@@ -2,7 +2,7 @@
 
 Freeform is the most powerful form building plugin for Craft CMS. It gives you full control to create simple or complex multi-page forms, as well as connect your forms to many popular API integrations.
 
-![Screenshot](src/freeform/src/icon.svg)
+![Screenshot](src/icon.svg)
 
 ## Requirements
 

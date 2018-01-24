@@ -30,8 +30,7 @@
     "developer": "Solspace",
     "developerUrl": "https://solspace.com/craft/freeform",
     "documentationUrl": "https://solspace.com/craft/freeform/docs",
-    "changelogUrl": "https://solspace.com",
-    "downloadUrl": "https://solspace.com",
+    "changelogUrl": "https://raw.githubusercontent.com/solspace/craft3-freeform/master/CHANGELOG.md",
     "hasSettings": true,
     "hasCpSection": true
   }

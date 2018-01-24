@@ -1,0 +1,37 @@
+<div class="freeform-widget-statistics">
+    {% for stats in formStatistics %}
+        {% if stats.label is defined %}
+            <h3>{{ stats.label }}</h3>
+        {% endif %}
+
+        <ul class="freeform-widget-statistics-container freeform-widget-statistics-main">
+            <li>
+                <span class="freeform-widget-digit">{{ stats.statistics.submissionCount }}</span>
+                <span class="freeform-widget-description">{{ "total submissions"|t }}</span>
+            </li>
+            <li>
+                <span class="freeform-widget-digit">{{ stats.statistics.spamBlockCount }}</span>
+                <span class="freeform-widget-description">{{ "blocked spam submissions"|t }}</span>
+            </li>
+        </ul>
+    {% endfor %}
+
+    {% if showGlobalStatistics %}
+        <hr>
+
+        <ul class="freeform-widget-statistics-container freeform-widget-statistics-secondary">
+            <li>
+                <span class="freeform-widget-digit">{{ formCount }}</span>
+                <span class="freeform-widget-description">{{ "forms"|t }}</span>
+            </li>
+            <li>
+                <span class="freeform-widget-digit">{{ fieldCount }}</span>
+                <span class="freeform-widget-description">{{ "form fields"|t }}</span>
+            </li>
+            <li>
+                <span class="freeform-widget-digit">{{ notificationCount }}</span>
+                <span class="freeform-widget-description">{{ "email notification templates"|t }}</span>
+            </li>
+        </ul>
+    {% endif %}
+</div>

@@ -1,0 +1,20 @@
+{% extends "demo/_layouts/layout" %}
+
+{% block nav %}
+    {% include "demo/_layouts/materialize-header.html" %}
+{% endblock %}
+
+{% block headerCss %}
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="{{ siteUrl }}assets/demo/css/main-materialize.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/css/materialize.min.css">
+{% endblock %}
+
+{% block footerJs %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+    <script>
+      $(document).ready(function() {
+        $('select').material_select();
+      });
+    </script>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% if page is not defined %}
+    {% set page = "" %}
+{% endif %}
+
+<div class="top-bar" id="main-menu">
+    <div class="row">
+        <div class="top-bar-left">
+            <ul class="dropdown menu" data-dropdown-menu>
+                <li class="menu-text">Freeform Demo</li>
+            </ul>
+        </div>
+        <div class="top-bar-right">
+            <ul class="menu vertical medium-horizontal" data-responsive-menu="drilldown medium-dropdown">
+                <li class="{{ page == "bootstrap" ? "active" }}"><a href="{{ siteUrl }}demo/bootstrap">Bootstrap</a></li>
+                <li class="{{ page == "foundation" ? "active" }}"><a href="{{ siteUrl }}demo/foundation">Foundation</a></li>
+                <li class="{{ page == "materialize" ? "active" }}"><a href="{{ siteUrl }}demo/materialize">Materialize</a></li>
+                <li><a href="https://solspace.com/craft/freeform/docs">Documentation</a></li>
+            </ul>
+        </div>
+    </div>
+</div>

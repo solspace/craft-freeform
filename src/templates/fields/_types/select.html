@@ -1,0 +1,40 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.lightSwitchField({
+    label: "Custom values"|t,
+    instructions: "Enable this to specify custom values for each option label."|t,
+    class: 'custom-values',
+    name: 'types[select][customValues]',
+    on: field.hasCustomOptionValues,
+}) }}
+
+<table class="shadow-box editable value-group" id="select-table" data-type="select">
+    <thead>
+    <tr>
+        <th scope="col" class="header field-label">{{ "Label" }}</th>
+        <th scope="col" class="header field-value">{{ "Value" }}</th>
+        <th scope="col" colspan="3" class="header">{{ "Selected?" }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for option in field.metaProperty('options', []) %}
+        <tr data-id="{{ loop.index0 }}">
+            <td class="textual field-label">
+                <textarea name="types[select][labels][]" rows="1">{{ option.label }}</textarea>
+            </td>
+            <td class="textual field-value">
+                <textarea name="types[select][values][]" class="code" rows="1">{{ option.value }}</textarea>
+            </td>
+            <td>
+                {% set isChecked = option.value in field.getMetaProperty('values') or option.value == field.getMetaProperty('value') %}
+                <input type="hidden" value="{{ isChecked }}" name="types[select][checked][]" />
+                <input type="radio" name="select_is_checked" {{ isChecked ? "checked" : "" }} />
+            </td>
+            <td class="thin action"><a class="move icon" title="{{ 'Reorder'|t }}"></a></td>
+            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="btn add icon">{{ addRowLabel is defined ? addRowLabel : "Add a row"|t }}</div>

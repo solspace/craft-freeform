@@ -1,0 +1,13 @@
+<div class="btn menubtn">{{ "Set status"|t }}</div>
+<div class="menu">
+    <ul>
+        {% for status in statuses %}
+            <li>
+                <a class="formsubmit" data-param="statusId" data-value="{{ status.id }}">
+                    <span class="status {{ status.color }}"></span>
+                    {{ status.name }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

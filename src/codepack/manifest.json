@@ -1,0 +1,8 @@
+{
+  "package_name": "Solspace Freeform Demo Templates",
+  "package_desc": "This package includes a set of sample templates that help demonstrate Freeform's abilities and get you better acquainted with it.",
+  "package_version": "1.0.0",
+  "vendor": "Solspace",
+  "vendor_url": "https://solspace.com/craft",
+  "docs_url": "https://solspace.com/craft/freeform/docs"
+}

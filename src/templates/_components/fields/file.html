@@ -1,0 +1,23 @@
+{% set thumbSizes = [30, 60, 100, 200] %}
+{% set srcset = "" %}
+{%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
+{% set srcset = srcset|trim(", ") %}
+
+<div class="element small hasthumb">
+    <div class="elementthumb">
+        <img sizes="30px" srcset="{{ srcset }}" alt="">
+    </div>
+    <label>
+        <a href="javascript:;" data-submit-form="asset_download_{{ asset.id }}">
+            {{ asset.title }}
+        </a>
+    </label>
+</div>
+
+<form method="post"
+      id="asset_download_{{ asset.id }}"
+      style="height: 0; width: 0; position: absolute; left: -99999px;">
+    <input type="hidden" name="action" value="assets/downloadAsset" />
+    <input type="hidden" name="assetId" value="{{ asset.id }}" />
+    {{ csrfInput() }}
+</form>

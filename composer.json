@@ -1,0 +1,38 @@
+{
+  "name": "solspace/craft3-freeform",
+  "description": "The most intuitive and powerful form builder for Craft.",
+  "version": "2.0.0-beta.1",
+  "type": "craft-plugin",
+  "minimum-stability": "dev",
+  "require": {
+    "symfony/property-access": "^3.3",
+    "symfony/finder": "^3.3",
+    "symfony/filesystem": "^3.3",
+    "solspace/craft3-commons": "^1.0",
+    "hashids/hashids": "^1.0",
+    "pixel418/markdownify": "2.1.11",
+    "egulias/email-validator": "^2.1",
+    "nesbot/carbon": "^1.22.1"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Solspace\\Freeform\\": "src/"
+    }
+  },
+  "extra": {
+    "schemaVersion": "2.0.0",
+    "handle": "freeform",
+    "class": "Solspace\\Freeform\\Freeform",
+    "name": "Freeform Lite",
+    "developer": "Solspace",
+    "developerUrl": "https://solspace.com/craft/freeform",
+    "documentationUrl": "https://solspace.com/craft/freeform/docs",
+    "changelogUrl": "https://solspace.com",
+    "downloadUrl": "https://solspace.com",
+    "hasSettings": true,
+    "hasCpSection": true
+  }
+}

@@ -1,0 +1,19 @@
+{% extends "demo/_layouts/layout" %}
+
+{% block nav %}
+    {% include "demo/_layouts/foundation-header.html" %}
+{% endblock %}
+
+{% block headerCss %}
+    <link href="{{ siteUrl }}assets/demo/css/main-foundation.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.2.3/foundation.min.css">
+    <style>
+        [type=checkbox], [type=file], [type=radio] {
+            margin: 0;
+        }
+    </style>
+{% endblock %}
+
+{% block footerJs %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.2.3/foundation.min.js"></script>
+{% endblock %}

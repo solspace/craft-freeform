@@ -1,0 +1,17 @@
+{% extends "freeform/_layouts/elementType" %}
+
+{% set title = craft.freeform.name ~ ": " ~ ("Submissions"|t) %}
+{% set selectedSubnavItem = 'submissions' %}
+{% set elementType = 'Solspace\\Freeform\\Elements\\Submission' %}
+
+
+{% css %}
+
+    {% for status in statuses %}
+        .status.{{ status.name }} {
+            border: 1px solid  rgba(0, 0, 0, 0.20) !important;
+            background-color: {{ status.colorHex }};
+        }
+    {% endfor %}
+
+{% endcss %}

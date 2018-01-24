@@ -1,0 +1,34 @@
+{% extends "freeform/_layouts/main" %}
+
+{% set selectedSubnavItem = 'settings' %}
+
+{% set title = craft.freeform.name ~ " " ~ ("Settings"|t) %}
+
+{% set navItems = {
+'hd': { heading: "Settings"|t },
+'general': { title: "General Settings"|t },
+'formatting-templates': { title: "Formatting Templates"|t },
+'email-templates': { title: "Email Templates"|t },
+'statuses': { title: "Statuses"|t },
+'demo-templates': {title: 'Demo Templates'|t},
+'hdapi': { heading: "API Integrations"|t },
+'mailing-lists': { title: "Mailing Lists"|t },
+'crm': { title: "CRM"|t },
+} %}
+
+{% set selectedItem = craft.app.request.getSegment(3)|default %}
+{% set docTitle = navItems[selectedItem].title~' - '~title %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for id, item in navItems %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li><a href="{{ url('freeform/settings/'~id) }}"{% if id == selectedItem %} class="sel"{% endif %}>{{ item.title }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

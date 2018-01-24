@@ -1,0 +1,117 @@
+<style>label.required:after {content:"*";color:#d00;margin-left:5px;}.submit-align-left{text-align:left}.submit-align-right{text-align:right}.submit-align-center{text-align:center}.submit-align-center button:not(:first-of-type),.submit-align-left button:not(:first-of-type),.submit-align-right button:not(:first-of-type){margin-left:5px}.submit-align-spread button:first-child{float:left}.submit-align-spread button:last-child{float:right}</style>
+
+{{ form.renderTag }}
+
+{% if form.pages|length > 1 %}
+    <ul class="nav nav-tabs">
+        {% for page in form.pages %}
+            <li class="{{ form.currentPage.index == page.index ? "active" : "disabled" }}">
+                {% if form.currentPage.index == page.index %}
+                    <a href="javascript:;">{{ page.label }}</a>
+                {% else %}
+                    <a href="javascript:;">{{ page.label }}</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if form.hasErrors %}
+    <div class="alert alert-danger">
+        {{ "There was an error submitting this form"|t }}
+    </div>
+{% endif %}
+
+{% for row in form %}
+    <div class="row {{ form.customAttributes.rowClass }}">
+        {% for field in row %}
+            {% set width = (12 / (row|length)) %}
+
+            {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
+
+            {% set columnClass = isCheckbox ? "checkbox" : "form-group" %}
+            {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
+            {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+            {% set columnClass = columnClass ~ " col-lg-" ~ width ~ " col-xs-12" %}
+
+            {% if field.type == "submit" %}
+                {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
+            {% endif %}
+
+            {% if field.type == "checkbox_group" %}
+
+                <div class="{{ columnClass }}">
+                    {{ field.renderLabel({
+                        labelClass: (field.required ? " required" : ""),
+                        instructionsClass: "help-block",
+                        errorClass: "help-block",
+                    }) }}
+
+                    {% for option in field.options %}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"
+                                       name="{{ field.handle }}[]"
+                                       value="{{ option.value }}"
+                                        {{ option.checked ? "checked" : "" }}
+                                />
+                                {{ option.label|raw }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors() }}
+                </div>
+
+            {% elseif field.type == "radio_group" or (field.type == "dynamic_recipients" and field.showAsRadio) %}
+
+                <div class="{{ columnClass }}">
+                    {{ field.renderLabel({
+                        labelClass: (field.required ? " required" : ""),
+                        instructionsClass: "help-block",
+                        errorClass: "help-block",
+                    }) }}
+
+                    {% for option in field.options %}
+                        <div class="radio">
+                            <label>
+                                <input type="radio"
+                                       name="{{ field.handle }}"
+                                       value="{{ option.value }}"
+                                        {{ option.checked ? "checked" : "" }}
+                                />
+                                {{ option.label|raw }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors() }}
+                </div>
+
+            {% elseif field.type == "submit" %}
+
+                <div class="{{ columnClass }}">
+                    {{ field.render() }}
+                </div>
+
+            {% else %}
+
+                <div class="{{ columnClass }}">
+                    {{ field.render({
+                        class: isCheckbox ? "checkbox" : "form-control",
+                        instructionsClass: "help-block",
+                        instructionsBelowField: true,
+                        labelClass: (field.required ? " required" : ""),
+                        errorClass: "help-block",
+                    }) }}
+                </div>
+
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+
+
+{{ form.renderClosingTag }}

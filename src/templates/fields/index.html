@@ -1,0 +1,72 @@
+{% extends "freeform/_layouts/main" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% set selectedSubnavItem = "fields" %}
+
+{% block actionButton %}
+
+    {% if currentUser.can("freeform-fieldsManage") %}
+        <a class="btn submit add icon" href="{{ url('freeform/fields/new/') }}">
+            {{ "New Field"|t }}
+        </a>
+    {% endif %}
+
+{% endblock %}
+
+{% set title = craft.freeform.name ~ ": " ~ ("Fields"|t) %}
+
+{% set content %}
+    <div id="nofields"{% if fields %} class="hidden"{% endif %}>
+        <p>{{ "No fields found"|t }}</p>
+    </div>
+
+    {% if fields|length %}
+        <table id="fields" class="data fullwidth collapsible">
+            <thead>
+            <th scope="col">{{ "Label"|t }}</th>
+            <th scope="col">{{ "Handle"|t }}</th>
+            <th scope="col">{{ "Type"|t }}</th>
+            <td class="thin"></td>
+            </thead>
+            <tbody>
+            {% for field in fields %}
+                <tr data-id="{{ field.id }}" data-name="{{ field.label|t }}">
+                    <th scope="row" data-title="{{ 'Label'|t }}">
+                        {% if currentUser.can("freeform-fieldsManage") %}
+                            <a href="{{ url('freeform/fields/' ~ field.id) }}">
+                                {{ field.label }}
+                            </a>
+                        {% else %}
+                            {{ field.label }}
+                        {% endif %}
+                    </th>
+                    <td data-title="{{ 'Handle'|t }}">
+                        <code>
+                            {{ field.handle }}
+                        </code>
+                    </td>
+                    <td style="width: 50%;">
+                        {{ fieldTypes[field.type] }}
+                    </td>
+                    <td class="thin">
+                        {% if currentUser.can("freeform-fieldsManage") %}
+                            <a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endset %}
+
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#fields',
+    noObjectsSelector: '#nofields',
+    newObjectBtnSelector: '#newfieldcontainer',
+    deleteAction: 'freeform/fields/delete',
+    confirmDeleteMessage: '{{ "Are you sure you want to delete this field?"|t }}'
+    });
+{% endjs %}

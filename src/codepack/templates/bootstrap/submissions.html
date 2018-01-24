@@ -1,0 +1,68 @@
+{% extends "demo/_layouts/bootstrap" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% if currentUser and currentUser.admin %}
+
+            {% set baseUrlSegments = 1 %}
+            {% set segment1 = craft.app.request.segment(baseUrlSegments + 1) %}
+            {% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
+
+            {% set formHandle = segment2 %}
+
+            {% set form = craft.freeform.form(formHandle) %}
+            {% set submissions = craft.freeform.submissions({
+                form: formHandle,
+            }).all %}
+
+            <h3>{{ form.name }}</h3>
+
+            {% if submissions is empty %}
+                <div>There are no submissions</div>
+            {% else %}
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Status</th>
+                        <th>Title</th>
+                        {% for field in (submissions|first).fieldMetadata %}
+                            <th>{{ field.label }}</th>
+                        {% endfor %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for submission in submissions %}
+                        <tr>
+                            <td>{{ submission.id }}</td>
+                            <td style="color: {{ submission.status }}">{{ submission.status.name }}</td>
+                            <td>
+                                <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/{{ submission.id }}">
+                                    {{ submission.title }}
+                                </a>
+                            </td>
+                            {% for field in submission.fieldMetadata %}
+                                <td>{{ attribute(submission, field.handle) }}</td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+        {% else %}
+            <div class="alert alert-danger" role="alert">
+                <p class="lead">
+                    Sorry, we couldn't find what you're looking for
+                </p>
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}

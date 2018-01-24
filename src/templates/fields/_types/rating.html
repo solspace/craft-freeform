@@ -1,0 +1,65 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: "Default Value"|t,
+    instructions: "If present, this will be the value pre-populated when the form is rendered."|t,
+    value: field.getMetaProperty('value'),
+    name: "types[rating][value]",
+    options: {
+        0: 'None',
+        1: 1,
+        2: 2,
+        3: 3,
+        4: 4,
+        5: 5,
+        6: 6,
+        7: 7,
+        8: 8,
+        9: 9,
+        10: 10,
+    },
+    required: false,
+    errors: field.getErrors("value"),
+}) }}
+
+<hr>
+
+{{ forms.selectField({
+    label: "Maximum Number of Stars"|t,
+    instructions: "Set how many stars are there in this rating"|t,
+    value: field.getMetaProperty('maxValue', 5),
+    name: "types[rating][maxValue]",
+    options: {
+        3: 3,
+        4: 4,
+        5: 5,
+        6: 6,
+        7: 7,
+        8: 8,
+        9: 9,
+        10: 10,
+    },
+    required: false,
+    errors: field.getErrors("maxValue"),
+}) }}
+
+{{ forms.colorField({
+    label: "Unselected Color",
+    id: "colorIdle",
+    name: "types[rating][colorIdle]",
+    value: field.getMetaProperty('colorIdle', '#dddddd'),
+}) }}
+
+{{ forms.colorField({
+    label: "Hover Color",
+    id: "colorHover",
+    name: "types[rating][colorHover]",
+    value: field.getMetaProperty('colorHover', '#FFD700'),
+}) }}
+
+{{ forms.colorField({
+    label: "Selected Color",
+    id: "colorSelected",
+    name: "types[rating][colorSelected]",
+    value: field.getMetaProperty('colorSelected', '#ff7700'),
+}) }}

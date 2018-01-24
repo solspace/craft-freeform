@@ -1,0 +1,119 @@
+{% extends "freeform/_layouts/main" %}
+{% import "_includes/forms" as forms %}
+
+{% set selectedSubnavItem = "fields" %}
+{% set saveShortcutRedirect = 'freeform/fields/{id}' %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url('freeform') },
+    { label: "Fields"|t, url: url('freeform/fields') },
+    { label: title, url: '' },
+] %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ url('freeform/fields/new')|hash }}">
+                            {{ "Save and add another"|t }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/fields/save">
+    {{ redirectInput('freeform/fields') }}
+    {% if field.id %}<input type="hidden" name="fieldId" value="{{ field.id }}">{% endif %}
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        first: true,
+        label: "Label"|t,
+        instructions: "The default label for this field."|t,
+        id: 'label',
+        name: 'label',
+        value: field.label,
+        errors: field.getErrors('label'),
+        autofocus: true,
+        required: true,
+        translatable: false
+    }) }}
+
+    {{ forms.textField({
+        label: "Handle"|t,
+        instructions: "How you’ll refer to this field in the templates."|t,
+        id: 'handle',
+        class: 'code',
+        name: 'handle',
+        value: field.handle,
+        errors: field.getErrors('handle'),
+        required: true
+    }) }}
+
+    {{ forms.textareaField({
+        first: true,
+        label: "Instructions"|t,
+        instructions: "Default instructions / help text for this field."|t,
+        id: 'instructions',
+        name: 'instructions',
+        value: field.instructions,
+        errors: field.getErrors('instructions'),
+    }) }}
+
+    {{ forms.lightSwitchField({
+        label: "Required"|t,
+        instructions: "Set this field as required by default."|t,
+        id: 'required',
+        name: 'required',
+        on: field.required,
+        errors: field.getErrors('required')
+    }) }}
+
+    <hr>
+
+    {{ forms.selectField({
+        label: ("Type"|t) ~ (field.id > 0 ? " (" ~ ("Read only"|t) ~ ")" : ""),
+        instructions: "What type of field is this?"|t,
+        id: "type",
+        name: "type",
+        disabled: field.id > 0,
+        options: fieldTypes,
+        value: field.type,
+        errors: field.getErrors("type"),
+        required: true
+    }) }}
+
+    <hr>
+
+    <div class="field-specific-settings">
+        {% for type in fieldTypes|keys %}
+            <div class="field-settings" data-type="{{ type }}">
+                {% include "freeform/fields/_types/" ~ type %}
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% if not field.handle %}
+    {% js %}
+        new Craft.HandleGenerator('#label', '#handle');
+    {% endjs %}
+{% endif %}

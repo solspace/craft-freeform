@@ -1,0 +1,140 @@
+{% extends "freeform/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set saveShortcutRedirect = 'freeform/settings/mailing-lists/{id}' %}
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl }}">
+                            {{ "Save and continue editing"|t }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ url('freeform/settings/mailing-lists/new')|hash }}">
+                            {{ "Save and add another"|t }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+    <h2>{{ blockTitle }}</h2>
+
+    <div id="integration-type" data-type="mailing-lists">
+        <input type="hidden" name="action" value="freeform/mailing-lists/save">
+        {{ redirectInput('freeform/settings/mailing-lists') }}
+        {% if integration.handle %}
+            <input type="hidden" name="id" value="{{ integration.id }}">
+        {% endif %}
+        {{ csrfInput() }}
+
+        {{ forms.selectField({
+            first: true,
+            label: "Service Provider"|t,
+            id: 'class',
+            name: 'class',
+            options: serviceProviderTypes,
+            value: integration.class,
+            errors: integration.getErrors('class'),
+            required: true
+        }) }}
+
+        {{ forms.textField({
+            label: "Name"|t,
+            instructions: "What this integration will be called in the CP."|t,
+            id: 'name',
+            name: 'name',
+            value: integration.name,
+            errors: integration.getErrors('name'),
+            autofocus: true,
+            required: true
+        }) }}
+
+        {{ forms.textField({
+            label: "Handle"|t,
+            instructions: "The unique name used to identify this integration."|t,
+            class: "code",
+            id: 'handle',
+            name: 'handle',
+            value: integration.handle,
+            errors: integration.getErrors('handle'),
+            required: true
+        }) }}
+
+        <hr>
+
+        {% if integration.id %}
+            <div id="auth-checker">
+                <div class="authorized">
+                    Authorized
+                </div>
+                <div class="not-authorized">
+                    Not able to authorize.
+                    {% if integration.isOAuthConnection %}
+                        <a href="{{ url("freeform/mailing-lists/authenticate/" ~ integration.handle) }}" class="">Click here to re-authorize</a>
+                    {% endif %}
+                    <div class="errors"></div>
+                </div>
+                <div class="pending-status-check"
+                     data-id="{{ integration.id }}"
+                     data-type="{{ integration.type }}">
+                    Checking credentials...
+                </div>
+            </div>
+        {% elseif integration.errors('integration') %}
+            <ul class="errors field">
+                {% for error in integration.errors('integration') %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="settingsWrapper">
+            {% for className, settingList in settings %}
+                <div id="settings-{{ className|replace("\\", "") }}" style="display: none;">
+                    {% for setting in settingList if setting.type not in ["internal", "config"] %}
+                        {% set value = "" %}
+                        {% if integration.settings is not null and integration.settings[setting.handle] is defined %}
+                            {% set value = integration.settings[setting.handle] %}
+                        {% endif %}
+
+                        {% set options = {
+                            label: setting.label|t,
+                            instructions: setting.instructions|t,
+                            class: "setting-" ~ setting.handle,
+                            name: "settings["~className~"]["~setting.handle~"]",
+                            value: value,
+                            required: setting.required,
+                            errors: integration.errors(className~setting.handle),
+                        } %}
+
+                        {% if setting.type == "text" %}
+                            {{ forms.textField(options) }}
+                        {% elseif setting.type == "password" %}
+                            {{ forms.passwordField(options) }}
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% js %}
+    {% if not integration.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+{% endjs %}

@@ -1,0 +1,12 @@
+{% set ID = random() %}
+<canvas id="submission-chart-{{ ID }}" width="100%" height="{{ settings.chartHeight }}%"></canvas>
+
+{% js %}
+  $(function () {
+    setTimeout(function() {
+      var ctx       = document.getElementById("submission-chart-{{ ID }}").getContext("2d");
+      var chartData = {{ chartData|json_encode|raw }};
+      var myChart = new Chart(ctx, chartData);
+    }, 100);
+  });
+{% endjs %}

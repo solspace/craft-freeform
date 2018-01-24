@@ -1,0 +1,34 @@
+{% if page is not defined %}
+    {% set page = "" %}
+{% endif %}
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{{ siteUrl }}demo/">Freeform Demo</a>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="{{ page == "bootstrap" ? "active" }}"><a href="{{ siteUrl }}demo/bootstrap">Bootstrap</a></li>
+                <li class="{{ page == "foundation" ? "active" }}"><a href="{{ siteUrl }}demo/foundation">Foundation</a></li>
+                <li class="{{ page == "materialize" ? "active" }}"><a href="{{ siteUrl }}demo/materialize">Materialize</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <span class="caret"></span></a>
+                    <ul class="dropdown-menu" role="menu">
+                        <li><a href="https://solspace.com">Solspace.com</a></li>
+                        <li><a href="https://solspace.com/craft/freeform/docs">Documentation</a></li>
+                        <li><a href="https://solspace.com/craft/support">Support</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

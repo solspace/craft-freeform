@@ -1,0 +1,11 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "Default Value"|t,
+    instructions: "The default value for the field.",
+    id: "value",
+    name: "types[hidden][value]",
+    value: field.metaProperty('value'),
+    errors: field.getErrors("value"),
+    required: false
+}) }}

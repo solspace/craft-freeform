@@ -1,0 +1,134 @@
+{% extends "freeform/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set blockTitle = title %}
+{% set selectedSubnavItem = "statuses" %}
+{% set saveShortcutRedirect = 'freeform/settings/statuses/{id}' %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl }}">
+                            {{ "Save and continue editing"|t }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ url('freeform/settings/statuses/new')|hash }}">
+                            {{ "Save and add another"|t }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ blockTitle }}</h2>
+
+    <div>
+
+        <input type="hidden" name="action" value="freeform/statuses/save">
+        {{ redirectInput('freeform/settings/statuses') }}
+        {% if status.id %}<input type="hidden" name="statusId" value="{{ status.id }}">{% endif %}
+        {{ csrfInput() }}
+
+        {{ forms.textField({
+            first: true,
+            label: "Name"|t,
+            instructions: "The name of the status."|t,
+            id: 'name',
+            name: 'name',
+            value: status.name,
+            errors: status.getErrors('name'),
+            autofocus: true,
+            required: true,
+            translatable: true
+        }) }}
+
+        {{ forms.textField({
+            label: "Handle"|t,
+            instructions: "How you’ll refer to this status in the templates."|t,
+            id: 'handle',
+            class: 'code',
+            name: 'handle',
+            value: status.handle,
+            errors: status.getErrors('handle'),
+            required: true
+        }) }}
+
+        <hr>
+
+        {{ forms.hidden({
+            id: "color",
+            name: "color",
+            value: status.color,
+            errors: status.getErrors("color"),
+            required: true
+        }) }}
+
+        {% set colorField %}
+            <div>
+                <a id="color-menu-btn" class="btn menubtn" href="#">
+                    <span class="status {{ status.color }}"></span>
+                    {{ status.color|t|title }}
+                </a>
+                <div class="menu">
+                    <ul class="padded">
+                        {% for color in ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
+                            <li>
+                                <a data-val="{{ color }}" {% if status.color == color %}class="sel"{% endif %} href="#">
+                                    <span class="status {{ color }}"></span>
+                                    {{ color|t|title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endset %}
+
+        {{ forms.field({
+            label: 'Color'|t,
+            instructions: 'The color of the status circle when viewing inside CP.'|t
+        },colorField) }}
+
+        {{ forms.lightswitchField({
+            label: "Is Default"|t,
+            instructions: "Set this status be selected by default when creating new forms?",
+            name: "isDefault",
+            on: status.isDefault,
+            disabled: status.isDefault,
+            errors: status.errors("isDefault"),
+        }) }}
+
+        </div>
+    </div>
+{% endblock %}
+
+
+{% js %}
+    {% if not status.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
+    $(function () {
+        $colorSelect = $('#color-menu-btn');
+        new Garnish.MenuBtn($colorSelect, {
+            onOptionSelect: function(data) {
+                var val = $(data).data('val');
+                $('#color').val(val);
+                var html = "<span class='status "+val+"'></span>"+Craft.uppercaseFirst(val);
+                $colorSelect.html(html);
+            }
+        });
+    });
+{% endjs %}

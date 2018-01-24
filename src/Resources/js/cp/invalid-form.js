@@ -1,0 +1,1 @@
+"use strict";var stateCheck=setInterval(function(){"complete"===document.readyState&&(clearInterval(stateCheck),document.getElementById("{{FORM_ANCHOR}}").scrollIntoView())},300);

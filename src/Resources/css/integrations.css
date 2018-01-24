@@ -1,0 +1,25 @@
+/*!
+ * Freeform for Craft
+ *
+ * @package       Solspace:Freeform
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @link          https://solspace.com/craft/freeform
+ * @license       https://solspace.com/software/license-agreement
+ *//*!
+ * Freeform for Craft
+ *
+ * @package       Solspace:Freeform
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @link          https://solspace.com/craft/freeform
+ * @license       https://solspace.com/software/license-agreement
+ *//*!
+ * Freeform for Craft
+ *
+ * @package       Solspace:Freeform
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @link          https://solspace.com/craft/freeform
+ * @license       https://solspace.com/software/license-agreement
+ */.alert{padding:7px 14px;margin-bottom:1rem;border:1px solid transparent;border-radius:3px;font-size:14px}.alert>p,.alert>ul{margin-bottom:0}.alert>p+p{margin-top:5px}.alert-heading{color:inherit}.alert-link{font-weight:bold}.alert-dismissible{position:relative;padding-right:7px 14px20}.alert-dismissible .close{position:absolute;top:7px;right:10px;color:inherit;font-size:18px}.alert-dismissible .close:before{font-family:Craft, sans-serif;content:'\e610';margin-left:2px}.alert-dismissible .close:hover{text-decoration:none}.alert-success{border-color:#d0e9c6;color:#3c763d;background:linear-gradient(to bottom, #eef7ea 0%, #dff0d8 100%)}.alert-success hr{border-top-color:#c1e2b3}.alert-success .alert-link{color:#2b542c}.alert-info{border-color:#bcdff1;color:#31708f;background:linear-gradient(to bottom, #eef7fb 0%, #d9edf7 100%)}.alert-info hr{border-top-color:#a6d5ec}.alert-info .alert-link{color:#245269}.alert-warning{border-color:#faf2cc;color:#8a6d3b;background:linear-gradient(to bottom, #fefefa 0%, #fcf8e3 100%)}.alert-warning hr{border-top-color:#f7ecb5}.alert-warning .alert-link{color:#66512c}.alert-danger{border-color:#ebcccc;color:#a94442;background:linear-gradient(to bottom, #f9f0f0 0%, #f2dede 100%)}.alert-danger hr{border-top-color:#e4b9b9}.alert-danger .alert-link{color:#843534}#auth-checker{margin-bottom:10px}#auth-checker>div{display:none}#auth-checker>div:before{content:"";position:relative;top:1px;display:inline-block;width:10px;height:10px;margin-right:5px;background:#CCD1D6;border:1px solid #CCD1D6;border-radius:10px}#auth-checker .authorized:before{border-color:#27AE60;background:#27AE60}#auth-checker .not-authorized:before{border-color:#D0021B;background:#D0021B}#auth-checker .not-authorized .errors{color:#D0021B}#auth-checker .pending-status-check{display:block}.alert{margin-top:30px}

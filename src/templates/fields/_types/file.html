@@ -1,0 +1,44 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: "Asset Source"|t,
+    instructions: "Select a default asset source for uploaded files."|t,
+    name: "types[file][assetSourceId]",
+    value: field.metaProperty('assetSourceId'),
+    options: ["Select an asset source"|t]|merge(assetSources),
+    errors: field.getErrors("assetSourceId"),
+}) }}
+
+{{ forms.textField({
+    label: "Maximum File Size"|t,
+    instructions: "Specify the default maximum file size, in KB."|t,
+    name: "types[file][maxFileSizeKB]",
+    value: field.metaProperty('maxFileSizeKB', 2048),
+    errors: field.getErrors("maxFileSizeKB"),
+}) }}
+
+{% if field.id %}
+    {% set selectedFileKinds = field.metaProperty('fileKinds', []) %}
+{% else %}
+    {% set selectedFileKinds = field.metaProperty('fileKinds', ["image", "pdf"]) %}
+{% endif %}
+
+{% set fileKindsInput %}
+    <div id="restrict-allowed-types">
+        <input type="hidden" name="types[file][fileKinds]" value="" />
+        {% for key, option in fileKinds %}
+            {{ forms.checkboxField({
+                label: option.label,
+                id: 'allowedKinds-'~key,
+                name: 'types[file][fileKinds][]',
+                value: key,
+                checked: (key in selectedFileKinds)
+            }) }}
+        {% endfor %}
+    </div>
+{% endset %}
+
+{{ forms.field({
+    label: "Allowed File Types"|t,
+    instructions: "Select the file types to be allowed by default. Leaving all unchecked will allow all file types."|t,
+}, fileKindsInput) }}

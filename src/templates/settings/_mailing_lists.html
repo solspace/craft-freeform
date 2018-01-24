@@ -1,0 +1,77 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% block actionButton %}
+
+    {% if currentUser.can("freeform-settingsManage") and providers|length > 0 %}
+        <div class="buttons">
+            <a href="{{ url('freeform/settings/mailing-lists/new') }}" class="btn submit add icon">
+                {{ "New Mailing List Integration"|t }}
+            </a>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ "Mailing Lists"|t }}</h2>
+
+    <div id="no-mailing-integrations"{% if integrations|length %} class="hidden"{% endif %}>
+        <p>{{ "No Mailing List integrations exist yet"|t }}</p>
+    </div>
+
+    {% if integrations|length %}
+        <table id="mailing-integrations" class="data fullwidth collapsible">
+            <thead>
+            <tr>
+                <th scope="col">{{ "Name"|t }}</th>
+                <th scope="col">{{ "Handle"|t }}</th>
+                <th scope="col">{{ "Service Provider"|t }}</th>
+                <th scope="col">{{ "Last Updated"|t }}</th>
+                <td class="thin"></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for integration in integrations %}
+                <tr data-id="{{ integration.id }}" data-name="{{ integration.name }}">
+                    <th scope="row" data-title="{{ 'Name'|t }}">
+                        <a href="{{ url('freeform/settings/mailing-lists/'~integration.id) }}">{{ integration.name }}</a>
+                    </th>
+                    <td data-title="{{ "Handle"|t }}" class="code">
+                        {{ integration.handle }}
+                    </td>
+                    <td data-title="{{ "Service Provider"|t }}" class="code">
+                        {{ integration.integrationObject.serviceProvider }}
+                    </td>
+                    <td data-title="{{ 'Last Updated'|t }}">
+                        {{ integration.lastUpdate|date("Y-m-d H:i") }}
+                    </td>
+                    <td class="thin">
+                        <a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% if providers|length <= 1 %}
+        <div class="alert alert-info alert-dismissible">
+            <a href="https://solspace.com/craft/freeform/#compare">
+                {{ "Upgrade to Pro to enable"|t }}
+            </a>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% js %}
+var adminTable = new Craft.AdminTable({
+tableSelector: '#mailing-integrations',
+noObjectsSelector: '#no-mailing-integrations',
+newObjectBtnSelector: '#new-mailing-integration',
+deleteAction: 'freeform/mailing-lists/delete',
+confirmDeleteMessage: '{{ "Are you sure you want to remove the “{name}” integration?"|t }}'
+});
+{% endjs %}

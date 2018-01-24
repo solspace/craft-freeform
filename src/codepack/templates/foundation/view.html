@@ -1,0 +1,144 @@
+{% extends "demo/_layouts/foundation" %}
+
+{% set pageTitle = "Foundation" %}
+{% set page = "foundation" %}
+
+{% block content %}
+
+<div class="row">
+
+    {% set baseUrlSegments = 1 %}
+    {% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
+
+    {% set form = craft.freeform.form(segment2, {
+        submitClass: "button",
+    }) %}
+
+    {% if form %}
+
+        <h3>{{ form.name }}</h3>
+
+        {{ form.renderTag }}
+
+        {% if form.pages|length > 1 %}
+
+            <ul class="menu pagemenu">
+                {% for page in form.pages %}
+                    <li class="{{ form.currentPage.index == loop.index0 ? "active" : "" }}">
+                        {% if form.currentPage.index == loop.index0 %}
+                            <a href="javascript:;" class="is-active">{{ page.label }}</a>
+                        {% else %}
+                            <a href="javascript:;">{{ page.label }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if form.hasErrors %}
+            <div class="callout alert">
+                {{ "There was an error submitting this form"|t }}
+            </div>
+        {% endif %}
+
+
+        {% for row in form %}
+            <div class="row {{ form.customAttributes.rowClass }}">
+                {% for field in row %}
+                    {% set width = (12 / (row|length)) %}
+
+                    {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
+
+                    {% set columnClass = "" %}
+                    {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+                    {% set columnClass = columnClass ~ " medium-" ~ width ~ " columns" %}
+
+                    {% if field.type == "submit" %}
+                        {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
+                    {% endif %}
+
+                    {% if field.type == "checkbox_group" %}
+
+                        <div class="{{ columnClass }}">
+                            {{ field.renderLabel({
+                                labelClass: (field.required ? " required" : ""),
+                                instructionsClass: "help-text",
+                            }) }}
+
+                            {% for option in field.options %}
+                                <div class="checkbox">
+                                    <label>
+                                        <input type="checkbox"
+                                               name="{{ field.handle }}[]"
+                                               value="{{ option.value }}"
+                                                {{ option.value in field.value ? "checked" : "" }}
+                                        />
+                                        {{ option.label|raw }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+
+                            {{ field.renderInstructions() }}
+                            {{ field.renderErrors() }}
+                        </div>
+
+                    {% elseif field.type == "radio_group" or (field.type == "dynamic_recipients" and field.showAsRadio) %}
+
+                        <div class="{{ columnClass }}">
+                            {{ field.renderLabel({
+                                labelClass: (field.required ? " required" : ""),
+                                instructionsClass: "help-text",
+                            }) }}
+
+                            {% for option in field.options %}
+                                <div class="radio">
+                                    <label>
+                                        <input type="radio"
+                                               name="{{ field.handle }}"
+                                               value="{{ option.value }}"
+                                                {{ option.value in field.value ? "checked" : "" }}
+                                        />
+                                        {{ option.label|raw }}
+                                    </label>
+                                </div>
+                            {% endfor %}
+
+                            {{ field.renderInstructions() }}
+                            {{ field.renderErrors() }}
+                        </div>
+
+                    {% elseif field.type == "submit" %}
+
+                        <div class="{{ columnClass }}">
+                            {{ field.render() }}
+                        </div>
+
+                    {% else %}
+
+                        <div class="{{ columnClass }}">
+                            {{ field.render({
+                                class: isCheckbox ? "checkbox" : "form-control",
+                                instructionsClass: "help-text",
+                                instructionsBelowField: true,
+                                labelClass: (field.required ? " required" : ""),
+                            }) }}
+                        </div>
+
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+
+        {{ form.renderClosingTag }}
+
+
+    {% else %}
+        <div class="alert alert-danger">
+            Form with the handle '{{ segment2 }}' does not exist
+        </div>
+    {% endif %}
+
+</div>
+
+{% endblock %}

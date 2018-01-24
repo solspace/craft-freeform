@@ -1,0 +1,23 @@
+{% set ID = random() %}
+<canvas id="submission-chart-{{ ID }}" width="100%" height="{{ settings.chartHeight }}%"></canvas>
+
+{% js %}
+  $(function () {
+    setTimeout(function() {
+      var ctx       = document.getElementById("submission-chart-{{ ID }}").getContext("2d");
+      var chartData = {{ chartData|json_encode|raw }};
+      var incrementSkip = {{ incrementSkip }};
+
+      chartData.options.scales.xAxes[0].ticks = {
+        callback: function (value, index, values) {
+          return index % incrementSkip === 0 ? value : null;
+        }
+      }
+
+    ctx.fillColor = "#000";
+  ctx.fillText("123%", 100 - 20, 100, 200);
+
+      var myChart = new Chart(ctx, chartData);
+    }, 200);
+  });
+{% endjs %}

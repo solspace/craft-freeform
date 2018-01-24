@@ -1,0 +1,14 @@
+{% extends "demo/_layouts/layout" %}
+
+{% block nav %}
+    {% include "demo/_layouts/bootstrap-header.html" %}
+{% endblock %}
+
+{% block headerCss %}
+    <link href="{{ siteUrl }}assets/demo/css/main-bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+{% endblock %}
+
+{% block footerJs %}
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+{% endblock %}

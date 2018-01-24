@@ -1,0 +1,57 @@
+[
+  {
+    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"], "\\/success"],
+    "urlPattern": "bootstrap/{slug}/submissions/{id}/success",
+    "template": "/bootstrap/view_submission.html"
+  },
+  {
+    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"]],
+    "urlPattern": "bootstrap/{slug}/submissions/{id}",
+    "template": "/bootstrap/view_submission.html"
+  },
+  {
+    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions"],
+    "urlPattern": "bootstrap/{slug}/submissions",
+    "template": "/bootstrap/submissions.html"
+  },
+  {
+    "urlParts": ["bootstrap\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "bootstrap/{slug}",
+    "template": "/bootstrap/view.html"
+  },
+  {
+    "urlParts": ["bootstrap\\/",["slug","[^\\\\\\/]+"], "\\/success"],
+    "urlPattern": "bootstrap/{slug}/success",
+    "template": "/bootstrap/view.html"
+  },
+  {
+    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"], "\\/success"],
+    "urlPattern": "materialize/{slug}/submissions/{id}/success",
+    "template": "/materialize/view_submission.html"
+  },
+  {
+    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"]],
+    "urlPattern": "materialize/{slug}/submissions/{id}",
+    "template": "/materialize/view_submission.html"
+  },
+  {
+    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions"],
+    "urlPattern": "materialize/{slug}/submissions",
+    "template": "/materialize/submissions.html"
+  },
+  {
+    "urlParts": ["materialize\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "materialize/{slug}",
+    "template": "/materialize/view.html"
+  },
+  {
+    "urlParts": ["materialize\\/",["slug","[^\\\\\\/]+"], "\\/success"],
+    "urlPattern": "materialize/{slug}/success",
+    "template": "/materialize/view.html"
+  },
+  {
+    "urlParts": ["foundation\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "foundation/{slug}",
+    "template": "/foundation/view.html"
+  }
+]

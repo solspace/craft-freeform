@@ -1,0 +1,92 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+
+    <h2>{{ "General Settings"|t }}</h2>
+
+    <form action="" method="post" accept-charset="UTF-8">
+        <input type="hidden" name="action" value="freeform/settings/save-settings">
+        {{ redirectInput('freeform/settings/general') }}
+        {{ csrfInput() }}
+
+        {{ forms.textField({
+            class: "code",
+            label: "Custom Plugin Name"|t,
+            instructions: "Override the plugin name by specifying your own here."|t,
+            placeholder: craft.freeform.name,
+            id: "pluginName",
+            name: "settings[pluginName]",
+            value: settings.pluginName,
+            errors: settings.getErrors("pluginName"),
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Spam Protection"|t,
+            instructions: "Enable this to use Freeform's built in Javascript-based honeypot spam protection."|t,
+            name: "settings[spamProtectionEnabled]",
+            on: settings.spamProtectionEnabled,
+            errors: settings.errors("spamProtectionEnabled"),
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Show Composer Tutorial"|t,
+            instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t,
+            name: "settings[showTutorial]",
+            on: settings.showTutorial,
+            errors: settings.errors("showTutorial"),
+        }) }}
+
+        {{ forms.selectField({
+            label: "Default View"|t,
+            instructions: "The default page to go to when clicking the Freeform nav item."|t,
+            name: "settings[defaultView]",
+            value: settings.defaultView,
+            errors: settings.errors("defaultView"),
+            options: {
+                forms: "Form view",
+                submissions: "Submission view",
+            },
+        }) }}
+
+        {{ forms.selectField({
+            label: "Display Order of Fields in Composer"|t,
+            instructions: "The display order for the list of available fields in Composer."|t,
+            name: "settings[fieldDisplayOrder]",
+            value: settings.fieldDisplayOrder,
+            errors: settings.errors("fieldDisplayOrder"),
+            options: {
+                type: "Field type, Field name (alphabetical)",
+                name: "Field name (alphabetical)",
+            },
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Include Default Freeform Formatting Templates"|t,
+            instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t,
+            name: "settings[defaultTemplates]",
+            on: settings.defaultTemplates,
+            errors: settings.errors("defaultTemplates"),
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Disable submit button on form submit?"|t,
+            instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t,
+            name: "settings[formSubmitDisable]",
+            on: settings.formSubmitDisable,
+            errors: settings.errors("formSubmitDisable"),
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Include Freeform scripts in the page's footer?"|t,
+            instructions: "Disable this to add each Freeform forms scripts inside the form tag instead of the page's footer."|t,
+            name: "settings[footerScripts]",
+            on: settings.footerScripts,
+            errors: settings.errors("footerScripts"),
+        }) }}
+
+        <input type="submit" class="btn submit" value="{{ "Save"|t }}">
+    </form>
+
+{% endblock %}

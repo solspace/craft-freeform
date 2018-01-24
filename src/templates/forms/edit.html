@@ -1,0 +1,43 @@
+{% extends "freeform/_layouts/main" %}
+{% import "_includes/forms" as forms %}
+
+{% set selectedSubnavItem = "forms" %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url('freeform') },
+    { label: "Forms"|t, url: url('freeform/forms') },
+    { label: title, url: '' },
+] %}
+
+
+{% block header %}
+    {{ block('pageTitle') }}
+    {{ block('contextMenu') }}
+    <div class="flex-grow"></div>
+    {{ block('actionButton') }}
+{% endblock %}
+
+{% block content %}
+    <script>
+      var formId                   = {{ form.id ? form.id : "null" }};
+      var fieldList                = {{ fieldList|raw }};
+      var fieldTypeList            = {{ fieldTypeList|raw }};
+      var notificationList         = {{ notificationList|raw }};
+      var mailingList              = {{ mailingList|raw }};
+      var crmIntegrations          = {{ crmIntegrations|raw }};
+      var composerState            = {{ form.layoutAsJson|raw }};
+      var formStatuses             = {{ statuses|raw }};
+      var assetSources             = {{ assetSources|raw }};
+      var solspaceFormTemplates    = {{ solspaceFormTemplates|raw }};
+      var formTemplateList         = {{ formTemplates|raw }};
+      var fileKinds                = {{ fileKinds|raw }};
+      var showTutorial             = {{ showTutorial ? "true" : "false" }};
+      var defaultTemplates         = {{ defaultTemplates ? "true" : "false" }};
+      var canManageFields          = {{ canManageFields ? "true" : "false" }};
+      var canManageNotifications   = {{ canManageNotifications? "true" : "false" }};
+      var canManageSettings        = {{ canManageSettings? "true" : "false" }};
+      var isDbEmailTemplateStorage = {{ isDbEmailTemplateStorage ? "true" : "false" }};
+      var isWidgetsInstalled       = {{ isWidgetsInstalled ? "true" : "false" }};
+    </script>
+    <div id="freeform-builder"></div>
+{% endblock %}

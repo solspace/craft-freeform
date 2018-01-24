@@ -1,0 +1,20 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.textField({
+    label: "Default Value"|t,
+    instructions: "The default value for the field."|t,
+    id: "value",
+    name: "types[checkbox][value]",
+    value: field.metaProperty('value', 'yes'),
+    errors: field.getErrors("value"),
+    required: false
+}) }}
+
+{{ forms.lightswitchField({
+    label: "Checked by default"|t,
+    instructions: "Enable this to check the checkbox by default."|t,
+    id: "placeholder",
+    name: "types[checkbox][checked]",
+    on: field.metaProperty('checked'),
+    required: false
+}) }}

@@ -1,0 +1,47 @@
+{% extends "demo/_layouts/bootstrap" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% block content %}
+
+<div class="container">
+
+    {% set forms = craft.freeform.forms %}
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Form Name</th>
+            <th>Handle</th>
+            {% if currentUser and currentUser.admin %}
+            <th>Submissions</th>
+            {% endif %}
+        </tr>
+        </thead>
+        <tbody>
+        {% for form in forms %}
+            <tr>
+                <td>{{ form.id }}</td>
+                <td>
+                    <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}">
+                        {{ form.name }}
+                    </a>
+                </td>
+                <td class="code">{{ form.handle }}</td>
+                {% if currentUser and currentUser.admin %}
+                    <td>
+                        <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions">
+                            {{ craft.freeform.submissions({formId: form.id}).count }} submissions
+                        </a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

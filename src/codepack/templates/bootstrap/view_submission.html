@@ -1,0 +1,89 @@
+{% extends "demo/_layouts/bootstrap" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% set baseUrlSegments = 1 %}
+        {% set segment1 = craft.app.request.segment(baseUrlSegments + 1) %}
+        {% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
+        {% set segment3 = craft.app.request.segment(baseUrlSegments + 3) %}
+        {% set segment4 = craft.app.request.segment(baseUrlSegments + 4) %}
+        {% set segment5 = craft.app.request.segment(baseUrlSegments + 5) %}
+
+        {% set formHandle   = segment2 %}
+        {% set submissionId = segment4 %}
+        {% set isSuccess    = segment5 == "success" %}
+
+        {% if isSuccess %}
+            <div class="alert alert-success" role="alert">
+                <p class="lead">
+                    Form submitted successfully!
+                </p>
+            </div>
+        {% endif %}
+
+        {% if currentUser and currentUser.admin %}
+
+            {% set form = craft.freeform.form(formHandle) %}
+            {% set submission = craft.freeform.submissions({
+                id: submissionId,
+                form: formHandle,
+            }).one %}
+
+            {% if submission %}
+
+                <h3>{{ form.name }} - {{ submission.title }}</h3>
+
+                <table class="table table-striped">
+                    <tr>
+                        <th style="width: 20%;">Status</th>
+                        <td style="color: {{ submission.status }}">{{ submission.status.name }}</td>
+                    </tr>
+                    {% for field in submission.fieldMetadata %}
+                        <tr>
+                            <th style="width: 20%;">{{ field.label }}</th>
+                            <td>
+                                {% if field.type == "file" %}
+                                    {% set assetId = attribute(submission, field.handle) %}
+                                    {% set asset = craft.assets.id(assetId).first() %}
+                                    {% if asset %}
+                                        {% if asset.kind == "image" %}
+                                            <img src="{{ asset.url }}" class="img-responsive" />
+                                        {% else %}
+                                            <a href="{{ asset.url }}">{{ asset.filename }}</a>
+                                        {% endif %}
+                                    {% endif %}
+                                {% else %}
+                                    {{ attribute(submission, field.handle) }}
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+            {% else %}
+
+                <div class="alert alert-danger" role="alert">
+                    <p class="lead">
+                        Sorry, no submission was found.
+                    </p>
+                </div>
+
+            {% endif %}
+        {% elseif not isSuccess %}
+
+            <div class="alert alert-danger" role="alert">
+                <p class="lead">
+                    Sorry, we didn't find what you're looking for
+                </p>
+            </div>
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

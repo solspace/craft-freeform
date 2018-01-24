@@ -1,0 +1,153 @@
+{% extends "freeform/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set saveShortcutRedirect = 'freeform/settings/crm/{id}' %}
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ url('freeform/settings/crm/new')|hash }}">
+                            {{ "Save and add another"|t }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+    <h2>{{ blockTitle }}</h2>
+
+    {% if serviceProviderTypes|length == 0 %}
+
+        <div>
+            {{ "There are no CRM integrations currently installed. Please visit {link_open}Solspace Freeform marketplace{link_close} to purchase CRM integrations"|t({
+                link_open: '<a href="https://solspace.com/">',
+                link_close: '</a>',
+            })|raw }}
+        </div>
+
+    {% else %}
+
+        <div id="integration-type" data-type="crm">
+            <input type="hidden" name="action" value="freeform/crm/save">
+            {{ redirectInput('freeform/settings/crm') }}
+            {% if integration.id %}
+                <input type="hidden" name="id" value="{{ integration.id }}">
+            {% endif %}
+            {{ csrfInput() }}
+
+            {{ forms.selectField({
+                first: true,
+                label: "Service Provider"|t,
+                id: 'class',
+                name: 'class',
+                options: serviceProviderTypes,
+                value: integration.class,
+                errors: integration.getErrors('class'),
+                required: true
+            }) }}
+
+            {{ forms.textField({
+                label: "Name"|t,
+                instructions: "What this integration will be called in the CP."|t,
+                id: 'name',
+                name: 'name',
+                value: integration.name,
+                errors: integration.getErrors('name'),
+                autofocus: true,
+                required: true
+            }) }}
+
+            {{ forms.textField({
+                label: "Handle"|t,
+                instructions: "The unique name used to identify this integration."|t,
+                class: "code",
+                id: 'handle',
+                name: 'handle',
+                value: integration.handle,
+                errors: integration.getErrors('handle'),
+                required: true
+            }) }}
+
+            <hr>
+
+            {% if integration.id %}
+                <div id="auth-checker">
+                    <div class="authorized">
+                        Authorized
+                    </div>
+                    <div class="not-authorized">
+                        Not able to authorize.
+                        <a href="{{ url("freeform/crm/authenticate/" ~ integration.handle) }}" class="">Click here to re-authorize</a>
+                        <div class="errors"></div>
+                    </div>
+                    <div class="pending-status-check"
+                         data-id="{{ integration.id }}"
+                         data-type="{{ integration.type }}">
+                        Checking credentials...
+                    </div>
+                </div>
+            {% elseif integration.errors('integration') %}
+                <ul class="errors field">
+                    {% for error in integration.errors('integration') %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <div class="settingsWrapper">
+                {% for className, settingList in settings %}
+                    <div id="settings-{{ className|replace("\\", "") }}" style="display: none;">
+                        {% for setting in settingList if setting.type not in ["internal", "config"] %}
+                            {% set value = "" %}
+                            {% if integration.settings is not null and integration.settings[setting.handle] is defined %}
+                                {% set value = integration.settings[setting.handle] %}
+                            {% endif %}
+
+                            {% set options = {
+                                label: setting.label|t,
+                                instructions: setting.instructions|t,
+                                class: "setting-" ~ setting.handle,
+                                name: "settings["~className~"]["~setting.handle~"]",
+                                value: value,
+                                required: setting.required,
+                                errors: integration.errors(className~setting.handle),
+                            } %}
+
+                            {% if setting.type == "text" %}
+                                {{ forms.textField(options) }}
+                            {% elseif setting.type == "password" %}
+                                {{ forms.passwordField(options) }}
+                            {% elseif setting.type == "bool" %}
+                                {{ forms.lightswitchField(options) }}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% js %}
+    {% if not integration.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+{% endjs %}

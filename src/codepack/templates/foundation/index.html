@@ -1,0 +1,39 @@
+{% extends "demo/_layouts/foundation" %}
+
+{% set pageTitle = "Foundation" %}
+{% set page = "foundation" %}
+
+{% block content %}
+
+<div class="row">
+
+    {% set forms = craft.freeform.forms %}
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Form Name</th>
+            <th>Handle</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for form in forms %}
+            <tr>
+                <td>{{ form.id }}</td>
+                <td>
+                    <a href="{{ siteUrl }}demo/foundation/{{ form.handle }}">
+                        {{ form.name }}
+                    </a>
+                </td>
+                <td class="code">{{ form.handle }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

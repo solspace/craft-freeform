@@ -1,0 +1,6 @@
+{% if currentUser.can('freeform-settingsAccess') %}
+    {% redirect 'freeform/settings/general' %}
+{% endif %}
+
+{% extends "403" %}
+{% set message = "You dont't have permission to access Freeform settings"|t %}

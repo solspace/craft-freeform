@@ -1,0 +1,51 @@
+<?php
+/**
+ * Freeform for Craft
+ *
+ * @package       Solspace:Freeform
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @link          https://solspace.com/craft/freeform
+ * @license       https://solspace.com/software/license-agreement
+ */
+
+namespace Solspace\freeform\Library\Database;
+
+use Solspace\Freeform\Library\Composer\Components\Form;
+
+interface FormHandlerInterface
+{
+    /**
+     * @param Form   $form
+     * @param string $templateName
+     *
+     * @return \Twig_Markup
+     */
+    public function renderFormTemplate(Form $form, $templateName): \Twig_Markup;
+
+    /**
+     * @return bool
+     */
+    public function isSpamProtectionEnabled(): bool;
+
+    /**
+     * Increments the spam block counter by 1
+     *
+     * @param Form $form
+     *
+     * @return int - new spam block count
+     */
+    public function incrementSpamBlockCount(Form $form): int;
+
+    /**
+     * @param Form $form
+     */
+    public function addScriptsToPage(Form $form);
+
+    /**
+     * @param Form $form
+     *
+     * @return string
+     */
+    public function getScriptOutput(Form $form): string;
+}

@@ -61,10 +61,10 @@ class FormFieldType extends Field
 
         /** @var FormModel $form */
         foreach ($forms as $form) {
-            if (is_array($form)) {
-                $formOptions[$form['id']] = $form['name'];
+            if (\is_array($form)) {
+                $formOptions[(int) $form['id']] = $form['name'];
             } else if ($form instanceof FormModel) {
-                $formOptions[$form->id] = $form->name;
+                $formOptions[(int) $form->id] = $form->name;
             }
         }
 
@@ -82,9 +82,25 @@ class FormFieldType extends Field
     /**
      * @inheritDoc
      */
+    public function serializeValue($value, ElementInterface $element = null)
+    {
+        if ($value instanceof Form) {
+            return $value->getId();
+        }
+
+        return parent::serializeValue($value, $element);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function normalizeValue($value, ElementInterface $element = null)
     {
-        $form = Freeform::getInstance()->forms->getFormById($value);
+        if ($value instanceof Form) {
+            return $value;
+        }
+
+        $form = Freeform::getInstance()->forms->getFormById((int) $value);
 
         if ($form) {
             return $form->getForm();

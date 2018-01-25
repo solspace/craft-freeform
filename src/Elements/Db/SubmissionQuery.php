@@ -131,18 +131,34 @@ class SubmissionQuery extends ElementQuery
             $this->status = '';
         }
 
-        if (isset($this->orderBy['status'])) {
-            $sortOrder = $this->orderBy['status'];
+        $customSortTables = [
+            'status' => "$statusTable.name",
+            'form'   => "$formTable.name",
+        ];
 
-            unset($this->orderBy['status']);
-            $this->orderBy(["$statusTable.name" => $sortOrder]);
+        foreach ($customSortTables as $column => $columnUpdate) {
+            if (isset($this->orderBy[$column])) {
+                $sortOrder = $this->orderBy[$column];
+
+                unset($this->orderBy[$column]);
+                $this->orderBy([$columnUpdate => $sortOrder]);
+            }
         }
 
-        if (isset($this->orderBy['form'])) {
-            $sortOrder = $this->orderBy['form'];
+        if (!empty($this->orderBy) && \is_array($this->orderBy)) {
+            $orderExceptions = ['title'];
 
-            unset($this->orderBy['form']);
-            $this->orderBy(["$formTable.name" => $sortOrder]);
+            $prefixedOrderList = [];
+            foreach ($this->orderBy as $key => $sortDirection) {
+                if (\in_array($key, $orderExceptions, true) || preg_match('/^[a-z0-9_]+\./i', $key)) {
+                    $prefixedOrderList[$key] = $sortDirection;
+                    continue;
+                }
+
+                $prefixedOrderList[$table . '.' . $key] = $sortDirection;
+            }
+
+            $this->orderBy = $prefixedOrderList;
         }
 
         return parent::beforePrepare();

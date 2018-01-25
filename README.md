@@ -2,6 +2,10 @@
 
 Freeform is the most powerful form building plugin for Craft CMS. It gives you full control to create simple or complex multi-page forms, as well as connect your forms to many popular API integrations.
 
+**NOTE: We don't recommend using Freeform in production environments just yet, but feel free to try it out now. Any issues can be reported on GitHub Issues only please.**
+
+**NOTE:** There currently is no support for migrating from Freeform 1 on Craft 2. An upcoming release will include support for this.
+
 ![Screenshot](src/icon.svg)
 
 ## Requirements
@@ -49,4 +53,4 @@ Last but not least, included with Freeform is a set of Demo Templates that can b
 
 ## Using Freeform
 
-Full documentation for Freeform can be found in the [Solspace Freeform documentation](https://solspace.com/craft/freeform/docs).
+Full documentation for Freeform can be found on the [Solspace website](https://solspace.com/craft/freeform/docs).

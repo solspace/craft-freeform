@@ -29,7 +29,9 @@ class MailingListsController extends BaseController
      */
     public function init()
     {
-        $this->requireLogin();
+        if (!\Craft::$app->request->getIsConsoleRequest()) {
+            $this->requireLogin();
+        }
     }
 
     /**

@@ -39,7 +39,9 @@ class CrmController extends Controller
      */
     public function init()
     {
-        $this->requireLogin();
+        if (!\Craft::$app->request->getIsConsoleRequest()) {
+            $this->requireLogin();
+        }
     }
 
     /**

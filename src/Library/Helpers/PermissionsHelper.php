@@ -64,6 +64,10 @@ class PermissionsHelper
      */
     public static function requirePermission(string $permissionName)
     {
+        if (self::isAdmin()) {
+            return;
+        }
+
         $user           = \Craft::$app->getUser();
         $permissionName = strtolower($permissionName);
 
@@ -121,7 +125,19 @@ class PermissionsHelper
      */
     public static function isAdmin(): bool
     {
+        if (self::isConsole()) {
+            return true;
+        }
+
         return \Craft::$app->getUser()->getIsAdmin();
+    }
+
+    /**
+     * @return bool
+     */
+    private static function isConsole(): bool
+    {
+        return \Craft::$app->request->getIsConsoleRequest();
     }
 
     /**
@@ -131,7 +147,7 @@ class PermissionsHelper
     {
         $edition = \Craft::$app->getEdition();
 
-        return in_array($edition, [\Craft::Pro, \Craft::Client], true);
+        return \in_array($edition, [\Craft::Pro, \Craft::Client], true);
     }
 }
 

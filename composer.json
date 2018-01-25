@@ -4,7 +4,6 @@
   "version": "2.0.0-beta.2",
   "type": "craft-plugin",
   "minimum-stability": "dev",
-  "license": "craft",
   "authors": [
     {
       "name": "Solspace",

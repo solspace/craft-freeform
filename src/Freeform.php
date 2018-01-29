@@ -20,6 +20,7 @@ use craft\services\Fields;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\ApiController;
 use Solspace\Freeform\Controllers\CodepackController;
 use Solspace\Freeform\Controllers\CrmController;
@@ -33,7 +34,6 @@ use Solspace\Freeform\Controllers\SubmissionsController;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\StatusRecord;
@@ -89,6 +89,16 @@ class Freeform extends Plugin
     const VERSION_CACHE_KEY           = 'freeform_version';
     const VERSION_CACHE_TIMESTAMP_KEY = 'freeform_version_timestamp';
     const VERSION_CACHE_TTL           = 86400; // 24-hours
+
+    const PERMISSION_FORMS_ACCESS           = 'freeform-formsAccess';
+    const PERMISSION_FORMS_MANAGE           = 'freeform-formsManage';
+    const PERMISSION_FIELDS_ACCESS          = 'freeform-fieldsAccess';
+    const PERMISSION_FIELDS_MANAGE          = 'freeform-fieldsManage';
+    const PERMISSION_SETTINGS_ACCESS        = 'freeform-settingsAccess';
+    const PERMISSION_SUBMISSIONS_ACCESS     = 'freeform-submissionsAccess';
+    const PERMISSION_SUBMISSIONS_MANAGE     = 'freeform-submissionsManage';
+    const PERMISSION_NOTIFICATIONS_ACCESS   = 'freeform-notificationsAccess';
+    const PERMISSION_NOTIFICATIONS_MANAGE   = 'freeform-notificationsManage';
 
     const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
@@ -193,7 +203,7 @@ class Freeform extends Plugin
                     $forms = $this->forms->getAllForms();
 
                     $submissionNestedPermissions = [
-                        PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE => [
+                        self::PERMISSION_SUBMISSIONS_MANAGE => [
                             'label' => self::t(
                                 'Manage All Submissions'
                             ),
@@ -201,8 +211,8 @@ class Freeform extends Plugin
                     ];
 
                     foreach ($forms as $form) {
-                        $permissionName = PermissionsHelper::prepareNestedPermission(
-                            PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE,
+                        $permissionName = PermissionHelper::prepareNestedPermission(
+                            self::PERMISSION_SUBMISSIONS_MANAGE,
                             $form->id
                         );
 
@@ -210,33 +220,33 @@ class Freeform extends Plugin
                     }
 
                     $event->permissions[$this->name] = [
-                        PermissionsHelper::PERMISSION_SUBMISSIONS_ACCESS   => [
+                        self::PERMISSION_SUBMISSIONS_ACCESS   => [
                             'label'  => self::t('Access Submissions'),
                             'nested' => $submissionNestedPermissions,
                         ],
-                        PermissionsHelper::PERMISSION_FORMS_ACCESS         => [
+                        self::PERMISSION_FORMS_ACCESS         => [
                             'label'  => self::t('Access Forms'),
                             'nested' => [
-                                PermissionsHelper::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
+                                PermissionHelper::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
                             ],
                         ],
-                        PermissionsHelper::PERMISSION_FIELDS_ACCESS        => [
+                        self::PERMISSION_FIELDS_ACCESS        => [
                             'label'  => self::t('Access Fields'),
                             'nested' => [
-                                PermissionsHelper::PERMISSION_FIELDS_MANAGE => ['label' => self::t('Manage Fields')],
+                                self::PERMISSION_FIELDS_MANAGE => ['label' => self::t('Manage Fields')],
                             ],
                         ],
-                        PermissionsHelper::PERMISSION_NOTIFICATIONS_ACCESS => [
+                        self::PERMISSION_NOTIFICATIONS_ACCESS => [
                             'label'  => self::t('Access Email Templates'),
                             'nested' => [
-                                PermissionsHelper::PERMISSION_NOTIFICATIONS_MANAGE => [
+                                self::PERMISSION_NOTIFICATIONS_MANAGE => [
                                     'label' => self::t(
                                         'Manage Email Templates'
                                     ),
                                 ],
                             ],
                         ],
-                        PermissionsHelper::PERMISSION_SETTINGS_ACCESS      => ['label' => self::t('Access Settings')],
+                        self::PERMISSION_SETTINGS_ACCESS      => ['label' => self::t('Access Settings')],
                     ];
                 }
             );

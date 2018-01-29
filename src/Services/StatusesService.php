@@ -12,11 +12,11 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Statuses\DeleteEvent;
 use Solspace\Freeform\Events\Statuses\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\StatusHandlerInterface;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\StatusRecord;
 use yii\base\Component;
@@ -213,7 +213,7 @@ class StatusesService extends Component implements StatusHandlerInterface
      */
     public function deleteById($id)
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $model = $this->getStatusById($id);
 

@@ -11,12 +11,12 @@
 
 namespace Solspace\Freeform\Controllers;
 
-use craft\web\Controller;
+use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Codepack\CodePack;
 use Solspace\Freeform\Library\Codepack\Exceptions\CodepackException;
 use Solspace\Freeform\Library\Codepack\Exceptions\FileObject\FileObjectException;
 use Solspace\Freeform\Library\Codepack\Exceptions\Manifest\ManifestNotPresentException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -29,8 +29,8 @@ class CodepackController extends BaseController
 
     public function init()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
-        
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
         parent::init();
     }
 
@@ -44,7 +44,7 @@ class CodepackController extends BaseController
      */
     public function actionListContents(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->view->registerAssetBundle(CodepackBundle::class);
 
@@ -54,19 +54,19 @@ class CodepackController extends BaseController
         if ($postInstallPrefix) {
             return $this->renderTemplate(
                 'freeform/codepack/_post_install',
-                array(
+                [
                     'codePack' => $codePack,
                     'prefix'   => CodePack::getCleanPrefix($postInstallPrefix),
-                )
+                ]
             );
         }
 
         return $this->renderTemplate(
             'freeform/codepack',
-            array(
+            [
                 'codePack' => $codePack,
                 'prefix'   => 'freeform_demo',
-            )
+            ]
         );
     }
 
@@ -81,7 +81,7 @@ class CodepackController extends BaseController
      */
     public function actionInstall(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->requirePostRequest();
 
@@ -95,11 +95,11 @@ class CodepackController extends BaseController
         } catch (FileObjectException $exception) {
             return $this->renderTemplate(
                 'freeform/codepack',
-                array(
+                [
                     'codePack'         => $codePack,
                     'prefix'           => $prefix,
                     'exceptionMessage' => $exception->getMessage(),
-                )
+                ]
             );
         }
 

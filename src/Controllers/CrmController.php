@@ -14,10 +14,9 @@ namespace Solspace\Freeform\Controllers;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use GuzzleHttp\Exception\BadResponseException;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
 use Solspace\Freeform\Library\Integrations\TokenRefreshInterface;
@@ -53,7 +52,7 @@ class CrmController extends Controller
      */
     public function actionIndex(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $integrations = $this->getCRMService()->getAllIntegrations();
 
@@ -121,7 +120,7 @@ class CrmController extends Controller
      */
     public function actionSave()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->requirePostRequest();
 
@@ -280,7 +279,7 @@ class CrmController extends Controller
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $id = \Craft::$app->request->post('id');
         $this->getCRMService()->delete($id);
@@ -301,7 +300,7 @@ class CrmController extends Controller
      */
     private function renderEditForm(IntegrationModel $model, string $title): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->view->registerAssetBundle(IntegrationsBundle::class);
 

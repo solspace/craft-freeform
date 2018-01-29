@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\DeleteEvent;
 use Solspace\Freeform\Events\Fields\FetchFieldTypes;
@@ -28,7 +29,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\SelectField;
 use Solspace\Freeform\Library\Composer\Components\Fields\TextareaField;
 use Solspace\Freeform\Library\Composer\Components\Fields\TextField;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
 use yii\base\Component;
@@ -249,7 +249,7 @@ class FieldsService extends Component
      */
     public function deleteById($fieldId)
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FIELDS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
 
         $model = $this->getFieldById($fieldId);
 
@@ -371,7 +371,7 @@ class FieldsService extends Component
     {
         $field = new FieldModel($data);
 
-        if (is_string($field->metaProperties) && $field->metaProperties !== '') {
+        if (\is_string($field->metaProperties) && $field->metaProperties !== '') {
             $field->metaProperties = json_decode($field->metaProperties, true);
         }
 

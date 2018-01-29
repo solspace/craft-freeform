@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use craft\helpers\Template;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Freeform;
@@ -20,7 +21,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\SubmitField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\FormRecord;
 use yii\base\Component;
@@ -249,7 +249,7 @@ class FormsService extends Component implements FormHandlerInterface
      */
     public function deleteById($formId)
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $record = $this->getFormById($formId);
 
@@ -293,7 +293,6 @@ class FormsService extends Component implements FormHandlerInterface
      *
      * @return \Twig_Markup
      * @throws \InvalidArgumentException
-     * @throws Exception
      * @throws ViewNotFoundException
      * @throws InvalidCallException
      * @throws FreeformException

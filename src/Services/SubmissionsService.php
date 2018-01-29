@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
@@ -21,7 +22,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValue
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\Component;
 
@@ -196,7 +196,7 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
      */
     public function delete(array $submissions): bool
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
         if (!$submissions) {
             return false;
@@ -300,11 +300,11 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
      */
     public function getAllowedSubmissionFormIds()
     {
-        if (PermissionsHelper::checkPermission(PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE)) {
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
             return null;
         }
 
-        $formIds = PermissionsHelper::getNestedPermissionIds(PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE);
+        $formIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
         return $formIds;
     }

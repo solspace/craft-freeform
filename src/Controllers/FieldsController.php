@@ -12,13 +12,12 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\helpers\Assets;
-use craft\helpers\UrlHelper;
 use craft\web\Controller;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Resources\Bundles\FieldEditorBundle;
 use Solspace\Freeform\Services\FieldsService;
@@ -36,7 +35,7 @@ class FieldsController extends Controller
      */
     public function actionIndex(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FIELDS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_ACCESS);
 
         $fieldsService = $this->getFieldsService();
         $fields        = $fieldsService->getAllFields();
@@ -57,7 +56,7 @@ class FieldsController extends Controller
      */
     public function actionCreate(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FIELDS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
 
         $model = FieldModel::create();
 
@@ -74,7 +73,7 @@ class FieldsController extends Controller
      */
     public function actionEdit(int $id): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FIELDS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
 
         $model = $this->getFieldsService()->getFieldById($id);
 
@@ -93,7 +92,7 @@ class FieldsController extends Controller
      */
     public function actionSave()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FIELDS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
 
         $post = \Craft::$app->request->post();
 
@@ -105,6 +104,7 @@ class FieldsController extends Controller
         }
 
         $field->setAttributes($post);
+        $field->required = (bool) ($post['required'] ?? false);
 
         $fieldHasOptions = \in_array(
             $field->type,
@@ -165,7 +165,7 @@ class FieldsController extends Controller
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FIELDS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
 
         $fieldId = \Craft::$app->request->post('id');
 

@@ -4,8 +4,6 @@ Freeform is the most powerful form building plugin for Craft CMS. It gives you f
 
 **NOTE: We don't recommend using Freeform in production environments just yet, but feel free to try it out now. Any issues can be reported on GitHub Issues only please.**
 
-**NOTE:** There currently is no support for migrating from Freeform 1 on Craft 2. An upcoming release will include support for this.
-
 ![Screenshot](src/icon.svg)
 
 ## Requirements

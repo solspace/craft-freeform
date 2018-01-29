@@ -12,9 +12,9 @@
 namespace Solspace\Freeform\Widgets;
 
 use craft\base\Widget;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FreeformStatistics;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Resources\Bundles\StatisticsWidgetBundle;
 
 class StatisticsWidget extends Widget
@@ -34,7 +34,7 @@ class StatisticsWidget extends Widget
     public static function isSelectable(): bool
     {
         // This widget is only available to users that can manage submissions
-        return PermissionsHelper::checkPermission(PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE);
+        return PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
     }
 
     /**

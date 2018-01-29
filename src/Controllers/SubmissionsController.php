@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Controllers;
 
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -18,7 +19,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
 use yii\base\InvalidParamException;
@@ -36,7 +36,7 @@ class SubmissionsController extends BaseController
      */
     public function actionIndex(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SUBMISSIONS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
         \Craft::$app->view->registerAssetBundle(SubmissionIndexBundle::class);
 
@@ -67,7 +67,7 @@ class SubmissionsController extends BaseController
     public function actionExport()
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
         $submissionIds = \Craft::$app->request->post('submissionIds');
         $submissionIds = explode(',', $submissionIds);
@@ -153,9 +153,9 @@ class SubmissionsController extends BaseController
         /** @var array|null $allowedFormIds */
         $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
         if (null !== $allowedFormIds) {
-            PermissionsHelper::requirePermission(
-                PermissionsHelper::prepareNestedPermission(
-                    PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE,
+            PermissionHelper::requirePermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
                     $submission->formId
                 )
             );
@@ -192,7 +192,7 @@ class SubmissionsController extends BaseController
      */
     public function actionSave()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
         $post = \Craft::$app->request->post();
 
@@ -246,7 +246,7 @@ class SubmissionsController extends BaseController
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SUBMISSIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
         $submissionId = \Craft::$app->request->post('id');
         $submission   = $this->getSubmissionsService()->getSubmissionById($submissionId);

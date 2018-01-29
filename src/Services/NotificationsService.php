@@ -12,11 +12,11 @@
 namespace Solspace\Freeform\Services;
 
 use Markdownify\Converter;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Notifications\DeleteEvent;
 use Solspace\Freeform\Events\Notifications\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Records\NotificationRecord;
 use yii\base\Component;
 
@@ -181,7 +181,7 @@ class NotificationsService extends Component
      */
     public function deleteById($notificationId): bool
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_NOTIFICATIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
 
         $record = $this->getNotificationById($notificationId);
 

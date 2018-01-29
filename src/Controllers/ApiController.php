@@ -15,17 +15,16 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ChartHelper;
-use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use GuzzleHttp\Exception\ClientException;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Library\Integrations\TokenRefreshInterface;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Models\FieldModel;
@@ -127,7 +126,7 @@ class ApiController extends BaseController
      */
     public function actionFields(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         return $this->asJson($this->getFieldsService()->getAllFields(false));
     }
@@ -140,7 +139,7 @@ class ApiController extends BaseController
      */
     public function actionNotifications(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         return $this->asJson($this->getNotificationsService()->getAllNotifications(false));
     }
@@ -153,7 +152,7 @@ class ApiController extends BaseController
      */
     public function actionMailingLists(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         $mailingLists = $this->getMailingListsService()->getAllIntegrationObjects();
         foreach ($mailingLists as $integration) {
@@ -171,7 +170,7 @@ class ApiController extends BaseController
      */
     public function actionCrmIntegrations(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         $crmIntegrations = $this->getCrmService()->getAllIntegrationObjects();
         foreach ($crmIntegrations as $integration) {
@@ -209,7 +208,7 @@ class ApiController extends BaseController
      */
     public function actionFormTemplates(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         return $this->asJson($this->getSettingsService()->getCustomFormTemplates());
     }
@@ -349,7 +348,7 @@ class ApiController extends BaseController
      */
     public function actionGetSubmissionData(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SUBMISSIONS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
         // Required for Dashboard widget, unnecessary for Entries Index view
         $source = \Craft::$app->request->post('source');
@@ -370,7 +369,7 @@ class ApiController extends BaseController
         // Prep the query
         $query = (new Query())
             ->select(['COUNT(*) as [[value]]'])
-            ->from([Submission::TABLE]);
+            ->from([Submission::TABLE . ' ' . Submission::TABLE_STD]);
 
         if ($formId) {
             $query->andWhere(['formId' => $formId]);

@@ -12,15 +12,12 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\helpers\Assets;
-use craft\helpers\UrlHelper;
-use craft\web\Controller;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Composer;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Library\Logging\CraftLogger;
 use Solspace\Freeform\Library\Session\CraftRequest;
 use Solspace\Freeform\Library\Session\CraftSession;
@@ -29,19 +26,7 @@ use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
-use Solspace\Freeform\Services\CrmService;
-use Solspace\Freeform\Services\FieldsService;
-use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
-use Solspace\Freeform\Services\MailingListsService;
-use Solspace\Freeform\Services\NotificationsService;
-use Solspace\Freeform\Services\SettingsService;
-use Solspace\Freeform\Services\StatusesService;
-use Solspace\Freeform\Services\SubmissionsService;
-use yii\base\InvalidConfigException;
-use yii\base\InvalidParamException;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class FormsController extends BaseController
@@ -51,7 +36,7 @@ class FormsController extends BaseController
      */
     public function actionIndex()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         $formService            = $this->getFormService();
         $forms                  = $formService->getAllForms();
@@ -104,7 +89,7 @@ class FormsController extends BaseController
      */
     public function actionSave(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $post = \Craft::$app->request->post();
         if (!isset($post['formId'])) {
@@ -184,7 +169,7 @@ class FormsController extends BaseController
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $formId = \Craft::$app->request->post('id');
         $this->getFormService()->deleteById($formId);
@@ -200,7 +185,7 @@ class FormsController extends BaseController
     public function actionResetSpamCounter(): Response
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $formId = (int) \Craft::$app->request->post('formId');
 
@@ -264,7 +249,7 @@ class FormsController extends BaseController
      */
     private function renderEditForm(string $title, FormModel $model): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_FORMS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $this->view->registerAssetBundle(ComposerBuilderBundle::class);
 
@@ -290,15 +275,9 @@ class FormsController extends BaseController
             'assetSources'             => $this->getEncodedJson($this->getFilesService()->getAssetSources()),
             'showTutorial'             => $this->getSettingsService()->getSettingsModel()->showTutorial,
             'defaultTemplates'         => $this->getSettingsService()->getSettingsModel()->defaultTemplates,
-            'canManageFields'          => PermissionsHelper::checkPermission(
-                PermissionsHelper::PERMISSION_FIELDS_MANAGE
-            ),
-            'canManageNotifications'   => PermissionsHelper::checkPermission(
-                PermissionsHelper::PERMISSION_NOTIFICATIONS_MANAGE
-            ),
-            'canManageSettings'        => PermissionsHelper::checkPermission(
-                PermissionsHelper::PERMISSION_SETTINGS_ACCESS
-            ),
+            'canManageFields'          => PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_MANAGE),
+            'canManageNotifications'   => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE),
+            'canManageSettings'        => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
             'isWidgetsInstalled'       => Freeform::getInstance()->isPro(),
         ];

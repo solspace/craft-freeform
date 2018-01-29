@@ -84,15 +84,15 @@ class SubmissionQuery extends ElementQuery
         $hasFormJoin = false;
         if (\is_array($this->join)) {
             foreach ($this->join as $joinData) {
-                if (isset($joinData[1]) && $joinData[1] === $formTable) {
+                if (isset($joinData[1]) && $joinData[1] === FormRecord::TABLE . ' ' . $formTable) {
                     $hasFormJoin = true;
                 }
             }
         }
 
         if (!$hasFormJoin) {
-            $this->innerJoin($formTable, "`$formTable`.`id` = `$table`.`formId`");
-            $this->innerJoin($statusTable, "`$statusTable`.`id` = `$table`.`statusId`");
+            $this->innerJoin(FormRecord::TABLE . ' ' . $formTable, "`$formTable`.`id` = `$table`.`formId`");
+            $this->innerJoin(StatusRecord::TABLE . ' ' . $statusTable, "`$statusTable`.`id` = `$table`.`statusId`");
         }
 
         $select = [

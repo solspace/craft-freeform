@@ -10,12 +10,12 @@ namespace Solspace\Freeform\Services;
 
 use craft\base\Component;
 use craft\db\Query;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Models\IntegrationModel;
@@ -237,7 +237,7 @@ abstract class AbstractIntegrationService extends Component
      */
     public function delete($id)
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $model = $this->getIntegrationById($id);
         if (!$model) {

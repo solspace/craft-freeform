@@ -12,9 +12,9 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\helpers\UrlHelper;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Library\Integrations\MailingLists\MailingListOAuthConnector;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -41,7 +41,7 @@ class MailingListsController extends BaseController
      */
     public function actionIndex(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $mailingListIntegrations = $this->getMailingListsService()->getAllIntegrations();
 
@@ -61,7 +61,7 @@ class MailingListsController extends BaseController
      */
     public function actionCreate(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $model = IntegrationModel::create(IntegrationRecord::TYPE_MAILING_LIST);
 
@@ -77,7 +77,7 @@ class MailingListsController extends BaseController
      */
     public function actionEdit(int $id = null, IntegrationModel $model = null): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         if (null === $model) {
             $model = $this->getMailingListsService()->getIntegrationById($id);
@@ -98,7 +98,7 @@ class MailingListsController extends BaseController
      */
     public function actionSave()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->requirePostRequest();
 
@@ -224,7 +224,7 @@ class MailingListsController extends BaseController
     public function actionDelete()
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $id = \Craft::$app->request->post('id');
 

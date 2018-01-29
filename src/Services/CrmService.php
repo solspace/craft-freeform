@@ -13,29 +13,19 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use GuzzleHttp\Exception\BadResponseException;
-use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
-use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Layout;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
-use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Library\Integrations\TokenRefreshInterface;
-use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\CrmFieldRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
-use yii\base\Component;
-use Solspace\Freeform\Library\Integrations\CRM\CRMIntegrationInterface;
-use yii\log\Logger;
 
 class CrmService extends AbstractIntegrationService implements CRMHandlerInterface
 {
@@ -164,7 +154,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
         foreach ($fields as $field) {
             // PERFORM INSERT
-            if (in_array($field->getHandle(), $addableHandles, true)) {
+            if (\in_array($field->getHandle(), $addableHandles, true)) {
                 $record                = new CrmFieldRecord();
                 $record->integrationId = $id;
                 $record->handle        = $field->getHandle();
@@ -174,7 +164,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
             }
 
             // PERFORM UPDATE
-            if (in_array($field->getHandle(), $updatableHandles, true)) {
+            if (\in_array($field->getHandle(), $updatableHandles, true)) {
                 \Craft::$app
                     ->getDb()
                     ->createCommand()

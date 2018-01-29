@@ -13,9 +13,9 @@ namespace Solspace\Freeform\Controllers;
 
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationEditorBundle;
 use Solspace\Freeform\Services\NotificationsService;
@@ -33,7 +33,7 @@ class NotificationsController extends BaseController
      */
     public function actionIndex(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_NOTIFICATIONS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
 
         $notifications = $this->getNotificationService()->getAllNotifications();
 
@@ -92,7 +92,7 @@ class NotificationsController extends BaseController
      */
     private function renderEditForm(NotificationRecord $record, string $title): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_NOTIFICATIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
         $routeParams = \Craft::$app->urlManager->getRouteParams();
 
         if (isset($routeParams['errors'])) {
@@ -118,13 +118,23 @@ class NotificationsController extends BaseController
      */
     public function actionSave()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_NOTIFICATIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
 
         $post = \Craft::$app->request->post();
 
         $notificationId = $post['notificationId'] ?? null;
         $notification   = $this->getNewOrExistingNotification((int) $notificationId);
-        $notification->setAttributes($post);
+
+        $notification->name               = \Craft::$app->request->post('name');
+        $notification->handle             = \Craft::$app->request->post('handle');
+        $notification->description        = \Craft::$app->request->post('description');
+        $notification->fromEmail          = \Craft::$app->request->post('fromEmail');
+        $notification->fromName           = \Craft::$app->request->post('fromName');
+        $notification->subject            = \Craft::$app->request->post('subject');
+        $notification->replyToEmail       = \Craft::$app->request->post('replyToEmail');
+        $notification->bodyHtml           = \Craft::$app->request->post('bodyHtml');
+        $notification->bodyText           = \Craft::$app->request->post('bodyHtml');
+        $notification->includeAttachments = (bool) \Craft::$app->request->post('includeAttachments');
 
         if ($this->getNotificationService()->save($notification)) {
             // Return JSON response if the request is an AJAX request
@@ -165,7 +175,7 @@ class NotificationsController extends BaseController
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_NOTIFICATIONS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
 
         $id = \Craft::$app->request->post('id');
         $this->getNotificationService()->deleteById($id);

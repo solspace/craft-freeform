@@ -14,9 +14,9 @@ namespace Solspace\Freeform\Controllers;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\PermissionsHelper;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use yii\web\Response;
@@ -40,11 +40,11 @@ class SettingsController extends BaseController
     {
         $defaultView = $this->getSettingsModel()->defaultView;
 
-        $canAccessForms = PermissionsHelper::checkPermission(PermissionsHelper::PERMISSION_FORMS_ACCESS);
-        $canAccessSubmissions = PermissionsHelper::checkPermission(PermissionsHelper::PERMISSION_SUBMISSIONS_ACCESS);
-        $canAccessFields = PermissionsHelper::checkPermission(PermissionsHelper::PERMISSION_FIELDS_ACCESS);
-        $canAccessNotifications = PermissionsHelper::checkPermission(PermissionsHelper::PERMISSION_NOTIFICATIONS_ACCESS);
-        $canAccessSettings = PermissionsHelper::checkPermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
+        $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
+        $canAccessFields = PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_ACCESS);
+        $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
+        $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $isFormView = $defaultView === Freeform::VIEW_FORMS;
         $isSubmissionView = $defaultView === Freeform::VIEW_SUBMISSIONS;
@@ -79,7 +79,7 @@ class SettingsController extends BaseController
      */
     public function actionAddDemoTemplate(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->requirePostRequest();
 
@@ -124,7 +124,7 @@ class SettingsController extends BaseController
      */
     public function actionAddEmailTemplate(): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->requirePostRequest();
 
@@ -199,7 +199,7 @@ class SettingsController extends BaseController
      */
     public function actionSaveSettings()
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->requirePostRequest();
         $postData = \Craft::$app->request->post('settings', []);
@@ -225,7 +225,7 @@ class SettingsController extends BaseController
      */
     private function provideTemplate($template): Response
     {
-        PermissionsHelper::requirePermission(PermissionsHelper::PERMISSION_SETTINGS_ACCESS);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         return $this->renderTemplate(
             'freeform/settings/_' . $template,

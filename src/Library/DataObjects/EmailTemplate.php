@@ -12,7 +12,7 @@
 namespace Solspace\Freeform\Library\DataObjects;
 
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
-use Solspace\Freeform\Library\Helpers\StringHelper;
+use Solspace\Commons\Helpers\StringHelper;
 
 class EmailTemplate
 {

@@ -19,6 +19,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
+use Solspace\FreeformPro\FreeformPro;
 use yii\web\Response;
 
 class SettingsController extends BaseController
@@ -51,23 +52,27 @@ class SettingsController extends BaseController
 
         if (($isFormView && !$canAccessForms) || ($isSubmissionView && !$canAccessSubmissions)) {
             if ($canAccessForms) {
-                $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_FORMS));
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_FORMS));
             }
 
             if ($canAccessSubmissions) {
-                $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_SUBMISSIONS));
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_SUBMISSIONS));
             }
 
             if ($canAccessFields) {
-                $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_FIELDS));
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_FIELDS));
             }
 
             if ($canAccessNotifications) {
-                $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_NOTIFICATIONS));
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_NOTIFICATIONS));
             }
 
             if ($canAccessSettings) {
-                $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_SETTINGS));
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_SETTINGS));
+            }
+
+            if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(FreeformPro::PERMISSION_EXPORT_PROFILES_ACCESS)) {
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . FreeformPro::VIEW_EXPORT_PROFILES));
             }
         }
 

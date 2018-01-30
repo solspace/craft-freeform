@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.4 - 2018-01-30
+### Fixed
+- Fixed a bug where Freeform would trigger permission related errors when trying to edit users or user groups.
+- Fixed a bug where Freeform would not hide pages from navigation that a user did not have permission access to.
+- Fixed various permission issues throughout Freeform.
+
 ## 2.0.0-beta.3 - 2018-01-29
 ### Added
 - Added Freeform 1.x to 2.x (Craft 2.x to 3.x) migration path.

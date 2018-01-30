@@ -192,8 +192,6 @@ class SubmissionsController extends BaseController
      */
     public function actionSave()
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-
         $post = \Craft::$app->request->post();
 
         $submissionId = $post['submissionId'] ?? null;
@@ -202,6 +200,13 @@ class SubmissionsController extends BaseController
         if (!$model) {
             throw new FreeformException(Freeform::t('Submission not found'));
         }
+
+        PermissionHelper::requirePermission(
+            PermissionHelper::prepareNestedPermission(
+                Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                $model->formId
+            )
+        );
 
         $model->title    = \Craft::$app->request->post('title', $model->title);
         $model->statusId = $post['statusId'];
@@ -233,28 +238,5 @@ class SubmissionsController extends BaseController
                 'errors'     => $model->getErrors(),
             ]
         );
-    }
-
-    /**
-     * Deletes a field
-     *
-     * @return Response
-     * @throws \Exception
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     */
-    public function actionDelete(): Response
-    {
-        $this->requirePostRequest();
-        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-
-        $submissionId = \Craft::$app->request->post('id');
-        $submission   = $this->getSubmissionsService()->getSubmissionById($submissionId);
-
-        if ($submission && !$this->getSubmissionsService()->delete($submission)) {
-            return $this->asErrorJson(implode('; ', $submission->getErrors()));
-        }
-
-        return $this->asJson(['success' => true]);
     }
 }

@@ -227,7 +227,7 @@ class Freeform extends Plugin
                         self::PERMISSION_FORMS_ACCESS         => [
                             'label'  => self::t('Access Forms'),
                             'nested' => [
-                                PermissionHelper::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
+                                self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
                             ],
                         ],
                         self::PERMISSION_FIELDS_ACCESS        => [

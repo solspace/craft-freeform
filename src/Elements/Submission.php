@@ -8,6 +8,7 @@ use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
@@ -492,6 +493,16 @@ class Submission extends Element
      */
     public function getCpEditUrl()
     {
+        static $allowedFormIds;
+
+        if (null === $allowedFormIds) {
+            $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        }
+
+        if (!\in_array($this->formId, $allowedFormIds, false)) {
+            return false;
+        }
+
         return UrlHelper::cpUrl('freeform/submissions/' . $this->id);
     }
 
@@ -616,5 +627,18 @@ class Submission extends Element
         }
 
         return self::$fieldIdMap[$this->formId][$id];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function beforeDelete(): bool
+    {
+        return PermissionHelper::checkPermission(
+            PermissionHelper::prepareNestedPermission(
+                Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                $this->formId
+            )
+        );
     }
 }

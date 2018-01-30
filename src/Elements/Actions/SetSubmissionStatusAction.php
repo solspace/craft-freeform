@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Elements\Actions;
 
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 
@@ -68,9 +69,19 @@ class SetSubmissionStatusAction extends ElementAction
         $submissions = $query->all();
         $failCount = 0;
 
+        static $allowedFormIds;
+
+        if (null === $allowedFormIds) {
+            $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        }
+
         foreach ($submissions as $submission) {
             // Skip if there's nothing to change
             if ((int) $submission->statusId === (int) $this->statusId) {
+                continue;
+            }
+
+            if (!\in_array($submission->formId, $allowedFormIds, false)) {
                 continue;
             }
 

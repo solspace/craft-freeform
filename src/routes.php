@@ -48,7 +48,6 @@ return [
     'freeform/submissions/export'                                => 'freeform/submissions/export',
     'freeform/submissions/<id:\d+>'                              => 'freeform/submissions/edit',
     'freeform/submissions/save'                                  => 'freeform/submissions/save',
-    'freeform/submissions/delete'                                => 'freeform/submissions/delete',
     // Mailing Lists
     'freeform/settings/mailing-lists'                            => 'freeform/mailing-lists/index',
     'freeform/settings/mailing-lists/new'                        => 'freeform/mailing-lists/create',

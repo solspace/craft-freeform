@@ -36,7 +36,9 @@ class m180120_140521_CraftUpgrade extends Migration
             return false;
         }
 
-        $this->addColumn('{{%freeform_forms}}', 'formTemplateId', 'int unsigned');
+        if (!Craft::$app->db->columnExists('{{%freeform_forms}}', 'formTemplateId', true)) {
+            $this->addColumn('{{%freeform_forms}}', 'formTemplateId', 'int unsigned');
+        }
 
         $prefix = Craft::$app->db->tablePrefix;
         if ($prefix) {

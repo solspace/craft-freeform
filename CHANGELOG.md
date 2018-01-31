@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.5 - 2018-01-31
+### Fixed
+- Fixed a bug where the Freeform 1.x to 2.x (Craft 2.x to 3.x) migration path could error in some cases.
+- Fixed a bug where an error could be triggered from the cleanup of unfinalized files.
+
 ## 2.0.0-beta.4 - 2018-01-30
 ### Fixed
 - Fixed a bug where Freeform would trigger permission related errors when trying to edit users or user groups.

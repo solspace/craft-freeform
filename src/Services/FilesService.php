@@ -140,6 +140,10 @@ class FilesService extends Component implements FileUploadHandlerInterface
      */
     public function cleanUpUnfinalizedAssets()
     {
+        if (!\Craft::$app->db->tableExists(UnfinalizedFileRecord::TABLE, true)) {
+            return;
+        }
+
         $date = new \DateTime('-180 minutes');
 
         $assetIds = (new Query())

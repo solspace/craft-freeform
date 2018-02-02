@@ -50,14 +50,14 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     /** @var bool */
     protected $required = false;
 
-    /** @var array */
-    protected $errors;
-
     /** @var CustomFieldAttributes */
     protected $customAttributes;
 
     /** @var int */
     protected $pageIndex;
+
+    /** @var array */
+    protected $errors;
 
     /** @var array */
     private $inputClasses;
@@ -298,7 +298,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     public function isValid(): bool
     {
-        $this->errors = $this->validate();
+        $this->addErrors($this->validate());
 
         return empty($this->errors);
     }
@@ -306,10 +306,14 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     /**
      * Returns an array of error messages
      *
-     * @return array|null
+     * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
+        if (null === $this->errors) {
+            $this->errors = [];
+        }
+
         return $this->errors;
     }
 
@@ -321,6 +325,39 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $errors = $this->getErrors();
 
         return !empty($errors);
+    }
+
+    /**
+     * @param array|null $errors
+     *
+     * @return $this
+     */
+    public function addErrors(array $errors = null): AbstractField
+    {
+        if (empty($errors)) {
+            return $this;
+        }
+
+        $existingErrors = $this->getErrors();
+        $existingErrors = array_merge($existingErrors, $errors);
+
+        $existingErrors = array_unique($existingErrors);
+
+        $this->errors = $existingErrors;
+
+        return $this;
+    }
+
+    /**
+     * @param string $error
+     *
+     * @return $this
+     */
+    public function addError(string $error): AbstractField
+    {
+        $this->addErrors([$error]);
+
+        return $this;
     }
 
     /**
@@ -639,7 +676,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     protected function validate(): array
     {
-        $errors = [];
+        $errors = $this->getErrors();
 
         if ($this instanceof ObscureValueInterface) {
             $value = $this->getActualValue($this->getValue());
@@ -700,7 +737,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      *
      * @return \Twig_Markup
      */
-    private function renderRaw($output): \Twig_Markup
+    protected function renderRaw($output): \Twig_Markup
     {
         return Template::raw($output);
     }

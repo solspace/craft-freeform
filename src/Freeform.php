@@ -90,15 +90,15 @@ class Freeform extends Plugin
     const VERSION_CACHE_TIMESTAMP_KEY = 'freeform_version_timestamp';
     const VERSION_CACHE_TTL           = 86400; // 24-hours
 
-    const PERMISSION_FORMS_ACCESS           = 'freeform-formsAccess';
-    const PERMISSION_FORMS_MANAGE           = 'freeform-formsManage';
-    const PERMISSION_FIELDS_ACCESS          = 'freeform-fieldsAccess';
-    const PERMISSION_FIELDS_MANAGE          = 'freeform-fieldsManage';
-    const PERMISSION_SETTINGS_ACCESS        = 'freeform-settingsAccess';
-    const PERMISSION_SUBMISSIONS_ACCESS     = 'freeform-submissionsAccess';
-    const PERMISSION_SUBMISSIONS_MANAGE     = 'freeform-submissionsManage';
-    const PERMISSION_NOTIFICATIONS_ACCESS   = 'freeform-notificationsAccess';
-    const PERMISSION_NOTIFICATIONS_MANAGE   = 'freeform-notificationsManage';
+    const PERMISSION_FORMS_ACCESS         = 'freeform-formsAccess';
+    const PERMISSION_FORMS_MANAGE         = 'freeform-formsManage';
+    const PERMISSION_FIELDS_ACCESS        = 'freeform-fieldsAccess';
+    const PERMISSION_FIELDS_MANAGE        = 'freeform-fieldsManage';
+    const PERMISSION_SETTINGS_ACCESS      = 'freeform-settingsAccess';
+    const PERMISSION_SUBMISSIONS_ACCESS   = 'freeform-submissionsAccess';
+    const PERMISSION_SUBMISSIONS_MANAGE   = 'freeform-submissionsManage';
+    const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
+    const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
 
     const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 

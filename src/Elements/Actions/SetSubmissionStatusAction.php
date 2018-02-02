@@ -70,9 +70,14 @@ class SetSubmissionStatusAction extends ElementAction
         $failCount = 0;
 
         static $allowedFormIds;
+        static $isAdmin;
 
         if (null === $allowedFormIds) {
             $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        }
+
+        if (null === $isAdmin) {
+            $isAdmin = PermissionHelper::isAdmin();
         }
 
         foreach ($submissions as $submission) {
@@ -81,7 +86,7 @@ class SetSubmissionStatusAction extends ElementAction
                 continue;
             }
 
-            if (!\in_array($submission->formId, $allowedFormIds, false)) {
+            if (!$isAdmin && !\in_array($submission->formId, $allowedFormIds, false)) {
                 continue;
             }
 

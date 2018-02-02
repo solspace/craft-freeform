@@ -499,7 +499,7 @@ class Submission extends Element
             $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
         }
 
-        if (!\in_array($this->formId, $allowedFormIds, false)) {
+        if (!PermissionHelper::isAdmin() && !\in_array($this->formId, $allowedFormIds, false)) {
             return false;
         }
 

@@ -65,15 +65,9 @@ class MailingListField extends AbstractField implements NoStorageInterface, Sing
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
-        $output     = '';
-
         $isSelected = (bool)$this->getValue();
 
-        $output .= '<label'
-            . $this->getAttributeString('class', $attributes->getLabelClass())
-            . '>';
-
-        $output .= '<input '
+        return '<input '
             . $this->getAttributeString('name', $this->getHash())
             . $this->getAttributeString('type', 'checkbox')
             . $this->getAttributeString('id', $this->getIdAttribute())
@@ -83,7 +77,30 @@ class MailingListField extends AbstractField implements NoStorageInterface, Sing
             . $attributes->getInputAttributesAsString()
             . ($isSelected ? 'checked ' : '')
             . '/>';
-        $output .= $this->getLabel();
+    }
+
+    /**
+     * Output something before an input HTML is output
+     *
+     * @return string
+     */
+    protected function onBeforeInputHtml(): string
+    {
+        $attributes = $this->getCustomAttributes();
+
+        return '<label'
+            . $this->getAttributeString('class', $attributes->getLabelClass())
+            . '>';
+    }
+
+    /**
+     * Output something after an input HTML is output
+     *
+     * @return string
+     */
+    protected function onAfterInputHtml(): string
+    {
+        $output = $this->getLabel();
         $output .= '</label>';
 
         return $output;

@@ -124,6 +124,9 @@
 
                         {% if setting.type == "text" %}
                             {{ forms.textField(options) }}
+                        {% elseif setting.type == "bool" %}
+                            {% set options = options|merge({on: value, value: 1}) %}
+                            {{ forms.lightswitchField(options) }}
                         {% elseif setting.type == "password" %}
                             {{ forms.passwordField(options) }}
                         {% endif %}

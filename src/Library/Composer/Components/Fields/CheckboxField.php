@@ -84,16 +84,27 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
-        $output     = '';
 
-        $output .= '<input '
+        $output = '<input '
             . $this->getAttributeString('name', $this->getHandle())
             . $this->getAttributeString('type', FieldInterface::TYPE_HIDDEN)
             . $this->getAttributeString('value', '', false)
             . $attributes->getInputAttributesAsString()
             . '/>';
 
-        $output .= '<input '
+        $output .= $this->getSingleInputHtml();
+
+        return $output;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSingleInputHtml(): string
+    {
+        $attributes = $this->getCustomAttributes();
+
+        return '<input '
             . $this->getAttributeString('name', $this->getHandle())
             . $this->getAttributeString('type', $this->getType())
             . $this->getAttributeString('id', $this->getIdAttribute())
@@ -103,8 +114,14 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             . $attributes->getInputAttributesAsString()
             . ($this->isChecked() ? 'checked ' : '')
             . '/>';
+    }
 
-        return $output;
+        /**
+     * @return \Twig_Markup
+     */
+    public function renderSingleInput(): \Twig_Markup
+    {
+        return $this->renderRaw($this->getSingleInputHtml());
     }
 
     /**

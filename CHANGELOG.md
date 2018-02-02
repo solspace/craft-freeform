@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.6 - 2018-02-02
+### Added
+- Added a 'Use Double Opt-in?' setting for MailChimp integrations.
+- Added `onBeforeSubmit` and `onAfterSubmit` events.
+- Added an optional `renderSingleInput` method to render single Checkbox fields' input without an additional hidden input.
+
+### Changed
+- Changed Mailing List fieldtype `renderInput` to now only output the input field (without a label).
+
+### Fixed
+- Fixed a bug where the chart on Submissions list page inside CP was sometimes not displaying new submissions based on timezone.
+- Fixed a bug where permissions weren't allowing Admins to change status of submission(s).
+
 ## 2.0.0-beta.5 - 2018-01-31
 ### Fixed
 - Fixed a bug where the Freeform 1.x to 2.x (Craft 2.x to 3.x) migration path could error in some cases.

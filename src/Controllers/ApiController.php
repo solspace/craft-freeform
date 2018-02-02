@@ -362,7 +362,7 @@ class ApiController extends BaseController
 
         $startDate = new Carbon($startDateParam, 'UTC');
         $endDate   = new Carbon($endDateParam, 'UTC');
-        $endDate->modify('+1 day');
+        $endDate->setTime(23, 59,59);
 
         $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
 
@@ -422,19 +422,19 @@ class ApiController extends BaseController
     }
 
     /**
-     * @param Query     $query
-     * @param \DateTime $startDate
-     * @param \DateTime $endDate
-     * @param string    $dateColumn
-     * @param array     $options
+     * @param Query  $query
+     * @param Carbon $startDate
+     * @param Carbon $endDate
+     * @param string $dateColumn
+     * @param array  $options
      *
      * @return array
      * @throws Exception
      */
     private function getRunChartDataFromQuery(
         Query $query,
-        \DateTime $startDate,
-        \DateTime $endDate,
+        Carbon $startDate,
+        Carbon $endDate,
         string $dateColumn,
         array $options = []
     ): array {
@@ -524,8 +524,8 @@ class ApiController extends BaseController
         // Prepare the query
         $condition = ['and', "{$dateColumnSql} >= :startDate", "{$dateColumnSql} < :endDate"];
         $params    = [
-            ':startDate' => Db::prepareDateForDb($startDate),
-            ':endDate'   => Db::prepareDateForDb($endDate),
+            ':startDate' => $startDate->toDateTimeString(),
+            ':endDate'   => $endDate->toDateTimeString(),
         ];
         $orderBy   = ['date' => SORT_ASC];
 

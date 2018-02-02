@@ -11,6 +11,7 @@
 
 namespace Solspace\freeform\Library\Database;
 
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
 interface FormHandlerInterface
@@ -48,4 +49,22 @@ interface FormHandlerInterface
      * @return string
      */
     public function getScriptOutput(Form $form): string;
+
+    /**
+     * Do something before the form is saved
+     * Return bool determines whether the form should be saved or not
+     *
+     * @param Form $form
+     *
+     * @return bool
+     */
+    public function onBeforeSubmit(Form $form): bool;
+
+    /**
+     * Do something after the form is saved
+     *
+     * @param Form            $form
+     * @param Submission|null $submission
+     */
+    public function onAfterSubmit(Form $form, Submission $submission = null);
 }

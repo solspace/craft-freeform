@@ -14,6 +14,9 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
+use Solspace\Freeform\Events\Forms\BeforeSubmitEvent;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Freeform;
@@ -31,6 +34,8 @@ use yii\web\View;
 
 class FormsService extends Component implements FormHandlerInterface
 {
+    const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
+    const EVENT_AFTER_SUBMIT  = 'afterSubmit';
     const EVENT_BEFORE_SAVE   = 'beforeSave';
     const EVENT_AFTER_SAVE    = 'afterSave';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
@@ -494,6 +499,26 @@ class FormsService extends Component implements FormHandlerInterface
             . '</script>';
 
         return $output;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onBeforeSubmit(Form $form): bool
+    {
+        $event = new BeforeSubmitEvent($form);
+        $this->trigger(self::EVENT_BEFORE_SUBMIT, $event);
+
+        return $event->isValid;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onAfterSubmit(Form $form, Submission $submission = null)
+    {
+        $event = new AfterSubmitEvent($form, $submission);
+        $this->trigger(self::EVENT_AFTER_SUBMIT, $event);
     }
 
     /**

@@ -436,6 +436,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function submit()
     {
         $formValueContext = $this->getFormValueContext();
+        $onBeforeSave     = $this->formHandler->onBeforeSubmit($this);
 
         if ($formValueContext->shouldFormWalkToPreviousPage()) {
             $formValueContext->retreatToPreviousPage();
@@ -466,7 +467,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
         $formValueContext->appendStoredValues($submittedValues);
 
-        if ($formValueContext->getCurrentPageIndex() === (count($this->getPages()) - 1)) {
+        if ($formValueContext->getCurrentPageIndex() === (\count($this->getPages()) - 1)) {
+            if (!$onBeforeSave) {
+                return false;
+            }
+
             if ($this->storeData) {
                 $submission = $this->saveStoredStateToDatabase();
             } else {
@@ -479,6 +484,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
             $this->pushToCRM();
 
             $formValueContext->cleanOutCurrentSession();
+
+            $this->formHandler->onAfterSubmit($this, $submission);
 
             return $submission;
         }

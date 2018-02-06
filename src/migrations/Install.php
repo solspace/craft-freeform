@@ -59,7 +59,7 @@ class Install extends StreamlinedInstallMigration
                 )
                 ->addField('handle', $this->string(255)->notNull()->unique())
                 ->addField('label', $this->string(255))
-                ->addField('required', $this->boolean()->defaultValue(0))
+                ->addField('required', $this->boolean()->defaultValue(false))
                 ->addField('instructions', $this->text())
                 ->addField('metaProperties', $this->text()),
 

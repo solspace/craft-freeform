@@ -85,6 +85,7 @@ class Freeform extends Plugin
     const VERSION_PRO   = 'pro';
 
     const PERMISSIONS_HELP_LINK = 'https://solspace.com/craft/freeform/docs/demo-templates';
+    const PERMISSION_NAMESPACE  = 'Freeform';
 
     const VERSION_CACHE_KEY           = 'freeform_version';
     const VERSION_CACHE_TIMESTAMP_KEY = 'freeform_version_timestamp';
@@ -219,7 +220,7 @@ class Freeform extends Plugin
                         $submissionNestedPermissions[$permissionName] = ['label' => 'For ' . $form->name];
                     }
 
-                    $event->permissions[$this->name] = [
+                    $permissions = [
                         self::PERMISSION_SUBMISSIONS_ACCESS   => [
                             'label'  => self::t('Access Submissions'),
                             'nested' => $submissionNestedPermissions,
@@ -248,6 +249,15 @@ class Freeform extends Plugin
                         ],
                         self::PERMISSION_SETTINGS_ACCESS      => ['label' => self::t('Access Settings')],
                     ];
+
+                    if (!isset($event->permissions[self::PERMISSION_NAMESPACE])) {
+                        $event->permissions[self::PERMISSION_NAMESPACE] = [];
+                    }
+
+                    $event->permissions[self::PERMISSION_NAMESPACE] = array_merge(
+                        $event->permissions[self::PERMISSION_NAMESPACE],
+                        $permissions
+                    );
                 }
             );
         }
@@ -456,5 +466,29 @@ class Freeform extends Plugin
         $status->color     = 'grey';
         $status->sortOrder = 3;
         $status->save();
+    }
+
+    /**
+     * Uninstall only if Freeform Pro is not present
+     *
+     * @return bool
+     */
+    protected function beforeUninstall(): bool
+    {
+        $isProInstalled = (bool) (new Query())
+            ->select('id')
+            ->from('{{%plugins}}')
+            ->where(['handle' => 'freeform-pro'])
+            ->one();
+
+        if ($isProInstalled) {
+            \Craft::$app->session->setNotice(
+                \Craft::t('app', 'You must uninstall Freeform Pro before you can uninstall Freeform Lite')
+            );
+
+            return false;
+        }
+
+        return true;
     }
 }

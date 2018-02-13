@@ -15,6 +15,7 @@ use craft\base\Model;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
@@ -134,6 +135,7 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
     /**
      * @return AbstractIntegration|AbstractCRMIntegration|AbstractMailingListIntegration
      * @throws IntegrationException
+     * @throws IntegrationNotFoundException
      */
     public function getIntegrationObject()
     {
@@ -153,6 +155,10 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
         }
 
         $className = $this->class;
+
+        if (!class_exists($className)) {
+            throw new IntegrationNotFoundException(sprintf('"%s" class does not exist', $className));
+        }
 
         /** @var AbstractIntegration $integration */
         $integration = new $className(

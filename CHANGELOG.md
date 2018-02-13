@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.7 - 2018-02-13
+### Added
+- Added Dutch translations.
+
+### Changed
+- Updated the install and uninstall process to be smarter (Lite vs Pro order, etc).
+
+### Fixed
+- Fixed a bug where Export CSV feature for Lite was not respecting the Remove Newlines setting.
+- Fixed a bug with user / user group permissions.
+- Fixed a bug where dashboard widgets' titles could not be overwritten.
+- Fixed a bug where an error on install could sometimes occur.
+
 ## 2.0.0-beta.6 - 2018-02-02
 ### Added
 - Added a 'Use Double Opt-in?' setting for MailChimp integrations.

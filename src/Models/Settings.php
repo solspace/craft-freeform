@@ -46,6 +46,9 @@ class Settings extends Model
     public $showTutorial;
 
     /** @var bool */
+    public $removeNewlines;
+
+    /** @var bool */
     public $defaultTemplates;
 
     /** @var bool */
@@ -82,6 +85,7 @@ class Settings extends Model
         $this->fieldDisplayOrder      = Freeform::FIELD_DISPLAY_ORDER_NAME;
         $this->showTutorial           = true;
         $this->defaultTemplates       = true;
+        $this->removeNewlines         = false;
         $this->footerScripts          = true;
         $this->formSubmitDisable      = true;
 

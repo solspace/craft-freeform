@@ -16,6 +16,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\TextareaField;
 use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -69,6 +70,8 @@ class SubmissionsController extends BaseController
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
+        $isRemoveNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
+
         $submissionIds = \Craft::$app->request->post('submissionIds');
         $submissionIds = explode(',', $submissionIds);
 
@@ -110,6 +113,10 @@ class SubmissionsController extends BaseController
                     if (is_array($value)) {
                         $value = implode(', ', $value);
                     }
+                }
+
+                if ($isRemoveNewlines && $field instanceof TextareaField) {
+                    $value = trim(preg_replace('/\s+/', ' ', $value));
                 }
 
                 $rowData[] = $value;

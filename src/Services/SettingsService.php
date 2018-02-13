@@ -137,6 +137,14 @@ class SettingsService extends Component
     }
 
     /**
+     * @return bool
+     */
+    public function isRemoveNewlines(): bool
+    {
+        return (bool) $this->getSettingsModel()->removeNewlines;
+    }
+
+    /**
      * @return Settings
      */
     public function getSettingsModel(): Settings

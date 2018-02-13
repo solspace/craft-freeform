@@ -16,6 +16,7 @@ use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Models\IntegrationModel;
@@ -38,7 +39,13 @@ abstract class AbstractIntegrationService extends Component
 
         $models = [];
         foreach ($results as $result) {
-            $models[] = $this->createIntegrationModel($result);
+            $model = $this->createIntegrationModel($result);
+
+            try{
+                $model->getIntegrationObject();
+                $models[] = $model;
+            } catch (IntegrationNotFoundException $e) {
+            }
         }
 
         return $models;

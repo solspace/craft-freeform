@@ -248,7 +248,10 @@ class Freeform extends Plugin
                         ],
                         self::PERMISSION_SETTINGS_ACCESS      => ['label' => self::t('Access Settings')],
                     ];
-                }
+                },
+                null,
+                false
+
             );
         }
 

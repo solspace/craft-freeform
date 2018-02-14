@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.8 - 2018-02-14
+### Fixed
+- Fixed a bug where the CP Submissions list page broke after Craft 3 RC 10 update.
+
 ## 2.0.0-beta.7 - 2018-02-13
 ### Added
 - Added Dutch translations.

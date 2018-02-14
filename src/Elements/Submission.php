@@ -106,7 +106,7 @@ class Submission extends Element
 
         $list = [];
         foreach ($statuses as $status) {
-            $list[$status->handle . ' ' . $status->color] = $status->name;
+            $list[$status->handle] = ['label' => $status->name, 'color' => $status->color];
         }
 
         return $list;
@@ -245,6 +245,10 @@ class Submission extends Element
      */
     protected function tableAttributeHtml(string $attribute): string
     {
+        if ($attribute === 'status') {
+            return $this->getStatusModel()->name;
+        }
+
         $value = $this->$attribute;
 
         if (\is_array($value)) {
@@ -285,9 +289,17 @@ class Submission extends Element
     }
 
     /**
+     * @return string
+     */
+    public function getStatus(): string
+    {
+        return $this->getStatusModel()->handle;
+    }
+
+    /**
      * @return StatusModel
      */
-    public function getStatus(): StatusModel
+    public function getStatusModel(): StatusModel
     {
         return Freeform::getInstance()->statuses->getStatusById($this->statusId);
     }

@@ -123,11 +123,8 @@ class SubmissionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam($table . '.incrementalId', $this->incrementalId));
         }
 
-        if ($this->status && \is_string($this->status) && preg_match('/ /', $this->status)) {
-            $status = explode(' ', $this->status);
-            $status = reset($status);
-
-            $this->subQuery->andWhere(Db::parseParam($statusTable . '.handle', $status));
+        if ($this->status && \is_string($this->status)) {
+            $this->subQuery->andWhere(Db::parseParam($statusTable . '.handle', $this->status));
             $this->status = '';
         }
 

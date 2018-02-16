@@ -40,7 +40,7 @@
                     {% for submission in submissions %}
                         <tr>
                             <td>{{ submission.id }}</td>
-                            <td style="color: {{ submission.status }}">{{ submission.status.name }}</td>
+                            <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
                             <td>
                                 <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/{{ submission.id }}">
                                     {{ submission.title }}

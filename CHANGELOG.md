@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.9 - 2018-02-16
+### Changed
+- Updated Dynamic Recipients fields to allow multiple email addresses per option (separated by commas).
+
+### Fixed
+- Fixed a bug where radio fields would not display errors if left empty.
+- Fixed a bug where the demo templates errored on submission views after Craft 3 RC 10 update.
+
 ## 2.0.0-beta.8 - 2018-02-14
 ### Fixed
 - Fixed a bug where the CP Submissions list page broke after Craft 3 RC 10 update.

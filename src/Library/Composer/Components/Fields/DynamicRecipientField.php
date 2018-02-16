@@ -25,6 +25,14 @@ class DynamicRecipientField extends SelectField implements RecipientInterface, O
     protected $showAsRadio;
 
     /**
+     * @return string
+     */
+    public static function getFieldType(): string
+    {
+        return FieldInterface::TYPE_DYNAMIC_RECIPIENTS;
+    }
+
+    /**
      * @return bool
      */
     public function isShowAsRadio(): bool
@@ -88,8 +96,14 @@ class DynamicRecipientField extends SelectField implements RecipientInterface, O
 
         if (null !== $value && array_key_exists($value, $options)) {
             $option = $options[$value];
+            $emails = explode(',', $option->getValue());
 
-            return [$option->getLabel() => $option->getValue()];
+            $batch = [];
+            foreach ($emails as $email) {
+                $batch[] = trim($email);
+            }
+
+            return $batch;
         }
 
         return [];

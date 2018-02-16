@@ -41,7 +41,7 @@
                 <table class="table table-striped">
                     <tr>
                         <th style="width: 20%;">Status</th>
-                        <td style="color: {{ submission.status }}">{{ submission.status.name }}</td>
+                        <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
                     </tr>
                     {% for field in submission.fieldMetadata %}
                         <tr>

@@ -8,6 +8,7 @@ use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
+use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
@@ -31,6 +32,8 @@ class Submission extends Element
     const TABLE               = '{{%freeform_submissions}}';
     const FIELD_COLUMN_PREFIX = 'field_';
 
+    const OPT_IN_DATA_TOKEN_LENGTH = 100;
+
     /** @var AbstractField[] */
     private static $fieldIdMap;
 
@@ -45,6 +48,9 @@ class Submission extends Element
 
     /** @var int */
     public $incrementalId;
+
+    /** @var string */
+    public $token;
 
     /** @var array */
     private $storedFieldValues;
@@ -110,6 +116,17 @@ class Submission extends Element
         }
 
         return $list;
+    }
+
+    /**
+     * @return Submission
+     */
+    public static function create(): Submission
+    {
+        $submission = new static();
+        $submission->generateToken();
+
+        return $submission;
     }
 
     /**
@@ -259,6 +276,22 @@ class Submission extends Element
             $field = $value;
             $value = $value->getValue();
 
+            if ($field instanceof FileUploadField) {
+                $output = '';
+                foreach ($value as $assetId) {
+                    $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+
+                    if ($asset) {
+                        $output .= \Craft::$app->view->renderTemplate(
+                            'freeform/_components/fields/file.html',
+                            ['asset' => $asset]
+                        );
+                    }
+                }
+
+                return $output;
+            }
+
             if (\is_array($value)) {
                 $value = implode(', ', $value);
             }
@@ -269,17 +302,6 @@ class Submission extends Element
 
             if ($field instanceof RatingField) {
                 return (int) $value . '/' . $field->getMaxValue();
-            }
-
-            if ($field instanceof FileUploadField) {
-                $asset = \Craft::$app->assets->getAssetById((int) $value);
-
-                if ($asset) {
-                    return \Craft::$app->view->renderTemplate(
-                        'freeform/_components/fields/file.html',
-                        ['asset' => $asset]
-                    );
-                }
             }
 
             return Html::encode($value);
@@ -315,18 +337,21 @@ class Submission extends Element
     /**
      * @param string $fieldColumnHandle - e.g. "field_1" or "field_52", etc
      *
-     * @return Asset|null
+     * @return Asset[]|null
      */
-    public function getAsset(string $fieldColumnHandle)
+    public function getAssets(string $fieldColumnHandle)
     {
         $columnPrefix = self::FIELD_COLUMN_PREFIX;
 
         if (strpos($fieldColumnHandle, $columnPrefix) === 0) {
             $value = $this->storedFieldValues[$fieldColumnHandle] ?? null;
 
-            if ($value) {
-                return \Craft::$app->assets->getAssetById($value);
+            $assets = [];
+            foreach ($value as $assetId) {
+                $assets[] = \Craft::$app->assets->getAssetById($assetId);
             }
+
+            return $assets;
         }
 
         return null;
@@ -553,9 +578,10 @@ class Submission extends Element
     public function afterSave(bool $isNew)
     {
         $insertData = [
-            'formId'        => $this->formId,
-            'statusId'      => $this->statusId,
-            'incrementalId' => $this->incrementalId ?? $this->getNewIncrementalId(),
+            'formId'         => $this->formId,
+            'statusId'       => $this->statusId,
+            'incrementalId'  => $this->incrementalId ?? $this->getNewIncrementalId(),
+            'token' => $this->token,
         ];
 
         foreach ($this->storedFieldValues as $key => $value) {
@@ -579,6 +605,18 @@ class Submission extends Element
         }
 
         parent::afterSave($isNew);
+    }
+
+    /**
+     * Generate and set the unique token
+     *
+     * @return $this
+     */
+    private function generateToken()
+    {
+        $this->token = CryptoHelper::getUniqueToken(self::OPT_IN_DATA_TOKEN_LENGTH);
+
+        return $this;
     }
 
     /**

@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.10 - 2018-02-28
+### Added
+- Added unique token to all form submissions. Useful if you want to more securely display a users submission data in the front end after they submit the form (with token in the URI). Available as `token` property in Submission object and `token` parameter in `freeform.submissions` function for filtering.
+- Added `deleteSubmissionByToken()` function to allow users to delete their own submissions (see demo template example).
+- Added *Opt-In Data Storage Checkbox* option for form settings in Composer to allow users to decide whether the submission data is saved to your site or not (but still sends email notifications). To use it, add a checkbox field to your form and pair the setting with that field. The checkbox will have to be checked to have data stored in Freeform.
+
+### Changed
+- Updated File Upload fields to have the ability to accept multiple files.
+- Updated Checkbox fieldtype to show a warning in Composer when no value is set.
+
+### Fixed
+- Fixed a bug where using Dynamic Recipients fieldtype as Radio display would not send email notifications (reinstall or adjust demo templates).
+- Fixed a bug where default value and placeholder attributes were not being saved for Text and Confirmation field types.
+
 ## 2.0.0-beta.9 - 2018-02-16
 ### Changed
 - Updated Dynamic Recipients fields to allow multiple email addresses per option (separated by commas).

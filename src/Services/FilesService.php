@@ -43,7 +43,6 @@ class FilesService extends Component implements FileUploadHandlerInterface
      * @param FileUploadField $field
      *
      * @return FileUploadResponse|null
-     * @throws FreeformException
      */
     public function uploadFile(FileUploadField $field)
     {
@@ -52,14 +51,9 @@ class FilesService extends Component implements FileUploadHandlerInterface
         }
 
         $assetService = \Craft::$app->assets;
-
-        $uploadedFile = UploadedFile::getInstanceByName($field->getHandle());
         $folder       = $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
 
-        if (!$uploadedFile) {
-            return null;
-        }
-
+        $uploadedFileCount = count($_FILES[$field->getHandle()]['name']);
 
         $beforeUploadEvent = new UploadEvent($field);
         $this->trigger(self::EVENT_BEFORE_UPLOAD, $beforeUploadEvent);
@@ -68,33 +62,48 @@ class FilesService extends Component implements FileUploadHandlerInterface
             return null;
         }
 
-        try {
+        $uploadedAssetIds = $errors = [];
+        for ($i = 0; $i < $uploadedFileCount; $i++) {
+            $uploadedFile = UploadedFile::getInstanceByName($field->getHandle() . "[$i]");
 
-            $filename = Assets::prepareAssetName($uploadedFile->name);
-            $asset    = new Asset();
+            if (!$uploadedFile) {
+                continue;
+            }
 
-            $asset->tempFilePath           = $uploadedFile->tempName;
-            $asset->filename               = $filename;
-            $asset->newFolderId            = $folder->id;
-            $asset->volumeId               = $folder->volumeId;
-            $asset->avoidFilenameConflicts = true;
-            $asset->setScenario(Asset::SCENARIO_CREATE);
+            $asset = $response = null;
+            try {
+                $filename = Assets::prepareAssetName($uploadedFile->name);
+                $asset    = new Asset();
 
-            $response = \Craft::$app->getElements()->saveElement($asset);
-        } catch (\Exception $e) {
-            return new FileUploadResponse(null, [$e->getMessage()]);
+                $asset->tempFilePath           = $uploadedFile->tempName;
+                $asset->filename               = $filename;
+                $asset->newFolderId            = $folder->id;
+                $asset->volumeId               = $folder->volumeId;
+                $asset->avoidFilenameConflicts = true;
+                $asset->setScenario(Asset::SCENARIO_CREATE);
+
+                $response = \Craft::$app->getElements()->saveElement($asset);
+            } catch (\Exception $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if ($response) {
+                $assetId = $asset->id;
+                $this->markAssetUnfinalized($assetId);
+
+                $uploadedAssetIds[] = $assetId;
+            } else if ($asset) {
+                $errors = array_merge($errors, $asset->getErrors());
+            }
         }
 
-        if ($response) {
-            $assetId = $asset->id;
+        $this->trigger(self::EVENT_AFTER_UPLOAD, new UploadEvent($field));
 
-            $this->markAssetUnfinalized($assetId);
-            $this->trigger(self::EVENT_AFTER_UPLOAD, new UploadEvent($field));
-
-            return new FileUploadResponse($assetId);
+        if ($uploadedAssetIds) {
+            return new FileUploadResponse($uploadedAssetIds);
         }
 
-        return new FileUploadResponse(null, $asset->getErrors());
+        return new FileUploadResponse(null, $errors);
     }
 
     /**

@@ -64,7 +64,7 @@
                     {{ field.renderErrors() }}
                 </div>
 
-            {% elseif field.type == "radio_group" or (field.type == "dynamic_recipients" and field.showAsRadio) %}
+            {% elseif field.type == "radio_group" %}
 
                 <div class="{{ columnClass }}">
                     {{ field.renderLabel({
@@ -79,6 +79,32 @@
                                 <input type="radio"
                                        name="{{ field.handle }}"
                                        value="{{ option.value }}"
+                                        {{ option.checked ? "checked" : "" }}
+                                />
+                                {{ option.label|raw }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors() }}
+                </div>
+
+            {% elseif field.type == "dynamic_recipients" and field.showAsRadio %}
+
+                <div class="{{ columnClass }}">
+                    {{ field.renderLabel({
+                        labelClass: (field.required ? " required" : ""),
+                        instructionsClass: "help-block",
+                        errorClass: "help-block",
+                    }) }}
+
+                    {% for option in field.options %}
+                        <div class="radio">
+                            <label>
+                                <input type="radio"
+                                       name="{{ field.handle }}"
+                                       value="{{ option.index }}"
                                         {{ option.checked ? "checked" : "" }}
                                 />
                                 {{ option.label|raw }}

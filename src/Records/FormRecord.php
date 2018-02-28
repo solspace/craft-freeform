@@ -37,6 +37,7 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property string $returnUrl
  * @property int    $defaultStatus
  * @property int    $formTemplateId
+ * @property int    $optInDataStorageTargetHash
  * @property string $color
  */
 class FormRecord extends ActiveRecord

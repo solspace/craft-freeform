@@ -59,7 +59,7 @@
                     {{ field.renderErrors }}
                 </div>
 
-            {% elseif field.type == "radio_group" or (field.type == "dynamic_recipients" and field.showAsRadio) %}
+            {% elseif field.type == "radio_group" %}
 
                 <div class="{{ columnClass }}" style="margin-bottom: 20px;">
 
@@ -75,6 +75,32 @@
                                    id="{{ form.hash ~ field.handle ~ option.value }}"
                                    name="{{ field.handle }}"
                                    value="{{ option.value }}"
+                                    {{ option.value in field.value ? "checked" : "" }}
+                            />
+                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
+                        </p>
+                    {% endfor %}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+                </div>
+
+            {% elseif field.type == "dynamic_recipients" and field.showAsRadio %}
+
+                <div class="{{ columnClass }}" style="margin-bottom: 20px;">
+
+                    {{ field.renderLabel({
+                        labelClass: " active" ~ (field.required ? " required"),
+                        instructionsClass: "help-block",
+                        errorClass: "help-block",
+                    }) }}
+
+                    {% for option in field.options %}
+                        <p>
+                            <input type="radio"
+                                   id="{{ form.hash ~ field.handle ~ option.value }}"
+                                   name="{{ field.handle }}"
+                                   value="{{ option.index }}"
                                     {{ option.value in field.value ? "checked" : "" }}
                             />
                             <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
@@ -129,7 +155,7 @@
 
                 <div class="{{ columnClass }}">
                     {{ field.render({
-                        class: "btn waves-effect waves-light"
+                        class: "btn btn-large waves-effect waves-light"
                     }) }}
                 </div>
 

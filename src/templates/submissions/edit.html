@@ -197,24 +197,26 @@
                                                 <label>{{ field.label }}</label>
                                             </div>
                                             <div>
-                                                {% set asset = submission.getAsset(fieldHandle) %}
+                                                {% set assets = submission.getAssets(fieldHandle) %}
 
-                                                {% if asset %}
-                                                    {% set thumbSizes = [30, 60, 100, 200] %}
-                                                    {% set srcset = "" %}
-                                                    {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
-                                                    {% set srcset = srcset|trim(", ") %}
+                                                {% if assets %}
+                                                    {% for asset in assets if asset is not null %}
+                                                        {% set thumbSizes = [30, 60, 100, 200] %}
+                                                        {% set srcset = "" %}
+                                                        {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
+                                                        {% set srcset = srcset|trim(", ") %}
 
-                                                    <div class="element small hasthumb">
-                                                        <div class="elementthumb">
-                                                            <img sizes="30px" srcset="{{ srcset }}" alt="">
+                                                        <div class="element small hasthumb">
+                                                            <div class="elementthumb">
+                                                                <img sizes="30px" srcset="{{ srcset }}" alt="">
+                                                            </div>
+                                                            <label>
+                                                                <a href="javascript:;" data-asset-id="{{ asset.id }}">
+                                                                    {{ asset.title }}
+                                                                </a>
+                                                            </label>
                                                         </div>
-                                                        <label>
-                                                            <a href="javascript:;" data-asset-id="{{ asset.id }}">
-                                                                {{ asset.title }}
-                                                            </a>
-                                                        </label>
-                                                    </div>
+                                                    {% endfor %}
                                                 {% else %}
                                                     {{ "No files uploaded"|t }}
                                                 {% endif %}

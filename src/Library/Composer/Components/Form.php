@@ -15,8 +15,8 @@ use craft\helpers\Template;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
+use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
@@ -75,6 +75,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
     /** @var Layout */
     private $layout;
+
+    /** @var string */
+    private $optInDataStorageTargetHash;
 
     /** @var Row[] */
     private $currentPageRows;
@@ -242,6 +245,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
+     * @return string|null
+     */
+    public function getOptInDataStorageTargetHash()
+    {
+        return $this->optInDataStorageTargetHash;
+    }
+
+    /**
      * @return string
      */
     public function getHash(): string
@@ -356,9 +367,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         }
 
         if (
-            $isFormValid &&
-            $this->formHandler->isSpamProtectionEnabled() &&
-            !$this->getFormValueContext()->isHoneypotValid()
+            $isFormValid
+            && $this->formHandler->isSpamProtectionEnabled()
+            && !$this->getFormValueContext()->isHoneypotValid()
         ) {
             $this->formHandler->incrementSpamBlockCount($this);
             $this->valid = false;
@@ -472,16 +483,20 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
                 return false;
             }
 
-            if ($this->storeData) {
+            if ($this->storeData && $this->hasOptInPermission()) {
                 $submission = $this->saveStoredStateToDatabase();
             } else {
                 $submission      = null;
                 $this->formSaved = true;
             }
+
             $this->getSubmissionHandler()->markFormAsSubmitted($this);
             $this->sendOutEmailNotifications($submission);
-            $this->pushToMailingLists();
-            $this->pushToCRM();
+
+            if ($this->hasOptInPermission()) {
+                $this->pushToMailingLists();
+                $this->pushToCRM();
+            }
 
             $formValueContext->cleanOutCurrentSession();
 
@@ -702,6 +717,37 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
+     * @return null|CheckboxField
+     */
+    public function getOptInDataTargetField()
+    {
+        if ($this->optInDataStorageTargetHash) {
+            $field = $this->get($this->optInDataStorageTargetHash);
+
+            if ($field instanceof CheckboxField) {
+                return $field;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * If the Opt-In has been selected, returns if it's checked or not
+     * If it's disabled, then just returns true
+     *
+     * @return bool
+     */
+    public function hasOptInPermission(): bool
+    {
+        if ($this->getOptInDataTargetField()) {
+            return $this->getOptInDataTargetField()->isChecked();
+        }
+
+        return true;
+    }
+
+    /**
      * @return Honeypot
      */
     private function getHoneypot(): Honeypot
@@ -739,15 +785,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     private function buildFromData(FormProperties $formProperties)
     {
-        $this->name                  = $formProperties->getName();
-        $this->handle                = $formProperties->getHandle();
-        $this->color                 = $formProperties->getColor();
-        $this->submissionTitleFormat = $formProperties->getSubmissionTitleFormat();
-        $this->description           = $formProperties->getDescription();
-        $this->returnUrl             = $formProperties->getReturnUrl();
-        $this->storeData             = $formProperties->isStoreData();
-        $this->defaultStatus         = $formProperties->getDefaultStatus();
-        $this->formTemplate          = $formProperties->getFormTemplate();
+        $this->name                       = $formProperties->getName();
+        $this->handle                     = $formProperties->getHandle();
+        $this->color                      = $formProperties->getColor();
+        $this->submissionTitleFormat      = $formProperties->getSubmissionTitleFormat();
+        $this->description                = $formProperties->getDescription();
+        $this->returnUrl                  = $formProperties->getReturnUrl();
+        $this->storeData                  = $formProperties->isStoreData();
+        $this->defaultStatus              = $formProperties->getDefaultStatus();
+        $this->formTemplate               = $formProperties->getFormTemplate();
+        $this->optInDataStorageTargetHash = $formProperties->getOptInDataStorageTargetHash();
     }
 
     /**
@@ -921,14 +968,15 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function jsonSerialize(): array
     {
         return [
-            'name'          => $this->name,
-            'handle'        => $this->handle,
-            'color'         => $this->color,
-            'description'   => $this->description,
-            'returnUrl'     => $this->returnUrl,
-            'storeData'     => (bool) $this->storeData,
-            'defaultStatus' => $this->defaultStatus,
-            'formTemplate'  => $this->formTemplate,
+            'name'                       => $this->name,
+            'handle'                     => $this->handle,
+            'color'                      => $this->color,
+            'description'                => $this->description,
+            'returnUrl'                  => $this->returnUrl,
+            'storeData'                  => (bool) $this->storeData,
+            'defaultStatus'              => $this->defaultStatus,
+            'formTemplate'               => $this->formTemplate,
+            'optInDataStorageTargetHash' => $this->optInDataStorageTargetHash,
         ];
     }
 

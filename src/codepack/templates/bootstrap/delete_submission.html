@@ -1,0 +1,21 @@
+{% extends "demo/_layouts/bootstrap" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% set baseUrlSegments = 1 %}
+{% set token = craft.app.request.segment(baseUrlSegments + 5) %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% if craft.freeform.deleteSubmissionByToken(token) %}
+            Removed successfully
+        {% else %}
+            Nothing to remove
+        {% endif %}
+
+    </div>
+
+{% endblock %}

@@ -27,7 +27,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\FormRecord;
 use yii\base\Component;
-use yii\base\Exception;
 use yii\base\InvalidCallException;
 use yii\base\ViewNotFoundException;
 use yii\web\View;
@@ -163,16 +162,17 @@ class FormsService extends Component implements FormHandlerInterface
             $record = FormRecord::create();
         }
 
-        $record->name                  = $model->name;
-        $record->handle                = $model->handle;
-        $record->spamBlockCount        = $model->spamBlockCount;
-        $record->submissionTitleFormat = $model->submissionTitleFormat;
-        $record->description           = $model->description;
-        $record->layoutJson            = $model->layoutJson;
-        $record->returnUrl             = $model->returnUrl;
-        $record->defaultStatus         = $model->defaultStatus;
-        $record->formTemplateId        = $model->formTemplateId;
-        $record->color                 = $model->color;
+        $record->name                       = $model->name;
+        $record->handle                     = $model->handle;
+        $record->spamBlockCount             = $model->spamBlockCount;
+        $record->submissionTitleFormat      = $model->submissionTitleFormat;
+        $record->description                = $model->description;
+        $record->layoutJson                 = $model->layoutJson;
+        $record->returnUrl                  = $model->returnUrl;
+        $record->defaultStatus              = $model->defaultStatus;
+        $record->formTemplateId             = $model->formTemplateId;
+        $record->color                      = $model->color;
+        $record->optInDataStorageTargetHash = $model->optInDataStorageTargetHash;
 
         $record->validate();
         $model->addErrors($record->getErrors());

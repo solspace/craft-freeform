@@ -184,6 +184,7 @@ class FieldModel extends Model implements \JsonSerializable
                 'maxFileSizeKB',
                 FileUploadField::DEFAULT_MAX_FILESIZE_KB
             );
+            $returnArray['fileCount']     = (int) $this->getMetaProperty('fileCount', FileUploadField::DEFAULT_FILE_COUNT);
             $returnArray['fileKinds']     = $this->getMetaProperty('fileKinds', ['image', 'pdf']);
         }
 
@@ -395,6 +396,7 @@ class FieldModel extends Model implements \JsonSerializable
             'assetSourceId'       => self::PROPERTY_TYPE_INT,
             'rows'                => self::PROPERTY_TYPE_INT,
             'maxFileSizeKB'       => self::PROPERTY_TYPE_INT,
+            'fileCount'           => self::PROPERTY_TYPE_INT,
             'minLength'           => self::PROPERTY_TYPE_INT,
             'maxLength'           => self::PROPERTY_TYPE_INT,
             'minValue'            => self::PROPERTY_TYPE_INT,

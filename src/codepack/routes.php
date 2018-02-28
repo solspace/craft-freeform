@@ -11,16 +11,17 @@
  * @license       https://solspace.com/software/license-agreement
  */
 
-return array(
-    'demo/bootstrap/(?P<slug>[^\/]+)/submissions/(?P<id>\d+)/success' => 'demo/bootstrap/view_submission.html',
-    'demo/bootstrap/(?P<slug>[^\/]+)/submissions/(?P<id>\d+)' => 'demo/bootstrap/view_submission.html',
-    'demo/bootstrap/(?P<slug>[^\/]+)/submissions' => 'demo/bootstrap/submissions.html',
-    'demo/bootstrap/(?P<slug>[^\/]+)' => 'demo/bootstrap/view.html',
-    'demo/bootstrap/(?P<slug>[^\/]+)/success' => 'demo/bootstrap/view.html',
+return [
+    'demo/bootstrap/(?P<slug>[^\/]+)/submissions/(?P<id>\d+)/success'   => 'demo/bootstrap/view_submission.html',
+    'demo/bootstrap/(?P<slug>[^\/]+)/submissions/(?P<id>\d+)'           => 'demo/bootstrap/view_submission.html',
+    'demo/bootstrap/(?P<slug>[^\/]+)/submissions/delete/(?P<token>\w+)' => 'demo/bootstrap/delete_submission.html',
+    'demo/bootstrap/(?P<slug>[^\/]+)/submissions'                       => 'demo/bootstrap/submissions.html',
+    'demo/bootstrap/(?P<slug>[^\/]+)'                                   => 'demo/bootstrap/view.html',
+    'demo/bootstrap/(?P<slug>[^\/]+)/success'                           => 'demo/bootstrap/view.html',
     'demo/materialize/(?P<slug>[^\/]+)/submissions/(?P<id>\d+)/success' => 'demo/materialize/view_submission.html',
-    'demo/materialize/(?P<slug>[^\/]+)/submissions/(?P<id>\d+)' => 'demo/materialize/view_submission.html',
-    'demo/materialize/(?P<slug>[^\/]+)/submissions' => 'demo/materialize/submissions.html',
-    'demo/materialize/(?P<slug>[^\/]+)' => 'demo/materialize/view.html',
-    'demo/materialize/(?P<slug>[^\/]+)/success' => 'demo/materialize/view.html',
-    'demo/foundation/(?P<slug>[^\/]+)' => 'demo/foundation/view.html',
-);
+    'demo/materialize/(?P<slug>[^\/]+)/submissions/(?P<id>\d+)'         => 'demo/materialize/view_submission.html',
+    'demo/materialize/(?P<slug>[^\/]+)/submissions'                     => 'demo/materialize/submissions.html',
+    'demo/materialize/(?P<slug>[^\/]+)'                                 => 'demo/materialize/view.html',
+    'demo/materialize/(?P<slug>[^\/]+)/success'                         => 'demo/materialize/view.html',
+    'demo/foundation/(?P<slug>[^\/]+)'                                  => 'demo/foundation/view.html',
+];

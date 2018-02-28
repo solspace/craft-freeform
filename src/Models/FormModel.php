@@ -15,7 +15,6 @@ use craft\base\Model;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
-use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Layout;
 use Solspace\Freeform\Library\Composer\Composer;
@@ -38,6 +37,7 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property string $returnUrl
  * @property int    $defaultStatus
  * @property int    $formTemplateId
+ * @property string $optInDataStorageTargetHash
  * @property string $color
  */
 class FormModel extends Model
@@ -73,6 +73,9 @@ class FormModel extends Model
     public $formTemplateId;
 
     /** @var string */
+    public $optInDataStorageTargetHash;
+
+    /** @var string */
     public $color;
 
     /** @var Composer */
@@ -85,7 +88,7 @@ class FormModel extends Model
      */
     public static function create(): FormModel
     {
-        $form = new self();
+        $form                 = new self();
         $form->spamBlockCount = 0;
 
         return $form;
@@ -99,15 +102,16 @@ class FormModel extends Model
      */
     public function setLayout(Composer $composer)
     {
-        $form                        = $composer->getForm();
-        $this->name                  = $form->getName();
-        $this->handle                = $form->getHandle();
-        $this->submissionTitleFormat = $form->getSubmissionTitleFormat();
-        $this->description           = $form->getDescription();
-        $this->defaultStatus         = $form->getDefaultStatus();
-        $this->returnUrl             = $form->getReturnUrl();
-        $this->color                 = $form->getColor();
-        $this->layoutJson            = $composer->getComposerStateJSON();
+        $form                             = $composer->getForm();
+        $this->name                       = $form->getName();
+        $this->handle                     = $form->getHandle();
+        $this->submissionTitleFormat      = $form->getSubmissionTitleFormat();
+        $this->description                = $form->getDescription();
+        $this->defaultStatus              = $form->getDefaultStatus();
+        $this->returnUrl                  = $form->getReturnUrl();
+        $this->color                      = $form->getColor();
+        $this->optInDataStorageTargetHash = $form->getOptInDataStorageTargetHash();
+        $this->layoutJson                 = $composer->getComposerStateJSON();
     }
 
     /**

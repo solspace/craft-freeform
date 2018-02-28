@@ -40,6 +40,9 @@ class FormProperties extends AbstractProperties
     /** @var string */
     protected $formTemplate;
 
+    /** @var string */
+    protected $optInDataStorageTargetHash;
+
     /**
      * @return string
      */
@@ -113,6 +116,14 @@ class FormProperties extends AbstractProperties
     }
 
     /**
+     * @return string|null
+     */
+    public function getOptInDataStorageTargetHash()
+    {
+        return $this->optInDataStorageTargetHash ?: null;
+    }
+
+    /**
      * Return a list of all property fields and their type
      *
      * [propertyKey => propertyType, ..]
@@ -123,15 +134,16 @@ class FormProperties extends AbstractProperties
     protected function getPropertyManifest(): array
     {
         return [
-            'name'                  => self::TYPE_STRING,
-            'handle'                => self::TYPE_STRING,
-            'color'                 => self::TYPE_STRING,
-            'submissionTitleFormat' => self::TYPE_STRING,
-            'description'           => self::TYPE_STRING,
-            'returnUrl'             => self::TYPE_STRING,
-            'storeData'             => self::TYPE_BOOLEAN,
-            'defaultStatus'         => self::TYPE_INTEGER,
-            'formTemplate'          => self::TYPE_STRING,
+            'name'                       => self::TYPE_STRING,
+            'handle'                     => self::TYPE_STRING,
+            'color'                      => self::TYPE_STRING,
+            'submissionTitleFormat'      => self::TYPE_STRING,
+            'description'                => self::TYPE_STRING,
+            'returnUrl'                  => self::TYPE_STRING,
+            'storeData'                  => self::TYPE_BOOLEAN,
+            'defaultStatus'              => self::TYPE_INTEGER,
+            'formTemplate'               => self::TYPE_STRING,
+            'optInDataStorageTargetHash' => self::TYPE_STRING,
         ];
     }
 }

@@ -162,7 +162,7 @@ class DynamicRecipientField extends SelectField implements RecipientInterface, O
         $attributes = $this->getCustomAttributes();
         $output     = '';
 
-        foreach ($this->options as $option) {
+        foreach ($this->options as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '
@@ -170,9 +170,9 @@ class DynamicRecipientField extends SelectField implements RecipientInterface, O
                 . $this->getAttributeString('type', 'radio')
                 . $this->getAttributeString('id', $this->getIdAttribute())
                 . $this->getAttributeString('class', $attributes->getClass())
-                . $this->getAttributeString('value', $this->getValue(), false)
+                . $this->getAttributeString('value', $index)
+                . $this->getParameterString('checked', $option->isChecked())
                 . $attributes->getInputAttributesAsString()
-                . ($option->isChecked() ? 'checked ' : '')
                 . '/>';
             $output .= $this->translate($option->getLabel());
             $output .= '</label>';

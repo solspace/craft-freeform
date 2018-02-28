@@ -28,7 +28,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('returnUrl', $this->string(255))
                 ->addField('defaultStatus', $this->integer()->unsigned())
                 ->addField('formTemplateId', $this->integer()->unsigned())
-                ->addField('color', $this->string(10)),
+                ->addField('color', $this->string(10))
+                ->addField('optInDataStorageTargetHash', $this->string(20)->null()),
 
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())
@@ -132,7 +133,9 @@ class Install extends StreamlinedInstallMigration
                 ->addField('incrementalId', $this->integer()->notNull())
                 ->addField('statusId', $this->integer())
                 ->addField('formId', $this->integer()->notNull())
+                ->addField('token', $this->string(100)->notNull())
                 ->addIndex(['incrementalId'], true)
+                ->addIndex(['token'], true)
                 ->addForeignKey('id', 'elements', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('statusId', 'freeform_statuses', 'id', ForeignKey::CASCADE),

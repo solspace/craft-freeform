@@ -95,10 +95,13 @@ class MailerService extends Component implements MailHandlerInterface
 
             if ($notification->isIncludeAttachmentsEnabled()) {
                 foreach ($fields as $field) {
-                    if ($field instanceof FileUploadInterface && (int) $field->getValue()) {
-                        $asset = \Craft::$app->assets->getAssetById((int) $field->getValue());
-                        if ($asset) {
-                            $email->attach($asset->getTransformSource());
+                    if ($field instanceof FileUploadInterface && $field->getValue()) {
+                        $assetIds = $field->getValue();
+                        foreach ($assetIds as $assetId) {
+                            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                            if ($asset) {
+                                $email->attach($asset->getTransformSource());
+                            }
                         }
                     }
                 }
@@ -163,6 +166,7 @@ class MailerService extends Component implements MailHandlerInterface
         $postedValues['form']        = $form;
         $postedValues['submission']  = $submission;
         $postedValues['dateCreated'] = new \DateTime();
+        $postedValues['token']       = $submission ? $submission->token : null;
 
         return $postedValues;
     }

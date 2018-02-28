@@ -10,6 +10,14 @@
 }) }}
 
 {{ forms.textField({
+    label: "File Count"|t,
+    instructions: "Specify the maximum uploadable file count"|t,
+    name: "types[file][fileCount]",
+    value: field.metaProperty('fileCount', 1),
+    errors: field.getErrors("fileCount"),
+}) }}
+
+{{ forms.textField({
     label: "Maximum File Size"|t,
     instructions: "Specify the default maximum file size, in KB."|t,
     name: "types[file][maxFileSizeKB]",

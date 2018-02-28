@@ -23,6 +23,9 @@ class SubmissionQuery extends ElementQuery
     /** @var int */
     public $incrementalId;
 
+    /** @var string */
+    public $token;
+
     /**
      * @param mixed $value
      *
@@ -72,6 +75,18 @@ class SubmissionQuery extends ElementQuery
     }
 
     /**
+     * @param string $value
+     *
+     * @return SubmissionQuery
+     */
+    public function token(string $value): SubmissionQuery
+    {
+        $this->token = $value;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     protected function beforePrepare(): bool
@@ -99,6 +114,7 @@ class SubmissionQuery extends ElementQuery
             $table . '.formId',
             $table . '.statusId',
             $table . '.incrementalId',
+            $table . '.token',
         ];
 
         foreach (Freeform::getInstance()->fields->getAllFieldIds() as $id) {
@@ -121,6 +137,10 @@ class SubmissionQuery extends ElementQuery
 
         if ($this->incrementalId) {
             $this->subQuery->andWhere(Db::parseParam($table . '.incrementalId', $this->incrementalId));
+        }
+
+        if ($this->token) {
+            $this->subQuery->andWhere(Db::parseParam($table . '.token', $this->token));
         }
 
         if ($this->status && \is_string($this->status)) {

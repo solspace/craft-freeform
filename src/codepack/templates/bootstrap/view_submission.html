@@ -48,15 +48,21 @@
                             <th style="width: 20%;">{{ field.label }}</th>
                             <td>
                                 {% if field.type == "file" %}
-                                    {% set assetId = attribute(submission, field.handle) %}
-                                    {% set asset = craft.assets.id(assetId).first() %}
-                                    {% if asset %}
-                                        {% if asset.kind == "image" %}
-                                            <img src="{{ asset.url }}" class="img-responsive" />
-                                        {% else %}
-                                            <a href="{{ asset.url }}">{{ asset.filename }}</a>
-                                        {% endif %}
+
+                                    {% set assetIds = attribute(submission, field.handle).value %}
+                                    {% if assetIds %}
+                                        {% for assetId in assetIds %}
+                                            {% set asset = craft.assets.id(assetId).one() %}
+                                            {% if asset %}
+                                                {% if asset.kind == "image" %}
+                                                    <img src="{{ asset.url }}" class="img-responsive" />
+                                                {% else %}
+                                                    <a href="{{ asset.url }}">{{ asset.filename }}</a>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endfor %}
                                     {% endif %}
+
                                 {% else %}
                                     {{ attribute(submission, field.handle) }}
                                 {% endif %}

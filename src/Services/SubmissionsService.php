@@ -131,7 +131,7 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
         $fieldsByHandle                   = $form->getLayout()->getFieldsByHandle();
 
 
-        $submission              = new Submission();
+        $submission = Submission::create();
         $submission->formId      = $form->getId();
         $submission->statusId    = $form->getDefaultStatus();
         $submission->dateCreated = $dateCreated;
@@ -172,16 +172,14 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
         $assetIds = [];
 
         foreach ($form->getLayout()->getFileUploadFields() as $field) {
-            $assetIds[] = $field->getValue();
+            $assetIds = array_merge($assetIds, $field->getValue());
         }
 
         if (empty($assetIds)) {
             return;
         }
 
-        $records = UnfinalizedFileRecord::findAll(
-            ['assetId' => $assetIds]
-        );
+        $records = UnfinalizedFileRecord::findAll(['assetId' => $assetIds]);
 
         foreach ($records as $record) {
             $record->delete();

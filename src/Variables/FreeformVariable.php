@@ -70,6 +70,27 @@ class FreeformVariable
     }
 
     /**
+     * @param string $token
+     *
+     * @return bool
+     * @throws \yii\db\Exception
+     */
+    public function deleteSubmissionByToken(string $token): bool
+    {
+        if (empty($token) || strlen($token) !== Submission::OPT_IN_DATA_TOKEN_LENGTH) {
+            return false;
+        }
+
+        return (bool) \Craft::$app->db
+            ->createCommand()
+            ->delete(
+                Submission::TABLE,
+                ['token' => $token]
+            )
+            ->execute();
+    }
+
+    /**
      * @return Settings
      */
     public function getSettings(): Settings

@@ -1,13 +1,18 @@
 [
   {
-    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"], "\\/success"],
+    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"], "\\/success"],
     "urlPattern": "bootstrap/{slug}/submissions/{id}/success",
     "template": "/bootstrap/view_submission.html"
   },
   {
-    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"]],
+    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"]],
     "urlPattern": "bootstrap/{slug}/submissions/{id}",
     "template": "/bootstrap/view_submission.html"
+  },
+  {
+    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/delete\\/", ["token","\\\\w+"]],
+    "urlPattern": "bootstrap/{slug}/submissions/delete/{token}",
+    "template": "/bootstrap/delete_submission.html"
   },
   {
     "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions"],
@@ -25,12 +30,12 @@
     "template": "/bootstrap/view.html"
   },
   {
-    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"], "\\/success"],
+    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"], "\\/success"],
     "urlPattern": "materialize/{slug}/submissions/{id}/success",
     "template": "/materialize/view_submission.html"
   },
   {
-    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["number","\\\\d+"]],
+    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"]],
     "urlPattern": "materialize/{slug}/submissions/{id}",
     "template": "/materialize/view_submission.html"
   },

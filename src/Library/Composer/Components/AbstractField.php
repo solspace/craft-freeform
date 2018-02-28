@@ -596,10 +596,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     protected function getAttributeString(string $name, $value, bool $escapeValue = true): string
     {
-        if (\is_bool($value)) {
-            return $value ? " $name" : '';
-        }
-
         if ('' !== $value) {
             return sprintf(
                 ' %s="%s"',
@@ -609,6 +605,19 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         }
 
         return '';
+    }
+
+    /**
+     * Outputs ' $name' if $enabled is true
+     *
+     * @param string $name
+     * @param bool   $enabled
+     *
+     * @return string
+     */
+    protected function getParameterString(string $name, bool $enabled): string
+    {
+        return $enabled ? sprintf(' %s', $name) : '';
     }
 
     /**

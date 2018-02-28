@@ -88,6 +88,9 @@ class FieldProperties extends AbstractProperties
     protected $maxFileSizeKB;
 
     /** @var int */
+    protected $fileCount;
+
+    /** @var int */
     protected $rows;
 
     /** @var string */
@@ -386,6 +389,14 @@ class FieldProperties extends AbstractProperties
     /**
      * @return int|null
      */
+    public function getFileCount()
+    {
+        return $this->fileCount;
+    }
+
+    /**
+     * @return int|null
+     */
     public function getRows()
     {
         return $this->rows;
@@ -634,6 +645,7 @@ class FieldProperties extends AbstractProperties
             'mapping'             => self::TYPE_ARRAY,
             'fileKinds'           => self::TYPE_ARRAY,
             'maxFileSizeKB'       => self::TYPE_INTEGER,
+            'fileCount'           => self::TYPE_INTEGER,
             'rows'                => self::TYPE_INTEGER,
             'dateTimeType'        => self::TYPE_STRING,
             'generatePlaceholder' => self::TYPE_BOOLEAN,

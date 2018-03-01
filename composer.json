@@ -29,7 +29,7 @@
     }
   },
   "extra": {
-    "schemaVersion": "2.0.3",
+    "schemaVersion": "2.0.4",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform Lite",

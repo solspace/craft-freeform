@@ -25,7 +25,7 @@ class m180120_140521_CraftUpgrade extends Migration
             ->one();
 
         if (!$freeform) {
-            return false;
+            return true;
         }
 
         $id      = $freeform['id'];
@@ -33,7 +33,7 @@ class m180120_140521_CraftUpgrade extends Migration
 
         // Only touch version below the 2.0
         if (version_compare($version, '2.0.0-dev', '>=')) {
-            return false;
+            return true;
         }
 
         if (!Craft::$app->db->columnExists('{{%freeform_forms}}', 'formTemplateId', true)) {

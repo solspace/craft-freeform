@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 2.0.0-beta.10 - 2018-02-28
+## 2.0.0-beta.10 - 2018-03-01
 ### Added
 - Added unique token to all form submissions. Useful if you want to more securely display a users submission data in the front end after they submit the form (with token in the URI). Available as `token` property in Submission object and `token` parameter in `freeform.submissions` function for filtering.
 - Added `deleteSubmissionByToken()` function to allow users to delete their own submissions (see demo template example).
@@ -13,6 +13,7 @@
 ### Fixed
 - Fixed a bug where using Dynamic Recipients fieldtype as Radio display would not send email notifications (reinstall or adjust demo templates).
 - Fixed a bug where default value and placeholder attributes were not being saved for Text and Confirmation field types.
+- Fixed a bug where a migration was not running correctly.
 
 ## 2.0.0-beta.9 - 2018-02-16
 ### Changed

@@ -139,7 +139,7 @@
                                     <label>
                                         <input type="radio"
                                                name="{{ field.handle }}"
-                                               value="{{ option.index }}"
+                                               value="{{ loop.index0 }}"
                                                 {{ option.value in field.value ? "checked" : "" }}
                                         />
                                         {{ option.label|raw }}

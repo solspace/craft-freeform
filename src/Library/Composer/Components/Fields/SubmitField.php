@@ -62,6 +62,14 @@ class SubmitField extends AbstractField implements SingleValueInterface, InputOn
     /**
      * @return string
      */
+    public function getLabel(): string
+    {
+        return $this->getLabelNext();
+    }
+
+    /**
+     * @return string
+     */
     public function getLabelNext(): string
     {
         return $this->translate($this->labelNext);

@@ -2,7 +2,7 @@
 
 Freeform is the most powerful form building plugin for Craft CMS. It gives you full control to create simple or complex multi-page forms, as well as connect your forms to many popular API integrations.
 
-**NOTE: We don't recommend using Freeform in production environments just yet, but feel free to try it out now. Any issues can be reported on GitHub Issues only please.**
+🐛 **NOTE: Any issues can be reported on GitHub Issues only please.** 🐛
 
 ![Screenshot](src/icon.svg)
 
@@ -12,7 +12,7 @@ This plugin requires Craft CMS 3.0.0-RC1 or later.
 
 ## Installation
 
-To install the plugin, search for `Freeform` in the *Craft Plugin Store*, or install manually with the following instructions:
+To install the plugin(s), search for **Freeform** in the *Craft Plugin Store*, or install manually with the following instructions:
 
 1. Open your terminal and go to your Craft project:
 
@@ -22,17 +22,11 @@ To install the plugin, search for `Freeform` in the *Craft Plugin Store*, or ins
 
         composer require solspace/craft3-freeform
 
-3. In the Control Panel, go to *Settings → Plugins* and click the “Install” button for **Freeform Lite**.
-
-If you'd like the `Pro` edition of Freeform, you'll need to also install Freeform Pro (in addition to Freeform Lite). Search for `Freeform Pro` in the *Craft Plugin Store*, or install manually with the following instructions:
-
-1. Open your terminal and go to your Craft project:
-
-        cd /path/to/project
-
-2. Then tell Composer to require the plugin:
+And if you'd like the **Pro** edition of Freeform, you'll need to also install Freeform Pro (in addition to Freeform Lite). Tell Composer to also require the plugin:
 
         composer require solspace/craft3-freeform-pro
+
+3. In the Control Panel, go to *Settings → Plugins* and click the “Install” button for **Freeform Lite** (and **Freeform Pro** if you're wanting Pro edition).
 
 ## Freeform Overview
 

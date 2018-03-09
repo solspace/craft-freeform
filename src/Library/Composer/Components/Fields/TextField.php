@@ -20,6 +20,8 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthC
 
 class TextField extends AbstractField implements SingleValueInterface, PlaceholderInterface
 {
+    const MAXIMUM_FIELD_LENGTH = 100;
+
     use PlaceholderTrait;
     use SingleValueTrait;
 
@@ -52,7 +54,7 @@ class TextField extends AbstractField implements SingleValueInterface, Placehold
         $constraints   = parent::getConstraints();
         $constraints[] = new LengthConstraint(
             null,
-            100,
+            $this->getMaxLength() ?: self::MAXIMUM_FIELD_LENGTH,
             'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.'
         );
 

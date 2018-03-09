@@ -136,7 +136,7 @@
                                     <input type="radio"
                                            id="{{ form.hash ~ field.handle ~ option.value }}"
                                            name="{{ field.handle }}"
-                                           value="{{ option.index }}"
+                                           value="{{ loop.index0 }}"
                                             {{ option.value in field.value ? "checked" : "" }}
                                     />
                                     <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>

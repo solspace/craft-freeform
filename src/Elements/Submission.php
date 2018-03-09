@@ -346,6 +346,10 @@ class Submission extends Element
         if (strpos($fieldColumnHandle, $columnPrefix) === 0) {
             $value = $this->storedFieldValues[$fieldColumnHandle] ?? null;
 
+            if (!\is_array($value)) {
+                $value = [$value];
+            }
+
             $assets = [];
             foreach ($value as $assetId) {
                 $assets[] = \Craft::$app->assets->getAssetById($assetId);

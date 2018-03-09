@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.11 - 2018-03-09
+### Changed
+- Updated multi-page limit in Composer to 100 pages.
+
+### Fixed
+- Fixed a bug where the single submission view page in CP would error for submissions with file uploads from before multiple upload capabilities.
+- Fixed a bug where formatting templates were not correctly handling Dynamic Recipients fields as radio options.
+- Fixed a bug where `field.label` would only ever render as 'Submit', regardless of any customized value specified in Composer.
+- Fixed a bug where the Maximum Length setting for text inputs was not correctly being applied.
+
 ## 2.0.0-beta.10 - 2018-03-01
 ### Added
 - Added unique token to all form submissions. Useful if you want to more securely display a users submission data in the front end after they submit the form (with token in the URI). Available as `token` property in Submission object and `token` parameter in `freeform.submissions` function for filtering.

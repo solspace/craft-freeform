@@ -145,7 +145,8 @@ class FilesService extends Component implements FileUploadHandlerInterface
      * Remove all unfinalized assets which are older than the TTL
      * specified in settings
      *
-     * @throws \Exception
+     * @throws \Throwable
+     * @throws \yii\db\Exception
      */
     public function cleanUpUnfinalizedAssets()
     {

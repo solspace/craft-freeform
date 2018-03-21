@@ -1,8 +1,8 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.textField({
-    label: "Default Value"|t,
-    instructions: "The default value for the field."|t,
+    label: "Default Value"|t('freeform'),
+    instructions: "The default value for the field."|t('freeform'),
     id: "value",
     name: "types[phone][value]",
     value: field.getMetaProperty('value'),
@@ -11,8 +11,8 @@
 }) }}
 
 {{ forms.textField({
-    label: "Placeholder"|t,
-    instructions: "The default text that will be shown if the field doesn’t have a value."|t,
+    label: "Placeholder"|t('freeform'),
+    instructions: "The default text that will be shown if the field doesn’t have a value."|t('freeform'),
     id: "placeholder",
     name: "types[phone][placeholder]",
     value: field.getMetaProperty("placeholder"),
@@ -23,8 +23,8 @@
 <hr>
 
 {{ forms.textField({
-    label: "Pattern"|t,
-    instructions: "Custom phone pattern (i.e. '(xxx) xxx xxxx'). The letter 'x' stands for a digit between 0-9. if left blank - will default to a universal phone number validation pattern."|t,
+    label: "Pattern"|t('freeform'),
+    instructions: "Custom phone pattern (i.e. '(xxx) xxx xxxx'). The letter 'x' stands for a digit between 0-9. if left blank - will default to a universal phone number validation pattern."|t('freeform'),
     name: "types[phone][pattern]",
     value: field.getMetaProperty('pattern'),
 }) }}

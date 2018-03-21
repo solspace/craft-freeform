@@ -2,7 +2,7 @@
 
 Freeform is the most powerful form building plugin for Craft CMS. It gives you full control to create simple or complex multi-page forms, as well as connect your forms to many popular API integrations.
 
-🐛 **NOTE: Any issues can be reported on GitHub Issues only please.** 🐛
+🚨 **IMPORTANT: Freeform has proven to be fairly stable now, but please take caution if using Freeform in production environments. Always backup your site before upgrading, etc. 🐛 Any issues can be reported on [GitHub Issues](https://github.com/solspace/craft3-freeform/issues) only please.** 🚨
 
 ![Screenshot](src/icon.svg)
 

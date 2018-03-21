@@ -48,7 +48,8 @@ class MailerService extends Component implements MailHandlerInterface
         $notificationId,
         array $fields,
         Submission $submission = null
-    ): int {
+    ): int
+    {
         $logger        = new CraftLogger();
         $sentMailCount = 0;
         $notification  = $this->getNotificationById($notificationId);
@@ -154,15 +155,17 @@ class MailerService extends Component implements MailHandlerInterface
     private function getFieldValues(array $fields, Form $form, Submission $submission = null): array
     {
         $postedValues = [];
+        $usableFields = [];
         foreach ($fields as $field) {
             if ($field instanceof NoStorageInterface || $field instanceof FileUploadInterface) {
                 continue;
             }
 
+            $usableFields[]                    = $field;
             $postedValues[$field->getHandle()] = $field->getValueAsString();
         }
 
-        $postedValues['allFields']   = $fields;
+        $postedValues['allFields']   = $usableFields;
         $postedValues['form']        = $form;
         $postedValues['submission']  = $submission;
         $postedValues['dateCreated'] = new \DateTime();

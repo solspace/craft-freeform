@@ -42,15 +42,23 @@ class m180120_140521_CraftUpgrade extends Migration
 
         $prefix = Craft::$app->db->tablePrefix;
         if ($prefix) {
-            $this->dropForeignKey($prefix . 'freeform_crm_fields_integrationId_fk', '{{%freeform_crm_fields}}');
-            $this->dropForeignKey($prefix . 'freeform_export_profiles_formId_fk', '{{%freeform_export_profiles}}');
-            $this->dropForeignKey($prefix . 'freeform_export_settings_userId_fk', '{{%freeform_export_settings}}');
-            $this->dropForeignKey($prefix . 'freeform_fields_notificationId_fk', '{{%freeform_fields}}');
-            $this->dropForeignKey($prefix . 'freeform_mailing_list_fields_mailingListId_fk', '{{%freeform_mailing_list_fields}}');
-            $this->dropForeignKey($prefix . 'freeform_mailing_lists_integrationId_fk', '{{%freeform_mailing_lists}}');
-            $this->dropForeignKey($prefix . 'freeform_submissions_id_fk', '{{%freeform_submissions}}');
-            $this->dropForeignKey($prefix . 'freeform_submissions_statusId_fk', '{{%freeform_submissions}}');
-            $this->dropForeignKey($prefix . 'freeform_submissions_formId_fk', '{{%freeform_submissions}}');
+            $oldForeignKeys = [
+                $prefix . 'freeform_crm_fields_integrationId_fk' => '{{%freeform_crm_fields}}',
+                $prefix . 'freeform_export_profiles_formId_fk' => '{{%freeform_export_profiles}}',
+                $prefix . 'freeform_export_settings_userId_fk' => '{{%freeform_export_settings}}',
+                $prefix . 'freeform_fields_notificationId_fk' => '{{%freeform_fields}}',
+                $prefix . 'freeform_mailing_list_fields_mailingListId_fk' => '{{%freeform_mailing_list_fields}}',
+                $prefix . 'freeform_mailing_lists_integrationId_fk' => '{{%freeform_mailing_lists}}',
+                $prefix . 'freeform_submissions_id_fk' => '{{%freeform_submissions}}',
+                $prefix . 'freeform_submissions_statusId_fk' => '{{%freeform_submissions}}',
+                $prefix . 'freeform_submissions_formId_fk' => '{{%freeform_submissions}}',
+            ];
+
+            foreach ($oldForeignKeys as $key => $table) {
+                try {
+                    $this->dropForeignKey($key, $table);
+                } catch (\Exception $e) {}
+            }
 
             $this->addForeignKey(
                 'crm_fields_integrationId',

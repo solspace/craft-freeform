@@ -7,20 +7,20 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
 
             <div class="btn submit menubtn"></div>
             <div class="menu">
                 <ul>
                     <li>
                         <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                            {{ "Save and continue editing"|t }}
+                            {{ "Save and continue editing"|t('freeform') }}
                             <span class="shortcut">⌘S</span>
                         </a>
                     </li>
                     <li>
                         <a class="formsubmit" data-redirect="{{ url('freeform/settings/crm/new')|hash }}">
-                            {{ "Save and add another"|t }}
+                            {{ "Save and add another"|t('freeform') }}
                         </a>
                     </li>
                 </ul>
@@ -37,7 +37,7 @@
     {% if serviceProviderTypes|length == 0 %}
 
         <div>
-            {{ "There are no CRM integrations currently installed. Please visit {link_open}Solspace Freeform marketplace{link_close} to purchase CRM integrations"|t({
+            {{ "There are no CRM integrations currently installed. Please visit {link_open}Solspace Freeform marketplace{link_close} to purchase CRM integrations"|t('freeform')({
                 link_open: '<a href="https://solspace.com/">',
                 link_close: '</a>',
             })|raw }}
@@ -55,7 +55,7 @@
 
             {{ forms.selectField({
                 first: true,
-                label: "Service Provider"|t,
+                label: "Service Provider"|t('freeform'),
                 id: 'class',
                 name: 'class',
                 options: serviceProviderTypes,
@@ -65,8 +65,8 @@
             }) }}
 
             {{ forms.textField({
-                label: "Name"|t,
-                instructions: "What this integration will be called in the CP."|t,
+                label: "Name"|t('freeform'),
+                instructions: "What this integration will be called in the CP."|t('freeform'),
                 id: 'name',
                 name: 'name',
                 value: integration.name,
@@ -76,8 +76,8 @@
             }) }}
 
             {{ forms.textField({
-                label: "Handle"|t,
-                instructions: "The unique name used to identify this integration."|t,
+                label: "Handle"|t('freeform'),
+                instructions: "The unique name used to identify this integration."|t('freeform'),
                 class: "code",
                 id: 'handle',
                 name: 'handle',
@@ -122,8 +122,8 @@
                             {% endif %}
 
                             {% set options = {
-                                label: setting.label|t,
-                                instructions: setting.instructions|t,
+                                label: setting.label|t('freeform'),
+                                instructions: setting.instructions|t('freeform'),
                                 class: "setting-" ~ setting.handle,
                                 name: "settings["~className~"]["~setting.handle~"]",
                                 value: value,

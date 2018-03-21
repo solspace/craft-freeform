@@ -5,7 +5,7 @@
     {% if currentUser.can("freeform-settingsManage") and providers|length > 0 %}
         <div class="buttons">
             <a href="{{ url('freeform/settings/mailing-lists/new') }}" class="btn submit add icon">
-                {{ "New Mailing List Integration"|t }}
+                {{ "New Mailing List Integration"|t('freeform') }}
             </a>
         </div>
     {% endif %}
@@ -14,40 +14,40 @@
 
 {% block content %}
 
-    <h2>{{ "Mailing Lists"|t }}</h2>
+    <h2>{{ "Mailing Lists"|t('freeform') }}</h2>
 
     <div id="no-mailing-integrations"{% if integrations|length %} class="hidden"{% endif %}>
-        <p>{{ "No Mailing List integrations exist yet"|t }}</p>
+        <p>{{ "No Mailing List integrations exist yet"|t('freeform') }}</p>
     </div>
 
     {% if integrations|length %}
         <table id="mailing-integrations" class="data fullwidth collapsible">
             <thead>
             <tr>
-                <th scope="col">{{ "Name"|t }}</th>
-                <th scope="col">{{ "Handle"|t }}</th>
-                <th scope="col">{{ "Service Provider"|t }}</th>
-                <th scope="col">{{ "Last Updated"|t }}</th>
+                <th scope="col">{{ "Name"|t('freeform') }}</th>
+                <th scope="col">{{ "Handle"|t('freeform') }}</th>
+                <th scope="col">{{ "Service Provider"|t('freeform') }}</th>
+                <th scope="col">{{ "Last Updated"|t('freeform') }}</th>
                 <td class="thin"></td>
             </tr>
             </thead>
             <tbody>
             {% for integration in integrations %}
                 <tr data-id="{{ integration.id }}" data-name="{{ integration.name }}">
-                    <th scope="row" data-title="{{ 'Name'|t }}">
+                    <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         <a href="{{ url('freeform/settings/mailing-lists/'~integration.id) }}">{{ integration.name }}</a>
                     </th>
-                    <td data-title="{{ "Handle"|t }}" class="code">
+                    <td data-title="{{ "Handle"|t('freeform') }}" class="code">
                         {{ integration.handle }}
                     </td>
-                    <td data-title="{{ "Service Provider"|t }}" class="code">
+                    <td data-title="{{ "Service Provider"|t('freeform') }}" class="code">
                         {{ integration.integrationObject.serviceProvider }}
                     </td>
-                    <td data-title="{{ 'Last Updated'|t }}">
+                    <td data-title="{{ 'Last Updated'|t('freeform') }}">
                         {{ integration.lastUpdate|date("Y-m-d H:i") }}
                     </td>
                     <td class="thin">
-                        <a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a>
+                        <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                     </td>
                 </tr>
             {% endfor %}
@@ -59,7 +59,7 @@
     {% if providers|length <= 1 %}
         <div class="alert alert-info alert-dismissible">
             <a href="https://solspace.com/craft/freeform/#compare">
-                {{ "Upgrade to Pro to enable"|t }}
+                {{ "Upgrade to Pro to enable"|t('freeform') }}
             </a>
         </div>
     {% endif %}
@@ -72,6 +72,6 @@ tableSelector: '#mailing-integrations',
 noObjectsSelector: '#no-mailing-integrations',
 newObjectBtnSelector: '#new-mailing-integration',
 deleteAction: 'freeform/mailing-lists/delete',
-confirmDeleteMessage: '{{ "Are you sure you want to remove the “{name}” integration?"|t }}'
+confirmDeleteMessage: '{{ "Are you sure you want to remove the “{name}” integration?"|t('freeform') }}'
 });
 {% endjs %}

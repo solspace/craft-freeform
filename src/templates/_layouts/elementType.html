@@ -5,7 +5,7 @@
     {% if currentUser.can("freeform-formsManage") %}
         <div class="buttons">
             <a class="btn submit add icon" href="{{ url('freeform/forms/new/') }}">
-                {{ "New Form"|t }}
+                {{ "New Form"|t('freeform') }}
             </a>
         </div>
     {% endif %}

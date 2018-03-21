@@ -2,7 +2,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set selectedSubnavItem = "settings" %}
-{% set title = craft.freeform.name ~ ": " ~ ("Demo Templates"|t) %}
+{% set title = craft.freeform.name ~ ": " ~ ("Demo Templates"|t('freeform')) %}
 
 {% macro listFiles(file) %}
     {% import _self as dir %}
@@ -23,7 +23,7 @@
 
 {% block content %}
 
-    <h2>{{ "Demo Templates"|t }}</h2>
+    <h2>{{ "Demo Templates"|t('freeform') }}</h2>
 
     <form method="post">
         <input type="hidden" name="action" value="freeform/codepack/install">
@@ -34,7 +34,7 @@
             <tr>
                 <td width="95%">
                     {{ forms.textField({
-                        label: "Prefix"|t,
+                        label: "Prefix"|t('freeform'),
                         id: 'prefix',
                         name: 'prefix',
                         value: prefix,
@@ -63,7 +63,7 @@
     <div id="components-wrapper">
         {% if codePack.templates %}
             <div>
-                <h3>{{ "Templates"|t }}</h3>
+                <h3>{{ "Templates"|t('freeform') }}</h3>
 
                 <ul class="directory-structure">
                     <li class="dir">
@@ -80,7 +80,7 @@
 
         {% if codePack.assets %}
             <div>
-                <h3>{{ "Assets"|t }}</h3>
+                <h3>{{ "Assets"|t('freeform') }}</h3>
 
                 <ul class="directory-structure">
                     <li class="dir">
@@ -97,7 +97,7 @@
 
         {% if codePack.routes.data %}
             <div>
-                <h3>{{ "Routes"|t }}</h3>
+                <h3>{{ "Routes"|t('freeform') }}</h3>
 
                 <ul class="directory-structure routes">
                     {% for route in codePack.routes.data %}

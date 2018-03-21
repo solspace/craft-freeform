@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.12 - 2018-03-21
+### Added
+- Added Pipedrive CRM integration for Freeform Pro edition.
+- Added new setting for Salesforce CRM integration for accounts using custom URLs in Salesforce.
+
+### Fixed
+- Fixed a bug where HTML blocks, submit buttons, and file uploads were being included in the `allFields` array in email notifications.
+- Fixed a bug where non-existent Freeform controllers were showing in console command help list.
+- Improved the Mailing List integration code in Composer.
+- Fixed a bug where translations were not being loaded correctly in control panel (aside from Composer which is unavailable currently).
+- Fixed a bug where reinstalling Demo Templates would generate extra duplicate routes.
+- Fixed a bug where Freeform 1.x to 2.x migration might not work correctly and error about foreign key drop statements.
+- Fixed a bug where the "Manage All Submissions" permission was not granting users and user groups access to Quick Export feature.
+
 ## 2.0.0-beta.11 - 2018-03-09
 ### Changed
 - Updated multi-page limit in Composer to 100 pages.

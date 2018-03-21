@@ -23,11 +23,11 @@
                 <input type="hidden" value="{{ isChecked }}" name="types[dynamic_recipients][checked][]" />
                 <input type="radio" name="dynamic_recipients_is_checked" {{ isChecked ? "checked" : "" }} />
             </td>
-            <td class="thin action"><a class="move icon" title="{{ 'Reorder'|t }}"></a></td>
-            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+            <td class="thin action"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}"></a></td>
+            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t('freeform') }}"></a></td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
 
-<div class="btn add icon">{{ addRowLabel is defined ? addRowLabel : "Add a row"|t }}</div>
+<div class="btn add icon">{{ addRowLabel is defined ? addRowLabel : "Add a row"|t('freeform') }}</div>

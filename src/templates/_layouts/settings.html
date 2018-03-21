@@ -2,18 +2,18 @@
 
 {% set selectedSubnavItem = 'settings' %}
 
-{% set title = craft.freeform.name ~ " " ~ ("Settings"|t) %}
+{% set title = craft.freeform.name ~ " " ~ ("Settings"|t('freeform')) %}
 
 {% set navItems = {
-'hd': { heading: "Settings"|t },
-'general': { title: "General Settings"|t },
-'formatting-templates': { title: "Formatting Templates"|t },
-'email-templates': { title: "Email Templates"|t },
-'statuses': { title: "Statuses"|t },
-'demo-templates': {title: 'Demo Templates'|t},
-'hdapi': { heading: "API Integrations"|t },
-'mailing-lists': { title: "Mailing Lists"|t },
-'crm': { title: "CRM"|t },
+'hd': { heading: "Settings"|t('freeform') },
+'general': { title: "General Settings"|t('freeform') },
+'formatting-templates': { title: "Formatting Templates"|t('freeform') },
+'email-templates': { title: "Email Templates"|t('freeform') },
+'statuses': { title: "Statuses"|t('freeform') },
+'demo-templates': {title: 'Demo Templates'|t('freeform')},
+'hdapi': { heading: "API Integrations"|t('freeform') },
+'mailing-lists': { title: "Mailing Lists"|t('freeform') },
+'crm': { title: "CRM"|t('freeform') },
 } %}
 
 {% set selectedItem = craft.app.request.getSegment(3)|default %}

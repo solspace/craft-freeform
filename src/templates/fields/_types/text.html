@@ -1,8 +1,8 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.textField({
-    label: "Default Value"|t,
-    instructions: "The default value for the field."|t,
+    label: "Default Value"|t('freeform'),
+    instructions: "The default value for the field."|t('freeform'),
     id: "value",
     name: "types[text][value]",
     value: field.metaProperty('value'),
@@ -11,8 +11,8 @@
 }) }}
 
 {{ forms.textField({
-    label: "Placeholder"|t,
-    instructions: "The default text that will be shown if the field doesn’t have a value."|t,
+    label: "Placeholder"|t('freeform'),
+    instructions: "The default text that will be shown if the field doesn’t have a value."|t('freeform'),
     id: "placeholder",
     name: "types[text][placeholder]",
     value: field.metaProperty('placeholder'),

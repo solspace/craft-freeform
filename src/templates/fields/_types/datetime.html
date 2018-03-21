@@ -1,22 +1,22 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.selectField({
-    label: "Date Time Type"|t,
-    instructions: "Use only date, time or both"|t,
+    label: "Date Time Type"|t('freeform'),
+    instructions: "Use only date, time or both"|t('freeform'),
     value: field.getMetaProperty('dateTimeType'),
     name: "types[datetime][dateTimeType]",
     id: "dateTimeTypeSelector",
     options: {
-        "both": "Both"|t,
-        "date": "Date"|t,
-        "time": "Time"|t,
+        "both": "Both"|t('freeform'),
+        "date": "Date"|t('freeform'),
+        "time": "Time"|t('freeform'),
     },
     required: false,
 }) }}
 
 {{ forms.textField({
-    label: "Default Value"|t,
-    instructions: "You can use 'now', 'today', '5 days ago', '2017-01-01 20:00:00', etc, which will format the default value according to the chosen format"|t,
+    label: "Default Value"|t('freeform'),
+    instructions: "You can use 'now', 'today', '5 days ago', '2017-01-01 20:00:00', etc, which will format the default value according to the chosen format"|t('freeform'),
     id: "initialValue",
     name: "types[datetime][initialValue]",
     value: field.getMetaProperty('initialValue'),
@@ -27,14 +27,14 @@
 {% set generatePlaceholder = field.getMetaProperty("generatePlaceholder", true) %}
 
 {{ forms.lightswitchField({
-    label: "Use datepicker for this field"|t,
+    label: "Use datepicker for this field"|t('freeform'),
     name: "types[datetime][useDatepicker]",
     on: field.getMetaProperty('useDatepicker', true),
 }) }}
 
 {{ forms.lightswitchField({
-    label: "Generate Placeholder"|t,
-    instructions: "Enable this to automatically generate a placeholder based on the given date format settings"|t,
+    label: "Generate Placeholder"|t('freeform'),
+    instructions: "Enable this to automatically generate a placeholder based on the given date format settings"|t('freeform'),
     name: "types[datetime][generatePlaceholder]",
     on: generatePlaceholder,
     reverseToggle: 'placeholder-wrapper',
@@ -44,8 +44,8 @@
      style="margin-bottom: 20px;"
      class="{{ generatePlaceholder ? 'hidden' : '' }}">
     {{ forms.textField({
-        label: "Placeholder"|t,
-        instructions: "The default text that will be shown if the field doesn’t have a value."|t,
+        label: "Placeholder"|t('freeform'),
+        instructions: "The default text that will be shown if the field doesn’t have a value."|t('freeform'),
         id: "placeholder",
         name: "types[datetime][placeholder]",
         value: field.getMetaProperty("placeholder"),
@@ -56,40 +56,40 @@
 
 <div id="date-time-date">
     {{ forms.selectField({
-        label: "Date Order"|t,
-        instructions: "Choose the order in which to show day, month and year"|t,
+        label: "Date Order"|t('freeform'),
+        instructions: "Choose the order in which to show day, month and year"|t('freeform'),
         value: field.getMetaProperty('dateOrder'),
         name: "types[datetime][dateOrder]",
         options: {
-            "ymd": "year month day"|t,
-            "mdy": "month day year"|t,
-            "dmy": "day month year"|t,
+            "ymd": "year month day"|t('freeform'),
+            "mdy": "month day year"|t('freeform'),
+            "dmy": "day month year"|t('freeform'),
         },
         required: false,
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Four digit year?"|t,
+        label: "Four digit year?"|t('freeform'),
         name: "types[datetime][date4DigitYear]",
         on: field.getMetaProperty('date4DigitYear', true),
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Date leading zero"|t,
-        instructions: "If enabled will use the leading zero for days and months"|t,
+        label: "Date leading zero"|t('freeform'),
+        instructions: "If enabled will use the leading zero for days and months"|t('freeform'),
         name: "types[datetime][dateLeadingZero]",
         on: field.getMetaProperty('dateLeadingZero', true),
     }) }}
 
 
     {{ forms.selectField({
-        label: "Date Separator"|t,
-        instructions: "Used to separate dates"|t,
+        label: "Date Separator"|t('freeform'),
+        instructions: "Used to separate dates"|t('freeform'),
         value: field.getMetaProperty('dateSeparator', '/'),
         name: "types[datetime][dateSeparator]",
         options: {
-            "": "None"|t,
-            " ": "Space"|t,
+            "": "None"|t('freeform'),
+            " ": "Space"|t('freeform'),
             "/": "/",
             "-": "-",
             ".": ".",
@@ -101,20 +101,20 @@
     {% set clock24h = field.getMetaProperty('clock24h', false) %}
 
     {{ forms.lightswitchField({
-        label: "24h clock?"|t,
+        label: "24h clock?"|t('freeform'),
         name: "types[datetime][clock24h]",
         on: clock24h,
         reverseToggle: '12h-clock-wrapper',
     }) }}
 
     {{ forms.selectField({
-        label: "Clock Separator"|t,
-        instructions: "Used to separate hours and minutes"|t,
+        label: "Clock Separator"|t('freeform'),
+        instructions: "Used to separate hours and minutes"|t('freeform'),
         value: field.getMetaProperty('clockSeparator', ':'),
         name: "types[datetime][clockSeparator]",
         options: {
-            "": "None"|t,
-            " ": "Space"|t,
+            "": "None"|t('freeform'),
+            " ": "Space"|t('freeform'),
             ":": ":",
             "-": "-",
             ".": ".",
@@ -126,14 +126,14 @@
          class="{{ clock24h ? 'hidden' : '' }}">
 
         {{ forms.lightswitchField({
-            label: "Lowercase AM/PM?"|t,
+            label: "Lowercase AM/PM?"|t('freeform'),
             name: "types[datetime][lowercaseAMPM]",
             on: field.getMetaProperty('lowercaseAMPM'),
         }) }}
 
 
         {{ forms.lightswitchField({
-            label: "Separate AM/PM with a space?"|t,
+            label: "Separate AM/PM with a space?"|t('freeform'),
             name: "types[datetime][clockAMPMSeparate]",
             on: field.getMetaProperty('clockAMPMSeparate'),
         }) }}

@@ -2,11 +2,11 @@
 {% import "_includes/forms" as forms %}
 
 {% set selectedSubnavItem = "settings" %}
-{% set title = craft.freeform.name ~ ": " ~ ("Demo Templates"|t) %}
+{% set title = craft.freeform.name ~ ": " ~ ("Demo Templates"|t('freeform')) %}
 
 {% block content %}
 
-    <h2>{{ "Demo Templates"|t }}</h2>
+    <h2>{{ "Demo Templates"|t('freeform') }}</h2>
 
     <div>
         {% set stats = {
@@ -14,10 +14,10 @@
         assets: codePack.assets.contents.fileCount
         } %}
 
-        {{ "Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>"|t(stats)|raw }}
+        {{ "Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>"|t('freeform', stats)|raw }}
     </div>
     <div>
-        {{ "You can view the templates <a href='{link}'>here</a>"|t({link: (siteUrl ~ prefix ~ '/')})|raw }}
+        {{ "You can view the templates <a href='{link}'>here</a>"|t('freeform', {link: (siteUrl ~ prefix ~ '/')})|raw }}
     </div>
 
 {% endblock %}

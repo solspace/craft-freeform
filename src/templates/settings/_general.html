@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <h2>{{ "General Settings"|t }}</h2>
+    <h2>{{ "General Settings"|t('freeform') }}</h2>
 
     <form action="" method="post" accept-charset="UTF-8">
         <input type="hidden" name="action" value="freeform/settings/save-settings">
@@ -13,8 +13,8 @@
 
         {{ forms.textField({
             class: "code",
-            label: "Custom Plugin Name"|t,
-            instructions: "Override the plugin name by specifying your own here."|t,
+            label: "Custom Plugin Name"|t('freeform'),
+            instructions: "Override the plugin name by specifying your own here."|t('freeform'),
             placeholder: craft.freeform.name,
             id: "pluginName",
             name: "settings[pluginName]",
@@ -23,24 +23,24 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Spam Protection"|t,
-            instructions: "Enable this to use Freeform's built in Javascript-based honeypot spam protection."|t,
+            label: "Spam Protection"|t('freeform'),
+            instructions: "Enable this to use Freeform's built in Javascript-based honeypot spam protection."|t('freeform'),
             name: "settings[spamProtectionEnabled]",
             on: settings.spamProtectionEnabled,
             errors: settings.errors("spamProtectionEnabled"),
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Show Composer Tutorial"|t,
-            instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t,
+            label: "Show Composer Tutorial"|t('freeform'),
+            instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
             name: "settings[showTutorial]",
             on: settings.showTutorial,
             errors: settings.errors("showTutorial"),
         }) }}
 
         {{ forms.selectField({
-            label: "Default View"|t,
-            instructions: "The default page to go to when clicking the Freeform nav item."|t,
+            label: "Default View"|t('freeform'),
+            instructions: "The default page to go to when clicking the Freeform nav item."|t('freeform'),
             name: "settings[defaultView]",
             value: settings.defaultView,
             errors: settings.errors("defaultView"),
@@ -51,8 +51,8 @@
         }) }}
 
         {{ forms.selectField({
-            label: "Display Order of Fields in Composer"|t,
-            instructions: "The display order for the list of available fields in Composer."|t,
+            label: "Display Order of Fields in Composer"|t('freeform'),
+            instructions: "The display order for the list of available fields in Composer."|t('freeform'),
             name: "settings[fieldDisplayOrder]",
             value: settings.fieldDisplayOrder,
             errors: settings.errors("fieldDisplayOrder"),
@@ -63,38 +63,38 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Include Default Freeform Formatting Templates"|t,
-            instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t,
+            label: "Include Default Freeform Formatting Templates"|t('freeform'),
+            instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t('freeform'),
             name: "settings[defaultTemplates]",
             on: settings.defaultTemplates,
             errors: settings.errors("defaultTemplates"),
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Remove Newlines from Textareas for Exporting"|t,
-            instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t,
+            label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
+            instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
             name: "settings[removeNewlines]",
             on: settings.removeNewlines,
             errors: settings.errors("removeNewlines"),
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Disable submit button on form submit?"|t,
-            instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t,
+            label: "Disable submit button on form submit?"|t('freeform'),
+            instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
             name: "settings[formSubmitDisable]",
             on: settings.formSubmitDisable,
             errors: settings.errors("formSubmitDisable"),
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Include Freeform scripts in the page's footer?"|t,
-            instructions: "Disable this to add each Freeform forms scripts inside the form tag instead of the page's footer."|t,
+            label: "Include Freeform scripts in the page's footer?"|t('freeform'),
+            instructions: "Disable this to add each Freeform forms scripts inside the form tag instead of the page's footer."|t('freeform'),
             name: "settings[footerScripts]",
             on: settings.footerScripts,
             errors: settings.errors("footerScripts"),
         }) }}
 
-        <input type="submit" class="btn submit" value="{{ "Save"|t }}">
+        <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
     </form>
 
 {% endblock %}

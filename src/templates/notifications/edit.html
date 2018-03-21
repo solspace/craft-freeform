@@ -6,7 +6,7 @@
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
-    { label: "Notifications"|t, url: url('freeform/notifications') },
+    { label: "Notifications"|t('freeform'), url: url('freeform/notifications') },
     { label: title, url: '' },
 ] %}
 
@@ -15,20 +15,20 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
 
             <div class="btn submit menubtn"></div>
             <div class="menu">
                 <ul>
                     <li>
                         <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                            {{ "Save and continue editing"|t }}
+                            {{ "Save and continue editing"|t('freeform') }}
                             <span class="shortcut">⌘S</span>
                         </a>
                     </li>
                     <li>
                         <a class="formsubmit" data-redirect="{{ url('freeform/notifications/new')|hash }}">
-                            {{ "Save and add another"|t }}
+                            {{ "Save and add another"|t('freeform') }}
                         </a>
                     </li>
                 </ul>
@@ -46,8 +46,8 @@
 
     {{ forms.textField({
         first: true,
-        label: "Name"|t,
-        instructions: "What this field will be called in the CP."|t,
+        label: "Name"|t('freeform'),
+        instructions: "What this field will be called in the CP."|t('freeform'),
         id: 'name',
         name: 'name',
         value: notification.name,
@@ -57,8 +57,8 @@
     }) }}
 
     {{ forms.textField({
-        label: "Handle"|t,
-        instructions: "How you’ll refer to this notification template in the templates."|t,
+        label: "Handle"|t('freeform'),
+        instructions: "How you’ll refer to this notification template in the templates."|t('freeform'),
         id: 'handle',
         class: 'code',
         name: 'handle',
@@ -68,8 +68,8 @@
     }) }}
 
     {{ forms.textareaField({
-        label: "Description"|t,
-        instructions: "Description of this notification."|t,
+        label: "Description"|t('freeform'),
+        instructions: "Description of this notification."|t('freeform'),
         id: 'description',
         name: 'description',
         value: notification.description,
@@ -80,8 +80,8 @@
     <hr>
 
     {{ forms.textField({
-        label: "Subject"|t,
-        instructions: "The subject line for the email notification."|t,
+        label: "Subject"|t('freeform'),
+        instructions: "The subject line for the email notification."|t('freeform'),
         id: 'subject',
         name: 'subject',
         value: notification.subject,
@@ -90,8 +90,8 @@
     }) }}
 
     {{ forms.textField({
-        label: "From Email"|t,
-        instructions: "The email address that the email will appear from in your email notification."|t,
+        label: "From Email"|t('freeform'),
+        instructions: "The email address that the email will appear from in your email notification."|t('freeform'),
         id: 'fromEmail',
         name: 'fromEmail',
         value: notification.fromEmail,
@@ -100,8 +100,8 @@
     }) }}
 
     {{ forms.textField({
-        label: "From Name"|t,
-        instructions: "The name that the email will appear from in your email notification."|t,
+        label: "From Name"|t('freeform'),
+        instructions: "The name that the email will appear from in your email notification."|t('freeform'),
         id: 'fromName',
         name: 'fromName',
         value: notification.fromName,
@@ -110,8 +110,8 @@
     }) }}
 
     {{ forms.textField({
-        label: "Reply-to Email"|t,
-        instructions: "The reply-to email address for your email notification. Leave blank to use 'From Email' address."|t,
+        label: "Reply-to Email"|t('freeform'),
+        instructions: "The reply-to email address for your email notification. Leave blank to use 'From Email' address."|t('freeform'),
         id: 'replyToEmail',
         name: 'replyToEmail',
         value: notification.replyToEmail,
@@ -119,16 +119,16 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Include Attachments?"|t,
-        instructions: "Include uploaded files as attachments in email notification."|t,
+        label: "Include Attachments?"|t('freeform'),
+        instructions: "Include uploaded files as attachments in email notification."|t('freeform'),
         name: "includeAttachments",
         on: notification.includeAttachments,
         errors: notification.getErrors("includeAttachments"),
     }) }}
 
     {{ forms.textareaField({
-        label: "Email Body",
-        instructions: "The content of the email notification. See documentation for availability of variables.",
+        label: "Email Body"|t('freeform'),
+        instructions: "The content of the email notification. See documentation for availability of variables."|t('freeform'),
         id: "emailBody",
         name: "bodyHtml",
         value: notification.bodyHtml,

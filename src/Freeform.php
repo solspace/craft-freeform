@@ -134,18 +134,20 @@ class Freeform extends Plugin
     {
         parent::init();
 
-        $this->controllerMap = [
-            'api'           => ApiController::class,
-            'codepack'      => CodepackController::class,
-            'crm'           => CrmController::class,
-            'mailing-lists' => MailingListsController::class,
-            'fields'        => FieldsController::class,
-            'forms'         => FormsController::class,
-            'notifications' => NotificationsController::class,
-            'submissions'   => SubmissionsController::class,
-            'statuses'      => StatusesController::class,
-            'settings'      => SettingsController::class,
-        ];
+        if (!\Craft::$app->request->isConsoleRequest) {
+            $this->controllerMap = [
+                'api'           => ApiController::class,
+                'codepack'      => CodepackController::class,
+                'crm'           => CrmController::class,
+                'mailing-lists' => MailingListsController::class,
+                'fields'        => FieldsController::class,
+                'forms'         => FormsController::class,
+                'notifications' => NotificationsController::class,
+                'submissions'   => SubmissionsController::class,
+                'statuses'      => StatusesController::class,
+                'settings'      => SettingsController::class,
+            ];
+        }
 
         $this->setComponents(
             [

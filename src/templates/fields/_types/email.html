@@ -1,8 +1,8 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.textField({
-    label: "Placeholder"|t,
-    instructions: "The default text that will be shown if the field doesn’t have a value."|t,
+    label: "Placeholder"|t('freeform'),
+    instructions: "The default text that will be shown if the field doesn’t have a value."|t('freeform'),
     id: "placeholder",
     name: "types[email][placeholder]",
     value: field.metaProperty('placeholder'),

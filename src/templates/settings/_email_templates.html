@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <h2>{{ "Email Templates"|t }}</h2>
+    <h2>{{ "Email Templates"|t('freeform') }}</h2>
 
     <form action="" method="post" accept-charset="UTF-8">
         <input type="hidden" name="action" value="freeform/settings/save-settings">
@@ -13,8 +13,8 @@
 
         {{ forms.textField({
             class: "code",
-            label: "Directory Path"|t,
-            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps Composer locate these files when setting up notifications."|t,
+            label: "Directory Path"|t('freeform'),
+            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps Composer locate these files when setting up notifications."|t('freeform'),
             placeholder: "e.g. freeform_emails/",
             id: "emailTemplateDirectory",
             name: "settings[emailTemplateDirectory]",
@@ -24,8 +24,8 @@
 
         {% if settings.absoluteEmailTemplateDirectory %}
             {{ forms.selectField({
-                label: "Default Email Notification Creation Method"|t,
-                instructions: "Which storage method to use when creating new email notifications with 'Add New Notification' option in Composer."|t,
+                label: "Default Email Notification Creation Method"|t('freeform'),
+                instructions: "Which storage method to use when creating new email notifications with 'Add New Notification' option in Composer."|t('freeform'),
                 name: "settings[emailTemplateStorage]",
                 options: {
                     "db": "Database Entry",
@@ -40,7 +40,7 @@
             <div id="components-wrapper">
                 <div>
                     <button type="button" class="btn submit small icon add" id="add-demo-template">
-                        {{ "Add an email template"|t }}
+                        {{ "Add an email template"|t('freeform') }}
                     </button>
 
                     <ul class="directory-structure">
@@ -59,7 +59,7 @@
             </div>
         {% endif %}
 
-        <input type="submit" class="btn submit" value="{{ "Save"|t }}">
+        <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
     </form>
 
 {% endblock %}

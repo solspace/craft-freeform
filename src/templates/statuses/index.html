@@ -8,33 +8,33 @@
     {% if currentUser.can("freeform-settingsManage") %}
         <div class="buttons">
             <a class="btn submit add icon" href="{{ url('freeform/settings/statuses/new/') }}">
-                {{ "New Status"|t }}
+                {{ "New Status"|t('freeform') }}
             </a>
         </div>
     {% endif %}
 
 {% endblock %}
 
-{% set title = craft.freeform.name ~ ": " ~ ("Statuses"|t) %}
+{% set title = craft.freeform.name ~ ": " ~ ("Statuses"|t('freeform')) %}
 
 {% set content %}
     <div id="nostatuses"{% if statuses %} class="hidden"{% endif %}>
-        <p>{{ "No statuses found"|t }}</p>
+        <p>{{ "No statuses found"|t('freeform') }}</p>
     </div>
 
     {% if statuses|length %}
         <table id="statuses" class="data fullwidth collapsible">
             <thead>
-            <th scope="col">{{ "Name"|t }}</th>
-            <th scope="col">{{ "Handle"|t }}</th>
-            <th scope="col">{{ "Is Default"|t }}</th>
+            <th scope="col">{{ "Name"|t('freeform') }}</th>
+            <th scope="col">{{ "Handle"|t('freeform') }}</th>
+            <th scope="col">{{ "Is Default"|t('freeform') }}</th>
             <td class="thin"></td>
             <td class="thin"></td>
             </thead>
             <tbody>
             {% for status in statuses %}
-                <tr data-id="{{ status.id }}" data-name="{{ status.name|t }}">
-                    <th scope="row" data-title="{{ 'Name'|t }}">
+                <tr data-id="{{ status.id }}" data-name="{{ status.name|t('freeform') }}">
+                    <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         <span class="color-indicator" style="background: {{ status.colorHex }};"></span>
                         {% if currentUser.can("freeform-settingsManage") %}
                             <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
@@ -44,16 +44,16 @@
                             {{ status.name }}
                         {% endif %}
                     </th>
-                    <td data-title="{{ 'Handle'|t }}">
+                    <td data-title="{{ 'Handle'|t('freeform') }}">
                         <code>
                             {{ status.handle }}
                         </code>
                     </td>
                     <td>{% if status.isDefault %}<span data-icon="check"></span>{% endif %}</td>
-                    <td><td class="thin"><a class="move icon" title="{{ 'Reorder'|t }}" role="button"></a></td>
+                    <td><td class="thin"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a></td>
                     <td class="thin">
                         {% if currentUser.can("freeform-settingsManage") and not status.isDefault %}
-                            <a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a>
+                            <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                         {% endif %}
                     </td>
                 </tr>
@@ -70,10 +70,10 @@
         noObjectsSelector: '#nostatuses',
         newObjectBtnSelector: '#newstatuscontainer',
         deleteAction: 'freeform/statuses/delete',
-        confirmDeleteMessage: '{{ "Are you sure you want to delete this status?"|t }}',
+        confirmDeleteMessage: '{{ "Are you sure you want to delete this status?"|t('freeform') }}',
         sortable: true,
         reorderAction: 'freeform/statuses/reorder',
-        reorderSuccessMessage: '{{ "Success"|t }}',
-        reorderFailMessage:    '{{ "Failed"|t }}',
+        reorderSuccessMessage: '{{ "Success"|t('freeform') }}',
+        reorderFailMessage:    '{{ "Failed"|t('freeform') }}',
     });
 {% endjs %}

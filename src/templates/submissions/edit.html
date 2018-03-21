@@ -1,28 +1,28 @@
 {% extends "freeform/_layouts/main" %}
 {% import "_includes/forms" as forms %}
 
-{% set title = "{title}"|t({title: title}) %}
+{% set title = "{title}"|t('freeform', {title: title}) %}
 {% set selectedSubnavItem = "submissions" %}
 {% set saveShortcutRedirect = 'freeform/submissions/{id}' %}
 {% set fullPageForm = true %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
-    { label: "Submissions"|t, url: url('freeform/submissions') },
+    { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
     { label: title, url: '' },
 ] %}
 
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
 
             <div class="btn submit menubtn"></div>
             <div class="menu">
                 <ul>
                     <li>
                         <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                            {{ "Save and continue editing"|t }}
+                            {{ "Save and continue editing"|t('freeform') }}
                             <span class="shortcut">⌘S</span>
                         </a>
                     </li>
@@ -218,7 +218,7 @@
                                                         </div>
                                                     {% endfor %}
                                                 {% else %}
-                                                    {{ "No files uploaded"|t }}
+                                                    {{ "No files uploaded"|t('freeform') }}
                                                 {% endif %}
                                             </div>
                                         </div>
@@ -253,11 +253,11 @@
     <div id="settings" class="meta">
 
         {{ forms.textField({
-            label: "Title"|t,
+            label: "Title"|t('freeform'),
             id: 'title',
             name: 'title',
             value: submission.title,
-            placeholder: "Enter title"|t,
+            placeholder: "Enter title"|t('freeform'),
             errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
         }) }}
 
@@ -275,7 +275,7 @@
 
                 <a id="status-menu-btn" class="btn menubtn" href="#">
                     <span class="status {{ selectedStatus.color }}"></span>
-                    {{ selectedStatus.name|t|title }}
+                    {{ selectedStatus.name|t('freeform')|title }}
                 </a>
                 <div class="menu" id="status-menu-select">
                     <ul class="padded">
@@ -287,7 +287,7 @@
                                    data-color="{{ status.color }}"
                                    href="#">
                                     <span class="status {{ status.color }}"></span>
-                                    {{ status.name|t|title }}
+                                    {{ status.name|t('freeform')|title }}
                                 </a>
                             </li>
                         {% endfor %}
@@ -297,7 +297,7 @@
         {% endset %}
 
         {{ forms.field({
-            label: 'Status'|t,
+            label: 'Status'|t('freeform'),
         }, statusField) }}
 
     </div>
@@ -309,11 +309,11 @@
 
         <div class="meta read-only">
             <div class="data">
-                <h5 class="heading">{{ "Date Created"|t }}</h5>
+                <h5 class="heading">{{ "Date Created"|t('freeform') }}</h5>
                 <div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
             </div>
             <div class="data">
-                <h5 class="heading">{{ "Date Updated"|t }}</h5>
+                <h5 class="heading">{{ "Date Updated"|t('freeform') }}</h5>
                 <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
             </div>
         </div>

@@ -1,8 +1,8 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.lightSwitchField({
-    label: "Custom values"|t,
-    instructions: "Enable this to specify custom values for each option label."|t,
+    label: "Custom values"|t('freeform'),
+    instructions: "Enable this to specify custom values for each option label."|t('freeform'),
     class: 'custom-values',
     name: 'types[select][customValues]',
     on: field.hasCustomOptionValues,
@@ -30,11 +30,11 @@
                 <input type="hidden" value="{{ isChecked }}" name="types[select][checked][]" />
                 <input type="radio" name="select_is_checked" {{ isChecked ? "checked" : "" }} />
             </td>
-            <td class="thin action"><a class="move icon" title="{{ 'Reorder'|t }}"></a></td>
-            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+            <td class="thin action"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}"></a></td>
+            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t('freeform') }}"></a></td>
         </tr>
     {% endfor %}
     </tbody>
 </table>
 
-<div class="btn add icon">{{ addRowLabel is defined ? addRowLabel : "Add a row"|t }}</div>
+<div class="btn add icon">{{ addRowLabel is defined ? addRowLabel : "Add a row"|t('freeform') }}</div>

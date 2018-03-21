@@ -1,25 +1,25 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.selectField({
-    label: "Asset Source"|t,
-    instructions: "Select a default asset source for uploaded files."|t,
+    label: "Asset Source"|t('freeform'),
+    instructions: "Select a default asset source for uploaded files."|t('freeform'),
     name: "types[file][assetSourceId]",
     value: field.metaProperty('assetSourceId'),
-    options: ["Select an asset source"|t]|merge(assetSources),
+    options: ["Select an asset source"|t('freeform')]|merge(assetSources),
     errors: field.getErrors("assetSourceId"),
 }) }}
 
 {{ forms.textField({
-    label: "File Count"|t,
-    instructions: "Specify the maximum uploadable file count"|t,
+    label: "File Count"|t('freeform'),
+    instructions: "Specify the maximum uploadable file count"|t('freeform'),
     name: "types[file][fileCount]",
     value: field.metaProperty('fileCount', 1),
     errors: field.getErrors("fileCount"),
 }) }}
 
 {{ forms.textField({
-    label: "Maximum File Size"|t,
-    instructions: "Specify the default maximum file size, in KB."|t,
+    label: "Maximum File Size"|t('freeform'),
+    instructions: "Specify the default maximum file size, in KB."|t('freeform'),
     name: "types[file][maxFileSizeKB]",
     value: field.metaProperty('maxFileSizeKB', 2048),
     errors: field.getErrors("maxFileSizeKB"),
@@ -47,6 +47,6 @@
 {% endset %}
 
 {{ forms.field({
-    label: "Allowed File Types"|t,
-    instructions: "Select the file types to be allowed by default. Leaving all unchecked will allow all file types."|t,
+    label: "Allowed File Types"|t('freeform'),
+    instructions: "Select the file types to be allowed by default. Leaving all unchecked will allow all file types."|t('freeform'),
 }, fileKindsInput) }}

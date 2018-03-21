@@ -6,7 +6,7 @@
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
-    { label: "Fields"|t, url: url('freeform/fields') },
+    { label: "Fields"|t('freeform'), url: url('freeform/fields') },
     { label: title, url: '' },
 ] %}
 
@@ -15,20 +15,20 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
 
             <div class="btn submit menubtn"></div>
             <div class="menu">
                 <ul>
                     <li>
                         <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                            {{ "Save and continue editing"|t }}
+                            {{ "Save and continue editing"|t('freeform') }}
                             <span class="shortcut">⌘S</span>
                         </a>
                     </li>
                     <li>
                         <a class="formsubmit" data-redirect="{{ url('freeform/fields/new')|hash }}">
-                            {{ "Save and add another"|t }}
+                            {{ "Save and add another"|t('freeform') }}
                         </a>
                     </li>
                 </ul>
@@ -46,8 +46,8 @@
 
     {{ forms.textField({
         first: true,
-        label: "Label"|t,
-        instructions: "The default label for this field."|t,
+        label: "Label"|t('freeform'),
+        instructions: "The default label for this field."|t('freeform'),
         id: 'label',
         name: 'label',
         value: field.label,
@@ -58,8 +58,8 @@
     }) }}
 
     {{ forms.textField({
-        label: "Handle"|t,
-        instructions: "How you’ll refer to this field in the templates."|t,
+        label: "Handle"|t('freeform'),
+        instructions: "How you’ll refer to this field in the templates."|t('freeform'),
         id: 'handle',
         class: 'code',
         name: 'handle',
@@ -70,8 +70,8 @@
 
     {{ forms.textareaField({
         first: true,
-        label: "Instructions"|t,
-        instructions: "Default instructions / help text for this field."|t,
+        label: "Instructions"|t('freeform'),
+        instructions: "Default instructions / help text for this field."|t('freeform'),
         id: 'instructions',
         name: 'instructions',
         value: field.instructions,
@@ -79,8 +79,8 @@
     }) }}
 
     {{ forms.lightSwitchField({
-        label: "Required"|t,
-        instructions: "Set this field as required by default."|t,
+        label: "Required"|t('freeform'),
+        instructions: "Set this field as required by default."|t('freeform'),
         id: 'required',
         name: 'required',
         on: field.required,
@@ -90,8 +90,8 @@
     <hr>
 
     {{ forms.selectField({
-        label: ("Type"|t) ~ (field.id > 0 ? " (" ~ ("Read only"|t) ~ ")" : ""),
-        instructions: "What type of field is this?"|t,
+        label: ("Type"|t('freeform')) ~ (field.id > 0 ? " (" ~ ("Read only"|t('freeform')) ~ ")" : ""),
+        instructions: "What type of field is this?"|t('freeform'),
         id: "type",
         name: "type",
         disabled: field.id > 0,

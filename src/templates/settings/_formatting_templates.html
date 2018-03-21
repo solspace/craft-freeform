@@ -4,7 +4,7 @@
 
 {% block content %}
 
-    <h2>{{ "Formatting Templates"|t }}</h2>
+    <h2>{{ "Formatting Templates"|t('freeform') }}</h2>
 
     <form action="" method="post" accept-charset="UTF-8">
         <input type="hidden" name="action" value="freeform/settings/save-settings">
@@ -13,8 +13,8 @@
 
         {{ forms.textField({
             class: "code",
-            label: "Directory Path"|t,
-            instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. This allows you to use Twig templates for your form formatting, and helps Composer locate these files to assign one of them to a form."|t,
+            label: "Directory Path"|t('freeform'),
+            instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. This allows you to use Twig templates for your form formatting, and helps Composer locate these files to assign one of them to a form."|t('freeform'),
             placeholder: "e.g. freeform_formatting/",
             id: "formTemplateDirectory",
             name: "settings[formTemplateDirectory]",
@@ -30,7 +30,7 @@
             <div id="components-wrapper">
                 <div>
                     <button type="button" class="btn submit small icon add" id="add-demo-template">
-                        {{ "Add a sample template"|t }}
+                        {{ "Add a sample template"|t('freeform') }}
                     </button>
 
                     <ul class="directory-structure">
@@ -49,7 +49,7 @@
             </div>
         {% endif %}
 
-        <input type="submit" class="btn submit" value="{{ "Save"|t }}">
+        <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
     </form>
 
 {% endblock %}

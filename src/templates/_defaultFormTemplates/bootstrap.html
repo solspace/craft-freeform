@@ -55,7 +55,7 @@
                                        value="{{ option.value }}"
                                         {{ option.checked ? "checked" : "" }}
                                 />
-                                {{ option.label|raw }}
+                                {{ option.label|raw|t }}
                             </label>
                         </div>
                     {% endfor %}
@@ -81,7 +81,7 @@
                                        value="{{ option.value }}"
                                         {{ option.checked ? "checked" : "" }}
                                 />
-                                {{ option.label|raw }}
+                                {{ option.label|raw|t }}
                             </label>
                         </div>
                     {% endfor %}
@@ -107,7 +107,7 @@
                                        value="{{ loop.index0 }}"
                                         {{ option.checked ? "checked" : "" }}
                                 />
-                                {{ option.label|raw }}
+                                {{ option.label|raw|t }}
                             </label>
                         </div>
                     {% endfor %}

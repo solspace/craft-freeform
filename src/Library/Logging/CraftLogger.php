@@ -11,7 +11,8 @@
 
 namespace Solspace\Freeform\Library\Logging;
 
-use Psr\Log\LogLevel;
+use Monolog\Logger;
+use Solspace\Commons\Loggers\FileLogger;
 
 class CraftLogger implements LoggerInterface
 {
@@ -22,31 +23,32 @@ class CraftLogger implements LoggerInterface
      */
     public function log($level, $message, $category = 'Freeform')
     {
-        \Craft::getLogger()->log($message, $this->getCraftLogLevel($level), $category);
+        $logger = FileLogger::getInstance($category);
+        $logger->log($this->getLogLevel($level), $message);
     }
 
     /**
      * @param string $level
      *
-     * @return string
+     * @return int
      */
-    private function getCraftLogLevel($level): string
+    public function getLogLevel(string $level): int
     {
         switch ($level) {
             case self::LEVEL_WARNING:
-                $craftLogLevel = LogLevel::WARNING;
+                $logLevel = Logger::WARNING;
                 break;
 
             case self::LEVEL_ERROR:
-                $craftLogLevel = LogLevel::ERROR;
+                $logLevel = Logger::ERROR;
                 break;
 
             case self::LEVEL_INFO:
             default:
-                $craftLogLevel = LogLevel::INFO;
+                $logLevel = Logger::INFO;
                 break;
         }
 
-        return $craftLogLevel;
+        return $logLevel;
     }
 }

@@ -42,7 +42,7 @@ class StatusesService extends Component implements StatusHandlerInterface
         $id = (new Query())
             ->select(['id'])
             ->from(StatusRecord::TABLE)
-            ->where('isDefault = 1')
+            ->where(['isDefault' => true])
             ->scalar();
 
         return (int) $id;

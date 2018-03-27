@@ -30,6 +30,11 @@ interface FormHandlerInterface
     public function isSpamProtectionEnabled(): bool;
 
     /**
+     * @return bool
+     */
+    public function isSpamBlockLikeSuccessfulPost(): bool;
+
+    /**
      * Increments the spam block counter by 1
      *
      * @param Form $form

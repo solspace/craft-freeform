@@ -106,15 +106,15 @@ class SubmissionQuery extends ElementQuery
         }
 
         if (!$hasFormJoin) {
-            $this->innerJoin(FormRecord::TABLE . ' ' . $formTable, "`$formTable`.`id` = `$table`.`formId`");
-            $this->innerJoin(StatusRecord::TABLE . ' ' . $statusTable, "`$statusTable`.`id` = `$table`.`statusId`");
+            $this->innerJoin(FormRecord::TABLE . ' ' . $formTable, "$formTable.[[id]] = $table.[[formId]]");
+            $this->innerJoin(StatusRecord::TABLE . ' ' . $statusTable, "$statusTable.[[id]] = $table.[[statusId]]");
         }
 
         $select = [
-            $table . '.formId',
-            $table . '.statusId',
-            $table . '.incrementalId',
-            $table . '.token',
+            $table . '.[[formId]]',
+            $table . '.[[statusId]]',
+            $table . '.[[incrementalId]]',
+            $table . '.[[token]]',
         ];
 
         foreach (Freeform::getInstance()->fields->getAllFieldIds() as $id) {
@@ -124,33 +124,33 @@ class SubmissionQuery extends ElementQuery
         $this->query->select($select);
 
         if ($this->formId) {
-            $this->subQuery->andWhere(Db::parseParam($table . '.formId', $this->formId));
+            $this->subQuery->andWhere(Db::parseParam($table . '.[[formId]]', $this->formId));
         }
 
         if ($this->form) {
-            $this->subQuery->andWhere(Db::parseParam($formTable . '.handle', $this->form));
+            $this->subQuery->andWhere(Db::parseParam($formTable . '.[[handle]]', $this->form));
         }
 
         if ($this->statusId) {
-            $this->subQuery->andWhere(Db::parseParam($table . '.statusId', $this->statusId));
+            $this->subQuery->andWhere(Db::parseParam($table . '.[[statusId]]', $this->statusId));
         }
 
         if ($this->incrementalId) {
-            $this->subQuery->andWhere(Db::parseParam($table . '.incrementalId', $this->incrementalId));
+            $this->subQuery->andWhere(Db::parseParam($table . '.[[incrementalId]]', $this->incrementalId));
         }
 
         if ($this->token) {
-            $this->subQuery->andWhere(Db::parseParam($table . '.token', $this->token));
+            $this->subQuery->andWhere(Db::parseParam($table . '.[[token]]', $this->token));
         }
 
         if ($this->status && \is_string($this->status)) {
-            $this->subQuery->andWhere(Db::parseParam($statusTable . '.handle', $this->status));
+            $this->subQuery->andWhere(Db::parseParam($statusTable . '.[[handle]]', $this->status));
             $this->status = '';
         }
 
         $customSortTables = [
-            'status' => "$statusTable.name",
-            'form'   => "$formTable.name",
+            'status' => "$statusTable.[[name]]",
+            'form'   => "$formTable.[[name]]",
         ];
 
         foreach ($customSortTables as $column => $columnUpdate) {
@@ -172,7 +172,7 @@ class SubmissionQuery extends ElementQuery
                     continue;
                 }
 
-                $prefixedOrderList[$table . '.' . $key] = $sortDirection;
+                $prefixedOrderList[$table . '.[[' . $key . ']]'] = $sortDirection;
             }
 
             $this->orderBy = $prefixedOrderList;

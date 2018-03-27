@@ -40,6 +40,14 @@ class SettingsService extends Component
     }
 
     /**
+     * @return bool
+     */
+    public function isSpamBlockLikeSuccessfulPost(): bool
+    {
+        return (bool) $this->getSettingsModel()->spamBlockLikeSuccessfulPost;
+    }
+
+    /**
      * @return string
      */
     public function getFieldDisplayOrder(): string

@@ -37,7 +37,7 @@
     {% if serviceProviderTypes|length == 0 %}
 
         <div>
-            {{ "There are no CRM integrations currently installed. Please visit {link_open}Solspace Freeform marketplace{link_close} to purchase CRM integrations"|t('freeform')({
+            {{ "There are no CRM integrations currently installed. Please visit {link_open}Solspace Freeform marketplace{link_close} to purchase CRM integrations"|t('freeform', {
                 link_open: '<a href="https://solspace.com/">',
                 link_close: '</a>',
             })|raw }}

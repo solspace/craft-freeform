@@ -23,14 +23,6 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Spam Protection"|t('freeform'),
-            instructions: "Enable this to use Freeform's built in Javascript-based honeypot spam protection."|t('freeform'),
-            name: "settings[spamProtectionEnabled]",
-            on: settings.spamProtectionEnabled,
-            errors: settings.errors("spamProtectionEnabled"),
-        }) }}
-
-        {{ forms.lightswitchField({
             label: "Show Composer Tutorial"|t('freeform'),
             instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
             name: "settings[showTutorial]",

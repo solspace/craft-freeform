@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.13 - 2018-03-27
+### Added
+- Added a setting for spam protection that allows you to control the behavior of submit return (to simulate a successful submit).
+- Added form, field values, submission and notification properties to `SendEmailEvent` object.
+- Added improved error logging.
+
+### Fixed
+- Fixed a bug where Freeform Lite would show Pro field types in Field editor area.
+- Fixed a bug where the 'Save' button in Composer was not in correct position after Craft 3 RC16 update.
+- Fixed a bug where new CRM integrations could not be edited or created due to a code error.
+- Fixed a bug where Freeform was not fully compatible with PostgreSQL.
+- Fixed a bug where Freeform 1 to 2 migration would error on `fileCount`.
+- Updated Return URL for forms to default to empty and redirect the user back to where the form was rendered (when left empty).
+
 ## 2.0.0-beta.12 - 2018-03-21
 ### Added
 - Added Pipedrive CRM integration for Freeform Pro edition.

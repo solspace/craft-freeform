@@ -51,7 +51,7 @@
                                    value="{{ option.value }}"
                                     {{ option.value in field.value ? "checked" : "" }}
                             />
-                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
+                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw|t }}</label>
                         </p>
                     {% endfor %}
 
@@ -77,7 +77,7 @@
                                    value="{{ option.value }}"
                                     {{ option.value in field.value ? "checked" : "" }}
                             />
-                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
+                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw|t }}</label>
                         </p>
                     {% endfor %}
 
@@ -103,7 +103,7 @@
                                    value="{{ loop.index0 }}"
                                     {{ option.value in field.value ? "checked" : "" }}
                             />
-                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
+                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw|t }}</label>
                         </p>
                     {% endfor %}
 

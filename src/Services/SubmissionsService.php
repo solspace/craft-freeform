@@ -81,9 +81,9 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     public function getSubmissionCountByForm(): array
     {
         $countList = (new Query())
-            ->select(['formId', 'COUNT(id) as submissionCount'])
+            ->select(['[[formId]]', 'COUNT([[id]]) as [[submissionCount]]'])
             ->from(Submission::TABLE)
-            ->groupBy('formId')
+            ->groupBy('[[formId]]')
             ->all();
 
         $submissionCountByForm = [];

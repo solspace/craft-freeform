@@ -582,10 +582,10 @@ class Submission extends Element
     public function afterSave(bool $isNew)
     {
         $insertData = [
-            'formId'         => $this->formId,
-            'statusId'       => $this->statusId,
-            'incrementalId'  => $this->incrementalId ?? $this->getNewIncrementalId(),
-            'token' => $this->token,
+            'formId'        => $this->formId,
+            'statusId'      => $this->statusId,
+            'incrementalId' => $this->incrementalId ?? $this->getNewIncrementalId(),
+            'token'         => $this->token,
         ];
 
         foreach ($this->storedFieldValues as $key => $value) {
@@ -629,7 +629,7 @@ class Submission extends Element
     private function getNewIncrementalId(): int
     {
         $maxIncrementalId = (int) (new Query())
-            ->select(['MAX(incrementalId)'])
+            ->select(['MAX([[incrementalId]])'])
             ->from(self::TABLE)
             ->scalar();
 

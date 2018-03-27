@@ -131,7 +131,6 @@ class m180120_140521_CraftUpgrade extends Migration
             'fileKinds',
             'rows',
             'maxFileSizeKB',
-            'fileCount',
             'additionalProperties',
             'assetSourceId',
         ];

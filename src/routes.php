@@ -1,13 +1,6 @@
 <?php
 
 return [
-    // Settings
-    'freeform/settings/general'                                  => 'freeform/settings/general',
-    'freeform/settings/formatting-templates'                     => 'freeform/settings/formatting-templates',
-    'freeform/settings/email-templates'                          => 'freeform/settings/email-templates',
-    'freeform/settings/add-demo-template'                        => 'freeform/settings/add-demo-template',
-    'freeform/settings/add-email-template'                       => 'freeform/settings/add-email-template',
-    'freeform/settings/demo-templates'                           => 'freeform/codepack/list-contents',
     // Api
     'freeform/api/fields'                                        => 'freeform/api/fields',
     'freeform/api/notifications'                                 => 'freeform/api/notifications',
@@ -60,4 +53,9 @@ return [
     'freeform/settings/crm/<id:\d+>'                             => 'freeform/crm/edit',
     'freeform/crm/check'                                         => 'freeform/crm/check-integration-connection',
     'freeform/crm/authenticate/<handle:[a-zA-Z0-9_]+>'           => 'freeform/crm/force-authorization',
+    // Settings
+    'freeform/settings/add-demo-template'                        => 'freeform/settings/add-demo-template',
+    'freeform/settings/add-email-template'                       => 'freeform/settings/add-email-template',
+    'freeform/settings/demo-templates'                           => 'freeform/codepack/list-contents',
+    'freeform/settings/<template:[\w+\-\_]+>'                    => 'freeform/settings/provide-setting',
 ];

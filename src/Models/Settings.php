@@ -36,6 +36,9 @@ class Settings extends Model
     /** @var bool */
     public $spamProtectionEnabled;
 
+    /** @var bool */
+    public $spamBlockLikeSuccessfulPost;
+
     /** @var string */
     public $defaultView;
 
@@ -76,18 +79,19 @@ class Settings extends Model
      */
     public function __construct(array $config = [])
     {
-        $this->pluginName             = null;
-        $this->formTemplateDirectory  = null;
-        $this->emailTemplateDirectory = null;
-        $this->emailTemplateStorage   = self::EMAIL_TEMPLATE_STORAGE_DB;
-        $this->spamProtectionEnabled  = true;
-        $this->defaultView            = Freeform::VIEW_FORMS;
-        $this->fieldDisplayOrder      = Freeform::FIELD_DISPLAY_ORDER_NAME;
-        $this->showTutorial           = true;
-        $this->defaultTemplates       = true;
-        $this->removeNewlines         = false;
-        $this->footerScripts          = true;
-        $this->formSubmitDisable      = true;
+        $this->pluginName                  = null;
+        $this->formTemplateDirectory       = null;
+        $this->emailTemplateDirectory      = null;
+        $this->emailTemplateStorage        = self::EMAIL_TEMPLATE_STORAGE_DB;
+        $this->spamProtectionEnabled       = true;
+        $this->spamBlockLikeSuccessfulPost = false;
+        $this->defaultView                 = Freeform::VIEW_FORMS;
+        $this->fieldDisplayOrder           = Freeform::FIELD_DISPLAY_ORDER_NAME;
+        $this->showTutorial                = true;
+        $this->defaultTemplates            = true;
+        $this->removeNewlines              = false;
+        $this->footerScripts               = true;
+        $this->formSubmitDisable           = true;
 
         parent::__construct($config);
     }

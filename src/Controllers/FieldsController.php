@@ -188,7 +188,7 @@ class FieldsController extends Controller
         $variables = [
             'field'              => $model,
             'title'              => $title,
-            'fieldTypes'         => AbstractField::getFieldTypes(),
+            'fieldTypes'         => $this->getFieldsService()->getFieldTypes(),
             'fileKinds'          => Assets::getFileKinds(),
             'assetSources'       => $this->getFilesService()->getAssetSourceList(),
             'continueEditingUrl' => 'freeform/fields/{id}',

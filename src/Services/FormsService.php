@@ -369,6 +369,14 @@ class FormsService extends Component implements FormHandlerInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isSpamBlockLikeSuccessfulPost(): bool
+    {
+        return $this->getSettingsService()->isSpamBlockLikeSuccessfulPost();
+    }
+
+    /**
      * @param $deletedStatusId
      * @param $newStatusId
      *

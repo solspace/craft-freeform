@@ -160,7 +160,7 @@ class FilesService extends Component implements FileUploadHandlerInterface
             ->select(['assetId'])
             ->from(UnfinalizedFileRecord::TABLE)
             ->where(
-                'dateCreated < :now',
+                '{{%freeform_unfinalized_files}}.[[dateCreated]] < :now',
                 ['now' => $date->format('Y-m-d H:i:s')]
             )
             ->column();

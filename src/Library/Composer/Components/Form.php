@@ -97,6 +97,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var bool */
     private $valid;
 
+    /** @var bool */
+    private $spamBlocked;
+
     /** @var SubmissionHandlerInterface */
     private $submissionHandler;
 
@@ -372,7 +375,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
             && !$this->getFormValueContext()->isHoneypotValid()
         ) {
             $this->formHandler->incrementSpamBlockCount($this);
-            $this->valid = false;
+            $this->spamBlocked = true;
+            $this->valid       = $this->formHandler->isSpamBlockLikeSuccessfulPost();
 
             return $this->valid;
         }
@@ -448,6 +452,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     {
         $formValueContext = $this->getFormValueContext();
         $onBeforeSave     = $this->formHandler->onBeforeSubmit($this);
+
+        if ($this->spamBlocked) {
+            $this->formSaved = true;
+
+            return null;
+        }
 
         if ($formValueContext->shouldFormWalkToPreviousPage()) {
             $formValueContext->retreatToPreviousPage();

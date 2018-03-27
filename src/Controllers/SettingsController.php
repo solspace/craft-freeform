@@ -170,34 +170,6 @@ class SettingsController extends BaseController
     }
 
     /**
-     * Renders the General settings page template
-     */
-    public function actionGeneral(): Response
-    {
-        return $this->provideTemplate('general');
-    }
-
-    /**
-     * Renders the General settings page template
-     */
-    public function actionFormattingTemplates(): Response
-    {
-        $this->view->registerAssetBundle(CodepackBundle::class);
-
-        return $this->provideTemplate('formatting_templates');
-    }
-
-    /**
-     * Renders the General settings page template
-     */
-    public function actionEmailTemplates(): Response
-    {
-        $this->view->registerAssetBundle(CodepackBundle::class);
-
-        return $this->provideTemplate('email_templates');
-    }
-
-    /**
      * @return Response|null
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
@@ -218,6 +190,18 @@ class SettingsController extends BaseController
         }
 
         \Craft::$app->session->setError(Freeform::t('Settings not saved'));
+    }
+
+    /**
+     * @param string $template
+     *
+     * @return Response
+     */
+    public function actionProvideSetting(string $template): Response
+    {
+        $this->view->registerAssetBundle(CodepackBundle::class);
+
+        return $this->provideTemplate($template);
     }
 
     /**

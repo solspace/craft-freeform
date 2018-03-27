@@ -75,6 +75,10 @@ class ApiController extends BaseController
                     ]
                 );
 
+                if (!$returnUrl) {
+                    $returnUrl = \Craft::$app->request->getUrl();
+                }
+
                 if ($isAjaxRequest) {
                     return $this->asJson(
                         [

@@ -30,6 +30,8 @@ class MailerService extends Component implements MailHandlerInterface
     const EVENT_BEFORE_SEND = 'beforeSend';
     const EVENT_AFTER_SEND  = 'afterSend';
 
+    const LOG_CATEGORY = 'freeform_notifications';
+
     /**
      * Send out an email to recipients using the given mail template
      *
@@ -90,7 +92,7 @@ class MailerService extends Component implements MailHandlerInterface
                 $message = $e->getMessage();
                 $message = 'Email notification [' . $notification->getHandle() . ']: ' . $message;
 
-                $logger->log(CraftLogger::LEVEL_ERROR, $message);
+                $logger->log(CraftLogger::LEVEL_ERROR, $message, self::LOG_CATEGORY);
                 continue;
             }
 
@@ -109,7 +111,7 @@ class MailerService extends Component implements MailHandlerInterface
             }
 
             try {
-                $sendEmailEvent = new SendEmailEvent($email);
+                $sendEmailEvent = new SendEmailEvent($email, $form, $notification, $fieldValues, $submission);
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
                 if (!$sendEmailEvent->isValid) {
@@ -118,7 +120,6 @@ class MailerService extends Component implements MailHandlerInterface
 
                 $emailSent = \Craft::$app->mailer->send($email);
 
-                $sendEmailEvent = new SendEmailEvent($email);
                 $this->trigger(self::EVENT_AFTER_SEND, $sendEmailEvent);
 
                 if ($emailSent) {
@@ -128,7 +129,7 @@ class MailerService extends Component implements MailHandlerInterface
                 $message = $e->getMessage();
                 $message = 'Email notification [' . $notification->getHandle() . ']: ' . $message;
 
-                $logger->log(CraftLogger::LEVEL_ERROR, $message);
+                $logger->log(CraftLogger::LEVEL_ERROR, $message, self::LOG_CATEGORY);
             }
         }
 

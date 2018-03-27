@@ -247,7 +247,7 @@ class Composer
                     'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',
                     'description'           => '',
                     'formTemplate'          => 'flexbox.html',
-                    'returnUrl'             => '/',
+                    'returnUrl'             => '',
                     'storeData'             => true,
                     'defaultStatus'         => $this->statusHandler->getDefaultStatusId(),
                 ],

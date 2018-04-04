@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.14 - 2018-04-04
+### Fixed
+- Fixed a bug where Freeform would error about `Client` constant in Craft 3.0.0 GA release, as the Client edition was removed.
+
 ## 2.0.0-beta.13 - 2018-03-27
 ### Added
 - Added a setting for spam protection that allows you to control the behavior of submit return (to simulate a successful submit).

@@ -8,7 +8,7 @@ Freeform is the most powerful form building plugin for Craft CMS. It gives you f
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-RC1 or later.
+This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 

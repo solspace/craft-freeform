@@ -198,7 +198,7 @@ class Freeform extends Plugin
             }
         );
 
-        if (\Craft::$app->getEdition() >= \Craft::Client) {
+        if (\Craft::$app->getEdition() >= \Craft::Solo) {
             Event::on(
                 UserPermissions::class,
                 UserPermissions::EVENT_REGISTER_PERMISSIONS,

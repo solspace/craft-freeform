@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+### Fixed
+- Fixed a bug where the Craft edition referenced no longer existed.
+
 ## 2.0.0-beta.13 - 2018-03-27
 ### Added
 - Added a setting for spam protection that allows you to control the behavior of submit return (to simulate a successful submit).

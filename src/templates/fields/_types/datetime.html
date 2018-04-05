@@ -76,7 +76,7 @@
 
     {{ forms.lightswitchField({
         label: "Date leading zero"|t('freeform'),
-        instructions: "If enabled will use the leading zero for days and months"|t('freeform'),
+        instructions: "If enabled, a leading zero for days and months"|t('freeform'),
         name: "types[datetime][dateLeadingZero]",
         on: field.getMetaProperty('dateLeadingZero', true),
     }) }}
@@ -84,7 +84,7 @@
 
     {{ forms.selectField({
         label: "Date Separator"|t('freeform'),
-        instructions: "Used to separate dates"|t('freeform'),
+        instructions: "Used to separate date values."|t('freeform'),
         value: field.getMetaProperty('dateSeparator', '/'),
         name: "types[datetime][dateSeparator]",
         options: {

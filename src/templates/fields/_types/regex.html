@@ -24,14 +24,14 @@
 
 {{ forms.textField({
     label: "Pattern"|t('freeform'),
-    instructions: "Any regex pattern here."|t('freeform'),
+    instructions: "Enter any regex pattern here."|t('freeform'),
     name: "types[regex][pattern]",
     value: field.getMetaProperty('pattern'),
 }) }}
 
 {{ forms.textField({
     label: "Error Message"|t('freeform'),
-    instructions: "The message a user should receive if an incorrect value is given. Will replace any occurrances of '{{pattern}}' with the supplied regex pattern inside the message if any are found."|t('freeform'),
+    instructions: "The message a user should receive if an incorrect value is given. It will replace any occurrences of '{{pattern}}' with the supplied regex pattern inside the message if any are found."|t('freeform'),
     name: "types[regex][message]",
     value: field.getMetaProperty('message'),
 }) }}

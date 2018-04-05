@@ -24,7 +24,7 @@
 
 {{ forms.textField({
     label: "Pattern"|t('freeform'),
-    instructions: "Custom phone pattern (i.e. '(xxx) xxx xxxx'). The letter 'x' stands for a digit between 0-9. if left blank - will default to a universal phone number validation pattern."|t('freeform'),
+    instructions: "Custom phone pattern (i.e. '(xxx) xxx-xxxx'). The letter 'x' stands for a digit between 0-9. If left blank, any number and dash, dot, space, parentheses and optional + at the beginning will be validated."|t('freeform'),
     name: "types[phone][pattern]",
     value: field.getMetaProperty('pattern'),
 }) }}

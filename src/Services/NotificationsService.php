@@ -200,7 +200,8 @@ class NotificationsService extends Component
         try {
             $affectedRows = \Craft::$app->getDb()
                 ->createCommand()
-                ->delete(NotificationRecord::TABLE, ['id' => $record->id]);
+                ->delete(NotificationRecord::TABLE, ['id' => $record->id])
+                ->execute();
 
             if ($transaction !== null) {
                 $transaction->commit();

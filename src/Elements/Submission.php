@@ -540,8 +540,11 @@ class Submission extends Element
             $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
         }
 
-        if (!PermissionHelper::isAdmin() && !\in_array($this->formId, $allowedFormIds, false)) {
-            return false;
+        if (!PermissionHelper::isAdmin()) {
+            $canManageAll = empty($allowedFormIds) && PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+            if (!$canManageAll && !\in_array($this->formId, $allowedFormIds, false)) {
+                return false;
+            }
         }
 
         return UrlHelper::cpUrl('freeform/submissions/' . $this->id);

@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.15 - 2018-04-05
+### Added
+- Added new setting for Salesforce CRM integration for assignment rules in Salesforce.
+- Added warnings in Composer to show if a field has a blank handle.
+
+### Changed
+- Updated Pipedrive API integration to have USER ID and STAGE ID settings.
+- Updated various translations in Composer interface.
+
+### Fixed
+- Fixed a bug where email notification templates were not able to be deleted.
+
 ## 2.0.0-beta.14 - 2018-04-04
 ### Fixed
 - Fixed a bug where Freeform would error about `Client` constant in Craft 3.0.0 GA release, as the Client edition was removed.

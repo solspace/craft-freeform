@@ -395,7 +395,7 @@ class Layout implements \JsonSerializable, \Iterator
 
     /**
      * @param string $string
-     * @param array $variables
+     * @param array  $variables
      *
      * @return string
      */

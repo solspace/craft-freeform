@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.16 - 2018-04-11
+### Fixed
+- Fixed a bug where Radio group and Checkbox group options were rendering without unique values for the ID attribute by default.
+- Fixed a bug where hidden system files would display in Formatting and Email Notification templates lists.
+- Fixed a bug where a "Handle Missing" error would display incorrectly for Mailing List fields in Composer layout.
+- Fixed a bug where file uploads could sometimes error when viewing submissions.
+
 ## 2.0.0-beta.15 - 2018-04-05
 ### Added
 - Added new setting for Salesforce CRM integration for assignment rules in Salesforce.

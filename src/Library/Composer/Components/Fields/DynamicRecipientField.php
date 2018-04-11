@@ -168,7 +168,7 @@ class DynamicRecipientField extends SelectField implements RecipientInterface, O
             $output .= '<input '
                 . $this->getAttributeString('name', $this->getHandle())
                 . $this->getAttributeString('type', 'radio')
-                . $this->getAttributeString('id', $this->getIdAttribute())
+                . $this->getAttributeString('id', $this->getIdAttribute() . "-$index")
                 . $this->getAttributeString('class', $attributes->getClass())
                 . $this->getAttributeString('value', $index)
                 . $this->getParameterString('checked', $option->isChecked())

@@ -15,6 +15,8 @@ use craft\base\Model;
 use craft\helpers\FileHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 class Settings extends Model
 {
@@ -203,18 +205,18 @@ class Settings extends Model
     public function listTemplatesInFormTemplateDirectory()
     {
         $templateDirectoryPath = $this->getAbsoluteFormTemplateDirectory();
-
-        if (!$templateDirectoryPath) {
+        if (!file_exists($templateDirectoryPath)) {
             return [];
         }
 
+        $fs = new Finder();
+        /** @var SplFileInfo[] $fileIterator */
+        $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html')->name('*.twig');
         $files = [];
-        foreach (FileHelper::findFiles($templateDirectoryPath) as $file) {
-            if (@is_dir($file)) {
-                continue;
-            }
 
-            $files[$file] = pathinfo($file, PATHINFO_BASENAME);
+        foreach ($fileIterator as $file) {
+            $path         = $file->getRealPath();
+            $files[$path] = pathinfo($path, PATHINFO_BASENAME);
         }
 
         return $files;
@@ -226,18 +228,18 @@ class Settings extends Model
     public function listTemplatesInEmailTemplateDirectory()
     {
         $templateDirectoryPath = $this->getAbsoluteEmailTemplateDirectory();
-
-        if (!$templateDirectoryPath) {
+        if (!file_exists($templateDirectoryPath)) {
             return [];
         }
 
+        $fs = new Finder();
+        /** @var SplFileInfo[] $fileIterator */
+        $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html')->name('*.twig');
         $files = [];
-        foreach (FileHelper::findFiles($templateDirectoryPath) as $file) {
-            if (@is_dir($file)) {
-                continue;
-            }
 
-            $files[$file] = pathinfo($file, PATHINFO_BASENAME);
+        foreach ($fileIterator as $file) {
+            $path         = $file->getRealPath();
+            $files[$path] = pathinfo($path, PATHINFO_BASENAME);
         }
 
         return $files;

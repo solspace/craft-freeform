@@ -352,7 +352,9 @@ class Submission extends Element
 
             $assets = [];
             foreach ($value as $assetId) {
-                $assets[] = \Craft::$app->assets->getAssetById($assetId);
+                if ((int) $assetId > 0) {
+                    $assets[] = \Craft::$app->assets->getAssetById((int) $assetId);
+                }
             }
 
             return $assets;

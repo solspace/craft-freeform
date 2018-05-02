@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -316,7 +316,7 @@ class Layout implements \JsonSerializable, \Iterator
                     );
                 }
 
-                if (!isset($rowData['columns']) || !is_array($rowData['columns'])) {
+                if (!isset($rowData['columns']) || !\is_array($rowData['columns'])) {
                     throw new ComposerException(
                         $this->translate(
                             'Layout page {pageIndex} row {rowIndex} does not contain a list of columns',
@@ -356,10 +356,8 @@ class Layout implements \JsonSerializable, \Iterator
                         $recipientFields[] = $field;
                     }
 
-                    if ($datetimeExists && get_class($field) === $datetimeClass) {
-                        if ($field->isUseDatepicker()) {
-                            $hasDatepickerEnabledFields = true;
-                        }
+                    if ($datetimeExists && \get_class($field) === $datetimeClass && $field->isUseDatepicker()) {
+                        $hasDatepickerEnabledFields = true;
                     }
 
                     $pageFields[] = $field;

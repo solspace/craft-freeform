@@ -59,7 +59,7 @@ class CrmController extends Controller
         \Craft::$app->view->registerAssetBundle(CrmBundle::class);
 
         return $this->renderTemplate(
-            'freeform/settings/_crm',
+            'freeform/_settings/crm',
             [
                 'integrations' => $integrations,
                 'providers'    => $this->getCRMService()->getAllCRMServiceProviders(),
@@ -322,7 +322,7 @@ class CrmController extends Controller
             'settings'             => $settingBlueprints,
         ];
 
-        return $this->renderTemplate('freeform/settings/_crm_edit', $variables);
+        return $this->renderTemplate('freeform/_settings/crm_edit', $variables);
     }
 
     /**

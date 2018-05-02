@@ -8,10 +8,13 @@ use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\IntegrationsQueueService;
+use Solspace\Freeform\Services\IntegrationsService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
+use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
 
@@ -39,6 +42,14 @@ class BaseController extends Controller
     protected function getSubmissionsService(): SubmissionsService
     {
         return Freeform::getInstance()->submissions;
+    }
+
+    /**
+     * @return SpamSubmissionsService
+     */
+    protected function getSpamSubmissionsService(): SpamSubmissionsService
+    {
+        return Freeform::getInstance()->spamSubmissions;
     }
 
     /**
@@ -95,5 +106,21 @@ class BaseController extends Controller
     protected function getStatusesService(): StatusesService
     {
         return Freeform::getInstance()->statuses;
+    }
+
+    /**
+     * @return IntegrationsQueueService
+     */
+    protected function getIntegrationsQueueService() : IntegrationsQueueService
+    {
+        return Freeform::getInstance()->integrationsQueue;
+    }
+
+    /**
+     * @return IntegrationsService
+     */
+    protected function getIntegrationsService() : IntegrationsService
+    {
+        return Freeform::getInstance()->integrations;
     }
 }

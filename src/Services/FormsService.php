@@ -18,6 +18,8 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\Forms\BeforeSubmitEvent;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
+use Solspace\Freeform\Events\Forms\FormRenderEvent;
+use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\SubmitField;
@@ -33,15 +35,11 @@ use yii\web\View;
 
 class FormsService extends Component implements FormHandlerInterface
 {
-    const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
-    const EVENT_AFTER_SUBMIT  = 'afterSubmit';
-    const EVENT_BEFORE_SAVE   = 'beforeSave';
-    const EVENT_AFTER_SAVE    = 'afterSave';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE  = 'afterDelete';
+    /** @var FormModel[] */
+    private static $formsById = [];
 
-    /** @var FormRecord[] */
-    private static $formCache;
+    /** @var FormModel[] */
+    private static $formsByHandle = [];
 
     /** @var bool */
     private static $allFormsLoaded;
@@ -54,20 +52,21 @@ class FormsService extends Component implements FormHandlerInterface
      */
     public function getAllForms(): array
     {
-        if (null === self::$formCache || !self::$allFormsLoaded) {
+        if (null === self::$formsById || !self::$allFormsLoaded) {
             $results = $this->getFormQuery()->all();
 
-            self::$formCache = [];
+            self::$formsById = [];
             foreach ($results as $result) {
                 $form = $this->createForm($result);
 
-                self::$formCache[$form->id] = $form;
+                self::$formsById[$form->id]         = $form;
+                self::$formsByHandle[$form->handle] = $form;
             }
 
             self::$allFormsLoaded = true;
         }
 
-        return self::$formCache;
+        return self::$formsById;
     }
 
     /**
@@ -96,24 +95,22 @@ class FormsService extends Component implements FormHandlerInterface
      *
      * @return FormModel|null
      */
-    public function getFormById($id)
+    public function getFormById(int $id)
     {
-        if (null === self::$formCache) {
-            self::$formCache = [];
-        }
-
-        if (null === self::$formCache || !isset(self::$formCache[$id])) {
+        if (null === self::$formsById || !isset(self::$formsById[$id])) {
             $result = $this->getFormQuery()->where(['id' => $id])->one();
 
             $form = null;
             if ($result) {
                 $form = $this->createForm($result);
+
+                self::$formsByHandle[$form->handle] = $form;
             }
 
-            self::$formCache[$id] = $form;
+            self::$formsById[$id] = $form;
         }
 
-        return self::$formCache[$id];
+        return self::$formsById[$id];
     }
 
     /**
@@ -121,15 +118,22 @@ class FormsService extends Component implements FormHandlerInterface
      *
      * @return FormModel|null
      */
-    public function getFormByHandle($handle)
+    public function getFormByHandle(string $handle)
     {
-        $result = $this->getFormQuery()->where(['handle' => $handle])->one();
+        if (null === self::$formsByHandle || !isset(self::$formsByHandle[$handle])) {
+            $result = $this->getFormQuery()->where(['handle' => $handle])->one();
 
-        if ($result) {
-            return $this->createForm($result);
+            $form = null;
+            if ($result) {
+                $form = $this->createForm($result);
+
+                self::$formsById[$form->id] = $form;
+            }
+
+            self::$formsByHandle[$handle] = $form;
         }
 
-        return null;
+        return self::$formsByHandle[$handle];
     }
 
     /**
@@ -190,7 +194,7 @@ class FormsService extends Component implements FormHandlerInterface
                     $model->id = $record->id;
                 }
 
-                self::$formCache[$model->id] = $model;
+                self::$formsById[$model->id] = $model;
 
                 if ($transaction !== null) {
                     $transaction->commit();
@@ -344,18 +348,7 @@ class FormsService extends Component implements FormHandlerInterface
             );
         }
 
-        $pathinfo = pathinfo($templatePath);
-
-        //\Craft::$app->view->setTemplatesPath($pathinfo['dirname']);
-
-        $output = \Craft::$app->view->renderString(
-            file_get_contents($templatePath),
-            [
-                'form' => $form,
-            ]
-        );
-
-        //\Craft::$app->view->setTemplatesPath(\Craft::$app->path->getSiteTemplatesPath());
+        $output = \Craft::$app->view->renderString(file_get_contents($templatePath), ['form' => $form]);
 
         return Template::raw($output);
     }
@@ -363,17 +356,25 @@ class FormsService extends Component implements FormHandlerInterface
     /**
      * @return bool
      */
-    public function isSpamProtectionEnabled(): bool
+    public function isSpamBehaviourSimulateSuccess(): bool
     {
-        return $this->getSettingsService()->isSpamProtectionEnabled();
+        return $this->getSettingsService()->isSpamBehaviourSimulatesSuccess();
     }
 
     /**
      * @return bool
      */
-    public function isSpamBlockLikeSuccessfulPost(): bool
+    public function isSpamBehaviourReloadForm(): bool
     {
-        return $this->getSettingsService()->isSpamBlockLikeSuccessfulPost();
+        return $this->getSettingsService()->isSpamBehaviourReloadForm();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSpamFolderEnabled(): bool
+    {
+        return $this->getSettingsService()->isSpamFolderEnabled();
     }
 
     /**
@@ -406,107 +407,74 @@ class FormsService extends Component implements FormHandlerInterface
     }
 
     /**
-     * @inheritDoc
+     * @param FormRenderEvent $event
      */
-    public function addScriptsToPage(Form $form)
+    public function addDateTimeJavascript(FormRenderEvent $event)
     {
-        if (!$this->getSettingsService()->isFooterScripts()) {
-            return;
-        }
-
-        if ($this->isSpamProtectionEnabled()) {
-            \Craft::$app->view->registerJs($form->getHoneypotJavascriptScript(), View::POS_END);
-        }
-
-        if ($this->getSettingsService()->isFormSubmitDisable()) {
-            // Add the form submit disable logic
-            $formSubmitJs = file_get_contents(__DIR__ . '/../Resources/js/cp/form-submit.js');
-            $formSubmitJs = str_replace(
-                ['{{FORM_ANCHOR}}', '{{PREV_BUTTON_NAME}}'],
-                [$form->getAnchor(), SubmitField::PREVIOUS_PAGE_INPUT_NAME],
-                $formSubmitJs
-            );
-            \Craft::$app->view->registerJs($formSubmitJs, View::POS_END);
-        }
+        $form = $event->getForm();
 
         if ($form->getLayout()->hasDatepickerEnabledFields()) {
             static $datepickerLoaded;
 
             if (null === $datepickerLoaded) {
                 $flatpickrCss = file_get_contents(__DIR__ . '/../Resources/css/fields/datepicker.css');
-                \Craft::$app->view->registerCss($flatpickrCss);
-
                 $flatpickrJs  = file_get_contents(__DIR__ . '/../Resources/js/lib/flatpickr/flatpickr.js');
                 $datepickerJs = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/datepicker.js');
 
-                \Craft::$app->view->registerJs($flatpickrJs, View::POS_END);
-                \Craft::$app->view->registerJs($datepickerJs, View::POS_END);
+                if ($this->getSettingsService()->isFooterScripts()) {
+                    \Craft::$app->view->registerCss($flatpickrCss);
+                    \Craft::$app->view->registerJs($flatpickrJs, View::POS_END);
+                    \Craft::$app->view->registerJs($datepickerJs, View::POS_END);
+                } else {
+                    $event->appendCssToOutput($flatpickrCss);
+                    $event->appendJsToOutput($flatpickrJs);
+                    $event->appendJsToOutput($datepickerJs);
+                }
 
                 $datepickerLoaded = true;
             }
         }
-
-        if ($form->getAnchor() && $form->isPagePosted() && !$form->isValid()) {
-            $invalidFormJs = file_get_contents(__DIR__ . '/../Resources/js/cp/invalid-form.js');
-            $invalidFormJs = str_replace('{{FORM_ANCHOR}}', $form->getAnchor(), $invalidFormJs);
-            \Craft::$app->view->registerJs($invalidFormJs, View::POS_END);
-        }
     }
 
     /**
-     * @inheritDoc
+     * @param FormRenderEvent $event
      */
-    public function getScriptOutput(Form $form): string
+    public function addFormDisabledJavascript(FormRenderEvent $event)
     {
-        if ($this->getSettingsService()->isFooterScripts()) {
-            return '';
-        }
-
-        $scripts = $styles = [];
-
-        if ($this->isSpamProtectionEnabled()) {
-            $scripts[] = $form->getHoneypotJavascriptScript();
-        }
-
         if ($this->getSettingsService()->isFormSubmitDisable()) {
             // Add the form submit disable logic
             $formSubmitJs = file_get_contents(__DIR__ . '/../Resources/js/cp/form-submit.js');
             $formSubmitJs = str_replace(
                 ['{{FORM_ANCHOR}}', '{{PREV_BUTTON_NAME}}'],
-                [$form->getAnchor(), SubmitField::PREVIOUS_PAGE_INPUT_NAME],
+                [$event->getForm()->getAnchor(), SubmitField::PREVIOUS_PAGE_INPUT_NAME],
                 $formSubmitJs
             );
-            $scripts[]    = $formSubmitJs;
-        }
 
-        if ($form->getLayout()->hasDatepickerEnabledFields()) {
-            static $datepickerLoaded;
-
-            if (null === $datepickerLoaded) {
-                $styles[] = file_get_contents(__DIR__ . '/../Resources/css/fields/datepicker.css');
-
-                $scripts[] = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/flatpickr.js');
-                $scripts[] = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/datepicker.js');
-
-                $datepickerLoaded = true;
+            if ($this->getSettingsService()->isFooterScripts()) {
+                \Craft::$app->view->registerJs($formSubmitJs, View::POS_END);
+            } else {
+                $event->appendJsToOutput($formSubmitJs);
             }
         }
+    }
+
+    /**
+     * @param FormRenderEvent $event
+     */
+    public function addFormAnchorJavascript(FormRenderEvent $event)
+    {
+        $form = $event->getForm();
 
         if ($form->getAnchor() && $form->isPagePosted() && !$form->isValid()) {
             $invalidFormJs = file_get_contents(__DIR__ . '/../Resources/js/cp/invalid-form.js');
             $invalidFormJs = str_replace('{{FORM_ANCHOR}}', $form->getAnchor(), $invalidFormJs);
-            $scripts[]     = $invalidFormJs;
+
+            if ($this->getSettingsService()->isFooterScripts()) {
+                \Craft::$app->view->registerJs($invalidFormJs, View::POS_END);
+            } else {
+                $event->appendJsToOutput($invalidFormJs);
+            }
         }
-
-        $output = '<style rel="stylesheet">'
-            . implode('</style><style rel="stylesheet">', $styles)
-            . '</style>';
-
-        $output .= '<script type="text/javascript">'
-            . implode('</script><script type="text/javascript">', $scripts)
-            . '</script>';
-
-        return $output;
     }
 
     /**
@@ -527,6 +495,37 @@ class FormsService extends Component implements FormHandlerInterface
     {
         $event = new AfterSubmitEvent($form, $submission);
         $this->trigger(self::EVENT_AFTER_SUBMIT, $event);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onRenderOpeningTag(Form $form): string
+    {
+        $event = new FormRenderEvent($form);
+        $this->trigger(self::EVENT_RENDER_OPENING_TAG, $event);
+
+        return $event->getCompiledOutput();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onRenderClosingTag(Form $form): string
+    {
+        $event = new FormRenderEvent($form);
+        $this->trigger(self::EVENT_RENDER_CLOSING_TAG, $event);
+
+        return $event->getCompiledOutput();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onFormValidate(Form $form, bool $isFormValid)
+    {
+        $event = new FormValidateEvent($form, $isFormValid);
+        $this->trigger(self::EVENT_FORM_VALIDATE, $event);
     }
 
     /**

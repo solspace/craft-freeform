@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -171,6 +171,15 @@ class FieldProperties extends AbstractProperties
     /** @var string */
     protected $colorSelected;
 
+    /** @var string */
+    protected $source;
+
+    /** @var string */
+    protected $target;
+
+    /** @var array */
+    protected $configuration;
+
     /**
      * @return string|null
      */
@@ -311,7 +320,7 @@ class FieldProperties extends AbstractProperties
      */
     public function getIntegrationId()
     {
-        return (int)$this->integrationId;
+        return (int) $this->integrationId;
     }
 
     /**
@@ -611,6 +620,30 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return string|null
+     */
+    public function getSource()
+    {
+        return $this->source;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfiguration(): array
+    {
+        return $this->configuration ?? [];
+    }
+
+    /**
      * Return a list of all property fields and their type
      *
      * [propertyKey => propertyType, ..]
@@ -673,6 +706,9 @@ class FieldProperties extends AbstractProperties
             'colorIdle'           => self::TYPE_STRING,
             'colorHover'          => self::TYPE_STRING,
             'colorSelected'       => self::TYPE_STRING,
+            'source'              => self::TYPE_STRING,
+            'target'              => self::TYPE_STRING,
+            'configuration'       => self::TYPE_ARRAY,
         ];
     }
 }

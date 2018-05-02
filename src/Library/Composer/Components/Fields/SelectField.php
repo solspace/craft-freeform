@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -17,10 +17,9 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueI
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OptionsTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
-class SelectField extends AbstractField implements SingleValueInterface, OptionsInterface
+class SelectField extends AbstractExternalOptionsField implements SingleValueInterface
 {
     use SingleValueTrait;
-    use OptionsTrait;
 
     /**
      * Return the field TYPE

@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -21,7 +21,7 @@ interface MailHandlerInterface
      * Send out an email to recipients using the given mail template
      *
      * @param Form             $form
-     * @param array            $recipients
+     * @param array|string     $recipients
      * @param int              $notificationId
      * @param FieldInterface[] $fields
      * @param Submission       $submission
@@ -30,7 +30,7 @@ interface MailHandlerInterface
      */
     public function sendEmail(
         Form $form,
-        array $recipients,
+        $recipients,
         $notificationId,
         array $fields,
         Submission $submission = null

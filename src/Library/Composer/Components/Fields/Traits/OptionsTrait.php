@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -15,6 +15,8 @@ use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
 trait OptionsTrait
 {
+    use OptionsKeyValuePairTrait;
+
     /** @var Option[] */
     protected $options;
 
@@ -24,19 +26,5 @@ trait OptionsTrait
     public function getOptions(): array
     {
         return $this->options;
-    }
-
-    /**
-     * @return array
-     */
-    public function getOptionsAsKeyValuePairs(): array
-    {
-        $pairs = [];
-
-        foreach ($this->getOptions() as $option) {
-            $pairs[$option->getValue()] = $option->getLabel();
-        }
-
-        return $pairs;
     }
 }

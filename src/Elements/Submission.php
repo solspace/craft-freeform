@@ -52,6 +52,12 @@ class Submission extends Element
     /** @var string */
     public $token;
 
+    /** @var bool */
+    public $isSpam;
+
+    /** @var string */
+    public $ip;
+
     /** @var array */
     private $storedFieldValues;
 
@@ -60,7 +66,7 @@ class Submission extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new SubmissionQuery(self::class);
+        return (new SubmissionQuery(self::class))->isSpam(false);
     }
 
     /**
@@ -187,6 +193,9 @@ class Submission extends Element
             $sources[] = [
                 'key'      => 'form:' . $form->id,
                 'label'    => $form->name,
+                'data' => [
+                    'handle' => $form->handle,
+                ],
                 'criteria' => [
                     'formId' => $form->id,
                 ],
@@ -208,6 +217,7 @@ class Submission extends Element
             'dateCreated'   => ['label' => Freeform::t('Date Created')],
             'id'            => ['label' => Freeform::t('ID')],
             'incrementalId' => ['label' => Freeform::t('Freeform ID')],
+            'ip'            => ['label' => Freeform::t('IP Address')],
         ];
 
         foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
@@ -591,6 +601,8 @@ class Submission extends Element
             'statusId'      => $this->statusId,
             'incrementalId' => $this->incrementalId ?? $this->getNewIncrementalId(),
             'token'         => $this->token,
+            'ip'            => $this->ip,
+            'isSpam'        => $this->isSpam,
         ];
 
         foreach ($this->storedFieldValues as $key => $value) {

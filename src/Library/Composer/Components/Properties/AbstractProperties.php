@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -16,11 +16,11 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractProperties
 {
-    const TYPE_STRING  = "string";
-    const TYPE_BOOLEAN = "boolean";
-    const TYPE_INTEGER = "integer";
-    const TYPE_ARRAY   = "array";
-    const TYPE_OBJECT  = "object";
+    const TYPE_STRING  = 'string';
+    const TYPE_BOOLEAN = 'boolean';
+    const TYPE_INTEGER = 'integer';
+    const TYPE_ARRAY   = 'array';
+    const TYPE_OBJECT  = 'object';
 
     /** @var string */
     protected $type;
@@ -34,7 +34,7 @@ abstract class AbstractProperties
      * @param array               $properties
      * @param TranslatorInterface $translator
      */
-    public final function __construct(array $properties, TranslatorInterface $translator)
+    final public function __construct(array $properties, TranslatorInterface $translator)
     {
         $this->translator = $translator;
         $this->validateAndSetProperties($properties);
@@ -64,7 +64,7 @@ abstract class AbstractProperties
      *
      * @return array
      */
-    protected abstract function getPropertyManifest();
+    abstract protected function getPropertyManifest();
 
     /**
      * @param array $properties
@@ -76,7 +76,7 @@ abstract class AbstractProperties
         $manifest = $this->getPropertyManifest();
 
         // Forcing type to be mandatory
-        $manifest["type"] = "string";
+        $manifest['type'] = 'string';
 
         foreach ($properties as $key => $value) {
             if (!array_key_exists($key, $manifest)) {
@@ -86,7 +86,7 @@ abstract class AbstractProperties
             $expectedType = strtolower($manifest[$key]);
             switch ($expectedType) {
                 case self::TYPE_BOOLEAN:
-                    $value = in_array(strtolower($value), [1, "true"]) ? true : false;
+                    $value = in_array(strtolower($value), [1, 'true']) ? true : false;
                     break;
 
                 case self::TYPE_INTEGER:
@@ -108,9 +108,9 @@ abstract class AbstractProperties
                     $this->getTranslator()->translate(
                         "Value for '{key}' should be '{valueType}' but is '{expectedType}'",
                         [
-                            "key"          => $key,
-                            "expectedType" => $expectedType,
-                            "valueType"    => $valueType,
+                            'key'          => $key,
+                            'expectedType' => $expectedType,
+                            'valueType'    => $valueType,
                         ]
                     )
 

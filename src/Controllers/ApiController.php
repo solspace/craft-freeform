@@ -15,7 +15,6 @@ use Carbon\Carbon;
 use craft\db\Query;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ChartHelper;
-use craft\helpers\Db;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use GuzzleHttp\Exception\ClientException;
@@ -103,6 +102,10 @@ class ApiController extends BaseController
             }
         }
 
+        if ($form->isMarkedAsSpam() && $this->getSettingsService()->isSpamBehaviourReloadForm()) {
+            return $this->redirect(\Craft::$app->request->getUrl());
+        }
+
         if ($isAjaxRequest) {
             $fieldErrors = [];
 
@@ -114,9 +117,10 @@ class ApiController extends BaseController
 
             return $this->asJson(
                 [
-                    'success'  => false,
-                    'finished' => false,
-                    'errors'   => $fieldErrors,
+                    'success'    => false,
+                    'finished'   => false,
+                    'errors'     => $fieldErrors,
+                    'formErrors' => $form->getErrors(),
                 ]
             );
         }
@@ -361,12 +365,13 @@ class ApiController extends BaseController
             $formId = (int) substr($source, 5);
         }
 
+        $isSpam         = \Craft::$app->request->post('isSpam');
         $startDateParam = \Craft::$app->request->post('startDate');
         $endDateParam   = \Craft::$app->request->post('endDate');
 
         $startDate = new Carbon($startDateParam, 'UTC');
         $endDate   = new Carbon($endDateParam, 'UTC');
-        $endDate->setTime(23, 59,59);
+        $endDate->setTime(23, 59, 59);
 
         $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
 
@@ -377,6 +382,9 @@ class ApiController extends BaseController
 
         if ($formId) {
             $query->andWhere(['formId' => $formId]);
+        }
+        if ($isSpam !== null) {
+            $query->andWhere(['isSpam' => $isSpam]);
         }
 
         // Get the chart data table
@@ -423,6 +431,30 @@ class ApiController extends BaseController
     public function actionFinishTutorial(): Response
     {
         return $this->asJson(['success' => $this->getSettingsService()->finishTutorial()]);
+    }
+
+    /**
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
+     */
+    public function actionOptionsFromSource(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+        $this->requirePostRequest();
+        $request = \Craft::$app->request;
+
+        $source        = $request->post('source');
+        $target        = $request->post('target');
+        $configuration = $request->post('configuration');
+
+        if (!\is_array($configuration)) {
+            $configuration = [];
+        }
+
+        $options = $this->getFieldsService()->getOptionsFromSource($source, $target, $configuration);
+
+        return $this->asJson(['data' => $options]);
     }
 
     /**

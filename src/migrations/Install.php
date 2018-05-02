@@ -43,6 +43,7 @@ class Install extends StreamlinedInstallMigration
                             'email',
                             'hidden',
                             'select',
+                            'multiple_select',
                             'checkbox',
                             'checkbox_group',
                             'radio_group',
@@ -134,11 +135,23 @@ class Install extends StreamlinedInstallMigration
                 ->addField('statusId', $this->integer())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('token', $this->string(100)->notNull())
+                ->addField('ip', $this->string(46)->null())
+                ->addField('isSpam', $this->boolean()->defaultValue(false))
                 ->addIndex(['incrementalId'], true)
                 ->addIndex(['token'], true)
                 ->addForeignKey('id', 'elements', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('statusId', 'freeform_statuses', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_integrations_queue'))
+                ->addField('id', $this->primaryKey())
+                ->addField('submissionId', $this->integer()->notNull())
+                ->addField('integrationType', $this->string(50)->notNull())
+                ->addField('status', $this->string(50)->notNull())
+                ->addField('fieldHash', $this->string(20))
+                ->addIndex(['status'], true)
+                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('id', 'freeform_mailing_list_fields', 'id', ForeignKey::CASCADE)
         ];
     }
 }

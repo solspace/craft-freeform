@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use yii\base\Event;
 
 class FetchFieldTypes extends Event
@@ -35,7 +36,10 @@ class FetchFieldTypes extends Event
     {
         $reflectionClass = new \ReflectionClass($class);
 
-        if ($reflectionClass->isSubclassOf(AbstractField::class)) {
+        if (
+            $reflectionClass->isSubclassOf(AbstractField::class) &&
+            !$reflectionClass->implementsInterface(NoStorageInterface::class)
+        ) {
             /** @var $class AbstractField */
             $type = $class::getFieldType();
             $name = $class::getFieldTypeName();

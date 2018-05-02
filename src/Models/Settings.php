@@ -12,7 +12,6 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
-use craft\helpers\FileHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Symfony\Component\Finder\Finder;
@@ -22,6 +21,13 @@ class Settings extends Model
 {
     const EMAIL_TEMPLATE_STORAGE_DB   = 'db';
     const EMAIL_TEMPLATE_STORAGE_FILE = 'template';
+
+    const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
+    const PROTECTION_DISPLAY_ERRORS   = 'display_errors';
+    const PROTECTION_RELOAD_FORM      = 'reload_form';
+
+    const DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE   = 'Invalid Email Address';
+    const DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE = 'Invalid Entry Data';
 
     /** @var string */
     public $pluginName;
@@ -34,12 +40,6 @@ class Settings extends Model
 
     /** @var string */
     public $emailTemplateStorage;
-
-    /** @var bool */
-    public $spamProtectionEnabled;
-
-    /** @var bool */
-    public $spamBlockLikeSuccessfulPost;
 
     /** @var string */
     public $defaultView;
@@ -62,6 +62,33 @@ class Settings extends Model
     /** @var bool */
     public $formSubmitDisable;
 
+    /** @var bool */
+    public $freeformHoneypot;
+
+    /** @var string */
+    public $spamProtectionBehaviour;
+
+    /** @var string */
+    public $blockedEmails;
+
+    /** @var string */
+    public $blockedKeywords;
+
+    /** @var string */
+    public $blockedKeywordsError;
+
+    /** @var string */
+    public $blockedEmailsError;
+
+    /** @var bool */
+    public $showErrorsForBlockedEmails;
+
+    /** @var bool */
+    public $showErrorsForBlockedKeywords;
+
+    /** @var string */
+    public $blockedIpAddresses;
+
     /** @var string */
     public $salesforce_client_id;
 
@@ -74,6 +101,9 @@ class Settings extends Model
     /** @var string */
     public $salesforce_password;
 
+    /** @var bool */
+    public $spamFolderEnabled;
+
     /**
      * Settings constructor.
      *
@@ -81,19 +111,28 @@ class Settings extends Model
      */
     public function __construct(array $config = [])
     {
-        $this->pluginName                  = null;
-        $this->formTemplateDirectory       = null;
-        $this->emailTemplateDirectory      = null;
-        $this->emailTemplateStorage        = self::EMAIL_TEMPLATE_STORAGE_DB;
-        $this->spamProtectionEnabled       = true;
-        $this->spamBlockLikeSuccessfulPost = false;
-        $this->defaultView                 = Freeform::VIEW_FORMS;
-        $this->fieldDisplayOrder           = Freeform::FIELD_DISPLAY_ORDER_NAME;
-        $this->showTutorial                = true;
-        $this->defaultTemplates            = true;
-        $this->removeNewlines              = false;
-        $this->footerScripts               = true;
-        $this->formSubmitDisable           = true;
+        $this->pluginName             = null;
+        $this->formTemplateDirectory  = null;
+        $this->emailTemplateDirectory = null;
+        $this->emailTemplateStorage   = self::EMAIL_TEMPLATE_STORAGE_DB;
+        $this->defaultView            = Freeform::VIEW_FORMS;
+        $this->fieldDisplayOrder      = Freeform::FIELD_DISPLAY_ORDER_NAME;
+        $this->showTutorial           = true;
+        $this->defaultTemplates       = true;
+        $this->removeNewlines         = false;
+        $this->footerScripts          = true;
+        $this->formSubmitDisable      = true;
+
+        $this->freeformHoneypot             = true;
+        $this->spamProtectionBehaviour      = self::PROTECTION_SIMULATE_SUCCESS;
+        $this->blockedEmails                = null;
+        $this->blockedKeywords              = null;
+        $this->blockedEmailsError           = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
+        $this->blockedKeywordsError         = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
+        $this->blockedIpAddresses           = null;
+        $this->showErrorsForBlockedKeywords = false;
+        $this->showErrorsForBlockedEmails   = false;
+        $this->spamFolderEnabled            = false;
 
         parent::__construct($config);
     }
@@ -212,7 +251,7 @@ class Settings extends Model
         $fs = new Finder();
         /** @var SplFileInfo[] $fileIterator */
         $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html')->name('*.twig');
-        $files = [];
+        $files        = [];
 
         foreach ($fileIterator as $file) {
             $path         = $file->getRealPath();
@@ -235,7 +274,7 @@ class Settings extends Model
         $fs = new Finder();
         /** @var SplFileInfo[] $fileIterator */
         $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html')->name('*.twig');
-        $files = [];
+        $files        = [];
 
         foreach ($fileIterator as $file) {
             $path         = $file->getRealPath();
@@ -243,6 +282,59 @@ class Settings extends Model
         }
 
         return $files;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBlockedKeywords(): array
+    {
+        return $this->getArrayFromDelimitedText($this->blockedKeywords);
+    }
+
+    /**
+     * @return string
+     */
+    public function getBlockedKeywordsError(): string
+    {
+        return $this->blockedKeywordsError ?? self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBlockedEmails(): array
+    {
+        return $this->getArrayFromDelimitedText($this->blockedEmails);
+    }
+
+    /**
+     * @return array
+     */
+    public function getBlockedIpAddresses(): array
+    {
+        return $this->getArrayFromDelimitedText($this->blockedIpAddresses);
+    }
+
+    /**
+     * Takes a comma or newline (or both) separated string
+     * and returns a cleaned up, unique value array
+     *
+     * @param string $value
+     *
+     * @return array
+     */
+    private function getArrayFromDelimitedText(string $value = null): array
+    {
+        if (empty($value)) {
+            return [];
+        }
+
+        $array = preg_split('/[\ \n\,]+/', $value);
+        $array = array_map('trim', $array);
+        $array = array_unique($array);
+
+        return array_filter($array);
     }
 
     /**

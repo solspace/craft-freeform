@@ -4,18 +4,7 @@
 
 {% set title = craft.freeform.name ~ " " ~ ("Settings"|t('freeform')) %}
 
-{% set navItems = {
-'hd': { heading: "Settings"|t('freeform') },
-'general': { title: "General Settings"|t('freeform') },
-'spam': { title: "Spam Settings"|t('freeform') },
-'formatting-templates': { title: "Formatting Templates"|t('freeform') },
-'email-templates': { title: "Email Templates"|t('freeform') },
-'statuses': { title: "Statuses"|t('freeform') },
-'demo-templates': {title: 'Demo Templates'|t('freeform')},
-'hdapi': { heading: "API Integrations"|t('freeform') },
-'mailing-lists': { title: "Mailing Lists"|t('freeform') },
-'crm': { title: "CRM"|t('freeform') },
-} %}
+{% set navItems = craft.freeform.settingsNavigation %}
 
 {% set selectedItem = craft.app.request.getSegment(3)|default %}
 {% set docTitle = navItems[selectedItem].title~' - '~title %}
@@ -27,7 +16,9 @@
                 {% if item.heading is defined %}
                     <li class="heading"><span>{{ item.heading }}</span></li>
                 {% else %}
-                    <li><a href="{{ url('freeform/settings/'~id) }}"{% if id == selectedItem %} class="sel"{% endif %}>{{ item.title }}</a></li>
+                    <li>
+                        <a href="{{ url('freeform/settings/'~id) }}"{% if id == selectedItem %} class="sel"{% endif %}>{{ item.title }}</a>
+                    </li>
                 {% endif %}
             {% endfor %}
         </ul>

@@ -11,13 +11,16 @@
 
 namespace Solspace\Freeform\Variables;
 
+use craft\helpers\Template;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Session\Honeypot;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\HoneypotService;
 
 class FreeformVariable
 {
@@ -61,6 +64,12 @@ class FreeformVariable
     public function submissions(array $attributes = null): SubmissionQuery
     {
         $query = Submission::find();
+
+        if (isset($attributes['includeSpam'])) {
+            $isSpam = $attributes['includeSpam'] ? null : false;
+            unset($attributes['includeSpam']);
+            $query->isSpam($isSpam);
+        }
 
         if ($attributes) {
             \Craft::configure($query, $attributes);
@@ -107,10 +116,56 @@ class FreeformVariable
     }
 
     /**
+     * @param Form $form
+     *
+     * @return Honeypot
+     */
+    public function getHoneypot(Form $form): Honeypot
+    {
+        return $this->getHoneypotService()->getHoneypot($form);
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return \Twig_Markup
+     */
+    public function getHoneypotInput(Form $form): \Twig_Markup
+    {
+        return Template::raw($this->getHoneypotService()->getHoneypotInput($form));
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return \Twig_Markup
+     */
+    public function getHoneypotJavascript(Form $form): \Twig_Markup
+    {
+        return Template::raw($this->getHoneypotService()->getHoneypotJavascriptScript($form));
+    }
+
+    /**
+     * @return array
+     */
+    public function getSettingsNavigation(): array
+    {
+        return Freeform::getInstance()->settings->getSettingsNavigation();
+    }
+
+    /**
      * @return FormsService
      */
     private function getFormService(): FormsService
     {
         return Freeform::getInstance()->forms;
+    }
+
+    /**
+     * @return HoneypotService
+     */
+    private function getHoneypotService(): HoneypotService
+    {
+        return Freeform::getInstance()->honeypot;
     }
 }

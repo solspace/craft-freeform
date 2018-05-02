@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -54,8 +54,8 @@ class TextField extends AbstractField implements SingleValueInterface, Placehold
         $constraints   = parent::getConstraints();
         $constraints[] = new LengthConstraint(
             null,
-            $this->getMaxLength() ?: self::MAXIMUM_FIELD_LENGTH,
-            'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.'
+            $this->getMaxLength() ?: static::MAXIMUM_FIELD_LENGTH,
+            $this->translate('The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.')
         );
 
         return $constraints;

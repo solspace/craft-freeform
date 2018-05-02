@@ -153,7 +153,7 @@ class StatusesService extends Component implements StatusHandlerInterface
         }
 
         $record->name      = $model->name;
-        $record->handle    = $model->name;
+        $record->handle    = $model->handle;
         $record->isDefault = $model->isDefault;
         $record->color     = $model->color;
         $record->sortOrder = $model->sortOrder;

@@ -1,0 +1,43 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.lightSwitchField({
+    label: "Custom values"|t('freeform'),
+    instructions: "Enable this to specify custom values for each option label."|t('freeform'),
+    class: 'custom-values',
+    name: 'types[multiple_select][customValues]',
+    on: field.hasCustomOptionValues,
+}) }}
+
+<table class="shadow-box editable value-group"
+       id="multiple-select-table"
+       data-is-multiple
+       data-type="multiple_select">
+    <thead>
+    <tr>
+        <th scope="col" class="header field-label">{{ "Label" }}</th>
+        <th scope="col" class="header field-value">{{ "Value" }}</th>
+        <th scope="col" colspan="3" class="header">{{ "Is selected?" }}</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for option in field.metaProperty('options', []) %}
+            <tr data-id="{{ loop.index0 }}">
+                <td class="textual field-label">
+                    <textarea name="types[multiple_select][labels][]" rows="1">{{ option.label }}</textarea>
+                </td>
+                <td class="textual field-value">
+                    <textarea name="types[multiple_select][values][]" class="code" rows="1">{{ option.value }}</textarea>
+                </td>
+                <td>
+                    {% set isChecked = option.value in field.getMetaProperty('values') or option.value == field.getMetaProperty('value') %}
+                    <input type="hidden" value="{{ isChecked }}" name="types[multiple_select][checked][]" />
+                    <input type="checkbox" {{ isChecked ? "checked" : "" }} />
+                </td>
+                <td class="thin action"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}"></a></td>
+                <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t('freeform') }}"></a></td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="btn add icon">{{ addRowLabel is defined ? addRowLabel : "Add a row"|t('freeform') }}</div>

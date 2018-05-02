@@ -5,6 +5,7 @@ namespace Solspace\Freeform\migrations;
 use Craft;
 use craft\db\Migration;
 use craft\db\Query;
+use Solspace\Freeform\FieldTypes\FormFieldType;
 
 /**
  * m180120_140521_CraftUpgrade migration.
@@ -36,6 +37,14 @@ class m180120_140521_CraftUpgrade extends Migration
             return true;
         }
 
+        $this->update(
+            '{{%fields}}',
+            ['type' => FormFieldType::class],
+            ['type' => 'Freeform_Forms'],
+            [],
+            false
+        );
+
         if (!Craft::$app->db->columnExists('{{%freeform_forms}}', 'formTemplateId', true)) {
             $this->addColumn('{{%freeform_forms}}', 'formTemplateId', 'int unsigned');
         }
@@ -43,21 +52,22 @@ class m180120_140521_CraftUpgrade extends Migration
         $prefix = Craft::$app->db->tablePrefix;
         if ($prefix) {
             $oldForeignKeys = [
-                $prefix . 'freeform_crm_fields_integrationId_fk' => '{{%freeform_crm_fields}}',
-                $prefix . 'freeform_export_profiles_formId_fk' => '{{%freeform_export_profiles}}',
-                $prefix . 'freeform_export_settings_userId_fk' => '{{%freeform_export_settings}}',
-                $prefix . 'freeform_fields_notificationId_fk' => '{{%freeform_fields}}',
+                $prefix . 'freeform_crm_fields_integrationId_fk'          => '{{%freeform_crm_fields}}',
+                $prefix . 'freeform_export_profiles_formId_fk'            => '{{%freeform_export_profiles}}',
+                $prefix . 'freeform_export_settings_userId_fk'            => '{{%freeform_export_settings}}',
+                $prefix . 'freeform_fields_notificationId_fk'             => '{{%freeform_fields}}',
                 $prefix . 'freeform_mailing_list_fields_mailingListId_fk' => '{{%freeform_mailing_list_fields}}',
-                $prefix . 'freeform_mailing_lists_integrationId_fk' => '{{%freeform_mailing_lists}}',
-                $prefix . 'freeform_submissions_id_fk' => '{{%freeform_submissions}}',
-                $prefix . 'freeform_submissions_statusId_fk' => '{{%freeform_submissions}}',
-                $prefix . 'freeform_submissions_formId_fk' => '{{%freeform_submissions}}',
+                $prefix . 'freeform_mailing_lists_integrationId_fk'       => '{{%freeform_mailing_lists}}',
+                $prefix . 'freeform_submissions_id_fk'                    => '{{%freeform_submissions}}',
+                $prefix . 'freeform_submissions_statusId_fk'              => '{{%freeform_submissions}}',
+                $prefix . 'freeform_submissions_formId_fk'                => '{{%freeform_submissions}}',
             ];
 
             foreach ($oldForeignKeys as $key => $table) {
                 try {
                     $this->dropForeignKey($key, $table);
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
 
             $this->addForeignKey(
@@ -183,7 +193,8 @@ class m180120_140521_CraftUpgrade extends Migration
         try {
             $prefix = \Craft::$app->db->tablePrefix;
             $this->dropForeignKey($prefix . 'freeform_fields_notificationId_fk', $table);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         foreach ($mergeableFields as $column) {
             $this->dropColumn($table, $column);

@@ -4,23 +4,19 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields;
 
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OptionsTrait;
 
-class CheckboxGroupField extends AbstractField implements MultipleValueInterface, OptionsInterface
+class CheckboxGroupField extends AbstractExternalOptionsField implements MultipleValueInterface
 {
     use MultipleValueTrait;
-    use OptionsTrait;
 
     /**
      * Return the field TYPE

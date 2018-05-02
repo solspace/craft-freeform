@@ -4,48 +4,33 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Session;
 
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\SubmitField;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 class FormValueContext implements \JsonSerializable
 {
     const FORM_HASH_DELIMITER = '_';
     const FORM_HASH_KEY       = 'formHash';
-    const FORM_HONEYPOT_KEY   = 'freeformHoneypotHashList';
-    const FORM_HONEYPOT_NAME  = 'form_name_handle';
     const HASH_PATTERN        = '/^(?P<formId>[a-zA-Z0-9]+)_(?P<pageIndex>[a-zA-Z0-9]+)_(?P<payload>.*)$/';
 
     const FORM_SESSION_TTL    = 10800; // 3 hours
     const ACTIVE_SESSIONS_KEY = 'freeformActiveSessions';
 
-    const MAX_HONEYPOT_TTL   = 10800; // 3 Hours
-    const MAX_HONEYPOT_COUNT = 100;   // Limit the number of maximum honeypot values per session
-
     const DEFAULT_PAGE_INDEX = 0;
 
     const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
 
-    /** @var array */
-    private static $validHoneypots = [];
-
     /** @var int */
     private $formId;
-
-    /**
-     * This is a generated hash for storing and restoring state from a session
-     *
-     * @var string
-     */
-    private $hash;
 
     /** @var int */
     private $currentPageIndex;
@@ -56,24 +41,24 @@ class FormValueContext implements \JsonSerializable
     /** @var array */
     private $customFormData;
 
+    /** @var bool */
+    private $markedAsSpam;
+
     /** @var SessionInterface */
     private $session;
 
     /** @var RequestInterface */
     private $request;
 
-    /** @var bool */
-    private $formIsPosted;
-
-    /** @var bool */
-    private $pageIsPosted;
+    /** @var string */
+    private $lastHash;
 
     /**
      * @param string $hash
      *
      * @return int|null
      */
-    public static function getFormIdFromHash($hash)
+    public static function getFormIdFromHash(string $hash = null)
     {
         list($formIdHash) = self::getHashParts($hash);
 
@@ -120,13 +105,15 @@ class FormValueContext implements \JsonSerializable
         SessionInterface $session,
         RequestInterface $request
     ) {
-        $this->session      = $session;
-        $this->request      = $request;
-        $this->formId       = $formId;
-        $this->storedValues = [];
+        $this->session          = $session;
+        $this->request          = $request;
+        $this->formId           = (int) $formId;
+        $this->currentPageIndex = 0;
+        $this->storedValues     = [];
+        $this->markedAsSpam     = false;
 
+        $this->lastHash = $this->regenerateHash();
         $this->regenerateState();
-        $this->hash = $this->generateHash();
         $this->cleanUpOldSessions();
     }
 
@@ -135,7 +122,17 @@ class FormValueContext implements \JsonSerializable
      */
     public function getHash(): string
     {
-        return $this->hash;
+        $this->lastHash = $this->regenerateHash();
+
+        return $this->lastHash;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastHash(): string
+    {
+        return $this->lastHash;
     }
 
     /**
@@ -154,35 +151,26 @@ class FormValueContext implements \JsonSerializable
     public function setCurrentPageIndex($currentPageIndex): FormValueContext
     {
         $this->currentPageIndex = $currentPageIndex;
+        $this->regenerateHash();
 
         return $this;
     }
 
     /**
-     * @param string     $fieldName
-     * @param mixed|null $default
+     * @param AbstractField $field
      *
      * @return mixed|null
      */
-    public function getStoredValue($fieldName, $default = null)
+    public function getStoredValue(AbstractField $field)
     {
+        $fieldName = $field->getHandle();
         if (null === $fieldName) {
             return null;
         }
 
         if ($this->hasFormBeenPosted()) {
-            if ($this->hasPageBeenPosted()) {
-                $value = $this->request->getPost($fieldName);
-
-                if (null !== $value) {
-                    return $value;
-                }
-
-                if (isset($this->storedValues[$fieldName])) {
-                    return $this->storedValues[$fieldName];
-                }
-
-                return null;
+            if ($this->hasPageBeenPosted() && $field->getPageIndex() === $this->getCurrentPageIndex()) {
+                return $this->request->getPost($fieldName);
             }
 
             if (isset($this->storedValues[$fieldName])) {
@@ -190,6 +178,7 @@ class FormValueContext implements \JsonSerializable
             }
         }
 
+        $default = $field->getValue();
         if (\is_string($default)) {
             $default = htmlspecialchars($default);
         }
@@ -198,51 +187,23 @@ class FormValueContext implements \JsonSerializable
     }
 
     /**
-     * @return Honeypot
+     * @return bool
      */
-    public function getNewHoneypot(): Honeypot
+    public function isMarkedAsSpam(): bool
     {
-        $honeypotList = $this->getHoneypotList();
-
-        $newHoneypot    = new Honeypot();
-        $honeypotList[] = $newHoneypot;
-
-        $honeypotList = $this->weedOutOldHoneypots($honeypotList);
-        $this->updateHoneypotList($honeypotList);
-
-        return $newHoneypot;
+        return $this->markedAsSpam;
     }
 
     /**
-     * @return bool
+     * @param bool $markedAsSpam
+     *
+     * @return $this
      */
-    public function isHoneypotValid(): bool
+    public function setMarkedAsSpam(bool $markedAsSpam): FormValueContext
     {
-        /** @var array $postValues */
-        $postValues = $this->request->getPost(null);
+        $this->markedAsSpam = $markedAsSpam;
 
-        foreach ($postValues as $key => $value) {
-            if (strpos($key, Honeypot::NAME_PREFIX) === 0) {
-                if (\in_array($key, self::$validHoneypots, true)) {
-                    return true;
-                }
-
-                $honeypotList = $this->getHoneypotList();
-                foreach ($honeypotList as $honeypot) {
-                    $hasMatchingName = $key === $honeypot->getName();
-                    $hasMatchingHash = $value === $honeypot->getHash();
-                    if ($hasMatchingName && $hasMatchingHash) {
-                        self::$validHoneypots[] = $key;
-
-                        $this->removeHoneypot($honeypot);
-
-                        return true;
-                    }
-                }
-            }
-        }
-
-        return false;
+        return $this;
     }
 
     /**
@@ -264,7 +225,7 @@ class FormValueContext implements \JsonSerializable
      *
      * @return $this
      */
-    public function setCustomFormData(array $data = null)
+    public function setCustomFormData(array $data = null): FormValueContext
     {
         $this->customFormData = $data;
 
@@ -301,6 +262,7 @@ class FormValueContext implements \JsonSerializable
     public function advanceToNextPage()
     {
         $this->currentPageIndex++;
+        $this->regenerateHash();
     }
 
     /**
@@ -309,6 +271,7 @@ class FormValueContext implements \JsonSerializable
     public function retreatToPreviousPage()
     {
         $this->currentPageIndex--;
+        $this->regenerateHash();
     }
 
     /**
@@ -317,7 +280,7 @@ class FormValueContext implements \JsonSerializable
     public function saveState()
     {
         $encodedData    = json_encode($this, JSON_OBJECT_AS_ARRAY);
-        $sessionHashKey = $this->getSessionHash($this->hash);
+        $sessionHashKey = $this->getSessionHash($this->getHash());
 
         $this->session->set($sessionHashKey, $encodedData);
         $this->appendKeyToActiveSessions($sessionHashKey);
@@ -328,7 +291,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function cleanOutCurrentSession()
     {
-        $sessionHashKey = $this->getSessionHash($this->hash);
+        $sessionHashKey = $this->getSessionHash($this->getHash());
         $this->session->remove($sessionHashKey);
     }
 
@@ -346,10 +309,12 @@ class FormValueContext implements \JsonSerializable
             $this->currentPageIndex = $sessionState['currentPageIndex'];
             $this->storedValues     = $sessionState['storedValues'];
             $this->customFormData   = $sessionState['customFormData'];
+            $this->markedAsSpam     = $sessionState['markedAsSpam'];
         } else {
             $this->currentPageIndex = self::DEFAULT_PAGE_INDEX;
             $this->storedValues     = [];
             $this->customFormData   = [];
+            $this->markedAsSpam     = false;
         }
     }
 
@@ -360,20 +325,16 @@ class FormValueContext implements \JsonSerializable
      */
     public function hasFormBeenPosted(): bool
     {
-        if (null === $this->formIsPosted) {
-            $postedHash = $this->getPostedHash();
+        $postedHash = $this->getPostedHash();
 
-            if (null === $postedHash) {
-                return false;
-            }
-
-            list($_, $_, $postedPayload) = self::getHashParts($postedHash);
-            list($_, $_, $currentPayload) = self::getHashParts($this->hash);
-
-            $this->formIsPosted = ($postedPayload === $currentPayload);
+        if (null === $postedHash) {
+            return false;
         }
 
-        return $this->formIsPosted;
+        list($_, $_, $postedPayload) = self::getHashParts($postedHash);
+        list($_, $_, $currentPayload) = self::getHashParts($this->getHash());
+
+        return $postedPayload === $currentPayload;
     }
 
     /**
@@ -383,20 +344,16 @@ class FormValueContext implements \JsonSerializable
      */
     public function hasPageBeenPosted(): bool
     {
-        if (null === $this->pageIsPosted) {
-            $postedHash = $this->getPostedHash();
+        $postedHash = $this->getPostedHash();
 
-            if (null === $postedHash || !$this->hasFormBeenPosted()) {
-                return false;
-            }
-
-            list($_, $postedPageIndex, $postedPayload) = self::getHashParts($postedHash);
-            list($_, $currentPageIndex, $currentPayload) = self::getHashParts($this->hash);
-
-            $this->pageIsPosted = ($postedPageIndex === $currentPageIndex && $postedPayload === $currentPayload);
+        if (null === $postedHash || !$this->hasFormBeenPosted()) {
+            return false;
         }
 
-        return $this->pageIsPosted;
+        list($_, $postedPageIndex, $postedPayload) = self::getHashParts($postedHash);
+        list($_, $currentPageIndex, $currentPayload) = self::getHashParts($this->getHash());
+
+        return $postedPageIndex === $currentPageIndex && $postedPayload === $currentPayload;
     }
 
     /**
@@ -437,13 +394,13 @@ class FormValueContext implements \JsonSerializable
      *
      * @return string
      */
-    private function generateHash(): string
+    private function regenerateHash(): string
     {
         // Attempt to fetch hashes from POST data
         list($formIdHash, $_, $payload) = self::getHashParts($this->getPostedHash());
 
         $formId           = self::getFormIdFromHash($this->getPostedHash());
-        $isFormIdMatching = $formId === (int) $this->formId;
+        $isFormIdMatching = $formId === $this->formId;
 
         // Only generate a new hash if the content indexes don' match with the posted hash
         // Or if there is no posted hash
@@ -454,12 +411,12 @@ class FormValueContext implements \JsonSerializable
             $hash    = sha1($random);
             $payload = uniqid($hash, false);
 
-            $formIdHash = HashHelper::hash($this->formId ?? 0);
+            $formIdHash = HashHelper::hash($this->formId);
         }
 
         $hashedPageIndex = $this->hashPageIndex();
 
-        return sprintf(
+        $hash = sprintf(
             '%s%s%s%s%s',
             $formIdHash,
             self::FORM_HASH_DELIMITER,
@@ -467,6 +424,9 @@ class FormValueContext implements \JsonSerializable
             self::FORM_HASH_DELIMITER,
             $payload
         );
+        $hash = htmlentities($hash, ENT_QUOTES, 'UTF-8');
+
+        return $hash;
     }
 
     /**
@@ -483,81 +443,6 @@ class FormValueContext implements \JsonSerializable
     private function hashPageIndex(): string
     {
         return HashHelper::sha1($this->currentPageIndex, 4, 10);
-    }
-
-    /**
-     * @return Honeypot[]
-     */
-    private function getHoneypotList(): array
-    {
-        $sessionHoneypotList = json_decode($this->session->get(self::FORM_HONEYPOT_KEY, "[]"), true);
-        if (!empty($sessionHoneypotList)) {
-            foreach ($sessionHoneypotList as $index => $unserialized) {
-                $sessionHoneypotList[$index] = Honeypot::createFromUnserializedData($unserialized);
-            }
-        }
-
-        return $sessionHoneypotList;
-    }
-
-    /**
-     * @param array $honeypotList
-     *
-     * @return array
-     */
-    private function weedOutOldHoneypots(array $honeypotList): array
-    {
-        $cleanList = array_filter(
-            $honeypotList,
-            function (Honeypot $honeypot) {
-                return $honeypot->getTimestamp() > (time() - self::MAX_HONEYPOT_TTL);
-            }
-        );
-
-        usort(
-            $cleanList,
-            function (Honeypot $a, Honeypot $b) {
-                if ($a->getTimestamp() === $b->getTimestamp()) {
-                    return 0;
-                }
-
-                return ($a->getTimestamp() < $b->getTimestamp()) ? 1 : -1;
-            }
-        );
-
-        if (count($cleanList) > self::MAX_HONEYPOT_COUNT) {
-            $cleanList = array_slice($cleanList, 0, self::MAX_HONEYPOT_COUNT);
-        }
-
-        return $cleanList;
-    }
-
-    /**
-     * Removes a honeypot from the list once it has been validated
-     *
-     * @param Honeypot $honeypot
-     */
-    private function removeHoneypot(Honeypot $honeypot)
-    {
-        $list = $this->getHoneypotList();
-
-        foreach ($list as $index => $listHoneypot) {
-            if ($listHoneypot->getName() === $honeypot->getName()) {
-                unset($list[$index]);
-
-                break;
-            }
-        }
-
-        $this->updateHoneypotList($list);
-    }
-
-    /**
-     * @param array $honeypotList
-     */
-    private function updateHoneypotList(array $honeypotList)
-    {
-        $this->session->set(self::FORM_HONEYPOT_KEY, json_encode($honeypotList));
     }
 
     /**
@@ -611,6 +496,7 @@ class FormValueContext implements \JsonSerializable
             'currentPageIndex' => $this->currentPageIndex,
             'storedValues'     => $this->storedValues,
             'customFormData'   => $this->customFormData,
+            'markedAsSpam'     => $this->markedAsSpam,
         ];
     }
 }

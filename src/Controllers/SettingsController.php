@@ -41,13 +41,13 @@ class SettingsController extends BaseController
     {
         $defaultView = $this->getSettingsModel()->defaultView;
 
-        $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
-        $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
-        $canAccessFields = PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_ACCESS);
+        $canAccessForms         = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
+        $canAccessSubmissions   = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
+        $canAccessFields        = PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
-        $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $canAccessSettings      = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
-        $isFormView = $defaultView === Freeform::VIEW_FORMS;
+        $isFormView       = $defaultView === Freeform::VIEW_FORMS;
         $isSubmissionView = $defaultView === Freeform::VIEW_SUBMISSIONS;
 
         if (($isFormView && !$canAccessForms) || ($isSubmissionView && !$canAccessSubmissions)) {
@@ -189,35 +189,24 @@ class SettingsController extends BaseController
             return $this->redirectToPostedUrl();
         }
 
-        \Craft::$app->session->setError(Freeform::t('Settings not saved'));
+        $errors = $plugin->getSettings()->getErrors();
+        \Craft::$app->session->setError(
+            implode("\n", \Solspace\Commons\Helpers\StringHelper::flattenArrayValues($errors))
+        );
     }
 
     /**
-     * @param string $template
-     *
      * @return Response
      */
-    public function actionProvideSetting(string $template): Response
-    {
-        $this->view->registerAssetBundle(CodepackBundle::class);
-
-        return $this->provideTemplate($template);
-    }
-
-    /**
-     * Determines which template has to be rendered based on $template
-     * Adds a Freeform_SettingsModel to template variables
-     *
-     * @param string $template
-     *
-     * @return Response
-     */
-    private function provideTemplate($template): Response
+    public function actionProvideSetting(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
+        $this->view->registerAssetBundle(CodepackBundle::class);
+        $template = \Craft::$app->request->getSegment(3);
+
         return $this->renderTemplate(
-            'freeform/settings/_' . $template,
+            'freeform/_settings/' . (string) $template,
             [
                 'settings' => $this->getSettingsModel(),
             ]

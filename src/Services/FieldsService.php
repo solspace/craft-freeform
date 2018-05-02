@@ -12,34 +12,49 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use craft\elements\Category;
+use craft\elements\Entry;
+use craft\elements\Tag;
+use craft\elements\User;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\DeleteEvent;
 use Solspace\Freeform\Events\Fields\FetchFieldTypes;
 use Solspace\Freeform\Events\Fields\SaveEvent;
+use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxGroupField;
+use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\DynamicRecipientField;
 use Solspace\Freeform\Library\Composer\Components\Fields\EmailField;
 use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\HiddenField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\MultipleSelectField;
 use Solspace\Freeform\Library\Composer\Components\Fields\RadioGroupField;
 use Solspace\Freeform\Library\Composer\Components\Fields\SelectField;
 use Solspace\Freeform\Library\Composer\Components\Fields\TextareaField;
 use Solspace\Freeform\Library\Composer\Components\Fields\TextField;
+use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
+use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Factories\PredefinedOptionsFactory;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
 use yii\base\Component;
 
-class FieldsService extends Component
+class FieldsService extends Component implements FieldHandlerInterface
 {
-    const EVENT_BEFORE_SAVE   = 'beforeSave';
-    const EVENT_AFTER_SAVE    = 'afterSave';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE  = 'afterDelete';
-    const EVENT_FETCH_TYPES   = 'fetchTypes';
+    const EVENT_BEFORE_SAVE     = 'beforeSave';
+    const EVENT_AFTER_SAVE      = 'afterSave';
+    const EVENT_BEFORE_DELETE   = 'beforeDelete';
+    const EVENT_AFTER_DELETE    = 'afterDelete';
+    const EVENT_FETCH_TYPES     = 'fetchTypes';
+    const EVENT_BEFORE_VALIDATE = 'beforeValidate';
+    const EVENT_AFTER_VALIDATE  = 'afterValidate';
 
     /** @var FieldModel[] */
     private static $fieldCache;
@@ -138,6 +153,7 @@ class FieldsService extends Component
             EmailField::class,
             HiddenField::class,
             SelectField::class,
+            MultipleSelectField::class,
             CheckboxField::class,
             CheckboxGroupField::class,
             RadioGroupField::class,
@@ -289,6 +305,87 @@ class FieldsService extends Component
 
             throw $exception;
         }
+    }
+
+    /**
+     * @param AbstractField $field
+     * @param Form          $form
+     */
+    public function beforeValidate(AbstractField $field, Form $form)
+    {
+        $this->trigger(self::EVENT_BEFORE_VALIDATE, new ValidateEvent($field, $form));
+    }
+
+    /**
+     * @param AbstractField $field
+     * @param Form          $form
+     */
+    public function afterValidate(AbstractField $field, Form $form)
+    {
+        $this->trigger(self::EVENT_AFTER_VALIDATE, new ValidateEvent($field, $form));
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOptionsFromSource(string $source, $target, array $configuration = [], $selectedValues = []): array
+    {
+        $config     = new ExternalOptionsConfiguration($configuration);
+        $labelField = $config->getLabelField() ?? 'title';
+        $valueField = $config->getValueField() ?? 'id';
+        $options    = [];
+        if (!\is_array($selectedValues)) {
+            $selectedValues = [$selectedValues];
+        }
+
+        switch ($source) {
+            case ExternalOptionsInterface::SOURCE_ENTRIES:
+                $items = Entry::find()->sectionId($target)->all();
+                foreach ($items as $item) {
+                    $label     = $item->$labelField ?? $item->title;
+                    $value     = $item->$valueField ?? $item->id;
+
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                }
+
+                break;
+
+            case ExternalOptionsInterface::SOURCE_CATEGORIES:
+                $items = Category::find()->group($target)->all();
+                foreach ($items as $item) {
+                    $label     = $item->$labelField ?? $item->title;
+                    $value     = $item->$valueField ?? $item->id;
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                }
+
+                break;
+
+            case ExternalOptionsInterface::SOURCE_TAGS:
+                $items = Tag::find()->group($target)->all();
+                foreach ($items as $item) {
+                    $label     = $item->$labelField ?? $item->title;
+                    $value     = $item->$valueField ?? $item->id;
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                }
+
+                break;
+
+            case ExternalOptionsInterface::SOURCE_USERS:
+                $items      = User::find()->groupId($target)->all();
+                $labelField = $config->getLabelField() ?? 'username';
+                foreach ($items as $item) {
+                    $label     = $item->$labelField ?? $item->username;
+                    $value     = $item->$valueField ?? $item->id;
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                }
+
+                break;
+
+            case ExternalOptionsInterface::SOURCE_PREDEFINED:
+                return PredefinedOptionsFactory::create($target, $config, $selectedValues);
+        }
+
+        return $options;
     }
 
     /**

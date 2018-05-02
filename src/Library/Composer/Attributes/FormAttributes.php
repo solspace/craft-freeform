@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -42,7 +42,7 @@ class FormAttributes
     /**
      * FormAttributes constructor.
      *
-     * @param                  $formId
+     * @param int              $formId
      * @param SessionInterface $session
      * @param RequestInterface $request
      */
@@ -54,11 +54,11 @@ class FormAttributes
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getId(): int
+    public function getId()
     {
-        return (int) $this->id;
+        return $this->id;
     }
 
     /**
@@ -172,12 +172,10 @@ class FormAttributes
     /**
      * @param SessionInterface $session
      * @param RequestInterface $request
-     *
-     * @return FormValueContext
      */
     private function setFormValueContext(SessionInterface $session, RequestInterface $request)
     {
-        $hashPrefix = HashHelper::hash((int) $this->id);
+        $hashPrefix = HashHelper::hash((int) $this->getId());
 
         $this->formValueContext = $session->get(
             $hashPrefix . '_form_context',

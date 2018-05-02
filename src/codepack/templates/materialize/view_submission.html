@@ -32,6 +32,7 @@
             {% set submission = craft.freeform.submissions({
                 id: submissionId,
                 form: formHandle,
+                includeSpam: true,
             }).first() %}
 
             {% if submission %}

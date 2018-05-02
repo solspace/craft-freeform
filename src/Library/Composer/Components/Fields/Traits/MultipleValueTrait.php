@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -59,9 +59,9 @@ trait MultipleValueTrait
             $updatedOptions = [];
             foreach ($this->getOptions() as $option) {
                 if (is_numeric($option->getValue())) {
-                    $checked = in_array((int) $option->getValue(), $this->getValue(), false);
+                    $checked = \in_array((int) $option->getValue(), $this->getValue(), false);
                 } else {
-                    $checked = in_array($option->getValue(), $this->getValue(), true);
+                    $checked = \in_array($option->getValue(), $this->getValue(), true);
                 }
 
                 $updatedOptions[] = new Option(

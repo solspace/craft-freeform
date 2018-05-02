@@ -5,187 +5,195 @@
 
 {% block content %}
 
-<div class="container">
+    <div class="container">
 
-    {% set baseUrlSegments = 1 %}
-    {% set segment1 = craft.app.request.segment(baseUrlSegments + 1) %}
-    {% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
-    {% set segment3 = craft.app.request.segment(baseUrlSegments + 3) %}
-    {% set segment4 = craft.app.request.segment(baseUrlSegments + 4) %}
-    {% set segment5 = craft.app.request.segment(baseUrlSegments + 5) %}
+        {% set baseUrlSegments = 1 %}
+        {% set segment1 = craft.app.request.segment(baseUrlSegments + 1) %}
+        {% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
+        {% set segment3 = craft.app.request.segment(baseUrlSegments + 3) %}
+        {% set segment4 = craft.app.request.segment(baseUrlSegments + 4) %}
+        {% set segment5 = craft.app.request.segment(baseUrlSegments + 5) %}
 
-    {% set formHandle = segment2 %}
-    {% set isSuccess  = segment3 == "success" %}
+        {% set formHandle = segment2 %}
+        {% set isSuccess  = segment3 == "success" %}
 
-    {% if isSuccess %}
-        <div class="alert alert-success" role="alert">
-            <p class="lead">
-                Form submitted successfully!
-            </p>
-        </div>
-    {% endif %}
+        {% if isSuccess %}
+            <div class="alert alert-success" role="alert">
+                <p class="lead">
+                    Form submitted successfully!
+                </p>
+            </div>
+        {% endif %}
 
-    {% set form = craft.freeform.form(formHandle, {
-        submitClass: "btn btn-success",
-        returnUrl: "{{ siteUrl }}demo/bootstrap/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
-    }) %}
+        {% set form = craft.freeform.form(formHandle, {
+            submitClass: "btn btn-success",
+            returnUrl: "{{ siteUrl }}demo/bootstrap/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
+        }) %}
 
-    {% if form %}
+        {% if form %}
 
-        <h3>{{ form.name }}</h3>
+            <h3>{{ form.name }}</h3>
 
-        {{ form.renderTag }}
+            {{ form.renderTag }}
 
-        {% if form.pages|length > 1 %}
-            <ul class="nav nav-tabs">
-                {% for page in form.pages %}
-                    <li class="{{ form.currentPage.index == loop.index0 ? "active" : "disabled" }}">
-                        {% if form.currentPage.index == loop.index0 %}
-                            <a href="javascript:;">{{ page.label }}</a>
-                        {% else %}
-                            <a href="javascript:;">{{ page.label }}</a>
+            {% if form.pages|length > 1 %}
+                <ul class="nav nav-tabs">
+                    {% for page in form.pages %}
+                        <li class="{{ form.currentPage.index == loop.index0 ? "active" : "disabled" }}">
+                            {% if form.currentPage.index == loop.index0 %}
+                                <a href="javascript:;">{{ page.label }}</a>
+                            {% else %}
+                                <a href="javascript:;">{{ page.label }}</a>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if form.hasErrors %}
+                <div class="alert alert-danger">
+                    {{ "There was an error submitting this form"|t }}
+
+                    {% if form.errors|length %}
+                        <ul>
+                            {% for error in form.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+
+            {% for row in form %}
+                <div class="row {{ form.customAttributes.rowClass }}">
+                    {% for field in row %}
+                        {% set width = (12 / (row|length)) %}
+
+                        {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
+
+                        {% set columnClass = isCheckbox ? "checkbox" : "form-group" %}
+                        {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
+                        {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+                        {% set columnClass = columnClass ~ " col-lg-" ~ width ~ " col-xs-12" %}
+
+                        {% if field.type == "submit" %}
+                            {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
                         {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
 
-        {% if form.hasErrors %}
+                        {% if field.type == "checkbox_group" %}
+
+                            <div class="{{ columnClass }}">
+                                {{ field.renderLabel({
+                                    labelClass: (field.required ? " required" : ""),
+                                    instructionsClass: "help-block",
+                                    errorClass: "help-block",
+                                }) }}
+
+                                {% for option in field.options %}
+                                    <div class="checkbox">
+                                        <label>
+                                            <input type="checkbox"
+                                                   name="{{ field.handle }}[]"
+                                                   value="{{ option.value }}"
+                                                    {{ option.value in field.value ? "checked" : "" }}
+                                            />
+                                            {{ option.label|raw }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+
+                                {{ field.renderInstructions() }}
+                                {{ field.renderErrors() }}
+                            </div>
+
+                        {% elseif field.type == "radio_group" %}
+
+                            <div class="{{ columnClass }}">
+                                {{ field.renderLabel({
+                                    labelClass: (field.required ? " required" : ""),
+                                    instructionsClass: "help-block",
+                                    errorClass: "help-block",
+                                }) }}
+
+                                {% for option in field.options %}
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio"
+                                                   name="{{ field.handle }}"
+                                                   value="{{ option.value }}"
+                                                    {{ option.value in field.value ? "checked" : "" }}
+                                            />
+                                            {{ option.label|raw }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+
+                                {{ field.renderInstructions() }}
+                                {{ field.renderErrors() }}
+                            </div>
+
+                        {% elseif field.type == "dynamic_recipients" and field.showAsRadio %}
+
+                            <div class="{{ columnClass }}">
+                                {{ field.renderLabel({
+                                    labelClass: (field.required ? " required" : ""),
+                                    instructionsClass: "help-block",
+                                    errorClass: "help-block",
+                                }) }}
+
+                                {% for option in field.options %}
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio"
+                                                   name="{{ field.handle }}"
+                                                   value="{{ loop.index0 }}"
+                                                    {{ option.value in field.value ? "checked" : "" }}
+                                            />
+                                            {{ option.label|raw }}
+                                        </label>
+                                    </div>
+                                {% endfor %}
+
+                                {{ field.renderInstructions() }}
+                                {{ field.renderErrors() }}
+                            </div>
+
+                        {% elseif field.type == "submit" %}
+
+                            <div class="{{ columnClass }}">
+                                {{ field.render() }}
+                            </div>
+
+                        {% else %}
+
+                            <div class="{{ columnClass }}">
+                                {{ field.render({
+                                    class: isCheckbox ? "checkbox" : "form-control",
+                                    instructionsClass: "help-block",
+                                    instructionsBelowField: true,
+                                    labelClass: (field.required ? " required" : ""),
+                                    errorClass: "help-block",
+                                }) }}
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+
+            {{ form.renderClosingTag }}
+
+
+        {% else %}
             <div class="alert alert-danger">
-                {{ "There was an error submitting this form"|t }}
+                <p class="lead">
+                    Form with the handle '{{ segment2 }}' does not exist
+                </p>
             </div>
         {% endif %}
 
-
-        {% for row in form %}
-            <div class="row {{ form.customAttributes.rowClass }}">
-                {% for field in row %}
-                    {% set width = (12 / (row|length)) %}
-
-                    {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
-
-                    {% set columnClass = isCheckbox ? "checkbox" : "form-group" %}
-                    {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
-                    {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-                    {% set columnClass = columnClass ~ " col-lg-" ~ width ~ " col-xs-12" %}
-
-                    {% if field.type == "submit" %}
-                        {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
-                    {% endif %}
-
-                    {% if field.type == "checkbox_group" %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.renderLabel({
-                                labelClass: (field.required ? " required" : ""),
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {% for option in field.options %}
-                                <div class="checkbox">
-                                    <label>
-                                        <input type="checkbox"
-                                               name="{{ field.handle }}[]"
-                                               value="{{ option.value }}"
-                                                {{ option.value in field.value ? "checked" : "" }}
-                                        />
-                                        {{ option.label|raw }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-
-                            {{ field.renderInstructions() }}
-                            {{ field.renderErrors() }}
-                        </div>
-
-                    {% elseif field.type == "radio_group" %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.renderLabel({
-                                labelClass: (field.required ? " required" : ""),
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {% for option in field.options %}
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio"
-                                               name="{{ field.handle }}"
-                                               value="{{ option.value }}"
-                                                {{ option.value in field.value ? "checked" : "" }}
-                                        />
-                                        {{ option.label|raw }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-
-                            {{ field.renderInstructions() }}
-                            {{ field.renderErrors() }}
-                        </div>
-
-                    {% elseif field.type == "dynamic_recipients" and field.showAsRadio %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.renderLabel({
-                                labelClass: (field.required ? " required" : ""),
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {% for option in field.options %}
-                                <div class="radio">
-                                    <label>
-                                        <input type="radio"
-                                               name="{{ field.handle }}"
-                                               value="{{ loop.index0 }}"
-                                                {{ option.value in field.value ? "checked" : "" }}
-                                        />
-                                        {{ option.label|raw }}
-                                    </label>
-                                </div>
-                            {% endfor %}
-
-                            {{ field.renderInstructions() }}
-                            {{ field.renderErrors() }}
-                        </div>
-
-                    {% elseif field.type == "submit" %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.render() }}
-                        </div>
-
-                    {% else %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.render({
-                                class: isCheckbox ? "checkbox" : "form-control",
-                                instructionsClass: "help-block",
-                                instructionsBelowField: true,
-                                labelClass: (field.required ? " required" : ""),
-                                errorClass: "help-block",
-                            }) }}
-                        </div>
-
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endfor %}
-
-
-        {{ form.renderClosingTag }}
-
-
-    {% else %}
-        <div class="alert alert-danger">
-            <p class="lead">
-                Form with the handle '{{ segment2 }}' does not exist
-            </p>
-        </div>
-    {% endif %}
-
-</div>
+    </div>
 
 {% endblock %}

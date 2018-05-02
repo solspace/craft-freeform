@@ -4,13 +4,16 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 class Page implements \JsonSerializable, \Iterator, \ArrayAccess
@@ -46,7 +49,7 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
         return $this->label;
     }
@@ -54,7 +57,7 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
     /**
      * @return int
      */
-    public function getIndex()
+    public function getIndex(): int
     {
         return $this->index;
     }
@@ -62,7 +65,7 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
     /**
      * @return Row[]
      */
-    public function getRows()
+    public function getRows(): array
     {
         return $this->rows;
     }
@@ -70,9 +73,32 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
     /**
      * @return FieldInterface[]
      */
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStorableFieldValues(): array
+    {
+        $submittedValues = [];
+
+        foreach ($this->getFields() as $field) {
+            if ($field instanceof NoStorageInterface && !$field instanceof RememberPostedValueInterface) {
+                continue;
+            }
+
+            $value = $field->getValue();
+            if ($field instanceof StaticValueInterface && !empty($value)) {
+                $value = $field->getStaticValue();
+            }
+
+            $submittedValues[$field->getHandle()] = $value;
+        }
+
+        return $submittedValues;
     }
 
     /**

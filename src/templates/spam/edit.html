@@ -1,0 +1,22 @@
+{% extends "freeform/submissions/_edit_base.html" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "{title}"|t('freeform', {title: title}) %}
+{% set selectedSubnavItem = "spam" %}
+{% set saveShortcutRedirect = 'freeform/spam/{id}' %}
+{% set fullPageForm = true %}
+{% set actionUrl = 'freeform/spam-submissions/whitelist' %}
+
+{% set crumbs = [
+{ label: craft.freeform.name, url: url('freeform') },
+{ label: "Spam"|t('freeform'), url: url('freeform/spam') },
+{ label: title, url: '' },
+] %}
+
+{% block actionButton %}
+<div class="buttons">
+    <div class="btngroup submit">
+        <input type="submit" class="btn submit" value="{{ 'Whitelist'|t('freeform') }}">
+    </div>
+</div>
+{% endblock %}

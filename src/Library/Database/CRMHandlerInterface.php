@@ -4,13 +4,14 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Database;
 
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Components\Layout;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
@@ -67,5 +68,5 @@ interface CRMHandlerInterface
      *
      * @return bool
      */
-    public function pushObject(IntegrationProperties $properties, Layout $layout);
+    public function pushObject(Submission $submission);
 }

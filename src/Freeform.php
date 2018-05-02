@@ -29,6 +29,7 @@ use Solspace\Freeform\Controllers\FormsController;
 use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\SettingsController;
+use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
 use Solspace\Freeform\Controllers\SubmissionsController;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
@@ -41,11 +42,15 @@ use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\IntegrationsQueueService;
+use Solspace\Freeform\Services\IntegrationsService;
+use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
+use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
 use Solspace\Freeform\Variables\FreeformVariable;
@@ -56,17 +61,21 @@ use yii\db\Query;
 /**
  * Class Plugin
  *
- * @property CrmService           $crm
- * @property FieldsService        $fields
- * @property FilesService         $files
- * @property FormsService         $forms
- * @property MailerService        $mailer
- * @property MailingListsService  $mailingLists
- * @property NotificationsService $notifications
- * @property SettingsService      $settings
- * @property StatusesService      $statuses
- * @property SubmissionsService   $submissions
- * @property LoggerService        $logger
+ * @property CrmService                 $crm
+ * @property FieldsService              $fields
+ * @property FilesService               $files
+ * @property FormsService               $forms
+ * @property MailerService              $mailer
+ * @property MailingListsService        $mailingLists
+ * @property NotificationsService       $notifications
+ * @property SettingsService            $settings
+ * @property StatusesService            $statuses
+ * @property SubmissionsService         $submissions
+ * @property SpamSubmissionsService     $spamSubmissions
+ * @property LoggerService              $logger
+ * @property HoneypotService            $honeypot
+ * @property IntegrationsService        $integrations
+ * @property IntegrationsQueueService   $integrationsQueue
  */
 class Freeform extends Plugin
 {
@@ -134,135 +143,16 @@ class Freeform extends Plugin
     {
         parent::init();
 
-        if (!\Craft::$app->request->isConsoleRequest) {
-            $this->controllerMap = [
-                'api'           => ApiController::class,
-                'codepack'      => CodepackController::class,
-                'crm'           => CrmController::class,
-                'mailing-lists' => MailingListsController::class,
-                'fields'        => FieldsController::class,
-                'forms'         => FormsController::class,
-                'notifications' => NotificationsController::class,
-                'submissions'   => SubmissionsController::class,
-                'statuses'      => StatusesController::class,
-                'settings'      => SettingsController::class,
-            ];
-        }
-
-        $this->setComponents(
-            [
-                'crm'           => CrmService::class,
-                'fields'        => FieldsService::class,
-                'files'         => FilesService::class,
-                'forms'         => FormsService::class,
-                'mailer'        => MailerService::class,
-                'mailingLists'  => MailingListsService::class,
-                'notifications' => NotificationsService::class,
-                'settings'      => SettingsService::class,
-                'statuses'      => StatusesService::class,
-                'submissions'   => SubmissionsService::class,
-                'logger'        => LoggerService::class,
-            ]
-        );
-
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $routes       = include __DIR__ . '/routes.php';
-                $event->rules = array_merge($event->rules, $routes);
-            }
-        );
-
-        Event::on(
-            CraftVariable::class,
-            CraftVariable::EVENT_INIT,
-            function (Event $event) {
-                $event->sender->set('freeform', FreeformVariable::class);
-            }
-        );
-
-        Event::on(
-            Dashboard::class,
-            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = StatisticsWidget::class;
-            }
-        );
-
-        Event::on(
-            Fields::class,
-            Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = FormFieldType::class;
-            }
-        );
-
-        if (\Craft::$app->getEdition() >= \Craft::Pro) {
-            Event::on(
-                UserPermissions::class,
-                UserPermissions::EVENT_REGISTER_PERMISSIONS,
-                function (RegisterUserPermissionsEvent $event) {
-                    $forms = $this->forms->getAllForms();
-
-                    $submissionNestedPermissions = [
-                        self::PERMISSION_SUBMISSIONS_MANAGE => [
-                            'label' => self::t(
-                                'Manage All Submissions'
-                            ),
-                        ],
-                    ];
-
-                    foreach ($forms as $form) {
-                        $permissionName = PermissionHelper::prepareNestedPermission(
-                            self::PERMISSION_SUBMISSIONS_MANAGE,
-                            $form->id
-                        );
-
-                        $submissionNestedPermissions[$permissionName] = ['label' => 'For ' . $form->name];
-                    }
-
-                    $permissions = [
-                        self::PERMISSION_SUBMISSIONS_ACCESS   => [
-                            'label'  => self::t('Access Submissions'),
-                            'nested' => $submissionNestedPermissions,
-                        ],
-                        self::PERMISSION_FORMS_ACCESS         => [
-                            'label'  => self::t('Access Forms'),
-                            'nested' => [
-                                self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
-                            ],
-                        ],
-                        self::PERMISSION_FIELDS_ACCESS        => [
-                            'label'  => self::t('Access Fields'),
-                            'nested' => [
-                                self::PERMISSION_FIELDS_MANAGE => ['label' => self::t('Manage Fields')],
-                            ],
-                        ],
-                        self::PERMISSION_NOTIFICATIONS_ACCESS => [
-                            'label'  => self::t('Access Email Templates'),
-                            'nested' => [
-                                self::PERMISSION_NOTIFICATIONS_MANAGE => [
-                                    'label' => self::t(
-                                        'Manage Email Templates'
-                                    ),
-                                ],
-                            ],
-                        ],
-                        self::PERMISSION_SETTINGS_ACCESS      => ['label' => self::t('Access Settings')],
-                    ];
-
-                    if (!isset($event->permissions[self::PERMISSION_NAMESPACE])) {
-                        $event->permissions[self::PERMISSION_NAMESPACE] = [];
-                    }
-
-                    $event->permissions[self::PERMISSION_NAMESPACE] = array_merge(
-                        $event->permissions[self::PERMISSION_NAMESPACE],
-                        $permissions
-                    );
-                }
-            );
-        }
+        $this->initControllerMap();
+        $this->initServices();
+        $this->initRoutes();
+        $this->initTwigVariables();
+        $this->initWidgets();
+        $this->initFieldTypes();
+        $this->initPermissions();
+        $this->initEventListeners();
+        $this->initHoneypot();
+        $this->initSpamCheck();
 
         if ($this->settings->getPluginName()) {
             $this->name = $this->settings->getPluginName();
@@ -492,5 +382,220 @@ class Freeform extends Plugin
         }
 
         return true;
+    }
+
+    private function initControllerMap()
+    {
+        if (!\Craft::$app->request->isConsoleRequest) {
+            $this->controllerMap = [
+                'api'              => ApiController::class,
+                'codepack'         => CodepackController::class,
+                'crm'              => CrmController::class,
+                'mailing-lists'    => MailingListsController::class,
+                'fields'           => FieldsController::class,
+                'forms'            => FormsController::class,
+                'notifications'    => NotificationsController::class,
+                'submissions'      => SubmissionsController::class,
+                'spam-submissions' => SpamSubmissionsController::class,
+                'statuses'         => StatusesController::class,
+                'settings'         => SettingsController::class,
+            ];
+        }
+    }
+
+    private function initServices()
+    {
+        $this->setComponents(
+            [
+                'crm'               => CrmService::class,
+                'fields'            => FieldsService::class,
+                'files'             => FilesService::class,
+                'forms'             => FormsService::class,
+                'mailer'            => MailerService::class,
+                'mailingLists'      => MailingListsService::class,
+                'notifications'     => NotificationsService::class,
+                'settings'          => SettingsService::class,
+                'statuses'          => StatusesService::class,
+                'submissions'       => SubmissionsService::class,
+                'spamSubmissions'   => SpamSubmissionsService::class,
+                'logger'            => LoggerService::class,
+                'honeypot'          => HoneypotService::class,
+                'integrations'      => IntegrationsService::class,
+                'integrationsQueue' => IntegrationsQueueService::class,
+            ]
+        );
+    }
+
+    private function initRoutes()
+    {
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_CP_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $routes       = include __DIR__ . '/routes.php';
+                $event->rules = array_merge($event->rules, $routes);
+            }
+        );
+    }
+
+    private function initTwigVariables()
+    {
+        Event::on(
+            CraftVariable::class,
+            CraftVariable::EVENT_INIT,
+            function (Event $event) {
+                $event->sender->set('freeform', FreeformVariable::class);
+            }
+        );
+    }
+
+    private function initWidgets()
+    {
+        Event::on(
+            Dashboard::class,
+            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
+            function (RegisterComponentTypesEvent $event) {
+                $event->types[] = StatisticsWidget::class;
+            }
+        );
+    }
+
+    private function initFieldTypes()
+    {
+        Event::on(
+            Fields::class,
+            Fields::EVENT_REGISTER_FIELD_TYPES,
+            function (RegisterComponentTypesEvent $event) {
+                $event->types[] = FormFieldType::class;
+            }
+        );
+    }
+
+    private function initPermissions()
+    {
+        if (\Craft::$app->getEdition() >= \Craft::Pro) {
+            Event::on(
+                UserPermissions::class,
+                UserPermissions::EVENT_REGISTER_PERMISSIONS,
+                function (RegisterUserPermissionsEvent $event) {
+                    $forms = $this->forms->getAllForms();
+
+                    $submissionNestedPermissions = [
+                        self::PERMISSION_SUBMISSIONS_MANAGE => [
+                            'label' => self::t(
+                                'Manage All Submissions'
+                            ),
+                        ],
+                    ];
+
+                    foreach ($forms as $form) {
+                        $permissionName = PermissionHelper::prepareNestedPermission(
+                            self::PERMISSION_SUBMISSIONS_MANAGE,
+                            $form->id
+                        );
+
+                        $submissionNestedPermissions[$permissionName] = ['label' => 'For ' . $form->name];
+                    }
+
+                    $permissions = [
+                        self::PERMISSION_SUBMISSIONS_ACCESS   => [
+                            'label'  => self::t('Access Submissions'),
+                            'nested' => $submissionNestedPermissions,
+                        ],
+                        self::PERMISSION_FORMS_ACCESS         => [
+                            'label'  => self::t('Access Forms'),
+                            'nested' => [
+                                self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
+                            ],
+                        ],
+                        self::PERMISSION_FIELDS_ACCESS        => [
+                            'label'  => self::t('Access Fields'),
+                            'nested' => [
+                                self::PERMISSION_FIELDS_MANAGE => ['label' => self::t('Manage Fields')],
+                            ],
+                        ],
+                        self::PERMISSION_NOTIFICATIONS_ACCESS => [
+                            'label'  => self::t('Access Email Templates'),
+                            'nested' => [
+                                self::PERMISSION_NOTIFICATIONS_MANAGE => [
+                                    'label' => self::t(
+                                        'Manage Email Templates'
+                                    ),
+                                ],
+                            ],
+                        ],
+                        self::PERMISSION_SETTINGS_ACCESS      => ['label' => self::t('Access Settings')],
+                    ];
+
+                    if (!isset($event->permissions[self::PERMISSION_NAMESPACE])) {
+                        $event->permissions[self::PERMISSION_NAMESPACE] = [];
+                    }
+
+                    $event->permissions[self::PERMISSION_NAMESPACE] = array_merge(
+                        $event->permissions[self::PERMISSION_NAMESPACE],
+                        $permissions
+                    );
+                }
+            );
+        }
+    }
+
+    private function initEventListeners()
+    {
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_RENDER_CLOSING_TAG,
+            [$this->forms, 'addDateTimeJavascript']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_RENDER_CLOSING_TAG,
+            [$this->forms, 'addFormDisabledJavascript']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_RENDER_CLOSING_TAG,
+            [$this->forms, 'addFormAnchorJavascript']
+        );
+    }
+
+    private function initHoneypot()
+    {
+        if ($this->settings->isFreeformHoneypotEnabled()) {
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_OPENING_TAG,
+                [$this->honeypot, 'addHoneyPotInputToForm']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->honeypot, 'addFormJavascript']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_FORM_VALIDATE,
+                [$this->honeypot, 'validateFormHoneypot']
+            );
+        }
+    }
+
+    private function initSpamCheck()
+    {
+        Event::on(
+            FieldsService::class,
+            FieldsService::EVENT_BEFORE_VALIDATE,
+            [$this->settings, 'checkSubmissionForSpam']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_FORM_VALIDATE,
+            [$this->settings, 'checkBlacklistedIps']
+        );
     }
 }

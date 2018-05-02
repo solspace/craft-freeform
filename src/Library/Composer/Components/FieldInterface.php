@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -19,6 +19,7 @@ interface FieldInterface
     const TYPE_TEXTAREA           = 'textarea';
     const TYPE_HIDDEN             = 'hidden';
     const TYPE_SELECT             = 'select';
+    const TYPE_MULTIPLE_SELECT    = 'multiple_select';
     const TYPE_CHECKBOX           = 'checkbox';
     const TYPE_CHECKBOX_GROUP     = 'checkbox_group';
     const TYPE_RADIO_GROUP        = 'radio_group';
@@ -36,6 +37,7 @@ interface FieldInterface
     const TYPE_RATING       = 'rating';
     const TYPE_REGEX        = 'regex';
     const TYPE_CONFIRMATION = 'confirmation';
+    const TYPE_RECAPTCHA    = 'recaptcha';
 
     /**
      * Returns the INPUT type

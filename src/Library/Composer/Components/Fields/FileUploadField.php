@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -121,6 +121,15 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
 
         if (!array_key_exists($this->handle, self::$filesUploaded)) {
             $exists = isset($_FILES[$this->handle]) && !empty($_FILES[$this->handle]['name']);
+
+            if ($exists && !\is_array($_FILES[$this->handle]['name'])) {
+                $_FILES[$this->handle]['name']     = [$_FILES[$this->handle]['name']];
+                $_FILES[$this->handle]['tmp_name'] = [$_FILES[$this->handle]['tmp_name']];
+                $_FILES[$this->handle]['error']    = [$_FILES[$this->handle]['error']];
+                $_FILES[$this->handle]['size']     = [$_FILES[$this->handle]['size']];
+                $_FILES[$this->handle]['type']     = [$_FILES[$this->handle]['type']];
+            }
+
             if ($exists && $_FILES[$this->handle]['name'][0]) {
                 $fileCount = count($_FILES[$this->handle]['name']);
 

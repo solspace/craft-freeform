@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -64,7 +64,7 @@ class TextareaField extends AbstractField implements SingleValueInterface, Place
         $constraints[] = new LengthConstraint(
             null,
             65535,
-            'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.'
+            $this->translate('The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.')
         );
 
         return $constraints;

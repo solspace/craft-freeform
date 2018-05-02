@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -16,6 +16,16 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 
 interface FormHandlerInterface
 {
+    const EVENT_BEFORE_SUBMIT      = 'beforeSubmit';
+    const EVENT_AFTER_SUBMIT       = 'afterSubmit';
+    const EVENT_BEFORE_SAVE        = 'beforeSave';
+    const EVENT_AFTER_SAVE         = 'afterSave';
+    const EVENT_BEFORE_DELETE      = 'beforeDelete';
+    const EVENT_AFTER_DELETE       = 'afterDelete';
+    const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
+    const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
+    const EVENT_FORM_VALIDATE      = 'validateForm';
+
     /**
      * @param Form   $form
      * @param string $templateName
@@ -23,16 +33,6 @@ interface FormHandlerInterface
      * @return \Twig_Markup
      */
     public function renderFormTemplate(Form $form, $templateName): \Twig_Markup;
-
-    /**
-     * @return bool
-     */
-    public function isSpamProtectionEnabled(): bool;
-
-    /**
-     * @return bool
-     */
-    public function isSpamBlockLikeSuccessfulPost(): bool;
 
     /**
      * Increments the spam block counter by 1
@@ -44,16 +44,19 @@ interface FormHandlerInterface
     public function incrementSpamBlockCount(Form $form): int;
 
     /**
-     * @param Form $form
+     * @return bool
      */
-    public function addScriptsToPage(Form $form);
+    public function isSpamBehaviourSimulateSuccess(): bool;
 
     /**
-     * @param Form $form
-     *
-     * @return string
+     * @return bool
      */
-    public function getScriptOutput(Form $form): string;
+    public function isSpamBehaviourReloadForm(): bool;
+
+    /**
+     * @return bool
+     */
+    public function isSpamFolderEnabled(): bool;
 
     /**
      * Do something before the form is saved
@@ -72,4 +75,28 @@ interface FormHandlerInterface
      * @param Submission|null $submission
      */
     public function onAfterSubmit(Form $form, Submission $submission = null);
+
+    /**
+     * Attach anything to the form after opening tag
+     *
+     * @param Form   $form
+     *
+     * @return string
+     */
+    public function onRenderOpeningTag(Form $form): string;
+
+    /**
+     * Attach anything to the form before the closing tag
+     *
+     * @param Form   $form
+     *
+     * @return string
+     */
+    public function onRenderClosingTag(Form $form): string;
+
+    /**
+     * @param Form $form
+     * @param bool $isFormValid
+     */
+    public function onFormValidate(Form $form, bool $isFormValid);
 }

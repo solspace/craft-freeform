@@ -1,0 +1,22 @@
+{% extends "freeform/_layouts/elementType" %}
+
+{% set title = craft.freeform.name ~ ": " ~ ("Spam"|t('freeform')) %}
+{% set selectedSubnavItem = 'spam' %}
+{% set elementType = 'Solspace\\Freeform\\Elements\\SpamSubmission' %}
+
+{% block body %}
+{{ parent() }}
+<form method="post"
+      id="asset_download"
+      style="height: 0; width: 0; position: absolute; left: -99999px;">
+    <input type="hidden" name="action" value="assets/download-asset"/>
+    <input type="hidden" name="assetId" value=""/>
+    {{ csrfInput() }}
+</form>
+{% endblock %}
+
+{% if formHandle is defined %}
+    {% js %}
+        window.defaultFormHandle = '{{ formHandle }}';
+    {% endjs %}
+{% endif %}

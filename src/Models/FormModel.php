@@ -122,21 +122,27 @@ class FormModel extends Model
      */
     public function getComposer(): Composer
     {
-        $freeform = Freeform::getInstance();
+        if (null === $this->composer) {
+            $freeform = Freeform::getInstance();
 
-        return $this->composer = new Composer(
-            json_decode($this->layoutJson, true),
-            $this->getFormAttributes(),
-            $freeform->forms,
-            $freeform->submissions,
-            $freeform->mailer,
-            $freeform->files,
-            $freeform->mailingLists,
-            $freeform->crm,
-            $freeform->statuses,
-            new CraftTranslator(),
-            new CraftLogger()
-        );
+            return $this->composer = new Composer(
+                json_decode($this->layoutJson, true),
+                $this->getFormAttributes(),
+                $freeform->forms,
+                $freeform->fields,
+                $freeform->submissions,
+                $freeform->spamSubmissions,
+                $freeform->mailer,
+                $freeform->files,
+                $freeform->mailingLists,
+                $freeform->crm,
+                $freeform->statuses,
+                new CraftTranslator(),
+                new CraftLogger()
+            );
+        }
+
+        return $this->composer;
     }
 
     /**

@@ -51,10 +51,18 @@
                         {{ form.description }}
                     </td>
                     <td>
-                        {{ totalSubmissionsByForm[form.id] is defined ? totalSubmissionsByForm[form.id] : 0 }}
+                        <a href="{{ url('freeform/submissions/' ~ form.handle) }}">
+                            {{ totalSubmissionsByForm[form.id] is defined ? totalSubmissionsByForm[form.id] : 0 }}
+                        </a>
                     </td>
                     <td class="spam-count" data-form-id="{{ form.id }}">
-                        {{ form.spamBlockCount }}
+                        {% if isSpamFolderEnabled %}
+                            <a href="{{ url('freeform/spam/' ~ form.handle) }}">
+                                {{ form.spamBlockCount }}
+                            </a>
+                        {% else %}
+                            {{ form.spamBlockCount }}
+                        {% endif %}
                     </td>
                     <td>
                         <button

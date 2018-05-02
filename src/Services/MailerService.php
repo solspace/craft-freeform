@@ -36,7 +36,7 @@ class MailerService extends Component implements MailHandlerInterface
      * Send out an email to recipients using the given mail template
      *
      * @param Form             $form
-     * @param array            $recipients
+     * @param array|string     $recipients
      * @param mixed            $notificationId
      * @param FieldInterface[] $fields
      * @param Submission       $submission
@@ -46,7 +46,7 @@ class MailerService extends Component implements MailHandlerInterface
      */
     public function sendEmail(
         Form $form,
-        array $recipients,
+        $recipients,
         $notificationId,
         array $fields,
         Submission $submission = null
@@ -55,6 +55,10 @@ class MailerService extends Component implements MailHandlerInterface
         $logger        = new CraftLogger();
         $sentMailCount = 0;
         $notification  = $this->getNotificationById($notificationId);
+
+        if (!is_array($recipients)) {
+            $recipients = $recipients ? array($recipients) : array();
+        }
 
         if (!$notification) {
             throw new FreeformException(
@@ -98,8 +102,12 @@ class MailerService extends Component implements MailHandlerInterface
 
             if ($notification->isIncludeAttachmentsEnabled()) {
                 foreach ($fields as $field) {
-                    if ($field instanceof FileUploadInterface && $field->getValue()) {
-                        $assetIds = $field->getValue();
+                    if (!$field->getHandle()) {
+                        continue;
+                    }
+                    $fieldValue = $submission->{$field->getHandle()}->getValue();
+                    if ($field instanceof FileUploadInterface && $fieldValue) {
+                        $assetIds = $fieldValue;
                         foreach ($assetIds as $assetId) {
                             $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                             if ($asset) {
@@ -162,6 +170,7 @@ class MailerService extends Component implements MailHandlerInterface
                 continue;
             }
 
+            $field->setValue($submission->{$field->getHandle()}->getValue());
             $usableFields[]                    = $field;
             $postedValues[$field->getHandle()] = $field->getValueAsString();
         }

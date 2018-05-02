@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -99,11 +99,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             $field->staticValue = $field->getValue();
         }
 
-        $storedValue = $formValueContext->getStoredValue($field->getHandle(), $field->getValue());
+        $storedValue = $formValueContext->getStoredValue($field);
         $field->setValue($storedValue);
 
         if ($field instanceof CheckboxField && $formValueContext->hasFormBeenPosted()) {
-            $storedValue = $formValueContext->getStoredValue($field->getHandle());
+            $storedValue = $formValueContext->getStoredValue($field);
             $field->setIsCheckedByPost((bool) $storedValue);
         }
 
@@ -121,6 +121,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             self::TYPE_EMAIL              => 'Email',
             self::TYPE_HIDDEN             => 'Hidden',
             self::TYPE_SELECT             => 'Select',
+            self::TYPE_MULTIPLE_SELECT    => 'Multi select',
             self::TYPE_CHECKBOX           => 'Checkbox',
             self::TYPE_CHECKBOX_GROUP     => 'Checkbox group',
             self::TYPE_RADIO_GROUP        => 'Radio group',
@@ -685,6 +686,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     protected function validate(): array
     {
+        $this->getForm()->getFieldHandler()->beforeValidate($this, $this->getForm());
+
         $errors = $this->getErrors();
 
         if ($this instanceof ObscureValueInterface) {
@@ -716,6 +719,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
             $errors = array_merge($errors, $violationList->getErrors());
         }
+
+        $this->getForm()->getFieldHandler()->afterValidate($this, $this->getForm());
 
         return $errors;
     }

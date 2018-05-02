@@ -12,11 +12,15 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Commons\Migrations\Field;
+use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
@@ -56,10 +60,11 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     /**
      * @param array|null $formIds
      * @param array|null $statusIds
+     * @param bool $isSpam
      *
      * @return int
      */
-    public function getSubmissionCount(array $formIds = null, array $statusIds = null): int
+    public function getSubmissionCount(array $formIds = null, array $statusIds = null, bool $isSpam = false): int
     {
         return (int) (new Query())
             ->select(['COUNT(id)'])
@@ -68,6 +73,7 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
                 [
                     'formId'   => $formIds,
                     'statusId' => $statusIds,
+                    'isSpam'   => $isSpam,
                 ]
             )
             ->scalar();
@@ -76,13 +82,16 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     /**
      * Returns submission count by form ID
      *
+     * @param bool $isSpam
+     *
      * @return array
      */
-    public function getSubmissionCountByForm(): array
+    public function getSubmissionCountByForm(bool $isSpam = false): array
     {
         $countList = (new Query())
             ->select(['[[formId]]', 'COUNT([[id]]) as [[submissionCount]]'])
             ->from(Submission::TABLE)
+            ->filterWhere(['isSpam' => $isSpam])
             ->groupBy('[[formId]]')
             ->all();
 
@@ -98,12 +107,31 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
      * Stores the submitted fields to database
      *
      * @param Form  $form
-     * @param array $fields
      *
      * @return Submission|null
      */
-    public function storeSubmission(Form $form, array $fields)
+    public function storeSubmission(Form $form)
     {
+        $submission = $this->createSubmissionFromForm($form);
+
+        $beforeSubmitEvent = new SubmitEvent($submission, $form);
+        $this->trigger(self::EVENT_BEFORE_SUBMIT, $beforeSubmitEvent);
+
+        if ($beforeSubmitEvent->isValid && \Craft::$app->getElements()->saveElement($submission)) {
+            $this->finalizeFormFiles($form);
+            $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($submission, $form));
+
+            return $submission;
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function createSubmissionFromForm(Form $form) {
+        $fields = $form->getLayout()->getFields();
         $savableFields = [];
         foreach ($fields as $field) {
             if ($field instanceof NoStorageInterface) {
@@ -131,9 +159,15 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
         $fieldsByHandle                   = $form->getLayout()->getFieldsByHandle();
 
 
-        $submission = Submission::create();
+        if (!$form->isMarkedAsSpam()) {
+            $submission = Submission::create();
+        } else {
+            $submission = SpamSubmission::create();
+        }
+        $submission->ip          = \Craft::$app->request->getRemoteIP();
         $submission->formId      = $form->getId();
         $submission->statusId    = $form->getDefaultStatus();
+        $submission->isSpam      = $form->isMarkedAsSpam();
         $submission->dateCreated = $dateCreated;
         $submission->dateUpdated = $dateCreated;
         $submission->title       = \Craft::$app->view->renderString(
@@ -149,17 +183,28 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
 
         $submission->setFormFieldValues($savableFields);
 
-        $beforeSubmitEvent = new SubmitEvent($submission, $form);
-        $this->trigger(self::EVENT_BEFORE_SUBMIT, $beforeSubmitEvent);
+        return $submission;
+    }
 
-        if ($beforeSubmitEvent->isValid && \Craft::$app->getElements()->saveElement($submission)) {
-            $this->finalizeFormFiles($form);
-            $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($submission, $form));
+    /**
+     * Runs all integrations on submission
+     *
+     * @param Submission $submission
+     * @param AbstractField[] $mailingListOptedInFields
+     */
+    public function postProcessSubmission(Submission $submission, array $mailingListOptedInFields) {
+        $integrationsService = Freeform::getInstance()->integrations;
+        $formsService = Freeform::getInstance()->forms;
+        $form = $submission->getForm();
+        $this->markFormAsSubmitted($form);
+        $integrationsService->sendOutEmailNotifications($submission);
 
-            return $submission;
+        if ($form->hasOptInPermission()) {
+            $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);
+            $integrationsService->pushToCRM($submission);
         }
 
-        return null;
+        $formsService->onAfterSubmit($form, $submission);
     }
 
     /**

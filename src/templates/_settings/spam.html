@@ -1,0 +1,110 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+
+    <h2>{{ "Spam Settings"|t('freeform') }}</h2>
+
+    <form action="" method="post" accept-charset="UTF-8">
+        <input type="hidden" name="action" value="freeform/settings/save-settings">
+        {{ redirectInput('freeform/settings/spam') }}
+        {{ csrfInput() }}
+
+        {{ forms.lightswitchField({
+            label: "Freeform Honeypot / Javascript detection"|t('freeform'),
+            instructions: "Enable this to use Freeform's built in Javascript-based honeypot spam protection."|t('freeform'),
+            name: "settings[freeformHoneypot]",
+            on: settings.freeformHoneypot,
+            errors: settings.errors("freeformHoneypot"),
+        }) }}
+
+        {{ forms.selectField({
+            label: "Spam Protection Behavior"|t('freeform'),
+            instructions: "Select the behavior you'd like Freeform to take when it detects a submission as being spam."|t('freeform'),
+            name: "settings[spamProtectionBehaviour]",
+            value: settings.spamProtectionBehaviour,
+            options: {
+                "simulate_success": "Simulate successful submission (recommended)"|t,
+                "display_errors": "Display error messages (not recommended)"|t,
+                "reload_form": "Reload form"|t,
+            }
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Enable Spam Folder"|t('freeform'),
+            instructions: "When this is enabled all submissions caught by honeypot will be stored in separate menu."|t('freeform'),
+            name: "settings[spamFolderEnabled]",
+            on: settings.spamFolderEnabled,
+            errors: settings.errors("spamFolderEnabled"),
+        }) }}
+
+        {{ forms.textareaField({
+            label: "Block Email addresses"|t('freeform'),
+            instructions: "Enter email addresses you would like blacklisted from being used in Email fields. Use '*' for wildcard, and separate multiples on new lines."|t('freeform'),
+            name: "settings[blockedEmails]",
+            rows: 5,
+            value: settings.blockedEmails,
+            errors: settings.errors("blockedEmails"),
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Display errors about blocked email(s) under each email field?"|t('freeform'),
+            instructions: "Enable this if you'd like field-based errors to display under the email field(s) that the user has entered blocked emails for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues."|t('freeform'),
+            name: "settings[showErrorsForBlockedEmails]",
+            on: settings.showErrorsForBlockedEmails,
+            toggle: "blocked-emails-error",
+            errors: settings.errors("showErrorsForBlockedEmails"),
+        }) }}
+
+        <div id="blocked-emails-error" class="{{ not settings.showErrorsForBlockedEmails ? 'hidden' }}">
+            {{ forms.textField({
+                label: "Blocked Emails Error Message"|t('freeform'),
+                instructions: "The message shown to users when blocked emails are submitted. Can use the {email} variable."|t('freeform'),
+                name: "settings[blockedEmailsError]",
+                value: settings.blockedEmailsError,
+                errors: settings.errors("blockedEmailsError"),
+            }) }}
+        </div>
+
+        {{ forms.textareaField({
+            label: "Block Keywords"|t('freeform'),
+            instructions: "Enter keywords you would like blacklisted from being used in all text and textarea fields. Use '*' for wildcard, and separate multiples on new lines."|t('freeform'),
+            name: "settings[blockedKeywords]",
+            rows: 5,
+            value: settings.blockedKeywords,
+            errors: settings.errors("blockedKeywords"),
+        }) }}
+
+        {{ forms.lightswitchField({
+            label: "Display errors about blocked keyword(s) under each text/textarea field?"|t('freeform'),
+            instructions: "Enable this if you'd like field-based errors to display under the field(s) that the user has entered blocked keywords for. Not recommended for regular use, but helpful if trying to troubleshoot submission issues."|t('freeform'),
+            name: "settings[showErrorsForBlockedKeywords]",
+            on: settings.showErrorsForBlockedKeywords,
+            toggle: "blocked-keywords-error",
+            errors: settings.errors("showErrorsForBlockedKeywords"),
+        }) }}
+
+        <div id="blocked-keywords-error" class="{{ not settings.showErrorsForBlockedKeywords ? 'hidden' }}">
+            {{ forms.textField({
+                label: "Blocked Keywords Error Message"|t('freeform'),
+                instructions: "The message shown to users when blocked keywords are submitted. Can use {value} and {keyword} variables."|t('freeform'),
+                name: "settings[blockedKeywordsError]",
+                value: settings.blockedKeywordsError,
+                errors: settings.errors("blockedKeywordsError"),
+            }) }}
+        </div>
+
+        {{ forms.textareaField({
+            label: "Block IP addresses"|t('freeform'),
+            instructions: "Enter IP addresses you would like blacklisted. Separate multiples on new lines."|t('freeform'),
+            name: "settings[blockedIpAddresses]",
+            rows: 5,
+            value: settings.blockedIpAddresses,
+            errors: settings.errors("blockedIpAddresses"),
+        }) }}
+
+        <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
+    </form>
+
+{% endblock %}

@@ -4,14 +4,14 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\DataContainers;
 
-class Option
+class Option implements \JsonSerializable
 {
     /** @var string */
     private $label;
@@ -66,5 +66,16 @@ class Option
     public function isChecked(): bool
     {
         return $this->checked;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function jsonSerialize()
+    {
+        return [
+            'label'   => $this->getLabel(),
+            'value'   => $this->getValue(),
+        ];
     }
 }

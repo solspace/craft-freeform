@@ -20,7 +20,6 @@ use craft\web\UploadedFile;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
 use Solspace\Freeform\Records\FieldRecord;
@@ -53,7 +52,11 @@ class FilesService extends Component implements FileUploadHandlerInterface
         $assetService = \Craft::$app->assets;
         $folder       = $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
 
-        $uploadedFileCount = count($_FILES[$field->getHandle()]['name']);
+        if (!$_FILES || !isset($_FILES[$field->getHandle()])) {
+            return null;
+        }
+
+        $uploadedFileCount = \count($_FILES[$field->getHandle()]['name']);
 
         $beforeUploadEvent = new UploadEvent($field);
         $this->trigger(self::EVENT_BEFORE_UPLOAD, $beforeUploadEvent);

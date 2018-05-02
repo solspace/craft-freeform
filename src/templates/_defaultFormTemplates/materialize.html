@@ -13,9 +13,16 @@
 {% if form.hasErrors %}
     <div class="alert alert-danger errors">
         {{ "There was an error submitting this form"|t('freeform') }}
+
+        {% if form.errors|length %}
+            <ul>
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 {% endif %}
-
 
 <div class="row {{ form.customAttributes.rowClass }}">
     {% for row in form %}

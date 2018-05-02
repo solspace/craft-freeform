@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -15,25 +15,21 @@ use craft\helpers\Template;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
+use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
-use Solspace\Freeform\Library\Database\CRMHandlerInterface;
+use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\freeform\Library\Database\FormHandlerInterface;
-use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
+use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Logging\LoggerInterface;
-use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Session\FormValueContext;
-use Solspace\Freeform\Library\Session\Honeypot;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
+use Solspace\Freeform\Models\FieldModel;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 {
@@ -76,11 +72,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var Layout */
     private $layout;
 
-    /** @var string */
-    private $optInDataStorageTargetHash;
-
     /** @var Row[] */
     private $currentPageRows;
+
+    /** @var string */
+    private $optInDataStorageTargetHash;
 
     /** @var FormAttributes */
     private $formAttributes;
@@ -88,8 +84,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var Properties */
     private $properties;
 
-    /** @var Page */
-    private $currentPage;
+    /** @var string[] */
+    private $errors;
 
     /** @var bool */
     private $formSaved;
@@ -97,26 +93,20 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var bool */
     private $valid;
 
-    /** @var bool */
-    private $spamBlocked;
-
     /** @var SubmissionHandlerInterface */
     private $submissionHandler;
+
+    /** @var SpamSubmissionHandlerInterface */
+    private $spamSubmissionHandler;
 
     /** @var FormHandlerInterface */
     private $formHandler;
 
-    /** @var MailHandlerInterface */
-    private $mailHandler;
-
     /** @var FileUploadHandlerInterface */
     private $fileUploadHandler;
 
-    /** @var MailingListHandlerInterface */
-    private $mailingListHandler;
-
-    /** @var CRMHandlerInterface */
-    private $crmHandler;
+    /** @var FieldHandlerInterface */
+    private $fieldHandler;
 
     /** @var TranslatorInterface */
     private $translator;
@@ -127,23 +117,22 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var CustomFormAttributes */
     private $customAttributes;
 
-    /** @var Honeypot */
-    private $honeypot;
+    /** @var int */
+    private $cachedPageIndex;
 
     /**
      * Form constructor.
      *
-     * @param Properties                  $properties
-     * @param FormAttributes              $formAttributes
-     * @param array                       $layoutData
-     * @param FormHandlerInterface        $formHandler
-     * @param SubmissionHandlerInterface  $submissionHandler
-     * @param MailHandlerInterface        $mailHandler
-     * @param FileUploadHandlerInterface  $fileUploadHandler
-     * @param MailingListHandlerInterface $mailingListHandler
-     * @param CRMHandlerInterface         $crmHandler
-     * @param TranslatorInterface         $translator
-     * @param LoggerInterface             $logger
+     * @param Properties                      $properties
+     * @param FormAttributes                  $formAttributes
+     * @param array                           $layoutData
+     * @param FormHandlerInterface            $formHandler
+     * @param FieldHandlerInterface           $fieldHandler
+     * @param SubmissionHandlerInterface      $submissionHandler
+     * @param SpamSubmissionHandlerInterface  $spamSubmissionHandler
+     * @param FileUploadHandlerInterface      $fileUploadHandler
+     * @param TranslatorInterface             $translator
+     * @param LoggerInterface                 $logger
      *
      * @throws FreeformException
      * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
@@ -153,25 +142,25 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         FormAttributes $formAttributes,
         array $layoutData,
         FormHandlerInterface $formHandler,
+        FieldHandlerInterface $fieldHandler,
         SubmissionHandlerInterface $submissionHandler,
-        MailHandlerInterface $mailHandler,
+        SpamSubmissionHandlerInterface $spamSubmissionHandler,
         FileUploadHandlerInterface $fileUploadHandler,
-        MailingListHandlerInterface $mailingListHandler,
-        CRMHandlerInterface $crmHandler,
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->properties         = $properties;
-        $this->formHandler        = $formHandler;
-        $this->submissionHandler  = $submissionHandler;
-        $this->mailHandler        = $mailHandler;
-        $this->fileUploadHandler  = $fileUploadHandler;
-        $this->mailingListHandler = $mailingListHandler;
-        $this->crmHandler         = $crmHandler;
-        $this->translator         = $translator;
-        $this->logger             = $logger;
-        $this->storeData          = true;
-        $this->customAttributes   = new CustomFormAttributes();
+        $this->properties               = $properties;
+        $this->formHandler              = $formHandler;
+        $this->fieldHandler             = $fieldHandler;
+        $this->submissionHandler        = $submissionHandler;
+        $this->spamSubmissionHandler    = $spamSubmissionHandler;
+        $this->fileUploadHandler        = $fileUploadHandler;
+        $this->translator               = $translator;
+        $this->logger                   = $logger;
+        $this->storeData                = true;
+        $this->customAttributes         = new CustomFormAttributes();
+        $this->errors                   = [];
+        $this->markedAsSpam             = false;
 
         $this->layout = new Layout(
             $this,
@@ -184,9 +173,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
         $this->id             = $formAttributes->getId();
         $this->formAttributes = $formAttributes;
-        $this->setCurrentPage($this->getPageIndexFromContext());
-        $this->currentPageRows = $this->currentPage->getRows();
-        $this->isValid();
+
+        $this->getCurrentPage();
     }
 
     /**
@@ -220,7 +208,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function getId(): int
     {
-        return (int) $this->id;
+        return $this->id;
     }
 
     /**
@@ -260,7 +248,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function getHash(): string
     {
-        return $this->getFormValueContext()->getHash();
+        return $this->getFormValueContext()->getLastHash();
     }
 
     /**
@@ -284,7 +272,27 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function getCurrentPage(): Page
     {
-        return $this->currentPage;
+        static $page;
+
+        $index = $this->getFormValueContext()->getCurrentPageIndex();
+
+        if (null === $page || $this->cachedPageIndex !== $index) {
+            if (!isset($this->layout->getPages()[$index])) {
+                throw new FreeformException(
+                    $this->getTranslator()->translate(
+                        "The provided page index '{pageIndex}' does not exist in form '{formName}'",
+                        ['pageIndex' => $index, 'formName' => $this->getName()]
+                    )
+                );
+            }
+
+            $page = $this->layout->getPages()[$index];
+
+            $this->currentPageRows = $page->getRows();
+            $this->cachedPageIndex = $index;
+        }
+
+        return $page;
     }
 
     /**
@@ -339,6 +347,46 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
+     * @return array
+     */
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    /**
+     * @param string $message
+     *
+     * @return Form
+     */
+    public function addError(string $message): Form
+    {
+        $this->errors[] = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isMarkedAsSpam(): bool
+    {
+        return $this->getFormValueContext()->isMarkedAsSpam();
+    }
+
+    /**
+     * @param bool $markedAsSpam
+     *
+     * @return Form
+     */
+    public function setMarkedAsSpam(bool $markedAsSpam): Form
+    {
+        $this->getFormValueContext()->setMarkedAsSpam($markedAsSpam);
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isValid(): bool
@@ -353,14 +401,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
             return $this->valid;
         }
 
-        $pageIsPosted = $this->getFormValueContext()->hasPageBeenPosted();
-        if (!$pageIsPosted) {
+        if (!$this->isPagePosted()) {
             $this->valid = false;
 
             return $this->valid;
         }
 
-        $currentPageFields = $this->currentPage->getFields();
+        $currentPageFields = $this->getCurrentPage()->getFields();
 
         $isFormValid = true;
         foreach ($currentPageFields as $field) {
@@ -369,14 +416,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
             }
         }
 
-        if (
-            $isFormValid
-            && $this->formHandler->isSpamProtectionEnabled()
-            && !$this->getFormValueContext()->isHoneypotValid()
-        ) {
+        $this->formHandler->onFormValidate($this, $isFormValid);
+
+        if ($isFormValid && $this->isMarkedAsSpam()) {
             $this->formHandler->incrementSpamBlockCount($this);
-            $this->spamBlocked = true;
-            $this->valid       = $this->formHandler->isSpamBlockLikeSuccessfulPost();
+            $this->valid = $this->formHandler->isSpamBehaviourSimulateSuccess();
 
             return $this->valid;
         }
@@ -419,18 +463,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function hasErrors(): bool
     {
-        $pageIsPosted = $this->getFormValueContext()->hasPageBeenPosted();
-
-        if ($pageIsPosted && !$this->isValid()) {
-            // If the form isn' valid because of a honeypot, we pretend nothing was wrong
-            if ($this->formHandler->isSpamProtectionEnabled() && !$this->getFormValueContext()->isHoneypotValid()) {
-                return false;
-            }
-
-            return true;
-        }
-
-        return false;
+        return $this->isPagePosted() && !$this->isValid();
     }
 
     /**
@@ -450,78 +483,112 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function submit()
     {
-        $formValueContext = $this->getFormValueContext();
-        $onBeforeSave     = $this->formHandler->onBeforeSubmit($this);
-
-        if ($this->spamBlocked) {
-            $this->formSaved = true;
-
-            return null;
+        if ($this->isMarkedAsSpam() && !$this->isSpamFolderEnabled()) {
+            return $this->processSpamSubmissionWithoutSpamFolder();
         }
+
+        $formValueContext = $this->getFormValueContext();
 
         if ($formValueContext->shouldFormWalkToPreviousPage()) {
-            $formValueContext->retreatToPreviousPage();
-            $formValueContext->saveState();
+            $this->retreatFormToPreviousPage();
 
-            return true;
+            return false;
         }
 
-        if (!$this->isValid()) {
-            throw new FreeformException($this->translator->translate('Trying to post an invalid form'));
-        }
-
-        $submittedValues = [];
-        foreach ($this->currentPage->getFields() as $field) {
-            if ($field instanceof NoStorageInterface && !$field instanceof RememberPostedValueInterface) {
-                continue;
-            }
-
-            $value = $field->getValue();
-            if ($field instanceof StaticValueInterface) {
-                if (!empty($value)) {
-                    $value = $field->getStaticValue();
-                }
-            }
-
-            $submittedValues[$field->getHandle()] = $value;
-        }
-
+        $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
         $formValueContext->appendStoredValues($submittedValues);
 
-        if ($formValueContext->getCurrentPageIndex() === (\count($this->getPages()) - 1)) {
-            if (!$onBeforeSave) {
-                return false;
-            }
+        if (!$this->isLastPage()) {
+            $this->advanceFormToNextPage();
 
-            if ($this->storeData && $this->hasOptInPermission()) {
-                $submission = $this->saveStoredStateToDatabase();
-            } else {
-                $submission      = null;
-                $this->formSaved = true;
-            }
-
-            $this->getSubmissionHandler()->markFormAsSubmitted($this);
-            $this->sendOutEmailNotifications($submission);
-
-            if ($this->hasOptInPermission()) {
-                $this->pushToMailingLists();
-                $this->pushToCRM();
-            }
-
-            $formValueContext->cleanOutCurrentSession();
-
-            $this->formHandler->onAfterSubmit($this, $submission);
-
-            return $submission;
+            return false;
         }
 
-        $formValueContext->advanceToNextPage();
-        $formValueContext->saveState();
+        if (!$this->formHandler->onBeforeSubmit($this)) {
+            return false;
+        }
 
-        return true;
+        $submission = null;
+
+        if ($this->storeData && $this->hasOptInPermission()) {
+            $submission = $this->saveStoredStateToDatabase();
+        } else {
+            $submission = $this->getSubmissionHandler()->createSubmissionFromForm($this);
+            $this->formSaved = true;
+        }
+
+        if (!$submission) {
+            $formValueContext->cleanOutCurrentSession();
+
+            return false;
+        }
+
+        $mailingListOptInFields = $this->getMailingListOptedInFields();
+
+        if ($this->isMarkedAsSpam()) {
+            if ($submission->getId()) {
+                $this->spamSubmissionHandler->postProcessSubmission($submission, $mailingListOptInFields);
+            }
+        } else {
+            $this->submissionHandler->postProcessSubmission($submission, $mailingListOptInFields);
+        }
+
+        $formValueContext->cleanOutCurrentSession();
+
+        return $submission->getId() ? $submission : false;
     }
 
     /**
+     * @return bool
+     */
+    public function isSpamFolderEnabled(): bool
+    {
+        return $this->formHandler->isSpamFolderEnabled() && $this->storeData;
+    }
+
+    /**
+     * @return bool
+     * @throws FreeformException
+     */
+    public function processSpamSubmissionWithoutSpamFolder(): bool
+    {
+        $formValueContext = $this->getFormValueContext();
+
+        if ($this->isLastPage()) {
+            $this->formSaved = !$this->formHandler->isSpamBehaviourReloadForm();
+            $formValueContext->cleanOutCurrentSession();
+
+            return false;
+        }
+
+        $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
+        $formValueContext->appendStoredValues($submittedValues);
+
+        $this->advanceFormToNextPage();
+
+        return false;
+    }
+
+    /**
+     * Returns list of mailing list fields that user opted-in
+     *
+     * @return AbstractField[]
+     */
+    public function getMailingListOptedInFields(): array
+    {
+        $fields = [];
+        foreach ($this->getLayout()->getMailingListFields() as $field) {
+            $field = $this->getLayout()->getFieldByHandle($field->getHandle());
+            $fieldValue = $field->getValue();
+            if ($fieldValue && $field->getEmailFieldHash() && $field->getResourceId()) {
+                $fields[] = $field;
+            }
+        }
+
+        return $fields;
+    }
+
+     /**
      * Render a predefined template
      *
      * @param array $customFormAttributes
@@ -544,11 +611,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     {
         $this->setAttributes($customFormAttributes);
 
-        $this->formHandler->addScriptsToPage($this);
-
         $customAttributes = $this->getCustomAttributes();
 
-        $encTypeAttribute = count($this->getLayout()->getFileUploadFields()) ? ' enctype="multipart/form-data"' : '';
+        $encTypeAttribute = \count($this->getLayout()->getFileUploadFields()) ? ' enctype="multipart/form-data"' : '';
 
         $idAttribute = $customAttributes->getId();
         $idAttribute = $idAttribute ? ' id="' . $idAttribute . '"' : '';
@@ -576,8 +641,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
                 $customAttributes->getFormAttributesAsString()
             ) . PHP_EOL;
 
-        $output .= '<a id="' . $this->getAnchor() . '"></a>';
-
         if (!$customAttributes->getAction()) {
             $output .= '<input type="hidden" name="action" value="' . $this->formAttributes->getActionUrl() . '" />';
         }
@@ -592,12 +655,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $output .= '<input '
             . 'type="hidden" '
             . 'name="' . FormValueContext::FORM_HASH_KEY . '" '
-            . 'value="' . $this->getFormValueContext()->getHash() . '" '
+            . 'value="' . $this->getHash() . '" '
             . '/>';
-
-        if ($this->formHandler->isSpamProtectionEnabled()) {
-            $output .= $this->getHoneyPotInput();
-        }
 
         if ($this->formAttributes->isCsrfEnabled()) {
             $csrfTokenName = $this->formAttributes->getCsrfTokenName();
@@ -608,10 +667,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
         $hiddenFields = $this->layout->getHiddenFields();
         foreach ($hiddenFields as $field) {
-            if ($field->getPageIndex() === $this->currentPage->getIndex()) {
+            if ($field->getPageIndex() === $this->getCurrentPage()->getIndex()) {
                 $output .= $field->renderInput();
             }
         }
+
+        $output .= '<a id="' . $this->getAnchor() . '"></a>';
+        $output .= $this->formHandler->onRenderOpeningTag($this);
 
         return Template::raw($output);
     }
@@ -621,46 +683,18 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function renderClosingTag(): \Twig_Markup
     {
-        $output = $this->formHandler->getScriptOutput($this);
+        $output = $this->formHandler->onRenderClosingTag($this);
         $output .= '</form>';
 
         return Template::raw($output);
     }
 
     /**
-     * Assembles a honeypot field
-     *
-     * @return string
+     * @return FieldHandlerInterface
      */
-    public function getHoneyPotInput(): string
+    public function getFieldHandler(): FieldHandlerInterface
     {
-        $random = time() . random_int(111, 999) . (time() + 999);
-        $hash   = substr(sha1($random), 0, 6);
-
-        $honeypot = $this->getHoneypot();
-        $output   = '<input '
-            . 'type="text" '
-            . 'value="' . $hash . '" '
-            . 'id="' . $honeypot->getName() . '" '
-            . 'name="' . $honeypot->getName() . '" '
-            . '/>';
-
-        $output = '<div style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true">'
-            . '<label>Leave this field blank</label>'
-            . $output
-            . '</div>';
-
-        return $output;
-    }
-
-    /**
-     * @return string
-     */
-    public function getHoneypotJavascriptScript(): string
-    {
-        $honeypot = $this->getHoneypot();
-
-        return 'document.getElementById("' . $honeypot->getName() . '").value = "' . $honeypot->getHash() . '";';
+        return $this->fieldHandler;
     }
 
     /**
@@ -672,11 +706,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
-     * @return MailHandlerInterface
+     * @return SpamSubmissionHandlerInterface
      */
-    public function getMailHandler(): MailHandlerInterface
+    public function getSpamSubmissionHandler(): SpamSubmissionHandlerInterface
     {
-        return $this->mailHandler;
+        return $this->spamSubmissionHandler;
     }
 
     /**
@@ -685,14 +719,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function getFileUploadHandler(): FileUploadHandlerInterface
     {
         return $this->fileUploadHandler;
-    }
-
-    /**
-     * @return MailingListHandlerInterface
-     */
-    public function getMailingListHandler(): MailingListHandlerInterface
-    {
-        return $this->mailingListHandler;
     }
 
     /**
@@ -708,7 +734,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      *
      * @return $this
      */
-    public function setAttributes(array $attributes = null)
+    public function setAttributes(array $attributes = null): Form
     {
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);
@@ -758,37 +784,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
-     * @return Honeypot
-     */
-    private function getHoneypot(): Honeypot
-    {
-        if (null === $this->honeypot) {
-            $this->honeypot = $this->getFormValueContext()->getNewHoneypot();
-        }
-
-        return $this->honeypot;
-    }
-
-    /**
-     * @param int $index
-     *
-     * @throws FreeformException
-     */
-    private function setCurrentPage(int $index)
-    {
-        if (!isset($this->layout->getPages()[$index])) {
-            throw new FreeformException(
-                $this->getTranslator()->translate(
-                    "The provided page index '{pageIndex}' does not exist in form '{formName}'",
-                    ['pageIndex' => $index, 'formName' => $this->getName()]
-                )
-            );
-        }
-
-        $this->currentPage = $this->layout->getPages()[$index];
-    }
-
-    /**
      * Builds the form object based on $formData
      *
      * @param FormProperties $formProperties
@@ -827,19 +822,37 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
-     * @return int
-     */
-    private function getPageIndexFromContext(): int
-    {
-        return $this->getFormValueContext()->getCurrentPageIndex();
-    }
-
-    /**
      * @return FormValueContext
      */
     private function getFormValueContext(): FormValueContext
     {
         return $this->formAttributes->getFormValueContext();
+    }
+
+    /**
+     * Set the form to advance to next page and flush cached data
+     */
+    private function advanceFormToNextPage()
+    {
+        $formValueContext = $this->getFormValueContext();
+
+        $formValueContext->advanceToNextPage();
+        $formValueContext->saveState();
+
+        $this->cachedPageIndex = null;
+    }
+
+    /**
+     * Set the form to retreat to previous page and flush cached data
+     */
+    private function retreatFormToPreviousPage()
+    {
+        $formValueContext = $this->getFormValueContext();
+
+        $formValueContext->retreatToPreviousPage();
+        $formValueContext->saveState();
+
+        $this->cachedPageIndex = null;
     }
 
     /**
@@ -849,7 +862,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     private function saveStoredStateToDatabase()
     {
-        $submission = $this->getSubmissionHandler()->storeSubmission($this, $this->layout->getFields());
+        $submission = $this->getSubmissionHandler()->storeSubmission($this);
 
         if ($submission) {
             $this->formSaved = true;
@@ -859,111 +872,31 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
-     * Send out any email notifications
+     * @return Properties\AdminNotificationProperties
      *
-     * @param Submission $submission
+     * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
      */
-    private function sendOutEmailNotifications(Submission $submission = null)
-    {
-        $adminNotifications = $this->properties->getAdminNotificationProperties();
-        if ($adminNotifications->getNotificationId()) {
-            $this->getMailHandler()->sendEmail(
-                $this,
-                $adminNotifications->getRecipientArray(),
-                $adminNotifications->getNotificationId(),
-                $this->layout->getFields(),
-                $submission
-            );
-        }
-
-        $recipientFields = $this->layout->getRecipientFields();
-
-        foreach ($recipientFields as $field) {
-            $this->getMailHandler()->sendEmail(
-                $this,
-                $field->getRecipients(),
-                $field->getNotificationId(),
-                $this->layout->getFields(),
-                $submission
-            );
-        }
-
-        $dynamicRecipients = $this->getFormValueContext()->getDynamicNotificationData();
-        if ($dynamicRecipients && $dynamicRecipients->getRecipients()) {
-            $this->getMailHandler()->sendEmail(
-                $this,
-                $dynamicRecipients->getRecipients(),
-                $dynamicRecipients->getTemplate(),
-                $this->layout->getFields(),
-                $submission
-            );
-        }
+    public function getAdminNotificationProperties() {
+        return $this->properties->getAdminNotificationProperties();
     }
 
     /**
-     * Pushes all emails to their respective mailing lists, if applicable
-     * Does nothing otherwise
+     * Returns data for dynamic notification email template.
+     *
+     * @return DynamicNotificationAttributes|null
      */
-    private function pushToMailingLists()
-    {
-        foreach ($this->getLayout()->getMailingListFields() as $field) {
-            if (!$field->getValue() || !$field->getEmailFieldHash() || !$field->getResourceId()) {
-                continue;
-            }
-
-            $mailingListHandler = $this->getMailingListHandler();
-
-            try {
-                $emailField = $this->getLayout()->getFieldByHash($field->getEmailFieldHash());
-
-                // TODO: Log any errors that happen
-                $integration = $mailingListHandler->getIntegrationObjectById($field->getIntegrationId());
-                $mailingList = $mailingListHandler->getListById($integration, $field->getResourceId());
-
-                /** @var FieldObject[] $mailingListFieldsByHandle */
-                $mailingListFieldsByHandle = [];
-                foreach ($mailingList->getFields() as $mailingListField) {
-                    $mailingListFieldsByHandle[$mailingListField->getHandle()] = $mailingListField;
-                }
-
-                $emailList = $emailField->getValue();
-                if ($emailList) {
-                    $mappedValues = [];
-                    if ($field->getMapping()) {
-                        foreach ($field->getMapping() as $key => $handle) {
-                            if (!isset($mailingListFieldsByHandle[$key])) {
-                                continue;
-                            }
-
-                            $mailingListField = $mailingListFieldsByHandle[$key];
-
-                            $convertedValue = $integration->convertCustomFieldValue(
-                                $mailingListField,
-                                $this->getLayout()->getFieldByHandle($handle)->getValue()
-                            );
-
-                            $mappedValues[$key] = $convertedValue;
-                        }
-                    }
-
-                    $mailingList->pushEmailsToList($emailList, $mappedValues);
-                    $mailingListHandler->flagIntegrationForUpdating($integration);
-                }
-
-            } catch (FreeformException $exception) {
-                continue;
-            }
-        }
+    public function getDynamicNotificationData() {
+        return $this->getFormValueContext()->getDynamicNotificationData();
     }
 
     /**
-     * Push the submitted data to the mapped fields of a CRM integration
+     * Returns form CRM integration properties
+     *
+     * @return Properties\IntegrationProperties
      */
-    private function pushToCRM()
+    public function getIntegrationProperties()
     {
-        $integrationProperties = $this->properties->getIntegrationProperties();
-
-        $this->crmHandler->pushObject($integrationProperties, $this->getLayout());
+        return $this->properties->getIntegrationProperties();
     }
 
     // ==========================
@@ -1089,5 +1022,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function offsetUnset($offset)
     {
         throw new FreeformException('Form ArrayAccess does not allow unsetting values');
+    }
+
+    private function isLastPage() {
+        return $this->getFormValueContext()->getCurrentPageIndex() === (\count($this->getPages()) - 1);
     }
 }

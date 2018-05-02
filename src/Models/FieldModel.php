@@ -15,6 +15,7 @@ use craft\base\Model;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 class FieldModel extends Model implements \JsonSerializable
@@ -176,6 +177,18 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['showCustomValues'] = $this->hasCustomOptionValues();
             $returnArray['values']           = $this->getMetaProperty('values', []);
             $returnArray['options']          = $this->getMetaProperty('options', []);
+            $returnArray['source']           = $this->getMetaProperty('source', ExternalOptionsInterface::SOURCE_CUSTOM);
+            $returnArray['target']           = $this->getMetaProperty('target', null);
+            $returnArray['configuration']    = $this->getMetaProperty('target', null);
+        }
+
+        if ($this->type === FieldInterface::TYPE_MULTIPLE_SELECT) {
+            $returnArray['showCustomValues'] = $this->hasCustomOptionValues();
+            $returnArray['values']           = $this->getMetaProperty('values', []);
+            $returnArray['options']          = $this->getMetaProperty('options', []);
+            $returnArray['source']           = $this->getMetaProperty('source', ExternalOptionsInterface::SOURCE_CUSTOM);
+            $returnArray['target']           = $this->getMetaProperty('target', null);
+            $returnArray['configuration']    = $this->getMetaProperty('target', null);
         }
 
         if ($this->type === FieldInterface::TYPE_FILE) {
@@ -192,6 +205,9 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['showCustomValues'] = $this->hasCustomOptionValues();
             $returnArray['value']            = $this->getMetaProperty('value', '');
             $returnArray['options']          = $this->getMetaProperty('options', []);
+            $returnArray['source']           = $this->getMetaProperty('source', ExternalOptionsInterface::SOURCE_CUSTOM);
+            $returnArray['target']           = $this->getMetaProperty('target', null);
+            $returnArray['configuration']    = $this->getMetaProperty('target', null);
         }
 
         if ($this->type === FieldInterface::TYPE_DATETIME) {
@@ -308,6 +324,7 @@ class FieldModel extends Model implements \JsonSerializable
             if ($isChecked) {
                 switch ($this->type) {
                     case FieldInterface::TYPE_CHECKBOX_GROUP:
+                    case FieldInterface::TYPE_MULTIPLE_SELECT:
                         $savableValues[] = $fieldValue;
                         break;
 

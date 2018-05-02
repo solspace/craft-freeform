@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use GuzzleHttp\Exception\BadResponseException;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Layout;
@@ -233,9 +234,13 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      *
      * @return bool
      */
-    public function pushObject(IntegrationProperties $properties, Layout $layout): bool
+    public function pushObject(Submission $submission): bool
     {
         $freeform = Freeform::getInstance();
+
+        $form       = $submission->getForm();
+        $layout     = $form->getLayout();
+        $properties = $form->getIntegrationProperties();
 
         try {
             /** @var AbstractCRMIntegration $integration */
@@ -269,9 +274,9 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 $formField = $layout->getFieldByHandle($fieldHandle);
 
                 if ($crmField->getType() === FieldObject::TYPE_ARRAY) {
-                    $value = $formField->getValue();
+                    $value = $submission->{$formField->getHandle()}->getValue();
                 } else {
-                    $value = $formField->getValueAsString(false);
+                    $value = $submission->{$formField->getHandle()}->getValueAsString();
                 }
 
                 $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $value);

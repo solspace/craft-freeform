@@ -11,10 +11,13 @@
 
 namespace Solspace\Freeform\Controllers;
 
+use craft\base\Field;
 use craft\helpers\Assets;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Composer;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -27,6 +30,7 @@ use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\FreeformPro\FreeformPro;
 use yii\web\Response;
 
 class FormsController extends BaseController
@@ -49,6 +53,7 @@ class FormsController extends BaseController
             [
                 'forms'                  => $forms,
                 'totalSubmissionsByForm' => $totalSubmissionsByForm,
+                'isSpamFolderEnabled'    => $this->getSettingsService()->isSpamFolderEnabled(),
             ]
         );
     }
@@ -126,7 +131,9 @@ class FormsController extends BaseController
                 $composerState,
                 $formAttributes,
                 $freeform->forms,
+                $freeform->fields,
                 $freeform->submissions,
+                $freeform->spamSubmissions,
                 $freeform->mailer,
                 $freeform->files,
                 $freeform->mailingLists,
@@ -280,9 +287,115 @@ class FormsController extends BaseController
             'canManageSettings'        => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
             'isWidgetsInstalled'       => Freeform::getInstance()->isPro(),
+            'isReCaptchaEnabled'       => Freeform::getInstance()->isPro() && FreeformPro::getInstance()->getSettings()->recaptchaEnabled,
+            'sourceTargets'            => $this->getEncodedJson($this->getSourceTargetsList()),
+            'customFields'             => $this->getEncodedJson($this->getAllCustomFieldList()),
+            'generatedOptions'         => $this->getEncodedJson($this->getGeneratedOptionsList($model->getForm())),
         ];
 
         return $this->renderTemplate('freeform/forms/edit', $templateVariables);
+    }
+
+    /**
+     * @return array
+     */
+    private function getAllCustomFieldList(): array
+    {
+        $fieldList = [
+            ['key' => 'id', 'value' => 'ID'],
+            ['key' => 'title', 'value' => \Craft::t('app', 'Title')],
+            ['key' => 'slug', 'value' => \Craft::t('app', 'Slug')],
+            ['key' => 'uri', 'value' => \Craft::t('app', 'URI')],
+            ['key' => 'username', 'value' => \Craft::t('app', 'Username')],
+            ['key' => 'email', 'value' => \Craft::t('app', 'Email')],
+            ['key' => 'firstName', 'value' => \Craft::t('app', 'First Name')],
+            ['key' => 'lastName', 'value' => \Craft::t('app', 'Last Name')],
+            ['key' => 'fullName', 'value' => \Craft::t('app', 'Full Name')],
+        ];
+
+        /** @var Field[] $fields */
+        $fields = \Craft::$app->fields->getAllFields();
+        foreach ($fields as $field) {
+            $fieldList[] = ['key' => $field->handle, 'value' => $field->name];
+        }
+
+        return $fieldList;
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return array|\stdClass
+     */
+    private function getGeneratedOptionsList(Form $form)
+    {
+        $options = [];
+        foreach ($form->getLayout()->getFields() as $field) {
+            if ($field instanceof ExternalOptionsInterface) {
+                if ($field->getOptionSource() !== ExternalOptionsInterface::SOURCE_CUSTOM) {
+                    $options[$field->getHash()] = $this->getFieldsService()->getOptionsFromSource(
+                        $field->getOptionSource(),
+                        $field->getOptionTarget(),
+                        $field->getOptionConfiguration()
+                    );
+                }
+            }
+        }
+
+        if (empty($options)) {
+            return new \stdClass();
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return array
+     */
+    private function getSourceTargetsList(): array
+    {
+        $sections    = \Craft::$app->sections->getAllSections();
+        $sectionList = [0 => ['key' => '', 'value' => Freeform::t('All Sections')]];
+        foreach ($sections as $group) {
+            $sectionList[] = [
+                'key'   => $group->id,
+                'value' => $group->name,
+            ];
+        }
+
+        $categories   = \Craft::$app->categories->getAllGroups();
+        $categoryList = [0 => ['key' => '', 'value' => Freeform::t('All Category Groups')]];
+        foreach ($categories as $group) {
+            $categoryList[] = [
+                'key'   => $group->id,
+                'value' => $group->name,
+            ];
+        }
+
+        $tags    = \Craft::$app->tags->getAllTagGroups();
+        $tagList = [0 => ['key' => '', 'value' => Freeform::t('All Tag Groups')]];
+        foreach ($tags as $group) {
+            $tagList[] = [
+                'key'   => $group->id,
+                'value' => $group->name,
+            ];
+        }
+
+        $users    = \Craft::$app->userGroups->getAllGroups();
+        $userList = [0 => ['key' => '', 'value' => Freeform::t('All User Groups')]];
+        foreach ($users as $group) {
+            $userList[] = [
+                'key'   => $group->id,
+                'value' => $group->name,
+            ];
+        }
+
+        return [
+            ExternalOptionsInterface::SOURCE_ENTRIES    => $sectionList,
+            ExternalOptionsInterface::SOURCE_CATEGORIES => $categoryList,
+            ExternalOptionsInterface::SOURCE_TAGS       => $tagList,
+            ExternalOptionsInterface::SOURCE_USERS      => $userList,
+        ];
     }
 
     /**

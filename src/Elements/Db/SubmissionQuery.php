@@ -26,6 +26,9 @@ class SubmissionQuery extends ElementQuery
     /** @var string */
     public $token;
 
+    /** @var bool */
+    public $isSpam = null;
+
     /**
      * @param mixed $value
      *
@@ -87,6 +90,18 @@ class SubmissionQuery extends ElementQuery
     }
 
     /**
+     * @param bool|null $value
+     *
+     * @return SubmissionQuery
+     */
+    public function isSpam($value): SubmissionQuery
+    {
+        $this->isSpam = $value;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     protected function beforePrepare(): bool
@@ -115,6 +130,8 @@ class SubmissionQuery extends ElementQuery
             $table . '.[[statusId]]',
             $table . '.[[incrementalId]]',
             $table . '.[[token]]',
+            $table . '.[[isSpam]]',
+            $table . '.[[ip]]',
         ];
 
         foreach (Freeform::getInstance()->fields->getAllFieldIds() as $id) {
@@ -143,6 +160,10 @@ class SubmissionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam($table . '.[[token]]', $this->token));
         }
 
+        if ($this->isSpam !== null) {
+            $this->subQuery->andWhere(Db::parseParam($table . '.[[isSpam]]', $this->isSpam));
+        }
+
         if ($this->status && \is_string($this->status)) {
             $this->subQuery->andWhere(Db::parseParam($statusTable . '.[[handle]]', $this->status));
             $this->status = '';
@@ -163,7 +184,7 @@ class SubmissionQuery extends ElementQuery
         }
 
         if (!empty($this->orderBy) && \is_array($this->orderBy)) {
-            $orderExceptions = ['title'];
+            $orderExceptions = ['title', 'score'];
 
             $prefixedOrderList = [];
             foreach ($this->orderBy as $key => $sortDirection) {

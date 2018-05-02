@@ -11,6 +11,7 @@ return [
     'freeform/api/quick-create-notification'                     => 'freeform/api/quick-create-notification',
     'freeform/api/finish-tutorial'                               => 'freeform/api/finish-tutorial',
     'freeform/api/get-submission-data'                           => 'freeform/api/get-submission-data',
+    'freeform/api/options-from-source'                           => 'freeform/api/options-from-source',
     // Forms
     'freeform'                                                   => 'freeform/settings/default-view',
     'freeform/forms'                                             => 'freeform/forms/index',
@@ -41,6 +42,13 @@ return [
     'freeform/submissions/export'                                => 'freeform/submissions/export',
     'freeform/submissions/<id:\d+>'                              => 'freeform/submissions/edit',
     'freeform/submissions/save'                                  => 'freeform/submissions/save',
+    'freeform/submissions/<formHandle:{handle}>'                 => 'freeform/submissions/index',
+    // Spam
+    'freeform/spam'                                              => 'freeform/spam-submissions/index',
+    'freeform/spam/whitelist'                                    => 'freeform/spam-submissions/whitelist',
+    'freeform/spam/<id:\d+>'                                     => 'freeform/spam-submissions/edit',
+    'freeform/spam/<formHandle:{handle}>'                        => 'freeform/spam-submissions/index',
+
     // Mailing Lists
     'freeform/settings/mailing-lists'                            => 'freeform/mailing-lists/index',
     'freeform/settings/mailing-lists/new'                        => 'freeform/mailing-lists/create',
@@ -54,8 +62,12 @@ return [
     'freeform/crm/check'                                         => 'freeform/crm/check-integration-connection',
     'freeform/crm/authenticate/<handle:[a-zA-Z0-9_]+>'           => 'freeform/crm/force-authorization',
     // Settings
+    'freeform/settings'                                          => 'freeform/settings/provide-setting',
+    'freeform/settings/general'                                  => 'freeform/settings/provide-setting',
+    'freeform/settings/email-templates'                          => 'freeform/settings/provide-setting',
+    'freeform/settings/formatting-templates'                     => 'freeform/settings/provide-setting',
+    'freeform/settings/spam'                                     => 'freeform/settings/provide-setting',
     'freeform/settings/add-demo-template'                        => 'freeform/settings/add-demo-template',
     'freeform/settings/add-email-template'                       => 'freeform/settings/add-email-template',
     'freeform/settings/demo-templates'                           => 'freeform/codepack/list-contents',
-    'freeform/settings/<template:[\w+\-\_]+>'                    => 'freeform/settings/provide-setting',
 ];

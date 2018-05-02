@@ -24,7 +24,7 @@ use Solspace\Freeform\Library\Logging\CraftLogger;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 
 /**
- * Class Freeform_NotificationRecord
+ * Class IntegrationRecord
  *
  * @property int       $id
  * @property string    $name

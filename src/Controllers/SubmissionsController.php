@@ -22,7 +22,6 @@ use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
-use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
@@ -30,12 +29,26 @@ use yii\web\Response;
 
 class SubmissionsController extends BaseController
 {
+    const TEMPLATE_BASE_PATH = 'freeform/submissions';
+
     /**
+     * Returns base path for view templates, so it could be overridden
+     *
+     * @return string
+     */
+    protected function getTemplateBasePath(): string
+    {
+        return self::TEMPLATE_BASE_PATH;
+    }
+
+    /**
+     * @param string|null $formHandle
+     *
      * @return Response
      * @throws ForbiddenHttpException
-     * @throws InvalidParamException
+     * @throws \yii\base\InvalidConfigException
      */
-    public function actionIndex(): Response
+    public function actionIndex(string $formHandle = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
 
@@ -49,10 +62,11 @@ class SubmissionsController extends BaseController
         $forms = $this->getFormsService()->getAllForms();
 
         return $this->renderTemplate(
-            'freeform/submissions',
+            $this->getTemplateBasePath(),
             [
-                'forms'    => $forms,
-                'statuses' => $this->getStatusesService()->getAllStatuses(),
+                'forms'      => $forms,
+                'statuses'   => $this->getStatusesService()->getAllStatuses(),
+                'formHandle' => $formHandle,
             ]
         );
     }
@@ -187,7 +201,7 @@ class SubmissionsController extends BaseController
         ];
 
         return $this->renderTemplate(
-            'freeform/submissions/edit',
+            $this->getTemplateBasePath() . '/edit',
             $variables
         );
     }

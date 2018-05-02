@@ -111,6 +111,7 @@ class FieldsController extends Controller
             [
                 FieldInterface::TYPE_RADIO_GROUP,
                 FieldInterface::TYPE_CHECKBOX_GROUP,
+                FieldInterface::TYPE_MULTIPLE_SELECT,
                 FieldInterface::TYPE_SELECT,
                 FieldInterface::TYPE_DYNAMIC_RECIPIENTS,
             ],
@@ -121,7 +122,7 @@ class FieldsController extends Controller
             $fieldSpecificPost = $post['types'][$field->type];
             $field->addMetaProperties($fieldSpecificPost);
 
-            $hasValues         = isset($fieldSpecificPost['values']) && is_array($fieldSpecificPost['values']);
+            $hasValues         = isset($fieldSpecificPost['values']) && \is_array($fieldSpecificPost['values']);
             $forceLabelOnValue = isset($fieldSpecificPost['customValues']) && $fieldSpecificPost['customValues'] !== '1';
 
             if ($fieldHasOptions && $hasValues) {

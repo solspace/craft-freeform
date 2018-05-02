@@ -4,7 +4,6 @@
 {% set selectedSubnavItem = 'submissions' %}
 {% set elementType = 'Solspace\\Freeform\\Elements\\Submission' %}
 
-
 {% block body %}
     {{ parent() }}
     <form method="post"
@@ -26,3 +25,10 @@
     {% endfor %}
 
 {% endcss %}
+
+
+{% if formHandle is defined %}
+    {% js %}
+        window.defaultFormHandle = '{{ formHandle }}';
+    {% endjs %}
+{% endif %}

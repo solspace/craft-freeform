@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
  * @link          https://solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
@@ -12,13 +12,14 @@
 namespace Solspace\Freeform\Library\Composer;
 
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
-use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Context;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
+use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
+use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\StatusHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
@@ -55,6 +56,9 @@ class Composer
     /** @var SubmissionHandlerInterface */
     private $submissionHandler;
 
+    /** @var SpamSubmissionHandlerInterface */
+    private $spamSubmissionHandler;
+
     /** @var MailHandlerInterface */
     private $mailHandler;
 
@@ -76,20 +80,25 @@ class Composer
     /** @var StatusHandlerInterface */
     private $statusHandler;
 
+    /** @var FieldHandlerInterface */
+    private $fieldHandler;
+
     /**
      * Composer constructor.
      *
-     * @param array                       $composerState
-     * @param FormAttributes              $formAttributes
-     * @param FormHandlerInterface        $formHandler
-     * @param SubmissionHandlerInterface  $submissionHandler
-     * @param MailHandlerInterface        $mailHandler
-     * @param FileUploadHandlerInterface  $fileUploadHandler
-     * @param MailingListHandlerInterface $mailingListHandler
-     * @param CRMHandlerInterface         $crmHandler
-     * @param StatusHandlerInterface      $statusHandler
-     * @param TranslatorInterface         $translator
-     * @param LoggerInterface             $logger
+     * @param array                           $composerState
+     * @param FormAttributes                  $formAttributes
+     * @param FormHandlerInterface            $formHandler
+     * @param FieldHandlerInterface           $fieldHandler
+     * @param SubmissionHandlerInterface      $submissionHandler
+     * @param SpamSubmissionHandlerInterface  $spamSubmissionHandler
+     * @param MailHandlerInterface            $mailHandler
+     * @param FileUploadHandlerInterface      $fileUploadHandler
+     * @param MailingListHandlerInterface     $mailingListHandler
+     * @param CRMHandlerInterface             $crmHandler
+     * @param StatusHandlerInterface          $statusHandler
+     * @param TranslatorInterface             $translator
+     * @param LoggerInterface                 $logger
      *
      * @throws ComposerException
      */
@@ -97,7 +106,9 @@ class Composer
         array $composerState = null,
         FormAttributes $formAttributes = null,
         FormHandlerInterface $formHandler,
+        FieldHandlerInterface $fieldHandler,
         SubmissionHandlerInterface $submissionHandler,
+        SpamSubmissionHandlerInterface $spamSubmissionHandler,
         MailHandlerInterface $mailHandler,
         FileUploadHandlerInterface $fileUploadHandler,
         MailingListHandlerInterface $mailingListHandler,
@@ -106,15 +117,17 @@ class Composer
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->formHandler        = $formHandler;
-        $this->submissionHandler  = $submissionHandler;
-        $this->mailHandler        = $mailHandler;
-        $this->fileUploadHandler  = $fileUploadHandler;
-        $this->mailingListHandler = $mailingListHandler;
-        $this->crmHandler         = $crmHandler;
-        $this->statusHandler      = $statusHandler;
-        $this->translator         = $translator;
-        $this->logger             = $logger;
+        $this->formHandler              = $formHandler;
+        $this->fieldHandler             = $fieldHandler;
+        $this->submissionHandler        = $submissionHandler;
+        $this->spamSubmissionHandler    = $spamSubmissionHandler;
+        $this->mailHandler              = $mailHandler;
+        $this->fileUploadHandler        = $fileUploadHandler;
+        $this->mailingListHandler       = $mailingListHandler;
+        $this->crmHandler               = $crmHandler;
+        $this->statusHandler            = $statusHandler;
+        $this->translator               = $translator;
+        $this->logger                   = $logger;
 
         $this->composerState = $composerState;
         $this->validateComposerData($formAttributes);
@@ -215,11 +228,10 @@ class Composer
             $formAttributes,
             $composer[self::KEY_LAYOUT],
             $this->formHandler,
+            $this->fieldHandler,
             $this->submissionHandler,
-            $this->mailHandler,
+            $this->spamSubmissionHandler,
             $this->fileUploadHandler,
-            $this->mailingListHandler,
-            $this->crmHandler,
             $this->translator,
             $this->logger
         );
@@ -273,11 +285,10 @@ class Composer
             $formAttributes,
             [[]],
             $this->formHandler,
+            $this->fieldHandler,
             $this->submissionHandler,
-            $this->mailHandler,
+            $this->spamSubmissionHandler,
             $this->fileUploadHandler,
-            $this->mailingListHandler,
-            $this->crmHandler,
             $this->translator,
             $this->logger
         );

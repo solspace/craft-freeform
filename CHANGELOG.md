@@ -1,5 +1,31 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.17 - 2018-05-01
+### Added
+- Added field option Element and Data Feeders for Checkbox group, Radio group, Select and Multi-select fieldtypes. You can now populate these fields with Entries, Categories, Tags, Users, or one of our many predefined options: States, Provinces, Countries, Languages, Number ranges, Year ranges, Months, Days and Days of the Week. Freeform Data Feeders also offer flexible control over formatting and/or which data fills option labels and option values.
+- Added Multi-select fieldtype.
+- Added Spam Folder feature. Never miss a valid lead again! You can optionally enable this to have submissions flagged as spam (from failed honeypot or blocked keywords/emails/IP addresses) be saved to the database an placed into Freeform's Spam Folder. Submissions can then be reviewed (and optionally edited) and whitelisted, retroactively generating missed email notifications and passing along of data to API integrations.
+- Added Spam Protection options to ban email addresses, keywords and IP addresses. Wildcards are permitted on email addresses and keywords.
+- Added reCAPTCHA spam protection integration for Freeform Pro edition.
+
+### Changed
+- Updated the Spam Protection Behavior setting to allow one of three options: Simulate Success, Display errors (good for debugging), and Reload form.
+- Updated form submissions to collect the IP address of submitters.
+- Improved the appearance of the Property Editor in Composer by having instructions for each setting displayed in a tooltip instead.
+- Increased the size of image thumbnails when viewing submissions in control panel.
+- Updated Forms list in CP to have submission counts link to Submissions area.
+- Updated Hidden fields to allow up to 250 characters.
+
+### Fixed
+- Fixed an XSS security vulnerability with submitting forms.
+- Fixed a bug where searching into Submissions in the CP would return an error.
+- Fixed a bug where submitting a form with a single File Upload field without `[]` would error.
+- Fixed a bug where the Date & Time fieldtype datepicker path was incorrect.
+- Fixed a bug where 'max length' error messages for text and textarea fields were not translatable.
+- Fixed a bug where creating and editing statuses would not correctly update the status handle.
+- Fixed a bug where Freeform 1 to 2 migration would not correctly update the Form Fieldtype for Craft 3.
+- Fixed a bug where exporting odd checkbox data could result in an error.
+
 ## 2.0.0-beta.16 - 2018-04-11
 ### Fixed
 - Fixed a bug where Radio group and Checkbox group options were rendering without unique values for the ID attribute by default.

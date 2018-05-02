@@ -79,7 +79,7 @@
                                         <input type="checkbox"
                                                name="{{ field.handle }}[]"
                                                value="{{ option.value }}"
-                                                {{ option.value in field.value ? "checked" : "" }}
+                                                {{ option.checked ? "checked" }}
                                         />
                                         {{ option.label|raw }}
                                     </label>
@@ -104,7 +104,7 @@
                                         <input type="radio"
                                                name="{{ field.handle }}"
                                                value="{{ option.value }}"
-                                                {{ option.value in field.value ? "checked" : "" }}
+                                                {{ option.checked ? "checked" }}
                                         />
                                         {{ option.label|raw }}
                                     </label>

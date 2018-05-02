@@ -48,7 +48,7 @@ class MailingListsController extends BaseController
         \Craft::$app->view->registerAssetBundle(MailingListsBundle::class);
 
         return $this->renderTemplate(
-            'freeform/_settings/mailing_lists',
+            'freeform/settings/_mailing_lists',
             [
                 'integrations' => $mailingListIntegrations,
                 'providers'    => $this->getMailingListsService()->getAllMailingListServiceProviders(),
@@ -310,6 +310,6 @@ class MailingListsController extends BaseController
             'settings'             => $settingBlueprints,
         ];
 
-        return $this->renderTemplate('freeform/_settings/mailing_list_edit', $variables);
+        return $this->renderTemplate('freeform/settings/_mailing_list_edit', $variables);
     }
 }

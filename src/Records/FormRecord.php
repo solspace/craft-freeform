@@ -73,7 +73,7 @@ class FormRecord extends ActiveRecord
     {
         return [
             [['handle'], 'unique'],
-            [['handle'], 'required'],
+            [['name', 'handle'], 'required'],
         ];
     }
 }

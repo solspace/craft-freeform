@@ -93,7 +93,7 @@
                                            id="{{ form.hash ~ field.handle ~ option.value }}"
                                            name="{{ field.handle }}"
                                            value="{{ option.value }}"
-                                            {{ option.value in field.value ? "checked" : "" }}
+                                            {{ option.checked ? "checked" }}
                                     />
                                     <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
                                 </p>
@@ -119,7 +119,7 @@
                                            id="{{ form.hash ~ field.handle ~ option.value }}"
                                            name="{{ field.handle }}"
                                            value="{{ option.value }}"
-                                            {{ option.value in field.value ? "checked" : "" }}
+                                            {{ option.checked ? "checked" }}
                                     />
                                     <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
                                 </p>
@@ -145,7 +145,7 @@
                                            id="{{ form.hash ~ field.handle ~ option.value }}"
                                            name="{{ field.handle }}"
                                            value="{{ loop.index0 }}"
-                                            {{ option.value in field.value ? "checked" : "" }}
+                                            {{ option.checked ? "checked" }}
                                     />
                                     <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
                                 </p>

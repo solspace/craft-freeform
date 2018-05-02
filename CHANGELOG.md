@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.18 - 2018-05-02
+### Changed
+- Updated Composer to no longer have a default Form Name, and also auto-generate a Form Handle based on the Form Name.
+
+### Fixed
+- Fixed a bug where clicking the Settings link from the Plugins list was not rerouted correctly.
+- Fixed a bug where the Spam Folder API queue migration did not account for prefixed database tables.
+- Fixed a bug where updates could error if you updated Pro before Lite.
+- Fixed a bug where fields with numeric options were not always using the correct values.
+
 ## 2.0.0-beta.17 - 2018-05-01
 ### Added
 - Added field option Element and Data Feeders for Checkbox group, Radio group, Select and Multi-select fieldtypes. You can now populate these fields with Entries, Categories, Tags, Users, or one of our many predefined options: States, Provinces, Countries, Languages, Number ranges, Year ranges, Months, Days and Days of the Week. Freeform Data Feeders also offer flexible control over formatting and/or which data fills option labels and option values.

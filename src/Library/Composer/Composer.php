@@ -253,8 +253,8 @@ class Composer
                 ],
                 Properties::FORM_HASH                => [
                     'type'                  => Properties::FORM_HASH,
-                    'name'                  => 'Composer Form',
-                    'handle'                => 'composerForm',
+                    'name'                  => '',
+                    'handle'                => '',
                     'color'                 => '#' . substr(md5(random_int(111, 999) . time()), 0, 6),
                     'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',
                     'description'           => '',

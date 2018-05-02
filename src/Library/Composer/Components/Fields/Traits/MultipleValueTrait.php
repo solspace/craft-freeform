@@ -58,11 +58,7 @@ trait MultipleValueTrait
         if ($this instanceof OptionsInterface) {
             $updatedOptions = [];
             foreach ($this->getOptions() as $option) {
-                if (is_numeric($option->getValue())) {
-                    $checked = \in_array((int) $option->getValue(), $this->getValue(), false);
-                } else {
-                    $checked = \in_array($option->getValue(), $this->getValue(), true);
-                }
+                $checked = \in_array($option->getValue(), $this->getValue(), false);
 
                 $updatedOptions[] = new Option(
                     $option->getLabel(),

@@ -55,16 +55,10 @@ trait SingleValueTrait
             }
 
             foreach ($this->getOptions() as $option) {
-                if (is_numeric($objectValue) && is_numeric($option->getValue())) {
-                    $checked = (int) $option->getValue() === (int) $objectValue;
-                } else {
-                    $checked = $option->getValue() === $objectValue;
-                }
-
                 $updatedOptions[] = new Option(
                     $option->getLabel(),
                     $option->getValue(),
-                    $checked
+                    (string) $option->getValue() === (string) $objectValue
                 );
             }
 

@@ -206,7 +206,7 @@ class SettingsController extends BaseController
         $template = \Craft::$app->request->getSegment(3);
 
         return $this->renderTemplate(
-            'freeform/_settings/' . (string) $template,
+            'freeform/settings/' . ($template ? '_' . (string) $template : ''),
             [
                 'settings' => $this->getSettingsModel(),
             ]

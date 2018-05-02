@@ -16,7 +16,8 @@ class m180410_131206_CreateIntegrationsQueue extends Migration
      */
     public function safeUp()
     {
-        $this->createTable('freeform_integrations_queue', array(
+        $this->dropTableIfExists('freeform_integrations_queue');
+        $this->createTable('{{%freeform_integrations_queue}}', array(
             'id' => $this->primaryKey(),
             'submissionId' => $this->integer()->notNull(),
             'fieldHash' => $this->string(20),
@@ -26,12 +27,12 @@ class m180410_131206_CreateIntegrationsQueue extends Migration
             'dateUpdated' => $this->dateTime(),
             'uid' => $this->uid(),
         ));
-        $this->createIndex(null,  'freeform_integrations_queue', 'status');
+        $this->createIndex(null,  '{{%freeform_integrations_queue}}', 'status');
         $this->addForeignKey(
             null,
-            'freeform_integrations_queue',
+            '{{%freeform_integrations_queue}}',
             'submissionId',
-            'freeform_submissions',
+            '{{%freeform_submissions}}',
             'id',
             ForeignKey::CASCADE
         );
@@ -44,7 +45,7 @@ class m180410_131206_CreateIntegrationsQueue extends Migration
      */
     public function safeDown()
     {
-        $this->dropTable('freeform_integrations_queue');
+        $this->dropTable('{{%freeform_integrations_queue}}');
 
         return true;
     }

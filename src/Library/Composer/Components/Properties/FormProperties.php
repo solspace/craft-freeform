@@ -34,6 +34,9 @@ class FormProperties extends AbstractProperties
     /** @var bool */
     protected $storeData;
 
+    /** @var bool */
+    protected $ipCollectingEnabled;
+
     /** @var int */
     protected $defaultStatus;
 
@@ -100,6 +103,14 @@ class FormProperties extends AbstractProperties
     }
 
     /**
+     * @return boolean
+     */
+    public function isIpCollectingEnabled(): bool
+    {
+        return null !== $this->ipCollectingEnabled ? (bool) $this->ipCollectingEnabled : true;
+    }
+
+    /**
      * @return int
      */
     public function getDefaultStatus(): int
@@ -141,6 +152,7 @@ class FormProperties extends AbstractProperties
             'description'                => self::TYPE_STRING,
             'returnUrl'                  => self::TYPE_STRING,
             'storeData'                  => self::TYPE_BOOLEAN,
+            'ipCollectingEnabled'        => self::TYPE_BOOLEAN,
             'defaultStatus'              => self::TYPE_INTEGER,
             'formTemplate'               => self::TYPE_STRING,
             'optInDataStorageTargetHash' => self::TYPE_STRING,

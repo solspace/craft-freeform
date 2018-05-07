@@ -296,7 +296,7 @@ class Layout implements \JsonSerializable, \Iterator
         $mailingListFields          = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
-            if (!is_array($rows)) {
+            if (!\is_array($rows)) {
                 throw new ComposerException(
                     $this->translate(
                         'Layout page {pageIndex} does not contain a row array',

@@ -6,13 +6,29 @@ use Solspace\Commons\Configurations\BaseConfiguration;
 
 class ExternalOptionsConfiguration extends BaseConfiguration
 {
+    /** @var string */
     protected $labelField;
+
+    /** @var string */
     protected $valueField;
+
+    /** @var int */
     protected $start;
+
+    /** @var int */
     protected $end;
+
+    /** @var string */
     protected $listType;
+
+    /** @var string */
     protected $valueType;
+
+    /** @var string */
     protected $sort;
+
+    /** @var string */
+    protected $emptyOption;
 
     /**
      * @return string|null
@@ -68,5 +84,13 @@ class ExternalOptionsConfiguration extends BaseConfiguration
     public function getSort()
     {
         return $this->sort;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmptyOption()
+    {
+        return $this->castToString($this->emptyOption);
     }
 }

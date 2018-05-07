@@ -134,10 +134,7 @@ class FormsController extends BaseController
                 $freeform->fields,
                 $freeform->submissions,
                 $freeform->spamSubmissions,
-                $freeform->mailer,
                 $freeform->files,
-                $freeform->mailingLists,
-                $freeform->crm,
                 $freeform->statuses,
                 new CraftTranslator(),
                 new CraftLogger()

@@ -132,10 +132,7 @@ class FormModel extends Model
                 $freeform->fields,
                 $freeform->submissions,
                 $freeform->spamSubmissions,
-                $freeform->mailer,
                 $freeform->files,
-                $freeform->mailingLists,
-                $freeform->crm,
                 $freeform->statuses,
                 new CraftTranslator(),
                 new CraftLogger()

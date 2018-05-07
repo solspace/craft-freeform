@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Factories;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
@@ -29,37 +30,54 @@ class PredefinedOptionsFactory
     public static function create(string $type, ExternalOptionsConfiguration $configuration, array $selectedValues = []): array
     {
         $instance = new self($configuration, $selectedValues);
-        
+
         switch ($type) {
             case ExternalOptionsInterface::PREDEFINED_NUMBERS:
-                return $instance->getNumberOptions();
+                $options = $instance->getNumberOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_YEARS:
-                return $instance->getYearOptions();
+                $options = $instance->getYearOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_MONTHS:
-                return $instance->getMonthOptions();
+                $options = $instance->getMonthOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_DAYS:
-                return $instance->getDayOptions();
+                $options = $instance->getDayOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_DAYS_OF_WEEK:
-                return $instance->getDaysOfWeekOptions();
+                $options = $instance->getDaysOfWeekOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_COUNTRIES:
-                return $instance->getCountryOptions();
+                $options = $instance->getCountryOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_LANGUAGES:
-                return $instance->getLanguageOptions();
+                $options = $instance->getLanguageOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_PROVINCES:
-                return $instance->getProvinceOptions();
+                $options = $instance->getProvinceOptions();
+                break;
 
             case ExternalOptionsInterface::PREDEFINED_STATES:
-                return $instance->getStateOptions();
+                $options = $instance->getStateOptions();
+                break;
+
+            default:
+                $options = [];
+                break;
         }
 
-        return [];
+        if ($configuration->getEmptyOption()) {
+            array_unshift($options, new Option(Freeform::t($configuration->getEmptyOption()), ''));
+        }
+
+        return $options;
     }
 
     /**

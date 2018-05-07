@@ -59,17 +59,8 @@ class Composer
     /** @var SpamSubmissionHandlerInterface */
     private $spamSubmissionHandler;
 
-    /** @var MailHandlerInterface */
-    private $mailHandler;
-
     /** @var FileUploadHandlerInterface */
     private $fileUploadHandler;
-
-    /** @var MailingListHandlerInterface */
-    private $mailingListHandler;
-
-    /** @var CRMHandlerInterface */
-    private $crmHandler;
 
     /** @var TranslatorInterface */
     private $translator;
@@ -92,10 +83,7 @@ class Composer
      * @param FieldHandlerInterface           $fieldHandler
      * @param SubmissionHandlerInterface      $submissionHandler
      * @param SpamSubmissionHandlerInterface  $spamSubmissionHandler
-     * @param MailHandlerInterface            $mailHandler
      * @param FileUploadHandlerInterface      $fileUploadHandler
-     * @param MailingListHandlerInterface     $mailingListHandler
-     * @param CRMHandlerInterface             $crmHandler
      * @param StatusHandlerInterface          $statusHandler
      * @param TranslatorInterface             $translator
      * @param LoggerInterface                 $logger
@@ -109,10 +97,7 @@ class Composer
         FieldHandlerInterface $fieldHandler,
         SubmissionHandlerInterface $submissionHandler,
         SpamSubmissionHandlerInterface $spamSubmissionHandler,
-        MailHandlerInterface $mailHandler,
         FileUploadHandlerInterface $fileUploadHandler,
-        MailingListHandlerInterface $mailingListHandler,
-        CRMHandlerInterface $crmHandler,
         StatusHandlerInterface $statusHandler,
         TranslatorInterface $translator,
         LoggerInterface $logger
@@ -121,10 +106,7 @@ class Composer
         $this->fieldHandler             = $fieldHandler;
         $this->submissionHandler        = $submissionHandler;
         $this->spamSubmissionHandler    = $spamSubmissionHandler;
-        $this->mailHandler              = $mailHandler;
         $this->fileUploadHandler        = $fileUploadHandler;
-        $this->mailingListHandler       = $mailingListHandler;
-        $this->crmHandler               = $crmHandler;
         $this->statusHandler            = $statusHandler;
         $this->translator               = $translator;
         $this->logger                   = $logger;

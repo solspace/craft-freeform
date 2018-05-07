@@ -86,19 +86,22 @@ abstract class AbstractProperties
             $expectedType = strtolower($manifest[$key]);
             switch ($expectedType) {
                 case self::TYPE_BOOLEAN:
-                    $value = in_array(strtolower($value), [1, 'true']) ? true : false;
+                    if (!\is_bool($value)) {
+                        $value = \in_array(strtolower($value), ['1', 1, 'true'], true) ? true : false;
+                    }
+
                     break;
 
                 case self::TYPE_INTEGER:
-                    $value = (int)$value;
+                    $value = (int) $value;
                     break;
 
                 case self::TYPE_STRING:
-                    $value = (string)$value;
+                    $value = (string) $value;
                     break;
             }
 
-            $valueType = gettype($value);
+            $valueType = \gettype($value);
             if ($valueType === self::TYPE_OBJECT && $expectedType === self::TYPE_ARRAY) {
                 $expectedType = self::TYPE_OBJECT;
             }

@@ -593,11 +593,13 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      * @param mixed  $value
      * @param bool   $escapeValue
      *
+     * @param bool   $insertEmpty
+     *
      * @return string
      */
-    protected function getAttributeString(string $name, $value, bool $escapeValue = true): string
+    protected function getAttributeString(string $name, $value, bool $escapeValue = true, bool $insertEmpty = false): string
     {
-        if ('' !== $value) {
+        if ('' !== $value || $insertEmpty) {
             return sprintf(
                 ' %s="%s"',
                 $name,

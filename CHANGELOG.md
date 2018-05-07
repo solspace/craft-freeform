@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.19 - 2018-05-07
+### Added
+- Added optional 'Empty Option Label' input for Select fields that use the Data Feeders feature, so the first option can be `Please Select` or whatever you like.
+- Added 'Collect IP Addresses' setting inside Composer form setting area to disable IP address collecting per form.
+- Added ability to include collected IP addresses when exporting.
+
+### Changed
+- Changed Freeform to store all numeric submission data as strings instead of integers to be more reliable.
+
+### Fixed
+- Fixed a bug where the hidden Spam honeypot field label was missing the 'for' attribute.
+- Fixed a bug where the Status indicators were incorrect for the Recent Submissions widget.
+
 ## 2.0.0-beta.18 - 2018-05-02
 ### Changed
 - Updated Composer to no longer have a default Form Name, and also auto-generate a Form Handle based on the Form Name.

@@ -164,7 +164,8 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
         } else {
             $submission = SpamSubmission::create();
         }
-        $submission->ip          = \Craft::$app->request->getRemoteIP();
+
+        $submission->ip          = $form->isIpCollectingEnabled() ? \Craft::$app->request->getRemoteIP() : null;
         $submission->formId      = $form->getId();
         $submission->statusId    = $form->getDefaultStatus();
         $submission->isSpam      = $form->isMarkedAsSpam();

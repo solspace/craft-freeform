@@ -29,7 +29,6 @@ use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\Logging\LoggerInterface;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
-use Solspace\Freeform\Models\FieldModel;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 {
@@ -62,6 +61,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
     /** @var bool */
     private $storeData;
+
+    /** @var bool */
+    private $ipCollectingEnabled;
 
     /** @var int */
     private $defaultStatus;
@@ -123,16 +125,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /**
      * Form constructor.
      *
-     * @param Properties                      $properties
-     * @param FormAttributes                  $formAttributes
-     * @param array                           $layoutData
-     * @param FormHandlerInterface            $formHandler
-     * @param FieldHandlerInterface           $fieldHandler
-     * @param SubmissionHandlerInterface      $submissionHandler
-     * @param SpamSubmissionHandlerInterface  $spamSubmissionHandler
-     * @param FileUploadHandlerInterface      $fileUploadHandler
-     * @param TranslatorInterface             $translator
-     * @param LoggerInterface                 $logger
+     * @param Properties                     $properties
+     * @param FormAttributes                 $formAttributes
+     * @param array                          $layoutData
+     * @param FormHandlerInterface           $formHandler
+     * @param FieldHandlerInterface          $fieldHandler
+     * @param SubmissionHandlerInterface     $submissionHandler
+     * @param SpamSubmissionHandlerInterface $spamSubmissionHandler
+     * @param FileUploadHandlerInterface     $fileUploadHandler
+     * @param TranslatorInterface            $translator
+     * @param LoggerInterface                $logger
      *
      * @throws FreeformException
      * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
@@ -149,18 +151,18 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->properties               = $properties;
-        $this->formHandler              = $formHandler;
-        $this->fieldHandler             = $fieldHandler;
-        $this->submissionHandler        = $submissionHandler;
-        $this->spamSubmissionHandler    = $spamSubmissionHandler;
-        $this->fileUploadHandler        = $fileUploadHandler;
-        $this->translator               = $translator;
-        $this->logger                   = $logger;
-        $this->storeData                = true;
-        $this->customAttributes         = new CustomFormAttributes();
-        $this->errors                   = [];
-        $this->markedAsSpam             = false;
+        $this->properties            = $properties;
+        $this->formHandler           = $formHandler;
+        $this->fieldHandler          = $fieldHandler;
+        $this->submissionHandler     = $submissionHandler;
+        $this->spamSubmissionHandler = $spamSubmissionHandler;
+        $this->fileUploadHandler     = $fileUploadHandler;
+        $this->translator            = $translator;
+        $this->logger                = $logger;
+        $this->storeData             = true;
+        $this->ipCollectingEnabled   = true;
+        $this->customAttributes      = new CustomFormAttributes();
+        $this->errors                = [];
 
         $this->layout = new Layout(
             $this,
@@ -320,6 +322,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function getDefaultStatus(): int
     {
         return $this->defaultStatus;
+    }
+
+    /**
+     * @return int
+     */
+    public function isIpCollectingEnabled(): bool
+    {
+        return (bool) $this->ipCollectingEnabled;
     }
 
     /**
@@ -513,7 +523,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         if ($this->storeData && $this->hasOptInPermission()) {
             $submission = $this->saveStoredStateToDatabase();
         } else {
-            $submission = $this->getSubmissionHandler()->createSubmissionFromForm($this);
+            $submission      = $this->getSubmissionHandler()->createSubmissionFromForm($this);
             $this->formSaved = true;
         }
 
@@ -578,7 +588,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     {
         $fields = [];
         foreach ($this->getLayout()->getMailingListFields() as $field) {
-            $field = $this->getLayout()->getFieldByHandle($field->getHandle());
+            $field      = $this->getLayout()->getFieldByHandle($field->getHandle());
             $fieldValue = $field->getValue();
             if ($fieldValue && $field->getEmailFieldHash() && $field->getResourceId()) {
                 $fields[] = $field;
@@ -588,7 +598,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         return $fields;
     }
 
-     /**
+    /**
      * Render a predefined template
      *
      * @param array $customFormAttributes
@@ -797,6 +807,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $this->description                = $formProperties->getDescription();
         $this->returnUrl                  = $formProperties->getReturnUrl();
         $this->storeData                  = $formProperties->isStoreData();
+        $this->ipCollectingEnabled        = $formProperties->isIpCollectingEnabled();
         $this->defaultStatus              = $formProperties->getDefaultStatus();
         $this->formTemplate               = $formProperties->getFormTemplate();
         $this->optInDataStorageTargetHash = $formProperties->getOptInDataStorageTargetHash();
@@ -876,7 +887,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      *
      * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
      */
-    public function getAdminNotificationProperties() {
+    public function getAdminNotificationProperties()
+    {
         return $this->properties->getAdminNotificationProperties();
     }
 
@@ -885,7 +897,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      *
      * @return DynamicNotificationAttributes|null
      */
-    public function getDynamicNotificationData() {
+    public function getDynamicNotificationData()
+    {
         return $this->getFormValueContext()->getDynamicNotificationData();
     }
 
@@ -1024,7 +1037,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         throw new FreeformException('Form ArrayAccess does not allow unsetting values');
     }
 
-    private function isLastPage() {
+    private function isLastPage()
+    {
         return $this->getFormValueContext()->getCurrentPageIndex() === (\count($this->getPages()) - 1);
     }
 }

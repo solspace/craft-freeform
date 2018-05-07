@@ -255,12 +255,12 @@ class FieldProperties extends AbstractProperties
             foreach ($this->options as $option) {
                 $isChecked = false;
                 if (null !== $this->getValue()) {
-                    $isChecked = $option['value'] === $this->getValue();
+                    $isChecked = (string) $option['value'] === (string) $this->getValue();
                 } else if (null !== $this->getValues()) {
                     $isChecked = \in_array($option['value'], $this->getValues(), true);
                 }
 
-                $return[] = new Option($option['label'], $option['value'], $isChecked);
+                $return[] = new Option((string) $option['label'], (string) $option['value'], $isChecked);
             }
         }
 

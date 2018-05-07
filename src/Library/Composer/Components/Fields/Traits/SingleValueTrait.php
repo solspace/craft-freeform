@@ -30,7 +30,7 @@ trait SingleValueTrait
             return $this->getValueOverride();
         }
 
-        return $this->value;
+        return (string) $this->value;
     }
 
     /**
@@ -58,7 +58,7 @@ trait SingleValueTrait
                 $updatedOptions[] = new Option(
                     $option->getLabel(),
                     $option->getValue(),
-                    (string) $option->getValue() === (string) $objectValue
+                    $option->getValue() === (string) $objectValue
                 );
             }
 

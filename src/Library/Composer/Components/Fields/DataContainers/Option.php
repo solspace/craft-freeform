@@ -74,8 +74,8 @@ class Option implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'label'   => $this->getLabel(),
-            'value'   => $this->getValue(),
+            'label' => $this->getLabel(),
+            'value' => $this->getValue(),
         ];
     }
 }

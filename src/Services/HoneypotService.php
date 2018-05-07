@@ -232,23 +232,25 @@ class HoneypotService extends Component
         static $honeypotHashes = [];
 
         if (!isset($honeypotHashes[$form->getHash()])) {
-            $random = time() . random_int(0, 999) . (time() + 999);
+            $random                           = time() . random_int(0, 999) . (time() + 999);
             $honeypotHashes[$form->getHash()] = substr(sha1($random), 0, 6);
         }
 
         $hash = $honeypotHashes[$form->getHash()];
 
-        $honeypot = $this->getHoneypot($form);
-        $output   = '<input '
+        $honeypot     = $this->getHoneypot($form);
+        $honeypotName = $honeypot->getName();
+        $output       = '<input '
             . 'type="text" '
             . 'value="' . $hash . '" '
-            . 'name="' . $honeypot->getName() . '" '
+            . 'name="' . $honeypotName . '" '
+            . 'id="' . $honeypotName . '" '
             . '/>';
 
         $output = '<div style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true">'
-            . '<label>Leave this field blank</label>'
+            . '<label for="' . $honeypotName . '">Leave this field blank</label>'
             . $output
             . '</div>';
         return $output;
-}
+    }
 }

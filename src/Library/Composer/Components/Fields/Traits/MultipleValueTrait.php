@@ -26,7 +26,7 @@ trait MultipleValueTrait
     {
         $valueOverride = $this->getValueOverride();
         if ($valueOverride) {
-            if (!is_array($valueOverride)) {
+            if (!\is_array($valueOverride)) {
                 return [$valueOverride];
             }
 
@@ -35,12 +35,14 @@ trait MultipleValueTrait
 
         $values = $this->values;
 
-        if (empty($values)) {
-            $values = [];
+        if (!\is_array($values) && !empty($values)) {
+            $values = [$values];
         }
 
-        if (!is_array($values)) {
-            $values = [$values];
+        if (empty($values)) {
+            $values = [];
+        } else {
+            $values = array_map('strval', $values);
         }
 
         return $values;

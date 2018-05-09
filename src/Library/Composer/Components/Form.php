@@ -435,6 +435,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
             return $this->valid;
         }
 
+        if ($this->errors) {
+            $isFormValid = false;
+        }
+
         foreach ($currentPageFields as $field) {
             if ($field instanceof FileUploadInterface) {
                 try {

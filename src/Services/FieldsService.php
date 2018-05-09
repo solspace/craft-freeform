@@ -334,6 +334,7 @@ class FieldsService extends Component implements FieldHandlerInterface
         $labelField = $config->getLabelField() ?? 'title';
         $valueField = $config->getValueField() ?? 'id';
         $options    = [];
+
         if (!\is_array($selectedValues)) {
             $selectedValues = [$selectedValues];
         }
@@ -344,8 +345,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;
-
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
                 }
 
                 break;
@@ -355,7 +355,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
                 }
 
                 break;
@@ -365,7 +365,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
                 }
 
                 break;
@@ -376,13 +376,20 @@ class FieldsService extends Component implements FieldHandlerInterface
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->username;
                     $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
                 }
 
                 break;
 
             case ExternalOptionsInterface::SOURCE_PREDEFINED:
                 return PredefinedOptionsFactory::create($target, $config, $selectedValues);
+        }
+
+        if ($config->getEmptyOption()) {
+            array_unshift(
+                $options,
+                new Option($config->getEmptyOption(), '', \in_array('', $selectedValues, true))
+            );
         }
 
         return $options;

@@ -29,6 +29,9 @@ class Settings extends Model
     const DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE   = 'Invalid Email Address';
     const DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE = 'Invalid Entry Data';
 
+    const THROTTLING_TIME_FRAME_MINUTES = 'm';
+    const THROTTLING_TIME_FRAME_SECONDS = 's';
+
     /** @var string */
     public $pluginName;
 
@@ -67,6 +70,12 @@ class Settings extends Model
 
     /** @var string */
     public $spamProtectionBehaviour;
+
+    /** @var int */
+    public $submissionThrottlingCount;
+
+    /** @var string */
+    public $submissionThrottlingTimeFrame;
 
     /** @var string */
     public $blockedEmails;
@@ -123,16 +132,18 @@ class Settings extends Model
         $this->footerScripts          = true;
         $this->formSubmitDisable      = true;
 
-        $this->freeformHoneypot             = true;
-        $this->spamProtectionBehaviour      = self::PROTECTION_SIMULATE_SUCCESS;
-        $this->blockedEmails                = null;
-        $this->blockedKeywords              = null;
-        $this->blockedEmailsError           = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
-        $this->blockedKeywordsError         = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
-        $this->blockedIpAddresses           = null;
-        $this->showErrorsForBlockedKeywords = false;
-        $this->showErrorsForBlockedEmails   = false;
-        $this->spamFolderEnabled            = false;
+        $this->freeformHoneypot              = true;
+        $this->spamProtectionBehaviour       = self::PROTECTION_SIMULATE_SUCCESS;
+        $this->blockedEmails                 = null;
+        $this->blockedKeywords               = null;
+        $this->blockedEmailsError            = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
+        $this->blockedKeywordsError          = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
+        $this->blockedIpAddresses            = null;
+        $this->showErrorsForBlockedKeywords  = false;
+        $this->showErrorsForBlockedEmails    = false;
+        $this->spamFolderEnabled             = false;
+        $this->submissionThrottlingCount     = null;
+        $this->submissionThrottlingTimeFrame = null;
 
         parent::__construct($config);
     }

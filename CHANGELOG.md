@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 2.0.0-beta.20 - 2018-05-09
+### Added
+- Added Form Submission Throttling setting to help prevent against spam or attacks.
+
+### Fixed
+- Fixed a bug where the 'Empty Option Label' input would not show when using Element Feeder (but did for Predefined Feeder) for Select fields.
+- Fixed a bug where having an option with a value of `0` with Feeders, and an 'Empty Option Label' set, it would select the option with the value of `0` by default, not the Empty Option.
+
 ## 2.0.0-beta.19 - 2018-05-07
 ### Added
 - Added optional 'Empty Option Label' input for Select fields that use the Data Feeders feature, so the first option can be `Please Select` or whatever you like.

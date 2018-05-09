@@ -597,5 +597,11 @@ class Freeform extends Plugin
             FormsService::EVENT_FORM_VALIDATE,
             [$this->settings, 'checkBlacklistedIps']
         );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_FORM_VALIDATE,
+            [$this->settings, 'throttleSubmissions']
+        );
     }
 }

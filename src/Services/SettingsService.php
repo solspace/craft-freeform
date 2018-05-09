@@ -11,7 +11,9 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\db\Query;
 use Solspace\Commons\Helpers\ComparisonHelper;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
@@ -288,6 +290,41 @@ class SettingsService extends Component
             $event->getForm()->setMarkedAsSpam(true);
             if ($this->isSpamBehaviourDisplayErrors()) {
                 $event->getForm()->addError(Freeform::t('Your IP has been blacklisted'));
+            }
+        }
+    }
+
+    /**
+     * @param FormValidateEvent $event
+     */
+    public function throttleSubmissions(FormValidateEvent $event)
+    {
+        static $throttleCount, $interval;
+
+        if (null === $throttleCount) {
+            $throttleCount = (int) $this->getSettingsModel()->submissionThrottlingCount;
+            if ($this->getSettingsModel()->submissionThrottlingTimeFrame === Settings::THROTTLING_TIME_FRAME_MINUTES) {
+                $interval = 'minutes';
+            } else {
+                $interval = 'seconds';
+            }
+        }
+
+        if ($throttleCount) {
+            $form = $event->getForm();
+
+            $date = new \DateTime("-1 $interval", new \DateTimeZone('UTC'));
+            $date = $date->format('Y-m-d H:i:s');
+
+            $submissionCount = (int) (new Query())
+                ->select('COUNT(id)')
+                ->from(Submission::TABLE)
+                ->where(['[[formId]]' => $form->getId()])
+                ->andWhere('[[dateCreated]] > :date', ['date' => $date])
+                ->scalar();
+
+            if ($throttleCount <= $submissionCount) {
+                $form->addError(Freeform::t('There was an error processing your submission. Please try again later.'));
             }
         }
     }

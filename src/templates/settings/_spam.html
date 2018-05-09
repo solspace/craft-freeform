@@ -104,6 +104,33 @@
             errors: settings.errors("blockedIpAddresses"),
         }) }}
 
+        <hr>
+
+        {% set input %}
+            {{ forms.text({
+                id: "throttling-count",
+                name: "settings[submissionThrottlingCount]",
+                value: settings.submissionThrottlingCount,
+                placeholder: "unlimited",
+            }) }}
+
+            {{ forms.select({
+                id: "throttling-time-frame",
+                name: "settings[submissionThrottlingTimeFrame]",
+                value: settings.submissionThrottlingTimeFrame,
+                options: {
+                    m: "per minute"|t("freeform"),
+                    s: "per second"|t("freeform"),
+                }
+            }) }}
+        {% endset %}
+
+        {{ forms.field({
+            label: "Form Submission Throttling"|t("freeform"),
+            instructions: "Globally (affecting all users) prevent spam or attacks by limiting the number of times all forms can be submitted within a given timeframe."|t("freeform"),
+            errors: settings.errors("submissionThrottlingCount"),
+        }, input) }}
+
         <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
     </form>
 

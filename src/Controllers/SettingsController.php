@@ -19,6 +19,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
+use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use Solspace\FreeformPro\FreeformPro;
 use yii\web\Response;
 
@@ -203,6 +204,7 @@ class SettingsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $this->view->registerAssetBundle(CodepackBundle::class);
+        $this->view->registerAssetBundle(SettingsBundle::class);
         $template = \Craft::$app->request->getSegment(3);
 
         return $this->renderTemplate(

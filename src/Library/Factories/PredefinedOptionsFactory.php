@@ -290,9 +290,9 @@ class PredefinedOptionsFactory
      *
      * @return bool
      */
-    private function isChecked($value): bool
+    private function isChecked(string $value): bool
     {
-        return \in_array($value, $this->selectedValues, false);
+        return \in_array($value, $this->selectedValues, true);
     }
 
     /**

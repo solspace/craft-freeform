@@ -605,12 +605,14 @@ class Submission extends Element
             'isSpam'        => $this->isSpam,
         ];
 
-        foreach ($this->storedFieldValues as $key => $value) {
-            if (\is_array($value)) {
-                $value = json_encode($value);
-            }
+        if ($this->storedFieldValues) {
+            foreach ($this->storedFieldValues as $key => $value) {
+                if (\is_array($value)) {
+                    $value = json_encode($value);
+                }
 
-            $insertData[$key] = $value;
+                $insertData[$key] = $value;
+            }
         }
 
         if ($isNew) {

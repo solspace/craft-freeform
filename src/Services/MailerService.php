@@ -102,7 +102,7 @@ class MailerService extends Component implements MailHandlerInterface
 
             if ($notification->isIncludeAttachmentsEnabled()) {
                 foreach ($fields as $field) {
-                    if (!$field->getHandle()) {
+                    if (!$field->getHandle() || $field instanceof NoStorageInterface) {
                         continue;
                     }
                     $fieldValue = $submission->{$field->getHandle()}->getValue();

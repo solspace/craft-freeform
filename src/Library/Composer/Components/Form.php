@@ -95,6 +95,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var bool */
     private $valid;
 
+    /** @var bool */
+    private $markedAsSpam;
+
     /** @var SubmissionHandlerInterface */
     private $submissionHandler;
 
@@ -163,6 +166,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $this->ipCollectingEnabled   = true;
         $this->customAttributes      = new CustomFormAttributes();
         $this->errors                = [];
+        $this->markedAsSpam          = false;
 
         $this->layout = new Layout(
             $this,
@@ -381,7 +385,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function isMarkedAsSpam(): bool
     {
-        return $this->getFormValueContext()->isMarkedAsSpam();
+        return $this->markedAsSpam;
     }
 
     /**
@@ -391,7 +395,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function setMarkedAsSpam(bool $markedAsSpam): Form
     {
-        $this->getFormValueContext()->setMarkedAsSpam($markedAsSpam);
+        $this->markedAsSpam = $markedAsSpam;
 
         return $this;
     }
@@ -420,17 +424,30 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $currentPageFields = $this->getCurrentPage()->getFields();
 
         $isFormValid = true;
-        foreach ($currentPageFields as $field) {
-            if (!$field->isValid()) {
-                $isFormValid = false;
+        foreach ($this->getLayout()->getPages() as $page) {
+            if ($page->getIndex() > $this->getCurrentPage()->getIndex()) {
+                break;
+            }
+
+            foreach ($page->getFields() as $field) {
+                if (!$field->isValid()) {
+                    $isFormValid = false;
+                }
             }
         }
 
         $this->formHandler->onFormValidate($this, $isFormValid);
 
         if ($isFormValid && $this->isMarkedAsSpam()) {
-            $this->formHandler->incrementSpamBlockCount($this);
-            $this->valid = $this->formHandler->isSpamBehaviourSimulateSuccess();
+            $simulateSuccess = $this->formHandler->isSpamBehaviourSimulateSuccess();
+
+            if ($simulateSuccess && $this->isLastPage()) {
+                $this->formHandler->incrementSpamBlockCount($this);
+            } else if (!$simulateSuccess) {
+                $this->formHandler->incrementSpamBlockCount($this);
+            }
+
+            $this->valid = $simulateSuccess;
 
             return $this->valid;
         }

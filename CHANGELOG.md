@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 2.0.0 - 2018-05-14
+### Added
+- Added mailing list integration support for the Craft Campaign plugin, available on Lite and Pro editions.
+
+### Fixed
+- Fixed a bug where 'Display error messages' option for Spam Protection Behavior setting would trip on submitting a form if it initially errored.
+- Fixed a bug where submitting a form with a mailing list would error in some cases.
+- Fixed a bug where the Salesforce fetch token URL regex restriction was not allowing for less common URLs to pass through.
+- Fixed a bug where saving field mapping for HubSpot was not always saving fields correctly.
+
 ## 2.0.0-beta.20 - 2018-05-09
 ### Added
 - Added Form Submission Throttling setting to help prevent against spam or attacks.

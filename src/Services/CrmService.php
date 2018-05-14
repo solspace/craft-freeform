@@ -160,6 +160,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 $record->integrationId = $id;
                 $record->handle        = $field->getHandle();
                 $record->label         = $field->getLabel();
+                $record->type          = $field->getType();
                 $record->required      = $field->isRequired();
                 $record->save();
             }

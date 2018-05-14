@@ -41,9 +41,6 @@ class FormValueContext implements \JsonSerializable
     /** @var array */
     private $customFormData;
 
-    /** @var bool */
-    private $markedAsSpam;
-
     /** @var SessionInterface */
     private $session;
 
@@ -110,7 +107,6 @@ class FormValueContext implements \JsonSerializable
         $this->formId           = (int) $formId;
         $this->currentPageIndex = 0;
         $this->storedValues     = [];
-        $this->markedAsSpam     = false;
 
         $this->lastHash = $this->regenerateHash();
         $this->regenerateState();
@@ -184,26 +180,6 @@ class FormValueContext implements \JsonSerializable
         }
 
         return $default;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isMarkedAsSpam(): bool
-    {
-        return $this->markedAsSpam;
-    }
-
-    /**
-     * @param bool $markedAsSpam
-     *
-     * @return $this
-     */
-    public function setMarkedAsSpam(bool $markedAsSpam): FormValueContext
-    {
-        $this->markedAsSpam = $markedAsSpam;
-
-        return $this;
     }
 
     /**
@@ -309,12 +285,10 @@ class FormValueContext implements \JsonSerializable
             $this->currentPageIndex = $sessionState['currentPageIndex'];
             $this->storedValues     = $sessionState['storedValues'];
             $this->customFormData   = $sessionState['customFormData'];
-            $this->markedAsSpam     = $sessionState['markedAsSpam'];
         } else {
             $this->currentPageIndex = self::DEFAULT_PAGE_INDEX;
             $this->storedValues     = [];
             $this->customFormData   = [];
-            $this->markedAsSpam     = false;
         }
     }
 
@@ -496,7 +470,6 @@ class FormValueContext implements \JsonSerializable
             'currentPageIndex' => $this->currentPageIndex,
             'storedValues'     => $this->storedValues,
             'customFormData'   => $this->customFormData,
-            'markedAsSpam'     => $this->markedAsSpam,
         ];
     }
 }

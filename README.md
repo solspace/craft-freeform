@@ -2,8 +2,6 @@
 
 Freeform is the most powerful form building plugin for Craft CMS. It gives you full control to create simple or complex multi-page forms, as well as connect your forms to many popular API integrations.
 
-🚨 **NOTE: Freeform has proven to be fairly stable now, but please take caution if using in production environments.** 🚨
-
 ![Screenshot](src/icon.svg)
 
 ## Requirements
@@ -12,21 +10,19 @@ This plugin requires Craft CMS 3.0.0 or later.
 
 ## Installation
 
-To install the plugin(s), search for **Freeform** in the *Craft Plugin Store*, or install manually with the following instructions:
+To install Freeform, simply:
 
-1. Open your terminal and go to your Craft project:
+1. Go to the **Plugin Store** area inside your Craft control panel and search for *Freeform*.
+2. Choose to install *Freeform Lite* and/or *Freeform Pro* (*Pro* requires *Lite* to be installed) by clicking on them.
+3. Click on the **Try** button to install a trial copy of Freeform.
+4. Try things out and if Freeform is right for your site, purchase a copy of if through the Plugin Store when you're ready!
 
-        cd /path/to/project
+Freeform can also be installed manually through Composer:
 
-2. Then tell Composer to require the plugin:
-
-        composer require solspace/craft3-freeform
-
-And if you'd like the **Pro** edition of Freeform, you'll need to also install Freeform Pro (in addition to Freeform Lite). Tell Composer to also require the plugin:
-
-        composer require solspace/craft3-freeform-pro
-
-3. In the Control Panel, go to *Settings → Plugins* and click the “Install” button for **Freeform Lite** (and **Freeform Pro** if you're wanting Pro edition).
+1. Open your terminal and go to your Craft project: `cd /path/to/project`
+2. Then tell Composer to require the plugin: `composer require solspace/craft3-freeform`
+3. If you'd like Freeform Pro, also run: `composer require solspace/craft3-freeform-pro`
+4. In the Craft control panel, go to *Settings → Plugins* and click the **Install** button for Freeform Lite (and Freeform Pro if you're using Pro edition).
 
 ## Freeform Overview
 

@@ -33,6 +33,7 @@ use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
 use Solspace\Freeform\Controllers\SubmissionsController;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
+use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Models\FieldModel;
@@ -55,6 +56,8 @@ use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
 use Solspace\Freeform\Variables\FreeformVariable;
 use Solspace\Freeform\Widgets\StatisticsWidget;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 use yii\base\Event;
 use yii\db\Query;
 
@@ -558,6 +561,29 @@ class Freeform extends Plugin
             FormsService::class,
             FormsService::EVENT_RENDER_CLOSING_TAG,
             [$this->forms, 'addFormAnchorJavascript']
+        );
+
+        Event::on(
+            MailingListsService::class,
+            MailingListsService::EVENT_FETCH_TYPES,
+            function (FetchMailingListTypesEvent $event) {
+                $finder = new Finder();
+
+                $namespace = 'Solspace\Freeform\Library\MailingLists';
+
+                /** @var SplFileInfo[] $files */
+                $files = $finder
+                    ->name('*.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->in(__DIR__ . '/Library/MailingLists/');
+
+                foreach ($files as $file) {
+                    $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
+                    $className = $namespace . '\\' . $className;
+                    $event->addType($className);
+                }
+            }
         );
     }
 

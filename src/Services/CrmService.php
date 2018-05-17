@@ -15,12 +15,12 @@ use craft\db\Query;
 use GuzzleHttp\Exception\BadResponseException;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
+use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Layout;
-use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
@@ -230,10 +230,10 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
     /**
      * Push the mapped object values to the CRM
      *
-     * @param IntegrationProperties $properties
-     * @param Layout                $layout
+     * @param Submission $submission
      *
      * @return bool
+     * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
      */
     public function pushObject(Submission $submission): bool
     {
@@ -281,14 +281,24 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 }
 
                 $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $value);
-            } catch (FreeformException $e) {
+            } catch (\Exception $e) {
                 $freeform->logger->error($e->getMessage());
             }
         }
 
+        if (!$this->onBeforePush($integration, $objectValues)) {
+            return false;
+        }
+
         if (!empty($objectValues)) {
             try {
-                return $integration->pushObject($objectValues);
+                $result = $integration->pushObject($objectValues);
+
+                if ($result) {
+                    $this->onAfterPush($integration, $objectValues);
+                }
+
+                return $result;
             } catch (BadResponseException $e) {
                 if ($integration instanceof TokenRefreshInterface) {
                     if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
@@ -296,7 +306,13 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                             $this->updateAccessToken($integration);
 
                             try {
-                                return $integration->pushObject($objectValues);
+                                $result = $integration->pushObject($objectValues);
+
+                                if ($result) {
+                                    $this->onAfterPush($integration, $objectValues);
+                                }
+
+                                return $result;
                             } catch (\Exception $e) {
                                 $freeform->logger->error($e->getMessage());
                             }
@@ -321,5 +337,33 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
     protected function getIntegrationType(): string
     {
         return IntegrationRecord::TYPE_CRM;
+    }
+
+    /**
+     * @param AbstractIntegration $integration
+     * @param array               $values
+     *
+     * @return bool
+     */
+    private function onBeforePush(AbstractIntegration $integration, array $values): bool
+    {
+        $event = new PushEvent($integration, $values);
+        $this->trigger(self::EVENT_BEFORE_PUSH, $event);
+
+        return $event->isValid;
+    }
+
+    /**
+     * @param AbstractIntegration $integration
+     * @param array               $values
+     *
+     * @return bool
+     */
+    private function onAfterPush(AbstractIntegration $integration, array $values): bool
+    {
+        $event = new PushEvent($integration, $values);
+        $this->trigger(self::EVENT_AFTER_PUSH, $event);
+
+        return $event->isValid;
     }
 }

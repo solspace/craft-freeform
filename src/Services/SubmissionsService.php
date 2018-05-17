@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Commons\Migrations\Field;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
@@ -35,6 +34,10 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     const EVENT_AFTER_SUBMIT  = 'afterSubmit';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE  = 'afterDelete';
+
+    const MIN_PURGE_AGE   = 7;
+    const PURGE_CACHE_KEY = 'freeform_purge_cache_key';
+    const PURGE_CACHE_TTL = 3600; // 1 hour
 
     /** @var Submission[] */
     private static $submissionCache = [];
@@ -60,7 +63,7 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     /**
      * @param array|null $formIds
      * @param array|null $statusIds
-     * @param bool $isSpam
+     * @param bool       $isSpam
      *
      * @return int
      */
@@ -106,7 +109,7 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     /**
      * Stores the submitted fields to database
      *
-     * @param Form  $form
+     * @param Form $form
      *
      * @return Submission|null
      */
@@ -130,8 +133,9 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     /**
      * @inheritdoc
      */
-    public function createSubmissionFromForm(Form $form) {
-        $fields = $form->getLayout()->getFields();
+    public function createSubmissionFromForm(Form $form)
+    {
+        $fields        = $form->getLayout()->getFields();
         $savableFields = [];
         foreach ($fields as $field) {
             if ($field instanceof NoStorageInterface) {
@@ -190,13 +194,14 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
     /**
      * Runs all integrations on submission
      *
-     * @param Submission $submission
+     * @param Submission      $submission
      * @param AbstractField[] $mailingListOptedInFields
      */
-    public function postProcessSubmission(Submission $submission, array $mailingListOptedInFields) {
+    public function postProcessSubmission(Submission $submission, array $mailingListOptedInFields)
+    {
         $integrationsService = Freeform::getInstance()->integrations;
-        $formsService = Freeform::getInstance()->forms;
-        $form = $submission->getForm();
+        $formsService        = Freeform::getInstance()->forms;
+        $form                = $submission->getForm();
         $this->markFormAsSubmitted($form);
         $integrationsService->sendOutEmailNotifications($submission);
 
@@ -351,6 +356,38 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
         $formIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
         return $formIds;
+    }
+
+    /**
+     * Removes all old submissions according to the submission age set in settings
+     */
+    public function purgeSubmissions()
+    {
+        $hasBeenPurgedRecently = \Craft::$app->cache->get(static::PURGE_CACHE_KEY);
+        if ($hasBeenPurgedRecently) {
+            return;
+        }
+
+        $age = Freeform::getInstance()->settings->getPurgableSubmissionAgeInDays();
+        if (\is_int($age) && $age >= static::MIN_PURGE_AGE) {
+            $date = new \DateTime("-$age days");
+
+            $ids = (new Query())
+                ->select(['id'])
+                ->from(Submission::TABLE)
+                ->where(['<', 'dateCreated', $date->format('Y-m-d H:i:s')])
+                ->column();
+
+            \Craft::$app->db
+                ->createCommand()
+                ->delete(
+                    Element::tableName(),
+                    ['id' => $ids]
+                )
+                ->execute();
+
+            \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);
+        }
     }
 
     /**

@@ -53,6 +53,14 @@ class Campaign extends AbstractMailingListIntegration
     /**
      * @inheritDoc
      */
+    public static function isInstallable(): bool
+    {
+        return \Craft::$app->plugins->isPluginInstalled('campaign');
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected function fetchLists(): array
     {
         $lists = [];
@@ -112,7 +120,7 @@ class Campaign extends AbstractMailingListIntegration
      */
     public function checkConnection(): bool
     {
-        return \Craft::$app->plugins->isPluginInstalled('campaign');
+        return self::isInstallable();
     }
 
     /**

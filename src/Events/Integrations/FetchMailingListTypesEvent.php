@@ -30,7 +30,9 @@ class FetchMailingListTypesEvent extends Event
         $reflectionClass = new \ReflectionClass($class);
 
         if ($reflectionClass->implementsInterface(MailingListIntegrationInterface::class)) {
-            $this->types[$class] = $reflectionClass->getConstant('TITLE');
+            if ($class::isInstallable()) {
+                $this->types[$class] = $reflectionClass->getConstant('TITLE');
+            }
         }
 
         return $this;

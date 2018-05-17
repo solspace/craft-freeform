@@ -30,6 +30,14 @@ abstract class AbstractMailingListIntegration extends AbstractIntegration implem
     private $mailingListHandler;
 
     /**
+     * @inheritDoc
+     */
+    public static function isInstallable(): bool
+    {
+        return true;
+    }
+
+    /**
      * AbstractMailingList constructor.
      *
      * @param int                         $id

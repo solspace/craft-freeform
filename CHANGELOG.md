@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 2.0.1 - 2018-05-17
+### Added
+- Added automated Submission Purge feature.
+- Added automated Spam Folder Purge feature.
+- Added `beforePush` and `afterPush` developer hooks for API integrations.
+
+### Changed
+- Updated Composer UI to closer match Craft 3 styling.
+- Updated and rearranged options in Form Settings property editor area in Composer.
+
+### Fixed
+- Fixed a bug where Craft Campaign mailing list option would show as available to create if you didn't have the plugin installed.
+
 ## 2.0.0 - 2018-05-14
 ### Added
 - Added mailing list integration support for the Craft Campaign plugin, available on Lite and Pro editions.

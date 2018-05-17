@@ -32,12 +32,46 @@
         }) }}
 
         {{ forms.lightswitchField({
-            label: "Enable Spam Folder"|t('freeform'),
-            instructions: "When this is enabled all submissions caught by honeypot will be stored in separate menu."|t('freeform'),
+            label: "Use Spam Folder"|t('freeform'),
+            instructions: "When enabled, all submissions caught by the honeypot or blocked email addresses, keywords and IP addresses will be flagged as spam and stored in the database, but available to manage in a separate menu inside Freeform."|t('freeform'),
             name: "settings[spamFolderEnabled]",
             on: settings.spamFolderEnabled,
+            toggle: "spam-features",
             errors: settings.errors("spamFolderEnabled"),
         }) }}
+
+        <div id="spam-features" class="field {{ not settings.spamFolderEnabled ? 'hidden' }}">
+            {{ forms.lightswitchField({
+                label: "Automatically Purge Spam Submissions"|t('freeform'),
+                instructions: "If you wish to have Freeform automatically purge submissions flagged as spam after a specified number of days, enable this setting and specify the number of days after submission date it should purge spammy submissions."|t('freeform'),
+                warning: "Enabling this and saving this settings page will begin the purging of submissions flagged as spam, and cannot be undone.",
+                name: "purge-toggle",
+                on: settings.purgableSpamAgeInDays,
+                toggle: "purge",
+                errors: settings.errors("purgableSpamAgeInDays"),
+            }) }}
+
+            <div id="purge" class="field {{ not settings.purgableSpamAgeInDays ? 'hidden' }}">
+                {{ forms.selectField({
+                    label: "Days After Submission Date to Purge"|t('freeform'),
+                    instructions: "Select the number of days after spammy submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
+                    name: "settings[purgableSpamAgeInDays]",
+                    value: settings.purgableSpamAgeInDays,
+                    errors: settings.errors("purgableSpamAgeInDays"),
+                    id: "purge-value",
+                    options: {
+                        0: "Please select"|t("freeform"),
+                        3: "3 days"|t("freeform"),
+                        7: "7 days"|t("freeform"),
+                        14: "14 days"|t("freeform"),
+                        30: "30 days"|t("freeform"),
+                        60: "60 days"|t("freeform"),
+                    }
+                }) }}
+            </div>
+        </div>
+
+        <hr>
 
         {{ forms.textareaField({
             label: "Block Email addresses"|t('freeform'),

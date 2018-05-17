@@ -17,6 +17,11 @@ use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
 interface MailingListIntegrationInterface
 {
     /**
+     * @return bool
+     */
+    public static function isInstallable(): bool;
+
+    /**
      * @return ListObject[]
      */
     public function getLists();

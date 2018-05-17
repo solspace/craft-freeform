@@ -10,6 +10,14 @@ class SettingsBundle extends AbstractFreeformAssetBundle
     /**
      * @inheritDoc
      */
+    public function getScripts(): array
+    {
+        return ['js/cp/settings.js'];
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getStylesheets(): array
     {
         return ['css/settings.css'];

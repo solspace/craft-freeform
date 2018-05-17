@@ -29,6 +29,8 @@ abstract class AbstractIntegrationService extends Component
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE  = 'afterDelete';
     const EVENT_FETCH_TYPES   = 'fetchTypes';
+    const EVENT_BEFORE_PUSH   = 'beforePush';
+    const EVENT_AFTER_PUSH    = 'afterPush';
 
     /**
      * @return IntegrationModel[]
@@ -41,7 +43,7 @@ abstract class AbstractIntegrationService extends Component
         foreach ($results as $result) {
             $model = $this->createIntegrationModel($result);
 
-            try{
+            try {
                 $model->getIntegrationObject();
                 $models[] = $model;
             } catch (IntegrationNotFoundException $e) {

@@ -43,9 +43,9 @@ use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\IntegrationsService;
-use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
@@ -64,21 +64,21 @@ use yii\db\Query;
 /**
  * Class Plugin
  *
- * @property CrmService                 $crm
- * @property FieldsService              $fields
- * @property FilesService               $files
- * @property FormsService               $forms
- * @property MailerService              $mailer
- * @property MailingListsService        $mailingLists
- * @property NotificationsService       $notifications
- * @property SettingsService            $settings
- * @property StatusesService            $statuses
- * @property SubmissionsService         $submissions
- * @property SpamSubmissionsService     $spamSubmissions
- * @property LoggerService              $logger
- * @property HoneypotService            $honeypot
- * @property IntegrationsService        $integrations
- * @property IntegrationsQueueService   $integrationsQueue
+ * @property CrmService               $crm
+ * @property FieldsService            $fields
+ * @property FilesService             $files
+ * @property FormsService             $forms
+ * @property MailerService            $mailer
+ * @property MailingListsService      $mailingLists
+ * @property NotificationsService     $notifications
+ * @property SettingsService          $settings
+ * @property StatusesService          $statuses
+ * @property SubmissionsService       $submissions
+ * @property SpamSubmissionsService   $spamSubmissions
+ * @property LoggerService            $logger
+ * @property HoneypotService          $honeypot
+ * @property IntegrationsService      $integrations
+ * @property IntegrationsQueueService $integrationsQueue
  */
 class Freeform extends Plugin
 {
@@ -166,6 +166,8 @@ class Freeform extends Plugin
         if ($this->isInstalled) {
             // Perform unfinalized asset cleanup
             $this->files->cleanUpUnfinalizedAssets();
+            $this->submissions->purgeSubmissions();
+            $this->spamSubmissions->purgeSubmissions();
         }
     }
 

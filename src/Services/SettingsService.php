@@ -180,6 +180,34 @@ class SettingsService extends Component
     }
 
     /**
+     * @return int|null
+     */
+    public function getPurgableSubmissionAgeInDays()
+    {
+        $age = (int) $this->getSettingsModel()->purgableSubmissionAgeInDays;
+
+        if (!$age || $age < SubmissionsService::MIN_PURGE_AGE) {
+            return null;
+        }
+
+        return $age;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPurgableSpamAgeInDays()
+    {
+        $age = (int) $this->getSettingsModel()->purgableSpamAgeInDays;
+
+        if (!$age || $age < SpamSubmissionsService::MIN_PURGE_AGE) {
+            return null;
+        }
+
+        return $age;
+    }
+
+    /**
      * @param ValidateEvent $event
      */
     public function checkSubmissionForSpam(ValidateEvent $event)

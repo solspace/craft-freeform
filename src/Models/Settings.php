@@ -98,6 +98,12 @@ class Settings extends Model
     /** @var string */
     public $blockedIpAddresses;
 
+    /** @var int */
+    public $purgableSubmissionAgeInDays;
+
+    /** @var int */
+    public $purgableSpamAgeInDays;
+
     /** @var string */
     public $salesforce_client_id;
 
@@ -144,6 +150,8 @@ class Settings extends Model
         $this->spamFolderEnabled             = false;
         $this->submissionThrottlingCount     = null;
         $this->submissionThrottlingTimeFrame = null;
+        $this->purgableSubmissionAgeInDays   = null;
+        $this->purgableSpamAgeInDays         = null;
 
         parent::__construct($config);
     }

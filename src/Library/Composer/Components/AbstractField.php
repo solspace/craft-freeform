@@ -705,7 +705,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
                 if (empty($value)) {
                     $errors[] = $this->translate('This field is required');
                 }
-            } else if (null === $value || '' === $value) {
+            } else if (null === $value || '' === \trim($value)) {
                 $errors[] = $this->translate('This field is required');
             }
         }

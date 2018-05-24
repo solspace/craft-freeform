@@ -284,7 +284,7 @@ class FormsController extends BaseController
             'canManageSettings'        => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
             'isWidgetsInstalled'       => Freeform::getInstance()->isPro(),
-            'isReCaptchaEnabled'       => Freeform::getInstance()->isPro() && FreeformPro::getInstance()->getSettings()->recaptchaEnabled,
+            'isRecaptchaEnabled'       => Freeform::getInstance()->isPro() && FreeformPro::getInstance()->getSettings()->recaptchaEnabled,
             'sourceTargets'            => $this->getEncodedJson($this->getSourceTargetsList()),
             'customFields'             => $this->getEncodedJson($this->getAllCustomFieldList()),
             'generatedOptions'         => $this->getEncodedJson($this->getGeneratedOptionsList($model->getForm())),

@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 2.0.2 - 2018-05-24
+### Changed
+- Updated `hashids` dependency to `^2.0` so Freeform doesn't conflict with other plugins.
+- Updated form validation to no longer allow a single space as a valid value for required fields.
+
+### Fixed
+- Fixed a bug where the reCAPTCHA feature would error when trying to add to forms for some users.
+- Fixed a bug where Categories and Tags Feeders could break due to a JS error when setting the source.
+- Fixed a bug where setting the `maxlength` option for text and textarea fields to a value, and then changing back to nothing would result in Freeform not having the field accept no values.
+
 ## 2.0.1 - 2018-05-17
 ### Added
 - Added automated Submission Purge feature.

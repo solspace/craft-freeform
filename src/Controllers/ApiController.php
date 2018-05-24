@@ -115,12 +115,18 @@ class ApiController extends BaseController
                 }
             }
 
+            $honeypot = Freeform::getInstance()->honeypot->getHoneypot($form);
+
             return $this->asJson(
                 [
                     'success'    => false,
                     'finished'   => false,
                     'errors'     => $fieldErrors,
                     'formErrors' => $form->getErrors(),
+                    'honeypot'   => [
+                        'name' => $honeypot->getName(),
+                        'hash' => $honeypot->getHash(),
+                    ],
                 ]
             );
         }

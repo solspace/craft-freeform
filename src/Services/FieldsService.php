@@ -351,7 +351,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 break;
 
             case ExternalOptionsInterface::SOURCE_CATEGORIES:
-                $items = Category::find()->group($target)->all();
+                $items = Category::find()->groupId($target)->all();
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;
@@ -361,7 +361,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 break;
 
             case ExternalOptionsInterface::SOURCE_TAGS:
-                $items = Tag::find()->group($target)->all();
+                $items = Tag::find()->groupId($target)->all();
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;

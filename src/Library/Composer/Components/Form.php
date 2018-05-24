@@ -1058,6 +1058,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         throw new FreeformException('Form ArrayAccess does not allow unsetting values');
     }
 
+    /**
+     * @return bool
+     */
     private function isLastPage()
     {
         return $this->getFormValueContext()->getCurrentPageIndex() === (\count($this->getPages()) - 1);

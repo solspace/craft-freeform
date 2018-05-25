@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.0.3 - 2018-05-25
+### Changed
+- Updated Symfony dependencies to avoid conflicting with other plugins.
+
 ## 2.0.2 - 2018-05-24
 ### Changed
 - Updated `hashids` dependency to `^2.0` so Freeform doesn't conflict with other plugins.

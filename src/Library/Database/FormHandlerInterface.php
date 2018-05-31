@@ -9,7 +9,7 @@
  * @license       https://solspace.com/software/license-agreement
  */
 
-namespace Solspace\freeform\Library\Database;
+namespace Solspace\Freeform\Library\Database;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Components\Form;

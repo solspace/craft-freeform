@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 2.0.4 - 2018-05-31
+### Added
+- Added a variety of thorough AJAX examples to demo templates!
+- Added `EVENT_BEFORE_RENDER` event for developers.
+
+### Changed
+- Updated Field editor and Composer to error if field handles are using a reserved word such as `title` or `id`.
+
+### Fixed
+- Fixed a bug where the Craft automated tasks feature would error on because of the Freeform fieldtype being used inside Matrix fields under certain circumstances.
+- Fixed a bug where the Salesforce fetch token URL regex restriction was not allowing all types of URLs to pass through.
+- Fixed some issues Freeform when using with AJAX.
+
 ## 2.0.3 - 2018-05-25
 ### Changed
 - Updated Symfony dependencies to avoid conflicting with other plugins.

@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\mail\Message;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
@@ -27,8 +28,9 @@ use yii\base\Component;
 
 class MailerService extends Component implements MailHandlerInterface
 {
-    const EVENT_BEFORE_SEND = 'beforeSend';
-    const EVENT_AFTER_SEND  = 'afterSend';
+    const EVENT_BEFORE_SEND   = 'beforeSend';
+    const EVENT_AFTER_SEND    = 'afterSend';
+    const EVENT_BEFORE_RENDER = 'beforeRender';
 
     const LOG_CATEGORY = 'freeform_notifications';
 
@@ -50,14 +52,13 @@ class MailerService extends Component implements MailHandlerInterface
         $notificationId,
         array $fields,
         Submission $submission = null
-    ): int
-    {
+    ): int {
         $logger        = new CraftLogger();
         $sentMailCount = 0;
         $notification  = $this->getNotificationById($notificationId);
 
-        if (!is_array($recipients)) {
-            $recipients = $recipients ? array($recipients) : array();
+        if (!\is_array($recipients)) {
+            $recipients = $recipients ? [$recipients] : [];
         }
 
         if (!$notification) {
@@ -70,6 +71,10 @@ class MailerService extends Component implements MailHandlerInterface
         }
 
         $fieldValues = $this->getFieldValues($fields, $form, $submission);
+        $renderEvent = new RenderEmailEvent($form, $notification, $fieldValues, $submission);
+
+        $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
+        $fieldValues = $renderEvent->getFieldValues();
 
         $view = \Craft::$app->view;
 
@@ -100,19 +105,18 @@ class MailerService extends Component implements MailHandlerInterface
                 continue;
             }
 
-            if ($notification->isIncludeAttachmentsEnabled()) {
+            if ($submission && $notification->isIncludeAttachmentsEnabled()) {
                 foreach ($fields as $field) {
-                    if (!$field->getHandle() || $field instanceof NoStorageInterface) {
+                    if (!$field instanceof FileUploadInterface || !$field->getHandle()) {
                         continue;
                     }
+
                     $fieldValue = $submission->{$field->getHandle()}->getValue();
-                    if ($field instanceof FileUploadInterface && $fieldValue) {
-                        $assetIds = $fieldValue;
-                        foreach ($assetIds as $assetId) {
-                            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-                            if ($asset) {
-                                $email->attach($asset->getTransformSource());
-                            }
+                    $assetIds = $fieldValue;
+                    foreach ($assetIds as $assetId) {
+                        $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                        if ($asset) {
+                            $email->attach($asset->getTransformSource());
                         }
                     }
                 }

@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Records;
 
 use Solspace\Commons\Records\SerializableActiveRecord;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Helpers\HashHelper;
@@ -31,6 +32,20 @@ class FieldRecord extends SerializableActiveRecord
 {
     const TABLE = '{{%freeform_fields}}';
 
+    const RESERVED_FIELD_KEYWORDS = [
+        'id',
+        'title',
+        'incrementalId',
+        'statusId',
+        'formId',
+        'token',
+        'ip',
+        'isSpam',
+        'dateCreated',
+        'dateUpdated',
+        'uid',
+    ];
+
     /**
      * Returns the name of the associated database table.
      *
@@ -46,8 +61,8 @@ class FieldRecord extends SerializableActiveRecord
      */
     public static function create(): FieldRecord
     {
-        $field           = new self();
-        $field->type     = AbstractField::TYPE_TEXT;
+        $field       = new self();
+        $field->type = AbstractField::TYPE_TEXT;
 
         return $field;
     }
@@ -104,7 +119,28 @@ class FieldRecord extends SerializableActiveRecord
     {
         return [
             [['handle'], 'unique'],
+            [['handle'], 'checkReservedKeywords'],
         ];
+    }
+
+    /**
+     * Validates an attribute to see if it's a reserved keyword or not
+     *
+     * @param $attribute
+     */
+    public function checkReservedKeywords($attribute)
+    {
+        $keyword = $this->{$attribute};
+
+        if (\in_array($keyword, self::RESERVED_FIELD_KEYWORDS, true)) {
+            $this->addError(
+                $attribute,
+                Freeform::t(
+                    'The handle "{handle}" is a reserved keyword and cannot be used.',
+                    ['handle' => $keyword, 'keywords' => implode('", "', self::RESERVED_FIELD_KEYWORDS)]
+                )
+            );
+        }
     }
 
     /**

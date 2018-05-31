@@ -1,0 +1,3 @@
+{% set baseUrlSegments = 1 %}
+{% set segment = craft.app.request.segment(baseUrlSegments + 2) %}
+{% include "demo/materialize/_form" with { formHandle: segment } %}

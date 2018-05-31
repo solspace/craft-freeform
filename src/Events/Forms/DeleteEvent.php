@@ -24,6 +24,15 @@ class DeleteEvent extends CancelableEvent
     /**
      * @return FormModel
      */
+    public function getModel(): FormModel
+    {
+        return $this->model;
+    }
+
+    /**
+     * @deprecated use ::getModel() instead
+     * @return FormModel
+     */
     public function getRecord(): FormModel
     {
         return $this->model;

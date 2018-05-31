@@ -1,0 +1,41 @@
+{% extends "demo/_layouts/ajax" %}
+
+{% set pageTitle = "AJAX" %}
+{% set page = "ajax" %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% set forms = craft.freeform.forms %}
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Form Name</th>
+                <th>Bootstrap</th>
+                <th>Foundation</th>
+                <th>Materialize</th>
+                <th>Flexbox</th>
+                <th>Grid</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for form in forms %}
+                <tr>
+                    <td>{{ form.id }}</td>
+                    <td>{{ form.name }}</td>
+                    <td><a href="{{ siteUrl }}demo/ajax-bootstrap/{{ form.handle }}">Bootstrap</a></td>
+                    <td><a href="{{ siteUrl }}demo/ajax-foundation/{{ form.handle }}">Foundation</a></td>
+                    <td><a href="{{ siteUrl }}demo/ajax-materialize/{{ form.handle }}">Materialize</a></td>
+                    <td><a href="{{ siteUrl }}demo/ajax-flexbox/{{ form.handle }}">Flexbox</a></td>
+                    <td><a href="{{ siteUrl }}demo/ajax-grid/{{ form.handle }}">Grid</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

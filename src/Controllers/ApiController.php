@@ -58,6 +58,7 @@ class ApiController extends BaseController
         }
 
         $form          = $formModel->getForm();
+        $honeypot      = Freeform::getInstance()->honeypot->getHoneypot($form);
         $isAjaxRequest = \Craft::$app->request->getIsAjax();
         if ($form->isValid()) {
             $submission = $form->submit();
@@ -85,6 +86,10 @@ class ApiController extends BaseController
                             'finished'     => true,
                             'returnUrl'    => $returnUrl,
                             'submissionId' => $submission ? $submission->id : null,
+                            'honeypot'     => [
+                                'name' => $honeypot->getName(),
+                                'hash' => $honeypot->getHash(),
+                            ],
                         ]
                     );
                 }
@@ -97,6 +102,10 @@ class ApiController extends BaseController
                     [
                         'success'  => true,
                         'finished' => false,
+                        'honeypot' => [
+                            'name' => $honeypot->getName(),
+                            'hash' => $honeypot->getHash(),
+                        ],
                     ]
                 );
             }

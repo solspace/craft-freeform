@@ -3,262 +3,28 @@
 {% set pageTitle = "Materialize" %}
 {% set page = "materialize" %}
 
+{% set baseUrlSegments = 1 %}
+{% set segment1 = craft.app.request.segment(baseUrlSegments + 1) %}
+{% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
+{% set segment3 = craft.app.request.segment(baseUrlSegments + 3) %}
+{% set segment4 = craft.app.request.segment(baseUrlSegments + 4) %}
+{% set segment5 = craft.app.request.segment(baseUrlSegments + 5) %}
+
+{% set formHandle = segment2 %}
+{% set isSuccess  = segment3 == "success" %}
+
 {% block content %}
 
-<div class="container">
-
-    {% set baseUrlSegments = 1 %}
-    {% set segment1 = craft.app.request.segment(baseUrlSegments + 1) %}
-    {% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
-    {% set segment3 = craft.app.request.segment(baseUrlSegments + 3) %}
-    {% set segment4 = craft.app.request.segment(baseUrlSegments + 4) %}
-    {% set segment5 = craft.app.request.segment(baseUrlSegments + 5) %}
-
-    {% set formHandle = segment2 %}
-    {% set isSuccess  = segment3 == "success" %}
-
-    {% if isSuccess %}
-        <div class="alert alert-success" role="alert">
-            <p class="lead">
-                Form submitted successfully!
-            </p>
-        </div>
-    {% endif %}
-
-    {% set form = craft.freeform.form(formHandle, {
-        submitClass: "btn-large",
-        returnUrl: "{{ siteUrl }}demo/materialize/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
-    }) %}
-
-    {% if form %}
-
-        <h3>{{ form.name }}</h3>
-
-        {{ form.renderTag }}
-
-        {% if form.pages|length > 1 %}
-            <ul class="pagination">
-                {% for page in form.pages %}
-                    <li class="{{ form.currentPage.index == loop.index0 ? "active" : "disabled" }}">
-                        <a href="javascript:;">{{ page.label }}</a>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        {% if form.hasErrors %}
-            <div class="alert alert-danger errors">
-                {{ "There was an error submitting this form"|t }}
-
-                {% if form.errors|length %}
-                    <ul>
-                        {% for error in form.errors %}
-                            <li>{{ error }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
+    <div class="container">
+        {% if isSuccess %}
+            <div class="alert alert-success" role="alert">
+                <p class="lead">
+                    Form submitted successfully!
+                </p>
             </div>
         {% endif %}
 
-
-        {% for row in form %}
-            <div class="row {{ form.customAttributes.rowClass }}" style="margin-bottom: 0;">
-                {% for field in row %}
-                    {% set width = (12 / (row|length)) %}
-
-                    {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
-
-                    {% set columnClass = field.type in ["radio_group", "checkbox_group"] ? "" : "input-field" %}
-                    {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
-                    {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-                    {% set columnClass = columnClass ~ " col m" ~ width ~ " s12" %}
-
-                    {% if field.type == "submit" %}
-                        {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
-                    {% endif %}
-
-                    {% if field.type == "checkbox_group" %}
-
-                        <div class="{{ columnClass }}" style="margin-bottom: 20px;">
-
-                            {{ field.renderLabel({
-                                labelClass: " active" ~ (field.required ? " required"),
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {% for option in field.options %}
-                                <p>
-                                    <input type="checkbox"
-                                           id="{{ form.hash ~ field.handle ~ option.value }}"
-                                           name="{{ field.handle }}"
-                                           value="{{ option.value }}"
-                                            {{ option.checked ? "checked" }}
-                                    />
-                                    <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
-                                </p>
-                            {% endfor %}
-
-                            {{ field.renderInstructions }}
-                            {{ field.renderErrors }}
-                        </div>
-
-                    {% elseif field.type == "radio_group" %}
-
-                        <div class="{{ columnClass }}" style="margin-bottom: 20px;">
-
-                            {{ field.renderLabel({
-                                labelClass: " active" ~ (field.required ? " required"),
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {% for option in field.options %}
-                                <p>
-                                    <input type="radio"
-                                           id="{{ form.hash ~ field.handle ~ option.value }}"
-                                           name="{{ field.handle }}"
-                                           value="{{ option.value }}"
-                                            {{ option.checked ? "checked" }}
-                                    />
-                                    <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
-                                </p>
-                            {% endfor %}
-
-                            {{ field.renderInstructions }}
-                            {{ field.renderErrors }}
-                        </div>
-
-                    {% elseif field.type == "dynamic_recipients" and field.showAsRadio %}
-
-                        <div class="{{ columnClass }}" style="margin-bottom: 20px;">
-
-                            {{ field.renderLabel({
-                                labelClass: " active" ~ (field.required ? " required"),
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {% for option in field.options %}
-                                <p>
-                                    <input type="radio"
-                                           id="{{ form.hash ~ field.handle ~ option.value }}"
-                                           name="{{ field.handle }}"
-                                           value="{{ loop.index0 }}"
-                                            {{ option.checked ? "checked" }}
-                                    />
-                                    <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
-                                </p>
-                            {% endfor %}
-
-                            {{ field.renderInstructions }}
-                            {{ field.renderErrors }}
-                        </div>
-
-                    {% elseif field.type == "textarea" %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.renderInput({
-                                class: 'materialize-textarea'
-                            }) }}
-                            {{ field.renderLabel }}
-
-                            {{ field.renderInstructions }}
-                            {{ field.renderErrors }}
-                        </div>
-
-                    {% elseif field.type == "checkbox" %}
-
-                        <div class="{{ columnClass|replace('input-field', '') }}">
-
-                            {{ field.renderInput }}
-                            {{ field.renderLabel({
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {{ field.renderInstructions() }}
-                            {{ field.renderErrors() }}
-                        </div>
-
-                    {% elseif field.type == "mailing_list" %}
-
-                        <div class="{{ columnClass|replace('input-field', '') }}">
-
-                            {{ field.renderInput|replace('<label>', '')|replace('</label>', '')|replace(field.label, '')|raw }}
-                            {{ field.renderLabel({
-                                instructionsClass: "help-block",
-                                errorClass: "help-block",
-                            }) }}
-
-                            {{ field.renderInstructions() }}
-                            {{ field.renderErrors() }}
-                        </div>
-
-                    {% elseif field.type == "submit" %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.render({
-                                class: "btn waves-effect waves-light"
-                            }) }}
-                        </div>
-
-                    {% elseif field.type == "html" %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.renderInput }}
-                        </div>
-
-                    {% elseif field.type == "file" %}
-
-                        <div class="{{ columnClass|replace('input-field', '') }} file-field input-field">
-                            <div class="btn">
-                                <span>File</span>
-                                {{ field.renderInput }}
-                            </div>
-                            <div class="file-path-wrapper">
-                                <input class="file-path validate"
-                                       type="text"
-                                       placeholder="{{ field.label }}"
-                                />
-                            </div>
-
-                            {{ field.renderInstructions }}
-                            {{ field.renderErrors }}
-                        </div>
-
-                    {% else %}
-
-                        <div class="{{ columnClass }}">
-                            {{ field.renderInput({
-                                instructionsClass: "help-block",
-                                instructionsBelowField: true,
-                                labelClass: (field.required ? " required" : ""),
-                                errorClass: "help-block",
-                            }) }}
-                            {{ field.renderLabel }}
-
-                            {{ field.renderInstructions }}
-                            {{ field.renderErrors }}
-                        </div>
-
-                    {% endif %}
-                {% endfor %}
-            </div>
-        {% endfor %}
-
-
-        {{ form.renderClosingTag }}
-
-
-    {% else %}
-        <div class="alert alert-danger">
-            <p class="lead">
-                Form with the handle '{{ segment2 }}' does not exist
-            </p>
-        </div>
-    {% endif %}
-
-</div>
+        {% include "demo/materialize/_form" with { formHandle: formHandle } %}
+    </div>
 
 {% endblock %}

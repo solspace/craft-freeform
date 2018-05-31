@@ -58,5 +58,55 @@
     "urlParts": ["foundation\\/",["slug","[^\\\\\\/]+"]],
     "urlPattern": "foundation/{slug}",
     "template": "/foundation/view.html"
+  },
+  {
+    "urlParts": ["ajax-bootstrap\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-bootstrap/{slug}",
+    "template": "/ajax/bootstrap.html"
+  },
+  {
+    "urlParts": ["ajax-bootstrap-source\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-bootstrap-source/{slug}",
+    "template": "/ajax/bootstrap-source.html"
+  },
+  {
+    "urlParts": ["ajax-foundation\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-foundation/{slug}",
+    "template": "/ajax/foundation.html"
+  },
+  {
+    "urlParts": ["ajax-foundation-source\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-foundation-source/{slug}",
+    "template": "/ajax/foundation-source.html"
+  },
+  {
+    "urlParts": ["ajax-materialize\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-materialize/{slug}",
+    "template": "/ajax/materialize.html"
+  },
+  {
+    "urlParts": ["ajax-materialize-source\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-materialize-source/{slug}",
+    "template": "/ajax/materialize-source.html"
+  },
+  {
+    "urlParts": ["ajax-flexbox\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-flexbox/{slug}",
+    "template": "/ajax/flexbox.html"
+  },
+  {
+    "urlParts": ["ajax-flexbox-source\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-flexbox-source/{slug}",
+    "template": "/ajax/flexbox-source.html"
+  },
+  {
+    "urlParts": ["ajax-grid\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-grid/{slug}",
+    "template": "/ajax/grid.html"
+  },
+  {
+    "urlParts": ["ajax-grid-source\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "ajax-grid-source/{slug}",
+    "template": "/ajax/grid-source.html"
   }
 ]

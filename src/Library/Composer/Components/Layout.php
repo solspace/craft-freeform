@@ -11,7 +11,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
-use Solspace\freeform\Library\Composer\Components\Fields\CheckboxGroupField;
+use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxGroupField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;

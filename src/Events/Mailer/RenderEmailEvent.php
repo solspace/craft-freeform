@@ -2,17 +2,13 @@
 
 namespace Solspace\Freeform\Events\Mailer;
 
-use craft\events\CancelableEvent;
-use craft\mail\Message;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
+use yii\base\Event;
 
-class SendEmailEvent extends CancelableEvent
+class RenderEmailEvent extends Event
 {
-    /** @var Message */
-    private $message;
-
     /** @var Form */
     private $form;
 
@@ -26,35 +22,24 @@ class SendEmailEvent extends CancelableEvent
     private $submission;
 
     /**
-     * @param Message               $message
      * @param Form                  $form
      * @param NotificationInterface $notification
      * @param array                 $fieldValues
      * @param Submission|null       $submission
      */
     public function __construct(
-        Message $message,
         Form $form,
         NotificationInterface $notification,
         array $fieldValues,
         Submission $submission = null
     )
     {
-        $this->message      = $message;
         $this->form         = $form;
         $this->notification = $notification;
         $this->fieldValues  = $fieldValues;
         $this->submission   = $submission;
 
         parent::__construct([]);
-    }
-
-    /**
-     * @return Message
-     */
-    public function getMessage(): Message
-    {
-        return $this->message;
     }
 
     /**
@@ -82,9 +67,21 @@ class SendEmailEvent extends CancelableEvent
     }
 
     /**
-     * @return Submission|null
+     * @param array $fieldValues
+     *
+     * @return RenderEmailEvent
      */
-    public function getSubmission()
+    public function setFieldValues(array $fieldValues): RenderEmailEvent
+    {
+        $this->fieldValues = $fieldValues;
+
+        return $this;
+    }
+
+    /**
+     * @return Submission
+     */
+    public function getSubmission(): Submission
     {
         return $this->submission;
     }

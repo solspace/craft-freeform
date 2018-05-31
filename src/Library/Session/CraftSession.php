@@ -11,6 +11,8 @@
 
 namespace Solspace\Freeform\Library\Session;
 
+use Solspace\Freeform\Library\Logging\CraftLogger;
+
 class CraftSession implements SessionInterface
 {
     /**
@@ -21,7 +23,11 @@ class CraftSession implements SessionInterface
      */
     public function get($key, $defaultValue = null)
     {
-        return \Craft::$app->session->get($key, $defaultValue);
+        try {
+            return \Craft::$app->session->get($key, $defaultValue);
+        } catch (\Exception $e) {
+            return $defaultValue;
+        }
     }
 
     /**
@@ -30,7 +36,11 @@ class CraftSession implements SessionInterface
      */
     public function set($key, $value)
     {
-        \Craft::$app->session->set($key, $value);
+        try {
+            \Craft::$app->session->set($key, $value);
+        } catch (\Exception $e) {
+            (new CraftLogger())->log(CraftLogger::LEVEL_ERROR, $e->getMessage(), 'freeform_craft_session');
+        }
     }
 
     /**

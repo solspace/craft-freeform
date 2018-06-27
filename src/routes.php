@@ -15,12 +15,14 @@ return [
     // Forms
     'freeform'                                                   => 'freeform/settings/default-view',
     'freeform/forms'                                             => 'freeform/forms/index',
+    'freeform/forms/duplicate'                                   => 'freeform/forms/duplicate',
     'freeform/forms/new'                                         => 'freeform/forms/create',
     'freeform/forms/save'                                        => 'freeform/forms/save',
     'freeform/forms/<id:\d+>'                                    => 'freeform/forms/edit',
     'freeform/forms/delete'                                      => 'freeform/forms/delete',
     // Fields
     'freeform/fields'                                            => 'freeform/fields/index',
+    'freeform/fields/duplicate'                                  => 'freeform/fields/duplicate',
     'freeform/fields/new'                                        => 'freeform/fields/create',
     'freeform/fields/<id:\d+>'                                   => 'freeform/fields/edit',
     'freeform/fields/save'                                       => 'freeform/fields/save',

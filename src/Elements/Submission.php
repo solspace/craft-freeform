@@ -707,6 +707,12 @@ class Submission extends Element
      */
     public function beforeDelete(): bool
     {
+        $canModifyAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+
+        if ($canModifyAll) {
+            return true;
+        }
+
         return PermissionHelper::checkPermission(
             PermissionHelper::prepareNestedPermission(
                 Freeform::PERMISSION_SUBMISSIONS_MANAGE,

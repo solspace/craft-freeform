@@ -7,6 +7,11 @@ use craft\web\assets\cp\CpAsset;
 
 class FormIndexBundle extends AbstractFreeformAssetBundle
 {
+    public function getStylesheets(): array
+    {
+        return ['css/form-index.css'];
+    }
+
     /**
      * @inheritDoc
      */

@@ -165,10 +165,25 @@
                                             values: value,
                                         })) }}
                                     {% elseif field.type == "dynamic_recipients" %}
-                                        {{ forms.selectField(options|merge({
-                                            options: field.optionsAsKeyValuePairs,
-                                            value: value,
-                                        })) }}
+                                        {% if field.showAsRadio %}
+                                            {{ forms.radioGroupField(options|merge({
+                                                options: field.optionsAsKeyValuePairs,
+                                                name: fieldHandle~"[]",
+                                                value: value|first,
+                                            })) }}
+                                        {% elseif field.showAsCheckboxes %}
+                                            {{ forms.checkboxSelectField(options|merge({
+                                                showAllOption: false,
+                                                options: field.optionsAsKeyValuePairs,
+                                                values: value,
+                                            })) }}
+                                        {% else %}
+                                            {{ forms.selectField(options|merge({
+                                                options: field.optionsAsKeyValuePairs,
+                                                value: value|first,
+                                                name: fieldHandle~"[]",
+                                            })) }}
+                                        {% endif %}
                                     {% elseif field.type == "radio_group" %}
                                         {{ forms.radioGroupField(options|merge({
                                             options: field.optionsAsKeyValuePairs,

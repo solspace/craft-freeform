@@ -106,7 +106,7 @@
                         {{ field.renderErrors() }}
                     </div>
 
-                {% elseif field.type == "dynamic_recipients" and field.showAsRadio %}
+                {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
 
                     <div class="{{ columnClass }}">
                         {{ field.renderLabel({
@@ -116,10 +116,10 @@
                         }) }}
 
                         {% for option in field.options %}
-                            <div class="radio">
+                            <div class="{{ field.showAsRadio ? "radio" : "checkbox" }}">
                                 <label>
-                                    <input type="radio"
-                                           name="{{ field.handle }}"
+                                    <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
+                                           name="{{ field.handle }}[]"
                                            value="{{ loop.index0 }}"
                                             {{ option.checked ? "checked" }}
                                     />

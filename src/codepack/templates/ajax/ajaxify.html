@@ -110,6 +110,7 @@
     const action = form.getAttribute("action");
 
     request.open(method, action ? action : window.location.href, true);
+    request.setRequestHeader("Cache-Control", "no-cache");
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
     request.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest");
     request.onload = function () {

@@ -51,6 +51,9 @@ class FieldProperties extends AbstractProperties
     /** @var bool */
     protected $showAsRadio;
 
+    /** @var bool */
+    protected $showAsCheckboxes;
+
     /** @var int */
     protected $notificationId;
 
@@ -281,6 +284,14 @@ class FieldProperties extends AbstractProperties
     public function isShowAsRadio()
     {
         return $this->showAsRadio;
+    }
+
+    /**
+     * @return boolean|null
+     */
+    public function isShowAsCheckboxes()
+    {
+        return $this->showAsCheckboxes;
     }
 
     /**
@@ -666,6 +677,7 @@ class FieldProperties extends AbstractProperties
             'options'             => self::TYPE_ARRAY,
             'checked'             => self::TYPE_BOOLEAN,
             'showAsRadio'         => self::TYPE_BOOLEAN,
+            'showAsCheckboxes'    => self::TYPE_BOOLEAN,
             'notificationId'      => self::TYPE_STRING,
             'assetSourceId'       => self::TYPE_INTEGER,
             'integrationId'       => self::TYPE_INTEGER,

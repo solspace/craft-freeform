@@ -417,17 +417,26 @@ class FormsService extends Component implements FormHandlerInterface
             static $datepickerLoaded;
 
             if (null === $datepickerLoaded) {
-                $flatpickrCss = file_get_contents(__DIR__ . '/../Resources/css/fields/datepicker.css');
-                $flatpickrJs  = file_get_contents(__DIR__ . '/../Resources/js/lib/flatpickr/flatpickr.js');
-                $datepickerJs = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/datepicker.js');
+                $locale = \Craft::$app->locale->id;
+                $localePath = __DIR__ . "/../Resources/js/lib/flatpickr/i10n/$locale.js";
+                if (!file_exists($localePath)) {
+                    $localePath = __DIR__ . '/../Resources/js/lib/flatpickr/i10n/default.js';
+                }
+
+                $flatpickrCss      = file_get_contents(__DIR__ . '/../Resources/css/fields/datepicker.css');
+                $flatpickrJs       = file_get_contents(__DIR__ . '/../Resources/js/lib/flatpickr/flatpickr.js');
+                $flatpickrLocaleJs = file_get_contents($localePath);
+                $datepickerJs      = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/datepicker.js');
 
                 if ($this->getSettingsService()->isFooterScripts()) {
                     \Craft::$app->view->registerCss($flatpickrCss);
                     \Craft::$app->view->registerJs($flatpickrJs, View::POS_END);
+                    \Craft::$app->view->registerJs($flatpickrLocaleJs, View::POS_END);
                     \Craft::$app->view->registerJs($datepickerJs, View::POS_END);
                 } else {
                     $event->appendCssToOutput($flatpickrCss);
                     $event->appendJsToOutput($flatpickrJs);
+                    $event->appendJsToOutput($flatpickrLocaleJs);
                     $event->appendJsToOutput($datepickerJs);
                 }
 

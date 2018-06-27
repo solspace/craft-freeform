@@ -61,6 +61,15 @@ class MailerService extends Component implements MailHandlerInterface
             $recipients = $recipients ? [$recipients] : [];
         }
 
+        $previousRecipients = $recipients;
+        $recipients = [];
+        foreach ($previousRecipients as $index => $value) {
+            $exploded = explode(',', $value);
+            foreach ($exploded as $emailString) {
+                $recipients[] = trim($emailString);
+            }
+        }
+
         if (!$notification) {
             throw new FreeformException(
                 Freeform::t(
@@ -87,7 +96,7 @@ class MailerService extends Component implements MailHandlerInterface
             try {
                 $email->variables = $fieldValues;
                 $email
-                    ->setTo([$emailAddress => $recipientName])
+                    ->setTo([$emailAddress])
                     ->setFrom([$fromEmail => $fromName])
                     ->setSubject($view->renderString($notification->getSubject(), $fieldValues))
                     ->setHtmlBody($view->renderString($notification->getBodyHtml(), $fieldValues))

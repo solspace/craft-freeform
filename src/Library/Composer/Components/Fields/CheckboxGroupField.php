@@ -35,8 +35,8 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements Multipl
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $output     = '';
+        $attributes   = $this->getCustomAttributes();
+        $output       = '';
 
         foreach ($this->options as $index => $option) {
             $output .= '<label>';
@@ -46,7 +46,7 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements Multipl
                 . $this->getAttributeString('type', 'checkbox')
                 . $this->getAttributeString('id', $this->getIdAttribute() . "-$index")
                 . $this->getAttributeString('class', $attributes->getClass())
-                . $this->getAttributeString('value', $option->getValue(), false)
+                . $this->getAttributeString('value', $option->getValue())
                 . $this->getParameterString('checked', $option->isChecked())
                 . $attributes->getInputAttributesAsString()
                 . '/>';

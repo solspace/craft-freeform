@@ -12,6 +12,9 @@
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
+use Solspace\Freeform\Library\Composer\Components\Fields\DynamicRecipientField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 
 trait MultipleValueTrait
@@ -45,6 +48,26 @@ trait MultipleValueTrait
             $values = array_map('strval', $values);
         }
 
+        if ($this instanceof DynamicRecipientField && $values) {
+            $areIndexes = true;
+            foreach ($values as $value) {
+                if (!\is_numeric($value)) {
+                    $areIndexes = false;
+                }
+            }
+
+            $checkedIndexes = [];
+            foreach ($this->options as $index => $option) {
+                if ($areIndexes && \in_array($index, $values, false)) {
+                    $checkedIndexes[] = $index;
+                } else if (\in_array($option->getValue(), $values, true)) {
+                    $checkedIndexes[] = $index;
+                }
+            }
+
+            $values = $checkedIndexes;
+        }
+
         return $values;
     }
 
@@ -55,12 +78,20 @@ trait MultipleValueTrait
      */
     public function setValue($value)
     {
+        if ($this instanceof MultipleValueInterface && !\is_array($value)) {
+            $value = [$value];
+        }
+
         $this->values = $value;
 
         if ($this instanceof OptionsInterface) {
             $updatedOptions = [];
-            foreach ($this->getOptions() as $option) {
-                $checked = \in_array($option->getValue(), $this->getValue(), false);
+            foreach ($this->getOptions() as $index => $option) {
+                if ($this instanceof ObscureValueInterface) {
+                    $checked = \in_array($index, $value, false);
+                } else {
+                    $checked = \in_array($option->getValue(), $value, false);
+                }
 
                 $updatedOptions[] = new Option(
                     $option->getLabel(),

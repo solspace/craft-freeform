@@ -167,10 +167,11 @@ class FieldModel extends Model implements \JsonSerializable
         }
 
         if ($this->type === FieldInterface::TYPE_DYNAMIC_RECIPIENTS) {
-            $returnArray['notificationId'] = $this->getMetaProperty('notificationId', 0);
-            $returnArray['value']          = $this->getMetaProperty('value', '');
-            $returnArray['options']        = $this->getMetaProperty('options', []);
-            $returnArray['showAsRadio']    = $this->getMetaProperty('showAsRadio', false);
+            $returnArray['notificationId']   = $this->getMetaProperty('notificationId', 0);
+            $returnArray['value']            = $this->getMetaProperty('value', '');
+            $returnArray['options']          = $this->getMetaProperty('options', []);
+            $returnArray['showAsRadio']      = $this->getMetaProperty('showAsRadio', false);
+            $returnArray['showAsCheckboxes'] = $this->getMetaProperty('showAsCheckboxes', false);
         }
 
         if ($this->type === FieldInterface::TYPE_CHECKBOX_GROUP) {
@@ -401,6 +402,7 @@ class FieldModel extends Model implements \JsonSerializable
             'useDatepicker'       => self::PROPERTY_TYPE_BOOL,
             'checked'             => self::PROPERTY_TYPE_BOOL,
             'showAsRadio'         => self::PROPERTY_TYPE_BOOL,
+            'showAsCheckboxes'    => self::PROPERTY_TYPE_BOOL,
             'generatePlaceholder' => self::PROPERTY_TYPE_BOOL,
             'date4DigitYear'      => self::PROPERTY_TYPE_BOOL,
             'dateLeadingZero'     => self::PROPERTY_TYPE_BOOL,

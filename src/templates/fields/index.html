@@ -49,9 +49,16 @@
                         {{ fieldTypes[field.type] }}
                     </td>
                     <td class="thin">
-                        {% if currentUser.can("freeform-fieldsManage") %}
-                            <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
-                        {% endif %}
+                        <div class="action-buttons">
+                            {% if currentUser.can("freeform-fieldsManage") %}
+                                <form method="post" action="{{ url("freeform/fields/duplicate") }}">
+                                    {{ csrfInput() }}
+                                    <input type="hidden" name="id" value="{{ field.id }}" />
+                                    <a class="clone icon" title="{{ 'Clone'|t('freeform') }}" role="button"></a>
+                                </form>
+                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
@@ -68,5 +75,11 @@
     newObjectBtnSelector: '#newfieldcontainer',
     deleteAction: 'freeform/fields/delete',
     confirmDeleteMessage: '{{ "Are you sure you want to delete this field?"|t('freeform') }}'
+    });
+
+    $("a.clone.icon").click(function() {
+        $(this).parents("form:first").submit();
+
+        return false;
     });
 {% endjs %}

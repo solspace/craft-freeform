@@ -21,7 +21,7 @@ interface RecipientInterface
      *
      * @return array
      */
-    public function getRecipients();
+    public function getRecipients(): array;
 
     /**
      * @return int|null
@@ -34,5 +34,5 @@ interface RecipientInterface
      *
      * @return bool
      */
-    public function shouldReceiveEmail();
+    public function shouldReceiveEmail(): bool;
 }

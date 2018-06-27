@@ -1,5 +1,35 @@
 # Solspace Freeform Changelog
 
+## 2.1.0 - 2018-06-27
+### Added
+- Added the ability to move fields from one page to another in multipage forms in Composer.
+- Added ability to rearrange pages in multipage forms in Composer.
+- Added ability to render Dynamic Recipients as checkboxes, and now allows submitter to select more than 1 option.
+- Added ability to easily duplicate forms (from Forms list) and duplicate fields.
+- Added 'Reset' button inside Property editor for fields to reset/update them to the defaults set for the 'main' field (Freeform -> Fields area).
+
+### Changed
+- Updated Composer UI to match the Craft 3.0.12 UI changes.
+- Updated and improved the Forms list control panel page.
+- Updated File Upload field exporting to load the full URL path to file fields, or file name only if the Asset preference does not have a public URL.
+- Updated Date & Time field date picker to have several more translation options available.
+- Updated Demo Templates to no longer install duplicate template routes.
+- Updated Demo Templates routes to be extension agnostic.
+- Updated the 'Disable submit button on form submit?' setting to be disabled by default.
+- Updated plugin icon to be a little more spicy.
+- Renamed the 'Save and continue editing' button in Composer to just 'Quick Save'.
+- Renamed the 'Include Freeform scripts in the page's footer?' setting to 'Freeform Javascript Insertion Location' with a dropdown for choices.
+
+### Fixed
+- Fixed a bug where the Composer Save button was off position if there was a Craft notice at top of page.
+- Fixed a bug where the Date & Time fieldtype would incorrectly display time picker when the field was set to Date only.
+- Fixed a bug where the Dynamic Recipients field would not show the selected options in Submission object and single submission view in control panel.
+- Fixed a bug where the Dynamic Recipients field would not render as Radios in single submission view in control panel if it was set to render that way.
+- Fixed a bug where form field options were not being escaped.
+- Fixed a bug where some reCAPTCHA files were not correctly named for case sensitivity.
+- Fixed a bug where Demo Templates installer was stripping `-` from URI paths.
+- Fixed a bug where the "Manage all Submissions" permission was not allowing valid users to delete submissions.
+
 ## 2.0.4 - 2018-05-31
 ### Added
 - Added a variety of thorough AJAX examples to demo templates!

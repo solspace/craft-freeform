@@ -65,7 +65,7 @@ class CodepackController extends BaseController
             'freeform/codepack',
             [
                 'codePack' => $codePack,
-                'prefix'   => 'freeform_demo',
+                'prefix'   => 'freeform-demo',
             ]
         );
     }
@@ -88,7 +88,7 @@ class CodepackController extends BaseController
         $codePack = $this->getCodepack();
         $prefix   = \Craft::$app->request->post('prefix');
 
-        $prefix = preg_replace('/[^a-zA-Z_0-9\/]/', '', $prefix);
+        $prefix = preg_replace('/[^a-zA-Z_0-9-\/]/', '', $prefix);
 
         try {
             $codePack->install($prefix);

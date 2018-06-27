@@ -53,7 +53,7 @@
                     {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
                 {% endif %}
 
-                {% if field.type == "checkbox_group" %}
+                {% if field.type == "checkbox_group" or (field.type == "dynamic_recipients" and field.showAsCheckboxes) %}
 
                     <div class="{{ columnClass }}">
                         {{ field.renderLabel({
@@ -87,9 +87,9 @@
                         }) }}
 
                         {% for option in field.options %}
-                            <div class="radio">
+                            <div class="{{ field.showAsRadio ? "radio" : "checkbox" }}">
                                 <label>
-                                    <input type="radio"
+                                    <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
                                            name="{{ field.handle }}"
                                            value="{{ option.value }}"
                                             {{ option.checked ? "checked" }}

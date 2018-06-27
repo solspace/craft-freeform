@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Controllers;
 
 use craft\base\Field;
 use craft\helpers\Assets;
+use craft\helpers\Json;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
@@ -86,6 +87,55 @@ class FormsController extends BaseController
         }
 
         return $this->renderEditForm($model->name, $model);
+    }
+
+    /**
+     * @return Response
+     * @throws FreeformException
+     */
+    public function actionDuplicate(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+        $this->requirePostRequest();
+
+        $id    = \Craft::$app->request->post('id');
+        $model = $this->getFormService()->getFormById($id);
+
+        if (!$model) {
+            throw new FreeformException(
+                Freeform::t('Form with ID {id} not found', ['id' => $id])
+            );
+        }
+
+        $model->id = null;
+        $layout    = Json::decode($model->layoutJson, true);
+        $oldHandle = $model->handle;
+
+        if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
+            list($string, $mainPart, $iterator) = $matches;
+
+            $newHandle = $mainPart . ((int) $iterator + 1);
+        } else {
+            $newHandle = $oldHandle . '1';
+        }
+
+        $layout['composer']['properties']['form']['handle'] = $newHandle;
+
+        $model->handle = $newHandle;
+        $model->layoutJson = Json::encode($layout);
+
+        $this->getFormsService()->save($model);
+
+        if ($model->getErrors()) {
+            $string = '';
+            foreach ($model->getErrors() as $errors) {
+                $string .= implode(', ', $errors);
+            }
+
+            \Craft::$app->session->setError($string);
+        }
+
+        return $this->redirect('freeform/forms');
     }
 
     /**

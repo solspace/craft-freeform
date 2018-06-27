@@ -106,7 +106,7 @@ class IntegrationsService extends Component
         foreach ($recipientFields as $field) {
             $mailer->sendEmail(
                 $form,
-                $submission->{$field->getHandle()}->getValue(),
+                $submission->{$field->getHandle()}->getRecipients(),
                 $field->getNotificationId(),
                 $fields,
                 $submission

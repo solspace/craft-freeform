@@ -75,13 +75,7 @@ class RoutesComponent extends AbstractJsonComponent
                 $id = (new Query())
                     ->select('id')
                     ->from('{{%routes}}')
-                    ->where(
-                        [
-                            'uriParts'   => Json::encode($uriParts),
-                            'uriPattern' => $uriPattern,
-                            'template'   => $template,
-                        ]
-                    )
+                    ->where(['uriParts' => Json::encode($uriParts)])
                     ->scalar();
 
                 $routeService->saveRoute($urlParts, $template, null, $id ?: null);

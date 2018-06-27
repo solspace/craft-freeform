@@ -78,12 +78,16 @@
             errors: settings.errors("formSubmitDisable"),
         }) }}
 
-        {{ forms.lightswitchField({
-            label: "Include Freeform scripts in the page's footer?"|t('freeform'),
-            instructions: "Disable this to add each Freeform forms scripts inside the form tag instead of the page's footer."|t('freeform'),
+        {{ forms.selectField({
+            label: "Freeform Javascript Insertion Location"|t('freeform'),
+            instructions: "The location of where you want Freeform to insert it's scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),
             name: "settings[footerScripts]",
-            on: settings.footerScripts,
+            value: settings.footerScripts,
             errors: settings.errors("footerScripts"),
+            options: {
+                1: "Page Footer"|t('freeform'),
+                0: "Inside Form"|t('freeform'),
+            }
         }) }}
 
         <hr>

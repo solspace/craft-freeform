@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Resources\Bundles\FieldEditorBundle;
+use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use yii\base\InvalidParamException;
@@ -39,6 +40,8 @@ class FieldsController extends Controller
 
         $fieldsService = $this->getFieldsService();
         $fields        = $fieldsService->getAllFields();
+
+        \Craft::$app->view->registerAssetBundle(FormIndexBundle::class);
 
         return $this->renderTemplate(
             'freeform/fields',
@@ -82,6 +85,52 @@ class FieldsController extends Controller
         }
 
         return $this->renderEditForm($model, $model->label);
+    }
+
+    /**
+     * @return Response
+     * @throws BadRequestHttpException
+     * @throws ForbiddenHttpException
+     * @throws FreeformException
+     */
+    public function actionDuplicate(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
+        $this->requirePostRequest();
+
+        $id    = \Craft::$app->request->post('id');
+        $model = $this->getFieldsService()->getFieldById($id);
+
+        if (!$model) {
+            throw new FreeformException(
+                Freeform::t('Field with ID {id} not found', ['id' => $id])
+            );
+        }
+
+        $model->id = null;
+        $oldHandle = $model->handle;
+
+        if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
+            list($string, $mainPart, $iterator) = $matches;
+
+            $newHandle = $mainPart . ((int) $iterator + 1);
+        } else {
+            $newHandle = $oldHandle . '1';
+        }
+
+        $model->handle = $newHandle;
+        $this->getFieldsService()->save($model);
+
+        if ($model->getErrors()) {
+            $string = '';
+            foreach ($model->getErrors() as $errors) {
+                $string .= implode(', ', $errors);
+            }
+
+            \Craft::$app->session->setError($string);
+        }
+
+        return $this->redirect('freeform/fields');
     }
 
     /**

@@ -136,7 +136,7 @@ class Settings extends Model
         $this->defaultTemplates       = true;
         $this->removeNewlines         = false;
         $this->footerScripts          = true;
-        $this->formSubmitDisable      = true;
+        $this->formSubmitDisable      = false;
 
         $this->freeformHoneypot              = true;
         $this->spamProtectionBehaviour       = self::PROTECTION_SIMULATE_SUCCESS;

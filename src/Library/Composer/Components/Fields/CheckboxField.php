@@ -88,7 +88,7 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
         $output = '<input '
             . $this->getAttributeString('name', $this->getHandle())
             . $this->getAttributeString('type', FieldInterface::TYPE_HIDDEN)
-            . $this->getAttributeString('value', '', false)
+            . $this->getAttributeString('value', '')
             . $attributes->getInputAttributesAsString()
             . '/>';
 
@@ -109,7 +109,7 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             . $this->getAttributeString('type', $this->getType())
             . $this->getAttributeString('id', $this->getIdAttribute())
             . $this->getAttributeString('class', $attributes->getClass())
-            . $this->getAttributeString('value', 1, false)
+            . $this->getAttributeString('value', 1)
             . $this->getParameterString('checked', $this->isChecked())
             . $this->getRequiredAttribute()
             . $attributes->getInputAttributesAsString()

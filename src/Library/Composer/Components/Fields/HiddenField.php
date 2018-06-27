@@ -39,7 +39,7 @@ class HiddenField extends TextField implements NoRenderInterface
             . $this->getAttributeString('type', $this->getType())
             . $this->getAttributeString('class', $attributes->getClass())
             . $this->getAttributeString('id', $this->getIdAttribute())
-            . $this->getAttributeString('value', $this->getValue(), false)
+            . $this->getAttributeString('value', $this->getValue())
             . $attributes->getInputAttributesAsString()
             . '/>';
     }

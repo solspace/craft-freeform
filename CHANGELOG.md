@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.1.1 - 2018-07-03
+### Fixed
+- Fixed a bug where longer form layouts would not scroll vertically in Composer with Craft 3.0.13+.
+- Fixed a bug where submitting forms with emojis would result in an error and not correctly store submission.
+
 ## 2.1.0 - 2018-06-27
 ### Added
 - Added the ability to move fields from one page to another in multipage forms in Composer.

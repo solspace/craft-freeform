@@ -8,6 +8,7 @@ use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
+use LitEmoji\LitEmoji;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
@@ -609,6 +610,10 @@ class Submission extends Element
             foreach ($this->storedFieldValues as $key => $value) {
                 if (\is_array($value)) {
                     $value = json_encode($value);
+                }
+                
+                if (PHP_VERSION_ID >= 50400) {
+                    $value = LitEmoji::unicodeToShortcode($value);
                 }
 
                 $insertData[$key] = $value;

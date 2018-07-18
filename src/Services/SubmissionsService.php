@@ -199,11 +199,17 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
      */
     public function postProcessSubmission(Submission $submission, array $mailingListOptedInFields)
     {
-        $integrationsService = Freeform::getInstance()->integrations;
-        $formsService        = Freeform::getInstance()->forms;
-        $form                = $submission->getForm();
+        $freeform = Freeform::getInstance();
+
+        $integrationsService = $freeform->integrations;
+        $connectionsService  = $freeform->connections;
+        $formsService        = $freeform->forms;
+
+        $form = $submission->getForm();
+
         $this->markFormAsSubmitted($form);
         $integrationsService->sendOutEmailNotifications($submission);
+        $connectionsService->connect($form);
 
         if ($form->hasOptInPermission()) {
             $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);

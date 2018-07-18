@@ -250,6 +250,10 @@ class Composer
                     'integrationId' => 0,
                     'mapping'       => new \stdClass(),
                 ],
+                Properties::CONNECTIONS_HASH => [
+                    'type' => Properties::CONNECTIONS_HASH,
+                    'list' => null,
+                ],
                 Properties::ADMIN_NOTIFICATIONS_HASH => [
                     'type'           => Properties::ADMIN_NOTIFICATIONS_HASH,
                     'notificationId' => 0,

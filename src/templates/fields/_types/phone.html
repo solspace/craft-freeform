@@ -22,9 +22,16 @@
 
 <hr>
 
+{{ forms.lightSwitchField({
+    label: "Use JS validation"|t('freeform'),
+    instructions: "Enable this to force JS to validate the input on this field based on the pattern."|t('freeform'),
+    name: 'types[phone][useJsMask]',
+    on: field.getMetaProperty('useJsMask'),
+}) }}
+
 {{ forms.textField({
     label: "Pattern"|t('freeform'),
-    instructions: "Custom phone pattern (i.e. '(xxx) xxx-xxxx'). The letter 'x' stands for a digit between 0-9. If left blank, any number and dash, dot, space, parentheses and optional + at the beginning will be validated."|t('freeform'),
+    instructions: "Custom phone pattern (e.g. '(000) 000-0000' or '+0 0000 000000'), where '0' stands for a digit between 0-9. If left blank, any number and dash, dot, space, parentheses and optional + at the beginning will be validated."|t('freeform'),
     name: "types[phone][pattern]",
     value: field.getMetaProperty('pattern'),
 }) }}

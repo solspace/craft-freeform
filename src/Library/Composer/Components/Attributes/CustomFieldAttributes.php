@@ -185,7 +185,7 @@ class CustomFieldAttributes extends AbstractAttributes
             return $this->inputAttributes;
         }
 
-        if (!is_array($this->inputAttributes)) {
+        if (!\is_array($this->inputAttributes)) {
             return [$this->inputAttributes];
         }
 
@@ -208,7 +208,7 @@ class CustomFieldAttributes extends AbstractAttributes
             }
         }
 
-        if (!is_array($inputAttributes)) {
+        if (!\is_array($inputAttributes)) {
             $inputAttributes = [];
         }
 
@@ -227,6 +227,14 @@ class CustomFieldAttributes extends AbstractAttributes
         }
 
         return $value;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFieldIdPrefix()
+    {
+        return $this->formAttributes->getFieldIdPrefix();
     }
 
     /**

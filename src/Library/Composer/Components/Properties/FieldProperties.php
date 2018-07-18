@@ -183,6 +183,9 @@ class FieldProperties extends AbstractProperties
     /** @var array */
     protected $configuration;
 
+    /** @var bool */
+    protected $useJsMask;
+
     /**
      * @return string|null
      */
@@ -655,6 +658,14 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return bool|null
+     */
+    public function isUseJsMask()
+    {
+        return $this->useJsMask;
+    }
+
+    /**
      * Return a list of all property fields and their type
      *
      * [propertyKey => propertyType, ..]
@@ -721,6 +732,7 @@ class FieldProperties extends AbstractProperties
             'source'              => self::TYPE_STRING,
             'target'              => self::TYPE_STRING,
             'configuration'       => self::TYPE_ARRAY,
+            'useJsMask'           => self::TYPE_BOOLEAN,
         ];
     }
 }

@@ -413,6 +413,20 @@ class FormsService extends Component implements FormHandlerInterface
     {
         $form = $event->getForm();
 
+        if ($form->getLayout()->hasPhonePatternFields()) {
+            static $imaskLoaded;
+
+            if (null === $imaskLoaded) {
+                $imaskJs = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/input-mask.js');
+
+                if ($this->getSettingsService()->isFooterScripts()) {
+                    \Craft::$app->view->registerJs($imaskJs, View::POS_END);
+                } else {
+                    $event->appendJsToOutput($imaskJs);
+                }
+            }
+        }
+
         if ($form->getLayout()->hasDatepickerEnabledFields()) {
             static $datepickerLoaded;
 
@@ -531,9 +545,9 @@ class FormsService extends Component implements FormHandlerInterface
     /**
      * @inheritDoc
      */
-    public function onFormValidate(Form $form, bool $isFormValid)
+    public function onFormValidate(Form $form)
     {
-        $event = new FormValidateEvent($form, $isFormValid);
+        $event = new FormValidateEvent($form);
         $this->trigger(self::EVENT_FORM_VALIDATE, $event);
     }
 

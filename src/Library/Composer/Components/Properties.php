@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use Solspace\Freeform\Library\Composer\Components\Properties\AdminNotificationProperties;
+use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
@@ -24,6 +25,7 @@ class Properties implements \JsonSerializable
     const PAGE_PREFIX              = 'page';
     const FORM_HASH                = 'form';
     const INTEGRATION_HASH         = 'integration';
+    const CONNECTIONS_HASH         = 'connections';
     const ADMIN_NOTIFICATIONS_HASH = 'admin_notifications';
 
     /** @var array */
@@ -63,6 +65,7 @@ class Properties implements \JsonSerializable
 
         $this->propertyList = $properties;
         $this->getIntegrationProperties();
+        $this->getConnectionProperties();
     }
 
     /**
@@ -183,6 +186,26 @@ class Properties implements \JsonSerializable
             }
 
             $this->builtProperties[$hash] = new IntegrationProperties($this->propertyList[$hash], $this->translator);
+        }
+
+        return $this->builtProperties[$hash];
+    }
+
+    /**
+     * @return ConnectionProperties
+     * @throws ComposerException
+     */
+    public function getConnectionProperties(): ConnectionProperties
+    {
+        $hash = self::CONNECTIONS_HASH;
+        if (!isset($this->builtProperties[$hash])) {
+            if (isset($this->propertyList[$hash])) {
+                $settings = $this->propertyList[$hash];
+            } else {
+                $settings = ['type' => 'connections', 'list' => []];
+            }
+
+            $this->builtProperties[$hash] = new ConnectionProperties($settings, $this->translator);
         }
 
         return $this->builtProperties[$hash];

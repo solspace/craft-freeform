@@ -19,9 +19,9 @@ class PageProperties extends AbstractProperties
     /**
      * @return string
      */
-    public function getLabel()
+    public function getLabel(): string
     {
-        return $this->label;
+        return $this->label ?: 'Page';
     }
 
     /**
@@ -32,8 +32,8 @@ class PageProperties extends AbstractProperties
      *
      * @return array
      */
-    protected function getPropertyManifest()
+    protected function getPropertyManifest(): array
     {
-        return ["label" => self::TYPE_STRING];
+        return ['label' => self::TYPE_STRING];
     }
 }

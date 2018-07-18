@@ -81,7 +81,7 @@
 
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row if field.type not in ["submit", "confirmation"] -%}
+                        {%- for field in row if field.type not in ["submit", "confirmation", "password"] -%}
                             <div class="fields-column{{ field.required ? " field-required" : "" }}">
                                 {% set fieldHandle = "field_" ~ field.id %}
 
@@ -98,7 +98,7 @@
                                         first: loop.index0 == 0,
                                     } %}
 
-                                    {% if field.type in ["text", "confirmation", "datetime", "number", "phone", "regex", "website"] %}
+                                    {% if field.type in ["text", "datetime", "number", "phone", "regex", "website"] %}
                                         {{ forms.textField(options|merge({
                                             placeholder: field.placeholder,
                                         })) }}

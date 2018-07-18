@@ -11,7 +11,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
+use LitEmoji\LitEmoji;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
@@ -30,7 +30,7 @@ trait SingleValueTrait
             return $this->getValueOverride();
         }
 
-        return (string) $this->value;
+        return (string) LitEmoji::shortcodeToUnicode($this->value);
     }
 
     /**

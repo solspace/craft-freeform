@@ -454,11 +454,15 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     public function getIdAttribute(): string
     {
+        $attribute = sprintf('form-input-%s', $this->getHandle());
+
         if ($this->getCustomAttributes()->getId()) {
-            return $this->getCustomAttributes()->getId();
+            $attribute = $this->getCustomAttributes()->getId();
         }
 
-        return sprintf('form-input-%s', $this->getHandle());
+        $attribute = $this->getCustomAttributes()->getFieldIdPrefix() . $attribute;
+
+        return $attribute;
     }
 
     /**

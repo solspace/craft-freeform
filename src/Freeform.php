@@ -39,6 +39,7 @@ use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\StatusRecord;
+use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
@@ -79,6 +80,7 @@ use yii\db\Query;
  * @property HoneypotService          $honeypot
  * @property IntegrationsService      $integrations
  * @property IntegrationsQueueService $integrationsQueue
+ * @property ConnectionsService       $connections
  */
 class Freeform extends Plugin
 {
@@ -155,6 +157,7 @@ class Freeform extends Plugin
         $this->initPermissions();
         $this->initEventListeners();
         $this->initHoneypot();
+        $this->initConnections();
         $this->initSpamCheck();
 
         if ($this->settings->getPluginName()) {
@@ -427,6 +430,7 @@ class Freeform extends Plugin
                 'honeypot'          => HoneypotService::class,
                 'integrations'      => IntegrationsService::class,
                 'integrationsQueue' => IntegrationsQueueService::class,
+                'connections'       => ConnectionsService::class,
             ]
         );
     }
@@ -610,6 +614,15 @@ class Freeform extends Plugin
                 [$this->honeypot, 'validateFormHoneypot']
             );
         }
+    }
+
+    private function initConnections()
+    {
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_FORM_VALIDATE,
+            [$this->connections, 'validateConnections']
+        );
     }
 
     private function initSpamCheck()

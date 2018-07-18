@@ -20,17 +20,17 @@ class DynamicNotificationAttributes extends AbstractAttributes implements \JsonS
     protected $template;
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getRecipients()
     {
-        if (is_null($this->recipients)) {
+        if (null === $this->recipients) {
             return null;
         }
 
         $recipients = $this->recipients;
 
-        if (!is_array($this->recipients)) {
+        if (!\is_array($this->recipients)) {
             $recipients = [$recipients];
         }
 
@@ -38,7 +38,7 @@ class DynamicNotificationAttributes extends AbstractAttributes implements \JsonS
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getTemplate()
     {
@@ -51,8 +51,8 @@ class DynamicNotificationAttributes extends AbstractAttributes implements \JsonS
     public function jsonSerialize()
     {
         return [
-            "recipients" => $this->getRecipients(),
-            "template"   => $this->getTemplate(),
+            'recipients' => $this->getRecipients(),
+            'template'   => $this->getTemplate(),
         ];
     }
 }

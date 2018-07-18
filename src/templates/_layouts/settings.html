@@ -1,6 +1,7 @@
 {% extends "freeform/_layouts/main" %}
 
 {% set selectedSubnavItem = 'settings' %}
+{% set fullPageForm = true %}
 
 {% set title = craft.freeform.name ~ " " ~ ("Settings"|t('freeform')) %}
 
@@ -8,6 +9,14 @@
 
 {% set selectedItem = craft.app.request.getSegment(3)|default %}
 {% set docTitle = navItems[selectedItem].title~' - '~title %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
+        </div>
+    </div>
+{% endblock %}
 
 {% block sidebar %}
     <nav>

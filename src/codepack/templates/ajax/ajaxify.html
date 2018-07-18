@@ -2,12 +2,19 @@
 {# Each can and should be overridden #}
 
 <script>
+  var chrome = navigator.userAgent.indexOf("Chrome") > -1;
+  var explorer = navigator.userAgent.indexOf("MSIE") > -1;
+  var firefox = navigator.userAgent.indexOf("Firefox") > -1;
+  var safari = navigator.userAgent.indexOf("Safari") > -1;
+  var camino = navigator.userAgent.indexOf("Camino") > -1;
+  var opera = navigator.userAgent.toLowerCase().indexOf("op") > -1;
+
   if (window.renderFormSuccess === undefined) {
     function renderFormSuccess(form) {
-      const successMessage = document.createElement("div");
+      var successMessage = document.createElement("div");
       successMessage.classList.add("alert", "alert-success", "form-success");
 
-      const paragraph = document.createElement("p");
+      var paragraph = document.createElement("p");
       paragraph.classList.add("lead");
       paragraph.appendChild(document.createTextNode("Form submitted successfully"));
 
@@ -21,8 +28,13 @@
     function removeMessages(form) {
       // Remove any existing errors that are being shown
       form.querySelectorAll("ul.errors").remove();
-      const fieldsWithErrors = form.querySelectorAll(".has-error");
-      for (field of fieldsWithErrors) {
+      var fieldsWithErrors = form.querySelectorAll(".has-error");
+      for (var fieldIndex in fieldsWithErrors) {
+        if (!fieldsWithErrors.hasOwnProperty(fieldIndex)) {
+          continue;
+        }
+
+        var field = fieldsWithErrors[fieldIndex];
         field.classList.remove("has-error");
       }
 
@@ -38,23 +50,33 @@
      * @param form
      */
     function renderErrors(errors, form) {
-      for (const key in errors) {
+      for (var key in errors) {
         if (!errors.hasOwnProperty(key) || !key) {
           continue;
         }
 
-        const messages = errors[key];
-        const errorsList = document.createElement("ul");
+        var messages = errors[key];
+        var errorsList = document.createElement("ul");
         errorsList.classList.add("errors", "help-block");
 
-        for (const message of messages) {
-          const listItem = document.createElement("li");
+        for (var messageIndex in messages) {
+          if (!messages.hasOwnProperty(messageIndex)) {
+            continue;
+          }
+
+          var message = messages[messageIndex];
+          var listItem = document.createElement("li");
           listItem.appendChild(document.createTextNode(message));
           errorsList.appendChild(listItem);
         }
 
-        const inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
-        for (const input of inputList) {
+        var inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
+        for (var inputIndex in inputList) {
+          if (!inputList.hasOwnProperty(inputIndex)) {
+            continue;
+          }
+          var input = inputList[inputIndex];
+
           input.parentElement.classList.add("has-error");
           input.parentElement.appendChild(errorsList);
         }
@@ -64,18 +86,24 @@
 
   if (window.renderFormErrors === undefined) {
     function renderFormErrors(errors, form) {
-      const errorBlock = document.createElement("div");
+      var errorBlock = document.createElement("div");
       errorBlock.classList.add("alert", "alert-danger", "form-errors");
 
-      const paragraph = document.createElement("p");
+      var paragraph = document.createElement("p");
       paragraph.classList.add("lead");
       paragraph.appendChild(document.createTextNode("This form has errors"));
       errorBlock.appendChild(paragraph);
 
       if (errors.length) {
-        const errorsList = document.createElement("ul");
-        for (const message of errors) {
-          const listItem = document.createElement("li");
+        var errorsList = document.createElement("ul");
+        for (var messageIndex in errors) {
+          if (!errors.hasOwnProperty(messageIndex)) {
+            continue;
+          }
+
+          var message = errors[messageIndex];
+          var listItem = document.createElement("li");
+
           listItem.appendChild(document.createTextNode(message));
           errorsList.appendChild(listItem);
         }
@@ -91,9 +119,15 @@
 <script>
 
   function lookForFormsToAjaxify() {
-    const forms = document.getElementsByTagName("form");
+    var forms = document.getElementsByTagName("form");
 
-    for (const form of forms) {
+    for (var formIndex in forms) {
+      if (!forms.hasOwnProperty(formIndex)) {
+        continue;
+      }
+
+      var form = forms[formIndex];
+
       if (!form.dataset.ajaxified) {
         form.dataset.ajaxified = true;
         form.addEventListener("submit", ajaxifyForm, false);
@@ -102,12 +136,23 @@
   }
 
   function ajaxifyForm(event) {
-    const form = event.target;
-    const data = new FormData(form);
-    const request = new XMLHttpRequest();
+    var form = event.target;
+    var data = new FormData(form);
+    var request = new XMLHttpRequest();
 
-    const method = form.getAttribute("method");
-    const action = form.getAttribute("action");
+    if (safari) {
+      for (i = 0; i < form.elements.length; i++) {
+        if (form.elements[i].type == "file") {
+          if (form.elements[i].value == "") {
+            var elem = form.elements[i];
+            data.delete(elem.name);
+          }
+        }
+      }
+    }
+
+    var method = form.getAttribute("method");
+    var action = form.getAttribute("action");
 
     request.open(method, action ? action : window.location.href, true);
     request.setRequestHeader("Cache-Control", "no-cache");
@@ -117,7 +162,7 @@
       removeMessages(form);
 
       if (request.status === 200) {
-        const response = JSON.parse(request.response);
+        var response = JSON.parse(request.response);
 
         if (response.success && response.finished) {
           // Reset the form so that the user may enter fresh information
@@ -138,7 +183,7 @@
         }
 
         if (response.honeypot) {
-          const honeypotInput = form.querySelector("input[name^=freeform_form_handle_]");
+          var honeypotInput = form.querySelector("input[name^=freeform_form_handle_]");
           honeypotInput.setAttribute("name", response.honeypot.name);
           honeypotInput.setAttribute("id", response.honeypot.name);
           honeypotInput.value = response.honeypot.hash;
@@ -157,7 +202,7 @@
   }
 
   function loadExternalForm(url, targetElement) {
-    const request = new XMLHttpRequest();
+    var request = new XMLHttpRequest();
 
     // Load the forms content into the #form-loader div
     request.open("GET", url, true);
@@ -167,14 +212,20 @@
         targetElement.innerHTML = request.response;
 
         // Activate all of the loaded scripts
-        const loadedScripts = targetElement.getElementsByTagName('script')
-        for (const script of loadedScripts) {
-          if (script.getAttribute('src')) {
-            const newScript = document.createElement('script');
-            newScript.setAttribute('src', script.getAttribute('src'));
+        var loadedScripts = targetElement.getElementsByTagName("script");
+        for (var scriptIndex in loadedScripts) {
+          if (!loadedScripts.hasOwnProperty(scriptIndex)) {
+            continue;
+          }
+
+          var script = loadedScripts[scriptIndex];
+
+          if (script.getAttribute("src")) {
+            var newScript = document.createElement("script");
+            newScript.setAttribute("src", script.getAttribute("src"));
             document.body.appendChild(newScript);
           } else {
-            eval(script.innerHTML)
+            eval(script.innerHTML);
           }
         }
 
@@ -192,7 +243,7 @@
    */
   function unlockSubmit(form) {
     form.querySelector("button[type=submit]").removeAttribute("disabled");
-    if (typeof grecaptcha !== 'undefined') {
+    if (typeof grecaptcha !== "undefined") {
       grecaptcha.reset();
     }
   }
@@ -203,7 +254,7 @@
   };
 
   NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
-    for (let i = this.length - 1; i >= 0; i--) {
+    for (var i = this.length - 1; i >= 0; i--) {
       if (this[i] && this[i].parentElement) {
         this[i].parentElement.removeChild(this[i]);
       }

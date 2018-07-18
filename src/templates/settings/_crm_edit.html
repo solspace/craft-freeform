@@ -91,17 +91,19 @@
             {% if integration.id %}
                 <div id="auth-checker">
                     <div class="authorized">
-                        Authorized
+                        {{ "Authorized"|t('freeform') }}
                     </div>
                     <div class="not-authorized">
-                        Not able to authorize.
-                        <a href="{{ url("freeform/crm/authenticate/" ~ integration.handle) }}" class="">Click here to re-authorize</a>
+                        {{ 'Not able to authorize.'|t('freeform') }}
+                        <a href="{{ url("freeform/crm/authenticate/" ~ integration.handle) }}" class="">
+                            {{ "Click here to re-authorize"|t("freeform") }}
+                        </a>
                         <div class="errors"></div>
                     </div>
                     <div class="pending-status-check"
                          data-id="{{ integration.id }}"
                          data-type="{{ integration.type }}">
-                        Checking credentials...
+                        {{ "Checking credentials..."|t("freeform") }}
                     </div>
                 </div>
             {% elseif integration.errors('integration') %}

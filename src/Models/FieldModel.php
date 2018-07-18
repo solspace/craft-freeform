@@ -265,7 +265,8 @@ class FieldModel extends Model implements \JsonSerializable
         if ($this->type === FieldInterface::TYPE_PHONE) {
             $returnArray['value']       = $this->getMetaProperty('value', '');
             $returnArray['placeholder'] = $this->getMetaProperty('placeholder', '');
-            $returnArray['pattern']     = $this->getMetaProperty('pattern');
+            $returnArray['pattern']     = $this->getMetaProperty('pattern', '');
+            $returnArray['useJsMask']   = $this->getMetaProperty('useJsMask', false);
         }
 
         if ($this->type === FieldInterface::TYPE_WEBSITE) {

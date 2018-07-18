@@ -96,7 +96,6 @@ interface FormHandlerInterface
 
     /**
      * @param Form $form
-     * @param bool $isFormValid
      */
-    public function onFormValidate(Form $form, bool $isFormValid);
+    public function onFormValidate(Form $form);
 }

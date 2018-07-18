@@ -20,7 +20,7 @@ class IntegrationProperties extends AbstractProperties
     protected $mapping;
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getIntegrationId()
     {
@@ -28,7 +28,7 @@ class IntegrationProperties extends AbstractProperties
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getMapping()
     {
@@ -43,11 +43,11 @@ class IntegrationProperties extends AbstractProperties
      *
      * @return array
      */
-    protected function getPropertyManifest()
+    protected function getPropertyManifest(): array
     {
         return [
-            "integrationId" => self::TYPE_INTEGER,
-            "mapping"       => self::TYPE_ARRAY,
+            'integrationId' => self::TYPE_INTEGER,
+            'mapping'       => self::TYPE_ARRAY,
         ];
     }
 }

@@ -6,125 +6,121 @@
 
     <h2>{{ "General Settings"|t('freeform') }}</h2>
 
-    <form action="" method="post" accept-charset="UTF-8">
-        <input type="hidden" name="action" value="freeform/settings/save-settings">
-        {{ redirectInput('freeform/settings/general') }}
-        {{ csrfInput() }}
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/general') }}
+    {{ csrfInput() }}
 
-        {{ forms.textField({
-            class: "code",
-            label: "Custom Plugin Name"|t('freeform'),
-            instructions: "Override the plugin name by specifying your own here."|t('freeform'),
-            placeholder: craft.freeform.name,
-            id: "pluginName",
-            name: "settings[pluginName]",
-            value: settings.pluginName,
-            errors: settings.getErrors("pluginName"),
-        }) }}
+    {{ forms.textField({
+        class: "code",
+        label: "Custom Plugin Name"|t('freeform'),
+        instructions: "Override the plugin name by specifying your own here."|t('freeform'),
+        placeholder: craft.freeform.name,
+        id: "pluginName",
+        name: "settings[pluginName]",
+        value: settings.pluginName,
+        errors: settings.getErrors("pluginName"),
+    }) }}
 
-        {{ forms.lightswitchField({
-            label: "Show Composer Tutorial"|t('freeform'),
-            instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
-            name: "settings[showTutorial]",
-            on: settings.showTutorial,
-            errors: settings.errors("showTutorial"),
-        }) }}
+    {{ forms.lightswitchField({
+        label: "Show Composer Tutorial"|t('freeform'),
+        instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
+        name: "settings[showTutorial]",
+        on: settings.showTutorial,
+        errors: settings.errors("showTutorial"),
+    }) }}
 
+    {{ forms.selectField({
+        label: "Default View"|t('freeform'),
+        instructions: "The default page to go to when clicking the Freeform nav item."|t('freeform'),
+        name: "settings[defaultView]",
+        value: settings.defaultView,
+        errors: settings.errors("defaultView"),
+        options: {
+            forms: "Form view",
+            submissions: "Submission view",
+        },
+    }) }}
+
+    {{ forms.selectField({
+        label: "Display Order of Fields in Composer"|t('freeform'),
+        instructions: "The display order for the list of available fields in Composer."|t('freeform'),
+        name: "settings[fieldDisplayOrder]",
+        value: settings.fieldDisplayOrder,
+        errors: settings.errors("fieldDisplayOrder"),
+        options: {
+            type: "Field type, Field name (alphabetical)",
+            name: "Field name (alphabetical)",
+        },
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Include Default Freeform Formatting Templates"|t('freeform'),
+        instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t('freeform'),
+        name: "settings[defaultTemplates]",
+        on: settings.defaultTemplates,
+        errors: settings.errors("defaultTemplates"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
+        instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
+        name: "settings[removeNewlines]",
+        on: settings.removeNewlines,
+        errors: settings.errors("removeNewlines"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Disable submit button on form submit?"|t('freeform'),
+        instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
+        name: "settings[formSubmitDisable]",
+        on: settings.formSubmitDisable,
+        errors: settings.errors("formSubmitDisable"),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Freeform Javascript Insertion Location"|t('freeform'),
+        instructions: "The location of where you want Freeform to insert it's scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),
+        name: "settings[footerScripts]",
+        value: settings.footerScripts,
+        errors: settings.errors("footerScripts"),
+        options: {
+            1: "Page Footer"|t('freeform'),
+            0: "Inside Form"|t('freeform'),
+        }
+    }) }}
+
+    <hr>
+
+    {{ forms.lightswitchField({
+        label: "Automatically Purge Submission Data"|t('freeform'),
+        instructions: "If you wish to have Freeform automatically purge submission data after a specified number of days, enable this setting and specify the number of days after submission date it should purge submissions."|t('freeform'),
+        warning: "Enabling this and saving this settings page will result in purging beginning.",
+        name: "purge-toggle",
+        on: settings.purgableSubmissionAgeInDays,
+        toggle: "purge",
+        errors: settings.errors("purgableSubmissionAgeInDays"),
+    }) }}
+
+    <div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
         {{ forms.selectField({
-            label: "Default View"|t('freeform'),
-            instructions: "The default page to go to when clicking the Freeform nav item."|t('freeform'),
-            name: "settings[defaultView]",
-            value: settings.defaultView,
-            errors: settings.errors("defaultView"),
+            label: "Days After Submission Date to Purge"|t('freeform'),
+            instructions: "Select the number of days after submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
+            name: "settings[purgableSubmissionAgeInDays]",
+            value: settings.purgableSubmissionAgeInDays,
+            errors: settings.errors("purgableSubmissionAgeInDays"),
+            id: "purge-value",
             options: {
-                forms: "Form view",
-                submissions: "Submission view",
-            },
-        }) }}
-
-        {{ forms.selectField({
-            label: "Display Order of Fields in Composer"|t('freeform'),
-            instructions: "The display order for the list of available fields in Composer."|t('freeform'),
-            name: "settings[fieldDisplayOrder]",
-            value: settings.fieldDisplayOrder,
-            errors: settings.errors("fieldDisplayOrder"),
-            options: {
-                type: "Field type, Field name (alphabetical)",
-                name: "Field name (alphabetical)",
-            },
-        }) }}
-
-        {{ forms.lightswitchField({
-            label: "Include Default Freeform Formatting Templates"|t('freeform'),
-            instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t('freeform'),
-            name: "settings[defaultTemplates]",
-            on: settings.defaultTemplates,
-            errors: settings.errors("defaultTemplates"),
-        }) }}
-
-        {{ forms.lightswitchField({
-            label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
-            instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
-            name: "settings[removeNewlines]",
-            on: settings.removeNewlines,
-            errors: settings.errors("removeNewlines"),
-        }) }}
-
-        {{ forms.lightswitchField({
-            label: "Disable submit button on form submit?"|t('freeform'),
-            instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
-            name: "settings[formSubmitDisable]",
-            on: settings.formSubmitDisable,
-            errors: settings.errors("formSubmitDisable"),
-        }) }}
-
-        {{ forms.selectField({
-            label: "Freeform Javascript Insertion Location"|t('freeform'),
-            instructions: "The location of where you want Freeform to insert it's scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),
-            name: "settings[footerScripts]",
-            value: settings.footerScripts,
-            errors: settings.errors("footerScripts"),
-            options: {
-                1: "Page Footer"|t('freeform'),
-                0: "Inside Form"|t('freeform'),
+                0: "Please select"|t("freeform"),
+                7: "7 days"|t("freeform"),
+                14: "14 days"|t("freeform"),
+                30: "30 days"|t("freeform"),
+                60: "60 days"|t("freeform"),
+                90: "90 days"|t("freeform"),
+                120: "120 days"|t("freeform"),
+                180: "180 days"|t("freeform"),
+                365: "365 days"|t("freeform"),
             }
         }) }}
-
-        <hr>
-
-        {{ forms.lightswitchField({
-            label: "Automatically Purge Submission Data"|t('freeform'),
-            instructions: "If you wish to have Freeform automatically purge submission data after a specified number of days, enable this setting and specify the number of days after submission date it should purge submissions."|t('freeform'),
-            warning: "Enabling this and saving this settings page will result in purging beginning.",
-            name: "purge-toggle",
-            on: settings.purgableSubmissionAgeInDays,
-            toggle: "purge",
-            errors: settings.errors("purgableSubmissionAgeInDays"),
-        }) }}
-
-        <div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
-            {{ forms.selectField({
-                label: "Days After Submission Date to Purge"|t('freeform'),
-                instructions: "Select the number of days after submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
-                name: "settings[purgableSubmissionAgeInDays]",
-                value: settings.purgableSubmissionAgeInDays,
-                errors: settings.errors("purgableSubmissionAgeInDays"),
-                id: "purge-value",
-                options: {
-                    0: "Please select"|t("freeform"),
-                    7: "7 days"|t("freeform"),
-                    14: "14 days"|t("freeform"),
-                    30: "30 days"|t("freeform"),
-                    60: "60 days"|t("freeform"),
-                    90: "90 days"|t("freeform"),
-                    120: "120 days"|t("freeform"),
-                    180: "180 days"|t("freeform"),
-                    365: "365 days"|t("freeform"),
-                }
-            }) }}
-        </div>
-
-        <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
-    </form>
+    </div>
 
 {% endblock %}

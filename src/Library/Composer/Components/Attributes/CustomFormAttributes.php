@@ -67,8 +67,11 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var array */
     protected $inputAttributes;
 
-    /** @var  */
+    /** @var */
     protected $dynamicNotification;
+
+    /** @var string */
+    protected $fieldIdPrefix;
 
     /**
      * @return string
@@ -203,11 +206,11 @@ class CustomFormAttributes extends AbstractAttributes
      */
     public function getFormAttributes()
     {
-        if (is_null($this->formAttributes)) {
+        if (null === $this->formAttributes) {
             return $this->formAttributes;
         }
 
-        if (!is_array($this->formAttributes)) {
+        if (!\is_array($this->formAttributes)) {
             return [$this->formAttributes];
         }
 
@@ -229,11 +232,11 @@ class CustomFormAttributes extends AbstractAttributes
      */
     public function getInputAttributes()
     {
-        if (is_null($this->inputAttributes)) {
+        if (null === $this->inputAttributes) {
             return $this->inputAttributes;
         }
 
-        if (!is_array($this->inputAttributes)) {
+        if (!\is_array($this->inputAttributes)) {
             return [$this->inputAttributes];
         }
 
@@ -245,12 +248,20 @@ class CustomFormAttributes extends AbstractAttributes
      */
     public function getDynamicNotification()
     {
-        if (!is_null($this->dynamicNotification)) {
+        if (null !== $this->dynamicNotification) {
             if (!$this->dynamicNotification instanceof DynamicNotificationAttributes) {
                 $this->dynamicNotification = new DynamicNotificationAttributes($this->dynamicNotification);
             }
         }
 
         return $this->dynamicNotification;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getFieldIdPrefix()
+    {
+        return $this->fieldIdPrefix;
     }
 }

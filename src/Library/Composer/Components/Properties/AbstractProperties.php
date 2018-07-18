@@ -43,7 +43,7 @@ abstract class AbstractProperties
     /**
      * @return string
      */
-    public function getType()
+    public function getType(): string
     {
         return $this->type;
     }
@@ -51,7 +51,7 @@ abstract class AbstractProperties
     /**
      * @return TranslatorInterface
      */
-    protected function getTranslator()
+    protected function getTranslator(): TranslatorInterface
     {
         return $this->translator;
     }
@@ -64,7 +64,7 @@ abstract class AbstractProperties
      *
      * @return array
      */
-    abstract protected function getPropertyManifest();
+    abstract protected function getPropertyManifest(): array;
 
     /**
      * @param array $properties

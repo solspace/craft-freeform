@@ -18,7 +18,9 @@ use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttribute
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
+use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
+use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
@@ -423,6 +425,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
         $currentPageFields = $this->getCurrentPage()->getFields();
 
+        $this->formHandler->onFormValidate($this);
+
         $isFormValid = true;
         foreach ($this->getLayout()->getPages() as $page) {
             if ($page->getIndex() > $this->getCurrentPage()->getIndex()) {
@@ -436,7 +440,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
             }
         }
 
-        $this->formHandler->onFormValidate($this, $isFormValid);
 
         if ($isFormValid && $this->isMarkedAsSpam()) {
             $simulateSuccess = $this->formHandler->isSpamBehaviourSimulateSuccess();
@@ -924,13 +927,35 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
+     * @return null|string
+     */
+    public function getFieldPrefix()
+    {
+        if (null === $this->getFormValueContext()) {
+            return $this->getCustomAttributes()->getFieldPrefix();
+        }
+
+        return $this->getFormValueContext()->getFieldPrefix();
+    }
+
+    /**
      * Returns form CRM integration properties
      *
      * @return Properties\IntegrationProperties
      */
-    public function getIntegrationProperties()
+    public function getIntegrationProperties(): IntegrationProperties
     {
         return $this->properties->getIntegrationProperties();
+    }
+
+    /**
+     * Returns form CRM integration properties
+     *
+     * @return Properties\ConnectionProperties
+     */
+    public function getConnectionProperties(): ConnectionProperties
+    {
+        return $this->properties->getConnectionProperties();
     }
 
     // ==========================

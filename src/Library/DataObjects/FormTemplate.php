@@ -34,6 +34,7 @@ class FormTemplate implements \JsonSerializable
         $this->filePath = $filePath;
         $this->fileName = pathinfo($filePath, PATHINFO_BASENAME);
         $this->name     = StringHelper::camelize(StringHelper::humanize(pathinfo($filePath, PATHINFO_FILENAME)));
+        $this->name     = str_replace(['-', '_'], ' ', $this->name);
     }
 
     /**

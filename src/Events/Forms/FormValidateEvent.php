@@ -10,19 +10,14 @@ class FormValidateEvent extends Event
     /** @var Form */
     private $form;
 
-    /** @var bool */
-    private $formValid;
-
     /**
      * FormValidateEvent constructor.
      *
      * @param Form $form
-     * @param bool $formValid
      */
-    public function __construct(Form $form, bool $formValid)
+    public function __construct(Form $form)
     {
         $this->form      = $form;
-        $this->formValid = $formValid;
 
         parent::__construct([]);
     }
@@ -37,10 +32,11 @@ class FormValidateEvent extends Event
 
     /**
      * @return bool
+     * @deprecated this is no longer used, since it's redundant
      */
     public function isFormValid(): bool
     {
-        return $this->formValid;
+        return true;
     }
 
     /**

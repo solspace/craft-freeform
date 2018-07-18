@@ -70,6 +70,9 @@ class Layout implements \JsonSerializable, \Iterator
     /** @var bool */
     private $hasDatepickerEnabledFields;
 
+    /** @var bool */
+    private $hasPhonePatternFields;
+
     /**
      * Layout constructor.
      *
@@ -99,6 +102,14 @@ class Layout implements \JsonSerializable, \Iterator
     public function hasDatepickerEnabledFields(): bool
     {
         return $this->hasDatepickerEnabledFields;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPhonePatternFields(): bool
+    {
+        return $this->hasPhonePatternFields;
     }
 
     /**
@@ -286,7 +297,11 @@ class Layout implements \JsonSerializable, \Iterator
         $datetimeClass  = 'Solspace\FreeformPro\Fields\DatetimeField';
         $datetimeExists = class_exists($datetimeClass);
 
+        $phoneClass  = 'Solspace\FreeformPro\Fields\PhoneField';
+        $phoneExists = class_exists($phoneClass);
+
         $hasDatepickerEnabledFields = false;
+        $hasPhonePatternFields      = false;
         $pageObjects                = [];
         $allRows                    = [];
         $allFields                  = [];
@@ -360,6 +375,10 @@ class Layout implements \JsonSerializable, \Iterator
                         $hasDatepickerEnabledFields = true;
                     }
 
+                    if ($phoneExists && \get_class($field) === $phoneClass && $field->isUseJsMask()) {
+                        $hasPhonePatternFields = true;
+                    }
+
                     $pageFields[] = $field;
                     $allFields[]  = $field;
                 }
@@ -389,6 +408,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->fileUploadFields           = $fileUploadFields;
         $this->mailingListFields          = $mailingListFields;
         $this->hasDatepickerEnabledFields = $hasDatepickerEnabledFields;
+        $this->hasPhonePatternFields      = $hasPhonePatternFields;
     }
 
     /**

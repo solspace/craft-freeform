@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
+use LitEmoji\LitEmoji;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\DynamicRecipientField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -46,6 +47,7 @@ trait MultipleValueTrait
             $values = [];
         } else {
             $values = array_map('strval', $values);
+            $values = array_map([LitEmoji::class, 'shortcodeToUnicode'], $values);
         }
 
         if ($this instanceof DynamicRecipientField && $values) {

@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\base\Field;
+use craft\elements\User;
 use craft\helpers\Assets;
 use craft\helpers\Json;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -32,6 +33,7 @@ use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\FreeformPro\FreeformPro;
+use yii\db\Query;
 use yii\web\Response;
 
 class FormsController extends BaseController
@@ -121,7 +123,7 @@ class FormsController extends BaseController
 
         $layout['composer']['properties']['form']['handle'] = $newHandle;
 
-        $model->handle = $newHandle;
+        $model->handle     = $newHandle;
         $model->layoutJson = Json::encode($layout);
 
         $this->getFormsService()->save($model);
@@ -305,7 +307,10 @@ class FormsController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
+        $translationCategories = include __DIR__ . '/../Resources/composer-translations.php';
+
         $this->view->registerAssetBundle(ComposerBuilderBundle::class);
+        $this->view->registerTranslations(Freeform::TRANSLATION_CATEGORY, $translationCategories);
 
         $notifications           = $this->getNotificationsService()->getAllNotifications(true);
         $mailingListIntegrations = $this->getMailingListsService()->getAllIntegrationObjects();
@@ -336,6 +341,7 @@ class FormsController extends BaseController
             'isWidgetsInstalled'       => Freeform::getInstance()->isPro(),
             'isRecaptchaEnabled'       => Freeform::getInstance()->isPro() && FreeformPro::getInstance()->getSettings()->recaptchaEnabled,
             'sourceTargets'            => $this->getEncodedJson($this->getSourceTargetsList()),
+            'craftFields'              => $this->getEncodedJson($this->getCraftFields()),
             'customFields'             => $this->getEncodedJson($this->getAllCustomFieldList()),
             'generatedOptions'         => $this->getEncodedJson($this->getGeneratedOptionsList($model->getForm())),
         ];
@@ -401,12 +407,53 @@ class FormsController extends BaseController
      */
     private function getSourceTargetsList(): array
     {
+        $entryTypes = (new Query())
+            ->select(['id', 'sectionId', 'name', 'hasTitleField', 'titleLabel', 'fieldLayoutId'])
+            ->from('{{%entrytypes}}')
+            ->orderBy(['sectionId' => SORT_ASC, 'sortOrder' => SORT_ASC])
+            ->all();
+
+        $fieldLayoutFields = (new Query())
+            ->select(['fieldId', 'layoutId'])
+            ->from('{{%fieldlayoutfields}}')
+            ->orderBy(['sortOrder' => SORT_ASC])
+            ->all();
+
+        $fieldByLayoutGroupId = [];
+        foreach ($fieldLayoutFields as $field) {
+            $layoutId = $field['layoutId'];
+
+            if (!isset($fieldByLayoutGroupId[$layoutId])) {
+                $fieldByLayoutGroupId[$layoutId] = [];
+            }
+
+            $fieldByLayoutGroupId[$layoutId][] = (int) $field['fieldId'];
+        }
+
+        $entryTypesBySectionId = [];
+        foreach ($entryTypes as $entryType) {
+            $fieldLayoutId = $entryType['fieldLayoutId'];
+            $fieldIds      = [];
+            if (isset($fieldByLayoutGroupId[$fieldLayoutId])) {
+                $fieldIds = $fieldByLayoutGroupId[$fieldLayoutId];
+            }
+
+            $entryTypesBySectionId[$entryType['sectionId']][] = [
+                'key'                 => $entryType['id'],
+                'value'               => $entryType['name'],
+                'hasTitleField'       => (bool) $entryType['hasTitleField'],
+                'titleLabel'          => $entryType['titleLabel'],
+                'fieldLayoutFieldIds' => $fieldIds,
+            ];
+        }
         $sections    = \Craft::$app->sections->getAllSections();
         $sectionList = [0 => ['key' => '', 'value' => Freeform::t('All Sections')]];
+
         foreach ($sections as $group) {
             $sectionList[] = [
-                'key'   => $group->id,
-                'value' => $group->name,
+                'key'        => $group->id,
+                'value'      => $group->name,
+                'entryTypes' => $entryTypesBySectionId[$group->id] ?? [],
             ];
         }
 
@@ -428,12 +475,32 @@ class FormsController extends BaseController
             ];
         }
 
-        $users    = \Craft::$app->userGroups->getAllGroups();
-        $userList = [0 => ['key' => '', 'value' => Freeform::t('All User Groups')]];
-        foreach ($users as $group) {
+        $userFieldLayoutId = (int) (new Query())
+            ->select('id')
+            ->from('fieldlayouts')
+            ->where(['type' => User::class])
+            ->scalar();
+
+        $groupsWithAdminPermissions = (new Query())
+            ->select('groupId')
+            ->from('{{%userpermissions_usergroups}} ug')
+            ->innerJoin('{{%userpermissions}} u', '[[u.id]] = [[ug.permissionId]]')
+            ->where(['[[u.name]]' => 'accesscp'])
+            ->column();
+
+        $userGroups = \Craft::$app->userGroups->getAllGroups();
+        $userList   = [0 => ['key' => '', 'value' => Freeform::t('All User Groups')]];
+        foreach ($userGroups as $group) {
+            $fieldIds = [];
+            if (isset($fieldByLayoutGroupId[$userFieldLayoutId])) {
+                $fieldIds = $fieldByLayoutGroupId[$userFieldLayoutId];
+            }
+
             $userList[] = [
-                'key'   => $group->id,
-                'value' => $group->name,
+                'key'                 => $group->id,
+                'value'               => $group->name,
+                'fieldLayoutFieldIds' => $fieldIds,
+                'canAccessCp'         => \in_array($group->id, $groupsWithAdminPermissions, false),
             ];
         }
 
@@ -443,6 +510,25 @@ class FormsController extends BaseController
             ExternalOptionsInterface::SOURCE_TAGS       => $tagList,
             ExternalOptionsInterface::SOURCE_USERS      => $userList,
         ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getCraftFields(): array
+    {
+        $fields = [];
+        /** @var Field $field */
+        foreach (\Craft::$app->fields->getAllFields() as $field) {
+            $fields[] = [
+                'id'     => (int) $field->id,
+                'name'   => $field->name,
+                'handle' => $field->handle,
+                'type'   => \get_class($field),
+            ];
+        }
+
+        return $fields;
     }
 
     /**

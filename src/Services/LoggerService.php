@@ -2,8 +2,9 @@
 
 namespace Solspace\Freeform\Services;
 
+use Psr\Log\LoggerInterface;
+use Solspace\Commons\Loggers\FileLogger;
 use yii\base\Component;
-use yii\log\Logger;
 
 class LoggerService extends Component
 {
@@ -11,21 +12,11 @@ class LoggerService extends Component
 
     /**
      * @param string $message
-     * @param int    $level
-     * @param string $category
-     */
-    public function log(string $message, int $level, $category = self::DEFAULT_CATEGORY)
-    {
-        $this->getLogger()->log($message, $level, $category);
-    }
-
-    /**
-     * @param string $message
      * @param string $category
      */
     public function error(string $message, $category = self::DEFAULT_CATEGORY)
     {
-        $this->getLogger()->log($message, Logger::LEVEL_ERROR, $category);
+        $this->getLogger($category)->error($message);
     }
 
     /**
@@ -34,7 +25,7 @@ class LoggerService extends Component
      */
     public function warning(string $message, $category = self::DEFAULT_CATEGORY)
     {
-        $this->getLogger()->log($message, Logger::LEVEL_WARNING, $category);
+        $this->getLogger($category)->warning($message);
     }
 
     /**
@@ -43,7 +34,7 @@ class LoggerService extends Component
      */
     public function info(string $message, $category = self::DEFAULT_CATEGORY)
     {
-        $this->getLogger()->log($message, Logger::LEVEL_INFO, $category);
+        $this->getLogger($category)->info($message);
     }
 
     /**
@@ -52,18 +43,20 @@ class LoggerService extends Component
      */
     public function trace(string $message, $category = self::DEFAULT_CATEGORY)
     {
-        $this->getLogger()->log($message, Logger::LEVEL_TRACE, $category);
+        $this->getLogger($category)->info($message);
     }
 
     /**
-     * @return Logger
+     * @param string $category
+     *
+     * @return LoggerInterface
      */
-    private function getLogger(): Logger
+    private function getLogger(string $category = self::DEFAULT_CATEGORY): LoggerInterface
     {
         static $logger;
 
         if (null === $logger) {
-            $logger = \Craft::getLogger();
+            $logger = FileLogger::getInstance($category);
         }
 
         return $logger;

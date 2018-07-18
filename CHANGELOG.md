@@ -1,5 +1,33 @@
 # Solspace Freeform Changelog
 
+## 2.2.0 - 2018-07-18
+
+> {tip} There are updates in this release that affect the Phone fieldtype and Confirmation fieldtype. Please review change log below for more info.
+
+### Added
+- Added ability to map submission data to Craft Entries and Users!
+- Added Password fieldtype, meant typically for using with Users connection for registration forms.
+- Added Bootstrap 4 example formatting template (to choose inside Composer).
+- Added support for mapping to website, URL, dropdown, radio, date and zip fields in MailChimp integration.
+- Added `fieldIdPrefix` parameter to `freeform.form` function to set a prefix value on field output. Helpful if you have more than 1 form on the same template and are sharing fields.
+
+### Changed
+- Updated Phone fieldtype (Pro) to now optionally use JS validation for generating the correct format. Breaking change for existing users: change `x` to `0` going forward.
+- Updated Confirmation fieldtype to now be a Special field instead, and available for Lite as well. Legacy Confirmation fields will still work, but you should consider switching them out (removing and replacing) with the special field instead.
+- Updated Composer interface to now be translatable.
+- Updated the default English language file to include all language strings and removed obsolete ones.
+- Updated the autogeneration of form handles to only happen for the first naming of the form. After that, it will not change by itself when updating a form name.
+- Updated Submission object and submission view in control panel to use LitEmoji to render emojis.
+
+### Fixed
+- Fixed several issues with browser compatibility in AJAX demo templates.
+- Fixed a bug where CSV exporting from Export Profiles section were not including email field data.
+- Fixed a bug where form names weren't showing in Submissions breadcrumbs.
+- Fixed a bug where the Composer Tutorial was not lining up properly in Craft 3.0.12+.
+- Fixed a bug where the 'Reset' button was showing in property editor on some fields that shouldn't have had it.
+- Fixed a bug where the Formatting Template select menu options were not displaying cleaned up version of names in Composer.
+- Fixed a bug where some headings in the Property Editor were incorrect.
+
 ## 2.1.1 - 2018-07-03
 ### Fixed
 - Fixed a bug where longer form layouts would not scroll vertically in Composer with Craft 3.0.13+.

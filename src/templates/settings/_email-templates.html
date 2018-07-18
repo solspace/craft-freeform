@@ -6,61 +6,57 @@
 
     <h2>{{ "Email Templates"|t('freeform') }}</h2>
 
-    <form action="" method="post" accept-charset="UTF-8">
-        <input type="hidden" name="action" value="freeform/settings/save-settings">
-        {{ redirectInput('freeform/settings/email-templates') }}
-        {{ csrfInput() }}
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/email-templates') }}
+    {{ csrfInput() }}
 
-        {{ forms.textField({
-            class: "code",
-            label: "Directory Path"|t('freeform'),
-            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps Composer locate these files when setting up notifications."|t('freeform'),
-            placeholder: "e.g. freeform_emails/",
-            id: "emailTemplateDirectory",
-            name: "settings[emailTemplateDirectory]",
-            value: settings.emailTemplateDirectory,
-            errors: settings.getErrors("emailTemplateDirectory"),
+    {{ forms.textField({
+        class: "code",
+        label: "Directory Path"|t('freeform'),
+        instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps Composer locate these files when setting up notifications."|t('freeform'),
+        placeholder: "e.g. freeform_emails/",
+        id: "emailTemplateDirectory",
+        name: "settings[emailTemplateDirectory]",
+        value: settings.emailTemplateDirectory,
+        errors: settings.getErrors("emailTemplateDirectory"),
+    }) }}
+
+    {% if settings.absoluteEmailTemplateDirectory %}
+        {{ forms.selectField({
+            label: "Default Email Notification Creation Method"|t('freeform'),
+            instructions: "Which storage method to use when creating new email notifications with 'Add New Notification' option in Composer."|t('freeform'),
+            name: "settings[emailTemplateStorage]",
+            options: {
+                "db": "Database Entry",
+                "template": "Template File",
+            },
+            value: settings.emailTemplateStorage,
+            errors: settings.getErrors("emailTemplateStorage"),
         }) }}
 
-        {% if settings.absoluteEmailTemplateDirectory %}
-            {{ forms.selectField({
-                label: "Default Email Notification Creation Method"|t('freeform'),
-                instructions: "Which storage method to use when creating new email notifications with 'Add New Notification' option in Composer."|t('freeform'),
-                name: "settings[emailTemplateStorage]",
-                options: {
-                    "db": "Database Entry",
-                    "template": "Template File",
-                },
-                value: settings.emailTemplateStorage,
-                errors: settings.getErrors("emailTemplateStorage"),
-            }) }}
+        {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
 
-            {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
+        <div id="components-wrapper">
+            <div>
+                <button type="button" class="btn submit small icon add" id="add-demo-template">
+                    {{ "Add an email template"|t('freeform') }}
+                </button>
 
-            <div id="components-wrapper">
-                <div>
-                    <button type="button" class="btn submit small icon add" id="add-demo-template">
-                        {{ "Add an email template"|t('freeform') }}
-                    </button>
-
-                    <ul class="directory-structure">
-                        <li class="dir">
-                            <span>{{ settings.emailTemplateDirectory }}</span>
-                            <ul>
-                                {% for file in templateFiles %}
-                                    <li class="file">
-                                        <span>{{ file }}</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="directory-structure">
+                    <li class="dir">
+                        <span>{{ settings.emailTemplateDirectory }}</span>
+                        <ul>
+                            {% for file in templateFiles %}
+                                <li class="file">
+                                    <span>{{ file }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
             </div>
-        {% endif %}
-
-        <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
-    </form>
+        </div>
+    {% endif %}
 
 {% endblock %}
 

@@ -6,51 +6,47 @@
 
     <h2>{{ "Formatting Templates"|t('freeform') }}</h2>
 
-    <form action="" method="post" accept-charset="UTF-8">
-        <input type="hidden" name="action" value="freeform/settings/save-settings">
-        {{ redirectInput('freeform/settings/formatting-templates') }}
-        {{ csrfInput() }}
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/formatting-templates') }}
+    {{ csrfInput() }}
 
-        {{ forms.textField({
-            class: "code",
-            label: "Directory Path"|t('freeform'),
-            instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. This allows you to use Twig templates for your form formatting, and helps Composer locate these files to assign one of them to a form."|t('freeform'),
-            placeholder: "e.g. freeform_formatting/",
-            id: "formTemplateDirectory",
-            name: "settings[formTemplateDirectory]",
-            value: settings.formTemplateDirectory,
-            errors: settings.getErrors("formTemplateDirectory"),
-        }) }}
+    {{ forms.textField({
+        class: "code",
+        label: "Directory Path"|t('freeform'),
+        instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. This allows you to use Twig templates for your form formatting, and helps Composer locate these files to assign one of them to a form."|t('freeform'),
+        placeholder: "e.g. freeform_formatting/",
+        id: "formTemplateDirectory",
+        name: "settings[formTemplateDirectory]",
+        value: settings.formTemplateDirectory,
+        errors: settings.getErrors("formTemplateDirectory"),
+    }) }}
 
-        {% if settings.absoluteFormTemplateDirectory %}
+    {% if settings.absoluteFormTemplateDirectory %}
 
-            {% set templateFiles = craft.freeform.settings.listTemplatesInFormTemplateDirectory() %}
+        {% set templateFiles = craft.freeform.settings.listTemplatesInFormTemplateDirectory() %}
 
 
-            <div id="components-wrapper">
-                <div>
-                    <button type="button" class="btn submit small icon add" id="add-demo-template">
-                        {{ "Add a sample template"|t('freeform') }}
-                    </button>
+        <div id="components-wrapper">
+            <div>
+                <button type="button" class="btn submit small icon add" id="add-demo-template">
+                    {{ "Add a sample template"|t('freeform') }}
+                </button>
 
-                    <ul class="directory-structure">
-                        <li class="dir">
-                            <span>{{ settings.formTemplateDirectory }}</span>
-                            <ul>
-                                {% for file in templateFiles %}
-                                    <li class="file">
-                                        <span>{{ file }}</span>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                <ul class="directory-structure">
+                    <li class="dir">
+                        <span>{{ settings.formTemplateDirectory }}</span>
+                        <ul>
+                            {% for file in templateFiles %}
+                                <li class="file">
+                                    <span>{{ file }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
             </div>
-        {% endif %}
-
-        <input type="submit" class="btn submit" value="{{ "Save"|t('freeform') }}">
-    </form>
+        </div>
+    {% endif %}
 
 {% endblock %}
 

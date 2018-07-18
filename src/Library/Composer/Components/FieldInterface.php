@@ -29,6 +29,7 @@ interface FieldInterface
     const TYPE_EMAIL              = 'email';
     const TYPE_MAILING_LIST       = 'mailing_list';
     const TYPE_FILE               = 'file';
+    const TYPE_PASSWORD           = 'password';
 
     const TYPE_DATETIME     = 'datetime';
     const TYPE_NUMBER       = 'number';

@@ -417,11 +417,14 @@ class FormsService extends Component implements FormHandlerInterface
             static $imaskLoaded;
 
             if (null === $imaskLoaded) {
-                $imaskJs = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/input-mask.js');
+                $imaskMainJs = file_get_contents(__DIR__ . '/../Resources/js/lib/imask/imask.3.4.0.min.js');
+                $imaskJs     = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/input-mask.js');
 
                 if ($this->getSettingsService()->isFooterScripts()) {
+                    \Craft::$app->view->registerJs($imaskMainJs, View::POS_END);
                     \Craft::$app->view->registerJs($imaskJs, View::POS_END);
                 } else {
+                    $event->appendJsToOutput($imaskMainJs);
                     $event->appendJsToOutput($imaskJs);
                 }
             }
@@ -431,7 +434,7 @@ class FormsService extends Component implements FormHandlerInterface
             static $datepickerLoaded;
 
             if (null === $datepickerLoaded) {
-                $locale = \Craft::$app->locale->id;
+                $locale     = \Craft::$app->locale->id;
                 $localePath = __DIR__ . "/../Resources/js/lib/flatpickr/i10n/$locale.js";
                 if (!file_exists($localePath)) {
                     $localePath = __DIR__ . '/../Resources/js/lib/flatpickr/i10n/default.js';

@@ -48,7 +48,7 @@ class AdminNotificationProperties extends AbstractProperties
             return [];
         }
 
-        $list = explode("\n", $recipients);
+        $list = preg_split("/\r\n|\n|\r/", $recipients);
         $list = array_map('trim', $list);
         $list = array_unique($list);
         $list = array_filter($list);

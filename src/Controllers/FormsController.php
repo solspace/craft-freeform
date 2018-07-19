@@ -477,7 +477,7 @@ class FormsController extends BaseController
 
         $userFieldLayoutId = (int) (new Query())
             ->select('id')
-            ->from('fieldlayouts')
+            ->from('{{%fieldlayouts}}')
             ->where(['type' => User::class])
             ->scalar();
 

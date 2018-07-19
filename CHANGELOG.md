@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 2.2.1 - 2018-07-19
+### Changed
+- Updated HubSpot integration to load custom fields from Contacts, Companies and Deals endpoints now, not just Deals.
+- Updated Composer to display an error if any fields are using the same handle.
+
+### Fixed
+- Fixed a bug where some users were getting a 'fieldlayout' table doesn't exist error in Composer.
+- Fixed a bug where JS validation for the Phone fieldtype was not working.
+- Fixed a bug where admin notification recipients were not being collected when using Windows newlines.
+
 ## 2.2.0 - 2018-07-18
 
 > {tip} There are updates in this release that affect the Phone fieldtype and Confirmation fieldtype. Please review change log below for more info.

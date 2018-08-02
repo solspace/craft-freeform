@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 2.2.2 - 2018-08-02
+### Changed
+- Updated Element Connections feature to allow mapping Freeform File Upload fields to the User Photo field.
+- Updated SharpSpring integration to work with all custom field types.
+
+### Fixed
+- Fixed a bug where the Element Connections feature would display an error for customers using Solo edition.
+
 ## 2.2.1 - 2018-07-19
 ### Changed
 - Updated HubSpot integration to load custom fields from Contacts, Companies and Deals endpoints now, not just Deals.

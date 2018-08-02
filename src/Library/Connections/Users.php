@@ -35,6 +35,10 @@ class Users extends AbstractConnection
             if ($key === 'email' && !$this->active) {
                 $user->unverifiedEmail = $user->email;
             }
+
+            if ($key === 'photoId' && \is_array($value)) {
+                $user->photoId = reset($value);
+            }
         }
 
         if (\Craft::$app->getConfig()->getGeneral()->useEmailAsUsername) {

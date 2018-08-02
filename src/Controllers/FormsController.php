@@ -475,33 +475,35 @@ class FormsController extends BaseController
             ];
         }
 
-        $userFieldLayoutId = (int) (new Query())
-            ->select('id')
-            ->from('{{%fieldlayouts}}')
-            ->where(['type' => User::class])
-            ->scalar();
+        $userList = [0 => ['key' => '', 'value' => Freeform::t('All User Groups')]];
+        if (\Craft::$app->getEdition() === \Craft::Pro) {
+            $groupsWithAdminPermissions = (new Query())
+                ->select('groupId')
+                ->from('{{%userpermissions_usergroups}} ug')
+                ->innerJoin('{{%userpermissions}} u', '[[u.id]] = [[ug.permissionId]]')
+                ->where(['[[u.name]]' => 'accesscp'])
+                ->column();
 
-        $groupsWithAdminPermissions = (new Query())
-            ->select('groupId')
-            ->from('{{%userpermissions_usergroups}} ug')
-            ->innerJoin('{{%userpermissions}} u', '[[u.id]] = [[ug.permissionId]]')
-            ->where(['[[u.name]]' => 'accesscp'])
-            ->column();
+            $userFieldLayoutId = (int) (new Query())
+                ->select('id')
+                ->from('{{%fieldlayouts}}')
+                ->where(['type' => User::class])
+                ->scalar();
 
-        $userGroups = \Craft::$app->userGroups->getAllGroups();
-        $userList   = [0 => ['key' => '', 'value' => Freeform::t('All User Groups')]];
-        foreach ($userGroups as $group) {
-            $fieldIds = [];
-            if (isset($fieldByLayoutGroupId[$userFieldLayoutId])) {
-                $fieldIds = $fieldByLayoutGroupId[$userFieldLayoutId];
+            $userGroups = \Craft::$app->userGroups->getAllGroups();
+            foreach ($userGroups as $group) {
+                $fieldIds = [];
+                if (isset($fieldByLayoutGroupId[$userFieldLayoutId])) {
+                    $fieldIds = $fieldByLayoutGroupId[$userFieldLayoutId];
+                }
+
+                $userList[] = [
+                    'key'                 => $group->id,
+                    'value'               => $group->name,
+                    'fieldLayoutFieldIds' => $fieldIds,
+                    'canAccessCp'         => \in_array($group->id, $groupsWithAdminPermissions, false),
+                ];
             }
-
-            $userList[] = [
-                'key'                 => $group->id,
-                'value'               => $group->name,
-                'fieldLayoutFieldIds' => $fieldIds,
-                'canAccessCp'         => \in_array($group->id, $groupsWithAdminPermissions, false),
-            ];
         }
 
         return [

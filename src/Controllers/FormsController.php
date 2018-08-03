@@ -228,9 +228,13 @@ class FormsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $formId = \Craft::$app->request->post('id');
-        $this->getFormService()->deleteById($formId);
+        $success = $this->getFormService()->deleteById($formId);
 
-        return $this->asJson(['success' => true]);
+        if ($success) {
+            return $this->asJson(['success' => true]);
+        } else {
+            return $this->asJson(['error' => 'Couldn’t delete form']);
+        }        
     }
 
     /**

@@ -21,8 +21,9 @@ use Stringy\Stringy;
 
 class ComposerFieldFactory
 {
-    private static $defaultFieldNamespace = 'Solspace\Freeform\Library\Composer\Components\Fields';
-    private static $proFieldNamespace     = 'Solspace\FreeformPro\Fields';
+    private static $defaultFieldNamespace  = 'Solspace\Freeform\Library\Composer\Components\Fields';
+    private static $proFieldNamespace      = 'Solspace\FreeformPro\Fields';
+    private static $paymentsFieldNamespace = 'Solspace\FreeformPayments\Fields';
 
     /**
      * @param Form             $form
@@ -49,6 +50,10 @@ class ComposerFieldFactory
             $className = 'file_upload';
         }
 
+        if ($className === FieldInterface::TYPE_CREDIT_CARD_DETAILS) {
+            $className = 'credit_card_details';
+        }
+
         $className = (string) Stringy::create($className)->upperCamelize();
         $className .= 'Field';
 
@@ -56,6 +61,8 @@ class ComposerFieldFactory
             $className = self::$defaultFieldNamespace . '\\' . $className;
         } else if (class_exists(self::$proFieldNamespace . '\\' . $className)) {
             $className = self::$proFieldNamespace . '\\' . $className;
+        } else if (class_exists(self::$paymentsFieldNamespace . '\\' . $className)) {
+            $className = self::$paymentsFieldNamespace . '\\' . $className;
         } else {
             throw new ComposerException(
                 $form->getTranslator()->translate(

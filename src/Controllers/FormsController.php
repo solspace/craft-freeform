@@ -32,7 +32,6 @@ use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FormsService;
-use Solspace\FreeformPro\FreeformPro;
 use yii\db\Query;
 use yii\web\Response;
 
@@ -213,6 +212,10 @@ class FormsController extends BaseController
         }
 
         $errors = array_values($form->getErrors());
+        //flattening error map
+        if ($errors) {
+            $errors = array_merge(...$errors);
+        }
 
         return $this->asJson(['success' => false, 'errors' => $errors]);
     }
@@ -228,9 +231,12 @@ class FormsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $formId = \Craft::$app->request->post('id');
-        $this->getFormService()->deleteById($formId);
 
-        return $this->asJson(['success' => true]);
+        return $this->asJson(
+            [
+                'success' => $this->getFormService()->deleteById($formId),
+            ]
+        );
     }
 
     /**
@@ -315,6 +321,8 @@ class FormsController extends BaseController
         $notifications           = $this->getNotificationsService()->getAllNotifications(true);
         $mailingListIntegrations = $this->getMailingListsService()->getAllIntegrationObjects();
         $crmIntegrations         = $this->getCrmService()->getAllIntegrationObjects();
+        $paymentGateways         = $this->getPaymentGatewaysService()->getAllIntegrationObjects();
+        $settings                = $this->getSettingsService()->getSettingsModel();
 
         $templateVariables = [
             'form'                     => $model,
@@ -325,6 +333,7 @@ class FormsController extends BaseController
             'notificationList'         => $this->getEncodedJson($notifications),
             'mailingList'              => $this->getEncodedJson($mailingListIntegrations),
             'crmIntegrations'          => $this->getEncodedJson($crmIntegrations),
+            'paymentGatewayList'       => $this->getEncodedJson($paymentGateways),
             'fieldList'                => $this->getEncodedJson($this->getFieldsService()->getAllFields(false)),
             'statuses'                 => $this->getEncodedJson($this->getStatusesService()->getAllStatuses(false)),
             'solspaceFormTemplates'    => $this->getEncodedJson(
@@ -332,14 +341,15 @@ class FormsController extends BaseController
             ),
             'formTemplates'            => $this->getEncodedJson($this->getSettingsService()->getCustomFormTemplates()),
             'assetSources'             => $this->getEncodedJson($this->getFilesService()->getAssetSources()),
-            'showTutorial'             => $this->getSettingsService()->getSettingsModel()->showTutorial,
-            'defaultTemplates'         => $this->getSettingsService()->getSettingsModel()->defaultTemplates,
+            'showTutorial'             => $settings->showTutorial,
+            'defaultTemplates'         => $settings->defaultTemplates,
             'canManageFields'          => PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_MANAGE),
             'canManageNotifications'   => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE),
             'canManageSettings'        => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
             'isWidgetsInstalled'       => Freeform::getInstance()->isPro(),
-            'isRecaptchaEnabled'       => Freeform::getInstance()->isPro() && FreeformPro::getInstance()->getSettings()->recaptchaEnabled,
+            'isRecaptchaEnabled'       => Freeform::getInstance()->isPro() && $settings->recaptchaEnabled,
+            'isPaymentEnabled'         => \Craft::$app->plugins->isPluginEnabled('freeform-payments'),
             'sourceTargets'            => $this->getEncodedJson($this->getSourceTargetsList()),
             'craftFields'              => $this->getEncodedJson($this->getCraftFields()),
             'customFields'             => $this->getEncodedJson($this->getAllCustomFieldList()),

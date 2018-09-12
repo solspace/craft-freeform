@@ -2,11 +2,11 @@
 /**
  * Freeform for Craft
  *
- * @package       Solspace:Freeform
+ * @package       Solspace: Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2018, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
- * @license       https://solspace.com/software/license-agreement
+ * @link          https:   //solspace.com/craft/freeform
+ * @license       https:   //solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components;
@@ -317,7 +317,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function getAnchor(): string
     {
         $hash = $this->getHash();
-        $id   = substr(sha1($this->getId() . $this->getHandle()), 0, 6);
+        $id = substr(sha1($this->getId() . $this->getHandle()), 0, 6);
 
         return "$id-form-$hash";
     }
@@ -378,6 +378,18 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function addError(string $message): Form
     {
         $this->errors[] = $message;
+
+        return $this;
+    }
+
+        /**
+     * @param array $messages
+     *
+     * @return Form
+     */
+    public function addErrors(array $messages): Form
+    {
+        $this->errors = array_merge($this->errors, $messages);
 
         return $this;
     }
@@ -446,7 +458,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
             if ($simulateSuccess && $this->isLastPage()) {
                 $this->formHandler->incrementSpamBlockCount($this);
-            } else if (!$simulateSuccess) {
+            } elseif (!$simulateSuccess) {
                 $this->formHandler->incrementSpamBlockCount($this);
             }
 
@@ -497,7 +509,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function hasErrors(): bool
     {
-        return $this->isPagePosted() && !$this->isValid();
+        return ($this->isPagePosted() && !$this->isValid()) || count($this->getErrors()) != 0;
     }
 
     /**
@@ -512,7 +524,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      * Submit and store the form values in either session or database
      * depending on the current form page
      *
-     * @return bool|Submission - saved or not saved
+     * @return bool|Submission Returns false if submission was not saves, otherwise returns saved submission object
      * @throws FreeformException
      */
     public function submit()
@@ -681,14 +693,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
         if ($customAttributes->getReturnUrl()) {
             $output .= '<input type="hidden" '
-                . 'name="' . self::RETURN_URI_KEY . '" '
+                . 'name="' . self:: RETURN_URI_KEY . '" '
                 . 'value="' . $customAttributes->getReturnUrl() . '" '
                 . '/>';
         }
 
         $output .= '<input '
             . 'type="hidden" '
-            . 'name="' . FormValueContext::FORM_HASH_KEY . '" '
+            . 'name="' . FormValueContext:: FORM_HASH_KEY . '" '
             . 'value="' . $this->getHash() . '" '
             . '/>';
 
@@ -946,6 +958,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function getIntegrationProperties(): IntegrationProperties
     {
         return $this->properties->getIntegrationProperties();
+    }
+
+    /**
+     * Returns form payment integration properties
+     *
+     * @return Properties\PaymentProperties
+     */
+    public function getPaymentProperties()
+    {
+        return $this->properties->getPaymentProperties();
     }
 
     /**

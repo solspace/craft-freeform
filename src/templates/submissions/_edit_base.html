@@ -26,8 +26,8 @@
     <form method="post"
           id="asset_download"
           style="height: 0; width: 0; position: absolute; left: -99999px;">
-        <input type="hidden" name="action" value="assets/download-asset"/>
-        <input type="hidden" name="assetId" value=""/>
+        <input type="hidden" name="action" value="assets/download-asset" />
+        <input type="hidden" name="assetId" value="" />
         {{ csrfInput() }}
     </form>
 {% endblock %}
@@ -59,7 +59,7 @@
     <div id="fields">
         {% for page in layout.pages %}
             <div class="field tab-content{% if not loop.first %} hidden{% endif %}" data-for-tab="{{ page.index }}">
-                {% for field in layout.hiddenFields if field.pageIndex == page.index %}
+                {% for field in layout.hiddenFields if field.pageIndex == page.index and field.type not in ["mailing_list"] %}
                     {% set fieldHandle = "field_" ~ field.id %}
 
                     <div class="fields-row">
@@ -235,13 +235,15 @@
 
                                 {% else %}
                                     {% if field.type == "mailing_list" %}
-                                        {{ forms.checkboxField({
-                                            label: field.label,
-                                            name: fieldHandle,
-                                            id: fieldHandle,
-                                            required: field.required,
-                                            errors: submission.errors(fieldHandle),
-                                        }) }}
+                                        <div class="field">
+                                            <div class="heading">
+                                                <label>{{ field.label }}</label>
+                                            </div>
+
+                                            <div class="error" style="font-size: 12px;">
+                                                {{ 'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.'|t('freeform') }}
+                                            </div>
+                                        </div>
                                     {% elseif field.type != "recaptcha" %}
                                         {{ field.render }}
                                     {% endif %}
@@ -327,6 +329,83 @@
             </div>
         </div>
 
+        <hr>
+
+    {% endif %}
+{# TODO: move to payments module #}
+    {% if payments is defined %}
+        <div class="meta read-only">
+            <h4>Payments</h4>
+            <div class="data">
+                <h5 class="heading">{{ "Gateway"|t('freeform') }}</h5>
+                <div class="value">{{ payments.gateway|t('freeform') }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Type"|t('freeform') }}</h5>
+                <div class="value">{{ payments.type|t('freeform')|capitalize }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
+                <div class="value">
+                  {% include 'freeform-payments/_components/fields/paymentStatus.html' with { payment: payments } %}
+                </div>
+            </div>
+
+            {% if payments.errorMessage %}
+                <div class="data">
+                    <h5 class="heading">{{ "Error"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.errorMessage }}</div>
+                </div>
+            {% elseif payments.type == 'single' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.amount }} {{ payments.currency|upper }}</div>
+                </div>
+            {% else %}
+                {% if payments.status == 'active' %}
+                  <div class="data">
+                      <h5 class="heading"></h5>
+                      <div class="value">
+                          <a href="{{ payments.unsubscribeUrl }}" target="_blank">
+                            {{ "Cancel Subscription"|t('freeform') }}
+                          </a>
+                      </div>
+                  </div>
+                {% endif %}
+                <div class="data">
+                    <h5 class="heading">{{ "Plan"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.plan ? payments.plan.name : 'Unknown' }}</div>
+                </div>
+                <div class="data">
+                    <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.amount }} {{ payments.currency|upper }}</div>
+                </div>
+                <div class="data">
+                    <h5 class="heading">{{ "Interval"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.interval|capitalize }}</div>
+                </div>
+            {% endif %}
+
+            {% if not payments.errorMessage %}
+              <div class="data">
+                  <h5 class="heading">{{ "Card Number"|t('freeform') }}</h5>
+                  <div class="value">
+                      {% include 'freeform-payments/_components/fields/paymentCard.html' with { payment: payments } %}
+                  </div>
+              </div>
+            {% endif %}
+
+            {% if payments.externalDashboardLink %}
+              <div class="data">
+                  <h5 class="heading"></h5>
+                  <div class="value"><a href={{ payments.externalDashboardLink }} target="_blank">
+                      {{ "See in"|t('freeform') }}
+                      {{ payments.serviceProvider|t('freeform') }}<span class="icon-link-ext"></span>
+                      </a>
+                  </div>
+              </div>
+            {% endif %}
+        </div>
         <hr>
 
     {% endif %}

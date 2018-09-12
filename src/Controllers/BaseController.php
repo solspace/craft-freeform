@@ -13,6 +13,7 @@ use Solspace\Freeform\Services\IntegrationsService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
+use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
@@ -122,5 +123,13 @@ class BaseController extends Controller
     protected function getIntegrationsService() : IntegrationsService
     {
         return Freeform::getInstance()->integrations;
+    }
+
+    /**
+     * @return PaymentGatewaysService
+     */
+    protected function getPaymentGatewaysService() : PaymentGatewaysService
+    {
+        return Freeform::getInstance()->paymentGateways;
     }
 }

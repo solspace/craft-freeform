@@ -70,59 +70,86 @@ class m180120_140521_CraftUpgrade extends Migration
                 }
             }
 
-            $this->addForeignKey(
-                'crm_fields_integrationId',
-                '{{%freeform_crm_fields}}',
-                'integrationId',
-                '{{%freeform_integrations}}',
-                'id',
-                'CASCADE'
-            );
-            $this->addForeignKey(
-                'mailing_list_fields_mailingListId',
-                '{{%freeform_mailing_list_fields}}',
-                'mailingListId',
-                '{{%freeform_mailing_lists}}',
-                'id',
-                'CASCADE'
-            );
-            $this->addForeignKey(
-                'mailing_lists_integrationId',
-                '{{%freeform_mailing_lists}}',
-                'integrationId',
-                '{{%freeform_integrations}}',
-                'id',
-                'CASCADE'
-            );
-            $this->addForeignKey(
-                'submissions_id_fk',
-                '{{%freeform_submissions}}',
-                'id',
-                '{{%elements}}',
-                'id',
-                'CASCADE'
-            );
-            $this->addForeignKey(
-                'submissions_formId_fk',
-                '{{%freeform_submissions}}',
-                'formId',
-                '{{%freeform_forms}}',
-                'id',
-                'CASCADE'
-            );
-            $this->addForeignKey(
-                'submissions_statusId_fk',
-                '{{%freeform_submissions}}',
-                'statusId',
-                '{{%freeform_statuses}}',
-                'id',
-                'CASCADE'
-            );
+            try {
+                $this->addForeignKey(
+                    'crm_fields_integrationId',
+                    '{{%freeform_crm_fields}}',
+                    'integrationId',
+                    '{{%freeform_integrations}}',
+                    'id',
+                    'CASCADE'
+                );
+            } catch (\Exception $e) {
+            }
+
+            try {
+                $this->addForeignKey(
+                    'mailing_list_fields_mailingListId',
+                    '{{%freeform_mailing_list_fields}}',
+                    'mailingListId',
+                    '{{%freeform_mailing_lists}}',
+                    'id',
+                    'CASCADE'
+                );
+            } catch (\Exception $e) {
+            }
+
+            try {
+                $this->addForeignKey(
+                    'mailing_lists_integrationId',
+                    '{{%freeform_mailing_lists}}',
+                    'integrationId',
+                    '{{%freeform_integrations}}',
+                    'id',
+                    'CASCADE'
+                );
+            } catch (\Exception $e) {
+            }
+
+            try {
+                $this->addForeignKey(
+                    'submissions_id_fk',
+                    '{{%freeform_submissions}}',
+                    'id',
+                    '{{%elements}}',
+                    'id',
+                    'CASCADE'
+                );
+            } catch (\Exception $e) {
+            }
+
+            try {
+                $this->addForeignKey(
+                    'submissions_formId_fk',
+                    '{{%freeform_submissions}}',
+                    'formId',
+                    '{{%freeform_forms}}',
+                    'id',
+                    'CASCADE'
+                );
+            } catch (\Exception $e) {
+            }
+
+            try {
+                $this->addForeignKey(
+                    'submissions_statusId_fk',
+                    '{{%freeform_submissions}}',
+                    'statusId',
+                    '{{%freeform_statuses}}',
+                    'id',
+                    'CASCADE'
+                );
+            } catch (\Exception $e) {
+            }
         }
 
-        // Rename the saved export profiles
-        $this->renameTable('{{%freeform_export_profiles}}', '{{%freeform_export_profiles_backup}}');
-        $this->renameTable('{{%freeform_export_settings}}', '{{%freeform_export_settings_backup}}');
+
+        try {
+            // Rename the saved export profiles
+            $this->renameTable('{{%freeform_export_profiles}}', '{{%freeform_export_profiles_backup}}');
+            $this->renameTable('{{%freeform_export_settings}}', '{{%freeform_export_settings_backup}}');
+        } catch (\Exception $e) {
+        }
 
         $table = '{{%freeform_fields}}';
         $this->addColumn(

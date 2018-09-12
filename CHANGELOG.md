@@ -1,5 +1,27 @@
 # Solspace Freeform Changelog
 
+## 2.3.0 - 2018-09-12
+### Added
+- Added ability to set Mailing List fields as hidden fields (automatically opting in users).
+
+### Changed
+- Updated for compatibility with future Freeform Payments add-on plugin.
+- Updated CP single submission view to include a note for Mailing List fields that mentions data is not stored for this field type.
+- Updated new field creation to error if maximum number of fields are reached.
+- Updated Freeform's automatically inserted JS to no longer include `type="text/javascript"`.
+- Updated reCAPTCHA settings to be stored in Freeform Lite rather than Pro.
+- Updated Element Connections feature to only attempt to fire when it's properly set up (to eliminate form errors if accidentally partially added).
+- Improved AJAX script in Demo Templates to better handle script loading and IE11 compatibility.
+
+### Fixed
+- Fixed a bug where Salesforce API connections were not holding for more than a day or so.
+- Fixed a bug where the Freeform 1.x to 2.x (Craft 2.x to 3.x) migration path could error in some cases.
+- Fixed a bug where deleting forms and fields were not returning proper AJAX return statuses.
+- Fixed a bug where the Constant Contact integration was not correctly working.
+- Fixed a bug where the Dynamic Recipients field as Checkbox OR Radio would default to the first option being checked IF none were selected and form reloaded after an error was triggered.
+- Fixed a bug where required asterisks were out of position in CP submission view.
+- Fixed a bug where permissions for Manage Export Profiles was not working correctly.
+
 ## 2.2.2 - 2018-08-02
 ### Changed
 - Updated Element Connections feature to allow mapping Freeform File Upload fields to the User Photo field.

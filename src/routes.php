@@ -7,6 +7,9 @@ return [
     'freeform/api/form-templates'                                => 'freeform/api/form-templates',
     'freeform/api/mailing-lists'                                 => 'freeform/api/mailing-lists',
     'freeform/api/crm-integrations'                              => 'freeform/api/crm-integrations',
+    'freeform/api/payment-gateways'                              => 'freeform/api/payment-gateways',
+    'freeform/api/payment-gateway-integrations'                  => 'freeform/api/payment-gateway-integrations',
+    'freeform/api/payment-plans'                                 => 'freeform/api/payment-plans',
     'freeform/api/quick-create-field'                            => 'freeform/api/quick-create-field',
     'freeform/api/quick-create-notification'                     => 'freeform/api/quick-create-notification',
     'freeform/api/finish-tutorial'                               => 'freeform/api/finish-tutorial',
@@ -55,6 +58,7 @@ return [
     'freeform/settings/mailing-lists'                            => 'freeform/mailing-lists/index',
     'freeform/settings/mailing-lists/new'                        => 'freeform/mailing-lists/create',
     'freeform/settings/mailing-lists/<id:\d+>'                   => 'freeform/mailing-lists/edit',
+    'freeform/settings/mailing-lists/<handle:[a-zA-Z0-9_]+>'     => 'freeform/mailing-lists/handle-o-auth-redirect',
     'freeform/mailing-lists/authenticate/<handle:[a-zA-Z0-9_]+>' => 'freeform/mailing-lists/force-authorization',
     'freeform/mailing_list/check'                                => 'freeform/mailing-lists/check-integration-connection',
     // CRM
@@ -63,6 +67,12 @@ return [
     'freeform/settings/crm/<id:\d+>'                             => 'freeform/crm/edit',
     'freeform/crm/check'                                         => 'freeform/crm/check-integration-connection',
     'freeform/crm/authenticate/<handle:[a-zA-Z0-9_]+>'           => 'freeform/crm/force-authorization',
+    // Payment Gateways
+    'freeform/settings/payment-gateways'                            => 'freeform/payment-gateways/index',
+    'freeform/settings/payment-gateways/new'                        => 'freeform/payment-gateways/create',
+    'freeform/settings/payment-gateways/<id:\d+>'                   => 'freeform/payment-gateways/edit',
+    'freeform/payment_gateway/check'                               => 'freeform/payment-gateways/check-integration-connection',
+    'freeform/payment-gateway/authenticate/<handle:[a-zA-Z0-9_]+>' => 'freeform/payment-gateways/force-authorization',
     // Settings
     'freeform/settings'                                          => 'freeform/settings/provide-setting',
     'freeform/settings/general'                                  => 'freeform/settings/provide-setting',

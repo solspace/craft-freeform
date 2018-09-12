@@ -1,6 +1,150 @@
+{% import _self as form_twig %}
+
+{% macro renderRows(rows, rowClass, columnClass) %}
+    {% import _self as form_twig %}
+    {% for row in rows %}
+        <div class="row {{ rowClass }}">
+            {% for field in row %}
+                {% set width = (12 / (row|length)) %}
+
+                {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
+
+                {% set columnClass = isCheckbox ? " checkbox " : " form-group" %}
+                {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
+                {% set columnClass = columnClass ~ " col-lg-" ~ width ~ " col-xs-12" %}
+
+                {% if field.type == "submit" %}
+                    {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
+                {% endif %}
+
+                {% if field.type == "checkbox_group" %}
+
+                    <div class="{{ columnClass }}">
+                        {{ field.renderLabel({
+                            labelClass: (field.required ? " required" : ""),
+                            instructionsClass: "help-block",
+                            errorClass: "help-block",
+                        }) }}
+
+                        {% for option in field.options %}
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox"
+                                          name="{{ field.handle }}[]"
+                                          value="{{ option.value }}"
+                                            {{ option.checked ? "checked" }}
+                                    />
+                                    {{ option.label|raw }}
+                                </label>
+                            </div>
+                        {% endfor %}
+
+                        {{ field.renderInstructions() }}
+                        {{ field.renderErrors() }}
+                    </div>
+
+                {% elseif field.type == "radio_group" %}
+
+                    <div class="{{ columnClass }}">
+                        {{ field.renderLabel({
+                            labelClass: (field.required ? " required" : ""),
+                            instructionsClass: "help-block",
+                            errorClass: "help-block",
+                        }) }}
+
+                        {% for option in field.options %}
+                            <div class="radio">
+                                <label>
+                                    <input type="radio"
+                                          name="{{ field.handle }}"
+                                          value="{{ option.value }}"
+                                            {{ option.checked ? "checked" }}
+                                    />
+                                    {{ option.label|raw }}
+                                </label>
+                            </div>
+                        {% endfor %}
+
+                        {{ field.renderInstructions() }}
+                        {{ field.renderErrors() }}
+                    </div>
+
+                {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
+
+                    <div class="{{ columnClass }}">
+                        {{ field.renderLabel({
+                            labelClass: (field.required ? " required" : ""),
+                            instructionsClass: "help-block",
+                            errorClass: "help-block",
+                        }) }}
+
+                        {% for option in field.options %}
+                            <div class="{{ field.showAsRadio ? "radio" : "checkbox" }}">
+                                <label>
+                                    <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
+                                          name="{{ field.handle }}[]"
+                                          value="{{ loop.index0 }}"
+                                            {{ option.checked ? "checked" }}
+                                    />
+                                    {{ option.label|raw }}
+                                </label>
+                            </div>
+                        {% endfor %}
+
+                        {{ field.renderInstructions() }}
+                        {{ field.renderErrors() }}
+                    </div>
+
+                {% elseif field.type == "submit" %}
+
+                    <div class="{{ columnClass }}">
+                        {{ field.render() }}
+                    </div>
+
+                {% elseif field.type == "cc_details" %}
+
+                  <div class="{{ columnClass|replace('input-field', '') }}">
+
+                      {{ field.renderLabel({
+                          labelClass: (field.required ? " required" : ""),
+                          instructionsClass: "help-block",
+                          errorClass: "help-block",
+                      }) }}
+
+                      {{ form_twig.renderRows(field.layoutRows, '', '') }}
+
+                      {{ field.renderInput({
+                          instructionsClass: "help-block",
+                          instructionsBelowField: true,
+                          labelClass: (field.required ? " required" : ""),
+                          errorClass: "help-block",
+                      }) }}
+
+                      {{ field.renderInstructions }}
+                      {{ field.renderErrors }}
+                  </div>
+
+                {% else %}
+
+                    <div class="{{ columnClass }}">
+                        {{ field.render({
+                            class: isCheckbox ? "checkbox" : "form-control",
+                            instructionsClass: "help-block",
+                            instructionsBelowField: true,
+                            labelClass: (field.required ? " required" : ""),
+                            errorClass: "help-block",
+                        }) }}
+                    </div>
+
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endfor %}
+{% endmacro %}
+
 {% set form = craft.freeform.form(formHandle, {
     submitClass: "btn btn-success",
-    returnUrl: "{{ siteUrl }}demo/bootstrap/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
+    returnUrl: "{{ siteUrl }}freeform-demo/bootstrap/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
 }) %}
 
 {% if form %}
@@ -37,126 +181,9 @@
         </div>
     {% endif %}
 
-
-    {% for row in form %}
-        <div class="row {{ form.customAttributes.rowClass }}">
-            {% for field in row %}
-                {% set width = (12 / (row|length)) %}
-
-                {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
-
-                {% set columnClass = isCheckbox ? "checkbox" : "form-group" %}
-                {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
-                {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-                {% set columnClass = columnClass ~ " col-lg-" ~ width ~ " col-xs-12" %}
-
-                {% if field.type == "submit" %}
-                    {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
-                {% endif %}
-
-                {% if field.type == "checkbox_group" %}
-
-                    <div class="{{ columnClass }}">
-                        {{ field.renderLabel({
-                            labelClass: (field.required ? " required" : ""),
-                            instructionsClass: "help-block",
-                            errorClass: "help-block",
-                        }) }}
-
-                        {% for option in field.options %}
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox"
-                                           name="{{ field.handle }}[]"
-                                           value="{{ option.value }}"
-                                            {{ option.checked ? "checked" }}
-                                    />
-                                    {{ option.label|raw }}
-                                </label>
-                            </div>
-                        {% endfor %}
-
-                        {{ field.renderInstructions() }}
-                        {{ field.renderErrors() }}
-                    </div>
-
-                {% elseif field.type == "radio_group" %}
-
-                    <div class="{{ columnClass }}">
-                        {{ field.renderLabel({
-                            labelClass: (field.required ? " required" : ""),
-                            instructionsClass: "help-block",
-                            errorClass: "help-block",
-                        }) }}
-
-                        {% for option in field.options %}
-                            <div class="radio">
-                                <label>
-                                    <input type="radio"
-                                           name="{{ field.handle }}"
-                                           value="{{ option.value }}"
-                                            {{ option.checked ? "checked" }}
-                                    />
-                                    {{ option.label|raw }}
-                                </label>
-                            </div>
-                        {% endfor %}
-
-                        {{ field.renderInstructions() }}
-                        {{ field.renderErrors() }}
-                    </div>
-
-                {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
-
-                    <div class="{{ columnClass }}">
-                        {{ field.renderLabel({
-                            labelClass: (field.required ? " required" : ""),
-                            instructionsClass: "help-block",
-                            errorClass: "help-block",
-                        }) }}
-
-                        {% for option in field.options %}
-                            <div class="{{ field.showAsRadio ? "radio" : "checkbox" }}">
-                                <label>
-                                    <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
-                                           name="{{ field.handle }}[]"
-                                           value="{{ loop.index0 }}"
-                                            {{ option.checked ? "checked" }}
-                                    />
-                                    {{ option.label|raw }}
-                                </label>
-                            </div>
-                        {% endfor %}
-
-                        {{ field.renderInstructions() }}
-                        {{ field.renderErrors() }}
-                    </div>
-
-                {% elseif field.type == "submit" %}
-
-                    <div class="{{ columnClass }}">
-                        {{ field.render() }}
-                    </div>
-
-                {% else %}
-
-                    <div class="{{ columnClass }}">
-                        {{ field.render({
-                            class: isCheckbox ? "checkbox" : "form-control",
-                            instructionsClass: "help-block",
-                            instructionsBelowField: true,
-                            labelClass: (field.required ? " required" : ""),
-                            errorClass: "help-block",
-                        }) }}
-                    </div>
-
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endfor %}
+    {{ form_twig.renderRows(form, form.customAttributes.rowClass, form.customAttributes.columnClass) }}
 
     {{ form.renderClosingTag }}
-
 
 {% else %}
     <div class="alert alert-danger">

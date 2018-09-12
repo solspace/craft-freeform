@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
+use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Logging\CraftLogger;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 use Solspace\Freeform\Records\IntegrationRecord;
@@ -133,7 +134,7 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
     }
 
     /**
-     * @return AbstractIntegration|AbstractCRMIntegration|AbstractMailingListIntegration
+     * @return AbstractIntegration|AbstractCRMIntegration|AbstractMailingListIntegration|AbstractPaymentGatewayIntegration
      * @throws IntegrationException
      * @throws IntegrationNotFoundException
      */
@@ -148,6 +149,10 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
 
             case IntegrationRecord::TYPE_CRM:
                 $handler = $freeform->crm;
+                break;
+
+            case IntegrationRecord::TYPE_PAYMENT_GATEWAY:
+                $handler = $freeform->paymentGateways;
                 break;
 
             default:

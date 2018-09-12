@@ -30,37 +30,39 @@
             </thead>
             <tbody>
             {% for field in fields %}
-                <tr data-id="{{ field.id }}" data-name="{{ field.label|t('freeform') }}">
-                    <th scope="row" data-title="{{ 'Label'|t('freeform') }}">
-                        {% if currentUser.can("freeform-fieldsManage") %}
-                            <a href="{{ url('freeform/fields/' ~ field.id) }}">
-                                {{ field.label }}
-                            </a>
-                        {% else %}
-                            {{ field.label }}
-                        {% endif %}
-                    </th>
-                    <td data-title="{{ 'Handle'|t('freeform') }}">
-                        <code>
-                            {{ field.handle }}
-                        </code>
-                    </td>
-                    <td style="width: 50%;">
-                        {{ fieldTypes[field.type] }}
-                    </td>
-                    <td class="thin">
-                        <div class="action-buttons">
+                {% if fieldTypes[field.type] is defined %}
+                    <tr data-id="{{ field.id }}" data-name="{{ field.label|t('freeform') }}">
+                        <th scope="row" data-title="{{ 'Label'|t('freeform') }}">
                             {% if currentUser.can("freeform-fieldsManage") %}
-                                <form method="post" action="{{ url("freeform/fields/duplicate") }}">
-                                    {{ csrfInput() }}
-                                    <input type="hidden" name="id" value="{{ field.id }}" />
-                                    <a class="clone icon" title="{{ 'Clone'|t('freeform') }}" role="button"></a>
-                                </form>
-                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                                <a href="{{ url('freeform/fields/' ~ field.id) }}">
+                                    {{ field.label }}
+                                </a>
+                            {% else %}
+                                {{ field.label }}
                             {% endif %}
-                        </div>
-                    </td>
-                </tr>
+                        </th>
+                        <td data-title="{{ 'Handle'|t('freeform') }}">
+                            <code>
+                                {{ field.handle }}
+                            </code>
+                        </td>
+                        <td style="width: 50%;">
+                            {{ fieldTypes[field.type] }}
+                        </td>
+                        <td class="thin">
+                            <div class="action-buttons">
+                                {% if currentUser.can("freeform-fieldsManage") %}
+                                    <form method="post" action="{{ url("freeform/fields/duplicate") }}">
+                                        {{ csrfInput() }}
+                                        <input type="hidden" name="id" value="{{ field.id }}" />
+                                        <a class="clone icon" title="{{ 'Clone'|t('freeform') }}" role="button"></a>
+                                    </form>
+                                    <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

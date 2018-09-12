@@ -73,7 +73,6 @@ abstract class AbstractIntegrationService extends Component
      *
      * @return AbstractIntegration
      * @throws IntegrationException
-     * @throws IntegrationException
      */
     public function getIntegrationObjectById($id): AbstractIntegration
     {
@@ -84,7 +83,7 @@ abstract class AbstractIntegrationService extends Component
         }
 
         throw new IntegrationException(
-            Freeform::t('Mailing List integration with ID {id} not found', ['id' => $id])
+            Freeform::t('Integration with ID {id} not found', ['id' => $id])
         );
     }
 
@@ -208,7 +207,7 @@ abstract class AbstractIntegrationService extends Component
             }
         }
 
-        if ($beforeSaveEvent->isValid && !$record->hasErrors()) {
+        if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
             $transaction = \Craft::$app->getDb()->beginTransaction();
             try {
                 $record->save(false);

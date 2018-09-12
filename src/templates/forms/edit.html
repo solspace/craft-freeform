@@ -25,6 +25,7 @@
       var notificationList         = {{ notificationList|raw }};
       var mailingList              = {{ mailingList|raw }};
       var crmIntegrations          = {{ crmIntegrations|raw }};
+      var paymentGatewayList       = {{ paymentGatewayList|raw }};
       var composerState            = {{ form.layoutAsJson|raw }};
       var formStatuses             = {{ statuses|raw }};
       var assetSources             = {{ assetSources|raw }};
@@ -39,6 +40,7 @@
       var isDbEmailTemplateStorage = {{ isDbEmailTemplateStorage ? "true" : "false" }};
       var isWidgetsInstalled       = {{ isWidgetsInstalled ? "true" : "false" }};
       var isRecaptchaEnabled       = {{ isRecaptchaEnabled ? "true" : "false" }};
+      var isPaymentEnabled         = {{ isPaymentEnabled ? "true" : "false" }};
       var sourceTargets            = {{ sourceTargets|raw }};
       var craftFields              = {{ craftFields|raw }};
       var customFields             = {{ customFields|raw }};

@@ -56,6 +56,7 @@ class Install extends StreamlinedInstallMigration
                             'rating',
                             'regex',
                             'confirmation',
+                            'cc_details',
                         ]
                     )->notNull()
                 )
@@ -83,7 +84,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->primaryKey())
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
-                ->addField('type', $this->enum('type', ['mailing_list', 'crm'])->notNull())
+                ->addField('type', $this->enum('type', ['mailing_list', 'crm', 'payment_gateway'])->notNull())
                 ->addField('class', $this->string(255))
                 ->addField('accessToken', $this->string(255))
                 ->addField('settings', $this->text())
@@ -109,6 +110,15 @@ class Install extends StreamlinedInstallMigration
                 ->addForeignKey('mailingListId', 'freeform_mailing_lists', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_crm_fields'))
+                ->addField('id', $this->primaryKey())
+                ->addField('integrationId', $this->integer()->notNull())
+                ->addField('label', $this->string(255)->notNull())
+                ->addField('handle', $this->string(255)->notNull())
+                ->addField('type', $this->enum('type', ['string', 'numeric', 'boolean', 'array'])->notNull())
+                ->addField('required', $this->boolean()->defaultValue(false))
+                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_payment_gateway_fields'))
                 ->addField('id', $this->primaryKey())
                 ->addField('integrationId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())

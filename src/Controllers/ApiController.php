@@ -17,13 +17,15 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ChartHelper;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\TokenRefreshInterface;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Models\FieldModel;
@@ -63,51 +65,61 @@ class ApiController extends BaseController
         if ($form->isValid()) {
             $submission = $form->submit();
 
-            if ($form->isFormSaved()) {
-                $postedReturnUrl = \Craft::$app->request->post(Form::RETURN_URI_KEY);
+            if ($submission !== false && $submission->getErrors()) {
+                $form->addErrors(array_keys($submission->getErrors()));
+                //TODO: redirect to special error page?
+            } else {
 
-                $returnUrl = $postedReturnUrl ?: $form->getReturnUrl();
-                $returnUrl = \Craft::$app->view->renderString(
-                    $returnUrl,
-                    [
-                        'form'       => $form,
-                        'submission' => $submission,
-                    ]
-                );
+                if (!$form->getErrors() && $form->isFormSaved()) {
 
-                if (!$returnUrl) {
-                    $returnUrl = \Craft::$app->request->getUrl();
+                    //TODO: check if it required payment and payment succeeded
+                    //TODO: if payment failed than display error message
+
+                    $postedReturnUrl = \Craft::$app->request->post(Form::RETURN_URI_KEY);
+
+                    $returnUrl = $postedReturnUrl ?: $form->getReturnUrl();
+                    $returnUrl = \Craft::$app->view->renderString(
+                        $returnUrl,
+                        [
+                            'form'       => $form,
+                            'submission' => $submission,
+                        ]
+                    );
+
+                    if (!$returnUrl) {
+                        $returnUrl = \Craft::$app->request->getUrl();
+                    }
+
+                    if ($isAjaxRequest) {
+                        return $this->asJson(
+                            [
+                                'success'      => true,
+                                'finished'     => true,
+                                'returnUrl'    => $returnUrl,
+                                'submissionId' => $submission ? $submission->id : null,
+                                'honeypot'     => [
+                                    'name' => $honeypot->getName(),
+                                    'hash' => $honeypot->getHash(),
+                                ],
+                            ]
+                        );
+                    }
+
+                    return $this->redirect($returnUrl);
                 }
 
                 if ($isAjaxRequest) {
                     return $this->asJson(
                         [
-                            'success'      => true,
-                            'finished'     => true,
-                            'returnUrl'    => $returnUrl,
-                            'submissionId' => $submission ? $submission->id : null,
-                            'honeypot'     => [
+                            'success'  => true,
+                            'finished' => false,
+                            'honeypot' => [
                                 'name' => $honeypot->getName(),
                                 'hash' => $honeypot->getHash(),
                             ],
                         ]
                     );
                 }
-
-                return $this->redirect($returnUrl);
-            }
-
-            if ($isAjaxRequest) {
-                return $this->asJson(
-                    [
-                        'success'  => true,
-                        'finished' => false,
-                        'honeypot' => [
-                            'name' => $honeypot->getName(),
-                            'hash' => $honeypot->getHash(),
-                        ],
-                    ]
-                );
             }
         }
 
@@ -201,7 +213,7 @@ class ApiController extends BaseController
 
             try {
                 $integration->getFields();
-            } catch (ClientException $e) {
+            } catch (RequestException $e) {
                 if ($integration instanceof TokenRefreshInterface) {
                     try {
                         if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
@@ -221,6 +233,80 @@ class ApiController extends BaseController
         }
 
         return $this->asJson($crmIntegrations);
+    }
+
+    /**
+     * GET payment gateways
+     *
+     * @return Response
+     * @throws ForbiddenHttpException
+     */
+    public function actionPaymentGateways(): Response
+    {
+        //TODO: add separate function to query single gateway?
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
+        $paymentGateways = $this->getPaymentGatewaysService()->getAllIntegrationObjects();
+        foreach ($paymentGateways as $integration) {
+            $integration->setForceUpdate(true);
+        }
+
+        return $this->asJson($paymentGateways);
+    }
+
+    /**
+     * POST payment plans
+     *
+     * @return Response
+     * @throws ForbiddenHttpException
+     */
+    public function actionPaymentPlans(): Response
+    {
+        $this->requirePostRequest();
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+
+        $request = \Craft::$app->request;
+        $errors  = [];
+
+        $integrationId = $request->post('integrationId');
+        $name          = $request->post('name');
+        $amount        = $request->post('amount');
+        $currency      = $request->post('currency');
+        $interval      = $request->post('interval');
+
+        if (!$integrationId) {
+            $errors[] = Freeform::t('IntegrationId is required');
+        }
+
+        if (!$name) {
+            $errors[] = Freeform::t('Label is required');
+        }
+
+        if (!$amount) {
+            $errors[] = Freeform::t('Amount is required');
+        }
+
+        /** @var AbstractPaymentGatewayIntegration $integration */
+        $integration = $this->getPaymentGatewaysService()->getIntegrationObjectById($integrationId);
+
+        if (empty($errors)) {
+            $planDetails = new PlanDetails($name, $amount, $currency, $interval);
+            $result = $integration->createPlan($planDetails);
+
+            if ($result) {
+                $integration->setForceUpdate(true);
+
+                return $this->asJson(['success' => true, 'id' => $result]);
+            }
+
+            $error = $integration->getLastError();
+            if ($error) {
+                $error = $error->getPrevious();
+                $errors[] = $error->getMessage();
+            }
+        }
+
+        return $this->asJson(['success' => false, 'errors' => $errors]);
     }
 
     /**

@@ -222,7 +222,9 @@ class Submission extends Element
         ];
 
         foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
-            $titles[self::getFieldColumnName($field->id)] = ['label' => $field->label];
+            if ($field->label) {
+                $titles[self::getFieldColumnName($field->id)] = ['label' => $field->label];
+            }
         }
 
         return $titles;
@@ -611,7 +613,7 @@ class Submission extends Element
                 if (\is_array($value)) {
                     $value = json_encode($value);
                 }
-                
+
                 if (PHP_VERSION_ID >= 50400) {
                     $value = LitEmoji::unicodeToShortcode($value);
                 }

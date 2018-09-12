@@ -208,13 +208,17 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
         $form = $submission->getForm();
 
         $this->markFormAsSubmitted($form);
-        $integrationsService->sendOutEmailNotifications($submission);
+        
         $connectionsService->connect($form);
+        $integrationsService->processPayments($submission);
+        $integrationsService->sendOutEmailNotifications($submission);
 
         if ($form->hasOptInPermission()) {
             $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);
             $integrationsService->pushToCRM($submission);
         }
+
+
 
         $formsService->onAfterSubmit($form, $submission);
     }

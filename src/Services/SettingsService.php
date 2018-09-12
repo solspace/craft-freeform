@@ -387,6 +387,7 @@ class SettingsService extends Component
             'hdapi'                => ['heading' => Freeform::t('API Integrations')],
             'mailing-lists'        => ['title' => Freeform::t('Mailing Lists')],
             'crm'                  => ['title' => Freeform::t('CRM')],
+            'payment-gateways'     => ['title' => Freeform::t('Payment Gateways')],
         ]);
 
         $this->trigger(self::EVENT_REGISTER_SETTINGS_NAVIGATION, $event);

@@ -190,6 +190,21 @@
                     {{ field.renderErrors }}
                 </div>
 
+            {% elseif field.type == "cc_details" %}
+
+                <div class="{{ columnClass|replace('input-field', '') }}">
+                    {{ field.renderInput({
+                    instructionsClass: "help-block",
+                    instructionsBelowField: true,
+                    labelClass: (field.required ? " required" : ""),
+                    errorClass: "help-block",
+                    }) }}
+                    {{ field.renderLabel }}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+                </div>
+
             {% else %}
 
                 <div class="{{ columnClass }}">

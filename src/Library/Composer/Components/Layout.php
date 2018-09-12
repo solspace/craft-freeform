@@ -15,7 +15,9 @@ use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxGroupField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\MailingListField;
 use Solspace\Freeform\Library\Composer\Components\Fields\TextField;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -57,6 +59,9 @@ class Layout implements \JsonSerializable, \Iterator
 
     /** @var AbstractField[]|MailingListInterface[] */
     private $mailingListFields;
+
+    /** @var AbstractField[]|PaymentInterface[] */
+    private $paymentFields;
 
     /** @var Properties */
     private $properties;
@@ -286,6 +291,14 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
+     * @return AbstractField[]|PaymentInterface[]
+     */
+    public function getPaymentFields(): array
+    {
+        return $this->paymentFields;
+    }
+
+    /**
      * Builds all page, row and field objects and inflates them
      *
      * @param FormValueContext $formValueContext
@@ -309,6 +322,7 @@ class Layout implements \JsonSerializable, \Iterator
         $recipientFields            = [];
         $fileUploadFields           = [];
         $mailingListFields          = [];
+        $paymentFields              = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
             if (!\is_array($rows)) {
@@ -353,7 +367,7 @@ class Layout implements \JsonSerializable, \Iterator
                         $pageIndex
                     );
 
-                    if ($field instanceof NoRenderInterface) {
+                    if ($field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())) {
                         $hiddenFields[] = $field;
                     } else {
                         $fields[] = $field;
@@ -369,6 +383,10 @@ class Layout implements \JsonSerializable, \Iterator
 
                     if ($field instanceof RecipientInterface && $field->shouldReceiveEmail()) {
                         $recipientFields[] = $field;
+                    }
+
+                    if ($field instanceof PaymentInterface) {
+                        $paymentFields[] = $field;
                     }
 
                     if ($datetimeExists && \get_class($field) === $datetimeClass && $field->isUseDatepicker()) {
@@ -407,6 +425,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->recipientFields            = $recipientFields;
         $this->fileUploadFields           = $fileUploadFields;
         $this->mailingListFields          = $mailingListFields;
+        $this->paymentFields              = $paymentFields;
         $this->hasDatepickerEnabledFields = $hasDatepickerEnabledFields;
         $this->hasPhonePatternFields      = $hasPhonePatternFields;
     }

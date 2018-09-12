@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\PageProperties;
+use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
@@ -27,6 +28,7 @@ class Properties implements \JsonSerializable
     const INTEGRATION_HASH         = 'integration';
     const CONNECTIONS_HASH         = 'connections';
     const ADMIN_NOTIFICATIONS_HASH = 'admin_notifications';
+    const PAYMENT_HASH             = 'payment';
 
     /** @var array */
     private $propertyList;
@@ -83,6 +85,22 @@ class Properties implements \JsonSerializable
         }
 
         return $this->propertyList[$hash];
+    }
+
+    /**
+     * @param string $hash
+     * @param array $params
+     *
+     * @return array
+     * @throws ComposerException
+     */
+    public function set($hash, $params): array
+    {
+        if (isset($this->propertyList[$hash])) {
+            $this->removeHash($hash);
+        }
+
+        return $this->propertyList[$hash] = $params;
     }
 
     /**
@@ -192,6 +210,26 @@ class Properties implements \JsonSerializable
     }
 
     /**
+     * @return PaymentProperties
+     * @throws ComposerException
+     */
+    public function getPaymentProperties(): PaymentProperties
+    {
+        $hash = self::PAYMENT_HASH;
+        if (!isset($this->builtProperties[$hash])) {
+            if (!isset($this->propertyList[$hash])) {
+                throw new ComposerException(
+                    $this->translator->translate('Could not find properties for integrations')
+                );
+            }
+
+            $this->builtProperties[$hash] = new PaymentProperties($this->propertyList[$hash], $this->translator);
+        }
+
+        return $this->builtProperties[$hash];
+    }
+
+    /**
      * @return ConnectionProperties
      * @throws ComposerException
      */
@@ -218,6 +256,9 @@ class Properties implements \JsonSerializable
     {
         if (isset($this->propertyList[$hash])) {
             unset($this->propertyList[$hash]);
+        }
+        if (isset($this->builtProperties[$hash])) {
+            unset($this->builtProperties[$hash]);
         }
     }
 

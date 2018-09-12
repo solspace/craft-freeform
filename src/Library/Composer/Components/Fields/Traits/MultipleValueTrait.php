@@ -81,7 +81,11 @@ trait MultipleValueTrait
     public function setValue($value)
     {
         if ($this instanceof MultipleValueInterface && !\is_array($value)) {
-            $value = [$value];
+            if (null === $value) {
+                $value = [];
+            } else {
+                $value = [$value];
+            }
         }
 
         $this->values = $value;

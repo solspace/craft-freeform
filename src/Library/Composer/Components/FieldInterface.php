@@ -40,6 +40,11 @@ interface FieldInterface
     const TYPE_CONFIRMATION = 'confirmation';
     const TYPE_RECAPTCHA    = 'recaptcha';
 
+    const TYPE_CREDIT_CARD_DETAILS = 'cc_details';
+    const TYPE_CREDIT_CARD_NUMBER  = 'cc_number';
+    const TYPE_CREDIT_CARD_EXPIRY  = 'cc_expiry';
+    const TYPE_CREDIT_CARD_CVC     = 'cc_cvc';
+
     /**
      * Returns the INPUT type
      *

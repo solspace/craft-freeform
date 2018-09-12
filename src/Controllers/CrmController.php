@@ -12,8 +12,8 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\helpers\UrlHelper;
+use GuzzleHttp\Exception\RequestException;
 use craft\web\Controller;
-use GuzzleHttp\Exception\BadResponseException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -219,7 +219,7 @@ class CrmController extends Controller
             }
 
             return $this->asJson(['success' => false]);
-        } catch (BadResponseException $e) {
+        } catch (RequestException $e) {
             if ($integration instanceof TokenRefreshInterface) {
                 try {
                     if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {

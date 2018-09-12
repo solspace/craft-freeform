@@ -19,12 +19,14 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Logging\CraftLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
 use yii\base\Component;
+use Solspace\FreeformPayments\FreeformPayments;
 
 class MailerService extends Component implements MailHandlerInterface
 {
@@ -179,13 +181,25 @@ class MailerService extends Component implements MailHandlerInterface
         $postedValues = [];
         $usableFields = [];
         foreach ($fields as $field) {
-            if ($field instanceof NoStorageInterface || $field instanceof FileUploadInterface) {
+            if ($field instanceof NoStorageInterface
+                || $field instanceof FileUploadInterface
+                || $field instanceof PaymentInterface
+            ) {
                 continue;
             }
 
             $field->setValue($submission->{$field->getHandle()}->getValue());
             $usableFields[]                    = $field;
             $postedValues[$field->getHandle()] = $field->getValueAsString();
+        }
+
+        //TODO: offload this call to payments plugin with an event
+        if ($submission && $form->getLayout()->getPaymentFields()) {
+            $payments = FreeformPayments::getInstance()->payments->getPaymentDetails(
+                $submission->getId(),
+                $submission->getForm()
+            );
+            $postedValues['payments'] = $payments;
         }
 
         $postedValues['allFields']   = $usableFields;

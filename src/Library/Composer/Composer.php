@@ -33,10 +33,10 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 class Composer
 {
     const KEY_COMPOSER   = 'composer';
-    const KEY_FORM       = 'form';
     const KEY_PROPERTIES = 'properties';
     const KEY_LAYOUT     = 'layout';
     const KEY_CONTEXT    = 'context';
+    const KEY_PAYMENT    = 'payment';
 
     /** @var Form */
     private $form;
@@ -151,6 +151,16 @@ class Composer
     }
 
     /**
+     * Removes property
+     *
+     * @param string $hash
+     */
+    public function removeProperty($hash)
+    {
+        $this->properties->removeHash($hash);
+    }
+
+    /**
      * Validates all components and hydrates respective objects
      *
      * @param FormAttributes $formAttributes
@@ -181,7 +191,8 @@ class Composer
             );
         }
 
-        $this->properties = new Properties($composer['properties'], $this->translator);
+        $properties = $composer[self::KEY_PROPERTIES];
+        $this->properties = new Properties($properties, $this->translator);
 
         if (!isset($composer[self::KEY_LAYOUT])) {
             $composer[self::KEY_LAYOUT] = [[]];
@@ -195,14 +206,14 @@ class Composer
 
         $this->context = new Context($composerState[self::KEY_CONTEXT]);
 
-        if (!isset($composer[self::KEY_PROPERTIES])) {
-            throw new ComposerException($this->translator->translate('No properties available'));
+        if (!isset($properties[Properties::FORM_HASH])) {
+            throw new ComposerException($this->translator->translate('No form settings specified'));
         }
 
-        $properties = $composer[self::KEY_PROPERTIES];
-
-        if (!isset($properties[self::KEY_FORM])) {
-            throw new ComposerException($this->translator->translate('No form settings specified'));
+        //XXX: maybe not very clean approach, but existing forms will fail to display payments tab otherwise
+        if (!isset($properties[Properties::PAYMENT_HASH])) {
+            $defaults = $this->getDefaultProperties();
+            $this->properties->set(Properties::PAYMENT_HASH, $defaults[Properties::PAYMENT_HASH]);
         }
 
         $this->form = new Form(
@@ -227,41 +238,7 @@ class Composer
      */
     private function setDefaults()
     {
-        $this->properties = new Properties(
-            [
-                Properties::PAGE_PREFIX . '0'        => [
-                    'type'  => Properties::PAGE_PREFIX,
-                    'label' => 'Page 1',
-                ],
-                Properties::FORM_HASH                => [
-                    'type'                  => Properties::FORM_HASH,
-                    'name'                  => '',
-                    'handle'                => '',
-                    'color'                 => '#' . substr(md5(random_int(111, 999) . time()), 0, 6),
-                    'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',
-                    'description'           => '',
-                    'formTemplate'          => 'flexbox.html',
-                    'returnUrl'             => '',
-                    'storeData'             => true,
-                    'defaultStatus'         => $this->statusHandler->getDefaultStatusId(),
-                ],
-                Properties::INTEGRATION_HASH         => [
-                    'type'          => Properties::INTEGRATION_HASH,
-                    'integrationId' => 0,
-                    'mapping'       => new \stdClass(),
-                ],
-                Properties::CONNECTIONS_HASH => [
-                    'type' => Properties::CONNECTIONS_HASH,
-                    'list' => null,
-                ],
-                Properties::ADMIN_NOTIFICATIONS_HASH => [
-                    'type'           => Properties::ADMIN_NOTIFICATIONS_HASH,
-                    'notificationId' => 0,
-                    'recipients'     => '',
-                ],
-            ],
-            $this->translator
-        );
+        $this->properties = new Properties($this->getDefaultProperties(), $this->translator);
 
         $formAttributes = new FormAttributes(null, new CraftSession(), new CraftRequest());
 
@@ -278,5 +255,46 @@ class Composer
             $this->translator,
             $this->logger
         );
+    }
+
+    private function getDefaultProperties()
+    {
+        return [
+            Properties::PAGE_PREFIX . '0'        => [
+                'type'  => Properties::PAGE_PREFIX,
+                'label' => 'Page 1',
+            ],
+            Properties::FORM_HASH                => [
+                'type'                  => Properties::FORM_HASH,
+                'name'                  => '',
+                'handle'                => '',
+                'color'                 => '#' . substr(md5(random_int(111, 999) . time()), 0, 6),
+                'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',
+                'description'           => '',
+                'formTemplate'          => 'flexbox.html',
+                'returnUrl'             => '',
+                'storeData'             => true,
+                'defaultStatus'         => $this->statusHandler->getDefaultStatusId(),
+            ],
+            Properties::INTEGRATION_HASH         => [
+                'type'          => Properties::INTEGRATION_HASH,
+                'integrationId' => 0,
+                'mapping'       => new \stdClass(),
+            ],
+            Properties::CONNECTIONS_HASH => [
+                'type' => Properties::CONNECTIONS_HASH,
+                'list' => null,
+            ],
+            Properties::ADMIN_NOTIFICATIONS_HASH => [
+                'type'           => Properties::ADMIN_NOTIFICATIONS_HASH,
+                'notificationId' => 0,
+                'recipients'     => '',
+            ],
+            Properties::PAYMENT_HASH => [
+                'type'           => Properties::PAYMENT_HASH,
+                'integrationId'  => 0,
+                'mapping'        => new \stdClass(),
+            ],
+        ];
     }
 }

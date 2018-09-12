@@ -219,9 +219,11 @@ class FieldsController extends Controller
 
         $fieldId = \Craft::$app->request->post('id');
 
-        $this->getFieldsService()->deleteById((int) $fieldId);
-
-        return $this->asJson(['success' => true]);
+        return $this->asJson(
+            [
+                'success' => $this->getFieldsService()->deleteById((int) $fieldId),
+            ]
+        );
     }
 
     /**

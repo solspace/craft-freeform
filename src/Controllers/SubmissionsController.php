@@ -26,10 +26,13 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
+use Solspace\Freeform\Events\Assets\RegisterEvent;
 
 class SubmissionsController extends BaseController
 {
-    const TEMPLATE_BASE_PATH = 'freeform/submissions';
+    const TEMPLATE_BASE_PATH          = 'freeform/submissions';
+    const EVENT_REGISTER_INDEX_ASSETS = 'registerIndexAssets';
+    const EVENT_REGISTER_EDIT_ASSETS  = 'registerEditAssets';
 
     /**
      * Returns base path for view templates, so it could be overridden
@@ -55,6 +58,10 @@ class SubmissionsController extends BaseController
         \Craft::$app->view->registerAssetBundle(SubmissionIndexBundle::class);
 
         $exportButtonBundleClass = 'Solspace\FreeformPro\Bundles\ExportButtonBundle';
+
+        $registerAssetsEvent = new RegisterEvent(\Craft::$app->view);
+        $this->trigger(self::EVENT_REGISTER_INDEX_ASSETS, $registerAssetsEvent);
+
         if (Freeform::getInstance()->isPro() && class_exists($exportButtonBundleClass)) {
             \Craft::$app->view->registerAssetBundle($exportButtonBundleClass);
         }
@@ -184,6 +191,9 @@ class SubmissionsController extends BaseController
 
         \Craft::$app->view->registerAssetBundle(SubmissionEditBundle::class);
 
+        $registerAssetsEvent = new RegisterEvent(\Craft::$app->view);
+        $this->trigger(self::EVENT_REGISTER_EDIT_ASSETS, $registerAssetsEvent);
+
         $layout = $submission->getForm()->getLayout();
 
         $statuses        = [];
@@ -199,6 +209,10 @@ class SubmissionsController extends BaseController
             'statuses'           => $statuses,
             'continueEditingUrl' => 'freeform/submissions/{id}',
         ];
+        $paymentDetails = $this->getSubmissionPaymentDetails($submission);
+        if ($paymentDetails) {
+            $variables['payments'] = $paymentDetails;
+        }
 
         return $this->renderTemplate(
             $this->getTemplateBasePath() . '/edit',
@@ -264,5 +278,25 @@ class SubmissionsController extends BaseController
                 'errors'     => $model->getErrors(),
             ]
         );
+    }
+
+    private function getSubmissionPaymentDetails($submission)
+    {
+        $form          = $submission->getForm();
+        $paymentFields = $form->getLayout()->getPaymentFields();
+
+        if (count($paymentFields) > 0) {
+            $paymentField      = $paymentFields[0];
+            $paymentProperties = $form->getPaymentProperties();
+            $integrationId     = $paymentProperties->getIntegrationId();
+            $integrationModel  = $this->getPaymentGatewaysService()->getIntegrationById($integrationId);
+            $integration       = $integrationModel->getIntegrationObject();
+            $token             = $submission->{$paymentField->getHandle()}->getValue();
+            $details           = $integration->getPaymentDetails($submission->getId(), $token);
+
+            return $details !== false ? $details : null;
+        }
+
+        return null;
     }
 }

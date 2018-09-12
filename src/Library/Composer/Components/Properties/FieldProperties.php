@@ -183,8 +183,38 @@ class FieldProperties extends AbstractProperties
     /** @var array */
     protected $configuration;
 
+    /** @var string */
+    protected $layout;
+
+    /** @var string */
+    protected $paymentType;
+
+    /** @var float */
+    protected $amount;
+
+    /** @var string */
+    protected $currency;
+
+    /** @var string */
+    protected $interval;
+
+    /** @var string */
+    protected $plan;
+
+    /** @var array */
+    protected $children;
+
+    /** @var array */
+    protected $paymentFieldMapping;
+
+    /** @var array */
+    protected $customerFieldMapping;
+
     /** @var bool */
     protected $useJsMask;
+
+    /** @var bool */
+    protected $hidden;
 
     /**
      * @return string|null
@@ -262,7 +292,7 @@ class FieldProperties extends AbstractProperties
                 $isChecked = false;
                 if (null !== $this->getValue()) {
                     $isChecked = (string) $option['value'] === (string) $this->getValue();
-                } else if (null !== $this->getValues()) {
+                } elseif (null !== $this->getValues()) {
                     $isChecked = \in_array($option['value'], $this->getValues(), true);
                 }
 
@@ -658,11 +688,91 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return float|null
+     */
+    public function getAmount()
+    {
+        return $this->amount;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCurrency(): string
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlan()
+    {
+        return $this->plan;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLayout(): string
+    {
+        return $this->layout;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPaymentType(): string
+    {
+        return $this->paymentType;
+    }
+
+    /**
+     * @return string
+     */
+    public function getInterval()
+    {
+        return $this->interval;
+    }
+
+    /**
+     * @return array
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPaymentFieldMapping()
+    {
+        return $this->paymentFieldMapping;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCustomerFieldMapping()
+    {
+        return $this->customerFieldMapping;
+    }
+
+    /*
      * @return bool|null
      */
     public function isUseJsMask()
     {
         return $this->useJsMask;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function isHidden()
+    {
+        return $this->hidden;
     }
 
     /**
@@ -676,63 +786,73 @@ class FieldProperties extends AbstractProperties
     protected function getPropertyManifest(): array
     {
         return [
-            'hash'                => self::TYPE_STRING,
-            'id'                  => self::TYPE_INTEGER,
-            'handle'              => self::TYPE_STRING,
-            'label'               => self::TYPE_STRING,
-            'required'            => self::TYPE_BOOLEAN,
-            'placeholder'         => self::TYPE_STRING,
-            'instructions'        => self::TYPE_STRING,
-            'value'               => self::TYPE_STRING,
-            'values'              => self::TYPE_ARRAY,
-            'options'             => self::TYPE_ARRAY,
-            'checked'             => self::TYPE_BOOLEAN,
-            'showAsRadio'         => self::TYPE_BOOLEAN,
-            'showAsCheckboxes'    => self::TYPE_BOOLEAN,
-            'notificationId'      => self::TYPE_STRING,
-            'assetSourceId'       => self::TYPE_INTEGER,
-            'integrationId'       => self::TYPE_INTEGER,
-            'resourceId'          => self::TYPE_STRING,
-            'emailFieldHash'      => self::TYPE_STRING,
-            'position'            => self::TYPE_STRING,
-            'labelNext'           => self::TYPE_STRING,
-            'labelPrev'           => self::TYPE_STRING,
-            'disablePrev'         => self::TYPE_BOOLEAN,
-            'mapping'             => self::TYPE_ARRAY,
-            'fileKinds'           => self::TYPE_ARRAY,
-            'maxFileSizeKB'       => self::TYPE_INTEGER,
-            'fileCount'           => self::TYPE_INTEGER,
-            'rows'                => self::TYPE_INTEGER,
-            'dateTimeType'        => self::TYPE_STRING,
-            'generatePlaceholder' => self::TYPE_BOOLEAN,
-            'dateOrder'           => self::TYPE_STRING,
-            'date4DigitYear'      => self::TYPE_BOOLEAN,
-            'dateLeadingZero'     => self::TYPE_BOOLEAN,
-            'dateSeparator'       => self::TYPE_STRING,
-            'clock24h'            => self::TYPE_BOOLEAN,
-            'lowercaseAMPM'       => self::TYPE_BOOLEAN,
-            'clockSeparator'      => self::TYPE_STRING,
-            'clockAMPMSeparate'   => self::TYPE_BOOLEAN,
-            'useDatepicker'       => self::TYPE_BOOLEAN,
-            'initialValue'        => self::TYPE_STRING,
-            'minValue'            => self::TYPE_INTEGER,
-            'maxValue'            => self::TYPE_INTEGER,
-            'minLength'           => self::TYPE_INTEGER,
-            'maxLength'           => self::TYPE_INTEGER,
-            'decimalCount'        => self::TYPE_INTEGER,
-            'decimalSeparator'    => self::TYPE_STRING,
-            'thousandsSeparator'  => self::TYPE_STRING,
-            'allowNegative'       => self::TYPE_BOOLEAN,
-            'pattern'             => self::TYPE_STRING,
-            'targetFieldHash'     => self::TYPE_STRING,
-            'message'             => self::TYPE_STRING,
-            'colorIdle'           => self::TYPE_STRING,
-            'colorHover'          => self::TYPE_STRING,
-            'colorSelected'       => self::TYPE_STRING,
-            'source'              => self::TYPE_STRING,
-            'target'              => self::TYPE_STRING,
-            'configuration'       => self::TYPE_ARRAY,
+            'hash'                 => self::TYPE_STRING,
+            'id'                   => self::TYPE_INTEGER,
+            'handle'               => self::TYPE_STRING,
+            'label'                => self::TYPE_STRING,
+            'required'             => self::TYPE_BOOLEAN,
+            'placeholder'          => self::TYPE_STRING,
+            'instructions'         => self::TYPE_STRING,
+            'value'                => self::TYPE_STRING,
+            'values'               => self::TYPE_ARRAY,
+            'options'              => self::TYPE_ARRAY,
+            'checked'              => self::TYPE_BOOLEAN,
+            'showAsRadio'          => self::TYPE_BOOLEAN,
+            'showAsCheckboxes'     => self::TYPE_BOOLEAN,
+            'notificationId'       => self::TYPE_STRING,
+            'assetSourceId'        => self::TYPE_INTEGER,
+            'integrationId'        => self::TYPE_INTEGER,
+            'resourceId'           => self::TYPE_STRING,
+            'emailFieldHash'       => self::TYPE_STRING,
+            'position'             => self::TYPE_STRING,
+            'labelNext'            => self::TYPE_STRING,
+            'labelPrev'            => self::TYPE_STRING,
+            'disablePrev'          => self::TYPE_BOOLEAN,
+            'mapping'              => self::TYPE_ARRAY,
+            'fileKinds'            => self::TYPE_ARRAY,
+            'maxFileSizeKB'        => self::TYPE_INTEGER,
+            'fileCount'            => self::TYPE_INTEGER,
+            'rows'                 => self::TYPE_INTEGER,
+            'dateTimeType'         => self::TYPE_STRING,
+            'generatePlaceholder'  => self::TYPE_BOOLEAN,
+            'dateOrder'            => self::TYPE_STRING,
+            'date4DigitYear'       => self::TYPE_BOOLEAN,
+            'dateLeadingZero'      => self::TYPE_BOOLEAN,
+            'dateSeparator'        => self::TYPE_STRING,
+            'clock24h'             => self::TYPE_BOOLEAN,
+            'lowercaseAMPM'        => self::TYPE_BOOLEAN,
+            'clockSeparator'       => self::TYPE_STRING,
+            'clockAMPMSeparate'    => self::TYPE_BOOLEAN,
+            'useDatepicker'        => self::TYPE_BOOLEAN,
+            'initialValue'         => self::TYPE_STRING,
+            'minValue'             => self::TYPE_INTEGER,
+            'maxValue'             => self::TYPE_INTEGER,
+            'minLength'            => self::TYPE_INTEGER,
+            'maxLength'            => self::TYPE_INTEGER,
+            'decimalCount'         => self::TYPE_INTEGER,
+            'decimalSeparator'     => self::TYPE_STRING,
+            'thousandsSeparator'   => self::TYPE_STRING,
+            'allowNegative'        => self::TYPE_BOOLEAN,
+            'pattern'              => self::TYPE_STRING,
+            'targetFieldHash'      => self::TYPE_STRING,
+            'message'              => self::TYPE_STRING,
+            'colorIdle'            => self::TYPE_STRING,
+            'colorHover'           => self::TYPE_STRING,
+            'colorSelected'        => self::TYPE_STRING,
+            'source'               => self::TYPE_STRING,
+            'target'               => self::TYPE_STRING,
+            'configuration'        => self::TYPE_ARRAY,
+            'layout'               => self::TYPE_STRING,
+            'paymentType'          => self::TYPE_STRING,
+            'amount'               => self::TYPE_DOUBLE,
+            'currency'             => self::TYPE_STRING,
+            'interval'             => self::TYPE_STRING,
+            'plan'                 => self::TYPE_STRING,
+            'children'             => self::TYPE_ARRAY,
+            'paymentFieldMapping'  => self::TYPE_ARRAY,
+            'customerFieldMapping' => self::TYPE_ARRAY,
             'useJsMask'           => self::TYPE_BOOLEAN,
+            'hidden'              => self::TYPE_BOOLEAN,
         ];
     }
 }

@@ -29,11 +29,7 @@
       // Remove any existing errors that are being shown
       form.querySelectorAll("ul.errors").remove();
       var fieldsWithErrors = form.querySelectorAll(".has-error");
-      for (var fieldIndex in fieldsWithErrors) {
-        if (!fieldsWithErrors.hasOwnProperty(fieldIndex)) {
-          continue;
-        }
-
+      for (var fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
         var field = fieldsWithErrors[fieldIndex];
         field.classList.remove("has-error");
       }
@@ -59,11 +55,7 @@
         var errorsList = document.createElement("ul");
         errorsList.classList.add("errors", "help-block");
 
-        for (var messageIndex in messages) {
-          if (!messages.hasOwnProperty(messageIndex)) {
-            continue;
-          }
-
+        for (var messageIndex = 0; messageIndex < messages.length; messageIndex++) {
           var message = messages[messageIndex];
           var listItem = document.createElement("li");
           listItem.appendChild(document.createTextNode(message));
@@ -71,10 +63,7 @@
         }
 
         var inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
-        for (var inputIndex in inputList) {
-          if (!inputList.hasOwnProperty(inputIndex)) {
-            continue;
-          }
+        for (var inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
           var input = inputList[inputIndex];
 
           input.parentElement.classList.add("has-error");
@@ -96,11 +85,7 @@
 
       if (errors.length) {
         var errorsList = document.createElement("ul");
-        for (var messageIndex in errors) {
-          if (!errors.hasOwnProperty(messageIndex)) {
-            continue;
-          }
-
+        for (var messageIndex = 0; messageIndex < errors.length; messageIndex++) {
           var message = errors[messageIndex];
           var listItem = document.createElement("li");
 
@@ -121,11 +106,7 @@
   function lookForFormsToAjaxify() {
     var forms = document.getElementsByTagName("form");
 
-    for (var formIndex in forms) {
-      if (!forms.hasOwnProperty(formIndex)) {
-        continue;
-      }
-
+    for (var formIndex = 0; formIndex < forms.length; formIndex++) {
       var form = forms[formIndex];
 
       if (!form.dataset.ajaxified) {
@@ -141,7 +122,7 @@
     var request = new XMLHttpRequest();
 
     if (safari) {
-      for (i = 0; i < form.elements.length; i++) {
+      for (var i = 0; i < form.elements.length; i++) {
         if (form.elements[i].type == "file") {
           if (form.elements[i].value == "") {
             var elem = form.elements[i];
@@ -212,21 +193,14 @@
         targetElement.innerHTML = request.response;
 
         // Activate all of the loaded scripts
-        var loadedScripts = targetElement.getElementsByTagName("script");
-        for (var scriptIndex in loadedScripts) {
-          if (!loadedScripts.hasOwnProperty(scriptIndex)) {
-            continue;
-          }
+        var scripts = targetElement.querySelectorAll('script');
+        for (var index = 0; index < scripts.length; index++) {
+          var script = scripts[index];
+          var newScript = document.createElement('script');
+          newScript.innerHTML = script.innerHTML;
+          targetElement.appendChild(newScript);
 
-          var script = loadedScripts[scriptIndex];
-
-          if (script.getAttribute("src")) {
-            var newScript = document.createElement("script");
-            newScript.setAttribute("src", script.getAttribute("src"));
-            document.body.appendChild(newScript);
-          } else {
-            eval(script.innerHTML);
-          }
+          script.parentNode.removeChild(script);
         }
 
         lookForFormsToAjaxify();

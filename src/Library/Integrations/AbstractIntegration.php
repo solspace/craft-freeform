@@ -339,7 +339,7 @@ abstract class AbstractIntegration implements IntegrationInterface
      * @return $this
      * @throws IntegrationException
      */
-    protected final function setSetting($handle, $value)
+    final protected function setSetting($handle, $value)
     {
         // Check for blueprint validity
         $this->getSettingBlueprint($handle);

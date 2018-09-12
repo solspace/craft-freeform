@@ -29,8 +29,8 @@ class Context implements \JsonSerializable
      */
     public function __construct(array $contextData)
     {
-        $this->page = isset($contextData['page']) ? (int) $contextData['page'] : 0;
-        $this->hash = $contextData['hash'] ?? Composer::KEY_FORM;
+        $this->page = isset($contextData['page']) ? (int)$contextData['page'] : 0;
+        $this->hash = isset($contextData['hash']) ? $contextData['hash'] : Properties::FORM_HASH;
     }
 
     /**

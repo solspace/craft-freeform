@@ -185,8 +185,12 @@ class FormsService extends Component implements FormHandlerInterface
         $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
 
         if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
-
-            $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
+            $transaction = null;
+            if (!\Craft::$app->getDb()->getTransaction()) {
+                //we start new transaction only in case there is none, otherwise we are not ones responsible for commit
+                //TODO: do save for other similar services
+                $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
+            }
             try {
                 $record->save(false);
 

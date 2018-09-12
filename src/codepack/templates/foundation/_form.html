@@ -1,52 +1,16 @@
-{% set form = craft.freeform.form(formHandle, {
-    submitClass: "button",
-}) %}
+{% import _self as form_twig %}
 
-{% if form %}
+{% macro renderRows(rows, rowClass, columnClass) %}
+    {% import _self as form_twig %}
 
-    <h3>{{ form.name }}</h3>
-
-    {{ form.renderTag }}
-
-    {% if form.pages|length > 1 %}
-
-        <ul class="menu pagemenu">
-            {% for page in form.pages %}
-                <li class="{{ form.currentPage.index == loop.index0 ? "active" : "" }}">
-                    {% if form.currentPage.index == loop.index0 %}
-                        <a href="javascript:;" class="is-active">{{ page.label }}</a>
-                    {% else %}
-                        <a href="javascript:;">{{ page.label }}</a>
-                    {% endif %}
-                </li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% if form.hasErrors %}
-        <div class="callout alert">
-            {{ "There was an error submitting this form"|t }}
-
-            {% if form.errors|length %}
-                <ul>
-                    {% for error in form.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    {% endif %}
-
-
-    {% for row in form %}
-        <div class="row {{ form.customAttributes.rowClass }}">
+    {% for row in rows %}
+        <div class="row {{ rowClass }}">
             {% for field in row %}
                 {% set width = (12 / (row|length)) %}
 
                 {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
 
                 {% set columnClass = "" %}
-                {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
                 {% set columnClass = columnClass ~ " medium-" ~ width ~ " columns" %}
 
                 {% if field.type == "submit" %}
@@ -87,9 +51,9 @@
                         }) }}
 
                         {% for option in field.options %}
-                            <div class="{{ field.showAsRadio ? "radio" : "checkbox" }}">
+                            <div class="radio">
                                 <label>
-                                    <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
+                                    <input type="radio"
                                            name="{{ field.handle }}"
                                            value="{{ option.value }}"
                                             {{ option.checked ? "checked" }}
@@ -109,6 +73,46 @@
                         {{ field.render() }}
                     </div>
 
+                {% elseif field.type == "cc_details" %}
+
+                    <div class="{{ columnClass|replace('input-field', '') }}">
+                        {{ field.renderLabel({
+                          labelClass: (field.required ? " required" : ""),
+                          instructionsClass: "help-text",
+                        }) }}
+
+                        {{ form_twig.renderRows(field.layoutRows, '', '') }}
+
+                        {{ field.renderInput({
+                            instructionsClass: "help-block",
+                            instructionsBelowField: true,
+                            labelClass: (field.required ? " required" : ""),
+                            errorClass: "help-block",
+                        }) }}
+
+                        {{ field.renderInstructions }}
+                        {{ field.renderErrors }}
+                    </div>
+                {% elseif field.type == "cc_number" or field.type == "cc_expiry" or field.type == "cc_cvc" %}
+
+                    <div class="{{ columnClass|replace('input-field', '') }}">
+                        {{ field.renderLabel({
+                            labelClass: (field.required ? " required" : ""),
+                            instructionsClass: "help-text",
+                        }) }}
+
+                        {{ field.renderInput({
+                            instructionsClass: "help-block",
+                            instructionsBelowField: true,
+                            labelClass: (field.required ? " required" : ""),
+                            errorClass: "help-block",
+                            inputAttributes: {type: "text"},
+                        }) }}
+
+                        {{ field.renderInstructions() }}
+                        {{ field.renderErrors() }}
+                    </div>
+
                 {% else %}
 
                     <div class="{{ columnClass }}">
@@ -124,10 +128,50 @@
             {% endfor %}
         </div>
     {% endfor %}
+{% endmacro %}
 
+{% set form = craft.freeform.form(formHandle, {
+    submitClass: "button",
+}) %}
+
+{% if form %}
+
+    <h3>{{ form.name }}</h3>
+
+    {{ form.renderTag }}
+
+    {% if form.pages|length > 1 %}
+
+        <ul class="menu pagemenu">
+            {% for page in form.pages %}
+                <li class="{{ form.currentPage.index == loop.index0 ? "active" : "" }}">
+                    {% if form.currentPage.index == loop.index0 %}
+                        <a href="javascript:;" class="is-active">{{ page.label }}</a>
+                    {% else %}
+                        <a href="javascript:;">{{ page.label }}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if form.hasErrors %}
+        <div class="callout alert">
+            {{ "There was an error submitting this form"|t }}
+
+            {% if form.errors|length %}
+                <ul>
+                    {% for error in form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {{ form_twig.renderRows(form, form.customAttributes.rowClass, form.customAttributes.columnClass) }}
 
     {{ form.renderClosingTag }}
-
 
 {% else %}
     <div class="alert alert-danger">

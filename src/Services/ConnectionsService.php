@@ -20,6 +20,10 @@ class ConnectionsService extends Component
 
         $list = $form->getConnectionProperties()->getList();
         foreach ($list as $connection) {
+            if (!$connection->isConnectable()) {
+                continue;
+            }
+
             $keyValuePairs = $this->getKeyValuePairs($form, $connection);
 
             $result = $connection->validate($keyValuePairs);
@@ -45,6 +49,10 @@ class ConnectionsService extends Component
     {
         $list = $form->getConnectionProperties()->getList();
         foreach ($list as $connection) {
+            if (!$connection->isConnectable()) {
+                continue;
+            }
+
             $keyValuePairs = $this->getKeyValuePairs($form, $connection);
 
             $result = $connection->connect($keyValuePairs);

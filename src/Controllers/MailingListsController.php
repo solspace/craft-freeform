@@ -94,6 +94,36 @@ class MailingListsController extends BaseController
     }
 
     /**
+     * @param string|null           $handle
+     *
+     * @return Response
+     * @throws \HttpException
+     * @throws \yii\web\ForbiddenHttpException
+     */
+    public function actionHandleOAuthRedirect(string $handle = null): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $model = $this->getMailingListsService()->getIntegrationByHandle($handle);
+
+        if (!$model) {
+            throw new \HttpException(
+                404,
+                Freeform::t('Mailing List integration with ID {id} not found', ['id' => $id])
+            );
+        }
+
+        if (\Craft::$app->request->getParam('code')) {
+            $response = $this->handleAuthorization($model);
+
+            if (null !== $response) {
+                return $response;
+            }
+        }
+
+        return $this->renderEditForm($model, $model->name);
+    }
+
+    /**
      * Saves an integration
      */
     public function actionSave()

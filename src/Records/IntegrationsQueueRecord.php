@@ -34,7 +34,7 @@ class IntegrationsQueueRecord extends ActiveRecord
     const STATUS_FAILED = 'failed';
     const STATUS_HALTED = 'halted';
 
-    const INTEGRATION_TYPE_MAILING_LIST      = 'mailing_list';
+    const INTEGRATION_TYPE_MAILING_LIST = 'mailing_list';
     const INTEGRATION_TYPE_CRM          = 'crm';
     const INTEGRATION_TYPE_NOTIFICATION = 'notification';
 

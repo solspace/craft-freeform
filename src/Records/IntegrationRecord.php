@@ -40,8 +40,9 @@ class IntegrationRecord extends ActiveRecord
 {
     const TABLE = '{{%freeform_integrations}}';
 
-    const TYPE_MAILING_LIST = 'mailing_list';
-    const TYPE_CRM          = 'crm';
+    const TYPE_MAILING_LIST    = 'mailing_list';
+    const TYPE_CRM             = 'crm';
+    const TYPE_PAYMENT_GATEWAY = 'payment_gateway';
 
     /**
      * @return string

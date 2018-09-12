@@ -7,6 +7,14 @@ use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 interface ConnectionInterface
 {
     /**
+     * Determine if the connection has all of its settings readily available
+     * and if it is able to create the connection
+     *
+     * @return bool
+     */
+    public function isConnectable(): bool;
+
+    /**
      * @param array $keyValuePairs
      *
      * @return ConnectionResult

@@ -1,0 +1,78 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% block actionButton %}
+
+{% if currentUser.can("freeform-settingsManage") and providers|length > 0 %}
+<div class="buttons">
+    <a href="{{ url('freeform/settings/payment-gateways/new') }}" class="btn submit add icon">
+        {{ "New Payment Gateway Integration"|t('freeform') }}
+    </a>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+<h2>{{ "Payment Gateways"|t('freeform') }}</h2>
+
+<div id="no-payment-gateway-integrations"{% if integrations|length %} class="hidden"{% endif %}>
+    <p>{{ "No Payment Gateway integrations exist yet"|t('freeform') }}</p>
+</div>
+
+{% if integrations|length %}
+<table id="payment-gateway-integrations" class="data fullwidth collapsible">
+    <thead>
+    <tr>
+        <th scope="col">{{ "Name"|t('freeform') }}</th>
+        <th scope="col">{{ "Handle"|t('freeform') }}</th>
+        <th scope="col">{{ "Service Provider"|t('freeform') }}</th>
+        <th scope="col">{{ "Last Updated"|t('freeform') }}</th>
+        <td class="thin"></td>
+    </tr>
+    </thead>
+    <tbody>
+    {% for integration in integrations %}
+    <tr data-id="{{ integration.id }}" data-name="{{ integration.name }}">
+        <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
+            <a href="{{ url('freeform/settings/payment-gateways/'~integration.id) }}">{{ integration.name }}</a>
+        </th>
+        <td data-title="{{ "Handle"|t('freeform') }}" class="code">
+        {{ integration.handle }}
+        </td>
+        <td data-title="{{ "Service Provider"|t('freeform') }}" class="code">
+        {{ integration.integrationObject.serviceProvider }}
+        </td>
+        <td data-title="{{ 'Last Updated'|t('freeform') }}">
+            {{ integration.lastUpdate|date("Y-m-d H:i") }}
+        </td>
+        <td class="thin">
+            <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+        </td>
+    </tr>
+    {% endfor %}
+
+    </tbody>
+</table>
+{% endif %}
+
+{% if providers|length == 0 %}
+    <div class="alert alert-info alert-dismissible">
+        <a href="https://solspace.com/craft/freeform/">
+            {{ "Purchase Freeform Payments plugin to enable"|t('freeform') }}
+        </a>
+    </div>
+{% endif %}
+
+{% endblock %}
+
+
+{% js %}
+var adminTable = new Craft.AdminTable({
+tableSelector: '#payment-gateway-integrations',
+noObjectsSelector: '#no-payment-gateway-integrations',
+newObjectBtnSelector: '#new-payment-gateway-integration',
+deleteAction: 'freeform/payment-gateways/delete',
+confirmDeleteMessage: '{{ "Are you sure you want to remove the “{name}” integration?"|t('freeform') }}'
+});
+{% endjs %}

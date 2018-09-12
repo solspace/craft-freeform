@@ -28,6 +28,7 @@ use Solspace\Freeform\Controllers\FieldsController;
 use Solspace\Freeform\Controllers\FormsController;
 use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\NotificationsController;
+use Solspace\Freeform\Controllers\PaymentGatewaysController;
 use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
@@ -51,6 +52,7 @@ use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
+use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
@@ -80,6 +82,7 @@ use yii\db\Query;
  * @property HoneypotService          $honeypot
  * @property IntegrationsService      $integrations
  * @property IntegrationsQueueService $integrationsQueue
+ * @property PaymentGatewaysService   $paymentGateways
  * @property ConnectionsService       $connections
  */
 class Freeform extends Plugin
@@ -95,8 +98,9 @@ class Freeform extends Plugin
     const FIELD_DISPLAY_ORDER_TYPE = 'type';
     const FIELD_DISPLAY_ORDER_NAME = 'name';
 
-    const VERSION_BASIC = 'basic';
-    const VERSION_PRO   = 'pro';
+    const VERSION_BASIC    = 'basic';
+    const VERSION_PRO      = 'pro';
+    const VERSION_PAYMENTS = 'payments';
 
     const PERMISSIONS_HELP_LINK = 'https://solspace.com/craft/freeform/docs/demo-templates';
     const PERMISSION_NAMESPACE  = 'Freeform';
@@ -345,6 +349,12 @@ class Freeform extends Plugin
         $field->setMetaProperty('rows', 5);
         $fieldService->save($field);
 
+        $field         = FieldModel::create();
+        $field->handle = 'number';
+        $field->label  = 'Number';
+        $field->type   = FieldInterface::TYPE_NUMBER;
+        $fieldService->save($field);
+
         $status            = StatusRecord::create();
         $status->name      = 'Pending';
         $status->handle    = 'pending';
@@ -400,6 +410,7 @@ class Freeform extends Plugin
                 'codepack'         => CodepackController::class,
                 'crm'              => CrmController::class,
                 'mailing-lists'    => MailingListsController::class,
+                'payment-gateways' => PaymentGatewaysController::class,
                 'fields'           => FieldsController::class,
                 'forms'            => FormsController::class,
                 'notifications'    => NotificationsController::class,
@@ -430,6 +441,7 @@ class Freeform extends Plugin
                 'honeypot'          => HoneypotService::class,
                 'integrations'      => IntegrationsService::class,
                 'integrationsQueue' => IntegrationsQueueService::class,
+                'paymentGateways'   => PaymentGatewaysService::class,
                 'connections'       => ConnectionsService::class,
             ]
         );

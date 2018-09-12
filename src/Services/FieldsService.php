@@ -45,6 +45,8 @@ use Solspace\Freeform\Library\Factories\PredefinedOptionsFactory;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
 use yii\base\Component;
+use Solspace\Freeform\Library\Composer\Components\Fields\NumberField;
+use yii\db\Exception;
 
 class FieldsService extends Component implements FieldHandlerInterface
 {
@@ -158,6 +160,7 @@ class FieldsService extends Component implements FieldHandlerInterface
             CheckboxGroupField::class,
             RadioGroupField::class,
             FileUploadField::class,
+            NumberField::class,
             DynamicRecipientField::class,
         ];
 
@@ -232,7 +235,21 @@ class FieldsService extends Component implements FieldHandlerInterface
 
                 if ($isNew) {
                     $model->id = $record->id;
-                    $this->createFieldInSubmissionsTable($record);
+                    try {
+                        $this->createFieldInSubmissionsTable($record);
+                    } catch (Exception $exception) {
+                        // If row size too large - we remove the field and throw an error
+                        if ($exception->getCode() === 42000) {
+                            $transaction->rollBack();
+                            $record->delete();
+                            $model->addError(
+                                'title',
+                                Freeform::t('Total field limit reached.')
+                            );
+
+                            return false;
+                        }
+                    }
                 }
 
                 self::$fieldCache[$model->id] = $model;

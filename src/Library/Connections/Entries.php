@@ -26,17 +26,25 @@ class Entries extends AbstractConnection
     }
 
     /**
-     * @return int
+     * @inheritDoc
      */
-    public function getSection(): int
+    public function isConnectable(): bool
+    {
+        return $this->getSection() !== null && $this->getEntryType() !== null;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSection()
     {
         return $this->castToInt($this->section);
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getEntryType(): int
+    public function getEntryType()
     {
         return $this->castToInt($this->entryType);
     }
@@ -90,6 +98,11 @@ class Entries extends AbstractConnection
         }
     }
 
+    /**
+     * @param Element          $element
+     * @param ConnectionResult $result
+     * @param array            $keyValuePairs
+     */
     protected function beforeConnect(Element $element, ConnectionResult $result, array $keyValuePairs)
     {
     }

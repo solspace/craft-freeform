@@ -12,13 +12,12 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
@@ -299,7 +298,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 }
 
                 return $result;
-            } catch (BadResponseException $e) {
+            } catch (RequestException $e) {
                 if ($integration instanceof TokenRefreshInterface) {
                     if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
                         try {

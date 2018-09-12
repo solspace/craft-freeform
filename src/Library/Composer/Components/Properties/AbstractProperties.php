@@ -21,6 +21,8 @@ abstract class AbstractProperties
     const TYPE_INTEGER = 'integer';
     const TYPE_ARRAY   = 'array';
     const TYPE_OBJECT  = 'object';
+    const TYPE_FLOAT   = 'float';
+    const TYPE_DOUBLE  = 'double';
 
     /** @var string */
     protected $type;
@@ -96,8 +98,28 @@ abstract class AbstractProperties
                     $value = (int) $value;
                     break;
 
+                case self::TYPE_DOUBLE:
+                    $value = (double) $value;
+                    break;
+
+                case self::TYPE_FLOAT:
+                    $value = (float) $value;
+                    break;
+
                 case self::TYPE_STRING:
                     $value = (string) $value;
+                    break;
+
+                case self::TYPE_OBJECT:
+                    if ($value === []) {
+                        $value = (object) $value;
+                    }
+                    break;
+
+                case self::TYPE_ARRAY:
+                    if ($value == new \stdClass) {
+                        $value = (array) $value;
+                    }
                     break;
             }
 
@@ -116,7 +138,6 @@ abstract class AbstractProperties
                             'valueType'    => $valueType,
                         ]
                     )
-
                 );
             }
 

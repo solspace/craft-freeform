@@ -15,6 +15,14 @@ class Users extends AbstractConnection
     protected $active;
 
     /**
+     * @inheritDoc
+     */
+    public function isConnectable(): bool
+    {
+        return !empty($this->group);
+    }
+
+    /**
      * @param array $keyValuePairs
      *
      * @return Element

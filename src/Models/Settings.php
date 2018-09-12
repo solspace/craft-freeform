@@ -119,6 +119,15 @@ class Settings extends Model
     /** @var bool */
     public $spamFolderEnabled;
 
+    /** @var bool */
+    public $recaptchaEnabled;
+
+    /** @var string */
+    public $recaptchaKey;
+
+    /** @var string */
+    public $recaptchaSecret;
+
     /**
      * Settings constructor.
      *
@@ -153,6 +162,10 @@ class Settings extends Model
         $this->purgableSubmissionAgeInDays   = null;
         $this->purgableSpamAgeInDays         = null;
 
+        $this->recaptchaEnabled = false;
+        $this->recaptchaKey     = null;
+        $this->recaptchaSecret  = null;
+
         parent::__construct($config);
     }
 
@@ -163,6 +176,9 @@ class Settings extends Model
     {
         return [
             ['formTemplateDirectory', 'folderExists'],
+            [['recaptchaKey', 'recaptchaSecret'], 'required', 'when' => function (Settings $model) {
+                return (bool) $model->recaptchaEnabled;
+            }],
         ];
     }
 

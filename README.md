@@ -15,7 +15,7 @@ To install Freeform, simply:
 1. Go to the **Plugin Store** area inside your Craft control panel and search for *Freeform*.
 2. Choose to install *Freeform Lite* and/or *Freeform Pro* (*Pro* requires *Lite* to be installed) by clicking on them.
 3. Click on the **Try** button to install a trial copy of Freeform.
-4. Try things out and if Freeform is right for your site, purchase a copy of if through the Plugin Store when you're ready!
+4. Try things out and if Freeform is right for your site, and then purchase a copy of it through the Plugin Store when you're ready!
 
 Freeform can also be installed manually through Composer:
 

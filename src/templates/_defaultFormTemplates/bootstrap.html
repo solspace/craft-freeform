@@ -74,9 +74,10 @@
                 {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
             {% endif %}
 
-            {% if field.type == "checkbox_group" %}
+            <div class="{{ columnClass }}">
 
-                <div class="{{ columnClass }}">
+                {% if field.type == "checkbox_group" %}
+
                     {{ field.renderLabel({
                         labelClass: (field.required ? " required" : ""),
                         instructionsClass: "help-block",
@@ -98,11 +99,9 @@
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
-                </div>
 
-            {% elseif field.type == "radio_group" %}
+                {% elseif field.type == "radio_group" %}
 
-                <div class="{{ columnClass }}">
                     {{ field.renderLabel({
                         labelClass: (field.required ? " required" : ""),
                         instructionsClass: "help-block",
@@ -124,11 +123,9 @@
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
-                </div>
 
-            {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
+                {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
 
-                <div class="{{ columnClass }}">
                     {{ field.renderLabel({
                         labelClass: (field.required ? " required" : ""),
                         instructionsClass: "help-block",
@@ -150,17 +147,48 @@
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
-                </div>
 
-            {% elseif field.type == "submit" %}
+                {% elseif field.type == "submit" %}
 
-                <div class="{{ columnClass }}">
                     {{ field.render() }}
-                </div>
 
-            {% else %}
+                {% elseif field.type == "cc_details" %}
 
-                <div class="{{ columnClass }}">
+                    {{ field.renderLabel({
+                        labelClass: (field.required ? " required" : ""),
+                        instructionsClass: "help-block",
+                        errorClass: "help-block",
+                    }) }}
+
+                    {% for layoutRow in field.layoutRows %}
+                        <div class="row {{ form.customAttributes.rowClass }}">
+                            {% for layoutField in layoutRow %}
+                                <div class="{{ columnClass }}">
+                                    {{ layoutField.render({
+                                        class: isCheckbox ? "checkbox" : "form-control",
+                                        instructionsClass: "help-block",
+                                        instructionsBelowField: true,
+                                        labelClass: (layoutField.required ? " required" : ""),
+                                        errorClass: "help-block",
+                                    }) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInput({
+                        instructionsClass: "help-block",
+                        instructionsBelowField: true,
+                        labelClass: (field.required ? " required" : ""),
+                        errorClass: "help-block",
+                    }) }}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+
+
+                {% else %}
+
                     {{ field.render({
                         class: isCheckbox ? "checkbox" : "form-control",
                         instructionsClass: "help-block",
@@ -168,9 +196,9 @@
                         labelClass: (field.required ? " required" : ""),
                         errorClass: "help-block",
                     }) }}
-                </div>
 
-            {% endif %}
+                {% endif %}
+            </div>
         {% endfor %}
     </div>
 {% endfor %}

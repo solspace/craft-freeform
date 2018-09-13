@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Controllers;
 
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Resources\Bundles\MailingListsBundle;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
@@ -38,8 +39,10 @@ class PaymentGatewaysController extends BaseController
         $integrations = $this->getPaymentGatewaysService()->getAllIntegrations();
         $providers = $this->getPaymentGatewaysService()->getAllPaymentGatewayServiceProviders();
 
+        \Craft::$app->view->registerAssetBundle(MailingListsBundle::class);
+
         return $this->renderTemplate(
-            'freeform/_settings/payment_gateways',
+            'freeform/settings/_payment_gateways',
             [
                 'integrations' => $integrations,
                 'providers'    => $providers,
@@ -89,7 +92,7 @@ class PaymentGatewaysController extends BaseController
             'webhookUrl'           => $model->id ? $model->getIntegrationObject()->getWebhookUrl() : '',
         ];
 
-        return $this->renderTemplate('freeform/_settings/payment_gateway_edit', $variables);
+        return $this->renderTemplate('freeform/settings/_payment_gateway_edit', $variables);
     }
 
     /**

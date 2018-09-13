@@ -24,8 +24,8 @@
     </div>
 {% endif %}
 
-<div class="row {{ form.customAttributes.rowClass }}">
-    {% for row in form %}
+{% for row in form %}
+    <div class="row {{ form.customAttributes.rowClass }}">
         {% for field in row %}
             {% set width = (12 / (row|length)) %}
 
@@ -193,13 +193,34 @@
             {% elseif field.type == "cc_details" %}
 
                 <div class="{{ columnClass|replace('input-field', '') }}">
-                    {{ field.renderInput({
-                    instructionsClass: "help-block",
-                    instructionsBelowField: true,
-                    labelClass: (field.required ? " required" : ""),
-                    errorClass: "help-block",
-                    }) }}
                     {{ field.renderLabel }}
+
+                    {% for layoutRow in field.layoutRows %}
+                        <div class="row {{ form.customAttributes.rowClass }}">
+                            {% for layoutField in layoutRow %}
+                                <div class="{{ columnClass }}">
+                                    {{ layoutField.renderInput({
+                                        class: " select-wrapper chips",
+                                        instructionsClass: "help-block",
+                                        instructionsBelowField: true,
+                                        errorClass: "help-block",
+                                        inputAttributes: { style: "padding-top: 1rem" },
+                                    }) }}
+                                    {{ layoutField.renderLabel({labelClass: " select-label" ~ (layoutField.required ? " required" : "")}) }}
+
+                                    {{ layoutField.renderInstructions }}
+                                    {{ layoutField.renderErrors }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInput({
+                        instructionsClass: "help-block",
+                        instructionsBelowField: true,
+                        labelClass: (field.required ? " required" : ""),
+                        errorClass: "help-block",
+                    }) }}
 
                     {{ field.renderInstructions }}
                     {{ field.renderErrors }}
@@ -222,7 +243,7 @@
 
             {% endif %}
         {% endfor %}
-    {% endfor %}
-</div>
+    </div>
+{% endfor %}
 
 {{ form.renderClosingTag }}

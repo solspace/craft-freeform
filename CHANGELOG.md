@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.3.1 - 2018-09-13
+### Changed
+- Updated reCAPTCHA field to only be allowed once per form (disappears from Special fields list when in use).
+- Various tweaks and improvements for Freeform Payments compatibility.
+
 ## 2.3.0 - 2018-09-12
 ### Added
 - Added ability to set Mailing List fields as hidden fields (automatically opting in users).

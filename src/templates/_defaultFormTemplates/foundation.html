@@ -1,4 +1,39 @@
-<style>label.required:after{content:"*";color:#d00;margin-left:5px;font-size:12px;font-family:serif;font-weight:700}.submit{margin-top:15px}.submit-align-left{text-align:left}.submit-align-right{text-align:right}.submit-align-center{text-align:center}.submit-align-center button:not(:first-of-type),.submit-align-left button:not(:first-of-type),.submit-align-right button:not(:first-of-type){margin-left:5px}.submit-align-spread button:first-child{float:left}.submit-align-spread button:last-child{float:right}</style>
+<style>label.required:after {
+        content: "*";
+        color: #d00;
+        margin-left: 5px;
+        font-size: 12px;
+        font-family: serif;
+        font-weight: 700
+    }
+
+    .submit {
+        margin-top: 15px
+    }
+
+    .submit-align-left {
+        text-align: left
+    }
+
+    .submit-align-right {
+        text-align: right
+    }
+
+    .submit-align-center {
+        text-align: center
+    }
+
+    .submit-align-center button:not(:first-of-type), .submit-align-left button:not(:first-of-type), .submit-align-right button:not(:first-of-type) {
+        margin-left: 5px
+    }
+
+    .submit-align-spread button:first-child {
+        float: left
+    }
+
+    .submit-align-spread button:last-child {
+        float: right
+    }</style>
 
 {{ form.renderTag }}
 
@@ -46,9 +81,10 @@
                 {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
             {% endif %}
 
-            {% if field.type == "checkbox_group" %}
+            <div class="{{ columnClass }}">
 
-                <div class="{{ columnClass }}">
+                {% if field.type == "checkbox_group" %}
+
                     {{ field.renderLabel({
                         labelClass: (field.required ? " required" : ""),
                         instructionsClass: "help-text",
@@ -69,11 +105,9 @@
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
-                </div>
 
-            {% elseif field.type == "radio_group" %}
+                {% elseif field.type == "radio_group" %}
 
-                <div class="{{ columnClass }}">
                     {{ field.renderLabel({
                         labelClass: (field.required ? " required" : ""),
                         instructionsClass: "help-text",
@@ -94,11 +128,9 @@
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
-                </div>
 
-            {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
+                {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
 
-                <div class="{{ columnClass }}">
                     {{ field.renderLabel({
                         labelClass: (field.required ? " required" : ""),
                         instructionsClass: "help-text",
@@ -119,26 +151,63 @@
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
-                </div>
 
-            {% elseif field.type == "submit" %}
+                {% elseif field.type == "cc_details" %}
 
-                <div class="{{ columnClass }}">
+                    {{ field.renderLabel({
+                        labelClass: (field.required ? " required" : ""),
+                        instructionsClass: "help-text",
+                    }) }}
+
+                    {% for layoutRow in field.layoutRows %}
+                        <div class="row {{ form.customAttributes.rowClass }}">
+                            {% for layoutField in layoutRow %}
+                                <div class="{{ columnClass }}">
+                                    {{ layoutField.renderLabel({
+                                        labelClass: (layoutField.required ? " required" : ""),
+                                        instructionsClass: "help-text",
+                                    }) }}
+
+                                    {{ layoutField.renderInput({
+                                        instructionsClass: "help-block",
+                                        instructionsBelowField: true,
+                                        labelClass: (layoutField.required ? " required" : ""),
+                                        errorClass: "help-block",
+                                        inputAttributes: {type: "text"},
+                                    }) }}
+
+                                    {{ layoutField.renderInstructions() }}
+                                    {{ layoutField.renderErrors() }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInput({
+                        instructionsClass: "help-block",
+                        instructionsBelowField: true,
+                        labelClass: (field.required ? " required" : ""),
+                        errorClass: "help-block",
+                    }) }}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+
+                {% elseif field.type == "submit" %}
+
                     {{ field.render({ class: "button" }) }}
-                </div>
 
-            {% else %}
+                {% else %}
 
-                <div class="{{ columnClass }}">
                     {{ field.render({
                         class: isCheckbox ? "checkbox" : "form-control",
                         instructionsClass: "help-text",
                         instructionsBelowField: true,
                         labelClass: (field.required ? " required" : ""),
                     }) }}
-                </div>
 
-            {% endif %}
+                {% endif %}
+            </div>
         {% endfor %}
     </div>
 {% endfor %}

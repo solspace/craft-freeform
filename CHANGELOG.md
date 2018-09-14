@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.3.2 - 2018-09-14
+### Fixed
+- Various bug fixes for Freeform Payments feature.
+- Bug fixes and improvements to demo and sample templates to better accommodate Freeform Payments.
+
 ## 2.3.1 - 2018-09-13
 ### Changed
 - Updated reCAPTCHA field to only be allowed once per form (disappears from Special fields list when in use).
@@ -11,6 +16,7 @@
 
 ### Changed
 - Updated for compatibility with future Freeform Payments add-on plugin.
+- Number fieldtype is no longer Pro only, and part of Lite edition (in consideration for Freeform Payments plugin).
 - Updated CP single submission view to include a note for Mailing List fields that mentions data is not stored for this field type.
 - Updated new field creation to error if maximum number of fields are reached.
 - Updated Freeform's automatically inserted JS to no longer include `type="text/javascript"`.

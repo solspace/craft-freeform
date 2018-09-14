@@ -46,9 +46,11 @@
 
                     {% for layoutRow in field.layoutRows %}
                         <div class="freeform-row {{ form.customAttributes.rowClass }}">
+                            {% set layoutWidth = (12 / (layoutRow|length)) %}
+                            {% set columnClass = columnClass|replace(' col-lg-' ~ (row|length)) %}
+                            {% set columnClass = columnClass ~ " col-lg-" ~ layoutWidth %}
                             {% for layoutField in layoutRow %}
                                 <div class="{{ columnClass }}">
-
                                     {{ layoutField.render({
                                         class: "freeform-input",
                                         labelClass: "freeform-label" ~ (layoutField.inputOnly ? " freeform-input-only-label" : "") ~ (layoutField.required ? " freeform-required" : ""),

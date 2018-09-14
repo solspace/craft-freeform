@@ -163,6 +163,9 @@
                     {% for layoutRow in field.layoutRows %}
                         <div class="row {{ form.customAttributes.rowClass }}">
                             {% for layoutField in layoutRow %}
+                                {% set layoutWidth = (12 / (layoutRow|length)) %}
+                                {% set columnClass = columnClass|replace(' col-lg-' ~ width) %}
+                                {% set columnClass = columnClass ~ " col-lg-" ~ layoutWidth %}
                                 <div class="{{ columnClass }}">
                                     {{ layoutField.render({
                                         class: isCheckbox ? "checkbox" : "form-control",

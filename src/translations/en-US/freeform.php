@@ -483,6 +483,7 @@ return [
     'Provinces'    => 'Provinces',
     'Countries'    => 'Countries',
     'Languages'    => 'Languages',
+    'Currencies'   => 'Currencies',
     'Numbers'      => 'Numbers',
     'Years'        => 'Years',
     'Months'       => 'Months',
@@ -522,4 +523,9 @@ return [
 
     'DB Notifications'       => 'DB Notifications',
     'Template Notifications' => 'Template Notifications',
+
+    // Payments
+    'Enter your Stripe public key here.'     => 'Enter your Stripe public key here.',
+    'Enter your Stripe secret key here.'     => 'Enter your Stripe secret key here.',
+    'Enter your Stripe webhook secret here.' => 'Enter your Stripe webhook secret here.',
 ];

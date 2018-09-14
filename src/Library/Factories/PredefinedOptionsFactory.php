@@ -68,6 +68,10 @@ class PredefinedOptionsFactory
                 $options = $instance->getStateOptions();
                 break;
 
+            case ExternalOptionsInterface::PREDEFINED_CURRENCIES:
+                $options = $instance->getCurrencyOptions();
+                break;
+
             default:
                 $options = [];
                 break;
@@ -278,6 +282,30 @@ class PredefinedOptionsFactory
         foreach ($states as $abbreviation => $stateName) {
             $label = $isShortLabel ? $abbreviation : $stateName;
             $value = $isShortValue ? $abbreviation : $stateName;
+
+            $options[] = new Option($label, $value, $this->isChecked($value));
+        }
+
+        return $options;
+    }
+
+    /**
+     * @return Option[]
+     */
+    private function getCurrencyOptions(): array
+    {
+        /** @var array $states */
+        static $states;
+        if (null === $states) {
+            $states = json_decode(file_get_contents(__DIR__ . '/Data/currencies.json'), true);
+        }
+
+        $options      = [];
+        $isShortLabel = $this->getConfig()->getListType() === self::TYPE_ABBREVIATED;
+        $isShortValue = $this->getConfig()->getValueType() === self::TYPE_ABBREVIATED;
+        foreach ($states as $isoCode => $data) {
+            $label = $isShortLabel ? $isoCode : $data['name'];
+            $value = $isShortValue ? $isoCode : $data['name'];
 
             $options[] = new Option($label, $value, $this->isChecked($value));
         }

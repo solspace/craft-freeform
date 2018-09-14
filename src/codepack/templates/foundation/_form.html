@@ -114,6 +114,9 @@
 
                         {% for layoutRow in field.layoutRows %}
                             <div class="row {{ form.customAttributes.rowClass }}">
+                                {% set layoutWidth = (12 / (layoutRow|length)) %}
+                                {% set columnClass = columnClass|replace(' medium-' ~ width) %}
+                                {% set columnClass = columnClass ~ " medium-" ~ layoutWidth %}
                                 {% for layoutField in layoutRow %}
                                     <div class="{{ columnClass }}">
                                         {{ layoutField.renderLabel({

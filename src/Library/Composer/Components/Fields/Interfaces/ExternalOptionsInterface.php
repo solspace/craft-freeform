@@ -20,6 +20,7 @@ interface ExternalOptionsInterface extends OptionsInterface
     const PREDEFINED_STATES       = 'states';
     const PREDEFINED_COUNTRIES    = 'countries';
     const PREDEFINED_LANGUAGES    = 'languages';
+    const PREDEFINED_CURRENCIES   = 'currencies';
 
     /**
      * Returns the option source

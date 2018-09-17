@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.3.3 - 2018-09-17
+### Fixed
+- Fixed a bug where Payments were not working correctly in Flexbox and Grid formatting templates and demo templates.
+
 ## 2.3.2 - 2018-09-14
 ### Fixed
 - Various bug fixes for Freeform Payments feature.

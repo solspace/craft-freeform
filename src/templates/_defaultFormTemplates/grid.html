@@ -40,8 +40,13 @@
             {% endif %}
             <div class="{{ columnClass }}">
 
-                {% if field.layoutRows is defined %}
+                {{ field.render({
+                    class: field.type != "submit" ? "freeform-input" : "",
+                    labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
+                    errorClass: "freeform-errors",
+                }) }}
 
+                {% if field.layoutRows is defined %}
                     {% for layoutRow in field.layoutRows %}
                         <div class="freeform-row {{ form.customAttributes.rowClass }}">
                             {% set layoutWidth = (12 / (layoutRow|length)) %}
@@ -60,21 +65,11 @@
                         </div>
 
                     {% endfor %}
-
-                {% else %}
-
-                    {{ field.render({
-                        class: field.type != "submit" ? "freeform-input" : "",
-                        labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
-                        errorClass: "freeform-errors",
-                    }) }}
-
                 {% endif %}
 
             </div>
         {% endfor %}
     </div>
 {% endfor %}
-
 
 {{ form.renderClosingTag }}

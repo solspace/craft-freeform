@@ -422,7 +422,7 @@ class FormsService extends Component implements FormHandlerInterface
 
             if (null === $imaskLoaded) {
                 $imaskMainJs = file_get_contents(__DIR__ . '/../Resources/js/lib/imask/imask.3.4.0.min.js');
-                $imaskJs     = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/input-mask.js');
+                $imaskJs     = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/fields/input-mask.js');
 
                 if ($this->getSettingsService()->isFooterScripts()) {
                     \Craft::$app->view->registerJs($imaskMainJs, View::POS_END);
@@ -444,10 +444,10 @@ class FormsService extends Component implements FormHandlerInterface
                     $localePath = __DIR__ . '/../Resources/js/lib/flatpickr/i10n/default.js';
                 }
 
-                $flatpickrCss      = file_get_contents(__DIR__ . '/../Resources/css/fields/datepicker.css');
+                $flatpickrCss      = file_get_contents(__DIR__ . '/../Resources/css/form-frontend/fields/datepicker.css');
                 $flatpickrJs       = file_get_contents(__DIR__ . '/../Resources/js/lib/flatpickr/flatpickr.js');
                 $flatpickrLocaleJs = file_get_contents($localePath);
-                $datepickerJs      = file_get_contents(__DIR__ . '/../Resources/js/cp/fields/datepicker.js');
+                $datepickerJs      = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/fields/datepicker.js');
 
                 if ($this->getSettingsService()->isFooterScripts()) {
                     \Craft::$app->view->registerCss($flatpickrCss);
@@ -473,7 +473,7 @@ class FormsService extends Component implements FormHandlerInterface
     {
         if ($this->getSettingsService()->isFormSubmitDisable()) {
             // Add the form submit disable logic
-            $formSubmitJs = file_get_contents(__DIR__ . '/../Resources/js/cp/form-submit.js');
+            $formSubmitJs = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/submit-disabler.js');
             $formSubmitJs = str_replace(
                 ['{{FORM_ANCHOR}}', '{{PREV_BUTTON_NAME}}'],
                 [$event->getForm()->getAnchor(), SubmitField::PREVIOUS_PAGE_INPUT_NAME],
@@ -495,8 +495,8 @@ class FormsService extends Component implements FormHandlerInterface
     {
         $form = $event->getForm();
 
-        if ($form->getAnchor() && $form->isPagePosted() && !$form->isValid()) {
-            $invalidFormJs = file_get_contents(__DIR__ . '/../Resources/js/cp/invalid-form.js');
+        if ($form->getAnchor() && $form->isFormPosted()) {
+            $invalidFormJs = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/form-jump-to-anchor.js');
             $invalidFormJs = str_replace('{{FORM_ANCHOR}}', $form->getAnchor(), $invalidFormJs);
 
             if ($this->getSettingsService()->isFooterScripts()) {

@@ -263,8 +263,28 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
         /** @var FieldObject[] $crmFieldsByHandle */
         $crmFieldsByHandle = [];
-        foreach ($integration->getFields() as $field) {
-            $crmFieldsByHandle[$field->getHandle()] = $field;
+        try {
+            foreach ($integration->getFields() as $field) {
+                $crmFieldsByHandle[$field->getHandle()] = $field;
+            }
+        } catch (RequestException $e) {
+            if ($integration instanceof TokenRefreshInterface) {
+                try {
+                    if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
+                        $this->updateAccessToken($integration);
+
+                        try {
+                            foreach ($integration->getFields() as $field) {
+                                $crmFieldsByHandle[$field->getHandle()] = $field;
+                            }
+                        } catch (\Exception $e) {
+                            $freeform->logger->error($e->getMessage());
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $freeform->logger->error($e->getMessage());
+                }
+            }
         }
 
         $objectValues = [];
@@ -300,8 +320,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 return $result;
             } catch (RequestException $e) {
                 if ($integration instanceof TokenRefreshInterface) {
-                    if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
-                        try {
+                    try {
+                        if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
                             $this->updateAccessToken($integration);
 
                             try {
@@ -315,9 +335,9 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                             } catch (\Exception $e) {
                                 $freeform->logger->error($e->getMessage());
                             }
-                        } catch (\Exception $e) {
-                            $freeform->logger->error($e->getMessage());
                         }
+                    } catch (\Exception $e) {
+                        $freeform->logger->error($e->getMessage());
                     }
                 }
 

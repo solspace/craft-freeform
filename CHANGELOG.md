@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 2.3.4 - 2018-09-24
+### Changed
+- Updated page changes (forward and backward) in multipage forms to auto-scroll to form (helpful if your form is lower down on page).
+
+### Fixed
+- Fixed a bug where Salesforce API connections were still holding their connection.
+- Fixed a bug where the SharpSpring API integration was not connecting to SharpSpring.
+- Fixed a bug where forms would error on front end if Spam Blocking keywords contained regex-specific symbols.
+
 ## 2.3.3 - 2018-09-17
 ### Fixed
 - Fixed a bug where Payments were not working correctly in Flexbox and Grid formatting templates and demo templates.

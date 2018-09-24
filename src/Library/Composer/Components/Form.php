@@ -507,6 +507,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /**
      * @return bool
      */
+    public function isFormPosted(): bool
+    {
+        return $this->getFormValueContext()->hasFormBeenPosted();
+    }
+
+    /**
+     * @return bool
+     */
     public function hasErrors(): bool
     {
         return ($this->isPagePosted() && !$this->isValid()) || count($this->getErrors()) != 0;

@@ -4,12 +4,14 @@ namespace Solspace\Freeform\Controllers;
 
 use craft\web\Controller;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\IntegrationsService;
+use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
@@ -112,7 +114,7 @@ class BaseController extends Controller
     /**
      * @return IntegrationsQueueService
      */
-    protected function getIntegrationsQueueService() : IntegrationsQueueService
+    protected function getIntegrationsQueueService(): IntegrationsQueueService
     {
         return Freeform::getInstance()->integrationsQueue;
     }
@@ -120,7 +122,7 @@ class BaseController extends Controller
     /**
      * @return IntegrationsService
      */
-    protected function getIntegrationsService() : IntegrationsService
+    protected function getIntegrationsService(): IntegrationsService
     {
         return Freeform::getInstance()->integrations;
     }
@@ -128,8 +130,24 @@ class BaseController extends Controller
     /**
      * @return PaymentGatewaysService
      */
-    protected function getPaymentGatewaysService() : PaymentGatewaysService
+    protected function getPaymentGatewaysService(): PaymentGatewaysService
     {
         return Freeform::getInstance()->paymentGateways;
+    }
+
+    /**
+     * @return LoggerService
+     */
+    protected function getLoggerService(): LoggerService
+    {
+        return Freeform::getInstance()->logger;
+    }
+
+    /**
+     * @return ChartsService
+     */
+    protected function getChartsService(): ChartsService
+    {
+        return Freeform::getInstance()->charts;
     }
 }

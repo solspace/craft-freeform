@@ -11,10 +11,32 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
+use Solspace\Freeform\Library\Composer\Components\Properties;
+
 class PageProperties extends AbstractProperties
 {
     /** @var string */
     protected $label;
+
+    /**
+     * @param int $index
+     *
+     * @return string
+     */
+    public static function getKey(int $index): string
+    {
+        return Properties::PAGE_PREFIX . $index;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return int
+     */
+    public static function getIndex(string $key): int
+    {
+        return (int) str_replace(Properties::PAGE_PREFIX, '', $key);
+    }
 
     /**
      * @return string

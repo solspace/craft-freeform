@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\base\Component;
+use craft\db\Query;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -21,9 +22,12 @@ use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
+use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Models\IntegrationsQueueModel;
+use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\IntegrationsQueueRecord;
 use Solspace\FreeformPayments\Fields\CreditCardDetailsField;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
@@ -31,6 +35,28 @@ use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 
 class IntegrationsService extends Component
 {
+    /**
+     * @return IntegrationModel[]
+     * @throws \Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException
+     */
+    public function getAllIntegrations(): array
+    {
+        $results = $this->getQuery()->all();
+
+        $models = [];
+        foreach ($results as $result) {
+            $model = $this->createIntegrationModel($result);
+
+            try {
+                $model->getIntegrationObject();
+                $models[] = $model;
+            } catch (IntegrationNotFoundException $e) {
+            }
+        }
+
+        return $models;
+    }
+
     /**
      * Pushes all emails to their respective mailing lists, if applicable
      * Does nothing otherwise
@@ -275,5 +301,44 @@ class IntegrationsService extends Component
     protected function applyPaymentErrors($submission, $integration) {
         $error = $integration->getLastError();
         $submission->addError($error->getMessage());
+    }
+
+    /**
+     * @return Query
+     */
+    protected function getQuery(): Query
+    {
+        return (new Query())
+            ->select(
+                [
+                    'integration.id',
+                    'integration.name',
+                    'integration.handle',
+                    'integration.type',
+                    'integration.class',
+                    'integration.accessToken',
+                    'integration.settings',
+                    'integration.forceUpdate',
+                    'integration.lastUpdate',
+                ]
+            )
+            ->from(IntegrationRecord::TABLE . ' integration')
+            ->orderBy(['id' => SORT_ASC]);
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return IntegrationModel
+     */
+    protected function createIntegrationModel(array $data): IntegrationModel
+    {
+        $model = new IntegrationModel($data);
+
+        $model->lastUpdate  = new \DateTime($model->lastUpdate);
+        $model->forceUpdate = (bool) $model->forceUpdate;
+        $model->settings    = $model->settings ? json_decode($model->settings, true) : [];
+
+        return $model;
     }
 }

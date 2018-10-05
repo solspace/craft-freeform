@@ -22,7 +22,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Logging\CraftLogger;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
 use yii\base\Component;
@@ -55,7 +55,7 @@ class MailerService extends Component implements MailHandlerInterface
         array $fields,
         Submission $submission = null
     ): int {
-        $logger        = new CraftLogger();
+        $logger        = FreeformLogger::getInstance(FreeformLogger::MAILER);
         $sentMailCount = 0;
         $notification  = $this->getNotificationById($notificationId);
 
@@ -112,7 +112,7 @@ class MailerService extends Component implements MailHandlerInterface
                 $message = $e->getMessage();
                 $message = 'Email notification [' . $notification->getHandle() . ']: ' . $message;
 
-                $logger->log(CraftLogger::LEVEL_ERROR, $message, self::LOG_CATEGORY);
+                $logger->error($message);
                 continue;
             }
 
@@ -152,7 +152,7 @@ class MailerService extends Component implements MailHandlerInterface
                 $message = $e->getMessage();
                 $message = 'Email notification [' . $notification->getHandle() . ']: ' . $message;
 
-                $logger->log(CraftLogger::LEVEL_ERROR, $message, self::LOG_CATEGORY);
+                $logger->error($message);
             }
         }
 

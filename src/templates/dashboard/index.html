@@ -1,0 +1,55 @@
+{% extends "freeform/_layouts/main" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% set title = craft.freeform.name ~ ": " ~ ("Dashboard"|t('freeform')) %}
+{% set selectedSubnavItem = "dashboard" %}
+
+{% set content %}
+
+    <div class="dashboard">
+
+        <div class="row">
+            <div class="col-md-6 col-xs-12">
+                {% include "freeform/dashboard/_charts" %}
+            </div>
+            <div class="col-md-3 col-xs-12 centered">
+                {% include "freeform/dashboard/_pie-charts" %}
+            </div>
+            <div class="col-md-3 col-xs-12 centered">
+                {% include "freeform/dashboard/_settings" %}
+            </div>
+        </div>
+
+        {% if currentUser.can("freeform-submissionsAccess") or currentUser.can("freeform-formsAccess") %}
+            <div class="row">
+                {% if currentUser.can("freeform-submissionsAccess") %}
+                    <div class="col-md-6 col-xs-12">
+                        {% include "freeform/dashboard/_submissions" %}
+                    </div>
+                {% endif %}
+
+                {% if currentUser.can("freeform-formsAccess") %}
+                    <div class="col-md-6 col-xs-12">
+                        {% include "freeform/dashboard/_forms" %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if integrations|length %}
+            <div class="row">
+                <div class="col-md-12 col-xs-12">
+                    {% include "freeform/dashboard/_integrations" %}
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-12 col-xs-12">
+                {% include "freeform/dashboard/_errors" %}
+            </div>
+        </div>
+
+    </div>
+
+{% endset %}

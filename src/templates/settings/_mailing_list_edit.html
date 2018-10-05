@@ -78,23 +78,7 @@
         <hr>
 
         {% if integration.id %}
-            <div id="auth-checker">
-                <div class="authorized">
-                    Authorized
-                </div>
-                <div class="not-authorized">
-                    Not able to authorize.
-                    {% if integration.isOAuthConnection %}
-                        <a href="{{ url("freeform/mailing-lists/authenticate/" ~ integration.handle) }}" class="">Click here to re-authorize</a>
-                    {% endif %}
-                    <div class="errors"></div>
-                </div>
-                <div class="pending-status-check"
-                     data-id="{{ integration.id }}"
-                     data-type="{{ integration.type }}">
-                    Checking credentials...
-                </div>
-            </div>
+            {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
         {% elseif integration.errors('integration') %}
             <ul class="errors field">
                 {% for error in integration.errors('integration') %}

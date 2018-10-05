@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Composer\Components\Properties\PageProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
+use Solspace\FreeformPro\Library\Rules\RuleProperties;
 
 class Properties implements \JsonSerializable
 {
@@ -27,6 +28,7 @@ class Properties implements \JsonSerializable
     const FORM_HASH                = 'form';
     const INTEGRATION_HASH         = 'integration';
     const CONNECTIONS_HASH         = 'connections';
+    const RULES_HASH               = 'rules';
     const ADMIN_NOTIFICATIONS_HASH = 'admin_notifications';
     const PAYMENT_HASH             = 'payment';
 
@@ -54,13 +56,13 @@ class Properties implements \JsonSerializable
         foreach ($properties as $key => $value) {
             if (!\is_array($value)) {
                 throw new ComposerException(
-                    $translator->translate("Properties for key '{key}' is not an array", ["key" => $key])
+                    $translator->translate("Properties for key '{key}' is not an array", ['key' => $key])
                 );
             }
 
             if (!isset($value['type'])) {
                 throw new ComposerException(
-                    $translator->translate("Properties for key '{key}' do not contain TYPE", ["key" => $key])
+                    $translator->translate("Properties for key '{key}' do not contain TYPE", ['key' => $key])
                 );
             }
         }
@@ -231,7 +233,6 @@ class Properties implements \JsonSerializable
 
     /**
      * @return ConnectionProperties
-     * @throws ComposerException
      */
     public function getConnectionProperties(): ConnectionProperties
     {
@@ -244,6 +245,29 @@ class Properties implements \JsonSerializable
             }
 
             $this->builtProperties[$hash] = new ConnectionProperties($settings, $this->translator);
+        }
+
+        return $this->builtProperties[$hash];
+    }
+
+    /**
+     * @return RuleProperties|null
+     */
+    public function getRuleProperties()
+    {
+        if (!class_exists('Solspace\FreeformPro\Library\Rules\RuleProperties')) {
+            return null;
+        }
+
+        $hash = self::RULES_HASH;
+        if (!isset($this->builtProperties[$hash])) {
+            if (isset($this->propertyList[$hash])) {
+                $settings = $this->propertyList[$hash];
+            } else {
+                $settings = ['type' => 'rules', 'fields' => null, 'pages' => null];
+            }
+
+            $this->builtProperties[$hash] = new RuleProperties($settings, $this->translator, $this);
         }
 
         return $this->builtProperties[$hash];
@@ -278,7 +302,12 @@ class Properties implements \JsonSerializable
             function (&$value, $key) {
                 if (null === $value) {
                     $value = null;
-                } else if (\is_string($value) && !\in_array($key, ['value', 'label', 'handle', 'description'], true) && preg_match('/^(true|false)$/i', $value)) {
+                } else if (\is_string($value) && !\in_array($key, [
+                        'value',
+                        'label',
+                        'handle',
+                        'description',
+                    ], true) && preg_match('/^(true|false)$/i', $value)) {
                     $value = strtolower($value) === 'true';
                 }
             }

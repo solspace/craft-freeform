@@ -35,6 +35,11 @@ Email notifications are global and can be reused for multiple forms, saving you 
 Freeform attempts to do all the heavy lifting when it comes to templating. Our looping templating approach allows you to automate all or almost all of your form formatting.
 
 Freeform also allows for true multi-page forms, has its own built in spam protection service, and Freeform Pro supports several popular Mailing List and CRM (Customer Relationship Management) API integrations, including MailChimp, Constant Contact, Campaign Monitor, Salesforce and HubSpot.
+Freeform also allows for true multi-page forms, has its own built in spam protection service (including **reCAPTCHA** for *Pro* edition), allows you to map/connect your submission data to Craft Elements, and *Freeform Pro* supports several popular Mailing List and CRM (Customer Relationship Management) API integrations, including MailChimp, Constant Contact, Campaign Monitor, Salesforce, HubSpot and Pipedrive.
+
+Freeform Pro edition also includes Conditional Rules logic that can be added to forms. This feature allows you to effortlessly set fields to show or hide based on the contents/selection of other fields, and even skip pages based on the contents/selection of fields on a previous page.
+
+Also available for Freeform is the [Freeform Payments](https://solspace.com/craft/freeform/docs/payments) add-on plugin, which adds support for Stripe payments on forms. Works with both Lite and Pro editions.
 
 Last but not least, included with Freeform is a set of Demo Templates that can be installed on your site, instantaneously giving you a real-world set of styled, working templates.
 

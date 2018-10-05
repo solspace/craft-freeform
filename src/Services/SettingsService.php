@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use Solspace\Commons\Helpers\ComparisonHelper;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Freeform;
@@ -208,9 +207,9 @@ class SettingsService extends Component
     }
 
     /**
-     * @param ValidateEvent $event
+     * @param FormValidateEvent $event
      */
-    public function checkSubmissionForSpam(ValidateEvent $event)
+    public function checkSubmissionForSpam(FormValidateEvent $event)
     {
         static $loaded;
         static $emails;
@@ -237,8 +236,6 @@ class SettingsService extends Component
             return;
         }
 
-        $field = $event->getField();
-
         $spamKeywordTypes = [
             FieldInterface::TYPE_NUMBER,
             FieldInterface::TYPE_PHONE,
@@ -249,47 +246,52 @@ class SettingsService extends Component
             FieldInterface::TYPE_WEBSITE,
         ];
 
-        if ($keywords && \in_array($field->getType(), $spamKeywordTypes, true)) {
-            foreach ($keywords as $keyword) {
-                if (ComparisonHelper::stringContainsWildcardKeyword($keyword, $field->getValueAsString())) {
-                    $event->getForm()->setMarkedAsSpam(true);
+        $form = $event->getForm();
+        foreach ($form->getLayout()->getPages() as $page) {
+            foreach ($page->getFields() as $field) {
+                if ($keywords && \in_array($field->getType(), $spamKeywordTypes, true)) {
+                    foreach ($keywords as $keyword) {
+                        if (ComparisonHelper::stringContainsWildcardKeyword($keyword, $field->getValueAsString())) {
+                            $event->getForm()->setMarkedAsSpam(true);
 
-                    if ($this->isSpamBehaviourDisplayErrors()) {
-                        $event->getForm()->addError(Freeform::t('Form contains a restricted keyword'));
+                            if ($this->isSpamBehaviourDisplayErrors()) {
+                                $event->getForm()->addError(Freeform::t('Form contains a restricted keyword'));
+                            }
+
+                            if ($showKeywordsErrorBelowFields) {
+                                $field->addError(
+                                    Freeform::t(
+                                        $keywordsMessage,
+                                        [
+                                            'value'   => $field->getValueAsString(),
+                                            'keyword' => $keyword,
+                                        ]
+                                    )
+                                );
+                            }
+
+                            break;
+                        }
                     }
-
-                    if ($showKeywordsErrorBelowFields) {
-                        $event->getField()->addError(
-                            Freeform::t(
-                                $keywordsMessage,
-                                [
-                                    'value'   => $field->getValueAsString(),
-                                    'keyword' => $keyword,
-                                ]
-                            )
-                        );
-                    }
-
-                    break;
                 }
-            }
-        }
 
-        if ($emails && $field instanceof EmailField) {
-            foreach ($field->getValue() as $value) {
-                foreach ($emails as $email) {
-                    if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
-                        $event->getForm()->setMarkedAsSpam(true);
+                if ($emails && $field instanceof EmailField) {
+                    foreach ($field->getValue() as $value) {
+                        foreach ($emails as $email) {
+                            if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
+                                $event->getForm()->setMarkedAsSpam(true);
 
-                        if ($this->isSpamBehaviourDisplayErrors()) {
-                            $event->getForm()->addError(Freeform::t('Form contains a blacklisted email'));
+                                if ($this->isSpamBehaviourDisplayErrors()) {
+                                    $event->getForm()->addError(Freeform::t('Form contains a blacklisted email'));
+                                }
+
+                                if ($showEmailsErrorBelowFields) {
+                                    $event->getField()->addError(Freeform::t($emailsMessage, ['email' => $value]));
+                                }
+
+                                break;
+                            }
                         }
-
-                        if ($showEmailsErrorBelowFields) {
-                            $event->getField()->addError(Freeform::t($emailsMessage, ['email' => $value]));
-                        }
-
-                        break;
                     }
                 }
             }
@@ -375,6 +377,8 @@ class SettingsService extends Component
      */
     public function getSettingsNavigation(): array
     {
+        $errorCount = Freeform::getInstance()->logger->getLogReader()->count();
+
         $event = new RegisterSettingsNavigationEvent([
             'hd'                   => ['heading' => Freeform::t('Settings')],
             'general'              => ['title' => Freeform::t('General Settings')],
@@ -388,6 +392,8 @@ class SettingsService extends Component
             'mailing-lists'        => ['title' => Freeform::t('Mailing Lists')],
             'crm'                  => ['title' => Freeform::t('CRM')],
             'payment-gateways'     => ['title' => Freeform::t('Payment Gateways')],
+            'hdlogs'               => ['heading' => Freeform::t('Logs')],
+            'error-log'            => ['title' => Freeform::t('Error Log ({count})', ['count' => $errorCount])],
         ]);
 
         $this->trigger(self::EVENT_REGISTER_SETTINGS_NAVIGATION, $event);

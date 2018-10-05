@@ -530,7 +530,7 @@ class Submission extends Element
         }
 
         if (\in_array($name, $this->getAllFieldHandles(), true)) {
-            return null;
+            return false;
         }
 
         return parent::__isset($name);

@@ -39,7 +39,7 @@
             {% if field.type == "submit" %}
                 {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
             {% endif %}
-            <div class="{{ columnClass }}">
+            <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
 
                 {{ field.render({
                     class: field.type != "submit" ? "freeform-input" : "",

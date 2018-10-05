@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Controllers;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
@@ -26,7 +27,6 @@ use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
-use Solspace\Freeform\Events\Assets\RegisterEvent;
 
 class SubmissionsController extends BaseController
 {
@@ -173,7 +173,7 @@ class SubmissionsController extends BaseController
         $submission = $this->getSubmissionsService()->getSubmissionById($id);
 
         if (!$submission) {
-            throw new HttpException(404, Freeform::t('Submission with ID {id} not found', ['id' => $submissionId]));
+            throw new HttpException(404, Freeform::t('Submission with ID {id} not found', ['id' => $id]));
         }
 
         $title = $submission->title;
@@ -209,6 +209,11 @@ class SubmissionsController extends BaseController
             'statuses'           => $statuses,
             'continueEditingUrl' => 'freeform/submissions/{id}',
         ];
+        $paymentDetails = $this->getSubmissionPaymentDetails($submission);
+        if ($paymentDetails) {
+            $variables['payments'] = $paymentDetails;
+        }
+
         $paymentDetails = $this->getSubmissionPaymentDetails($submission);
         if ($paymentDetails) {
             $variables['payments'] = $paymentDetails;

@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
+use Solspace\Freeform\Library\Composer\Components\Properties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
@@ -35,8 +36,10 @@ abstract class AbstractProperties
      *
      * @param array               $properties
      * @param TranslatorInterface $translator
+     *
+     * @throws ComposerException
      */
-    final public function __construct(array $properties, TranslatorInterface $translator)
+    public function __construct(array $properties, TranslatorInterface $translator)
     {
         $this->translator = $translator;
         $this->validateAndSetProperties($properties);

@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Events\Assets;
 
 use craft\events\CancelableEvent;
-use yii\base\View;
+use craft\web\View;
 
 class RegisterEvent extends CancelableEvent
 {
@@ -11,7 +11,9 @@ class RegisterEvent extends CancelableEvent
     private $view;
 
     /**
-     * @param FieldModel $model
+     * RegisterEvent constructor.
+     *
+     * @param View $view
      */
     public function __construct(View $view)
     {

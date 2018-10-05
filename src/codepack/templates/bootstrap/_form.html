@@ -48,13 +48,13 @@
                 {% set columnClass = isCheckbox ? "checkbox" : "form-group" %}
                 {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
                 {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-                {% set columnClass = columnClass ~ " col-lg-" ~ width ~ " col-xs-12" %}
+                {% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-xs-12" %}
 
                 {% if field.type == "submit" %}
                     {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
                 {% endif %}
 
-                <div class="{{ columnClass }}">
+                <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
 
                     {% if field.type == "checkbox_group" %}
 
@@ -143,8 +143,8 @@
                         {% for layoutRow in field.layoutRows %}
                             <div class="row {{ form.customAttributes.rowClass }}">
                                 {% set layoutWidth = (12 / (layoutRow|length)) %}
-                                {% set columnClass = columnClass|replace(' col-lg-' ~ width) %}
-                                {% set columnClass = columnClass ~ " col-lg-" ~ layoutWidth %}
+                                {% set columnClass = columnClass|replace(' col-sm-' ~ width) %}
+                                {% set columnClass = columnClass ~ " col-sm-" ~ layoutWidth %}
                                 {% for layoutField in layoutRow %}
                                     <div class="{{ columnClass }}">
                                         {{ layoutField.render({

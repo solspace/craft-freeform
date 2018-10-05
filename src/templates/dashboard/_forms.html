@@ -1,0 +1,59 @@
+{% include "freeform/dashboard/_assets/header" with {
+    title: "Forms"|t("freeform"),
+    count: formCount,
+    links: [
+        { link: url("freeform/forms"), label: "Manage"|t("freeform") },
+        { link: url("freeform/forms/new"), label: "New"|t("freeform"), class: "submit", permission: "freeform-formsManage" },
+    ]
+} %}
+
+{% if forms|length %}
+    <table class="data fullwidth">
+        <thead>
+        <tr>
+            <th>{{ "Name"|t('freeform') }}</th>
+            <th>{{ "Handle"|t('freeform') }}</th>
+            <th>{{ "Submissions"|t('freeform') }}</th>
+            <th>{{ "Spam"|t('freeform') }}</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for form in forms %}
+            <tr>
+                <td>
+                    <span class="color-indicator" style="background-color: {{ form.color }};"></span>
+                    {% if currentUser.can("freeform-formsManage") %}
+                        <a href="{{ url('freeform/forms/' ~ form.id) }}" style="font-weight: bold;">
+                            {{ form.name }}
+                        </a>
+                    {% else %}
+                        {{ form.name }}
+                    {% endif %}
+                </td>
+                <td class="code">{{ form.handle }}</td>
+                <td>
+                    {% if currentUser.can("freeform-formsManage") %}
+                        <a href="{{ url("freeform/submissions/" ~ form.handle) }}">
+                            {{ submissionsByForm[form.id] is defined ? submissionsByForm[form.id] : 0 }}
+                        </a>
+                    {% else %}
+                        {{ submissionsByForm[form.id] is defined ? submissionsByForm[form.id] : 0 }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if currentUser.can("freeform-formsManage") and isSpamFolderEnabled %}
+                        <a href="{{ url('freeform/spam/' ~ form.handle) }}">
+                            {{ form.spamBlockCount }}
+                        </a>
+                    {% else %}
+                        {{ form.spamBlockCount }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    {{ "You haven't created any forms yet!"|t("freeform") }}
+{% endif %}

@@ -1,0 +1,16 @@
+<div class="heading">
+    <div class="hero">
+        {{ title }}
+        <small>({{ count }})</small>
+    </div>
+
+    <div class="actions">
+        {% for link in links if link.forPro is not defined or (link.forPro is defined and craft.freeform.isPro) %}
+            {% if link.permission is not defined or (link.permission is defined and currentUser.can(link.permission)) %}
+                <a href="{{ link.link ?: "" }}" class="btn small {{ link.class|default }}">
+                    {{ link.label }}
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+</div>

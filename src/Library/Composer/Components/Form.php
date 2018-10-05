@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
+use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
@@ -28,9 +29,10 @@ use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
-use Solspace\Freeform\Library\Logging\LoggerInterface;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
+use Solspace\FreeformPro\Library\Rules\RuleProperties;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 {
@@ -118,7 +120,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var TranslatorInterface */
     private $translator;
 
-    /** @var LoggerInterface */
+    /** @var FreeformLogger */
     private $logger;
 
     /** @var CustomFormAttributes */
@@ -317,7 +319,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function getAnchor(): string
     {
         $hash = $this->getHash();
-        $id = substr(sha1($this->getId() . $this->getHandle()), 0, 6);
+        $id   = substr(sha1($this->getId() . $this->getHandle()), 0, 6);
 
         return "$id-form-$hash";
     }
@@ -382,7 +384,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         return $this;
     }
 
-        /**
+    /**
      * @param array $messages
      *
      * @return Form
@@ -440,15 +442,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $this->formHandler->onFormValidate($this);
 
         $isFormValid = true;
-        foreach ($this->getLayout()->getPages() as $page) {
-            if ($page->getIndex() > $this->getCurrentPage()->getIndex()) {
-                break;
-            }
-
-            foreach ($page->getFields() as $field) {
-                if (!$field->isValid()) {
-                    $isFormValid = false;
-                }
+        foreach ($this->getCurrentPage()->getFields() as $field) {
+            if (!$field->isValid()) {
+                $isFormValid = false;
             }
         }
 
@@ -458,7 +454,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
             if ($simulateSuccess && $this->isLastPage()) {
                 $this->formHandler->incrementSpamBlockCount($this);
-            } elseif (!$simulateSuccess) {
+            } else if (!$simulateSuccess) {
                 $this->formHandler->incrementSpamBlockCount($this);
             }
 
@@ -478,11 +474,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
                 } catch (FileUploadException $e) {
                     $isFormValid = false;
 
-                    $this->logger->log(LoggerInterface::LEVEL_ERROR, $e->getMessage());
+                    $this->logger->error($e->getMessage(), ['field' => $field]);
                 } catch (\Exception $e) {
                     $isFormValid = false;
 
-                    $this->logger->log(LoggerInterface::LEVEL_ERROR, $e->getMessage());
+                    $this->logger->error($e->getMessage(), ['field' => $field]);
                 }
 
                 if ($field->hasErrors()) {
@@ -532,7 +528,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      * Submit and store the form values in either session or database
      * depending on the current form page
      *
-     * @return bool|Submission Returns false if submission was not saves, otherwise returns saved submission object
+     * @return bool|Submission Returns false if submission was not saved, otherwise returns saved submission object
      * @throws FreeformException
      */
     public function submit()
@@ -551,6 +547,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
         $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
         $formValueContext->appendStoredValues($submittedValues);
+
+        $pageJumpIndex = $this->formHandler->onBeforePageJump($this);
+        if ($pageJumpIndex !== null) {
+            $this->jumpFormToPage($pageJumpIndex);
+
+            return false;
+        }
 
         if (!$this->isLastPage()) {
             $this->advanceFormToNextPage();
@@ -664,36 +667,21 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function renderTag(array $customFormAttributes = null): \Twig_Markup
     {
         $this->setAttributes($customFormAttributes);
-
         $customAttributes = $this->getCustomAttributes();
 
-        $encTypeAttribute = \count($this->getLayout()->getFileUploadFields()) ? ' enctype="multipart/form-data"' : '';
+        $attributes = [
+            'id'      => $customAttributes->getId(),
+            'name'    => $customAttributes->getName(),
+            'method'  => $customAttributes->getMethod() ?: 'post',
+            'class'   => $customAttributes->getClass(),
+            'action'  => $customAttributes->getAction(),
+            'enctype' => \count($this->getLayout()->getFileUploadFields()) ? 'multipart/form-data' : null,
+        ];
 
-        $idAttribute = $customAttributes->getId();
-        $idAttribute = $idAttribute ? ' id="' . $idAttribute . '"' : '';
+        $attributes         = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
+        $compiledAttributes = $this->formHandler->onAttachFormAttributes($this, $attributes);
 
-        $nameAttribute = $customAttributes->getName();
-        $nameAttribute = $nameAttribute ? ' name="' . $nameAttribute . '"' : '';
-
-        $methodAttribute = $customAttributes->getMethod() ?: $this->formAttributes->getMethod();
-        $methodAttribute = $methodAttribute ? ' method="' . $methodAttribute . '"' : '';
-
-        $classAttribute = $customAttributes->getClass();
-        $classAttribute = $classAttribute ? ' class="' . $classAttribute . '"' : '';
-
-        $actionAttribute = $customAttributes->getAction();
-        $actionAttribute = $actionAttribute ? ' action="' . $actionAttribute . '"' : '';
-
-        $output = sprintf(
-                '<form %s%s%s%s%s%s%s>',
-                $idAttribute,
-                $nameAttribute,
-                $methodAttribute,
-                $encTypeAttribute,
-                $classAttribute,
-                $actionAttribute,
-                $customAttributes->getFormAttributesAsString()
-            ) . PHP_EOL;
+        $output = "<form $compiledAttributes>" . PHP_EOL;
 
         if (!$customAttributes->getAction()) {
             $output .= '<input type="hidden" name="action" value="' . $this->formAttributes->getActionUrl() . '" />';
@@ -911,6 +899,21 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
+     * Target the form to a specific page index and flush cached data
+     *
+     * @param int $pageIndex
+     */
+    private function jumpFormToPage(int $pageIndex)
+    {
+        $formValueContext = $this->getFormValueContext();
+
+        $formValueContext->jumpToPageIndex($pageIndex);
+        $formValueContext->saveState();
+
+        $this->cachedPageIndex = null;
+    }
+
+    /**
      * Store the submitted state in the database
      *
      * @return bool|mixed
@@ -986,6 +989,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function getConnectionProperties(): ConnectionProperties
     {
         return $this->properties->getConnectionProperties();
+    }
+
+    /**
+     * Returns form field rule properties
+     *
+     * @return RuleProperties|null
+     */
+    public function getRuleProperties()
+    {
+        return $this->properties->getRuleProperties();
     }
 
     // ==========================

@@ -269,6 +269,26 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     }
 
     /**
+     * @return \Twig_Markup
+     */
+    final public function rulesHtmlData(): \Twig_Markup
+    {
+        $ruleProperties = $this->getForm()->getRuleProperties();
+        if (null === $ruleProperties) {
+            return $this->renderRaw('');
+        }
+
+        $rule = $ruleProperties->getFieldRule($this->getPageIndex(), $this->getHash());
+        if (null === $rule) {
+            return $this->renderRaw('');
+        }
+
+        $data = \GuzzleHttp\json_encode($rule, JSON_HEX_APOS);
+
+        return $this->renderRaw(" data-ff-rule='$data'");
+    }
+
+    /**
      * @return bool
      */
     final public function canRender(): bool
@@ -692,7 +712,10 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     protected function validate(): array
     {
-        $this->getForm()->getFieldHandler()->beforeValidate($this, $this->getForm());
+        $form = $this->getForm();
+        $rules = $form->getRuleProperties();
+
+        $form->getFieldHandler()->beforeValidate($this, $form);
 
         $errors = $this->getErrors();
 
@@ -703,14 +726,16 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         }
 
         if ($this->isRequired()) {
-            if (\is_array($value)) {
-                $value = array_filter($value);
+            if (!$rules || !$rules->isHidden($this, $form)) {
+                if (\is_array($value)) {
+                    $value = array_filter($value);
 
-                if (empty($value)) {
+                    if (empty($value)) {
+                        $errors[] = $this->translate('This field is required');
+                    }
+                } else if (null === $value || '' === \trim($value)) {
                     $errors[] = $this->translate('This field is required');
                 }
-            } else if (null === $value || '' === \trim($value)) {
-                $errors[] = $this->translate('This field is required');
             }
         }
 
@@ -726,7 +751,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             $errors = array_merge($errors, $violationList->getErrors());
         }
 
-        $this->getForm()->getFieldHandler()->afterValidate($this, $this->getForm());
+        $form->getFieldHandler()->afterValidate($this, $form);
 
         return $errors;
     }

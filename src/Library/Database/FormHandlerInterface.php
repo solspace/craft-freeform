@@ -16,15 +16,17 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 
 interface FormHandlerInterface
 {
-    const EVENT_BEFORE_SUBMIT      = 'beforeSubmit';
-    const EVENT_AFTER_SUBMIT       = 'afterSubmit';
-    const EVENT_BEFORE_SAVE        = 'beforeSave';
-    const EVENT_AFTER_SAVE         = 'afterSave';
-    const EVENT_BEFORE_DELETE      = 'beforeDelete';
-    const EVENT_AFTER_DELETE       = 'afterDelete';
-    const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
-    const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
-    const EVENT_FORM_VALIDATE      = 'validateForm';
+    const EVENT_BEFORE_SUBMIT          = 'beforeSubmit';
+    const EVENT_AFTER_SUBMIT           = 'afterSubmit';
+    const EVENT_PAGE_JUMP              = 'pageJump';
+    const EVENT_BEFORE_SAVE            = 'beforeSave';
+    const EVENT_AFTER_SAVE             = 'afterSave';
+    const EVENT_BEFORE_DELETE          = 'beforeDelete';
+    const EVENT_AFTER_DELETE           = 'afterDelete';
+    const EVENT_RENDER_OPENING_TAG     = 'renderOpeningTag';
+    const EVENT_RENDER_CLOSING_TAG     = 'renderClosingTag';
+    const EVENT_FORM_VALIDATE          = 'validateForm';
+    const EVENT_ATTACH_FORM_ATTRIBUTES = 'attachFormAttributes';
 
     /**
      * @param Form   $form
@@ -77,9 +79,18 @@ interface FormHandlerInterface
     public function onAfterSubmit(Form $form, Submission $submission = null);
 
     /**
+     * Allows 3rd party scripts to override the page that the form will jump to
+     *
+     * @param Form $form
+     *
+     * @return int|null $pageIndex
+     */
+    public function onBeforePageJump(Form $form);
+
+    /**
      * Attach anything to the form after opening tag
      *
-     * @param Form   $form
+     * @param Form $form
      *
      * @return string
      */
@@ -88,11 +99,21 @@ interface FormHandlerInterface
     /**
      * Attach anything to the form before the closing tag
      *
-     * @param Form   $form
+     * @param Form $form
      *
      * @return string
      */
     public function onRenderClosingTag(Form $form): string;
+
+    /**
+     * Attach any custom form attributes to the form tag
+     *
+     * @param Form  $form
+     * @param array $attributes
+     *
+     * @return null
+     */
+    public function onAttachFormAttributes(Form $form, array $attributes = []);
 
     /**
      * @param Form $form

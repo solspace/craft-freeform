@@ -521,11 +521,53 @@ return [
     'Reset to default values'  => 'Reset to default values',
     'Please select an element' => 'Please select an element',
 
-    'DB Notifications'       => 'DB Notifications',
-    'Template Notifications' => 'Template Notifications',
+    'DB Notifications'                       => 'DB Notifications',
+    'Template Notifications'                 => 'Template Notifications',
+
+    // Conditional logic
+    'Select a page to add rules to'          => 'Select a page to add rules to',
+    'Add a new field rule'                   => 'Add a new field rule',
+    'Add a new goto rule'                    => 'Add a new goto rule',
+    'Field rules'                            => 'Field rules',
+    'Page rules'                             => 'Page rules',
+    'Rules for {page}'                       => 'Rules for {page}',
+    'Go to {page} when'                      => 'Go to {page} when',
+    'of its criteria match'                  => 'of its criteria match',
+    'any'                                    => 'any',
+    'all'                                    => 'all',
+    'Add...'                                 => 'Add...',
+    'Add criteria...'                        => 'Add criteria...',
+    'Show'                                   => 'Show',
+    'Hide'                                   => 'Hide',
+    'this item when'                         => 'this item when',
+    'is'                                     => 'is',
+    'is not'                                 => 'is not',
+
 
     // Payments
     'Enter your Stripe public key here.'     => 'Enter your Stripe public key here.',
     'Enter your Stripe secret key here.'     => 'Enter your Stripe secret key here.',
     'Enter your Stripe webhook secret here.' => 'Enter your Stripe webhook secret here.',
+
+    'Add a rule'                                 => 'Add a rule',
+    'Add Field rule'                             => 'Add Field rule',
+    'Choose a field'                             => 'Choose a field',
+
+    // Dashboard
+    'Dashboard'                                  => 'Dashboard',
+    'Access Dashboard'                           => 'Access Dashboard',
+    'Manage'                                     => 'Manage',
+    'Spam ({count})'                             => 'Spam ({count})',
+
+    // Logs
+    'Logs'                                                             => 'Logs',
+    'View Log'                                                         => 'View Log',
+    'Clear'                                                            => 'Clear',
+    'Errors'                                                           => 'Errors',
+    'Error Log'                                                        => 'Error Log',
+    'Error Log ({count})'                                              => 'Error Log ({count})',
+    'Everything appears to be okay right now! No errors were found.'   => 'Everything appears to be okay right now! No errors were found.',
+    'You don\'t have any submissions yet!'                             => 'You don\'t have any submissions yet!',
+    'You haven\'t created any forms yet!'                              => 'You haven\'t created any forms yet!',
+    'Are you sure you want to clear the Error log?'                    => 'Are you sure you want to clear the Error log?',
 ];

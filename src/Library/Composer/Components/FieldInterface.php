@@ -89,6 +89,13 @@ interface FieldInterface
     public function hasErrors(): bool;
 
     /**
+     * @param string $error
+     *
+     * @return AbstractField
+     */
+    public function addError(string $error): AbstractField;
+
+    /**
      * Renders the <label> and <input> tags combined
      *
      * @return \Twig_Markup

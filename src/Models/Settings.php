@@ -139,12 +139,12 @@ class Settings extends Model
         $this->formTemplateDirectory  = null;
         $this->emailTemplateDirectory = null;
         $this->emailTemplateStorage   = self::EMAIL_TEMPLATE_STORAGE_DB;
-        $this->defaultView            = Freeform::VIEW_FORMS;
+        $this->defaultView            = Freeform::VIEW_DASHBOARD;
         $this->fieldDisplayOrder      = Freeform::FIELD_DISPLAY_ORDER_NAME;
         $this->showTutorial           = true;
         $this->defaultTemplates       = true;
         $this->removeNewlines         = false;
-        $this->footerScripts          = true;
+        $this->footerScripts          = false;
         $this->formSubmitDisable      = false;
 
         $this->freeformHoneypot              = true;

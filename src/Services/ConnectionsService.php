@@ -8,6 +8,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class ConnectionsService extends Component
 {
@@ -57,10 +58,9 @@ class ConnectionsService extends Component
 
             $result = $connection->connect($keyValuePairs);
             if (!$result->isSuccessful()) {
-                Freeform::getInstance()->logger->error(
-                    $result->getAllErrorJson(),
-                    'freeform_connections'
-                );
+                Freeform::getInstance()->logger
+                    ->getLogger(FreeformLogger::ELEMENT_CONNECTION)
+                    ->error($result->getAllErrorJson(), ['connection' => \get_class($connection)]);
             }
         }
     }

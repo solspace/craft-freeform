@@ -21,6 +21,7 @@ use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\HoneypotService;
+use Solspace\Freeform\Services\LoggerService;
 
 class FreeformVariable
 {
@@ -151,6 +152,22 @@ class FreeformVariable
     public function getSettingsNavigation(): array
     {
         return Freeform::getInstance()->settings->getSettingsNavigation();
+    }
+
+    /**
+     * @return LoggerService
+     */
+    public function getLoggerService(): LoggerService
+    {
+        return Freeform::getInstance()->logger;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPro(): bool
+    {
+        return Freeform::getInstance()->isPro();
     }
 
     /**

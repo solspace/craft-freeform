@@ -11,17 +11,13 @@
 
 namespace Solspace\Freeform\Library\Integrations\PaymentGateways;
 
+use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Database\PaymentGatewayHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\DataObjects\PlanObject;
-use Solspace\Freeform\Library\Logging\LoggerInterface;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration implements PaymentGatewayIntegrationInterface, IntegrationInterface, \JsonSerializable
@@ -111,6 +107,7 @@ abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration imp
      * Fetches plan from integration
      *
      * @param string $id
+     *
      * @return PlanObject
      */
     abstract public function fetchPlan(string $id);
@@ -126,6 +123,7 @@ abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration imp
      * Returns all details of single payment
      *
      * @param int $submissionId
+     *
      * @return array
      */
     abstract public function getPaymentDetails(int $submissionId);
@@ -140,7 +138,7 @@ abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration imp
         try {
             $plans = $this->getPlans();
         } catch (\Exception $e) {
-            $this->getLogger()->log(LoggerInterface::LEVEL_ERROR, $e->getMessage(), 'Payment Gateway Integrations');
+            $this->getLogger()->error($e->getMessage(), ['service' => $this->getServiceProvider()]);
 
             $plans = [];
         }

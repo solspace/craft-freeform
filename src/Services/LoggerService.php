@@ -2,8 +2,12 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\helpers\FileHelper;
+use craft\web\View;
 use Psr\Log\LoggerInterface;
-use Solspace\Commons\Loggers\FileLogger;
+use Solspace\Commons\Loggers\Readers\LineLogReader;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Component;
 
 class LoggerService extends Component
@@ -11,54 +15,52 @@ class LoggerService extends Component
     const DEFAULT_CATEGORY = 'freeform';
 
     /**
-     * @param string $message
-     * @param string $category
-     */
-    public function error(string $message, $category = self::DEFAULT_CATEGORY)
-    {
-        $this->getLogger($category)->error($message);
-    }
-
-    /**
-     * @param string $message
-     * @param string $category
-     */
-    public function warning(string $message, $category = self::DEFAULT_CATEGORY)
-    {
-        $this->getLogger($category)->warning($message);
-    }
-
-    /**
-     * @param string $message
-     * @param string $category
-     */
-    public function info(string $message, $category = self::DEFAULT_CATEGORY)
-    {
-        $this->getLogger($category)->info($message);
-    }
-
-    /**
-     * @param string $message
-     * @param string $category
-     */
-    public function trace(string $message, $category = self::DEFAULT_CATEGORY)
-    {
-        $this->getLogger($category)->info($message);
-    }
-
-    /**
      * @param string $category
      *
      * @return LoggerInterface
      */
-    private function getLogger(string $category = self::DEFAULT_CATEGORY): LoggerInterface
+    public function getLogger(string $category): LoggerInterface
     {
-        static $logger;
+        return FreeformLogger::getInstance($category);
+    }
 
-        if (null === $logger) {
-            $logger = FileLogger::getInstance($category);
+    /**
+     * @return LineLogReader
+     */
+    public function getLogReader(): LineLogReader
+    {
+        return new LineLogReader(FreeformLogger::getLogfilePath());
+    }
+
+    /**
+     * @param View $view
+     */
+    public function registerJsTranslations(View $view)
+    {
+        $view->registerTranslations(Freeform::TRANSLATION_CATEGORY, [
+            'Are you sure you want to clear the Error log?',
+        ]);
+    }
+
+    /**
+     * Delete the logfile
+     */
+    public function clearLogs()
+    {
+        $logFilePath = FreeformLogger::getLogfilePath();
+
+        if (file_exists($logFilePath)) {
+            FileHelper::unlink($logFilePath);
         }
+    }
 
-        return $logger;
+    /**
+     * @param string $logger
+     *
+     * @return string
+     */
+    public function getColor(string $logger): string
+    {
+        return FreeformLogger::getColor($logger);
     }
 }

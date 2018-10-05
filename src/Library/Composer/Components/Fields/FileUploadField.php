@@ -256,9 +256,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                 }
             }
         } else {
-            foreach ($allFileKinds as $kind => $extensions) {
-                $allowedExtensions = array_merge($allowedExtensions, $extensions);
-            }
+            $allowedExtensions = \Craft::$app->getConfig()->getGeneral()->allowedFileExtensions;
         }
 
         return $allowedExtensions;

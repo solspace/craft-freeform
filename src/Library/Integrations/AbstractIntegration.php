@@ -11,10 +11,10 @@
 
 namespace Solspace\Freeform\Library\Integrations;
 
+use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Logging\LoggerInterface;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractIntegration implements IntegrationInterface

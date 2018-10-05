@@ -7,6 +7,7 @@ use Solspace\Commons\Configurations\BaseConfiguration;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 use Solspace\Freeform\Library\Exceptions\Connections\ConnectionException;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 abstract class AbstractConnection extends BaseConfiguration implements ConnectionInterface
 {
@@ -146,15 +147,13 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
     protected function attachErrors(ConnectionResult $result, Element $element)
     {
         $reflectionClass = new \ReflectionClass($this);
-        $logCategory     = 'freeform_' . $reflectionClass->getShortName() . '_connection';
 
         $errors = $element->getErrors();
         foreach ($errors as $field => $fieldErrors) {
             if (\in_array($field, static::getSuppressableErrorFieldHandles(), true)) {
-                Freeform::getInstance()->logger->error(
-                    implode(', ', $fieldErrors),
-                    $logCategory
-                );
+                Freeform::getInstance()->logger
+                    ->getLogger(FreeformLogger::ELEMENT_CONNECTION)
+                    ->error(implode(', ', $fieldErrors), ['connection' => $reflectionClass->getShortName()]);
 
                 continue;
             }

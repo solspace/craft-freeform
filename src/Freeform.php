@@ -24,8 +24,10 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\ApiController;
 use Solspace\Freeform\Controllers\CodepackController;
 use Solspace\Freeform\Controllers\CrmController;
+use Solspace\Freeform\Controllers\DashboardController;
 use Solspace\Freeform\Controllers\FieldsController;
 use Solspace\Freeform\Controllers\FormsController;
+use Solspace\Freeform\Controllers\LogsController;
 use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
@@ -40,8 +42,10 @@ use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\StatusRecord;
+use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\CrmService;
+use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
@@ -53,6 +57,7 @@ use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
+use Solspace\Freeform\Services\RulesService;
 use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
@@ -84,11 +89,13 @@ use yii\db\Query;
  * @property IntegrationsQueueService $integrationsQueue
  * @property PaymentGatewaysService   $paymentGateways
  * @property ConnectionsService       $connections
+ * @property ChartsService            $charts
  */
 class Freeform extends Plugin
 {
     const TRANSLATION_CATEGORY = 'freeform';
 
+    const VIEW_DASHBOARD     = 'dashboard';
     const VIEW_FORMS         = 'forms';
     const VIEW_SUBMISSIONS   = 'submissions';
     const VIEW_FIELDS        = 'fields';
@@ -118,6 +125,9 @@ class Freeform extends Plugin
     const PERMISSION_SUBMISSIONS_MANAGE   = 'freeform-submissionsManage';
     const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
     const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
+    const PERMISSION_DASHBOARD_ACCESS     = 'freeform-dashboardAccess';
+    const PERMISSION_ERROR_LOG_ACCESS     = 'freeform-errorLogAccess';
+    const PERMISSION_ERROR_LOG_MANAGE     = 'freeform-errorLogManage';
 
     const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
@@ -406,6 +416,7 @@ class Freeform extends Plugin
     {
         if (!\Craft::$app->request->isConsoleRequest) {
             $this->controllerMap = [
+                'dashboard'        => DashboardController::class,
                 'api'              => ApiController::class,
                 'codepack'         => CodepackController::class,
                 'crm'              => CrmController::class,
@@ -413,6 +424,7 @@ class Freeform extends Plugin
                 'payment-gateways' => PaymentGatewaysController::class,
                 'fields'           => FieldsController::class,
                 'forms'            => FormsController::class,
+                'logs'             => LogsController::class,
                 'notifications'    => NotificationsController::class,
                 'submissions'      => SubmissionsController::class,
                 'spam-submissions' => SpamSubmissionsController::class,
@@ -426,7 +438,9 @@ class Freeform extends Plugin
     {
         $this->setComponents(
             [
+                'dashboard'         => DashboardService::class,
                 'crm'               => CrmService::class,
+                'charts'            => ChartsService::class,
                 'fields'            => FieldsService::class,
                 'files'             => FilesService::class,
                 'forms'             => FormsService::class,
@@ -519,6 +533,7 @@ class Freeform extends Plugin
                     }
 
                     $permissions = [
+                        self::PERMISSION_DASHBOARD_ACCESS     => ['label' => self::t('Access Dashboard')],
                         self::PERMISSION_SUBMISSIONS_ACCESS   => [
                             'label'  => self::t('Access Submissions'),
                             'nested' => $submissionNestedPermissions,
@@ -640,8 +655,8 @@ class Freeform extends Plugin
     private function initSpamCheck()
     {
         Event::on(
-            FieldsService::class,
-            FieldsService::EVENT_BEFORE_VALIDATE,
+            FormsService::class,
+            FormsService::EVENT_FORM_VALIDATE,
             [$this->settings, 'checkSubmissionForSpam']
         );
 

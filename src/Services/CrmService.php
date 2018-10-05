@@ -249,9 +249,10 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
             return false;
         }
 
+        $logger  = $freeform->logger->getLogger($integration->getServiceProvider());
         $mapping = $properties->getMapping();
         if (empty($mapping)) {
-            $freeform->logger->warning(
+            $logger->warning(
                 Freeform::t(
                     "No field mapping specified for '{integration}' integration",
                     ['integration' => $integration->getName()]
@@ -278,11 +279,11 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                                 $crmFieldsByHandle[$field->getHandle()] = $field;
                             }
                         } catch (\Exception $e) {
-                            $freeform->logger->error($e->getMessage());
+                            $logger->error($e->getMessage());
                         }
                     }
                 } catch (\Exception $e) {
-                    $freeform->logger->error($e->getMessage());
+                    $logger->error($e->getMessage());
                 }
             }
         }
@@ -301,7 +302,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
                 $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $value);
             } catch (\Exception $e) {
-                $freeform->logger->error($e->getMessage());
+                $logger->error($e->getMessage());
             }
         }
 
@@ -333,17 +334,17 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
                                 return $result;
                             } catch (\Exception $e) {
-                                $freeform->logger->error($e->getMessage());
+                                $logger->error($e->getMessage());
                             }
                         }
                     } catch (\Exception $e) {
-                        $freeform->logger->error($e->getMessage());
+                        $logger->error($e->getMessage());
                     }
                 }
 
-                $freeform->logger->error($e->getMessage());
+                $logger->error($e->getMessage());
             } catch (\Exception $e) {
-                $freeform->logger->error($e->getMessage());
+                $logger->error($e->getMessage());
             }
         }
 

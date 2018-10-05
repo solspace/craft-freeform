@@ -1,0 +1,62 @@
+{% extends "freeform/_layouts/settings" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% set selectedSubnavItem = "errors" %}
+
+{% set title = craft.freeform.name ~ ": " ~ ("Error Log"|t('freeform')) %}
+
+{% block actionButton %}
+
+    <div class="buttons">
+        <a href="{{ url('freeform/logs/clear') }}" class="btn submit icon clear-logs">
+            {{ "Clear"|t('freeform') }}
+        </a>
+    </div>
+
+{% endblock %}
+
+{% set content %}
+
+    <h2>{{ "Error Log"|t('freeform') }}</h2>
+
+    <div class="container">
+
+        {% if logReader|length %}
+            <table class="data fullwidth">
+                <thead>
+                <tr>
+                    <th>{{ "Type"|t('freeform') }}</th>
+                    <th>{{ "Level"|t('freeform') }}</th>
+                    <th>{{ "Date"|t('freeform') }}</th>
+                    <th>{{ "Details"|t('freeform') }}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% for line in logReader.lastLines(100) %}
+                    <tr>
+                        <td class="nowrap">
+                            {{ line.logger }}
+                        </td>
+                        <td class="nowrap">
+                        <span class="badge log-level-{{ line.level|lower }}">
+                            {{ line.level|lower }}
+                        </span>
+                        </td>
+                        <td class="nowrap code">
+                            {{ line.date|datetime }}
+                        </td>
+                        <td class="log-message">
+                            {{ line.message }}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            {{ "Everything appears to be okay right now! No errors were found."|t("freeform") }}
+        {% endif %}
+
+    </div>
+
+{% endset %}

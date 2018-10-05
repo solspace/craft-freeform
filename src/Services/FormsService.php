@@ -16,10 +16,12 @@ use craft\helpers\Template;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
+use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\BeforeSubmitEvent;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
+use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\SubmitField;
@@ -530,6 +532,17 @@ class FormsService extends Component implements FormHandlerInterface
     /**
      * @inheritDoc
      */
+    public function onBeforePageJump(Form $form)
+    {
+        $event = new PageJumpEvent($form);
+        $this->trigger(self::EVENT_PAGE_JUMP, $event);
+
+        return $event->getJumpToIndex();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function onRenderOpeningTag(Form $form): string
     {
         $event = new FormRenderEvent($form);
@@ -547,6 +560,17 @@ class FormsService extends Component implements FormHandlerInterface
         $this->trigger(self::EVENT_RENDER_CLOSING_TAG, $event);
 
         return $event->getCompiledOutput();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onAttachFormAttributes(Form $form, array $attributes = [])
+    {
+        $event = new AttachFormAttributesEvent($form, $attributes);
+        $this->trigger(self::EVENT_ATTACH_FORM_ATTRIBUTES, $event);
+
+        return $event->getCompiledAttributeString();
     }
 
     /**

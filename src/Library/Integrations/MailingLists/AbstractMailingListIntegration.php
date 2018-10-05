@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Library\Integrations\MailingLists;
 
+use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -19,7 +20,7 @@ use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
-use Solspace\Freeform\Library\Logging\LoggerInterface;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractMailingListIntegration extends AbstractIntegration implements MailingListIntegrationInterface, IntegrationInterface, \JsonSerializable

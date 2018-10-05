@@ -251,6 +251,17 @@ class FormValueContext implements \JsonSerializable
     }
 
     /**
+     * Jumps to a specific form page index
+     *
+     * @param int $pageIndex
+     */
+    public function jumpToPageIndex(int $pageIndex)
+    {
+        $this->currentPageIndex = $pageIndex;
+        $this->regenerateHash();
+    }
+
+    /**
      * Save current state in session
      */
     public function saveState()

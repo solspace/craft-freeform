@@ -74,7 +74,7 @@ class CustomFormAttributes extends AbstractAttributes
     protected $fieldIdPrefix;
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getReturnUrl()
     {
@@ -82,7 +82,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getInputClass()
     {
@@ -90,7 +90,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSubmitClass()
     {
@@ -98,7 +98,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getRowClass()
     {
@@ -106,7 +106,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getColumnClass()
     {
@@ -114,7 +114,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getLabelClass()
     {
@@ -122,7 +122,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getErrorClass()
     {
@@ -130,7 +130,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getClass()
     {
@@ -138,7 +138,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getInstructionsClass()
     {
@@ -146,7 +146,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return boolean
+     * @return boolean|null
      */
     public function isInstructionsBelowField()
     {
@@ -154,7 +154,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getId()
     {
@@ -162,7 +162,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getName()
     {
@@ -170,7 +170,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getMethod()
     {
@@ -178,7 +178,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getAction()
     {
@@ -186,7 +186,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getOverrideValues()
     {
@@ -194,7 +194,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return boolean
+     * @return boolean|null
      */
     public function getUseRequiredAttribute()
     {
@@ -202,7 +202,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getFormAttributes()
     {
@@ -220,7 +220,7 @@ class CustomFormAttributes extends AbstractAttributes
     /**
      * @return string
      */
-    public function getFormAttributesAsString()
+    public function getFormAttributesAsString(): string
     {
         $formAttributes = $this->getFormAttributes() ?: [];
 
@@ -228,7 +228,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return array
+     * @return array|null
      */
     public function getInputAttributes()
     {
@@ -244,7 +244,7 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return DynamicNotificationAttributes
+     * @return DynamicNotificationAttributes|null
      */
     public function getDynamicNotification()
     {

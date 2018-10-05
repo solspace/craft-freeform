@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Attributes;
 
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 abstract class AbstractAttributes
@@ -62,19 +63,9 @@ abstract class AbstractAttributes
      *
      * @return string
      */
-    protected final function getAttributeStringFromArray(array $array)
+    final protected function getAttributeStringFromArray(array $array): string
     {
-        $attributeString = "";
-
-        foreach ($array as $key => $value) {
-            if (is_bool($value) && $value) {
-                $attributeString .= "$key ";
-            } else if (!is_bool($value)) {
-                $attributeString .= "$key=\"$value\" ";
-            }
-        }
-
-        return $attributeString ? " " . $attributeString : "";
+        return StringHelper::compileAttributeStringFromArray($array);
     }
 
     /**
@@ -82,14 +73,14 @@ abstract class AbstractAttributes
      *
      * @return string
      */
-    protected final function extractClassValue($value)
+    final protected function extractClassValue($value)
     {
         if (empty($value)) {
-            return "";
+            return '';
         }
 
-        if (is_array($value)) {
-            $value = implode(" ", $value);
+        if (\is_array($value)) {
+            $value = implode(' ', $value);
         }
 
         return $value;

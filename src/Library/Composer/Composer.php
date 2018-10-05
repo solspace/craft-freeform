@@ -11,21 +11,18 @@
 
 namespace Solspace\Freeform\Library\Composer;
 
+use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Context;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties;
-use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
-use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\StatusHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
-use Solspace\Freeform\Library\Logging\LoggerInterface;
-use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Session\CraftRequest;
 use Solspace\Freeform\Library\Session\CraftSession;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
@@ -77,16 +74,16 @@ class Composer
     /**
      * Composer constructor.
      *
-     * @param array                           $composerState
-     * @param FormAttributes                  $formAttributes
-     * @param FormHandlerInterface            $formHandler
-     * @param FieldHandlerInterface           $fieldHandler
-     * @param SubmissionHandlerInterface      $submissionHandler
-     * @param SpamSubmissionHandlerInterface  $spamSubmissionHandler
-     * @param FileUploadHandlerInterface      $fileUploadHandler
-     * @param StatusHandlerInterface          $statusHandler
-     * @param TranslatorInterface             $translator
-     * @param LoggerInterface                 $logger
+     * @param array                          $composerState
+     * @param FormAttributes                 $formAttributes
+     * @param FormHandlerInterface           $formHandler
+     * @param FieldHandlerInterface          $fieldHandler
+     * @param SubmissionHandlerInterface     $submissionHandler
+     * @param SpamSubmissionHandlerInterface $spamSubmissionHandler
+     * @param FileUploadHandlerInterface     $fileUploadHandler
+     * @param StatusHandlerInterface         $statusHandler
+     * @param TranslatorInterface            $translator
+     * @param LoggerInterface                $logger
      *
      * @throws ComposerException
      */
@@ -102,14 +99,14 @@ class Composer
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->formHandler              = $formHandler;
-        $this->fieldHandler             = $fieldHandler;
-        $this->submissionHandler        = $submissionHandler;
-        $this->spamSubmissionHandler    = $spamSubmissionHandler;
-        $this->fileUploadHandler        = $fileUploadHandler;
-        $this->statusHandler            = $statusHandler;
-        $this->translator               = $translator;
-        $this->logger                   = $logger;
+        $this->formHandler           = $formHandler;
+        $this->fieldHandler          = $fieldHandler;
+        $this->submissionHandler     = $submissionHandler;
+        $this->spamSubmissionHandler = $spamSubmissionHandler;
+        $this->fileUploadHandler     = $fileUploadHandler;
+        $this->statusHandler         = $statusHandler;
+        $this->translator            = $translator;
+        $this->logger                = $logger;
 
         $this->composerState = $composerState;
         $this->validateComposerData($formAttributes);
@@ -191,7 +188,7 @@ class Composer
             );
         }
 
-        $properties = $composer[self::KEY_PROPERTIES];
+        $properties       = $composer[self::KEY_PROPERTIES];
         $this->properties = new Properties($properties, $this->translator);
 
         if (!isset($composer[self::KEY_LAYOUT])) {
@@ -257,7 +254,11 @@ class Composer
         );
     }
 
-    private function getDefaultProperties()
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    private function getDefaultProperties(): array
     {
         return [
             Properties::PAGE_PREFIX . '0'        => [
@@ -281,19 +282,23 @@ class Composer
                 'integrationId' => 0,
                 'mapping'       => new \stdClass(),
             ],
-            Properties::CONNECTIONS_HASH => [
+            Properties::CONNECTIONS_HASH         => [
                 'type' => Properties::CONNECTIONS_HASH,
                 'list' => null,
+            ],
+            Properties::RULES_HASH               => [
+                'type' => Properties::RULES_HASH,
+                'list' => new \stdClass(),
             ],
             Properties::ADMIN_NOTIFICATIONS_HASH => [
                 'type'           => Properties::ADMIN_NOTIFICATIONS_HASH,
                 'notificationId' => 0,
                 'recipients'     => '',
             ],
-            Properties::PAYMENT_HASH => [
-                'type'           => Properties::PAYMENT_HASH,
-                'integrationId'  => 0,
-                'mapping'        => new \stdClass(),
+            Properties::PAYMENT_HASH             => [
+                'type'          => Properties::PAYMENT_HASH,
+                'integrationId' => 0,
+                'mapping'       => new \stdClass(),
             ],
         ];
     }

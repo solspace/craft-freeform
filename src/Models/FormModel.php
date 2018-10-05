@@ -19,7 +19,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Layout;
 use Solspace\Freeform\Library\Composer\Composer;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
-use Solspace\Freeform\Library\Logging\CraftLogger;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Session\CraftRequest;
 use Solspace\Freeform\Library\Session\CraftSession;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
@@ -135,7 +135,7 @@ class FormModel extends Model
                 $freeform->files,
                 $freeform->statuses,
                 new CraftTranslator(),
-                new CraftLogger()
+                FreeformLogger::getInstance(FreeformLogger::FORM)
             );
         }
 

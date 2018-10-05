@@ -18,7 +18,7 @@ class m180430_151626_PaymentGateways extends Migration
         $this->alterColumn(
             '{{%freeform_integrations}}',
             'type',
-            "enum('mailing_list', 'crm', 'payment_gateway')"
+            $this->enum('type', ['mailing_list', 'crm', 'payment_gateway'])->notNull()
         );
     }
 
@@ -30,7 +30,7 @@ class m180430_151626_PaymentGateways extends Migration
         $this->alterColumn(
             '{{%freeform_integrations}}',
             'type',
-            "enum('mailing_list', 'crm')"
+            $this->enum('type', ['mailing_list', 'crm'])->notNull()
         );
     }
 }

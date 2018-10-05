@@ -11,7 +11,7 @@
 
 namespace Solspace\Freeform\Library\Session;
 
-use Solspace\Freeform\Library\Logging\CraftLogger;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class CraftSession implements SessionInterface
 {
@@ -39,7 +39,7 @@ class CraftSession implements SessionInterface
         try {
             \Craft::$app->session->set($key, $value);
         } catch (\Exception $e) {
-            (new CraftLogger())->log(CraftLogger::LEVEL_ERROR, $e->getMessage(), 'freeform_craft_session');
+            FreeformLogger::getInstance(FreeformLogger::FREEFORM)->error($e->getMessage(), ['Craft Session']);
         }
     }
 

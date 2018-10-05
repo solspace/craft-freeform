@@ -23,7 +23,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Composer;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Logging\CraftLogger;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Session\CraftRequest;
 use Solspace\Freeform\Library\Session\CraftSession;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
@@ -188,7 +188,7 @@ class FormsController extends BaseController
                 $freeform->files,
                 $freeform->statuses,
                 new CraftTranslator(),
-                new CraftLogger()
+                FreeformLogger::getInstance(FreeformLogger::FORM)
             );
         } catch (ComposerException $exception) {
             return $this->asJson(
@@ -348,6 +348,7 @@ class FormsController extends BaseController
             'canManageSettings'        => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
             'isWidgetsInstalled'       => Freeform::getInstance()->isPro(),
+            'isRulesEnabled'           => Freeform::getInstance()->isPro(),
             'isRecaptchaEnabled'       => Freeform::getInstance()->isPro() && $settings->recaptchaEnabled,
             'isPaymentEnabled'         => \Craft::$app->plugins->isPluginEnabled('freeform-payments'),
             'sourceTargets'            => $this->getEncodedJson($this->getSourceTargetsList()),

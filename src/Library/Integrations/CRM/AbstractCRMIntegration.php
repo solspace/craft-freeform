@@ -11,12 +11,11 @@
 
 namespace Solspace\Freeform\Library\Integrations\CRM;
 
+use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Logging\LoggerInterface;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractCRMIntegration extends AbstractIntegration implements CRMIntegrationInterface, \JsonSerializable
@@ -102,7 +101,7 @@ abstract class AbstractCRMIntegration extends AbstractIntegration implements CRM
         try {
             $fields = $this->getFields();
         } catch (\Exception $e) {
-            $this->getLogger()->log(LoggerInterface::LEVEL_ERROR, $e->getMessage(), 'CRM Integrations');
+            $this->getLogger()->error($e->getMessage(), ['service' => $this->getServiceProvider()]);
 
             $fields = [];
         }

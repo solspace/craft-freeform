@@ -12,16 +12,6 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
-use Solspace\Freeform\Library\Logging\CraftLogger;
-use Solspace\Freeform\Library\Translations\CraftTranslator;
 
 /**
  * Class IntegrationRecord

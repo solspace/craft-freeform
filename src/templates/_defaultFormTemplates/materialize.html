@@ -42,7 +42,7 @@
 
             {% if field.type == "checkbox_group" %}
 
-                <div class="{{ columnClass }}" style="margin-bottom: 20px;">
+                <div class="{{ columnClass }}" style="margin-bottom: 20px;"{{ field.rulesHtmlData }}>
 
                     {{ field.renderLabel({
                         labelClass: " active" ~ (field.required ? " required"),
@@ -68,7 +68,7 @@
 
             {% elseif field.type == "radio_group" %}
 
-                <div class="{{ columnClass }}" style="margin-bottom: 20px;">
+                <div class="{{ columnClass }}" style="margin-bottom: 20px;"{{ field.rulesHtmlData }}>
 
                     {{ field.renderLabel({
                         labelClass: " active" ~ (field.required ? " required"),
@@ -94,7 +94,7 @@
 
             {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
 
-                <div class="{{ columnClass }}" style="margin-bottom: 20px;">
+                <div class="{{ columnClass }}" style="margin-bottom: 20px;"{{ field.rulesHtmlData }}>
 
                     {{ field.renderLabel({
                         labelClass: " active" ~ (field.required ? " required"),
@@ -120,7 +120,7 @@
 
             {% elseif field.type == "textarea" %}
 
-                <div class="{{ columnClass }}">
+                <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
                     {{ field.renderInput({
                         class: 'materialize-textarea'
                     }) }}
@@ -132,7 +132,7 @@
 
             {% elseif field.type == "checkbox" %}
 
-                <div class="{{ columnClass|replace('input-field', '') }}">
+                <div class="{{ columnClass|replace('input-field', '') }}"{{ field.rulesHtmlData }}>
 
                     {{ field.renderInput }}
                     {{ field.renderLabel({
@@ -146,7 +146,7 @@
 
             {% elseif field.type == "mailing_list" %}
 
-                <div class="{{ columnClass|replace('input-field', '') }}">
+                <div class="{{ columnClass|replace('input-field', '') }}"{{ field.rulesHtmlData }}>
 
                     {{ field.renderInput|replace('<label>', '')|replace('</label>', '')|replace(field.label, '')|raw }}
                     {{ field.renderLabel({
@@ -160,7 +160,7 @@
 
             {% elseif field.type == "submit" %}
 
-                <div class="{{ columnClass }}">
+                <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
                     {{ field.render({
                         class: "btn btn-large waves-effect waves-light"
                     }) }}
@@ -174,7 +174,7 @@
 
             {% elseif field.type == "file" %}
 
-                <div class="{{ columnClass|replace('input-field', '') }} file-field input-field">
+                <div class="{{ columnClass|replace('input-field', '') }} file-field input-field"{{ field.rulesHtmlData }}>
                     <div class="btn">
                         <span>File</span>
                         {{ field.renderInput }}
@@ -192,7 +192,7 @@
 
             {% elseif field.type == "cc_details" %}
 
-                <div class="{{ columnClass|replace('input-field', '') }}">
+                <div class="{{ columnClass|replace('input-field', '') }}"{{ field.rulesHtmlData }}>
                     {{ field.renderLabel }}
 
                     {% for layoutRow in field.layoutRows %}
@@ -231,7 +231,7 @@
 
             {% else %}
 
-                <div class="{{ columnClass }}">
+                <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
                     {{ field.renderInput({
                         instructionsClass: "help-block",
                         instructionsBelowField: true,

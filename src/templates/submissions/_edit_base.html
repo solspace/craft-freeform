@@ -60,7 +60,7 @@
         {% for page in layout.pages %}
             <div class="field tab-content{% if not loop.first %} hidden{% endif %}" data-for-tab="{{ page.index }}">
                 {% for field in layout.hiddenFields if field.pageIndex == page.index and field.type not in ["mailing_list"] %}
-                    {% set fieldHandle = "field_" ~ field.id %}
+                    {% set fieldHandle = field.handle %}
 
                     <div class="fields-row">
                         <div class="fields-column">
@@ -82,8 +82,8 @@
                 {% for row in page %}
                     <div class="fields-row">
                         {%- for field in row if field.type not in ["submit", "confirmation", "password"] -%}
-                            <div class="fields-column{{ field.required ? " field-required" : "" }}">
-                                {% set fieldHandle = "field_" ~ field.id %}
+                            <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
+                                {% set fieldHandle = field.handle %}
 
                                 {% if field.canStoreValues %}
                                     {% set value = attribute(submission, fieldHandle).value %}

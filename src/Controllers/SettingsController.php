@@ -42,16 +42,25 @@ class SettingsController extends BaseController
     {
         $defaultView = $this->getSettingsModel()->defaultView;
 
+        $canAccessDashboard     = PermissionHelper::checkPermission(Freeform::PERMISSION_DASHBOARD_ACCESS);
         $canAccessForms         = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
         $canAccessSubmissions   = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessFields        = PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessSettings      = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
+        $isDashboardView  = $defaultView === Freeform::VIEW_DASHBOARD;
         $isFormView       = $defaultView === Freeform::VIEW_FORMS;
         $isSubmissionView = $defaultView === Freeform::VIEW_SUBMISSIONS;
 
-        if (($isFormView && !$canAccessForms) || ($isSubmissionView && !$canAccessSubmissions)) {
+        $cantAccessFormView       = $isFormView && !$canAccessForms;
+        $cantAccessSubmissionView = $isSubmissionView && !$canAccessSubmissions;
+        $cantAccessDashboardView  = $isDashboardView && !$canAccessDashboard;
+        if ($cantAccessFormView || $cantAccessSubmissionView || $cantAccessDashboardView) {
+            if ($canAccessDashboard) {
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_DASHBOARD));
+            }
+
             if ($canAccessForms) {
                 return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_FORMS));
             }
@@ -187,6 +196,7 @@ class SettingsController extends BaseController
 
         if (\Craft::$app->plugins->savePluginSettings($plugin, $postData)) {
             \Craft::$app->session->setNotice(Freeform::t('Settings Saved'));
+
             return $this->redirectToPostedUrl();
         }
 

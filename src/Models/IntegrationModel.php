@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -21,7 +22,7 @@ use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
-use Solspace\Freeform\Library\Logging\CraftLogger;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 use Solspace\Freeform\Records\IntegrationRecord;
 
@@ -134,6 +135,30 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
     }
 
     /**
+     * @return string
+     */
+    public function getCpEditUrl(): string
+    {
+        $id   = $this->id;
+        switch ($this->type) {
+            case IntegrationRecord::TYPE_PAYMENT_GATEWAY:
+                $type = 'payment-gateways';
+                break;
+
+            case IntegrationRecord::TYPE_MAILING_LIST:
+                $type = 'mailing-lists';
+                break;
+
+            case IntegrationRecord::TYPE_CRM:
+            default:
+                $type = 'crm';
+                break;
+        }
+
+        return UrlHelper::cpUrl("freeform/settings/$type/$id");
+    }
+
+    /**
      * @return AbstractIntegration|AbstractCRMIntegration|AbstractMailingListIntegration|AbstractPaymentGatewayIntegration
      * @throws IntegrationException
      * @throws IntegrationNotFoundException
@@ -144,15 +169,18 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
 
         switch ($this->type) {
             case IntegrationRecord::TYPE_MAILING_LIST:
-                $handler = $freeform->mailingLists;
+                $logCategory = FreeformLogger::MAILING_LIST_INTEGRATION;
+                $handler     = $freeform->mailingLists;
                 break;
 
             case IntegrationRecord::TYPE_CRM:
-                $handler = $freeform->crm;
+                $logCategory = FreeformLogger::CRM_INTEGRATION;
+                $handler     = $freeform->crm;
                 break;
 
             case IntegrationRecord::TYPE_PAYMENT_GATEWAY:
-                $handler = $freeform->paymentGateways;
+                $logCategory = FreeformLogger::PAYMENT_GATEWAY;
+                $handler     = $freeform->paymentGateways;
                 break;
 
             default:
@@ -172,7 +200,7 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
             $this->lastUpdate,
             $this->accessToken,
             $this->settings,
-            new CraftLogger(),
+            FreeformLogger::getInstance($logCategory),
             new CraftPluginConfiguration(),
             new CraftTranslator(),
             $handler

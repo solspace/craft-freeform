@@ -6,6 +6,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Connections\AbstractConnection;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
 use Solspace\Freeform\Library\Exceptions\Connections\ConnectionException;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class ConnectionProperties extends AbstractProperties
 {
@@ -27,7 +28,9 @@ class ConnectionProperties extends AbstractProperties
                     try {
                         $list[] = AbstractConnection::create($item);
                     } catch (ConnectionException $e) {
-                        Freeform::getInstance()->logger->warning($e->getMessage());
+                        Freeform::getInstance()->logger
+                            ->getLogger(FreeformLogger::ELEMENT_CONNECTION)
+                            ->warning($e->getMessage(), ['properties' => $list]);
                     }
                 }
             }

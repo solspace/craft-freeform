@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 2.4.0 - 2018-10-05
+### Added
+- Added Conditional Rules logic for fields and pages!
+- Added Dashboard that gives you convenient insights and an overview of your forms, submissions, settings and logged errors.
+- Added an Error Log page inside Freeform control panel area to conveniently check for Freeform-related errors.
+
+### Changed
+- Improved Composer's Property Editor heading to have tabs and larger titles instead of buttons.
+- Consolidated Freeform's many error log file writing into a unified `freeform.log` error log file.
+- Updated Dashboard widget charts to start at `0` and no longer display negative numbers when there's no data.
+- Updated column breakpoint for Bootstrap formatting templates to be `sm` instead of `lg`.
+
+### Fixed
+- Fixed a bug where File Upload fields weren't respecting `extraAllowedFileExtensions` config override setting.
+- Fixed a bug where the Freeform 2.3 migration would not work correctly with PostgreSQL.
+- Fixed a bug where `Submission::__isset()` check was sometimes returning `null` instead of `false`.
+
 ## 2.3.4 - 2018-09-24
 ### Changed
 - Updated page changes (forward and backward) in multipage forms to auto-scroll to form (helpful if your form is lower down on page).

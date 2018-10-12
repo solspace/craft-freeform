@@ -6,6 +6,9 @@ use Solspace\Commons\Configurations\BaseConfiguration;
 
 class ExternalOptionsConfiguration extends BaseConfiguration
 {
+    /** @var int */
+    protected $siteId;
+
     /** @var string */
     protected $labelField;
 
@@ -29,6 +32,14 @@ class ExternalOptionsConfiguration extends BaseConfiguration
 
     /** @var string */
     protected $emptyOption;
+
+    /**
+     * @return int|null
+     */
+    public function getSiteId()
+    {
+        return $this->castToInt($this->siteId);
+    }
 
     /**
      * @return string|null

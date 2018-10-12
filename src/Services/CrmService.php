@@ -149,7 +149,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                         'integrationId' => $id,
                         'handle'        => $handle,
                     ]
-                );
+                )
+                ->execute();
         }
 
         foreach ($fields as $field) {
@@ -180,7 +181,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                             'integrationId' => $id,
                             'handle'        => $field->getHandle(),
                         ]
-                    );
+                    )
+                    ->execute();
             }
         }
 
@@ -192,7 +194,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 IntegrationRecord::TABLE,
                 ['forceUpdate' => 0],
                 ['id' => $id]
-            );
+            )
+            ->execute();
 
         return true;
     }

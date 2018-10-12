@@ -71,7 +71,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                         'integrationId' => $id,
                         'resourceId'    => $resourceId,
                     ]
-                );
+                )
+                ->execute();
         }
 
         foreach ($mailingLists as $mailingList) {
@@ -100,7 +101,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                             'integrationId' => $id,
                             'resourceId'    => $mailingList->getId(),
                         ]
-                    );
+                    )
+                    ->execute();
             }
         }
 
@@ -114,7 +116,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                 IntegrationRecord::TABLE,
                 ['forceUpdate' => 0],
                 ['id' => $id]
-            );
+            )
+            ->execute();
 
         return true;
     }
@@ -341,7 +344,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                             'mailingListId' => $mailingListId,
                             'handle'        => $handle,
                         ]
-                    );
+                    )
+                    ->execute();
             }
 
             foreach ($fields as $field) {
@@ -374,7 +378,8 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                                 'mailingListId' => $mailingListId,
                                 'handle'        => $field->getHandle(),
                             ]
-                        );
+                        )
+                        ->execute();
                 }
             }
         }

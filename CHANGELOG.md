@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 2.4.1 - 2018-10-12
+### Changed
+- Updated Spam Counts for forms to correctly reflect the number of submissions in spam folder when Spam Folder is enabled.
+- Updated Element Feeder feature to include Site selector to allow specifying of alternate site content.
+
+### Fixed
+- Fixed a bug where all API integrations were always forcing a refresh on each form edit page.
+- Fixed a bug where the Email field type and some others were not correctly mapping to Craft Entries in Element Connections feature.
+- Fixed a bug where the Phone field type JS validation was causing issues in IE11.
+- Fixed a bug where uploaded files were no longer displaying in CP submission detail view.
+
 ## 2.4.0 - 2018-10-05
 ### Added
 - Added Conditional Rules logic for fields and pages!

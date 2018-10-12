@@ -350,6 +350,7 @@ class FieldsService extends Component implements FieldHandlerInterface
         $config     = new ExternalOptionsConfiguration($configuration);
         $labelField = $config->getLabelField() ?? 'title';
         $valueField = $config->getValueField() ?? 'id';
+        $siteId     = $config->getSiteId() ?? \Craft::$app->sites->currentSite->id;
         $options    = [];
 
         if (!\is_array($selectedValues)) {
@@ -358,7 +359,7 @@ class FieldsService extends Component implements FieldHandlerInterface
 
         switch ($source) {
             case ExternalOptionsInterface::SOURCE_ENTRIES:
-                $items = Entry::find()->sectionId($target)->all();
+                $items = Entry::find()->sectionId($target)->siteId($siteId)->all();
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;
@@ -368,7 +369,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 break;
 
             case ExternalOptionsInterface::SOURCE_CATEGORIES:
-                $items = Category::find()->groupId($target)->all();
+                $items = Category::find()->groupId($target)->siteId($siteId)->all();
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;
@@ -378,7 +379,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 break;
 
             case ExternalOptionsInterface::SOURCE_TAGS:
-                $items = Tag::find()->groupId($target)->all();
+                $items = Tag::find()->groupId($target)->siteId($siteId)->all();
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->title;
                     $value     = $item->$valueField ?? $item->id;
@@ -388,7 +389,7 @@ class FieldsService extends Component implements FieldHandlerInterface
                 break;
 
             case ExternalOptionsInterface::SOURCE_USERS:
-                $items      = User::find()->groupId($target)->all();
+                $items      = User::find()->groupId($target)->siteId($siteId)->all();
                 $labelField = $config->getLabelField() ?? 'username';
                 foreach ($items as $item) {
                     $label     = $item->$labelField ?? $item->username;

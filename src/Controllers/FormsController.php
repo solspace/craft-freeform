@@ -324,6 +324,15 @@ class FormsController extends BaseController
         $paymentGateways         = $this->getPaymentGatewaysService()->getAllIntegrationObjects();
         $settings                = $this->getSettingsService()->getSettingsModel();
 
+        $sites = [];
+        foreach (\Craft::$app->sites->getAllSites() as $site) {
+            $sites[] = [
+                'id'     => (int) $site->id,
+                'handle' => $site->handle,
+                'name'   => $site->name,
+            ];
+        }
+
         $templateVariables = [
             'form'                     => $model,
             'title'                    => $title,
@@ -355,6 +364,8 @@ class FormsController extends BaseController
             'craftFields'              => $this->getEncodedJson($this->getCraftFields()),
             'customFields'             => $this->getEncodedJson($this->getAllCustomFieldList()),
             'generatedOptions'         => $this->getEncodedJson($this->getGeneratedOptionsList($model->getForm())),
+            'currentSiteId'            => (int) \Craft::$app->getSites()->currentSite->id,
+            'sites'                    => $this->getEncodedJson($sites),
         ];
 
         return $this->renderTemplate('freeform/forms/edit', $templateVariables);
@@ -465,6 +476,7 @@ class FormsController extends BaseController
                 'key'        => $group->id,
                 'value'      => $group->name,
                 'entryTypes' => $entryTypesBySectionId[$group->id] ?? [],
+                'sites'      => array_keys($group->siteSettings),
             ];
         }
 
@@ -474,6 +486,7 @@ class FormsController extends BaseController
             $categoryList[] = [
                 'key'   => $group->id,
                 'value' => $group->name,
+                'sites' => array_keys($group->siteSettings),
             ];
         }
 

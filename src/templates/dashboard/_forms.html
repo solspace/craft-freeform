@@ -44,10 +44,10 @@
                 <td>
                     {% if currentUser.can("freeform-formsManage") and isSpamFolderEnabled %}
                         <a href="{{ url('freeform/spam/' ~ form.handle) }}">
-                            {{ form.spamBlockCount }}
+                            {{ form.getBlockedSpamCount() }}
                         </a>
                     {% else %}
-                        {{ form.spamBlockCount }}
+                        {{ form.getBlockedSpamCount() }}
                     {% endif %}
                 </td>
             </tr>

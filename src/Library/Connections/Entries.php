@@ -4,6 +4,9 @@ namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
 use craft\elements\Entry;
+use craft\fields\BaseOptionsField;
+use craft\fields\BaseRelationField;
+use craft\models\FieldLayout;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 
 class Entries extends AbstractConnection
@@ -69,7 +72,20 @@ class Entries extends AbstractConnection
             'typeId'    => $this->getEntryType(),
         ]);
 
+        $fieldLayout = $entry->getFieldLayout();
+        if (null === $fieldLayout) {
+            $fieldLayout = new FieldLayout();
+        }
+
         foreach ($keyValuePairs as $key => $value) {
+            $field = $fieldLayout->getFieldByHandle($key);
+
+            $hasOptions = $field instanceof BaseOptionsField;
+            $hasRelations = $field instanceof BaseRelationField;
+            if (\is_array($value) && !$hasOptions && !$hasRelations) {
+                $value = reset($value);
+            }
+
             $entry->{$key} = $value;
         }
 

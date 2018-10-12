@@ -42,6 +42,9 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  */
 class FormModel extends Model
 {
+    /** @var int[] */
+    private static $spamBlockCountCache;
+
     /** @var int */
     public $id;
 
@@ -140,6 +143,24 @@ class FormModel extends Model
         }
 
         return $this->composer;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBlockedSpamCount(): int
+    {
+        if (!isset(self::$spamBlockCountCache[$this->id])) {
+            $spamBlockCount = $this->spamBlockCount;
+
+            if (Freeform::getInstance()->settings->isSpamFolderEnabled()) {
+                $spamBlockCount = Freeform::getInstance()->spamSubmissions->getSubmissionCount([$this->id], null, true);
+            }
+
+            self::$spamBlockCountCache[$this->id] = $spamBlockCount;
+        }
+
+        return self::$spamBlockCountCache[$this->id];
     }
 
     /**

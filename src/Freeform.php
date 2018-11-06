@@ -161,6 +161,7 @@ class Freeform extends Plugin
     public function init()
     {
         parent::init();
+        \Yii::setAlias('@freeform', __DIR__);
 
         $this->initControllerMap();
         $this->initServices();

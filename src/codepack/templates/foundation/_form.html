@@ -107,6 +107,8 @@
 
                     {% elseif field.type == "cc_details" %}
 
+                        {# FOR FREEFORM PAYMENTS #}
+
                         {{ field.renderLabel({
                             labelClass: (field.required ? " required" : ""),
                             instructionsClass: "help-text",

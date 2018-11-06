@@ -45,11 +45,11 @@
                     instructionsClass: "freeform-instructions",
                 }) }}
 
+                {# FOR FREEFORM PAYMENTS #}
                 {% if field.layoutRows is defined %}
                     {% for layoutRow in field.layoutRows %}
                         <div class="freeform-row {{ form.customAttributes.rowClass }}">
                             {% for layoutField in layoutRow %}
-
                                 <div class="{{ columnClass }}">
                                     {{ layoutField.render({
                                         class: "freeform-input",
@@ -60,7 +60,6 @@
                                 </div>
                             {% endfor %}
                         </div>
-
                     {% endfor %}
                 {% endif %}
 

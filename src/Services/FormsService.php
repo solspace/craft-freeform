@@ -318,10 +318,7 @@ class FormsService extends Component implements FormHandlerInterface
 
         if (empty($templateName)) {
             throw new FreeformException(
-                Freeform::t(
-                    'freeform',
-                    "Can't use render() if no form template specified"
-                )
+                Freeform::t("Can't use render() if no form template specified")
             );
         }
 
@@ -417,14 +414,15 @@ class FormsService extends Component implements FormHandlerInterface
      */
     public function addDateTimeJavascript(FormRenderEvent $event)
     {
-        $form = $event->getForm();
+        $freeformPath = \Yii::getAlias('@freeform');
+        $form         = $event->getForm();
 
         if ($form->getLayout()->hasPhonePatternFields()) {
             static $imaskLoaded;
 
             if (null === $imaskLoaded) {
-                $imaskMainJs = file_get_contents(__DIR__ . '/../Resources/js/lib/imask/imask.3.4.0.min.js');
-                $imaskJs     = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/fields/input-mask.js');
+                $imaskMainJs = file_get_contents($freeformPath . '/Resources/js/lib/imask/imask.3.4.0.min.js');
+                $imaskJs     = file_get_contents($freeformPath . '/Resources/js/cp/form-frontend/fields/input-mask.js');
 
                 if ($this->getSettingsService()->isFooterScripts()) {
                     \Craft::$app->view->registerJs($imaskMainJs, View::POS_END);
@@ -441,15 +439,15 @@ class FormsService extends Component implements FormHandlerInterface
 
             if (null === $datepickerLoaded) {
                 $locale     = \Craft::$app->locale->id;
-                $localePath = __DIR__ . "/../Resources/js/lib/flatpickr/i10n/$locale.js";
+                $localePath = $freeformPath . "/Resources/js/lib/flatpickr/i10n/$locale.js";
                 if (!file_exists($localePath)) {
-                    $localePath = __DIR__ . '/../Resources/js/lib/flatpickr/i10n/default.js';
+                    $localePath = $freeformPath . '/Resources/js/lib/flatpickr/i10n/default.js';
                 }
 
-                $flatpickrCss      = file_get_contents(__DIR__ . '/../Resources/css/form-frontend/fields/datepicker.css');
-                $flatpickrJs       = file_get_contents(__DIR__ . '/../Resources/js/lib/flatpickr/flatpickr.js');
+                $flatpickrCss      = file_get_contents($freeformPath . '/Resources/css/form-frontend/fields/datepicker.css');
+                $flatpickrJs       = file_get_contents($freeformPath . '/Resources/js/lib/flatpickr/flatpickr.js');
                 $flatpickrLocaleJs = file_get_contents($localePath);
-                $datepickerJs      = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/fields/datepicker.js');
+                $datepickerJs      = file_get_contents($freeformPath . '/Resources/js/cp/form-frontend/fields/datepicker.js');
 
                 if ($this->getSettingsService()->isFooterScripts()) {
                     \Craft::$app->view->registerCss($flatpickrCss);
@@ -475,7 +473,7 @@ class FormsService extends Component implements FormHandlerInterface
     {
         if ($this->getSettingsService()->isFormSubmitDisable()) {
             // Add the form submit disable logic
-            $formSubmitJs = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/submit-disabler.js');
+            $formSubmitJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/submit-disabler.js');
             $formSubmitJs = str_replace(
                 ['{{FORM_ANCHOR}}', '{{PREV_BUTTON_NAME}}'],
                 [$event->getForm()->getAnchor(), SubmitField::PREVIOUS_PAGE_INPUT_NAME],
@@ -498,7 +496,7 @@ class FormsService extends Component implements FormHandlerInterface
         $form = $event->getForm();
 
         if ($form->getAnchor() && $form->isFormPosted()) {
-            $invalidFormJs = file_get_contents(__DIR__ . '/../Resources/js/cp/form-frontend/form-jump-to-anchor.js');
+            $invalidFormJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form-jump-to-anchor.js');
             $invalidFormJs = str_replace('{{FORM_ANCHOR}}', $form->getAnchor(), $invalidFormJs);
 
             if ($this->getSettingsService()->isFooterScripts()) {

@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Controllers;
 
+use Carbon\Carbon;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
@@ -113,9 +114,12 @@ class SubmissionsController extends BaseController
         $csvData = [];
         $labels  = ['ID', 'Submission Date'];
         foreach ($submissions as $submission) {
+            $date = new Carbon($submission['dateCreated'], 'UTC');
+            $date->setTimezone(date_default_timezone_get());
+
             $rowData   = [];
             $rowData[] = $submission['id'];
-            $rowData[] = $submission['dateCreated'];
+            $rowData[] = $date->toDateTimeString();
 
             foreach ($form->getLayout()->getFields() as $field) {
                 if ($field instanceof NoStorageInterface) {

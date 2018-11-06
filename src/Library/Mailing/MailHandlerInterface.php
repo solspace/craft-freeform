@@ -39,7 +39,7 @@ interface MailHandlerInterface
     /**
      * @param int $id
      *
-     * @return NotificationInterface
+     * @return NotificationInterface|null
      */
-    public function getNotificationById($id): NotificationInterface;
+    public function getNotificationById($id);
 }

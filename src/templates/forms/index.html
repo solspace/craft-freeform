@@ -65,10 +65,12 @@
                             {% endif %}
                         </span>
 
+                        {% if not isSpamFolderEnabled %}
                         <a class="reset-spam-count btn small icon-refresh"
                            data-confirm-message="{{ "Are you sure you want to reset the spam count for '{formName}'"|t('freeform', {formName: form.name}) }}"
                            data-form-id="{{ form.id }}"
                         >{{ "Reset"|t('freeform') }}</a>
+                        {% endif %}
                     </td>
                     <td class="thin">
                         <div class="action-buttons">

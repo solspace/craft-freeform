@@ -140,20 +140,7 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
     public function getCpEditUrl(): string
     {
         $id   = $this->id;
-        switch ($this->type) {
-            case IntegrationRecord::TYPE_PAYMENT_GATEWAY:
-                $type = 'payment-gateways';
-                break;
-
-            case IntegrationRecord::TYPE_MAILING_LIST:
-                $type = 'mailing-lists';
-                break;
-
-            case IntegrationRecord::TYPE_CRM:
-            default:
-                $type = 'crm';
-                break;
-        }
+        $type = $this->getTypeSlug();
 
         return UrlHelper::cpUrl("freeform/settings/$type/$id");
     }
@@ -209,5 +196,23 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
         $integration->setForceUpdate($this->forceUpdate);
 
         return $integration;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTypeSlug(): string
+    {
+        switch ($this->type) {
+            case IntegrationRecord::TYPE_PAYMENT_GATEWAY:
+                return 'payment-gateways';
+
+            case IntegrationRecord::TYPE_MAILING_LIST:
+                return 'mailing-lists';
+
+            case IntegrationRecord::TYPE_CRM:
+            default:
+                return 'crm';
+        }
     }
 }

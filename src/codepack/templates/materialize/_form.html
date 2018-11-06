@@ -202,6 +202,8 @@
 
                 {% elseif field.type == "cc_details" %}
 
+                    {# FOR FREEFORM PAYMENTS #}
+
                     <div class="{{ columnClass|replace('input-field', '') }}"{{ field.rulesHtmlData }}>
                         {{ field.renderLabel }}
 

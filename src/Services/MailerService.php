@@ -73,12 +73,16 @@ class MailerService extends Component implements MailHandlerInterface
         }
 
         if (!$notification) {
-            throw new FreeformException(
+            $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION);
+            $logger->warning(
                 Freeform::t(
                     'Email notification template with ID {id} not found',
                     ['id' => $notificationId]
-                )
+                ),
+                ['form' => $form->getName()]
             );
+
+            return 0;
         }
 
         $fieldValues = $this->getFieldValues($fields, $form, $submission);
@@ -162,9 +166,9 @@ class MailerService extends Component implements MailHandlerInterface
     /**
      * @param int $id
      *
-     * @return NotificationInterface
+     * @return NotificationInterface|null
      */
-    public function getNotificationById($id): NotificationInterface
+    public function getNotificationById($id)
     {
         return Freeform::getInstance()->notifications->getNotificationById($id);
     }

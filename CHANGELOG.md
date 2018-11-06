@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 2.4.2 - 2018-11-06
+### Added
+- Added dotmailer mailing list integration for Freeform Pro edition.
+
+### Fixed
+- Fixed a bug where Exports were not showing the correct localized dates.
+- Fixed a bug where Payments would sometimes error when using dynamic subscription-based payments.
+- Fixed a bug where viewing the Submissions and Spam Folder pages would error when a form contained a dash in its handle.
+- Fixed a bug where Rating fields were not displaying the stars CSS in rendered forms and CP submissions view.
+- Fixed a bug where there were a couple different JS warnings in CP submissions view and inside rendered forms, when using certain special fields.
+- Fixed a bug where submitting a form would error if an invalid/removed email notification template was assigned to that form.
+- Fixed a bug where the 'Reset' spam button would incorrectly show in CP Forms list page when using with Spam Folder.
+
 ## 2.4.1 - 2018-10-12
 ### Changed
 - Updated Spam Counts for forms to correctly reflect the number of submissions in spam folder when Spam Folder is enabled.

@@ -12,8 +12,8 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\helpers\UrlHelper;
-use GuzzleHttp\Exception\RequestException;
 use craft\web\Controller;
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -248,7 +248,7 @@ class CrmController extends Controller
      */
     public function actionForceAuthorization(string $handle)
     {
-        $model  = $this->getCRMService()->getIntegrationByHandle($handle);
+        $model = $this->getCRMService()->getIntegrationByHandle($handle);
 
         if (!$model) {
             throw new IntegrationException(

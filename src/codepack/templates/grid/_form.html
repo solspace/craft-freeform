@@ -48,6 +48,7 @@
                     errorClass: "freeform-errors",
                 }) }}
 
+                {# FOR FREEFORM PAYMENTS #}
                 {% if field.layoutRows is defined %}
                     {% for layoutRow in field.layoutRows %}
                         <div class="freeform-row {{ form.customAttributes.rowClass }}">
@@ -64,7 +65,6 @@
                                 </div>
                             {% endfor %}
                         </div>
-
                     {% endfor %}
                 {% endif %}
 

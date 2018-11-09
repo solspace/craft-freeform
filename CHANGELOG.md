@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.4.3 - 2018-11-09
+### Fixed
+- Fixed a bug where CSV exports could sometimes error on multi-option field types.
+- Fixed a bug where Widgets and the Freeform Dashboard could error in PostgreSQL and some versions of MySQL.
+
 ## 2.4.2 - 2018-11-06
 ### Added
 - Added dotmailer mailing list integration for Freeform Pro edition.

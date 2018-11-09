@@ -26,6 +26,10 @@ class ExportDataCSV extends ExportData
         foreach ($row as $key => $value) {
             // Escape inner quotes by double-quoting and wrap non-empty contents in new quotes
             if ($value != '') {
+                if (\is_array($value) || \is_object($value)) {
+                    $value = implode(', ', (array) $value);
+                }
+
                 $row[$key] = '"' . str_replace('"', '""', $value) . '"';
             }
         }

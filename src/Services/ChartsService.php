@@ -47,18 +47,18 @@ class ChartsService extends Component
             }
 
             $query = (new Query())
-                ->select(['DATE(dateCreated) as dt', 'COUNT(id) as count'])
-                ->from(Submission::TABLE)
+                ->select(['DATE([[submission.dateCreated]]) as dt', 'COUNT([[submission.id]]) as count'])
+                ->from(Submission::TABLE . ' submission')
                 ->groupBy(['dt']);
 
-            $query->where(['between', 'dateCreated', $rangeStart->toDateTimeString(), $rangeEnd->toDateTimeString()]);
+            $query->where(['between', '[[submission.dateCreated]]', $rangeStart->toDateTimeString(), $rangeEnd->toDateTimeString()]);
 
             $form = null;
             if ($aggregate) {
-                $query->andWhere(['in', 'formId', $formIds]);
+                $query->andWhere(['in', '[[submission.formId]]', $formIds]);
             } else {
                 $form = $forms[$formId];
-                $query->andWhere(['formId' => $formId]);
+                $query->andWhere(['[[submission.formId]]' => $formId]);
             }
 
             $result = $query->all();
@@ -103,11 +103,11 @@ class ChartsService extends Component
         $formIds = array_keys($forms);
 
         $result = (new Query())
-            ->select(['formId', 'COUNT(id) as count'])
-            ->from(Submission::TABLE)
-            ->where(['between', 'dateCreated', $rangeStart, $rangeEnd])
-            ->andWhere(['IN', 'formId', $formIds])
-            ->groupBy(['formId'])
+            ->select(['[[submission.formId]]', 'COUNT([[submission.id]]) as count'])
+            ->from(Submission::TABLE . ' submission')
+            ->where(['between', '[[submission.dateCreated]]', $rangeStart, $rangeEnd])
+            ->andWhere(['IN', '[[submission.formId]]', $formIds])
+            ->groupBy(['[[submission.formId]]'])
             ->all();
 
         $labels = $data = $backgroundColors = $hoverBackgroundColors = $formsWithResults = [];

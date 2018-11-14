@@ -16,17 +16,20 @@ use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OneLineTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OptionsTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\RecipientTrait;
 
-class DynamicRecipientField extends AbstractField implements RecipientInterface, ObscureValueInterface, MultipleValueInterface, OptionsInterface
+class DynamicRecipientField extends AbstractField implements RecipientInterface, ObscureValueInterface, MultipleValueInterface, OptionsInterface, OneLineInterface
 {
     use RecipientTrait;
     use MultipleValueTrait;
     use OptionsTrait;
+    use OneLineTrait;
 
     /** @var bool */
     protected $showAsRadio;
@@ -40,6 +43,14 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
     public static function getFieldType(): string
     {
         return FieldInterface::TYPE_DYNAMIC_RECIPIENTS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowAsSelect(): bool
+    {
+        return !$this->isShowAsRadio() && !$this->isShowAsCheckboxes();
     }
 
     /**
@@ -66,6 +77,22 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
     public function getType(): string
     {
         return FieldInterface::TYPE_DYNAMIC_RECIPIENTS;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onBeforeInputHtml(): string
+    {
+        return $this->isOneLine() && !$this->isShowAsSelect() ? '<div class="input-group-one-line">' : '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onAfterInputHtml(): string
+    {
+        return $this->isOneLine() && !$this->isShowAsSelect() ? '</div>' : '';
     }
 
     /**
@@ -126,8 +153,8 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
     public function getRecipients(): array
     {
         /** @var Option[] $options */
-        $options = $this->getOptions();
-        $value   = $this->getValue();
+        $options    = $this->getOptions();
+        $value      = $this->getValue();
         $recipients = [];
 
         if (null !== $value) {
@@ -180,12 +207,13 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
     private function renderAsSelect(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
         $output = '<select '
+            . $this->getInputAttributesString()
             . $this->getAttributeString('name', $this->getHandle())
             . $this->getAttributeString('type', $this->getType())
             . $this->getAttributeString('id', $this->getIdAttribute())
-            . $this->getAttributeString('class', $attributes->getClass())
             . $this->getRequiredAttribute()
             . $attributes->getInputAttributesAsString()
             . '>';
@@ -207,16 +235,17 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
     private function renderAsRadios(): string
     {
         $attributes = $this->getCustomAttributes();
-        $output     = '';
+        $this->addInputAttribute('class', $attributes->getClass());
 
+        $output = '';
         foreach ($this->options as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '
+                . $this->getInputAttributesString()
                 . $this->getAttributeString('name', $this->getHandle())
                 . $this->getAttributeString('type', 'radio')
                 . $this->getAttributeString('id', $this->getIdAttribute() . "-$index")
-                . $this->getAttributeString('class', $attributes->getClass())
                 . $this->getAttributeString('value', $index)
                 . $this->getParameterString('checked', $option->isChecked())
                 . $attributes->getInputAttributesAsString()
@@ -234,16 +263,17 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
     private function renderAsCheckboxes(): string
     {
         $attributes = $this->getCustomAttributes();
-        $output     = '';
+        $this->addInputAttribute('class', $attributes->getClass());
 
+        $output = '';
         foreach ($this->options as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '
+                . $this->getInputAttributesString()
                 . $this->getAttributeString('name', $this->getHandle() . '[]')
                 . $this->getAttributeString('type', 'checkbox')
                 . $this->getAttributeString('id', $this->getIdAttribute() . "-$index")
-                . $this->getAttributeString('class', $attributes->getClass())
                 . $this->getAttributeString('value', $index)
                 . $this->getParameterString('checked', $option->isChecked())
                 . $attributes->getInputAttributesAsString()

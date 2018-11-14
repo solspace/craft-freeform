@@ -39,11 +39,12 @@ class MultipleSelectField extends AbstractExternalOptionsField implements Multip
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
         $output = '<select '
+            . $this->getInputAttributesString()
             . $this->getAttributeString('name', $this->getHandle() . '[]')
             . $this->getAttributeString('id', $this->getIdAttribute())
-            . $this->getAttributeString('class', $attributes->getClass())
             . $this->getParameterString('multiple', true)
             . $attributes->getInputAttributesAsString()
             . $this->getRequiredAttribute()

@@ -16,12 +16,13 @@ use craft\base\Component;
 use craft\db\Query;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\IntegrationsQueueModel;
 use Solspace\Freeform\Records\IntegrationsQueueRecord;
 
-class IntegrationsQueueService extends Component
+class IntegrationsQueueService extends BaseService
 {
     /**
      * Stores necessary additional form data, so integrations could be run asynchronously.

@@ -26,7 +26,7 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use yii\base\Component;
 
-class SettingsService extends Component
+class SettingsService extends BaseService
 {
     const EVENT_REGISTER_SETTINGS_NAVIGATION = 'registerSettingsNavigation';
 
@@ -204,6 +204,11 @@ class SettingsService extends Component
         }
 
         return $age;
+    }
+
+    public function isRenderFormHtmlInCpViews(): bool
+    {
+        return $this->getSettingsModel()->renderFormHtmlInCpViews;
     }
 
     /**

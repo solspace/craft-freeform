@@ -20,7 +20,7 @@ use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Freeform\Records\NotificationRecord;
 use yii\base\Component;
 
-class NotificationsService extends Component
+class NotificationsService extends BaseService
 {
     const EVENT_BEFORE_SAVE   = 'beforeSave';
     const EVENT_AFTER_SAVE    = 'afterSave';

@@ -244,6 +244,12 @@
                                                 {{ 'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.'|t('freeform') }}
                                             </div>
                                         </div>
+                                    {% elseif field.type == "html" %}
+                                        {% if craft.freeform.settings.renderFormHtmlInCpViews %}
+                                            {{ field.render }}
+                                        {% else %}
+                                            {{ "Live HTML rendering currently disabled."|t("freeform") }}
+                                        {% endif %}
                                     {% elseif field.type != "recaptcha" %}
                                         {{ field.render }}
                                     {% endif %}

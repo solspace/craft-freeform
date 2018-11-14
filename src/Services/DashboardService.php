@@ -2,9 +2,6 @@
 
 namespace Solspace\Freeform\Services;
 
-use yii\base\Component;
-
-class DashboardService extends Component
+class DashboardService extends BaseService
 {
-
 }

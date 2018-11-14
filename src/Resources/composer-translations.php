@@ -245,4 +245,7 @@ return [
     'this item when',
     'is',
     'is not',
+    'Assets',
+    'All Assets',
+    'Filename',
 ];

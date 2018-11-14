@@ -33,38 +33,13 @@ class Install extends StreamlinedInstallMigration
 
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())
-                ->addField(
-                    'type',
-                    $this->enum(
-                        'type',
-                        [
-                            'text',
-                            'textarea',
-                            'email',
-                            'hidden',
-                            'select',
-                            'multiple_select',
-                            'checkbox',
-                            'checkbox_group',
-                            'radio_group',
-                            'file',
-                            'dynamic_recipients',
-                            'datetime',
-                            'number',
-                            'phone',
-                            'website',
-                            'rating',
-                            'regex',
-                            'confirmation',
-                            'cc_details',
-                        ]
-                    )->notNull()
-                )
+                ->addField('type', $this->string(50)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
                 ->addField('label', $this->string(255))
                 ->addField('required', $this->boolean()->defaultValue(false))
                 ->addField('instructions', $this->text())
-                ->addField('metaProperties', $this->text()),
+                ->addField('metaProperties', $this->text())
+                ->addIndex(['type']),
 
             (new Table('freeform_notifications'))
                 ->addField('id', $this->primaryKey())
@@ -84,12 +59,13 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->primaryKey())
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
-                ->addField('type', $this->enum('type', ['mailing_list', 'crm', 'payment_gateway'])->notNull())
+                ->addField('type', $this->string(50)->notNull())
                 ->addField('class', $this->string(255))
                 ->addField('accessToken', $this->string(255))
                 ->addField('settings', $this->text())
                 ->addField('forceUpdate', $this->boolean()->defaultValue(false))
-                ->addField('lastUpdate', $this->dateTime()),
+                ->addField('lastUpdate', $this->dateTime())
+                ->addIndex(['type']),
 
             (new Table('freeform_mailing_lists'))
                 ->addField('id', $this->primaryKey())

@@ -15,33 +15,18 @@ class m180417_134527_AddMultipleSelectTypeToFields extends Migration
      */
     public function safeUp(): bool
     {
-        $this->alterColumn(
-            '{{%freeform_fields}}',
-            'type',
-            $this->enum(
+        if ($this->db->getIsPgsql()) {
+            // Manually construct the SQL for Postgres
+            // (see https://github.com/yiisoft/yii2/issues/12077)
+            $this->execute('ALTER TABLE {{%freeform_fields}} ALTER COLUMN [[type]] TYPE VARCHAR(50)');
+            $this->execute('ALTER TABLE {{%freeform_fields}} ALTER COLUMN [[type]] SET NOT NULL');
+        } else {
+            $this->alterColumn(
+                '{{%freeform_fields}}',
                 'type',
-                [
-                    'text',
-                    'textarea',
-                    'email',
-                    'hidden',
-                    'select',
-                    'multiple_select',
-                    'checkbox',
-                    'checkbox_group',
-                    'radio_group',
-                    'file',
-                    'dynamic_recipients',
-                    'datetime',
-                    'number',
-                    'phone',
-                    'website',
-                    'rating',
-                    'regex',
-                    'confirmation',
-                ]
-            )->notNull()
-        );
+                $this->string(50)->notNull()
+            );
+        }
 
         return true;
     }
@@ -51,33 +36,6 @@ class m180417_134527_AddMultipleSelectTypeToFields extends Migration
      */
     public function safeDown(): bool
     {
-        $this->alterColumn(
-            '{{%freeform_fields}}',
-            'type',
-            $this->enum(
-                'type',
-                [
-                    'text',
-                    'textarea',
-                    'email',
-                    'hidden',
-                    'select',
-                    'checkbox',
-                    'checkbox_group',
-                    'radio_group',
-                    'file',
-                    'dynamic_recipients',
-                    'datetime',
-                    'number',
-                    'phone',
-                    'website',
-                    'rating',
-                    'regex',
-                    'confirmation',
-                ]
-            )->notNull()
-        );
-
         return true;
     }
 }

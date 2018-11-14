@@ -26,7 +26,7 @@ use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\Component;
 
-class FilesService extends Component implements FileUploadHandlerInterface
+class FilesService extends BaseService implements FileUploadHandlerInterface
 {
     const EVENT_BEFORE_UPLOAD = 'beforeUpload';
     const EVENT_AFTER_UPLOAD  = 'afterUpload';

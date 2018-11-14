@@ -63,10 +63,9 @@ interface CRMHandlerInterface
     /**
      * Push the mapped object values to the CRM
      *
-     * @param IntegrationProperties $properties
-     * @param Layout                $layout
+     * @param Submission $submission
      *
      * @return bool
      */
-    public function pushObject(Submission $submission);
+    public function pushObject(Submission $submission): bool;
 }

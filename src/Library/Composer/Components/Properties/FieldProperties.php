@@ -130,6 +130,12 @@ class FieldProperties extends AbstractProperties
     protected $useDatepicker;
 
     /** @var string */
+    protected $minDate;
+
+    /** @var string */
+    protected $maxDate;
+
+    /** @var string */
     protected $initialValue;
 
     /** @var int */
@@ -216,6 +222,21 @@ class FieldProperties extends AbstractProperties
     /** @var bool */
     protected $hidden;
 
+    /** @var bool */
+    protected $oneLine;
+
+    /** @var array */
+    protected $inputAttributes;
+
+    /** @var array */
+    protected $labelAttributes;
+
+    /** @var array */
+    protected $errorAttributes;
+
+    /** @var array */
+    protected $instructionAttributes;
+
     /**
      * @return string|null
      */
@@ -292,7 +313,7 @@ class FieldProperties extends AbstractProperties
                 $isChecked = false;
                 if (null !== $this->getValue()) {
                     $isChecked = (string) $option['value'] === (string) $this->getValue();
-                } elseif (null !== $this->getValues()) {
+                } else if (null !== $this->getValues()) {
                     $isChecked = \in_array($option['value'], $this->getValues(), true);
                 }
 
@@ -546,6 +567,22 @@ class FieldProperties extends AbstractProperties
     /**
      * @return string|null
      */
+    public function getMinDate()
+    {
+        return $this->minDate;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getMaxDate()
+    {
+        return $this->maxDate;
+    }
+
+    /**
+     * @return string|null
+     */
     public function getInitialValue()
     {
         return $this->initialValue;
@@ -776,6 +813,46 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return bool|null
+     */
+    public function isOneLine()
+    {
+        return $this->oneLine;
+    }
+
+    /**
+     * @return array
+     */
+    public function getInputAttributes(): array
+    {
+        return $this->inputAttributes ?? [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabelAttributes(): array
+    {
+        return $this->labelAttributes ?? [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrorAttributes(): array
+    {
+        return $this->errorAttributes ?? [];
+    }
+
+    /**
+     * @return array
+     */
+    public function getInstructionAttributes(): array
+    {
+        return $this->instructionAttributes ?? [];
+    }
+
+    /**
      * Return a list of all property fields and their type
      *
      * [propertyKey => propertyType, ..]
@@ -786,73 +863,81 @@ class FieldProperties extends AbstractProperties
     protected function getPropertyManifest(): array
     {
         return [
-            'hash'                 => self::TYPE_STRING,
-            'id'                   => self::TYPE_INTEGER,
-            'handle'               => self::TYPE_STRING,
-            'label'                => self::TYPE_STRING,
-            'required'             => self::TYPE_BOOLEAN,
-            'placeholder'          => self::TYPE_STRING,
-            'instructions'         => self::TYPE_STRING,
-            'value'                => self::TYPE_STRING,
-            'values'               => self::TYPE_ARRAY,
-            'options'              => self::TYPE_ARRAY,
-            'checked'              => self::TYPE_BOOLEAN,
-            'showAsRadio'          => self::TYPE_BOOLEAN,
-            'showAsCheckboxes'     => self::TYPE_BOOLEAN,
-            'notificationId'       => self::TYPE_STRING,
-            'assetSourceId'        => self::TYPE_INTEGER,
-            'integrationId'        => self::TYPE_INTEGER,
-            'resourceId'           => self::TYPE_STRING,
-            'emailFieldHash'       => self::TYPE_STRING,
-            'position'             => self::TYPE_STRING,
-            'labelNext'            => self::TYPE_STRING,
-            'labelPrev'            => self::TYPE_STRING,
-            'disablePrev'          => self::TYPE_BOOLEAN,
-            'mapping'              => self::TYPE_ARRAY,
-            'fileKinds'            => self::TYPE_ARRAY,
-            'maxFileSizeKB'        => self::TYPE_INTEGER,
-            'fileCount'            => self::TYPE_INTEGER,
-            'rows'                 => self::TYPE_INTEGER,
-            'dateTimeType'         => self::TYPE_STRING,
-            'generatePlaceholder'  => self::TYPE_BOOLEAN,
-            'dateOrder'            => self::TYPE_STRING,
-            'date4DigitYear'       => self::TYPE_BOOLEAN,
-            'dateLeadingZero'      => self::TYPE_BOOLEAN,
-            'dateSeparator'        => self::TYPE_STRING,
-            'clock24h'             => self::TYPE_BOOLEAN,
-            'lowercaseAMPM'        => self::TYPE_BOOLEAN,
-            'clockSeparator'       => self::TYPE_STRING,
-            'clockAMPMSeparate'    => self::TYPE_BOOLEAN,
-            'useDatepicker'        => self::TYPE_BOOLEAN,
-            'initialValue'         => self::TYPE_STRING,
-            'minValue'             => self::TYPE_INTEGER,
-            'maxValue'             => self::TYPE_INTEGER,
-            'minLength'            => self::TYPE_INTEGER,
-            'maxLength'            => self::TYPE_INTEGER,
-            'decimalCount'         => self::TYPE_INTEGER,
-            'decimalSeparator'     => self::TYPE_STRING,
-            'thousandsSeparator'   => self::TYPE_STRING,
-            'allowNegative'        => self::TYPE_BOOLEAN,
-            'pattern'              => self::TYPE_STRING,
-            'targetFieldHash'      => self::TYPE_STRING,
-            'message'              => self::TYPE_STRING,
-            'colorIdle'            => self::TYPE_STRING,
-            'colorHover'           => self::TYPE_STRING,
-            'colorSelected'        => self::TYPE_STRING,
-            'source'               => self::TYPE_STRING,
-            'target'               => self::TYPE_STRING,
-            'configuration'        => self::TYPE_ARRAY,
-            'layout'               => self::TYPE_STRING,
-            'paymentType'          => self::TYPE_STRING,
-            'amount'               => self::TYPE_DOUBLE,
-            'currency'             => self::TYPE_STRING,
-            'interval'             => self::TYPE_STRING,
-            'plan'                 => self::TYPE_STRING,
-            'children'             => self::TYPE_ARRAY,
-            'paymentFieldMapping'  => self::TYPE_ARRAY,
-            'customerFieldMapping' => self::TYPE_ARRAY,
-            'useJsMask'           => self::TYPE_BOOLEAN,
-            'hidden'              => self::TYPE_BOOLEAN,
+            'hash'                  => self::TYPE_STRING,
+            'id'                    => self::TYPE_INTEGER,
+            'handle'                => self::TYPE_STRING,
+            'label'                 => self::TYPE_STRING,
+            'required'              => self::TYPE_BOOLEAN,
+            'placeholder'           => self::TYPE_STRING,
+            'instructions'          => self::TYPE_STRING,
+            'value'                 => self::TYPE_STRING,
+            'values'                => self::TYPE_ARRAY,
+            'options'               => self::TYPE_ARRAY,
+            'checked'               => self::TYPE_BOOLEAN,
+            'showAsRadio'           => self::TYPE_BOOLEAN,
+            'showAsCheckboxes'      => self::TYPE_BOOLEAN,
+            'notificationId'        => self::TYPE_STRING,
+            'assetSourceId'         => self::TYPE_INTEGER,
+            'integrationId'         => self::TYPE_INTEGER,
+            'resourceId'            => self::TYPE_STRING,
+            'emailFieldHash'        => self::TYPE_STRING,
+            'position'              => self::TYPE_STRING,
+            'labelNext'             => self::TYPE_STRING,
+            'labelPrev'             => self::TYPE_STRING,
+            'disablePrev'           => self::TYPE_BOOLEAN,
+            'mapping'               => self::TYPE_ARRAY,
+            'fileKinds'             => self::TYPE_ARRAY,
+            'maxFileSizeKB'         => self::TYPE_INTEGER,
+            'fileCount'             => self::TYPE_INTEGER,
+            'rows'                  => self::TYPE_INTEGER,
+            'dateTimeType'          => self::TYPE_STRING,
+            'generatePlaceholder'   => self::TYPE_BOOLEAN,
+            'dateOrder'             => self::TYPE_STRING,
+            'date4DigitYear'        => self::TYPE_BOOLEAN,
+            'dateLeadingZero'       => self::TYPE_BOOLEAN,
+            'dateSeparator'         => self::TYPE_STRING,
+            'clock24h'              => self::TYPE_BOOLEAN,
+            'lowercaseAMPM'         => self::TYPE_BOOLEAN,
+            'clockSeparator'        => self::TYPE_STRING,
+            'clockAMPMSeparate'     => self::TYPE_BOOLEAN,
+            'useDatepicker'         => self::TYPE_BOOLEAN,
+            'minDate'               => self::TYPE_STRING,
+            'maxDate'               => self::TYPE_STRING,
+            'initialValue'          => self::TYPE_STRING,
+            'minValue'              => self::TYPE_INTEGER,
+            'maxValue'              => self::TYPE_INTEGER,
+            'minLength'             => self::TYPE_INTEGER,
+            'maxLength'             => self::TYPE_INTEGER,
+            'decimalCount'          => self::TYPE_INTEGER,
+            'decimalSeparator'      => self::TYPE_STRING,
+            'thousandsSeparator'    => self::TYPE_STRING,
+            'allowNegative'         => self::TYPE_BOOLEAN,
+            'pattern'               => self::TYPE_STRING,
+            'targetFieldHash'       => self::TYPE_STRING,
+            'message'               => self::TYPE_STRING,
+            'colorIdle'             => self::TYPE_STRING,
+            'colorHover'            => self::TYPE_STRING,
+            'colorSelected'         => self::TYPE_STRING,
+            'source'                => self::TYPE_STRING,
+            'target'                => self::TYPE_STRING,
+            'configuration'         => self::TYPE_ARRAY,
+            'layout'                => self::TYPE_STRING,
+            'paymentType'           => self::TYPE_STRING,
+            'amount'                => self::TYPE_DOUBLE,
+            'currency'              => self::TYPE_STRING,
+            'interval'              => self::TYPE_STRING,
+            'plan'                  => self::TYPE_STRING,
+            'children'              => self::TYPE_ARRAY,
+            'paymentFieldMapping'   => self::TYPE_ARRAY,
+            'customerFieldMapping'  => self::TYPE_ARRAY,
+            'useJsMask'             => self::TYPE_BOOLEAN,
+            'hidden'                => self::TYPE_BOOLEAN,
+            'oneLine'               => self::TYPE_BOOLEAN,
+            'inputAttributes'       => self::TYPE_ARRAY,
+            'labelAttributes'       => self::TYPE_ARRAY,
+            'errorAttributes'       => self::TYPE_ARRAY,
+            'instructionAttributes' => self::TYPE_ARRAY,
+            'tagAttributes'         => self::TYPE_ARRAY,
         ];
     }
 }

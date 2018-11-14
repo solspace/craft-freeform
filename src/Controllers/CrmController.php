@@ -19,7 +19,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
-use Solspace\Freeform\Library\Integrations\TokenRefreshInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\CrmBundle;
@@ -220,18 +219,6 @@ class CrmController extends Controller
 
             return $this->asJson(['success' => false]);
         } catch (RequestException $e) {
-            if ($integration instanceof TokenRefreshInterface) {
-                try {
-                    if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
-                        $this->getCRMService()->updateAccessToken($integration);
-
-                        return $this->asJson(['success' => true]);
-                    }
-                } catch (\Exception $e) {
-                    return $this->asJson(['success' => false, 'errors' => [$e->getMessage()]]);
-                }
-            }
-
             return $this->asJson(['success' => false, 'errors' => [$e->getMessage()]]);
         } catch (\Exception $e) {
             return $this->asJson(['success' => false, 'errors' => [$e->getMessage()]]);

@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use craft\elements\Asset;
 use craft\elements\Category;
 use craft\elements\Entry;
 use craft\elements\Tag;
@@ -44,11 +45,10 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Factories\PredefinedOptionsFactory;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
-use yii\base\Component;
 use Solspace\Freeform\Library\Composer\Components\Fields\NumberField;
 use yii\db\Exception;
 
-class FieldsService extends Component implements FieldHandlerInterface
+class FieldsService extends BaseService implements FieldHandlerInterface
 {
     const EVENT_BEFORE_SAVE     = 'beforeSave';
     const EVENT_AFTER_SAVE      = 'afterSave';
@@ -399,6 +399,17 @@ class FieldsService extends Component implements FieldHandlerInterface
 
                 break;
 
+            case ExternalOptionsInterface::SOURCE_ASSETS:
+                $items      = Asset::find()->volumeId($target)->siteId($siteId)->all();
+                $labelField = $config->getLabelField() ?? 'fileName';
+                foreach ($items as $item) {
+                    $label     = $item->$labelField ?? $item->getFilename();
+                    $value     = $item->$valueField ?? $item->id;
+                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
+                }
+
+                break;
+
             case ExternalOptionsInterface::SOURCE_PREDEFINED:
                 return PredefinedOptionsFactory::create($target, $config, $selectedValues);
         }
@@ -498,13 +509,5 @@ class FieldsService extends Component implements FieldHandlerInterface
         }
 
         return $field;
-    }
-
-    /**
-     * @return FormsService
-     */
-    private function getFormsService(): FormsService
-    {
-        return Freeform::getInstance()->forms;
     }
 }

@@ -10,7 +10,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use yii\base\Component;
 
-class LoggerService extends Component
+class LoggerService extends BaseService
 {
     const DEFAULT_CATEGORY = 'freeform';
 

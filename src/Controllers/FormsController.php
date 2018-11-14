@@ -15,6 +15,7 @@ use craft\base\Field;
 use craft\elements\User;
 use craft\helpers\Assets;
 use craft\helpers\Json;
+use craft\records\Volume;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
@@ -366,6 +367,7 @@ class FormsController extends BaseController
             'generatedOptions'         => $this->getEncodedJson($this->getGeneratedOptionsList($model->getForm())),
             'currentSiteId'            => (int) \Craft::$app->getSites()->currentSite->id,
             'sites'                    => $this->getEncodedJson($sites),
+            'renderFormHtmlInCpViews'  => $settings->renderFormHtmlInCpViews,
         ];
 
         return $this->renderTemplate('freeform/forms/edit', $templateVariables);
@@ -386,6 +388,7 @@ class FormsController extends BaseController
             ['key' => 'firstName', 'value' => \Craft::t('app', 'First Name')],
             ['key' => 'lastName', 'value' => \Craft::t('app', 'Last Name')],
             ['key' => 'fullName', 'value' => \Craft::t('app', 'Full Name')],
+            ['key' => 'filename', 'value' => \Craft::t('app', 'Filename')],
         ];
 
         /** @var Field[] $fields */
@@ -530,11 +533,22 @@ class FormsController extends BaseController
             }
         }
 
+        /** @var Volume[] $volumes */
+        $volumes    = \Craft::$app->volumes->getAllVolumes();
+        $volumeList = [0 => ['key' => '', 'value' => Freeform::t('All Assets')]];
+        foreach ($volumes as $volume) {
+            $volumeList[] = [
+                'key'   => $volume->id,
+                'value' => $volume->name,
+            ];
+        }
+
         return [
             ExternalOptionsInterface::SOURCE_ENTRIES    => $sectionList,
             ExternalOptionsInterface::SOURCE_CATEGORIES => $categoryList,
             ExternalOptionsInterface::SOURCE_TAGS       => $tagList,
             ExternalOptionsInterface::SOURCE_USERS      => $userList,
+            ExternalOptionsInterface::SOURCE_ASSETS     => $volumeList,
         ];
     }
 

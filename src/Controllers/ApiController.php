@@ -17,7 +17,6 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ChartHelper;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
@@ -26,7 +25,6 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
-use Solspace\Freeform\Library\Integrations\TokenRefreshInterface;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\NotificationRecord;
@@ -213,20 +211,6 @@ class ApiController extends BaseController
 
             try {
                 $integration->getFields();
-            } catch (RequestException $e) {
-                if ($integration instanceof TokenRefreshInterface) {
-                    try {
-                        if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
-                            $this->getCrmService()->updateAccessToken($integration);
-
-                            $integration->getFields();
-                        }
-                    } catch (\Exception $e) {
-                        return $this->asErrorJson($e->getMessage());
-                    }
-                } else {
-                    return $this->asErrorJson($e->getMessage());
-                }
             } catch (\Exception $e) {
                 return $this->asErrorJson($e->getMessage());
             }
@@ -291,7 +275,7 @@ class ApiController extends BaseController
 
         if (empty($errors)) {
             $planDetails = new PlanDetails($name, $amount, $currency, $interval);
-            $result = $integration->createPlan($planDetails);
+            $result      = $integration->createPlan($planDetails);
 
             if ($result) {
                 $integration->setForceUpdate(true);
@@ -301,7 +285,7 @@ class ApiController extends BaseController
 
             $error = $integration->getLastError();
             if ($error) {
-                $error = $error->getPrevious();
+                $error    = $error->getPrevious();
                 $errors[] = $error->getMessage();
             }
         }

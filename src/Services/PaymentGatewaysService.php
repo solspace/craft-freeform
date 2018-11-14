@@ -130,7 +130,8 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                         'integrationId' => $id,
                         'resourceId'    => $handle,
                     ]
-                );
+                )
+                ->execute();
         }
 
         foreach ($plans as $plan) {
@@ -139,7 +140,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                 $record                = new SubscriptionPlanRecord();
                 $record->integrationId = $id;
                 $record->resourceId    = $plan->getId();
-                $record->name          = $plan->name;
+                $record->name          = $plan->getName();
                 $record->save();
             }
 
@@ -151,13 +152,14 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                     ->update(
                         SubscriptionPlanRecord::TABLE,
                         [
-                            'name' => $plan->name,
+                            'name' => $plan->getName(),
                         ],
                         [
                             'integrationId' => $id,
                             'resourceId'    => $plan->getId(),
                         ]
-                    );
+                    )
+                    ->execute();
             }
         }
 
@@ -169,7 +171,8 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                 IntegrationRecord::TABLE,
                 ['forceUpdate' => 0],
                 ['id' => $id]
-            );
+            )
+            ->execute();
 
         return true;
     }

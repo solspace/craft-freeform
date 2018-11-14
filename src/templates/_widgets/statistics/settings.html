@@ -4,7 +4,7 @@
 
     {{ forms.checkboxSelectField({
         label: "Forms"|t('freeform'),
-        instructions: "Choose which Forms to use for statistics"|t('freeform'),
+        instructions: "Choose which forms to use for statistics."|t('freeform'),
         name: 'formIds',
         options: formList,
         values: settings.formIds,
@@ -13,7 +13,7 @@
 
     {{ forms.checkboxSelectField({
         label: "Statuses"|t('freeform'),
-        instructions: "Choose which submission statuses should be used for statistics"|t('freeform'),
+        instructions: "Choose which submission statuses should be used for statistics."|t('freeform'),
         name: "statusIds",
         options: statusList,
         values: settings.statusIds,
@@ -22,7 +22,7 @@
 
     {{ forms.lightswitchField({
         label: "Show Global Statistics"|t('freeform'),
-        instructions: "Enable this to show the total form, field and notification template count"|t('freeform'),
+        instructions: "Enable this to show the total form, field and notification template count."|t('freeform'),
         name: "showGlobalStatistics",
         on: settings.showGlobalStatistics,
     }) }}

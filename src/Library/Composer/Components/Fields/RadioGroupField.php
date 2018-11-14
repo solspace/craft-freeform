@@ -11,15 +11,15 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields;
 
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OptionsTrait;
+use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OneLineTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
-class RadioGroupField extends AbstractExternalOptionsField implements SingleValueInterface
+class RadioGroupField extends AbstractExternalOptionsField implements SingleValueInterface, OneLineInterface
 {
     use SingleValueTrait;
+    use OneLineTrait;
 
     /**
      * Return the field TYPE
@@ -32,6 +32,22 @@ class RadioGroupField extends AbstractExternalOptionsField implements SingleValu
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function onBeforeInputHtml(): string
+    {
+        return $this->isOneLine() ? '<div class="input-group-one-line">' : '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onAfterInputHtml(): string
+    {
+        return $this->isOneLine() ? '</div>' : '';
+    }
+
+    /**
      * Outputs the HTML of input
      *
      * @return string
@@ -39,16 +55,17 @@ class RadioGroupField extends AbstractExternalOptionsField implements SingleValu
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
-        $output     = '';
+        $this->addInputAttribute('class', $attributes->getClass());
 
+        $output = '';
         foreach ($this->options as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '
+                . $this->getInputAttributesString()
                 . $this->getAttributeString('name', $this->getHandle())
                 . $this->getAttributeString('type', 'radio')
                 . $this->getAttributeString('id', $this->getIdAttribute() . "-$index")
-                . $this->getAttributeString('class', $attributes->getClass())
                 . $this->getAttributeString('value', $option->getValue(), true, true)
                 . $this->getParameterString('checked', $option->isChecked())
                 . $attributes->getInputAttributesAsString()

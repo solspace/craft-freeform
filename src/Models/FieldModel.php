@@ -226,6 +226,8 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['clockSeparator']      = $this->getMetaProperty('clockSeparator', ':');
             $returnArray['clockAMPMSeparate']   = $this->getMetaProperty('clockAMPMSeparate', true);
             $returnArray['useDatepicker']       = $this->getMetaProperty('useDatepicker', true);
+            $returnArray['minDate']             = $this->getMetaProperty('minDate', '');
+            $returnArray['maxDate']             = $this->getMetaProperty('maxDate', '');
         }
 
         if ($this->type === FieldInterface::TYPE_NUMBER) {

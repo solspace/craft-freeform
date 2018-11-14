@@ -73,6 +73,12 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var string */
     protected $fieldIdPrefix;
 
+    /** @var string */
+    protected $status;
+
+    /** @var int */
+    protected $statusId;
+
     /**
      * @return string|null
      */
@@ -263,5 +269,21 @@ class CustomFormAttributes extends AbstractAttributes
     public function getFieldIdPrefix()
     {
         return $this->fieldIdPrefix;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getStatusId()
+    {
+        return $this->statusId;
     }
 }

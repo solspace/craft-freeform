@@ -55,6 +55,14 @@
     }) }}
 
     {{ forms.lightswitchField({
+        label: "Render HTML inside Composer & Submissions view?"|t('freeform'),
+        instructions: "Live rendering HTML in HTML blocks, field labels and option labels inside the Composer interface can sometimes conflict with Freeform's display of the form preview inside the control panel. In cases like these, you'll need to disable this setting to prevent HTML from rendering automatically."|t('freeform'),
+        name: "settings[renderFormHtmlInCpViews]",
+        on: settings.renderFormHtmlInCpViews,
+        errors: settings.errors("renderFormHtmlInCpViews"),
+    }) }}
+
+    {{ forms.lightswitchField({
         label: "Include Default Freeform Formatting Templates"|t('freeform'),
         instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t('freeform'),
         name: "settings[defaultTemplates]",
@@ -71,7 +79,7 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Disable submit button on form submit?"|t('freeform'),
+        label: "Disable Submit Button on Form Submit?"|t('freeform'),
         instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
         name: "settings[formSubmitDisable]",
         on: settings.formSubmitDisable,

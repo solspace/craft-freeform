@@ -1,3 +1,5 @@
+<style>.input-group-one-line{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap}.input-group-one-line p{padding-right:20px} </style>
+
 {% set form = craft.freeform.form(formHandle, {
     submitClass: "btn-large",
     returnUrl: "{{ siteUrl }}demo/materialize/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
@@ -54,27 +56,33 @@
 
                     <div class="{{ columnClass }}" style="margin-bottom: 20px;"{{ field.rulesHtmlData }}>
 
-                        {{ field.renderLabel({
-                            labelClass: " active" ~ (field.required ? " required"),
-                            instructionsClass: "help-block",
-                            errorClass: "help-block",
-                        }) }}
+                    {{ field.renderLabel({
+                        labelClass: " active" ~ (field.required ? " required"),
+                        instructionsClass: "help-block",
+                        errorClass: "help-block",
+                    }) }}
 
-                        {% for option in field.options %}
-                            <p>
+                    {{ field.oneLine ? '<div class="input-group-one-line">'|raw }}
+
+                    {% for index, option in field.options %}
+                        <p>
+                            <label for="{{ field.idAttribute }}-{{ index }}">
                                 <input type="checkbox"
-                                       id="{{ form.hash ~ field.handle ~ option.value }}"
+                                       id="{{ field.idAttribute }}-{{ index }}"
                                        name="{{ field.handle }}"
                                        value="{{ option.value }}"
-                                        {{ option.checked ? "checked" }}
+                                        {{ option.value in field.value ? "checked" : "" }}
                                 />
-                                <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
-                            </p>
-                        {% endfor %}
+                                <span>{{ option.label|t|raw }}</span>
+                            </label>
+                        </p>
+                    {% endfor %}
 
-                        {{ field.renderInstructions }}
-                        {{ field.renderErrors }}
-                    </div>
+                    {{ field.oneLine ? '</div>'|raw }}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+                </div>
 
                 {% elseif field.type == "radio_group" %}
 
@@ -86,21 +94,27 @@
                             errorClass: "help-block",
                         }) }}
 
-                        {% for option in field.options %}
-                            <p>
+                    {{ field.oneLine ? '<div class="input-group-one-line">'|raw }}
+
+                    {% for index, option in field.options %}
+                        <p>
+                            <label for="{{ field.idAttribute }}-{{ index }}">
                                 <input type="radio"
-                                       id="{{ form.hash ~ field.handle ~ option.value }}"
+                                       id="{{ field.idAttribute }}-{{ index }}"
                                        name="{{ field.handle }}"
                                        value="{{ option.value }}"
-                                        {{ option.checked ? "checked" }}
+                                        {{ option.value in field.value ? "checked" : "" }}
                                 />
-                                <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
-                            </p>
-                        {% endfor %}
+                                <span>{{ option.label|t|raw }}</span>
+                            </label>
+                        </p>
+                    {% endfor %}
 
-                        {{ field.renderInstructions }}
-                        {{ field.renderErrors }}
-                    </div>
+                    {{ field.oneLine ? '</div>'|raw }}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+                </div>
 
                 {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
 
@@ -112,21 +126,27 @@
                             errorClass: "help-block",
                         }) }}
 
-                        {% for option in field.options %}
-                            <p>
+                    {{ field.oneLine ? '<div class="input-group-one-line">'|raw }}
+
+                    {% for index, option in field.options %}
+                        <p>
+                            <label for="{{ field.idAttribute }}-{{ index }}">
                                 <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
-                                       id="{{ form.hash ~ field.handle ~ option.value }}"
+                                       id="{{ field.idAttribute }}-{{ index }}"
                                        name="{{ field.handle }}[]"
                                        value="{{ loop.index0 }}"
-                                        {{ option.checked ? "checked" }}
+                                        {{ option.value in field.value ? "checked" : "" }}
                                 />
-                                <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw }}</label>
-                            </p>
-                        {% endfor %}
+                                <span>{{ option.label|t|raw }}</span>
+                            </label>
+                        </p>
+                    {% endfor %}
 
-                        {{ field.renderInstructions }}
-                        {{ field.renderErrors }}
-                    </div>
+                    {{ field.oneLine ? '</div>'|raw }}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+                </div>
 
                 {% elseif field.type == "textarea" %}
 
@@ -272,3 +292,79 @@
         </p>
     </div>
 {% endif %}
+
+<script>
+
+  window.renderFormSuccess = function(form) {
+    const successMessage = document.createElement("div");
+    successMessage.classList.add("card", "green", "form-success");
+    successMessage.style.padding = "10px 15px";
+
+    const paragraph = document.createElement("p");
+    paragraph.appendChild(document.createTextNode("Form submitted successfully"));
+
+    successMessage.appendChild(paragraph);
+
+    form.insertBefore(successMessage, form.childNodes[0]);
+  };
+
+  window.renderErrors = function(errors, form) {
+    for (const key in errors) {
+      if (!errors.hasOwnProperty(key)) {
+        continue;
+      }
+
+      const messages = errors[key];
+      const errorsList = document.createElement("ul");
+      errorsList.classList.add("errors");
+
+      for (const message of messages) {
+        const listItem = document.createElement("li");
+        listItem.appendChild(document.createTextNode(message));
+        errorsList.appendChild(listItem);
+      }
+
+
+      const inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
+      for (const input of inputList) {
+        input.parentElement.classList.add("has-error");
+        input.parentElement.appendChild(errorsList);
+      }
+    }
+  };
+
+  window.renderFormErrors = function(errors, form) {
+    const errorBlock = document.createElement("div");
+    errorBlock.classList.add("card", "red", "form-errors");
+    errorBlock.style.padding = "10px 15px";
+    errorBlock.appendChild(document.createTextNode("This form has errors"));
+
+    if (errors.length) {
+      const errorsList = document.createElement("ul");
+      for (const message of errors) {
+        const listItem = document.createElement("li");
+        listItem.appendChild(document.createTextNode(message));
+        errorsList.appendChild(listItem);
+      }
+
+      errorBlock.appendChild(errorsList);
+    }
+
+    form.insertBefore(errorBlock, form.childNodes[0]);
+  };
+
+
+  window.removeMessages = (form) => {
+    // Remove any existing errors that are being shown
+    form.querySelectorAll(".errors").remove();
+    const fieldsWithErrors = form.querySelectorAll(".has-error");
+    for (let fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
+      const field = fieldsWithErrors[fieldIndex];
+      field.classList.remove("has-error");
+    }
+
+    // Remove success messages
+    form.querySelectorAll(".card.success").remove();
+    form.querySelectorAll(".card.form-errors").remove();
+  }
+</script>

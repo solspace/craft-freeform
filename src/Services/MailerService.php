@@ -28,7 +28,7 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
 use yii\base\Component;
 use Solspace\FreeformPayments\FreeformPayments;
 
-class MailerService extends Component implements MailHandlerInterface
+class MailerService extends BaseService implements MailHandlerInterface
 {
     const EVENT_BEFORE_SEND   = 'beforeSend';
     const EVENT_AFTER_SEND    = 'afterSend';

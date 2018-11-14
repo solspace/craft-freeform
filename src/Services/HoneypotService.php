@@ -10,7 +10,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Session\Honeypot;
 
-class HoneypotService extends Component
+class HoneypotService extends BaseService
 {
     const FORM_HONEYPOT_KEY  = 'freeformHoneypotHashList';
     const FORM_HONEYPOT_NAME = 'form_name_handle';
@@ -212,14 +212,6 @@ class HoneypotService extends Component
     private function updateHoneypotList(array $honeypotList)
     {
         \Craft::$app->session->set(self::FORM_HONEYPOT_KEY, json_encode($honeypotList));
-    }
-
-    /**
-     * @return SettingsService
-     */
-    private function getSettingsService(): SettingsService
-    {
-        return Freeform::getInstance()->settings;
     }
 
     /**

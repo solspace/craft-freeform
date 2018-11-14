@@ -66,6 +66,7 @@ class ConfirmationField extends TextField implements NoStorageInterface, Remembe
     protected function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
         try {
             $field = $this->getForm()->getLayout()->getFieldByHash($this->getTargetFieldHash());
@@ -75,7 +76,6 @@ class ConfirmationField extends TextField implements NoStorageInterface, Remembe
 
             $output = $this->injectAttribute($output, 'name', $this->getHandle());
             $output = $this->injectAttribute($output, 'id', $this->getIdAttribute());
-            $output = $this->injectAttribute($output, 'class', $attributes->getClass());
             $output = $this->injectAttribute($output, 'value', $this->getValue(), false);
             $output = $this->injectAttribute(
                 $output,
@@ -84,6 +84,8 @@ class ConfirmationField extends TextField implements NoStorageInterface, Remembe
                     $attributes->getPlaceholder() ?: $this->getPlaceholder()
                 )
             );
+
+            $output .= $this->getInputAttributesString();
 
             $output = str_replace(' required', '', $output);
             $output .= $this->getRequiredAttribute();

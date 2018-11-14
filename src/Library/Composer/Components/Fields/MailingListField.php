@@ -76,14 +76,15 @@ class MailingListField extends AbstractField implements NoStorageInterface, Sing
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
         $isSelected = (bool) $this->getValue();
 
         if ($this->isHidden()) {
             return '<input '
+                . $this->getInputAttributesString()
                 . $this->getAttributeString('name', $this->getHash())
                 . $this->getAttributeString('type', 'hidden')
                 . $this->getAttributeString('id', $this->getIdAttribute())
-                . $this->getAttributeString('class', $attributes->getClass())
                 . $this->getAttributeString('value', 1, false)
                 . $this->getRequiredAttribute()
                 . $attributes->getInputAttributesAsString()
@@ -91,10 +92,10 @@ class MailingListField extends AbstractField implements NoStorageInterface, Sing
         }
 
         return '<input '
+            . $this->getInputAttributesString()
             . $this->getAttributeString('name', $this->getHash())
             . $this->getAttributeString('type', 'checkbox')
             . $this->getAttributeString('id', $this->getIdAttribute())
-            . $this->getAttributeString('class', $attributes->getClass())
             . $this->getAttributeString('value', 1, false)
             . $this->getRequiredAttribute()
             . $attributes->getInputAttributesAsString()
@@ -114,9 +115,10 @@ class MailingListField extends AbstractField implements NoStorageInterface, Sing
         }
 
         $attributes = $this->getCustomAttributes();
+        $this->addLabelAttribute('class', $attributes->getLabelClass());
 
         return '<label'
-            . $this->getAttributeString('class', $attributes->getLabelClass())
+            . $this->getLabelAttributesString()
             . '>';
     }
 

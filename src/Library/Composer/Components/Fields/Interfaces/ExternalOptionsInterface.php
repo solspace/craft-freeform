@@ -9,6 +9,7 @@ interface ExternalOptionsInterface extends OptionsInterface
     const SOURCE_CATEGORIES = 'categories';
     const SOURCE_TAGS       = 'tags';
     const SOURCE_USERS      = 'users';
+    const SOURCE_ASSETS     = 'assets';
     const SOURCE_PREDEFINED = 'predefined';
 
     const PREDEFINED_DAYS         = 'days';

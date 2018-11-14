@@ -13,6 +13,7 @@ use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
+use Solspace\Freeform\Elements\Actions\ResendNotificationsAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Freeform;
@@ -194,7 +195,7 @@ class Submission extends Element
             $sources[] = [
                 'key'      => 'form:' . $form->id,
                 'label'    => $form->name,
-                'data' => [
+                'data'     => [
                     'handle' => $form->handle,
                 ],
                 'criteria' => [
@@ -257,16 +258,9 @@ class Submission extends Element
                     'successMessage'      => Freeform::t('Submissions deleted.'),
                 ]
             ),
-            \Craft::$app->elements->createAction(
-                [
-                    'type' => SetSubmissionStatusAction::class,
-                ]
-            ),
-            \Craft::$app->elements->createAction(
-                [
-                    'type' => ExportCSVAction::class,
-                ]
-            ),
+            \Craft::$app->elements->createAction(['type' => SetSubmissionStatusAction::class]),
+            \Craft::$app->elements->createAction(['type' => ExportCSVAction::class]),
+            \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]),
         ];
     }
 

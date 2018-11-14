@@ -2,15 +2,15 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\base\Component;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
+use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 
-class ConnectionsService extends Component
+class ConnectionsService extends BaseService
 {
     /**
      * @param FormValidateEvent $event

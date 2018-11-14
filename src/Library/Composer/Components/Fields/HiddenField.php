@@ -33,11 +33,12 @@ class HiddenField extends TextField implements NoRenderInterface
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
         return '<input '
+            . $this->getInputAttributesString()
             . $this->getAttributeString('name', $this->getHandle())
             . $this->getAttributeString('type', $this->getType())
-            . $this->getAttributeString('class', $attributes->getClass())
             . $this->getAttributeString('id', $this->getIdAttribute())
             . $this->getAttributeString('value', $this->getValue())
             . $attributes->getInputAttributesAsString()

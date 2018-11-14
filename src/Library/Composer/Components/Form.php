@@ -102,6 +102,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var bool */
     private $markedAsSpam;
 
+    /** @var bool */
+    private $ajaxEnabled;
+
     /** @var SubmissionHandlerInterface */
     private $submissionHandler;
 
@@ -125,6 +128,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
     /** @var CustomFormAttributes */
     private $customAttributes;
+
+    /** @var array */
+    private $tagAttributes;
 
     /** @var int */
     private $cachedPageIndex;
@@ -325,10 +331,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
-     * @return int
+     * @return int|string|null
      */
-    public function getDefaultStatus(): int
+    public function getDefaultStatus()
     {
+        if (null !== $this->getFormValueContext()->getDefaultStatus()) {
+            return $this->getFormValueContext()->getDefaultStatus();
+        }
+
         return $this->defaultStatus;
     }
 
@@ -338,6 +348,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function isIpCollectingEnabled(): bool
     {
         return (bool) $this->ipCollectingEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAjaxEnabled(): bool
+    {
+        return $this->ajaxEnabled;
     }
 
     /**
@@ -669,14 +687,34 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $this->setAttributes($customFormAttributes);
         $customAttributes = $this->getCustomAttributes();
 
-        $attributes = [
-            'id'      => $customAttributes->getId(),
-            'name'    => $customAttributes->getName(),
-            'method'  => $customAttributes->getMethod() ?: 'post',
-            'class'   => $customAttributes->getClass(),
-            'action'  => $customAttributes->getAction(),
-            'enctype' => \count($this->getLayout()->getFileUploadFields()) ? 'multipart/form-data' : null,
-        ];
+        $attributes = CustomFormAttributes::extractAttributes($this->tagAttributes, $this, ['form' => $this]);
+        if ($customAttributes->getId()) {
+            $attributes['id'] = $customAttributes->getId();
+        }
+
+        if ($customAttributes->getName()) {
+            $attributes['name'] = $customAttributes->getName();
+        }
+
+        if (!isset($attributes['method']) || $customAttributes->getMethod()) {
+            $attributes['method'] = $customAttributes->getMethod() ?: 'post';
+        }
+
+        if ($customAttributes->getClass()) {
+            $attributes['class'] = trim($customAttributes->getClass() . ' ' . ($attributes['class'] ?? ''));
+        }
+
+        if ($customAttributes->getAction()) {
+            $attributes['action'] = $customAttributes->getAction();
+        }
+
+        if (\count($this->getLayout()->getFileUploadFields())) {
+            $attributes['enctype'] = 'multipart/form-data';
+        }
+
+        if ($this->ajaxEnabled) {
+            $attributes['data-ff-ajaxified'] = true;
+        }
 
         $attributes         = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
         $compiledAttributes = $this->formHandler->onAttachFormAttributes($this, $attributes);
@@ -843,6 +881,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $this->defaultStatus              = $formProperties->getDefaultStatus();
         $this->formTemplate               = $formProperties->getFormTemplate();
         $this->optInDataStorageTargetHash = $formProperties->getOptInDataStorageTargetHash();
+        $this->tagAttributes              = $formProperties->getTagAttributes();
+        $this->ajaxEnabled                = $formProperties->isAjaxEnabled();
     }
 
     /**
@@ -857,6 +897,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
             ->setCustomFormData(
                 [
                     FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
+                    FormValueContext::DATA_STATUS               => $this->customAttributes->getStatus(),
                 ]
             )
             ->saveState();

@@ -78,11 +78,12 @@ class TextareaField extends AbstractField implements SingleValueInterface, Place
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
         return '<textarea '
+            . $this->getInputAttributesString()
             . $this->getAttributeString('name', $this->getHandle())
             . $this->getAttributeString('id', $this->getIdAttribute())
-            . $this->getAttributeString('class', $attributes->getClass())
             . $this->getAttributeString('rows', $this->getRows())
             . $this->getNumericAttributeString('maxlength', $this->getMaxLength())
             . $this->getRequiredAttribute()

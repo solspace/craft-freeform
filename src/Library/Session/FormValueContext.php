@@ -28,6 +28,7 @@ class FormValueContext implements \JsonSerializable
     const DEFAULT_PAGE_INDEX = 0;
 
     const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
+    const DATA_STATUS               = 'status';
 
     /** @var int */
     private $formId;
@@ -215,6 +216,18 @@ class FormValueContext implements \JsonSerializable
     {
         if (isset($this->customFormData[self::DATA_DYNAMIC_TEMPLATE_KEY])) {
             return new DynamicNotificationAttributes($this->customFormData[self::DATA_DYNAMIC_TEMPLATE_KEY]);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return DynamicNotificationAttributes|null
+     */
+    public function getDefaultStatus()
+    {
+        if (isset($this->customFormData[self::DATA_STATUS])) {
+            return $this->customFormData[self::DATA_STATUS];
         }
 
         return null;

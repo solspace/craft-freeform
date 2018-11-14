@@ -1,0 +1,114 @@
+<div class="freeform-widget-quick-form">
+    {% if form %}
+        {% if form.submittedSuccessfully %}
+            <div style="color: mediumseagreen;">
+                {{ successMessage }}
+            </div>
+        {% endif %}
+
+        {% css formCss %}
+
+        {{ form.renderTag }}
+
+        {% if form.pages|length > 1 %}
+            <ul class="freeform-pages">
+                {% for page in form.pages %}
+                    <li>
+                        {% if form.currentPage.index == page.index %}
+                            <a href="javascript:;">{{ page.label }}</a>
+                        {% else %}
+                            {{ page.label }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if form.hasErrors %}
+            <div class="freeform-form-has-errors">
+                {{ "There was an error submitting this form"|t('freeform') }}
+
+                {% if form.errors|length %}
+                    <ul>
+                        {% for error in form.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% for row in form %}
+            <div class="freeform-row {{ form.customAttributes.rowClass }}">
+                {% for field in row %}
+                    {% set columnClass = "field freeform-column " ~ form.customAttributes.columnClass %}
+
+                    {% if field.type == "submit" %}
+                        {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
+                    {% endif %}
+
+                    <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
+                        {% set class = "freeform-input" %}
+                        {% if field.type in ["checkbox", "checkbox_group", "radio_group", "mailing_list", "dynamic_recipients"] %}
+                            {% set class = class %}
+                        {% elseif field.type == "submit" %}
+                            {% set class = class ~ " " %}
+                        {% else %}
+                            {% set class = class ~ " text" %}
+                        {% endif %}
+
+                        {% set labelClass = "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : "") %}
+                        {% set instructionsClass = "freeform-instructions" %}
+                        {% set errorClass = "freeform-errors" %}
+
+                        {% if field.type == "select" or (field.type == "dynamic_recipients" and field.showAsSelect) %}
+
+                            {{ field.renderLabel({ labelClass: labelClass }) }}
+                            {{ field.renderInstructions({ instructionsClass: instructionsClass }) }}
+
+                            <div class="select fullwidth">
+                                {{ field.renderInput({ class: class }) }}
+                            </div>
+
+                            {{ field.renderErrors({ errorClass: errorClass }) }}
+
+                        {% elseif field.type == "submit" %}
+
+                            {{ field.renderInput({ class: "btn submit" }) }}
+
+                        {% else %}
+                            {{ field.render({
+                                class: class,
+                                labelClass: labelClass,
+                                errorClass: errorClass,
+                                instructionsClass: instructionsClass,
+                            }) }}
+                        {% endif %}
+
+                        {# FOR FREEFORM PAYMENTS #}
+                        {% if field.layoutRows is defined %}
+                            {% for layoutRow in field.layoutRows %}
+                                <div class="freeform-row {{ form.customAttributes.rowClass }}">
+                                    {% for layoutField in layoutRow %}
+                                        <div class="{{ columnClass }}">
+                                            {{ layoutField.render({
+                                                class: class,
+                                                labelClass: labelClass,
+                                                errorClass: errorClass,
+                                                instructionsClass: instructionsClass,
+                                            }) }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        {{ form.renderClosingTag }}
+
+    {% endif %}
+</div>

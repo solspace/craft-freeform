@@ -128,6 +128,9 @@ class Settings extends Model
     /** @var string */
     public $recaptchaSecret;
 
+    /** @var bool */
+    public $renderFormHtmlInCpViews;
+
     /**
      * Settings constructor.
      *
@@ -161,6 +164,7 @@ class Settings extends Model
         $this->submissionThrottlingTimeFrame = null;
         $this->purgableSubmissionAgeInDays   = null;
         $this->purgableSpamAgeInDays         = null;
+        $this->renderFormHtmlInCpViews       = true;
 
         $this->recaptchaEnabled = false;
         $this->recaptchaKey     = null;
@@ -176,9 +180,13 @@ class Settings extends Model
     {
         return [
             ['formTemplateDirectory', 'folderExists'],
-            [['recaptchaKey', 'recaptchaSecret'], 'required', 'when' => function (Settings $model) {
-                return (bool) $model->recaptchaEnabled;
-            }],
+            [
+                ['recaptchaKey', 'recaptchaSecret'],
+                'required',
+                'when' => function (Settings $model) {
+                    return (bool) $model->recaptchaEnabled;
+                },
+            ],
         ];
     }
 

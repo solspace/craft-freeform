@@ -1,3 +1,5 @@
+{% css formCss %}
+
 {{ form.renderTag }}
 
 {% if form.pages|length > 1 %}
@@ -50,17 +52,23 @@
                         errorClass: "help-block",
                     }) }}
 
-                    {% for option in field.options %}
+                    {{ field.oneLine ? '<div class="input-group-one-line">'|raw }}
+
+                    {% for index, option in field.options %}
                         <p>
-                            <input type="checkbox"
-                                   id="{{ form.hash ~ field.handle ~ option.value }}"
-                                   name="{{ field.handle }}"
-                                   value="{{ option.value }}"
-                                    {{ option.value in field.value ? "checked" : "" }}
-                            />
-                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw|t }}</label>
+                            <label for="{{ field.idAttribute }}-{{ index }}">
+                                <input type="checkbox"
+                                       id="{{ field.idAttribute }}-{{ index }}"
+                                       name="{{ field.handle }}"
+                                       value="{{ option.value }}"
+                                        {{ option.value in field.value ? "checked" : "" }}
+                                />
+                                <span>{{ option.label|t|raw }}</span>
+                            </label>
                         </p>
                     {% endfor %}
+
+                    {{ field.oneLine ? '</div>'|raw }}
 
                     {{ field.renderInstructions }}
                     {{ field.renderErrors }}
@@ -76,17 +84,23 @@
                         errorClass: "help-block",
                     }) }}
 
-                    {% for option in field.options %}
+                    {{ field.oneLine ? '<div class="input-group-one-line">'|raw }}
+
+                    {% for index, option in field.options %}
                         <p>
-                            <input type="radio"
-                                   id="{{ form.hash ~ field.handle ~ option.value }}"
-                                   name="{{ field.handle }}"
-                                   value="{{ option.value }}"
-                                    {{ option.value in field.value ? "checked" : "" }}
-                            />
-                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw|t }}</label>
+                            <label for="{{ field.idAttribute }}-{{ index }}">
+                                <input type="radio"
+                                       id="{{ field.idAttribute }}-{{ index }}"
+                                       name="{{ field.handle }}"
+                                       value="{{ option.value }}"
+                                        {{ option.value in field.value ? "checked" : "" }}
+                                />
+                                <span>{{ option.label|t|raw }}</span>
+                            </label>
                         </p>
                     {% endfor %}
+
+                    {{ field.oneLine ? '</div>'|raw }}
 
                     {{ field.renderInstructions }}
                     {{ field.renderErrors }}
@@ -102,17 +116,23 @@
                         errorClass: "help-block",
                     }) }}
 
-                    {% for option in field.options %}
+                    {{ field.oneLine ? '<div class="input-group-one-line">'|raw }}
+
+                    {% for index, option in field.options %}
                         <p>
-                            <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
-                                   id="{{ form.hash ~ field.handle ~ option.value }}"
-                                   name="{{ field.handle }}[]"
-                                   value="{{ loop.index0 }}"
-                                    {{ option.value in field.value ? "checked" : "" }}
-                            />
-                            <label for="{{ form.hash ~ field.handle ~ option.value }}">{{ option.label|raw|t }}</label>
+                            <label for="{{ field.idAttribute }}-{{ index }}">
+                                <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
+                                       id="{{ field.idAttribute }}-{{ index }}"
+                                       name="{{ field.handle }}[]"
+                                       value="{{ loop.index0 }}"
+                                        {{ option.value in field.value ? "checked" : "" }}
+                                />
+                                <span>{{ option.label|t|raw }}</span>
+                            </label>
                         </p>
                     {% endfor %}
+
+                    {{ field.oneLine ? '</div>'|raw }}
 
                     {{ field.renderInstructions }}
                     {{ field.renderErrors }}
@@ -134,11 +154,10 @@
 
                 <div class="{{ columnClass|replace('input-field', '') }}"{{ field.rulesHtmlData }}>
 
-                    {{ field.renderInput }}
-                    {{ field.renderLabel({
-                        instructionsClass: "help-block",
-                        errorClass: "help-block",
-                    }) }}
+                    <label>
+                        {{ field.renderInput }}
+                        <span>{{ field.label }}</span>
+                    </label>
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
@@ -148,11 +167,10 @@
 
                 <div class="{{ columnClass|replace('input-field', '') }}"{{ field.rulesHtmlData }}>
 
-                    {{ field.renderInput|replace('<label>', '')|replace('</label>', '')|replace(field.label, '')|raw }}
-                    {{ field.renderLabel({
-                        instructionsClass: "help-block",
-                        errorClass: "help-block",
-                    }) }}
+                    <label>
+                        {{ field.renderInput }}
+                        <span>{{ field.label }}</span>
+                    </label>
 
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
@@ -168,7 +186,7 @@
 
             {% elseif field.type == "html" %}
 
-                <div class="{{ columnClass }}">
+                <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
                     {{ field.renderInput }}
                 </div>
 
@@ -252,3 +270,79 @@
 {% endfor %}
 
 {{ form.renderClosingTag }}
+
+<script>
+
+  window.renderFormSuccess = function(form) {
+    const successMessage = document.createElement("div");
+    successMessage.classList.add("card", "green", "form-success");
+    successMessage.style.padding = "10px 15px";
+
+    const paragraph = document.createElement("p");
+    paragraph.appendChild(document.createTextNode("Form submitted successfully"));
+
+    successMessage.appendChild(paragraph);
+
+    form.insertBefore(successMessage, form.childNodes[0]);
+  };
+
+  window.renderErrors = function(errors, form) {
+    for (const key in errors) {
+      if (!errors.hasOwnProperty(key)) {
+        continue;
+      }
+
+      const messages = errors[key];
+      const errorsList = document.createElement("ul");
+      errorsList.classList.add("errors");
+
+      for (const message of messages) {
+        const listItem = document.createElement("li");
+        listItem.appendChild(document.createTextNode(message));
+        errorsList.appendChild(listItem);
+      }
+
+
+      const inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
+      for (const input of inputList) {
+        input.parentElement.classList.add("has-error");
+        input.parentElement.appendChild(errorsList);
+      }
+    }
+  };
+
+  window.renderFormErrors = function(errors, form) {
+    const errorBlock = document.createElement("div");
+    errorBlock.classList.add("card", "red", "form-errors");
+    errorBlock.style.padding = "10px 15px";
+    errorBlock.appendChild(document.createTextNode("This form has errors"));
+
+    if (errors.length) {
+      const errorsList = document.createElement("ul");
+      for (const message of errors) {
+        const listItem = document.createElement("li");
+        listItem.appendChild(document.createTextNode(message));
+        errorsList.appendChild(listItem);
+      }
+
+      errorBlock.appendChild(errorsList);
+    }
+
+    form.insertBefore(errorBlock, form.childNodes[0]);
+  };
+
+
+  window.removeMessages = (form) => {
+    // Remove any existing errors that are being shown
+    form.querySelectorAll(".errors").remove();
+    const fieldsWithErrors = form.querySelectorAll(".has-error");
+    for (let fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
+      const field = fieldsWithErrors[fieldIndex];
+      field.classList.remove("has-error");
+    }
+
+    // Remove success messages
+    form.querySelectorAll(".card.success").remove();
+    form.querySelectorAll(".card.form-errors").remove();
+  }
+</script>

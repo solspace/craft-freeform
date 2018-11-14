@@ -21,15 +21,18 @@ use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\StatusRecord;
 use yii\base\Component;
 
-class StatusesService extends Component implements StatusHandlerInterface
+class StatusesService extends BaseService implements StatusHandlerInterface
 {
     const EVENT_BEFORE_SAVE   = 'beforeSave';
     const EVENT_AFTER_SAVE    = 'afterSave';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE  = 'afterDelete';
 
-    /** @var StatusRecord[] */
-    private static $statusCache;
+    /** @var StatusModel[] */
+    private static $statusCache = [];
+
+    /** @var StatusModel[] */
+    private static $statusByHandleCache = [];
     private static $allStatusesLoaded;
 
     /**
@@ -116,11 +119,7 @@ class StatusesService extends Component implements StatusHandlerInterface
      */
     public function getStatusById($id)
     {
-        if (null === self::$statusCache) {
-            self::$statusCache = [];
-        }
-
-        if (null === self::$statusCache || !isset(self::$statusCache[$id])) {
+        if (!isset(self::$statusCache[$id])) {
             $result = $this->getStatusQuery()
                 ->where(['id' => $id])
                 ->one();
@@ -134,6 +133,29 @@ class StatusesService extends Component implements StatusHandlerInterface
         }
 
         return self::$statusCache[$id];
+    }
+
+    /**
+     * @param string $handle
+     *
+     * @return StatusModel|null
+     */
+    public function getStatusByHandle(string $handle)
+    {
+        if (!isset(self::$statusByHandleCache[$handle])) {
+            $result = $this->getStatusQuery()
+                ->where(['handle' => $handle])
+                ->one();
+
+            $status = null;
+            if ($result) {
+                $status = $this->createStatus($result);
+            }
+
+            self::$statusByHandleCache[$handle] = $status;
+        }
+
+        return self::$statusByHandleCache[$handle];
     }
 
     /**

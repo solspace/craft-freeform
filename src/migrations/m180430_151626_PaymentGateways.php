@@ -15,11 +15,20 @@ class m180430_151626_PaymentGateways extends Migration
      */
     public function safeUp()
     {
-        $this->alterColumn(
-            '{{%freeform_integrations}}',
-            'type',
-            $this->enum('type', ['mailing_list', 'crm', 'payment_gateway'])->notNull()
-        );
+        if ($this->db->getIsPgsql()) {
+            // Manually construct the SQL for Postgres
+            // (see https://github.com/yiisoft/yii2/issues/12077)
+            $this->execute('ALTER TABLE {{%freeform_integrations}} ALTER COLUMN [[type]] TYPE VARCHAR(50)');
+            $this->execute('ALTER TABLE {{%freeform_integrations}} ALTER COLUMN [[type]] SET NOT NULL');
+        } else {
+            $this->alterColumn(
+                '{{%freeform_integrations}}',
+                'type',
+                $this->string(50)->notNull()
+            );
+        }
+
+        return true;
     }
 
     /**
@@ -27,10 +36,6 @@ class m180430_151626_PaymentGateways extends Migration
      */
     public function safeDown()
     {
-        $this->alterColumn(
-            '{{%freeform_integrations}}',
-            'type',
-            $this->enum('type', ['mailing_list', 'crm'])->notNull()
-        );
+        return true;
     }
 }

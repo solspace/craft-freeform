@@ -18,19 +18,26 @@ use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
+use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
-use Solspace\Freeform\Library\Integrations\TokenRefreshInterface;
 use Solspace\Freeform\Records\CrmFieldRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\FreeformPayments\FreeformPayments;
+use Solspace\FreeformPayments\Models\PaymentModel;
+use Solspace\FreeformPayments\Models\SubscriptionModel;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class CrmService extends AbstractIntegrationService implements CRMHandlerInterface
 {
     /** @var array */
     private static $integrations;
+
+    /** @var PaymentModel[]|SubscriptionModel[] */
+    private $paymentAndSubscriptionCache = [];
 
     /**
      * Update the access token of an integration
@@ -272,23 +279,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 $crmFieldsByHandle[$field->getHandle()] = $field;
             }
         } catch (RequestException $e) {
-            if ($integration instanceof TokenRefreshInterface) {
-                try {
-                    if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
-                        $this->updateAccessToken($integration);
-
-                        try {
-                            foreach ($integration->getFields() as $field) {
-                                $crmFieldsByHandle[$field->getHandle()] = $field;
-                            }
-                        } catch (\Exception $e) {
-                            $logger->error($e->getMessage());
-                        }
-                    }
-                } catch (\Exception $e) {
-                    $logger->error($e->getMessage());
-                }
-            }
+            $logger->error($e->getMessage());
         }
 
         $objectValues = [];
@@ -305,7 +296,13 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
                 $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $value);
             } catch (\Exception $e) {
-                $logger->error($e->getMessage());
+                try {
+                    $objectValues[$crmHandle] = $this->getExtraFieldsValue($fieldHandle, $submission, $integration);
+                } catch (FreeformException $exception) {
+                    $logger->warning($exception->getMessage());
+                } catch (\Exception $exception) {
+                    $logger->error($exception->getMessage());
+                }
             }
         }
 
@@ -322,30 +319,6 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 }
 
                 return $result;
-            } catch (RequestException $e) {
-                if ($integration instanceof TokenRefreshInterface) {
-                    try {
-                        if ($integration->refreshToken() && $integration->isAccessTokenUpdated()) {
-                            $this->updateAccessToken($integration);
-
-                            try {
-                                $result = $integration->pushObject($objectValues);
-
-                                if ($result) {
-                                    $this->onAfterPush($integration, $objectValues);
-                                }
-
-                                return $result;
-                            } catch (\Exception $e) {
-                                $logger->error($e->getMessage());
-                            }
-                        }
-                    } catch (\Exception $e) {
-                        $logger->error($e->getMessage());
-                    }
-                }
-
-                $logger->error($e->getMessage());
             } catch (\Exception $e) {
                 $logger->error($e->getMessage());
             }
@@ -388,5 +361,91 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
 
         return $event->isValid;
+    }
+
+    /**
+     * @param string              $handle
+     * @param Submission          $submission
+     * @param AbstractIntegration $integration
+     *
+     * @return mixed|null
+     * @throws FreeformException
+     */
+    private function getExtraFieldsValue(string $handle, Submission $submission, AbstractIntegration $integration)
+    {
+        if (!preg_match('/^(\w+)###(.*)$/', $handle, $matches)) {
+            throw new FreeformException(
+                Freeform::t(
+                    'Cannot access field "{handle}" for "{integration}" integration',
+                    [
+                        'handle'      => $handle,
+                        'integration' => $integration->getName(),
+                    ]
+                )
+            );
+        }
+
+        list ($_, $object, $property) = $matches;
+
+        switch ($object) {
+            case 'payments':
+                $targetObject = $this->getPaymentOrSubscription($submission);
+                break;
+
+            default:
+                $targetObject = null;
+        }
+
+        if ($targetObject) {
+            static $accessor;
+
+            if (null === $accessor) {
+                $accessor = PropertyAccess::createPropertyAccessor();
+            }
+
+            if ($accessor->isReadable($targetObject, $property)) {
+                return $accessor->getValue($targetObject, $property);
+            }
+        }
+
+        throw new FreeformException(
+            Freeform::t(
+                'Cannot access property "{property}" on "{object}" for "{integration}" integration',
+                [
+                    'property'    => $property,
+                    'object'      => $object,
+                    'integration' => $integration->getName(),
+                ]
+            )
+        );
+    }
+
+    /**
+     * @param Submission $submission
+     *
+     * @return PaymentModel|SubscriptionModel|null
+     */
+    private function getPaymentOrSubscription(Submission $submission)
+    {
+        $submissionId = $submission->id;
+        if (!isset($this->paymentAndSubscriptionCache[$submissionId])) {
+            if (!\Craft::$app->plugins->isPluginEnabled('freeform-payments')) {
+                $this->paymentAndSubscriptionCache[$submissionId] = null;
+            } else {
+                $payment = FreeformPayments::getInstance()->payments->getBySubmissionId($submissionId);
+                if ($payment) {
+                    $this->paymentAndSubscriptionCache[$submissionId] = $payment;
+                } else {
+                    $subscription = FreeformPayments::getInstance()->subscriptions->getBySubmissionId($submissionId);
+                    if ($subscription) {
+                        $this->paymentAndSubscriptionCache[$submissionId] = $subscription;
+                    } else {
+                        $this->paymentAndSubscriptionCache[$submissionId] = null;
+                    }
+                }
+            }
+        }
+
+        return $this->paymentAndSubscriptionCache[$submissionId];
     }
 }

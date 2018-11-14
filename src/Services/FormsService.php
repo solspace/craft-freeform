@@ -35,7 +35,7 @@ use yii\base\InvalidCallException;
 use yii\base\ViewNotFoundException;
 use yii\web\View;
 
-class FormsService extends Component implements FormHandlerInterface
+class FormsService extends BaseService implements FormHandlerInterface
 {
     /** @var FormModel[] */
     private static $formsById = [];
@@ -351,7 +351,13 @@ class FormsService extends Component implements FormHandlerInterface
             );
         }
 
-        $output = \Craft::$app->view->renderString(file_get_contents($templatePath), ['form' => $form]);
+        $output = \Craft::$app->view->renderString(
+            file_get_contents($templatePath),
+            [
+                'form'    => $form,
+                'formCss' => $this->getFormattingTemplateCss($templateName),
+            ]
+        );
 
         return Template::raw($output);
     }
@@ -473,7 +479,7 @@ class FormsService extends Component implements FormHandlerInterface
     {
         if ($this->getSettingsService()->isFormSubmitDisable()) {
             // Add the form submit disable logic
-            $formSubmitJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/submit-disabler.js');
+            $formSubmitJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form/submit-disabler.js');
             $formSubmitJs = str_replace(
                 ['{{FORM_ANCHOR}}', '{{PREV_BUTTON_NAME}}'],
                 [$event->getForm()->getAnchor(), SubmitField::PREVIOUS_PAGE_INPUT_NAME],
@@ -496,7 +502,7 @@ class FormsService extends Component implements FormHandlerInterface
         $form = $event->getForm();
 
         if ($form->getAnchor() && $form->isFormPosted()) {
-            $invalidFormJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form-jump-to-anchor.js');
+            $invalidFormJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form/form-jump-to-anchor.js');
             $invalidFormJs = str_replace('{{FORM_ANCHOR}}', $form->getAnchor(), $invalidFormJs);
 
             if ($this->getSettingsService()->isFooterScripts()) {
@@ -505,6 +511,22 @@ class FormsService extends Component implements FormHandlerInterface
                 $event->appendJsToOutput($invalidFormJs);
             }
         }
+    }
+
+    /**
+     * @param string $templateName
+     *
+     * @return string
+     */
+    public function getFormattingTemplateCss(string $templateName): string
+    {
+        $fileName    = pathinfo($templateName, PATHINFO_FILENAME);
+        $cssFilePath = \Yii::getAlias('@freeform') . '/Resources/css/form-formatting-templates/' . $fileName . '.css';
+        if (file_exists($cssFilePath)) {
+            return file_get_contents($cssFilePath);
+        }
+
+        return '';
     }
 
     /**
@@ -613,13 +635,5 @@ class FormsService extends Component implements FormHandlerInterface
     private function createForm(array $data): FormModel
     {
         return new FormModel($data);
-    }
-
-    /**
-     * @return SettingsService
-     */
-    private function getSettingsService(): SettingsService
-    {
-        return Freeform::getInstance()->settings;
     }
 }

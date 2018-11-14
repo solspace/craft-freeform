@@ -1,5 +1,31 @@
 # Solspace Freeform Changelog
 
+## 2.5.0 - 2018-11-14
+### Added
+- Added ability to 1-click enable built-in AJAX (anywhere) for forms via Composer.
+- Added ability to set attributes for labels, inputs, errors and instructions directly inside Composer property editor for fields.
+- Added ability to resend email notifications from the control panel for submissions.
+- Added ability to set static and relative date restrictions to the Date fieldtype.
+- Added Composer setting for Radio fieldtype to display options on a single line (instead of list).
+- Added Salesforce Opportunities API integration (Pro edition).
+- Added Assets element data feeder option for populating multi-option fieldtypes.
+- Added Quick Form Craft Dashboard Widget. Allows you to set up support forms for clients, etc.
+- Added setting to disable rendering of HTML inside Composer & Submissions views.
+- Added `status` parameter to `freeform.form` function so that statuses can be set at template level.
+
+### Changed
+- Updated Salesforce Lead integration to optionally accept credentials to be entered via the Freeform control panel and saved to database.
+- Updated the Craft User Element connection to respect Craft's `autoLoginAfterAccountActivation` config setting and allow new user registrations to automatically be logged in.
+- Updated CRM integrations to allow for Freeform Payments data to be mapped to CRM fields.
+- Updated CRM integrations with more than 1 object mapped to have separate field mapping tables (cleaner interface).
+
+### Fixed
+- Fixed a bug where Phone fieldtype would have a JS map file error in front end.
+- Fixed a bug where some update migrations could error for PostgreSQL users.
+- Fixed a bug where default formatting templates and demo templates had incorrect order of Twig filters that prevented HTML from being rendered in field option labels.
+- Fixed a bug where File uploads were not being mapped to User Photo field correctly (in User Element Connection).
+- Fixed some visual bugs in Composer for required asterisks.
+
 ## 2.4.3 - 2018-11-09
 ### Fixed
 - Fixed a bug where CSV exports could sometimes error on multi-option field types.

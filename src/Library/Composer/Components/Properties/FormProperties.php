@@ -46,6 +46,12 @@ class FormProperties extends AbstractProperties
     /** @var string */
     protected $optInDataStorageTargetHash;
 
+    /** @var array */
+    protected $tagAttributes;
+
+    /** @var bool */
+    protected $ajaxEnabled;
+
     /**
      * @return string
      */
@@ -135,6 +141,22 @@ class FormProperties extends AbstractProperties
     }
 
     /**
+     * @return array
+     */
+    public function getTagAttributes(): array
+    {
+        return $this->tagAttributes ?? [];
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAjaxEnabled(): bool
+    {
+        return (bool) $this->ajaxEnabled;
+    }
+
+    /**
      * Return a list of all property fields and their type
      *
      * [propertyKey => propertyType, ..]
@@ -156,6 +178,8 @@ class FormProperties extends AbstractProperties
             'defaultStatus'              => self::TYPE_INTEGER,
             'formTemplate'               => self::TYPE_STRING,
             'optInDataStorageTargetHash' => self::TYPE_STRING,
+            'tagAttributes'              => self::TYPE_ARRAY,
+            'ajaxEnabled'                => self::TYPE_BOOLEAN,
         ];
     }
 }

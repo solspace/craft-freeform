@@ -48,6 +48,7 @@ use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
+use Solspace\Freeform\Services\FormAjaxService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
@@ -63,6 +64,7 @@ use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
 use Solspace\Freeform\Variables\FreeformVariable;
+use Solspace\Freeform\Widgets\QuickFormWidget;
 use Solspace\Freeform\Widgets\StatisticsWidget;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
@@ -76,6 +78,7 @@ use yii\db\Query;
  * @property FieldsService            $fields
  * @property FilesService             $files
  * @property FormsService             $forms
+ * @property FormAjaxService          $formAjax
  * @property MailerService            $mailer
  * @property MailingListsService      $mailingLists
  * @property NotificationsService     $notifications
@@ -445,6 +448,7 @@ class Freeform extends Plugin
                 'fields'            => FieldsService::class,
                 'files'             => FilesService::class,
                 'forms'             => FormsService::class,
+                'formAjax'          => FormAjaxService::class,
                 'mailer'            => MailerService::class,
                 'mailingLists'      => MailingListsService::class,
                 'notifications'     => NotificationsService::class,
@@ -492,6 +496,7 @@ class Freeform extends Plugin
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
                 $event->types[] = StatisticsWidget::class;
+                $event->types[] = QuickFormWidget::class;
             }
         );
     }
@@ -595,6 +600,12 @@ class Freeform extends Plugin
             FormsService::class,
             FormsService::EVENT_RENDER_CLOSING_TAG,
             [$this->forms, 'addFormAnchorJavascript']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_RENDER_CLOSING_TAG,
+            [$this->formAjax, 'addAjaxJavascript']
         );
 
         Event::on(

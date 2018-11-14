@@ -12,11 +12,14 @@
 namespace Solspace\Freeform\Library\Composer\Components\Fields;
 
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OneLineTrait;
 
-class CheckboxGroupField extends AbstractExternalOptionsField implements MultipleValueInterface
+class CheckboxGroupField extends AbstractExternalOptionsField implements MultipleValueInterface, OneLineInterface
 {
     use MultipleValueTrait;
+    use OneLineTrait;
 
     /**
      * Return the field TYPE
@@ -29,23 +32,40 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements Multipl
     }
 
     /**
+     * @inheritDoc
+     */
+    protected function onBeforeInputHtml(): string
+    {
+        return $this->isOneLine() ? '<div class="input-group-one-line">' : '';
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function onAfterInputHtml(): string
+    {
+        return $this->isOneLine() ? '</div>' : '';
+    }
+
+    /**
      * Outputs the HTML of input
      *
      * @return string
      */
     public function getInputHtml(): string
     {
-        $attributes   = $this->getCustomAttributes();
-        $output       = '';
+        $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
+        $output = '';
         foreach ($this->options as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '
+                . $this->getInputAttributesString()
                 . $this->getAttributeString('name', $this->getHandle() . '[]')
                 . $this->getAttributeString('type', 'checkbox')
                 . $this->getAttributeString('id', $this->getIdAttribute() . "-$index")
-                . $this->getAttributeString('class', $attributes->getClass())
                 . $this->getAttributeString('value', $option->getValue())
                 . $this->getParameterString('checked', $option->isChecked())
                 . $attributes->getInputAttributesAsString()

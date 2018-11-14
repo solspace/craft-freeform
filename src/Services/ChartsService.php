@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Services;
 
 use Carbon\Carbon;
-use craft\base\Component;
 use craft\db\Query;
 use Solspace\Commons\Helpers\ColorHelper;
 use Solspace\Freeform\Elements\Submission;
@@ -12,7 +11,7 @@ use Solspace\Freeform\Library\Charts\LinearChartData;
 use Solspace\Freeform\Library\Charts\LinearItem;
 use Solspace\Freeform\Library\Charts\RadialChartData;
 
-class ChartsService extends Component
+class ChartsService extends BaseService
 {
     /**
      * @param Carbon $rangeStart

@@ -17,6 +17,72 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 abstract class AbstractAttributes
 {
     /**
+     * @param array $attributes
+     * @param null  $templateObject
+     * @param array $templateVars
+     *
+     * @return array
+     * @throws \Throwable
+     * @throws \yii\base\Exception
+     */
+    public static function extractAttributes(array $attributes, $templateObject = null, array $templateVars = []): array
+    {
+        $byAttribute = [];
+        foreach ($attributes as $values) {
+            $attribute = $values['attribute'] ?? '';
+            $value     = $values['value'] ?? '';
+
+            if (empty($attribute) || (empty($value) && empty($attribute))) {
+                continue;
+            }
+
+            $attribute = \Craft::$app->view->renderObjectTemplate($attribute, $templateObject, $templateVars);
+            $attribute = htmlentities($attribute, ENT_QUOTES);
+
+            if (!$value) {
+                $byAttribute[$attribute] = null;
+                continue;
+            }
+
+            $value = \Craft::$app->view->renderObjectTemplate($value, $templateObject, $templateVars);
+            $value = htmlentities($value, ENT_QUOTES);
+
+            if (isset($byAttribute[$attribute])) {
+                $byAttribute[$attribute] .= ' ' . $value;
+            } else {
+                $byAttribute[$attribute] = $value;
+            }
+        }
+
+        return $byAttribute;
+    }
+
+    /**
+     * @param array $attributes
+     * @param null  $templateObject
+     * @param array $templateVars
+     *
+     * @return string
+     * @throws \Throwable
+     * @throws \yii\base\Exception
+     */
+    public static function extractAttributeString(array $attributes, $templateObject = null, array $templateVars = []): string
+    {
+        $attributes = self::extractAttributes($attributes, $templateObject, $templateVars);
+
+        $output = [];
+        foreach ($attributes as $attribute => $value) {
+            if (null === $value) {
+                $output[] = "$attribute";
+            } else {
+                $output[] = "$attribute=\"$value\"";
+            }
+        }
+
+        return $output ? ' ' . implode(' ', $output) : '';
+    }
+
+    /**
      * CustomFormAttributes constructor.
      *
      * @param array|null $attributes

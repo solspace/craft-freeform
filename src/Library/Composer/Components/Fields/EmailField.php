@@ -46,6 +46,7 @@ class EmailField extends AbstractField implements RecipientInterface, MultipleVa
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
         $values = $this->getValue();
         if (empty($values)) {
@@ -55,10 +56,10 @@ class EmailField extends AbstractField implements RecipientInterface, MultipleVa
         $output = '';
         foreach ($values as $value) {
             $output .= '<input '
+                . $this->getInputAttributesString()
                 . $this->getAttributeString('name', $this->getHandle())
                 . $this->getAttributeString('type', $this->getType())
                 . $this->getAttributeString('id', $this->getIdAttribute())
-                . $this->getAttributeString('class', $attributes->getClass())
                 . $this->getAttributeString(
                     'placeholder',
                     $this->getForm()->getTranslator()->translate(

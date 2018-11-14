@@ -44,7 +44,7 @@ class Users extends AbstractConnection
                 $user->unverifiedEmail = $user->email;
             }
 
-            if ($key === 'photoId' && \is_array($value)) {
+            if ($key === 'photoId' && \is_array($value) && \count($value)) {
                 $user->photoId = reset($value);
             }
         }
@@ -75,6 +75,10 @@ class Users extends AbstractConnection
                 \Craft::$app->getErrorHandler()->logException($e);
                 \Craft::$app->getSession()->setError(\Craft::t('app', 'User saved, but couldn’t send verification email. Check your email settings.'));
             }
+        }
+
+        if ($this->active && \Craft::$app->getConfig()->getGeneral()->autoLoginAfterAccountActivation) {
+            \Craft::$app->getUser()->login($element);
         }
     }
 }

@@ -98,12 +98,13 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
+        $this->addInputAttribute('class', $attributes->getClass());
 
         return '<input '
+            . $this->getInputAttributesString()
             . $this->getAttributeString('name', $this->getHandle() . '[]')
             . $this->getAttributeString('type', $this->getType())
             . $this->getAttributeString('id', $this->getIdAttribute())
-            . $this->getAttributeString('class', $attributes->getClass())
             . $this->getParameterString('multiple', $this->getFileCount() > 1)
             . $this->getRequiredAttribute()
             . $attributes->getInputAttributesAsString()

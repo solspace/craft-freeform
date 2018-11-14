@@ -1,0 +1,32 @@
+{% import "_includes/forms" as forms %}
+
+<div>
+
+    {{ forms.textField({
+        label: "Title"|t,
+        instructions: "Customize the widget title. Leave blank for default."|t,
+        id: 'title',
+        name: 'title',
+        value: settings.title,
+        errors: settings.getErrors('title'),
+    }) }}
+
+    {{ forms.textField({
+        label: "Success Message"|t,
+        instructions: "Customize the message to be displayed to the user when the form has been successfully submitted."|t,
+        id: 'successMessage',
+        name: 'successMessage',
+        placeholder: 'Form submitted successfully!',
+        value: settings.successMessage,
+        errors: settings.getErrors('successMessage'),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Form"|t('freeform'),
+        instructions: "Select the form to be displayed."|t('freeform'),
+        name: 'formId',
+        options: formList,
+        value: settings.formId,
+    }) }}
+
+</div>

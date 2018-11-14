@@ -1,4 +1,4 @@
-<style>label.required:after{content:"*";color:#d00;margin-left:5px;font-size:12px;font-family:serif;font-weight:700}.submit{margin-top:15px}.submit-align-left{text-align:left}.submit-align-right{text-align:right}.submit-align-center{text-align:center}.submit-align-center button:not(:first-of-type),.submit-align-left button:not(:first-of-type),.submit-align-right button:not(:first-of-type){margin-left:5px}.submit-align-spread button:first-child{float:left}.submit-align-spread button:last-child{float:right}</style>
+{% css formCss %}
 
 {{ form.renderTag }}
 
@@ -55,17 +55,18 @@
                         instructionsClass: "help-text",
                     }) }}
 
-                    {% for option in field.options %}
-                        <div class="checkbox">
-                            <label>
-                                <input type="checkbox"
-                                       name="{{ field.handle }}[]"
-                                       value="{{ option.value }}"
-                                        {{ option.checked ? "checked" : "" }}
-                                />
-                                {{ option.label|raw|t }}
-                            </label>
-                        </div>
+                    {% for index, option in field.options %}
+                        {{ not field.oneLine ? '<div class="checkbox">'|raw }}
+
+                        <input type="checkbox"
+                               name="{{ field.handle }}[]"
+                               value="{{ option.value }}"
+                               id="{{ field.idAttribute }}-{{ index }}"
+                                {{ option.checked ? "checked" : "" }}
+                        />
+                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t|raw }}</label>
+
+                        {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}
 
                     {{ field.renderInstructions() }}
@@ -78,17 +79,18 @@
                         instructionsClass: "help-text",
                     }) }}
 
-                    {% for option in field.options %}
-                        <div class="radio">
-                            <label>
-                                <input type="radio"
-                                       name="{{ field.handle }}"
-                                       value="{{ option.value }}"
-                                        {{ option.checked ? "checked" : "" }}
-                                />
-                                {{ option.label|raw|t }}
-                            </label>
-                        </div>
+                    {% for index, option in field.options %}
+                        {{ not field.oneLine ? '<div class="radio">'|raw }}
+
+                        <input type="radio"
+                               name="{{ field.handle }}"
+                               value="{{ option.value }}"
+                               id="{{ field.idAttribute }}-{{ index }}"
+                                {{ option.checked ? "checked" : "" }}
+                        />
+                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t|raw }}</label>
+
+                        {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}
 
                     {{ field.renderInstructions() }}
@@ -101,17 +103,18 @@
                         instructionsClass: "help-text",
                     }) }}
 
-                    {% for option in field.options %}
-                        <div class="radio">
-                            <label>
-                                <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
-                                       name="{{ field.handle }}[]"
-                                       value="{{ loop.index0 }}"
-                                        {{ option.checked ? "checked" : "" }}
-                                />
-                                {{ option.label|raw|t }}
-                            </label>
-                        </div>
+                    {% for index, option in field.options %}
+                        {{ not field.oneLine ? '<div class="radio">'|raw }}
+
+                        <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
+                               name="{{ field.handle }}[]"
+                               value="{{ loop.index0 }}"
+                               id="{{ field.idAttribute }}-{{ index }}"
+                                {{ option.checked ? "checked" : "" }}
+                        />
+                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t|raw }}</label>
+
+                        {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}
 
                     {{ field.renderInstructions() }}
@@ -184,3 +187,76 @@
 
 
 {{ form.renderClosingTag }}
+
+<script>
+  window.renderFormSuccess = function(form) {
+    const successMessage = document.createElement("div");
+    successMessage.classList.add("callout", "success");
+
+    const paragraph = document.createElement("p");
+    paragraph.appendChild(document.createTextNode("Form submitted successfully"));
+
+    successMessage.appendChild(paragraph);
+
+    form.insertBefore(successMessage, form.childNodes[0]);
+  };
+
+  window.renderErrors = function(errors, form) {
+    for (const key in errors) {
+      if (!errors.hasOwnProperty(key)) {
+        continue;
+      }
+
+      const messages = errors[key];
+      const errorsList = document.createElement("ul");
+      errorsList.classList.add("errors");
+
+      for (const message of messages) {
+        const listItem = document.createElement("li");
+        listItem.appendChild(document.createTextNode(message));
+        errorsList.appendChild(listItem);
+      }
+
+
+      const inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
+      for (const input of inputList) {
+        input.parentElement.classList.add("has-error");
+        input.parentElement.appendChild(errorsList);
+      }
+    }
+  };
+
+  window.renderFormErrors = function (errors, form) {
+    const errorBlock = document.createElement("div");
+    errorBlock.classList.add("callout", "alert", "form-errors");
+    errorBlock.appendChild(document.createTextNode("This form has errors"));
+
+    if (errors.length) {
+      const errorsList = document.createElement("ul");
+      for (const message of errors) {
+        const listItem = document.createElement("li");
+        listItem.appendChild(document.createTextNode(message));
+        errorsList.appendChild(listItem);
+      }
+
+      errorBlock.appendChild(errorsList);
+    }
+
+    form.insertBefore(errorBlock, form.childNodes[0]);
+  };
+
+
+  window.removeMessages = (form) => {
+    // Remove any existing errors that are being shown
+    form.querySelectorAll(".errors").remove();
+    const fieldsWithErrors = form.querySelectorAll(".has-error");
+    for (let fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
+      const field = fieldsWithErrors[fieldIndex];
+      field.classList.remove("has-error");
+    }
+
+    // Remove success messages
+    form.querySelectorAll(".callout.success").remove();
+    form.querySelectorAll(".callout.form-errors").remove();
+  }
+</script>

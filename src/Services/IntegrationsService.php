@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Models\IntegrationsQueueModel;
@@ -33,7 +34,7 @@ use Solspace\FreeformPayments\Fields\CreditCardDetailsField;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 
-class IntegrationsService extends Component
+class IntegrationsService extends BaseService
 {
     /**
      * @return IntegrationModel[]
@@ -178,17 +179,16 @@ class IntegrationsService extends Component
     {
         $form = $submission->getForm();
         $paymentFields = $form->getLayout()->getPaymentFields();
-        if (!$paymentFields || count($paymentFields) == 0) {
+        if (!$paymentFields || \count($paymentFields) === 0) {
             return true; //no payment fields, so no processing needed
         }
 
         //atm we support only single payment field
 
-
         if (!$submission->getId()) {
             //TODO: add to string constants? translate?
             $submission->addError($submission->getFieldColumnName($paymentFields[0]->getId()), 'Can\'t process payments for unsaved submission!');
-            $paymentField->addError('Can\'t process payments for unsaved submission!');
+            $paymentFields[0]->addError('Can\'t process payments for unsaved submission!');
 
             return false;
         }
@@ -207,7 +207,7 @@ class IntegrationsService extends Component
             $customerFieldMapping = $properties->getCustomerFieldMapping();
             $dynamicValues = array();
 
-            if (is_array($paymentFieldMapping)) {
+            if (\is_array($paymentFieldMapping)) {
                 foreach ($paymentFieldMapping as $key => $handle) {
                     $value = $submission->{$handle}->getValue();
                     if ($value) {
@@ -216,7 +216,7 @@ class IntegrationsService extends Component
                 }
             }
 
-            if (is_array($customerFieldMapping)) {
+            if (\is_array($customerFieldMapping)) {
                 foreach ($customerFieldMapping as $key => $handle) {
                     $value = $submission->{$handle}->getValue();
                     if ($value) {
@@ -227,6 +227,7 @@ class IntegrationsService extends Component
             $customer = CustomerDetails::fromArray($dynamicValues);
             $token    = $field->getValue();
 
+            $result = false;
             switch ($paymentType) {
                 case PaymentProperties::PAYMENT_TYPE_SINGLE:
                     $currency       = $dynamicValues[PaymentProperties::FIELD_CURRENCY] ?? $properties->getCurrency();

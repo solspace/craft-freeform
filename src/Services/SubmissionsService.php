@@ -28,7 +28,7 @@ use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\Component;
 
-class SubmissionsService extends Component implements SubmissionHandlerInterface
+class SubmissionsService extends BaseService implements SubmissionHandlerInterface
 {
     const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
     const EVENT_AFTER_SUBMIT  = 'afterSubmit';
@@ -169,9 +169,17 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
             $submission = SpamSubmission::create();
         }
 
+        $statusId = $form->getDefaultStatus();
+        if (!is_numeric($statusId)) {
+            $status = Freeform::getInstance()->statuses->getStatusByHandle($statusId);
+            if ($status) {
+                $statusId = $status->id;
+            }
+        }
+
         $submission->ip          = $form->isIpCollectingEnabled() ? \Craft::$app->request->getRemoteIP() : null;
         $submission->formId      = $form->getId();
-        $submission->statusId    = $form->getDefaultStatus();
+        $submission->statusId    = $statusId;
         $submission->isSpam      = $form->isMarkedAsSpam();
         $submission->dateCreated = $dateCreated;
         $submission->dateUpdated = $dateCreated;
@@ -208,7 +216,7 @@ class SubmissionsService extends Component implements SubmissionHandlerInterface
         $form = $submission->getForm();
 
         $this->markFormAsSubmitted($form);
-        
+
         $connectionsService->connect($form);
         $integrationsService->processPayments($submission);
         $integrationsService->sendOutEmailNotifications($submission);

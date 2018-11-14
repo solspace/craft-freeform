@@ -112,9 +112,11 @@ class SubmitField extends AbstractField implements SingleValueInterface, InputOn
         $submitClass = $attributes->getInputClassOnly();
         $formSubmitClass = $this->getForm()->getCustomAttributes()->getSubmitClass();
 
-        $submitClass = trim($submitClass . " " . $formSubmitClass);
+        $submitClass = trim($submitClass . ' ' . $formSubmitClass);
 
-        $output = "";
+        $this->addInputAttribute('class', $submitClass);
+
+        $output = '';
 
         if (!$this->isFirstPage() && !$this->isDisablePrev()) {
             $output .= '<input '
@@ -124,8 +126,8 @@ class SubmitField extends AbstractField implements SingleValueInterface, InputOn
                 . ' />';
 
             $output .= '<button '
+                . $this->getInputAttributesString()
                 . $this->getAttributeString('type', 'submit')
-                . $this->getAttributeString('class', $submitClass)
                 . $this->getAttributeString('name', self::PREVIOUS_PAGE_INPUT_NAME)
                 . $attributes->getInputAttributesAsString()
                 . '>'
@@ -134,8 +136,8 @@ class SubmitField extends AbstractField implements SingleValueInterface, InputOn
         }
 
         $output .= '<button '
+            . $this->getInputAttributesString()
             . $this->getAttributeString('type', 'submit')
-            . $this->getAttributeString('class', $submitClass)
             . $this->getAttributeString('name', self::SUBMIT_INPUT_NAME)
             . $attributes->getInputAttributesAsString()
             . '>'

@@ -22,7 +22,7 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 
-abstract class AbstractIntegrationService extends Component
+abstract class AbstractIntegrationService extends BaseService
 {
     const EVENT_BEFORE_SAVE   = 'beforeSave';
     const EVENT_AFTER_SAVE    = 'afterSave';

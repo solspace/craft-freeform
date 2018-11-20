@@ -37,10 +37,13 @@ class Submission extends Element
     const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
     /** @var AbstractField[] */
-    private static $fieldIdMap;
+    private static $fieldIdMap = [];
 
     /** @var AbstractField */
-    private static $fieldHandleMap;
+    private static $fieldHandleMap = [];
+
+    /** @var array */
+    private static $permissionCache = [];
 
     /** @var int */
     public $formId;
@@ -405,14 +408,6 @@ class Submission extends Element
     {
         $formId = $this->formId;
 
-        if (null === self::$fieldIdMap) {
-            self::$fieldIdMap = [];
-        }
-
-        if (null === self::$fieldHandleMap) {
-            self::$fieldHandleMap = [];
-        }
-
         if (!isset(self::$fieldIdMap[$formId])) {
             $ids = $handles = [];
             foreach ($this->getForm()->getLayout()->getFields() as $field) {
@@ -535,7 +530,20 @@ class Submission extends Element
      */
     public function getIsEditable(): bool
     {
-        return true;
+        if (!isset(self::$permissionCache[$this->formId])) {
+            if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
+                self::$permissionCache[$this->formId] = true;
+            } else {
+                self::$permissionCache[$this->formId] = PermissionHelper::checkPermission(
+                    PermissionHelper::prepareNestedPermission(
+                        Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                        $this->formId
+                    )
+                );
+            }
+        }
+
+        return self::$permissionCache[$this->formId];
     }
 
     /**
@@ -543,20 +551,7 @@ class Submission extends Element
      */
     public function getCpEditUrl()
     {
-        static $allowedFormIds;
-
-        if (null === $allowedFormIds) {
-            $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-        }
-
-        if (!PermissionHelper::isAdmin()) {
-            $canManageAll = empty($allowedFormIds) && PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-            if (!$canManageAll && !\in_array($this->formId, $allowedFormIds, false)) {
-                return false;
-            }
-        }
-
-        return UrlHelper::cpUrl('freeform/submissions/' . $this->id);
+        return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/submissions/' . $this->id) : false;
     }
 
     /**

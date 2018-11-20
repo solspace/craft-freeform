@@ -90,8 +90,6 @@ class SubmissionsController extends BaseController
     public function actionExport()
     {
         $this->requirePostRequest();
-        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-
         $isRemoveNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
 
         $submissionIds = \Craft::$app->request->post('submissionIds');
@@ -103,6 +101,12 @@ class SubmissionsController extends BaseController
         if ($submissions) {
             $formId = $submissions[0]['formId'];
             $form   = $this->getFormsService()->getFormById($formId);
+
+            PermissionHelper::requirePermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId
+                )
+            );
 
             if (!$form) {
                 throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $formId]));

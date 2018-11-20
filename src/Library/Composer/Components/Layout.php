@@ -78,6 +78,9 @@ class Layout implements \JsonSerializable, \Iterator
     /** @var bool */
     private $hasPhonePatternFields;
 
+    /** @var bool */
+    private $hasRecaptchaFields;
+
     /**
      * Layout constructor.
      *
@@ -115,6 +118,14 @@ class Layout implements \JsonSerializable, \Iterator
     public function hasPhonePatternFields(): bool
     {
         return $this->hasPhonePatternFields;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasRecaptchaFields(): bool
+    {
+        return $this->hasRecaptchaFields;
     }
 
     /**
@@ -313,8 +324,12 @@ class Layout implements \JsonSerializable, \Iterator
         $phoneClass  = 'Solspace\FreeformPro\Fields\PhoneField';
         $phoneExists = class_exists($phoneClass);
 
+        $recaptchaClass  = 'Solspace\FreeformPro\Fields\RecaptchaField';
+        $recaptchaExists = class_exists($recaptchaClass);
+
         $hasDatepickerEnabledFields = false;
         $hasPhonePatternFields      = false;
+        $hasRecaptchaFields         = false;
         $pageObjects                = [];
         $allRows                    = [];
         $allFields                  = [];
@@ -397,6 +412,10 @@ class Layout implements \JsonSerializable, \Iterator
                         $hasPhonePatternFields = true;
                     }
 
+                    if ($recaptchaExists && \get_class($field) === $recaptchaClass) {
+                        $hasRecaptchaFields = true;
+                    }
+
                     $pageFields[] = $field;
                     $allFields[]  = $field;
                 }
@@ -428,6 +447,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->paymentFields              = $paymentFields;
         $this->hasDatepickerEnabledFields = $hasDatepickerEnabledFields;
         $this->hasPhonePatternFields      = $hasPhonePatternFields;
+        $this->hasRecaptchaFields               = $hasRecaptchaFields;
     }
 
     /**

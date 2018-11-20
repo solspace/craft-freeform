@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 2.5.1 - 2018-11-20
+### Changed
+- Updated the way reCAPTCHA handles loading in templates. When loading an entire form via AJAX, you'll need to manually load the reCAPTCHA JS yourself now. AJAX demo templates are updated to reflect this.
+
+### Fixed
+- Fixed a bug where restricted users/user groups were able to see form submissions they didn't have access to when clicking on 'All Submissions' filter in control panel.
+- Fixed a bug where the 'Export to CSV' feature would error for some users/user groups.
+- Fixed a bug where the 'Freeform Javascript Insertion Location' setting was not defaulting to 'Inside Form' (which offers better support for AJAX and other convenience features, etc) for fresh installs.
+
 ## 2.5.0 - 2018-11-14
 ### Added
 - Added ability to 1-click enable built-in AJAX (anywhere) for forms via Composer.

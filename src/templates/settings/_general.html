@@ -90,7 +90,7 @@
         label: "Freeform Javascript Insertion Location"|t('freeform'),
         instructions: "The location of where you want Freeform to insert it's scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),
         name: "settings[footerScripts]",
-        value: settings.footerScripts,
+        value: settings.footerScripts ? 1 : 0,
         errors: settings.errors("footerScripts"),
         options: {
             1: "Page Footer"|t('freeform'),

@@ -67,6 +67,18 @@ class FormRenderEvent extends Event
     }
 
     /**
+     * @param string $url
+     *
+     * @return FormRenderEvent
+     */
+    public function appendExternalJsToOutput(string $url): FormRenderEvent
+    {
+        $this->outputChunks[] = "<script src=\"$url\"></script>";
+
+        return $this;
+    }
+
+    /**
      * @param string $value
      *
      * @return FormRenderEvent

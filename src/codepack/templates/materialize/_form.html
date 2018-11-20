@@ -296,11 +296,11 @@
 <script>
 
   window.renderFormSuccess = function(form) {
-    const successMessage = document.createElement("div");
+    var successMessage = document.createElement("div");
     successMessage.classList.add("card", "green", "form-success");
     successMessage.style.padding = "10px 15px";
 
-    const paragraph = document.createElement("p");
+    var paragraph = document.createElement("p");
     paragraph.appendChild(document.createTextNode("Form submitted successfully"));
 
     successMessage.appendChild(paragraph);
@@ -309,24 +309,24 @@
   };
 
   window.renderErrors = function(errors, form) {
-    for (const key in errors) {
+    for (var key in errors) {
       if (!errors.hasOwnProperty(key)) {
         continue;
       }
 
-      const messages = errors[key];
-      const errorsList = document.createElement("ul");
+      var messages = errors[key];
+      var errorsList = document.createElement("ul");
       errorsList.classList.add("errors");
 
-      for (const message of messages) {
-        const listItem = document.createElement("li");
+      for (var message of messages) {
+        var listItem = document.createElement("li");
         listItem.appendChild(document.createTextNode(message));
         errorsList.appendChild(listItem);
       }
 
 
-      const inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
-      for (const input of inputList) {
+      var inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
+      for (var input of inputList) {
         input.parentElement.classList.add("has-error");
         input.parentElement.appendChild(errorsList);
       }
@@ -334,15 +334,15 @@
   };
 
   window.renderFormErrors = function(errors, form) {
-    const errorBlock = document.createElement("div");
+    var errorBlock = document.createElement("div");
     errorBlock.classList.add("card", "red", "form-errors");
     errorBlock.style.padding = "10px 15px";
     errorBlock.appendChild(document.createTextNode("This form has errors"));
 
     if (errors.length) {
-      const errorsList = document.createElement("ul");
-      for (const message of errors) {
-        const listItem = document.createElement("li");
+      var errorsList = document.createElement("ul");
+      for (var message of errors) {
+        var listItem = document.createElement("li");
         listItem.appendChild(document.createTextNode(message));
         errorsList.appendChild(listItem);
       }
@@ -357,14 +357,27 @@
   window.removeMessages = (form) => {
     // Remove any existing errors that are being shown
     form.querySelectorAll(".errors").remove();
-    const fieldsWithErrors = form.querySelectorAll(".has-error");
-    for (let fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
-      const field = fieldsWithErrors[fieldIndex];
+    var fieldsWithErrors = form.querySelectorAll(".has-error");
+    for (var fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
+      var field = fieldsWithErrors[fieldIndex];
       field.classList.remove("has-error");
     }
 
     // Remove success messages
     form.querySelectorAll(".card.success").remove();
     form.querySelectorAll(".card.form-errors").remove();
-  }
+  };
+
+  // Add remove prototypes
+  Element.prototype.remove = function () {
+    this.parentElement.removeChild(this);
+  };
+
+  NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
+    for (var i = this.length - 1; i >= 0; i--) {
+      if (this[i] && this[i].parentElement) {
+        this[i].parentElement.removeChild(this[i]);
+      }
+    }
+  };
 </script>

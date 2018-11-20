@@ -6,7 +6,16 @@ Freeform is the most powerful form building plugin for Craft CMS. It gives you f
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0 or later.
+* **Craft 3.0.0 or later**
+* PHP 7.0+
+* MySQL 5.5+ (with InnoDB) or PostgreSQL 9.5+
+* [BC Math](http://php.net/manual/en/book.bc.php) or [GMP](http://php.net/manual/en/book.gmp.php) PHP extensions (usually included in most server environments)
+* Windows and OS X browsers:
+	* Chrome 29 or later
+	* Firefox 28 or later
+	* Safari 9.0 or later
+	* Internet Explorer 11 or later
+	* Microsoft Edge
 
 ## Installation
 

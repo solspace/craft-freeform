@@ -244,10 +244,10 @@
 
 <script>
   window.renderFormSuccess = function (form) {
-    const successMessage = document.createElement("div");
+    var successMessage = document.createElement("div");
     successMessage.classList.add("alert", "alert-success", "form-success");
 
-    const paragraph = document.createElement("p");
+    var paragraph = document.createElement("p");
     paragraph.classList.add("lead");
     paragraph.appendChild(document.createTextNode("Form submitted successfully"));
 
@@ -258,25 +258,25 @@
 
 
   window.renderErrors = function (errors, form) {
-    for (const key in errors) {
+    for (var key in errors) {
       if (!errors.hasOwnProperty(key) || !key) {
         continue;
       }
 
-      const messages = errors[key];
-      const errorsList = document.createElement("ul");
+      var messages = errors[key];
+      var errorsList = document.createElement("ul");
       errorsList.classList.add("help-block", "errors");
 
-      for (let messageIndex = 0; messageIndex < messages.length; messageIndex++) {
-        const message = messages[messageIndex];
-        const listItem = document.createElement("li");
+      for (var messageIndex = 0; messageIndex < messages.length; messageIndex++) {
+        var message = messages[messageIndex];
+        var listItem = document.createElement("li");
         listItem.appendChild(document.createTextNode(message));
         errorsList.appendChild(listItem);
       }
 
-      const inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
-      for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
-        const input = inputList[inputIndex];
+      var inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
+      for (var inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
+        var input = inputList[inputIndex];
 
         input.parentElement.classList.add("has-error");
         input.parentElement.appendChild(errorsList);
@@ -286,19 +286,19 @@
 
 
   window.renderFormErrors = (errors, form) => {
-    const errorBlock = document.createElement("div");
+    var errorBlock = document.createElement("div");
     errorBlock.classList.add("alert", "alert-danger", "errors");
 
-    const paragraph = document.createElement("p");
+    var paragraph = document.createElement("p");
     paragraph.appendChild(document.createTextNode("This form has errors"));
     paragraph.classList.add("lead");
     errorBlock.appendChild(paragraph);
 
     if (errors.length) {
-      const errorsList = document.createElement("ul");
-      for (let messageIndex = 0; messageIndex < errors.length; messageIndex++) {
-        const message = errors[messageIndex];
-        const listItem = document.createElement("li");
+      var errorsList = document.createElement("ul");
+      for (var messageIndex = 0; messageIndex < errors.length; messageIndex++) {
+        var message = errors[messageIndex];
+        var listItem = document.createElement("li");
 
         listItem.appendChild(document.createTextNode(message));
         errorsList.appendChild(listItem);
@@ -314,13 +314,27 @@
   window.removeMessages = (form) => {
     // Remove any existing errors that are being shown
     form.querySelectorAll(".errors").remove();
-    const fieldsWithErrors = form.querySelectorAll(".has-error");
-    for (let fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
-      const field = fieldsWithErrors[fieldIndex];
+
+    var fieldsWithErrors = form.querySelectorAll(".has-error");
+    for (var fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
+      var field = fieldsWithErrors[fieldIndex];
       field.classList.remove("has-error");
     }
 
     // Remove success messages
     form.querySelectorAll(".form-success").remove();
-  }
+  };
+
+  // Add remove prototypes
+  Element.prototype.remove = function () {
+    this.parentElement.removeChild(this);
+  };
+
+  NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
+    for (var i = this.length - 1; i >= 0; i--) {
+      if (this[i] && this[i].parentElement) {
+        this[i].parentElement.removeChild(this[i]);
+      }
+    }
+  };
 </script>

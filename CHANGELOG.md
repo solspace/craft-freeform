@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.5.2 - 2018-11-27
+### Added
+- Added Freeform Submissions Element Fieldtype.
+
+### Changed
+- Updated Conditional Rules feature to now include Submit buttons and HTML blocks.
+
+### Fixed
+- Fixed a bug where Conditional Rules feature was not working with File Upload fields.
+- Fixed a bug where setting a `class` attribute in Composer for field labels would sometimes not render correctly.
+- Fixed a bug where the Built-in AJAX feature was still attempting to redirect after successful submit.
+- Fixed a bug where Conditional Rules feature was not excluding fields hidden from logic in email notifications.
+- Fixed a bug where ordering Submissions in front end was not working correctly.
+
 ## 2.5.1 - 2018-11-20
 ### Changed
 - Updated the way reCAPTCHA handles loading in templates. When loading an entire form via AJAX, you'll need to manually load the reCAPTCHA JS yourself now. AJAX demo templates are updated to reflect this.

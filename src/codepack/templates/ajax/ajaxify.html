@@ -144,10 +144,16 @@
 
       if (request.status === 200) {
         var response = JSON.parse(request.response);
+        var event = document.createEvent("Event");
 
         if (response.success && response.finished) {
           // Reset the form so that the user may enter fresh information
           form.reset();
+
+          event.initEvent("form.submit.success", true, true);
+          event.form = form;
+          event.response = response;
+          form.dispatchEvent(event);
 
           // ============================================================
           // Uncomment this to have the form redirect to the success page
@@ -159,6 +165,12 @@
           renderFormSuccess(form);
 
         } else if (response.errors || response.formErrors) {
+
+          event.initEvent("form.submit.error", true, true);
+          event.form = form;
+          event.response = response;
+          form.dispatchEvent(event);
+
           renderErrors(response.errors, form);
           renderFormErrors(response.formErrors, form);
         }

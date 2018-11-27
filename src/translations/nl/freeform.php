@@ -256,4 +256,8 @@ return [
     "Allowed File Types"                                                                               => "Toegelaten bestandstypes",
     "Select the file types to be allowed by default. Leaving all unchecked will allow all file types." => "Selecteer de standaard toegelaten bestandstypes. Alles onaangekruist wilt zeggen dat alle bestandstypes toegelaten zijn.",
     'The handle "{handle}" is a reserved keyword and cannot be used.'                                  => 'The handle "{handle}" is a reserved keyword and cannot be used.',
+
+    // Front End
+    'Form has been submitted successfully!'                       => 'Form has been submitted successfully!',
+    'Error! Please review the form and try submitting again.'     => 'Error! Please review the form and try submitting again.',
 ];

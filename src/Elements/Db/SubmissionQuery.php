@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Elements\Db;
 
+use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -107,6 +108,19 @@ class SubmissionQuery extends ElementQuery
      */
     protected function beforePrepare(): bool
     {
+        static $formHandleToIdMap;
+        $selectedForm = null;
+
+        if (null === $formHandleToIdMap) {
+            $result = (new Query())
+                ->select(['id', 'handle'])
+                ->from(FormRecord::TABLE)
+                ->all();
+
+            $formHandleToIdMap = array_column($result, 'id', 'handle');
+            $formHandleToIdMap = array_map('intval', $formHandleToIdMap);
+        }
+
         $table       = Submission::TABLE_STD;
         $formTable   = FormRecord::TABLE_STD;
         $statusTable = StatusRecord::TABLE_STD;
@@ -149,12 +163,17 @@ class SubmissionQuery extends ElementQuery
             }
         }
 
-        if ($this->formId) {
-            $this->subQuery->andWhere(Db::parseParam($table . '.[[formId]]', $this->formId));
+        if ($this->form && $formHandleToIdMap[$this->form]) {
+            $this->formId = $formHandleToIdMap[$this->form];
         }
 
-        if ($this->form) {
-            $this->subQuery->andWhere(Db::parseParam($formTable . '.[[handle]]', $this->form));
+        if ($this->formId) {
+            $this->subQuery->andWhere(Db::parseParam($table . '.[[formId]]', $this->formId));
+
+            $form = Freeform::getInstance()->forms->getFormById($this->formId);
+            if ($form) {
+                $selectedForm = $form->getForm();
+            }
         }
 
         if ($this->statusId) {
@@ -200,6 +219,13 @@ class SubmissionQuery extends ElementQuery
                 if (\in_array($key, $orderExceptions, true) || preg_match('/^[a-z0-9_]+\./i', $key)) {
                     $prefixedOrderList[$key] = $sortDirection;
                     continue;
+                }
+
+                if ($selectedForm) {
+                    $field = $selectedForm->get($key);
+                    if ($field) {
+                        $key = Submission::getFieldColumnName($field->getId());
+                    }
                 }
 
                 $prefixedOrderList[$table . '.[[' . $key . ']]'] = $sortDirection;

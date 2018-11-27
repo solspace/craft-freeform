@@ -184,6 +184,8 @@ class MailerService extends BaseService implements MailHandlerInterface
     {
         $postedValues = [];
         $usableFields = [];
+        $rules = $form->getRuleProperties();
+
         foreach ($fields as $field) {
             if ($field instanceof NoStorageInterface
                 || $field instanceof FileUploadInterface
@@ -192,7 +194,14 @@ class MailerService extends BaseService implements MailHandlerInterface
                 continue;
             }
 
-            $field->setValue($submission->{$field->getHandle()}->getValue());
+            if ($submission) {
+                $field->setValue($submission->{$field->getHandle()}->getValue());
+            }
+
+            if ($rules && $rules->isHidden($field, $form)) {
+                continue;
+            }
+
             $usableFields[]                    = $field;
             $postedValues[$field->getHandle()] = $field->getValueAsString();
         }

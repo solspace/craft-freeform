@@ -18,7 +18,7 @@
 
 {% if form.hasErrors %}
     <div class="freeform-form-has-errors">
-        {{ "There was an error submitting this form"|t('freeform') }}
+        {{ "Error! Please review the form and try submitting again."|t('freeform') }}
 
         {% if form.errors|length %}
             <ul>

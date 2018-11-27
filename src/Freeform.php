@@ -38,6 +38,7 @@ use Solspace\Freeform\Controllers\SubmissionsController;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
+use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
@@ -508,6 +509,7 @@ class Freeform extends Plugin
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
                 $event->types[] = FormFieldType::class;
+                $event->types[] = SubmissionFieldType::class;
             }
         );
     }

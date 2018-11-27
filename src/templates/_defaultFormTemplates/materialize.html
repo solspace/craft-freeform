@@ -14,7 +14,7 @@
 
 {% if form.hasErrors %}
     <div class="alert alert-danger errors">
-        {{ "There was an error submitting this form"|t('freeform') }}
+        {{ "Error! Please review the form and try submitting again."|t('freeform') }}
 
         {% if form.errors|length %}
             <ul>
@@ -279,7 +279,7 @@
     successMessage.style.padding = "10px 15px";
 
     const paragraph = document.createElement("p");
-    paragraph.appendChild(document.createTextNode("Form submitted successfully"));
+    paragraph.appendChild(document.createTextNode("{{ "Form has been submitted successfully!"|t('freeform') }}"));
 
     successMessage.appendChild(paragraph);
 
@@ -315,7 +315,7 @@
     const errorBlock = document.createElement("div");
     errorBlock.classList.add("card", "red", "form-errors");
     errorBlock.style.padding = "10px 15px";
-    errorBlock.appendChild(document.createTextNode("This form has errors"));
+    errorBlock.appendChild(document.createTextNode("{{ "Error! Please review the form and try submitting again."|t('freeform') }}"));
 
     if (errors.length) {
       const errorsList = document.createElement("ul");

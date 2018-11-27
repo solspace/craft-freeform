@@ -25,7 +25,7 @@
 
     {% if form.hasErrors %}
         <div class="alert alert-danger">
-            {{ "There was an error submitting this form"|t }}
+            {{ "Error! Please review the form and try submitting again."|t('freeform') }}
 
             {% if form.errors|length %}
                 <ul>
@@ -249,7 +249,7 @@
 
     var paragraph = document.createElement("p");
     paragraph.classList.add("lead");
-    paragraph.appendChild(document.createTextNode("Form submitted successfully"));
+    paragraph.appendChild(document.createTextNode("{{ "Form has been submitted successfully!"|t('freeform') }}"));
 
     successMessage.appendChild(paragraph);
 
@@ -290,7 +290,7 @@
     errorBlock.classList.add("alert", "alert-danger", "errors");
 
     var paragraph = document.createElement("p");
-    paragraph.appendChild(document.createTextNode("This form has errors"));
+    paragraph.appendChild(document.createTextNode("{{ "Error! Please review the form and try submitting again."|t('freeform') }}"));
     paragraph.classList.add("lead");
     errorBlock.appendChild(paragraph);
 

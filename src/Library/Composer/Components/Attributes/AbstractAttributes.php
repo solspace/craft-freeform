@@ -40,7 +40,10 @@ abstract class AbstractAttributes
             $attribute = htmlentities($attribute, ENT_QUOTES);
 
             if (!$value) {
-                $byAttribute[$attribute] = null;
+                if (!isset($byAttribute[$attribute])) {
+                    $byAttribute[$attribute] = null;
+                }
+
                 continue;
             }
 

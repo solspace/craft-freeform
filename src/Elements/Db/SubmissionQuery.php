@@ -170,9 +170,11 @@ class SubmissionQuery extends ElementQuery
         if ($this->formId) {
             $this->subQuery->andWhere(Db::parseParam($table . '.[[formId]]', $this->formId));
 
-            $form = Freeform::getInstance()->forms->getFormById($this->formId);
-            if ($form) {
-                $selectedForm = $form->getForm();
+            if (\is_numeric($this->formId)) {
+                $form = Freeform::getInstance()->forms->getFormById($this->formId);
+                if ($form) {
+                    $selectedForm = $form->getForm();
+                }
             }
         }
 
@@ -216,6 +218,11 @@ class SubmissionQuery extends ElementQuery
 
             $prefixedOrderList = [];
             foreach ($this->orderBy as $key => $sortDirection) {
+                if (preg_match("/\(\)$/", $key)) {
+                    $prefixedOrderList[$key] = $sortDirection;
+                    continue;
+                }
+
                 if (\in_array($key, $orderExceptions, true) || preg_match('/^[a-z0-9_]+\./i', $key)) {
                     $prefixedOrderList[$key] = $sortDirection;
                     continue;

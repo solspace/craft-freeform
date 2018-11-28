@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.5.3 - 2018-11-28
+### Fixed
+- Fixed a bug where the Recent Submissions widget was causing an error in the Craft Dashboard page.
+- Fixed a bug where `rand()` and other native SQL functions did not work for `orderBy` parameter in `freeform.submissions`.
+
 ## 2.5.2 - 2018-11-27
 ### Added
 - Added Freeform Submissions Element Fieldtype.

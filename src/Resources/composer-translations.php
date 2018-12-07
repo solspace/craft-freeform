@@ -193,6 +193,7 @@ return [
     'Single number',
     '2-digit number',
     'States',
+    'States & Territories',
     'Provinces',
     'Countries',
     'Languages',

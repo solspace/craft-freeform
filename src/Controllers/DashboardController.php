@@ -55,15 +55,15 @@ class DashboardController extends BaseController
         $settingsService     = $this->getSettingsService();
         $submissionPurge     = $settingsService->getPurgableSubmissionAgeInDays();
         $isSpamFolderEnabled = $settingsService->isSpamFolderEnabled();
-        $spamPurge           = $isSpamFolderEnabled && $settingsService->getPurgableSpamAgeInDays();
+        $spamPurge           = $settingsService->getPurgableSpamAgeInDays();
 
         $settings = [
             ['label' => 'Spam Protection', 'enabled' => $settingsService->isFreeformHoneypotEnabled()],
             ['label' => 'Spam Folder', 'enabled' => $isSpamFolderEnabled],
             [
                 'label'   => 'Spam Automatic Purge',
-                'enabled' => $spamPurge,
-                'extra'   => $spamPurge ? "$spamPurge days" : null,
+                'enabled' => $isSpamFolderEnabled && $spamPurge,
+                'extra'   => $isSpamFolderEnabled && $spamPurge ? "$spamPurge days" : null,
             ],
             ['delimiter' => true],
             [

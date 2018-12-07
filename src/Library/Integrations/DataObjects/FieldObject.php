@@ -11,15 +11,15 @@
 
 namespace Solspace\Freeform\Library\Integrations\DataObjects;
 
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\FreeformSalesforceLead\Library\SalesforceLead;
-
 class FieldObject implements \JsonSerializable
 {
-    const TYPE_STRING  = 'string';
-    const TYPE_ARRAY   = 'array';
-    const TYPE_NUMERIC = 'numeric';
-    const TYPE_BOOLEAN = 'boolean';
+    const TYPE_STRING   = 'string';
+    const TYPE_ARRAY    = 'array';
+    const TYPE_NUMERIC  = 'numeric';
+    const TYPE_FLOAT    = 'float';
+    const TYPE_DATE     = 'date';
+    const TYPE_DATETIME = 'datetime';
+    const TYPE_BOOLEAN  = 'boolean';
 
     /** @var string */
     private $handle;

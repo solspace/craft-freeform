@@ -31,17 +31,11 @@ class HoneypotService extends BaseService
      */
     public function addFormJavascript(FormRenderEvent $event)
     {
-        $isFooterScripts   = $this->getSettingsService()->isFooterScripts();
         $isHoneypotEnabled = $this->getSettingsService()->isFreeformHoneypotEnabled();
 
         if ($isHoneypotEnabled) {
             $script = $this->getHoneypotJavascriptScript($event->getForm());
-
-            if ($isFooterScripts) {
-                \Craft::$app->view->registerJs($script, View::POS_END);
-            } else {
-                $event->appendJsToOutput($script);
-            }
+            $event->appendJsToOutput($script);
         }
     }
 

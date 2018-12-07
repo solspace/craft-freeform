@@ -102,11 +102,13 @@ class SubmissionsController extends BaseController
             $formId = $submissions[0]['formId'];
             $form   = $this->getFormsService()->getFormById($formId);
 
-            PermissionHelper::requirePermission(
-                PermissionHelper::prepareNestedPermission(
-                    Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId
-                )
-            );
+            if (!PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
+                PermissionHelper::requirePermission(
+                    PermissionHelper::prepareNestedPermission(
+                        Freeform::PERMISSION_SUBMISSIONS_MANAGE, $formId
+                    )
+                );
+            }
 
             if (!$form) {
                 throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $formId]));

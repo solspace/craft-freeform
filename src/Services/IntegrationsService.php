@@ -97,7 +97,7 @@ class IntegrationsService extends BaseService
 
                             $convertedValue = $integration->convertCustomFieldValue(
                                 $mailingListField,
-                                $submission->{$handle}->getValue()
+                                $submission->{$handle}
                             );
 
                             $mappedValues[$key] = $convertedValue;

@@ -121,7 +121,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         $uploadErrors = [];
 
         if (!array_key_exists($this->handle, self::$filesUploaded)) {
-            $exists = isset($_FILES[$this->handle]) && !empty($_FILES[$this->handle]['name']);
+            $exists = isset($_FILES[$this->handle]) && !empty($_FILES[$this->handle]['name']) && !$this->isHidden();
 
             if ($exists && !\is_array($_FILES[$this->handle]['name'])) {
                 $_FILES[$this->handle]['name']     = [$_FILES[$this->handle]['name']];
@@ -178,12 +178,12 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                     }
                 }
 
-            } else if ($this->isRequired()) {
+            } else if ($this->isRequired() && !$this->isHidden()) {
                 $uploadErrors[] = $this->translate('This field is required');
             }
 
             // if there are errors - prevent the file from being uploaded
-            if ($uploadErrors) {
+            if ($uploadErrors || $this->isHidden()) {
                 self::$filesUploaded[$this->handle] = null;
             }
 

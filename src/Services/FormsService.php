@@ -30,10 +30,8 @@ use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\FormRecord;
-use yii\base\Component;
 use yii\base\InvalidCallException;
 use yii\base\ViewNotFoundException;
-use yii\web\View;
 
 class FormsService extends BaseService implements FormHandlerInterface
 {
@@ -60,6 +58,9 @@ class FormsService extends BaseService implements FormHandlerInterface
             self::$formsById = [];
             foreach ($results as $result) {
                 $form = $this->createForm($result);
+                if (!$form) {
+                    continue;
+                }
 
                 self::$formsById[$form->id]         = $form;
                 self::$formsByHandle[$form->handle] = $form;
@@ -105,11 +106,14 @@ class FormsService extends BaseService implements FormHandlerInterface
             $form = null;
             if ($result) {
                 $form = $this->createForm($result);
-
-                self::$formsByHandle[$form->handle] = $form;
             }
 
-            self::$formsById[$id] = $form;
+            if ($form) {
+                self::$formsByHandle[$form->handle] = $form;
+                self::$formsById[$id] = $form;
+            } else {
+                return $form;
+            }
         }
 
         return self::$formsById[$id];
@@ -128,11 +132,15 @@ class FormsService extends BaseService implements FormHandlerInterface
             $form = null;
             if ($result) {
                 $form = $this->createForm($result);
-
-                self::$formsById[$form->id] = $form;
             }
 
-            self::$formsByHandle[$handle] = $form;
+
+            if ($form) {
+                self::$formsById[$form->id] = $form;
+                self::$formsByHandle[$handle] = $form;
+            } else {
+                return null;
+            }
         }
 
         return self::$formsByHandle[$handle];
@@ -418,79 +426,18 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @param FormRenderEvent $event
      */
-    public function addDateTimeJavascript(FormRenderEvent $event)
-    {
-        $freeformPath = \Yii::getAlias('@freeform');
-        $form         = $event->getForm();
-
-        if ($form->getLayout()->hasPhonePatternFields()) {
-            static $imaskLoaded;
-
-            if (null === $imaskLoaded) {
-                $imaskMainJs = file_get_contents($freeformPath . '/Resources/js/lib/imask/imask.3.4.0.min.js');
-                $imaskJs     = file_get_contents($freeformPath . '/Resources/js/cp/form-frontend/fields/input-mask.js');
-
-                if ($this->getSettingsService()->isFooterScripts()) {
-                    \Craft::$app->view->registerJs($imaskMainJs, View::POS_END);
-                    \Craft::$app->view->registerJs($imaskJs, View::POS_END);
-                } else {
-                    $event->appendJsToOutput($imaskMainJs);
-                    $event->appendJsToOutput($imaskJs);
-                }
-            }
-        }
-
-        if ($form->getLayout()->hasDatepickerEnabledFields()) {
-            static $datepickerLoaded;
-
-            if (null === $datepickerLoaded) {
-                $locale     = \Craft::$app->locale->id;
-                $localePath = $freeformPath . "/Resources/js/lib/flatpickr/i10n/$locale.js";
-                if (!file_exists($localePath)) {
-                    $localePath = $freeformPath . '/Resources/js/lib/flatpickr/i10n/default.js';
-                }
-
-                $flatpickrCss      = file_get_contents($freeformPath . '/Resources/css/form-frontend/fields/datepicker.css');
-                $flatpickrJs       = file_get_contents($freeformPath . '/Resources/js/lib/flatpickr/flatpickr.js');
-                $flatpickrLocaleJs = file_get_contents($localePath);
-                $datepickerJs      = file_get_contents($freeformPath . '/Resources/js/cp/form-frontend/fields/datepicker.js');
-
-                if ($this->getSettingsService()->isFooterScripts()) {
-                    \Craft::$app->view->registerCss($flatpickrCss);
-                    \Craft::$app->view->registerJs($flatpickrJs, View::POS_END);
-                    \Craft::$app->view->registerJs($flatpickrLocaleJs, View::POS_END);
-                    \Craft::$app->view->registerJs($datepickerJs, View::POS_END);
-                } else {
-                    $event->appendCssToOutput($flatpickrCss);
-                    $event->appendJsToOutput($flatpickrJs);
-                    $event->appendJsToOutput($flatpickrLocaleJs);
-                    $event->appendJsToOutput($datepickerJs);
-                }
-
-                $datepickerLoaded = true;
-            }
-        }
-    }
-
-    /**
-     * @param FormRenderEvent $event
-     */
     public function addFormDisabledJavascript(FormRenderEvent $event)
     {
         if ($this->getSettingsService()->isFormSubmitDisable()) {
             // Add the form submit disable logic
             $formSubmitJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form/submit-disabler.js');
-            $formSubmitJs = str_replace(
-                ['{{FORM_ANCHOR}}', '{{PREV_BUTTON_NAME}}'],
-                [$event->getForm()->getAnchor(), SubmitField::PREVIOUS_PAGE_INPUT_NAME],
-                $formSubmitJs
+            $event->appendJsToOutput(
+                $formSubmitJs,
+                [
+                    'formAnchor'     => $event->getForm()->getAnchor(),
+                    'prevButtonName' => SubmitField::PREVIOUS_PAGE_INPUT_NAME,
+                ]
             );
-
-            if ($this->getSettingsService()->isFooterScripts()) {
-                \Craft::$app->view->registerJs($formSubmitJs, View::POS_END);
-            } else {
-                $event->appendJsToOutput($formSubmitJs);
-            }
         }
     }
 
@@ -503,13 +450,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         if ($form->getAnchor() && $form->isFormPosted()) {
             $invalidFormJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form/form-jump-to-anchor.js');
-            $invalidFormJs = str_replace('{{FORM_ANCHOR}}', $form->getAnchor(), $invalidFormJs);
-
-            if ($this->getSettingsService()->isFooterScripts()) {
-                \Craft::$app->view->registerJs($invalidFormJs, View::POS_END);
-            } else {
-                $event->appendJsToOutput($invalidFormJs);
-            }
+            $event->appendJsToOutput($invalidFormJs, ['formAnchor' => $form->getAnchor()]);
         }
     }
 
@@ -568,7 +509,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         $event = new FormRenderEvent($form);
         $this->trigger(self::EVENT_RENDER_OPENING_TAG, $event);
 
-        return $event->getCompiledOutput();
+        return $event->getOrAttachOutputToView();
     }
 
     /**
@@ -579,7 +520,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         $event = new FormRenderEvent($form);
         $this->trigger(self::EVENT_RENDER_CLOSING_TAG, $event);
 
-        return $event->getCompiledOutput();
+        return $event->getOrAttachOutputToView();
     }
 
     /**

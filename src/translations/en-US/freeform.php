@@ -484,16 +484,17 @@ return [
     'Confirm'                                                                                                                                  => 'Confirm',
     'Password'                                                                                                                                 => 'Password',
 
-    'States'       => 'States',
-    'Provinces'    => 'Provinces',
-    'Countries'    => 'Countries',
-    'Languages'    => 'Languages',
-    'Currencies'   => 'Currencies',
-    'Numbers'      => 'Numbers',
-    'Years'        => 'Years',
-    'Months'       => 'Months',
-    'Days'         => 'Days',
-    'Days of Week' => 'Days of Week',
+    'States'               => 'States',
+    'States & Territories' => 'States & Territories',
+    'Provinces'            => 'Provinces',
+    'Countries'            => 'Countries',
+    'Languages'            => 'Languages',
+    'Currencies'           => 'Currencies',
+    'Numbers'              => 'Numbers',
+    'Years'                => 'Years',
+    'Months'               => 'Months',
+    'Days'                 => 'Days',
+    'Days of Week'         => 'Days of Week',
 
     'The notification template used to send an email to the email value entered into this field (optional).' => 'The notification template used to send an email to the email value entered into this field (optional).',
     'Select a template...'                                                                                   => 'Select a template...',
@@ -624,6 +625,6 @@ return [
     'Enable this to show the total form, field and notification template count.'                                                  => 'Enable this to show the total form, field and notification template count.',
 
     // Front End
-    'Form has been submitted successfully!'                       => 'Form has been submitted successfully!',
-    'Error! Please review the form and try submitting again.'     => 'Error! Please review the form and try submitting again.',
+    'Form has been submitted successfully!'                                                                                       => 'Form has been submitted successfully!',
+    'Error! Please review the form and try submitting again.'                                                                     => 'Error! Please review the form and try submitting again.',
 ];

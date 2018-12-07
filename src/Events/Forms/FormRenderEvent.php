@@ -2,7 +2,13 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\FormRenderObject\CssObject;
+use Solspace\Freeform\Library\DataObjects\FormRenderObject\ExternalJavascriptObject;
+use Solspace\Freeform\Library\DataObjects\FormRenderObject\FormRenderObjectInterface;
+use Solspace\Freeform\Library\DataObjects\FormRenderObject\JavascriptObject;
+use Solspace\Freeform\Library\DataObjects\FormRenderObject\StringObject;
 use yii\base\Event;
 
 class FormRenderEvent extends Event
@@ -10,8 +16,8 @@ class FormRenderEvent extends Event
     /** @var Form */
     private $form;
 
-    /** @var string[] */
-    private $outputChunks;
+    /** @var FormRenderObjectInterface[] */
+    private $renderObjects;
 
     /**
      * FormRenderEvent constructor.
@@ -20,8 +26,8 @@ class FormRenderEvent extends Event
      */
     public function __construct(Form $form)
     {
-        $this->form         = $form;
-        $this->outputChunks = [];
+        $this->form          = $form;
+        $this->renderObjects = [];
 
         parent::__construct([]);
     }
@@ -37,55 +43,66 @@ class FormRenderEvent extends Event
     /**
      * @return string
      */
-    public function getCompiledOutput(): string
+    public function getOrAttachOutputToView(): string
     {
-        return implode("\n", $this->outputChunks);
+        $isFooter = Freeform::getInstance()->settings->isFooterScripts();
+
+        $output = '';
+        foreach ($this->renderObjects as $object) {
+            $output .= $object->getFormattedValueOrAttachToView($isFooter) ?? '';
+        }
+
+        return $output;
     }
 
     /**
      * @param string $value
+     * @param array  $replacements
      *
      * @return FormRenderEvent
      */
-    public function appendToOutput(string $value): FormRenderEvent
+    public function appendToOutput(string $value, array $replacements = []): FormRenderEvent
     {
-        $this->outputChunks[] = $value;
+        $this->renderObjects[] = new StringObject($value, $replacements);
 
         return $this;
     }
 
     /**
      * @param string $value
+     * @param array  $replacements
      *
      * @return FormRenderEvent
      */
-    public function appendJsToOutput(string $value): FormRenderEvent
+    public function appendJsToOutput(string $value, array $replacements = []): FormRenderEvent
     {
-        $this->outputChunks[] = "<script>$value</script>";
+        $this->renderObjects[] = new JavascriptObject($value, $replacements);
 
         return $this;
     }
 
     /**
      * @param string $url
+     * @param array  $replacements
      *
      * @return FormRenderEvent
      */
-    public function appendExternalJsToOutput(string $url): FormRenderEvent
+    public function appendExternalJsToOutput(string $url, array $replacements = []): FormRenderEvent
     {
-        $this->outputChunks[] = "<script src=\"$url\"></script>";
+        $this->renderObjects[] = new ExternalJavascriptObject($url, $replacements);
 
         return $this;
     }
 
     /**
      * @param string $value
+     * @param array  $replacements
      *
      * @return FormRenderEvent
      */
-    public function appendCssToOutput(string $value): FormRenderEvent
+    public function appendCssToOutput(string $value, array $replacements = []): FormRenderEvent
     {
-        $this->outputChunks[] = "<style>$value</style>";
+        $this->renderObjects[] = new CssObject($value, $replacements);
 
         return $this;
     }

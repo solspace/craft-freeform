@@ -110,6 +110,9 @@ class QuickFormWidget extends Widget
         $forms    = $freeform->forms->getAllForms();
         $formList = [];
         foreach ($forms as $form) {
+            if (!$form) {
+                continue;
+            }
             $formList[$form->id] = $form->name;
         }
 

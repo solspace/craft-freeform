@@ -449,6 +449,27 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     }
 
     /**
+     * @return bool
+     */
+    public function isHidden(): bool
+    {
+        static $rules;
+
+        if (null === $rules) {
+            $rules = $this->getForm()->getRuleProperties();
+            if (null === $rules) {
+                $rules = false;
+            }
+        }
+
+        if (false === $rules) {
+            return false;
+        }
+
+        return $rules->isHidden($this, $this->getForm());
+    }
+
+    /**
      * @return int
      */
     public function getPageIndex(): int
@@ -697,7 +718,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     public function addInputAttribute(string $name = null, string $value = null): AbstractField
     {
-        $this->inputAttributes[] = ['attribute' => $name, 'value' => $value];
+        $this->inputAttributes[sha1($name . $value)] = ['attribute' => $name, 'value' => $value];
 
         return $this;
     }

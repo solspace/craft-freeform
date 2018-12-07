@@ -81,8 +81,9 @@ class Install extends StreamlinedInstallMigration
                 ->addField('mailingListId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull())
-                ->addField('type', $this->enum('type', ['string', 'numeric', 'boolean', 'array'])->notNull())
+                ->addField('type', $this->string(50)->notNull())
                 ->addField('required', $this->boolean()->defaultValue(false))
+                ->addIndex(['type'])
                 ->addForeignKey('mailingListId', 'freeform_mailing_lists', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_crm_fields'))
@@ -90,8 +91,9 @@ class Install extends StreamlinedInstallMigration
                 ->addField('integrationId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull())
-                ->addField('type', $this->enum('type', ['string', 'numeric', 'boolean', 'array'])->notNull())
+                ->addField('type', $this->string(50)->notNull())
                 ->addField('required', $this->boolean()->defaultValue(false))
+                ->addIndex(['type'])
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_payment_gateway_fields'))
@@ -99,8 +101,9 @@ class Install extends StreamlinedInstallMigration
                 ->addField('integrationId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull())
-                ->addField('type', $this->enum('type', ['string', 'numeric', 'boolean', 'array'])->notNull())
+                ->addField('type', $this->string(50)->notNull())
                 ->addField('required', $this->boolean()->defaultValue(false))
+                ->addIndex(['type'])
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_statuses'))

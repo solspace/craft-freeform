@@ -1,1 +1,1 @@
-"use strict";var stateCheck=setInterval(function(){"complete"===document.readyState&&(clearInterval(stateCheck),document.getElementById("{{FORM_ANCHOR}}").scrollIntoView())},300);
+"use strict";!function(){var e=setInterval(function(){"complete"===document.readyState&&(clearInterval(e),document.getElementById("{formAnchor}").scrollIntoView())},300)}();

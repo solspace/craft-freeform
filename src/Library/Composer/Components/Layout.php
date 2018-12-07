@@ -12,10 +12,13 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxGroupField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PhoneMaskInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecaptchaInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\MailingListField;
 use Solspace\Freeform\Library\Composer\Components\Fields\TextField;
@@ -63,6 +66,15 @@ class Layout implements \JsonSerializable, \Iterator
     /** @var AbstractField[]|PaymentInterface[] */
     private $paymentFields;
 
+    /** @var DatetimeInterface[] */
+    private $datepickerFields;
+
+    /** @var PhoneMaskInterface[] */
+    private $phoneFields;
+
+    /** @var RecaptchaInterface[] */
+    private $recaptchaFields;
+
     /** @var Properties */
     private $properties;
 
@@ -71,15 +83,6 @@ class Layout implements \JsonSerializable, \Iterator
 
     /** @var TranslatorInterface */
     private $translator;
-
-    /** @var bool */
-    private $hasDatepickerEnabledFields;
-
-    /** @var bool */
-    private $hasPhonePatternFields;
-
-    /** @var bool */
-    private $hasRecaptchaFields;
 
     /**
      * Layout constructor.
@@ -109,7 +112,7 @@ class Layout implements \JsonSerializable, \Iterator
      */
     public function hasDatepickerEnabledFields(): bool
     {
-        return $this->hasDatepickerEnabledFields;
+        return (bool) \count($this->datepickerFields);
     }
 
     /**
@@ -117,7 +120,7 @@ class Layout implements \JsonSerializable, \Iterator
      */
     public function hasPhonePatternFields(): bool
     {
-        return $this->hasPhonePatternFields;
+        return (bool) \count($this->phoneFields);
     }
 
     /**
@@ -125,7 +128,7 @@ class Layout implements \JsonSerializable, \Iterator
      */
     public function hasRecaptchaFields(): bool
     {
-        return $this->hasRecaptchaFields;
+        return (bool) \count($this->recaptchaFields);
     }
 
     /**
@@ -158,6 +161,30 @@ class Layout implements \JsonSerializable, \Iterator
     public function getMailingListFields(): array
     {
         return $this->mailingListFields;
+    }
+
+    /**
+     * @return AbstractField[]|DatetimeInterface[]
+     */
+    public function getDatepickerFields(): array
+    {
+        return $this->datepickerFields;
+    }
+
+    /**
+     * @return AbstractField[]|PhoneMaskInterface[]
+     */
+    public function getPhoneFields(): array
+    {
+        return $this->phoneFields;
+    }
+
+    /**
+     * @return AbstractField[]|RecaptchaInterface[]
+     */
+    public function getRecaptchaFields(): array
+    {
+        return $this->recaptchaFields;
     }
 
     /**
@@ -318,26 +345,18 @@ class Layout implements \JsonSerializable, \Iterator
      */
     private function buildLayout(FormValueContext $formValueContext)
     {
-        $datetimeClass  = 'Solspace\FreeformPro\Fields\DatetimeField';
-        $datetimeExists = class_exists($datetimeClass);
-
-        $phoneClass  = 'Solspace\FreeformPro\Fields\PhoneField';
-        $phoneExists = class_exists($phoneClass);
-
-        $recaptchaClass  = 'Solspace\FreeformPro\Fields\RecaptchaField';
-        $recaptchaExists = class_exists($recaptchaClass);
-
-        $hasDatepickerEnabledFields = false;
-        $hasPhonePatternFields      = false;
-        $hasRecaptchaFields         = false;
-        $pageObjects                = [];
-        $allRows                    = [];
-        $allFields                  = [];
-        $hiddenFields               = [];
-        $recipientFields            = [];
-        $fileUploadFields           = [];
-        $mailingListFields          = [];
-        $paymentFields              = [];
+        $hasRecaptchaFields = false;
+        $pageObjects        = [];
+        $allRows            = [];
+        $allFields          = [];
+        $hiddenFields       = [];
+        $recipientFields    = [];
+        $fileUploadFields   = [];
+        $mailingListFields  = [];
+        $paymentFields      = [];
+        $datepickerFields   = [];
+        $phoneFields        = [];
+        $recaptchaFields    = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
             if (!\is_array($rows)) {
@@ -404,16 +423,16 @@ class Layout implements \JsonSerializable, \Iterator
                         $paymentFields[] = $field;
                     }
 
-                    if ($datetimeExists && \get_class($field) === $datetimeClass && $field->isUseDatepicker()) {
-                        $hasDatepickerEnabledFields = true;
+                    if ($field instanceof DatetimeInterface && $field->isUseDatepicker()) {
+                        $datepickerFields[] = $field;
                     }
 
-                    if ($phoneExists && \get_class($field) === $phoneClass && $field->isUseJsMask()) {
-                        $hasPhonePatternFields = true;
+                    if ($field instanceof PhoneMaskInterface && $field->isUseJsMask()) {
+                        $phoneFields[] = $field;
                     }
 
-                    if ($recaptchaExists && \get_class($field) === $recaptchaClass) {
-                        $hasRecaptchaFields = true;
+                    if ($field instanceof RecaptchaInterface) {
+                        $recaptchaFields[] = true;
                     }
 
                     $pageFields[] = $field;
@@ -437,17 +456,17 @@ class Layout implements \JsonSerializable, \Iterator
             $pageObjects[] = $page;
         }
 
-        $this->pages                      = $pageObjects;
-        $this->rows                       = $allRows;
-        $this->fields                     = $allFields;
-        $this->hiddenFields               = $hiddenFields;
-        $this->recipientFields            = $recipientFields;
-        $this->fileUploadFields           = $fileUploadFields;
-        $this->mailingListFields          = $mailingListFields;
-        $this->paymentFields              = $paymentFields;
-        $this->hasDatepickerEnabledFields = $hasDatepickerEnabledFields;
-        $this->hasPhonePatternFields      = $hasPhonePatternFields;
-        $this->hasRecaptchaFields               = $hasRecaptchaFields;
+        $this->pages              = $pageObjects;
+        $this->rows               = $allRows;
+        $this->fields             = $allFields;
+        $this->hiddenFields       = $hiddenFields;
+        $this->recipientFields    = $recipientFields;
+        $this->fileUploadFields   = $fileUploadFields;
+        $this->mailingListFields  = $mailingListFields;
+        $this->paymentFields      = $paymentFields;
+        $this->datepickerFields   = $datepickerFields;
+        $this->phoneFields        = $phoneFields;
+        $this->recaptchaFields    = $recaptchaFields;
     }
 
     /**

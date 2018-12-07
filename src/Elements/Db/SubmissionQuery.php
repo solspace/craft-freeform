@@ -31,6 +31,9 @@ class SubmissionQuery extends ElementQuery
     /** @var bool */
     public $isSpam = null;
 
+    /** @var string */
+    private $freeformStatus;
+
     /**
      * @param mixed $value
      *
@@ -194,9 +197,19 @@ class SubmissionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam($table . '.[[isSpam]]', $this->isSpam));
         }
 
-        if ($this->status && \is_string($this->status)) {
-            $this->subQuery->andWhere(Db::parseParam($statusTable . '.[[handle]]', $this->status));
-            $this->status = '';
+        if ($this->status) {
+            $this->freeformStatus = $this->status;
+            $this->status = null;
+
+            if (\is_array($this->freeformStatus)) {
+                if (isset($this->freeformStatus[0]) && $this->freeformStatus[0] === 'enabled') {
+                    $this->freeformStatus = null;
+                }
+            }
+        }
+
+        if ($this->freeformStatus) {
+            $this->subQuery->andWhere(Db::parseParam($statusTable . '.[[handle]]', $this->freeformStatus));
         }
 
         $customSortTables = [

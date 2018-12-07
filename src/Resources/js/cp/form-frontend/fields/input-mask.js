@@ -1,1 +1,1 @@
-"use strict";var elements=document.querySelectorAll(".form-phone-pattern-field");for(var index in elements)if(elements.hasOwnProperty(index)){var elem=elements[index];elem.dataset&&elem.dataset.pattern&&new IMask(elem,{mask:elem.dataset.pattern})}
+"use strict";var element=document.getElementById("{id}");element&&element.dataset&&element.dataset.pattern&&new IMask(element,{mask:element.dataset.pattern});

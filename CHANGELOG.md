@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 2.5.4 - 2018-12-07
+### Changed
+- Updated Salesforce Lead and Opportunities integrations to work with Date/Time fields and more reliably with numeric data.
+
+### Fixed
+- Fixed a bug where File Upload fields would hold the form back from submitting if required and also hidden due to Conditional Rules logic.
+- Fixed a bug where loading the same form twice in the same template (even with `fieldIdPrefix` parameter) would have issues with JS-related features and fields.
+- Fixed a potential issue where multi-page forms could be submitted more than once, causing the form to fail/lose its place.
+- Fixed a bug where `status` filtering on Submissions in front end was not correctly working with pagination.
+- Fixed a bug where the Min Date and Max Date feature for Date & Time fields were not accounting for all formatting variations.
+- Fixed a bug where users and user groups with the 'Manage all Submissions' permission (only) were not able to export submissions as CSV.
+- Fixed a bug where payments for Freeform Payments were not going through correctly when using with Built-in AJAX feature.
+- Fixed a bug where the US States predefined options list contained more than official states. Also added a States & Territories list that contains official states and territories.
+- Fixed a bug where the 'Spam Automatic Purge enabled' line in settings overview on Dashboard would always show 1 day.
+
 ## 2.5.3 - 2018-11-28
 ### Fixed
 - Fixed a bug where the Recent Submissions widget was causing an error in the Craft Dashboard page.

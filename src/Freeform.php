@@ -589,12 +589,6 @@ class Freeform extends Plugin
         Event::on(
             FormsService::class,
             FormsService::EVENT_RENDER_CLOSING_TAG,
-            [$this->forms, 'addDateTimeJavascript']
-        );
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_RENDER_CLOSING_TAG,
             [$this->forms, 'addFormDisabledJavascript']
         );
 

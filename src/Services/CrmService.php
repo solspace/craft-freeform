@@ -288,13 +288,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 $crmField  = $crmFieldsByHandle[$crmHandle];
                 $formField = $layout->getFieldByHandle($fieldHandle);
 
-                if ($crmField->getType() === FieldObject::TYPE_ARRAY) {
-                    $value = $submission->{$formField->getHandle()}->getValue();
-                } else {
-                    $value = $submission->{$formField->getHandle()}->getValueAsString();
-                }
-
-                $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $value);
+                $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $formField);
             } catch (\Exception $e) {
                 try {
                     $objectValues[$crmHandle] = $this->getExtraFieldsValue($fieldHandle, $submission, $integration);

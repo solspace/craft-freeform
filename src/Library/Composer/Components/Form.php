@@ -135,6 +135,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     /** @var int */
     private $cachedPageIndex;
 
+    /** @var bool */
+    private $submitted;
+
+    /** @var mixed */
+    private $submitResult;
+
     /**
      * Form constructor.
      *
@@ -177,6 +183,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $this->customAttributes      = new CustomFormAttributes();
         $this->errors                = [];
         $this->markedAsSpam          = false;
+        $this->submitted             = false;
 
         $this->layout = new Layout(
             $this,
@@ -551,16 +558,25 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
      */
     public function submit()
     {
+        if ($this->submitted) {
+            return $this->submitResult;
+        }
+
+        $this->submitted = true;
+
         if ($this->isMarkedAsSpam() && !$this->isSpamFolderEnabled()) {
-            return $this->processSpamSubmissionWithoutSpamFolder();
+            $this->submitResult = $this->processSpamSubmissionWithoutSpamFolder();
+
+            return $this->submitResult;
         }
 
         $formValueContext = $this->getFormValueContext();
 
         if ($formValueContext->shouldFormWalkToPreviousPage()) {
             $this->retreatFormToPreviousPage();
+            $this->submitResult = false;
 
-            return false;
+            return $this->submitResult;
         }
 
         $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
@@ -569,18 +585,22 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         $pageJumpIndex = $this->formHandler->onBeforePageJump($this);
         if ($pageJumpIndex !== null) {
             $this->jumpFormToPage($pageJumpIndex);
+            $this->submitResult = false;
 
-            return false;
+            return $this->submitResult;
         }
 
         if (!$this->isLastPage()) {
             $this->advanceFormToNextPage();
+            $this->submitResult = false;
 
-            return false;
+            return $this->submitResult;
         }
 
         if (!$this->formHandler->onBeforeSubmit($this)) {
-            return false;
+            $this->submitResult = false;
+
+            return $this->submitResult;
         }
 
         $submission = null;
@@ -594,8 +614,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
 
         if (!$submission) {
             $formValueContext->cleanOutCurrentSession();
+            $this->submitResult = false;
 
-            return false;
+            return $this->submitResult;
         }
 
         $mailingListOptInFields = $this->getMailingListOptedInFields();
@@ -609,8 +630,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
         }
 
         $formValueContext->cleanOutCurrentSession();
+        $this->submitResult = $submission->getId() ? $submission : false;
 
-        return $submission->getId() ? $submission : false;
+        return $this->submitResult;
     }
 
     /**

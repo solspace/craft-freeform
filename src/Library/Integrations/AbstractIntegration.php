@@ -12,10 +12,12 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use Psr\Log\LoggerInterface;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
+use Solspace\FreeformPro\Fields\DatetimeField;
 
 abstract class AbstractIntegration implements IntegrationInterface
 {
@@ -221,20 +223,45 @@ abstract class AbstractIntegration implements IntegrationInterface
     }
 
     /**
-     * @param FieldObject $fieldObject
-     * @param mixed|null  $value
+     * @param FieldObject   $fieldObject
+     * @param AbstractField $field
      *
-     * @return bool|string
+     * @return array|bool|string
      */
-    public function convertCustomFieldValue(FieldObject $fieldObject, $value = null)
+    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field)
     {
-        if (\is_array($value) && $fieldObject->getType() !== FieldObject::TYPE_ARRAY) {
-            $value = implode(', ', $value);
+        if ($fieldObject->getType() === FieldObject::TYPE_ARRAY) {
+            $value = $field->getValue();
+        } else {
+            $value = $field->getValueAsString();
         }
 
         switch ($fieldObject->getType()) {
             case FieldObject::TYPE_NUMERIC:
                 return (int) preg_replace('/\D/', '', $value) ?: '';
+
+            case FieldObject::TYPE_FLOAT:
+                return (float) preg_replace('/[^0-9,.]/', '', $value) ?: '';
+
+            case FieldObject::TYPE_DATE:
+                if ($field instanceof DatetimeField) {
+                    $carbon = $field->getCarbon();
+                    if ($carbon) {
+                        return $carbon->toAtomString();
+                    }
+                }
+
+                return (string) $value;
+
+            case FieldObject::TYPE_DATETIME:
+                if ($field instanceof DatetimeField) {
+                    $carbon = $field->getCarbon();
+                    if ($carbon) {
+                        return $carbon->toAtomString();
+                    }
+                }
+
+                return (string) $value;
 
             case FieldObject::TYPE_BOOLEAN:
                 return (bool) $value;

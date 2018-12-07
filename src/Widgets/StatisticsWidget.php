@@ -120,6 +120,9 @@ class StatisticsWidget extends Widget
             $submissionCount = $submissionsService->getSubmissionCount(null, $selectedStatusIds);
             $spamBlockCount  = 0;
             foreach ($forms as $form) {
+                if (!$form) {
+                    continue;
+                }
                 $spamBlockCount += $form->spamBlockCount;
             }
 
@@ -161,6 +164,9 @@ class StatisticsWidget extends Widget
         $statuses   = $freeform->statuses->getAllStatuses();
         $statusList = [];
         foreach ($statuses as $status) {
+            if (!$status) {
+                continue;
+            }
             $statusList[$status->id] = $status->name;
         }
 

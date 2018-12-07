@@ -1,1 +1,1 @@
-"use strict";!function(){var e=document.getElementById("{{FORM_ANCHOR}}").parentElement;e.addEventListener("submit",function(){var t=e.querySelectorAll("[type=submit]:not([name={{PREV_BUTTON_NAME}}])");for(var n in t)if(t.hasOwnProperty(n)){var r=t[n];return r.disabled=!0,!0}})}();
+"use strict";!function(){var e=document.getElementById("{formAnchor}").parentElement;e.addEventListener("submit",function(){var t=e.querySelectorAll("[type=submit]:not([name={prevButtonName}])");for(var n in t)if(t.hasOwnProperty(n)){var r=t[n];return r.disabled=!0,!0}})}();

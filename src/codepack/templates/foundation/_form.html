@@ -55,7 +55,7 @@
 
                 <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
 
-                    {% if field.type == "checkbox_group" or (field.type == "dynamic_recipients" and field.showAsCheckboxes) %}
+                    {% if field.type == "checkbox_group" %}
 
                         {{ field.renderLabel({
                             labelClass: (field.required ? " required" : ""),

@@ -29,7 +29,7 @@ class m181129_083939_ChangeIntegrationFieldTypeColumnTypeToString extends Migrat
             try {
                 $prefix = $this->db->tablePrefix ?: '';
 
-                $this->execute('ALTER TABLE {{%freeform_fields}} DROP CONSTRAINT ' . $prefix . 'freeform_crm_fields_type_check;');
+                $this->execute('ALTER TABLE {{%freeform_crm_fields}} DROP CONSTRAINT ' . $prefix . 'freeform_crm_fields_type_check;');
                 $this->execute('ALTER TABLE {{%freeform_mailing_list_fields}} DROP CONSTRAINT ' . $prefix . 'freeform_mailing_list_fields_type_check;');
                 $this->execute('ALTER TABLE {{%freeform_payment_gateway_fields}} DROP CONSTRAINT ' . $prefix . 'freeform_payment_gateway_fields_type_check;');
             } catch (\Exception $e) {

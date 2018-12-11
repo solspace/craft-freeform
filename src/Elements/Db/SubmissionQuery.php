@@ -8,6 +8,7 @@ use craft\helpers\Db;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\StatusRecord;
 
@@ -166,8 +167,13 @@ class SubmissionQuery extends ElementQuery
             }
         }
 
-        if ($this->form && $formHandleToIdMap[$this->form]) {
-            $this->formId = $formHandleToIdMap[$this->form];
+        $formHandle = $this->form;
+        if ($formHandle instanceof Form) {
+            $formHandle = $formHandle->getHandle();
+        }
+
+        if ($formHandle && $formHandleToIdMap[$formHandle]) {
+            $this->formId = $formHandleToIdMap[$formHandle];
         }
 
         if ($this->formId) {

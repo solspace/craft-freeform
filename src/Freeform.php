@@ -202,18 +202,11 @@ class Freeform extends Plugin
         $time    = \Craft::$app->getCache()->get(self::VERSION_CACHE_TIMESTAMP_KEY);
 
         if (!$time || (int) $time < time() - self::VERSION_CACHE_TTL) {
-            $isPro = (bool) (new Query())
-                ->select(['id'])
-                ->from('{{%plugins}}')
-                ->where(
-                    [
-                        'handle'  => 'freeform-pro',
-                        'enabled' => true,
-                    ]
-                )
-                ->scalar();
+            $handle = 'freeform-pro';
+            $proIsInstalled = \Craft::$app->getPlugins()->isPluginInstalled($handle);
+            $proIsEnabled = \Craft::$app->getPlugins()->isPluginEnabled($handle);
 
-            $version = $isPro ? self::VERSION_PRO : self::VERSION_BASIC;
+            $version = $proIsInstalled && $proIsEnabled ? self::VERSION_PRO : self::VERSION_BASIC;
 
             \Craft::$app->getCache()->multiSet(
                 [

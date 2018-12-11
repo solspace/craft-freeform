@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 2.5.5 - 2018-12-11
+- Fixed a bug where Conditional Rules feature settings inside Composer stopped working correctly after 2.5.4 update.
+- Fixed a bug where Freeform would error when attempting to install on Craft 3.1.
+- Fixed a bug where the 2.5.4 update migration would error for PostgreSQL users.
+- Updated `freeform.submissions` to check if a Form object is passed to submission query form variable, and extract the form handle from that.
+- Fixed a bug where Freeform Payments subscription transactions that failed would not contain any (failed) Payment information attached to the submission.
+
 ## 2.5.4 - 2018-12-07
 ### Changed
 - Updated Salesforce Lead and Opportunities integrations to work with Date/Time fields and more reliably with numeric data.

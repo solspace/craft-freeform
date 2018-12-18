@@ -345,7 +345,6 @@ class Layout implements \JsonSerializable, \Iterator
      */
     private function buildLayout(FormValueContext $formValueContext)
     {
-        $hasRecaptchaFields = false;
         $pageObjects        = [];
         $allRows            = [];
         $allFields          = [];

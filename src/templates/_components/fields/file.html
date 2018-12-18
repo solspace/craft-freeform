@@ -3,13 +3,27 @@
 {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
 {% set srcset = srcset|trim(", ") %}
 
-<div class="element small hasthumb">
+<div data-editable-image=""
+     data-image-width="{{ asset.width }}"
+     data-image-height="{{ asset.height }}"
+     class="element small hasthumb"
+     data-type="craft\elements\Asset"
+     data-id="{{ asset.id }}"
+     data-site-id="{{ asset.siteId }}"
+     data-status="{{ asset.status }}"
+     data-label="{{ asset.title }}"
+     data-url="{{ asset.url }}"
+     data-level="{{ asset.level }}"
+     data-editable
+>
     <div class="elementthumb">
         <img sizes="30px" srcset="{{ srcset }}" alt="">
     </div>
-    <label>
-        <a href="javascript:;" data-asset-id="{{ asset.id }}">
+    <div class="label">
+        <span class="title">
             {{ asset.title }}
-        </a>
-    </label>
+        </span>
+    </div>
 </div>
+
+

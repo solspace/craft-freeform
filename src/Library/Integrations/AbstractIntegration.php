@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Library\Integrations;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
+use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
@@ -51,6 +52,9 @@ abstract class AbstractIntegration implements IntegrationInterface
     /** @var TranslatorInterface */
     private $translator;
 
+    /** @var IntegrationHandlerInterface */
+    private $handler;
+
     /**
      * Returns a list of additional settings for this integration
      * Could be used for anything, like - AccessTokens
@@ -63,14 +67,15 @@ abstract class AbstractIntegration implements IntegrationInterface
     }
 
     /**
-     * @param int                    $id
-     * @param string                 $name
-     * @param \DateTime              $lastUpdate
-     * @param string                 $accessToken
-     * @param array|null             $settings
-     * @param LoggerInterface        $logger
-     * @param ConfigurationInterface $configuration
-     * @param TranslatorInterface    $translator
+     * @param int                         $id
+     * @param string                      $name
+     * @param \DateTime                   $lastUpdate
+     * @param string                      $accessToken
+     * @param array|null                  $settings
+     * @param LoggerInterface             $logger
+     * @param ConfigurationInterface      $configuration
+     * @param TranslatorInterface         $translator
+     * @param IntegrationHandlerInterface $handler
      */
     public function __construct(
         $id,
@@ -80,7 +85,8 @@ abstract class AbstractIntegration implements IntegrationInterface
         $settings,
         LoggerInterface $logger,
         ConfigurationInterface $configuration,
-        TranslatorInterface $translator
+        TranslatorInterface $translator,
+        IntegrationHandlerInterface $handler
     ) {
         $this->id            = $id;
         $this->name          = $name;
@@ -90,6 +96,7 @@ abstract class AbstractIntegration implements IntegrationInterface
         $this->logger        = $logger;
         $this->configuration = $configuration;
         $this->translator    = $translator;
+        $this->handler       = $handler;
     }
 
     /**
@@ -285,6 +292,14 @@ abstract class AbstractIntegration implements IntegrationInterface
     final protected function setAccessToken(string $accessToken)
     {
         $this->accessToken = $accessToken;
+    }
+
+    /**
+     * @return IntegrationHandlerInterface
+     */
+    protected function getHandler(): IntegrationHandlerInterface
+    {
+        return $this->handler;
     }
 
     /**

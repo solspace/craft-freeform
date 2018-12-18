@@ -8,13 +8,15 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\base\Component;
 use craft\db\Query;
+use Psr\Http\Message\ResponseInterface;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
+use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
+use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
@@ -22,15 +24,16 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 
-abstract class AbstractIntegrationService extends BaseService
+abstract class AbstractIntegrationService extends BaseService implements IntegrationHandlerInterface
 {
-    const EVENT_BEFORE_SAVE   = 'beforeSave';
-    const EVENT_AFTER_SAVE    = 'afterSave';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE  = 'afterDelete';
-    const EVENT_FETCH_TYPES   = 'fetchTypes';
-    const EVENT_BEFORE_PUSH   = 'beforePush';
-    const EVENT_AFTER_PUSH    = 'afterPush';
+    const EVENT_BEFORE_SAVE    = 'beforeSave';
+    const EVENT_AFTER_SAVE     = 'afterSave';
+    const EVENT_BEFORE_DELETE  = 'beforeDelete';
+    const EVENT_AFTER_DELETE   = 'afterDelete';
+    const EVENT_FETCH_TYPES    = 'fetchTypes';
+    const EVENT_BEFORE_PUSH    = 'beforePush';
+    const EVENT_AFTER_PUSH     = 'afterPush';
+    const EVENT_AFTER_RESPONSE = 'afterResponse';
 
     /**
      * @return IntegrationModel[]
@@ -280,6 +283,15 @@ abstract class AbstractIntegrationService extends BaseService
 
             throw $exception;
         }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function onAfterResponse(AbstractIntegration $integration, ResponseInterface $response)
+    {
+        $event = new IntegrationResponseEvent($integration, $response);
+        $this->trigger(self::EVENT_AFTER_RESPONSE, $event);
     }
 
     /**

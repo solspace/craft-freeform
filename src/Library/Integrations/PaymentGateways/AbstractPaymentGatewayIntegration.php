@@ -63,7 +63,8 @@ abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration imp
             $settings,
             $logger,
             $configuration,
-            $translator
+            $translator,
+            $paymentGatewayHandler
         );
 
         $this->paymentGatewayHandler = $paymentGatewayHandler;

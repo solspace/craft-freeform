@@ -11,11 +11,10 @@
 
 namespace Solspace\Freeform\Library\Database;
 
-
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 
-interface PaymentGatewayHandlerInterface
+interface PaymentGatewayHandlerInterface extends IntegrationHandlerInterface
 {
     /**
      * Updates the fields of a given payment gateway

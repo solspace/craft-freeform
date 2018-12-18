@@ -25,6 +25,20 @@ trait OptionsTrait
      */
     public function getOptions(): array
     {
-        return $this->options;
+        $value = $this->getValue();
+        if (!is_array($value)) {
+            $value = [$value];
+        }
+
+        $options = [];
+        foreach ($this->options as $option) {
+            $options[] = new Option(
+                $option->getLabel(),
+                $option->getValue(),
+                \in_array($option->getValue(), $value, false)
+            );
+        }
+
+        return $options;
     }
 }

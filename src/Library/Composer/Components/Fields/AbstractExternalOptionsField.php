@@ -53,7 +53,21 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
     public function getOptions(): array
     {
         if ($this->getOptionSource() === self::SOURCE_CUSTOM) {
-            return $this->options;
+            $value = $this->getValue();
+            if (!is_array($value)) {
+                $value = [$value];
+            }
+
+            $options = [];
+            foreach ($this->options as $option) {
+                $options[] = new Option(
+                    $option->getLabel(),
+                    $option->getValue(),
+                    \in_array($option->getValue(), $value, false)
+                );
+            }
+
+            return $options;
         }
 
         return $this

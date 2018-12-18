@@ -19,7 +19,7 @@ use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
-interface CRMHandlerInterface
+interface CRMHandlerInterface extends IntegrationHandlerInterface
 {
     /**
      * @return AbstractCRMIntegration[]

@@ -251,7 +251,6 @@ class SubmissionsController extends BaseController
             throw new FreeformException(Freeform::t('Submission not found'));
         }
 
-
         /** @var array|null $allowedFormIds */
         $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
         if (null !== $allowedFormIds) {

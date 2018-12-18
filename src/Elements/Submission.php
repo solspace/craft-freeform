@@ -388,13 +388,17 @@ class Submission extends Element
      */
     public function setFormFieldValues(array $values): Submission
     {
-        foreach ($values as $key => $value) {
-            try {
-                $field = $this->getFieldByIdentifier($key);
-
-                $this->storedFieldValues[self::getFieldColumnName($field->getId())] = $value;
-            } catch (FieldException $exception) {
+        foreach ($this->getForm()->getLayout()->getFields() as $field) {
+            if (!$field->canStoreValues()) {
+                continue;
             }
+
+            $value = null;
+            if (array_key_exists($field->getHandle(), $values)) {
+                $value = $values[$field->getHandle()];
+            }
+
+            $this->storedFieldValues[self::getFieldColumnName($field->getId())] = $value;
         }
 
         return $this;

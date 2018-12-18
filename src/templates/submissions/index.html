@@ -4,17 +4,6 @@
 {% set selectedSubnavItem = 'submissions' %}
 {% set elementType = 'Solspace\\Freeform\\Elements\\Submission' %}
 
-{% block body %}
-    {{ parent() }}
-    <form method="post"
-          id="asset_download"
-          style="height: 0; width: 0; position: absolute; left: -99999px;">
-        <input type="hidden" name="action" value="assets/download-asset"/>
-        <input type="hidden" name="assetId" value=""/>
-        {{ csrfInput() }}
-    </form>
-{% endblock %}
-
 {% css %}
 
     {% for status in statuses %}

@@ -70,7 +70,8 @@ abstract class AbstractMailingListIntegration extends AbstractIntegration implem
             $settings,
             $logger,
             $configuration,
-            $translator
+            $translator,
+            $mailingListHandler
         );
 
         $this->mailingListHandler = $mailingListHandler;

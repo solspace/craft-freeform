@@ -238,7 +238,7 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
         $this->addInputAttribute('class', $attributes->getClass());
 
         $output = '';
-        foreach ($this->options as $index => $option) {
+        foreach ($this->getOptions() as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '
@@ -266,7 +266,7 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
         $this->addInputAttribute('class', $attributes->getClass());
 
         $output = '';
-        foreach ($this->options as $index => $option) {
+        foreach ($this->getOptions() as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '

@@ -1,6 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.5.6 - 2018-12-18
+### Added
+- Added `EVENT_AFTER_RESPONSE` developer event for all API integrations.
+
+### Changed
+- Updated Demo Templates installer to be compatible with Craft 3.1.
+- Updated File Upload fields in Freeform CP Submissions list to use Craft element viewer/editor.
+
+### Fixed
+- Fixed a bug where the `overrideValues` parameter was not working for pre-selecting options for multi-option field types.
+- Fixed a bug where Freeform Payments was logging credit card decline/fail errors to the Freeform error log.
+
 ## 2.5.5 - 2018-12-11
+### Fixed
 - Fixed a bug where Conditional Rules feature settings inside Composer stopped working correctly after 2.5.4 update.
 - Fixed a bug where Freeform would error when attempting to install on Craft 3.1.
 - Fixed a bug where the 2.5.4 update migration would error for PostgreSQL users.

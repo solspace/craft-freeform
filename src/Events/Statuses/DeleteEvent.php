@@ -9,7 +9,7 @@ use Solspace\Freeform\Records\StatusRecord;
 class DeleteEvent extends CancelableEvent
 {
     /** @var StatusModel */
-    private $model;
+    public $model;
 
     /**
      * @param StatusModel $model

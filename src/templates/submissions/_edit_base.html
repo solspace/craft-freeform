@@ -215,14 +215,13 @@
                                                         {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
                                                         {% set srcset = srcset|trim(", ") %}
 
-                                                        <div class="element large hasthumb">
+                                                        <div class="element small hasthumb">
+                                                            <input type="hidden" name="{{ field.handle }}[]" value="{{ asset.id }}">
                                                             <div class="elementthumb">
-                                                                <img sizes="200px" srcset="{{ srcset }}" alt="">
+                                                                <img sizes="30px" srcset="{{ srcset }}" alt="">
                                                             </div>
                                                             <label>
-                                                                <a href="javascript:;" data-asset-id="{{ asset.id }}">
-                                                                    {{ asset.title }}
-                                                                </a>
+                                                                {{ asset.title }}
                                                             </label>
                                                         </div>
                                                     {% endfor %}

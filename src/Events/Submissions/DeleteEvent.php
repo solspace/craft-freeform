@@ -8,7 +8,7 @@ use Solspace\Freeform\Elements\Submission;
 class DeleteEvent extends CancelableEvent
 {
     /** @var Submission */
-    private $element;
+    public $element;
 
     /**
      * @param Submission $element

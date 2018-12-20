@@ -33,8 +33,9 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 use Solspace\FreeformPro\Library\Rules\RuleProperties;
+use yii\base\Arrayable;
 
-class Form implements \JsonSerializable, \Iterator, \ArrayAccess
+class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 {
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
@@ -1076,6 +1077,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     public function jsonSerialize(): array
     {
         return [
+            'id'                         => $this->getId(),
             'name'                       => $this->name,
             'handle'                     => $this->handle,
             'color'                      => $this->color,
@@ -1195,5 +1197,29 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess
     private function isLastPage()
     {
         return $this->getFormValueContext()->getCurrentPageIndex() === (\count($this->getPages()) - 1);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields()
+    {
+        return array_keys($this->jsonSerialize());
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function extraFields()
+    {
+        return [];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    {
+        return $this->jsonSerialize();
     }
 }

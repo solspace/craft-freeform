@@ -8,10 +8,10 @@ use Solspace\Freeform\Models\FormModel;
 class SaveEvent extends CancelableEvent
 {
     /** @var FormModel */
-    private $model;
+    public $model;
 
     /** @var bool */
-    private $new;
+    public $new;
 
     /**
      * @param FormModel $model

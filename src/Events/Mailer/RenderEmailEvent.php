@@ -10,16 +10,16 @@ use yii\base\Event;
 class RenderEmailEvent extends Event
 {
     /** @var Form */
-    private $form;
+    public $form;
 
     /** @var NotificationInterface */
-    private $notification;
+    public $notification;
 
     /** @var array */
-    private $fieldValues;
+    public $fieldValues;
 
     /** @var Submission */
-    private $submission;
+    public $submission;
 
     /**
      * @param Form                  $form

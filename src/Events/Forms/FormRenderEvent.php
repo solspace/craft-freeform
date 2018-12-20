@@ -14,7 +14,7 @@ use yii\base\Event;
 class FormRenderEvent extends Event
 {
     /** @var Form */
-    private $form;
+    public $form;
 
     /** @var FormRenderObjectInterface[] */
     private $renderObjects;

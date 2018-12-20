@@ -9,10 +9,10 @@ use yii\base\Event;
 class ValidateEvent extends Event
 {
     /** @var AbstractField */
-    private $field;
+    public $field;
 
     /** @var Form $form */
-    private $form;
+    public $form;
 
     /**
      * ValidateEvent constructor.

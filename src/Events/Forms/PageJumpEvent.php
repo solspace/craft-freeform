@@ -9,8 +9,10 @@ use yii\base\Event;
 
 class PageJumpEvent extends Event
 {
-    private $form;
+    /** @var Form */
+    public $form;
 
+    /** @var int */
     private $jumpToIndex;
 
     /**

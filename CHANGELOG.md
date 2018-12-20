@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 2.5.7 - 2018-12-20
+### Changed
+- Updated Freeform's developer events for compatibility with the Craft Webhooks plugin.
+- Improved file cleanup and submission/spam purge. File cleanup no longer triggers on every request and does not clear DB cache to check for table existence.
+- Optimized the Submission element.
+- Disabled automatic emoji conversion support for now to allow for significant performance improvements.
+
+### Fixed
+- Fixed a bug where updating submissions inside control panel would detach uploaded files.
+
 ## 2.5.6 - 2018-12-18
 ### Added
 - Added `EVENT_AFTER_RESPONSE` developer event for all API integrations.

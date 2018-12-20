@@ -11,19 +11,19 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
 class SendEmailEvent extends CancelableEvent
 {
     /** @var Message */
-    private $message;
+    public $message;
 
     /** @var Form */
-    private $form;
+    public $form;
 
     /** @var NotificationInterface */
-    private $notification;
+    public $notification;
 
     /** @var array */
-    private $fieldValues;
+    public $fieldValues;
 
     /** @var Submission */
-    private $submission;
+    public $submission;
 
     /**
      * @param Message               $message

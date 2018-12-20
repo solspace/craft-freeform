@@ -8,10 +8,10 @@ use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 class PushEvent extends CancelableEvent
 {
     /** @var AbstractIntegration */
-    private $integration;
+    public $integration;
 
     /** @var array */
-    private $values;
+    public $values;
 
     /**
      * @param AbstractIntegration $integration

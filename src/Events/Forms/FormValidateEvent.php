@@ -3,12 +3,14 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Library\Composer\Components\Form;
+use yii\base\Arrayable;
+use yii\base\ArrayableTrait;
 use yii\base\Event;
 
 class FormValidateEvent extends Event
 {
     /** @var Form */
-    private $form;
+    public $form;
 
     /**
      * FormValidateEvent constructor.

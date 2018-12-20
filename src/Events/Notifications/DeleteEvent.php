@@ -8,7 +8,7 @@ use Solspace\Freeform\Records\NotificationRecord;
 class DeleteEvent extends CancelableEvent
 {
     /** @var NotificationRecord */
-    private $record;
+    public $record;
 
     /**
      * @param NotificationRecord $model

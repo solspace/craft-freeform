@@ -8,7 +8,7 @@ use Solspace\Freeform\Models\FieldModel;
 class DeleteEvent extends CancelableEvent
 {
     /** @var FieldModel */
-    private $model;
+    public $model;
 
     /**
      * @param FieldModel $model

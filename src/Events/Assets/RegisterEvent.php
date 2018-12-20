@@ -8,7 +8,7 @@ use craft\web\View;
 class RegisterEvent extends CancelableEvent
 {
     /** @var View */
-    private $view;
+    public $view;
 
     /**
      * RegisterEvent constructor.

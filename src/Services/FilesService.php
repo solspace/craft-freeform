@@ -24,10 +24,12 @@ use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
 use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
-use yii\base\Component;
 
 class FilesService extends BaseService implements FileUploadHandlerInterface
 {
+    const CLEANUP_CACHE_KEY = 'freeform_file_cleanup_cache_key';
+    const CACHE_TTL         = 3600; // 1 hour
+
     const EVENT_BEFORE_UPLOAD = 'beforeUpload';
     const EVENT_AFTER_UPLOAD  = 'afterUpload';
 
@@ -153,7 +155,12 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      */
     public function cleanUpUnfinalizedAssets()
     {
-        if (!\Craft::$app->db->tableExists(UnfinalizedFileRecord::TABLE, true)) {
+        $hasBeenPurgedRecently = \Craft::$app->cache->get(static::CLEANUP_CACHE_KEY);
+        if ($hasBeenPurgedRecently) {
+            return;
+        }
+
+        if (!\Craft::$app->db->tableExists(UnfinalizedFileRecord::TABLE)) {
             return;
         }
 
@@ -187,6 +194,8 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                     ->execute();
             }
         }
+
+        \Craft::$app->cache->set(static::CLEANUP_CACHE_KEY, true, static::CACHE_TTL);
     }
 
     /**

@@ -4,15 +4,14 @@ namespace Solspace\Freeform\Events\Fields;
 
 use craft\events\CancelableEvent;
 use Solspace\Freeform\Models\FieldModel;
-use Solspace\Freeform\Records\FieldRecord;
 
 class SaveEvent extends CancelableEvent
 {
     /** @var FieldModel */
-    private $model;
+    public $model;
 
     /** @var bool */
-    private $new;
+    public $new;
 
     /**
      * @param FieldModel $model

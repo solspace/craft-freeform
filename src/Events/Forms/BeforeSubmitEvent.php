@@ -8,7 +8,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 class BeforeSubmitEvent extends CancelableEvent
 {
     /** @var Form */
-    private $form;
+    public $form;
 
     /**
      * @param Form $form

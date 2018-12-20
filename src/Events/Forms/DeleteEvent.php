@@ -4,12 +4,11 @@ namespace Solspace\Freeform\Events\Forms;
 
 use craft\events\CancelableEvent;
 use Solspace\Freeform\Models\FormModel;
-use Solspace\Freeform\Records\FormRecord;
 
 class DeleteEvent extends CancelableEvent
 {
     /** @var FormModel */
-    private $model;
+    public $model;
 
     /**
      * @param FormModel $model

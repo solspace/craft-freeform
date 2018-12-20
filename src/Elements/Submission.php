@@ -66,6 +66,9 @@ class Submission extends Element
     /** @var array */
     private $storedFieldValues;
 
+    /** @var array AbstractField[] */
+    private $fieldsByIdentifier = [];
+
     /**
      * @return SubmissionQuery|ElementQueryInterface
      */
@@ -176,35 +179,41 @@ class Submission extends Element
      */
     protected static function defineSources(string $context = null): array
     {
-        $sources = [
-            [
-                'key'      => '*',
-                'label'    => Freeform::t('All Submissions'),
-                'criteria' => [],
-            ],
-            ['heading' => Freeform::t('Forms')],
-        ];
+        static $sources;
 
-        $formsService = Freeform::getInstance()->forms;
+        if (null === $sources) {
+            $items = [
+                [
+                    'key'      => '*',
+                    'label'    => Freeform::t('All Submissions'),
+                    'criteria' => [],
+                ],
+                ['heading' => Freeform::t('Forms')],
+            ];
 
-        /** @var array|null $allowedFormIds */
-        $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
+            $formsService = Freeform::getInstance()->forms;
 
-        foreach ($formsService->getAllForms() as $form) {
-            if (null !== $allowedFormIds && !\in_array($form->id, $allowedFormIds, true)) {
-                continue;
+            /** @var array|null $allowedFormIds */
+            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
+
+            foreach ($formsService->getAllForms() as $form) {
+                if (null !== $allowedFormIds && !\in_array($form->id, $allowedFormIds, true)) {
+                    continue;
+                }
+
+                $items[] = [
+                    'key'      => 'form:' . $form->id,
+                    'label'    => $form->name,
+                    'data'     => [
+                        'handle' => $form->handle,
+                    ],
+                    'criteria' => [
+                        'formId' => $form->id,
+                    ],
+                ];
             }
 
-            $sources[] = [
-                'key'      => 'form:' . $form->id,
-                'label'    => $form->name,
-                'data'     => [
-                    'handle' => $form->handle,
-                ],
-                'criteria' => [
-                    'formId' => $form->id,
-                ],
-            ];
+            $sources = $items;
         }
 
         return $sources;
@@ -215,23 +224,29 @@ class Submission extends Element
      */
     protected static function defineTableAttributes(): array
     {
-        $titles = [
-            'title'         => ['label' => Freeform::t('Title')],
-            'status'        => ['label' => Freeform::t('Status')],
-            'form'          => ['label' => Freeform::t('Form')],
-            'dateCreated'   => ['label' => Freeform::t('Date Created')],
-            'id'            => ['label' => Freeform::t('ID')],
-            'incrementalId' => ['label' => Freeform::t('Freeform ID')],
-            'ip'            => ['label' => Freeform::t('IP Address')],
-        ];
+        static $attributes;
 
-        foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
-            if ($field->label) {
-                $titles[self::getFieldColumnName($field->id)] = ['label' => $field->label];
+        if (null === $attributes) {
+            $titles = [
+                'title'         => ['label' => Freeform::t('Title')],
+                'status'        => ['label' => Freeform::t('Status')],
+                'form'          => ['label' => Freeform::t('Form')],
+                'dateCreated'   => ['label' => Freeform::t('Date Created')],
+                'id'            => ['label' => Freeform::t('ID')],
+                'incrementalId' => ['label' => Freeform::t('Freeform ID')],
+                'ip'            => ['label' => Freeform::t('IP Address')],
+            ];
+
+            foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
+                if ($field->label) {
+                    $titles[self::getFieldColumnName($field->id)] = ['label' => $field->label];
+                }
             }
+
+            $attributes = $titles;
         }
 
-        return $titles;
+        return $attributes;
     }
 
     /**
@@ -682,24 +697,30 @@ class Submission extends Element
             )
         );
 
-        $id = null;
-        if (!is_numeric($identifier)) {
-            if (preg_match('/^' . self::FIELD_COLUMN_PREFIX . '(\d+)$/', $identifier, $matches)) {
-                $id = (int) $matches[1];
-            } else {
-                if (!isset(self::$fieldHandleMap[$this->formId][$identifier])) {
-                    throw $exception;
+        if (!isset($this->fieldsByIdentifier[$identifier])) {
+            $id = null;
+            if (!is_numeric($identifier)) {
+                if (preg_match('/^' . self::FIELD_COLUMN_PREFIX . '(\d+)$/', $identifier, $matches)) {
+                    $id = (int) $matches[1];
+                } else {
+                    if (!isset(self::$fieldHandleMap[$this->formId][$identifier])) {
+                        throw $exception;
+                    }
+
+                    $this->fieldsByIdentifier[$identifier] = self::$fieldHandleMap[$this->formId][$identifier];
+
+                    return $this->fieldsByIdentifier[$identifier];
                 }
-
-                return self::$fieldHandleMap[$this->formId][$identifier];
             }
+
+            if (!isset(self::$fieldIdMap[$this->formId][$id])) {
+                throw $exception;
+            }
+
+            $this->fieldsByIdentifier[$identifier] = self::$fieldIdMap[$this->formId][$id];
         }
 
-        if (!isset(self::$fieldIdMap[$this->formId][$id])) {
-            throw $exception;
-        }
-
-        return self::$fieldIdMap[$this->formId][$id];
+        return $this->fieldsByIdentifier[$identifier];
     }
 
     /**
@@ -719,5 +740,20 @@ class Submission extends Element
                 $this->formId
             )
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    {
+        $fields = parent::toArray($fields, $expand, $recursive);
+
+        foreach ($this->getFieldMetadata() as $field) {
+            $handle          = $field->getHandle();
+            $fields[$handle] = $this->{$handle}->getValue();
+        }
+
+        return $fields;
     }
 }

@@ -9,10 +9,10 @@ use yii\base\Event;
 class AfterSubmitEvent extends Event
 {
     /** @var Form */
-    private $form;
+    public $form;
 
     /** @var Submission */
-    private $submission;
+    public $submission;
 
     /**
      * @param Form            $form

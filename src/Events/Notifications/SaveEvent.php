@@ -8,10 +8,10 @@ use Solspace\Freeform\Records\NotificationRecord;
 class SaveEvent extends CancelableEvent
 {
     /** @var NotificationRecord */
-    private $record;
+    public $record;
 
     /** @var bool */
-    private $new;
+    public $new;
 
     /**
      * @param NotificationRecord $model

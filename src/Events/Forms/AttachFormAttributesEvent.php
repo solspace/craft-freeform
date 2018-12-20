@@ -9,7 +9,7 @@ use yii\base\Event;
 class AttachFormAttributesEvent extends Event
 {
     /** @var Form */
-    private $form;
+    public $form;
 
     /** @var array */
     private $attributes;

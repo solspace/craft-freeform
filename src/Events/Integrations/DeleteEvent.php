@@ -8,7 +8,7 @@ use Solspace\Freeform\Models\IntegrationModel;
 class DeleteEvent extends CancelableEvent
 {
     /** @var IntegrationModel */
-    private $model;
+    public $model;
 
     /**
      * @param IntegrationModel $model

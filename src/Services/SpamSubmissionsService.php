@@ -109,8 +109,8 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
                     ['id' => $ids]
                 )
                 ->execute();
-
-            \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);
         }
+
+        \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);
     }
 }

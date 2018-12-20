@@ -9,10 +9,10 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 class SubmitEvent extends CancelableEvent
 {
     /** @var Submission */
-    private $element;
+    public $element;
 
     /** @var Form */
-    private $form;
+    public $form;
 
     /**
      * @param Submission $element

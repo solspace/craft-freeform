@@ -9,10 +9,10 @@ use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 class IntegrationResponseEvent extends CancelableEvent
 {
     /** @var AbstractIntegration */
-    private $integration;
+    public $integration;
 
     /** @var ResponseInterface */
-    private $response;
+    public $response;
 
     /**
      * IntegrationResponseEvent constructor.

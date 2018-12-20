@@ -8,7 +8,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
 class UploadEvent extends CancelableEvent
 {
     /** @var FileUploadField */
-    private $field;
+    public $field;
 
     /**
      * @param FileUploadField $field

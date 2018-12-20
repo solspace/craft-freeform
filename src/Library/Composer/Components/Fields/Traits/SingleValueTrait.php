@@ -30,7 +30,8 @@ trait SingleValueTrait
             return $this->getValueOverride();
         }
 
-        return (string) LitEmoji::shortcodeToUnicode($this->value);
+        return (string) $this->value;
+        // return (string) LitEmoji::shortcodeToUnicode($this->value);
     }
 
     /**

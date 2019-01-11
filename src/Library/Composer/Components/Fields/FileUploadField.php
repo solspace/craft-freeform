@@ -73,6 +73,10 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
      */
     public function getFileKinds(): array
     {
+        if (!is_array($this->fileKinds)) {
+            return [];
+        }
+
         return $this->fileKinds;
     }
 

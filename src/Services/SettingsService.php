@@ -173,6 +173,14 @@ class SettingsService extends BaseService
     /**
      * @return bool
      */
+    public function isAutoScrollToErrors(): bool
+    {
+        return (bool) $this->getSettingsModel()->autoScrollToErrors;
+    }
+
+    /**
+     * @return bool
+     */
     public function isRemoveNewlines(): bool
     {
         return (bool) $this->getSettingsModel()->removeNewlines;

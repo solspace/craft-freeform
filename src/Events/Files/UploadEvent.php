@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Events\Files;
 
-use craft\events\CancelableEvent;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
 
-class UploadEvent extends CancelableEvent
+class UploadEvent extends CancelableArrayableEvent
 {
     /** @var FileUploadField */
-    public $field;
+    private $field;
 
     /**
      * @param FileUploadField $field
@@ -18,6 +18,14 @@ class UploadEvent extends CancelableEvent
         $this->field = $field;
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['field']);
     }
 
     /**

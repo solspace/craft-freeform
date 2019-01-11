@@ -15,11 +15,14 @@ use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
+use craft\events\SiteEvent;
 use craft\services\Dashboard;
 use craft\services\Fields;
+use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use function foo\func;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\ApiController;
 use Solspace\Freeform\Controllers\CodepackController;
@@ -35,6 +38,7 @@ use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
 use Solspace\Freeform\Controllers\SubmissionsController;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
@@ -616,6 +620,43 @@ class Freeform extends Plugin
                     $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
                     $className = $namespace . '\\' . $className;
                     $event->addType($className);
+                }
+            }
+        );
+
+        Event::on(
+            Sites::class,
+            Sites::EVENT_BEFORE_SAVE_SITE,
+            function (SiteEvent $event) {
+                if ($event->site->primary && (int) $event->site->id !== (int) $event->oldPrimarySiteId) {
+                    $oldId = $event->oldPrimarySiteId;
+                    $newId = $event->site->id;
+
+                    $ids = (new Query())
+                        ->select('[[id]]')
+                        ->from('{{%elements}}')
+                        ->where(['[[type]]' => Submission::class])
+                        ->column();
+
+                    \Craft::$app
+                        ->db
+                        ->createCommand()
+                        ->update(
+                            '{{%elements_sites}}',
+                            ['siteId' => $newId],
+                            ['siteId' => $oldId, 'elementId' => $ids]
+                        )
+                        ->execute();
+
+                    \Craft::$app
+                        ->db
+                        ->createCommand()
+                        ->update(
+                            '{{%content}}',
+                            ['siteId' => $newId],
+                            ['siteId' => $oldId, 'elementId' => $ids]
+                        )
+                        ->execute();
                 }
             }
         );

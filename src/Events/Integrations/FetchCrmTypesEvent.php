@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Integrations\CRM\CRMIntegrationInterface;
-use yii\base\Event;
 
-class FetchCrmTypesEvent extends Event
+class FetchCrmTypesEvent extends ArrayableEvent
 {
     /** @var array */
     private $types;
@@ -18,6 +18,14 @@ class FetchCrmTypesEvent extends Event
         $this->types = [];
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['types'];
     }
 
     /**

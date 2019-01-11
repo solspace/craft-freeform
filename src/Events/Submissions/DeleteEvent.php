@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Events\Submissions;
 
-use craft\events\CancelableEvent;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 
-class DeleteEvent extends CancelableEvent
+class DeleteEvent extends CancelableArrayableEvent
 {
     /** @var Submission */
-    public $element;
+    private $element;
 
     /**
      * @param Submission $element
@@ -18,6 +18,14 @@ class DeleteEvent extends CancelableEvent
         $this->element = $element;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['element']);
     }
 
     /**

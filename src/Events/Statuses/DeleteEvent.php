@@ -2,14 +2,13 @@
 
 namespace Solspace\Freeform\Events\Statuses;
 
-use craft\events\CancelableEvent;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Models\StatusModel;
-use Solspace\Freeform\Records\StatusRecord;
 
-class DeleteEvent extends CancelableEvent
+class DeleteEvent extends CancelableArrayableEvent
 {
     /** @var StatusModel */
-    public $model;
+    private $model;
 
     /**
      * @param StatusModel $model
@@ -19,6 +18,14 @@ class DeleteEvent extends CancelableEvent
         $this->model = $model;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['model']);
     }
 
     /**

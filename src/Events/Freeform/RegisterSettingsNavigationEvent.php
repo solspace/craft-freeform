@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Events\Freeform;
 
-use yii\base\Event;
+use Solspace\Freeform\Events\ArrayableEvent;
 
-class RegisterSettingsNavigationEvent extends Event
+class RegisterSettingsNavigationEvent extends ArrayableEvent
 {
     /** @var array */
     private $navigation;
@@ -19,6 +19,14 @@ class RegisterSettingsNavigationEvent extends Event
         $this->navigation = $navigation;
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['navigation'];
     }
 
     /**

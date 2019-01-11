@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\CssObject;
@@ -9,12 +10,11 @@ use Solspace\Freeform\Library\DataObjects\FormRenderObject\ExternalJavascriptObj
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\FormRenderObjectInterface;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\JavascriptObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\StringObject;
-use yii\base\Event;
 
-class FormRenderEvent extends Event
+class FormRenderEvent extends ArrayableEvent
 {
     /** @var Form */
-    public $form;
+    private $form;
 
     /** @var FormRenderObjectInterface[] */
     private $renderObjects;
@@ -30,6 +30,14 @@ class FormRenderEvent extends Event
         $this->renderObjects = [];
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['form', 'renderObjects'];
     }
 
     /**

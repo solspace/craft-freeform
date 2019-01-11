@@ -131,6 +131,9 @@ class Settings extends Model
     /** @var bool */
     public $renderFormHtmlInCpViews;
 
+    /** @var bool */
+    public $autoScrollToErrors;
+
     /**
      * Settings constructor.
      *
@@ -165,6 +168,7 @@ class Settings extends Model
         $this->purgableSubmissionAgeInDays   = null;
         $this->purgableSpamAgeInDays         = null;
         $this->renderFormHtmlInCpViews       = true;
+        $this->autoScrollToErrors            = true;
 
         $this->recaptchaEnabled = false;
         $this->recaptchaKey     = null;

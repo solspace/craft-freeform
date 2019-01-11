@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\Events\Fields;
 
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use yii\base\Event;
 
-class FetchFieldTypes extends Event
+class FetchFieldTypes extends ArrayableEvent
 {
     /** @var array */
     private $types;
@@ -25,6 +25,14 @@ class FetchFieldTypes extends Event
         }
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['types'];
     }
 
     /**

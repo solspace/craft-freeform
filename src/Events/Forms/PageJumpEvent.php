@@ -2,15 +2,15 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
-use yii\base\Event;
 
-class PageJumpEvent extends Event
+class PageJumpEvent extends ArrayableEvent
 {
     /** @var Form */
-    public $form;
+    private $form;
 
     /** @var int */
     private $jumpToIndex;
@@ -25,6 +25,14 @@ class PageJumpEvent extends Event
         $this->form = $form;
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['form'];
     }
 
     /**

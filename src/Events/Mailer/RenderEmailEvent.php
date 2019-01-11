@@ -3,23 +3,23 @@
 namespace Solspace\Freeform\Events\Mailer;
 
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
-use yii\base\Event;
 
-class RenderEmailEvent extends Event
+class RenderEmailEvent extends ArrayableEvent
 {
     /** @var Form */
-    public $form;
+    private $form;
 
     /** @var NotificationInterface */
-    public $notification;
+    private $notification;
 
     /** @var array */
-    public $fieldValues;
+    private $fieldValues;
 
     /** @var Submission */
-    public $submission;
+    private $submission;
 
     /**
      * @param Form                  $form
@@ -32,14 +32,21 @@ class RenderEmailEvent extends Event
         NotificationInterface $notification,
         array $fieldValues,
         Submission $submission = null
-    )
-    {
+    ) {
         $this->form         = $form;
         $this->notification = $notification;
         $this->fieldValues  = $fieldValues;
         $this->submission   = $submission;
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['form', 'notification', 'fieldValues', 'submission'];
     }
 
     /**

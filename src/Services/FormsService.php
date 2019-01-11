@@ -110,7 +110,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
             if ($form) {
                 self::$formsByHandle[$form->handle] = $form;
-                self::$formsById[$id] = $form;
+                self::$formsById[$id]               = $form;
             } else {
                 return $form;
             }
@@ -136,7 +136,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
 
             if ($form) {
-                self::$formsById[$form->id] = $form;
+                self::$formsById[$form->id]   = $form;
                 self::$formsByHandle[$handle] = $form;
             } else {
                 return null;
@@ -446,9 +446,10 @@ class FormsService extends BaseService implements FormHandlerInterface
      */
     public function addFormAnchorJavascript(FormRenderEvent $event)
     {
-        $form = $event->getForm();
+        $form       = $event->getForm();
+        $autoScroll = $this->getSettingsService()->isAutoScrollToErrors();
 
-        if ($form->getAnchor() && $form->isFormPosted()) {
+        if ($autoScroll && $form->getAnchor() && $form->isFormPosted()) {
             $invalidFormJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form/form-jump-to-anchor.js');
             $event->appendJsToOutput($invalidFormJs, ['formAnchor' => $form->getAnchor()]);
         }

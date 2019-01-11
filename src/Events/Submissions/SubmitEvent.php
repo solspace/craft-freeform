@@ -4,15 +4,18 @@ namespace Solspace\Freeform\Events\Submissions;
 
 use craft\events\CancelableEvent;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use yii\base\Arrayable;
+use yii\base\ArrayableTrait;
 
-class SubmitEvent extends CancelableEvent
+class SubmitEvent extends CancelableArrayableEvent
 {
     /** @var Submission */
-    public $element;
+    private $element;
 
     /** @var Form */
-    public $form;
+    private $form;
 
     /**
      * @param Submission $element
@@ -24,6 +27,14 @@ class SubmitEvent extends CancelableEvent
         $this->form    = $form;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['element', 'form']);
     }
 
     /**

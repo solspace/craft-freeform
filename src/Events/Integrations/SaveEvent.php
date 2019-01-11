@@ -2,16 +2,16 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
-use craft\events\CancelableEvent;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Models\IntegrationModel;
 
-class SaveEvent extends CancelableEvent
+class SaveEvent extends CancelableArrayableEvent
 {
     /** @var IntegrationModel */
-    public $model;
+    private $model;
 
     /** @var bool */
-    public $new;
+    private $new;
 
     /**
      * @param IntegrationModel $model
@@ -23,6 +23,14 @@ class SaveEvent extends CancelableEvent
         $this->new   = $new;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['model', 'new']);
     }
 
     /**

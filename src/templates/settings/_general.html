@@ -86,6 +86,14 @@
         errors: settings.errors("formSubmitDisable"),
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Automatically Scroll to Form on Errors and Multipage forms?"|t('freeform'),
+        instructions: "Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms."|t('freeform'),
+        name: "settings[autoScrollToErrors]",
+        on: settings.autoScrollToErrors,
+        errors: settings.errors("autoScrollToErrors"),
+    }) }}
+
     {{ forms.selectField({
         label: "Freeform Javascript Insertion Location"|t('freeform'),
         instructions: "The location of where you want Freeform to insert it's scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),

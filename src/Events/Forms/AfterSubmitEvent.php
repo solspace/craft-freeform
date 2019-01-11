@@ -3,16 +3,16 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use yii\base\Event;
 
-class AfterSubmitEvent extends Event
+class AfterSubmitEvent extends ArrayableEvent
 {
     /** @var Form */
-    public $form;
+    private $form;
 
     /** @var Submission */
-    public $submission;
+    private $submission;
 
     /**
      * @param Form            $form
@@ -24,6 +24,14 @@ class AfterSubmitEvent extends Event
         $this->submission = $submission;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['form', 'submission'];
     }
 
     /**

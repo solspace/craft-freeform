@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Events\Fields;
 
-use craft\events\CancelableEvent;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Models\FieldModel;
 
-class DeleteEvent extends CancelableEvent
+class DeleteEvent extends CancelableArrayableEvent
 {
     /** @var FieldModel */
-    public $model;
+    private $model;
 
     /**
      * @param FieldModel $model
@@ -18,6 +18,14 @@ class DeleteEvent extends CancelableEvent
         $this->model = $model;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['model']);
     }
 
     /**

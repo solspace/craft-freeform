@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
-use craft\events\CancelableEvent;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
-class BeforeSubmitEvent extends CancelableEvent
+class BeforeSubmitEvent extends CancelableArrayableEvent
 {
     /** @var Form */
-    public $form;
+    private $form;
 
     /**
      * @param Form $form
@@ -18,6 +18,14 @@ class BeforeSubmitEvent extends CancelableEvent
         $this->form = $form;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['form']);
     }
 
     /**

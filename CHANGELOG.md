@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.5.8 - 2019-01-11
+### Added
+- Added 'Automatically Scroll to Form on Errors and Multipage forms?' setting to allow the ability to disable this feature.
+
+### Changed
+- Updated Freeform's developer events for compatibility with the Craft Webhooks plugin's [updated approach](https://github.com/craftcms/webhooks/blob/develop/CHANGELOG.md#112---2018-12-21) (v1.1.2).
+- Updated Freeform to reset `siteId` for submissions in `elements_sites` database table to whichever site is the primary site (to prevent CP viewing issues if the primary site is switched along the way).
+
+### Fixed
+- Fixed a bug where adding a new File Upload field to a form that had defaults of no file kinds checked (implying allow ALL file types) would not save correctly to the form layout and error when submitting the form.
+- Fixed a bug where fields shown/hidden with Conditional Rules feature that were dependent on checkboxes were not being correctly included in email notifications or showing in the submission detail view in control panel.
+- Fixed a bug where attempting to change the status of a submission in the control panel was not working.
+- Fixed a bug where the "Manage All Submissions" user/group permission was not allowing users to view or whitelist spam submissions.
+
 ## 2.5.7 - 2018-12-20
 ### Changed
 - Updated Freeform's developer events for compatibility with the Craft Webhooks plugin.

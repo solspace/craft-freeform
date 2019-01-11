@@ -64,16 +64,6 @@ class SpamSubmission extends Submission
      */
     public function getCpEditUrl()
     {
-        static $allowedFormIds;
-
-        if (null === $allowedFormIds) {
-            $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-        }
-
-        if (!PermissionHelper::isAdmin() && !\in_array($this->formId, $allowedFormIds, false)) {
-            return false;
-        }
-
-        return UrlHelper::cpUrl('freeform/spam/' . $this->id);
+        return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/spam/' . $this->id) : false;
     }
 }

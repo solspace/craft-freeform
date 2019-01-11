@@ -53,12 +53,16 @@ class SpamSubmissionsController extends SubmissionsController
             throw new FreeformException(Freeform::t('Submission not found'));
         }
 
-        PermissionHelper::requirePermission(
-            PermissionHelper::prepareNestedPermission(
-                Freeform::PERMISSION_SUBMISSIONS_MANAGE,
-                $model->formId
-            )
-        );
+        /** @var array|null $allowedFormIds */
+        $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
+        if (null !== $allowedFormIds) {
+            PermissionHelper::requirePermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                    $model->formId
+                )
+            );
+        }
 
         $model->setFormFieldValues($post);
 

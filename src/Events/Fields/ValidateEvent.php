@@ -2,22 +2,23 @@
 
 namespace Solspace\Freeform\Events\Fields;
 
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use yii\base\Event;
 
-class ValidateEvent extends Event
+class ValidateEvent extends ArrayableEvent
 {
     /** @var AbstractField */
-    public $field;
+    private $field;
 
     /** @var Form $form */
-    public $form;
+    private $form;
 
     /**
      * ValidateEvent constructor.
      *
      * @param AbstractField $field
+     * @param Form          $form
      */
     public function __construct(AbstractField $field, Form $form)
     {
@@ -25,6 +26,14 @@ class ValidateEvent extends Event
         $this->form  = $form;
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['field', 'form'];
     }
 
     /**

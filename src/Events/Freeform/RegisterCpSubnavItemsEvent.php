@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Events\Freeform;
 
-use yii\base\Event;
+use Solspace\Freeform\Events\ArrayableEvent;
 
-class RegisterCpSubnavItemsEvent extends Event
+class RegisterCpSubnavItemsEvent extends ArrayableEvent
 {
     /** @var array */
     private $subnavItems;
@@ -19,6 +19,14 @@ class RegisterCpSubnavItemsEvent extends Event
         $this->subnavItems = $subnavItems;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['subnavItems'];
     }
 
     /**

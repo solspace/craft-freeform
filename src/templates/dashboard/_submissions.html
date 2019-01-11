@@ -30,7 +30,7 @@
                 <td>{{ submission.id }}</td>
                 <td>
                     <div class="color-indicator" style="background-color: {{ submission.statusModel.color }}"></div>
-                    {% if currentUser.can("freeform-submissionsManage:" ~ submission.form.id) %}
+                    {% if currentUser.can("freeform-submissionsManage") or currentUser.can("freeform-submissionsManage:" ~ submission.form.id) %}
                         <a href="{{ submission.cpEditUrl }}">
                             {{ submission.title }}
                         </a>

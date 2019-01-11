@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use yii\base\Event;
 
-class AttachFormAttributesEvent extends Event
+class AttachFormAttributesEvent extends ArrayableEvent
 {
     /** @var Form */
-    public $form;
+    private $form;
 
     /** @var array */
     private $attributes;
@@ -26,6 +26,14 @@ class AttachFormAttributesEvent extends Event
         $this->attributes = $attributes;
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['form', 'attributes'];
     }
 
     /**

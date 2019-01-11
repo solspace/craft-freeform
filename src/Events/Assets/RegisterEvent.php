@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Events\Assets;
 
-use craft\events\CancelableEvent;
 use craft\web\View;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 
-class RegisterEvent extends CancelableEvent
+class RegisterEvent extends CancelableArrayableEvent
 {
     /** @var View */
-    public $view;
+    private $view;
 
     /**
      * RegisterEvent constructor.
@@ -20,6 +20,14 @@ class RegisterEvent extends CancelableEvent
         $this->view = $view;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['view']);
     }
 
     /**

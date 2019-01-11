@@ -2,16 +2,16 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
-use craft\events\CancelableEvent;
+use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 
-class PushEvent extends CancelableEvent
+class PushEvent extends CancelableArrayableEvent
 {
     /** @var AbstractIntegration */
-    public $integration;
+    private $integration;
 
     /** @var array */
-    public $values;
+    private $values;
 
     /**
      * @param AbstractIntegration $integration
@@ -23,6 +23,14 @@ class PushEvent extends CancelableEvent
         $this->values      = $values;
 
         parent::__construct();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return array_merge(parent::fields(), ['integration', 'values']);
     }
 
     /**

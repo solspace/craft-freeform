@@ -2,15 +2,13 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
+use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use yii\base\Arrayable;
-use yii\base\ArrayableTrait;
-use yii\base\Event;
 
-class FormValidateEvent extends Event
+class FormValidateEvent extends ArrayableEvent
 {
     /** @var Form */
-    public $form;
+    private $form;
 
     /**
      * FormValidateEvent constructor.
@@ -19,9 +17,17 @@ class FormValidateEvent extends Event
      */
     public function __construct(Form $form)
     {
-        $this->form      = $form;
+        $this->form = $form;
 
         parent::__construct([]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function fields(): array
+    {
+        return ['form'];
     }
 
     /**

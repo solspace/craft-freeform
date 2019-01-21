@@ -66,7 +66,7 @@ class EmailField extends AbstractField implements RecipientInterface, MultipleVa
                         $attributes->getPlaceholder() ?: $this->getPlaceholder()
                     )
                 )
-                . $this->getAttributeString('value', $value, false)
+                . $this->getAttributeString('value', $value, true)
                 . $this->getRequiredAttribute()
                 . $attributes->getInputAttributesAsString()
                 . '/>';

@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.5.9 - 2019-01-21
+### Added
+- Added two new methods for the `EVENT_BEFORE_PUSH` developer event: `setValues($values)` which will override all values, and `addValue($key, $value)` which allows for a quick and easy value addition to the existing values.
+
+### Changed
+- Updated Freeform API to be accessible via console.
+- Updated Salesforce Lead and Opportunity integrations to clear out all empty values before submitting to Salesforce.
+
+### Fixed
+- Fixed a bug where existing HTML block fields in Conditional Rules tab did not include their hash (for identifying which was which when more than one existed).
+- Fixed a bug where an error could be triggered when Email Address spam blocking was enabled and shown below email fields.
+- Fixed a potential XSS vulnerability on Email field types.
+- Fixed a bug where the 'Add criteria' button in Conditional Rules feature was not working in Firefox.
+
 ## 2.5.8 - 2019-01-11
 ### Added
 - Added 'Automatically Scroll to Form on Errors and Multipage forms?' setting to allow the ability to disable this feature.

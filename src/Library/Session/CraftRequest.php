@@ -21,7 +21,11 @@ class CraftRequest implements RequestInterface
      */
     public function getPost($key, $defaultValue = null)
     {
-        return \Craft::$app->request->post($key, $defaultValue);
+        if (!\Craft::$app->request->isConsoleRequest) {
+            return \Craft::$app->request->post($key, $defaultValue);
+        }
+
+        return $defaultValue;
     }
 
 }

@@ -299,7 +299,7 @@ class SettingsService extends BaseService
                                 }
 
                                 if ($showEmailsErrorBelowFields) {
-                                    $event->getField()->addError(Freeform::t($emailsMessage, ['email' => $value]));
+                                    $field->addError(Freeform::t($emailsMessage, ['email' => $value]));
                                 }
 
                                 break;

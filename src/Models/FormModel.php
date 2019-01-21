@@ -216,11 +216,13 @@ class FormModel extends Model
     private function getFormAttributes(): FormAttributes
     {
         $attributes = new FormAttributes($this->id, new CraftSession(), new CraftRequest());
-        $attributes
-            ->setActionUrl('freeform/api/form')
-            ->setCsrfEnabled(\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection)
-            ->setCsrfToken(\Craft::$app->request->csrfToken)
-            ->setCsrfTokenName(\Craft::$app->getConfig()->getGeneral()->csrfTokenName);
+        if (!\Craft::$app->request->isConsoleRequest) {
+            $attributes
+                ->setActionUrl('freeform/api/form')
+                ->setCsrfEnabled(\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection)
+                ->setCsrfToken(\Craft::$app->request->csrfToken)
+                ->setCsrfTokenName(\Craft::$app->getConfig()->getGeneral()->csrfTokenName);
+        }
 
         return $attributes;
     }

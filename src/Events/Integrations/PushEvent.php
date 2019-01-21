@@ -48,4 +48,29 @@ class PushEvent extends CancelableArrayableEvent
     {
         return $this->values;
     }
+
+    /**
+     * @param array $values
+     *
+     * @return PushEvent
+     */
+    public function setValues(array $values = []): PushEvent
+    {
+        $this->values = $values;
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return PushEvent
+     */
+    public function addValue(string $key, $value): PushEvent
+    {
+        $this->values[$key] = $value;
+
+        return $this;
+    }
 }

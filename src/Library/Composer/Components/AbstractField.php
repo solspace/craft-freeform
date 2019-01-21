@@ -625,7 +625,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $output = '<ul' . $this->getErrorAttributesString() . '>';
 
         foreach ($errors as $error) {
-            $output .= '<li>' . $error . '</li>';
+            $output .= '<li>' . htmlentities($error) . '</li>';
         }
 
         $output .= '</ul>';
@@ -659,7 +659,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             return sprintf(
                 ' %s="%s"',
                 $name,
-                $escapeValue ? htmlspecialchars($value) : $value
+                $escapeValue ? htmlentities($value) : $value
             );
         }
 

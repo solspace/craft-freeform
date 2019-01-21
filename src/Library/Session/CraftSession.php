@@ -24,10 +24,13 @@ class CraftSession implements SessionInterface
     public function get($key, $defaultValue = null)
     {
         try {
-            return \Craft::$app->session->get($key, $defaultValue);
+            if (!\Craft::$app->request->isConsoleRequest) {
+                return \Craft::$app->session->get($key, $defaultValue);
+            }
         } catch (\Exception $e) {
-            return $defaultValue;
         }
+
+        return $defaultValue;
     }
 
     /**
@@ -37,7 +40,9 @@ class CraftSession implements SessionInterface
     public function set($key, $value)
     {
         try {
-            \Craft::$app->session->set($key, $value);
+            if (!\Craft::$app->request->isConsoleRequest) {
+                \Craft::$app->session->set($key, $value);
+            }
         } catch (\Exception $e) {
             FreeformLogger::getInstance(FreeformLogger::FREEFORM)->error($e->getMessage(), ['Craft Session']);
         }
@@ -50,6 +55,10 @@ class CraftSession implements SessionInterface
      */
     public function remove($key): bool
     {
-        return (bool) \Craft::$app->session->remove($key);
+        if (!\Craft::$app->request->isConsoleRequest) {
+            return (bool) \Craft::$app->session->remove($key);
+        }
+
+        return true;
     }
 }

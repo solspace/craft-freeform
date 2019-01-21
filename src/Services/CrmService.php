@@ -300,7 +300,8 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
             }
         }
 
-        if (!$this->onBeforePush($integration, $objectValues)) {
+        list ($isValid, $objectValues) = $this->onBeforePush($integration, $objectValues);
+        if (!$isValid) {
             return false;
         }
 
@@ -333,14 +334,14 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      * @param AbstractIntegration $integration
      * @param array               $values
      *
-     * @return bool
+     * @return array - [isValid, values]
      */
-    private function onBeforePush(AbstractIntegration $integration, array $values): bool
+    private function onBeforePush(AbstractIntegration $integration, array $values): array
     {
         $event = new PushEvent($integration, $values);
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
 
-        return $event->isValid;
+        return [$event->isValid, $event->getValues()];
     }
 
     /**

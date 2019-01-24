@@ -16,6 +16,7 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\TextareaField;
@@ -139,6 +140,28 @@ class SubmissionsController extends BaseController
                 $columnName = Submission::getFieldColumnName($field->getId());
 
                 $value = $submission[$columnName];
+
+                if ($field instanceof FileUploadField) {
+                    $value = (array) json_decode($value ?: '[]', true);
+                    $combo = [];
+
+                    foreach ($value as $assetId) {
+                        $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                        if ($asset) {
+                            $assetValue = $asset->filename;
+                            if ($asset->getUrl()) {
+                                $assetValue = $asset->getUrl();
+                            }
+
+                            $combo[] = $assetValue;
+                        }
+                    }
+
+                    $rowData[] = implode(',', $combo);
+
+                    continue;
+                }
+
                 if ($field instanceof MultipleValueInterface) {
                     $value = json_decode($value);
                     if (is_array($value)) {

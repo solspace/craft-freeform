@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.5.10 - 2019-01-24
+### Fixed
+- Fixed a bug where using the Export as CSV option was not exporting file uploads as the filename/full path.
+- Fixed a bug where assets for file upload fields in CP submission edit view were no longer linked to be downloadable.
+
 ## 2.5.9 - 2019-01-21
 ### Added
 - Added two new methods for the `EVENT_BEFORE_PUSH` developer event: `setValues($values)` which will override all values, and `addValue($key, $value)` which allows for a quick and easy value addition to the existing values.

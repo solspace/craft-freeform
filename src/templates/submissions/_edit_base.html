@@ -221,7 +221,9 @@
                                                                 <img sizes="30px" srcset="{{ srcset }}" alt="">
                                                             </div>
                                                             <label>
-                                                                {{ asset.title }}
+                                                                <a href="javascript:;" data-asset-id="{{ asset.id }}">
+                                                                    {{ asset.title }}
+                                                                </a>
                                                             </label>
                                                         </div>
                                                     {% endfor %}

@@ -48,11 +48,11 @@ Freeform also allows for true multi-page forms, has its own built in spam protec
 
 Freeform Pro edition also includes Conditional Rules logic that can be added to forms. This feature allows you to effortlessly set fields to show or hide based on the contents/selection of other fields, and even skip pages based on the contents/selection of fields on a previous page.
 
-Also available for Freeform is the [Freeform Payments](https://solspace.com/craft/freeform/docs/payments) add-on plugin, which adds support for Stripe payments on forms. Works with both Lite and Pro editions.
+Also available for Freeform is the [Freeform Payments](http://docs.solspace.com/craft/freeform/v2/api-integrations/payments/) add-on plugin, which adds support for Stripe payments on forms. Works with both Lite and Pro editions.
 
 Last but not least, included with Freeform is a set of Demo Templates that can be installed on your site, instantaneously giving you a real-world set of styled, working templates.
 
 
 ## Using Freeform
 
-Full documentation for Freeform can be found on the [Solspace website](https://solspace.com/craft/freeform/docs).
+Full documentation for Freeform can be found on the [Solspace documentation website](http://docs.solspace.com/craft/freeform/v2/).

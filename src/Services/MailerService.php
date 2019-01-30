@@ -25,7 +25,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
-use yii\base\Component;
 use Solspace\FreeformPayments\FreeformPayments;
 
 class MailerService extends BaseService implements MailHandlerInterface
@@ -64,7 +63,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         $previousRecipients = $recipients;
-        $recipients = [];
+        $recipients         = [];
         foreach ($previousRecipients as $index => $value) {
             $exploded = explode(',', $value);
             foreach ($exploded as $emailString) {
@@ -127,7 +126,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     }
 
                     $fieldValue = $submission->{$field->getHandle()}->getValue();
-                    $assetIds = $fieldValue;
+                    $assetIds   = $fieldValue;
                     foreach ($assetIds as $assetId) {
                         $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                         if ($asset) {
@@ -184,7 +183,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     {
         $postedValues = [];
         $usableFields = [];
-        $rules = $form->getRuleProperties();
+        $rules        = $form->getRuleProperties();
 
         foreach ($fields as $field) {
             if ($field instanceof NoStorageInterface
@@ -203,12 +202,12 @@ class MailerService extends BaseService implements MailHandlerInterface
             }
 
             $usableFields[]                    = $field;
-            $postedValues[$field->getHandle()] = $field->getValueAsString();
+            $postedValues[$field->getHandle()] = $field;
         }
 
         //TODO: offload this call to payments plugin with an event
         if ($submission && $form->getLayout()->getPaymentFields()) {
-            $payments = FreeformPayments::getInstance()->payments->getPaymentDetails(
+            $payments                 = FreeformPayments::getInstance()->payments->getPaymentDetails(
                 $submission->getId(),
                 $submission->getForm()
             );

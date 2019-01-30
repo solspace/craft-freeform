@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.5.11 - 2019-01-30
+### Fixed
+- Fixed a bug where manually specifying field options (such as `fieldName.label`) in email notification templates were not working.
+
 ## 2.5.10 - 2019-01-24
 ### Fixed
 - Fixed a bug where using the Export as CSV option was not exporting file uploads as the filename/full path.

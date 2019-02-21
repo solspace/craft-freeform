@@ -49,6 +49,10 @@ class Users extends AbstractConnection
             }
         }
 
+        if (empty($user->photoId)) {
+            $user->photoId = null;
+        }
+
         if (\Craft::$app->getConfig()->getGeneral()->useEmailAsUsername) {
             $user->username = $user->email;
         }

@@ -12,7 +12,9 @@
 namespace Solspace\Freeform\Controllers;
 
 use Carbon\Carbon;
+use craft\base\Element;
 use craft\db\Query;
+use craft\db\Table;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ChartHelper;
 use craft\helpers\FileHelper;
@@ -460,10 +462,20 @@ class ApiController extends BaseController
 
         $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
 
+        $submissions = Submission::TABLE;
+
         // Prep the query
         $query = (new Query())
             ->select(['COUNT(*) as [[value]]'])
             ->from([Submission::TABLE . ' ' . Submission::TABLE_STD]);
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $elements = Table::ELEMENTS;
+            $query->innerJoin(
+                $elements,
+                "$elements.[[id]] = $submissions.[[id]] AND $elements.[[dateDeleted]] IS NULL"
+            );
+        }
 
         if ($formId) {
             $query->andWhere(['formId' => $formId]);

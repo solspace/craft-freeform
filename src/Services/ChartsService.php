@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services;
 
 use Carbon\Carbon;
 use craft\db\Query;
+use craft\db\Table;
 use Solspace\Commons\Helpers\ColorHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
@@ -28,6 +29,12 @@ class ChartsService extends BaseService
         array $formIds,
         bool $aggregate = false
     ): LinearChartData {
+        $submissions = Submission::TABLE;
+        
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $elements = Table::ELEMENTS;
+        }
+
         $diff = $rangeStart->diffInDays($rangeEnd);
 
         $labels      = $dates = [];
@@ -46,18 +53,25 @@ class ChartsService extends BaseService
             }
 
             $query = (new Query())
-                ->select(['DATE([[submission.dateCreated]]) as dt', 'COUNT([[submission.id]]) as count'])
-                ->from(Submission::TABLE . ' submission')
+                ->select(["DATE($submissions.[[dateCreated]]) as dt", "COUNT($submissions.[[id]]) as count"])
+                ->from(Submission::TABLE)
                 ->groupBy(['dt']);
 
-            $query->where(['between', '[[submission.dateCreated]]', $rangeStart->toDateTimeString(), $rangeEnd->toDateTimeString()]);
+            $query->where(['between', "$submissions.[[dateCreated]]", $rangeStart->toDateTimeString(), $rangeEnd->toDateTimeString()]);
 
             $form = null;
             if ($aggregate) {
-                $query->andWhere(['in', '[[submission.formId]]', $formIds]);
+                $query->andWhere(['in', "$submissions.[[formId]]", $formIds]);
             } else {
                 $form = $forms[$formId];
-                $query->andWhere(['[[submission.formId]]' => $formId]);
+                $query->andWhere(["$submissions.[[formId]]" => $formId]);
+            }
+
+            if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+                $query->innerJoin(
+                    $elements,
+                    "$elements.[[id]] = $submissions.[[id]] AND $elements.[[dateDeleted]] IS NULL"
+                );
             }
 
             $result = $query->all();
@@ -101,13 +115,23 @@ class ChartsService extends BaseService
     ): RadialChartData {
         $formIds = array_keys($forms);
 
-        $result = (new Query())
-            ->select(['[[submission.formId]]', 'COUNT([[submission.id]]) as count'])
-            ->from(Submission::TABLE . ' submission')
-            ->where(['between', '[[submission.dateCreated]]', $rangeStart, $rangeEnd])
-            ->andWhere(['IN', '[[submission.formId]]', $formIds])
-            ->groupBy(['[[submission.formId]]'])
-            ->all();
+        $submissions = Submission::TABLE;
+        $query = (new Query())
+            ->select(["$submissions.[[formId]]", "COUNT($submissions.[[id]]) as count"])
+            ->from($submissions)
+            ->where(['between', "$submissions.[[dateCreated]]", $rangeStart, $rangeEnd])
+            ->andWhere(['IN', "$submissions.[[formId]]", $formIds])
+            ->groupBy(["$submissions.[[formId]]"]);
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $elements = Table::ELEMENTS;
+            $query->innerJoin(
+                $elements,
+                "$elements.[[id]] = $submissions.[[id]] AND $elements.[[dateDeleted]] IS NULL"
+            );
+        }
+
+        $result = $query->all();
 
         $labels = $data = $backgroundColors = $hoverBackgroundColors = $formsWithResults = [];
         foreach ($result as $item) {

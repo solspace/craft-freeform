@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 2.5.12 - 2019-02-21
+### Added
+- Added getters for all form field attributes.
+
+### Fixed
+- Fixed a bug where soft deletes were not correctly affecting visual counts and stats in Freeform CP in Craft 3.1+.
+- Fixed a bug where a migration was not working correctly in Craft 3.1+.
+- Fixed a bug where User Registration forms would error if an optional User Photo field was setup and mapped and the user submitted without a photo.
+- Fixed a bug where saving email notifications in the control panel would error in PHP 7.3. Updated the Markdownify dependency.
+
 ## 2.5.11 - 2019-01-30
 ### Fixed
 - Fixed a bug where manually specifying field options (such as `fieldName.label`) in email notification templates were not working.

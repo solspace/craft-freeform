@@ -763,11 +763,27 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function getInputAttributes(): array
+    {
+        return $this->inputAttributes ?? [];
+    }
+
+    /**
      * @return string
      */
     final public function getInputAttributesString(): string
     {
         return $this->assembleAttributeString($this->inputAttributes ?? []);
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabelAttributes(): array
+    {
+        return $this->labelAttributes ?? [];
     }
 
     /**
@@ -779,11 +795,27 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     }
 
     /**
+     * @return array
+     */
+    public function getErrorAttributes(): array
+    {
+        return $this->errorAttributes ?? [];
+    }
+
+    /**
      * @return string
      */
     final public function getErrorAttributesString(): string
     {
         return $this->assembleAttributeString($this->errorAttributes ?? []);
+    }
+
+    /**
+     * @return array
+     */
+    public function getInstructionAttributes(): array
+    {
+        return $this->instructionAttributes ?? [];
     }
 
     /**

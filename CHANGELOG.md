@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 2.5.13 - 2019-02-26
+### Changed
+- Updated Salesforce integrations to send over field data as strings (instead of integer) when mapping to a Salesforce Phone field type.
+
+### Fixed
+- Fixed a bug where the Submissions CP index page would error for some customers.
+- Fixed a bug where submissions were not able to be restored (from soft delete) in Craft 3.1+.
+
 ## 2.5.12 - 2019-02-21
 ### Added
 - Added getters for all form field attributes.

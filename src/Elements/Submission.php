@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Elements;
 
 use craft\base\Element;
 use craft\db\Query;
+use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Html;
@@ -268,7 +269,7 @@ class Submission extends Element
      */
     protected static function defineActions(string $source = null): array
     {
-        return [
+        $actions = [
             \Craft::$app->elements->createAction(
                 [
                     'type'                => DeleteSubmissionAction::class,
@@ -280,6 +281,17 @@ class Submission extends Element
             \Craft::$app->elements->createAction(['type' => ExportCSVAction::class]),
             \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]),
         ];
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $actions[] = \Craft::$app->elements->createAction([
+                'type'                  => Restore::class,
+                'successMessage'        => \Craft::t('app', 'Submissions restored.'),
+                'partialSuccessMessage' => \Craft::t('app', 'Some submissions restored.'),
+                'failMessage'           => \Craft::t('app', 'Submissions not restored.'),
+            ]);
+        }
+
+        return $actions;
     }
 
     /**
@@ -461,8 +473,8 @@ class Submission extends Element
      *
      * @param string $name
      *
-     * @throws \Exception
      * @return mixed
+     * @throws \Exception
      */
     public function __get($name)
     {

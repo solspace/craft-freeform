@@ -466,8 +466,8 @@ class ApiController extends BaseController
 
         // Prep the query
         $query = (new Query())
-            ->select(['COUNT(*) as [[value]]'])
-            ->from([Submission::TABLE . ' ' . Submission::TABLE_STD]);
+            ->select(["COUNT($submissions.[[id]]) as [[value]]"])
+            ->from($submissions);
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;
@@ -478,10 +478,10 @@ class ApiController extends BaseController
         }
 
         if ($formId) {
-            $query->andWhere(['formId' => $formId]);
+            $query->andWhere(["$submissions.[[formId]]" => $formId]);
         }
         if ($isSpam !== null) {
-            $query->andWhere(['isSpam' => $isSpam]);
+            $query->andWhere(["$submissions.[[isSpam]]" => $isSpam]);
         }
 
         // Get the chart data table
@@ -489,7 +489,7 @@ class ApiController extends BaseController
             $query,
             $startDate,
             $endDate,
-            Submission::TABLE_STD . '.dateCreated',
+            "$submissions.[[dateCreated]]",
             [
                 'intervalUnit' => $intervalUnit,
                 'valueLabel'   => Freeform::t('Submissions'),

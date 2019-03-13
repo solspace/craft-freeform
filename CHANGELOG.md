@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.5.14 - 2019-03-13
+### Fixed
+- Fixed a bug where using the User element connection with the Password field on a page other than the last page of multi-page forms would have the mapping fail.
+- Fixed a bug where updating a mailing list integration's handle would cause it to duplicate instead.
+
 ## 2.5.13 - 2019-02-26
 ### Changed
 - Updated Salesforce integrations to send over field data as strings (instead of integer) when mapping to a Salesforce Phone field type.

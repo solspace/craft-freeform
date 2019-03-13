@@ -20,6 +20,7 @@ use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\MailingListsBundle;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class MailingListsController extends BaseController
@@ -94,7 +95,7 @@ class MailingListsController extends BaseController
     }
 
     /**
-     * @param string|null           $handle
+     * @param string|null $handle
      *
      * @return Response
      * @throws \HttpException
@@ -135,7 +136,19 @@ class MailingListsController extends BaseController
         $post = \Craft::$app->request->post();
 
         $handle = $post['handle'] ?? null;
-        $model  = $this->getNewOrExistingMailingListIntegrationModel($handle);
+        $id     = $post['id'] ?? null;
+
+        if ($id) {
+            $model = $this->getMailingListsService()->getIntegrationById($id);
+        } else {
+            $model = $this->getNewOrExistingMailingListIntegrationModel($handle);
+        }
+
+        if (!$model) {
+            throw new NotFoundHttpException(
+                Freeform::t('Mailing List integration with ID {id} not found', ['id' => $id])
+            );
+        }
 
         $isNewIntegration = !$model->id;
 
@@ -235,7 +248,7 @@ class MailingListsController extends BaseController
      */
     public function actionForceAuthorization(string $handle)
     {
-        $model  = $this->getMailingListsService()->getIntegrationByHandle($handle);
+        $model = $this->getMailingListsService()->getIntegrationByHandle($handle);
 
         if (!$model) {
             throw new IntegrationException(

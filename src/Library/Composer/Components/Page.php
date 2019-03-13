@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\PasswordField;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 class Page implements \JsonSerializable, \Iterator, \ArrayAccess
@@ -86,7 +87,7 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
         $submittedValues = [];
 
         foreach ($this->getFields() as $field) {
-            if ($field instanceof NoStorageInterface && !$field instanceof RememberPostedValueInterface) {
+            if ($field instanceof NoStorageInterface && !$field instanceof RememberPostedValueInterface && !$field instanceof PasswordField) {
                 continue;
             }
 

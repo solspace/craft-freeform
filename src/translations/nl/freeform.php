@@ -258,6 +258,6 @@ return [
     'The handle "{handle}" is a reserved keyword and cannot be used.'                                  => 'The handle "{handle}" is a reserved keyword and cannot be used.',
 
     // Front End
-    'Form has been submitted successfully!'                       => 'Form has been submitted successfully!',
-    'Error! Please review the form and try submitting again.'     => 'Error! Please review the form and try submitting again.',
+    'Form has been submitted successfully!'                       => 'Formulier is succesvol versuurd!',
+    'Error! Please review the form and try submitting again.'     => 'Error! Gelieve het formulier na te kijken en opnieuw te proberen.',
 ];

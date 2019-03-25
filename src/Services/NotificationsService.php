@@ -11,14 +11,12 @@
 
 namespace Solspace\Freeform\Services;
 
-use Markdownify\Converter;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Notifications\DeleteEvent;
 use Solspace\Freeform\Events\Notifications\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Freeform\Records\NotificationRecord;
-use yii\base\Component;
 
 class NotificationsService extends BaseService
 {
@@ -136,12 +134,10 @@ class NotificationsService extends BaseService
     {
         $isNew = !$record->id;
 
-        $markdownify = new Converter();
-
         // Replace all &nbsp; occurrences with a blank space, since it might mess up
         // Twig parsing. These non-breakable spaces are caused by the HTML editor
         $record->bodyHtml = str_replace('&nbsp;', ' ', $record->bodyHtml);
-        $record->bodyText = $markdownify->parseString($record->bodyHtml);
+        $record->bodyText = $record->bodyHtml;
 
         $this->trigger(self::EVENT_BEFORE_SAVE, new SaveEvent($record, $isNew));
 

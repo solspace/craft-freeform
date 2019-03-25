@@ -7,9 +7,9 @@
 
 <h2>New submission from your {{ form.name }} form</h2>
 
-<p>Submitted on: {{ dateCreated|date('Y-m-d H:i:s') }}</p>
+<p>Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}</p>
 <ul>
     {% for field in allFields %}
-        <li>{{ field.label }}: {{ field.getValueAsString() }}</li>
+        <li>{{ field.label }}: {{ field.valueAsString }}</li>
     {% endfor %}
 </ul>

@@ -26,6 +26,8 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
 use Solspace\FreeformPayments\FreeformPayments;
+use Twig\Error\LoaderError as TwigLoaderError;
+use Twig\Error\SyntaxError as TwigSyntaxError;
 
 class MailerService extends BaseService implements MailHandlerInterface
 {
@@ -90,11 +92,9 @@ class MailerService extends BaseService implements MailHandlerInterface
         $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
         $fieldValues = $renderEvent->getFieldValues();
 
-        $view = \Craft::$app->view;
-
         foreach ($recipients as $recipientName => $emailAddress) {
-            $fromName  = $view->renderString($notification->getFromName(), $fieldValues);
-            $fromEmail = $view->renderString($notification->getFromEmail(), $fieldValues);
+            $fromName  = $this->renderString($notification->getFromName(), $fieldValues);
+            $fromEmail = $this->renderString($notification->getFromEmail(), $fieldValues);
 
             $email = new Message();
 
@@ -103,13 +103,13 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $email
                     ->setTo([$emailAddress])
                     ->setFrom([$fromEmail => $fromName])
-                    ->setSubject($view->renderString($notification->getSubject(), $fieldValues))
-                    ->setHtmlBody($view->renderString($notification->getBodyHtml(), $fieldValues))
-                    ->setTextBody($view->renderString($notification->getBodyText(), $fieldValues));
+                    ->setSubject($this->renderString($notification->getSubject(), $fieldValues))
+                    ->setHtmlBody($this->renderString($notification->getBodyHtml(), $fieldValues))
+                    ->setTextBody($this->renderString($notification->getBodyText(), $fieldValues));
 
 
                 if ($notification->getReplyToEmail()) {
-                    $email->setReplyTo($view->renderString($notification->getReplyToEmail(), $fieldValues));
+                    $email->setReplyTo($this->renderString($notification->getReplyToEmail(), $fieldValues));
                 }
             } catch (\Exception $e) {
                 $message = $e->getMessage();
@@ -221,5 +221,22 @@ class MailerService extends BaseService implements MailHandlerInterface
         $postedValues['token']       = $submission ? $submission->token : null;
 
         return $postedValues;
+    }
+
+    /**
+     * Renders a template defined in a string.
+     *
+     * @param string $template  The source template string.
+     * @param array  $variables Any variables that should be available to the template.
+     *
+     * @return string The rendered template.
+     * @throws TwigLoaderError
+     * @throws TwigSyntaxError
+     */
+    public function renderString(string $template, array $variables = []): string
+    {
+        return \Craft::$app->view->getTwig()
+            ->createTemplate($template)
+            ->render($variables);
     }
 }

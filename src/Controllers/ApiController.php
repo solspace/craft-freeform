@@ -597,7 +597,7 @@ class ApiController extends BaseController
             $daySql        = "DAY({$dateColumnSql})";
             $hourSql       = "HOUR({$dateColumnSql})";
         } else {
-            $dateColumnSql = "[[{$dateColumn}]]";
+            $dateColumnSql = "{$dateColumn}";
             $yearSql       = "EXTRACT(YEAR FROM {$dateColumnSql})";
             $monthSql      = "EXTRACT(MONTH FROM {$dateColumnSql})";
             $daySql        = "EXTRACT(DAY FROM {$dateColumnSql})";

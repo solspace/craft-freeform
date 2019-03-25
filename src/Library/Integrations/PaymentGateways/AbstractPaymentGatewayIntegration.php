@@ -75,7 +75,7 @@ abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration imp
      */
     public function isOAuthConnection(): bool
     {
-        return $this instanceof PaymentGatewayOAuthConnector;
+        return false;
     }
 
     /**

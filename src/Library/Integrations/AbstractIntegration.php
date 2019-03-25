@@ -240,7 +240,7 @@ abstract class AbstractIntegration implements IntegrationInterface
         if ($fieldObject->getType() === FieldObject::TYPE_ARRAY) {
             $value = $field->getValue();
         } else {
-            $value = $field->getValueAsString();
+            $value = $field->getValueAsString(false);
         }
 
         switch ($fieldObject->getType()) {

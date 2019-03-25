@@ -70,7 +70,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     public function getSubmissionCount(array $formIds = null, array $statusIds = null, bool $isSpam = false): int
     {
         $submissions = Submission::TABLE;
-        $query  = (new Query())
+        $query       = (new Query())
             ->select(["COUNT($submissions.[[id]])"])
             ->from($submissions)
             ->filterWhere(
@@ -362,7 +362,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function markFormAsSubmitted(Form $form)
     {
-        \Craft::$app->session->setFlash(Form::SUBMISSION_FLASH_KEY . $form->getId());
+        \Craft::$app->session->setFlash(
+            Form::SUBMISSION_FLASH_KEY . $form->getId(),
+            Freeform::t('Form submitted successfully')
+        );
     }
 
     /**

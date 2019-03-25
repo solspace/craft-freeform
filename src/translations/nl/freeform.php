@@ -255,9 +255,9 @@ return [
     "Specify the default maximum file size, in KB."                                                    => "Specifiëer de standaard maximum bestandsgrootte, in KB.",
     "Allowed File Types"                                                                               => "Toegelaten bestandstypes",
     "Select the file types to be allowed by default. Leaving all unchecked will allow all file types." => "Selecteer de standaard toegelaten bestandstypes. Alles onaangekruist wilt zeggen dat alle bestandstypes toegelaten zijn.",
-    'The handle "{handle}" is a reserved keyword and cannot be used.'                                  => 'The handle "{handle}" is a reserved keyword and cannot be used.',
+    'The handle "{handle}" is a reserved keyword and cannot be used.'                                  => 'Het woord "{handle}" is a gereserveerd trefwoord en kan niet gebruikt worden.',
 
     // Front End
-    'Form has been submitted successfully!'                       => 'Form has been submitted successfully!',
-    'Error! Please review the form and try submitting again.'     => 'Error! Please review the form and try submitting again.',
+    'Form has been submitted successfully!'                       => 'Formulier is succesvol versuurd!',
+    'Error! Please review the form and try submitting again.'     => 'Error! Gelieve het formulier na te kijken en opnieuw te proberen.',
 ];

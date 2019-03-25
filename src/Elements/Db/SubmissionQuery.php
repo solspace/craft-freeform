@@ -142,6 +142,7 @@ class SubmissionQuery extends ElementQuery
         if (!$hasFormJoin) {
             $this->innerJoin(FormRecord::TABLE . ' ' . $formTable, "$formTable.[[id]] = $table.[[formId]]");
             $this->innerJoin(StatusRecord::TABLE . ' ' . $statusTable, "$statusTable.[[id]] = $table.[[statusId]]");
+            $this->subQuery->innerJoin(StatusRecord::TABLE . ' sub_' . $statusTable, "sub_$statusTable.[[id]] = $table.[[statusId]]");
         }
 
         $select = [
@@ -215,7 +216,7 @@ class SubmissionQuery extends ElementQuery
         }
 
         if ($this->freeformStatus) {
-            $this->subQuery->andWhere(Db::parseParam($statusTable . '.[[handle]]', $this->freeformStatus));
+            $this->subQuery->andWhere(Db::parseParam("sub_$statusTable.[[handle]]", $this->freeformStatus));
         }
 
         $customSortTables = [

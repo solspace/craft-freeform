@@ -339,7 +339,6 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                     ->createCommand()
                     ->delete(
                         MailingListFieldRecord::TABLE,
-                        'mailingListId = :mailingListId AND handle = :handle',
                         [
                             'mailingListId' => $mailingListId,
                             'handle'        => $handle,
@@ -373,7 +372,6 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                                 'type'     => $field->getType(),
                                 'required' => $field->isRequired() ? 1 : 0,
                             ],
-                            'mailingListId = :mailingListId AND handle = :handle',
                             [
                                 'mailingListId' => $mailingListId,
                                 'handle'        => $field->getHandle(),

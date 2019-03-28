@@ -41,7 +41,7 @@ class StatusesController extends BaseController
      */
     public function actionCreate(): Response
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $model = StatusModel::create();
 

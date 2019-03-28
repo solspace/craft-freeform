@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 2.5.16 - 2019-03-28
+### Fixed
+- Fixed a bug where multi-page tabs would not allow you to re-arrange them in CP.
+- Fixed a bug where user/group permissions for Settings didn't give access to create/edit API integrations and statuses.
+- Fixed a bug where trying to load mailing lists for API integration would error when using PostgreSQL.
+
+## 2.5.15 - 2019-03-25
+### Changed
+- Updated Flash success message to return 'Form submitted successfully' instead of `true`.
+- Updated Dutch NL translation.
+
+### Fixed
+- Fixed a bug where email notification values were not always being escaped.
+- Fixed a bug where API integration values for multi-option fields were being sent as option labels instead of option values.
+- Fixed a bug where underscores in email notification templates were not rendering correctly.
+- Fixed a bug where filtering submissions in CP by status was not working and returning an error.
+- Fixed a bug where the CP Submissions chart could error when using PostgreSQL.
+- Fixed a bug where Freeform has unused class that caused the Craft Webhooks plugin to fail.
+
 ## 2.5.14 - 2019-03-13
 ### Fixed
 - Fixed a bug where using the User element connection with the Password field on a page other than the last page of multi-page forms would have the mapping fail.

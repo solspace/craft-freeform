@@ -5,7 +5,7 @@
 
 {% block actionButton %}
 
-    {% if currentUser.can("freeform-settingsManage") %}
+    {% if currentUser.can("freeform-settingsAccess") %}
         <div class="buttons">
             <a class="btn submit add icon" href="{{ url('freeform/settings/statuses/new/') }}">
                 {{ "New Status"|t('freeform') }}
@@ -36,7 +36,7 @@
                 <tr data-id="{{ status.id }}" data-name="{{ status.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         <span class="color-indicator" style="background: {{ status.colorHex }};"></span>
-                        {% if currentUser.can("freeform-settingsManage") %}
+                        {% if currentUser.can("freeform-settingsAccess") %}
                             <a href="{{ url('freeform/settings/statuses/' ~ status.id) }}">
                                 {{ status.name }}
                             </a>
@@ -52,7 +52,7 @@
                     <td>{% if status.isDefault %}<span data-icon="check"></span>{% endif %}</td>
                     <td><td class="thin"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a></td>
                     <td class="thin">
-                        {% if currentUser.can("freeform-settingsManage") and not status.isDefault %}
+                        {% if currentUser.can("freeform-settingsAccess") and not status.isDefault %}
                             <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                         {% endif %}
                     </td>

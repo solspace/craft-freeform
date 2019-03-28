@@ -2,7 +2,7 @@
 
 {% block actionButton %}
 
-    {% if currentUser.can("freeform-settingsManage") and providers|length > 0 %}
+    {% if currentUser.can("freeform-settingsAccess") and providers|length > 0 %}
         <div class="buttons">
             <a href="{{ url('freeform/settings/payment-gateways/new') }}" class="btn submit add icon">
                 {{ "New Payment Gateway Integration"|t('freeform') }}

@@ -825,6 +825,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     }
 
     /**
+     * @return array
+     */
+    public function getTagAttributes(): array
+    {
+        return $this->tagAttributes;
+    }
+
+    /**
      * @return CustomFormAttributes
      */
     public function getCustomAttributes(): CustomFormAttributes

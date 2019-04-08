@@ -26,6 +26,7 @@ use Solspace\Freeform\Library\Session\FormValueContext;
 use Stringy\Stringy;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Twig\Markup;
 
 abstract class AbstractField implements FieldInterface, \JsonSerializable
 {
@@ -194,9 +195,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      *
      * @param array $customAttributes
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    final public function render(array $customAttributes = null): \Twig_Markup
+    final public function render(array $customAttributes = null): Markup
     {
         $this->setCustomAttributes($customAttributes);
 
@@ -231,9 +232,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      *
      * @param array $customAttributes
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    final public function renderLabel(array $customAttributes = null): \Twig_Markup
+    final public function renderLabel(array $customAttributes = null): Markup
     {
         $this->setCustomAttributes($customAttributes);
 
@@ -243,9 +244,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     /**
      * @param array|null $customAttributes
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function renderInstructions(array $customAttributes = null): \Twig_Markup
+    public function renderInstructions(array $customAttributes = null): Markup
     {
         $this->setCustomAttributes($customAttributes);
 
@@ -257,9 +258,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      *
      * @param array $customAttributes
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    final public function renderInput(array $customAttributes = null): \Twig_Markup
+    final public function renderInput(array $customAttributes = null): Markup
     {
         $this->setCustomAttributes($customAttributes);
 
@@ -271,9 +272,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      *
      * @param array $customAttributes
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    final public function renderErrors(array $customAttributes = null): \Twig_Markup
+    final public function renderErrors(array $customAttributes = null): Markup
     {
         $this->setCustomAttributes($customAttributes);
 
@@ -281,9 +282,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     }
 
     /**
-     * @return \Twig_Markup
+     * @return Markup
      */
-    final public function rulesHtmlData(): \Twig_Markup
+    final public function rulesHtmlData(): Markup
     {
         $ruleProperties = $this->getForm()->getRuleProperties();
         if (null === $ruleProperties) {
@@ -928,9 +929,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     /**
      * @param string $output
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    protected function renderRaw($output): \Twig_Markup
+    protected function renderRaw($output): Markup
     {
         return Template::raw($output);
     }
@@ -940,7 +941,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      *
      * @param array|null $attributes
      */
-    private function setCustomAttributes(array $attributes = null)
+    protected function setCustomAttributes(array $attributes = null)
     {
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);

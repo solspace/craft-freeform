@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\ConstraintInterface;
+use Twig\Markup;
 
 interface FieldInterface
 {
@@ -98,30 +99,30 @@ interface FieldInterface
     /**
      * Renders the <label> and <input> tags combined
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function render(): \Twig_Markup;
+    public function render(): Markup;
 
     /**
      * Renders the <label> tag
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function renderLabel(): \Twig_Markup;
+    public function renderLabel(): Markup;
 
     /**
      * Outputs the HTML of input
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function renderInput(): \Twig_Markup;
+    public function renderInput(): Markup;
 
     /**
      * Outputs the HTML of errors
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function renderErrors(): \Twig_Markup;
+    public function renderErrors(): Markup;
 
     /**
      * Validates the Field value

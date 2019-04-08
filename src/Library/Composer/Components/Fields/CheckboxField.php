@@ -18,6 +18,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueI
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\StaticValueTrait;
+use Twig\Markup;
 
 class CheckboxField extends AbstractField implements SingleValueInterface, InputOnlyInterface, StaticValueInterface
 {
@@ -118,11 +119,15 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             . '/>';
     }
 
-        /**
-     * @return \Twig_Markup
+    /**
+     * @param array|null $customAttributes
+     *
+     * @return Markup
      */
-    public function renderSingleInput(): \Twig_Markup
+    public function renderSingleInput(array $customAttributes = null): Markup
     {
+        $this->setCustomAttributes($customAttributes);
+
         return $this->renderRaw($this->getSingleInputHtml());
     }
 

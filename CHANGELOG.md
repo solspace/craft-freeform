@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 2.5.17 - 2019-04-08
+### Added
+- Added a `getTagAttributes()` function to the Form component.
+
+### Fixed
+- Fixed a bug where loading more than 1 form in a page with reCAPTCHA would trigger JS errors.
+- Fixed a bug where Users element connection was not always displaying all available fields for mapping for some User groups.
+- Fixed a bug where the `renderSingleInput()` method would not work with any directly applied custom attributes, etc.
+
 ## 2.5.16 - 2019-03-28
 ### Fixed
 - Fixed a bug where multi-page tabs would not allow you to re-arrange them in CP.

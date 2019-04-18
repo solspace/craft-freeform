@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 2.5.18 - 2019-04-18
+### Added
+- Added Active Campaign mailing list API integration (Pro edition).
+- Added `EVENT_AFTER_GENERATE_RETURN_URL` developer event, allowing modifying of the return URL of forms.
+
+### Changed
+- Updated the HubSpot integration to not create blank Deals if no Freeform data is mapped to Deal fields.
+- Updated the HubSpot integration to include an IP Address mapping setting, allowing you to map IP addresses to a custom field in Contacts.
+
 ## 2.5.17 - 2019-04-08
 ### Added
 - Added a `getTagAttributes()` function to the Form component.

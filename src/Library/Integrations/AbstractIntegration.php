@@ -254,7 +254,7 @@ abstract class AbstractIntegration implements IntegrationInterface
                 if ($field instanceof DatetimeField) {
                     $carbon = $field->getCarbon();
                     if ($carbon) {
-                        return $carbon->toAtomString();
+                        return $carbon->toDateString();
                     }
                 }
 

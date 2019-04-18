@@ -12,7 +12,6 @@
 namespace Solspace\Freeform\Controllers;
 
 use Carbon\Carbon;
-use craft\base\Element;
 use craft\db\Query;
 use craft\db\Table;
 use craft\elements\db\ElementQueryInterface;
@@ -86,6 +85,7 @@ class ApiController extends BaseController
                         ]
                     );
 
+                    $returnUrl = Freeform::getInstance()->forms->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
                     if (!$returnUrl) {
                         $returnUrl = \Craft::$app->request->getUrl();
                     }

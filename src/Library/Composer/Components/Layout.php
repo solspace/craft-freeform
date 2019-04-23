@@ -389,7 +389,7 @@ class Layout implements \JsonSerializable, \Iterator
 
                 $columns = $rowData['columns'];
 
-                $fields = [];
+                $fields = $allRowFields = [];
                 foreach ($columns as $fieldHash) {
                     $fieldProperties = $this->properties->getFieldProperties($fieldHash);
 
@@ -434,8 +434,9 @@ class Layout implements \JsonSerializable, \Iterator
                         $recaptchaFields[] = true;
                     }
 
-                    $pageFields[] = $field;
-                    $allFields[]  = $field;
+                    $pageFields[]   = $field;
+                    $allFields[]    = $field;
+                    $allRowFields[] = $field;
                 }
 
                 if (empty($fields)) {
@@ -443,7 +444,7 @@ class Layout implements \JsonSerializable, \Iterator
                 }
 
                 $rowId = $rowData['id'];
-                $row   = new Row($rowId, $fields);
+                $row   = new Row($rowId, $fields, $allRowFields);
 
                 $rowObjects[] = $row;
                 $allRows[]    = $row;

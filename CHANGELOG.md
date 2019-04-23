@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 2.5.19 - 2019-04-23
+### Added
+- Added Insightly CRM Lead integration for Freeform Pro edition.
+
+### Changed
+- Updated Hidden fields to be in their original field position (instead of first in form) when viewing submissions in the CP.
+- Updated Date field picker and format getters to be public.
+
+### Fixed
+- Fixed a bug where Form Color setting for forms was only visible in Pro edition.
+- Fixed a bug where using `DD/MM/YYYY` formatting and Min/Max date setting on Date fields would result in an error upon submit when validating.
+- Fixed a bug where the Resend Notifications feature errored when email notifications extended layouts.
+- Fixed a bug where permanently deleting fields could cause an error if assigned to an integration field list.
+
 ## 2.5.18 - 2019-04-18
 ### Added
 - Added Active Campaign mailing list API integration (Pro edition).

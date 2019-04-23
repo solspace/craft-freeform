@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Elements\Actions;
 
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
+use craft\web\View;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 
@@ -22,6 +23,9 @@ class ResendNotificationsAction extends ElementAction
      */
     public function performAction(ElementQueryInterface $query): bool
     {
+        $templateMode = \Craft::$app->view->getTemplateMode();
+        \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
+
         $integrations = Freeform::getInstance()->integrations;
         foreach ($query->all() as $submission) {
             /** @var Submission $submission */
@@ -29,6 +33,8 @@ class ResendNotificationsAction extends ElementAction
         }
 
         $this->setMessage('Notifications sent successfully');
+
+        \Craft::$app->view->setTemplateMode($templateMode);
 
         return true;
     }

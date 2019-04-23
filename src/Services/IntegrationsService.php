@@ -89,7 +89,7 @@ class IntegrationsService extends BaseService
                     $mappedValues = [];
                     if ($field->getMapping()) {
                         foreach ($field->getMapping() as $key => $handle) {
-                            if (!isset($mailingListFieldsByHandle[$key])) {
+                            if (!isset($mailingListFieldsByHandle[$key], $submission->{$handle})) {
                                 continue;
                             }
 

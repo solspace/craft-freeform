@@ -21,14 +21,27 @@ class Row implements \JsonSerializable, \Iterator, \ArrayAccess, \Countable
     /** @var AbstractField[] */
     private $fields;
 
+    /** @var AbstractField[] */
+    private $allFields;
+
     /**
      * @param string $id
      * @param array  $fields
+     * @param array  $allFields
      */
-    public function __construct($id, array $fields)
+    public function __construct($id, array $fields, array $allFields)
     {
-        $this->id     = $id;
-        $this->fields = $fields;
+        $this->id        = $id;
+        $this->fields    = $fields;
+        $this->allFields = $allFields;
+    }
+
+    /**
+     * @return AbstractField[]
+     */
+    public function getAllFields(): array
+    {
+        return $this->allFields;
     }
 
     /**

@@ -11,17 +11,25 @@ class MaxDateConstraint implements ConstraintInterface
     private $message;
 
     /** @var string */
+    private $format;
+
+    /** @var string */
     private $maxDate;
 
     /**
      * DateRangeConstraint constructor.
      *
      * @param string      $message
+     * @param string      $format
      * @param string|null $maxDate
      */
-    public function __construct(string $message, string $maxDate = null)
-    {
+    public function __construct(
+        string $message,
+        string $format,
+        string $maxDate = null
+    ) {
         $this->message = $message;
+        $this->format  = $format;
         $this->maxDate = $maxDate;
     }
 
@@ -39,7 +47,7 @@ class MaxDateConstraint implements ConstraintInterface
         $maxDate = new Carbon($this->maxDate);
         $maxDate->setTime(23, 59, 59);
 
-        $date = new Carbon($value);
+        $date = Carbon::createFromFormat($this->format, $value);
 
         if ($date->gt($maxDate)) {
             $violationList->addError($this->message);

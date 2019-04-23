@@ -11,17 +11,25 @@ class MinDateConstraint implements ConstraintInterface
     private $message;
 
     /** @var string */
+    private $format;
+
+    /** @var string */
     private $minDate;
 
     /**
      * DateRangeConstraint constructor.
      *
      * @param string      $message
+     * @param string      $format
      * @param string|null $minDate
      */
-    public function __construct(string $message, string $minDate = null)
-    {
+    public function __construct(
+        string $message,
+        string $format,
+        string $minDate = null
+    ) {
         $this->message = $message;
+        $this->format  = $format;
         $this->minDate = $minDate;
     }
 
@@ -39,7 +47,7 @@ class MinDateConstraint implements ConstraintInterface
         $minDate = new Carbon($this->minDate);
         $minDate->setTime(0, 0, 0);
 
-        $date = new Carbon($value);
+        $date = Carbon::createFromFormat($this->format, $value);
 
         if ($date->lt($minDate)) {
             $violationList->addError($this->message);

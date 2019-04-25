@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.5.20 - 2019-04-25
+### Fixed
+- Fixed a bug where the return URL could trigger an error in some cases.
+
 ## 2.5.19 - 2019-04-23
 ### Added
 - Added Insightly CRM Lead integration for Freeform Pro edition.

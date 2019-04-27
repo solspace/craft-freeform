@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.5.21 - 2019-04-27
+### Fixed
+- Fixed a bug where Settings area in CP was still visible when the `allowAdminChanges` setting is disabled for Project Config.
+- Reverted the Hidden fields order in CP Submission view change from v2.5.19 due to other side effects occurring from it.
+
 ## 2.5.20 - 2019-04-25
 ### Fixed
 - Fixed a bug where the return URL could trigger an error in some cases.

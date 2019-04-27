@@ -21,6 +21,7 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use Solspace\FreeformPro\FreeformPro;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class SettingsController extends BaseController
@@ -212,6 +213,9 @@ class SettingsController extends BaseController
     public function actionProvideSetting(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        if (!\Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+            throw new ForbiddenHttpException('Changes are not allowed');
+        }
 
         $this->view->registerAssetBundle(CodepackBundle::class);
         $this->view->registerAssetBundle(SettingsBundle::class);

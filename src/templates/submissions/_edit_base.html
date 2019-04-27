@@ -59,9 +59,29 @@
     <div id="fields">
         {% for page in layout.pages %}
             <div class="field tab-content{% if not loop.first %} hidden{% endif %}" data-for-tab="{{ page.index }}">
+                {% for field in layout.hiddenFields if field.pageIndex == page.index and field.type not in ["mailing_list"] %}
+                    {% set fieldHandle = field.handle %}
+
+                    <div class="fields-row">
+                        <div class="fields-column">
+                            {% set options = {
+                                label: field.label,
+                                name: fieldHandle,
+                                id: fieldHandle,
+                                value: attribute(submission, fieldHandle),
+                                required: field.required,
+                                errors: submission.errors(fieldHandle),
+                                first: loop.index0 == 0,
+                            } %}
+
+                            {{ forms.textField(options) }}
+                        </div>
+                    </div>
+                {% endfor %}
+
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row.allFields if field.type not in ["submit", "confirmation", "password"] -%}
+                        {%- for field in row if field.type not in ["submit", "confirmation", "password"] -%}
                             <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
                                 {% set fieldHandle = field.handle %}
 
@@ -78,7 +98,7 @@
                                         first: loop.index0 == 0,
                                     } %}
 
-                                    {% if field.type in ["text", "hidden", "datetime", "number", "phone", "regex", "website"] %}
+                                    {% if field.type in ["text", "datetime", "number", "phone", "regex", "website"] %}
                                         {{ forms.textField(options|merge({
                                             placeholder: field.placeholder,
                                         })) }}

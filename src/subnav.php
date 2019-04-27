@@ -31,7 +31,10 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS)
     $navItems['notifications'] = ['label' => Freeform::t('Email Notifications'), 'url' => 'freeform/notifications'];
 }
 
-if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS)) {
+if (
+    PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) &&
+    Craft::$app->getConfig()->getGeneral()->allowAdminChanges
+) {
     $navItems['settings'] = ['label' => Freeform::t('Settings'), 'url' => 'freeform/settings'];
 }
 

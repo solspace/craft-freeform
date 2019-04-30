@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Controllers;
 
+use Craft;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
@@ -213,8 +214,12 @@ class SettingsController extends BaseController
     public function actionProvideSetting(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
-        if (!\Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
-            throw new ForbiddenHttpException('Changes are not allowed');
+
+        if (
+            version_compare(Craft::$app->getVersion(), '3.1', '>=') &&
+            !\Craft::$app->getConfig()->getGeneral()->allowAdminChanges
+        ) {
+            throw new ForbiddenHttpException('Administrative changes are disallowed in this environment.');
         }
 
         $this->view->registerAssetBundle(CodepackBundle::class);

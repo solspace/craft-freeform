@@ -15,7 +15,7 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)) 
 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
     && $this->settings->isSpamFolderEnabled()) {
-    $spamCount = $this->spamSubmissions->getSubmissionCount(null, null, true);
+    $spamCount        = $this->spamSubmissions->getSubmissionCount(null, null, true);
     $navItems['spam'] = ['label' => Freeform::t("Spam ({$spamCount})"), 'url' => 'freeform/spam'];
 }
 
@@ -31,10 +31,12 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS)
     $navItems['notifications'] = ['label' => Freeform::t('Email Notifications'), 'url' => 'freeform/notifications'];
 }
 
-if (
-    PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) &&
-    Craft::$app->getConfig()->getGeneral()->allowAdminChanges
-) {
+$canViewSettings = true;
+if (version_compare(Craft::$app->getVersion(), '3.1', '>=')) {
+    $canViewSettings = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
+}
+
+if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) && $canViewSettings) {
     $navItems['settings'] = ['label' => Freeform::t('Settings'), 'url' => 'freeform/settings'];
 }
 

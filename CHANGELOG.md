@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.5.22 - 2019-04-30
+### Fixed
+- Fixed a bug where the `allowAdminChanges` Project Config setting fix was causing errors for Craft 3.0.x users.
+
 ## 2.5.21 - 2019-04-27
 ### Fixed
 - Fixed a bug where Settings area in CP was still visible when the `allowAdminChanges` setting is disabled for Project Config.

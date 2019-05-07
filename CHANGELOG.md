@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 2.5.23 - 2019-05-07
+### Changed
+- Updated Flatpickr library (for Freeform date picker on Date fields) to v4.5.7, which resolves some issues.
+- Updated Pro edition to prepare for future official Editions support in Freeform.
+
 ## 2.5.22 - 2019-04-30
 ### Fixed
 - Fixed a bug where the `allowAdminChanges` Project Config setting fix was causing errors for Craft 3.0.x users.

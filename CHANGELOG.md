@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 2.5.24 - 2019-05-16
+### Changed
+- Updated plugin icon.
+
+### Fixed
+- Fixed a bug where entering the root template directory for directory path for Formatting Templates and Email Notifications settings would result in an error.
+- Fixed some CSS issues in CP submission detail views.
+
 ## 2.5.23 - 2019-05-07
 ### Changed
 - Updated Flatpickr library (for Freeform date picker on Date fields) to v4.5.7, which resolves some issues.

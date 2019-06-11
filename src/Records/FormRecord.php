@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -38,6 +38,7 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property int    $defaultStatus
  * @property int    $formTemplateId
  * @property int    $optInDataStorageTargetHash
+ * @property int    $limitFormSubmissions
  * @property string $color
  */
 class FormRecord extends ActiveRecord

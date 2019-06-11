@@ -1,0 +1,108 @@
+{% import "_includes/forms" as formFields %}
+
+<style>
+    #export-csv-modal .radio-list label {
+        margin-right: 5px;
+    }
+
+    #export-csv-modal .body{
+        overflow-y: auto;
+        height: 380px;
+        width: 280px;
+    }
+
+    #export-csv-modal .radio-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
+</style>
+
+<form id="export-csv-modal" method="post">
+    {{ csrfInput() }}
+    <input type="hidden" name="action" value="freeform/quick-export" />
+
+    <div class="header">
+        <h1>{{ "Export data"|t }}</h1>
+    </div>
+    <div class="body">
+        <div class="field">
+            <div class="heading">
+                <label>{{ "Export as"|t }}</label>
+            </div>
+            <div class="select">
+                <select class="select" name="export_type">
+                    <option value="excel" selected>Excel</option>
+                    <option value="csv">CSV</option>
+                    <option value="json">JSON</option>
+                    <option value="xml">XML</option>
+                    <option value="text">Text</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="heading">
+                <label>{{ "Form"|t }}</label>
+            </div>
+            <div class="select">
+                <select class="select" name="form_id">
+                    {% for form in forms %}
+                        <option value="{{ form.id }}"{{ form.id == selectedFormId ? ' selected' }}>
+                            {{ form.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        {% for settingItem in setting %}
+            {% set form = settingItem.form %}
+            {% set fields = settingItem.fields %}
+
+            <div class="form-field-list field{{ form.id != selectedFormId ? ' hidden' }}" data-id="{{ form.id }}">
+                <div class="heading">
+                    <label>{{ ("Fields for"|t) ~ " " ~ form.name }}</label>
+                </div>
+                <div class="checkbox-select">
+                    {% for fieldId, fieldSetting in fields %}
+                        {% set label     = fieldSetting.label %}
+                        {% set isChecked = fieldSetting.checked %}
+
+                        <div>
+                            <div class="icon move"></div>
+
+                            <input type="hidden"
+                                   name="export_fields[{{ form.id }}][{{ fieldId }}][label]"
+                                   value="{{ fieldSetting.label }}"
+                            />
+
+                            <input type="hidden"
+                                   name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
+                                   value="0"
+                            />
+                            <input type="checkbox"
+                                   class="checkbox"
+                                   name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
+                                   value="1"
+                                   {{ isChecked ? 'checked' }}
+                                   id="{{ form.id ~ "-" ~ fieldId }}"
+                            />
+                            <label for="{{ form.id ~ "-" ~ fieldId }}">{{ label }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+
+    </div>
+    <div class="footer">
+        <div class="buttons right last">
+            <input type="button" class="btn cancel" value="{{ "Cancel"|t }}"/>
+            <input type="submit" class="btn submit" value="{{ "Export"|t }}"/>
+
+            <div class="spinner" style="display: none;"></div>
+        </div>
+    </div>
+</form>

@@ -5,14 +5,19 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxGroupField;
+use Solspace\Freeform\Fields\CheckboxGroupField;
+use Solspace\Freeform\Fields\MailingListField;
+use Solspace\Freeform\Fields\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\TextField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
@@ -20,8 +25,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInter
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PhoneMaskInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecaptchaInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\MailingListField;
-use Solspace\Freeform\Library\Composer\Components\Fields\TextField;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Factories\ComposerFieldFactory;
@@ -74,6 +77,9 @@ class Layout implements \JsonSerializable, \Iterator
 
     /** @var RecaptchaInterface[] */
     private $recaptchaFields;
+
+    /** @var OpinionScaleField[] */
+    private $opinionScaleFields;
 
     /** @var Properties */
     private $properties;
@@ -129,6 +135,14 @@ class Layout implements \JsonSerializable, \Iterator
     public function hasRecaptchaFields(): bool
     {
         return (bool) \count($this->recaptchaFields);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasOpinionScaleFields(): bool
+    {
+        return (bool) \count($this->opinionScaleFields);
     }
 
     /**
@@ -345,6 +359,8 @@ class Layout implements \JsonSerializable, \Iterator
      */
     private function buildLayout(FormValueContext $formValueContext)
     {
+        $isPro = Freeform::getInstance()->isPro();
+
         $pageObjects        = [];
         $allRows            = [];
         $allFields          = [];
@@ -356,6 +372,7 @@ class Layout implements \JsonSerializable, \Iterator
         $datepickerFields   = [];
         $phoneFields        = [];
         $recaptchaFields    = [];
+        $opinionScaleFields = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
             if (!\is_array($rows)) {
@@ -389,7 +406,7 @@ class Layout implements \JsonSerializable, \Iterator
 
                 $columns = $rowData['columns'];
 
-                $fields = [];
+                $fields = $allRowFields = [];
                 foreach ($columns as $fieldHash) {
                     $fieldProperties = $this->properties->getFieldProperties($fieldHash);
 
@@ -399,6 +416,10 @@ class Layout implements \JsonSerializable, \Iterator
                         $formValueContext,
                         $pageIndex
                     );
+
+                    if (!$isPro && $field instanceof ExtraFieldInterface) {
+                        continue;
+                    }
 
                     if ($field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())) {
                         $hiddenFields[] = $field;
@@ -434,8 +455,13 @@ class Layout implements \JsonSerializable, \Iterator
                         $recaptchaFields[] = true;
                     }
 
-                    $pageFields[] = $field;
-                    $allFields[]  = $field;
+                    if ($field instanceof OpinionScaleField) {
+                        $opinionScaleFields[] = true;
+                    }
+
+                    $pageFields[]   = $field;
+                    $allFields[]    = $field;
+                    $allRowFields[] = $field;
                 }
 
                 if (empty($fields)) {
@@ -443,7 +469,7 @@ class Layout implements \JsonSerializable, \Iterator
                 }
 
                 $rowId = $rowData['id'];
-                $row   = new Row($rowId, $fields);
+                $row   = new Row($rowId, $fields, $allRowFields);
 
                 $rowObjects[] = $row;
                 $allRows[]    = $row;
@@ -466,6 +492,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->datepickerFields   = $datepickerFields;
         $this->phoneFields        = $phoneFields;
         $this->recaptchaFields    = $recaptchaFields;
+        $this->opinionScaleFields = $opinionScaleFields;
     }
 
     /**

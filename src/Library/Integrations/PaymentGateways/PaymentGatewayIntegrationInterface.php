@@ -4,8 +4,8 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -15,8 +15,7 @@ use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\DataObjects\PlanObject;
-use Solspace\FreeformPayments\Models\SubscriptionPlanModel;
+use Solspace\Freeform\Models\Pro\Payments\SubscriptionPlanModel;
 //TODO: document
 interface PaymentGatewayIntegrationInterface
 {

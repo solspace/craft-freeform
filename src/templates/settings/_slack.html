@@ -1,0 +1,76 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% set title = "Slack"|t("freeform") %}
+
+{% block actionButton %}
+
+    {% if craft.freeform.pro and currentUser.can("freeform-settingsAccess") %}
+        <div class="buttons">
+            <a href="{{ url('freeform/settings/slack/new') }}" class="btn submit add icon">
+                {{ "New Slack Webhook"|t('freeform') }}
+            </a>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block content %}
+
+    <h2>{{ "Slack Webhooks"|t('freeform') }}</h2>
+
+    <div id="no-webhooks"{% if webhooks|length %} class="hidden"{% endif %}>
+        <p>{{ "No Slack Webhooks added yet"|t('freeform') }}</p>
+    </div>
+
+    {% if webhooks|length %}
+        <table id="webhooks" class="data fullwidth collapsible">
+            <thead>
+            <tr>
+                <th scope="col">{{ "Name"|t('freeform') }}</th>
+                <th scope="col">{{ "Message"|t('freeform') }}</th>
+                <td class="thin"></td>
+            </tr>
+            </thead>
+            <tbody>
+            {% for webhook in webhooks %}
+                <tr data-id="{{ webhook.id }}" data-name="{{ webhook.name }}">
+                    <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
+                        {% if craft.freeform.pro %}
+                            <a href="{{ url('freeform/settings/slack/'~webhook.id) }}">{{ webhook.name }}</a>
+                        {% else %}
+                            {{ webhook.name }}
+                        {% endif %}
+                    </th>
+                    <td>
+                        {{ webhook.message }}
+                    </td>
+                    <td class="thin">
+                        <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                    </td>
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
+    {% endif %}
+
+    {% if not craft.freeform.pro %}
+        <div class="alert alert-info alert-dismissible">
+            <a href="http://docs.solspace.com/craft/freeform">
+                {{ "Upgrade to Pro to enable"|t('freeform') }}
+            </a>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#webhooks',
+    noObjectsSelector: '#no-webhooks',
+    newObjectBtnSelector: '#new-webhooks',
+    deleteAction: 'freeform/slack/delete',
+    confirmDeleteMessage: '{{ "Are you sure you want to remove the “{name}” webhook?"|t('freeform') }}'
+    });
+{% endjs %}

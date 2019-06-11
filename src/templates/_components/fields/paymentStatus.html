@@ -1,0 +1,15 @@
+{% set status = 'unknown' %}
+{% if payment and payment.status %}
+  {% set status = payment.status %}
+{% endif %}
+<div class="element">
+  <a {{payment and payment.externalDashboardLink ? 'href=' ~ payment.externalDashboardLink : '' }} class="label payment-status {{ status }}" target="_blank">
+    <span class="title">
+      {% if status == 'unknown' %}
+        N/A
+      {% else %}
+        {{ status|capitalize }}
+      {% endif %}
+    </span>
+  </a>
+</div>

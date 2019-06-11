@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -13,7 +13,7 @@ namespace Solspace\Freeform\Library\Session;
 
 class Honeypot implements \JsonSerializable
 {
-    const NAME_PREFIX = "freeform_form_handle_";
+    const NAME_PREFIX = 'freeform_form_handle';
 
     /** @var string */
     private $name;
@@ -29,30 +29,32 @@ class Honeypot implements \JsonSerializable
      *
      * @return Honeypot
      */
-    public static function createFromUnserializedData(array $data)
+    public static function createFromUnserializedData(array $data): Honeypot
     {
         $honeypot            = new Honeypot();
-        $honeypot->name      = $data["name"];
-        $honeypot->hash      = $data["hash"];
-        $honeypot->timestamp = $data["timestamp"];
+        $honeypot->name      = $data['name'];
+        $honeypot->hash      = $data['hash'];
+        $honeypot->timestamp = $data['timestamp'];
 
         return $honeypot;
     }
 
     /**
      * Honeypot constructor.
+     *
+     * @param bool $isEnhanced
      */
-    public function __construct()
+    public function __construct(bool $isEnhanced = false)
     {
-        $this->name      = $this->generateUniqueName();
-        $this->hash      = $this->generateHash();
+        $this->name      = $isEnhanced ? $this->generateUniqueName() : self::NAME_PREFIX;
+        $this->hash      = $isEnhanced ? $this->generateHash() : '';
         $this->timestamp = time();
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -60,7 +62,7 @@ class Honeypot implements \JsonSerializable
     /**
      * @return string
      */
-    public function getHash()
+    public function getHash(): string
     {
         return $this->hash;
     }
@@ -68,7 +70,7 @@ class Honeypot implements \JsonSerializable
     /**
      * @return int
      */
-    public function getTimestamp()
+    public function getTimestamp(): int
     {
         return $this->timestamp;
     }
@@ -78,23 +80,23 @@ class Honeypot implements \JsonSerializable
      *
      * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return [
-            "name"      => $this->getName(),
-            "hash"      => $this->getHash(),
-            "timestamp" => $this->getTimestamp(),
+            'name'      => $this->getName(),
+            'hash'      => $this->getHash(),
+            'timestamp' => $this->getTimestamp(),
         ];
     }
 
     /**
      * @return string
      */
-    private function generateUniqueName()
+    private function generateUniqueName(): string
     {
         $hash = $this->generateHash(6);
 
-        return self::NAME_PREFIX . $hash;
+        return self::NAME_PREFIX . '_' . $hash;
     }
 
     /**
@@ -102,9 +104,9 @@ class Honeypot implements \JsonSerializable
      *
      * @return string
      */
-    private function generateHash($length = 9)
+    private function generateHash($length = 9): string
     {
-        $random = time() . rand(111, 999) . (time() + 999);
+        $random = time() . random_int(111, 999) . (time() + 999);
         $hash   = sha1($random);
 
         return substr($hash, 0, $length);

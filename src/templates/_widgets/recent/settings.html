@@ -1,0 +1,31 @@
+{% import "_includes/forms" as forms %}
+
+
+{{ forms.textField({
+    label: "Title"|t,
+    instructions: "Customize the widget title. Leave blank for default."|t,
+    id: 'title',
+    name: 'title',
+    value: settings.title,
+    errors: settings.getErrors('title')
+}) }}
+
+{{ forms.textField({
+    label: "Limit"|t,
+    instructions: "The maximum amount of submissions to show."|t,
+    id: 'limit',
+    name: 'limit',
+    value: settings.limit,
+    errors: settings.getErrors('limit')
+}) }}
+
+{{ forms.checkboxSelectField({
+    label: "Forms"|t,
+    instructions: "Which form submissions do you wish to show?"|t,
+    id: 'formIds',
+    name: 'formIds',
+    options: formOptions,
+    values: settings.formIds|length ? settings.formIds : '*',
+    errors: settings.getErrors('formIds'),
+    showAllOption: true,
+}) }}

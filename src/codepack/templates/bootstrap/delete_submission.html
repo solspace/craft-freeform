@@ -1,19 +1,31 @@
-{% extends "demo/_layouts/bootstrap" %}
+{% extends "demo/_layout" %}
 
 {% set pageTitle = "Bootstrap" %}
 {% set page = "bootstrap" %}
 
-{% set baseUrlSegments = 1 %}
-{% set token = craft.app.request.segment(baseUrlSegments + 5) %}
+{% set token = craft.app.request.segment(6) %}
 
 {% block content %}
 
     <div class="container">
 
+        <h2>Delete Submission</h2>
+        <br />
+
         {% if craft.freeform.deleteSubmissionByToken(token) %}
-            Removed successfully
+            <div class="alert alert-success">
+                <h5 class="alert-heading">Success!</h5>
+                <p class="mb-0">
+                    The submission has been removed successfully!
+                </p>
+            </div>
         {% else %}
-            Nothing to remove
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">Error!</h5>
+                <p class="mb-0">
+                    No submission was found.
+                </p>
+            </div>
         {% endif %}
 
     </div>

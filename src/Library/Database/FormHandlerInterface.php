@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -60,6 +60,25 @@ interface FormHandlerInterface
      * @return bool
      */
     public function isSpamFolderEnabled(): bool;
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    public function shouldScrollToAnchor(Form $form): bool;
+
+    /**
+     * @return bool
+     */
+    public function isFormSubmitDisable(): bool;
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    public function isReachedPostingLimit(Form $form): bool;
 
     /**
      * Do something before the form is saved

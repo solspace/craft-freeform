@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -21,9 +21,9 @@ use Stringy\Stringy;
 
 class ComposerFieldFactory
 {
-    private static $defaultFieldNamespace  = 'Solspace\Freeform\Library\Composer\Components\Fields';
-    private static $proFieldNamespace      = 'Solspace\FreeformPro\Fields';
-    private static $paymentsFieldNamespace = 'Solspace\FreeformPayments\Fields';
+    private static $defaultFieldNamespace  = 'Solspace\Freeform\Fields';
+    private static $proFieldNamespace = 'Solspace\Freeform\Fields\Pro';
+    private static $paymentsFieldNamespace = 'Solspace\Freeform\Fields\Pro\Payments';
 
     /**
      * @param Form             $form
@@ -52,6 +52,10 @@ class ComposerFieldFactory
 
         if ($className === FieldInterface::TYPE_CREDIT_CARD_DETAILS) {
             $className = 'credit_card_details';
+        }
+
+        if ($className === FieldInterface::TYPE_OPINION_SCALE) {
+            $className = 'opinion_scale';
         }
 
         $className = (string) Stringy::create($className)->upperCamelize();

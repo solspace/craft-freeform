@@ -5,13 +5,14 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Services;
 
 use craft\mail\Message;
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
@@ -25,7 +26,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
-use Solspace\FreeformPayments\FreeformPayments;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
 
@@ -100,13 +100,34 @@ class MailerService extends BaseService implements MailHandlerInterface
 
             try {
                 $email->variables = $fieldValues;
+
+                $text = $this->renderString($notification->getBodyText(), $fieldValues);
+                $html = $this->renderString($notification->getBodyHtml(), $fieldValues);
+
                 $email
                     ->setTo([$emailAddress])
                     ->setFrom([$fromEmail => $fromName])
-                    ->setSubject($this->renderString($notification->getSubject(), $fieldValues))
-                    ->setHtmlBody($this->renderString($notification->getBodyHtml(), $fieldValues))
-                    ->setTextBody($this->renderString($notification->getBodyText(), $fieldValues));
+                    ->setSubject($this->renderString($notification->getSubject(), $fieldValues));
 
+                if (empty($text)) {
+                    $email
+                        ->setHtmlBody($html)
+                        ->setTextBody($html);
+                } if (empty($html)) {
+                    $email->setTextBody($text);
+                } else {
+                    $email
+                        ->setHtmlBody($html)
+                        ->setTextBody($text);
+                }
+
+                if ($notification->getCc()) {
+                    $email->setCc(StringHelper::extractSeparatedValues($notification->getCc()));
+                }
+
+                if ($notification->getBcc()) {
+                    $email->setBcc(StringHelper::extractSeparatedValues($notification->getBcc()));
+                }
 
                 if ($notification->getReplyToEmail()) {
                     $email->setReplyTo($this->renderString($notification->getReplyToEmail(), $fieldValues));
@@ -117,6 +138,15 @@ class MailerService extends BaseService implements MailHandlerInterface
 
                 $logger->error($message);
                 continue;
+            }
+
+            if ($notification->getPresetAssets() && Freeform::getInstance()->isPro()) {
+                foreach ($notification->getPresetAssets() as $assetId) {
+                    $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                    if ($asset) {
+                        $email->attach($asset->getTransformSource());
+                    }
+                }
             }
 
             if ($submission && $notification->isIncludeAttachmentsEnabled()) {
@@ -207,7 +237,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         //TODO: offload this call to payments plugin with an event
         if ($submission && $form->getLayout()->getPaymentFields()) {
-            $payments                 = FreeformPayments::getInstance()->payments->getPaymentDetails(
+            $payments                 = Freeform::getInstance()->payments->getPaymentDetails(
                 $submission->getId(),
                 $submission->getForm()
             );
@@ -235,6 +265,10 @@ class MailerService extends BaseService implements MailHandlerInterface
      */
     public function renderString(string $template, array $variables = []): string
     {
+        if (preg_match('/^\$(\w+)$/', $template, $matches)) {
+            return \Craft::parseEnv($template);
+        }
+
         return \Craft::$app->view->getTwig()
             ->createTemplate($template)
             ->render($variables);

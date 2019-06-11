@@ -13,9 +13,9 @@ class SubmissionIndexBundle extends AbstractFreeformAssetBundle
     public function getScripts(): array
     {
         return [
-            'js/cp/submissions.js',
-            'js/cp/freeform-submissions-index.js',
-            'js/cp/freeform-submissions-table-view.js',
+            'js/other/submissions.js',
+            'js/other/freeform-submissions-index.js',
+            'js/other/freeform-submissions-table-view.js',
         ];
     }
 

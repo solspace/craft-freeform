@@ -1,0 +1,26 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% set formHandle = craft.app.request.segment(3) %}
+{% set submissionToken = craft.app.request.segment(6) %}
+
+{% block content %}
+
+    <div class="container">
+        <h2>Edit Submission</h2>
+        <br />
+        {# Display an alert about Submission Editing requiring Freeform Pro #}
+        {% if not craft.freeform.pro %}
+            <div class="alert alert-danger">
+                <h5 class="alert-heading">Please note...</h5>
+                <p class="mb-0">
+                    Front end Submission Editing requires Freeform Pro edition in order to work.
+                </p>
+            </div>
+        {% endif %}
+        {% include "demo/bootstrap/_form" with { formHandle: formHandle, submissionToken: submissionToken } %}
+    </div>
+
+{% endblock %}

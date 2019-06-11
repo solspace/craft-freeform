@@ -5,12 +5,13 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
+use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
 trait OptionsTrait
@@ -30,13 +31,26 @@ trait OptionsTrait
             $value = [$value];
         }
 
+
+        $areIndexes = false;
+        if ($this instanceof DynamicRecipientField && $value) {
+            $areIndexes = true;
+            foreach ($value as $val) {
+                if (!\is_numeric($val)) {
+                    $areIndexes = false;
+                }
+            }
+        }
+
         $options = [];
-        foreach ($this->options as $option) {
-            $options[] = new Option(
-                $option->getLabel(),
-                $option->getValue(),
-                \in_array($option->getValue(), $value, false)
-            );
+        foreach ($this->options as $index => $option) {
+            if ($areIndexes) {
+                $isChecked = \in_array($index, $value, false);
+            } else {
+                $isChecked = \in_array($option->getValue(), $value, true);
+            }
+
+            $options[] = new Option($option->getLabel(), $option->getValue(), $isChecked);
         }
 
         return $options;

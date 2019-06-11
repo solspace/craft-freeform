@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -17,9 +17,9 @@ use Solspace\Commons\Helpers\ComparisonHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
+use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\EmailField;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\IpUtils;
 use Solspace\Freeform\Models\Settings;
@@ -47,6 +47,14 @@ class SettingsService extends BaseService
     public function isFreeformHoneypotEnabled(): bool
     {
         return (bool) $this->getSettingsModel()->freeformHoneypot;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFreeformHoneypotEnhanced(): bool
+    {
+        return (bool) $this->getSettingsModel()->freeformHoneypotEnhancement;
     }
 
     /**
@@ -159,7 +167,23 @@ class SettingsService extends BaseService
      */
     public function isFooterScripts(): bool
     {
-        return (bool) $this->getSettingsModel()->footerScripts;
+        return $this->getSettingsModel()->scriptInsertLocation === Settings::SCRIPT_INSERT_LOCATION_FOOTER;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFormScripts(): bool
+    {
+        return $this->getSettingsModel()->scriptInsertLocation === Settings::SCRIPT_INSERT_LOCATION_FORM;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isManualScripts(): bool
+    {
+        return $this->getSettingsModel()->scriptInsertLocation === Settings::SCRIPT_INSERT_LOCATION_MANUAL;
     }
 
     /**
@@ -416,6 +440,7 @@ class SettingsService extends BaseService
             'mailing-lists'        => ['title' => Freeform::t('Mailing Lists')],
             'crm'                  => ['title' => Freeform::t('CRM')],
             'payment-gateways'     => ['title' => Freeform::t('Payment Gateways')],
+            'slack'                => ['title' => Freeform::t('Slack')],
             'hdlogs'               => ['heading' => Freeform::t('Logs')],
             'error-log'            => ['title' => Freeform::t('Error Log ({count})', ['count' => $errorCount])],
         ]);

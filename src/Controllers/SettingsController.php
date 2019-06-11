@@ -5,13 +5,12 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Controllers;
 
-use Craft;
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper;
@@ -21,7 +20,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
-use Solspace\FreeformPro\FreeformPro;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -50,6 +48,7 @@ class SettingsController extends BaseController
         $canAccessFields        = PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessSettings      = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+        $canAccessResources     = PermissionHelper::checkPermission(Freeform::PERMISSION_RESOURCES);
 
         $isDashboardView  = $defaultView === Freeform::VIEW_DASHBOARD;
         $isFormView       = $defaultView === Freeform::VIEW_FORMS;
@@ -83,8 +82,12 @@ class SettingsController extends BaseController
                 return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_SETTINGS));
             }
 
-            if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(FreeformPro::PERMISSION_EXPORT_PROFILES_ACCESS)) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/' . FreeformPro::VIEW_EXPORT_PROFILES));
+            if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS)) {
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_EXPORT_PROFILES));
+            }
+
+            if ($canAccessResources) {
+                return $this->redirect(UrlHelper::cpUrl('freeform/' . Freeform::VIEW_RESOURCES));
             }
         }
 
@@ -216,10 +219,10 @@ class SettingsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         if (
-            version_compare(Craft::$app->getVersion(), '3.1', '>=') &&
+            version_compare(\Craft::$app->getVersion(), '3.1', '>=') &&
             !\Craft::$app->getConfig()->getGeneral()->allowAdminChanges
         ) {
-            throw new ForbiddenHttpException('Administrative changes are disallowed in this environment.');
+            throw new ForbiddenHttpException('Changes are not allowed');
         }
 
         $this->view->registerAssetBundle(CodepackBundle::class);

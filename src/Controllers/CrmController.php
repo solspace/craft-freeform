@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -299,7 +299,7 @@ class CrmController extends Controller
         $settingBlueprints    = $this->getCRMService()->getAllCRMSettingBlueprints();
 
         \Craft::$app->view->registerCssFile('freeform/css/integrations.css');
-        \Craft::$app->view->registerJsFile('freeform/js/cp/integrations.js');
+        \Craft::$app->view->registerJsFile('freeform/js/other/integrations.js');
 
         $variables = [
             'integration'          => $model,

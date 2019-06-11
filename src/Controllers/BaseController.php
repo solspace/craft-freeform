@@ -16,6 +16,11 @@ use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
+use Solspace\Freeform\Services\Pro\ExportProfilesService;
+use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
+use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
+use Solspace\Freeform\Services\Pro\Payments\StripeService;
+use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
@@ -149,5 +154,45 @@ class BaseController extends Controller
     protected function getChartsService(): ChartsService
     {
         return Freeform::getInstance()->charts;
+    }
+
+    /**
+     * @return ExportProfilesService
+     */
+    protected function getExportProfileService(): ExportProfilesService
+    {
+        return Freeform::getInstance()->exportProfiles;
+    }
+
+    /**
+     * @return StripeService
+     */
+    protected function getPaymentsStripeService(): StripeService
+    {
+        return Freeform::getInstance()->stripe;
+    }
+
+    /**
+     * @return PaymentNotificationsService
+     */
+    protected function getPaymentsNotificationService(): PaymentNotificationsService
+    {
+        return Freeform::getInstance()->paymentNotifications;
+    }
+
+    /**
+     * @return PaymentsService
+     */
+    protected function getPaymentsPaymentsService(): PaymentsService
+    {
+        return Freeform::getInstance()->payments;
+    }
+
+    /**
+     * @return SubscriptionsService
+     */
+    protected function getPaymentsSubscriptionsService(): SubscriptionsService
+    {
+        return Freeform::getInstance()->subscriptions;
     }
 }

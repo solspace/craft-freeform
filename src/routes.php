@@ -70,6 +70,10 @@ return [
     'freeform/settings/crm/<id:\d+>'                                 => 'freeform/crm/edit',
     'freeform/crm/check'                                             => 'freeform/crm/check-integration-connection',
     'freeform/crm/authenticate/<handle:[a-zA-Z0-9_]+>'               => 'freeform/crm/force-authorization',
+    // Slack
+    'freeform/settings/slack'                                        => 'freeform/slack/index',
+    'freeform/settings/slack/new'                                    => 'freeform/slack/create',
+    'freeform/settings/slack/<id:\d+>'                               => 'freeform/slack/edit',
     // Payment Gateways
     'freeform/settings/payment-gateways'                             => 'freeform/payment-gateways/index',
     'freeform/settings/payment-gateways/new'                         => 'freeform/payment-gateways/create',
@@ -85,6 +89,23 @@ return [
     'freeform/settings/add-demo-template'                            => 'freeform/settings/add-demo-template',
     'freeform/settings/add-email-template'                           => 'freeform/settings/add-email-template',
     'freeform/settings/demo-templates'                               => 'freeform/codepack/list-contents',
+    'freeform/settings/recaptcha'                                    => 'freeform/settings/provide-setting',
+    // Resources
+    'freeform/resources'                                             => 'freeform/resources/index',
+    'freeform/resources/community'                                   => 'freeform/resources/community',
+    'freeform/resources/explore'                                     => 'freeform/resources/explore',
+    'freeform/resources/support'                                     => 'freeform/resources/support',
     // Dashboard
     'freeform/dashboard'                                             => 'freeform/dashboard/index',
+    // Export
+    'freeform/export/export-dialogue'                                => 'freeform/quick-export/export-dialogue',
+    'freeform/export'                                                => 'freeform/quick-export/index',
+    // Export Profiles
+    'freeform/export-profiles'                                       => 'freeform/export-profiles/index',
+    'freeform/export-profiles/delete'                                => 'freeform/export-profiles/delete',
+    'freeform/export-profiles/new/<formHandle:[a-zA-Z_\-]+>'         => 'freeform/export-profiles/create',
+    'freeform/export-profiles/<id:\d+>'                              => 'freeform/export-profiles/edit',
+    // Payments
+    'freeform/payment-webhooks/stripe'                               => 'freeform/webhooks/stripe',
+    'freeform/payment-subscription/<id:\d+>/cancel/<validationKey>'  => 'freeform/subscriptions/cancel',
 ];

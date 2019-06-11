@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -32,14 +32,16 @@ interface FieldInterface
     const TYPE_FILE               = 'file';
     const TYPE_PASSWORD           = 'password';
 
-    const TYPE_DATETIME     = 'datetime';
-    const TYPE_NUMBER       = 'number';
-    const TYPE_PHONE        = 'phone';
-    const TYPE_WEBSITE      = 'website';
-    const TYPE_RATING       = 'rating';
-    const TYPE_REGEX        = 'regex';
-    const TYPE_CONFIRMATION = 'confirmation';
-    const TYPE_RECAPTCHA    = 'recaptcha';
+    const TYPE_RICH_TEXT     = 'rich_text';
+    const TYPE_DATETIME      = 'datetime';
+    const TYPE_NUMBER        = 'number';
+    const TYPE_PHONE         = 'phone';
+    const TYPE_WEBSITE       = 'website';
+    const TYPE_RATING        = 'rating';
+    const TYPE_REGEX         = 'regex';
+    const TYPE_CONFIRMATION  = 'confirmation';
+    const TYPE_RECAPTCHA     = 'recaptcha';
+    const TYPE_OPINION_SCALE = 'opinion_scale';
 
     const TYPE_CREDIT_CARD_DETAILS = 'cc_details';
     const TYPE_CREDIT_CARD_NUMBER  = 'cc_number';

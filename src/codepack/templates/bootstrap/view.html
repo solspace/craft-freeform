@@ -1,17 +1,10 @@
-{% extends "demo/_layouts/bootstrap" %}
+{% extends "demo/_layout" %}
 
 {% set pageTitle = "Bootstrap" %}
 {% set page = "bootstrap" %}
 
-{% set baseUrlSegments = 1 %}
-{% set segment1 = craft.app.request.segment(baseUrlSegments + 1) %}
-{% set segment2 = craft.app.request.segment(baseUrlSegments + 2) %}
-{% set segment3 = craft.app.request.segment(baseUrlSegments + 3) %}
-{% set segment4 = craft.app.request.segment(baseUrlSegments + 4) %}
-{% set segment5 = craft.app.request.segment(baseUrlSegments + 5) %}
-
-{% set formHandle = segment2 %}
-{% set isSuccess  = segment3 == "success" %}
+{% set formHandle = craft.app.request.segment(3) %}
+{% set isSuccess  = craft.app.request.segment(4) == "success" %}
 
 {% block content %}
 

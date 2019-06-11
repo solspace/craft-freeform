@@ -5,14 +5,12 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Controllers;
 
-use craft\helpers\UrlHelper;
-use craft\web\Controller;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -93,11 +91,6 @@ class NotificationsController extends BaseController
     private function renderEditForm(NotificationRecord $record, string $title): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
-        $routeParams = \Craft::$app->urlManager->getRouteParams();
-
-        if (isset($routeParams['errors'])) {
-            $record->addErrors($routeParams['errors']);
-        }
 
         $this->view->registerAssetBundle(NotificationEditorBundle::class);
 
@@ -120,25 +113,29 @@ class NotificationsController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
 
-        $post = \Craft::$app->request->post();
+        $request = \Craft::$app->request;
+        $post    = $request->post();
 
         $notificationId = $post['notificationId'] ?? null;
         $notification   = $this->getNewOrExistingNotification((int) $notificationId);
 
-        $notification->name               = \Craft::$app->request->post('name');
-        $notification->handle             = \Craft::$app->request->post('handle');
-        $notification->description        = \Craft::$app->request->post('description');
-        $notification->fromEmail          = \Craft::$app->request->post('fromEmail');
-        $notification->fromName           = \Craft::$app->request->post('fromName');
-        $notification->subject            = \Craft::$app->request->post('subject');
-        $notification->replyToEmail       = \Craft::$app->request->post('replyToEmail');
-        $notification->bodyHtml           = \Craft::$app->request->post('bodyHtml');
-        $notification->bodyText           = \Craft::$app->request->post('bodyHtml');
-        $notification->includeAttachments = (bool) \Craft::$app->request->post('includeAttachments');
+        $notification->name               = $request->post('name');
+        $notification->handle             = $request->post('handle');
+        $notification->description        = $request->post('description');
+        $notification->fromEmail          = $request->post('fromEmail');
+        $notification->fromName           = $request->post('fromName');
+        $notification->cc                 = $request->post('cc');
+        $notification->bcc                = $request->post('bcc');
+        $notification->subject            = $request->post('subject');
+        $notification->replyToEmail       = $request->post('replyToEmail');
+        $notification->bodyHtml           = $request->post('bodyHtml');
+        $notification->bodyText           = $request->post('bodyText');
+        $notification->includeAttachments = (bool) $request->post('includeAttachments');
+        $notification->presetAssets       = $request->post('presetAssets');
 
         if ($this->getNotificationService()->save($notification)) {
             // Return JSON response if the request is an AJAX request
-            if (\Craft::$app->request->isAjax) {
+            if ($request->isAjax) {
                 return $this->asJson(['success' => true]);
             }
 
@@ -149,7 +146,7 @@ class NotificationsController extends BaseController
         }
 
         // Return JSON response if the request is an AJAX request
-        if (\Craft::$app->request->isAjax) {
+        if ($request->isAjax) {
             return $this->asJson(['success' => false]);
         }
 

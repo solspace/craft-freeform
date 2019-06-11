@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -13,19 +13,24 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use craft\db\Table;
+use craft\records\Asset as AssetRecord;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\PostProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
+use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
@@ -34,13 +39,15 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     const EVENT_AFTER_SUBMIT  = 'afterSubmit';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE  = 'afterDelete';
+    const EVENT_POST_PROCESS  = 'postProcess';
 
     const MIN_PURGE_AGE   = 7;
     const PURGE_CACHE_KEY = 'freeform_purge_cache_key';
     const PURGE_CACHE_TTL = 3600; // 1 hour
 
     /** @var Submission[] */
-    private static $submissionCache = [];
+    private static $submissionCache      = [];
+    private static $submissionTokenCache = [];
 
     /**
      * @param int $id
@@ -49,15 +56,43 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function getSubmissionById($id)
     {
-        if (null === self::$submissionCache || !isset(self::$submissionCache[$id])) {
-            if (null === self::$submissionCache) {
-                self::$submissionCache = [];
-            }
-
+        if (!isset(self::$submissionCache[$id])) {
             self::$submissionCache[$id] = Submission::find()->id($id)->one();
         }
 
         return self::$submissionCache[$id];
+    }
+
+    /**
+     * @param string $token
+     *
+     * @return Submission|null
+     */
+    public function getSubmissionByToken(string $token)
+    {
+        if (!isset(self::$submissionTokenCache[$token])) {
+            self::$submissionTokenCache[$token] = Submission::find()->where(['token' => $token])->one();
+        }
+
+        return self::$submissionTokenCache[$token];
+    }
+
+    /**
+     * @param Submission|string|int $identificator
+     *
+     * @return Submission|null
+     */
+    public function getSubmission($identificator)
+    {
+        if ($identificator instanceof Submission) {
+            return $identificator;
+        }
+
+        if (is_numeric($identificator)) {
+            return $this->getSubmissionById($identificator);
+        }
+
+        return $this->getSubmissionByToken($identificator);
     }
 
     /**
@@ -155,6 +190,21 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function createSubmissionFromForm(Form $form)
     {
+        $isNew      = true;
+        $submission = null;
+        if (!$form->isMarkedAsSpam()) {
+            if ($form->getAssociatedSubmissionToken() && Freeform::getInstance()->isPro()) {
+                $submission = $this->getSubmissionByToken($form->getAssociatedSubmissionToken());
+                $isNew      = false;
+            }
+
+            if (null === $submission) {
+                $submission = Submission::create();
+            }
+        } else {
+            $submission = SpamSubmission::create();
+        }
+
         $fields        = $form->getLayout()->getFields();
         $savableFields = [];
         foreach ($fields as $field) {
@@ -171,6 +221,8 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 if (!empty($value)) {
                     $value = $field->getStaticValue();
                 }
+            } else if ($field instanceof FileUploadField && !$isNew && empty($field->getValue())) {
+                continue;
             }
 
             $savableFields[$field->getHandle()]     = $value;
@@ -182,13 +234,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $titleReplacements['dateCreated'] = $dateCreated->format('Y-m-d H:i:s');
         $fieldsByHandle                   = $form->getLayout()->getFieldsByHandle();
 
-
-        if (!$form->isMarkedAsSpam()) {
-            $submission = Submission::create();
-        } else {
-            $submission = SpamSubmission::create();
-        }
-
         $statusId = $form->getDefaultStatus();
         if (!is_numeric($statusId)) {
             $status = Freeform::getInstance()->statuses->getStatusByHandle($statusId);
@@ -197,24 +242,26 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             }
         }
 
-        $submission->ip          = $form->isIpCollectingEnabled() ? \Craft::$app->request->getRemoteIP() : null;
-        $submission->formId      = $form->getId();
-        $submission->statusId    = $statusId;
-        $submission->isSpam      = $form->isMarkedAsSpam();
-        $submission->dateCreated = $dateCreated;
-        $submission->dateUpdated = $dateCreated;
-        $submission->title       = \Craft::$app->view->renderString(
-            $form->getSubmissionTitleFormat(),
-            array_merge(
-                $fieldsByHandle,
-                [
-                    'dateCreated' => $dateCreated,
-                    'form'        => $form,
-                ]
-            )
-        );
+        if (!$submission->id) {
+            $submission->ip          = $form->isIpCollectingEnabled() ? \Craft::$app->request->getRemoteIP() : null;
+            $submission->formId      = $form->getId();
+            $submission->statusId    = $statusId;
+            $submission->isSpam      = $form->isMarkedAsSpam();
+            $submission->dateCreated = $dateCreated;
+            $submission->title       = \Craft::$app->view->renderString(
+                $form->getSubmissionTitleFormat(),
+                array_merge(
+                    $fieldsByHandle,
+                    [
+                        'dateCreated' => $dateCreated,
+                        'form'        => $form,
+                    ]
+                )
+            );
+        }
 
-        $submission->setFormFieldValues($savableFields);
+        $submission->dateUpdated = $dateCreated;
+        $submission->setFormFieldValues($savableFields, $isNew);
 
         return $submission;
     }
@@ -246,7 +293,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $integrationsService->pushToCRM($submission);
         }
 
-
+        $formsService->setPostedCookie($form);
         $formsService->onAfterSubmit($form, $submission);
     }
 
@@ -403,6 +450,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function purgeSubmissions()
     {
+        if (!Freeform::getInstance()->isPro()) {
+            return;
+        }
+
         $hasBeenPurgedRecently = \Craft::$app->cache->get(static::PURGE_CACHE_KEY);
         if ($hasBeenPurgedRecently) {
             return;
@@ -410,13 +461,40 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $age = Freeform::getInstance()->settings->getPurgableSubmissionAgeInDays();
         if (\is_int($age) && $age >= static::MIN_PURGE_AGE) {
-            $date = new \DateTime("-$age days");
-
-            $ids = (new Query())
+            $date          = new \DateTime("-$age days");
+            $assetFieldIds = (new Query())
                 ->select(['id'])
+                ->from(FieldRecord::TABLE)
+                ->where(['type' => FieldInterface::TYPE_FILE])
+                ->column();
+
+            $columns = ['id'];
+            foreach ($assetFieldIds as $assetFieldId) {
+                $columns[] = Submission::getFieldColumnName($assetFieldId);
+            }
+
+            $results = (new Query())
+                ->select($columns)
                 ->from(Submission::TABLE)
                 ->where(['<', 'dateCreated', $date->format('Y-m-d H:i:s')])
-                ->column();
+                ->all();
+
+            $ids      = [];
+            $assetIds = [];
+            foreach ($results as $result) {
+                $ids[] = $result['id'];
+                unset ($result['id']);
+
+                foreach ($result as $values) {
+                    try {
+                        $values = \GuzzleHttp\json_decode($values);
+                        foreach ($values as $value) {
+                            $assetIds[] = $value;
+                        }
+                    } catch (\InvalidArgumentException $e) {
+                    }
+                }
+            }
 
             \Craft::$app->db
                 ->createCommand()
@@ -425,6 +503,18 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                     ['id' => $ids]
                 )
                 ->execute();
+
+            foreach ($assetIds as $assetId) {
+                if (is_numeric($assetId)) {
+                    try {
+                        $asset = AssetRecord::find()->where(['id' => $assetId])->one();
+                        if ($asset) {
+                            $asset->delete();
+                        }
+                    } catch (\Exception $e) {
+                    }
+                }
+            }
         }
 
         \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);

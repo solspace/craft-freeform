@@ -5,15 +5,16 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Session;
 
+use Solspace\Freeform\Fields\SubmitField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
-use Solspace\Freeform\Library\Composer\Components\Fields\SubmitField;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 class FormValueContext implements \JsonSerializable
@@ -29,6 +30,7 @@ class FormValueContext implements \JsonSerializable
 
     const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
     const DATA_STATUS               = 'status';
+    const DATA_SUBMISSION_TOKEN     = 'submissionToken';
 
     /** @var int */
     private $formId;
@@ -180,6 +182,10 @@ class FormValueContext implements \JsonSerializable
             $default = htmlspecialchars($default);
         }
 
+        if (Freeform::getInstance()->settings->getSettingsModel()->fillWithGet) {
+            return $this->request->getGet($fieldName, $default);
+        }
+
         return $default;
     }
 
@@ -226,11 +232,15 @@ class FormValueContext implements \JsonSerializable
      */
     public function getDefaultStatus()
     {
-        if (isset($this->customFormData[self::DATA_STATUS])) {
-            return $this->customFormData[self::DATA_STATUS];
-        }
+        return $this->customFormData[self::DATA_STATUS] ?? null;
+    }
 
-        return null;
+    /**
+     * @return string|null
+     */
+    public function getSubmissionIdentificator()
+    {
+        return $this->customFormData[self::DATA_SUBMISSION_TOKEN] ?? null;
     }
 
     /**
@@ -280,7 +290,7 @@ class FormValueContext implements \JsonSerializable
     public function saveState()
     {
         $encodedData    = json_encode($this, JSON_OBJECT_AS_ARRAY);
-        $sessionHashKey = $this->getSessionHash($this->getHash());
+        $sessionHashKey = $this->getSessionHash($this->getLastHash());
 
         $this->session->set($sessionHashKey, $encodedData);
         $this->appendKeyToActiveSessions($sessionHashKey);
@@ -291,7 +301,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function cleanOutCurrentSession()
     {
-        $sessionHashKey = $this->getSessionHash($this->getHash());
+        $sessionHashKey = $this->getSessionHash($this->getLastHash());
         $this->session->remove($sessionHashKey);
     }
 
@@ -330,7 +340,7 @@ class FormValueContext implements \JsonSerializable
         }
 
         list($_, $_, $postedPayload) = self::getHashParts($postedHash);
-        list($_, $_, $currentPayload) = self::getHashParts($this->getHash());
+        list($_, $_, $currentPayload) = self::getHashParts($this->getLastHash());
 
         return $postedPayload === $currentPayload;
     }
@@ -349,7 +359,7 @@ class FormValueContext implements \JsonSerializable
         }
 
         list($_, $postedPageIndex, $postedPayload) = self::getHashParts($postedHash);
-        list($_, $currentPageIndex, $currentPayload) = self::getHashParts($this->getHash());
+        list($_, $currentPageIndex, $currentPayload) = self::getHashParts($this->getLastHash());
 
         return $postedPageIndex === $currentPageIndex && $postedPayload === $currentPayload;
     }

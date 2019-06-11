@@ -1,6 +1,7 @@
 <?php
 
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\ExpressForms\ExpressForms;
 use Solspace\Freeform\Freeform;
 
 $navItems = [];
@@ -31,6 +32,10 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS)
     $navItems['notifications'] = ['label' => Freeform::t('Email Notifications'), 'url' => 'freeform/notifications'];
 }
 
+if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(self::PERMISSION_EXPORT_PROFILES_ACCESS)) {
+    $navItems['exportProfiles'] = ['label' => Freeform::t('Export'), 'url' => 'freeform/export-profiles'];
+}
+
 $canViewSettings = true;
 if (version_compare(Craft::$app->getVersion(), '3.1', '>=')) {
     $canViewSettings = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
@@ -38,6 +43,10 @@ if (version_compare(Craft::$app->getVersion(), '3.1', '>=')) {
 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) && $canViewSettings) {
     $navItems['settings'] = ['label' => Freeform::t('Settings'), 'url' => 'freeform/settings'];
+}
+
+if (PermissionHelper::checkPermission(Freeform::PERMISSION_RESOURCES)) {
+    $navItems['resources'] = ['label' => Freeform::t('Resources'), 'url' => 'freeform/resources'];
 }
 
 return $navItems;

@@ -5,15 +5,15 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
+use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
@@ -147,6 +147,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             self::TYPE_RATING             => 'Rating',
             self::TYPE_REGEX              => 'Regex',
             self::TYPE_CONFIRMATION       => 'Confirmation',
+            self::TYPE_OPINION_SCALE      => 'Opinion Scale',
         ];
     }
 

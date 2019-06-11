@@ -5,18 +5,18 @@ namespace Solspace\Freeform\Library\DataObjects\FormRenderObject;
 class CssObject extends AbstractFormRenderObject
 {
     /**
-     * @inheritDoc
+     * Attach the object to view
      */
-    public function getFormattedValueOrAttachToView(bool $attachToView)
+    public function attachToView()
     {
-        $value = $this->getValue();
+        \Craft::$app->view->registerCss($this->getValue());
+    }
 
-        if ($attachToView) {
-            \Craft::$app->view->registerCss($value);
-
-            return null;
-        }
-
-        return '<style rel="stylesheet">' . $value . '</style>';
+    /**
+     * @return string
+     */
+    public function getOutput(): string
+    {
+        return '<style rel="stylesheet">' . $this->getValue() . '</style>';
     }
 }

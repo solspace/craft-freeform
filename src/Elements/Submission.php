@@ -14,20 +14,20 @@ use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
-use Solspace\Freeform\Elements\Actions\ResendNotificationsAction;
+use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
+use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Pro\RatingField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
-use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Models\StatusModel;
-use Solspace\FreeformPro\Fields\RatingField;
 
 class Submission extends Element
 {
@@ -279,8 +279,11 @@ class Submission extends Element
             ),
             \Craft::$app->elements->createAction(['type' => SetSubmissionStatusAction::class]),
             \Craft::$app->elements->createAction(['type' => ExportCSVAction::class]),
-            \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]),
         ];
+
+        if (Freeform::getInstance()->isPro()) {
+            $actions[] = \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]);
+        }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $actions[] = \Craft::$app->elements->createAction([
@@ -410,10 +413,12 @@ class Submission extends Element
 
     /**
      * @param array $values
+     * @param bool  $override
      *
      * @return $this
+     * @throws ComposerException
      */
-    public function setFormFieldValues(array $values): Submission
+    public function setFormFieldValues(array $values, bool $override = true): Submission
     {
         foreach ($this->getForm()->getLayout()->getFields() as $field) {
             if (!$field->canStoreValues()) {
@@ -423,6 +428,12 @@ class Submission extends Element
             $value = null;
             if (array_key_exists($field->getHandle(), $values)) {
                 $value = $values[$field->getHandle()];
+            }
+
+            if (!$override) {
+                if ($field instanceof FileUploadField && empty($value)) {
+                    continue;
+                }
             }
 
             $this->storedFieldValues[self::getFieldColumnName($field->getId())] = $value;

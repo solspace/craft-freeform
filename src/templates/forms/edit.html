@@ -6,7 +6,6 @@
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
     { label: "Forms"|t('freeform'), url: url('freeform/forms') },
-    { label: title, url: '' },
 ] %}
 
 
@@ -38,7 +37,7 @@
       var canManageNotifications   = {{ canManageNotifications? "true" : "false" }};
       var canManageSettings        = {{ canManageSettings? "true" : "false" }};
       var isDbEmailTemplateStorage = {{ isDbEmailTemplateStorage ? "true" : "false" }};
-      var isWidgetsInstalled       = {{ isWidgetsInstalled ? "true" : "false" }};
+      var isPro                    = {{ craft.freeform.pro ? "true" : "false" }};
       var isRulesEnabled           = {{ isRulesEnabled ? "true" : "false" }};
       var isRecaptchaEnabled       = {{ isRecaptchaEnabled ? "true" : "false" }};
       var isPaymentEnabled         = {{ isPaymentEnabled ? "true" : "false" }};

@@ -12,7 +12,7 @@ class IntegrationsBundle extends AbstractFreeformAssetBundle
      */
     public function getScripts(): array
     {
-        return ['js/cp/integrations.js'];
+        return ['js/other/integrations.js'];
     }
 
     /**

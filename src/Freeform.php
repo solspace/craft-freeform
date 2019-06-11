@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -22,7 +22,6 @@ use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
-use function foo\func;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\ApiController;
 use Solspace\Freeform\Controllers\CodepackController;
@@ -34,26 +33,38 @@ use Solspace\Freeform\Controllers\LogsController;
 use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
+use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
+use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
+use Solspace\Freeform\Controllers\Pro\QuickExportController;
+use Solspace\Freeform\Controllers\Pro\SlackController;
+use Solspace\Freeform\Controllers\Pro\WebhooksController;
+use Solspace\Freeform\Controllers\ResourcesController;
 use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
 use Solspace\Freeform\Controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
+use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
+use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
+use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
+use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\StatusRecord;
+use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
-use Solspace\Freeform\Services\FormAjaxService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
@@ -63,59 +74,83 @@ use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
-use Solspace\Freeform\Services\RulesService;
+use Solspace\Freeform\Services\Pro\ExportProfilesService;
+use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
+use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
+use Solspace\Freeform\Services\Pro\Payments\StripeService;
+use Solspace\Freeform\Services\Pro\Payments\SubscriptionPlansService;
+use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
+use Solspace\Freeform\Services\Pro\ProFormsService;
+use Solspace\Freeform\Services\Pro\RecaptchaService;
+use Solspace\Freeform\Services\Pro\RulesService;
+use Solspace\Freeform\Services\Pro\SlackService;
+use Solspace\Freeform\Services\Pro\WebhooksService;
+use Solspace\Freeform\Services\Pro\WidgetsService;
 use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
+use Solspace\Freeform\Variables\FreeformPaymentsVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
-use Solspace\Freeform\Widgets\QuickFormWidget;
-use Solspace\Freeform\Widgets\StatisticsWidget;
+use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use yii\base\Event;
 use yii\db\Query;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Class Plugin
  *
- * @property CrmService               $crm
- * @property FieldsService            $fields
- * @property FilesService             $files
- * @property FormsService             $forms
- * @property FormAjaxService          $formAjax
- * @property MailerService            $mailer
- * @property MailingListsService      $mailingLists
- * @property NotificationsService     $notifications
- * @property SettingsService          $settings
- * @property StatusesService          $statuses
- * @property SubmissionsService       $submissions
- * @property SpamSubmissionsService   $spamSubmissions
- * @property LoggerService            $logger
- * @property HoneypotService          $honeypot
- * @property IntegrationsService      $integrations
- * @property IntegrationsQueueService $integrationsQueue
- * @property PaymentGatewaysService   $paymentGateways
- * @property ConnectionsService       $connections
- * @property ChartsService            $charts
+ * @property CrmService                  $crm
+ * @property FieldsService               $fields
+ * @property FilesService                $files
+ * @property FormsService                $forms
+ * @property MailerService               $mailer
+ * @property MailingListsService         $mailingLists
+ * @property NotificationsService        $notifications
+ * @property SettingsService             $settings
+ * @property StatusesService             $statuses
+ * @property SubmissionsService          $submissions
+ * @property SpamSubmissionsService      $spamSubmissions
+ * @property LoggerService               $logger
+ * @property HoneypotService             $honeypot
+ * @property IntegrationsService         $integrations
+ * @property IntegrationsQueueService    $integrationsQueue
+ * @property PaymentGatewaysService      $paymentGateways
+ * @property ConnectionsService          $connections
+ * @property ChartsService               $charts
+ * @property WidgetsService              $widgets
+ * @property ExportProfilesService       $exportProfiles
+ * @property RecaptchaService            $recaptcha
+ * @property RulesService                $rules
+ * @property ProFormsService             $proForms
+ * @property PaymentNotificationsService $paymentNotifications
+ * @property PaymentsService             $payments
+ * @property StripeService               $stripe
+ * @property SubscriptionPlansService    $subscriptionPlans
+ * @property SubscriptionsService        $subscriptions
+ * @property WebhooksService             $webhooks
+ * @property SlackService                $slack
  */
 class Freeform extends Plugin
 {
     const TRANSLATION_CATEGORY = 'freeform';
 
-    const VIEW_DASHBOARD     = 'dashboard';
-    const VIEW_FORMS         = 'forms';
-    const VIEW_SUBMISSIONS   = 'submissions';
-    const VIEW_FIELDS        = 'fields';
-    const VIEW_NOTIFICATIONS = 'notifications';
-    const VIEW_SETTINGS      = 'settings';
+    const VIEW_DASHBOARD       = 'dashboard';
+    const VIEW_FORMS           = 'forms';
+    const VIEW_SUBMISSIONS     = 'submissions';
+    const VIEW_FIELDS          = 'fields';
+    const VIEW_NOTIFICATIONS   = 'notifications';
+    const VIEW_SETTINGS        = 'settings';
+    const VIEW_RESOURCES       = 'resources';
+    const VIEW_EXPORT_PROFILES = 'export-profiles';
 
     const FIELD_DISPLAY_ORDER_TYPE = 'type';
     const FIELD_DISPLAY_ORDER_NAME = 'name';
 
-    const VERSION_BASIC    = 'basic';
-    const VERSION_PRO      = 'pro';
-    const VERSION_PAYMENTS = 'payments';
+    const EDITION_LITE = 'lite';
+    const EDITION_PRO  = 'pro';
 
     const PERMISSIONS_HELP_LINK = 'http://docs.solspace.com/craft/freeform/v2/setup/demo-templates.html';
     const PERMISSION_NAMESPACE  = 'Freeform';
@@ -124,18 +159,21 @@ class Freeform extends Plugin
     const VERSION_CACHE_TIMESTAMP_KEY = 'freeform_version_timestamp';
     const VERSION_CACHE_TTL           = 86400; // 24-hours
 
-    const PERMISSION_FORMS_ACCESS         = 'freeform-formsAccess';
-    const PERMISSION_FORMS_MANAGE         = 'freeform-formsManage';
-    const PERMISSION_FIELDS_ACCESS        = 'freeform-fieldsAccess';
-    const PERMISSION_FIELDS_MANAGE        = 'freeform-fieldsManage';
-    const PERMISSION_SETTINGS_ACCESS      = 'freeform-settingsAccess';
-    const PERMISSION_SUBMISSIONS_ACCESS   = 'freeform-submissionsAccess';
-    const PERMISSION_SUBMISSIONS_MANAGE   = 'freeform-submissionsManage';
-    const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
-    const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
-    const PERMISSION_DASHBOARD_ACCESS     = 'freeform-dashboardAccess';
-    const PERMISSION_ERROR_LOG_ACCESS     = 'freeform-errorLogAccess';
-    const PERMISSION_ERROR_LOG_MANAGE     = 'freeform-errorLogManage';
+    const PERMISSION_FORMS_ACCESS           = 'freeform-formsAccess';
+    const PERMISSION_FORMS_MANAGE           = 'freeform-formsManage';
+    const PERMISSION_FIELDS_ACCESS          = 'freeform-fieldsAccess';
+    const PERMISSION_FIELDS_MANAGE          = 'freeform-fieldsManage';
+    const PERMISSION_SETTINGS_ACCESS        = 'freeform-settingsAccess';
+    const PERMISSION_SUBMISSIONS_ACCESS     = 'freeform-submissionsAccess';
+    const PERMISSION_SUBMISSIONS_MANAGE     = 'freeform-submissionsManage';
+    const PERMISSION_NOTIFICATIONS_ACCESS   = 'freeform-notificationsAccess';
+    const PERMISSION_NOTIFICATIONS_MANAGE   = 'freeform-notificationsManage';
+    const PERMISSION_DASHBOARD_ACCESS       = 'freeform-dashboardAccess';
+    const PERMISSION_ERROR_LOG_ACCESS       = 'freeform-errorLogAccess';
+    const PERMISSION_ERROR_LOG_MANAGE       = 'freeform-errorLogManage';
+    const PERMISSION_RESOURCES              = 'freeform-resources';
+    const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
+    const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
 
     const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
@@ -151,6 +189,17 @@ class Freeform extends Plugin
     }
 
     /**
+     * @inheritDoc
+     */
+    public static function editions(): array
+    {
+        return [
+            self::EDITION_LITE,
+            self::EDITION_PRO,
+        ];
+    }
+
+    /**
      * @param string $message
      * @param array  $params
      * @param string $language
@@ -160,6 +209,32 @@ class Freeform extends Plugin
     public static function t(string $message, array $params = [], string $language = null): string
     {
         return \Craft::t(self::TRANSLATION_CATEGORY, $message, $params, $language);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPro(): bool
+    {
+        return $this->edition === self::EDITION_PRO;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLite(): bool
+    {
+        return $this->edition === self::EDITION_LITE;
+    }
+
+    /**
+     * @throws ForbiddenHttpException
+     */
+    public function requirePro()
+    {
+        if (!$this->isPro()) {
+            throw new ForbiddenHttpException(self::t('Requires Freeform Pro'));
+        }
     }
 
     /**
@@ -174,6 +249,7 @@ class Freeform extends Plugin
         $this->initControllerMap();
         $this->initServices();
         $this->initRoutes();
+        $this->initIntegrations();
         $this->initTwigVariables();
         $this->initWidgets();
         $this->initFieldTypes();
@@ -182,11 +258,13 @@ class Freeform extends Plugin
         $this->initHoneypot();
         $this->initConnections();
         $this->initSpamCheck();
+        $this->initPaymentAssets();
+        $this->initHookHandlers();
 
-        if ($this->settings->getPluginName()) {
+        if ($this->isPro() && $this->settings->getPluginName()) {
             $this->name = $this->settings->getPluginName();
         } else {
-            $this->name = $this->isPro() ? 'Freeform Pro' : 'Freeform Lite';
+            $this->name = 'Freeform';
         }
 
         if ($this->isInstalled) {
@@ -195,48 +273,6 @@ class Freeform extends Plugin
             $this->submissions->purgeSubmissions();
             $this->spamSubmissions->purgeSubmissions();
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getFreeformVersion(): string
-    {
-        $version = \Craft::$app->getCache()->get(self::VERSION_CACHE_KEY);
-        $time    = \Craft::$app->getCache()->get(self::VERSION_CACHE_TIMESTAMP_KEY);
-
-        if (!$time || (int) $time < time() - self::VERSION_CACHE_TTL) {
-            $handle         = 'freeform-pro';
-            $proIsInstalled = \Craft::$app->getPlugins()->isPluginInstalled($handle);
-            $proIsEnabled   = \Craft::$app->getPlugins()->isPluginEnabled($handle);
-
-            $version = $proIsInstalled && $proIsEnabled ? self::VERSION_PRO : self::VERSION_BASIC;
-
-            \Craft::$app->getCache()->multiSet(
-                [
-                    self::VERSION_CACHE_KEY           => $version,
-                    self::VERSION_CACHE_TIMESTAMP_KEY => time(),
-                ]
-            );
-        }
-
-        return $version;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPro(): bool
-    {
-        return $this->getFreeformVersion() === self::VERSION_PRO;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isBasic(): bool
-    {
-        return $this->getFreeformVersion() === self::VERSION_BASIC;
     }
 
     /**
@@ -388,30 +424,12 @@ class Freeform extends Plugin
         $status->color     = 'grey';
         $status->sortOrder = 3;
         $status->save();
-    }
 
-    /**
-     * Uninstall only if Freeform Pro is not present
-     *
-     * @return bool
-     */
-    protected function beforeUninstall(): bool
-    {
-        $isProInstalled = (bool) (new Query())
-            ->select('id')
-            ->from('{{%plugins}}')
-            ->where(['handle' => 'freeform-pro'])
-            ->one();
-
-        if ($isProInstalled) {
-            \Craft::$app->session->setNotice(
-                \Craft::t('app', 'You must uninstall Freeform Pro before you can uninstall Freeform Lite')
-            );
-
-            return false;
-        }
-
-        return true;
+        $field         = FieldModel::create();
+        $field->handle = 'payment';
+        $field->label  = '';
+        $field->type   = FieldInterface::TYPE_CREDIT_CARD_DETAILS;
+        $fieldService->save($field);
     }
 
     private function initControllerMap()
@@ -432,6 +450,12 @@ class Freeform extends Plugin
                 'spam-submissions' => SpamSubmissionsController::class,
                 'statuses'         => StatusesController::class,
                 'settings'         => SettingsController::class,
+                'resources'        => ResourcesController::class,
+                'quick-export'     => QuickExportController::class,
+                'export-profiles'  => ExportProfilesController::class,
+                'subscriptions'    => SubscriptionsController::class,
+                'webhooks'         => WebhooksController::class,
+                'slack'            => SlackController::class,
             ];
         }
     }
@@ -440,27 +464,109 @@ class Freeform extends Plugin
     {
         $this->setComponents(
             [
-                'dashboard'         => DashboardService::class,
-                'crm'               => CrmService::class,
-                'charts'            => ChartsService::class,
-                'fields'            => FieldsService::class,
-                'files'             => FilesService::class,
-                'forms'             => FormsService::class,
-                'formAjax'          => FormAjaxService::class,
-                'mailer'            => MailerService::class,
-                'mailingLists'      => MailingListsService::class,
-                'notifications'     => NotificationsService::class,
-                'settings'          => SettingsService::class,
-                'statuses'          => StatusesService::class,
-                'submissions'       => SubmissionsService::class,
-                'spamSubmissions'   => SpamSubmissionsService::class,
-                'logger'            => LoggerService::class,
-                'honeypot'          => HoneypotService::class,
-                'integrations'      => IntegrationsService::class,
-                'integrationsQueue' => IntegrationsQueueService::class,
-                'paymentGateways'   => PaymentGatewaysService::class,
-                'connections'       => ConnectionsService::class,
+                'dashboard'            => DashboardService::class,
+                'crm'                  => CrmService::class,
+                'charts'               => ChartsService::class,
+                'fields'               => FieldsService::class,
+                'files'                => FilesService::class,
+                'forms'                => FormsService::class,
+                'mailer'               => MailerService::class,
+                'mailingLists'         => MailingListsService::class,
+                'notifications'        => NotificationsService::class,
+                'settings'             => SettingsService::class,
+                'statuses'             => StatusesService::class,
+                'submissions'          => SubmissionsService::class,
+                'spamSubmissions'      => SpamSubmissionsService::class,
+                'logger'               => LoggerService::class,
+                'honeypot'             => HoneypotService::class,
+                'integrations'         => IntegrationsService::class,
+                'integrationsQueue'    => IntegrationsQueueService::class,
+                'paymentGateways'      => PaymentGatewaysService::class,
+                'connections'          => ConnectionsService::class,
+                'widgets'              => WidgetsService::class,
+                'exportProfiles'       => ExportProfilesService::class,
+                'recaptcha'            => RecaptchaService::class,
+                'rules'                => RulesService::class,
+                'proForms'             => ProFormsService::class,
+                'paymentNotifications' => PaymentNotificationsService::class,
+                'payments'             => PaymentsService::class,
+                'stripe'               => StripeService::class,
+                'subscriptionPlans'    => SubscriptionPlansService::class,
+                'subscriptions'        => SubscriptionsService::class,
+                'webhooks'             => WebhooksService::class,
+                'slack'                => SlackService::class,
             ]
+        );
+    }
+
+    private function initIntegrations()
+    {
+        Event::on(
+            CrmService::class,
+            CrmService::EVENT_FETCH_TYPES,
+            function (FetchCrmTypesEvent $event) {
+                $finder = new Finder();
+
+                $namespace = 'Solspace\Freeform\Integrations\CRM';
+
+                /** @var SplFileInfo[] $files */
+                $files = $finder
+                    ->name('*.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->in(__DIR__ . '/Integrations/CRM/');
+
+                foreach ($files as $file) {
+                    $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
+                    $className = $namespace . '\\' . $className;
+                    $event->addType($className);
+                }
+            }
+        );
+
+        Event::on(
+            MailingListsService::class,
+            MailingListsService::EVENT_FETCH_TYPES,
+            function (FetchMailingListTypesEvent $event) {
+                $finder = new Finder();
+
+                $namespace = 'Solspace\Freeform\Integrations\MailingLists';
+
+                /** @var SplFileInfo[] $files */
+                $files = $finder
+                    ->name('*.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->in(__DIR__ . '/Integrations/MailingLists/');
+
+                foreach ($files as $file) {
+                    $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
+                    $className = $namespace . '\\' . $className;
+                    $event->addType($className);
+                }
+            }
+        );
+        Event::on(
+            PaymentGatewaysService::class,
+            PaymentGatewaysService::EVENT_FETCH_TYPES,
+            function (FetchPaymentGatewayTypesEvent $event) {
+                $finder = new Finder();
+
+                $namespace = 'Solspace\Freeform\Integrations\PaymentGateways';
+
+                /** @var SplFileInfo[] $files */
+                $files = $finder
+                    ->name('*.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->in(__DIR__ . '/Integrations/PaymentGateways/');
+
+                foreach ($files as $file) {
+                    $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
+                    $className = $namespace . '\\' . $className;
+                    $event->addType($className);
+                }
+            }
         );
     }
 
@@ -483,6 +589,7 @@ class Freeform extends Plugin
             CraftVariable::EVENT_INIT,
             function (Event $event) {
                 $event->sender->set('freeform', FreeformVariable::class);
+                $event->sender->set('freeformPayments', FreeformPaymentsVariable::class);
             }
         );
     }
@@ -493,8 +600,31 @@ class Freeform extends Plugin
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
-                $event->types[] = StatisticsWidget::class;
-                $event->types[] = QuickFormWidget::class;
+                $finder = new Finder();
+
+                $namespace = 'Solspace\Freeform\Widgets';
+
+                /** @var SplFileInfo[] $files */
+                $files = $finder
+                    ->name('*Widget.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->notName('Abstract*.php')
+                    ->in(__DIR__ . '/Widgets/');
+
+                foreach ($files as $file) {
+                    $isForPro = $file->getRelativePath() === 'Pro';
+
+                    $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
+                    $className = $namespace . ($isForPro ? '\\Pro' : '') . '\\' . $className;
+
+                    $reflectionClass = new \ReflectionClass($className);
+                    if (!$this->isPro() && $reflectionClass->implementsInterface(ExtraWidgetInterface::class)) {
+                        continue;
+                    }
+
+                    $event->types[] = $className;
+                }
             }
         );
     }
@@ -538,24 +668,24 @@ class Freeform extends Plugin
                     }
 
                     $permissions = [
-                        self::PERMISSION_DASHBOARD_ACCESS     => ['label' => self::t('Access Dashboard')],
-                        self::PERMISSION_SUBMISSIONS_ACCESS   => [
+                        self::PERMISSION_DASHBOARD_ACCESS       => ['label' => self::t('Access Dashboard')],
+                        self::PERMISSION_SUBMISSIONS_ACCESS     => [
                             'label'  => self::t('Access Submissions'),
                             'nested' => $submissionNestedPermissions,
                         ],
-                        self::PERMISSION_FORMS_ACCESS         => [
+                        self::PERMISSION_FORMS_ACCESS           => [
                             'label'  => self::t('Access Forms'),
                             'nested' => [
                                 self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
                             ],
                         ],
-                        self::PERMISSION_FIELDS_ACCESS        => [
+                        self::PERMISSION_FIELDS_ACCESS          => [
                             'label'  => self::t('Access Fields'),
                             'nested' => [
                                 self::PERMISSION_FIELDS_MANAGE => ['label' => self::t('Manage Fields')],
                             ],
                         ],
-                        self::PERMISSION_NOTIFICATIONS_ACCESS => [
+                        self::PERMISSION_NOTIFICATIONS_ACCESS   => [
                             'label'  => self::t('Access Email Templates'),
                             'nested' => [
                                 self::PERMISSION_NOTIFICATIONS_MANAGE => [
@@ -565,7 +695,18 @@ class Freeform extends Plugin
                                 ],
                             ],
                         ],
-                        self::PERMISSION_SETTINGS_ACCESS      => ['label' => self::t('Access Settings')],
+                        self::PERMISSION_SETTINGS_ACCESS        => ['label' => self::t('Access Settings')],
+                        self::PERMISSION_RESOURCES              => ['label' => self::t('Access Resources')],
+                        self::PERMISSION_EXPORT_PROFILES_ACCESS => [
+                            'label'  => self::t('Access Export Profiles'),
+                            'nested' => [
+                                self::PERMISSION_EXPORT_PROFILES_MANAGE => [
+                                    'label' => self::t(
+                                        'Manage Export Profiles'
+                                    ),
+                                ],
+                            ],
+                        ],
                     ];
 
                     if (!isset($event->permissions[self::PERMISSION_NAMESPACE])) {
@@ -586,42 +727,7 @@ class Freeform extends Plugin
         Event::on(
             FormsService::class,
             FormsService::EVENT_RENDER_CLOSING_TAG,
-            [$this->forms, 'addFormDisabledJavascript']
-        );
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_RENDER_CLOSING_TAG,
-            [$this->forms, 'addFormAnchorJavascript']
-        );
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_RENDER_CLOSING_TAG,
-            [$this->formAjax, 'addAjaxJavascript']
-        );
-
-        Event::on(
-            MailingListsService::class,
-            MailingListsService::EVENT_FETCH_TYPES,
-            function (FetchMailingListTypesEvent $event) {
-                $finder = new Finder();
-
-                $namespace = 'Solspace\Freeform\Library\MailingLists';
-
-                /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->in(__DIR__ . '/Library/MailingLists/');
-
-                foreach ($files as $file) {
-                    $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
-                    $className = $namespace . '\\' . $className;
-                    $event->addType($className);
-                }
-            }
+            [$this->forms, 'addFormPluginJavascript']
         );
 
         Event::on(
@@ -660,6 +766,100 @@ class Freeform extends Plugin
                 }
             }
         );
+
+        Event::on(
+            FieldsService::class,
+            FieldsService::EVENT_AFTER_VALIDATE,
+            [$this->recaptcha, 'validateRecaptchaV2Checkbox']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_FORM_VALIDATE,
+            [$this->recaptcha, 'validateRecaptchaV2Invisible']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_FORM_VALIDATE,
+            [$this->recaptcha, 'validateRecaptchaV3']
+        );
+
+        Event::on(
+            SettingsService::class,
+            SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
+            function (RegisterSettingsNavigationEvent $event) {
+                $event->addNavigationItem('recaptcha', Freeform::t('reCAPTCHA'), 'spam');
+            }
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_RENDER_CLOSING_TAG,
+            [$this->recaptcha, 'addRecaptchaJavascriptToForm']
+        );
+
+        if ($this->isPro()) {
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_FORM_VALIDATE,
+                [$this->forms, 'checkReachedPostingLimit']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->proForms, 'addDateTimeJavascript']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->proForms, 'addPhonePatternJavascript']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->proForms, 'addOpinionScaleStyles']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->rules, 'addJavascriptToForm']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
+                [$this->rules, 'addAttributesToFormTag']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_PAGE_JUMP,
+                [$this->rules, 'handleFormPageJump']
+            );
+
+            Event::on(
+                SubmissionsController::class,
+                SubmissionsController::EVENT_REGISTER_EDIT_ASSETS,
+                [$this->rules, 'registerRulesJsAsAssets']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->stripe, 'addFormJavascript']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_AFTER_SUBMIT,
+                [$this->slack, 'triggerWebhooks']
+            );
+        }
     }
 
     private function initHoneypot()
@@ -713,5 +913,38 @@ class Freeform extends Plugin
             FormsService::EVENT_FORM_VALIDATE,
             [$this->settings, 'throttleSubmissions']
         );
+    }
+
+    private function initPaymentAssets()
+    {
+        if (!$this->isPro()) {
+            return;
+        }
+
+        Event::on(
+            SubmissionsController::class,
+            SubmissionsController::EVENT_REGISTER_INDEX_ASSETS,
+            function (RegisterEvent $event) {
+                $event->getView()->registerAssetBundle(PaymentsBundle::class);
+            }
+        );
+
+        Event::on(
+            SubmissionsController::class,
+            SubmissionsController::EVENT_REGISTER_EDIT_ASSETS,
+            function (RegisterEvent $event) {
+                $event->getView()->registerAssetBundle(PaymentsBundle::class);
+            }
+        );
+    }
+
+    private function initHookHandlers()
+    {
+        if (!$this->isPro()) {
+            return;
+        }
+
+        SubmissionHookHandler::registerHooks();
+        FormHookHandler::registerHooks();
     }
 }

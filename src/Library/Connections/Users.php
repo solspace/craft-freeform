@@ -4,6 +4,8 @@ namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
 use craft\elements\User;
+use craft\models\FieldLayout;
+use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 
 class Users extends AbstractConnection
@@ -12,7 +14,10 @@ class Users extends AbstractConnection
     protected $group;
 
     /** @var bool */
-    protected $active;
+    protected $active = false;
+
+    /** @var bool */
+    protected $sendActivation = true;
 
     /**
      * @inheritDoc
@@ -23,30 +28,30 @@ class Users extends AbstractConnection
     }
 
     /**
-     * @param array $keyValuePairs
+     * @param TransformerInterface[] $transformers
      *
      * @return Element
      */
-    protected function buildElement(array $keyValuePairs): Element
+    protected function buildElement(array $transformers): Element
     {
-        $user                  = new User();
-        $user->pending         = !$this->active;
-        $user->unverifiedEmail = !$this->active ? true : null;
+        $user          = new User();
+        $user->pending = !$this->active;
 
-        foreach ($keyValuePairs as $key => $value) {
-            if ($key === 'email' && \is_array($value)) {
-                $user->email = reset($value);
-            } else {
-                $user->{$key} = $value;
-            }
+        if (!$this->active && $this->sendActivation) {
+            $user->unverifiedEmail = $user->email;
+        }
 
-            if ($key === 'email' && !$this->active) {
-                $user->unverifiedEmail = $user->email;
-            }
+        $fieldLayout = $user->getFieldLayout();
+        if (!$fieldLayout) {
+            $fieldLayout = new FieldLayout();
+        }
 
-            if ($key === 'photoId' && \is_array($value) && \count($value)) {
-                $user->photoId = reset($value);
-            }
+        foreach ($transformers as $transformer) {
+            $handle = $transformer->getCraftFieldHandle();
+            $field  = $fieldLayout->getFieldByHandle($handle);
+            $value  = $transformer->transformValueFor($field);
+
+            $user->{$handle} = $value;
         }
 
         if (empty($user->photoId)) {
@@ -72,7 +77,7 @@ class Users extends AbstractConnection
             \Craft::$app->getUsers()->assignUserToGroups($element->id, [$group->id]);
         }
 
-        if ($element->status === User::STATUS_PENDING) {
+        if (!$this->active && $this->sendActivation && $element->status === User::STATUS_PENDING) {
             try {
                 \Craft::$app->getUsers()->sendActivationEmail($element);
             } catch (\Throwable $e) {

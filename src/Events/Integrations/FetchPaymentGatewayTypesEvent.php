@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Events\Integrations;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
 
 class FetchPaymentGatewayTypesEvent extends ArrayableEvent
@@ -35,6 +36,10 @@ class FetchPaymentGatewayTypesEvent extends ArrayableEvent
      */
     public function addType(string $class): FetchPaymentGatewayTypesEvent
     {
+        if (!Freeform::getInstance()->isPro()) {
+            return $this;
+        }
+
         $reflectionClass = new \ReflectionClass($class);
 
         if ($reflectionClass->implementsInterface(PaymentGatewayIntegrationInterface::class)) {

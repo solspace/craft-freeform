@@ -7,7 +7,6 @@
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
     { label: "Notifications"|t('freeform'), url: url('freeform/notifications') },
-    { label: title, url: '' },
 ] %}
 
 {% set fullPageForm = true %}
@@ -118,6 +117,24 @@
         errors: notification.getErrors('replyToEmail')
     }) }}
 
+    {{ forms.textField({
+        label: "CC"|t('freeform'),
+        instructions: "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use."|t('freeform'),
+        id: 'cc',
+        name: 'cc',
+        value: notification.cc,
+        errors: notification.getErrors('cc')
+    }) }}
+
+    {{ forms.textField({
+        label: "BCC"|t('freeform'),
+        instructions: "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use."|t('freeform'),
+        id: 'bcc',
+        name: 'bcc',
+        value: notification.bcc,
+        errors: notification.getErrors('bcc')
+    }) }}
+
     {{ forms.lightswitchField({
         label: "Include Attachments?"|t('freeform'),
         instructions: "Include uploaded files as attachments in email notification."|t('freeform'),
@@ -127,8 +144,8 @@
     }) }}
 
     {{ forms.textareaField({
-        label: "Email Body"|t('freeform'),
-        instructions: "The content of the email notification. See documentation for availability of variables."|t('freeform'),
+        label: "Email Body (HTML)"|t('freeform'),
+        instructions: "The HTML content of the email notification. If you wish to use Text only, leave this empty and fill out the Text body (below). See documentation for availability of variables."|t('freeform'),
         id: "emailBody",
         name: "bodyHtml",
         value: notification.bodyHtml,
@@ -155,6 +172,44 @@
     </style>
     <div id="editor">{{ notification.bodyHtml }}</div>
 
+    {{ forms.textareaField({
+        label: "Email Body (Text)"|t('freeform'),
+        instructions: "The text content of the email notification. If you wish to send out both HTML and Text options, fill out both the HTML and Text body fields. See documentation for availability of variables."|t('freeform'),
+        id: "emailBodyText",
+        name: "bodyText",
+        class: "code",
+        value: notification.bodyText,
+        errors: notification.getErrors("bodyText"),
+        required: false,
+        rows: 20,
+    }) }}
+
+    {% if craft.freeform.pro %}
+
+        {{ forms.elementSelectField({
+            id: "preset-assets",
+            name: "presetAssets",
+            label: "Predefined Assets",
+            instructions: "Select any Assets you wish to include as attachments on all email notifications using this template.",
+            elements: notification.presetAssets ? craft.assets.id(notification.presetAssets).all : [],
+            selectionLabel: "Choose assets",
+            elementType: "craft\\elements\\Asset",
+            sources: "*",
+            criteria: {
+                kind: [],
+                enabledForSite: null,
+                siteId: craft.app.sites.currentSite.id,
+            },
+            viewMode: "list",
+            limit: "",
+            defaultFieldLayoutId: null,
+            modalSettings: {
+                hideSidebar: 0,
+            }
+        }) }}
+
+    {% endif %}
+
 {% endblock %}
 
 {% js %}
@@ -166,7 +221,7 @@
 
     editor.getSession().setValue(textarea.val());
     editor.getSession().on('change', function(){
-        textarea.val(editor.getSession().getValue());
+    textarea.val(editor.getSession().getValue());
     });
 
     editor.getSession().setUseWorker(false);

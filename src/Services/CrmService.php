@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -18,17 +18,17 @@ use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
+use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
+use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
+use Solspace\Freeform\Models\Pro\Payments\SubscriptionModel;
 use Solspace\Freeform\Records\CrmFieldRecord;
 use Solspace\Freeform\Records\IntegrationRecord;
-use Solspace\FreeformPayments\FreeformPayments;
-use Solspace\FreeformPayments\Models\PaymentModel;
-use Solspace\FreeformPayments\Models\SubscriptionModel;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class CrmService extends AbstractIntegrationService implements CRMHandlerInterface
@@ -242,7 +242,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      * @param Submission $submission
      *
      * @return bool
-     * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
+     * @throws ComposerException
      */
     public function pushObject(Submission $submission): bool
     {
@@ -424,14 +424,14 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
     {
         $submissionId = $submission->id;
         if (!isset($this->paymentAndSubscriptionCache[$submissionId])) {
-            if (!\Craft::$app->plugins->isPluginEnabled('freeform-payments')) {
+            if (!Freeform::getInstance()->isPro()) {
                 $this->paymentAndSubscriptionCache[$submissionId] = null;
             } else {
-                $payment = FreeformPayments::getInstance()->payments->getBySubmissionId($submissionId);
+                $payment = Freeform::getInstance()->payments->getBySubmissionId($submissionId);
                 if ($payment) {
                     $this->paymentAndSubscriptionCache[$submissionId] = $payment;
                 } else {
-                    $subscription = FreeformPayments::getInstance()->subscriptions->getBySubmissionId($submissionId);
+                    $subscription = Freeform::getInstance()->subscriptions->getBySubmissionId($submissionId);
                     if ($subscription) {
                         $this->paymentAndSubscriptionCache[$submissionId] = $subscription;
                     } else {

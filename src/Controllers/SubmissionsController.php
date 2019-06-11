@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -16,13 +16,14 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
+use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\TextareaField;
+use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
 use yii\web\BadRequestHttpException;
@@ -59,13 +60,11 @@ class SubmissionsController extends BaseController
 
         \Craft::$app->view->registerAssetBundle(SubmissionIndexBundle::class);
 
-        $exportButtonBundleClass = 'Solspace\FreeformPro\Bundles\ExportButtonBundle';
-
         $registerAssetsEvent = new RegisterEvent(\Craft::$app->view);
         $this->trigger(self::EVENT_REGISTER_INDEX_ASSETS, $registerAssetsEvent);
 
-        if (Freeform::getInstance()->isPro() && class_exists($exportButtonBundleClass)) {
-            \Craft::$app->view->registerAssetBundle($exportButtonBundleClass);
+        if (Freeform::getInstance()->isPro()) {
+            \Craft::$app->view->registerAssetBundle(ExportButtonBundle::class);
         }
 
         $forms = $this->getFormsService()->getAllForms();

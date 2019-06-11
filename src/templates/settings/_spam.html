@@ -2,6 +2,8 @@
 
 {% import "_includes/forms" as forms %}
 
+{% set title = "Spam"|t("freeform") %}
+
 {% block content %}
 
     <h2>{{ "Spam Settings"|t('freeform') }}</h2>
@@ -12,12 +14,23 @@
         {{ csrfInput() }}
 
         {{ forms.lightswitchField({
-            label: "Freeform Honeypot / Javascript detection"|t('freeform'),
-            instructions: "Enable this to use Freeform's built in Javascript-based honeypot spam protection."|t('freeform'),
+            label: "Freeform Honeypot"|t('freeform'),
+            instructions: "Enable this to use Freeform's built in Honeypot spam protection."|t('freeform'),
             name: "settings[freeformHoneypot]",
             on: settings.freeformHoneypot,
+            toggle: 'honeypot-enhancement',
             errors: settings.errors("freeformHoneypot"),
         }) }}
+
+        <div id="honeypot-enhancement" class="field {{ not settings.freeformHoneypot ? 'hidden' }}">
+            {{ forms.lightswitchField({
+                label: "Javascript Enhancement"|t('freeform'),
+                instructions: "Enable this to use Freeform's built-in Javascript enhancement for the  Honeypot feature. This will require users have JS enabled for their browser and help fight spambots more aggressively."|t('freeform'),
+                name: "settings[freeformHoneypotEnhancement]",
+                on: settings.freeformHoneypotEnhancement,
+                errors: settings.errors("freeformHoneypotEnhancement"),
+            }) }}
+        </div>
 
         {{ forms.selectField({
             label: "Spam Protection Behavior"|t('freeform'),

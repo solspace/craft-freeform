@@ -15,12 +15,6 @@ class NumericConstraint implements ConstraintInterface
     /** @var int */
     private $decimalCount;
 
-    /** @var string */
-    private $decimalSeparator;
-
-    /** @var string */
-    private $thousandsSeparator;
-
     /** @var bool */
     private $allowNegativeNumbers;
 
@@ -48,8 +42,6 @@ class NumericConstraint implements ConstraintInterface
      * @param int    $min
      * @param int    $max
      * @param int    $decimalCount
-     * @param string $decimalSeparator
-     * @param string $thousandsSeparator
      * @param bool   $allowNegativeNumbers
      * @param string $message
      * @param string $messageMax
@@ -62,8 +54,6 @@ class NumericConstraint implements ConstraintInterface
         $min = null,
         $max = null,
         $decimalCount = null,
-        $decimalSeparator = null,
-        $thousandsSeparator = ',',
         $allowNegativeNumbers = false,
         $message = 'Value must be numeric',
         $messageMax = 'The value must be no more than {{max}}',
@@ -75,8 +65,6 @@ class NumericConstraint implements ConstraintInterface
         $this->min                  = $min > 0 ? (int) $min : null;
         $this->max                  = $max > 0 ? (int) $max : null;
         $this->decimalCount         = $decimalCount > 0 ? (int) $decimalCount : null;
-        $this->decimalSeparator     = $decimalSeparator ?: '.';
-        $this->thousandsSeparator   = $thousandsSeparator;
         $this->allowNegativeNumbers = (bool) $allowNegativeNumbers;
         $this->message              = $message;
         $this->messageMax           = $messageMax;
@@ -93,10 +81,7 @@ class NumericConstraint implements ConstraintInterface
     {
         $violationList = new ConstraintViolationList();
 
-        $decimalSeparator = $this->decimalSeparator ? "\\" . $this->decimalSeparator : '';
-        $thousandsSeparator = $this->thousandsSeparator ? "\\" . $this->thousandsSeparator : '';
-
-        $pattern = "/^-?\d*({$thousandsSeparator}\d{3})*({$decimalSeparator}\d+)?$/";
+        $pattern = "/^-?\d*((?:\.|,)\d+)?$/";
 
         if (!preg_match($pattern, $value, $matches)) {
             $violationList->addError($this->message);
@@ -119,8 +104,8 @@ class NumericConstraint implements ConstraintInterface
             }
         }
 
-        $numericValue = str_replace($this->thousandsSeparator, '', $value);
-        $numericValue = preg_replace("/[^0-9\-{$this->decimalSeparator}]/", '', $numericValue);
+        $numericValue = str_replace(',', '.', $value);
+        $numericValue = preg_replace("/[^0-9\-\.]/", '', $numericValue);
 
         if (!$this->allowNegativeNumbers && $numericValue < 0) {
             $violationList->addError($this->messageNegative);

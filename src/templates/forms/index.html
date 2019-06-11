@@ -11,7 +11,7 @@
 
 {% endblock %}
 
-{% set title = craft.freeform.name ~ ": " ~ ("Forms"|t('freeform')) %}
+{% set title = "Forms"|t('freeform') %}
 {% set selectedSubnavItem = "forms" %}
 
 {% set content %}
@@ -47,7 +47,14 @@
                         </code>
                     </td>
                     <td>
-                        {{ form.description|nl2br }}
+                        <div style="overflow: hidden; height: 18px;" title="{{ form.description }}">
+                            {% set desc = form.description %}
+                            {% if desc|length > 80 %}
+                                {% set desc = desc|slice(0, 80)|trim ~ "..." %}
+                            {% endif %}
+
+                            {{ desc|replace("\n", " ")|trim }}
+                        </div>
                     </td>
                     <td>
                         <a href="{{ url('freeform/submissions/' ~ form.handle) }}">

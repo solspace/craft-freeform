@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -334,6 +334,8 @@ class FormsController extends BaseController
             ];
         }
 
+        $isPro = Freeform::getInstance()->isPro();
+
         $templateVariables = [
             'form'                     => $model,
             'title'                    => $title,
@@ -357,10 +359,9 @@ class FormsController extends BaseController
             'canManageNotifications'   => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE),
             'canManageSettings'        => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
-            'isWidgetsInstalled'       => true,
-            'isRulesEnabled'           => Freeform::getInstance()->isPro(),
-            'isRecaptchaEnabled'       => Freeform::getInstance()->isPro() && $settings->recaptchaEnabled,
-            'isPaymentEnabled'         => \Craft::$app->plugins->isPluginEnabled('freeform-payments'),
+            'isRulesEnabled'           => $isPro,
+            'isRecaptchaEnabled'       => $settings->recaptchaEnabled,
+            'isPaymentEnabled'         => $isPro,
             'sourceTargets'            => $this->getEncodedJson($this->getSourceTargetsList()),
             'craftFields'              => $this->getEncodedJson($this->getCraftFields()),
             'customFields'             => $this->getEncodedJson($this->getAllCustomFieldList()),

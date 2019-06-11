@@ -59,29 +59,9 @@
     <div id="fields">
         {% for page in layout.pages %}
             <div class="field tab-content{% if not loop.first %} hidden{% endif %}" data-for-tab="{{ page.index }}">
-                {% for field in layout.hiddenFields if field.pageIndex == page.index and field.type not in ["mailing_list"] %}
-                    {% set fieldHandle = field.handle %}
-
-                    <div class="fields-row">
-                        <div class="fields-column">
-                            {% set options = {
-                                label: field.label,
-                                name: fieldHandle,
-                                id: fieldHandle,
-                                value: attribute(submission, fieldHandle),
-                                required: field.required,
-                                errors: submission.errors(fieldHandle),
-                                first: loop.index0 == 0,
-                            } %}
-
-                            {{ forms.textField(options) }}
-                        </div>
-                    </div>
-                {% endfor %}
-
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row if field.type not in ["submit", "confirmation", "password"] -%}
+                        {%- for field in row.allFields if field.type not in ["submit", "confirmation", "password"] -%}
                             <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
                                 {% set fieldHandle = field.handle %}
 
@@ -98,7 +78,7 @@
                                         first: loop.index0 == 0,
                                     } %}
 
-                                    {% if field.type in ["text", "datetime", "number", "phone", "regex", "website"] %}
+                                    {% if field.type in ["text", "hidden", "datetime", "number", "phone", "regex", "website"] %}
                                         {{ forms.textField(options|merge({
                                             placeholder: field.placeholder,
                                         })) }}
@@ -200,6 +180,38 @@
                                             </div>
                                         </div>
 
+                                    {% elseif field.type == "opinion_scale" %}
+                                        {% set field = field.setValue(value) %}
+
+                                        <div class="field">
+                                            <div class="heading">
+                                                {{ field.label }}
+                                            </div>
+                                            <div class="opinion-scale">
+                                                <ul class="opinion-scale-scales">
+                                                    {% for index, scale in field.scales %}
+                                                        <li>
+                                                            <input type="radio"
+                                                                   id="{{ field.handle ~ '-' ~ index }}"
+                                                                   name="{{ field.handle }}"
+                                                                   autocomplete="off"
+                                                                   value="{{ scale.value }}"
+                                                                    {{ field.value == scale.value ? "checked" }}
+                                                            />
+                                                            <label for="{{ field.handle ~ '-' ~ index }}">
+                                                                {{ scale.label ?? scale.value }}
+                                                            </label>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <ul class="opinion-scale-legends">
+                                                    {% for legend in field.legends %}
+                                                        <li>{{ legend.legend|t("app") }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+
                                     {% elseif field.type == "file" %}
                                         <div class="field">
                                             <div class="heading">
@@ -216,7 +228,8 @@
                                                         {% set srcset = srcset|trim(", ") %}
 
                                                         <div class="element small hasthumb">
-                                                            <input type="hidden" name="{{ field.handle }}[]" value="{{ asset.id }}">
+                                                            <input type="hidden" name="{{ field.handle }}[]"
+                                                                   value="{{ asset.id }}">
                                                             <div class="elementthumb">
                                                                 <img sizes="30px" srcset="{{ srcset }}" alt="">
                                                             </div>
@@ -339,7 +352,7 @@
         <hr>
 
     {% endif %}
-{# TODO: move to payments module #}
+    {# TODO: move to payments module #}
     {% if payments is defined %}
         <div class="meta read-only">
             <h4>Payments</h4>
@@ -354,7 +367,7 @@
             <div class="data">
                 <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
                 <div class="value">
-                  {% include 'freeform-payments/_components/fields/paymentStatus.html' with { payment: payments } %}
+                    {% include 'freeform/_components/fields/paymentStatus.html' with { payment: payments } %}
                 </div>
             </div>
 
@@ -370,14 +383,14 @@
                 </div>
             {% else %}
                 {% if payments.status == 'active' %}
-                  <div class="data">
-                      <h5 class="heading"></h5>
-                      <div class="value">
-                          <a href="{{ payments.unsubscribeUrl }}" target="_blank">
-                            {{ "Cancel Subscription"|t('freeform') }}
-                          </a>
-                      </div>
-                  </div>
+                    <div class="data">
+                        <h5 class="heading"></h5>
+                        <div class="value">
+                            <a href="{{ payments.unsubscribeUrl }}" target="_blank">
+                                {{ "Cancel Subscription"|t('freeform') }}
+                            </a>
+                        </div>
+                    </div>
                 {% endif %}
                 <div class="data">
                     <h5 class="heading">{{ "Plan"|t('freeform') }}</h5>
@@ -394,23 +407,23 @@
             {% endif %}
 
             {% if not payments.errorMessage %}
-              <div class="data">
-                  <h5 class="heading">{{ "Card Number"|t('freeform') }}</h5>
-                  <div class="value">
-                      {% include 'freeform-payments/_components/fields/paymentCard.html' with { payment: payments } %}
-                  </div>
-              </div>
+                <div class="data">
+                    <h5 class="heading">{{ "Card Number"|t('freeform') }}</h5>
+                    <div class="value">
+                        {% include 'freeform/_components/fields/paymentCard.html' with { payment: payments } %}
+                    </div>
+                </div>
             {% endif %}
 
             {% if payments.externalDashboardLink %}
-              <div class="data">
-                  <h5 class="heading"></h5>
-                  <div class="value"><a href={{ payments.externalDashboardLink }} target="_blank">
-                      {{ "See in"|t('freeform') }}
-                      {{ payments.serviceProvider|t('freeform') }}<span class="icon-link-ext"></span>
-                      </a>
-                  </div>
-              </div>
+                <div class="data">
+                    <h5 class="heading"></h5>
+                    <div class="value"><a href={{ payments.externalDashboardLink }} target="_blank">
+                            {{ "See in"|t('freeform') }}
+                            {{ payments.serviceProvider|t('freeform') }}<span class="icon-link-ext"></span>
+                        </a>
+                    </div>
+                </div>
             {% endif %}
         </div>
         <hr>

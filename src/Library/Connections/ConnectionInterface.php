@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Library\Connections;
 
+use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 
 interface ConnectionInterface
@@ -15,18 +17,20 @@ interface ConnectionInterface
     public function isConnectable(): bool;
 
     /**
-     * @param array $keyValuePairs
+     * @param Form                   $form
+     * @param TransformerInterface[] $transformers
      *
      * @return ConnectionResult
      */
-    public function validate(array $keyValuePairs): ConnectionResult;
+    public function validate(Form $form, array $transformers): ConnectionResult;
 
     /**
-     * @param array $keyValuePairs
+     * @param Form                   $form
+     * @param TransformerInterface[] $transformers
      *
      * @return ConnectionResult
      */
-    public function connect(array $keyValuePairs): ConnectionResult;
+    public function connect(Form $form, array $transformers): ConnectionResult;
 
     /**
      * @return array

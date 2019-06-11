@@ -5,12 +5,13 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\AdminNotificationProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
@@ -19,8 +20,8 @@ use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperti
 use Solspace\Freeform\Library\Composer\Components\Properties\PageProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
+use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
-use Solspace\FreeformPro\Library\Rules\RuleProperties;
 
 class Properties implements \JsonSerializable
 {
@@ -255,7 +256,7 @@ class Properties implements \JsonSerializable
      */
     public function getRuleProperties()
     {
-        if (!class_exists('Solspace\FreeformPro\Library\Rules\RuleProperties')) {
+        if (!Freeform::getInstance()->isPro()) {
             return null;
         }
 

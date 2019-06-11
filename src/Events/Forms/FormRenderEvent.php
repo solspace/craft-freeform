@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
+use RingCentral\Tests\Psr7\Str;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -29,7 +30,7 @@ class FormRenderEvent extends ArrayableEvent
         $this->form          = $form;
         $this->renderObjects = [];
 
-        parent::__construct([]);
+        parent::__construct();
     }
 
     /**
@@ -54,10 +55,17 @@ class FormRenderEvent extends ArrayableEvent
     public function getOrAttachOutputToView(): string
     {
         $isFooter = Freeform::getInstance()->settings->isFooterScripts();
+        $isForm = Freeform::getInstance()->settings->isFormScripts();
 
         $output = '';
         foreach ($this->renderObjects as $object) {
-            $output .= $object->getFormattedValueOrAttachToView($isFooter) ?? '';
+            if ($isFooter) {
+                $object->attachToView();
+            }
+
+            if ($isForm || $object instanceof StringObject) {
+                $output .= $object->getOutput();
+            }
         }
 
         return $output;

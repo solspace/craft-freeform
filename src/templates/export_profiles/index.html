@@ -1,0 +1,124 @@
+{% extends "freeform/_layouts/main" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% block actionButton %}
+
+    {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+
+        <div class="buttons">
+            {% set forms = craft.freeform.forms %}
+            {% if forms|length %}
+                {% if forms|length > 1 %}
+                    <div class="btn submit menubtn add icon">{{ "New Export Profile"|t }}</div>
+                    <div class="menu">
+                        <ul>
+                            {% for form in forms %}
+                                <li>
+                                    <a href="{{ url('freeform/export-profiles/new/'~form.handle) }}">
+                                        {% if form.color %}
+                                            <span class="color-indicator" style="background-color: {{ form.color }};"></span>
+                                        {% endif %}
+                                        {{ form.name|t }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% else %}
+                    <a class="btn submit add icon" href="{{ url('freeform/export-profiles/new/'~(forms|first).handle|default) }}">
+                        {{ "New Export Profile for {form}"|t({form: (forms|first).name}) }}
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% set title = "Export profiles"|t %}
+{% set selectedSubnavItem = "exportProfiles" %}
+
+{% set content %}
+    <div id="noexport-profiles"{% if exportProfiles %} class="hidden"{% endif %}>
+        <p>{{ "No export profiles found"|t }}</p>
+    </div>
+
+    {% if exportProfiles|length %}
+        <table id="export-profiles" class="data fullwidth collapsible">
+            <thead>
+            <th scope="col">{{ "Name"|t }}</th>
+            <th scope="col">{{ "Form"|t }}</th>
+            <th scope="col">{{ "Submissions"|t }}</th>
+            <th>{{ "Actions"|t }}</th>
+            <td class="thin"></td>
+            </thead>
+            <tbody>
+            {% for profile in exportProfiles %}
+                <tr data-id="{{ profile.id }}" data-name="{{ profile.name|t }}">
+                    <th scope="row" data-title="{{ 'Name'|t }}">
+                        {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+                            <a href="{{ url('freeform/export-profiles/' ~ profile.id) }}">
+                                {{ profile.name }}
+                            </a>
+                        {% else %}
+                            {{ profile.name }}
+                        {% endif %}
+                    </th>
+                    <td>
+                        {{ profile.formModel.name }}
+                    </td>
+                    <td>
+                        {% if profile.limit > 0 and profile.submissionCount > profile.limit %}
+                            {{ profile.limit }}
+                        {% else %}
+                            {{ profile.submissionCount }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="btngroup small file-download-list">
+                            <a data-type="excel" class="btn small">Excel</a>
+                            <a data-type="csv" class="btn small">CSV</a>
+                            <a data-type="json" class="btn small">JSON</a>
+                            <a data-type="xml" class="btn small">XML</a>
+                            <a data-type="text" class="btn small">Text</a>
+                        </div>
+                        <form method="post" style="position: absolute; left:-9999px; top: -9999px;">
+                            {{ csrfInput() }}
+                            <input type="hidden" name="type" value="csv" />
+                            <input type="hidden" name="profileId" value="{{ profile.id }}" />
+                            <input type="hidden" name="action" value="freeform/export-profiles/export" />
+                        </form>
+                    </td>
+                    <td class="thin">
+                        {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+                            <a class="delete icon" title="{{ 'Delete'|t }}" role="button"></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+{% endset %}
+
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#export-profiles',
+    noObjectsSelector: '#noexport-profiles',
+    newObjectBtnSelector: '#newprofilecontainer',
+    deleteAction: Craft.getCpUrl('freeform/export-profiles/delete'),
+    confirmDeleteMessage: '{{ "Are you sure you want to delete this profile?"|t }}'
+    });
+
+    $('.file-download-list > a').on({
+        click: function() {
+            var parent = $(this).parents(".btngroup:first");
+            var type = $(this).data('type');
+
+            parent.next().find("input[name=type]").val(type);
+            parent.next("form").submit();
+        }
+    });
+{% endjs %}

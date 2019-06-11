@@ -1,0 +1,117 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = "reCAPTCHA"|t("freeform") %}
+
+{% block content %}
+
+    <h2>{{ "reCAPTCHA"|t('freeform') }}</h2>
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/recaptcha') }}
+    {{ csrfInput() }}
+
+    {{ forms.lightswitchField({
+        label: "Enable reCAPTCHA?"|t('freeform'),
+        instructions: "Enable this to allow use of reCAPTCHA on your forms."|t('freeform'),
+        name: "settings[recaptchaEnabled]",
+        on: settings.recaptchaEnabled,
+        toggle: 'recaptcha-fields',
+        errors: settings.errors("recaptchaEnabled"),
+    }) }}
+
+    <div id="recaptcha-fields" class="field {{ not settings.recaptchaEnabled ? 'hidden' }}">
+        {% set isLite = not craft.freeform.pro %}
+        {% set opts = {
+            v2_checkbox: "reCATPCHA v2 - Checkbox",
+            v2_invisible: {
+                label: "reCAPTCHA v2 - Invisible" ~ (isLite ? " (Pro Only)"),
+                disabled: isLite,
+            },
+            v3: {
+                label: "reCAPTCHA v3" ~ (isLite ? " (Pro Only)"),
+                disabled: isLite,
+            }
+        } %}
+
+        {{ forms.selectField({
+            label: "reCAPTCHA type"|t('freeform'),
+            instructions: "Choose which type of reCAPTCHA you want to use."|t('freeform'),
+            id: "recaptcha-type",
+            name: "settings[recaptchaType]",
+            value: settings.recaptchaType,
+            errors: settings.errors("recaptchaType"),
+            options: opts,
+        }) }}
+
+        {{ forms.textField({
+            label: "reCAPTCHA Site Key"|t('freeform'),
+            name: "settings[recaptchaKey]",
+            required: true,
+            value: settings.recaptchaKey,
+            errors: settings.errors("recaptchaKey"),
+        }) }}
+
+        {{ forms.textField({
+            label: "reCAPTCHA Secret Key"|t('freeform'),
+            name: "settings[recaptchaSecret]",
+            required: true,
+            value: settings.recaptchaSecret,
+            errors: settings.errors("recaptchaSecret"),
+        }) }}
+
+        {{ forms.selectField({
+            label: "Failure Behavior"|t("freeform"),
+            name: "settings[recaptchaBehaviour]",
+            value: settings.spamFolderEnabled ? settings.recaptchaBehaviour : 'display_error',
+            errors: settings.errors("recaptchaBehaviour"),
+            options: {
+                "display_error": "Display Error"|t("freeform"),
+                "spam": {
+                    label: "Send to Freeform Spam Folder"|t("freeform"),
+                    disabled: not settings.spamFolderEnabled,
+                }
+            }
+        }) }}
+
+        <div id="min-score" class="{{ settings.recaptchaType != "v3" ? "hidden" }}">
+            {{ forms.selectField({
+                label: "reCAPTCHA Minimum Score (reCAPTCHA v3 only)"|t("freeform"),
+                instructions: "Enter the minimum score needed to pass the reCAPTCHA v3 test. 0.0 score means that it's almost certain a bot, 1.0 score means it's a user."|t("freeform"),
+                name: "settings[recaptchaMinScore]",
+                value: settings.recaptchaMinScore,
+                errors: settings.errors("recaptchaMinScore"),
+                options: {
+                    "0.0": "0.0",
+                    "0.1": "0.1",
+                    "0.2": "0.2",
+                    "0.3": "0.3",
+                    "0.4": "0.4",
+                    "0.5": "0.5",
+                    "0.6": "0.6",
+                    "0.7": "0.7",
+                    "0.8": "0.8",
+                    "0.9": "0.9",
+                    "1.0": "1.0",
+                }
+            }) }}
+        </div>
+    </div>
+
+{% endblock %}
+
+{% js %}
+    (function() {
+        var select = document.getElementById("recaptcha-type");
+        var minScore = document.getElementById("min-score");
+        select.addEventListener("change", function (event) {
+            var value = event.target.value;
+            if (value === "v3") {
+                minScore.classList.remove("hidden");
+            } else {
+                minScore.classList.add("hidden");
+            }
+        });
+    })();
+{% endjs %}

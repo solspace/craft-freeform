@@ -1,0 +1,229 @@
+{% extends "freeform/_layouts/main" %}
+{% import "_includes/forms" as forms %}
+
+{% set selectedSubnavItem = "exportProfiles" %}
+{% set saveShortcutRedirect = 'freeform/export-profiles/{id}' %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+        <input type="hidden" name="action" value="freeform/export-profiles/save">
+        <input type="hidden" name="formId" value="{{ profile.formId }}">
+        {{ redirectInput('freeform/export-profiles') }}
+        {% if profile.id %}<input type="hidden" name="profileId" value="{{ profile.id }}">{% endif %}
+        {{ csrfInput() }}
+
+        {{ forms.textField({
+            first: true,
+            label: "Name"|t,
+            instructions: "What this export profile will be called in the CP."|t,
+            id: 'name',
+            name: 'name',
+            value: profile.name,
+            errors: profile.getErrors('name'),
+            autofocus: true,
+            required: true
+        }) }}
+
+        {{ forms.checkboxSelectField({
+            label: "Statuses"|t,
+            instructions: "Select which statuses to use"|t,
+            name: 'statuses',
+            values: profile.statuses,
+            errors: profile.getErrors('statuses'),
+            options: statusOptionList,
+            required: true,
+            showAllOption: true,
+        }) }}
+
+        {{ forms.selectField({
+            label: "Date Range"|t,
+            instructions: "The date range for fetching submissions"|t,
+            id: 'dateRange',
+            name: 'dateRange',
+            value: profile.dateRange,
+            options: {
+                '': 'None',
+                'today': 'Today',
+                'yesterday': 'Yesterday',
+                7: 'Last 7 days',
+                30: 'Last 30 days',
+                365: 'Last 365 days',
+            },
+            errors: profile.getErrors('dateRange'),
+        }) }}
+
+        {{ forms.textField({
+            label: "Limit"|t,
+            instructions: "Maximum number of submissions to fetch."|t,
+            id: 'limit',
+            name: 'limit',
+            size: 3,
+            value: profile.limit,
+            errors: profile.getErrors('limit'),
+        }) }}
+
+        <hr>
+
+        <div class="field">
+            <div class="heading">
+                <label>{{ "Fields to export"|t }}</label>
+                <div class="instructions">
+                    <p>{{ "Specify the fields you wish to export and their order."|t }}</p>
+                </div>
+            </div>
+            <div class="input">
+                <table id="field-settings" class="data fullwidth collapsible">
+                    <thead>
+                    <th></th>
+                    <th width="50">{{ 'Enabled?'|t }}</th>
+                    <th>{{ 'Field Name'|t }}</th>
+                    </thead>
+                    <tbody>
+                    {% for fieldId, fieldData in profile.fieldSettings %}
+                        <tr>
+                            <td class="thin">
+                                <a class="move icon" title="{{ 'Reorder'|t }}"></a>
+                            </td>
+                            <td width="50">
+                                {{ forms.lightswitchField({
+                                    name: 'fieldSettings[' ~ fieldId ~ '][checked]',
+                                    on: fieldData.checked
+                                }) }}
+                            </td>
+                            <td>
+                                {{ fieldData.label }}
+                                <input type="hidden" name="fieldSettings[{{ fieldId }}][label]" value="{{ fieldData.label }}" />
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="field">
+            <div class="heading">
+                <label>{{ "Filters"|t }}</label>
+                <div class="instructions">
+                    <p>{{ "Add filters to narrow down your results"|t }}</p>
+                </div>
+            </div>
+            <div class="input">
+
+                <table class="shadow-box editable value-group" id="filter-table"
+                       data-type="checkbox_group">
+                    <thead>
+                    <tr>
+                        <th class="header thin filter-field">{{ "Field" }}</th>
+                        <th class="header thin filter-type">{{ "Filter Type" }}</th>
+                        <th class="header thin filter-value" colspan="2">{{ "Value" }}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for filter in profile.filters %}
+                        {% set iterator = loop.index0 %}
+
+                        <tr data-iterator="{{ iterator }}">
+                            <td width="50">
+                                <div class="select">
+                                    <select name="filters[{{ iterator }}][field]">
+                                        {% for fieldId, fieldData in profile.fieldSettings %}
+                                            <option value="{{ fieldId }}"{{ fieldId == filter.field ? ' selected' }}>
+                                                {{ fieldData.label }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </td>
+                            <td width="50">
+                                <div class="select">
+                                    {{ forms.select({
+                                        name: 'filters['~iterator~'][type]',
+                                        value: filter.type,
+                                        options: {
+                                            '=': 'Equal To'|t,
+                                            '!=': 'Not Equal To'|t,
+                                            'like': 'Like'|t,
+                                        }
+                                    }) }}
+                                </div>
+                            </td>
+                            <td class="textual">
+                                <textarea class="code" name="filters[{{ iterator }}][value]" rows="1">{{ filter.value }}</textarea>
+                            </td>
+                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+                        </tr>
+                    {% endfor %}
+                    <template>
+                        <tr data-iterator="__iterator__">
+                            <td width="50">
+                                <div class="select">
+                                    <select name="filters[__iterator__][field]">
+                                        {% for fieldId, fieldData in profile.fieldSettings %}
+                                            <option value="{{ fieldId }}">{{ fieldData.label }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </td>
+                            <td width="50">
+                                <div class="select">
+                                    {{ forms.select({
+                                        name: 'filters[__iterator__][type]',
+                                        options: {
+                                            '=': 'Equal To'|t,
+                                            '!=': 'Not Equal To'|t,
+                                            'like': 'Like'|t,
+                                        }
+                                    }) }}
+                                </div>
+                            </td>
+                            <td class="textual">
+                                <textarea class="code" name="filters[__iterator__][value]" rows="1"></textarea>
+                            </td>
+                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
+
+                <div class="btn add icon" id="add-filter">
+                    {{ addRowLabel is defined ? addRowLabel : "Add a row"|t }}
+                </div>
+
+            </div>
+        </div>
+
+    <style>
+        #filter-table textarea.code {
+            padding: 10px 9px 9px;
+        }
+
+        #filter-table textarea.code:focus {
+            padding: 10px 9px 9px;
+        }
+    </style>
+{% endblock %}

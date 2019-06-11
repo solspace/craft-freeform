@@ -7,6 +7,7 @@ use craft\elements\Entry;
 use craft\fields\BaseOptionsField;
 use craft\fields\BaseRelationField;
 use craft\models\FieldLayout;
+use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 
 class Entries extends AbstractConnection
@@ -61,11 +62,11 @@ class Entries extends AbstractConnection
     }
 
     /**
-     * @param array $keyValuePairs
+     * @param TransformerInterface[] $transformers
      *
      * @return Element
      */
-    protected function buildElement(array $keyValuePairs): Element
+    protected function buildElement(array $transformers): Element
     {
         $entry = new Entry([
             'sectionId' => $this->getSection(),
@@ -77,16 +78,9 @@ class Entries extends AbstractConnection
             $fieldLayout = new FieldLayout();
         }
 
-        foreach ($keyValuePairs as $key => $value) {
-            $field = $fieldLayout->getFieldByHandle($key);
-
-            $hasOptions = $field instanceof BaseOptionsField;
-            $hasRelations = $field instanceof BaseRelationField;
-            if (\is_array($value) && !$hasOptions && !$hasRelations) {
-                $value = reset($value);
-            }
-
-            $entry->{$key} = $value;
+        foreach ($transformers as $transformer) {
+            $field = $fieldLayout->getFieldByHandle($transformer->getCraftFieldHandle());
+            $entry->{$transformer->getCraftFieldHandle()} = $transformer->transformValueFor($field);
         }
 
         if (!$entry->slug) {
@@ -101,9 +95,9 @@ class Entries extends AbstractConnection
 
     /**
      * @param Element|Entry $element
-     * @param array         $keyValuePairs
+     * @param array         $transformers
      */
-    protected function beforeValidate(Element $element, array $keyValuePairs)
+    protected function beforeValidate(Element $element, array $transformers)
     {
         $type = $element->getType();
 
@@ -117,9 +111,9 @@ class Entries extends AbstractConnection
     /**
      * @param Element          $element
      * @param ConnectionResult $result
-     * @param array            $keyValuePairs
+     * @param array            $transformers
      */
-    protected function beforeConnect(Element $element, ConnectionResult $result, array $keyValuePairs)
+    protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers)
     {
     }
 }

@@ -4,10 +4,10 @@ namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
-use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
+use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
+use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class ConnectionsService extends BaseService
@@ -17,6 +17,10 @@ class ConnectionsService extends BaseService
      */
     public function validateConnections(FormValidateEvent $event)
     {
+        if (!Freeform::getInstance()->isPro()) {
+            return;
+        }
+
         $form = $event->getForm();
 
         $list = $form->getConnectionProperties()->getList();
@@ -25,9 +29,9 @@ class ConnectionsService extends BaseService
                 continue;
             }
 
-            $keyValuePairs = $this->getKeyValuePairs($form, $connection);
+            $keyValuePairs = $this->getTransformers($form, $connection);
 
-            $result = $connection->validate($keyValuePairs);
+            $result = $connection->validate($form, $keyValuePairs);
             if (!$result->isSuccessful()) {
                 foreach ($result->getFormErrors() as $error) {
                     $form->addError($error);
@@ -48,15 +52,17 @@ class ConnectionsService extends BaseService
      */
     public function connect(Form $form)
     {
+        if (!Freeform::getInstance()->isPro()) {
+            return;
+        }
+
         $list = $form->getConnectionProperties()->getList();
         foreach ($list as $connection) {
             if (!$connection->isConnectable()) {
                 continue;
             }
 
-            $keyValuePairs = $this->getKeyValuePairs($form, $connection);
-
-            $result = $connection->connect($keyValuePairs);
+            $result = $connection->connect($form, $this->getTransformers($form, $connection));
             if (!$result->isSuccessful()) {
                 Freeform::getInstance()->logger
                     ->getLogger(FreeformLogger::ELEMENT_CONNECTION)
@@ -71,26 +77,20 @@ class ConnectionsService extends BaseService
      *
      * @return array
      */
-    private function getKeyValuePairs(Form $form, ConnectionInterface $connection): array
+    private function getTransformers(Form $form, ConnectionInterface $connection): array
     {
-        $keyValuePairs = [];
+        $transformers = [];
 
-        foreach ($connection->getMapping() as $craftFieldName => $freeformFieldName) {
-            $field = $form->get($freeformFieldName);
+        foreach ($connection->getMapping() as $craftFieldHandle => $freeformFieldHandle) {
+            $field = $form->get($freeformFieldHandle);
             if (!$field) {
                 continue;
             }
 
-            if ($field instanceof CheckboxField) {
-                $value = $field->getValueAsString();
-            } else {
-                $value = $field->getValue();
-            }
-
-            $keyValuePairs[$craftFieldName] = $value;
+            $transformers[] = AbstractFieldTransformer::create($field, $craftFieldHandle);
         }
 
-        return $keyValuePairs;
+        return $transformers;
     }
 
 }

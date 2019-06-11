@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -78,6 +78,12 @@ class CustomFormAttributes extends AbstractAttributes
 
     /** @var int */
     protected $statusId;
+
+    /** @var string */
+    protected $submissionToken;
+
+    /** @var string */
+    protected $recaptchaAction;
 
     /**
      * @return string|null
@@ -285,5 +291,21 @@ class CustomFormAttributes extends AbstractAttributes
     public function getStatusId()
     {
         return $this->statusId;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSubmissionToken()
+    {
+        return $this->submissionToken;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRecaptchaAction()
+    {
+        return $this->recaptchaAction;
     }
 }

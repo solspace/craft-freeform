@@ -1,0 +1,89 @@
+{% extends "freeform/_layouts/settings" %}
+{% import "_includes/forms" as forms %}
+
+{% set title = "Slack"|t("freeform") %}
+
+{% set saveShortcutRedirect = 'freeform/settings/slack/{id}' %}
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t('freeform') }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ url('freeform/settings/slack/new')|hash }}">
+                            {{ "Save and add another"|t('freeform') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+    <h2>{{ blockTitle }}</h2>
+
+    <div>
+        <input type="hidden" name="action" value="freeform/slack/save">
+        {{ redirectInput('freeform/settings/slack') }}
+        {{ csrfInput() }}
+        {% if webhook.id %}
+            <input type="hidden" name="id" value="{{ webhook.id }}">
+        {% endif %}
+
+        {{ forms.textField({
+            label: "Webhook Name"|t('freeform'),
+            instructions: "A name for this webhook"|t('freeform'),
+            name: 'name',
+            value: webhook.name,
+            errors: webhook.getErrors('name'),
+            autofocus: true,
+            required: true,
+        }) }}
+
+        {{ forms.textField({
+            label: "Webhook URL"|t('freeform'),
+            instructions: "Enter the Webhook URL."|t('freeform'),
+            name: 'webhook',
+            value: webhook.webhook,
+            errors: webhook.getErrors('webhook'),
+            required: true,
+        }) }}
+
+        {{ forms.textareaField({
+            label: "Message"|t('freeform'),
+            instructions: "Enter the notification message the Slack channel should receive. (Can use {{ submission }} and {{ form }} variables)"|t('freeform'),
+            name: 'settings[message]',
+            value: webhook.settings ? webhook.settings.message : '',
+            errors: webhook.getErrors('message'),
+            required: true,
+            rows: 10,
+        }) }}
+
+        {{ forms.checkboxGroupField({
+            label: "Forms"|t('freeform'),
+            instructions: "Select which forms will trigger this webhook."|t('freeform'),
+            name: 'formIds',
+            values: formIds,
+            options: formList,
+            errors: webhook.getErrors('formIds'),
+            required: true,
+            showAllOption: true,
+        }) }}
+
+    </div>
+
+{% endblock %}

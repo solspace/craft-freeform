@@ -1,7 +1,7 @@
 {
-  "name": "solspace/craft3-freeform",
+  "name": "solspace/craft-freeform",
   "description": "The most reliable, intuitive and powerful form builder for Craft.",
-  "version": "2.5.24",
+  "version": "3.0.0-beta.1",
   "type": "craft-plugin",
   "authors": [
     {
@@ -10,14 +10,16 @@
     }
   ],
   "require": {
-    "craftcms/cms": "^3.0.0",
+    "craftcms/cms": "^3.1.21",
     "symfony/property-access": "^2.8|^3.0|^4.0",
     "symfony/finder": "^2.8|^3.0|^4.0",
     "symfony/filesystem": "^2.8|^3.0|^4.0",
     "solspace/craft3-commons": "^1.0.20",
     "hashids/hashids": "^2.0",
     "egulias/email-validator": "^2.1",
-    "nesbot/carbon": "^1.22.1"
+    "nesbot/carbon": "^1.22.1|^2.19",
+    "stripe/stripe-php": "^6.6.0",
+    "phpoffice/phpspreadsheet": "^1.6.0"
   },
   "require-dev": {
     "phpunit/phpunit": "^6.1"
@@ -28,13 +30,13 @@
     }
   },
   "extra": {
-    "schemaVersion": "2.1.3",
+    "schemaVersion": "3.0.0",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
-    "name": "Freeform Lite",
+    "name": "Freeform",
     "developer": "Solspace",
-    "developerUrl": "http://docs.solspace.com/craft/freeform/v2/",
-    "documentationUrl": "http://docs.solspace.com/craft/freeform/v2/",
+    "developerUrl": "http://docs.solspace.com/craft/freeform/v3/",
+    "documentationUrl": "http://docs.solspace.com/craft/freeform/v3/",
     "changelogUrl": "https://raw.githubusercontent.com/solspace/craft3-freeform/master/CHANGELOG.md",
     "hasSettings": true,
     "hasCpSection": true

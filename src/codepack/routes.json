@@ -10,6 +10,11 @@
     "template": "/bootstrap/view_submission"
   },
   {
+    "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/edit\\/", ["token","\\\\w+"]],
+    "urlPattern": "bootstrap/{slug}/submissions/edit/{token}",
+    "template": "/bootstrap/edit_submission"
+  },
+  {
     "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/delete\\/", ["token","\\\\w+"]],
     "urlPattern": "bootstrap/{slug}/submissions/delete/{token}",
     "template": "/bootstrap/delete_submission"
@@ -30,83 +35,13 @@
     "template": "/bootstrap/view"
   },
   {
-    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"], "\\/success"],
-    "urlPattern": "materialize/{slug}/submissions/{id}/success",
-    "template": "/materialize/view_submission"
+    "urlParts": ["custom\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "custom/{slug}",
+    "template": "/custom/form"
   },
   {
-    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"]],
-    "urlPattern": "materialize/{slug}/submissions/{id}",
-    "template": "/materialize/view_submission"
-  },
-  {
-    "urlParts": ["materialize\\/", ["slug","[^\\\\\\/]+"], "\\/submissions"],
-    "urlPattern": "materialize/{slug}/submissions",
-    "template": "/materialize/submissions"
-  },
-  {
-    "urlParts": ["materialize\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "materialize/{slug}",
-    "template": "/materialize/view"
-  },
-  {
-    "urlParts": ["materialize\\/",["slug","[^\\\\\\/]+"], "\\/success"],
-    "urlPattern": "materialize/{slug}/success",
-    "template": "/materialize/view"
-  },
-  {
-    "urlParts": ["foundation\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "foundation/{slug}",
-    "template": "/foundation/view"
-  },
-  {
-    "urlParts": ["ajax-bootstrap\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-bootstrap/{slug}",
-    "template": "/ajax/bootstrap"
-  },
-  {
-    "urlParts": ["ajax-bootstrap-source\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-bootstrap-source/{slug}",
-    "template": "/ajax/bootstrap-source"
-  },
-  {
-    "urlParts": ["ajax-foundation\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-foundation/{slug}",
-    "template": "/ajax/foundation"
-  },
-  {
-    "urlParts": ["ajax-foundation-source\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-foundation-source/{slug}",
-    "template": "/ajax/foundation-source"
-  },
-  {
-    "urlParts": ["ajax-materialize\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-materialize/{slug}",
-    "template": "/ajax/materialize"
-  },
-  {
-    "urlParts": ["ajax-materialize-source\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-materialize-source/{slug}",
-    "template": "/ajax/materialize-source"
-  },
-  {
-    "urlParts": ["ajax-flexbox\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-flexbox/{slug}",
-    "template": "/ajax/flexbox"
-  },
-  {
-    "urlParts": ["ajax-flexbox-source\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-flexbox-source/{slug}",
-    "template": "/ajax/flexbox-source"
-  },
-  {
-    "urlParts": ["ajax-grid\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-grid/{slug}",
-    "template": "/ajax/grid"
-  },
-  {
-    "urlParts": ["ajax-grid-source\\/",["slug","[^\\\\\\/]+"]],
-    "urlPattern": "ajax-grid-source/{slug}",
-    "template": "/ajax/grid-source"
+    "urlParts": ["custom\\/",["slug","[^\\\\\\/]+"], "\\/success"],
+    "urlPattern": "custom/{slug}/success",
+    "template": "/custom/form"
   }
 ]

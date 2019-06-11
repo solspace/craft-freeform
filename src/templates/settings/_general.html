@@ -2,6 +2,8 @@
 
 {% import "_includes/forms" as forms %}
 
+{% set title = "General"|t("freeform") %}
+
 {% block content %}
 
     <h2>{{ "General Settings"|t('freeform') }}</h2>
@@ -10,16 +12,20 @@
     {{ redirectInput('freeform/settings/general') }}
     {{ csrfInput() }}
 
-    {{ forms.textField({
-        class: "code",
-        label: "Custom Plugin Name"|t('freeform'),
-        instructions: "Override the plugin name by specifying your own here."|t('freeform'),
-        placeholder: craft.freeform.name,
-        id: "pluginName",
-        name: "settings[pluginName]",
-        value: settings.pluginName,
-        errors: settings.getErrors("pluginName"),
-    }) }}
+    {% if craft.freeform.pro %}
+
+        {{ forms.textField({
+            class: "code",
+            label: "Custom Plugin Name"|t('freeform'),
+            instructions: "Override the plugin name by specifying your own here."|t('freeform'),
+            placeholder: craft.freeform.name,
+            id: "pluginName",
+            name: "settings[pluginName]",
+            value: settings.pluginName,
+            errors: settings.getErrors("pluginName"),
+        }) }}
+
+    {% endif %}
 
     {{ forms.lightswitchField({
         label: "Show Composer Tutorial"|t('freeform'),
@@ -79,6 +85,14 @@
     }) }}
 
     {{ forms.lightswitchField({
+        label: "Fill Form Values from the GET Query String?"|t('freeform'),
+        instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
+        name: "settings[fillWithGet]",
+        on: settings.fillWithGet,
+        errors: settings.errors("fillWithGet"),
+    }) }}
+
+    {{ forms.lightswitchField({
         label: "Disable Submit Button on Form Submit?"|t('freeform'),
         instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
         name: "settings[formSubmitDisable]",
@@ -96,48 +110,53 @@
 
     {{ forms.selectField({
         label: "Freeform Javascript Insertion Location"|t('freeform'),
-        instructions: "The location of where you want Freeform to insert it's scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),
-        name: "settings[footerScripts]",
-        value: settings.footerScripts ? 1 : 0,
-        errors: settings.errors("footerScripts"),
+        instructions: "The location of where you want Freeform to insert its scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),
+        name: "settings[scriptInsertLocation]",
+        value: settings.scriptInsertLocation,
+        errors: settings.errors("scriptInsertLocation"),
         options: {
-            1: "Page Footer"|t('freeform'),
-            0: "Inside Form"|t('freeform'),
+            "footer": "Page Footer"|t('freeform'),
+            "form": "Inside Form"|t('freeform'),
+            "manual": "None (add manually)"|t('freeform'),
         }
     }) }}
 
     <hr>
 
-    {{ forms.lightswitchField({
-        label: "Automatically Purge Submission Data"|t('freeform'),
-        instructions: "If you wish to have Freeform automatically purge submission data after a specified number of days, enable this setting and specify the number of days after submission date it should purge submissions."|t('freeform'),
-        warning: "Enabling this and saving this settings page will result in purging beginning.",
-        name: "purge-toggle",
-        on: settings.purgableSubmissionAgeInDays,
-        toggle: "purge",
-        errors: settings.errors("purgableSubmissionAgeInDays"),
-    }) }}
+    {% if craft.freeform.pro %}
 
-    <div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
-        {{ forms.selectField({
-            label: "Days After Submission Date to Purge"|t('freeform'),
-            instructions: "Select the number of days after submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
-            name: "settings[purgableSubmissionAgeInDays]",
-            value: settings.purgableSubmissionAgeInDays,
+        {{ forms.lightswitchField({
+            label: "Automatically Purge Submission Data"|t('freeform'),
+            instructions: "If you wish to have Freeform automatically purge submission data after a specified number of days, enable this setting and specify the number of days after submission date it should purge submissions."|t('freeform'),
+            warning: "Enabling this and saving this settings page will result in purging beginning.",
+            name: "purge-toggle",
+            on: settings.purgableSubmissionAgeInDays,
+            toggle: "purge",
             errors: settings.errors("purgableSubmissionAgeInDays"),
-            id: "purge-value",
-            options: {
-                0: "Please select"|t("freeform"),
-                7: "7 days"|t("freeform"),
-                14: "14 days"|t("freeform"),
-                30: "30 days"|t("freeform"),
-                60: "60 days"|t("freeform"),
-                90: "90 days"|t("freeform"),
-                120: "120 days"|t("freeform"),
-                180: "180 days"|t("freeform"),
-                365: "365 days"|t("freeform"),
-            }
         }) }}
-    </div>
+
+        <div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
+            {{ forms.selectField({
+                label: "Days After Submission Date to Purge"|t('freeform'),
+                instructions: "Select the number of days after submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
+                name: "settings[purgableSubmissionAgeInDays]",
+                value: settings.purgableSubmissionAgeInDays,
+                errors: settings.errors("purgableSubmissionAgeInDays"),
+                id: "purge-value",
+                options: {
+                    0: "Please select"|t("freeform"),
+                    7: "7 days"|t("freeform"),
+                    14: "14 days"|t("freeform"),
+                    30: "30 days"|t("freeform"),
+                    60: "60 days"|t("freeform"),
+                    90: "90 days"|t("freeform"),
+                    120: "120 days"|t("freeform"),
+                    180: "180 days"|t("freeform"),
+                    365: "365 days"|t("freeform"),
+                }
+            }) }}
+        </div>
+
+    {% endif %}
 
 {% endblock %}

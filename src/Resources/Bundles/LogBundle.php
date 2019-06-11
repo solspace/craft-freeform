@@ -20,6 +20,6 @@ class LogBundle extends AbstractFreeformAssetBundle
      */
     public function getScripts(): array
     {
-        return ['js/cp/logs/log.js'];
+        return ['js/other/logs/log.js'];
     }
 }

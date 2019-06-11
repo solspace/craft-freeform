@@ -10,9 +10,12 @@ interface FormRenderObjectInterface
     public function getValue();
 
     /**
-     * @param bool $attachToView
-     *
-     * @return string|null
+     * Attach the object to view
      */
-    public function getFormattedValueOrAttachToView(bool $attachToView);
+    public function attachToView();
+
+    /**
+     * @return string
+     */
+    public function getOutput(): string;
 }

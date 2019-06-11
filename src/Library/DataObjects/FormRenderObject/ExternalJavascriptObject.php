@@ -5,18 +5,18 @@ namespace Solspace\Freeform\Library\DataObjects\FormRenderObject;
 class ExternalJavascriptObject extends AbstractFormRenderObject
 {
     /**
-     * @inheritDoc
+     * Attach the object to view
      */
-    public function getFormattedValueOrAttachToView(bool $attachToView)
+    public function attachToView()
     {
-        $value = $this->getValue();
+        \Craft::$app->view->registerJsFile($this->getValue());
+    }
 
-        if ($attachToView) {
-            \Craft::$app->view->registerJsFile($value);
-
-            return null;
-        }
-
-        return '<script src="' . $value . '"></script>';
+    /**
+     * @return string
+     */
+    public function getOutput(): string
+    {
+        return '<script src="' . $this->getValue() . '"></script>';
     }
 }

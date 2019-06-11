@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -31,12 +31,27 @@ interface NotificationInterface
     /**
      * @return string|null
      */
+    public function getCc();
+
+    /**
+     * @return string|null
+     */
+    public function getBcc();
+
+    /**
+     * @return string|null
+     */
     public function getReplyToEmail();
 
     /**
      * @return bool
      */
     public function isIncludeAttachmentsEnabled(): bool;
+
+    /**
+     * @return array|null
+     */
+    public function getPresetAssets();
 
     /**
      * @return string

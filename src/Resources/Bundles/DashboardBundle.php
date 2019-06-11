@@ -20,6 +20,6 @@ class DashboardBundle extends AbstractFreeformAssetBundle
      */
     public function getScripts(): array
     {
-        return ['js/cp/dashboard/integrations.js'];
+        return ['js/other/dashboard/integrations.js'];
     }
 }

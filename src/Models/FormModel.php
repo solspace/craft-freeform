@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -38,6 +38,7 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property int    $defaultStatus
  * @property int    $formTemplateId
  * @property string $optInDataStorageTargetHash
+ * @property string $limitFormSubmissions
  * @property string $color
  */
 class FormModel extends Model
@@ -79,6 +80,9 @@ class FormModel extends Model
     public $optInDataStorageTargetHash;
 
     /** @var string */
+    public $limitFormSubmissions;
+
+    /** @var string */
     public $color;
 
     /** @var Composer */
@@ -114,6 +118,7 @@ class FormModel extends Model
         $this->returnUrl                  = $form->getReturnUrl();
         $this->color                      = $form->getColor();
         $this->optInDataStorageTargetHash = $form->getOptInDataStorageTargetHash();
+        $this->limitFormSubmissions       = $form->getLimitFormSubmissions();
         $this->layoutJson                 = $composer->getComposerStateJSON();
     }
 

@@ -194,7 +194,9 @@ return [
     '2-digit number',
     'States',
     'States & Territories',
-    'Provinces',
+    'Provinces - English',
+    'Provinces - French',
+    'Provinces - Bilingual',
     'Countries',
     'Languages',
     'Numbers',
@@ -249,4 +251,5 @@ return [
     'Assets',
     'All Assets',
     'Filename',
+    '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.',
 ];

@@ -3,7 +3,9 @@
 namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 
 class FetchFieldTypes extends ArrayableEvent
@@ -44,10 +46,16 @@ class FetchFieldTypes extends ArrayableEvent
     {
         $reflectionClass = new \ReflectionClass($class);
 
+        $isPro = Freeform::getInstance()->isPro();
+
         if (
             $reflectionClass->isSubclassOf(AbstractField::class) &&
             !$reflectionClass->implementsInterface(NoStorageInterface::class)
         ) {
+            if (!$isPro && $reflectionClass->implementsInterface(ExtraFieldInterface::class)) {
+                return $this;
+            }
+
             /** @var $class AbstractField */
             $type = $class::getFieldType();
             $name = $class::getFieldTypeName();

@@ -14,10 +14,12 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
@@ -26,13 +28,14 @@ use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
+use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
-use Solspace\FreeformPro\Library\Rules\RuleProperties;
 use yii\base\Arrayable;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
@@ -42,6 +45,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const PAGE_INDEX_KEY     = 'page_index';
     const RETURN_URI_KEY     = 'formReturnUrl';
     const DEFAULT_PAGE_INDEX = 0;
+
+    const LIMIT_COOKIE    = 'cookie';
+    const LIMIT_IP_COOKIE = 'ip_cookie';
 
     /** @var int */
     private $id;
@@ -84,6 +90,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     /** @var string */
     private $optInDataStorageTargetHash;
+
+    /** @var string */
+    private $limitFormSubmissions;
 
     /** @var FormAttributes */
     private $formAttributes;
@@ -157,7 +166,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      * @param LoggerInterface                $logger
      *
      * @throws FreeformException
-     * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
+     * @throws ComposerException
      */
     public function __construct(
         Properties $properties,
@@ -265,6 +274,22 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getOptInDataStorageTargetHash()
     {
         return $this->optInDataStorageTargetHash;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getLimitFormSubmissions()
+    {
+        return $this->limitFormSubmissions;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLimitByIpCookie(): bool
+    {
+        return $this->limitFormSubmissions === self::LIMIT_IP_COOKIE;
     }
 
     /**
@@ -383,6 +408,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     }
 
     /**
+     * @return string|null
+     */
+    public function getFormTemplate()
+    {
+        return $this->formTemplate;
+    }
+
+    /**
      * @return Layout
      */
     public function getLayout(): Layout
@@ -493,22 +526,24 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             $isFormValid = false;
         }
 
-        foreach ($currentPageFields as $field) {
-            if ($field instanceof FileUploadInterface) {
-                try {
-                    $field->uploadFile();
-                } catch (FileUploadException $e) {
-                    $isFormValid = false;
+        if ($isFormValid) {
+            foreach ($currentPageFields as $field) {
+                if ($field instanceof FileUploadInterface) {
+                    try {
+                        $field->uploadFile();
+                    } catch (FileUploadException $e) {
+                        $isFormValid = false;
 
-                    $this->logger->error($e->getMessage(), ['field' => $field]);
-                } catch (\Exception $e) {
-                    $isFormValid = false;
+                        $this->logger->error($e->getMessage(), ['field' => $field]);
+                    } catch (\Exception $e) {
+                        $isFormValid = false;
 
-                    $this->logger->error($e->getMessage(), ['field' => $field]);
-                }
+                        $this->logger->error($e->getMessage(), ['field' => $field]);
+                    }
 
-                if ($field->hasErrors()) {
-                    $isFormValid = false;
+                    if ($field->hasErrors()) {
+                        $isFormValid = false;
+                    }
                 }
             }
         }
@@ -639,6 +674,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /**
      * @return bool
      */
+    public function isReachedPostingLimit(): bool
+    {
+        return $this->formHandler->isReachedPostingLimit($this);
+    }
+
+    /**
+     * @return bool
+     */
     public function isSpamFolderEnabled(): bool
     {
         return $this->formHandler->isSpamFolderEnabled() && $this->storeData;
@@ -735,8 +778,18 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             $attributes['enctype'] = 'multipart/form-data';
         }
 
-        if ($this->ajaxEnabled) {
-            $attributes['data-ff-ajaxified'] = true;
+        $attributes['data-id'] = $this->getAnchor();
+
+        if ($this->isAjaxEnabled()) {
+            $attributes['data-ajax'] = true;
+        }
+
+        if ($this->formHandler->isFormSubmitDisable()) {
+            $attributes['data-disable-submit'] = true;
+        }
+
+        if ($this->formHandler->shouldScrollToAnchor($this)) {
+            $attributes['data-scroll-to-anchor'] = $this->getAnchor();
         }
 
         $attributes         = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
@@ -850,6 +903,41 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);
             $this->setSessionCustomFormData();
+            $this->populateFromSubmission($this->customAttributes->getSubmissionToken());
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Submission|int|string|null $token
+     *
+     * @return Form
+     */
+    public function populateFromSubmission($token = null): Form
+    {
+        if (null === $token || !Freeform::getInstance()->isPro()) {
+            return $this;
+        }
+
+        $submission = Freeform::getInstance()->submissions->getSubmissionByToken($token);
+        if ($submission instanceof Submission) {
+            foreach ($this->getLayout()->getFields() as $field) {
+                if ($field instanceof DynamicRecipientField) {
+                    continue;
+                }
+
+                if (isset($submission->{$field->getHandle()})) {
+                    $submissionField = $submission->{$field->getHandle()};
+                    $value = $submissionField->getValue();
+
+                    if ($submissionField instanceof CheckboxField) {
+                        $field->setIsCheckedByPost((bool) $value);
+                    }
+
+                    $field->setValue($value);
+                }
+            }
         }
 
         return $this;
@@ -912,6 +1000,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->defaultStatus              = $formProperties->getDefaultStatus();
         $this->formTemplate               = $formProperties->getFormTemplate();
         $this->optInDataStorageTargetHash = $formProperties->getOptInDataStorageTargetHash();
+        $this->limitFormSubmissions       = $formProperties->getLimitFormSubmissions();
         $this->tagAttributes              = $formProperties->getTagAttributes();
         $this->ajaxEnabled                = $formProperties->isAjaxEnabled();
     }
@@ -929,6 +1018,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                 [
                     FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
                     FormValueContext::DATA_STATUS               => $this->customAttributes->getStatus(),
+                    FormValueContext::DATA_SUBMISSION_TOKEN     => $this->customAttributes->getSubmissionToken(),
                 ]
             )
             ->saveState();
@@ -1004,7 +1094,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /**
      * @return Properties\AdminNotificationProperties
      *
-     * @throws \Solspace\Freeform\Library\Exceptions\Composer\ComposerException
+     * @throws ComposerException
      */
     public function getAdminNotificationProperties()
     {
@@ -1019,6 +1109,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getDynamicNotificationData()
     {
         return $this->getFormValueContext()->getDynamicNotificationData();
+    }
+
+    /**
+     * Returns the assigned submission token
+     *
+     * @return string|null
+     */
+    public function getAssociatedSubmissionToken()
+    {
+        return $this->getFormValueContext()->getSubmissionIdentificator();
     }
 
     /**
@@ -1095,6 +1195,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             'defaultStatus'              => $this->defaultStatus,
             'formTemplate'               => $this->formTemplate,
             'optInDataStorageTargetHash' => $this->optInDataStorageTargetHash,
+            'limitFormSubmissions'       => $this->limitFormSubmissions,
         ];
     }
 

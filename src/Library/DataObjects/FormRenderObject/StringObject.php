@@ -5,9 +5,16 @@ namespace Solspace\Freeform\Library\DataObjects\FormRenderObject;
 class StringObject extends AbstractFormRenderObject
 {
     /**
-     * @inheritDoc
+     * Attach the object to view
      */
-    public function getFormattedValueOrAttachToView(bool $attachToView)
+    public function attachToView()
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutput(): string
     {
         return $this->getValue();
     }

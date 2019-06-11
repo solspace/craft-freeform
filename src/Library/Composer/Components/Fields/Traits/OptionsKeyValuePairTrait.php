@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
-use Solspace\Freeform\Library\Composer\Components\Fields\DynamicRecipientField;
+use Solspace\Freeform\Fields\DynamicRecipientField;
 
 trait OptionsKeyValuePairTrait
 {

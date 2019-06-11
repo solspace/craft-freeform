@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Models;
 use craft\base\Model;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
+use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
@@ -274,6 +274,12 @@ class FieldModel extends Model implements \JsonSerializable
         if ($this->type === FieldInterface::TYPE_WEBSITE) {
             $returnArray['value']       = $this->getMetaProperty('value', '');
             $returnArray['placeholder'] = $this->getMetaProperty('placeholder', '');
+        }
+
+        if ($this->type === FieldInterface::TYPE_OPINION_SCALE) {
+            $returnArray['value']       = $this->getMetaProperty('value', '');
+            $returnArray['scales'] = $this->getMetaProperty('scales', []);
+            $returnArray['legends'] = $this->getMetaProperty('legends', []);
         }
 
         if (\in_array(

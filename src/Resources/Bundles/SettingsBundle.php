@@ -12,7 +12,7 @@ class SettingsBundle extends AbstractFreeformAssetBundle
      */
     public function getScripts(): array
     {
-        return ['js/cp/settings.js'];
+        return ['js/other/settings.js'];
     }
 
     /**

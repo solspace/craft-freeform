@@ -1,0 +1,110 @@
+/* Freeform Demo Styles */
+
+body {
+  margin-top: 100px !important;
+}
+
+footer {
+  margin-top: 50px;
+  padding: 25px 0;
+}
+footer p {
+  margin-bottom: 0;
+}
+
+.navbar-brand {
+  margin-right: 25px;
+}
+.navbar-brand img {
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+}
+.navbar-nav .nav-item {
+  margin-right: 10px;
+}
+
+.nav-tabs {
+  margin: 0 0 25px 0 !important;
+}
+
+label.required:after {
+  content: "*";
+  color: #d00;
+  margin-left: 5px;
+}
+
+ul.errors.help-block {
+  padding: 0 20px;
+  margin: 0;
+}
+
+ul.errors.help-block > li {
+  font-size: 12px;
+}
+
+.submit-align-left {
+  text-align: left;
+}
+
+.submit-align-right {
+  text-align: right;
+}
+
+.submit-align-center {
+  text-align: center;
+}
+
+.submit-align-left button:not(:first-of-type),
+.submit-align-right button:not(:first-of-type),
+.submit-align-center button:not(:first-of-type) {
+  margin-left: 5px;
+}
+
+.submit-align-spread button:first-child {
+  float: left;
+}
+
+.submit-align-spread button:last-child {
+  float: right;
+}
+
+ul.errors {
+  padding: 5px 0 0 25px;
+  margin: 0;
+  display: block !important;
+}
+.has-error .form-control,
+.has-error .custom-file-label {
+  border-color: #d00 !important;
+}
+.has-error .form-check-label {
+  color: #d00
+}
+.form-check ul.errors {
+  padding: 5px 0 0 5px;
+  margin: 0;
+}
+.has-error ul.errors {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  display: inherit;
+}
+.has-error ul.errors > li {
+  font-size: 80%;
+  color: #d00;
+  margin-top: .25rem;
+}
+
+.alert.alert-danger.errors > ul, .alert.alert-danger.errors > p {
+  margin-bottom: 0 !important;
+}
+
+.alert.alert-success.form-success > p {
+  margin-bottom: 0 !important;
+}
+
+.form-control.StripeElement {
+  padding: 8px 12px 0 !important;
+}

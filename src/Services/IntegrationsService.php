@@ -11,13 +11,12 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\base\Component;
 use craft\db\Query;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\MailingListField;
-use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
+use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
@@ -27,12 +26,8 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
-use Solspace\Freeform\Models\IntegrationsQueueModel;
 use Solspace\Freeform\Records\IntegrationRecord;
-use Solspace\Freeform\Records\IntegrationsQueueRecord;
-use Solspace\FreeformPayments\Fields\CreditCardDetailsField;
-use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
-use Solspace\Freeform\Library\DataObjects\CustomerDetails;
+use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 
 class IntegrationsService extends BaseService
 {
@@ -62,12 +57,16 @@ class IntegrationsService extends BaseService
      * Pushes all emails to their respective mailing lists, if applicable
      * Does nothing otherwise
      *
-     * @param Submission $submission
+     * @param Submission      $submission
      * @param AbstractField[] $fields
      */
     public function pushToMailingLists(Submission $submission, array $fields)
     {
-        $form = $submission->getForm();
+        if (!Freeform::getInstance()->isPro()) {
+            return;
+        }
+
+        $form               = $submission->getForm();
         $mailingListHandler = Freeform::getInstance()->mailingLists;
 
         foreach ($fields as $field) {
@@ -120,9 +119,9 @@ class IntegrationsService extends BaseService
      */
     public function sendOutEmailNotifications(Submission $submission = null)
     {
-        $mailer = Freeform::getInstance()->mailer;
-        $form = $submission->getForm();
-        $fields = $form->getLayout()->getFields();
+        $mailer             = Freeform::getInstance()->mailer;
+        $form               = $submission->getForm();
+        $fields             = $form->getLayout()->getFields();
         $adminNotifications = $form->getAdminNotificationProperties();
 
         if ($adminNotifications->getNotificationId()) {
@@ -166,6 +165,10 @@ class IntegrationsService extends BaseService
      */
     public function pushToCRM(Submission $submission)
     {
+        if (!Freeform::getInstance()->isPro()) {
+            return;
+        }
+
         Freeform::getInstance()->crm->pushObject($submission);
     }
 
@@ -173,11 +176,16 @@ class IntegrationsService extends BaseService
      * Makes all payment related processing of the submission, like making payments, creating subscriptions etc.
      *
      * @param Submission $submission saved submission
+     *
      * @return bool
      */
     public function processPayments(Submission $submission)
     {
-        $form = $submission->getForm();
+        if (!Freeform::getInstance()->isPro()) {
+            return true;
+        }
+
+        $form          = $submission->getForm();
         $paymentFields = $form->getLayout()->getPaymentFields();
         if (!$paymentFields || \count($paymentFields) === 0) {
             return true; //no payment fields, so no processing needed
@@ -194,7 +202,7 @@ class IntegrationsService extends BaseService
         }
 
         $paymentGatewayHandler = Freeform::getInstance()->paymentGateways;
-        $properties = $form->getPaymentProperties();
+        $properties            = $form->getPaymentProperties();
 
         foreach ($paymentFields as $field) {
             /** @var PaymentGatewayIntegrationInterface $integration */
@@ -205,7 +213,7 @@ class IntegrationsService extends BaseService
             $paymentType          = $properties->getPaymentType();
             $paymentFieldMapping  = $properties->getPaymentFieldMapping();
             $customerFieldMapping = $properties->getCustomerFieldMapping();
-            $dynamicValues = array();
+            $dynamicValues        = [];
 
             if (\is_array($paymentFieldMapping)) {
                 foreach ($paymentFieldMapping as $key => $handle) {
@@ -240,7 +248,7 @@ class IntegrationsService extends BaseService
                 case PaymentProperties::PAYMENT_TYPE_PREDEFINED_SUBSCRIPTION:
                     $planId              = $dynamicValues[PaymentProperties::FIELD_PLAN] ?? $properties->getPlan();
                     $subscriptionDetails = new SubscriptionDetails($token, $planId, $submission->getId(), $customer);
-                    $result = $integration->processSubscription($subscriptionDetails, $properties);
+                    $result              = $integration->processSubscription($subscriptionDetails, $properties);
 
                     break;
 
@@ -258,7 +266,7 @@ class IntegrationsService extends BaseService
                     );
 
                     $planId = $planDetails->getId();
-                    $plan = $integration->fetchPlan($planId);
+                    $plan   = $integration->fetchPlan($planId);
 
                     if ($plan === false) {
                         $this->applyPaymentErrors($submission, $integration);
@@ -295,11 +303,13 @@ class IntegrationsService extends BaseService
     /**
      * Gets last error from integration and adds it to submission element
      *
-     * @param Submission $submission
+     * @param Submission                        $submission
      * @param AbstractPaymentGatewayIntegration $integration
+     *
      * @return void
      */
-    protected function applyPaymentErrors($submission, $integration) {
+    protected function applyPaymentErrors($submission, $integration)
+    {
         $error = $integration->getLastError();
         $submission->addError($error->getMessage());
     }

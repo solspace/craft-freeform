@@ -12,7 +12,7 @@ class FieldEditorBundle extends AbstractFreeformAssetBundle
      */
     public function getScripts(): array
     {
-        return ['js/cp/field-editor.js'];
+        return ['js/other/field-editor.js'];
     }
 
     /**

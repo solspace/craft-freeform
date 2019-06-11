@@ -8,16 +8,16 @@
 {% set actionUrl = 'freeform/spam-submissions/whitelist' %}
 
 {% set crumbs = [
-{ label: craft.freeform.name, url: url('freeform') },
-{ label: submission.form.name, url: url('freeform/forms/' ~ submission.form.id) },
-{ label: "Spam"|t('freeform'), url: url('freeform/spam') },
-{ label: title, url: '' },
+    { label: craft.freeform.name, url: url('freeform') },
+    { label: "Forms"|t("freeform"), url: url('freeform/forms') },
+    { label: submission.form.name, url: url('freeform/forms/' ~ submission.form.id) },
+    { label: "Spam"|t('freeform'), url: url('freeform/spam') },
 ] %}
 
 {% block actionButton %}
-<div class="buttons">
-    <div class="btngroup submit">
-        <input type="submit" class="btn submit" value="{{ 'Whitelist'|t('freeform') }}">
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Whitelist'|t('freeform') }}">
+        </div>
     </div>
-</div>
 {% endblock %}

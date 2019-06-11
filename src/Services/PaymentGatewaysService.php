@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -16,16 +16,14 @@ use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\Library\Database\PaymentGatewayHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\DataObjects\PlanObject;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Records\Pro\Payments\SubscriptionPlanRecord;
+
 //TODO: move to payments module?
-use Solspace\FreeformPayments\Records\SubscriptionPlanRecord;
 
 class PaymentGatewaysService extends AbstractIntegrationService implements PaymentGatewayHandlerInterface
 {
@@ -97,7 +95,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
      * Updates the fields of a given CRM integration
      *
      * @param AbstractPaymentGatewayIntegration $integration
-     * @param PlanObject[]          $plans
+     * @param PlanObject[]                      $plans
      *
      * @return bool
      */

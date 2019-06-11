@@ -11,8 +11,6 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
-use Solspace\FreeformPayments\Fields\CreditCardDetailsField;
-
 class PaymentProperties extends IntegrationProperties
 {
     const PAYMENT_TYPE_SINGLE                  = 'single';

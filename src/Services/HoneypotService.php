@@ -2,8 +2,6 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\base\Component;
-use craft\web\View;
 use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Freeform;
@@ -32,8 +30,9 @@ class HoneypotService extends BaseService
     public function addFormJavascript(FormRenderEvent $event)
     {
         $isHoneypotEnabled = $this->getSettingsService()->isFreeformHoneypotEnabled();
+        $isEnhanced        = $this->isEnhanced();
 
-        if ($isHoneypotEnabled) {
+        if ($isHoneypotEnabled && $isEnhanced) {
             $script = $this->getHoneypotJavascriptScript($event->getForm());
             $event->appendJsToOutput($script);
         }
@@ -60,23 +59,32 @@ class HoneypotService extends BaseService
 
         /** @var array $postValues */
         $postValues = \Craft::$app->request->post(null);
+        $isEnhanced = $this->isEnhanced();
 
-        foreach ($postValues as $key => $value) {
-            if (strpos($key, Honeypot::NAME_PREFIX) === 0) {
-                if (\in_array($key, self::$validHoneypots, true)) {
-                    return;
-                }
-
-                $honeypotList = $this->getHoneypotList();
-                foreach ($honeypotList as $honeypot) {
-                    $hasMatchingName = $key === $honeypot->getName();
-                    $hasMatchingHash = $value === $honeypot->getHash();
-                    if ($hasMatchingName && $hasMatchingHash) {
-                        self::$validHoneypots[] = $key;
-
-                        $this->removeHoneypot($honeypot);
-
+        $honeypotName = Honeypot::NAME_PREFIX;
+        if (!$isEnhanced) {
+            if (array_key_exists($honeypotName, $postValues) && $postValues[$honeypotName] === '') {
+                return;
+            }
+        } else {
+            foreach ($postValues as $key => $value) {
+                if (strpos($key, $honeypotName) === 0) {
+                    if (\in_array($key, self::$validHoneypots, true)) {
                         return;
+                    }
+
+                    $honeypotList = $this->getHoneypotList();
+                    foreach ($honeypotList as $honeypot) {
+                        $hasMatchingName = $key === $honeypot->getName();
+                        $hasMatchingHash = $value === $honeypot->getHash();
+
+                        if ($hasMatchingName && $hasMatchingHash) {
+                            self::$validHoneypots[] = $key;
+
+                            $this->removeHoneypot($honeypot);
+
+                            return;
+                        }
                     }
                 }
             }
@@ -122,15 +130,16 @@ class HoneypotService extends BaseService
      */
     private function getNewHoneypot(): Honeypot
     {
-        $honeypotList = $this->getHoneypotList();
+        $honeypot = new Honeypot($this->isEnhanced());
 
-        $newHoneypot    = new Honeypot();
-        $honeypotList[] = $newHoneypot;
+        if ($this->isEnhanced()) {
+            $honeypotList   = $this->getHoneypotList();
+            $honeypotList[] = $honeypot;
+            $honeypotList   = $this->weedOutOldHoneypots($honeypotList);
+            $this->updateHoneypotList($honeypotList);
+        }
 
-        $honeypotList = $this->weedOutOldHoneypots($honeypotList);
-        $this->updateHoneypotList($honeypotList);
-
-        return $newHoneypot;
+        return $honeypot;
     }
 
     /**
@@ -138,7 +147,11 @@ class HoneypotService extends BaseService
      */
     private function getHoneypotList(): array
     {
-        $sessionHoneypotList = json_decode(\Craft::$app->session->get(self::FORM_HONEYPOT_KEY, '[]'), true);
+        $sessionHoneypotList = \GuzzleHttp\json_decode(
+            \Craft::$app->session->get(self::FORM_HONEYPOT_KEY, '[]'),
+            true
+        );
+
         if (!empty($sessionHoneypotList)) {
             foreach ($sessionHoneypotList as $index => $unserialized) {
                 $sessionHoneypotList[$index] = Honeypot::createFromUnserializedData($unserialized);
@@ -155,6 +168,10 @@ class HoneypotService extends BaseService
      */
     private function weedOutOldHoneypots(array $honeypotList): array
     {
+        if (!$this->isEnhanced()) {
+            return [];
+        }
+
         $cleanList = array_filter(
             $honeypotList,
             function (Honeypot $honeypot) {
@@ -205,7 +222,10 @@ class HoneypotService extends BaseService
      */
     private function updateHoneypotList(array $honeypotList)
     {
-        \Craft::$app->session->set(self::FORM_HONEYPOT_KEY, json_encode($honeypotList));
+        \Craft::$app->session->set(
+            self::FORM_HONEYPOT_KEY,
+            \GuzzleHttp\json_encode($honeypotList)
+        );
     }
 
     /**
@@ -226,17 +246,26 @@ class HoneypotService extends BaseService
 
         $honeypot     = $this->getHoneypot($form);
         $honeypotName = $honeypot->getName();
-        $output       = '<input '
+        $output       = '<input aria-hidden="true" '
             . 'type="text" '
-            . 'value="' . $hash . '" '
+            . 'value="' . ($this->isEnhanced() ? $hash : '') . '" '
             . 'name="' . $honeypotName . '" '
             . 'id="' . $honeypotName . '" '
             . '/>';
 
         $output = '<div style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true">'
-            . '<label for="' . $honeypotName . '">Leave this field blank</label>'
+            . '<label aria-hidden="true" for="' . $honeypotName . '">Leave this field blank</label>'
             . $output
             . '</div>';
+
         return $output;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isEnhanced(): bool
+    {
+        return $this->getSettingsService()->isFreeformHoneypotEnhanced();
     }
 }

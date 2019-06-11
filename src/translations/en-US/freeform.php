@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -44,6 +44,8 @@ return [
     'The unique name used to identify this integration.'                                                                                                                                                                                                                                                     => 'The unique name used to identify this integration.',
     'Service Provider'                                                                                                                                                                                                                                                                                       => 'Service Provider',
     'Upgrade to Pro to enable'                                                                                                                                                                                                                                                                               => 'Upgrade to Pro to enable',
+    'Requires Pro version'                                                                                                                                                                                                                                                                                   => 'Requires Pro version',
+    '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.'                                                                                                                                                                                                                          => '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.',
     'Are you sure you want to remove the “{name}” integration?'                                                                                                                                                                                                                                              => 'Are you sure you want to remove the “{name}” integration?',
     'Authorized'                                                                                                                                                                                                                                                                                             => 'Authorized',
     'Not able to authorize.'                                                                                                                                                                                                                                                                                 => 'Not able to authorize.',
@@ -91,7 +93,6 @@ return [
     'Create a new form'                                                                                                                                                                                                                                                                                      => 'Create a new form',
     'Editing: {title}'                                                                                                                                                                                                                                                                                       => 'Editing: {title}',
     'Forms'                                                                                                                                                                                                                                                                                                  => 'Forms',
-    'Solspace Freeform: Forms - {title}'                                                                                                                                                                                                                                                                     => 'Solspace Freeform: Forms - {title}',
     'No form ID specified'                                                                                                                                                                                                                                                                                   => 'No form ID specified',
     'No forms found'                                                                                                                                                                                                                                                                                         => 'No forms found',
     'Form with ID {id} not found'                                                                                                                                                                                                                                                                            => 'Form with ID {id} not found',
@@ -119,8 +120,16 @@ return [
     'The email address that the email will appear from in your email notification.'                                                                                                                                                                                                                          => 'The email address that the email will appear from in your email notification.',
     'The name that the email will appear from in your email notification.'                                                                                                                                                                                                                                   => 'The name that the email will appear from in your email notification.',
     "The reply-to email address for your email notification. Leave blank to use 'From Email' address."                                                                                                                                                                                                       => "The reply-to email address for your email notification. Leave blank to use 'From Email' address.",
-    'The content of the email notification. See documentation for availability of variables.'                                                                                                                                                                                                                => 'The content of the email notification. See documentation for availability of variables.',
-
+    "CC" => "CC",
+    "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use." => "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use.",
+    "BCC" => "BCC",
+    "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use." => "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use.",
+    'Email Body (HTML)' => 'Email Body (HTML)',
+    'Email Body (Text)' => 'Email Body (Text)',
+    'The HTML content of the email notification. If you wish to use Text only, leave this empty and fill out the Text body (below). See documentation for availability of variables.'                                                                                                                        => 'The HTML content of the email notification. If you wish to use Text only, leave this empty and fill out the Text body (below). See documentation for availability of variables.',
+    'The text content of the email notification. If you wish to send out both HTML and Text options, fill out both the HTML and Text body fields. See documentation for availability of variables.'                                                                                                          => 'The text content of the email notification. If you wish to send out both HTML and Text options, fill out both the HTML and Text body fields. See documentation for availability of variables.',
+    'Predefined Assets' => 'Predefined Assets',
+    'Select any Assets you wish to include as attachments on all email notifications using this template.' => 'Select any Assets you wish to include as attachments on all email notifications using this template.',
 
     // Settings controller
     'Settings'                                                                                                                                                                                                                                                                                               => 'Settings',
@@ -129,7 +138,6 @@ return [
     'No template name specified'                                                                                                                                                                                                                                                                             => 'No template name specified',
     'No custom template directory specified in settings'                                                                                                                                                                                                                                                     => 'No custom template directory specified in settings',
     'Add a sample template'                                                                                                                                                                                                                                                                                  => 'Add a sample template',
-    'Solspace Freeform: Demo Templates'                                                                                                                                                                                                                                                                      => 'Solspace Freeform: Demo Templates',
     'Demo Templates'                                                                                                                                                                                                                                                                                         => 'Demo Templates',
     'No demo templates present'                                                                                                                                                                                                                                                                              => 'No demo templates present',
     'Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>'                                                                                                                                                                                                                         => 'Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>',
@@ -151,8 +159,23 @@ return [
     'The display order for the list of available fields in Composer.'                                                                                                                                                                                                                                        => 'The display order for the list of available fields in Composer.',
     'Show Composer Tutorial'                                                                                                                                                                                                                                                                                 => 'Show Composer Tutorial',
     'Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped.'                                                                                                                                                                 => 'Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped.',
-    'Render HTML in inside Composer & Submissions view?'                                                                                                                                                                                                                                                     => 'Render HTML in inside Composer & Submissions view?',
+    'Render HTML inside Composer & Submissions view?'                                                                                                                                                                                                                                                     => 'Render HTML inside Composer & Submissions view?',
     'Live rendering HTML in HTML blocks, field labels and option labels inside the Composer interface can sometimes conflict with Freeform\'s display of the form preview inside the control panel. In cases like these, you\'ll need to disable this setting to prevent HTML from rendering automatically.' => 'Live rendering HTML in HTML blocks, field labels and option labels inside the Composer interface can sometimes conflict with Freeform\'s display of the form preview inside the control panel. In cases like these, you\'ll need to disable this setting to prevent HTML from rendering automatically.',
+    'Include Default Freeform Formatting Templates' => 'Include Default Freeform Formatting Templates',
+    'Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer.' => 'Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer.',
+    'Remove Newlines from Textareas for Exporting' => 'Remove Newlines from Textareas for Exporting',
+    'Enable this to have newlines removed from Textarea fields in submissions when exporting.' => 'Enable this to have newlines removed from Textarea fields in submissions when exporting.',
+    'Fill Form Values from the GET Query String?' => 'Fill Form Values from the GET Query String?',
+    'Enable this to be able to fill form field values from a GET query string in URI.' => 'Enable this to be able to fill form field values from a GET query string in URI.',
+    'Disable Submit Button on Form Submit?' => 'Disable Submit Button on Form Submit?',
+    'Enable this to automatically disable the form\'s submit button when the form is submitted. This will prevent the form from double-submitting.' => 'Enable this to automatically disable the form\'s submit button when the form is submitted. This will prevent the form from double-submitting.',
+    'Automatically Scroll to Form on Errors and Multipage forms?' => 'Automatically Scroll to Form on Errors and Multipage forms?',
+    'Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms.' => 'Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms.',
+    'Freeform Javascript Insertion Location' => 'Freeform Javascript Insertion Location',
+    'The location of where you want Freeform to insert its scripts for form and field functionality. This setting should be set to \'Inside Form\' to work with AJAX.' => 'The location of where you want Freeform to insert its scripts for form and field functionality. This setting should be set to \'Inside Form\' to work with AJAX.',
+    'Page Footer' => 'Page Footer',
+    'Inside Form' => 'Inside Form',
+    'None (add manually)' => 'None (add manually)',
 
 
     // Statuses controller
@@ -358,6 +381,11 @@ return [
     'Opt-In Data Storage Checkbox'                                                                                                                                                                                                     => 'Opt-In Data Storage Checkbox',
     'Allow users to decide whether the submission data is saved to your site or not.'                                                                                                                                                  => 'Allow users to decide whether the submission data is saved to your site or not.',
     'Disabled'                                                                                                                                                                                                                         => 'Disabled',
+    'Limit Form Submission Rate'                                                                                                                                                                                                       => 'Limit Form Submission Rate',
+    'Limit the number of times a user can submit the form.'                                                                                                                                                                            => 'Limit the number of times a user can submit the form.',
+    'Do not limit'                                                                                                                                                                                                                     => 'Do not limit',
+    'Once per Cookie only'                                                                                                                                                                                                             => 'Once per Cookie only',
+    'Once per IP/Cookie combo'                                                                                                                                                                                                         => 'Once per IP/Cookie combo',
     'Form Color'                                                                                                                                                                                                                       => 'Form Color',
     'Used for Widget Charts'                                                                                                                                                                                                           => 'Used for Widget Charts',
     'Description / Notes'                                                                                                                                                                                                              => 'Description / Notes',
@@ -484,17 +512,20 @@ return [
     'Confirm'                                                                                                                                  => 'Confirm',
     'Password'                                                                                                                                 => 'Password',
 
-    'States'               => 'States',
-    'States & Territories' => 'States & Territories',
-    'Provinces'            => 'Provinces',
-    'Countries'            => 'Countries',
-    'Languages'            => 'Languages',
-    'Currencies'           => 'Currencies',
-    'Numbers'              => 'Numbers',
-    'Years'                => 'Years',
-    'Months'               => 'Months',
-    'Days'                 => 'Days',
-    'Days of Week'         => 'Days of Week',
+    'States'                => 'States',
+    'States & Territories'  => 'States & Territories',
+    'Provinces'             => 'Provinces',
+    'Provinces - English'   => 'Provinces - English',
+    'Provinces - French'    => 'Provinces - French',
+    'Provinces - Bilingual' => 'Provinces - Bilingual',
+    'Countries'             => 'Countries',
+    'Languages'             => 'Languages',
+    'Currencies'            => 'Currencies',
+    'Numbers'               => 'Numbers',
+    'Years'                 => 'Years',
+    'Months'                => 'Months',
+    'Days'                  => 'Days',
+    'Days of Week'          => 'Days of Week',
 
     'The notification template used to send an email to the email value entered into this field (optional).' => 'The notification template used to send an email to the email value entered into this field (optional).',
     'Select a template...'                                                                                   => 'Select a template...',
@@ -627,4 +658,23 @@ return [
     // Front End
     'Form has been submitted successfully!'                                                                                       => 'Form has been submitted successfully!',
     'Error! Please review the form and try submitting again.'                                                                     => 'Error! Please review the form and try submitting again.',
+
+    // Payments
+    'Subscription not found'                                                                                                      => 'Subscription not found',
+    'Error during subscription cancellation'                                                                                      => 'Error during subscription cancellation',
+    'Unsubscribed successfully'                                                                                                   => 'Unsubscribed successfully',
+    'Invalid integration'                                                                                                         => 'Invalid integration',
+    'Integration is not configured properly'                                                                                      => 'Integration is not configured properly',
+    'Invalid payload'                                                                                                             => 'Invalid payload',
+    'Invalid signature'                                                                                                           => 'Invalid signature',
+    'Event is not linked to freeform submission'                                                                                  => 'Event is not linked to freeform submission',
+    'Fix Missing Payments'                                                                                                        => 'Fix Missing Payments',
+    'Form does not contain payment fields'                                                                                        => 'Form does not contain payment fields',
+    'Payments are not set up for the form'                                                                                        => 'Payments are not set up for the form',
+    'No submissions found'                                                                                                        => 'No submissions found',
+
+    'Payment gateway is not configured!'   => 'Payment gateway is not configured!',
+    'Payment type is not configured!'      => 'Payment type is not configured!',
+    'Payment amount is not configured!'    => 'Payment amount is not configured!',
+    'Subscription plan is not configured!' => 'Subscription plan is not configured!',
 ];

@@ -1,0 +1,5 @@
+{% set last4 = 'N/A' %}
+{% if payment and payment.last4 %}
+  {% set last4 = '•••• ' ~ payment.card %}
+{% endif %}
+{{ last4 }}

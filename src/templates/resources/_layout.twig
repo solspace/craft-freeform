@@ -1,0 +1,26 @@
+{% extends "_layouts/cp" %}
+
+{% set selectedSubnavItem = "resources" %}
+
+{% set selectedHandle = craft.app.request.segment(3) ?? "community" %}
+{% set sidebarItems = {
+    community: "Community",
+    explore: "Explore",
+    support: "Support",
+} %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for handle, name in sidebarItems %}
+                <li>
+                    <a href="{{ url('freeform/resources/'~handle) }}"
+                       class="{{ handle == selectedHandle ? "sel" }}"
+                    >
+                        {{ name|t('express-forms') }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

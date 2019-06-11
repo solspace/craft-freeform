@@ -3,18 +3,14 @@
 {{ form.renderTag }}
 
 {% if form.pages|length > 1 %}
-
-    <ul class="menu pagemenu">
+    <ul class="menu">
         {% for page in form.pages %}
-            <li class="{{ form.currentPage.index == page.index ? "active" : "" }}">
-                {% if form.currentPage.index == page.index %}
-                    <a href="javascript:;" class="is-active">{{ page.label }}</a>
-                {% else %}
-                    <a href="javascript:;">{{ page.label }}</a>
-                {% endif %}
+            <li class="menu-text{{ form.currentPage.index == page.index ? ' is-active' : '' }}">
+                {{ page.label }}
             </li>
         {% endfor %}
     </ul>
+    <br />
 {% endif %}
 
 {% if form.hasErrors %}
@@ -31,8 +27,9 @@
     </div>
 {% endif %}
 
+<div class="grid-container">
 {% for row in form %}
-    <div class="row {{ form.customAttributes.rowClass }}">
+    <div class="grid-x grid-padding-x {{ form.customAttributes.rowClass }}">
         {% for field in row %}
             {% set width = (12 / (row|length)) %}
 
@@ -46,7 +43,7 @@
                 {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
             {% endif %}
 
-            <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
+            <div class="{{ columnClass }} cell"{{ field.rulesHtmlData }}>
 
                 {% if field.type == "checkbox_group" %}
 
@@ -130,12 +127,12 @@
                     }) }}
 
                     {% for layoutRow in field.layoutRows %}
-                        <div class="row {{ form.customAttributes.rowClass }}">
+                        <div class="grid-x grid-padding-x {{ form.customAttributes.rowClass }}">
                             {% set layoutWidth = (12 / (layoutRow|length)) %}
                             {% set columnClass = columnClass|replace(' medium-' ~ width) %}
                             {% set columnClass = columnClass ~ " medium-" ~ layoutWidth %}
                             {% for layoutField in layoutRow %}
-                                <div class="{{ columnClass }}">
+                                <div class="{{ columnClass }} cell">
                                     {{ layoutField.renderLabel({
                                         labelClass: (layoutField.required ? " required" : ""),
                                         instructionsClass: "help-text",
@@ -184,79 +181,27 @@
         {% endfor %}
     </div>
 {% endfor %}
-
+</div>
 
 {{ form.renderClosingTag }}
 
 <script>
-  window.renderFormSuccess = function(form) {
-    const successMessage = document.createElement("div");
-    successMessage.classList.add("callout", "success");
+  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+  if (form) {
+    form.addEventListener("freeform-ready", function (event) {
+      var freeform = event.target.freeform;
 
-    const paragraph = document.createElement("p");
-    paragraph.appendChild(document.createTextNode("{{ "Form has been submitted successfully!"|t('freeform') }}"));
+      freeform.setOption("errorClassBanner", ["callout", "alert", "form-errors"]);
+      freeform.setOption("errorClassList", ["errors"]);
+      freeform.setOption("errorClassField", "has-error");
+      freeform.setOption("successClassBanner", ["callout", "success"]);
+    })
 
-    successMessage.appendChild(paragraph);
-
-    form.insertBefore(successMessage, form.childNodes[0]);
-  };
-
-  window.renderErrors = function(errors, form) {
-    for (const key in errors) {
-      if (!errors.hasOwnProperty(key)) {
-        continue;
+    form.addEventListener("freeform-stripe-styling", (event) => {
+      event.detail.base = {
+        fontSize: "16px",
+        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
       }
-
-      const messages = errors[key];
-      const errorsList = document.createElement("ul");
-      errorsList.classList.add("errors");
-
-      for (const message of messages) {
-        const listItem = document.createElement("li");
-        listItem.appendChild(document.createTextNode(message));
-        errorsList.appendChild(listItem);
-      }
-
-
-      const inputList = form.querySelectorAll("*[name=" + key + "], *[name='" + key + "[]']");
-      for (const input of inputList) {
-        input.parentElement.classList.add("has-error");
-        input.parentElement.appendChild(errorsList);
-      }
-    }
-  };
-
-  window.renderFormErrors = function (errors, form) {
-    const errorBlock = document.createElement("div");
-    errorBlock.classList.add("callout", "alert", "form-errors");
-    errorBlock.appendChild(document.createTextNode("{{ "Error! Please review the form and try submitting again."|t('freeform') }}"));
-
-    if (errors.length) {
-      const errorsList = document.createElement("ul");
-      for (const message of errors) {
-        const listItem = document.createElement("li");
-        listItem.appendChild(document.createTextNode(message));
-        errorsList.appendChild(listItem);
-      }
-
-      errorBlock.appendChild(errorsList);
-    }
-
-    form.insertBefore(errorBlock, form.childNodes[0]);
-  };
-
-
-  window.removeMessages = (form) => {
-    // Remove any existing errors that are being shown
-    form.querySelectorAll(".errors").remove();
-    const fieldsWithErrors = form.querySelectorAll(".has-error");
-    for (let fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
-      const field = fieldsWithErrors[fieldIndex];
-      field.classList.remove("has-error");
-    }
-
-    // Remove success messages
-    form.querySelectorAll(".callout.success").remove();
-    form.querySelectorAll(".callout.form-errors").remove();
+    })
   }
 </script>

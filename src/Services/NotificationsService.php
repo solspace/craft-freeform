@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -137,7 +137,6 @@ class NotificationsService extends BaseService
         // Replace all &nbsp; occurrences with a blank space, since it might mess up
         // Twig parsing. These non-breakable spaces are caused by the HTML editor
         $record->bodyHtml = str_replace('&nbsp;', ' ', $record->bodyHtml);
-        $record->bodyText = $record->bodyHtml;
 
         $this->trigger(self::EVENT_BEFORE_SAVE, new SaveEvent($record, $isNew));
 

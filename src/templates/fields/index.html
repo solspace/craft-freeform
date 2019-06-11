@@ -13,7 +13,7 @@
 
 {% endblock %}
 
-{% set title = craft.freeform.name ~ ": " ~ ("Fields"|t('freeform')) %}
+{% set title = "Fields"|t('freeform') %}
 
 {% set content %}
     <div id="nofields"{% if fields %} class="hidden"{% endif %}>

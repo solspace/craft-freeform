@@ -18,6 +18,8 @@ interface ExternalOptionsInterface extends OptionsInterface
     const PREDEFINED_NUMBERS            = 'numbers';
     const PREDEFINED_YEARS              = 'years';
     const PREDEFINED_PROVINCES          = 'provinces';
+    const PREDEFINED_PROVINCES_FR       = 'provinces_fr';
+    const PREDEFINED_PROVINCES_BIL      = 'provinces_bil';
     const PREDEFINED_STATES             = 'states';
     const PREDEFINED_STATES_TERRITORIES = 'states_territories';
     const PREDEFINED_COUNTRIES          = 'countries';

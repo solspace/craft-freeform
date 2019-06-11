@@ -3,12 +3,14 @@
 {% set selectedSubnavItem = 'settings' %}
 {% set fullPageForm = true %}
 
-{% set title = craft.freeform.name ~ " " ~ ("Settings"|t('freeform')) %}
-
 {% set navItems = craft.freeform.settingsNavigation %}
 
 {% set selectedItem = craft.app.request.getSegment(3)|default %}
-{% set docTitle = navItems[selectedItem].title~' - '~title %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Settings"|t("freeform"), url: url("freeform/settings") },
+] %}
 
 {% block actionButton %}
     <div class="buttons">

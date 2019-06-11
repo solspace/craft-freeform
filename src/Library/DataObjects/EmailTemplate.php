@@ -5,14 +5,14 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\DataObjects;
 
-use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 
 class EmailTemplate
 {
@@ -37,10 +37,19 @@ class EmailTemplate
     private $fromName;
 
     /** @var string */
+    private $cc;
+
+    /** @var string */
+    private $bcc;
+
+    /** @var string */
     private $replyToEmail;
 
     /** @var bool */
     private $includeAttachments;
+
+    /** @var array */
+    private $presetAssets = [];
 
     /** @var string */
     private $subject;
@@ -59,25 +68,28 @@ class EmailTemplate
 
         $this->handle = pathinfo($filePath, PATHINFO_FILENAME);
 
-        $name = $this->getMetadata("templateName", false);
+        $name = $this->getMetadata('templateName');
         if (!$name) {
             $name = StringHelper::camelize(StringHelper::humanize(pathinfo($filePath, PATHINFO_FILENAME)));
         }
 
         $this->name = $name;
 
-        $this->description  = $this->getMetadata("description", false);
-        $this->fromEmail    = $this->getMetadata("fromEmail", true);
-        $this->fromName     = $this->getMetadata("fromName", true);
-        $this->replyToEmail = $this->getMetadata("replyToEmail", false);
-        $this->subject      = $this->getMetadata("subject", true);
+        $this->description  = $this->getMetadata('description');
+        $this->fromEmail    = $this->getMetadata('fromEmail', true);
+        $this->fromName     = $this->getMetadata('fromName', true);
+        $this->cc           = $this->getMetadata('cc');
+        $this->bcc          = $this->getMetadata('bcc');
+        $this->replyToEmail = $this->getMetadata('replyToEmail');
+        $this->subject      = $this->getMetadata('subject', true);
         $this->body         = preg_replace("/{#.*#}\n?/", "", $this->templateData);
 
-        $includeAttachments = $this->getMetadata("includeAttachments", false);
-        if ($includeAttachments && strtolower($includeAttachments === "true")) {
-            $includeAttachments = true;
-        } else {
-            $includeAttachments = false;
+        $includeAttachments = $this->getMetadata('includeAttachments');
+        $this->includeAttachments = $includeAttachments && strtolower($includeAttachments) === 'true';
+
+        $presetAssets = $this->getMetadata('presetAssets');
+        if ($presetAssets) {
+            $this->presetAssets = StringHelper::extractSeparatedValues($presetAssets);
         }
 
         $this->includeAttachments = $includeAttachments;
@@ -126,6 +138,22 @@ class EmailTemplate
     /**
      * @return string
      */
+    public function getCc()
+    {
+        return $this->cc;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBcc()
+    {
+        return $this->bcc;
+    }
+
+    /**
+     * @return string
+     */
     public function getReplyToEmail()
     {
         return $this->replyToEmail;
@@ -137,6 +165,14 @@ class EmailTemplate
     public function isIncludeAttachments()
     {
         return $this->includeAttachments;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPresetAssets()
+    {
+        return $this->presetAssets;
     }
 
     /**
@@ -165,7 +201,7 @@ class EmailTemplate
     private function getMetadata($key, $required = false)
     {
         $value   = null;
-        $pattern = str_replace("__KEY__", $key, self::METADATA_PATTERN);
+        $pattern = str_replace('__KEY__', $key, self::METADATA_PATTERN);
 
         if (preg_match($pattern, $this->templateData, $matches)) {
             list ($_, $value) = $matches;

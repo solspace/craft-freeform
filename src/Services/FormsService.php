@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use craft\helpers\Template;
+use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
@@ -25,7 +26,6 @@ use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\SubmitField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -47,6 +47,9 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     /** @var array */
     private static $spamCountIncrementedForms = [];
+
+    /** @var array */
+    private static $postingLimitCache = [];
 
     /**
      * @return FormModel[]
@@ -188,6 +191,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         $record->formTemplateId             = $model->formTemplateId;
         $record->color                      = $model->color;
         $record->optInDataStorageTargetHash = $model->optInDataStorageTargetHash;
+        $record->limitFormSubmissions       = $model->limitFormSubmissions;
 
         $record->validate();
         $model->addErrors($record->getErrors());
@@ -427,33 +431,133 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @param FormRenderEvent $event
      */
-    public function addFormDisabledJavascript(FormRenderEvent $event)
+    public function addFormPluginJavascript(FormRenderEvent $event)
     {
-        if ($this->getSettingsService()->isFormSubmitDisable()) {
-            // Add the form submit disable logic
-            $formSubmitJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form/submit-disabler.js');
-            $event->appendJsToOutput(
-                $formSubmitJs,
-                [
-                    'formAnchor'     => $event->getForm()->getAnchor(),
-                    'prevButtonName' => SubmitField::PREVIOUS_PAGE_INPUT_NAME,
-                ]
+        static $pluginLoaded;
+
+        if (null === $pluginLoaded) {
+            $pluginJs = file_get_contents(
+                \Yii::getAlias('@freeform') . '/Resources/js/other/front-end/plugin/freeform.js'
             );
+
+            $event->appendJsToOutput($pluginJs);
+            $pluginLoaded = true;
+        }
+
+        $attachJs = file_get_contents(
+            \Yii::getAlias('@freeform') . '/Resources/js/other/front-end/plugin/attach-to-form.js'
+        );
+
+        $form = $event->getForm();
+        $event->appendJsToOutput($attachJs, ['formAnchor' => $form->getAnchor()]);
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    public function shouldScrollToAnchor(Form $form): bool
+    {
+        return $this->getSettingsService()->isAutoScrollToErrors() && $form->isFormPosted();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFormSubmitDisable(): bool
+    {
+        return $this->getSettingsService()->isFormSubmitDisable();
+    }
+
+    /**
+     * @param FormValidateEvent $event
+     */
+    public function checkReachedPostingLimit(FormValidateEvent $event)
+    {
+        $form = $event->getForm();
+
+        if ($this->isReachedPostingLimit($form) && !$form->getAssociatedSubmissionToken()) {
+            $form->addError(Freeform::t("Sorry, you've already submitted this form."));
         }
     }
 
     /**
-     * @param FormRenderEvent $event
+     * @param Form $form
+     *
+     * @return bool
      */
-    public function addFormAnchorJavascript(FormRenderEvent $event)
+    public function isReachedPostingLimit(Form $form): bool
     {
-        $form       = $event->getForm();
-        $autoScroll = $this->getSettingsService()->isAutoScrollToErrors();
+        if (!isset(self::$postingLimitCache[$form->getId()])) {
+            $limitFormSubmissions = $form->getLimitFormSubmissions();
+            if (!$limitFormSubmissions) {
+                self::$postingLimitCache[$form->getId()] = false;
 
-        if ($autoScroll && $form->getAnchor() && $form->isFormPosted()) {
-            $invalidFormJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/cp/form-frontend/form/form-jump-to-anchor.js');
-            $event->appendJsToOutput($invalidFormJs, ['formAnchor' => $form->getAnchor()]);
+                return false;
+            }
+
+            if ($form->isLimitByIpCookie() && $this->isSubmittedByIp($form)) {
+                self::$postingLimitCache[$form->getId()] = true;
+
+                return true;
+            }
+
+            $name       = $this->getPostingLimitCookieName($form);
+            $postedTime = $_COOKIE[$name] ?? '';
+
+            self::$postingLimitCache[$form->getId()] = (bool) $postedTime;
         }
+
+        return self::$postingLimitCache[$form->getId()];
+    }
+
+    /**
+     * @param Form $form
+     */
+    public function setPostedCookie(Form $form)
+    {
+        $name  = $this->getPostingLimitCookieName($form);
+        $value = time();
+        setcookie(
+            $name,
+            $value,
+            time() + strtotime('+1 year'),
+            '/',
+            \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
+            true,
+            true
+        );
+        $_COOKIE[$name] = $value;
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    public function isSubmittedByIp(Form $form): bool
+    {
+        $submissions = Submission::TABLE;
+        $query       = (new Query())
+            ->select(["$submissions.[[id]]"])
+            ->from($submissions)
+            ->where([
+                'isSpam' => false,
+                'formId' => $form->getId(),
+                'ip'     => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
+            ])
+            ->limit(1);
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $elements = Element::tableName();
+            $query->innerJoin(
+                $elements,
+                "$elements.[[id]] = $submissions.[[id]] AND $elements.[[dateDeleted]] IS NULL"
+            );
+        }
+
+        return (bool) $query->scalar();
     }
 
     /**
@@ -589,5 +693,15 @@ class FormsService extends BaseService implements FormHandlerInterface
     private function createForm(array $data): FormModel
     {
         return new FormModel($data);
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return string
+     */
+    private function getPostingLimitCookieName(Form $form): string
+    {
+        return 'form_posted_' . $form->getId();
     }
 }

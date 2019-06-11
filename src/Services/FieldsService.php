@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -23,21 +23,31 @@ use Solspace\Freeform\Events\Fields\DeleteEvent;
 use Solspace\Freeform\Events\Fields\FetchFieldTypes;
 use Solspace\Freeform\Events\Fields\SaveEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
+use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Fields\CheckboxGroupField;
+use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Fields\EmailField;
+use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\HiddenField;
+use Solspace\Freeform\Fields\MultipleSelectField;
+use Solspace\Freeform\Fields\NumberField;
+use Solspace\Freeform\Fields\Pro\ConfirmationField;
+use Solspace\Freeform\Fields\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Pro\PasswordField;
+use Solspace\Freeform\Fields\Pro\PhoneField;
+use Solspace\Freeform\Fields\Pro\RatingField;
+use Solspace\Freeform\Fields\Pro\RegexField;
+use Solspace\Freeform\Fields\Pro\WebsiteField;
+use Solspace\Freeform\Fields\RadioGroupField;
+use Solspace\Freeform\Fields\RecaptchaField;
+use Solspace\Freeform\Fields\SelectField;
+use Solspace\Freeform\Fields\TextareaField;
+use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxField;
-use Solspace\Freeform\Library\Composer\Components\Fields\CheckboxGroupField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
-use Solspace\Freeform\Library\Composer\Components\Fields\DynamicRecipientField;
-use Solspace\Freeform\Library\Composer\Components\Fields\EmailField;
-use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
-use Solspace\Freeform\Library\Composer\Components\Fields\HiddenField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\MultipleSelectField;
-use Solspace\Freeform\Library\Composer\Components\Fields\RadioGroupField;
-use Solspace\Freeform\Library\Composer\Components\Fields\SelectField;
-use Solspace\Freeform\Library\Composer\Components\Fields\TextareaField;
-use Solspace\Freeform\Library\Composer\Components\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
@@ -45,7 +55,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Factories\PredefinedOptionsFactory;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
-use Solspace\Freeform\Library\Composer\Components\Fields\NumberField;
 use yii\db\Exception;
 
 class FieldsService extends BaseService implements FieldHandlerInterface
@@ -162,6 +171,15 @@ class FieldsService extends BaseService implements FieldHandlerInterface
             FileUploadField::class,
             NumberField::class,
             DynamicRecipientField::class,
+            ConfirmationField::class,
+            DatetimeField::class,
+            PasswordField::class,
+            PhoneField::class,
+            RatingField::class,
+            RecaptchaField::class,
+            RegexField::class,
+            WebsiteField::class,
+            OpinionScaleField::class,
         ];
 
         $fetchTypesEvent = new FetchFieldTypes($fieldTypes);

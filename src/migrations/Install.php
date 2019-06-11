@@ -29,7 +29,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('defaultStatus', $this->integer()->unsigned())
                 ->addField('formTemplateId', $this->integer()->unsigned())
                 ->addField('color', $this->string(10))
-                ->addField('optInDataStorageTargetHash', $this->string(20)->null()),
+                ->addField('optInDataStorageTargetHash', $this->string(20)->null())
+                ->addField('limitFormSubmissions', $this->string(20)->null()),
 
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())
@@ -50,9 +51,12 @@ class Install extends StreamlinedInstallMigration
                 ->addField('fromName', $this->string(255)->notNull())
                 ->addField('fromEmail', $this->string(255)->notNull())
                 ->addField('replyToEmail', $this->string(255))
+                ->addField('cc', $this->string(255))
+                ->addField('bcc', $this->string(255))
                 ->addField('bodyHtml', $this->text())
                 ->addField('bodyText', $this->text())
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
+                ->addField('presetAssets', $this->string(255))
                 ->addField('sortOrder', $this->integer()),
 
             (new Table('freeform_integrations'))
@@ -140,7 +144,89 @@ class Install extends StreamlinedInstallMigration
                 ->addField('fieldHash', $this->string(20))
                 ->addIndex(['status'], true)
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('id', 'freeform_mailing_list_fields', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('id', 'freeform_mailing_list_fields', 'id', ForeignKey::CASCADE),
+
+            // Pro
+            (new Table('freeform_export_profiles'))
+                ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('name', $this->string(255)->notNull()->unique())
+                ->addField('limit', $this->integer())
+                ->addField('dateRange', $this->string(255))
+                ->addField('fields', $this->text()->notNull())
+                ->addField('filters', $this->text())
+                ->addField('statuses', $this->text()->notNull())
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_export_settings'))
+                ->addField('id', $this->primaryKey())
+                ->addField('userId', $this->integer()->notNull())
+                ->addField('setting', $this->text())
+                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
+
+            // Payments
+            (new Table('freeform_payments_subscription_plans'))
+                ->addField('id', $this->primaryKey())
+                ->addField('integrationId', $this->integer()->notNull())
+                ->addField('resourceId', $this->string(255))
+                ->addField('name', $this->string(255))
+                ->addField('status', $this->string(20))
+                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_payments_payments'))
+                ->addField('id', $this->primaryKey())
+                ->addField('integrationId', $this->integer()->notNull())
+                ->addField('submissionId', $this->integer()->notNull())
+                ->addField('subscriptionId', $this->integer())
+                ->addField('resourceId', $this->string(50))
+                ->addField('amount', $this->float(2))
+                ->addField('currency', $this->string(3))
+                ->addField('last4', $this->smallInteger())
+                ->addField('status', $this->string(20))
+                ->addField('metadata', $this->mediumText())
+                ->addField('errorCode', $this->string(20))
+                ->addField('errorMessage', $this->string(255))
+                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('subscriptionId', 'freeform_payments_subscriptions', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
+                ->addIndex(['integrationId', 'resourceId'], true),
+
+            (new Table('freeform_payments_subscriptions'))
+                ->addField('id', $this->primaryKey())
+                ->addField('integrationId', $this->integer()->notNull())
+                ->addField('submissionId', $this->integer()->notNull())
+                ->addField('planId', $this->integer()->notNull())
+                ->addField('resourceId', $this->string(50))
+                ->addField('amount', $this->float(2))
+                ->addField('currency', $this->string(3))
+                ->addField('interval', $this->string(20))
+                ->addField('intervalCount', $this->smallInteger()->null())
+                ->addField('last4', $this->smallInteger())
+                ->addField('status', $this->string(20))
+                ->addField('metadata', $this->mediumText())
+                ->addField('errorCode', $this->string(20))
+                ->addField('errorMessage', $this->string(255))
+                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('planId', 'freeform_payments_subscription_plans', 'id', ForeignKey::CASCADE)
+                ->addIndex(['integrationId', 'resourceId'], true),
+
+            (new Table('freeform_webhooks'))
+                ->addField('id', $this->primaryKey())
+                ->addField('type', $this->string()->notNull())
+                ->addField('name', $this->string()->notNull())
+                ->addField('webhook', $this->string()->notNull())
+                ->addField('settings', $this->text())
+                ->addIndex(['type']),
+
+            (new Table('freeform_webhooks_form_relations'))
+                ->addField('id', $this->primaryKey())
+                ->addField('webhookId', $this->integer()->notNull())
+                ->addField('formId', $this->integer()->notNull())
+                ->addIndex(['webhookId'])
+                ->addIndex(['formId'])
+                ->addForeignKey('webhookId', 'freeform_webhooks', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
         ];
     }
 }

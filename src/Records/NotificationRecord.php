@@ -5,13 +5,14 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
+use Solspace\Commons\Records\SerializableActiveRecord;
 use Solspace\Freeform\Library\DataObjects\EmailTemplate;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
 
@@ -30,8 +31,11 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
  * @property string $bodyHtml
  * @property string $bodyText
  * @property int    $sortOrder
+ * @property string $cc
+ * @property string $bcc
+ * @property array  $presetAssets
  */
-class NotificationRecord extends ActiveRecord implements NotificationInterface, \JsonSerializable
+class NotificationRecord extends SerializableActiveRecord implements NotificationInterface, \JsonSerializable
 {
     const TABLE = '{{%freeform_notifications}}';
 
@@ -60,7 +64,13 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
 {% endfor %}
 </ul>
 EOT;
-        $record->bodyText  = $record->bodyHtml;
+        $record->bodyText  = <<<EOT
+Submitted on: {{ dateCreated|date('l, F j, Y \\\\a\\\\t g:ia') }}
+
+{% for field in allFields %}
+ - {{ field.label }}: {{ field.valueAsString }}
+{% endfor %}
+EOT;
 
         return $record;
     }
@@ -81,13 +91,24 @@ EOT;
         $model->description        = $template->getDescription();
         $model->fromEmail          = $template->getFromEmail();
         $model->fromName           = $template->getFromName();
+        $model->cc                 = $template->getCc();
+        $model->bcc                = $template->getBcc();
         $model->subject            = $template->getSubject();
         $model->replyToEmail       = $template->getReplyToEmail();
         $model->bodyHtml           = $template->getBody();
         $model->bodyText           = $template->getBody();
         $model->includeAttachments = $template->isIncludeAttachments();
+        $model->presetAssets       = $template->getPresetAssets();
 
         return $model;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getSerializableFields(): array
+    {
+        return ['presetAssets'];
     }
 
     /**
@@ -96,10 +117,23 @@ EOT;
     public function rules(): array
     {
         $rules = [
+            [['name', 'handle', 'subject', 'fromName', 'fromEmail'], 'required'],
             [
-                ['name', 'handle', 'subject', 'fromName', 'fromEmail'],
+                'bodyHtml',
                 'required',
-            ]
+                'when'    => function ($model) {
+                    return empty($model->bodyText);
+                },
+                'message' => 'Either HTML or Text body must be present',
+            ],
+            [
+                'bodyText',
+                'required',
+                'when'    => function ($model) {
+                    return empty($model->bodyHtml);
+                },
+                'message' => 'Either HTML or Text body must be present',
+            ],
         ];
 
         return $rules;
@@ -135,6 +169,22 @@ EOT;
     public function getFromEmail(): string
     {
         return $this->fromEmail;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCc()
+    {
+        return $this->cc;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getBcc()
+    {
+        return $this->bcc;
     }
 
     /**
@@ -175,6 +225,14 @@ EOT;
     public function getBodyText(): string
     {
         return $this->bodyText;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getPresetAssets()
+    {
+        return $this->presetAssets;
     }
 
     /**

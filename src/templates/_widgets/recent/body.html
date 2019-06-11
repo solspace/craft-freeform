@@ -1,0 +1,31 @@
+<div class="freeform-latest-submissions-container">
+    {% if submissions|length %}
+        <table class="data fullwidth">
+            <thead>
+            <tr>
+                <th>{{ "Title"|t }}</th>
+                <th>{{ "Form"|t }}</th>
+                <th>{{ "Date"|t }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for submission in submissions.all %}
+                <tr>
+                    <td>
+                        <div class="element small hasstatus">
+                            <span class="status {{ submission.statusModel.color }}"></span>
+                            <a href="{{ submission.getCpEditUrl() }}">{{ submission.title }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        {{ submission.form.name }}
+                    </td>
+                    <td>{{ submission.dateCreated|date('short') }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{ "No submissions."|t }}</p>
+    {% endif %}
+</div>

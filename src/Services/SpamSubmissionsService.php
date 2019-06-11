@@ -5,19 +5,22 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use craft\records\Asset as AssetRecord;
 use craft\records\Element;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Records\FieldRecord;
 
 class SpamSubmissionsService extends SubmissionsService implements SpamSubmissionHandlerInterface
 {
@@ -93,14 +96,42 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
 
         $age = Freeform::getInstance()->settings->getPurgableSpamAgeInDays();
         if (\is_int($age) && $age >= static::MIN_PURGE_AGE) {
-            $date = new \DateTime("-$age days");
-
-            $ids = (new Query())
+            $date          = new \DateTime("-$age days");
+            $assetFieldIds = (new Query())
                 ->select(['id'])
+                ->from(FieldRecord::TABLE)
+                ->where(['type' => FieldInterface::TYPE_FILE])
+                ->column();
+
+            $columns = ['id'];
+            foreach ($assetFieldIds as $assetFieldId) {
+                $columns[] = Submission::getFieldColumnName($assetFieldId);
+            }
+
+            $results = (new Query())
+                ->select($columns)
                 ->from(Submission::TABLE)
                 ->where(['<', 'dateCreated', $date->format('Y-m-d H:i:s')])
                 ->andWhere(['isSpam' => true])
-                ->column();
+                ->all();
+
+            $ids      = [];
+            $assetIds = [];
+            foreach ($results as $result) {
+                $ids[] = $result['id'];
+                unset ($result['id']);
+
+                foreach ($result as $values) {
+                    if (!$values) {
+                        continue;
+                    }
+
+                    $values = \GuzzleHttp\json_decode($values);
+                    foreach ($values as $value) {
+                        $assetIds[] = $value;
+                    }
+                }
+            }
 
             \Craft::$app->db
                 ->createCommand()
@@ -109,6 +140,18 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
                     ['id' => $ids]
                 )
                 ->execute();
+
+            foreach ($assetIds as $assetId) {
+                if (is_numeric($assetId)) {
+                    try {
+                        $asset = AssetRecord::find()->where(['id' => $assetId])->one();
+                        if ($asset) {
+                            $asset->delete();
+                        }
+                    } catch (\Exception $e) {
+                    }
+                }
+            }
         }
 
         \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);

@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\PasswordField;
+use Solspace\Freeform\Fields\PasswordField;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 class Page implements \JsonSerializable, \Iterator, \ArrayAccess

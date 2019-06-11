@@ -1,5 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 
+{% set title = "Payment Gateways"|t("freeform") %}
+
 {% block actionButton %}
 
     {% if currentUser.can("freeform-settingsAccess") and providers|length > 0 %}
@@ -35,7 +37,11 @@
             {% for integration in integrations %}
                 <tr data-id="{{ integration.id }}" data-name="{{ integration.name }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        <a href="{{ url('freeform/settings/payment-gateways/'~integration.id) }}">{{ integration.name }}</a>
+                        {% if craft.freeform.pro %}
+                            <a href="{{ url('freeform/settings/payment-gateways/'~integration.id) }}">{{ integration.name }}</a>
+                        {% else %}
+                            {{ integration.name }}
+                        {% endif %}
                     </th>
                     <td data-title="{{ "Handle"|t('freeform') }}" class="code">
                         {{ integration.handle }}
@@ -58,8 +64,8 @@
 
     {% if providers|length == 0 %}
         <div class="alert alert-info alert-dismissible">
-            <a href="https://solspace.com/craft/freeform/">
-                {{ "Purchase Freeform Payments plugin to enable"|t('freeform') }}
+            <a href="http://docs.solspace.com/craft/freeform">
+                {{ "Upgrade to Pro to enable"|t('freeform') }}
             </a>
         </div>
     {% endif %}

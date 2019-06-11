@@ -7,18 +7,18 @@ use craft\web\View;
 class JavascriptObject extends AbstractFormRenderObject
 {
     /**
-     * @inheritDoc
+     * Attach the object to view
      */
-    public function getFormattedValueOrAttachToView(bool $attachToView)
+    public function attachToView()
     {
-        $value = $this->getValue();
+        \Craft::$app->view->registerJs($this->getValue(), View::POS_END);
+    }
 
-        if ($attachToView) {
-            \Craft::$app->view->registerJs($value, View::POS_END);
-
-            return null;
-        }
-
-        return '<script>' . $value . '</script>';
+    /**
+     * @return string
+     */
+    public function getOutput(): string
+    {
+        return '<script>' . $this->getValue() . '</script>';
     }
 }

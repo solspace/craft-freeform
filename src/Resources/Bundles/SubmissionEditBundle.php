@@ -12,7 +12,7 @@ class SubmissionEditBundle extends AbstractFreeformAssetBundle
      */
     public function getScripts(): array
     {
-        return ['js/cp/submissions.js'];
+        return ['js/other/submissions.js'];
     }
 
     /**

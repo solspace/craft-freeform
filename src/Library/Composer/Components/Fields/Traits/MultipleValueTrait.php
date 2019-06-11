@@ -5,15 +5,14 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use LitEmoji\LitEmoji;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
-use Solspace\Freeform\Library\Composer\Components\Fields\DynamicRecipientField;
+use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;

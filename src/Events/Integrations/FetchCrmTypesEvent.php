@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Events\Integrations;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\CRM\CRMIntegrationInterface;
 
 class FetchCrmTypesEvent extends ArrayableEvent
@@ -37,7 +38,8 @@ class FetchCrmTypesEvent extends ArrayableEvent
     {
         $reflectionClass = new \ReflectionClass($class);
 
-        if ($reflectionClass->implementsInterface(CRMIntegrationInterface::class)) {
+        $isPro = Freeform::getInstance()->isPro();
+        if ($isPro && $reflectionClass->implementsInterface(CRMIntegrationInterface::class)) {
             $this->types[$class] = $reflectionClass->getConstant('TITLE');
         }
 

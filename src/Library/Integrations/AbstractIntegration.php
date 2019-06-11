@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -13,12 +13,12 @@ namespace Solspace\Freeform\Library\Integrations;
 
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
-use Solspace\FreeformPro\Fields\DatetimeField;
 
 abstract class AbstractIntegration implements IntegrationInterface
 {

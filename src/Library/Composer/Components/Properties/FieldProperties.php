@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -938,6 +938,8 @@ class FieldProperties extends AbstractProperties
             'errorAttributes'       => self::TYPE_ARRAY,
             'instructionAttributes' => self::TYPE_ARRAY,
             'tagAttributes'         => self::TYPE_ARRAY,
+            'scales'                => self::TYPE_ARRAY,
+            'legends'               => self::TYPE_ARRAY,
         ];
     }
 }

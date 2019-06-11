@@ -15,9 +15,12 @@
 
 {% endblock %}
 
-{% set title = craft.freeform.name ~ ": " ~ ("Statuses"|t('freeform')) %}
+{% set title = "Statuses"|t('freeform') %}
 
 {% set content %}
+
+    <h2>{{ "Statuses"|t("freeform") }}</h2>
+
     <div id="nostatuses"{% if statuses %} class="hidden"{% endif %}>
         <p>{{ "No statuses found"|t('freeform') }}</p>
     </div>

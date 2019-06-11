@@ -12,7 +12,7 @@ class CodepackBundle extends AbstractFreeformAssetBundle
      */
     public function getScripts(): array
     {
-        return ['js/cp/code-pack.js'];
+        return ['js/other/code-pack.js'];
     }
 
     /**

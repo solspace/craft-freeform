@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Events\Integrations;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\MailingLists\MailingListIntegrationInterface;
 
 class FetchMailingListTypesEvent extends ArrayableEvent
@@ -38,7 +39,7 @@ class FetchMailingListTypesEvent extends ArrayableEvent
         $reflectionClass = new \ReflectionClass($class);
 
         if ($reflectionClass->implementsInterface(MailingListIntegrationInterface::class)) {
-            if ($class::isInstallable()) {
+            if ($class::isInstallable() && Freeform::getInstance()->isPro()) {
                 $this->types[$class] = $reflectionClass->getConstant('TITLE');
             }
         }

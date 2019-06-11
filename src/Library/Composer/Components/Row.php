@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -21,14 +21,27 @@ class Row implements \JsonSerializable, \Iterator, \ArrayAccess, \Countable
     /** @var AbstractField[] */
     private $fields;
 
+    /** @var AbstractField[] */
+    private $allFields;
+
     /**
      * @param string $id
      * @param array  $fields
+     * @param array  $allFields
      */
-    public function __construct($id, array $fields)
+    public function __construct($id, array $fields, array $allFields)
     {
-        $this->id     = $id;
-        $this->fields = $fields;
+        $this->id        = $id;
+        $this->fields    = $fields;
+        $this->allFields = $allFields;
+    }
+
+    /**
+     * @return AbstractField[]
+     */
+    public function getAllFields(): array
+    {
+        return $this->allFields;
     }
 
     /**

@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -19,7 +19,7 @@ use craft\records\Asset as AssetRecord;
 use craft\web\UploadedFile;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\FileUploadField;
+use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
 use Solspace\Freeform\Records\FieldRecord;

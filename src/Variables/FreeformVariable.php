@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -18,10 +18,13 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Session\Honeypot;
 use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\LoggerService;
+use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
+use Twig\Markup;
 
 class FreeformVariable
 {
@@ -131,7 +134,7 @@ class FreeformVariable
      *
      * @return \Twig_Markup
      */
-    public function getHoneypotInput(Form $form): \Twig_Markup
+    public function getHoneypotInput(Form $form): Markup
     {
         return Template::raw($this->getHoneypotService()->getHoneypotInput($form));
     }
@@ -141,7 +144,7 @@ class FreeformVariable
      *
      * @return \Twig_Markup
      */
-    public function getHoneypotJavascript(Form $form): \Twig_Markup
+    public function getHoneypotJavascript(Form $form): Markup
     {
         return Template::raw($this->getHoneypotService()->getHoneypotJavascriptScript($form));
     }
@@ -152,6 +155,16 @@ class FreeformVariable
     public function getSettingsNavigation(): array
     {
         return Freeform::getInstance()->settings->getSettingsNavigation();
+    }
+
+    /**
+     * @param string|int $submissionId
+     *
+     * @return null|PaymentModel
+     */
+    public function payments($submissionId)
+    {
+        return $this->getPaymentsService()->getPaymentDetails((int) $submissionId);
     }
 
     /**
@@ -184,5 +197,15 @@ class FreeformVariable
     private function getHoneypotService(): HoneypotService
     {
         return Freeform::getInstance()->honeypot;
+    }
+
+    /**
+     * Returns payments service
+     *
+     * @return PaymentsService
+     */
+    private function getPaymentsService(): PaymentsService
+    {
+        return Freeform::getInstance()->payments;
     }
 }

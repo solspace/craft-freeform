@@ -5,7 +5,7 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
+ * @link          http://docs.solspace.com/craft/freeform
  * @license       https://solspace.com/software/license-agreement
  */
 
@@ -88,7 +88,7 @@ class CodepackController extends BaseController
         $codePack = $this->getCodepack();
         $prefix   = \Craft::$app->request->post('prefix');
 
-        $prefix = preg_replace('/[^a-zA-Z_0-9-\/]/', '', $prefix);
+        $prefix = str_replace(['\\', '/'], '', $prefix);
 
         try {
             $codePack->install($prefix);

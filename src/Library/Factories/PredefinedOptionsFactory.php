@@ -61,7 +61,15 @@ class PredefinedOptionsFactory
                 break;
 
             case ExternalOptionsInterface::PREDEFINED_PROVINCES:
-                $options = $instance->getProvinceOptions();
+                $options = $instance->getProvinceOptions($type);
+                break;
+
+            case ExternalOptionsInterface::PREDEFINED_PROVINCES_FR:
+                $options = $instance->getProvinceOptions($type);
+                break;
+
+            case ExternalOptionsInterface::PREDEFINED_PROVINCES_BIL:
+                $options = $instance->getProvinceOptions($type);
                 break;
 
             case ExternalOptionsInterface::PREDEFINED_STATES:
@@ -248,12 +256,27 @@ class PredefinedOptionsFactory
     /**
      * @return Option[]
      */
-    private function getProvinceOptions(): array
+    private function getProvinceOptions(string $source = null): array
     {
+        switch ($source) {
+            case ExternalOptionsInterface::PREDEFINED_PROVINCES_FR:
+                $path = __DIR__ . '/Data/provinces_fr.json';
+                break;
+
+            case ExternalOptionsInterface::PREDEFINED_PROVINCES_BIL:
+                $path = __DIR__ . '/Data/provinces_bil.json';
+                break;
+
+            case ExternalOptionsInterface::PREDEFINED_PROVINCES:
+            default:
+                $path = __DIR__ . '/Data/provinces.json';
+                break;
+        }
+
         /** @var array $provinces */
         static $provinces;
         if (null === $provinces) {
-            $provinces = json_decode(file_get_contents(__DIR__ . '/Data/provinces.json'), true);
+            $provinces = json_decode(file_get_contents($path), true);
         }
 
         $options      = [];

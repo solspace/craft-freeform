@@ -1,5 +1,51 @@
 # Solspace Freeform Changelog
 
+## 3.0.0-beta.1 - 2019-06-XX
+
+> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server.
+
+### Added
+- Added support for editing submissions (Pro).
+- Added Slack Webhooks API integration (Pro).
+- Added support for reCAPTCHA v2 Invisible and v3 (Pro).
+- Added ability to choose failed reCAPTCHA behavior (show error or send to Freeform Spam Folder).
+- Added Opinion Scale field type (Pro).
+- Added Rich Text block special field to allow for easier managing of content inside form layouts (Pro).
+- Added support for searching on fields in `freeform.submissions` function (`fieldSearch`).
+- Added Excel exporting option (Pro).
+- Added ability to limit submissions to 1 per user per form (Pro).
+- Added support for GET query strings filling fields with values.
+- Added CC and BCC fields in email notifications.
+- Added Plain Text email notification template options.
+- Added ability to predefine Assets to attach to all emails sent from an email notification template (e.g. a ticket PDF or instructions document, etc) (Pro).
+- Added support for using environment variables inside email notification templates.
+- Added `EVENT_BEFORE_VALIDATE`, `EVENT_AFTER_VALIDATE`, `EVENT_BEFORE_CONNECT`, `EVENT_AFTER_CONNECT` developer events for Element Connections feature.
+- Added Resources area in control panel for quick access to docs/support/feedback, etc.
+
+### Changed
+- Consolidated _Lite_, _Pro_ and _Payments_ plugins into a unified Freeform plugin with editions.
+- Combined Freeform Payments into the Pro edition of Freeform.
+- The following features are no longer be available in the _Lite_ edition of Freeform (but available in _Pro_): Element Connections (mapping to Craft Elements)/ building of User Registration forms, Confirm and Password field types, retroactively resend email notifications, automatically purge submission data, accept Payments with Stripe (requires Pro now) and rename the plugin in CP. Support for reCAPTCHA v2 Checkbox was added to the _Lite_ edition.
+- Updated Freeform to use a unified JS plugin to handle all built-in JS. Plugin is extendable too, allowing for easier overriding of defaults.
+- Updated the Freeform JS Honeypot to now be regular Honeypot with optional JS enhancement feature (to work the same way).
+- Updated Phone, Website and Number field types to default to rendering as corresponding type attribute (e.g. `tel`, `url`, `number`).
+- Updated Canadian Provinces predefined field data to include French and Bilingual options in addition to English.
+- Improved Element Connections feature to be more robust and handle mapping of data better.
+- Updated User Element Connection feature to have option to suppress User Activation email notification for those that wish to Admin activate only.
+- Updated User Element Connection feature to allow all user groups, including ones that have access to Craft CP.
+- Updated the _Freeform Javascript Insertion Location_ setting to include option to not load it at all (and have the user load it manually).
+- Adjusted built-in AJAX feature to automatically remove error styling on blur once a user enters a new value/option.
+- Overhauled Freeform demo templates to be simpler and easier to use / understand.
+- Updated `carbon` dependency to `^1.22.1|^2.19` for better compatibility with other plugins, and to reduce the chances of seeing deprecation notice.
+- Various visual improvements to Composer interface and throughout CP.
+
+### Fixed
+- Fixed a bug where the Purge Submissions feature was not also removing associated Assets.
+- Fixed a bug where using AJAX and uploading files was keeping Asset files stored even when the form errored.
+- Fixed a bug where soft-deleted submissions were being included in exports.
+- Fixed a bug where using Radio field type with Freeform Payments forms (for amount) were not working correctly.
+- Fixed a bug where Rating field stars sometimes looked plumper than they should in the CP.
+
 ## 2.5.24 - 2019-05-16
 ### Changed
 - Updated plugin icon.

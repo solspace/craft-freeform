@@ -32,6 +32,9 @@ class SubmissionQuery extends ElementQuery
     /** @var bool */
     public $isSpam = null;
 
+    /** @var array */
+    public $fieldSearch = [];
+
     /** @var string */
     private $freeformStatus;
 
@@ -103,6 +106,18 @@ class SubmissionQuery extends ElementQuery
     public function isSpam($value): SubmissionQuery
     {
         $this->isSpam = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param $fieldSearch
+     *
+     * @return SubmissionQuery
+     */
+    public function fieldSearch(array $fieldSearch = []): SubmissionQuery
+    {
+        $this->fieldSearch = $fieldSearch;
 
         return $this;
     }
@@ -196,7 +211,7 @@ class SubmissionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam($table . '.[[incrementalId]]', $this->incrementalId));
         }
 
-        if ($this->token) {
+        if (null !== $this->token) {
             $this->subQuery->andWhere(Db::parseParam($table . '.[[token]]', $this->token));
         }
 
@@ -206,7 +221,7 @@ class SubmissionQuery extends ElementQuery
 
         if ($this->status) {
             $this->freeformStatus = $this->status;
-            $this->status = null;
+            $this->status         = null;
 
             if (\is_array($this->freeformStatus)) {
                 if (isset($this->freeformStatus[0]) && $this->freeformStatus[0] === 'enabled') {
@@ -261,6 +276,32 @@ class SubmissionQuery extends ElementQuery
             $this->orderBy = $prefixedOrderList;
         }
 
+        $this->prepareFieldSearch();
+
         return parent::beforePrepare();
+    }
+
+    /**
+     * Parses the fieldSearch variable and attaches the WHERE conditions to the query
+     */
+    private function prepareFieldSearch()
+    {
+        if (!$this->fieldSearch) {
+            return;
+        }
+
+        $fieldHandleToIdMap = array_flip(Freeform::getInstance()->fields->getAllFieldHandles());
+
+        $table = Submission::TABLE_STD;
+
+        foreach ($this->fieldSearch as $handle => $term) {
+            if (!array_key_exists($handle, $fieldHandleToIdMap)) {
+                continue;
+            }
+
+            $columnName = Submission::getFieldColumnName($fieldHandleToIdMap[$handle]);
+
+            $this->subQuery->andWhere(Db::parseParam($table . '.[[' . $columnName . ']]', $term));
+        }
     }
 }

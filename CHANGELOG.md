@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.0.0-beta.1 - 2019-06-XX
+## 3.0.0 - 2019-06-11
 
 > {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server.
 

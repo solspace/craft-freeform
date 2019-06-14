@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.0.1 - 2019-06-14
+### Fixed
+- Fixed a bug where some update migrations were failing when the `allowAdminChanges` Project Config setting was set to `false`.
+- Fixed a bug Hidden fields were not always showing up in CP Submission view.
+- Fixed an issue where style overrides in sample and demo templates may not always work, depending on what the Javascript Insertion Location setting is set to.
+- Fixed a bug where the Freeform 3 migration was missing some meta columns from Pro and Payments database tables when upgrading from v2 Lite.
+- Fixed a few minor regression bugs for notification template and formatting template path settings.
+
 ## 3.0.0 - 2019-06-11
 
 > {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server.

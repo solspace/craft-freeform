@@ -2,6 +2,40 @@
 
 {{ form.renderTag() }}
 
+<script>
+  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+  if (form) {
+    form.addEventListener("freeform-ready", function (event) {
+      var freeform = event.target.freeform;
+
+      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
+      freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
+      freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
+      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
+    })
+
+    form.addEventListener("flatpickr-ready", (event) => {
+      var instance = event.detail;
+      var input = instance.input;
+
+      input.parentNode.classList.add("form-control");
+      input.classList.remove("form-control");
+      input.style.border = "none";
+      input.style.margin = "0px";
+      input.style.padding = "0px";
+      input.style.width = "100%";
+      input.style.outline = "none";
+    })
+
+    form.addEventListener("freeform-stripe-styling", (event) => {
+      event.detail.base = {
+        fontSize: "16px",
+        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+      }
+    })
+  }
+</script>
+
 {% if form.pages|length > 1 %}
     <ul class="nav nav-tabs">
     {% for page in form.pages %}
@@ -212,40 +246,4 @@
     </div>
 {% endfor %}
 
-
 {{ form.renderClosingTag }}
-
-
-<script>
-  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
-  if (form) {
-    form.addEventListener("freeform-ready", function (event) {
-      var freeform = event.target.freeform;
-
-      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
-      freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
-      freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
-      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
-    })
-
-    form.addEventListener("flatpickr-ready", (event) => {
-      var instance = event.detail;
-      var input = instance.input;
-
-      input.parentNode.classList.add("form-control");
-      input.classList.remove("form-control");
-      input.style.border = "none";
-      input.style.margin = "0px";
-      input.style.padding = "0px";
-      input.style.width = "100%";
-      input.style.outline = "none";
-    })
-
-    form.addEventListener("freeform-stripe-styling", (event) => {
-      event.detail.base = {
-        fontSize: "16px",
-        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-      }
-    })
-  }
-</script>

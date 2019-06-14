@@ -16,6 +16,10 @@ class m190610_074840_MigrateScriptInsertLocation extends Migration
      */
     public function safeUp()
     {
+        if (!\Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+            return true;
+        }
+
         $pluginService = Craft::$app->getPlugins();
 
         $plugin  = $pluginService->getPlugin('freeform');

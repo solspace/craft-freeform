@@ -5,6 +5,7 @@ namespace Solspace\Freeform\migrations;
 use Craft;
 use craft\db\Migration;
 use Solspace\Freeform\Models\Settings;
+use yii\web\ForbiddenHttpException;
 
 /**
  * m190603_160423_UpgradeFreeformHoneypotEnhancement migration.
@@ -16,6 +17,10 @@ class m190603_160423_UpgradeFreeformHoneypotEnhancement extends Migration
      */
     public function safeUp()
     {
+        if (!\Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+            return true;
+        }
+
         $pluginService = Craft::$app->getPlugins();
 
         $plugin  = $pluginService->getPlugin('freeform');

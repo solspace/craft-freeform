@@ -300,7 +300,7 @@ class Settings extends Model
         $contents = file_get_contents($path);
 
         if ($name === 'flexbox') {
-            $css = file_get_contents(__DIR__ . "/../Resources/css/form-formatting-templates/flexbox.css");
+            $css      = file_get_contents(__DIR__ . "/../Resources/css/form-formatting-templates/flexbox.css");
             $contents = str_replace('{% css formCss %}', "<style>$css</style>", $contents);
         }
 
@@ -332,22 +332,7 @@ class Settings extends Model
      */
     public function listTemplatesInFormTemplateDirectory()
     {
-        $templateDirectoryPath = $this->getAbsoluteFormTemplateDirectory();
-        if ($templateDirectoryPath === '/' || !file_exists($templateDirectoryPath)) {
-            return [];
-        }
-
-        $fs = new Finder();
-        /** @var SplFileInfo[] $fileIterator */
-        $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html')->name('*.twig');
-        $files        = [];
-
-        foreach ($fileIterator as $file) {
-            $path         = $file->getRealPath();
-            $files[$path] = pathinfo($path, PATHINFO_BASENAME);
-        }
-
-        return $files;
+        return $this->getTemplatesInDirectory($this->getAbsoluteFormTemplateDirectory());
     }
 
     /**
@@ -355,22 +340,7 @@ class Settings extends Model
      */
     public function listTemplatesInEmailTemplateDirectory()
     {
-        $templateDirectoryPath = $this->getAbsoluteEmailTemplateDirectory();
-        if ($templateDirectoryPath === '/' || !file_exists($templateDirectoryPath)) {
-            return [];
-        }
-
-        $fs = new Finder();
-        /** @var SplFileInfo[] $fileIterator */
-        $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html')->name('*.twig');
-        $files        = [];
-
-        foreach ($fileIterator as $file) {
-            $path         = $file->getRealPath();
-            $files[$path] = pathinfo($path, PATHINFO_BASENAME);
-        }
-
-        return $files;
+        return $this->getTemplatesInDirectory($this->getAbsoluteEmailTemplateDirectory());
     }
 
     /**
@@ -476,4 +446,32 @@ class Settings extends Model
     {
         return preg_match('/^(?:\/|\\\\|\w\:\\\\).*$/', $path);
     }
+
+    /**
+     * @param string $templateDirectoryPath
+     *
+     * @return array
+     */
+    private function getTemplatesInDirectory(string $templateDirectoryPath = null): array
+    {
+        if ($templateDirectoryPath === '/' || !file_exists($templateDirectoryPath)) {
+            return [];
+        }
+
+        $fs = new Finder();
+        /** @var SplFileInfo[] $fileIterator */
+        $fileIterator = $fs
+            ->in($templateDirectoryPath)
+            ->name('*.html')
+            ->name('*.twig')
+            ->files();
+
+        $files = [];
+        foreach ($fileIterator as $file) {
+            $path         = $file->getRealPath();
+            $files[$path] = pathinfo($path, PATHINFO_BASENAME);
+        }
+
+        return $files;
+}
 }

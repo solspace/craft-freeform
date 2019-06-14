@@ -2,6 +2,25 @@
 
 {{ form.renderTag }}
 
+<script>
+  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+  if (form) {
+    form.addEventListener("flatpickr-ready", (event) => {
+      var instance = event.detail;
+      var input = instance.input;
+
+      input.parentNode.classList.add("freeform-input");
+    })
+
+    form.addEventListener("freeform-stripe-styling", (event) => {
+      event.detail.base = {
+        fontSize: "16px",
+        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+      }
+    })
+  }
+</script>
+
 {% if form.pages|length > 1 %}
     <ul class="freeform-pages">
         {% for page in form.pages %}
@@ -72,22 +91,3 @@
 {% endfor %}
 
 {{ form.renderClosingTag }}
-
-<script>
-  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
-  if (form) {
-    form.addEventListener("flatpickr-ready", (event) => {
-      var instance = event.detail;
-      var input = instance.input;
-
-      input.parentNode.classList.add("freeform-input");
-    })
-
-    form.addEventListener("freeform-stripe-styling", (event) => {
-      event.detail.base = {
-        fontSize: "16px",
-        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-      }
-    })
-  }
-</script>

@@ -29,12 +29,18 @@
 
     form.addEventListener("freeform-stripe-styling", (event) => {
       event.detail.base = {
-        fontSize: "16px",
-        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+        fontSize: "14px",
+        fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
       }
     })
   }
 </script>
+
+<style>
+    .StripeElement {
+        padding: 8px 12px;
+    }
+</style>
 
 
 {% if form.pages|length > 1 %}
@@ -69,6 +75,7 @@
             {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
 
             {% set columnClass = isCheckbox ? "checkbox" : "form-group" %}
+            {% set columnClass = field.type == "file" ? "" : columnClass %}
             {% set columnClass = columnClass ~ (field.errors|length ? " has-error" : "") %}
             {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
             {% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-xs-12" %}

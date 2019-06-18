@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Library\Session;
 
+use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\SubmitField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -168,11 +169,12 @@ class FormValueContext implements \JsonSerializable
         }
 
         if ($this->hasFormBeenPosted()) {
-            if ($this->hasPageBeenPosted() && $field->getPageIndex() === $this->getCurrentPageIndex()) {
+            $currentPageIndex = $this->getCurrentPageIndex();
+            if ($this->hasPageBeenPosted() && $field->getPageIndex() === $currentPageIndex) {
                 return $this->request->getPost($fieldName);
             }
 
-            if (isset($this->storedValues[$fieldName])) {
+            if (array_key_exists($fieldName, $this->storedValues)) {
                 return $this->storedValues[$fieldName];
             }
         }
@@ -183,7 +185,15 @@ class FormValueContext implements \JsonSerializable
         }
 
         if (Freeform::getInstance()->settings->getSettingsModel()->fillWithGet) {
+            if ($field instanceof CheckboxField && !$field->isChecked()) {
+                $default = null;
+            }
+
             return $this->request->getGet($fieldName, $default);
+        }
+
+        if ($field instanceof CheckboxField && !$field->isChecked()) {
+            return null;
         }
 
         return $default;

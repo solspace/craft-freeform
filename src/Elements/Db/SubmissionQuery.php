@@ -146,10 +146,14 @@ class SubmissionQuery extends ElementQuery
         $this->joinElementTable($table);
 
         $hasFormJoin = false;
+        $hasSubStatusJoin = false;
         if (\is_array($this->join)) {
             foreach ($this->join as $joinData) {
                 if (isset($joinData[1]) && $joinData[1] === FormRecord::TABLE . ' ' . $formTable) {
                     $hasFormJoin = true;
+                }
+                if (isset($joinData[1]) && $joinData[1] === 'sub_' . StatusRecord::TABLE . ' ' . $statusTable) {
+                    $hasSubStatusJoin = true;
                 }
             }
         }
@@ -157,6 +161,9 @@ class SubmissionQuery extends ElementQuery
         if (!$hasFormJoin) {
             $this->innerJoin(FormRecord::TABLE . ' ' . $formTable, "$formTable.[[id]] = $table.[[formId]]");
             $this->innerJoin(StatusRecord::TABLE . ' ' . $statusTable, "$statusTable.[[id]] = $table.[[statusId]]");
+        }
+
+        if (!$hasSubStatusJoin) {
             $this->subQuery->innerJoin(StatusRecord::TABLE . ' sub_' . $statusTable, "sub_$statusTable.[[id]] = $table.[[statusId]]");
         }
 

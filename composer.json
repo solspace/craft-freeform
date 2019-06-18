@@ -1,7 +1,7 @@
 {
   "name": "solspace/craft-freeform",
   "description": "The most reliable, intuitive and powerful form builder for Craft.",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "type": "craft-plugin",
   "authors": [
     {
@@ -30,14 +30,14 @@
     }
   },
   "extra": {
-    "schemaVersion": "3.0.1",
+    "schemaVersion": "3.0.2",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",
     "developer": "Solspace",
     "developerUrl": "http://docs.solspace.com/craft/freeform/v3/",
     "documentationUrl": "http://docs.solspace.com/craft/freeform/v3/",
-    "changelogUrl": "https://raw.githubusercontent.com/solspace/craft3-freeform/master/CHANGELOG.md",
+    "changelogUrl": "https://raw.githubusercontent.com/solspace/craft3-freeform/v3/CHANGELOG.md",
     "hasSettings": true,
     "hasCpSection": true
   }

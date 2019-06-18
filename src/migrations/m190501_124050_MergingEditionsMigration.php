@@ -74,7 +74,7 @@ class m190501_124050_MergingEditionsMigration extends Migration
             );
 
             $this->addForeignKey(
-                'freeform_export_settings_formId_fk',
+                'freeform_export_settings_userId_fk',
                 '{{%freeform_export_settings}}',
                 'userId',
                 '{{%users}}',
@@ -150,6 +150,9 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 true
             );
 
+            // ==================
+            // Subscription plans
+            // ==================
             $this->addForeignKey(
                 'freeform_payments_subscription_plans_integrationId_fk',
                 '{{%freeform_payments_subscription_plans}}',
@@ -159,18 +162,12 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'CASCADE'
             );
 
+            // ==================
+            // Payments
+            // ==================
             $this->addForeignKey(
                 'freeform_payments_payments_submissionId_fk',
                 '{{%freeform_payments_payments}}',
-                'subscriptionId',
-                '{{%freeform_payments_subscriptions}}',
-                'id',
-                'CASCADE'
-            );
-
-            $this->addForeignKey(
-                'freeform_payments_payments_subscriptionId_fk',
-                '{{%freeform_payments_subscriptions}}',
                 'submissionId',
                 '{{%freeform_submissions}}',
                 'id',
@@ -186,6 +183,18 @@ class m190501_124050_MergingEditionsMigration extends Migration
                 'CASCADE'
             );
 
+            $this->addForeignKey(
+                'freeform_payments_payments_subscriptionId_fk',
+                '{{%freeform_payments_payments}}',
+                'subscriptionId',
+                '{{%freeform_payments_subscriptions}}',
+                'id',
+                'CASCADE'
+            );
+
+            // ==================
+            // Subscriptions
+            // ==================
             $this->addForeignKey(
                 'freeform_payments_subscriptions_integrationId_fk',
                 '{{%freeform_payments_subscriptions}}',

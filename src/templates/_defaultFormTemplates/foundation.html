@@ -14,6 +14,13 @@
       freeform.setOption("successClassBanner", ["callout", "success"]);
     })
 
+    form.addEventListener("flatpickr-ready", (event) => {
+      var instance = event.detail;
+      var input = instance.input;
+
+      input.parentNode.style.width = "100%";
+    })
+
     form.addEventListener("freeform-stripe-styling", (event) => {
       event.detail.base = {
         fontSize: "16px",
@@ -50,7 +57,7 @@
 
 <div class="grid-container">
 {% for row in form %}
-    <div class="grid-x grid-padding-x {{ form.customAttributes.rowClass }}">
+    <div class="grid-x grid-margin-x {{ form.customAttributes.rowClass }}">
         {% for field in row %}
             {% set width = (12 / (row|length)) %}
 
@@ -58,7 +65,7 @@
 
             {% set columnClass = "" %}
             {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-            {% set columnClass = columnClass ~ " medium-" ~ width ~ " columns" %}
+            {% set columnClass = columnClass ~ " medium-" ~ width %}
 
             {% if field.type == "submit" %}
                 {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
@@ -148,9 +155,9 @@
                     }) }}
 
                     {% for layoutRow in field.layoutRows %}
-                        <div class="grid-x grid-padding-x {{ form.customAttributes.rowClass }}">
+                        <div class="grid-x grid-margin-x {{ form.customAttributes.rowClass }}">
                             {% set layoutWidth = (12 / (layoutRow|length)) %}
-                            {% set columnClass = columnClass|replace(' medium-' ~ width) %}
+                            {% set columnClass = columnClass|replace('medium-3')|replace('medium-4')|replace('medium-6')|replace('medium-12') %}
                             {% set columnClass = columnClass ~ " medium-" ~ layoutWidth %}
                             {% for layoutField in layoutRow %}
                                 <div class="{{ columnClass }} cell">

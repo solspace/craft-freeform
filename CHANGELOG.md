@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.0.2 - 2019-06-18
+### Fixed
+- Fixed a bug where the Freeform 3 migration had some incorrect foreign keys for some Pro and Payments database tables when upgrading from v2 Lite.
+- Fixed a bug where a migration was not compatible with PostgreSQL.
+- Fixed a bug where filtering submissions by status in templates would return an error.
+- Fixed a bug where the Element Connections feature would error when mapping to an entry section that did not have the primary site enabled for it.
+- Fixed a bug where single checkbox fields would always be checked by default when placed in multipage forms on page 2 or greater.
+- Fixed some very minor visual errors in sample formatting templates.
+
 ## 3.0.1 - 2019-06-14
 ### Fixed
 - Fixed a bug where some update migrations were failing when the `allowAdminChanges` Project Config setting was set to `false`.

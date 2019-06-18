@@ -87,7 +87,15 @@ class Entries extends AbstractConnection
             $entry->slug = $entry->title;
         }
 
-        $entry->siteId  = \Craft::$app->sites->currentSite->id;
+        $currentSiteId = \Craft::$app->sites->currentSite->id;
+        $siteIds = $entry->getSection()->getSiteIds();
+        if (in_array($currentSiteId, $siteIds, false)) {
+            $siteId = $currentSiteId;
+        } else {
+            $siteId = reset($siteIds);
+        }
+
+        $entry->siteId  = $siteId;
         $entry->enabled = !$this->isDisabled();
 
         return $entry;

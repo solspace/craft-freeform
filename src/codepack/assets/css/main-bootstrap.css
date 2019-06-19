@@ -56,3 +56,7 @@ ul.errors.help-block > li {
 .submit-align-spread button:last-child {
   float: right;
 }
+
+.flatpickr-wrapper {
+  width: 100%;
+}

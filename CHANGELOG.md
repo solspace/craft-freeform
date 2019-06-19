@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 2.5.25 - 2019-06-19
+### Added
+- Added Active Campaign CRM API integration (Pro edition).
+
+### Changed
+- Updated `carbon` dependency to `^1.22.1|^2.19` for better compatibility with other plugins, and to reduce the chances of seeing deprecation notice.
+
+### Fixed
+- Fixed a bug where single checkbox fields would always be checked by default when placed in multipage forms on page 2 or greater.
+- Fixed a bug where the Purge Submissions feature was not also removing associated Assets.
+- Fixed a bug where using AJAX and uploading files was keeping Asset files stored even when the form errored.
+- Fixed a bug where soft-deleted submissions were being included in exports.
+- Fixed a bug where Rating field stars sometimes looked plumper than they should in the CP.
+- Fixed some minor display issues with Date & Time fields in demo templates and sample formatting templates.
+
 ## 2.5.24 - 2019-05-16
 ### Changed
 - Updated plugin icon.

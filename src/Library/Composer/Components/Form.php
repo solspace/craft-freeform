@@ -493,22 +493,24 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             $isFormValid = false;
         }
 
-        foreach ($currentPageFields as $field) {
-            if ($field instanceof FileUploadInterface) {
-                try {
-                    $field->uploadFile();
-                } catch (FileUploadException $e) {
-                    $isFormValid = false;
+        if ($isFormValid) {
+            foreach ($currentPageFields as $field) {
+                if ($field instanceof FileUploadInterface) {
+                    try {
+                        $field->uploadFile();
+                    } catch (FileUploadException $e) {
+                        $isFormValid = false;
 
-                    $this->logger->error($e->getMessage(), ['field' => $field]);
-                } catch (\Exception $e) {
-                    $isFormValid = false;
+                        $this->logger->error($e->getMessage(), ['field' => $field]);
+                    } catch (\Exception $e) {
+                        $isFormValid = false;
 
-                    $this->logger->error($e->getMessage(), ['field' => $field]);
-                }
+                        $this->logger->error($e->getMessage(), ['field' => $field]);
+                    }
 
-                if ($field->hasErrors()) {
-                    $isFormValid = false;
+                    if ($field->hasErrors()) {
+                        $isFormValid = false;
+                    }
                 }
             }
         }

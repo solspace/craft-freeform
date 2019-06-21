@@ -69,6 +69,14 @@
     }) }}
 
     {{ forms.lightswitchField({
+        label: "AJAX Enabled for Forms by Default"|t('freeform'),
+        instructions: 'By default, the "Enable AJAX" feature checkbox will be checked for new forms.'|t('freeform'),
+        name: "settings[ajaxByDefault]",
+        on: settings.ajaxByDefault,
+        errors: settings.errors("ajaxByDefault"),
+    }) }}
+
+    {{ forms.lightswitchField({
         label: "Include Default Freeform Formatting Templates"|t('freeform'),
         instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t('freeform'),
         name: "settings[defaultTemplates]",

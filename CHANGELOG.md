@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.0.3 - 2019-06-21
+### Added
+- Added Active Campaign CRM API integration (Pro edition).
+- Added a setting to have the "Enable AJAX" feature checked by default for all new forms.
+
+### Changed
+- Updated Honeypot field to ensure screen readers don't see it and it can't be tabbed to, etc.
+
+### Fixed
+- Fixed a bug where using a Freeform field to generate the Reply-to, CC, and BCC fields that didn't contain a value (empty from submission) would cause the email notification to fail.
+- Fixed a bug where editing a form submission on the front end would not automatically update the submission title.
+
 ## 3.0.2 - 2019-06-18
 ### Fixed
 - Fixed a bug where the Freeform 3 migration had some incorrect foreign keys for some Pro and Payments database tables when upgrading from v2 Lite.
@@ -67,10 +79,10 @@
 ### Added
 - Added Active Campaign CRM API integration (Pro edition).
 
-### Changed
+ ### Changed
 - Updated `carbon` dependency to `^1.22.1|^2.19` for better compatibility with other plugins, and to reduce the chances of seeing deprecation notice.
 
-### Fixed
+ ### Fixed
 - Fixed a bug where single checkbox fields would always be checked by default when placed in multipage forms on page 2 or greater.
 - Fixed a bug where the Purge Submissions feature was not also removing associated Assets.
 - Fixed a bug where using AJAX and uploading files was keeping Asset files stored even when the form errored.

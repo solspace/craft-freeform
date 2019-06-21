@@ -457,4 +457,12 @@ class SettingsService extends BaseService
     {
         return (bool) $this->getSettingsModel()->spamFolderEnabled;
     }
+
+    /**
+     * @return bool
+     */
+    public function isAjaxEnabledByDefault(): bool
+    {
+        return (bool) $this->getSettingsModel()->ajaxByDefault;
+    }
 }

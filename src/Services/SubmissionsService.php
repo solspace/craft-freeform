@@ -248,17 +248,18 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $submission->statusId    = $statusId;
             $submission->isSpam      = $form->isMarkedAsSpam();
             $submission->dateCreated = $dateCreated;
-            $submission->title       = \Craft::$app->view->renderString(
-                $form->getSubmissionTitleFormat(),
-                array_merge(
-                    $fieldsByHandle,
-                    [
-                        'dateCreated' => $dateCreated,
-                        'form'        => $form,
-                    ]
-                )
-            );
         }
+
+        $submission->title = \Craft::$app->view->renderString(
+            $form->getSubmissionTitleFormat(),
+            array_merge(
+                $fieldsByHandle,
+                [
+                    'dateCreated' => $dateCreated,
+                    'form'        => $form,
+                ]
+            )
+        );
 
         $submission->dateUpdated = $dateCreated;
         $submission->setFormFieldValues($savableFields, $isNew);

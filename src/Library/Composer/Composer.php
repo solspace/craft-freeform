@@ -276,6 +276,7 @@ class Composer
                 'returnUrl'             => '',
                 'storeData'             => true,
                 'defaultStatus'         => $this->statusHandler->getDefaultStatusId(),
+                'ajaxEnabled'           => $this->formHandler->isAjaxEnabledByDefault(),
             ],
             Properties::INTEGRATION_HASH         => [
                 'type'          => Properties::INTEGRATION_HASH,

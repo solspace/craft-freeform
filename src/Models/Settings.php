@@ -43,6 +43,8 @@ class Settings extends Model
     const SCRIPT_INSERT_LOCATION_FORM   = 'form';
     const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
 
+    const DEFAULT_AJAX = false;
+
     /** @var string */
     public $pluginName;
 
@@ -158,6 +160,9 @@ class Settings extends Model
     public $renderFormHtmlInCpViews;
 
     /** @var bool */
+    public $ajaxByDefault;
+
+    /** @var bool */
     public $autoScrollToErrors;
 
     /** @var bool */
@@ -199,6 +204,7 @@ class Settings extends Model
         $this->purgableSubmissionAgeInDays   = null;
         $this->purgableSpamAgeInDays         = null;
         $this->renderFormHtmlInCpViews       = true;
+        $this->ajaxByDefault                 = self::DEFAULT_AJAX;
         $this->autoScrollToErrors            = true;
         $this->fillWithGet                   = false;
 
@@ -473,5 +479,5 @@ class Settings extends Model
         }
 
         return $files;
-}
+    }
 }

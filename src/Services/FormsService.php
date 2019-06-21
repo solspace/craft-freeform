@@ -400,6 +400,14 @@ class FormsService extends BaseService implements FormHandlerInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isAjaxEnabledByDefault(): bool
+    {
+        return $this->getSettingsService()->isAjaxEnabledByDefault();
+    }
+
+    /**
      * @param $deletedStatusId
      * @param $newStatusId
      *

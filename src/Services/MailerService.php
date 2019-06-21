@@ -122,15 +122,24 @@ class MailerService extends BaseService implements MailHandlerInterface
                 }
 
                 if ($notification->getCc()) {
-                    $email->setCc(StringHelper::extractSeparatedValues($notification->getCc()));
+                    $cc = StringHelper::extractSeparatedValues($notification->getCc());
+                    if (!empty($cc)) {
+                        $email->setCc($cc);
+                    }
                 }
 
                 if ($notification->getBcc()) {
-                    $email->setBcc(StringHelper::extractSeparatedValues($notification->getBcc()));
+                    $bcc = StringHelper::extractSeparatedValues($notification->getBcc());
+                    if (!empty($bcc)) {
+                        $email->setBcc($bcc);
+                    }
                 }
 
                 if ($notification->getReplyToEmail()) {
-                    $email->setReplyTo($this->renderString($notification->getReplyToEmail(), $fieldValues));
+                    $replyTo = trim($this->renderString($notification->getReplyToEmail(), $fieldValues));
+                    if (!empty($replyTo)) {
+                        $email->setReplyTo($replyTo);
+                    }
                 }
             } catch (\Exception $e) {
                 $message = $e->getMessage();

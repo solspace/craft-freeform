@@ -62,6 +62,11 @@ interface FormHandlerInterface
     public function isSpamFolderEnabled(): bool;
 
     /**
+     * @return bool
+     */
+    public function isAjaxEnabledByDefault(): bool;
+
+    /**
      * @param Form $form
      *
      * @return bool

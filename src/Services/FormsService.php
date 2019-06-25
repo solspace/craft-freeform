@@ -5,8 +5,8 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          http://docs.solspace.com/craft/freeform
- * @license       https://solspace.com/software/license-agreement
+ * @link          https://docs.solspace.com/craft/freeform
+ * @license       https://docs.solspace.com/license-agreement
  */
 
 namespace Solspace\Freeform\Services;
@@ -530,7 +530,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         setcookie(
             $name,
             $value,
-            time() + strtotime('+1 year'),
+            (int) (time() + strtotime('+1 year')),
             '/',
             \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
             true,

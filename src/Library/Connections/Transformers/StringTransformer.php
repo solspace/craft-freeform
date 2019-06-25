@@ -18,7 +18,7 @@ class StringTransformer extends AbstractFieldTransformer
         $hasOptions = $targetCraftField instanceof BaseOptionsField;
         $hasRelations = $targetCraftField instanceof BaseRelationField;
 
-        $value = $this->getField()->getValueAsString();
+        $value = $this->getField()->getValueAsString(false);
         if ($hasOptions || $hasRelations) {
             $value = [$value];
         }

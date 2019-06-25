@@ -746,7 +746,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     protected function prepareApi()
     {
         StripeAPI\Stripe::setApiKey($this->getAccessToken());
-        \Stripe\Stripe::setAppInfo("solspace/craft3-freeform", "v1", "http://docs.solspace.com/craft/freeform");
+        \Stripe\Stripe::setAppInfo("solspace/craft3-freeform", "v1", "https://docs.solspace.com/craft/freeform");
 
         $this->lastError = null;
     }

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.0.4 - 2019-06-25
+### Fixed
+- Fixed a bug where the Elements Connection feature would error when using a multi-option field that was required on Freeform's side.
+- Fixed a bug where the Empty Option Label feature with predefined/element data options was not refreshing the value between selecting different fields.
+- Fixed a bug where customers using more recent versions of PHP 7 would see a `setcookie() expects parameter 3 to be integer, float given` error.
+
 ## 3.0.3 - 2019-06-21
 ### Added
 - Added Active Campaign CRM API integration (Pro edition).

@@ -5,8 +5,8 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          http://docs.solspace.com/craft/freeform
- * @license       https://solspace.com/software/license-agreement
+ * @link          https://docs.solspace.com/craft/freeform
+ * @license       https://docs.solspace.com/license-agreement
  */
 
 namespace Solspace\Freeform;
@@ -152,7 +152,7 @@ class Freeform extends Plugin
     const EDITION_LITE = 'lite';
     const EDITION_PRO  = 'pro';
 
-    const PERMISSIONS_HELP_LINK = 'http://docs.solspace.com/craft/freeform/v2/setup/demo-templates.html';
+    const PERMISSIONS_HELP_LINK = 'https://docs.solspace.com/craft/freeform/v2/setup/demo-templates.html';
     const PERMISSION_NAMESPACE  = 'Freeform';
 
     const VERSION_CACHE_KEY           = 'freeform_version';

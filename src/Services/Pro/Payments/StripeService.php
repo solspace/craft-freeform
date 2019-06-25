@@ -38,9 +38,12 @@ class StripeService extends Component
             $ffPaymentsPath = \Yii::getAlias('@freeform');
 
             $variables = $this->getStripeVariables($form);
+            $variables = \GuzzleHttp\json_encode($variables);
 
             $stripeJs = file_get_contents($ffPaymentsPath . '/Resources/js/other/payments/form/stripe-submit.js');
-            $event->appendJsToOutput($stripeJs, ['variables' => \GuzzleHttp\json_encode($variables)]);
+            $stripeJs = preg_replace('/[\'"]#VARIABLES#[\'"]/', $variables, $stripeJs);
+
+            $event->appendJsToOutput($stripeJs);
         }
     }
 

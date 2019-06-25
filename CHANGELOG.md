@@ -1,8 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.0.5 - 2019-06-25
+### Fixed
+- Fixed a bug where Stripe credit card fields were not working in front end templates.
+- Fixed a bug where single checkbox fields weren't able to map to a Craft checkboxes field when using Element Connections feature.
+
 ## 3.0.4 - 2019-06-25
 ### Fixed
-- Fixed a bug where the Elements Connection feature would error when using a multi-option field that was required on Freeform's side.
+- Fixed a bug where the Element Connections feature would error when using a multi-option field that was required on Freeform's side.
 - Fixed a bug where the Empty Option Label feature with predefined/element data options was not refreshing the value between selecting different fields.
 - Fixed a bug where customers using more recent versions of PHP 7 would see a `setcookie() expects parameter 3 to be integer, float given` error.
 

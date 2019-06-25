@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Library\Connections\Transformers;
 use craft\base\Field;
 use craft\fields\BaseOptionsField;
 use craft\fields\BaseRelationField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 
 class StringTransformer extends AbstractFieldTransformer
 {
@@ -18,9 +19,11 @@ class StringTransformer extends AbstractFieldTransformer
         $hasOptions = $targetCraftField instanceof BaseOptionsField;
         $hasRelations = $targetCraftField instanceof BaseRelationField;
 
-        $value = $this->getField()->getValueAsString(false);
+        $field = $this->getField();
+        $value = $field->getValueAsString(!$field instanceof OptionsInterface);
         if ($hasOptions || $hasRelations) {
             $value = [$value];
+            $value = array_filter($value);
         }
 
         return $value;

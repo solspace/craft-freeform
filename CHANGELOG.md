@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 2.5.26 - 2019-06-26
+### Changed
+- Updated Honeypot field to ensure screen readers don't see it and it can't be tabbed to, etc.
+
+### Fixed
+- Fixed a bug where the Empty Option Label feature with predefined/element data options was not refreshing the value between selecting different fields.
+- Fixed a bug where OAuth-based integrations were not connecting properly.
+
 ## 2.5.25 - 2019-06-19
 ### Added
 - Added Active Campaign CRM API integration (Pro edition).

@@ -5,8 +5,8 @@
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
- * @license       https://solspace.com/software/license-agreement
+ * @link          https://docs.solspace.com/craft/freeform
+ * @license       https://docs.solspace.com/license-agreement
  */
 
 // php-export-data by Eli Dickinson, http://github.com/elidickinson/php-export-data

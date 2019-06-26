@@ -4,9 +4,9 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2016, Solspace, Inc.
- * @link          https://solspace.com/craft/freeform
- * @license       https://solspace.com/software/license-agreement
+ * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
+ * @link          https://docs.solspace.com/craft/freeform
+ * @license       https://docs.solspace.com/license-agreement
  */
 
 namespace Solspace\Freeform\Library\Integrations\PaymentGateways;

@@ -61,6 +61,7 @@ return [
     'freeform/settings/mailing-lists'                                => 'freeform/mailing-lists/index',
     'freeform/settings/mailing-lists/new'                            => 'freeform/mailing-lists/create',
     'freeform/settings/mailing-lists/<id:\d+>'                       => 'freeform/mailing-lists/edit',
+    'freeform/settings/mailing-lists/<id:[a-zA-Z0-9\-_]+>'           => 'freeform/mailing-lists/edit',
     'freeform/settings/mailing-lists/<handle:[a-zA-Z0-9\-_]+>'       => 'freeform/mailing-lists/handle-o-auth-redirect',
     'freeform/mailing-lists/authenticate/<handle:[a-zA-Z0-9\-_]+>'   => 'freeform/mailing-lists/force-authorization',
     'freeform/mailing_list/check'                                    => 'freeform/mailing-lists/check-integration-connection',
@@ -68,6 +69,7 @@ return [
     'freeform/settings/crm'                                          => 'freeform/crm/index',
     'freeform/settings/crm/new'                                      => 'freeform/crm/create',
     'freeform/settings/crm/<id:\d+>'                                 => 'freeform/crm/edit',
+    'freeform/settings/crm/<id:[a-zA-Z0-9\-_]+>'                     => 'freeform/crm/edit',
     'freeform/crm/check'                                             => 'freeform/crm/check-integration-connection',
     'freeform/crm/authenticate/<handle:[a-zA-Z0-9_]+>'               => 'freeform/crm/force-authorization',
     // Payment Gateways

@@ -25,9 +25,17 @@ class m190614_103420_AddMissingMetaColumnsToProAndPaymentTables extends Migratio
 
         foreach ($tables as $table) {
             try {
-                $this->addColumn("{{%$table}}", 'dateCreated', $this->dateTime());
-                $this->addColumn("{{%$table}}", 'dateUpdated', $this->dateTime());
-                $this->addColumn("{{%$table}}", 'uid', $this->uid());
+                if (!$this->db->columnExists("{{%$table}}", 'dateCreated')) {
+                    $this->addColumn("{{%$table}}", 'dateCreated', $this->dateTime());
+                }
+
+                if (!$this->db->columnExists("{{%$table}}", 'dateUpdated')) {
+                    $this->addColumn("{{%$table}}", 'dateUpdated', $this->dateTime());
+                }
+
+                if (!$this->db->columnExists("{{%$table}}", 'uid')) {
+                    $this->addColumn("{{%$table}}", 'uid', $this->uid());
+                }
             } catch (\Exception $e) {
             }
         }

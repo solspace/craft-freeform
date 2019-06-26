@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.0.6 - 2019-06-26
+### Fixed
+- Fixed a bug where a migration could error for some customers using PostgreSQL.
+- Fixed a bug where OAuth-based integrations were not connecting properly.
+
 ## 3.0.5 - 2019-06-25
 ### Fixed
 - Fixed a bug where Stripe credit card fields were not working in front end templates.

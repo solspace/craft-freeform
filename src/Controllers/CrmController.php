@@ -89,20 +89,20 @@ class CrmController extends Controller
      * @return Response
      * @throws HttpException
      */
-    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
+    public function actionEdit($id = null, IntegrationModel $model = null): Response
     {
         if (null === $model) {
-            $model = $this->getCRMService()->getIntegrationById($id);
+            if (is_numeric($id)) {
+                $model = $this->getCRMService()->getIntegrationById($id);
+            }
+
+            if (!$model && $id) {
+                $model = $this->getCRMService()->getIntegrationByHandle($id);
+            }
         }
 
         if (!$model) {
-            throw new HttpException(
-                404,
-                Freeform::t(
-                    "CRM integration with handle '{ID}' not found",
-                    ['ID' => $id]
-                )
-            );
+            throw new HttpException(404, Freeform::t('CRM integration not found'));
         }
 
         return $this->renderEditForm($model, $model->name);

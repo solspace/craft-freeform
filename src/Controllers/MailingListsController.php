@@ -81,8 +81,15 @@ class MailingListsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         if (null === $model) {
-            $model = $this->getMailingListsService()->getIntegrationById($id);
+            if (is_numeric($id)) {
+                $model = $this->getMailingListsService()->getIntegrationById($id);
+            }
+
+            if (!$model && $id) {
+                $model = $this->getMailingListsService()->getIntegrationByHandle($id);
+            }
         }
+
 
         if (!$model) {
             throw new \HttpException(

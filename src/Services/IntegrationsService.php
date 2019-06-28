@@ -13,6 +13,8 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
@@ -27,7 +29,6 @@ use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewa
 use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
-use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 
 class IntegrationsService extends BaseService
 {
@@ -62,11 +63,12 @@ class IntegrationsService extends BaseService
      */
     public function pushToMailingLists(Submission $submission, array $fields)
     {
-        if (!Freeform::getInstance()->isPro()) {
+        $form = $submission->getForm();
+
+        if (!Freeform::getInstance()->isPro() || $form->getSuppressors()->isApi()) {
             return;
         }
 
-        $form               = $submission->getForm();
         $mailingListHandler = Freeform::getInstance()->mailingLists;
 
         foreach ($fields as $field) {
@@ -119,12 +121,15 @@ class IntegrationsService extends BaseService
      */
     public function sendOutEmailNotifications(Submission $submission = null)
     {
-        $mailer             = Freeform::getInstance()->mailer;
-        $form               = $submission->getForm();
+        $mailer = Freeform::getInstance()->mailer;
+
+        $form = $submission->getForm();
+
         $fields             = $form->getLayout()->getFields();
         $adminNotifications = $form->getAdminNotificationProperties();
+        $suppressors        = $form->getSuppressors();
 
-        if ($adminNotifications->getNotificationId()) {
+        if (!$suppressors->isAdminNotifications() && $adminNotifications->getNotificationId()) {
             $mailer->sendEmail(
                 $form,
                 $adminNotifications->getRecipientArray(),
@@ -135,8 +140,15 @@ class IntegrationsService extends BaseService
         }
 
         $recipientFields = $form->getLayout()->getRecipientFields();
-
         foreach ($recipientFields as $field) {
+            if ($field instanceof DynamicRecipientField && $suppressors->isDynamicRecipients()) {
+                continue;
+            }
+
+            if (!$field instanceof DynamicRecipientField && $suppressors->isSubmitterNotifications()) {
+                continue;
+            }
+
             $mailer->sendEmail(
                 $form,
                 $submission->{$field->getHandle()}->getRecipients(),
@@ -146,15 +158,17 @@ class IntegrationsService extends BaseService
             );
         }
 
-        $dynamicRecipients = $form->getDynamicNotificationData();
-        if ($dynamicRecipients && $dynamicRecipients->getRecipients()) {
-            $mailer->sendEmail(
-                $form,
-                $dynamicRecipients->getRecipients(),
-                $dynamicRecipients->getTemplate(),
-                $fields,
-                $submission
-            );
+        if (!$suppressors->isDynamicRecipients()) {
+            $dynamicRecipients = $form->getDynamicNotificationData();
+            if ($dynamicRecipients && $dynamicRecipients->getRecipients()) {
+                $mailer->sendEmail(
+                    $form,
+                    $dynamicRecipients->getRecipients(),
+                    $dynamicRecipients->getTemplate(),
+                    $fields,
+                    $submission
+                );
+            }
         }
     }
 
@@ -165,7 +179,9 @@ class IntegrationsService extends BaseService
      */
     public function pushToCRM(Submission $submission)
     {
-        if (!Freeform::getInstance()->isPro()) {
+        $form = $submission->getForm();
+
+        if (!Freeform::getInstance()->isPro() || $form->getSuppressors()->isApi()) {
             return;
         }
 
@@ -187,7 +203,7 @@ class IntegrationsService extends BaseService
 
         $form          = $submission->getForm();
         $paymentFields = $form->getLayout()->getPaymentFields();
-        if (!$paymentFields || \count($paymentFields) === 0) {
+        if (!$paymentFields || \count($paymentFields) === 0 || $form->getSuppressors()->isPayments()) {
             return true; //no payment fields, so no processing needed
         }
 

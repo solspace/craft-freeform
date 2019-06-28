@@ -130,10 +130,10 @@ class StripeService extends Component
         }
 
         return [
-            'amountSelector'   => $elementAmount ?? $dynamicAmount ?? null,
-            'amountFixed'      => $elementAmount || $dynamicAmount ? null : $staticAmount,
-            'currencySelector' => $elementCurrency ?? $dynamicCurrency ?? $staticCurrency,
-            'currencyFixed'    => $elementCurrency || $dynamicCurrency ? null : $staticCurrency,
+            'amountSelector'   => $elementAmount,
+            'amountFixed'      => $dynamicAmount ?? $staticAmount,
+            'currencySelector' => $elementCurrency,
+            'currencyFixed'    => $dynamicCurrency ?? $staticCurrency,
         ];
     }
 

@@ -237,12 +237,11 @@ class ExportProfileModel extends Model
                 case 'title':
                     $fieldName = 'c.[[' . $fieldName . ']]';
                     break;
-                case 'ip':
-                    $fieldName = 's.[[' . $fieldName . ']]';
-                    break;
+
                 case 'status':
                     $fieldName = 'stat.[[name]] AS status';
                     break;
+
                 default:
                     $fieldName = 's.[[' . $fieldName . ']]';
                     break;
@@ -251,7 +250,7 @@ class ExportProfileModel extends Model
             $searchableFields[] = $fieldName;
         }
 
-        $conditions = ['s.[[formId]] = :formId', 's.isSpam  = false'];
+        $conditions = ['s.[[formId]] = :formId', 's.[[isSpam]] = false'];
         $parameters = ['formId' => $this->formId];
 
         $dateRangeEnd = $this->getDateRangeEnd();

@@ -76,7 +76,7 @@ class MailingListsController extends BaseController
      * @return Response
      * @throws \HttpException
      */
-    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
+    public function actionEdit($id = null, IntegrationModel $model = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -92,10 +92,7 @@ class MailingListsController extends BaseController
 
 
         if (!$model) {
-            throw new \HttpException(
-                404,
-                Freeform::t('Mailing List integration with ID {id} not found', ['id' => $id])
-            );
+            throw new HttpException(404, Freeform::t('Mailing List integration not found'));
         }
 
         return $this->renderEditForm($model, $model->name);

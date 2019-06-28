@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.1.0 - 2019-06-28
+### Added
+- Added `suppress` parameter that allows template-level suppression of email notifications, API integrations and Element Connections feature. Can be used for any reason, but more commonly used for editing existing submissions on front end.
+- Added Freshdesk CRM (helpdesk) API integration (Pro).
+- Added Infusionsoft CRM API integration (Pro).
+
+### Fixed
+- Fixed a bug where user registration forms (Element Connections) were not handling email activation process correctly.
+- Fixed a bug where Payments forms would not work correctly if the dynamic amount value field was on a different page from the Stripe credit card fields in a multi-page form.
+- Fixed a bug where using Export Profiles with PostgreSQL would return an error.
+
 ## 3.0.6 - 2019-06-26
 ### Fixed
 - Fixed a bug where a migration could error for some customers using PostgreSQL.
@@ -90,6 +101,14 @@
 - Fixed a bug where soft-deleted submissions were being included in exports.
 - Fixed a bug where using Radio field type with Freeform Payments forms (for amount) were not working correctly.
 - Fixed a bug where Rating field stars sometimes looked plumper than they should in the CP.
+
+## 2.5.26 - 2019-06-26
+### Changed
+- Updated Honeypot field to ensure screen readers don't see it and it can't be tabbed to, etc.
+
+### Fixed
+- Fixed a bug where the Empty Option Label feature with predefined/element data options was not refreshing the value between selecting different fields.
+- Fixed a bug where OAuth-based integrations were not connecting properly.
 
 ## 2.5.25 - 2019-06-19
 ### Added

@@ -37,10 +37,6 @@ class Users extends AbstractConnection
         $user          = new User();
         $user->pending = !$this->active;
 
-        if (!$this->active && $this->sendActivation) {
-            $user->unverifiedEmail = $user->email;
-        }
-
         $fieldLayout = $user->getFieldLayout();
         if (!$fieldLayout) {
             $fieldLayout = new FieldLayout();
@@ -52,6 +48,10 @@ class Users extends AbstractConnection
             $value  = $transformer->transformValueFor($field);
 
             $user->{$handle} = $value;
+        }
+
+        if (!$this->active && $this->sendActivation) {
+            $user->unverifiedEmail = $user->email;
         }
 
         if (empty($user->photoId)) {

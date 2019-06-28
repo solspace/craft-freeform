@@ -52,7 +52,7 @@ class ConnectionsService extends BaseService
      */
     public function connect(Form $form)
     {
-        if (!Freeform::getInstance()->isPro()) {
+        if (!Freeform::getInstance()->isPro() || $form->getSuppressors()->isConnections()) {
             return;
         }
 

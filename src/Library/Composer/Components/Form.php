@@ -28,6 +28,7 @@ use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -36,6 +37,7 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
+use Twig\Markup;
 use yii\base\Arrayable;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
@@ -734,9 +736,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      *
      * @param array $customFormAttributes
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function render(array $customFormAttributes = null): \Twig_Markup
+    public function render(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
 
@@ -746,9 +748,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /**
      * @param array $customFormAttributes
      *
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function renderTag(array $customFormAttributes = null): \Twig_Markup
+    public function renderTag(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
         $customAttributes = $this->getCustomAttributes();
@@ -835,9 +837,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     }
 
     /**
-     * @return \Twig_Markup
+     * @return Markup
      */
-    public function renderClosingTag(): \Twig_Markup
+    public function renderClosingTag(): Markup
     {
         $output = $this->formHandler->onRenderClosingTag($this);
         $output .= '</form>';
@@ -891,6 +893,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getCustomAttributes(): CustomFormAttributes
     {
         return $this->customAttributes;
+    }
+
+    /**
+     * @return Suppressors
+     */
+    public function getSuppressors(): Suppressors
+    {
+        return new Suppressors($this->getFormValueContext()->getSuppressorData());
     }
 
     /**
@@ -1019,6 +1029,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                     FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
                     FormValueContext::DATA_STATUS               => $this->customAttributes->getStatus(),
                     FormValueContext::DATA_SUBMISSION_TOKEN     => $this->customAttributes->getSubmissionToken(),
+                    FormValueContext::DATA_SUPPRESS             => $this->customAttributes->getSuppress(),
                 ]
             )
             ->saveState();

@@ -32,6 +32,7 @@ class FormValueContext implements \JsonSerializable
     const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
     const DATA_STATUS               = 'status';
     const DATA_SUBMISSION_TOKEN     = 'submissionToken';
+    const DATA_SUPPRESS             = 'suppress';
 
     /** @var int */
     private $formId;
@@ -238,6 +239,14 @@ class FormValueContext implements \JsonSerializable
     }
 
     /**
+     * @return array|bool|null
+     */
+    public function getSuppressorData()
+    {
+        return $this->customFormData[self::DATA_SUPPRESS] ?? null;
+    }
+
+    /**
      * @return DynamicNotificationAttributes|null
      */
     public function getDefaultStatus()
@@ -299,7 +308,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function saveState()
     {
-        $encodedData    = json_encode($this, JSON_OBJECT_AS_ARRAY);
+        $encodedData    = \GuzzleHttp\json_encode($this, JSON_OBJECT_AS_ARRAY);
         $sessionHashKey = $this->getSessionHash($this->getLastHash());
 
         $this->session->set($sessionHashKey, $encodedData);
@@ -324,7 +333,7 @@ class FormValueContext implements \JsonSerializable
         $sessionState = $this->session->get($sessionHash);
 
         if ($sessionHash && $sessionState) {
-            $sessionState = json_decode($sessionState, true);
+            $sessionState = \GuzzleHttp\json_decode($sessionState, true);
 
             $this->currentPageIndex = $sessionState['currentPageIndex'];
             $this->storedValues     = $sessionState['storedValues'];

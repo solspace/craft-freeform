@@ -67,7 +67,7 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var array */
     protected $inputAttributes;
 
-    /** @var */
+    /** @var array */
     protected $dynamicNotification;
 
     /** @var string */
@@ -84,6 +84,9 @@ class CustomFormAttributes extends AbstractAttributes
 
     /** @var string */
     protected $recaptchaAction;
+
+    /** @var array */
+    protected $suppress;
 
     /**
      * @return string|null
@@ -307,5 +310,13 @@ class CustomFormAttributes extends AbstractAttributes
     public function getRecaptchaAction()
     {
         return $this->recaptchaAction;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getSuppress()
+    {
+        return $this->suppress;
     }
 }

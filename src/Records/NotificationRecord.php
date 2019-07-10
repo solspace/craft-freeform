@@ -84,6 +84,12 @@ EOT;
     {
         $template = new EmailTemplate($filePath);
 
+        if (is_string($template->isIncludeAttachments())) {
+            $includeAttachments = strtolower($template->isIncludeAttachments()) === 'true' || $template->isIncludeAttachments() === '1';
+        } else {
+            $includeAttachments = $template->isIncludeAttachments();
+        }
+
         $model                     = new self();
         $model->id                 = pathinfo($filePath, PATHINFO_BASENAME);
         $model->name               = $template->getName();
@@ -97,7 +103,7 @@ EOT;
         $model->replyToEmail       = $template->getReplyToEmail();
         $model->bodyHtml           = $template->getBody();
         $model->bodyText           = $template->getBody();
-        $model->includeAttachments = $template->isIncludeAttachments();
+        $model->includeAttachments = $includeAttachments;
         $model->presetAssets       = $template->getPresetAssets();
 
         return $model;

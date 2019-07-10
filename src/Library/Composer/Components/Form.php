@@ -28,6 +28,7 @@ use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
@@ -621,24 +622,26 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $formValueContext->appendStoredValues($submittedValues);
 
         $pageJumpIndex = $this->formHandler->onBeforePageJump($this);
-        if ($pageJumpIndex !== null) {
-            $this->jumpFormToPage($pageJumpIndex);
-            $this->submitResult = false;
+        if ($pageJumpIndex !== -999) {
+            if ($pageJumpIndex !== null) {
+                $this->jumpFormToPage($pageJumpIndex);
+                $this->submitResult = false;
 
-            return $this->submitResult;
-        }
+                return $this->submitResult;
+            }
 
-        if (!$this->isLastPage()) {
-            $this->advanceFormToNextPage();
-            $this->submitResult = false;
+            if (!$this->isLastPage()) {
+                $this->advanceFormToNextPage();
+                $this->submitResult = false;
 
-            return $this->submitResult;
-        }
+                return $this->submitResult;
+            }
 
-        if (!$this->formHandler->onBeforeSubmit($this)) {
-            $this->submitResult = false;
+            if (!$this->formHandler->onBeforeSubmit($this)) {
+                $this->submitResult = false;
 
-            return $this->submitResult;
+                return $this->submitResult;
+            }
         }
 
         $submission = null;
@@ -904,6 +907,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     }
 
     /**
+     * @return Relations
+     */
+    public function getRelations(): Relations
+    {
+        return new Relations($this->getFormValueContext()->getRelationData());
+    }
+
+    /**
      * @param array|null $attributes
      *
      * @return $this
@@ -939,7 +950,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
                 if (isset($submission->{$field->getHandle()})) {
                     $submissionField = $submission->{$field->getHandle()};
-                    $value = $submissionField->getValue();
+                    $value           = $submissionField->getValue();
 
                     if ($submissionField instanceof CheckboxField) {
                         $field->setIsCheckedByPost((bool) $value);
@@ -993,6 +1004,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     }
 
     /**
+     * @param AbstractField $field
+     *
+     * @return bool
+     */
+    public function hasFieldBeenSubmitted(AbstractField $field): bool
+    {
+        return $this->getFormValueContext()->hasFieldBeenSubmitted($field);
+    }
+
+    /**
      * Builds the form object based on $formData
      *
      * @param FormProperties $formProperties
@@ -1030,6 +1051,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                     FormValueContext::DATA_STATUS               => $this->customAttributes->getStatus(),
                     FormValueContext::DATA_SUBMISSION_TOKEN     => $this->customAttributes->getSubmissionToken(),
                     FormValueContext::DATA_SUPPRESS             => $this->customAttributes->getSuppress(),
+                    FormValueContext::DATA_RELATIONS            => $this->customAttributes->getRelations(),
                 ]
             )
             ->saveState();

@@ -12,14 +12,16 @@
 namespace Solspace\Freeform\Controllers;
 
 use Carbon\Carbon;
+use craft\records\Asset;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\TextareaField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\TextareaField;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -234,7 +236,7 @@ class SubmissionsController extends BaseController
             $statuses[$statusId] = $status;
         }
 
-        $variables = [
+        $variables      = [
             'submission'         => $submission,
             'layout'             => $layout,
             'title'              => $title,
@@ -283,6 +285,9 @@ class SubmissionsController extends BaseController
                 )
             );
         }
+
+        $this->removeStaleAssets($model, $post);
+        $post = $this->uploadAndAddFiles($model->getForm(), $post);
 
         $model->title    = \Craft::$app->request->post('title', $model->title);
         $model->statusId = $post['statusId'];
@@ -334,5 +339,61 @@ class SubmissionsController extends BaseController
         }
 
         return null;
+    }
+
+    private function removeStaleAssets(Submission $submission, array $post = [])
+    {
+        foreach ($submission->getForm()->getLayout()->getFileUploadFields() as $field) {
+            $handle = $field->getHandle();
+            $oldIds = $submission->$handle->getValue() ?? [];
+            if (!is_array($oldIds)) {
+                $oldIds = empty($oldIds) ? [] : [$oldIds];
+            }
+
+            $postedIds = $post[$handle] ?? [];
+
+            $staleIds = array_diff($oldIds, $postedIds);
+
+            foreach ($staleIds as $id) {
+                try {
+                    $asset = Asset::find()->where(['id' => $id])->one();
+                    if ($asset) {
+                        $asset->delete();
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+        }
+    }
+
+    /**
+     * @param Form  $form
+     * @param array $post
+     *
+     * @return array
+     */
+    private function uploadAndAddFiles(Form $form, array $post = []): array
+    {
+        $uploadFields = $form->getLayout()->getFileUploadFields();
+
+        foreach ($uploadFields as $field) {
+            $response = Freeform::getInstance()->files->uploadFile($field);
+            if ($response) {
+                if ($response->getAssetIds()) {
+                    $handle = $field->getHandle();
+                    if (isset($post[$handle])) {
+                        if (!is_array($post[$handle])) {
+                            $post[$handle] = [$post[$handle]];
+                        }
+
+                        $post[$handle] = array_merge($post[$handle], $response->getAssetIds());
+                    } else {
+                        $post[$handle] = $response->getAssetIds();
+                    }
+                }
+            }
+        }
+
+        return $post;
     }
 }

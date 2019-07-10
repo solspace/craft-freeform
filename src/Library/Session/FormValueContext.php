@@ -33,6 +33,7 @@ class FormValueContext implements \JsonSerializable
     const DATA_STATUS               = 'status';
     const DATA_SUBMISSION_TOKEN     = 'submissionToken';
     const DATA_SUPPRESS             = 'suppress';
+    const DATA_RELATIONS            = 'relations';
 
     /** @var int */
     private $formId;
@@ -160,6 +161,16 @@ class FormValueContext implements \JsonSerializable
     /**
      * @param AbstractField $field
      *
+     * @return bool
+     */
+    public function hasFieldBeenSubmitted(AbstractField $field): bool
+    {
+        return array_key_exists($field->getHandle(), $this->storedValues);
+    }
+
+    /**
+     * @param AbstractField $field
+     *
      * @return mixed|null
      */
     public function getStoredValue(AbstractField $field)
@@ -244,6 +255,14 @@ class FormValueContext implements \JsonSerializable
     public function getSuppressorData()
     {
         return $this->customFormData[self::DATA_SUPPRESS] ?? null;
+    }
+
+    /**
+     * @return array|string|int|null
+     */
+    public function getRelationData()
+    {
+        return $this->customFormData[self::DATA_RELATIONS] ?? null;
     }
 
     /**

@@ -31,6 +31,9 @@ class ExternalOptionsConfiguration extends BaseConfiguration
     protected $sort;
 
     /** @var string */
+    protected $orderBy;
+
+    /** @var string */
     protected $emptyOption;
 
     /**
@@ -95,6 +98,14 @@ class ExternalOptionsConfiguration extends BaseConfiguration
     public function getSort()
     {
         return $this->sort;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getOrderBy()
+    {
+        return $this->orderBy;
     }
 
     /**

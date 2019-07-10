@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Integrations\PaymentGateways;
 
+use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\AddressDetails;
@@ -155,7 +156,10 @@ class Stripe extends AbstractPaymentGatewayIntegration
             return '';
         }
 
-        return \Craft::getAlias('@web/freeform/payment-webhooks/stripe?id=' . $this->getId());
+        $url = UrlHelper::actionUrl('freeform/payment-webhooks/stripe?id=' . $this->getId());
+        $url = str_replace(\Craft::$app->config->general->cpTrigger . '/', '', $url);
+
+        return $url;
     }
 
     /**

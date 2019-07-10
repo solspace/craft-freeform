@@ -359,7 +359,7 @@ class Infusionsoft extends CRMOAuthConnector
             'grant_type'    => 'refresh_token',
             'refresh_token' => $this->getSetting(self::SETTING_REFRESH_TOKEN)
         ];
-        $this->getLogger()->info('Token Refresh: Sent request', ['payload' => $payload]);
+        // $this->getLogger()->info('Token Refresh: Sent request', ['payload' => $payload]);
 
         try {
             $response = $client->post(

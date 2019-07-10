@@ -2,62 +2,60 @@
 
 namespace Solspace\Freeform\Library\Webhooks;
 
-use craft\base\Model;
+use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 
-abstract class AbstractWebhook extends Model implements WebhookInterface
+abstract class AbstractWebhook implements WebhookInterface
 {
-    /** @var int */
-    public $id;
-
     /** @var string */
-    public $name;
-
-    /** @var string */
-    public $webhook;
+    private $webhook;
 
     /** @var array */
-    public $settings;
+    private $settings;
 
     /**
-     * @return int|null
+     * AbstractWebhook constructor.
+     *
+     * @param string $webhook
+     * @param array  $settings
      */
-    public function getId()
+    public function __construct(string $webhook, array $settings)
     {
-        return $this->id;
+        $this->webhook  = $webhook;
+        $this->settings = $settings;
     }
 
     /**
-     * @return string|null
+     * @return string
+     * @throws \ReflectionException
      */
-    public function getName()
+    public function getProviderName(): string
     {
-        return $this->name;
+        return (new \ReflectionClass($this))->getShortName();
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getWebhook()
+    public function getWebhook(): string
     {
         return $this->webhook;
     }
 
     /**
-     * @return array
-     */
-    public function getSettings(): array
-    {
-        return $this->settings ?? [];
-    }
-
-    /**
-     * @param string $key
+     * @param string $name
      * @param mixed  $defaultValue
      *
      * @return mixed|null
      */
-    public function getSetting(string $key, $defaultValue = null)
+    public function getSetting(string $name, $defaultValue = null)
     {
-        return $this->settings[$key] ?? $defaultValue;
+        return $this->settings[$name] ?? $defaultValue;
     }
+
+    /**
+     * @param AfterSubmitEvent $event
+     *
+     * @return bool
+     */
+    abstract public function triggerWebhook(AfterSubmitEvent $event): bool;
 }

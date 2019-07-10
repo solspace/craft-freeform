@@ -51,13 +51,13 @@
                         <th style="width: 20%;">Date</th>
                         <td>{{ submission.dateCreated|date('l, F j, Y \\a\\t g:ia') }}</td>
                     </tr>
-                    {% for field in submission.fieldMetadata %}
+                    {% for field in submission %}
                         <tr>
                             <th style="width: 20%;">{{ field.label }}</th>
                             <td>
                                 {% if field.type == "file" %}
 
-                                    {% set assetIds = attribute(submission, field.handle).value %}
+                                    {% set assetIds = submission[field.handle].value %}
                                     {% if assetIds %}
                                         {% for assetId in assetIds %}
                                             {% set asset = craft.assets.id(assetId).one() %}
@@ -72,7 +72,7 @@
                                     {% endif %}
 
                                 {% else %}
-                                    {{ attribute(submission, field.handle) }}
+                                    {{ submission[field.handle] }}
                                 {% endif %}
                             </td>
                         </tr>

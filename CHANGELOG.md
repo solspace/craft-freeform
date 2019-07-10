@@ -1,5 +1,26 @@
 # Solspace Freeform Changelog
 
+## 3.2.0 - 2019-07-09
+### Added
+- Added ability to automate relating of Freeform submissions to other Craft Elements, thus allowing robust comment, ratings/reviews, sign-up forms, and more! (Pro)
+- Added Zapier and generic Webhooks integrations (Pro).
+- Added ability to have page skipping in Conditional Rules feature skip to a complete submit.
+- Added ability to add and remove files to submissions inside the control panel.
+- Added ability to orderby and sort Element data populated into Freeform fields. 
+- Added ability to suppress webhooks.
+
+### Changed
+- Updated Slack Webhooks section in Settings to now just be in a consolidated section called 'Webhooks' with the option to use Slack (and Zapier, etc) as a type.
+- Updated Freshdesk integration to have more improvements such as mapping off file attachments.
+- Improved Submissions object template markup for automated rendering of field data to be more intuitive. No longer need to use `fieldMetadata` and can use `submission[field.handle]` instead of `attribute(submission, field.handle)`.
+
+### Fixed
+- Fixed a bug where loading more than one form with reCAPTCHA would not work correctly.
+- Fixed a bug where the Stripe Webhook URL was not working correctly and would generate a 404 error.
+- Fixed a bug where editing multi-page submissions with Conditional Rules page skip triggered would erase skipped page data.
+- Fixed a bug where the `includeAttachments` setting in email notification templates was not working.
+- Fixed a bug where unchecking a checkbox when editing a form submission would continue to leave checkbox value as checked.
+
 ## 3.1.0 - 2019-06-28
 ### Added
 - Added `suppress` parameter that allows template-level suppression of email notifications, API integrations and Element Connections feature. Can be used for any reason, but more commonly used for editing existing submissions on front end.

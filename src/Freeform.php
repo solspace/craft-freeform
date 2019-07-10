@@ -34,10 +34,10 @@ use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
 use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
+use Solspace\Freeform\Controllers\Pro\WebhooksController;
+use Solspace\Freeform\Controllers\Pro\Payments\PaymentWebhooksController;
 use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
 use Solspace\Freeform\Controllers\Pro\QuickExportController;
-use Solspace\Freeform\Controllers\Pro\SlackController;
-use Solspace\Freeform\Controllers\Pro\WebhooksController;
 use Solspace\Freeform\Controllers\ResourcesController;
 use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
@@ -50,6 +50,7 @@ use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
+use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
@@ -83,9 +84,9 @@ use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Solspace\Freeform\Services\Pro\ProFormsService;
 use Solspace\Freeform\Services\Pro\RecaptchaService;
 use Solspace\Freeform\Services\Pro\RulesService;
-use Solspace\Freeform\Services\Pro\SlackService;
 use Solspace\Freeform\Services\Pro\WebhooksService;
 use Solspace\Freeform\Services\Pro\WidgetsService;
+use Solspace\Freeform\Services\RelationsService;
 use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
@@ -131,7 +132,7 @@ use yii\web\ForbiddenHttpException;
  * @property SubscriptionPlansService    $subscriptionPlans
  * @property SubscriptionsService        $subscriptions
  * @property WebhooksService             $webhooks
- * @property SlackService                $slack
+ * @property RelationsService            $relations
  */
 class Freeform extends Plugin
 {
@@ -454,8 +455,8 @@ class Freeform extends Plugin
                 'quick-export'     => QuickExportController::class,
                 'export-profiles'  => ExportProfilesController::class,
                 'subscriptions'    => SubscriptionsController::class,
+                'payment-webhooks' => PaymentWebhooksController::class,
                 'webhooks'         => WebhooksController::class,
-                'slack'            => SlackController::class,
             ];
         }
     }
@@ -494,7 +495,7 @@ class Freeform extends Plugin
                 'subscriptionPlans'    => SubscriptionPlansService::class,
                 'subscriptions'        => SubscriptionsService::class,
                 'webhooks'             => WebhooksService::class,
-                'slack'                => SlackService::class,
+                'relations'            => RelationsService::class,
             ]
         );
     }
@@ -546,6 +547,7 @@ class Freeform extends Plugin
                 }
             }
         );
+
         Event::on(
             PaymentGatewaysService::class,
             PaymentGatewaysService::EVENT_FETCH_TYPES,
@@ -560,6 +562,29 @@ class Freeform extends Plugin
                     ->files()
                     ->ignoreDotFiles(true)
                     ->in(__DIR__ . '/Integrations/PaymentGateways/');
+
+                foreach ($files as $file) {
+                    $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
+                    $className = $namespace . '\\' . $className;
+                    $event->addType($className);
+                }
+            }
+        );
+
+        Event::on(
+            WebhooksService::class,
+            WebhooksService::EVENT_FETCH_TYPES,
+            function (FetchWebhookTypesEvent $event) {
+                $finder = new Finder();
+
+                $namespace = 'Solspace\Freeform\Webhooks\Integrations';
+
+                /** @var SplFileInfo[] $files */
+                $files = $finder
+                    ->name('*.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->in(__DIR__ . '/Webhooks/Integrations/');
 
                 foreach ($files as $file) {
                     $className = str_replace('.' . $file->getExtension(), '', $file->getBasename());
@@ -799,6 +824,12 @@ class Freeform extends Plugin
             [$this->recaptcha, 'addRecaptchaJavascriptToForm']
         );
 
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_AFTER_SUBMIT,
+            [$this->relations, 'relate']
+        );
+
         if ($this->isPro()) {
             Event::on(
                 FormsService::class,
@@ -857,7 +888,7 @@ class Freeform extends Plugin
             Event::on(
                 FormsService::class,
                 FormsService::EVENT_AFTER_SUBMIT,
-                [$this->slack, 'triggerWebhooks']
+                [$this->webhooks, 'triggerWebhooks']
             );
         }
     }

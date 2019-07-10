@@ -4,20 +4,23 @@ namespace Solspace\Freeform\Events\Webhooks;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Library\Webhooks\AbstractWebhook;
+use Solspace\Freeform\Models\Pro\WebhookModel;
 
 class SaveEvent extends CancelableArrayableEvent
 {
-    /** @var AbstractWebhook */
+    /** @var WebhookModel */
     private $model;
 
     /** @var bool */
     private $new;
 
     /**
-     * @param AbstractWebhook $model
-     * @param bool            $new
+     * SaveEvent constructor.
+     *
+     * @param WebhookModel $model
+     * @param bool         $new
      */
-    public function __construct(AbstractWebhook $model, bool $new = false)
+    public function __construct(WebhookModel $model, bool $new = false)
     {
         $this->new   = $new;
         $this->model = $model;
@@ -34,9 +37,9 @@ class SaveEvent extends CancelableArrayableEvent
     }
 
     /**
-     * @return AbstractWebhook
+     * @return WebhookModel
      */
-    public function getModel(): AbstractWebhook
+    public function getModel(): WebhookModel
     {
         return $this->model;
     }

@@ -85,6 +85,8 @@ class Freshdesk extends AbstractCRMIntegration
      */
     public function pushObject(array $keyValueList): bool
     {
+        $requestType = 'json';
+
         $values = $customValues = [];
         foreach ($keyValueList as $key => $value) {
             if (is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/', $value)) {
@@ -98,7 +100,9 @@ class Freshdesk extends AbstractCRMIntegration
             }
 
             if (0 === strpos($key, 'cf_')) {
-                $customValues[$key] = $value;
+                if (!empty($value)) {
+                    $customValues[$key] = $value;
+                }
             } else {
                 $values[$key] = $value;
             }
@@ -131,11 +135,50 @@ class Freshdesk extends AbstractCRMIntegration
             unset($values['attachments']);
         }
 
+        if (isset($values['description']) && !empty($values['description'])) {
+            $values['description'] = nl2br($values['description']);
+        }
+
+        if (isset($values['attachments']) && !empty($values['attachments'])) {
+            $assetData = [];
+            foreach ($values['attachments'] as $assetId) {
+                if (is_numeric($assetId)) {
+                    $asset = \Craft::$app->getAssets()->getAssetById($assetId);
+                    if ($asset) {
+                        $assetData[] = [
+                            'name'     => 'attachments[]',
+                            'contents' => $asset->getStream(),
+                            'headers'  => ['Content-Type' => $asset->mimeType],
+                        ];
+                    }
+                }
+            }
+
+            if (!empty($assetData)) {
+                unset($values['attachments']);
+
+                $multipartValues = [];
+                foreach ($values as $key => $value) {
+                    $multipartValues[] = [
+                        'name' => $key,
+                        'contents' => $value,
+                        'headers' => ['Content-Type', 'text'],
+                    ];
+                }
+                $values = $multipartValues;
+
+                $values = array_merge($values, $assetData);
+                $requestType = 'multipart';
+            } else {
+                unset($values['attachments']);
+            }
+        }
+
         $response = $this
             ->getAuthorizedClient()
             ->post(
                 $this->getEndpoint('/tickets'),
-                ['json' => $values]
+                [$requestType => $values]
             );
 
         return $response->getStatusCode() === 200;

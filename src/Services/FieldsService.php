@@ -377,59 +377,53 @@ class FieldsService extends BaseService implements FieldHandlerInterface
 
         switch ($source) {
             case ExternalOptionsInterface::SOURCE_ENTRIES:
-                $items = Entry::find()->sectionId($target)->siteId($siteId)->all();
-                foreach ($items as $item) {
-                    $label     = $item->$labelField ?? $item->title;
-                    $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
-                }
-
+                $query = Entry::find()->sectionId($target)->siteId($siteId);
                 break;
 
             case ExternalOptionsInterface::SOURCE_CATEGORIES:
-                $items = Category::find()->groupId($target)->siteId($siteId)->all();
-                foreach ($items as $item) {
-                    $label     = $item->$labelField ?? $item->title;
-                    $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
-                }
-
+                $query = Category::find()->groupId($target)->siteId($siteId);
                 break;
 
             case ExternalOptionsInterface::SOURCE_TAGS:
-                $items = Tag::find()->groupId($target)->siteId($siteId)->all();
-                foreach ($items as $item) {
-                    $label     = $item->$labelField ?? $item->title;
-                    $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
-                }
-
+                $query = Tag::find()->groupId($target)->siteId($siteId);
                 break;
 
             case ExternalOptionsInterface::SOURCE_USERS:
-                $items      = User::find()->groupId($target)->siteId($siteId)->all();
-                $labelField = $config->getLabelField() ?? 'username';
-                foreach ($items as $item) {
-                    $label     = $item->$labelField ?? $item->username;
-                    $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
-                }
-
+                $query = User::find()->groupId($target)->siteId($siteId);
                 break;
 
             case ExternalOptionsInterface::SOURCE_ASSETS:
-                $items      = Asset::find()->volumeId($target)->siteId($siteId)->all();
-                $labelField = $config->getLabelField() ?? 'fileName';
-                foreach ($items as $item) {
-                    $label     = $item->$labelField ?? $item->getFilename();
-                    $value     = $item->$valueField ?? $item->id;
-                    $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
-                }
-
+                $query = Asset::find()->volumeId($target)->siteId($siteId);
                 break;
 
             case ExternalOptionsInterface::SOURCE_PREDEFINED:
                 return PredefinedOptionsFactory::create($target, $config, $selectedValues);
+        }
+
+        $orderBy = $config->getOrderBy() ?? 'id';
+        $sort    = strtolower($config->getSort()) === 'desc' ? SORT_DESC : SORT_ASC;
+        $query->orderBy([$orderBy => $sort]);
+
+        $items = $query->all();
+
+        foreach ($items as $item) {
+            switch ($source) {
+                case ExternalOptionsInterface::SOURCE_ASSETS:
+                    $defaultLabel = $item->getFilename();
+                    break;
+
+                case ExternalOptionsInterface::SOURCE_USERS:
+                    $defaultLabel = $item->username;
+                    break;
+
+                default:
+                    $defaultLabel = $item->title;
+                    break;
+            }
+
+            $label     = $item->$labelField ?? $defaultLabel;
+            $value     = $item->$valueField ?? $item->id;
+            $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
         }
 
         if ($config->getEmptyOption()) {

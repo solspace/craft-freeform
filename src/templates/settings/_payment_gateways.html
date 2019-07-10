@@ -1,13 +1,13 @@
 {% extends "freeform/_layouts/settings" %}
 
-{% set title = "Payment Gateways"|t("freeform") %}
+{% set title = "Payments"|t("freeform") %}
 
 {% block actionButton %}
 
     {% if currentUser.can("freeform-settingsAccess") and providers|length > 0 %}
         <div class="buttons">
             <a href="{{ url('freeform/settings/payment-gateways/new') }}" class="btn submit add icon">
-                {{ "New Payment Gateway Integration"|t('freeform') }}
+                {{ "New Payment Integration"|t('freeform') }}
             </a>
         </div>
     {% endif %}
@@ -16,10 +16,10 @@
 
 {% block content %}
 
-    <h2>{{ "Payment Gateways"|t('freeform') }}</h2>
+    <h2>{{ "Payments"|t('freeform') }}</h2>
 
     <div id="no-payment-gateway-integrations"{% if integrations|length %} class="hidden"{% endif %}>
-        <p>{{ "No Payment Gateway integrations exist yet"|t('freeform') }}</p>
+        <p>{{ "No Payment integrations exist yet"|t('freeform') }}</p>
     </div>
 
     {% if integrations|length %}

@@ -21,6 +21,11 @@
     </div>
 {% endblock %}
 
+{% block mainFormAttributes %}
+    {{ parent() }}
+    enctype="multipart/form-data"
+{% endblock %}
+
 {% block body %}
     {{ parent() }}
     <form method="post"
@@ -250,6 +255,7 @@
                                                         <div class="element small hasthumb">
                                                             <input type="hidden" name="{{ field.handle }}[]"
                                                                    value="{{ asset.id }}">
+                                                            <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>
                                                             <div class="elementthumb">
                                                                 <img sizes="30px" srcset="{{ srcset }}" alt="">
                                                             </div>
@@ -263,6 +269,9 @@
                                                 {% else %}
                                                     {{ "No files uploaded"|t('freeform') }}
                                                 {% endif %}
+                                            </div>
+                                            <div class="field">
+                                                <input type="file" name="{{ field.handle }}[]" multiple />
                                             </div>
                                         </div>
                                     {% endif %}
@@ -296,6 +305,14 @@
             </div>
         {% endfor %}
     </div>
+
+    <script>
+        function removeAsset(element) {
+          if (confirm('Are you sure?')) {
+            $(element).parents(".element:first").remove();
+          }
+        }
+    </script>
 
 {% endblock %}
 

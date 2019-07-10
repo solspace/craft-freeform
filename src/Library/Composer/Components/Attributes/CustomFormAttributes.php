@@ -88,6 +88,9 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var array */
     protected $suppress;
 
+    /** @var array */
+    protected $relations;
+
     /**
      * @return string|null
      */
@@ -318,5 +321,13 @@ class CustomFormAttributes extends AbstractAttributes
     public function getSuppress()
     {
         return $this->suppress;
+    }
+
+    /**
+     * @return array|null
+     */
+    public function getRelations()
+    {
+        return $this->relations;
     }
 }

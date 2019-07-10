@@ -430,10 +430,8 @@ class Submission extends Element
                 $value = $values[$field->getHandle()];
             }
 
-            if (!$override) {
-                if ($field instanceof FileUploadField && empty($value)) {
-                    continue;
-                }
+            if (!$override && null === $value) {
+                continue;
             }
 
             $this->storedFieldValues[self::getFieldColumnName($field->getId())] = $value;
@@ -778,5 +776,10 @@ class Submission extends Element
         }
 
         return $fields;
+    }
+
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->getFieldMetadata());
     }
 }

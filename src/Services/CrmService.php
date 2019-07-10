@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
@@ -315,7 +316,11 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
                 return $result;
             } catch (\Exception $e) {
-                $logger->error($e->getMessage());
+                if ($e instanceof ClientException && $e->getResponse()) {
+                    $logger->error($e->getResponse()->getBody());
+                } else {
+                    $logger->error($e->getMessage());
+                }
             }
         }
 

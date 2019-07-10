@@ -31,7 +31,7 @@
                         <th>#</th>
                         <th>Status</th>
                         <th>Title</th>
-                        {% for field in (submissions|first).fieldMetadata %}
+                        {% for field in (submissions|first) %}
                             <th>{{ field.label }}</th>
                         {% endfor %}
                         {% if craft.freeform.pro %}
@@ -51,8 +51,8 @@
                                     {{ submission.title }}
                                 </a>
                             </td>
-                            {% for field in submission.fieldMetadata %}
-                                <td>{{ attribute(submission, field.handle) }}</td>
+                            {% for field in submission %}
+                                <td>{{ submission[field.handle] }}</td>
                             {% endfor %}
                             {% if craft.freeform.pro %}
                                 {% if currentUser and currentUser.admin %}

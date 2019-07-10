@@ -73,9 +73,9 @@ return [
     'freeform/crm/check'                                             => 'freeform/crm/check-integration-connection',
     'freeform/crm/authenticate/<handle:[a-zA-Z0-9_]+>'               => 'freeform/crm/force-authorization',
     // Slack
-    'freeform/settings/slack'                                        => 'freeform/slack/index',
-    'freeform/settings/slack/new'                                    => 'freeform/slack/create',
-    'freeform/settings/slack/<id:\d+>'                               => 'freeform/slack/edit',
+    'freeform/settings/webhooks'                                     => 'freeform/webhooks/index',
+    'freeform/settings/webhooks/new'                                 => 'freeform/webhooks/create',
+    'freeform/settings/webhooks/<id:\d+>'                            => 'freeform/webhooks/edit',
     // Payment Gateways
     'freeform/settings/payment-gateways'                             => 'freeform/payment-gateways/index',
     'freeform/settings/payment-gateways/new'                         => 'freeform/payment-gateways/create',
@@ -108,6 +108,6 @@ return [
     'freeform/export-profiles/new/<formHandle:[a-zA-Z_\-]+>'         => 'freeform/export-profiles/create',
     'freeform/export-profiles/<id:\d+>'                              => 'freeform/export-profiles/edit',
     // Payments
-    'freeform/payment-webhooks/stripe'                               => 'freeform/webhooks/stripe',
+    'freeform/payment-webhooks/stripe'                               => 'freeform/payment-webhooks/stripe',
     'freeform/payment-subscription/<id:\d+>/cancel/<validationKey>'  => 'freeform/subscriptions/cancel',
 ];

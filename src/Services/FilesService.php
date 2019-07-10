@@ -221,6 +221,26 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
     }
 
     /**
+     * @param array $ids
+     *
+     * @return array
+     */
+    public function getAssetUrlsFromIds(array $ids): array
+    {
+        $urls = [];
+        foreach ($ids as $id) {
+            if ($id && is_numeric($id)) {
+                $asset = \Craft::$app->assets->getAssetById($id);
+                if ($asset) {
+                    $urls[] = $asset->getUrl();
+                }
+            }
+        }
+
+        return $urls;
+    }
+
+    /**
      * Get a key-value list of asset sources, indexed by ID
      *
      * @return array

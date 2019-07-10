@@ -208,7 +208,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $fields        = $form->getLayout()->getFields();
         $savableFields = [];
         foreach ($fields as $field) {
-            if ($field instanceof NoStorageInterface) {
+            if ($field instanceof NoStorageInterface || !$form->hasFieldBeenSubmitted($field)) {
                 continue;
             }
 

@@ -61,13 +61,7 @@ class PredefinedOptionsFactory
                 break;
 
             case ExternalOptionsInterface::PREDEFINED_PROVINCES:
-                $options = $instance->getProvinceOptions($type);
-                break;
-
             case ExternalOptionsInterface::PREDEFINED_PROVINCES_FR:
-                $options = $instance->getProvinceOptions($type);
-                break;
-
             case ExternalOptionsInterface::PREDEFINED_PROVINCES_BIL:
                 $options = $instance->getProvinceOptions($type);
                 break;

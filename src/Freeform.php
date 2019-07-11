@@ -814,7 +814,9 @@ class Freeform extends Plugin
             SettingsService::class,
             SettingsService::EVENT_REGISTER_SETTINGS_NAVIGATION,
             function (RegisterSettingsNavigationEvent $event) {
-                $event->addNavigationItem('recaptcha', Freeform::t('reCAPTCHA'), 'spam');
+                if ($this->settings->isAllowAdminEdit()) {
+                    $event->addNavigationItem('recaptcha', Freeform::t('reCAPTCHA'), 'spam');
+                }
             }
         );
 

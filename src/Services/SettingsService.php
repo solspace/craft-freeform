@@ -427,7 +427,7 @@ class SettingsService extends BaseService
     {
         $errorCount = Freeform::getInstance()->logger->getLogReader()->count();
 
-        $event = new RegisterSettingsNavigationEvent([
+        $nav = [
             'hd'                   => ['heading' => Freeform::t('Settings')],
             'general'              => ['title' => Freeform::t('General Settings')],
             'formatting-templates' => ['title' => Freeform::t('Formatting Templates')],
@@ -443,7 +443,18 @@ class SettingsService extends BaseService
             'webhooks'             => ['title' => Freeform::t('Webhooks')],
             'hdlogs'               => ['heading' => Freeform::t('Logs')],
             'error-log'            => ['title' => Freeform::t('Error Log ({count})', ['count' => $errorCount])],
-        ]);
+        ];
+
+        if (!$this->isAllowAdminEdit()) {
+            unset($nav['hdspam']);
+            foreach ($nav as $key => $value) {
+                if (!array_key_exists('heading', $value) && $this->isSectionASetting($key)) {
+                    unset($nav[$key]);
+                }
+            }
+        }
+
+        $event = new RegisterSettingsNavigationEvent($nav);
 
         $this->trigger(self::EVENT_REGISTER_SETTINGS_NAVIGATION, $event);
 
@@ -464,5 +475,36 @@ class SettingsService extends BaseService
     public function isAjaxEnabledByDefault(): bool
     {
         return (bool) $this->getSettingsModel()->ajaxByDefault;
+    }
+
+    /**
+     * @param string $sectionName
+     *
+     * @return bool
+     */
+    public function isSectionASetting(string $sectionName): bool
+    {
+        $nonSettingSections = [
+            'statuses',
+            'error-log',
+            'mailing-lists',
+            'crm',
+            'payment-gateways',
+            'webhooks',
+        ];
+
+        return !in_array($sectionName, $nonSettingSections, true);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowAdminEdit(): bool
+    {
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            return \Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
+        }
+
+        return true;
     }
 }

@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.2.1 - 2019-07-11
+### Changed
+- Updated Settings area to continue to allow access to API integrations, Statuses and Error Log when the Craft `allowAdminChanges` setting is false (as the aforementioned areas are not true settings available to project config, etc).
+
+### Fixed
+- Fixed a bug where the Date & Time field datepicker was not loading other locales when specified.
+
 ## 3.2.0 - 2019-07-09
 ### Added
 - Added ability to automate relating of Freeform submissions to other Craft Elements, thus allowing robust comment, ratings/reviews, sign-up forms, and more! (Pro)

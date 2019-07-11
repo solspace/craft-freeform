@@ -36,12 +36,7 @@ if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(self::
     $navItems['exportProfiles'] = ['label' => Freeform::t('Export'), 'url' => 'freeform/export-profiles'];
 }
 
-$canViewSettings = true;
-if (version_compare(Craft::$app->getVersion(), '3.1', '>=')) {
-    $canViewSettings = Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
-}
-
-if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS) && $canViewSettings) {
+if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS)) {
     $navItems['settings'] = ['label' => Freeform::t('Settings'), 'url' => 'freeform/settings'];
 }
 

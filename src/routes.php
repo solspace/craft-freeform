@@ -83,7 +83,7 @@ return [
     'freeform/payment_gateway/check'                                 => 'freeform/payment-gateways/check-integration-connection',
     'freeform/payment-gateway/authenticate/<handle:[a-zA-Z0-9\-_]+>' => 'freeform/payment-gateways/force-authorization',
     // Settings
-    'freeform/settings'                                              => 'freeform/settings/provide-setting',
+    'freeform/settings'                                              => 'freeform/settings/index',
     'freeform/settings/general'                                      => 'freeform/settings/provide-setting',
     'freeform/settings/email-templates'                              => 'freeform/settings/provide-setting',
     'freeform/settings/formatting-templates'                         => 'freeform/settings/provide-setting',

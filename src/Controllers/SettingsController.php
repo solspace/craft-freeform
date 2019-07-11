@@ -35,6 +35,15 @@ class SettingsController extends BaseController
         }
     }
 
+    public function actionIndex()
+    {
+        if ($this->getSettingsService()->isAllowAdminEdit()) {
+            return $this->actionProvideSetting();
+        }
+
+        return $this->redirect(UrlHelper::cpUrl('freeform/settings/statuses'));
+    }
+
     /**
      * Redirects to the default selected view
      */
@@ -218,19 +227,17 @@ class SettingsController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
-        if (
-            version_compare(\Craft::$app->getVersion(), '3.1', '>=') &&
-            !\Craft::$app->getConfig()->getGeneral()->allowAdminChanges
-        ) {
-            throw new ForbiddenHttpException('Changes are not allowed');
+        $section = \Craft::$app->request->getSegment(3);
+        $settingsService = $this->getSettingsService();
+        if (!$settingsService->isAllowAdminEdit() && $settingsService->isSectionASetting($section)) {
+            throw new ForbiddenHttpException('Administrative changes are disallowed in this environment.');
         }
 
         $this->view->registerAssetBundle(CodepackBundle::class);
         $this->view->registerAssetBundle(SettingsBundle::class);
-        $template = \Craft::$app->request->getSegment(3);
 
         return $this->renderTemplate(
-            'freeform/settings/' . ($template ? '_' . (string) $template : ''),
+            'freeform/settings/' . ($section ? '_' . (string) $section : ''),
             [
                 'settings' => $this->getSettingsModel(),
             ]

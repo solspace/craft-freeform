@@ -227,10 +227,29 @@ class SettingsController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
-        $section = \Craft::$app->request->getSegment(3);
+        $section         = \Craft::$app->request->getSegment(3);
         $settingsService = $this->getSettingsService();
         if (!$settingsService->isAllowAdminEdit() && $settingsService->isSectionASetting($section)) {
             throw new ForbiddenHttpException('Administrative changes are disallowed in this environment.');
+        }
+
+        $formattingTemplateList = [];
+        if ($this->getSettingsService()->getSettingsModel()->defaultTemplates) {
+            $formattingTemplateList[] = ['optgroup' => Freeform::t('Solspace Templates')];
+            foreach ($this->getSettingsService()->getSolspaceFormTemplates() as $formTemplate) {
+                $formattingTemplateList[] = [
+                    'label' => $formTemplate->getName(),
+                    'value' => $formTemplate->getFileName(),
+                ];
+            }
+        }
+
+        $formattingTemplateList[] = ['optgroup' => Freeform::t('Custom Templates')];
+        foreach ($this->getSettingsService()->getCustomFormTemplates() as $formTemplate) {
+            $formattingTemplateList[] = [
+                'label' => $formTemplate->getName(),
+                'value' => $formTemplate->getFileName(),
+            ];
         }
 
         $this->view->registerAssetBundle(CodepackBundle::class);
@@ -239,7 +258,8 @@ class SettingsController extends BaseController
         return $this->renderTemplate(
             'freeform/settings/' . ($section ? '_' . (string) $section : ''),
             [
-                'settings' => $this->getSettingsModel(),
+                'settings'               => $this->getSettingsModel(),
+                'formattingTemplateList' => $formattingTemplateList,
             ]
         );
     }

@@ -44,7 +44,6 @@ class CraftSession implements SessionInterface
                 \Craft::$app->session->set($key, $value);
             }
         } catch (\Exception $e) {
-            FreeformLogger::getInstance(FreeformLogger::FREEFORM)->error($e->getMessage(), ['Craft Session']);
         }
     }
 

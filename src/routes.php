@@ -105,7 +105,7 @@ return [
     // Export Profiles
     'freeform/export-profiles'                                       => 'freeform/export-profiles/index',
     'freeform/export-profiles/delete'                                => 'freeform/export-profiles/delete',
-    'freeform/export-profiles/new/<formHandle:[a-zA-Z_\-]+>'         => 'freeform/export-profiles/create',
+    'freeform/export-profiles/new/<formHandle:[0-9a-zA-Z_\-]+>'         => 'freeform/export-profiles/create',
     'freeform/export-profiles/<id:\d+>'                              => 'freeform/export-profiles/edit',
     // Payments
     'freeform/payment-webhooks/stripe'                               => 'freeform/payment-webhooks/stripe',

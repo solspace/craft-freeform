@@ -74,6 +74,10 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
      */
     public static function getSupportedLocale(string $locale): string
     {
+        if (preg_match('/^([a-z]{2})-/', $locale, $matches)) {
+            $locale = $matches[1];
+        }
+
         static $supportedLocales = ['ar','at','az','be','bg','bn','cat','cs','cy','da','de','eo','es','et','fa','fi','fo','fr','gr','he','hi','hr','hu','id','is','it','ja','km','ko','kz','lt','lv','mk','mn','ms','my','nl','no','pa','pl','pt','ro','ru','si','sk','sl','sq','sr-cyr','sr','sv','th','tr','uk','vn','zh-tw','zh'];
 
         if (in_array(strtolower($locale), $supportedLocales, true)) {
@@ -287,7 +291,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
                 '"{value}" does not conform to "{format}" format.',
                 [
                     'value'  => $this->getValue(),
-                    'format' => $this->getHumanReadableFormat(),
+                    'format' => $this->translate($this->getHumanReadableFormat()),
                 ]
             ),
             $this->getFormat()

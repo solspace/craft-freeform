@@ -272,7 +272,7 @@ class Composer
                 'color'                 => '#' . substr(md5(random_int(111, 999) . time()), 0, 6),
                 'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',
                 'description'           => '',
-                'formTemplate'          => 'flexbox.html',
+                'formTemplate'          => $this->formHandler->getDefaultFormattingTemplate(),
                 'returnUrl'             => '',
                 'storeData'             => true,
                 'defaultStatus'         => $this->statusHandler->getDefaultStatusId(),

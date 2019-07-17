@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -27,6 +28,8 @@ class Infusionsoft extends CRMOAuthConnector
     const LOG_CATEGORY = 'Infusionsoft';
 
     const SETTING_REFRESH_TOKEN = 'refresh_token';
+
+    protected static $_REFRESHED_TOKENS = [];
 
     public static function getSettingBlueprints(): array
     {
@@ -82,13 +85,13 @@ class Infusionsoft extends CRMOAuthConnector
             $this->getHandler()->onAfterResponse($this, $response);
 
             if ($applyTag) {
-                $responseBody = json_decode((string)$response->getBody(), true);
-                 $endpoint = $this->getEndpoint('/contacts/' . $responseBody['id'] . '/' . 'tags');
-                 $response = $client->post(
+                $responseBody = \GuzzleHttp\json_decode((string)$response->getBody(), true);
+                $endpoint = $this->getEndpoint('/contacts/' . $responseBody['id'] . '/tags');
+                $response = $client->post(
                     $endpoint,
                     [
                         'json' => ['tagIds' => [$applyTag]],
-                     ]
+                    ]
                 );
             }
 
@@ -341,13 +344,18 @@ class Infusionsoft extends CRMOAuthConnector
     }
 
     /**
-     * @return bool
+     * @return string
      * @throws CRMIntegrationNotFoundException
      * @throws IntegrationException
      * @throws \ReflectionException
      */
-    public function refreshToken(): bool
+    public function refreshToken(): string
     {
+        // Prevent this method from being called more than once in a request
+        if (isset(self::$_REFRESHED_TOKENS[$this->getId()])) {
+            return $this->getAccessToken();
+        }
+
         $client = new Client([
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode($this->getClientId() . ':' . $this->getClientSecret()),
@@ -359,13 +367,13 @@ class Infusionsoft extends CRMOAuthConnector
             'grant_type'    => 'refresh_token',
             'refresh_token' => $this->getSetting(self::SETTING_REFRESH_TOKEN)
         ];
-        // $this->getLogger()->info('Token Refresh: Sent request', ['payload' => $payload]);
 
         try {
             $response = $client->post(
                 $this->getAccessTokenUrl(),
                 ['form_params' => $payload]
             );
+            self::$_REFRESHED_TOKENS[$this->getId()] = true;
         } catch (RequestException $e) {
             throw new IntegrationException((string) $e->getResponse()->getBody());
         }
@@ -392,7 +400,12 @@ class Infusionsoft extends CRMOAuthConnector
 
         $this->setAccessToken($json->access_token);
         $this->onAfterFetchAccessToken($json);
-        $this->getLogger()->info('Set access token', $json);
+
+        try {
+            Freeform::getInstance()->crm->updateAccessToken($this);
+        } catch (\Exception $e) {
+            $this->getLogger()->error('Failed to save refreshed token', [$e->getMessage()]);
+        }
 
         return $this->getAccessToken();
     }
@@ -473,16 +486,16 @@ class Infusionsoft extends CRMOAuthConnector
             ],
         ]);
 
-        if ($refreshTokenIfExpired) {
+        if ($refreshTokenIfExpired && !isset(self::$_REFRESHED_TOKENS[$this->getId()])) {
             try {
                 $endpoint = $this->getEndpoint('/account/profile');
                 $client->get($endpoint);
             } catch (RequestException $e) {
                 if ($e->getCode() === 401) {
-                    $this->refreshToken();
+                    $accessToken = $this->refreshToken();
                     $client = new Client([
                         'headers' => [
-                            'Authorization' => 'Bearer ' . $this->fetchAccessToken(),
+                            'Authorization' => 'Bearer ' . $accessToken,
                             'Content-Type'  => 'application/json',
                         ],
                     ]);

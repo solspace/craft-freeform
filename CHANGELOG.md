@@ -1,5 +1,23 @@
 # Solspace Freeform Changelog
 
+## 3.2.2 - 2019-07-17
+
+> {warning} This update includes a change to the default loading of the Date & Time field type date picker. If you're using this field type in your custom templates (default sample ones have been updated), please be sure to review and/or remove the `addEventListener("flatpickr-ready"...` JS code from your templates.
+
+### Added
+- Added a `Default Formatting Template` general setting, allowing you to set the default formatting template for all new forms.
+- Added a Before Initialization developer event for Date & Time field type date picker.
+
+### Changed
+- Updated the Date & Time field date picker to no longer use `static: true` (which then loaded a special wrapper element that needed to be styled). This may be a breaking update for your templates, so be sure to review your templates if using this field type, and remove the `addEventListener("flatpickr-ready"...` JS code from your templates (default sample formatting templates have been updated).
+- Updated the Notifications service to be accessible via Twig as `craft.freeform.notifications.allNotifications`.
+
+### Fixed
+- Fixed a bug where Freeform's error log would show `Cannot send session cookie` errors in Craft 3.2+.
+- Fixed a bug where the Date & Time field type date picker may not correctly load correctly for alternative locales.
+- Fixed a bug where creating Export Profiles for forms that contained a number in the handle would error.
+- Fixed some bugs in the Infusionsoft CRM API integration.
+
 ## 3.2.1 - 2019-07-11
 ### Changed
 - Updated Settings area to continue to allow access to API integrations, Statuses and Error Log when the Craft `allowAdminChanges` setting is false (as the aforementioned areas are not true settings available to project config, etc).

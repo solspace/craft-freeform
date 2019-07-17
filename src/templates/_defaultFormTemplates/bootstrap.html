@@ -14,19 +14,6 @@
       freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
     })
 
-    form.addEventListener("flatpickr-ready", (event) => {
-      var instance = event.detail;
-      var input = instance.input;
-
-      input.parentNode.classList.add("form-control");
-      input.classList.remove("form-control");
-      input.style.border = "none";
-      input.style.margin = "0px";
-      input.style.padding = "0px";
-      input.style.width = "100%";
-      input.style.outline = "none";
-    })
-
     form.addEventListener("freeform-stripe-styling", (event) => {
       event.detail.base = {
         fontSize: "14px",

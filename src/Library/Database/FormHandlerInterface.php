@@ -86,6 +86,11 @@ interface FormHandlerInterface
     public function isReachedPostingLimit(Form $form): bool;
 
     /**
+     * @return string
+     */
+    public function getDefaultFormattingTemplate(): string;
+
+    /**
      * Do something before the form is saved
      * Return bool determines whether the form should be saved or not
      *

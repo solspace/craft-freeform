@@ -43,7 +43,8 @@ class Settings extends Model
     const SCRIPT_INSERT_LOCATION_FORM   = 'form';
     const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
 
-    const DEFAULT_AJAX = false;
+    const DEFAULT_AJAX                = false;
+    const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
 
     /** @var string */
     public $pluginName;
@@ -168,6 +169,9 @@ class Settings extends Model
     /** @var bool */
     public $fillWithGet;
 
+    /** @var string */
+    public $formattingTemplate;
+
     /**
      * Settings constructor.
      *
@@ -207,6 +211,7 @@ class Settings extends Model
         $this->ajaxByDefault                 = self::DEFAULT_AJAX;
         $this->autoScrollToErrors            = true;
         $this->fillWithGet                   = false;
+        $this->formattingTemplate            = self::DEFAULT_FORMATTING_TEMPLATE;
 
         $this->recaptchaEnabled   = false;
         $this->recaptchaKey       = null;

@@ -76,6 +76,15 @@
         errors: settings.errors("ajaxByDefault"),
     }) }}
 
+    {{ forms.selectField({
+        label: "Default Formatting Template"|t('freeform'),
+        instructions: "The default formatting template for new forms."|t('freeform'),
+        name: "settings[formattingTemplate]",
+        value: settings.formattingTemplate,
+        errors: settings.errors("formattingTemplate"),
+        options: formattingTemplateList,
+    }) }}
+
     {{ forms.lightswitchField({
         label: "Include Default Freeform Formatting Templates"|t('freeform'),
         instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t('freeform'),

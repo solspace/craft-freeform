@@ -23,6 +23,7 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\LoggerService;
+use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Twig\Markup;
 
@@ -181,6 +182,14 @@ class FreeformVariable
     public function isPro(): bool
     {
         return Freeform::getInstance()->isPro();
+    }
+
+    /**
+     * @return NotificationsService
+     */
+    public function notifications(): NotificationsService
+    {
+        return Freeform::getInstance()->notifications;
     }
 
     /**

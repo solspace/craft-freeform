@@ -479,6 +479,14 @@ class FormsService extends BaseService implements FormHandlerInterface
     }
 
     /**
+     * @return string
+     */
+    public function getDefaultFormattingTemplate(): string
+    {
+        return $this->getSettingsService()->getSettingsModel()->formattingTemplate;
+    }
+
+    /**
      * @param FormValidateEvent $event
      */
     public function checkReachedPostingLimit(FormValidateEvent $event)

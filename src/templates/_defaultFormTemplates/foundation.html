@@ -14,13 +14,6 @@
       freeform.setOption("successClassBanner", ["callout", "success"]);
     })
 
-    form.addEventListener("flatpickr-ready", (event) => {
-      var instance = event.detail;
-      var input = instance.input;
-
-      input.parentNode.style.width = "100%";
-    })
-
     form.addEventListener("freeform-stripe-styling", (event) => {
       event.detail.base = {
         fontSize: "16px",

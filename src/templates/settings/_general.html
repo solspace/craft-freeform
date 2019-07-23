@@ -127,7 +127,7 @@
 
     {{ forms.selectField({
         label: "Freeform Javascript Insertion Location"|t('freeform'),
-        instructions: "The location of where you want Freeform to insert its scripts for form and field functionality. This setting should be set to 'Inside Form' to work with AJAX."|t('freeform'),
+        instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
         name: "settings[scriptInsertLocation]",
         value: settings.scriptInsertLocation,
         errors: settings.errors("scriptInsertLocation"),

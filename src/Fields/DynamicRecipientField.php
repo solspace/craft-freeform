@@ -11,24 +11,21 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OneLineInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OneLineTrait;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OptionsTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\RecipientTrait;
 
-class DynamicRecipientField extends AbstractField implements RecipientInterface, ObscureValueInterface, MultipleValueInterface, OptionsInterface, OneLineInterface
+class DynamicRecipientField extends AbstractExternalOptionsField implements RecipientInterface, ObscureValueInterface, MultipleValueInterface, OneLineInterface
 {
     use RecipientTrait;
     use MultipleValueTrait;
-    use OptionsTrait;
     use OneLineTrait;
 
     /** @var bool */
@@ -181,7 +178,7 @@ class DynamicRecipientField extends AbstractField implements RecipientInterface,
      */
     public function getActualValue($obscureValue)
     {
-        $options = $this->getOptions();
+        $options = $this->options;
 
         if (\is_array($obscureValue)) {
             $list = [];

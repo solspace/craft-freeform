@@ -174,7 +174,7 @@ return [
     'Automatically Scroll to Form on Errors and Multipage forms?' => 'Automatically Scroll to Form on Errors and Multipage forms?',
     'Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms.' => 'Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms.',
     'Freeform Javascript Insertion Location' => 'Freeform Javascript Insertion Location',
-    'The location of where you want Freeform to insert its scripts for form and field functionality. This setting should be set to \'Inside Form\' to work with AJAX.' => 'The location of where you want Freeform to insert its scripts for form and field functionality. This setting should be set to \'Inside Form\' to work with AJAX.',
+    'The location of where you want Freeform to insert its scripts for form and field functionality.' => 'The location of where you want Freeform to insert its scripts for form and field functionality.',
     'Page Footer' => 'Page Footer',
     'Inside Form' => 'Inside Form',
     'None (add manually)' => 'None (add manually)',

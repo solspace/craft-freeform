@@ -31,9 +31,12 @@ class m190603_160423_UpgradeFreeformHoneypotEnhancement extends Migration
 
         /** @var Settings $settings */
         $settings = $plugin->getSettings();
-        $settings->freeformHoneypotEnhancement = true;
 
-        $pluginService->savePluginSettings($plugin, ['freeformHoneypotEnhancement' => true]);
+        try {
+            $settings->freeformHoneypotEnhancement = true;
+            $pluginService->savePluginSettings($plugin, ['freeformHoneypotEnhancement' => true]);
+        } catch (\Exception $e) {
+        }
 
         return true;
     }

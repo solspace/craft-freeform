@@ -126,13 +126,6 @@
          class="{{ clock24h ? 'hidden' : '' }}">
 
         {{ forms.lightswitchField({
-            label: "Lowercase AM/PM?"|t('freeform'),
-            name: "types[datetime][lowercaseAMPM]",
-            on: field.getMetaProperty('lowercaseAMPM'),
-        }) }}
-
-
-        {{ forms.lightswitchField({
             label: "Separate AM/PM with a space?"|t('freeform'),
             name: "types[datetime][clockAMPMSeparate]",
             on: field.getMetaProperty('clockAMPMSeparate'),

@@ -31,15 +31,18 @@ class m190610_074840_MigrateScriptInsertLocation extends Migration
         /** @var Settings $settings */
         $settings = $plugin->getSettings();
 
-        $scriptInsertLocation = 'form';
-        if ($settings->footerScripts) {
-            $scriptInsertLocation = 'footer';
+        try {
+            $scriptInsertLocation = 'form';
+            if ($settings->footerScripts) {
+                $scriptInsertLocation = 'footer';
+            }
+
+            $settings->scriptInsertLocation = $scriptInsertLocation;
+
+            $pluginService->savePluginSettings($plugin, ['freeformHoneypotEnhancement' => true]);
+        } catch (\Exception $e) {
         }
-
-        $settings->scriptInsertLocation = $scriptInsertLocation;
-
-        $pluginService->savePluginSettings($plugin, ['freeformHoneypotEnhancement' => true]);
-
+        
         return true;
     }
 

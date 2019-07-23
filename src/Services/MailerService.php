@@ -101,19 +101,22 @@ class MailerService extends BaseService implements MailHandlerInterface
             try {
                 $email->variables = $fieldValues;
 
-                $text = $this->renderString($notification->getBodyText(), $fieldValues);
-                $html = $this->renderString($notification->getBodyHtml(), $fieldValues);
+                $text    = $this->renderString($notification->getBodyText(), $fieldValues);
+                $html    = $this->renderString($notification->getBodyHtml(), $fieldValues);
+                $subject = $this->renderString($notification->getSubject(), $fieldValues);
+                $subject = htmlspecialchars_decode($subject, ENT_QUOTES);
 
                 $email
                     ->setTo([$emailAddress])
                     ->setFrom([$fromEmail => $fromName])
-                    ->setSubject($this->renderString($notification->getSubject(), $fieldValues));
+                    ->setSubject($subject);
 
                 if (empty($text)) {
                     $email
                         ->setHtmlBody($html)
                         ->setTextBody($html);
-                } if (empty($html)) {
+                }
+                if (empty($html)) {
                     $email->setTextBody($text);
                 } else {
                     $email

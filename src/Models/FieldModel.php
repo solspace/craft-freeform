@@ -222,7 +222,6 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['dateLeadingZero']     = $this->getMetaProperty('dateLeadingZero', true);
             $returnArray['dateSeparator']       = $this->getMetaProperty('dateSeparator', '/');
             $returnArray['clock24h']            = $this->getMetaProperty('clock24h', false);
-            $returnArray['lowercaseAMPM']       = $this->getMetaProperty('lowercaseAMPM', true);
             $returnArray['clockSeparator']      = $this->getMetaProperty('clockSeparator', ':');
             $returnArray['clockAMPMSeparate']   = $this->getMetaProperty('clockAMPMSeparate', true);
             $returnArray['useDatepicker']       = $this->getMetaProperty('useDatepicker', true);
@@ -418,7 +417,6 @@ class FieldModel extends Model implements \JsonSerializable
             'clock24h'            => self::PROPERTY_TYPE_BOOL,
             'clockLeadingZero'    => self::PROPERTY_TYPE_BOOL,
             'clockAMPMSeparate'   => self::PROPERTY_TYPE_BOOL,
-            'lowercaseAMPM'       => self::PROPERTY_TYPE_BOOL,
             'allowNegative'       => self::PROPERTY_TYPE_BOOL,
             'notificationId'      => self::PROPERTY_TYPE_INT,
             'assetSourceId'       => self::PROPERTY_TYPE_INT,

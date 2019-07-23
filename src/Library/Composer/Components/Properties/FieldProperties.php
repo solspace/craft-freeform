@@ -117,9 +117,6 @@ class FieldProperties extends AbstractProperties
     /** @var bool */
     protected $clock24h;
 
-    /** @var bool */
-    protected $lowercaseAMPM;
-
     /** @var string */
     protected $clockSeparator;
 
@@ -533,14 +530,6 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
-     * @return bool|null
-     */
-    public function isLowercaseAMPM()
-    {
-        return $this->lowercaseAMPM;
-    }
-
-    /**
      * @return string|null
      */
     public function getClockSeparator()
@@ -897,7 +886,6 @@ class FieldProperties extends AbstractProperties
             'dateLeadingZero'       => self::TYPE_BOOLEAN,
             'dateSeparator'         => self::TYPE_STRING,
             'clock24h'              => self::TYPE_BOOLEAN,
-            'lowercaseAMPM'         => self::TYPE_BOOLEAN,
             'clockSeparator'        => self::TYPE_STRING,
             'clockAMPMSeparate'     => self::TYPE_BOOLEAN,
             'useDatepicker'         => self::TYPE_BOOLEAN,

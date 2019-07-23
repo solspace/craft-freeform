@@ -41,9 +41,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     /** @var bool */
     protected $clock24h;
 
-    /** @var bool */
-    protected $lowercaseAMPM;
-
     /** @var string */
     protected $clockSeparator;
 
@@ -151,14 +148,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     public function isClock24h(): bool
     {
         return $this->clock24h;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isLowercaseAMPM(): bool
-    {
-        return $this->lowercaseAMPM;
     }
 
     /**
@@ -434,7 +423,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
             $ampm  = '';
         } else {
             $hours = 'g';
-            $ampm  = ($this->isClockAMPMSeparate() ? ' ' : '') . ($this->isLowercaseAMPM() ? 'a' : 'A');
+            $ampm  = ($this->isClockAMPMSeparate() ? ' ' : '') . 'A';
         }
 
         return $hours . $this->getClockSeparator() . $minutes . $ampm;

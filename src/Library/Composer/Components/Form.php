@@ -360,10 +360,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getAnchor(): string
     {
-        $hash = $this->getHash();
-        $id   = substr(sha1($this->getId() . $this->getHandle()), 0, 6);
+        $hash     = $this->getHash();
+        $id       = $this->customAttributes->getId() ?: $this->getId();
+        $hashedId = substr(sha1($id . $this->getHandle()), 0, 6);
 
-        return "$id-form-$hash";
+        return "$hashedId-form-$hash";
     }
 
     /**

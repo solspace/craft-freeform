@@ -7,15 +7,15 @@ use craft\db\Query;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Events\ExportProfiles\DeleteEvent;
+use Solspace\Freeform\Events\ExportProfiles\SaveEvent;
 use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Fields\TextareaField;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Events\ExportProfiles\DeleteEvent;
-use Solspace\Freeform\Events\ExportProfiles\SaveEvent;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Records\Pro\ExportProfileRecord;
 use yii\base\Component;
@@ -308,7 +308,7 @@ class ExportProfilesService extends Component
         $data = $this->normalizeArrayData($form, $data);
 
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+        $sheet       = $spreadsheet->getActiveSheet();
         $sheet->fromArray($data);
 
         $fileName = sprintf(
@@ -493,7 +493,7 @@ class ExportProfilesService extends Component
     {
         header('Content-Description: File Transfer');
         header('Content-Type: ' . $contentType);
-        header('Content-Disposition: attachment; filename=' . $fileName);
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
         header('Content-Transfer-Encoding: binary');
         header('Expires: 0');
         header('Cache-Control: must-revalidate, post-check=0, pre-check=0');

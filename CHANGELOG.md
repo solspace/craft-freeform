@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 3.2.3 - 2019-07-23
+### Added
+- Added support for populating Dynamic Recipients field options with Craft Element data.
+
+### Changed
+- Updated Conditional Rules to allow fields to be dependant on Hidden fields as well.
+- Updated the Date & Time field type to no longer have the "Lowercase AM/PM?" settings for Date Picker.
+
+### Fixed
+- Fixed a bug where loading more than 1 of the same form in the same template would not work correctly with built-in AJAX. Be sure to specify `id` parameter so the ID is unique for each form.
+- Fixed a bug where some settings-related migrations might error for some users.
+- Fixed a bug where exporting with Firefox would not include file extensions for all data types.
+- Fixed a bug where Credit Card fields were not working correctly in IE 11.
+- Fixed a bug where the email notification template subject was encoding quotes, apostropies, etc.
+- Fixed a bug where Mailing List fields were missing their icon in Composer.
+
 ## 3.2.2 - 2019-07-17
 
 > {warning} This update includes a change to the default loading of the Date & Time field type date picker. If you're using this field type in your custom templates (default sample ones have been updated), please be sure to review and/or remove the `addEventListener("flatpickr-ready"...` JS code from your templates.

@@ -2,9 +2,11 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields;
 
+use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OptionsKeyValuePairTrait;
 
 abstract class AbstractExternalOptionsField extends AbstractField implements ExternalOptionsInterface
@@ -52,10 +54,24 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
      */
     public function getOptions(): array
     {
+        if ($this instanceof MultipleValueInterface) {
+            $values = $this->values;
+        } else {
+            $values = $this->value;
+        }
+
+        if ($this instanceof DynamicRecipientField) {
+            $actualValues = [];
+            foreach ($this->values as $value) {
+                $actualValues[] = $this->getActualValue($value);
+            }
+
+            $values = $actualValues;
+        }
+
         if ($this->getOptionSource() === self::SOURCE_CUSTOM) {
-            $value = $this->getValue();
-            if (!is_array($value)) {
-                $value = [$value];
+            if (!is_array($values)) {
+                $values = [$values];
             }
 
             $options = [];
@@ -63,7 +79,7 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
                 $options[] = new Option(
                     $option->getLabel(),
                     $option->getValue(),
-                    \in_array($option->getValue(), $value, false)
+                    \in_array($option->getValue(), $values, false)
                 );
             }
 
@@ -77,7 +93,7 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
                 $this->getOptionSource(),
                 $this->getOptionTarget(),
                 $this->getOptionConfiguration(),
-                $this->getValue()
+                $values
             );
     }
 }

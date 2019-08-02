@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.2.4 - 2019-08-01
+### Changed
+- Updated the HubSpot integration to perform duplicate checks on Contacts and Companies and update them accordingly.
+- Updated the Salesforce Opportunity integration to perform an additional duplicate check option (check on email address and email domain/website only instead of names) on Contacts and Accounts and update them accordingly.
+- Updated the HubSpot and Salesforce Opportunity integrations to have settings that allow checkbox group data to append additional values on updating of Contacts and Companies/Accounts instead of replacing the value.
+
+### Fixed
+- Fixed a bug where the date picker wouldn't load for Date fields when loading more than 1 form in the same page.
+
 ## 3.2.3 - 2019-07-23
 ### Added
 - Added support for populating Dynamic Recipients field options with Craft Element data.

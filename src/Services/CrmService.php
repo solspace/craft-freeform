@@ -284,10 +284,13 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
         }
 
         $objectValues = [];
+        $formFields = [];
         foreach ($mapping as $crmHandle => $fieldHandle) {
             try {
                 $crmField  = $crmFieldsByHandle[$crmHandle];
                 $formField = $layout->getFieldByHandle($fieldHandle);
+
+                $formFields[$crmHandle] = $formField;
 
                 $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $formField);
             } catch (\Exception $e) {
@@ -308,7 +311,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
         if (!empty($objectValues)) {
             try {
-                $result = $integration->pushObject($objectValues);
+                $result = $integration->pushObject($objectValues, $formFields);
 
                 if ($result) {
                     $this->onAfterPush($integration, $objectValues);

@@ -171,7 +171,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
      */
     public function isUseDatepicker(): bool
     {
-        return $this->useDatepicker;
+        return (bool) $this->useDatepicker;
     }
 
     /**
@@ -454,6 +454,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
             . $this->getAttributeString('type', $this->getType())
             . $this->getAttributeString('id', $this->getIdAttribute())
             . $this->getAttributeString('data-datepicker', true)
+            . $this->getAttributeString('data-datepicker-enabled', $this->isUseDatepicker() ?: '')
             . $this->getAttributeString('data-datepicker-format', $this->getDatepickerFormat())
             . $this->getAttributeString('data-datepicker-enabletime', $hasTime ?: '')
             . $this->getAttributeString('data-datepicker-enabledate', $hasDate ?: '')

@@ -61,7 +61,7 @@ class SharpSpring extends AbstractCRMIntegration
      * @return bool
      * @throws IntegrationException
      */
-    public function pushObject(array $keyValueList): bool
+    public function pushObject(array $keyValueList, $formFields = null): bool
     {
         $contactProps = [];
 

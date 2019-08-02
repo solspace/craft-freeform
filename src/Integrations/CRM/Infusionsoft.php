@@ -54,7 +54,7 @@ class Infusionsoft extends CRMOAuthConnector
      * @return bool
      * @throws \Exception
      */
-    public function pushObject(array $keyValueList): bool
+    public function pushObject(array $keyValueList, $formFields = null): bool
     {
         // This should automatically refresh the access token if needed
         $client   = $this->generateAuthorizedClient();

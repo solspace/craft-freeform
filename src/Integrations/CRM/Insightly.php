@@ -42,7 +42,7 @@ class Insightly extends AbstractCRMIntegration
      *
      * @return bool
      */
-    public function pushObject(array $keyValueList): bool
+    public function pushObject(array $keyValueList, $formFields = null): bool
     {
         $response = $this
             ->getAuthorizedClient()

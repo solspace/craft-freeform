@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Fields\CheckboxGroupField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -27,19 +28,22 @@ class SalesforceOpportunity extends AbstractCRMIntegration
     const TITLE        = 'Salesforce Opportunity';
     const LOG_CATEGORY = 'Salesforce';
 
-    const SETTING_CLIENT_ID     = 'client_id';
-    const SETTING_CLIENT_SECRET = 'client_secret';
-    const SETTING_USER_LOGIN    = 'username';
-    const SETTING_USER_PASSWORD = 'password';
-    const SETTING_CLOSE_DATE    = 'close_date';
-    const SETTING_STAGE         = 'stage';
-    const SETTING_SANDBOX       = 'sandbox';
-    const SETTING_INSTANCE_URL  = 'instance_url';
-    const SETTING_DATA_URL      = 'data_url';
+    const SETTING_CLIENT_ID                     = 'client_id';
+    const SETTING_CLIENT_SECRET                 = 'client_secret';
+    const SETTING_USER_LOGIN                    = 'username';
+    const SETTING_USER_PASSWORD                 = 'password';
+    const SETTING_CLOSE_DATE                    = 'close_date';
+    const SETTING_STAGE                         = 'stage';
+    const SETTING_SANDBOX                       = 'sandbox';
+    const SETTING_APPEND_ACCOUNT_DATA           = 'append_account_data';
+    const SETTING_APPEND_CONTACT_DATA           = 'append_contact_data';
+    const SETTING_DOMAIN_DUPLICATE_CHECK_LOGIC  = 'domain_duplicate_check_logic';
+    const SETTING_INSTANCE_URL                  = 'instance_url';
+    const SETTING_DATA_URL                      = 'data_url';
 
-    const FIELD_CATEGORY_OPPORTUNITY = 'opportunity';
-    const FIELD_CATEGORY_ACCOUNT     = 'account';
-    const FIELD_CATEGORY_CONTACT     = 'contact';
+    const FIELD_CATEGORY_OPPORTUNITY            = 'opportunity';
+    const FIELD_CATEGORY_ACCOUNT                = 'account';
+    const FIELD_CATEGORY_CONTACT                = 'contact';
 
     /**
      * Returns a list of additional settings for this integration
@@ -97,6 +101,27 @@ class SalesforceOpportunity extends AbstractCRMIntegration
                 self::SETTING_SANDBOX,
                 'Sandbox Mode',
                 'Enable this if your Salesforce account is in Sandbox mode (connects to "test.salesforce.com" instead of "login.salesforce.com").',
+                false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_BOOL,
+                self::SETTING_APPEND_CONTACT_DATA,
+                'Append checkbox group field values on Contact update?',
+                'If a Contact already exists in Salesforce, enabling this will append additional checkbox group field values to the Contact inside Salesforce, instead of overwriting the options.',
+                false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_BOOL,
+                self::SETTING_APPEND_ACCOUNT_DATA,
+                'Append checkbox group field values on Account update?',
+                'If an Account already exists in Salesforce, enabling this will append additional checkbox group field values to the Account inside Salesforce, instead of overwriting the options.',
+                false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_BOOL,
+                self::SETTING_DOMAIN_DUPLICATE_CHECK_LOGIC,
+                'Check Contact email address and Account website when checking for duplicates?',
+                'By default, Freeform will check against Contact first name, last name and email address, as well as and Account name. If enabled, Freeform will instead check against Contact email address only and Account website. If no website is mapped, Freeform will gather the website domain from the Contact email address mapped.',
                 false
             ),
             new SettingBlueprint(
@@ -211,12 +236,20 @@ class SalesforceOpportunity extends AbstractCRMIntegration
      * Push objects to the CRM
      *
      * @param array $keyValueList
+     * @param array $formFields
      *
      * @return bool
      * @throws \Exception
      */
-    public function pushObject(array $keyValueList): bool
+    public function pushObject(array $keyValueList, $formFields = null): bool
     {
+        $isAppendContactData = $this->getSetting(self::SETTING_APPEND_CONTACT_DATA);
+        $isAppendAccountData = $this->getSetting(self::SETTING_APPEND_ACCOUNT_DATA);
+        $domainDuplicateCheck = $this->getSetting(self::SETTING_DOMAIN_DUPLICATE_CHECK_LOGIC);
+
+        $appendContactFields = [];
+        $appendAccountFields = [];
+
         $opportunityMapping = $accountMapping = $contactMapping = [];
         foreach ($keyValueList as $key => $value) {
             if (empty($value) || !preg_match('/^(\w+)___(.*)$/', $key, $matches)) {
@@ -230,9 +263,29 @@ class SalesforceOpportunity extends AbstractCRMIntegration
                     break;
                 case self::FIELD_CATEGORY_ACCOUNT:
                     $accountMapping[$handle] = $value;
+
+                    // Checks which account's values we'll need to append to an existing SF value based on a form field type
+                    if ($isAppendAccountData) {
+                        if (array_key_exists($key, $formFields)) {
+                            if ($this->isAppendFieldType($formFields[$key])) {
+                                $appendAccountFields[] = $handle;
+                            }
+                        }
+                    }
+
                     break;
                 case self::FIELD_CATEGORY_CONTACT:
                     $contactMapping[$handle] = $value;
+
+                    // Checks which contact's values we'll need to append to an existing SF value based on a form field type
+                    if ($isAppendContactData) {
+                        if (array_key_exists($key, $formFields)) {
+                            if ($this->isAppendFieldType($formFields[$key])) {
+                                $appendContactFields[] = $handle;
+                            }
+                        }
+                    }
+
                     break;
             }
         }
@@ -246,6 +299,7 @@ class SalesforceOpportunity extends AbstractCRMIntegration
         }
 
         $accountName      = $accountMapping['Name'] ?? null;
+        $accountWebsite   = $accountMapping['Website'] ?? null;
         $contactFirstName = $contactMapping['FirstName'] ?? null;
         $contactLastName  = $contactMapping['LastName'] ?? null;
         $contactEmail     = $contactMapping['Email'] ?? null;
@@ -255,19 +309,73 @@ class SalesforceOpportunity extends AbstractCRMIntegration
             $accountMapping['Name'] = $accountName;
         }
 
-        $accountRecord = $this->querySingle(
-            "SELECT Id
+        // We'll query
+        $appendAccountFieldsQuery = '';
+
+        // Check if contact has an email which we can use to get account website
+        if ($domainDuplicateCheck && !$accountWebsite && $contactEmail) {
+            $accountWebsite = $this->extractDomainFromEmail($contactEmail);
+
+            if ($accountWebsite) {
+                $accountMapping['Website'] = $accountWebsite;
+            }
+        }
+
+        // We'll query Account's contacts so we can later extract a website domain from contact's email address
+        if (!$accountWebsite) {
+            $appendAccountFieldsQuery = ', (select id, email from Contacts)';
+        }
+
+        // We'll query fields to which we have to append new values
+        if ($appendAccountFields) {
+            $appendAccountFieldsQuery = ', ' . implode(', ', $appendAccountFields) . ' ';
+        }
+
+        $accountRecord = null;
+
+        // If the advanced mapping is enabled and we have an account website which we can use for a search
+        if ($domainDuplicateCheck) {
+
+            if ($accountWebsite) {
+                // We'll search for an account with account website
+                $accountRecord = $this->querySingle(
+                    "SELECT Id" . $appendAccountFieldsQuery . "
+                    FROM Account
+                    WHERE Website = '%s'
+                    ORDER BY CreatedDate desc
+                    LIMIT 1",
+                    [$accountWebsite]
+                );
+            }
+
+        } else {
+            $accountRecord = $this->querySingle(
+                "SELECT Id" . $appendAccountFieldsQuery . "
                 FROM Account
                 WHERE Name = '%s'
                 ORDER BY CreatedDate desc
                 LIMIT 1",
-            [$accountName]
-        );
+                [$accountName]
+            );
+        }
+
+        // We'll extract a website domain from contact's email address to latter add it to the account
+//        if ($domainDuplicateCheck && !$accountWebsite && $accountRecord) {
+//            if (isset($accountRecord->Contacts->records) && $accountRecord->Contacts->records) {
+//                $accountMapping['Website'] = $this->extractWebsiteDomainFromContacts($accountRecord->Contacts->records);
+//            }
+//        }
+
+        $appendFieldsQuery = '';
+
+        if ($appendContactFields) {
+            $appendFieldsQuery = ', ' . implode(', ', $appendContactFields) . ' ';
+        }
 
         $contactRecord = null;
         if (!empty($contactEmail)) {
             $contactRecord = $this->querySingle(
-                "SELECT Id
+                "SELECT Id" . $appendFieldsQuery . "
                 FROM Contact
                 WHERE Email = '%s'
                 ORDER BY CreatedDate desc
@@ -278,7 +386,7 @@ class SalesforceOpportunity extends AbstractCRMIntegration
 
         if (!$contactRecord) {
             $contactRecord = $this->querySingle(
-                "SELECT Id
+                "SELECT Id" . $appendFieldsQuery . "
                 FROM Contact
                 WHERE Name = '%s'
                 ORDER BY CreatedDate desc
@@ -289,6 +397,12 @@ class SalesforceOpportunity extends AbstractCRMIntegration
 
         try {
             if ($accountRecord) {
+
+                // We'll prepare appendable values
+                if ($isAppendAccountData) {
+                    $accountMapping = $this->appendValues($accountMapping, $accountRecord, $appendAccountFields);
+                }
+
                 $accountEndpoint = $this->getEndpoint('/sobjects/Account/' . $accountRecord->Id);
                 $response        = $client->patch($accountEndpoint, ['json' => $accountMapping]);
                 $accountId       = $accountRecord->Id;
@@ -301,7 +415,14 @@ class SalesforceOpportunity extends AbstractCRMIntegration
             }
 
             $contactMapping['AccountId'] = $accountId;
+
             if ($contactRecord) {
+
+                // We'll prepare appendable values
+                if ($isAppendContactData) {
+                    $contactMapping = $this->appendValues($contactMapping, $contactRecord, $appendContactFields);
+                }
+
                 $contactEndpoint = $this->getEndpoint('/sobjects/Contact/' . $contactRecord->Id);
                 $response        = $client->patch($contactEndpoint, ['json' => $contactMapping]);
                 $this->getHandler()->onAfterResponse($this, $response);
@@ -708,5 +829,82 @@ class SalesforceOpportunity extends AbstractCRMIntegration
         ];
 
         return str_replace($characters, $replacement, $str);
+    }
+
+    /**
+     * Checks if Form field's type calls for a value append
+     *
+     * @param $formField
+     *
+     * @return bool
+     */
+    private function isAppendFieldType($formField)
+    {
+        return $formField instanceof CheckboxGroupField;
+    }
+
+    /**
+     * Goes through all of the mapped values, checks which values have to be appended and appends them to the record's
+     * values
+     *
+     * @param $mappedValues
+     * @param $record
+     * @param $appendFields
+     *
+     * @return mixed
+     */
+    private function appendValues($mappedValues, $record, $appendFields)
+    {
+        foreach ($mappedValues as $fieldHandle => $value) {
+            if (in_array($fieldHandle, $appendFields)) {
+                if (isset($record->{$fieldHandle}) && $record->{$fieldHandle}) {
+
+                    if ($value) {
+                        $mappedValues[$fieldHandle] = $record->{$fieldHandle} . ';' . $value;
+                    } else {
+                        $mappedValues[$fieldHandle] = $record->{$fieldHandle};
+                    }
+
+                    // Clean up duplicate values
+                    $valueArray = explode(';', $mappedValues[$fieldHandle]);
+                    $valueArray = array_unique($valueArray);
+                    $mappedValues[$fieldHandle]  = implode(';', $valueArray);
+                }
+            }
+        }
+
+        return $mappedValues;
+    }
+
+    /**
+     * Goes through all of the SF Contact records, finds an email address and returns a domain name from the email
+     * address
+     *
+     * @param $contacts - SF Contact records
+     *
+     * @return string
+     */
+    private function extractWebsiteDomainFromContacts($contacts)
+    {
+        foreach ($contacts as $contact) {
+            if (isset($contact->Email)) {
+                $domain = $this->extractDomainFromEmail($contact->Email);
+
+                if ($domain) {
+                    return $domain;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private function extractDomainFromEmail($email)
+    {
+        if (preg_match('/^.*@([^@]+)$$/', $email, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
     }
 }

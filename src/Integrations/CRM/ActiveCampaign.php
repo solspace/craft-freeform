@@ -105,7 +105,7 @@ class ActiveCampaign extends AbstractCRMIntegration
      *
      * @return bool
      */
-    public function pushObject(array $keyValueList): bool
+    public function pushObject(array $keyValueList, $formFields = null): bool
     {
         $client = $this->generateAuthorizedClient();
 

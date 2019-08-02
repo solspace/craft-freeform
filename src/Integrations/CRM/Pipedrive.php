@@ -69,7 +69,7 @@ class Pipedrive extends AbstractCRMIntegration
      *
      * @return bool
      */
-    public function pushObject(array $keyValueList): bool
+    public function pushObject(array $keyValueList, $formFields = null): bool
     {
         $client = new Client();
 

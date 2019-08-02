@@ -234,7 +234,7 @@ class SalesforceLead extends AbstractCRMIntegration
      * @return bool
      * @throws \Exception
      */
-    public function pushObject(array $keyValueList): bool
+    public function pushObject(array $keyValueList, $formFields = null): bool
     {
         $client   = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/sobjects/Lead');

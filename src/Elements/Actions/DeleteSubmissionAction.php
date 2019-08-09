@@ -47,9 +47,7 @@ class DeleteSubmissionAction extends ElementAction
      */
     public function performAction(ElementQueryInterface $query): bool
     {
-        foreach ($query->all() as $element) {
-            \Craft::$app->getElements()->deleteElement($element);
-        }
+        Freeform::getInstance()->submissions->delete($query->all());
 
         $this->setMessage($this->successMessage);
 

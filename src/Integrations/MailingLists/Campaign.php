@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Library\MailingLists;
+namespace Solspace\Freeform\Integrations\MailingLists;
 
 use craft\base\Field;
 use craft\fields\Checkboxes;

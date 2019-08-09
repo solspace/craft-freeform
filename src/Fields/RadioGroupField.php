@@ -59,7 +59,7 @@ class RadioGroupField extends AbstractExternalOptionsField implements SingleValu
         $this->addInputAttribute('class', $attributes->getClass());
 
         $output = '';
-        foreach ($this->options as $index => $option) {
+        foreach ($this->getOptions() as $index => $option) {
             $output .= '<label>';
 
             $output .= '<input '

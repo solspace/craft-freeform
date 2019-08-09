@@ -33,7 +33,7 @@ class NumberField extends TextField
      */
     public function getValue()
     {
-        $value = $this->value;
+        $value = parent::getValue();
         $value = str_replace(',', '.', $value);
         if (is_numeric($value)) {
             $value += 0;

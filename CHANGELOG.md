@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.2.5 - 2019-08-09
+### Added
+- Added German translations.
+
+### Fixed
+- Fixed a potential security vulnerability with textarea fields.
+- Fixed a bug where the `overrideValues` parameter was not correctly setting defaults for checkboxes, checkbox groups, radios and select fields.
+- Fixed a bug where the Craft Campaign plugin mailing list integration was not available to setup.
+- Fixed a bug where soft deleted Section Entry Types were showing as options in the Element Connections feature.
+- Fixed a bug where elements were not being deleted via the Service method.
+
 ## 3.2.4 - 2019-08-01
 ### Changed
 - Updated the HubSpot integration to perform duplicate checks on Contacts and Companies and update them accordingly.

@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\base\Field;
+use craft\db\Table;
 use craft\elements\User;
 use craft\helpers\Assets;
 use craft\helpers\Json;
@@ -433,11 +434,23 @@ class FormsController extends BaseController
      */
     private function getSourceTargetsList(): array
     {
-        $entryTypes = (new Query())
-            ->select(['id', 'sectionId', 'name', 'hasTitleField', 'titleLabel', 'fieldLayoutId'])
+        $entryTypesQuery = (new Query())
+            ->select([
+                '[[id]]',
+                '[[sectionId]]',
+                '[[name]]',
+                '[[hasTitleField]]',
+                '[[titleLabel]]',
+                '[[fieldLayoutId]]',
+            ])
             ->from('{{%entrytypes}}')
-            ->orderBy(['sectionId' => SORT_ASC, 'sortOrder' => SORT_ASC])
-            ->all();
+            ->orderBy(['sectionId' => SORT_ASC, 'sortOrder' => SORT_ASC]);
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $entryTypesQuery->where(['[[dateDeleted]]' => null]);
+        }
+
+        $entryTypes = $entryTypesQuery->all();
 
         $fieldLayoutFields = (new Query())
             ->select(['fieldId', 'layoutId'])

@@ -68,7 +68,10 @@ class CreditCardDetailsField extends AbstractField implements SingleValueInterfa
         return $this->layout;
     }
 
-    public function getLayoutRows()
+    /**
+     * @return array
+     */
+    public function getLayoutRows(): array
     {
         $id             = $this->getIdAttribute();
         $children       = $this->getChildren();

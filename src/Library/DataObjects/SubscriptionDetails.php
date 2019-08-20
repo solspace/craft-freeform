@@ -11,34 +11,26 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
+use Solspace\Freeform\Elements\Submission;
+
 class SubscriptionDetails
 {
     /** @var string */
     private $token;
 
-    /** @var string */
-    private $plan;
-
-    /** @var int */
-    private $submissionId;
-
-    /**
-     * @var CustomerDetails
-     */
-    private $customer;
+    /** @var Submission */
+    private $submission;
 
     /**
      * PaymentDetails constructor.
-     * @param string $token
-     * @param string $plan
-     * @param int $submissionId
+     *
+     * @param string     $token
+     * @param Submission $submission
      */
-    public function __construct(string $token, string $plan, int $submissionId, CustomerDetails $customer)
+    public function __construct(string $token, Submission $submission)
     {
-        $this->token = $token;
-        $this->plan = $plan;
-        $this->submissionId = $submissionId;
-        $this->customer = $customer;
+        $this->token      = $token;
+        $this->submission = $submission;
     }
 
     /**
@@ -50,28 +42,10 @@ class SubscriptionDetails
     }
 
     /**
-     * @return string
+     * @return Submission
      */
-    public function getPlan(): string
+    public function getSubmission(): Submission
     {
-        return $this->plan;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSubmissionId(): int
-    {
-        return $this->submissionId;
-    }
-
-    /**
-     * Get the value of customer
-     *
-     * @return CustomerDetails
-     */
-    public function getCustomer()
-    {
-        return $this->customer;
+        return $this->submission;
     }
 }

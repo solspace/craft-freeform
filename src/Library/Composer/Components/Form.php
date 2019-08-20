@@ -28,6 +28,7 @@ use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
+use Solspace\Freeform\Library\DataObjects\FormActionInterface;
 use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
@@ -105,6 +106,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     /** @var string[] */
     private $errors;
+
+    /** @var FormActionInterface[] */
+    private $actions;
 
     /** @var bool */
     private $formSaved;
@@ -398,6 +402,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /**
      * @return bool
      */
+    public function isMultiPage(): bool
+    {
+        return \count($this->getPages()) > 1;
+    }
+
+    /**
+     * @return bool
+     */
     public function isFormSaved(): bool
     {
         return (bool) $this->formSaved;
@@ -443,6 +455,26 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function addError(string $message): Form
     {
         $this->errors[] = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return FormActionInterface[]
+     */
+    public function getActions(): array
+    {
+        return $this->actions ?? [];
+    }
+
+    /**
+     * @param FormActionInterface $action
+     *
+     * @return Form
+     */
+    public function addAction(FormActionInterface $action): Form
+    {
+        $this->actions[] = $action;
 
         return $this;
     }
@@ -535,13 +567,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                 if ($field instanceof FileUploadInterface) {
                     try {
                         $field->uploadFile();
-                    } catch (FileUploadException $e) {
-                        $isFormValid = false;
-
-                        $this->logger->error($e->getMessage(), ['field' => $field]);
                     } catch (\Exception $e) {
                         $isFormValid = false;
-
                         $this->logger->error($e->getMessage(), ['field' => $field]);
                     }
 
@@ -551,6 +578,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                 }
             }
         }
+
+        $this->valid = $isFormValid;
+
+        $this->formHandler->onAfterFormValidate($this);
 
         $this->valid = $isFormValid;
 
@@ -646,6 +677,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         $submission = null;
+        if (!empty($this->getActions())) {
+            $this->formSaved = false;
+            $this->submitResult = false;
+
+            return $this->submitResult;
+        }
 
         if ($this->storeData && $this->hasOptInPermission()) {
             $submission = $this->saveStoredStateToDatabase();

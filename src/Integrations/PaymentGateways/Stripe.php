@@ -5,8 +5,6 @@ namespace Solspace\Freeform\Integrations\PaymentGateways;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
-use Solspace\Freeform\Library\DataObjects\AddressDetails;
-use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
@@ -25,6 +23,11 @@ use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionPlansService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Stripe as StripeAPI;
+use Stripe\Charge;
+use Stripe\Customer;
+use Stripe\Invoice;
+use Stripe\PaymentIntent;
+use Stripe\Subscription;
 use function strtolower;
 
 class Stripe extends AbstractPaymentGatewayIntegration
@@ -190,7 +193,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     public function fetchAccessToken(): string
     {
         return $this->getSetting(
-            $this->isLiveMode() ? self::SETTING_SECRET_KEY_LIVE :self::SETTING_SECRET_KEY_TEST
+            $this->isLiveMode() ? self::SETTING_SECRET_KEY_LIVE : self::SETTING_SECRET_KEY_TEST
         );
     }
 
@@ -303,28 +306,16 @@ class Stripe extends AbstractPaymentGatewayIntegration
      */
     public function processPayment(PaymentDetails $paymentDetails, PaymentProperties $paymentProperties)
     {
-        $submissionId = $paymentDetails->getSubmissionId();
+        $submissionId = $paymentDetails->getSubmission()->getId();
 
-        $this->updateSourceOwner($paymentDetails->getToken(), $paymentDetails->getCustomer());
-
-        $params = [
-            'amount'   => self::toStripeAmount($paymentDetails->getAmount(), $paymentDetails->getCurrency()),
-            'currency' => strtolower($paymentDetails->getCurrency()),
-            'source'   => $paymentDetails->getToken(),
-            'metadata' => [
-                'submission' => $submissionId,
-            ],
-        ];
-
-        $data = $this->charge($params);
-
+        $data = $this->processPaymentIntent($paymentDetails->getToken(), $paymentDetails);
         if ($data === false) {
             $this->savePayment([], $submissionId);
 
             return false;
         }
 
-        $data['amount'] = self::fromStripeAmount($data['amount'], $data['currency']);
+        $data->amount = self::fromStripeAmount($data->amount, $data->currency);
 
         return $this->savePayment($data, $submissionId);
     }
@@ -340,58 +331,67 @@ class Stripe extends AbstractPaymentGatewayIntegration
     {
         $this->prepareApi();
 
-        $source          = $subscriptionDetails->getToken();
-        $submissionId    = $subscriptionDetails->getSubmissionId();
-        $customerDetails = $subscriptionDetails->getCustomer();
-        $planResourceId  = $subscriptionDetails->getPlan();
-        $address         = $customerDetails->getAddress() ? $this->convertAddress($customerDetails->getAddress()) : null;
-        $shipping        = [
-            'name'    => $customerDetails->getName(),
-            'address' => $address,
-        ];
+        $token        = $subscriptionDetails->getToken();
+        $submissionId = $subscriptionDetails->getSubmission()->getId();
 
-        $this->updateSourceOwner($source, $customerDetails);
-
+        $subscription = $customer = null;
         try {
-            $customer = StripeAPI\Customer::create([
-                'source'      => $source,
-                'email'       => $customerDetails->getEmail(),
-                'description' => $customerDetails->getName(),
-                'shipping'    => $address ? $shipping : null,
-            ]);
-        } catch (\Exception $e) {
-            $this->processError($e);
-            $customer = false;
-        }
-
-        $data = false;
-        if ($customer !== false) {
-            $data = $customer->subscriptions->create([
-                'plan'     => $planResourceId,
-                'metadata' => [
-                    'submission' => $submissionId,
+            $subscription = Subscription::retrieve($token, [
+                'expand' => [
+                    'latest_invoice.payment_intent',
+                    'plan',
                 ],
             ]);
 
-            if ($data === false) {
-                $this->saveSubscription([], $submissionId, $planResourceId);
+            $customer = $subscription->customer;
+        } catch (\Exception $e) {
+            $this->processError($e);
+        }
+
+        if ($customer !== false) {
+            if ($subscription === false) {
+                $this->saveSubscription([], $submissionId, null);
 
                 return false;
             }
 
-            $plan                     = $data['plan'];
-            $data['plan']['amount']   = self::fromStripeAmount($plan['amount'], $plan['currency']);
-            $data['plan']['interval'] = self::fromStripeInterval($plan['interval'], $plan['interval_count']);
+            $plan                         = $subscription->plan;
+            $subscription->plan->amount   = self::fromStripeAmount($plan->amount, $plan->currency);
+            $subscription->plan->interval = self::fromStripeInterval($plan->interval, $plan->interval_count);
 
             //TODO: log if this fails
             //we need to save it immediately or we risk hitting webhooks without available record in DB
-            $model = $this->saveSubscription($data, $submissionId, $planResourceId);
+            $model = $this->saveSubscription($subscription, $submissionId, $plan->id);
 
             try {
                 $handler = $this->getSubscriptionHandler();
-                $source  = StripeAPI\Source::update($source, ['metadata' => ['subscription' => $data['id']]]);
 
-                $model->last4 = $source['card']['last4'];
+                /** @var Invoice $invoice */
+                $invoice = $subscription->latest_invoice;
+                if (!$invoice instanceof Invoice) {
+                    $invoice = Invoice::retrieve($invoice);
+                }
+
+                /** @var PaymentIntent $paymentIntent */
+                $paymentIntentId = $invoice->payment_intent;
+                $paymentIntent = PaymentIntent::update(
+                    $paymentIntentId,
+                    ['metadata' => ['subscription' => $subscription['id']]]
+                );
+
+                Subscription::update(
+                    $subscription->id,
+                    ['metadata' => ['submission' => $submissionId]]
+                );
+
+                /** @var Charge $charge */
+                $charge = array_pop($paymentIntent->charges->data);
+                $last4  = null;
+                if ($charge) {
+                    $last4 = $charge->payment_method_details->card->last4;
+                }
+
+                $model->last4 = $last4;
                 $model        = $handler->save($model);
             } catch (\Exception $e) {
                 //TODO: log error
@@ -400,7 +400,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
             return $model;
         }
 
-        $this->saveSubscription([], $submissionId, $planResourceId);
+        $this->saveSubscription([], $submissionId, $subscription->plan->id);
 
         return false;
     }
@@ -417,7 +417,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
         try {
             $subscription = StripeAPI\Subscription::retrieve($resourceId);
-            $subscription->cancel(['at_period_end' => $atPeriodEnd]);
+            $subscription->cancel();
         } catch (\Exception $e) {
             $this->processError($e);
 
@@ -473,7 +473,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
     {
         $planHandler = $this->getPlanHandler();
 
-        //TODO: this function might be unnecessary
         $this->prepareApi();
         try {
             $data = StripeAPI\Plan::retrieve($id);
@@ -605,7 +604,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     {
         $model->updateAccessToken(
             $this->getSetting(
-                $this->isLiveMode() ? self::SETTING_SECRET_KEY_LIVE :self::SETTING_SECRET_KEY_TEST
+                $this->isLiveMode() ? self::SETTING_SECRET_KEY_LIVE : self::SETTING_SECRET_KEY_TEST
             )
         );
     }
@@ -651,6 +650,19 @@ class Stripe extends AbstractPaymentGatewayIntegration
         );
     }
 
+    public function prepareApi()
+    {
+        StripeAPI\Stripe::setApiKey($this->getAccessToken());
+
+        \Stripe\Stripe::setAppInfo(
+            'solspace/craft3-freeform',
+            'v3',
+            'https://docs.solspace.com/craft/freeform'
+        );
+
+        $this->lastError = null;
+    }
+
 
     /**
      * @return bool
@@ -662,81 +674,45 @@ class Stripe extends AbstractPaymentGatewayIntegration
     }
 
     /**
-     * @param $params
+     * @param string         $paymentIntentId
+     * @param PaymentDetails $paymentDetails
      *
-     * @return bool|\Stripe\ApiResource
-     * @throws \Exception
+     * @return bool|PaymentIntent
      */
-    protected function charge($params)
+    protected function processPaymentIntent(string $paymentIntentId, PaymentDetails $paymentDetails)
     {
         $this->prepareApi();
+        $submissionId = $paymentDetails->getSubmission()->getId();
+
+        $intent = PaymentIntent::retrieve($paymentIntentId);
+
+        $customer = null;
+        if (!$intent->customer) {
+            try {
+                $customer = Customer::create($paymentDetails->getCustomer()->toStripeConstructArray());
+            } catch (\Exception $e) {
+            }
+        }
 
         try {
-            $data = StripeAPI\Charge::create($params);
+            $updateData = [
+                'description' => 'Payment for FF Submission #' . $submissionId,
+                'metadata'    => ['submissionId' => $submissionId],
+            ];
 
-            StripeAPI\Source::update(
-                $params['source'],
-                ['metadata' => ['charge' => $data['id']]]
-            );
+            if ($customer) {
+                $updateData['customer'] = $customer;
+            }
+
+            $intent = PaymentIntent::update($paymentIntentId, $updateData);
+            if ($intent->status === PaymentIntent::STATUS_REQUIRES_CONFIRMATION) {
+                $intent->confirm();
+            }
         } catch (\Exception $e) {
             return $this->processError($e);
         }
 
-        return $data;
-    }
-
-    /**
-     * @param $params
-     *
-     * @return bool|\Stripe\ApiResource
-     * @throws \Exception
-     */
-    protected function subscribe($params)
-    {
-        $this->prepareApi();
-
-        //TODO: return something sane
-        try {
-            $data = StripeAPI\Subscription::create($params);
-        } catch (\Exception $e) {
-            return $this->processError($e);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Updates source's owner field
-     *
-     * @param string          $id
-     * @param CustomerDetails $customer
-     *
-     * @return void
-     */
-    protected function updateSourceOwner(string $id, CustomerDetails $customer)
-    {
-        $this->prepareApi();
-
-        $params = [
-            'owner' => [
-                'name'  => $customer->getName(),
-                'email' => $customer->getEmail(),
-                'phone' => $customer->getPhone(),
-            ],
-        ];
-
-        $address = $customer->getAddress();
-        if ($address) {
-            $params['owner']['address'] = $this->convertAddress($address);
-        }
-
-        try {
-            $source = StripeAPI\Source::update($id, $params);
-        } catch (\Exception $e) {
-            return $this->processError($e);
-        }
-
-        return $source;
+        return $intent;
     }
 
     /**
@@ -745,31 +721,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
     protected function getApiRootUrl(): string
     {
         return 'https://api.stripe.com/';
-    }
-
-    protected function prepareApi()
-    {
-        StripeAPI\Stripe::setApiKey($this->getAccessToken());
-        \Stripe\Stripe::setAppInfo("solspace/craft3-freeform", "v1", "https://docs.solspace.com/craft/freeform");
-
-        $this->lastError = null;
-    }
-
-    /**
-     * @param AddressDetails $address
-     *
-     * @return array
-     */
-    protected function convertAddress(AddressDetails $address)
-    {
-        return [
-            'line1'       => $address->getLine1(),
-            'line2'       => $address->getLine2(),
-            'city'        => $address->getCity(),
-            'postal_code' => $address->getPostalCode(),
-            'state'       => $address->getState(),
-            'country'     => $address->getCountry(),
-        ];
     }
 
     /**
@@ -824,21 +775,29 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
             if ($error instanceof StripeAPI\Error\Base) {
                 $data              = $error->jsonBody['error'];
-                $model->resourceId = isset($data['charge']) ? $data['charge'] : null;
+                $model->resourceId = $data['paymentIntentId'] ?? null;
             }
 
             $model->errorCode    = $error->getCode();
             $model->errorMessage = $error->getMessage();
             $model->status       = PaymentRecord::STATUS_FAILED;
         } else {
+            /** @var Charge $charge */
+            $charge = array_pop($data['charges']->data);
+            $last4  = $card = null;
+            if ($charge) {
+                $last4 = $charge->payment_method_details->card->last4;
+                $card  = $charge->payment_method_details->card;
+            }
+
             $model->resourceId = $data['id'];
             $model->amount     = $data['amount'];
             $model->currency   = $data['currency'];
-            $model->last4      = $data['source']['card']['last4'];
-            $model->status     = $data['paid'] ? PaymentRecord::STATUS_PAID : PaymentRecord::STATUS_FAILED;
+            $model->last4      = $last4;
+            $model->status     = $data['status'] === 'succeeded' ? PaymentRecord::STATUS_PAID : PaymentRecord::STATUS_FAILED;
             $model->metadata   = [
-                'chargeId' => $data['id'],
-                'card'     => $data['source']['card'],
+                'paymentIntentId' => $data['id'],
+                'card'            => $card,
             ];
         }
 
@@ -893,8 +852,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
             if (isset($data['source'])) {
                 $model->last4    = $data['source']['card']['last4'];
                 $model->metadata = [
-                    'chargeId' => $data['id'],
-                    'card'     => $data['source']['card'],
+                    'paymentIntentId' => $data['id'],
+                    'card'            => $data['source']['card'],
                 ];
             }
             $model->status = $data['status'];

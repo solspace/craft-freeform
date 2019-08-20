@@ -227,6 +227,12 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['formId'])
                 ->addForeignKey('webhookId', 'freeform_webhooks', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_submission_notes'))
+                ->addField('id', $this->primaryKey())
+                ->addField('submissionId', $this->integer()->notNull())
+                ->addField('note', $this->text())
+                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE),
         ];
     }
 }

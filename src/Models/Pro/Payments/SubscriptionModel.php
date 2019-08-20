@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Models\Pro\Payments;
 
+use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Payments\PaymentInterface;
 
@@ -61,7 +62,7 @@ class SubscriptionModel extends AbstractPaymentModel
         $resourceId = $this->resourceId;
         $validationKey = sha1($resourceId);
 
-        return \Craft::getAlias("@web/freeform/payment-subscription/$id/cancel/$validationKey");
+        return UrlHelper::cpUrl("freeform/payment-subscription/$id/cancel/$validationKey");
     }
 
     /**

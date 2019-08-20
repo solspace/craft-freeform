@@ -25,6 +25,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
@@ -210,6 +211,8 @@ class SubmissionsController extends BaseController
             throw new HttpException(404, Freeform::t('Submission with ID {id} not found', ['id' => $id]));
         }
 
+        $noteRecord = SubmissionNoteRecord::findOne(['submissionId' => $id]);
+
         $title = $submission->title;
 
         /** @var array|null $allowedFormIds */
@@ -241,6 +244,7 @@ class SubmissionsController extends BaseController
             'layout'             => $layout,
             'title'              => $title,
             'statuses'           => $statuses,
+            'note'               => $noteRecord ? $noteRecord->note : null,
             'continueEditingUrl' => 'freeform/submissions/{id}',
         ];
         $paymentDetails = $this->getSubmissionPaymentDetails($submission);

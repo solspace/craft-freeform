@@ -198,6 +198,7 @@ return [
     'Submission could not be updated'                                                                                                                                                                                                                                                                        => 'Submission could not be updated',
     'Submission with ID {id} not found'                                                                                                                                                                                                                                                                      => 'Submission with ID {id} not found',
     'Submissions deleted successfully.'                                                                                                                                                                                                                                                                      => 'Submissions deleted successfully.',
+    'Notes about your changes'                                                                                                                                                                                                                                                                               => 'Notes about your changes',
 
 
     // Element type

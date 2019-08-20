@@ -467,4 +467,6 @@
 
     {% endif %}
 
+    <textarea class="text freeform-submission-note" id="freeform-submission-note" name="freeform-submission-note" placeholder="{{ 'Notes about your changes'|t('freeform') }}" spellcheck="false" style="width: 90%; margin: 5%; min-height: 100px;">{% if note %}{{ note }}{% endif %}</textarea>
+
 {% endblock %}

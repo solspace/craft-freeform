@@ -26,6 +26,7 @@ interface FormHandlerInterface
     const EVENT_RENDER_OPENING_TAG        = 'renderOpeningTag';
     const EVENT_RENDER_CLOSING_TAG        = 'renderClosingTag';
     const EVENT_FORM_VALIDATE             = 'validateForm';
+    const EVENT_AFTER_FORM_VALIDATE       = 'afterValidateForm';
     const EVENT_ATTACH_FORM_ATTRIBUTES    = 'attachFormAttributes';
     const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
 
@@ -149,6 +150,11 @@ interface FormHandlerInterface
      * @param Form $form
      */
     public function onFormValidate(Form $form);
+
+    /**
+     * @param Form $form
+     */
+    public function onAfterFormValidate(Form $form);
 
     /**
      * @param Form       $form

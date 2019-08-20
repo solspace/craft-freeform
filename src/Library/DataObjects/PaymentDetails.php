@@ -11,44 +11,34 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
+use Solspace\Freeform\Elements\Submission;
+
 class PaymentDetails
 {
     /** @var string */
     private $token;
 
-    /** @var float */
-    private $amount;
+    /** @var Submission */
+    private $submission;
 
-    /** @var string */
-    private $currency;
-
-    /** @var int */
-    private $submissionId;
-
-    /**
-     * @var CustomerDetails
-     */
+    /** @var CustomerDetails */
     private $customer;
 
     /**
      * PaymentDetails constructor.
-     * @param string $token
-     * @param float $amount
-     * @param string $currency
-     * @param int $submissionId
+     *
+     * @param string          $token
+     * @param Submission      $submissionId
+     * @param CustomerDetails $customer
      */
     public function __construct(
         string $token,
-        float $amount,
-        string $currency,
-        int $submissionId,
+        Submission $submissionId,
         CustomerDetails $customer
     ) {
-        $this->token = $token;
-        $this->amount = $amount;
-        $this->currency = $currency;
-        $this->submissionId = $submissionId;
-        $this->customer = $customer;
+        $this->token      = $token;
+        $this->submission = $submissionId;
+        $this->customer   = $customer;
     }
 
     /**
@@ -60,27 +50,11 @@ class PaymentDetails
     }
 
     /**
-     * @return float
-     */
-    public function getAmount(): float
-    {
-        return $this->amount;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCurrency(): string
-    {
-        return $this->currency;
-    }
-
-    /**
      * @return int
      */
-    public function getSubmissionId(): int
+    public function getSubmission(): Submission
     {
-        return $this->submissionId;
+        return $this->submission;
     }
 
     /**

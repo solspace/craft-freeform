@@ -59,71 +59,40 @@ class ApiController extends BaseController
         }
 
         $form          = $formModel->getForm();
-        $honeypot      = Freeform::getInstance()->honeypot->getHoneypot($form);
         $isAjaxRequest = \Craft::$app->request->getIsAjax();
+
         if ($form->isValid()) {
             $submission = $form->submit();
 
             if ($submission !== false && $submission->getErrors()) {
                 $form->addErrors(array_keys($submission->getErrors()));
-                //TODO: redirect to special error page?
-            } else {
+            }
 
-                if (!$form->getErrors() && $form->isFormSaved()) {
+            if (!$form->getErrors() && !$form->getActions() && $form->isFormSaved()) {
+                //TODO: check if it required payment and payment succeeded
+                //TODO: if payment failed than display error message
 
-                    //TODO: check if it required payment and payment succeeded
-                    //TODO: if payment failed than display error message
+                $postedReturnUrl = \Craft::$app->request->post(Form::RETURN_URI_KEY);
 
-                    $postedReturnUrl = \Craft::$app->request->post(Form::RETURN_URI_KEY);
+                $returnUrl = $postedReturnUrl ?: $form->getReturnUrl();
+                $returnUrl = \Craft::$app->view->renderString(
+                    $returnUrl,
+                    [
+                        'form'       => $form,
+                        'submission' => $submission,
+                    ]
+                );
 
-                    $returnUrl = $postedReturnUrl ?: $form->getReturnUrl();
-                    $returnUrl = \Craft::$app->view->renderString(
-                        $returnUrl,
-                        [
-                            'form'       => $form,
-                            'submission' => $submission,
-                        ]
-                    );
-
-                    if ($submission === false) {
-                        $submission = null;
-                    }
-
-                    $returnUrl = Freeform::getInstance()->forms->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
-                    if (!$returnUrl) {
-                        $returnUrl = \Craft::$app->request->getUrl();
-                    }
-
-                    if ($isAjaxRequest) {
-                        return $this->asJson(
-                            [
-                                'success'      => true,
-                                'finished'     => true,
-                                'returnUrl'    => $returnUrl,
-                                'submissionId' => $submission ? $submission->id : null,
-                                'honeypot'     => [
-                                    'name' => $honeypot->getName(),
-                                    'hash' => $honeypot->getHash(),
-                                ],
-                            ]
-                        );
-                    }
-
-                    return $this->redirect($returnUrl);
+                if ($submission === false) {
+                    $submission = null;
                 }
 
-                if ($isAjaxRequest) {
-                    return $this->asJson(
-                        [
-                            'success'  => true,
-                            'finished' => false,
-                            'honeypot' => [
-                                'name' => $honeypot->getName(),
-                                'hash' => $honeypot->getHash(),
-                            ],
-                        ]
-                    );
+                $returnUrl = Freeform::getInstance()->forms->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
+                if (!$returnUrl) {
+                    $returnUrl = \Craft::$app->request->getUrl();
                 }
+
+                return $isAjaxRequest ? $this->toAjaxResponse($form) : $this->redirect($returnUrl);
             }
         }
 
@@ -132,27 +101,40 @@ class ApiController extends BaseController
         }
 
         if ($isAjaxRequest) {
-            $fieldErrors = [];
-
-            foreach ($form->getLayout()->getFields() as $field) {
-                if ($field->hasErrors()) {
-                    $fieldErrors[$field->getHandle()] = $field->getErrors();
-                }
-            }
-
-            return $this->asJson(
-                [
-                    'success'    => false,
-                    'finished'   => false,
-                    'errors'     => $fieldErrors,
-                    'formErrors' => $form->getErrors(),
-                    'honeypot'   => [
-                        'name' => $honeypot->getName(),
-                        'hash' => $honeypot->getHash(),
-                    ],
-                ]
-            );
+            return $this->toAjaxResponse($form);
         }
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return Response
+     */
+    private function toAjaxResponse(Form $form): Response
+    {
+        $honeypot    = Freeform::getInstance()->honeypot->getHoneypot($form);
+        $fieldErrors = [];
+        foreach ($form->getLayout()->getFields() as $field) {
+            if ($field->hasErrors()) {
+                $fieldErrors[$field->getHandle()] = $field->getErrors();
+            }
+        }
+
+        $success = !$form->hasErrors() && $form->isFormSaved();
+
+        return $this->asJson(
+            [
+                'success'    => $success,
+                'finished'   => $success && !$form->isMultipage(),
+                'actions'    => $form->getActions(),
+                'errors'     => $fieldErrors,
+                'formErrors' => $form->getErrors(),
+                'honeypot'   => [
+                    'name' => $honeypot->getName(),
+                    'hash' => $honeypot->getHash(),
+                ],
+            ]
+        );
     }
 
     /**

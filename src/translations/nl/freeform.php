@@ -150,6 +150,7 @@ return [
     "Submission could not be updated"                                                                                                                                                                                                      => "Inzending kon niet worden aangepast",
     "Submission with ID {id} not found"                                                                                                                                                                                                    => "Inzending met ID {id} niet gevonden",
     "Submissions deleted successfully."                                                                                                                                                                                                    => "Inzendingen succesvol verwijderd.",
+    "Notes about your changes"                                                                                                                                                                                                             => "Opmerkingen over uw wijzigingen",
 
 
     // Element type

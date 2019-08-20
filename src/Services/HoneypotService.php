@@ -246,7 +246,7 @@ class HoneypotService extends BaseService
 
         $honeypot     = $this->getHoneypot($form);
         $honeypotName = $honeypot->getName();
-        $output       = '<input aria-hidden="true" '
+        $output       = '<input '
             . 'type="text" '
             . 'value="' . ($this->isEnhanced() ? $hash : '') . '" '
             . 'name="' . $honeypotName . '" '

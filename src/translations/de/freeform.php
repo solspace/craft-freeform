@@ -198,6 +198,7 @@ return [
     'Submission could not be updated'                                                                                                                                                                                                                                                                        => 'Einreichung konnte nicht geupdated werden',
     'Submission with ID {id} not found'                                                                                                                                                                                                                                                                      => 'Einreichung mit ID {id} nicht gefunden',
     'Submissions deleted successfully.'                                                                                                                                                                                                                                                                      => 'Einreichungen erfolgreich gelöscht.',
+    'Notes about your changes'                                                                                                                                                                                                                                                                               => 'Notizen zu Ihren Änderungen',
 
 
     // Element type

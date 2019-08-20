@@ -28,6 +28,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Models\StatusModel;
+use Solspace\Freeform\Services\NotesService;
 
 class Submission extends Element
 {
@@ -661,6 +662,9 @@ class Submission extends Element
             \Craft::$app->db->createCommand()
                 ->update(self::TABLE, $insertData, ['id' => $this->id])
                 ->execute();
+
+            $notesService = $this->getNotesService();
+            $notesService->saveNote($this->id);
         }
 
         parent::afterSave($isNew);
@@ -781,5 +785,14 @@ class Submission extends Element
     public function getIterator()
     {
         return new \ArrayIterator($this->getFieldMetadata());
+    }
+
+
+    /**
+     * @return NotesService
+     */
+    protected function getNotesService(): NotesService
+    {
+        return Freeform::getInstance()->notes;
     }
 }

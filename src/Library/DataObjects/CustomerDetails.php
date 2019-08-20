@@ -36,17 +36,17 @@ class CustomerDetails
     {
         $firstName = isset($customer['first_name']) ? $customer['first_name'] : null;
         $lastName  = isset($customer['last_name']) ? $customer['last_name'] : null;
-        $name      = isset($customer['name']) ? $customer['name'] : implode(' ', array($firstName, $lastName));
+        $name      = isset($customer['name']) ? $customer['name'] : implode(' ', [$firstName, $lastName]);
 
-        $email = isset($customer['email']) ? $customer['email'] : null;
-        $email = is_array($email) ? $email[0] : $email;
-        $phone = isset($customer['phone']) ? $customer['phone'] : null;
+        $email   = isset($customer['email']) ? $customer['email'] : null;
+        $email   = is_array($email) ? $email[0] : $email;
+        $phone   = isset($customer['phone']) ? $customer['phone'] : null;
         $address = null;
 
         if (isset($customer['address'])) {
             if (is_a($address, AddressDetails::name)) {
                 $address = $customer['address'];
-            } elseif (is_array($address)) {
+            } else if (is_array($address)) {
                 $addressProps = $customer['address'];
             }
         } else {
@@ -59,7 +59,7 @@ class CustomerDetails
             $city       = isset($addressProps['city']) ? $addressProps['city'] : null;
             $postalCode = isset($addressProps['postal_code']) ? $addressProps['postal_code'] : null;
             $state      = isset($addressProps['state']) ? $addressProps['state'] : null;
-            $country    = isset($addressProps['country']) ? $addressProps['country'] :  null;
+            $country    = isset($addressProps['country']) ? $addressProps['country'] : null;
 
             //validating if we have any address data at all
             if ($line1 || $line2) {
@@ -73,9 +73,9 @@ class CustomerDetails
     /**
      * CustomerDetails constructor
      *
-     * @param string $name
-     * @param string $email
-     * @param string $phone
+     * @param string         $name
+     * @param string         $email
+     * @param string         $phone
      * @param AddressDetails $address
      */
     public function __construct($name, $email, $phone, $address)
@@ -124,5 +124,30 @@ class CustomerDetails
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * @return array
+     */
+    public function toStripeConstructArray(): array
+    {
+        $data = [
+            'name'  => $this->getName(),
+            'email' => $this->getEmail(),
+            'phone' => $this->getPhone(),
+        ];
+
+        if ($this->getAddress()) {
+            $data['address'] = [
+                'line1'       => $this->getAddress()->getLine1(),
+                'line2'       => $this->getAddress()->getLine2(),
+                'city'        => $this->getAddress()->getCity(),
+                'country'     => $this->getAddress()->getCountry(),
+                'postal_code' => $this->getAddress()->getPostalCode(),
+                'state'       => $this->getAddress()->getState(),
+            ];
+        }
+
+        return $data;
     }
 }

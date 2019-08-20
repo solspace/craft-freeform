@@ -34,10 +34,11 @@ use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
 use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
-use Solspace\Freeform\Controllers\Pro\WebhooksController;
 use Solspace\Freeform\Controllers\Pro\Payments\PaymentWebhooksController;
+use Solspace\Freeform\Controllers\Pro\Payments\StripeController;
 use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
 use Solspace\Freeform\Controllers\Pro\QuickExportController;
+use Solspace\Freeform\Controllers\Pro\WebhooksController;
 use Solspace\Freeform\Controllers\ResourcesController;
 use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
@@ -73,6 +74,7 @@ use Solspace\Freeform\Services\IntegrationsService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
+use Solspace\Freeform\Services\NotesService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
@@ -261,6 +263,7 @@ class Freeform extends Plugin
         $this->initSpamCheck();
         $this->initPaymentAssets();
         $this->initHookHandlers();
+        $this->initPaymentEventListeners();
 
         if ($this->isPro() && $this->settings->getPluginName()) {
             $this->name = $this->settings->getPluginName();
@@ -496,6 +499,7 @@ class Freeform extends Plugin
                 'subscriptions'        => SubscriptionsService::class,
                 'webhooks'             => WebhooksService::class,
                 'relations'            => RelationsService::class,
+                'notes'                => NotesService::class,
             ]
         );
     }
@@ -515,6 +519,7 @@ class Freeform extends Plugin
                     ->name('*.php')
                     ->files()
                     ->ignoreDotFiles(true)
+                    ->depth(0)
                     ->in(__DIR__ . '/Integrations/CRM/');
 
                 foreach ($files as $file) {
@@ -538,6 +543,7 @@ class Freeform extends Plugin
                     ->name('*.php')
                     ->files()
                     ->ignoreDotFiles(true)
+                    ->depth(0)
                     ->in(__DIR__ . '/Integrations/MailingLists/');
 
                 foreach ($files as $file) {
@@ -561,6 +567,7 @@ class Freeform extends Plugin
                     ->name('*.php')
                     ->files()
                     ->ignoreDotFiles(true)
+                    ->depth(0)
                     ->in(__DIR__ . '/Integrations/PaymentGateways/');
 
                 foreach ($files as $file) {
@@ -584,6 +591,7 @@ class Freeform extends Plugin
                     ->name('*.php')
                     ->files()
                     ->ignoreDotFiles(true)
+                    ->depth(1)
                     ->in(__DIR__ . '/Webhooks/Integrations/');
 
                 foreach ($files as $file) {
@@ -979,5 +987,24 @@ class Freeform extends Plugin
 
         SubmissionHookHandler::registerHooks();
         FormHookHandler::registerHooks();
+    }
+
+    private function initPaymentEventListeners()
+    {
+        if (!$this->isPro()) {
+            return;
+        }
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_AFTER_FORM_VALIDATE,
+            [$this->stripe, 'preProcessPayment']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_AFTER_FORM_VALIDATE,
+            [$this->stripe, 'preProcessSubscription']
+        );
     }
 }

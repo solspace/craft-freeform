@@ -32,7 +32,7 @@ class PaymentNotificationsService extends Component
 
     public function sendSubscriptionEnded(int $submissionId) {
         //TODO: move status update somewhere nice
-        FreeformPayments::getInstance()->subscriptions->updateSubscriptionStatus($submissionId, PaymentRecord::STATUS_INACTIVE);
+        Freeform::getInstance()->subscriptions->updateSubscriptionStatus($submissionId, PaymentRecord::STATUS_INACTIVE);
         $this->send($submissionId, PaymentProperties::NOTIFICATION_TYPE_SUBSCRIPTION_ENDED);
     }
 

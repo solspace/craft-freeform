@@ -668,6 +668,15 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @inheritDoc
      */
+    public function onAfterFormValidate(Form $form)
+    {
+        $event = new FormValidateEvent($form);
+        $this->trigger(self::EVENT_AFTER_FORM_VALIDATE, $event);
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function onAfterGenerateReturnUrl(Form $form, Submission $submission = null, string $returnUrl = null)
     {
         $event = new ReturnUrlEvent($form, $submission, $returnUrl);

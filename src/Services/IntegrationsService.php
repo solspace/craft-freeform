@@ -20,7 +20,6 @@ use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
-use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
@@ -248,59 +247,21 @@ class IntegrationsService extends BaseService
                     }
                 }
             }
-            $customer = CustomerDetails::fromArray($dynamicValues);
-            $token    = $field->getValue();
+
+            $token = $field->getValue();
 
             $result = false;
             switch ($paymentType) {
                 case PaymentProperties::PAYMENT_TYPE_SINGLE:
-                    $currency       = $dynamicValues[PaymentProperties::FIELD_CURRENCY] ?? $properties->getCurrency();
-                    $amount         = (float) ($dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount());
-                    $paymentDetails = new PaymentDetails($token, $amount, $currency, $submission->getId(), $customer);
+                    $customer       = CustomerDetails::fromArray($dynamicValues);
+                    $paymentDetails = new PaymentDetails($token, $submission, $customer);
                     $result         = $integration->processPayment($paymentDetails, $properties);
 
                     break;
 
                 case PaymentProperties::PAYMENT_TYPE_PREDEFINED_SUBSCRIPTION:
-                    $planId              = $dynamicValues[PaymentProperties::FIELD_PLAN] ?? $properties->getPlan();
-                    $subscriptionDetails = new SubscriptionDetails($token, $planId, $submission->getId(), $customer);
-                    $result              = $integration->processSubscription($subscriptionDetails, $properties);
-
-                    break;
-
                 case PaymentProperties::PAYMENT_TYPE_DYNAMIC_SUBSCRIPTION:
-                    $currency    = $dynamicValues[PaymentProperties::FIELD_CURRENCY] ?? $properties->getCurrency();
-                    $amount      = (float) ($dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount());
-                    $interval    = $dynamicValues[PaymentProperties::FIELD_INTERVAL] ?? $properties->getInterval();
-                    $planDetails = new PlanDetails(
-                        null,
-                        $amount,
-                        $currency,
-                        $interval,
-                        $form->getName(),
-                        $form->getHandle()
-                    );
-
-                    $planId = $planDetails->getId();
-                    $plan   = $integration->fetchPlan($planId);
-
-                    if ($plan === false) {
-                        $this->applyPaymentErrors($submission, $integration);
-
-                        return false;
-                    }
-
-                    if (!$plan) {
-                        $planId = $integration->createPlan($planDetails);
-                    }
-
-                    if ($planId === false) {
-                        $this->applyPaymentErrors($submission, $integration);
-
-                        return false;
-                    }
-
-                    $subscriptionDetails = new SubscriptionDetails($token, $planId, $submission->getId(), $customer);
+                    $subscriptionDetails = new SubscriptionDetails($token, $submission);
                     $result              = $integration->processSubscription($subscriptionDetails, $properties);
 
                     break;

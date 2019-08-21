@@ -114,7 +114,7 @@
                                                 name: fieldHandle,
                                                 id: fieldHandle,
                                                 checked: value ? true : false,
-                                                value: field.value,
+                                                value: field.staticValue,
                                             }) }}
                                         {% endset %}
 
@@ -201,7 +201,7 @@
                                             </div>
                                             <div>
                                                 {% set field = field.setValue(value) %}
-                                                {{ field.renderInput|replace(field.handle, 'field_' ~ field.id)|raw }}
+                                                {{ field.renderInput }}
                                             </div>
                                         </div>
 

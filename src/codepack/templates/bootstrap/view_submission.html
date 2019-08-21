@@ -29,11 +29,16 @@
             {% if submission %}
 
                 {% if craft.freeform.pro %}
+                    <div class="float-right">
                     {% if currentUser and currentUser.admin %}
-                        <a class="btn btn-outline-primary float-right" href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/edit/{{ submission.token }}">
+                        <a class="btn btn-outline-primary" href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/edit/{{ submission.token }}">
                             {{ "Edit"|t("freeform") }}
                         </a>
                     {% endif %}
+                        <a class="btn btn-outline-danger" href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/delete/{{ submission.token }}">
+                            {{ "Delete"|t("freeform") }}
+                        </a>
+                    </div>
                 {% endif %}
 
                 <h3>{{ submission.title }}</h3>

@@ -92,7 +92,7 @@ class ApiController extends BaseController
                     $returnUrl = \Craft::$app->request->getUrl();
                 }
 
-                return $isAjaxRequest ? $this->toAjaxResponse($form) : $this->redirect($returnUrl);
+                return $isAjaxRequest ? $this->toAjaxResponse($form, $returnUrl) : $this->redirect($returnUrl);
             }
         }
 
@@ -106,11 +106,12 @@ class ApiController extends BaseController
     }
 
     /**
-     * @param Form $form
+     * @param Form   $form
+     * @param string $returnUrl
      *
      * @return Response
      */
-    private function toAjaxResponse(Form $form): Response
+    private function toAjaxResponse(Form $form, string $returnUrl = null): Response
     {
         $honeypot    = Freeform::getInstance()->honeypot->getHoneypot($form);
         $fieldErrors = [];
@@ -129,6 +130,7 @@ class ApiController extends BaseController
                 'actions'    => $form->getActions(),
                 'errors'     => $fieldErrors,
                 'formErrors' => $form->getErrors(),
+                'returnUrl'  => $returnUrl,
                 'honeypot'   => [
                     'name' => $honeypot->getName(),
                     'hash' => $honeypot->getHash(),

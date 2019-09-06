@@ -243,7 +243,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         if (!$submission->id) {
-            $submission->ip          = $form->isIpCollectingEnabled() ? \Craft::$app->request->getRemoteIP() : null;
+            $submission->ip          = $form->isIpCollectingEnabled() ? \Craft::$app->request->getUserIP() : null;
             $submission->formId      = $form->getId();
             $submission->statusId    = $statusId;
             $submission->isSpam      = $form->isMarkedAsSpam();

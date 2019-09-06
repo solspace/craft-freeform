@@ -44,6 +44,7 @@ class FieldRecord extends SerializableActiveRecord
         'dateCreated',
         'dateUpdated',
         'uid',
+        'level',
     ];
 
     /**

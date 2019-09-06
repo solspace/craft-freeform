@@ -12,7 +12,6 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\base\Field;
-use craft\db\Table;
 use craft\elements\User;
 use craft\helpers\Assets;
 use craft\helpers\Json;
@@ -30,6 +29,7 @@ use Solspace\Freeform\Library\Session\CraftRequest;
 use Solspace\Freeform\Library\Session\CraftSession;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
@@ -370,6 +370,7 @@ class FormsController extends BaseController
             'currentSiteId'            => (int) \Craft::$app->getSites()->currentSite->id,
             'sites'                    => $this->getEncodedJson($sites),
             'renderFormHtmlInCpViews'  => $settings->renderFormHtmlInCpViews,
+            'reservedKeywords'         => $this->getEncodedJson(FieldRecord::RESERVED_FIELD_KEYWORDS),
         ];
 
         return $this->renderTemplate('freeform/forms/edit', $templateVariables);

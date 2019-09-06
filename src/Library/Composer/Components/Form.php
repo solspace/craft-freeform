@@ -986,7 +986,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                     continue;
                 }
 
-                if (isset($submission->{$field->getHandle()})) {
+                $hasPostValue = isset($_POST[$field->getHandle()]);
+                if (!$hasPostValue && isset($submission->{$field->getHandle()})) {
                     $submissionField = $submission->{$field->getHandle()};
                     $value           = $submissionField->getValue();
 

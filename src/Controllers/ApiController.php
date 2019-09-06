@@ -92,7 +92,7 @@ class ApiController extends BaseController
                     $returnUrl = \Craft::$app->request->getUrl();
                 }
 
-                return $isAjaxRequest ? $this->toAjaxResponse($form, $returnUrl) : $this->redirect($returnUrl);
+                return $isAjaxRequest ? $this->toAjaxResponse($form, $submission, $returnUrl) : $this->redirect($returnUrl);
             }
         }
 
@@ -106,12 +106,13 @@ class ApiController extends BaseController
     }
 
     /**
-     * @param Form   $form
-     * @param string $returnUrl
+     * @param Form            $form
+     * @param Submission|null $submission
+     * @param string          $returnUrl
      *
      * @return Response
      */
-    private function toAjaxResponse(Form $form, string $returnUrl = null): Response
+    private function toAjaxResponse(Form $form, Submission $submission = null, string $returnUrl = null): Response
     {
         $honeypot    = Freeform::getInstance()->honeypot->getHoneypot($form);
         $fieldErrors = [];
@@ -125,13 +126,14 @@ class ApiController extends BaseController
 
         return $this->asJson(
             [
-                'success'    => $success,
-                'finished'   => $success && !$form->isMultipage(),
-                'actions'    => $form->getActions(),
-                'errors'     => $fieldErrors,
-                'formErrors' => $form->getErrors(),
-                'returnUrl'  => $returnUrl,
-                'honeypot'   => [
+                'success'      => $success,
+                'finished'     => $success && !$form->isMultipage(),
+                'submissionId' => $submission ? $submission->id : null,
+                'actions'      => $form->getActions(),
+                'errors'       => $fieldErrors,
+                'formErrors'   => $form->getErrors(),
+                'returnUrl'    => $returnUrl,
+                'honeypot'     => [
                     'name' => $honeypot->getName(),
                     'hash' => $honeypot->getHash(),
                 ],

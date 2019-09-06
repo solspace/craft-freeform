@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.3.2 - 2019-09-05
+### Fixed
+- Fixed a bug where a migration was causing the Payments `intervalCount` database table column to not allow null, which would trigger errors when submitting the form.
+- Fixed a bug where editing submissions on the front end was not remembering updated choices when the form reloaded after triggering errors.
+- Fixed a bug where error styling on inputs were not checking for actual changes to the field value before removing error styling when using with AJAX.
+- Fixed a bug where the submission ID was no longer be returned on AJAX calls.
+- Fixed a bug where the Payments SCA popup was not being triggered in Firefox.
+- Fixed a bug where IP address collecting was not as reliable.
+
 ## 3.3.1 - 2019-08-21
 ### Fixed
 - Fixed a bug where the return URL was not present in AJAX responses.

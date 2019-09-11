@@ -33,7 +33,7 @@ class Infusionsoft extends CRMOAuthConnector
 
     public static function getSettingBlueprints(): array
     {
-        $defaults =  parent::getSettingBlueprints();
+        $defaults = parent::getSettingBlueprints();
 
         // Add the refresh token
         $defaults[] = new SettingBlueprint(
@@ -43,6 +43,7 @@ class Infusionsoft extends CRMOAuthConnector
             'You should not set this',
             false
         );
+
         return $defaults;
     }
 
@@ -74,23 +75,21 @@ class Infusionsoft extends CRMOAuthConnector
 
         // $this->getLogger()->info('Submitting to Infusionsoft', $keyValueList);
 
-        $applyTag = null;
+        $applyTags = [];
         if (isset($keyValueList['infusionsoftTagId'])) {
-            $applyTag = $keyValueList['infusionsoftTagId'];
+            $applyTags = explode(',', $keyValueList['infusionsoftTagId']);
             unset($keyValueList['infusionsoftTagId']);
         }
-
         try {
             $response = $client->put($endpoint, ['json' => $keyValueList]);
             $this->getHandler()->onAfterResponse($this, $response);
-
-            if ($applyTag) {
-                $responseBody = \GuzzleHttp\json_decode((string)$response->getBody(), true);
-                $endpoint = $this->getEndpoint('/contacts/' . $responseBody['id'] . '/tags');
-                $response = $client->post(
+            if (count($applyTags) > 0) {
+                $responseBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
+                $endpoint     = $this->getEndpoint('/contacts/' . $responseBody['id'] . '/tags');
+                $response     = $client->post(
                     $endpoint,
                     [
-                        'json' => ['tagIds' => [$applyTag]],
+                        'json' => ['tagIds' => $applyTags],
                     ]
                 );
             }
@@ -205,8 +204,8 @@ class Infusionsoft extends CRMOAuthConnector
         foreach ($data as $fieldName => $fieldValue) {
 
             // Apply a tag if desired
-            if($fieldName === 'infusionsoftTagId') {
-                $resultData['infusionsoftTagId'] = (int)$fieldValue;
+            if ($fieldName === 'infusionsoftTagId') {
+                $resultData['infusionsoftTagId'] = $fieldValue;
                 continue;
             }
 
@@ -259,10 +258,10 @@ class Infusionsoft extends CRMOAuthConnector
         }
         // This code will flatten the field name key to a value
         $flattenedData = [];
-        foreach($complexData as $fieldGroupHandle => $complexDatum) {
+        foreach ($complexData as $fieldGroupHandle => $complexDatum) {
             $flattenedData[$fieldGroupHandle] = [];
-            foreach($complexDatum as $field => $item) {
-                $item['field'] = $field;
+            foreach ($complexDatum as $field => $item) {
+                $item['field']                      = $field;
                 $flattenedData[$fieldGroupHandle][] = $item;
             }
         }
@@ -298,7 +297,6 @@ class Infusionsoft extends CRMOAuthConnector
 
         $fieldList = self::getDefaultFields();
 
-        // I'm not 100%
         foreach ($data->custom_fields as $field) {
             $type = null;
             switch ($field->field_type) {
@@ -306,6 +304,7 @@ class Infusionsoft extends CRMOAuthConnector
                 case 'TextArea':
                 case 'Radio':
                 case 'Dropdown':
+                case 'YesNo':
                     $type = FieldObject::TYPE_STRING;
                     break;
 
@@ -314,6 +313,7 @@ class Infusionsoft extends CRMOAuthConnector
                     break;
 
                 case 'Number':
+                case 'WholeNumber':
                 case 'Currency':
                     $type = FieldObject::TYPE_NUMERIC;
                     break;
@@ -359,17 +359,17 @@ class Infusionsoft extends CRMOAuthConnector
         $client = new Client([
             'headers' => [
                 'Authorization' => 'Basic ' . base64_encode($this->getClientId() . ':' . $this->getClientSecret()),
-                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Content-Type'  => 'application/x-www-form-urlencoded',
             ],
         ]);
 
         $payload = [
             'grant_type'    => 'refresh_token',
-            'refresh_token' => $this->getSetting(self::SETTING_REFRESH_TOKEN)
+            'refresh_token' => $this->getSetting(self::SETTING_REFRESH_TOKEN),
         ];
 
         try {
-            $response = $client->post(
+            $response                                = $client->post(
                 $this->getAccessTokenUrl(),
                 ['form_params' => $payload]
             );
@@ -493,7 +493,7 @@ class Infusionsoft extends CRMOAuthConnector
             } catch (RequestException $e) {
                 if ($e->getCode() === 401) {
                     $accessToken = $this->refreshToken();
-                    $client = new Client([
+                    $client      = new Client([
                         'headers' => [
                             'Authorization' => 'Bearer ' . $accessToken,
                             'Content-Type'  => 'application/json',

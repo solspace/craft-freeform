@@ -52,7 +52,7 @@ class ProFormsService extends Component
     {
         static $styleLoaded;
 
-        if (null === $styleLoaded) {
+        if (null === $styleLoaded || $event->isNoScriptRenderEnabled()) {
             $freeformPath = \Yii::getAlias('@freeform');
             $form         = $event->getForm();
 

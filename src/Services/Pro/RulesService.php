@@ -22,7 +22,7 @@ class RulesService extends Component
         if (null !== $ruleProperties && $ruleProperties->hasActiveFieldRules($form->getCurrentPage()->getIndex())) {
             static $scriptLoaded;
 
-            if (null === $scriptLoaded) {
+            if (null === $scriptLoaded || $event->isNoScriptRenderEnabled()) {
                 $scriptJs = file_get_contents(\Yii::getAlias('@freeform') . '/Resources/js/other/pro/form/rules.js');
                 $event->appendJsToOutput($scriptJs);
             }

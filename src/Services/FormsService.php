@@ -15,6 +15,7 @@ use craft\db\Query;
 use craft\helpers\Template;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -443,21 +444,38 @@ class FormsService extends BaseService implements FormHandlerInterface
     {
         static $pluginLoaded;
 
-        if (null === $pluginLoaded) {
-            $pluginJs = file_get_contents(
-                \Yii::getAlias('@freeform') . '/Resources/js/other/front-end/plugin/freeform.js'
-            );
+        if (null === $pluginLoaded || $event->isNoScriptRenderEnabled()) {
+            $pluginJs = $this->getFreeformPluginScript();
 
             $event->appendJsToOutput($pluginJs);
             $pluginLoaded = true;
         }
 
-        $attachJs = file_get_contents(
+        $event->appendJsToOutput($this->getFreeformFormScript($event->getForm()));
+    }
+
+    /**
+     * @return string
+     */
+    public function getFreeformPluginScript(): string
+    {
+        return file_get_contents(
+            \Yii::getAlias('@freeform') . '/Resources/js/other/front-end/plugin/freeform.js'
+        );
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return string
+     */
+    public function getFreeformFormScript(Form $form): string
+    {
+        $script = file_get_contents(
             \Yii::getAlias('@freeform') . '/Resources/js/other/front-end/plugin/attach-to-form.js'
         );
 
-        $form = $event->getForm();
-        $event->appendJsToOutput($attachJs, ['formAnchor' => $form->getAnchor()]);
+        return StringHelper::replaceValues($script, ['formAnchor' => $form->getAnchor()]);
     }
 
     /**

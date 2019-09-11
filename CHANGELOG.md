@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.3.3 - 2019-09-11
+### Added
+- Added new `freeform.loadFreeformScripts()` function that allows you to manually insert Freeform's JS in the template.
+- Added the ability to check if the multi-page 'Previous' submit button was pressed in the Freeform JS plugin on submit callback.
+
+### Changed
+- Updated the Infusionsoft API integration to allow multiple tags to be assigned.
+- Updated the Infusionsoft API integration to work with 'Whole Number' and 'YesNo' field types.
+
+### Fixed
+- Fixed a bug where using the User Element Connections feature would not work correctly if using a multi-page form and the Password field was on a page other than the last.
+
 ## 3.3.2 - 2019-09-05
 ### Fixed
 - Fixed a bug where a migration was causing the Payments `intervalCount` database table column to not allow null, which would trigger errors when submitting the form.

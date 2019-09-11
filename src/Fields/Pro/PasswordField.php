@@ -14,8 +14,9 @@ namespace Solspace\Freeform\Fields\Pro;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
 
-class PasswordField extends TextField implements NoStorageInterface, ExtraFieldInterface
+class PasswordField extends TextField implements NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
 {
     /**
      * Return the field TYPE

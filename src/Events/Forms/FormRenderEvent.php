@@ -72,6 +72,19 @@ class FormRenderEvent extends ArrayableEvent
     }
 
     /**
+     * @return string
+     */
+    public function getOutput(): string
+    {
+        $output = '';
+        foreach ($this->renderObjects as $object) {
+            $output .= $object->getOutput();
+        }
+
+        return $output;
+    }
+
+    /**
      * @param string $value
      * @param array  $replacements
      *
@@ -121,5 +134,16 @@ class FormRenderEvent extends ArrayableEvent
         $this->renderObjects[] = new CssObject($value, $replacements);
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNoScriptRenderEnabled(): bool
+    {
+        $isFooter = Freeform::getInstance()->settings->isFooterScripts();
+        $isForm = Freeform::getInstance()->settings->isFormScripts();
+
+        return !$isFooter && !$isForm;
     }
 }

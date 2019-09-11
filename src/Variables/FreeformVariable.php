@@ -12,8 +12,10 @@
 namespace Solspace\Freeform\Variables;
 
 use craft\helpers\Template;
+use Solspace\ExpressForms\events\forms\FormRenderTagEvent;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Session\Honeypot;
@@ -26,6 +28,7 @@ use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Twig\Markup;
+use yii\base\Event;
 
 class FreeformVariable
 {
@@ -156,6 +159,19 @@ class FreeformVariable
     public function getSettingsNavigation(): array
     {
         return Freeform::getInstance()->settings->getSettingsNavigation();
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return Markup
+     */
+    public function loadFreeformScripts(Form $form): Markup
+    {
+        $event = new FormRenderEvent($form);
+        Event::trigger(FormsService::class, FormsService::EVENT_RENDER_CLOSING_TAG, $event);
+
+        return Template::raw($event->getOutput());
     }
 
     /**

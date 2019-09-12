@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.4.0 - 2019-09-12
+### Added
+- Added Signature fieldtype that allows users to handwrite signatures inside forms (Pro).
+
 ## 3.3.3 - 2019-09-11
 ### Added
 - Added new `freeform.loadFreeformScripts()` function that allows you to manually insert Freeform's JS in the template.

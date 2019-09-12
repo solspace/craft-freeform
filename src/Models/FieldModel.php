@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Fields\FileUploadField;
@@ -279,6 +280,12 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['value']       = $this->getMetaProperty('value', '');
             $returnArray['scales'] = $this->getMetaProperty('scales', []);
             $returnArray['legends'] = $this->getMetaProperty('legends', []);
+        }
+
+        if ($this->type === FieldInterface::TYPE_SIGNATURE) {
+            $returnArray['width'] = $this->getMetaProperty('width', SignatureField::DEFAULT_WIDTH);
+            $returnArray['height'] = $this->getMetaProperty('height', SignatureField::DEFAULT_HEIGHT);
+            $returnArray['showClearButton'] = $this->getMetaProperty('showClearButton', true);
         }
 
         if (\in_array(

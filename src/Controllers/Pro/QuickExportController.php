@@ -8,6 +8,7 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -44,7 +45,7 @@ class QuickExportController extends BaseController
 
             $forms[$form->id] = $form->getForm();
             foreach ($form->getForm()->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || !$field->getId()) {
+                if ($field instanceof NoStorageInterface || $field instanceof SignatureField || !$field->getId()) {
                     continue;
                 }
 
@@ -113,6 +114,7 @@ class QuickExportController extends BaseController
                 if (
                     $field instanceof NoStorageInterface ||
                     $field instanceof CreditCardDetailsField ||
+                    $field instanceof SignatureField ||
                     !$field->getId() ||
                     \in_array($field->getId(), $storedFieldIds, true)
                 ) {

@@ -67,4 +67,35 @@ class ProFormsService extends Component
             $styleLoaded = true;
         }
     }
+
+    /**
+     * @param FormRenderEvent $event
+     */
+    public function addSignatureJavascript(FormRenderEvent $event)
+    {
+        static $scriptLoaded;
+
+        $freeformPath = \Yii::getAlias('@freeform');
+        $form         = $event->getForm();
+
+        if (null === $scriptLoaded || $event->isNoScriptRenderEnabled()) {
+            if ($form->getLayout()->hasSignatureFields()) {
+                $signatureJs = file_get_contents(
+                    $freeformPath . '/Resources/js/lib/signature-pad/signature-pad.2.3.2.js'
+                );
+
+                $event->appendJsToOutput($signatureJs);
+            }
+
+            $scriptLoaded = true;
+        }
+
+        if ($form->getLayout()->hasSignatureFields()) {
+            $signatureJs = file_get_contents(
+                $freeformPath . '/Resources/js/other/front-end/fields/signature.js'
+            );
+
+            $event->appendJsToOutput($signatureJs, ['formAnchor' => $form->getAnchor()]);
+        }
+    }
 }

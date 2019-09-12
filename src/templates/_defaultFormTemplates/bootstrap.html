@@ -190,6 +190,10 @@
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
 
+                {% elseif field.type == "signature" %}
+
+                    {{ field.render({ class: "btn btn-light" }) }}
+
                 {% elseif field.type == "submit" %}
 
                     {{ field.render({ class: "btn btn-primary" }) }}

@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use Solspace\Freeform\Fields\CheckboxGroupField;
 use Solspace\Freeform\Fields\MailingListField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
@@ -81,6 +82,9 @@ class Layout implements \JsonSerializable, \Iterator
     /** @var OpinionScaleField[] */
     private $opinionScaleFields;
 
+    /** @var SignatureField[] */
+    private $signatureFields;
+
     /** @var Properties */
     private $properties;
 
@@ -143,6 +147,14 @@ class Layout implements \JsonSerializable, \Iterator
     public function hasOpinionScaleFields(): bool
     {
         return (bool) \count($this->opinionScaleFields);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasSignatureFields(): bool
+    {
+        return (bool) \count($this->signatureFields);
     }
 
     /**
@@ -373,6 +385,7 @@ class Layout implements \JsonSerializable, \Iterator
         $phoneFields        = [];
         $recaptchaFields    = [];
         $opinionScaleFields = [];
+        $signatureFields    = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
             if (!\is_array($rows)) {
@@ -452,11 +465,15 @@ class Layout implements \JsonSerializable, \Iterator
                     }
 
                     if ($field instanceof RecaptchaInterface) {
-                        $recaptchaFields[] = true;
+                        $recaptchaFields[] = $field;
                     }
 
                     if ($field instanceof OpinionScaleField) {
-                        $opinionScaleFields[] = true;
+                        $opinionScaleFields[] = $field;
+                    }
+
+                    if ($field instanceof SignatureField) {
+                        $signatureFields[] = $field;
                     }
 
                     $pageFields[] = $field;
@@ -492,6 +509,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->phoneFields        = $phoneFields;
         $this->recaptchaFields    = $recaptchaFields;
         $this->opinionScaleFields = $opinionScaleFields;
+        $this->signatureFields    = $signatureFields;
     }
 
     /**

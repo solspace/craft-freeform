@@ -35,7 +35,6 @@ use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
 use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
 use Solspace\Freeform\Controllers\Pro\Payments\PaymentWebhooksController;
-use Solspace\Freeform\Controllers\Pro\Payments\StripeController;
 use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
 use Solspace\Freeform\Controllers\Pro\QuickExportController;
 use Solspace\Freeform\Controllers\Pro\WebhooksController;
@@ -863,6 +862,12 @@ class Freeform extends Plugin
                 FormsService::class,
                 FormsService::EVENT_RENDER_CLOSING_TAG,
                 [$this->proForms, 'addOpinionScaleStyles']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->proForms, 'addSignatureJavascript']
             );
 
             Event::on(

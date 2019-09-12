@@ -53,7 +53,7 @@
             <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
 
                 {{ field.render({
-                    class: field.type != "submit" ? "freeform-input" : "",
+                    class: field.type not in ["submit", "signature"] ? "freeform-input" : "",
                     labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
                     errorClass: "freeform-errors",
                 }) }}

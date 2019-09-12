@@ -184,6 +184,10 @@
                     {{ field.renderInstructions }}
                     {{ field.renderErrors }}
 
+                {% elseif field.type == "signature" %}
+
+                    {{ field.render({ class: "button" }) }}
+
                 {% elseif field.type == "submit" %}
 
                     {{ field.render({ class: "button" }) }}

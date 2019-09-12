@@ -234,6 +234,15 @@ class FieldProperties extends AbstractProperties
     /** @var array */
     protected $instructionAttributes;
 
+    /** @var int */
+    protected $width;
+
+    /** @var int */
+    protected $height;
+
+    /** @var bool */
+    protected $showClearButton;
+
     /**
      * @return string|null
      */
@@ -810,6 +819,30 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return int
+     */
+    public function getWidth(): int
+    {
+        return $this->width;
+    }
+
+    /**
+     * @return int
+     */
+    public function getHeight(): int
+    {
+        return $this->height;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowClearButton(): bool
+    {
+        return $this->showClearButton;
+    }
+
+    /**
      * @return array
      */
     public function getInputAttributes(): array
@@ -928,6 +961,9 @@ class FieldProperties extends AbstractProperties
             'tagAttributes'         => self::TYPE_ARRAY,
             'scales'                => self::TYPE_ARRAY,
             'legends'               => self::TYPE_ARRAY,
+            'width'                 => self::TYPE_INTEGER,
+            'height'                => self::TYPE_INTEGER,
+            'showClearButton'       => self::TYPE_BOOLEAN,
         ];
     }
 }

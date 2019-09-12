@@ -52,7 +52,15 @@
                                 </a>
                             </td>
                             {% for field in submission %}
-                                <td>{{ submission[field.handle] }}</td>
+                                {% if field.type == "signature" %}
+                                    <td>
+                                        {% if submission[field.handle].value %}
+                                            <img src="{{ submission[field.handle].value }}" alt="Signature" />
+                                        {% endif %}
+                                    </td>
+                                {% else %}
+                                    <td>{{ submission[field.handle] }}</td>
+                                {% endif %}
                             {% endfor %}
                             {% if craft.freeform.pro %}
                                 {% if currentUser and currentUser.admin %}

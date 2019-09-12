@@ -42,6 +42,7 @@ interface FieldInterface
     const TYPE_CONFIRMATION  = 'confirmation';
     const TYPE_RECAPTCHA     = 'recaptcha';
     const TYPE_OPINION_SCALE = 'opinion_scale';
+    const TYPE_SIGNATURE     = 'signature';
 
     const TYPE_CREDIT_CARD_DETAILS = 'cc_details';
     const TYPE_CREDIT_CARD_NUMBER  = 'cc_number';

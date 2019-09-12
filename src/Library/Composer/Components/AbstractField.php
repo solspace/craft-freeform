@@ -148,6 +148,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             self::TYPE_REGEX              => 'Regex',
             self::TYPE_CONFIRMATION       => 'Confirmation',
             self::TYPE_OPINION_SCALE      => 'Opinion Scale',
+            self::TYPE_SIGNATURE          => 'Signature',
         ];
     }
 

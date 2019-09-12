@@ -24,6 +24,7 @@
 {% block mainFormAttributes %}
     {{ parent() }}
     enctype="multipart/form-data"
+    data-id="{{ form.anchor }}"
 {% endblock %}
 
 {% block body %}
@@ -274,6 +275,32 @@
                                                 <input type="file" name="{{ field.handle }}[]" multiple />
                                             </div>
                                         </div>
+
+                                    {% elseif field.type == "signature" %}
+
+                                        <div class="field">
+                                            <div class="heading">
+                                                <label>{{ field.label }}</label>
+                                            </div>
+                                            <div class="signature-wrapper">
+                                                <input type="hidden" name="{{ field.handle }}" value="{{ submission[field.handle] }}" />
+                                                <canvas data-image="{{ submission[field.handle] }}"
+                                                        width="{{ field.width }}"
+                                                        height="{{ field.height }}"
+                                                        style="border: 1px solid black; padding: 1px;"
+                                                >Your browser does not support canvas</canvas>
+
+                                                <div class="btngroup small download-signature-links">
+                                                    <a href="javascript:;"
+                                                       data-type="png"
+                                                       class="btn small">PNG</a>
+                                                    <a href="javascript:;"
+                                                       data-type="jpg"
+                                                       class="btn small">JPG</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     {% endif %}
 
                                 {% else %}
@@ -305,6 +332,8 @@
             </div>
         {% endfor %}
     </div>
+
+    {{ craft.freeform.loadFreeformScripts(form) }}
 
     <script>
         function removeAsset(element) {

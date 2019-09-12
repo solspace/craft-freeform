@@ -38,6 +38,7 @@ use Solspace\Freeform\Fields\Pro\PasswordField;
 use Solspace\Freeform\Fields\Pro\PhoneField;
 use Solspace\Freeform\Fields\Pro\RatingField;
 use Solspace\Freeform\Fields\Pro\RegexField;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Fields\Pro\WebsiteField;
 use Solspace\Freeform\Fields\RadioGroupField;
 use Solspace\Freeform\Fields\RecaptchaField;
@@ -180,6 +181,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
             RegexField::class,
             WebsiteField::class,
             OpinionScaleField::class,
+            SignatureField::class,
         ];
 
         $fetchTypesEvent = new FetchFieldTypes($fieldTypes);

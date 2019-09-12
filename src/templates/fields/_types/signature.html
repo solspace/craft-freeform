@@ -1,0 +1,21 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.lightSwitchField({
+    label: "Show 'Clear' button?"|t('freeform'),
+    name: 'types[signature][showClearButton]',
+    on: field.getMetaProperty('showClearButton'),
+}) }}
+
+{{ forms.textField({
+    label: "Width"|t('freeform'),
+    instructions: "Canvas width in pixels."|t('freeform'),
+    name: "types[signature][width]",
+    value: field.getMetaProperty('width'),
+}) }}
+
+{{ forms.textField({
+    label: "Height"|t('freeform'),
+    instructions: "Canvas height in pixels."|t('freeform'),
+    name: "types[signature][height]",
+    value: field.getMetaProperty('height'),
+}) }}

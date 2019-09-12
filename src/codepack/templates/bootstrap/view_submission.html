@@ -76,6 +76,10 @@
                                         {% endfor %}
                                     {% endif %}
 
+                                {% elseif field.type == "signature" %}
+                                    {% if submission[field.handle] %}
+                                        <img src="{{ submission[field.handle] }}" alt="">
+                                    {% endif %}
                                 {% else %}
                                     {{ submission[field.handle] }}
                                 {% endif %}

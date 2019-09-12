@@ -87,6 +87,8 @@
                 {% set class = "form-control" ~ (field.hasErrors ? " is-invalid") %}
             {% if field.type == "file" %}
                 {% set class = "form-control-file" ~ (field.hasErrors ? " is-invalid") %}
+            {% elseif field.type == "signature" %}
+                {% set class = "btn btn-light" %}
             {% elseif isCheckbox %}
                 {% set class = "checkbox" %}
             {% endif %}

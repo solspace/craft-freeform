@@ -6,6 +6,7 @@ use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
@@ -100,7 +101,7 @@ EOT;
             $rowData[] = $submission->dateCreated->format('Y-m-d H:i:s');
 
             foreach ($form->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface) {
+                if ($field instanceof NoStorageInterface || $field instanceof SignatureField) {
                     continue;
                 }
 

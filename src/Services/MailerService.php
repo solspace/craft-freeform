@@ -16,6 +16,7 @@ use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
@@ -231,6 +232,7 @@ class MailerService extends BaseService implements MailHandlerInterface
             if ($field instanceof NoStorageInterface
                 || $field instanceof FileUploadInterface
                 || $field instanceof PaymentInterface
+                || $field instanceof SignatureField
             ) {
                 continue;
             }

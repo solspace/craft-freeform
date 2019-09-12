@@ -6,6 +6,7 @@ use craft\base\Model;
 use craft\db\Query;
 use craft\db\Table;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -140,7 +141,7 @@ class ExportProfileModel extends Model
                 if (is_numeric($fieldId)) {
                     try {
                         $field = $form->getLayout()->getFieldById($fieldId);
-                        if ($field instanceof CreditCardDetailsField) {
+                        if ($field instanceof CreditCardDetailsField || $field instanceof SignatureField) {
                             continue;
                         }
 
@@ -185,6 +186,7 @@ class ExportProfileModel extends Model
             if (
                 $field instanceof NoStorageInterface ||
                 $field instanceof CreditCardDetailsField ||
+                $field instanceof SignatureField ||
                 !$field->getId() ||
                 \in_array($field->getId(), $storedFieldIds, true)
             ) {

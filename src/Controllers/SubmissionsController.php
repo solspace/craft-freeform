@@ -17,6 +17,7 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -131,7 +132,7 @@ class SubmissionsController extends BaseController
             $rowData[] = $date->toDateTimeString();
 
             foreach ($form->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface) {
+                if ($field instanceof NoStorageInterface || $field instanceof SignatureField) {
                     continue;
                 }
 
@@ -240,6 +241,7 @@ class SubmissionsController extends BaseController
         }
 
         $variables      = [
+            'form'               => $submission->getForm(),
             'submission'         => $submission,
             'layout'             => $layout,
             'title'              => $title,

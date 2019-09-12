@@ -20,6 +20,7 @@ use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Fields\Pro\RatingField;
+use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -311,6 +312,23 @@ class Submission extends Element
 
         if (\is_array($value)) {
             return Html::decode(implode(', ', $value));
+        }
+
+        if ($value instanceof SignatureField) {
+            $field = $value;
+            $value = $value->getValue();
+
+            if (!$value) {
+                return '';
+            }
+
+            $width = $field->getWidth();
+            $height = $field->getHeight();
+
+            $ratio = $width / $height;
+            $newWidth = 50 * $ratio;
+
+            return "<img height='50' width='{$newWidth}' src=\"{$value}\" />";
         }
 
         if ($value instanceof AbstractField) {

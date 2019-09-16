@@ -19,3 +19,27 @@
     name: "types[signature][height]",
     value: field.getMetaProperty('height'),
 }) }}
+
+{{ forms.colorField({
+    label: "Border Color"|t('freeform'),
+    name: "types[signature][borderColor]",
+    value: field.getMetaProperty('borderColor'),
+}) }}
+
+{{ forms.colorField({
+    label: "Background Color"|t('freeform'),
+    name: "types[signature][backgroundColor]",
+    value: field.getMetaProperty('backgroundColor'),
+}) }}
+
+{{ forms.colorField({
+    label: "Pen Color"|t('freeform'),
+    name: "types[signature][penColor]",
+    value: field.getMetaProperty('penColor'),
+}) }}
+
+{{ forms.textField({
+    label: "Pen Dot Size"|t('freeform'),
+    name: "types[signature][penDotSize]",
+    value: field.getMetaProperty('penDotSize'),
+}) }}

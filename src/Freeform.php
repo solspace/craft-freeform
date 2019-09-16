@@ -590,7 +590,7 @@ class Freeform extends Plugin
                     ->name('*.php')
                     ->files()
                     ->ignoreDotFiles(true)
-                    ->depth(1)
+                    ->depth(0)
                     ->in(__DIR__ . '/Webhooks/Integrations/');
 
                 foreach ($files as $file) {

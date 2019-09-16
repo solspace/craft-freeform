@@ -12,10 +12,10 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
@@ -277,15 +277,19 @@ class FieldModel extends Model implements \JsonSerializable
         }
 
         if ($this->type === FieldInterface::TYPE_OPINION_SCALE) {
-            $returnArray['value']       = $this->getMetaProperty('value', '');
-            $returnArray['scales'] = $this->getMetaProperty('scales', []);
+            $returnArray['value']   = $this->getMetaProperty('value', '');
+            $returnArray['scales']  = $this->getMetaProperty('scales', []);
             $returnArray['legends'] = $this->getMetaProperty('legends', []);
         }
 
         if ($this->type === FieldInterface::TYPE_SIGNATURE) {
-            $returnArray['width'] = $this->getMetaProperty('width', SignatureField::DEFAULT_WIDTH);
-            $returnArray['height'] = $this->getMetaProperty('height', SignatureField::DEFAULT_HEIGHT);
+            $returnArray['width']           = $this->getMetaProperty('width', SignatureField::DEFAULT_WIDTH);
+            $returnArray['height']          = $this->getMetaProperty('height', SignatureField::DEFAULT_HEIGHT);
             $returnArray['showClearButton'] = $this->getMetaProperty('showClearButton', true);
+            $returnArray['borderColor']     = $this->getMetaProperty('borderColor', SignatureField::DEFAULT_BORDER_COLOR);
+            $returnArray['backgroundColor'] = $this->getMetaProperty('backgroundColor', SignatureField::DEFAULT_BACKGROUND_COLOR);
+            $returnArray['penColor']        = $this->getMetaProperty('penColor', SignatureField::DEFAULT_PEN_COLOR);
+            $returnArray['penDotSize']      = $this->getMetaProperty('penDotSize', SignatureField::DEFAULT_PEN_DOT_SIZE);
         }
 
         if (\in_array(

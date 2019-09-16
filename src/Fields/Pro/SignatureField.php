@@ -12,8 +12,12 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
 {
     use SingleValueTrait;
 
-    const DEFAULT_WIDTH  = 400;
-    const DEFAULT_HEIGHT = 100;
+    const DEFAULT_WIDTH            = 400;
+    const DEFAULT_HEIGHT           = 100;
+    const DEFAULT_BORDER_COLOR     = '#999999';
+    const DEFAULT_BACKGROUND_COLOR = 'rgba(0,0,0,0)';
+    const DEFAULT_PEN_COLOR        = '#000000';
+    const DEFAULT_PEN_DOT_SIZE     = 2.5;
 
     /** @var int */
     protected $width;
@@ -23,6 +27,18 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
 
     /** @var bool */
     protected $showClearButton = true;
+
+    /** @var string */
+    protected $borderColor;
+
+    /** @var string */
+    protected $backgroundColor;
+
+    /** @var string */
+    protected $penColor;
+
+    /** @var float */
+    protected $penDotSize;
 
     /**
      * Return the field TYPE
@@ -55,7 +71,39 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
      */
     public function isShowClearButton(): bool
     {
-        return $this->showClearButton;
+        return (bool) $this->showClearButton;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBorderColor(): string
+    {
+        return $this->borderColor ?? self::DEFAULT_BORDER_COLOR;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBackgroundColor(): string
+    {
+        return $this->backgroundColor ?? self::DEFAULT_BACKGROUND_COLOR;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPenColor(): string
+    {
+        return $this->penColor ?? self::DEFAULT_PEN_COLOR;
+    }
+
+    /**
+     * @return float
+     */
+    public function getPenDotSize(): float
+    {
+        return (float) ($this->penDotSize ?? self::DEFAULT_PEN_DOT_SIZE);
     }
 
     /**
@@ -68,6 +116,19 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
         $attributes = $this->getCustomAttributes();
         $this->addInputAttribute('class', $attributes->getClass() . ' ' . $this->getInputClassString());
 
+        $hasMarginStyle = false;
+        foreach ($this->getInputAttributes() as $attribute) {
+            if (strtolower($attribute['attribute']) === 'style') {
+                if (strpos($attribute['value'], 'margin') !== false) {
+                    $hasMarginStyle = true;
+                }
+            }
+        }
+
+        if (!$hasMarginStyle) {
+            $this->addInputAttribute('style', 'margin-top: 10px;');
+        }
+
         $output = '<div class="freeform-signature-wrapper" style="position: relative;">';
         $output .= '<input'
             . $this->getAttributeString('type', 'hidden')
@@ -77,12 +138,15 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
             . ' />';
 
         $output .= '<canvas'
-            . ' style="border: 1px solid black; padding: 1px; display: block;"'
+            . ' style="padding: 1px; display: block;"'
             . $this->getAttributeString('width', $this->getWidth())
             . $this->getAttributeString('height', $this->getHeight())
             . $this->getAttributeString('id', $this->getIdAttribute())
+            . $this->getAttributeString('data-pen-color', $this->getPenColor())
+            . $this->getAttributeString('data-dot-size', $this->getPenDotSize())
+            . $this->getAttributeString('data-border-color', $this->getBorderColor())
+            . $this->getAttributeString('data-background-color', $this->getBackgroundColor())
             . ' data-signature-field'
-            . ' data-signature-value="' . $this->getValue() . '"'
             . '>Your browser does not support the Signature field</canvas>';
 
         if ($this->showClearButton) {

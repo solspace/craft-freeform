@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.4.1 - 2019-09-16
+### Changed
+- Updated the Signature fieldtype to also include ability to style the signature pad/square and pen size, color, etc, inside Composer.
+
+### Fixed
+- Fixed a bug where the Webhooks create/edit page was not showing options for the Type setting.
+
 ## 3.4.0 - 2019-09-12
 ### Added
 - Added Signature fieldtype that allows users to handwrite signatures inside forms (Pro).

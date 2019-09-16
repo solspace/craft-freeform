@@ -243,6 +243,18 @@ class FieldProperties extends AbstractProperties
     /** @var bool */
     protected $showClearButton;
 
+    /** @var string */
+    protected $borderColor;
+
+    /** @var string */
+    protected $backgroundColor;
+
+    /** @var string */
+    protected $penColor;
+
+    /** @var float */
+    protected $penDotSize;
+
     /**
      * @return string|null
      */
@@ -819,27 +831,59 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getWidth(): int
+    public function getWidth()
     {
         return $this->width;
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getHeight(): int
+    public function getHeight()
     {
         return $this->height;
     }
 
     /**
-     * @return bool
+     * @return bool|null
      */
-    public function isShowClearButton(): bool
+    public function isShowClearButton()
     {
         return $this->showClearButton;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBorderColor()
+    {
+        return $this->borderColor;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getBackgroundColor()
+    {
+        return $this->backgroundColor;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPenColor()
+    {
+        return $this->penColor;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getPenDotSize()
+    {
+        return $this->penDotSize;
     }
 
     /**
@@ -964,6 +1008,10 @@ class FieldProperties extends AbstractProperties
             'width'                 => self::TYPE_INTEGER,
             'height'                => self::TYPE_INTEGER,
             'showClearButton'       => self::TYPE_BOOLEAN,
+            'borderColor'           => self::TYPE_STRING,
+            'backgroundColor'       => self::TYPE_STRING,
+            'penColor'              => self::TYPE_STRING,
+            'penDotSize'            => self::TYPE_DOUBLE,
         ];
     }
 }

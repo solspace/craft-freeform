@@ -10,8 +10,17 @@
 }) }}
 
 {{ forms.textField({
+    label: "Upload Location Subfolder"|t('freeform'),
+    instructions: "The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well."|t('freeform'),
+    placeholder: "path/to/subfolder",
+    name: "types[file][defaultUploadLocation]",
+    value: field.metaProperty('defaultUploadLocation', ''),
+    errors: field.getErrors("defaultUploadLocation"),
+}) }}
+
+{{ forms.textField({
     label: "File Count"|t('freeform'),
-    instructions: "Specify the maximum uploadable file count"|t('freeform'),
+    instructions: "Specify the maximum uploadable file count."|t('freeform'),
     name: "types[file][fileCount]",
     value: field.metaProperty('fileCount', 1),
     errors: field.getErrors("fileCount"),

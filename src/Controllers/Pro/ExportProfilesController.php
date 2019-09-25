@@ -7,6 +7,8 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Export\AbstractExport;
+use Solspace\Freeform\Library\Export\ExportCsv;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use yii\web\HttpException;
@@ -160,36 +162,10 @@ class ExportProfilesController extends BaseController
         $form = $profile->getFormModel()->getForm();
         $data = $profile->getSubmissionData();
 
-        switch ($type) {
-            case 'json':
-                $this->getExportProfileService()->exportJson($form, $data);
-                break;
+        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
+        $exporter = AbstractExport::create($type, $form, $data, $removeNewlines);
 
-            case 'xml':
-                $this->getExportProfileService()->exportXml($form, $data);
-                break;
-
-            case 'text':
-                $this->getExportProfileService()->exportText($form, $data);
-                break;
-
-            case 'excel':
-            case 'csv':
-            default:
-                $labels = [];
-                foreach ($profile->getFieldSettings() as $id => $item) {
-                    if (!$item['checked']) {
-                        continue;
-                    }
-                    $labels[$id] = $item['label'];
-                }
-
-                if ($type === 'excel') {
-                    $this->getExportProfileService()->exportExcel($form, $labels, $data);
-                } else {
-                    $this->getExportProfileService()->exportCsv($form, $labels, $data);
-                }
-        }
+        $this->getExportProfileService()->export($exporter, $form);
     }
 
     /**

@@ -194,13 +194,14 @@ class FieldModel extends Model implements \JsonSerializable
         }
 
         if ($this->type === FieldInterface::TYPE_FILE) {
-            $returnArray['assetSourceId'] = (int) $this->getMetaProperty('assetSourceId', 0);
-            $returnArray['maxFileSizeKB'] = (int) $this->getMetaProperty(
+            $returnArray['assetSourceId']         = (int) $this->getMetaProperty('assetSourceId', 0);
+            $returnArray['maxFileSizeKB']         = (int) $this->getMetaProperty(
                 'maxFileSizeKB',
                 FileUploadField::DEFAULT_MAX_FILESIZE_KB
             );
-            $returnArray['fileCount']     = (int) $this->getMetaProperty('fileCount', FileUploadField::DEFAULT_FILE_COUNT);
-            $returnArray['fileKinds']     = $this->getMetaProperty('fileKinds', ['image', 'pdf']);
+            $returnArray['defaultUploadLocation'] = $this->getMetaProperty('defaultUploadLocation', '');
+            $returnArray['fileCount']             = (int) $this->getMetaProperty('fileCount', FileUploadField::DEFAULT_FILE_COUNT);
+            $returnArray['fileKinds']             = $this->getMetaProperty('fileKinds', ['image', 'pdf']);
         }
 
         if (\in_array($this->type, [FieldInterface::TYPE_RADIO_GROUP, FieldInterface::TYPE_SELECT], true)) {
@@ -290,6 +291,12 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['backgroundColor'] = $this->getMetaProperty('backgroundColor', SignatureField::DEFAULT_BACKGROUND_COLOR);
             $returnArray['penColor']        = $this->getMetaProperty('penColor', SignatureField::DEFAULT_PEN_COLOR);
             $returnArray['penDotSize']      = $this->getMetaProperty('penDotSize', SignatureField::DEFAULT_PEN_DOT_SIZE);
+        }
+
+        if ($this->type === FieldInterface::TYPE_TABLE) {
+            $returnArray['tableLayout'] = $this->getMetaProperty('tableLayout', []);
+            $returnArray['maxRows']     = $this->getMetaProperty('maxRows', 0);
+            $returnArray['useScript']   = $this->getMetaProperty('useScript', true);
         }
 
         if (\in_array(

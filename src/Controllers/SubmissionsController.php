@@ -11,21 +11,15 @@
 
 namespace Solspace\Freeform\Controllers;
 
-use Carbon\Carbon;
 use craft\records\Asset;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
-use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\Pro\SignatureField;
-use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Export\ExportCsv;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
@@ -94,7 +88,6 @@ class SubmissionsController extends BaseController
     public function actionExport()
     {
         $this->requirePostRequest();
-        $isRemoveNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
 
         $submissionIds = \Craft::$app->request->post('submissionIds');
         $submissionIds = explode(',', $submissionIds);
@@ -121,81 +114,12 @@ class SubmissionsController extends BaseController
             throw new FreeformException(Freeform::t('No submissions found'));
         }
 
-        $csvData = [];
-        $labels  = ['ID', 'Submission Date'];
-        foreach ($submissions as $submission) {
-            $date = new Carbon($submission['dateCreated'], 'UTC');
-            $date->setTimezone(date_default_timezone_get());
-
-            $rowData   = [];
-            $rowData[] = $submission['id'];
-            $rowData[] = $date->toDateTimeString();
-
-            foreach ($form->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || $field instanceof SignatureField) {
-                    continue;
-                }
-
-                if (empty($csvData)) {
-                    $labels[] = $field->getLabel();
-                }
-
-                $columnName = Submission::getFieldColumnName($field->getId());
-
-                $value = $submission[$columnName];
-
-                if ($field instanceof FileUploadField) {
-                    $value = (array) json_decode($value ?: '[]', true);
-                    $combo = [];
-
-                    foreach ($value as $assetId) {
-                        $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-                        if ($asset) {
-                            $assetValue = $asset->filename;
-                            if ($asset->getUrl()) {
-                                $assetValue = $asset->getUrl();
-                            }
-
-                            $combo[] = $assetValue;
-                        }
-                    }
-
-                    $rowData[] = implode(',', $combo);
-
-                    continue;
-                }
-
-                if ($field instanceof MultipleValueInterface) {
-                    $value = json_decode($value);
-                    if (is_array($value)) {
-                        $value = implode(', ', $value);
-                    }
-                }
-
-                if ($isRemoveNewlines && $field instanceof TextareaField) {
-                    $value = trim(preg_replace('/\s+/', ' ', $value));
-                }
-
-                $rowData[] = $value;
-            }
-
-            $csvData[] = $rowData;
-        }
-        unset($submissions);
-
-        array_unshift($csvData, $labels);
+        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
+        $exporter       = new ExportCsv($form->getForm(), $submissions, $removeNewlines);
 
         $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
 
-        $export = new ExportDataCSV('browser', $fileName);
-        $export->initialize();
-
-        foreach ($csvData as $csv) {
-            $export->addRow($csv);
-        }
-
-        $export->finalize();
-        exit();
+        $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }
 
     /**
@@ -383,7 +307,8 @@ class SubmissionsController extends BaseController
         $uploadFields = $form->getLayout()->getFileUploadFields();
 
         foreach ($uploadFields as $field) {
-            $response = Freeform::getInstance()->files->uploadFile($field);
+
+            $response = Freeform::getInstance()->files->uploadFile($field, $form);
             if ($response) {
                 if ($response->getAssetIds()) {
                     $handle = $field->getHandle();

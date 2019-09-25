@@ -193,6 +193,23 @@
                 {% elseif field.type == "signature" %}
 
                     {{ field.render({ class: "btn btn-light" }) }}
+                
+                {% elseif field.type == "table" %}
+
+                    {{ field.render({
+                        class: "table",
+                        labelClass: (field.required ? " required" : ""),
+                        instructionsClass: "help-block",
+                        errorClass: "help-block",
+                        instructionsBelowField: true,
+                        addButtonLabel: "Add +",
+                        addButtonClass: "btn btn-sm btn-primary",
+                        removeButtonLabel: "x",
+                        removeButtonClass: "btn btn-sm btn-danger",
+                        tableTextInputClass: "form-control",
+                        tableSelectInputClass: "form-control",
+                        tableCheckboxInputClass: "form-check-input"
+                    }) }}
 
                 {% elseif field.type == "submit" %}
 

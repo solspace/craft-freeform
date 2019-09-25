@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 3.5.0 - 2019-09-25
+### Added
+- Added Table field type, which allows users to enter repeating data rows into predefined columns (Pro).
+- Added Invisible field type, which allows you to collect hidden data in form submissions without a hidden field being present in the template source code (Pro).
+- Added 'Custom Honeypot Field Name' and 'Custom Honeypot Failed Error Message' settings for Freeform's built-in spam protection.
+
+### Changed
+- Updated File Upload fields to now allow custom subfolder paths. You can also dynamically build subfolder paths with `form.handle`, etc.
+- Updated the Users Element Connection to allow assigning users to multiple user groups.
+- Updated Freeform to show an error message if the old Freeform Pro 2.x plugin (which should be uninstalled) is still installed after an upgrade from Freeform 2.x to 3.x. Please follow the [Upgrading from Freeform 2.x guide](https://docs.solspace.com/craft/freeform/v3/setup/updating-freeform-2.html) for proper upgrading from 2.x to 3.x.
+
+### Fixed
+- Fixed a bug where submissions that are flagged as spam would not keep the attached file(s) submitted with it.
+- Fixed an incompatiblity issue with the Scout plugin and potentially other plugins.
+
 ## 3.4.1 - 2019-09-16
 ### Changed
 - Updated the Signature fieldtype to also include ability to style the signature pad/square and pen size, color, etc, inside Composer.
@@ -191,7 +206,7 @@
 
 ## 3.0.0 - 2019-06-11
 
-> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server.
+> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. [Please follow the upgrading guide available here](https://docs.solspace.com/craft/freeform/v3/setup/updating-freeform-2.html)!
 
 ### Added
 - Added support for editing submissions (Pro).

@@ -110,4 +110,7 @@ return [
     // Payments
     'freeform/payment-webhooks/stripe'                               => 'freeform/payment-webhooks/stripe',
     'freeform/payment-subscription/<id:\d+>/cancel/<validationKey>'  => 'freeform/subscriptions/cancel',
+    // Banners
+    'freeform/banners/dismiss/demo'                                  => 'freeform/banners/dismiss-demo',
+    'freeform/banners/dismiss/old-freeform'                          => 'freeform/banners/dismiss-old-freeform',
 ];

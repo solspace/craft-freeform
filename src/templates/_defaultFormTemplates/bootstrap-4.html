@@ -63,6 +63,8 @@
                 {% set class = "form-control-file" ~ (field.hasErrors ? " is-invalid") %}
             {% elseif field.type == "signature" %}
                 {% set class = "btn btn-light" %}
+            {% elseif field.type == "table" %}
+                {% set class = "table" %}
             {% elseif isCheckbox %}
                 {% set class = "checkbox" %}
             {% endif %}
@@ -179,6 +181,23 @@
                 {% elseif field.type == "submit" %}
 
                     {{ field.render({ class: "btn btn-primary" }) }}
+
+                {% elseif field.type == "table" %}
+
+                    {{ field.render({
+                        class: class,
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        instructionsBelowField: true,
+                        errorClass: errorClass,
+                        addButtonLabel: "Add +",
+                        addButtonClass: "btn btn-sm btn-primary",
+                        removeButtonLabel: "x",
+                        removeButtonClass: "btn btn-sm btn-danger",
+                        tableTextInputClass: "form-control",
+                        tableSelectInputClass: "form-control",
+                        tableCheckboxInputClass: "form-check-input"
+                    }) }}
 
                 {% elseif field.type == "cc_details" %}
 

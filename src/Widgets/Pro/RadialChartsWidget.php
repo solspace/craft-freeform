@@ -88,7 +88,7 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
         if (!Freeform::getInstance()->isPro()) {
             return Freeform::t(
                 "Requires <a href='{link}'>Pro</a> edition",
-                ['link' => UrlHelper::cpUrl('freeform/resources/explore')]
+                ['link' => UrlHelper::cpUrl('plugin-store/freeform')]
             );
         }
 

@@ -543,21 +543,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             }
         }
 
-
-        if ($isFormValid && $this->isMarkedAsSpam()) {
-            $simulateSuccess = $this->formHandler->isSpamBehaviourSimulateSuccess();
-
-            if ($simulateSuccess && $this->isLastPage()) {
-                $this->formHandler->incrementSpamBlockCount($this);
-            } else if (!$simulateSuccess) {
-                $this->formHandler->incrementSpamBlockCount($this);
-            }
-
-            $this->valid = $simulateSuccess;
-
-            return $this->valid;
-        }
-
         if ($this->errors) {
             $isFormValid = false;
         }
@@ -577,6 +562,20 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                     }
                 }
             }
+        }
+
+        if ($isFormValid && $this->isMarkedAsSpam()) {
+            $simulateSuccess = $this->formHandler->isSpamBehaviourSimulateSuccess();
+
+            if ($simulateSuccess && $this->isLastPage()) {
+                $this->formHandler->incrementSpamBlockCount($this);
+            } else if (!$simulateSuccess) {
+                $this->formHandler->incrementSpamBlockCount($this);
+            }
+
+            $this->valid = $simulateSuccess;
+
+            return $this->valid;
         }
 
         $this->valid = $isFormValid;
@@ -1091,6 +1090,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                     FormValueContext::DATA_SUBMISSION_TOKEN     => $this->customAttributes->getSubmissionToken(),
                     FormValueContext::DATA_SUPPRESS             => $this->customAttributes->getSuppress(),
                     FormValueContext::DATA_RELATIONS            => $this->customAttributes->getRelations(),
+                    FormValueContext::DATA_PERSISTENT_VALUES    => $this->customAttributes->getOverrideValues(),
                 ]
             )
             ->saveState();

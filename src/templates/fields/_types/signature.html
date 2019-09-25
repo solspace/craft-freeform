@@ -10,36 +10,36 @@
     label: "Width"|t('freeform'),
     instructions: "Canvas width in pixels."|t('freeform'),
     name: "types[signature][width]",
-    value: field.getMetaProperty('width'),
+    value: field.getMetaProperty('width', '400'),
 }) }}
 
 {{ forms.textField({
     label: "Height"|t('freeform'),
     instructions: "Canvas height in pixels."|t('freeform'),
     name: "types[signature][height]",
-    value: field.getMetaProperty('height'),
+    value: field.getMetaProperty('height', '100'),
 }) }}
 
 {{ forms.colorField({
     label: "Border Color"|t('freeform'),
     name: "types[signature][borderColor]",
-    value: field.getMetaProperty('borderColor'),
+    value: field.getMetaProperty('borderColor', '#999999'),
 }) }}
 
 {{ forms.colorField({
     label: "Background Color"|t('freeform'),
     name: "types[signature][backgroundColor]",
-    value: field.getMetaProperty('backgroundColor'),
+    value: field.getMetaProperty('backgroundColor', '#ffffff'),
 }) }}
 
 {{ forms.colorField({
     label: "Pen Color"|t('freeform'),
     name: "types[signature][penColor]",
-    value: field.getMetaProperty('penColor'),
+    value: field.getMetaProperty('penColor', '#000000'),
 }) }}
 
 {{ forms.textField({
     label: "Pen Dot Size"|t('freeform'),
     name: "types[signature][penDotSize]",
-    value: field.getMetaProperty('penDotSize'),
+    value: field.getMetaProperty('penDotSize', '2.5'),
 }) }}

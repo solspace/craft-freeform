@@ -2,24 +2,15 @@
 
 namespace Solspace\Freeform\Services\Pro;
 
-use Carbon\Carbon;
 use craft\db\Query;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\ExportProfiles\DeleteEvent;
 use Solspace\Freeform\Events\ExportProfiles\SaveEvent;
-use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\DataExport\ExportDataCSV;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Export\ExportInterface;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Records\Pro\ExportProfileRecord;
 use yii\base\Component;
-use yii\base\ErrorException;
 use yii\web\HttpException;
 
 class ExportProfilesService extends Component
@@ -192,296 +183,19 @@ class ExportProfilesService extends Component
     }
 
     /**
-     * @param Form  $form
-     * @param array $labels
-     * @param array $data
+     * @param ExportInterface $exporter
+     * @param Form            $form
      */
-    public function exportCsv(Form $form, array $labels, array $data)
+    public function export(ExportInterface $exporter, Form $form)
     {
-        $data = $this->normalizeArrayData($form, $data);
-
-        $csvData = $data;
-        array_unshift($csvData, array_values($labels));
-
-        $fileName = sprintf('%s submissions %s.csv', $form->getName(), date('Y-m-d H:i', time()));
-
-        $export = new ExportDataCSV('browser', $fileName);
-        $export->initialize();
-
-        foreach ($csvData as $csv) {
-            $export->addRow($csv);
-        }
-
-        $export->finalize();
-        exit();
-    }
-
-    /**
-     * @param Form  $form
-     * @param array $data
-     */
-    public function exportJson(Form $form, array $data)
-    {
-        $data = $this->normalizeArrayData($form, $data, false);
-
-        $export = [];
-        foreach ($data as $itemList) {
-            $sub = [];
-            foreach ($itemList as $id => $value) {
-                $label = $this->getHandleFromIdentificator($form, $id);
-
-                $sub[$label] = $value;
-            }
-
-            $export[] = $sub;
-        }
-
-        $fileName = sprintf('%s submissions %s.json', $form->getName(), date('Y-m-d H:i', time()));
-
-        $output = json_encode($export, JSON_PRETTY_PRINT);
-
-        $this->outputFile($output, $fileName, 'application/octet-stream');
-    }
-
-    /**
-     * @param Form  $form
-     * @param array $data
-     */
-    public function exportText(Form $form, array $data)
-    {
-        $data = $this->normalizeArrayData($form, $data);
-
-        $output = '';
-        foreach ($data as $itemList) {
-            foreach ($itemList as $id => $value) {
-                $label = $this->getHandleFromIdentificator($form, $id);
-
-                $output .= $label . ': ' . $value . "\n";
-            }
-
-            $output .= "\n";
-        }
-
-        $fileName = sprintf('%s submissions %s.txt', $form->getName(), date('Y-m-d H:i', time()));
-
-        $this->outputFile($output, $fileName, 'text/plain');
-    }
-
-    /**
-     * @param Form  $form
-     * @param array $data
-     */
-    public function exportXml(Form $form, array $data)
-    {
-        $data = $this->normalizeArrayData($form, $data);
-
-        $xml = new \SimpleXMLElement('<root/>');
-
-        foreach ($data as $itemList) {
-            $submission = $xml->addChild('submission');
-
-            foreach ($itemList as $id => $value) {
-                $label = $this->getHandleFromIdentificator($form, $id);
-
-                $node = $submission->addChild($label, htmlspecialchars($value));
-                $node->addAttribute('label', $this->getLabelFromIdentificator($form, $id));
-            }
-        }
-
-        $fileName = sprintf('%s submissions %s.xml', $form->getName(), date('Y-m-d H:i', time()));
-
-        $this->outputFile($xml->asXML(), $fileName, 'text/xml');
-    }
-
-    /**
-     * @param Form  $form
-     * @param array $labels
-     * @param array $data
-     *
-     * @throws \PhpOffice\PhpSpreadsheet\Exception
-     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
-     */
-    public function exportExcel(Form $form, array $labels, array $data)
-    {
-        array_unshift($data, array_values($labels));
-
-        $data = $this->normalizeArrayData($form, $data);
-
-        $spreadsheet = new Spreadsheet();
-        $sheet       = $spreadsheet->getActiveSheet();
-        $sheet->fromArray($data);
-
         $fileName = sprintf(
-            '%s submissions %s.xlsx',
+            '%s submissions %s.%s',
             $form->getName(),
-            date('Y-m-d H:i')
+            date('Y-m-d H:i', time()),
+            $exporter->getFileExtension()
         );
 
-        ob_start();
-
-        $writer = new Xlsx($spreadsheet);
-        $writer->save('php://output');
-
-        $content = ob_get_clean();
-        try {
-            ob_end_clean();
-        } catch (ErrorException $e) {
-        }
-
-        $this->outputFile($content, $fileName, 'application/vnd.ms-excel');
-    }
-
-    /**
-     * @param Form   $form
-     * @param string $id
-     *
-     * @return string
-     */
-    private function getLabelFromIdentificator(Form $form, string $id): string
-    {
-        static $cache;
-
-        if (null === $cache) {
-            $cache = [];
-        }
-
-        if (!isset($cache[$id])) {
-            $label = $id;
-            if (preg_match('/^(?:field_)?(\d+)$/', $label, $matches)) {
-                $fieldId = $matches[1];
-                try {
-                    $field = $form->getLayout()->getFieldById($fieldId);
-                    $label = $field->getLabel();
-                } catch (FreeformException $e) {
-                }
-            } else {
-                switch ($id) {
-                    case 'id':
-                        $label = 'ID';
-                        break;
-
-                    case 'dateCreated':
-                        $label = 'Date Created';
-                        break;
-
-                    case 'ip':
-                        $label = 'IP';
-                        break;
-
-                    default:
-                        $label = ucfirst($label);
-                        break;
-                }
-            }
-
-            $cache[$id] = $label;
-        }
-
-        return $cache[$id];
-    }
-
-    /**
-     * @param Form   $form
-     * @param string $id
-     *
-     * @return string
-     */
-    private function getHandleFromIdentificator(Form $form, string $id): string
-    {
-        static $cache;
-
-        if (null === $cache) {
-            $cache = [];
-        }
-
-        if (!isset($cache[$id])) {
-            $label = $id;
-            if (preg_match('/^field_(\d+)$/', $label, $matches)) {
-                $fieldId = $matches[1];
-                try {
-                    $field = $form->getLayout()->getFieldById($fieldId);
-                    $label = $field->getHandle();
-                } catch (FreeformException $e) {
-                }
-            }
-
-            $cache[$id] = $label;
-        }
-
-        return $cache[$id];
-    }
-
-    /**
-     * @param Form  $form
-     * @param array $data
-     * @param bool  $flattenArrays
-     *
-     * @return array
-     */
-    private function normalizeArrayData(Form $form, array $data, bool $flattenArrays = true): array
-    {
-        $isRemoveNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
-
-        /**
-         * @var int   $index
-         * @var array $item
-         */
-        foreach ($data as $index => $item) {
-            foreach ($item as $fieldId => $value) {
-                if ($fieldId === 'dateCreated') {
-                    $date = new Carbon($value, 'UTC');
-                    $date->setTimezone(date_default_timezone_get());
-
-                    $data[$index][$fieldId] = $date->toDateTimeString();
-                }
-
-                if (!preg_match('/^' . Submission::FIELD_COLUMN_PREFIX . '(\d+)$/', $fieldId, $matches)) {
-                    continue;
-                }
-
-                try {
-                    $field = $form->getLayout()->getFieldById($matches[1]);
-
-                    if ($field instanceof FileUploadField) {
-                        $value = (array) json_decode($value ?: '[]', true);
-                        $combo = [];
-
-                        foreach ($value as $assetId) {
-                            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-                            if ($asset) {
-                                $assetValue = $asset->filename;
-                                if ($asset->getUrl()) {
-                                    $assetValue = $asset->getUrl();
-                                }
-
-                                $combo[] = $assetValue;
-                            }
-                        }
-
-                        $data[$index][$fieldId] = implode(', ', $combo);
-
-                        continue;
-                    }
-
-                    if ($field instanceof MultipleValueInterface) {
-                        $value = (array) json_decode($value ?: '[]', true);
-                        if ($flattenArrays && \is_array($value)) {
-                            $value = implode(', ', $value ?: []);
-                        }
-
-                        $data[$index][$fieldId] = $value;
-                    }
-
-                    if ($isRemoveNewlines && $field instanceof TextareaField) {
-                        $data[$index][$fieldId] = trim(preg_replace('/\s+/', ' ', $value));
-                    }
-                } catch (FreeformException $e) {
-                    continue;
-                }
-            }
-        }
-
-        return $data;
+        $this->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }
 
     /**
@@ -489,7 +203,7 @@ class ExportProfilesService extends Component
      * @param string $fileName
      * @param string $contentType
      */
-    private function outputFile(string $content, string $fileName, string $contentType)
+    public function outputFile(string $content, string $fileName, string $contentType)
     {
         header('Content-Description: File Transfer');
         header('Content-Type: ' . $contentType);

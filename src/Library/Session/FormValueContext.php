@@ -34,6 +34,7 @@ class FormValueContext implements \JsonSerializable
     const DATA_SUBMISSION_TOKEN     = 'submissionToken';
     const DATA_SUPPRESS             = 'suppress';
     const DATA_RELATIONS            = 'relations';
+    const DATA_PERSISTENT_VALUES    = 'persistentValues';
 
     /** @var int */
     private $formId;
@@ -279,6 +280,14 @@ class FormValueContext implements \JsonSerializable
     public function getSubmissionIdentificator()
     {
         return $this->customFormData[self::DATA_SUBMISSION_TOKEN] ?? null;
+    }
+
+    /**
+     * @return array|mixed
+     */
+    public function getPersistentValues()
+    {
+        return $this->customFormData[self::DATA_PERSISTENT_VALUES] ?? [];
     }
 
     /**

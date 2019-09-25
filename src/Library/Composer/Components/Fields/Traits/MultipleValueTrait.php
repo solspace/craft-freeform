@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
@@ -44,7 +45,7 @@ trait MultipleValueTrait
 
         if (empty($values)) {
             $values = [];
-        } else {
+        } else if (!$this instanceof MultiDimensionalValueInterface) {
             $values = array_map('strval', $values);
             // $values = array_map([LitEmoji::class, 'shortcodeToUnicode'], $values);
         }

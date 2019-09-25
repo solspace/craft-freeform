@@ -6,12 +6,9 @@ use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\Json;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Library\DataExport\ExportDataCSV;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Export\ExportCsv;
 
 class ExportCSVAction extends ElementAction
 {
@@ -61,7 +58,7 @@ EOT;
 
         $js = str_replace(
             ['{csrfName}', '{csrfValue}'],
-            array(\Craft::$app->config->general->csrfTokenName, \Craft::$app->request->getCsrfToken()),
+            [\Craft::$app->config->general->csrfTokenName, \Craft::$app->request->getCsrfToken()],
             $js
         );
 
@@ -93,50 +90,11 @@ EOT;
             throw new FreeformException(Freeform::t('No submissions found'));
         }
 
-        $csvData = [];
-        $labels  = ['ID', 'Submission Date'];
-        foreach ($submissions as $submission) {
-            $rowData   = [];
-            $rowData[] = $submission->id;
-            $rowData[] = $submission->dateCreated->format('Y-m-d H:i:s');
+        $exporter = new ExportCsv($form->getForm(), $submissions);
+        $exporter->setRemoveNewLines(Freeform::getInstance()->settings->isRemoveNewlines());
 
-            foreach ($form->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || $field instanceof SignatureField) {
-                    continue;
-                }
+        $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i'));
 
-                if (empty($csvData)) {
-                    $labels[] = $field->getLabel();
-                }
-
-                $columnName = Submission::getFieldColumnName($field->getId());
-
-                $value = $submission->$columnName->getValue();
-                if ($field instanceof MultipleValueInterface) {
-                    if (is_array($value)) {
-                        $value = implode(', ', $value);
-                    }
-                }
-
-                $rowData[] = $value;
-            }
-
-            $csvData[] = $rowData;
-        }
-        unset($submissions);
-
-        array_unshift($csvData, $labels);
-
-        $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
-
-        $export = new ExportDataCSV('browser', $fileName);
-        $export->initialize();
-
-        foreach ($csvData as $csv) {
-            $export->addRow($csv);
-        }
-
-        $export->finalize();
-        exit();
+        Freeform::getInstance()->exportProfiles->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }
 }

@@ -1,0 +1,7 @@
+{% if craft.freeformBanners.showDemoTemplates and currentUser is defined and currentUser.admin %}
+    <div class="alert alert-info alert-dismissible">
+        <a class="close" data-icon="remove" href="{{ cpUrl("freeform/banners/dismiss/demo") }}"></a>
+
+        {{ 'Get Freeform up and running on the front end with just a couple clicks! <a href="{link}" class="alert-link">Click here to install the Demo templates.</a>'|t('freeform', {link: url('freeform/settings/demo-templates')})|raw }}
+    </div>
+{% endif %}

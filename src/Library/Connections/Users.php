@@ -72,9 +72,22 @@ class Users extends AbstractConnection
      */
     protected function afterConnect(Element $element, ConnectionResult $result, array $keyValuePairs)
     {
-        $group = \Craft::$app->userGroups->getGroupById($this->castToInt($this->group));
-        if ($group) {
-            \Craft::$app->getUsers()->assignUserToGroups($element->id, [$group->id]);
+        $validGroupIds = [];
+
+        if (!is_array($this->group) && !empty($this->group)) {
+            $this->group = [$this->group];
+        }
+        
+        foreach ($this->group as $groupId) {
+            $group = \Craft::$app->userGroups->getGroupById($this->castToInt($groupId));
+
+            if ($group) {
+                $validGroupIds[] = $group->id;
+            }
+        }
+
+        if ($validGroupIds) {
+            \Craft::$app->getUsers()->assignUserToGroups($element->id, $validGroupIds);
         }
 
         if (!$this->active && $this->sendActivation && $element->status === User::STATUS_PENDING) {

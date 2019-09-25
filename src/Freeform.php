@@ -24,6 +24,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\ApiController;
+use Solspace\Freeform\Controllers\BannersController;
 use Solspace\Freeform\Controllers\CodepackController;
 use Solspace\Freeform\Controllers\CrmController;
 use Solspace\Freeform\Controllers\DashboardController;
@@ -54,6 +55,7 @@ use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Models\FieldModel;
@@ -92,6 +94,7 @@ use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
+use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformPaymentsVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
@@ -459,6 +462,7 @@ class Freeform extends Plugin
                 'subscriptions'    => SubscriptionsController::class,
                 'payment-webhooks' => PaymentWebhooksController::class,
                 'webhooks'         => WebhooksController::class,
+                'banners'          => BannersController::class,
             ];
         }
     }
@@ -621,6 +625,7 @@ class Freeform extends Plugin
             CraftVariable::EVENT_INIT,
             function (Event $event) {
                 $event->sender->set('freeform', FreeformVariable::class);
+                $event->sender->set('freeformBanners', FreeformBannersVariable::class);
                 $event->sender->set('freeformPayments', FreeformPaymentsVariable::class);
             }
         );
@@ -868,6 +873,12 @@ class Freeform extends Plugin
                 FormsService::class,
                 FormsService::EVENT_RENDER_CLOSING_TAG,
                 [$this->proForms, 'addSignatureJavascript']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->proForms, 'addTableJavascript']
             );
 
             Event::on(

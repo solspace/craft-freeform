@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Library\FileUploads;
 
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Library\Composer\Components\Form;
 
 interface FileUploadHandlerInterface
 {
@@ -25,7 +26,7 @@ interface FileUploadHandlerInterface
      *
      * @return FileUploadResponse
      */
-    public function uploadFile(FileUploadField $field);
+    public function uploadFile(FileUploadField $field, Form $form);
 
     /**
      * Stores the unfinalized assetId in the database

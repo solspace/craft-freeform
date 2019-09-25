@@ -15,6 +15,7 @@ use Solspace\Freeform\Fields\CheckboxGroupField;
 use Solspace\Freeform\Fields\MailingListField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
+use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
@@ -84,6 +85,9 @@ class Layout implements \JsonSerializable, \Iterator
 
     /** @var SignatureField[] */
     private $signatureFields;
+
+    /** @var TableField[] */
+    private $tableFields;
 
     /** @var Properties */
     private $properties;
@@ -158,6 +162,14 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
+     * @return bool
+     */
+    public function hasTableFields(): bool
+    {
+        return (bool) \count($this->tableFields);
+    }
+
+    /**
      * @return Page[]
      */
     public function getPages(): array
@@ -211,6 +223,30 @@ class Layout implements \JsonSerializable, \Iterator
     public function getRecaptchaFields(): array
     {
         return $this->recaptchaFields;
+    }
+
+    /**
+     * @return OpinionScaleField[]
+     */
+    public function getOpinionScaleFields(): array
+    {
+        return $this->opinionScaleFields;
+    }
+
+    /**
+     * @return SignatureField[]
+     */
+    public function getSignatureFields(): array
+    {
+        return $this->signatureFields;
+    }
+
+    /**
+     * @return TableField[]
+     */
+    public function getTableFields(): array
+    {
+        return $this->tableFields;
     }
 
     /**
@@ -386,6 +422,7 @@ class Layout implements \JsonSerializable, \Iterator
         $recaptchaFields    = [];
         $opinionScaleFields = [];
         $signatureFields    = [];
+        $tableFields        = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
             if (!\is_array($rows)) {
@@ -476,6 +513,10 @@ class Layout implements \JsonSerializable, \Iterator
                         $signatureFields[] = $field;
                     }
 
+                    if ($field instanceof TableField && $field->isUseScript()) {
+                        $tableFields[] = $field;
+                    }
+
                     $pageFields[] = $field;
                     $allFields[]  = $field;
                 }
@@ -510,6 +551,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->recaptchaFields    = $recaptchaFields;
         $this->opinionScaleFields = $opinionScaleFields;
         $this->signatureFields    = $signatureFields;
+        $this->tableFields        = $tableFields;
     }
 
     /**

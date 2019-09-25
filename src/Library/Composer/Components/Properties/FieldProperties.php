@@ -90,6 +90,9 @@ class FieldProperties extends AbstractProperties
     /** @var int */
     protected $maxFileSizeKB;
 
+    /** @var string */
+    protected $defaultUploadLocation;
+
     /** @var int */
     protected $fileCount;
 
@@ -254,6 +257,15 @@ class FieldProperties extends AbstractProperties
 
     /** @var float */
     protected $penDotSize;
+
+    /** @var array */
+    protected $tableLayout;
+
+    /** @var int */
+    protected $maxRows;
+
+    /** @var bool */
+    protected $useScript;
 
     /**
      * @return string|null
@@ -559,6 +571,14 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return string|null
+     */
+    public function getDefaultUploadLocation()
+    {
+        return $this->defaultUploadLocation;
+    }
+
+    /**
      * @return bool|null
      */
     public function isClockAMPMSeparate()
@@ -847,7 +867,31 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return array|null
+     */
+    public function getTableLayout()
+    {
+        return $this->tableLayout;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getMaxRows()
+    {
+        return $this->maxRows;
+    }
+
+    /**
      * @return bool|null
+     */
+    public function isUseScript()
+    {
+        return $this->useScript;
+    }
+
+    /**
+     * @return bool
      */
     public function isShowClearButton()
     {
@@ -954,6 +998,7 @@ class FieldProperties extends AbstractProperties
             'mapping'               => self::TYPE_ARRAY,
             'fileKinds'             => self::TYPE_ARRAY,
             'maxFileSizeKB'         => self::TYPE_INTEGER,
+            'defaultUploadLocation' => self::TYPE_STRING,
             'fileCount'             => self::TYPE_INTEGER,
             'rows'                  => self::TYPE_INTEGER,
             'dateTimeType'          => self::TYPE_STRING,
@@ -1012,6 +1057,9 @@ class FieldProperties extends AbstractProperties
             'backgroundColor'       => self::TYPE_STRING,
             'penColor'              => self::TYPE_STRING,
             'penDotSize'            => self::TYPE_DOUBLE,
+            'tableLayout'           => self::TYPE_ARRAY,
+            'maxRows'               => self::TYPE_INTEGER,
+            'useScript'             => self::TYPE_BOOLEAN,
         ];
     }
 }

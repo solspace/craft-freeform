@@ -16,11 +16,20 @@ trait FileUploadTrait
     /** @var int */
     protected $assetSourceId;
 
+    /** @var int */
+    protected $defaultUploadLocation;
+
     /**
      * @return int|null
      */
     public function getAssetSourceId()
     {
         return $this->assetSourceId;
+    }
+
+
+    public function getDefaultUploadLocation()
+    {
+        return $this->defaultUploadLocation;
     }
 }

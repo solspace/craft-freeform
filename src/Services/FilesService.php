@@ -14,16 +14,21 @@ namespace Solspace\Freeform\Services;
 use craft\base\Volume;
 use craft\db\Query;
 use craft\elements\Asset;
+use craft\errors\InvalidSubpathException;
+use craft\errors\InvalidVolumeException;
 use craft\helpers\Assets;
 use craft\records\Asset as AssetRecord;
 use craft\web\UploadedFile;
 use Solspace\Freeform\Events\Files\UploadEvent;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
 use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
+use craft\helpers\FileHelper;
 
 class FilesService extends BaseService implements FileUploadHandlerInterface
 {
@@ -42,17 +47,15 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      * All unfinalized files will be deleted after a certain amount of time
      *
      * @param FileUploadField $field
+     * @param Form $form
      *
      * @return FileUploadResponse|null
      */
-    public function uploadFile(FileUploadField $field)
+    public function uploadFile(FileUploadField $field, Form $form)
     {
         if (!$field->getAssetSourceId()) {
             return null;
         }
-
-        $assetService = \Craft::$app->assets;
-        $folder       = $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
 
         if (!$_FILES || !isset($_FILES[$field->getHandle()])) {
             return null;
@@ -65,6 +68,14 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
         if (!$beforeUploadEvent->isValid) {
             return null;
+        }
+
+        $assetService = \Craft::$app->assets;
+
+        if (!$field->getDefaultUploadLocation()) {
+            $folder = $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
+        } else {
+            $folder = $this->getFolder($field->getAssetSourceId(), $field->getDefaultUploadLocation(), $form);
         }
 
         $uploadedAssetIds = $errors = [];
@@ -82,10 +93,10 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
                 $asset->tempFilePath           = $uploadedFile->tempName;
                 $asset->filename               = $filename;
+                $asset->setScenario(Asset::SCENARIO_CREATE);
                 $asset->newFolderId            = $folder->id;
                 $asset->volumeId               = $folder->volumeId;
                 $asset->avoidFilenameConflicts = true;
-                $asset->setScenario(Asset::SCENARIO_CREATE);
 
                 $response = \Craft::$app->getElements()->saveElement($asset);
             } catch (\Exception $e) {
@@ -109,6 +120,81 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         return new FileUploadResponse(null, $errors);
+    }
+
+    private function getFolder($volumeId, string $subpath, Form $form)
+    {
+        $assetsService = \Craft::$app->getAssets();
+
+        if ($volumeId === null || ($rootFolder = $assetsService->getRootFolderByVolumeId($volumeId)) === null) {
+            throw new InvalidVolumeException();
+        }
+
+        $subpath = is_string($subpath) ? trim($subpath, '/') : '';
+
+        if ($subpath === '') {
+            $folder = $rootFolder;
+        } else {
+            try {
+
+                $renderedSubpath = \Craft::$app->view->renderString(
+                    $subpath,
+                    [
+                        'form' => $form,
+                    ]
+                );
+
+            } catch (\Throwable $e) {
+                throw new InvalidSubpathException($subpath, null, 0, $e);
+            }
+
+            if (
+                $renderedSubpath === '' ||
+                trim($renderedSubpath, '/') != $renderedSubpath ||
+                strpos($renderedSubpath, '//') !== false
+            ) {
+                throw new InvalidSubpathException($subpath);
+            }
+
+            $segments = explode('/', $renderedSubpath);
+
+            foreach ($segments as &$segment) {
+                $segment = FileHelper::sanitizeFilename($segment, [
+                    'asciiOnly' => \Craft::$app->getConfig()->getGeneral()->convertFilenamesToAscii
+                ]);
+            }
+
+            unset($segment);
+            $subpath = implode('/', $segments);
+
+            $folder = $assetsService->findFolder([
+                'volumeId' => $volumeId,
+                'path'     => $subpath . '/'
+            ]);
+
+            // Ensure that the folder exists
+            if (!$folder) {
+                $volume   = \Craft::$app->getVolumes()->getVolumeById($volumeId);
+                $folderId = $assetsService->ensureFolderByFullPathAndVolume($subpath, $volume);
+                $folder   = $assetsService->getFolderById($folderId);
+            }
+        }
+
+        return $folder;
+    }
+
+    public function _volumeIdBySourceKey(string $sourceKey)
+    {
+        $parts = explode(':', $sourceKey, 2);
+
+        if (count($parts) !== 2) {
+            return null;
+        }
+
+        /** @var Volume|null $volume */
+        $volume = \Craft::$app->getVolumes()->getVolumeByUid($parts[1]);
+
+        return $volume ? $volume->id : null;
     }
 
     /**

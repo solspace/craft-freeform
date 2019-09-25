@@ -101,6 +101,7 @@ class FieldRecord extends SerializableActiveRecord
             case FieldInterface::TYPE_EMAIL:
             case FieldInterface::TYPE_TEXTAREA:
             case FieldInterface::TYPE_SIGNATURE:
+            case FieldInterface::TYPE_TABLE:
                 $columnType = 'text';
 
                 break;

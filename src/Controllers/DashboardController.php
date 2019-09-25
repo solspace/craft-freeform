@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Resources\Bundles\BannerBundle;
 use Solspace\Freeform\Resources\Bundles\ChartJsBundle;
 use Solspace\Freeform\Resources\Bundles\DashboardBundle;
 use Solspace\Freeform\Resources\Bundles\LogBundle;
@@ -87,6 +88,7 @@ class DashboardController extends BaseController
         \Craft::$app->view->registerAssetBundle(DashboardBundle::class);
         \Craft::$app->view->registerAssetBundle(ChartJsBundle::class);
         \Craft::$app->view->registerAssetBundle(LogBundle::class);
+        \Craft::$app->view->registerAssetBundle(BannerBundle::class);
         $this->getLoggerService()->registerJsTranslations($this->view);
 
         return $this->renderTemplate(

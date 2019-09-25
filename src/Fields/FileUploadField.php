@@ -206,7 +206,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     public function uploadFile()
     {
         if (!array_key_exists($this->handle, self::$filesUploaded)) {
-            $response = $this->getForm()->getFileUploadHandler()->uploadFile($this);
+            $response = $this->getForm()->getFileUploadHandler()->uploadFile($this, $this->getForm());
 
             self::$filesUploaded[$this->handle]       = null;
             self::$filesUploadedErrors[$this->handle] = [];

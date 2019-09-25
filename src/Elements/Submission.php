@@ -453,7 +453,9 @@ class Submission extends Element
                 continue;
             }
 
-            $this->storedFieldValues[self::getFieldColumnName($field->getId())] = $value;
+            $field->setValue($value);
+
+            $this->storedFieldValues[self::getFieldColumnName($field->getId())] = $field->getValue();
         }
 
         return $this;
@@ -553,8 +555,11 @@ class Submission extends Element
      */
     public function __call($name, $attributes = [])
     {
-        if ($this->getFieldByIdentifier($name)) {
-            return $this->__get($name);
+        try {
+            if ($this->getFieldByIdentifier($name)) {
+                return $this->__get($name);
+            }
+        } catch (FieldException $e) {
         }
 
         if (\in_array($name, $this->getAllFieldHandles(), true)) {

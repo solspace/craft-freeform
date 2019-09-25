@@ -33,12 +33,14 @@ use Solspace\Freeform\Fields\MultipleSelectField;
 use Solspace\Freeform\Fields\NumberField;
 use Solspace\Freeform\Fields\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Pro\InvisibleField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Pro\PasswordField;
 use Solspace\Freeform\Fields\Pro\PhoneField;
 use Solspace\Freeform\Fields\Pro\RatingField;
 use Solspace\Freeform\Fields\Pro\RegexField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
+use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Fields\Pro\WebsiteField;
 use Solspace\Freeform\Fields\RadioGroupField;
 use Solspace\Freeform\Fields\RecaptchaField;
@@ -182,6 +184,8 @@ class FieldsService extends BaseService implements FieldHandlerInterface
             WebsiteField::class,
             OpinionScaleField::class,
             SignatureField::class,
+            TableField::class,
+            InvisibleField::class,
         ];
 
         $fetchTypesEvent = new FetchFieldTypes($fieldTypes);

@@ -12,12 +12,15 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Fields\Pro\InvisibleField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\ConstraintInterface;
@@ -112,8 +115,13 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             $field->staticValue = $field->getValue();
         }
 
-        $storedValue = $formValueContext->getStoredValue($field);
-        $field->setValue($storedValue);
+        if ($field instanceof PersistentValueInterface) {
+            $persistentValues = $formValueContext->getPersistentValues();
+            $field->setValue($persistentValues[$field->getHandle()] ?? $field->getValue());
+        } else {
+            $storedValue = $formValueContext->getStoredValue($field);
+            $field->setValue($storedValue);
+        }
 
         if ($field instanceof CheckboxField && $formValueContext->hasFormBeenPosted()) {
             $storedValue = $formValueContext->getStoredValue($field);
@@ -149,6 +157,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             self::TYPE_CONFIRMATION       => 'Confirmation',
             self::TYPE_OPINION_SCALE      => 'Opinion Scale',
             self::TYPE_SIGNATURE          => 'Signature',
+            self::TYPE_TABLE              => 'Table',
+            self::TYPE_INVISIBLE          => 'Invisible',
         ];
     }
 
@@ -493,7 +503,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
         if (!\is_string($value)) {
             if (\is_array($value)) {
-                return implode(', ', $value);
+                return StringHelper::implodeRecursively(', ', $value);
             }
 
             return (string) $value;

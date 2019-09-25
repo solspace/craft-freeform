@@ -138,6 +138,14 @@
         }
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Hide 'Install Demo' alert message?"|t('freeform'),
+        instructions: "Hides the alert message suggesting to install demo templates when this setting is enabled."|t('freeform'),
+        name: 'settings[hideBannerDemo]',
+        on: settings.hideBannerDemo,
+        errors: settings.getErrors('hideBannerDemo')
+    }) }}
+
     <hr>
 
     {% if craft.freeform.pro %}

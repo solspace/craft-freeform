@@ -76,6 +76,26 @@
                                         {% endfor %}
                                     {% endif %}
 
+                                {% elseif field.type == "table" %}
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                            {% for column in field.tableLayout %}
+                                                <th>{{ column.label|default("-") }}</th>
+                                            {% endfor %}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for row in submission[field.handle].value %}
+                                            <tr>
+                                            {% for index, column in field.tableLayout %}
+                                                <td>{{ row[index] }}</td>
+                                            {% endfor %}
+                                            </tr>
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+
                                 {% elseif field.type == "signature" %}
                                     {% if submission[field.handle] %}
                                         <img src="{{ submission[field.handle] }}" alt="">

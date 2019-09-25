@@ -14,6 +14,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Export\AbstractExport;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -188,16 +189,13 @@ class QuickExportController extends BaseController
         $settings->setting = $exportFields;
         $settings->save();
 
-        $searchableFields = $labels = [];
+        $searchableFields = [];
         foreach ($fieldData as $fieldId => $data) {
-            $label     = $data['label'];
             $isChecked = $data['checked'];
 
             if (!(bool) $isChecked) {
                 continue;
             }
-
-            $labels[$fieldId] = $label;
 
             $fieldName = is_numeric($fieldId) ? Submission::getFieldColumnName($fieldId) : $fieldId;
             $fieldName = $fieldName === 'title' ? 'c.' . $fieldName : 's.' . $fieldName;
@@ -221,23 +219,10 @@ class QuickExportController extends BaseController
 
         $data = $query->all();
 
-        switch ($exportType) {
-            case 'json':
-                return $this->getExportProfileService()->exportJson($form, $data);
+        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
+        $exporter       = AbstractExport::create($exportType, $form, $data, $removeNewlines);
 
-            case 'xml':
-                return $this->getExportProfileService()->exportXml($form, $data);
-
-            case 'text':
-                return $this->getExportProfileService()->exportText($form, $data);
-
-            case 'excel':
-                return $this->getExportProfileService()->exportExcel($form, $labels, $data);
-
-            case 'csv':
-            default:
-                return $this->getExportProfileService()->exportCsv($form, $labels, $data);
-        }
+        $this->getExportProfileService()->export($exporter, $form);
     }
 
     /**

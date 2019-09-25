@@ -11,7 +11,6 @@ use Solspace\Freeform\Library\Session\Honeypot;
 class HoneypotService extends BaseService
 {
     const FORM_HONEYPOT_KEY  = 'freeformHoneypotHashList';
-    const FORM_HONEYPOT_NAME = 'form_name_handle';
 
     const MAX_HONEYPOT_TTL   = 10800; // 3 Hours
     const MAX_HONEYPOT_COUNT = 100;   // Limit the number of maximum honeypot values per session
@@ -61,7 +60,7 @@ class HoneypotService extends BaseService
         $postValues = \Craft::$app->request->post(null);
         $isEnhanced = $this->isEnhanced();
 
-        $honeypotName = Honeypot::NAME_PREFIX;
+        $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?? Honeypot::NAME_PREFIX;
         if (!$isEnhanced) {
             if (array_key_exists($honeypotName, $postValues) && $postValues[$honeypotName] === '') {
                 return;
@@ -91,7 +90,12 @@ class HoneypotService extends BaseService
         }
 
         if ($this->getSettingsService()->isSpamBehaviourDisplayErrors()) {
-            $event->addErrorToForm(Freeform::t('Form honeypot is invalid'));
+            $errorMessage = $this->getSettingsService()->getCustomErrorMessage();
+            if (!$errorMessage) {
+                $errorMessage = 'Form honeypot is invalid';
+            }
+
+            $event->addErrorToForm(Freeform::t($errorMessage));
         }
 
         $event->getForm()->setMarkedAsSpam(true);

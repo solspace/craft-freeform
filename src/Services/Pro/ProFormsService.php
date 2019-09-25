@@ -98,4 +98,18 @@ class ProFormsService extends Component
             $event->appendJsToOutput($signatureJs, ['formAnchor' => $form->getAnchor()]);
         }
     }
+
+    /**
+     * @param FormRenderEvent $event
+     */
+    public function addTableJavascript(FormRenderEvent $event)
+    {
+        $freeformPath = \Yii::getAlias('@freeform');
+        $form = $event->getForm();
+
+        if ($form->getLayout()->hasTableFields()) {
+            $tableJs = file_get_contents($freeformPath . '/Resources/js/other/front-end/fields/table.js');
+            $event->appendJsToOutput($tableJs, ['formAnchor' => $form->getAnchor()]);
+        }
+    }
 }

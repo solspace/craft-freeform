@@ -45,6 +45,27 @@ class CustomFieldAttributes extends AbstractAttributes
     /** @var array */
     protected $inputAttributes;
 
+    /** @var string */
+    protected $addButtonLabel;
+
+    /** @var string */
+    protected $addButtonClass;
+
+    /** @var string */
+    protected $removeButtonLabel;
+
+    /** @var string */
+    protected $removeButtonClass;
+
+    /** @var string */
+    protected $tableTextInputClass;
+
+    /** @var string */
+    protected $tableCheckboxInputClass;
+
+    /** @var string */
+    protected $tableSelectInputClass;
+
     /** @var AbstractField */
     private $field;
 
@@ -235,6 +256,62 @@ class CustomFieldAttributes extends AbstractAttributes
     public function getFieldIdPrefix()
     {
         return $this->formAttributes->getFieldIdPrefix();
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddButtonLabel()
+    {
+        return $this->addButtonLabel;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAddButtonClass()
+    {
+        return $this->addButtonClass;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRemoveButtonLabel()
+    {
+        return $this->removeButtonLabel;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getRemoveButtonClass()
+    {
+        return $this->removeButtonClass;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTableTextInputClass()
+    {
+        return $this->tableTextInputClass;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTableCheckboxInputClass()
+    {
+        return $this->tableCheckboxInputClass;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTableSelectInputClass()
+    {
+        return $this->tableSelectInputClass;
     }
 
     /**

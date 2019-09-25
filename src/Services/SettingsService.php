@@ -42,6 +42,14 @@ class SettingsService extends BaseService
     }
 
     /**
+     * @return string|null
+     */
+    public function getCustomErrorMessage()
+    {
+        return $this->getSettingsModel()->customErrorMessage;
+    }
+
+    /**
      * @return bool
      */
     public function isFreeformHoneypotEnabled(): bool
@@ -506,5 +514,26 @@ class SettingsService extends BaseService
         }
 
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isOldFreeformInstalled(): bool
+    {
+        $paths = [
+            '/solspace/craft3-freeform',
+            '/solspace/craft3-freeform-pro',
+            '/solspace/craft3-freeform-payments',
+        ];
+
+        $hasOldFreeform = false;
+        foreach ($paths as $path) {
+            if (is_dir(CRAFT_VENDOR_PATH . $path)) {
+                $hasOldFreeform = true;
+            }
+        }
+
+        return $hasOldFreeform;
     }
 }

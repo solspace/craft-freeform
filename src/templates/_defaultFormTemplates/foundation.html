@@ -188,6 +188,23 @@
 
                     {{ field.render({ class: "button" }) }}
 
+                {% elseif field.type == "table" %}
+
+                    {{ field.render({
+                        class: "table",
+                        labelClass: (field.required ? " required" : ""),
+                        instructionsClass: "help-block",
+                        instructionsBelowField: true,
+                        errorClass: "help-block",
+                        addButtonLabel: "Add +",
+                        addButtonClass: "button",
+                        removeButtonLabel: "x",
+                        removeButtonClass: "button",
+                        tableTextInputClass: "",
+                        tableSelectInputClass: "",
+                        tableCheckboxInputClass: ""
+                    }) }}
+
                 {% elseif field.type == "submit" %}
 
                     {{ field.render({ class: "button" }) }}

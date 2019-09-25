@@ -79,16 +79,18 @@
     {% for row in form %}
         <div class="row {{ form.customAttributes.rowClass }}">
             {% for field in row %}
-                {% set width = (12 / (row|length)) %}
-                {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
-                {% set columnClass = "form-group" %}
-                {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-                {% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-xs-12" %}
-                {% set class = "form-control" ~ (field.hasErrors ? " is-invalid") %}
+            {% set width = (12 / (row|length)) %}
+            {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
+            {% set columnClass = "form-group" %}
+            {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+            {% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-xs-12" %}
+            {% set class = "form-control" ~ (field.hasErrors ? " is-invalid") %}
             {% if field.type == "file" %}
                 {% set class = "form-control-file" ~ (field.hasErrors ? " is-invalid") %}
             {% elseif field.type == "signature" %}
                 {% set class = "btn btn-light" %}
+            {% elseif field.type == "table" %}
+                {% set class = "table" %}
             {% elseif isCheckbox %}
                 {% set class = "checkbox" %}
             {% endif %}
@@ -205,6 +207,23 @@
                 {% elseif field.type == "submit" %}
 
                     {{ field.render({ class: "btn btn-primary" }) }}
+
+                {% elseif field.type == "table" %}
+
+                    {{ field.render({
+                        class: class,
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        instructionsBelowField: true,
+                        errorClass: errorClass,
+                        addButtonLabel: "Add +",
+                        addButtonClass: "btn btn-sm btn-primary",
+                        removeButtonLabel: "x",
+                        removeButtonClass: "btn btn-sm btn-danger",
+                        tableTextInputClass: "form-control",
+                        tableSelectInputClass: "form-control",
+                        tableCheckboxInputClass: "form-check-input"
+                    }) }}
 
                 {% elseif field.type == "cc_details" %}
 

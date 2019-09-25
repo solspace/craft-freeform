@@ -11,6 +11,9 @@
 
 namespace Solspace\Freeform\Library\Session;
 
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Models\Settings;
+
 class Honeypot implements \JsonSerializable
 {
     const NAME_PREFIX = 'freeform_form_handle';
@@ -46,7 +49,7 @@ class Honeypot implements \JsonSerializable
      */
     public function __construct(bool $isEnhanced = false)
     {
-        $this->name      = $isEnhanced ? $this->generateUniqueName() : self::NAME_PREFIX;
+        $this->name      = $this->getHoneypotInputName($isEnhanced);
         $this->hash      = $isEnhanced ? $this->generateHash() : '';
         $this->timestamp = time();
     }
@@ -90,13 +93,15 @@ class Honeypot implements \JsonSerializable
     }
 
     /**
+     * @param string $prefix
+     *
      * @return string
      */
-    private function generateUniqueName(): string
+    private function generateUniqueName(string $prefix): string
     {
         $hash = $this->generateHash(6);
 
-        return self::NAME_PREFIX . '_' . $hash;
+        return $prefix . '_' . $hash;
     }
 
     /**
@@ -110,5 +115,20 @@ class Honeypot implements \JsonSerializable
         $hash   = sha1($random);
 
         return substr($hash, 0, $length);
+    }
+
+    /**
+     * @param bool $isEnhanced
+     *
+     * @return mixed|string
+     */
+    private function getHoneypotInputName(bool $isEnhanced)
+    {
+        $inputName = Freeform::getInstance()->settings->getSettingsModel()->customHoneypotName;
+        if (!$inputName) {
+            $inputName = self::NAME_PREFIX;
+        }
+
+        return $isEnhanced ? $this->generateUniqueName($inputName) : $inputName;
     }
 }

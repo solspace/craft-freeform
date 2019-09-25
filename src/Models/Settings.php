@@ -89,6 +89,12 @@ class Settings extends Model
     public $freeformHoneypotEnhancement;
 
     /** @var string */
+    public $customHoneypotName;
+
+    /** @var string */
+    public $customErrorMessage;
+
+    /** @var string */
     public $spamProtectionBehaviour;
 
     /** @var int */
@@ -172,6 +178,12 @@ class Settings extends Model
     /** @var string */
     public $formattingTemplate;
 
+    /** @var bool */
+    public $hideBannerDemo = false;
+
+    /** @var bool */
+    public $hideBannerOldFreeform = false;
+
     /**
      * Settings constructor.
      *
@@ -193,6 +205,8 @@ class Settings extends Model
         $this->formSubmitDisable      = false;
 
         $this->freeformHoneypot              = true;
+        $this->customHoneypotName            = null;
+        $this->customErrorMessage            = null;
         $this->freeformHoneypotEnhancement   = false;
         $this->spamProtectionBehaviour       = self::PROTECTION_SIMULATE_SUCCESS;
         $this->blockedEmails                 = null;
@@ -219,6 +233,9 @@ class Settings extends Model
         $this->recaptchaType      = self::RECAPTCHA_TYPE_V2_CHECKBOX;
         $this->recaptchaMinScore  = 0.5;
         $this->recaptchaBehaviour = self::RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR;
+
+        $this->hideBannerDemo        = false;
+        $this->hideBannerOldFreeform = false;
 
         parent::__construct($config);
     }

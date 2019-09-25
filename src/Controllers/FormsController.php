@@ -150,6 +150,7 @@ class FormsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $post = \Craft::$app->request->post();
+
         if (!isset($post['formId'])) {
             throw new FreeformException('No form ID specified');
         }

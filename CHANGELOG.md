@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.5.1 - 2019-10-01
+### Fixed
+- Fixed a bug where submissions were falsely being flagged as spam when a custom Honeypot field name was not set.
+- Fixed a bug with a navigation permission check on Export Profiles.
+
 ## 3.5.0 - 2019-09-25
 ### Added
 - Added Table field type, which allows users to enter repeating data rows into predefined columns (Pro).
@@ -10,10 +15,12 @@
 - Updated File Upload fields to now allow custom subfolder paths. You can also dynamically build subfolder paths with `form.handle`, etc.
 - Updated the Users Element Connection to allow assigning users to multiple user groups.
 - Updated Freeform to show an error message if the old Freeform Pro 2.x plugin (which should be uninstalled) is still installed after an upgrade from Freeform 2.x to 3.x. Please follow the [Upgrading from Freeform 2.x guide](https://docs.solspace.com/craft/freeform/v3/setup/updating-freeform-2.html) for proper upgrading from 2.x to 3.x.
+- Adjusted the Craft element toolbar in CP Submissions index to no longer include Export button (as Freeform includes other and better export options, and this approach would not work correctly).
 
 ### Fixed
 - Fixed a bug where submissions that are flagged as spam would not keep the attached file(s) submitted with it.
 - Fixed an incompatiblity issue with the Scout plugin and potentially other plugins.
+- Fixed several IE 11 compatibility bugs with special field types.
 
 ## 3.4.1 - 2019-09-16
 ### Changed

@@ -60,7 +60,7 @@ class HoneypotService extends BaseService
         $postValues = \Craft::$app->request->post(null);
         $isEnhanced = $this->isEnhanced();
 
-        $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?? Honeypot::NAME_PREFIX;
+        $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?: Honeypot::NAME_PREFIX;
         if (!$isEnhanced) {
             if (array_key_exists($honeypotName, $postValues) && $postValues[$honeypotName] === '') {
                 return;

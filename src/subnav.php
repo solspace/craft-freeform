@@ -32,7 +32,7 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS)
     $navItems['notifications'] = ['label' => Freeform::t('Email Notifications'), 'url' => 'freeform/notifications'];
 }
 
-if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(self::PERMISSION_EXPORT_PROFILES_ACCESS)) {
+if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS)) {
     $navItems['exportProfiles'] = ['label' => Freeform::t('Export'), 'url' => 'freeform/export-profiles'];
 }
 

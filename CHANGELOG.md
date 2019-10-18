@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.5.2 - 2019-10-18
+### Fixed
+- Fixed a bug where using Microsoft Edge browser would sometimes create duplicates when the user submitted a form.
+
 ## 3.5.1 - 2019-10-01
 ### Fixed
 - Fixed a bug where submissions were falsely being flagged as spam when a custom Honeypot field name was not set.

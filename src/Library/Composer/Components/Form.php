@@ -310,6 +310,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /**
      * @return string
      */
+    public function getInitTime(): string
+    {
+        return $this->getFormValueContext()->getInitTime();
+    }
+
+    /**
+     * @return string
+     */
     public function getSubmissionTitleFormat(): string
     {
         return $this->submissionTitleFormat;

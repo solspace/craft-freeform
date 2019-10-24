@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.5.3 - 2019-10-24
+### Added
+- Added Zoho Leads and Zoho Deals CRM API integrations (Pro).
+- Added 'Minimum Submit Time' and 'Form Submit Expiration' form submit control settings to help fight spam or other use-cases.
+
+### Fixed
+- Fixed a bug where using reCAPTCHA v2 Invisible would break form submitting in some cases.
+- Fixed a bug where you could get an internal server error when someone uploaded a 0 byte file attachment.
+
 ## 3.5.2 - 2019-10-18
 ### Fixed
 - Fixed a bug where using Microsoft Edge browser would sometimes create duplicates when the user submitted a form.

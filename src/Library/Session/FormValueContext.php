@@ -57,6 +57,9 @@ class FormValueContext implements \JsonSerializable
     /** @var string */
     private $lastHash;
 
+    /** @var int */
+    private $formInitTime;
+
     /**
      * @param string $hash
      *
@@ -128,6 +131,14 @@ class FormValueContext implements \JsonSerializable
         $this->lastHash = $this->regenerateHash();
 
         return $this->lastHash;
+    }
+
+    /**
+     * @return int
+     */
+    public function getInitTime(): int
+    {
+        return $this->formInitTime;
     }
 
     /**
@@ -366,10 +377,12 @@ class FormValueContext implements \JsonSerializable
             $this->currentPageIndex = $sessionState['currentPageIndex'];
             $this->storedValues     = $sessionState['storedValues'];
             $this->customFormData   = $sessionState['customFormData'];
+            $this->formInitTime     = $sessionState['formInitTime'];
         } else {
             $this->currentPageIndex = self::DEFAULT_PAGE_INDEX;
             $this->storedValues     = [];
             $this->customFormData   = [];
+            $this->formInitTime     = time();
         }
     }
 
@@ -551,6 +564,7 @@ class FormValueContext implements \JsonSerializable
             'currentPageIndex' => $this->currentPageIndex,
             'storedValues'     => $this->storedValues,
             'customFormData'   => $this->customFormData,
+            'formInitTime'     => $this->formInitTime,
         ];
     }
 }

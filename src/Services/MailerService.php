@@ -157,7 +157,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                 foreach ($notification->getPresetAssets() as $assetId) {
                     $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                     if ($asset) {
-                        $email->attach($asset->getTransformSource());
+                        $email->attach($asset->getCopyOfFile());
                     }
                 }
             }
@@ -173,7 +173,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     foreach ($assetIds as $assetId) {
                         $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                         if ($asset) {
-                            $email->attach($asset->getTransformSource());
+                            $email->attach($asset->getCopyOfFile());
                         }
                     }
                 }

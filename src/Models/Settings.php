@@ -94,6 +94,12 @@ class Settings extends Model
     /** @var string */
     public $customErrorMessage;
 
+    /** @var int */
+    public $formSubmitExpiration;
+
+    /** @var int */
+    public $minimumSubmitTime;
+
     /** @var string */
     public $spamProtectionBehaviour;
 

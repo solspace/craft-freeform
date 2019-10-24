@@ -202,6 +202,22 @@
             errors: settings.errors("submissionThrottlingCount"),
         }, input) }}
 
+        {{ forms.textField({
+            label: "Minimum Submit Time"|t('freeform'),
+            instructions: "The minimum amount of time (in seconds) that has to go by since loading the form for the user to be able to submit the form successfully. Otherwise the submission will be flagged as spam and the Spam Protection Behavior setting will take effect."|t('freeform'),
+            name: "settings[minimumSubmitTime]",
+            value: settings.minimumSubmitTime,
+            errors: settings.errors("minimumSubmitTime"),
+        }) }}
+
+        {{ forms.textField({
+            label: "Form Submit Expiration"|t('freeform'),
+            instructions: "The maximum amount of time (in minutes) a user has to submit the form before the form expires and the Spam Protection Behavior setting will take effect. This still has to be less than the Craft CSRF token expiry and PHP Session limit set for your server."|t('freeform'),
+            name: "settings[formSubmitExpiration]",
+            value: settings.formSubmitExpiration,
+            errors: settings.errors("formSubmitExpiration"),
+        }) }}
+
     </form>
 
 {% endblock %}

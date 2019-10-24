@@ -20,6 +20,7 @@ use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\Helpers\IpUtils;
 use Solspace\Freeform\Models\Settings;
@@ -166,8 +167,7 @@ class SettingsService extends BaseService
     {
         $settings = $this->getSettingsModel();
 
-        return !$settings->emailTemplateDirectory ||
-            $settings->emailTemplateStorage === Settings::EMAIL_TEMPLATE_STORAGE_DB;
+        return !$settings->emailTemplateDirectory || $settings->emailTemplateStorage === Settings::EMAIL_TEMPLATE_STORAGE_DB;
     }
 
     /**
@@ -264,6 +264,28 @@ class SettingsService extends BaseService
         static $keywordsMessage;
         static $showKeywordsErrorBelowFields;
         static $isSpamCheckNecessary;
+
+        $form = $event->getForm();
+
+        if ($this->isMinimumSubmissionTimePassed($form)) {
+            $event->getForm()->setMarkedAsSpam(true);
+
+            if ($this->isSpamBehaviourDisplayErrors()) {
+                $event->getForm()->addError(Freeform::t('Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.'));
+            }
+
+            return;
+        }
+
+        if ($this->isMaximumSubmissionTimePassed($form)) {
+            $event->getForm()->setMarkedAsSpam(true);
+
+            if ($this->isSpamBehaviourDisplayErrors()) {
+                $event->getForm()->addError(Freeform::t('Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.'));
+            }
+
+            return;
+        }
 
         if (null === $loaded) {
             $keywords                     = $this->getSettingsModel()->getBlockedKeywords();
@@ -535,5 +557,35 @@ class SettingsService extends BaseService
         }
 
         return $hasOldFreeform;
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    private function isMinimumSubmissionTimePassed(Form $form): bool
+    {
+        $initTime      = $form->getInitTime();
+        $timeFormAlive = time() - $initTime;
+
+        $minTime = $this->getSettingsModel()->minimumSubmitTime;
+
+        return $minTime && $timeFormAlive <= $minTime;
+    }
+
+    /**
+     * @param Form $form
+     *
+     * @return bool
+     */
+    private function isMaximumSubmissionTimePassed(Form $form): bool
+    {
+        $initTime      = $form->getInitTime();
+        $timeFormAlive = time() - $initTime;
+
+        $maxTime = $this->getSettingsModel()->formSubmitExpiration;
+
+        return $maxTime && $timeFormAlive >= $maxTime * 60;
     }
 }

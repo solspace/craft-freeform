@@ -336,11 +336,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getCurrentPage(): Page
     {
+        /** @var Page $page */
         static $page;
 
         $index = $this->getFormValueContext()->getCurrentPageIndex();
 
-        if (null === $page || $this->cachedPageIndex !== $index) {
+        if (null === $page || $this->cachedPageIndex !== $index || $page->getIndex() !== $index) {
             if (!isset($this->layout->getPages()[$index])) {
                 throw new FreeformException(
                     $this->getTranslator()->translate(

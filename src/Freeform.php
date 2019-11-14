@@ -804,23 +804,31 @@ class Freeform extends Plugin
             }
         );
 
-        Event::on(
-            FieldsService::class,
-            FieldsService::EVENT_AFTER_VALIDATE,
-            [$this->recaptcha, 'validateRecaptchaV2Checkbox']
-        );
+        if (!\Craft::$app->request->getIsCpRequest()) {
+            Event::on(
+                FieldsService::class,
+                FieldsService::EVENT_AFTER_VALIDATE,
+                [$this->recaptcha, 'validateRecaptchaV2Checkbox']
+            );
 
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_FORM_VALIDATE,
-            [$this->recaptcha, 'validateRecaptchaV2Invisible']
-        );
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_FORM_VALIDATE,
+                [$this->recaptcha, 'validateRecaptchaV2Invisible']
+            );
 
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_FORM_VALIDATE,
-            [$this->recaptcha, 'validateRecaptchaV3']
-        );
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_FORM_VALIDATE,
+                [$this->recaptcha, 'validateRecaptchaV3']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_RENDER_CLOSING_TAG,
+                [$this->recaptcha, 'addRecaptchaJavascriptToForm']
+            );
+        }
 
         Event::on(
             SettingsService::class,
@@ -830,12 +838,6 @@ class Freeform extends Plugin
                     $event->addNavigationItem('recaptcha', Freeform::t('reCAPTCHA'), 'spam');
                 }
             }
-        );
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_RENDER_CLOSING_TAG,
-            [$this->recaptcha, 'addRecaptchaJavascriptToForm']
         );
 
         Event::on(

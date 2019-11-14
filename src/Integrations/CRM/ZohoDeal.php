@@ -59,35 +59,35 @@ class ZohoDeal extends AbstractCRMIntegration
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_SITE_CLIENT_ID,
                 'Client ID',
-                'Enter the Client ID of your Zoho in here.',
+                'Enter your Zoho Client ID here.',
                 true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_PASSWORD,
                 self::SETTING_SITE_CLIENT_SECRET,
                 'Client Secret',
-                'Enter the Client Secret of your Zoho here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_REDIRECT_URL,
-                'Redirect URL',
-                'Redirect URL',
+                'Enter your Zoho Client Secret here.',
                 true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_GRANT_TOKEN,
                 'Grant Token',
-                'Grant Token',
+                'Enter your Zoho Grant Token here.',
+                true
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_TEXT,
+                self::SETTING_REDIRECT_URL,
+                'Redirect URL',
+                'Enter your site URL here (e.g. \'https://mysite.com\').',
                 true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_ACCOUNT_URL,
                 'Account URL',
-                'Account URL',
+                'Enter your Zoho Developer Account URL here (e.g. \'https://accounts.zoho.com\' or \'https://accounts.zoho.eu/developerconsole\').',
                 true
             ),
             new SettingBlueprint(

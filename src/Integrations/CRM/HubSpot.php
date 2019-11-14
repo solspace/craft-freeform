@@ -259,8 +259,6 @@ class HubSpot extends AbstractCRMIntegration
                     $response = $this->createContact($client, $contactProps);
                 }
 
-
-
                 $json = json_decode((string) $response->getBody());
                 if (isset($json->vid)) {
                     $contactId = $json->vid;
@@ -284,6 +282,10 @@ class HubSpot extends AbstractCRMIntegration
                             }
 
                             $this->getHandler()->onAfterResponse($this, $response);
+                        } else {
+                            $responseBody = (string) $e->getResponse()->getBody();
+
+                            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
                         }
                     } else if (isset($json->error, $json->identityProfile) && $json->error === 'CONTACT_EXISTS') {
                         $contactId = $json->identityProfile->vid;

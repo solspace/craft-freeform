@@ -25,6 +25,7 @@
     {{ parent() }}
     enctype="multipart/form-data"
     data-id="{{ form.anchor }}"
+    {{ form.ruleProperties ? 'data-has-rules' : '' }}
 {% endblock %}
 
 {% block body %}

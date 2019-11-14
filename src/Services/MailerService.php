@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\mail\Message;
+use craft\web\View;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
@@ -92,6 +93,9 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
         $fieldValues = $renderEvent->getFieldValues();
+
+        $templateMode = \Craft::$app->view->getTemplateMode();
+        \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         foreach ($recipients as $recipientName => $emailAddress) {
             $fromName  = $this->renderString($notification->getFromName(), $fieldValues);
@@ -201,6 +205,8 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $logger->error($message);
             }
         }
+
+        \Craft::$app->view->setTemplateMode($templateMode);
 
         return $sentMailCount;
     }

@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.5.4 - 2019-11-14
+### Fixed
+- Fixed a bug where Table field types could not be shown/hidden with Conditional Rules.
+- Fixed a bug where Dynamic Recipients fields would not map to API integrations correctly.
+- Fixed a bug where granting users/groups permissions to manage specific forms would not allow them to delete submissions.
+- Fixed a bug where whitelisting spam submissions would error if the email notification template uses a layout.
+- Fixed a bug where the multi-page form `currentPage` property was resetting to `0` if page reloaded due to error, etc.
+- Fixed a bug where the CP individual submission page was not showing/hiding fields based on Conditional Rules.
+- Fixed a bug where the CP individual submission page was showing and validating reCAPTCHA.
+- Fixed a bug where field options populated by Entries that are of a Structure type could not be sorted by their correct hierarchy.
+- Fixed a bug where setting an incorrect IP address field value for the HubSpot integration would not log an error to the log.
+
 ## 3.5.3 - 2019-10-24
 ### Added
 - Added Zoho Leads and Zoho Deals CRM API integrations (Pro).

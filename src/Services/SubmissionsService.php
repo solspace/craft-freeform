@@ -330,8 +330,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function delete(array $submissions): bool
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-
+        $allowedFormIds = $this->getAllowedSubmissionFormIds();
         if (!$submissions) {
             return false;
         }
@@ -340,6 +339,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         try {
             foreach ($submissions as $submission) {
+                if ($allowedFormIds !== null && !in_array($submission->formId, $allowedFormIds, false)) {
+                    continue;
+                }
+
                 $deleteEvent = new DeleteEvent($submission);
                 $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
 
@@ -441,9 +444,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             return null;
         }
 
-        $formIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-
-        return $formIds;
+        return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
     }
 
     /**

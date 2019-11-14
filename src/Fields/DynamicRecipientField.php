@@ -118,7 +118,7 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
     public function getValueAsString(bool $optionsAsValues = true): string
     {
         if (!$optionsAsValues) {
-            return $this->getActualValue($this->getValue());
+            return implode(', ', $this->getActualValue($this->getValue()) ?? []);
         }
 
         $areIndexValues = true;

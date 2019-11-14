@@ -444,8 +444,8 @@ class ApiController extends BaseController
         $startDateParam = \Craft::$app->request->post('startDate');
         $endDateParam   = \Craft::$app->request->post('endDate');
 
-        $startDate = new Carbon($startDateParam, 'UTC');
-        $endDate   = new Carbon($endDateParam, 'UTC');
+        $startDate = new Carbon($startDateParam);
+        $endDate   = new Carbon($endDateParam);
         $endDate->setTime(23, 59, 59);
 
         $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);

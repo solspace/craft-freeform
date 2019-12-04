@@ -17,6 +17,8 @@ use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Events\Mailer\SendEmailEvent;
+use Solspace\Freeform\Fields\HtmlField;
+use Solspace\Freeform\Fields\Pro\RichTextField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
@@ -230,11 +232,16 @@ class MailerService extends BaseService implements MailHandlerInterface
      */
     private function getFieldValues(array $fields, Form $form, Submission $submission = null): array
     {
-        $postedValues = [];
-        $usableFields = [];
-        $rules        = $form->getRuleProperties();
+        $postedValues    = [];
+        $usableFields    = [];
+        $fieldsAndBlocks = [];
+        $rules           = $form->getRuleProperties();
 
         foreach ($fields as $field) {
+            if ($field instanceof HtmlField || $field instanceof RichTextField) {
+                $fieldsAndBlocks[] = $field;
+            }
+
             if ($field instanceof NoStorageInterface
                 || $field instanceof FileUploadInterface
                 || $field instanceof PaymentInterface
@@ -251,6 +258,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                 continue;
             }
 
+            $fieldsAndBlocks[]                 = $field;
             $usableFields[]                    = $field;
             $postedValues[$field->getHandle()] = $field;
         }
@@ -264,11 +272,12 @@ class MailerService extends BaseService implements MailHandlerInterface
             $postedValues['payments'] = $payments;
         }
 
-        $postedValues['allFields']   = $usableFields;
-        $postedValues['form']        = $form;
-        $postedValues['submission']  = $submission;
-        $postedValues['dateCreated'] = new \DateTime();
-        $postedValues['token']       = $submission ? $submission->token : null;
+        $postedValues['allFields']          = $usableFields;
+        $postedValues['allFieldsAndBlocks'] = $fieldsAndBlocks;
+        $postedValues['form']               = $form;
+        $postedValues['submission']         = $submission;
+        $postedValues['dateCreated']        = new \DateTime();
+        $postedValues['token']              = $submission ? $submission->token : null;
 
         return $postedValues;
     }

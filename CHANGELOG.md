@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.5.5 - 2019-12-04
+### Added
+- Added `allFieldsAndBlocks` to email notification templates, which does the same as `allFields` but includes HTML blocks and Rich Text blocks as well.
+
+### Changed
+- Updated Freeform's Composer-based attributes settings for fields and forms to no longer allow Twig parsing.
+
+### Fixed
+- Fixed a bug where reCAPTCHA v3 was not working correctly.
+- Fixed a bug where Table fields would not generate additional rows correctly if there was only a single column.
+- Fixed a bug where the submissions chart in the Submissions CP index page was not correctly factoring in timezones.
+
 ## 3.5.4 - 2019-11-14
 ### Fixed
 - Fixed a bug where Table field types could not be shown/hidden with Conditional Rules.

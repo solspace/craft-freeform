@@ -36,7 +36,6 @@ abstract class AbstractAttributes
                 continue;
             }
 
-            $attribute = \Craft::$app->view->renderObjectTemplate($attribute, $templateObject, $templateVars);
             $attribute = htmlentities($attribute, ENT_QUOTES);
 
             if (!$value) {
@@ -47,7 +46,6 @@ abstract class AbstractAttributes
                 continue;
             }
 
-            $value = \Craft::$app->view->renderObjectTemplate($value, $templateObject, $templateVars);
             $value = htmlentities($value, ENT_QUOTES);
 
             if (isset($byAttribute[$attribute])) {

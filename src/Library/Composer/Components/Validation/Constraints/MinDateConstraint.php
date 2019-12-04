@@ -44,13 +44,17 @@ class MinDateConstraint implements ConstraintInterface
             return $violationList;
         }
 
-        $minDate = new Carbon($this->minDate);
-        $minDate->setTime(0, 0, 0);
+        try {
+            $minDate = new Carbon($this->minDate);
+            $minDate->setTime(0, 0, 0);
 
-        $date = Carbon::createFromFormat($this->format, $value);
+            $date = Carbon::createFromFormat($this->format, $value);
 
-        if ($date->lt($minDate)) {
-            $violationList->addError($this->message);
+            if ($date->lt($minDate)) {
+                $violationList->addError($this->message);
+            }
+        } catch (\InvalidArgumentException $e) {
+            $violationList->addError("Please be sure to use the correct date segment separator (e.g. '/', '-', etc).");
         }
 
         return $violationList;

@@ -44,17 +44,16 @@ class MaxDateConstraint implements ConstraintInterface
             return $violationList;
         }
 
-        try {
-            $maxDate = new Carbon($this->maxDate);
-            $maxDate->setTime(23, 59, 59);
+        $maxDate = new Carbon($this->maxDate);
+        $maxDate->setTime(23, 59, 59);
 
+        try {
             $date = Carbon::createFromFormat($this->format, $value);
 
             if ($date->gt($maxDate)) {
                 $violationList->addError($this->message);
             }
         } catch (\InvalidArgumentException $e) {
-            $violationList->addError("Please be sure to use the correct date segment separator (e.g. '/', '-', etc).");
         }
 
         return $violationList;

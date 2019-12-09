@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.5.6 - 2019-12-09 [CRITICAL]
+### Fixed
+- Fixed a bug where reCAPTCHA v2 Invisible and v3 was breaking built-in AJAX submitting.
+- Fixed a potential security vulnerability with submitting of forms.
+- Fixed a bug where Min Date and Max Date settings for Date & Time fields could error incorrectly in some cases.
+
 ## 3.5.5 - 2019-12-04
 ### Added
 - Added `allFieldsAndBlocks` to email notification templates, which does the same as `allFields` but includes HTML blocks and Rich Text blocks as well.

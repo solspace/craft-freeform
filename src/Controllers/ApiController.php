@@ -75,8 +75,15 @@ class ApiController extends BaseController
                 //TODO: if payment failed than display error message
 
                 $postedReturnUrl = \Craft::$app->request->post(Form::RETURN_URI_KEY);
+                if ($postedReturnUrl) {
+                    $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
+                    if ($returnUrl === false) {
+                        $returnUrl = $form->getReturnUrl();
+                    }
+                } else {
+                    $returnUrl = $form->getReturnUrl();
+                }
 
-                $returnUrl = $postedReturnUrl ?: $form->getReturnUrl();
                 $returnUrl = \Craft::$app->view->renderString(
                     $returnUrl,
                     [

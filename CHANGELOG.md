@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 2.5.27 - 2019-12-09 [CRITICAL]
+### Fixed
+- Fixed a potential security vulnerability with submitting of forms.
+
 ## 2.5.26 - 2019-06-26
 ### Changed
 - Updated Honeypot field to ensure screen readers don't see it and it can't be tabbed to, etc.

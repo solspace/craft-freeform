@@ -753,7 +753,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         if ($customAttributes->getReturnUrl()) {
             $output .= '<input type="hidden" '
                 . 'name="' . self:: RETURN_URI_KEY . '" '
-                . 'value="' . $customAttributes->getReturnUrl() . '" '
+                . 'value="' . \Craft::$app->security->hashData($customAttributes->getReturnUrl()) . '" '
                 . '/>';
         }
 

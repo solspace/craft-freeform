@@ -45,20 +45,22 @@
             options: opts,
         }) }}
 
-        {{ forms.textField({
+        {{ forms.autosuggestField({
             label: "reCAPTCHA Site Key"|t('freeform'),
             name: "settings[recaptchaKey]",
             required: true,
             value: settings.recaptchaKey,
             errors: settings.errors("recaptchaKey"),
+            suggestEnvVars: true,
         }) }}
 
-        {{ forms.textField({
+        {{ forms.autosuggestField({
             label: "reCAPTCHA Secret Key"|t('freeform'),
             name: "settings[recaptchaSecret]",
             required: true,
             value: settings.recaptchaSecret,
             errors: settings.errors("recaptchaSecret"),
+            suggestEnvVars: true,
         }) }}
 
         {{ forms.selectField({

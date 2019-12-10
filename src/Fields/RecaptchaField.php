@@ -39,7 +39,7 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
         /** @var Settings $settings */
         $settings = Freeform::getInstance()->getSettings();
 
-        $key   = $settings->recaptchaKey;
+        $key   = \Craft::parseEnv($settings->recaptchaKey);
         $type  = $settings->getRecaptchaType();
 
         switch ($type) {

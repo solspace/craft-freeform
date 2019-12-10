@@ -87,7 +87,7 @@ class RecaptchaService extends Component
                     $scriptJs,
                     [
                         'formAnchor' => $event->getForm()->getAnchor(),
-                        'siteKey'    => $model->recaptchaKey,
+                        'siteKey'    => \Craft::parseEnv($model->recaptchaKey),
                         'action' => $event->getForm()->getCustomAttributes()->getRecaptchaAction() ?? 'homepage',
                     ]
                 );
@@ -103,7 +103,7 @@ class RecaptchaService extends Component
                     $scriptJs,
                     [
                         'formAnchor' => $event->getForm()->getAnchor(),
-                        'siteKey'    => $model->recaptchaKey,
+                        'siteKey'    => \Craft::parseEnv($model->recaptchaKey),
                     ]
                 );
 
@@ -115,7 +115,7 @@ class RecaptchaService extends Component
                             data-callback="updateRecaptchaToken" 
                             data-size="invisible"
                             ></div>',
-                        $model->recaptchaKey
+                        \Craft::parseEnv($model->recaptchaKey)
                     )
                 );
                 break;
@@ -167,7 +167,7 @@ class RecaptchaService extends Component
             return false;
         }
 
-        $secret = $this->getSettings()->recaptchaSecret;
+        $secret = \Craft::parseEnv($this->getSettings()->recaptchaSecret);
 
         $client   = new Client();
         $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [

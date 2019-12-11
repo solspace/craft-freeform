@@ -236,7 +236,7 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         foreach ($layout as $column) {
             $label = $column['label'] ?? '';
 
-            $output .= '<th>' . htmlentities($label) . '</th>';
+            $output .= '<th' . $this->getAttributeString('class', $attributes->getTableLabelsClass()) . '>' . htmlentities($label) . '</th>';
         }
         $output .= '<th>&nbsp;</th></tr>';
         $output .= '</thead>';

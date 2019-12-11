@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.5.7 - 2019-12-11
+### Added
+- Added Tailwind CSS formatting template to the built-in example options. Due to the nature of Tailwind, this likely won't be useable as-is for most customers, but will serve as a good starting point for creating your own. If you have any suggestions on how we can improve upon this template, please let us know. :)
+
+### Fixed
+- Fixed a bug where the 'Disable Submit Button on Form Submit' feature was not working correctly.
+
 ## 3.5.6 - 2019-12-09 [CRITICAL]
 ### Fixed
 - Fixed a bug where reCAPTCHA v2 Invisible and v3 was breaking built-in AJAX submitting.
@@ -299,6 +306,10 @@
 - Fixed a bug where soft-deleted submissions were being included in exports.
 - Fixed a bug where using Radio field type with Freeform Payments forms (for amount) were not working correctly.
 - Fixed a bug where Rating field stars sometimes looked plumper than they should in the CP.
+
+## 2.5.27 - 2019-12-09 [CRITICAL]
+### Fixed
+- Fixed a potential security vulnerability with submitting of forms.
 
 ## 2.5.26 - 2019-06-26
 ### Changed

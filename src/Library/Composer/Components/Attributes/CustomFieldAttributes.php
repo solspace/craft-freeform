@@ -66,6 +66,9 @@ class CustomFieldAttributes extends AbstractAttributes
     /** @var string */
     protected $tableSelectInputClass;
 
+    /** @var string */
+    protected $tableLabelsClass;
+
     /** @var AbstractField */
     private $field;
 
@@ -304,6 +307,14 @@ class CustomFieldAttributes extends AbstractAttributes
     public function getTableCheckboxInputClass()
     {
         return $this->tableCheckboxInputClass;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTableLabelsClass()
+    {
+        return $this->tableLabelsClass;
     }
 
     /**

@@ -25,6 +25,8 @@ use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Stripe as StripeAPI;
 use Stripe\Charge;
 use Stripe\Customer;
+use Stripe\Error\Card;
+use Stripe\Error\InvalidRequest;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Subscription;
@@ -309,7 +311,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $submissionId = $paymentDetails->getSubmission()->getId();
 
         $data = $this->processPaymentIntent($paymentDetails->getToken(), $paymentDetails);
-        if ($data === false) {
+        if (!$data) {
             $this->savePayment([], $submissionId);
 
             return false;
@@ -374,7 +376,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
                 /** @var PaymentIntent $paymentIntent */
                 $paymentIntentId = $invoice->payment_intent;
-                $paymentIntent = PaymentIntent::update(
+                $paymentIntent   = PaymentIntent::update(
                     $paymentIntentId,
                     ['metadata' => ['subscription' => $subscription['id']]]
                 );
@@ -685,7 +687,16 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
         $submissionId = $paymentDetails->getSubmission()->getId();
 
-        $intent = PaymentIntent::retrieve($paymentIntentId);
+        if ($paymentIntentId === 'declined') {
+            $this->lastError = new \Exception('Your card was declined', 400);
+            return false;
+        }
+
+        try {
+            $intent = PaymentIntent::retrieve($paymentIntentId);
+        } catch (\Exception $e) {
+            return $this->processError($e);
+        }
 
         $customer = null;
         if (!$intent->customer) {

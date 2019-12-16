@@ -25,6 +25,9 @@ class Suppressors
     /** @var bool */
     private $webhooks = false;
 
+    /** @var bool */
+    private $payload = false;
+
     /**
      * Suppressors constructor.
      *
@@ -40,6 +43,7 @@ class Suppressors
             $this->submitterNotifications = true;
             $this->payments               = true;
             $this->webhooks               = true;
+            $this->payload                = true;
         }
 
         if (is_array($settings)) {
@@ -105,5 +109,13 @@ class Suppressors
     public function isWebhooks(): bool
     {
         return $this->webhooks;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPayload(): bool
+    {
+        return $this->payload;
     }
 }

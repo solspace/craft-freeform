@@ -188,6 +188,8 @@ class FormsService extends BaseService implements FormHandlerInterface
         $record->description                = $model->description;
         $record->layoutJson                 = $model->layoutJson;
         $record->returnUrl                  = $model->returnUrl;
+        $record->extraPostUrl               = $model->extraPostUrl;
+        $record->extraPostTriggerPhrase     = $model->extraPostTriggerPhrase;
         $record->defaultStatus              = $model->defaultStatus;
         $record->formTemplateId             = $model->formTemplateId;
         $record->color                      = $model->color;

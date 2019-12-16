@@ -77,6 +77,7 @@ use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotesService;
 use Solspace\Freeform\Services\NotificationsService;
+use Solspace\Freeform\Services\PayloadForwardingService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
@@ -137,6 +138,7 @@ use yii\web\ForbiddenHttpException;
  * @property SubscriptionsService        $subscriptions
  * @property WebhooksService             $webhooks
  * @property RelationsService            $relations
+ * @property PayloadForwardingService    $payloadForwarding
  */
 class Freeform extends Plugin
 {
@@ -503,6 +505,7 @@ class Freeform extends Plugin
                 'webhooks'             => WebhooksService::class,
                 'relations'            => RelationsService::class,
                 'notes'                => NotesService::class,
+                'payloadForwarding'    => PayloadForwardingService::class,
             ]
         );
     }
@@ -844,6 +847,12 @@ class Freeform extends Plugin
             FormsService::class,
             FormsService::EVENT_AFTER_SUBMIT,
             [$this->relations, 'relate']
+        );
+
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_AFTER_SUBMIT,
+            [$this->payloadForwarding, 'forward']
         );
 
         if ($this->isPro()) {

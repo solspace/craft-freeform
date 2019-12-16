@@ -17,6 +17,12 @@ class CustomFormAttributes extends AbstractAttributes
     protected $returnUrl;
 
     /** @var string */
+    protected $extraPostUrl;
+
+    /** @var string */
+    protected $extraPostTriggerPhrase;
+
+    /** @var string */
     protected $inputClass;
 
     /** @var string */
@@ -97,6 +103,22 @@ class CustomFormAttributes extends AbstractAttributes
     public function getReturnUrl()
     {
         return $this->returnUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExtraPostUrl()
+    {
+        return $this->extraPostUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExtraPostTriggerPhrase()
+    {
+        return $this->extraPostTriggerPhrase;
     }
 
     /**

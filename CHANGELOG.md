@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.5.8 - 2019-12-16
+### Added
+- Added POST Forwarding feature, allowing your forms to automatically submit an extra POST to pass off submission data to an external API URL upon successful submit and validation of a form.
+
+### Fixed
+- Fixed a bug where Stripe payment forms would fail if a declined credit card was used.
+
 ## 3.5.7 - 2019-12-11
 ### Added
 - Added Tailwind CSS formatting template to the built-in example options. Due to the nature of Tailwind, this likely won't be useable as-is for most customers, but will serve as a good starting point for creating your own. If you have any suggestions on how we can improve upon this template, please let us know. :)

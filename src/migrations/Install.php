@@ -30,7 +30,9 @@ class Install extends StreamlinedInstallMigration
                 ->addField('formTemplateId', $this->integer()->unsigned())
                 ->addField('color', $this->string(10))
                 ->addField('optInDataStorageTargetHash', $this->string(20)->null())
-                ->addField('limitFormSubmissions', $this->string(20)->null()),
+                ->addField('limitFormSubmissions', $this->string(20)->null())
+                ->addField('extraPostUrl', $this->string(255)->null())
+                ->addField('extraPostTriggerPhrase', $this->string(255)->null()),
 
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())

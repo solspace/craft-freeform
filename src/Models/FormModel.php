@@ -35,6 +35,8 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property string $description
  * @property string $layoutJson
  * @property string $returnUrl
+ * @property string $extraPostUrl
+ * @property string $extraPostTriggerPhrase
  * @property int    $defaultStatus
  * @property int    $formTemplateId
  * @property string $optInDataStorageTargetHash
@@ -69,6 +71,12 @@ class FormModel extends Model
 
     /** @var string */
     public $returnUrl;
+
+    /** @var string */
+    public $extraPostUrl;
+
+    /** @var string */
+    public $extraPostTriggerPhrase;
 
     /** @var int */
     public $defaultStatus;
@@ -116,6 +124,8 @@ class FormModel extends Model
         $this->description                = $form->getDescription();
         $this->defaultStatus              = $form->getDefaultStatus();
         $this->returnUrl                  = $form->getReturnUrl();
+        $this->extraPostUrl               = $form->getExtraPostUrl();
+        $this->extraPostTriggerPhrase     = $form->getExtraPostTriggerPhrase();
         $this->color                      = $form->getColor();
         $this->optInDataStorageTargetHash = $form->getOptInDataStorageTargetHash();
         $this->limitFormSubmissions       = $form->getLimitFormSubmissions();

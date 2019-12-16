@@ -37,6 +37,7 @@ class FreeformLogger
     const PAYMENT_GATEWAY          = 'Payment Gateway';
     const CONDITIONAL_RULE         = 'Conditional Rule';
     const ELEMENT_CONNECTION       = 'Element Connection';
+    const PAYLOAD_FORWARDING       = 'POST Forwarding';
 
     private static $categoryColorMap = [
         self::FREEFORM                 => '#333333',

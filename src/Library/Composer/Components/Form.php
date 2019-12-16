@@ -74,6 +74,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var string */
     private $returnUrl;
 
+    /** @var string */
+    private $extraPostUrl;
+
+    /** @var string */
+    private $extraPostTriggerPhrase;
+
     /** @var bool */
     private $storeData;
 
@@ -366,6 +372,22 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getReturnUrl(): string
     {
         return $this->returnUrl ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtraPostUrl(): string
+    {
+        return $this->extraPostUrl ?: '';
+    }
+
+    /**
+     * @return string
+     */
+    public function getExtraPostTriggerPhrase(): string
+    {
+        return $this->extraPostTriggerPhrase ?: '';
     }
 
     /**
@@ -1073,6 +1095,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->submissionTitleFormat      = $formProperties->getSubmissionTitleFormat();
         $this->description                = $formProperties->getDescription();
         $this->returnUrl                  = $formProperties->getReturnUrl();
+        $this->extraPostUrl               = $formProperties->getExtraPostUrl();
+        $this->extraPostTriggerPhrase     = $formProperties->getExtraPostTriggerPhrase();
         $this->storeData                  = $formProperties->isStoreData();
         $this->ipCollectingEnabled        = $formProperties->isIpCollectingEnabled();
         $this->defaultStatus              = $formProperties->getDefaultStatus();

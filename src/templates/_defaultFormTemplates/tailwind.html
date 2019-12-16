@@ -1,6 +1,5 @@
 {% css formCss %}
 
-{# Set a custom required label class since it's not available for tailwind #}
 <style>
     .required::after {
         content: "*";
@@ -9,7 +8,6 @@
     }
 </style>
 
-{# Render the Free Form #}
 {{ form.renderTag({class: "w-full"}) }}
 
 {# Set styling for Ajax responses #}

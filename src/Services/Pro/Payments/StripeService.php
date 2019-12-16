@@ -17,7 +17,6 @@ use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SinglePaymentAction;
-use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SinglePaymentConfirmation;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SubscriptionPaymentIntentAction;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -29,8 +28,10 @@ use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Models\IntegrationModel;
 use Stripe\Customer;
+use Stripe\Error\Card;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Plan;
@@ -68,13 +69,18 @@ class StripeService extends Component
             $amount   = $dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount();
             $amount   = Stripe::toStripeAmount($amount, $currency);
 
-            $paymentIntent = PaymentIntent::create([
-                'payment_method'      => $token,
-                'amount'              => $amount,
-                'currency'            => $currency,
-                'confirmation_method' => 'manual',
-                'confirm'             => true,
-            ]);
+            try {
+                $paymentIntent = PaymentIntent::create([
+                    'payment_method'      => $token,
+                    'amount'              => $amount,
+                    'currency'            => $currency,
+                    'confirmation_method' => 'manual',
+                    'confirm'             => true,
+                ]);
+            } catch (\Exception $e) {
+                $paymentField->setValue('declined');
+                return;
+            }
         } else {
             $paymentIntent = PaymentIntent::retrieve($token);
         }

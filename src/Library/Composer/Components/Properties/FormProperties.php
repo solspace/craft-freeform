@@ -31,6 +31,12 @@ class FormProperties extends AbstractProperties
     /** @var string */
     protected $returnUrl;
 
+    /** @var string */
+    protected $extraPostUrl;
+
+    /** @var string */
+    protected $extraPostTriggerPhrase;
+
     /** @var bool */
     protected $storeData;
 
@@ -101,6 +107,22 @@ class FormProperties extends AbstractProperties
     public function getReturnUrl(): string
     {
         return $this->returnUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExtraPostUrl()
+    {
+        return $this->extraPostUrl;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExtraPostTriggerPhrase()
+    {
+        return $this->extraPostTriggerPhrase;
     }
 
     /**
@@ -184,6 +206,8 @@ class FormProperties extends AbstractProperties
             'submissionTitleFormat'      => self::TYPE_STRING,
             'description'                => self::TYPE_STRING,
             'returnUrl'                  => self::TYPE_STRING,
+            'extraPostUrl'               => self::TYPE_STRING,
+            'extraPostTriggerPhrase'     => self::TYPE_STRING,
             'storeData'                  => self::TYPE_BOOLEAN,
             'ipCollectingEnabled'        => self::TYPE_BOOLEAN,
             'defaultStatus'              => self::TYPE_INTEGER,

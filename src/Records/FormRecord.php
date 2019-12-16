@@ -35,6 +35,8 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property string $description
  * @property string $layoutJson
  * @property string $returnUrl
+ * @property string $extraPostUrl
+ * @property string $extraPostTriggerPhrase
  * @property int    $defaultStatus
  * @property int    $formTemplateId
  * @property int    $optInDataStorageTargetHash

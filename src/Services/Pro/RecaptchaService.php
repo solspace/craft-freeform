@@ -79,6 +79,9 @@ class RecaptchaService extends Component
         }
 
         $alias = \Yii::getAlias('@freeform');
+
+        $recaptchaKey = \Craft::parseEnv($model->recaptchaKey);
+
         switch ($model->getRecaptchaType()) {
             case Settings::RECAPTCHA_TYPE_V3:
                 $scriptJs = file_get_contents($alias . '/Resources/js/other/pro/form/recaptcha-v3.js');
@@ -87,8 +90,8 @@ class RecaptchaService extends Component
                     $scriptJs,
                     [
                         'formAnchor' => $event->getForm()->getAnchor(),
-                        'siteKey'    => $model->recaptchaKey,
-                        'action' => $event->getForm()->getCustomAttributes()->getRecaptchaAction() ?? 'homepage',
+                        'siteKey'    => $recaptchaKey,
+                        'action'     => $event->getForm()->getCustomAttributes()->getRecaptchaAction() ?? 'homepage',
                     ]
                 );
 
@@ -103,7 +106,7 @@ class RecaptchaService extends Component
                     $scriptJs,
                     [
                         'formAnchor' => $event->getForm()->getAnchor(),
-                        'siteKey'    => $model->recaptchaKey,
+                        'siteKey'    => $recaptchaKey,
                     ]
                 );
 
@@ -115,7 +118,7 @@ class RecaptchaService extends Component
                             data-callback="updateRecaptchaToken" 
                             data-size="invisible"
                             ></div>',
-                        $model->recaptchaKey
+                        $recaptchaKey
                     )
                 );
                 break;
@@ -167,7 +170,7 @@ class RecaptchaService extends Component
             return false;
         }
 
-        $secret = $this->getSettings()->recaptchaSecret;
+        $secret = \Craft::parseEnv($this->getSettings()->recaptchaSecret);
 
         $client   = new Client();
         $response = $client->post('https://www.google.com/recaptcha/api/siteverify', [

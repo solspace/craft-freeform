@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2020, Solspace, Inc.
  * @link          https://docs.solspace.com/craft/freeform
  * @license       https://docs.solspace.com/license-agreement
  */
@@ -55,7 +55,6 @@ use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Models\FieldModel;
@@ -77,9 +76,9 @@ use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotesService;
 use Solspace\Freeform\Services\NotificationsService;
-use Solspace\Freeform\Services\PayloadForwardingService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
+use Solspace\Freeform\Services\Pro\PayloadForwardingService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\Pro\Payments\StripeService;
@@ -849,12 +848,6 @@ class Freeform extends Plugin
             [$this->relations, 'relate']
         );
 
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_AFTER_SUBMIT,
-            [$this->payloadForwarding, 'forward']
-        );
-
         if ($this->isPro()) {
             Event::on(
                 FormsService::class,
@@ -926,6 +919,12 @@ class Freeform extends Plugin
                 FormsService::class,
                 FormsService::EVENT_AFTER_SUBMIT,
                 [$this->webhooks, 'triggerWebhooks']
+            );
+
+            Event::on(
+                FormsService::class,
+                FormsService::EVENT_AFTER_SUBMIT,
+                [$this->payloadForwarding, 'forward']
             );
         }
     }

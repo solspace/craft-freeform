@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2020, Solspace, Inc.
  * @link          https://docs.solspace.com/craft/freeform
  * @license       https://docs.solspace.com/license-agreement
  */
@@ -100,8 +100,8 @@ class MailerService extends BaseService implements MailHandlerInterface
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         foreach ($recipients as $recipientName => $emailAddress) {
-            $fromName  = $this->renderString($notification->getFromName(), $fieldValues);
-            $fromEmail = $this->renderString($notification->getFromEmail(), $fieldValues);
+            $fromName  = $this->renderString(\Craft::parseEnv($notification->getFromName()), $fieldValues);
+            $fromEmail = $this->renderString(\Craft::parseEnv($notification->getFromEmail()), $fieldValues);
 
             $email = new Message();
 
@@ -134,19 +134,19 @@ class MailerService extends BaseService implements MailHandlerInterface
                 if ($notification->getCc()) {
                     $cc = StringHelper::extractSeparatedValues($notification->getCc());
                     if (!empty($cc)) {
-                        $email->setCc($cc);
+                        $email->setCc($this->parseEnvInArray($cc));
                     }
                 }
 
                 if ($notification->getBcc()) {
                     $bcc = StringHelper::extractSeparatedValues($notification->getBcc());
                     if (!empty($bcc)) {
-                        $email->setBcc($bcc);
+                        $email->setBcc($this->parseEnvInArray($bcc));
                     }
                 }
 
                 if ($notification->getReplyToEmail()) {
-                    $replyTo = trim($this->renderString($notification->getReplyToEmail(), $fieldValues));
+                    $replyTo = trim($this->renderString(\Craft::parseEnv($notification->getReplyToEmail()), $fieldValues));
                     if (!empty($replyTo)) {
                         $email->setReplyTo($replyTo);
                     }
@@ -221,6 +221,20 @@ class MailerService extends BaseService implements MailHandlerInterface
     public function getNotificationById($id)
     {
         return Freeform::getInstance()->notifications->getNotificationById($id);
+    }
+
+    /**
+     * @param array $array
+     *
+     * @return array
+     */
+    private function parseEnvInArray(array $array) {
+        $parsed = [];
+        foreach ($array as $key => $item) {
+            $parsed[$key] = \Craft::parseEnv($item);
+        }
+
+        return $parsed;
     }
 
     /**

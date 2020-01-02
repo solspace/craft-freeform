@@ -4,7 +4,7 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2020, Solspace, Inc.
  * @link          https://docs.solspace.com/craft/freeform
  * @license       https://docs.solspace.com/license-agreement
  */
@@ -123,9 +123,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             $field->setValue($storedValue);
         }
 
-        if ($field instanceof CheckboxField && $formValueContext->hasFormBeenPosted()) {
+        if ($field instanceof CheckboxField) {
             $storedValue = $formValueContext->getStoredValue($field);
-            $field->setIsCheckedByPost((bool) $storedValue);
+            if ($formValueContext->hasFormBeenPosted() || $storedValue !== null) {
+                $field->setIsCheckedByPost((bool) $storedValue);
+            }
         }
 
         return $field;

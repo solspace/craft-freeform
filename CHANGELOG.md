@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.5.9 - 2020-01-02
+### Changed
+- Updated reCAPTCHA settings to have the ability to use environment variables.
+- Updated email notification templates to have more settings with the ability to use environment variables.
+
+### Fixed
+- Fixed a bug where the GET Query String feature was not working correctly for single checkboxes.
+- Fixed a bug where error messages on radio or checkbox group fields were not displaying correctly when options are displayed on a single line and using the built-in AJAX feature.
+- Fixed a bug where filtering the submissions overview in the CP by status (e.g. pending or closed), would return a 500 error in some cases.
+
 ## 3.5.8 - 2019-12-16
 ### Added
 - Added POST Forwarding feature, allowing your forms to automatically submit an extra POST to pass off submission data to an external API URL upon successful submit and validation of a form.

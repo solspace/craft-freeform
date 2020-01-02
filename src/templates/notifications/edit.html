@@ -88,51 +88,56 @@
         required: true
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "From Email"|t('freeform'),
         instructions: "The email address that the email will appear from in your email notification."|t('freeform'),
         id: 'fromEmail',
         name: 'fromEmail',
         value: notification.fromEmail,
         errors: notification.getErrors('fromEmail'),
-        required: true
+        required: true,
+        suggestEnvVars: true,
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "From Name"|t('freeform'),
         instructions: "The name that the email will appear from in your email notification."|t('freeform'),
         id: 'fromName',
         name: 'fromName',
         value: notification.fromName,
         errors: notification.getErrors('fromName'),
-        required: true
+        required: true,
+        suggestEnvVars: true,
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "Reply-to Email"|t('freeform'),
         instructions: "The reply-to email address for your email notification. Leave blank to use 'From Email' address."|t('freeform'),
         id: 'replyToEmail',
         name: 'replyToEmail',
         value: notification.replyToEmail,
-        errors: notification.getErrors('replyToEmail')
+        errors: notification.getErrors('replyToEmail'),
+        suggestEnvVars: true,
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "CC"|t('freeform'),
         instructions: "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use."|t('freeform'),
         id: 'cc',
         name: 'cc',
         value: notification.cc,
-        errors: notification.getErrors('cc')
+        errors: notification.getErrors('cc'),
+        suggestEnvVars: true,
     }) }}
 
-    {{ forms.textField({
+    {{ forms.autosuggestField({
         label: "BCC"|t('freeform'),
         instructions: "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use."|t('freeform'),
         id: 'bcc',
         name: 'bcc',
         value: notification.bcc,
-        errors: notification.getErrors('bcc')
+        errors: notification.getErrors('bcc'),
+        suggestEnvVars: true,
     }) }}
 
     {{ forms.lightswitchField({

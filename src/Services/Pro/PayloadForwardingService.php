@@ -4,12 +4,12 @@
  *
  * @package       Solspace:Freeform
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2019, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2020, Solspace, Inc.
  * @link          https://docs.solspace.com/craft/freeform
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Pro;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
@@ -17,6 +17,7 @@ use GuzzleHttp\RequestOptions;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
+use Solspace\Freeform\Services\BaseService;
 
 class PayloadForwardingService extends BaseService
 {

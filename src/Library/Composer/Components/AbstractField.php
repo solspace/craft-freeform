@@ -15,6 +15,7 @@ use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\Pro\InvisibleField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;

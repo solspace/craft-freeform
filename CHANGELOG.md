@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 3.5.10 - 2020-01-14
+### Changed
+- Updated the Date & Time field type to no longer include the `autocomplete` attribute by default.
+
+### Fixed
+- Fixed a bug where the File Upload field type would not correctly display validation errors with built-in AJAX.
+- Fixed a bug where Stripe payments that contained decimals values would lose 1 cent in the transaction.
+- Fixed a bug where the Freeform error log could sometimes not display the correct dates.
+- Fixed a bug where using the Predefined Assets feature could cause the email notification template and form to fail in some cases.
+- Fixed a bug where the "Export as CSV" feature for submissions was ordering field columns by field ID instead of matching the Composer layout order.
+- Fixed a bug where Placeholders for fields were not translatable.
+- Fixed a bug where you could not select a formatting template if only 1 was available.
+
 ## 3.5.9 - 2020-01-02
 ### Changed
 - Updated reCAPTCHA settings to have the ability to use environment variables.

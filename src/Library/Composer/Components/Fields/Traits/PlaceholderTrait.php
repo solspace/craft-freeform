@@ -11,6 +11,8 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
+use Solspace\Freeform\Freeform;
+
 trait PlaceholderTrait
 {
     /** @var string */
@@ -21,6 +23,6 @@ trait PlaceholderTrait
      */
     public function getPlaceholder()
     {
-        return $this->placeholder;
+        return Freeform::t($this->placeholder ?? '');
     }
 }

@@ -503,7 +503,24 @@ class FormsService extends BaseService implements FormHandlerInterface
      */
     public function getDefaultFormattingTemplate(): string
     {
-        return $this->getSettingsService()->getSettingsModel()->formattingTemplate;
+        $default = $this->getSettingsService()->getSettingsModel()->formattingTemplate;
+
+        $templateList = [];
+        if ($this->getSettingsService()->getSettingsModel()->defaultTemplates) {
+            foreach ($this->getSettingsService()->getSolspaceFormTemplates() as $formTemplate) {
+                $templateList[] = $formTemplate->getFileName();
+            }
+        }
+
+        foreach ($this->getSettingsService()->getCustomFormTemplates() as $formTemplate) {
+            $templateList[] = $formTemplate->getFileName();
+        }
+
+        if (in_array($default, $templateList, true)) {
+            return $default;
+        }
+
+        return array_shift($templateList);
     }
 
     /**

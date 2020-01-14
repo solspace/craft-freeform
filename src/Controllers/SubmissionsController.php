@@ -110,6 +110,34 @@ class SubmissionsController extends BaseController
             if (!$form) {
                 throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $formId]));
             }
+
+            $dataReorder = [];
+            foreach ($submissions as $submission) {
+                $fieldData = [];
+                $reordered = [];
+                foreach ($submission as $key => $value) {
+                    if (preg_match('/^' . Submission::FIELD_COLUMN_PREFIX . '\d+$/', $key)) {
+                        $fieldData[$key] = $value;
+                    } else {
+                        $reordered[$key] = $value;
+                    }
+                }
+
+                foreach($form->getForm()->getLayout()->getFields() as $field) {
+                    if (!$field->getId()) {
+                        continue;
+                    }
+
+                    $columnName = Submission::getFieldColumnName($field->getId());
+                    if ($field->getId() && isset($fieldData[$columnName])) {
+                        $reordered[$columnName] = $fieldData[$columnName];
+                    }
+                }
+
+                $dataReorder[] = $reordered;
+            }
+
+            $submissions = $dataReorder;
         } else {
             throw new FreeformException(Freeform::t('No submissions found'));
         }

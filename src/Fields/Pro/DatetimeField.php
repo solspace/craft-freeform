@@ -439,7 +439,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
 
         if ($this->isUseDatepicker()) {
             $this->addInputClass('form-datepicker');
-            $this->addInputAttribute('autocomplete', 'off');
         }
 
         $hasTime = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_TIME], true);

@@ -82,7 +82,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
             return $amount;
         }
 
-        return floor($amount * 100);
+        return ceil($amount * 100);
     }
 
     public static function fromStripeAmount($amount, $currency)

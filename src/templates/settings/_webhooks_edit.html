@@ -34,8 +34,6 @@
 
 {% block content %}
 
-    <h2>{{ blockTitle }}</h2>
-
     <div>
         <input type="hidden" name="action" value="freeform/webhooks/save">
         {{ redirectInput('freeform/settings/webhooks') }}
@@ -45,6 +43,7 @@
         {% endif %}
 
         {{ forms.selectField({
+            first: true,
             label: "Type"|t('freeform'),
             instructions: "Choose the webhook type"|t('freeform'),
             name: 'type',

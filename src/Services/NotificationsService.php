@@ -56,8 +56,9 @@ class NotificationsService extends BaseService
             $settings = Freeform::getInstance()->settings->getSettingsModel();
             foreach ($settings->listTemplatesInEmailTemplateDirectory() as $filePath => $name) {
                 try {
-                    $model                               = NotificationRecord::createFromTemplate($filePath);
-                    self::$notificationCache[$model->id] = $model;
+                    $model = NotificationRecord::createFromTemplate($filePath);
+
+                    self::$notificationCache[$model->filepath] = $model;
                 } catch (EmailTemplateException $exception) {
                     \Craft::$app->session->setError(
                         Freeform::t(

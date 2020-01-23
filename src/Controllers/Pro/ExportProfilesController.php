@@ -11,6 +11,7 @@ use Solspace\Freeform\Library\Export\AbstractExport;
 use Solspace\Freeform\Library\Export\ExportCsv;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
+use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -25,6 +26,8 @@ class ExportProfilesController extends BaseController
 
         $exportProfileService = $this->getExportProfileService();
         $exportProfiles       = $exportProfileService->getAllProfiles();
+
+        $this->view->registerAssetBundle(SettingsBundle::class);
 
         return $this->renderTemplate(
             'freeform/export_profiles',

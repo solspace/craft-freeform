@@ -28,13 +28,15 @@ class ZohoLead extends AbstractCRMIntegration
     const LOG_CATEGORY = 'Zoho';
     const MODULE       = 'Leads';
 
-    const SETTING_SITE_CLIENT_ID     = 'client_id';
-    const SETTING_SITE_CLIENT_SECRET = 'client_secret';
-    const SETTING_REDIRECT_URL  = 'redirect_url';
-    const SETTING_GRANT_TOKEN   = 'grant_token';
-    const SETTING_ACCOUNT_URL   = 'account_url';
-    const SETTING_REFRESH_TOKEN   = 'refresh_token';
-    const SETTING_ACCESS_TOKEN_EXPIRES_IN   = 'accest_token_expires_in';
+    const SETTING_SITE_CLIENT_ID          = 'client_id';
+    const SETTING_SITE_CLIENT_SECRET      = 'client_secret';
+    const SETTING_REDIRECT_URL            = 'redirect_url';
+    const SETTING_GRANT_TOKEN             = 'grant_token';
+    const SETTING_ACCOUNT_URL             = 'account_url';
+    const SETTING_ACCESS_TOKEN_URL        = 'access_token_url';
+    const SETTING_API_ROOT_URL            = 'api_root_url';
+    const SETTING_REFRESH_TOKEN           = 'refresh_token';
+    const SETTING_ACCESS_TOKEN_EXPIRES_IN = 'accest_token_expires_in';
 
     /**
      * Returns a list of additional settings for this integration
@@ -77,7 +79,21 @@ class ZohoLead extends AbstractCRMIntegration
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_ACCOUNT_URL,
                 'Account URL',
-                'Enter your Zoho Developer Account URL here (e.g. \'https://accounts.zoho.com\' or \'https://accounts.zoho.eu/developerconsole\').',
+                'Enter your Zoho Developer Account URL here (e.g. \'https://accounts.zoho.com\' or \'https://accounts.zoho.eu\').',
+                true
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_TEXT,
+                self::SETTING_ACCESS_TOKEN_URL,
+                'Access Token URL',
+                'Enter your Zoho Developer Access Token URL here (e.g. \'https://accounts.zoho.com/oauth/v2/token\' or \'https://accounts.zoho.eu/oauth/v2/token\').',
+                true
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_TEXT,
+                self::SETTING_API_ROOT_URL,
+                'API Root URL',
+                'Enter your Zoho Developer Root URL here (e.g. \'https://www.zohoapis.com/crm/v2\' or \'https://www.zohoapis.eu/crm/v2\').',
                 true
             ),
             new SettingBlueprint(
@@ -127,7 +143,7 @@ class ZohoLead extends AbstractCRMIntegration
         $client = new Client([
             'headers' => [
                 'Authorization' => 'Basic ' . $clientId . ':' . $clientSecret,
-                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Content-Type'  => 'application/x-www-form-urlencoded',
             ],
         ]);
 
@@ -141,7 +157,7 @@ class ZohoLead extends AbstractCRMIntegration
 
         try {
             $response = $client->post(
-                $accountUrl. '/oauth/v2/token',
+                $accountUrl . '/oauth/v2/token',
                 ['form_params' => $payload]
             );
 
@@ -177,12 +193,14 @@ class ZohoLead extends AbstractCRMIntegration
      */
     public function onBeforeSave(IntegrationStorageInterface $model)
     {
-        $clientId     = $this->getClientId();
-        $clientSecret = $this->getClientSecret();
-        $redirectUri  = $this->getRedirectUrl();
-        $grantToken   = $this->getGrantToken();
+        $clientId       = $this->getClientId();
+        $clientSecret   = $this->getClientSecret();
+        $redirectUri    = $this->getRedirectUrl();
+        $grantToken     = $this->getGrantToken();
+        $accessTokenUrl = $this->getAccessTokenUrl();
+        $apiRootUrl     = $this->getApiRootUrl();
 
-        if (!$clientId || !$clientSecret || !$redirectUri || !$grantToken) {
+        if (!$clientId || !$clientSecret || !$redirectUri || !$grantToken || !$accessTokenUrl || !$apiRootUrl) {
             return;
         }
 
@@ -210,7 +228,7 @@ class ZohoLead extends AbstractCRMIntegration
             $response = $client->post(
                 $endpoint,
                 [
-                    'json'    => [
+                    'json' => [
                         'data' => [$keyValueList],
                     ],
                 ]
@@ -223,7 +241,7 @@ class ZohoLead extends AbstractCRMIntegration
             return $response->getStatusCode() === 201;
         } catch (RequestException $e) {
             $exceptionResponse = $e->getResponse();
-            
+
             if (!$exceptionResponse) {
                 $this->getLogger()->error($e->getMessage(), ['exception' => $e->getMessage()]);
 
@@ -336,13 +354,13 @@ class ZohoLead extends AbstractCRMIntegration
         $client = new Client([
             'headers' => [
                 'Authorization' => 'Basic ' . $clientId . ':' . $clientSecret,
-                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Content-Type'  => 'application/x-www-form-urlencoded',
             ],
         ]);
 
         try {
             $response = $client->post(
-                $accountUrl. '/oauth/v2/token?refresh_token=' . $refreshToken . '&client_id=' . $clientId . '&client_secret=' . $clientSecret . '&grant_type=refresh_token'
+                $accountUrl . '/oauth/v2/token?refresh_token=' . $refreshToken . '&client_id=' . $clientId . '&client_secret=' . $clientSecret . '&grant_type=refresh_token'
             );
 
             $json = \GuzzleHttp\json_decode($response->getBody(), false);
@@ -404,7 +422,7 @@ class ZohoLead extends AbstractCRMIntegration
      */
     protected function getAccessTokenUrl(): string
     {
-        return 'https://accounts.zoho.eu/oauth/v2/token';
+        return $this->getSetting(self::SETTING_ACCESS_TOKEN_URL);
     }
 
     /**
@@ -412,7 +430,7 @@ class ZohoLead extends AbstractCRMIntegration
      */
     protected function getApiRootUrl(): string
     {
-        return 'https://www.zohoapis.com/crm/v2';
+        return $this->getSetting(self::SETTING_API_ROOT_URL);
     }
 
     /**
@@ -484,7 +502,7 @@ class ZohoLead extends AbstractCRMIntegration
 
                 if ($this->refreshToken()) {
                     $newToken = $this->getAccessToken();
-                    $client = new Client([
+                    $client   = new Client([
                         'headers' => [
                             'Authorization' => 'Bearer ' . $newToken,
                             'Content-Type'  => 'application/json',

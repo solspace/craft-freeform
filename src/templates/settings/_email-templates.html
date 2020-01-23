@@ -6,13 +6,12 @@
 
 {% block content %}
 
-    <h2>{{ "Email Templates"|t('freeform') }}</h2>
-
     <input type="hidden" name="action" value="freeform/settings/save-settings">
     {{ redirectInput('freeform/settings/email-templates') }}
     {{ csrfInput() }}
 
     {{ forms.textField({
+        first: true,
         class: "code",
         label: "Directory Path"|t('freeform'),
         instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps Composer locate these files when setting up notifications."|t('freeform'),

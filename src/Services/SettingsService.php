@@ -458,7 +458,6 @@ class SettingsService extends BaseService
         $errorCount = Freeform::getInstance()->logger->getLogReader()->count();
 
         $nav = [
-            'hd'                   => ['heading' => Freeform::t('Settings')],
             'general'              => ['title' => Freeform::t('General Settings')],
             'formatting-templates' => ['title' => Freeform::t('Formatting Templates')],
             'email-templates'      => ['title' => Freeform::t('Email Templates')],
@@ -549,9 +548,17 @@ class SettingsService extends BaseService
             '/solspace/craft3-freeform-payments',
         ];
 
+        if (defined('CRAFT_VENDOR_PATH')) {
+            $vendorPath = CRAFT_VENDOR_PATH;
+        } else if (defined('CRAFT_BASE_PATH')) {
+            $vendorPath = CRAFT_BASE_PATH . '/vendor';
+        } else {
+            return false;
+        }
+
         $hasOldFreeform = false;
         foreach ($paths as $path) {
-            if (is_dir(CRAFT_VENDOR_PATH . $path)) {
+            if (is_dir($vendorPath . $path)) {
                 $hasOldFreeform = true;
             }
         }

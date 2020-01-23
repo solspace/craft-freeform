@@ -17,8 +17,6 @@
 
 {% set content %}
 
-    <h2>{{ "Error Log"|t('freeform') }}</h2>
-
     <div class="container">
 
         {% if logReader|length %}
@@ -54,9 +52,15 @@
                 </tbody>
             </table>
         {% else %}
-            {{ "Everything appears to be okay right now! No errors were found."|t("freeform") }}
+            <div class="readable">
+                <p style="padding: 24px !important">{{ "Everything appears to be okay right now! No errors were found."|t("freeform") }}</p>
+            </div>
         {% endif %}
 
     </div>
 
 {% endset %}
+
+{% css %}
+    #content { padding: 0; }
+{% endcss %}

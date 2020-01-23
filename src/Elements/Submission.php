@@ -168,6 +168,16 @@ class Submission extends Element
     }
 
     /**
+     * @param $name
+     *
+     * @return false|int
+     */
+    public static function isSubmissionField($name)
+    {
+        return preg_match('/^' . self::FIELD_COLUMN_PREFIX . '\d+$/', $name);
+    }
+
+    /**
      * @param int $fieldId
      *
      * @return string
@@ -522,7 +532,7 @@ class Submission extends Element
 
             return $clone;
         } catch (FieldException $exception) {
-            if (preg_match('/^' . self::FIELD_COLUMN_PREFIX . '\d+$/', $name)) {
+            if (self::isSubmissionField($name)) {
                 return null;
             }
 
@@ -535,15 +545,16 @@ class Submission extends Element
      */
     public function __set($name, $value)
     {
+        if (!self::isSubmissionField($name)) {
+            return parent::__set($name, $value);
+        }
+
         try {
             $field  = $this->getFieldByIdentifier($name);
             $column = self::getFieldColumnName($field->getId());
 
             $this->storedFieldValues[$column] = $value;
         } catch (FieldException $exception) {
-            if (!preg_match('/^' . self::FIELD_COLUMN_PREFIX . '\d+$/', $name)) {
-                parent::__set($name, $value);
-            }
         }
     }
 

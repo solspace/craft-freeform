@@ -103,7 +103,7 @@ class FormsService extends BaseService implements FormHandlerInterface
      *
      * @return FormModel|null
      */
-    public function getFormById(int $id)
+    public function getFormById($id)
     {
         if (null === self::$formsById || !isset(self::$formsById[$id])) {
             $result = $this->getFormQuery()->where(['id' => $id])->one();
@@ -520,7 +520,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             return $default;
         }
 
-        return array_shift($templateList);
+        return array_shift($templateList) ?? 'flexbox.html';
     }
 
     /**

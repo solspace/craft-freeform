@@ -2,11 +2,9 @@
 
 {% import "_includes/forms" as forms %}
 
-{% set title = "General"|t("freeform") %}
+{% set title = "General Settings"|t("freeform") %}
 
 {% block content %}
-
-    <h2>{{ "General Settings"|t('freeform') }}</h2>
 
     <input type="hidden" name="action" value="freeform/settings/save-settings">
     {{ redirectInput('freeform/settings/general') }}
@@ -15,6 +13,7 @@
     {% if craft.freeform.pro %}
 
         {{ forms.textField({
+            first: true,
             class: "code",
             label: "Custom Plugin Name"|t('freeform'),
             instructions: "Override the plugin name by specifying your own here."|t('freeform'),
@@ -28,6 +27,7 @@
     {% endif %}
 
     {{ forms.lightswitchField({
+        first: not craft.freeform.pro,
         label: "Show Composer Tutorial"|t('freeform'),
         instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
         name: "settings[showTutorial]",

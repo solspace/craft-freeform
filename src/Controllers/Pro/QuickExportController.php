@@ -68,9 +68,14 @@ class QuickExportController extends BaseController
         $setting = [];
         foreach ($forms as $form) {
             $storedFieldIds = $fieldSetting = [];
+            if (!$settingRecord || !$settingRecord->setting) {
+                continue;
+            }
 
-            if ($settingRecord && isset($settingRecord->setting[$form->getId()])) {
-                foreach ($settingRecord->setting[$form->getId()] as $fieldId => $item) {
+            $settingArray = is_array($settingRecord->setting) ? $settingRecord->setting : \GuzzleHttp\json_decode($settingRecord->setting, true);
+
+            if ($settingRecord && isset($settingArray[$form->getId()])) {
+                foreach ($settingArray[$form->getId()] as $fieldId => $item) {
                     $label     = $item['label'];
                     $isChecked = (bool) $item['checked'];
 

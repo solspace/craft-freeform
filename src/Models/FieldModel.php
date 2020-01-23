@@ -284,13 +284,13 @@ class FieldModel extends Model implements \JsonSerializable
         }
 
         if ($this->type === FieldInterface::TYPE_SIGNATURE) {
-            $returnArray['width']           = $this->getMetaProperty('width', SignatureField::DEFAULT_WIDTH);
-            $returnArray['height']          = $this->getMetaProperty('height', SignatureField::DEFAULT_HEIGHT);
-            $returnArray['showClearButton'] = $this->getMetaProperty('showClearButton', true);
+            $returnArray['width']           = (int) $this->getMetaProperty('width', SignatureField::DEFAULT_WIDTH);
+            $returnArray['height']          = (int) $this->getMetaProperty('height', SignatureField::DEFAULT_HEIGHT);
+            $returnArray['showClearButton'] = (bool) $this->getMetaProperty('showClearButton', true);
             $returnArray['borderColor']     = $this->getMetaProperty('borderColor', SignatureField::DEFAULT_BORDER_COLOR);
             $returnArray['backgroundColor'] = $this->getMetaProperty('backgroundColor', SignatureField::DEFAULT_BACKGROUND_COLOR);
             $returnArray['penColor']        = $this->getMetaProperty('penColor', SignatureField::DEFAULT_PEN_COLOR);
-            $returnArray['penDotSize']      = $this->getMetaProperty('penDotSize', SignatureField::DEFAULT_PEN_DOT_SIZE);
+            $returnArray['penDotSize']      = (float) $this->getMetaProperty('penDotSize', SignatureField::DEFAULT_PEN_DOT_SIZE);
         }
 
         if ($this->type === FieldInterface::TYPE_TABLE) {

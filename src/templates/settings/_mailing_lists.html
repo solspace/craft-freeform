@@ -16,9 +16,7 @@
 
 {% block content %}
 
-    <h2>{{ "Mailing Lists"|t('freeform') }}</h2>
-
-    <div id="no-mailing-integrations"{% if integrations|length %} class="hidden"{% endif %}>
+    <div id="no-mailing-integrations" class="padded{% if integrations|length %} hidden{% endif %}">
         <p>{{ "No Mailing List integrations exist yet"|t('freeform') }}</p>
     </div>
 
@@ -71,6 +69,10 @@
     {% endif %}
 
 {% endblock %}
+
+{% css %}
+    #content { padding: 0; }
+{% endcss %}
 
 {% js %}
 var adminTable = new Craft.AdminTable({

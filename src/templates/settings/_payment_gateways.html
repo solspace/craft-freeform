@@ -16,9 +16,7 @@
 
 {% block content %}
 
-    <h2>{{ "Payments"|t('freeform') }}</h2>
-
-    <div id="no-payment-gateway-integrations"{% if integrations|length %} class="hidden"{% endif %}>
+    <div id="no-payment-gateway-integrations" class="padded{% if integrations|length %} hidden{% endif %}">
         <p>{{ "No Payment integrations exist yet"|t('freeform') }}</p>
     </div>
 
@@ -72,6 +70,9 @@
 
 {% endblock %}
 
+{% css %}
+    #content { padding: 0; }
+{% endcss %}
 
 {% js %}
     var adminTable = new Craft.AdminTable({

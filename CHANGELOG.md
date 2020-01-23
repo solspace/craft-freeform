@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 3.6.0 - 2020-01-23
+
+> {warning} Freeform 3.6+ is now only available for Craft 3.4+, as this update includes various Craft 3.4+ compatibility fixes and changes. Also, existing Zoho CRM users will need to update and reauthorize their integrations due to a change made for better compatibility with European accounts.
+
+### Changed
+- Updated Freeform for compatibility with Craft 3.4+.
+- Made various improvements and changes to the Composer form builder UI.
+- Updated the way Freeform checks for old 2.x versions of its dependencies so it won't break installs.
+- Changed the Zoho CRM integrations to now require manual setting of Access Token URL and API Root URL for compatibility with European accounts. Existing Zoho CRM users will need to update and reauthorize their integrations.
+
+### Fixed
+- Fixed a bug where using reCAPTCHA v3 and having more than 1 form loaded in the same page would display JS errors.
+- Fixed a bug where Composer and the front end could error if setting to hide default formatting templates was enabled, and there are no custom formatting templates available.
+
 ## 3.5.10 - 2020-01-14
 ### Changed
 - Updated the Date & Time field type to no longer include the `autocomplete` attribute by default.

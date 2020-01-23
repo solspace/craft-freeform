@@ -40,7 +40,7 @@
 {% set selectedSubnavItem = "exportProfiles" %}
 
 {% set content %}
-    <div id="noexport-profiles"{% if exportProfiles %} class="hidden"{% endif %}>
+    <div id="noexport-profiles" class="padded{% if exportProfiles %} hidden{% endif %}">
         <p>{{ "No export profiles found"|t }}</p>
     </div>
 
@@ -102,6 +102,9 @@
     {% endif %}
 {% endset %}
 
+{% css %}
+    #content { padding: 0; }
+{% endcss %}
 
 {% js %}
     var adminTable = new Craft.AdminTable({

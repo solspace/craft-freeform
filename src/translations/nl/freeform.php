@@ -533,7 +533,14 @@ return [
     'Admin Recipients'                                                                                       => 'Admin ontvangers',
     'Email address(es) to receive an email notification. Enter each on a new line.'                          => 'E-mailadres om een e-mailmelding te ontvangen. Voer elk op een nieuwe regel in.',
 
-    'This field is Required?'            => 'Dit veld is verplicht?',
+    'This field is required?'            => 'Dit veld is verplicht?',
+    'Use built-in Table JS?'             => 'Use built-in Table JS?',
+    'Configuration'                      => 'Configuration',
+    'Options Editor'                     => 'Options Editor',
+    'Attribute Editor'                   => 'Attribute Editor',
+    'Credit Card Number'                 => 'Credit Card Number',
+    'Expiry Date'                        => 'Expiry Date',
+    'CVC/CVV'                            => 'CVC/CVV',
     'Checked by default'                 => 'Standaard aangevinkt',
     'Show all options in a single line?' => 'Alle opties op één regel weergeven?',
 

@@ -6,13 +6,12 @@
 
 {% block content %}
 
-    <h2>{{ "reCAPTCHA"|t('freeform') }}</h2>
-
     <input type="hidden" name="action" value="freeform/settings/save-settings">
     {{ redirectInput('freeform/settings/recaptcha') }}
     {{ csrfInput() }}
 
     {{ forms.lightswitchField({
+        first: true,
         label: "Enable reCAPTCHA?"|t('freeform'),
         instructions: "Enable this to allow use of reCAPTCHA on your forms."|t('freeform'),
         name: "settings[recaptchaEnabled]",

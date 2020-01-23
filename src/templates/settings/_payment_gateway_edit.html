@@ -34,8 +34,6 @@
 
 {% block content %}
 
-<h2>{{ blockTitle }}</h2>
-
 <div id="integration-type" data-type="payment-gateways">
     <input type="hidden" name="action" value="freeform/payment-gateways/save">
     {{ redirectInput('freeform/settings/payment-gateways') }}

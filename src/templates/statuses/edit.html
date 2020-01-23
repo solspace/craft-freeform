@@ -1,7 +1,7 @@
 {% extends "freeform/_layouts/settings" %}
 {% import "_includes/forms" as forms %}
 
-{% set blockTitle = title %}
+{% set title = "Statuses"|t('freeform') %}
 {% set selectedSubnavItem = "statuses" %}
 {% set saveShortcutRedirect = 'freeform/settings/statuses/{id}' %}
 
@@ -34,86 +34,80 @@
 
 {% block content %}
 
-    <h2>{{ blockTitle }}</h2>
+    <input type="hidden" name="action" value="freeform/statuses/save">
+    {{ redirectInput('freeform/settings/statuses') }}
+    {% if status.id %}<input type="hidden" name="statusId" value="{{ status.id }}">{% endif %}
+    {{ csrfInput() }}
 
-    <div>
+    {{ forms.textField({
+        first: true,
+        label: "Name"|t('freeform'),
+        instructions: "The name of the status."|t('freeform'),
+        id: 'name',
+        name: 'name',
+        value: status.name,
+        errors: status.getErrors('name'),
+        autofocus: true,
+        required: true,
+        translatable: true
+    }) }}
 
-        <input type="hidden" name="action" value="freeform/statuses/save">
-        {{ redirectInput('freeform/settings/statuses') }}
-        {% if status.id %}<input type="hidden" name="statusId" value="{{ status.id }}">{% endif %}
-        {{ csrfInput() }}
+    {{ forms.textField({
+        label: "Handle"|t('freeform'),
+        instructions: "How you’ll refer to this status in the templates."|t('freeform'),
+        id: 'handle',
+        class: 'code',
+        name: 'handle',
+        value: status.handle,
+        errors: status.getErrors('handle'),
+        required: true
+    }) }}
 
-        {{ forms.textField({
-            first: true,
-            label: "Name"|t('freeform'),
-            instructions: "The name of the status."|t('freeform'),
-            id: 'name',
-            name: 'name',
-            value: status.name,
-            errors: status.getErrors('name'),
-            autofocus: true,
-            required: true,
-            translatable: true
-        }) }}
+    <hr>
 
-        {{ forms.textField({
-            label: "Handle"|t('freeform'),
-            instructions: "How you’ll refer to this status in the templates."|t('freeform'),
-            id: 'handle',
-            class: 'code',
-            name: 'handle',
-            value: status.handle,
-            errors: status.getErrors('handle'),
-            required: true
-        }) }}
+    {{ forms.hidden({
+        id: "color",
+        name: "color",
+        value: status.color,
+        errors: status.getErrors("color"),
+        required: true
+    }) }}
 
-        <hr>
-
-        {{ forms.hidden({
-            id: "color",
-            name: "color",
-            value: status.color,
-            errors: status.getErrors("color"),
-            required: true
-        }) }}
-
-        {% set colorField %}
-            <div>
-                <a id="color-menu-btn" class="btn menubtn" href="#">
-                    <span class="status {{ status.color }}"></span>
-                    {{ status.color|t('freeform')|title }}
-                </a>
-                <div class="menu">
-                    <ul class="padded">
-                        {% for color in ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
-                            <li>
-                                <a data-val="{{ color }}" {% if status.color == color %}class="sel"{% endif %} href="#">
-                                    <span class="status {{ color }}"></span>
-                                    {{ color|t('freeform')|title }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
+    {% set colorField %}
+        <div>
+            <a id="color-menu-btn" class="btn menubtn" href="#">
+                <span class="status {{ status.color }}"></span>
+                {{ status.color|t('freeform')|title }}
+            </a>
+            <div class="menu">
+                <ul class="padded">
+                    {% for color in ['green','orange', 'red', 'blue', 'yellow', 'pink', 'purple', 'turquoise', 'light', 'grey', 'black'] %}
+                        <li>
+                            <a data-val="{{ color }}" {% if status.color == color %}class="sel"{% endif %} href="#">
+                                <span class="status {{ color }}"></span>
+                                {{ color|t('freeform')|title }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-        {% endset %}
-
-        {{ forms.field({
-            label: 'Color'|t('freeform'),
-            instructions: 'The color of the status circle when viewing inside CP.'|t('freeform')
-        },colorField) }}
-
-        {{ forms.lightswitchField({
-            label: "Is Default"|t('freeform'),
-            instructions: "Set this status be selected by default when creating new forms?",
-            name: "isDefault",
-            on: status.isDefault,
-            disabled: status.isDefault,
-            errors: status.errors("isDefault"),
-        }) }}
-
         </div>
-    </div>
+    {% endset %}
+
+    {{ forms.field({
+        label: 'Color'|t('freeform'),
+        instructions: 'The color of the status circle when viewing inside CP.'|t('freeform')
+    },colorField) }}
+
+    {{ forms.lightswitchField({
+        label: "Is Default"|t('freeform'),
+        instructions: "Set this status be selected by default when creating new forms?",
+        name: "isDefault",
+        on: status.isDefault,
+        disabled: status.isDefault,
+        errors: status.errors("isDefault"),
+    }) }}
+
 {% endblock %}
 
 

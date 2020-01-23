@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
  * Class Freeform_NotificationRecord
  *
  * @property int    $id
+ * @property string $filepath
  * @property string $name
  * @property string $handle
  * @property string $description
@@ -37,6 +38,9 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
  */
 class NotificationRecord extends SerializableActiveRecord implements NotificationInterface, \JsonSerializable
 {
+    /** @var string */
+    public $filepath;
+
     const TABLE = '{{%freeform_notifications}}';
 
     /**
@@ -91,7 +95,7 @@ EOT;
         }
 
         $model                     = new self();
-        $model->id                 = pathinfo($filePath, PATHINFO_BASENAME);
+        $model->filepath           = pathinfo($filePath, PATHINFO_BASENAME);
         $model->name               = $template->getName();
         $model->handle             = $template->getHandle();
         $model->description        = $template->getDescription();
@@ -158,7 +162,7 @@ EOT;
      */
     public function isFileBasedTemplate(): bool
     {
-        return !is_numeric($this->id);
+        return !!$this->filepath;
     }
 
     /**

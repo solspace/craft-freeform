@@ -43,8 +43,9 @@
     <nav id="tabs">
         <ul>
             {% for page in layout.pages %}
-                <li>
+                <li data-id="{{ page.index }}">
                     <a href="javascript:;"
+                       id="tab-{{ page.index }}"
                        data-tab-id="{{ page.index }}"
                        class="tab{% if loop.first %} sel{% endif %}">
                         {{ page.label }}
@@ -358,7 +359,7 @@
                                                                     >
                                                                         {{- column.value|default("") -}}
                                                                     </textarea>
-                                                                {% endswitch %}>
+                                                                {% endswitch %}
                                                             </td>
                                                         {% endfor %}
                                                         <td class="thin action">
@@ -485,14 +486,6 @@
             errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
         }) }}
 
-        {{ forms.hidden({
-            id: "statusId",
-            name: "statusId",
-            value: submission.statusId,
-            errors: [],
-            required: true
-        }) }}
-
         {% set statusField %}
             <div>
                 {% set selectedStatus = statuses[submission.statusId] ? statuses[submission.statusId] : statuses|first %}
@@ -524,12 +517,18 @@
             label: 'Status'|t('freeform'),
         }, statusField) }}
 
+        {{ forms.hidden({
+            id: "statusId",
+            name: "statusId",
+            value: submission.statusId,
+            errors: [],
+            required: true
+        }) }}
+
     </div>
 
 
     {% if submission.id %}
-
-        <hr>
 
         <div class="meta read-only">
             <div class="data">
@@ -542,9 +541,8 @@
             </div>
         </div>
 
-        <hr>
-
     {% endif %}
+
     {# TODO: move to payments module #}
     {% if payments is defined %}
         <div class="meta read-only">
@@ -623,6 +621,11 @@
 
     {% endif %}
 
-    <textarea class="text freeform-submission-note" id="freeform-submission-note" name="freeform-submission-note" placeholder="{{ 'Notes about your changes'|t('freeform') }}" spellcheck="false" style="width: 90%; margin: 5%; min-height: 100px;">{% if note %}{{ note }}{% endif %}</textarea>
+    <textarea class="text freeform-submission-note"
+              id="freeform-submission-note"
+              name="freeform-submission-note"
+              placeholder="{{ 'Notes about your changes'|t('freeform') }}"
+              spellcheck="false"
+              style="width: 100%; margin: 0; min-height: 100px;">{% if note %}{{ note }}{% endif %}</textarea>
 
 {% endblock %}

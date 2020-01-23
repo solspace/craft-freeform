@@ -6,14 +6,13 @@
 
 {% block content %}
 
-    <h2>{{ "Spam Settings"|t('freeform') }}</h2>
-
     <form action="" method="post" accept-charset="UTF-8">
         <input type="hidden" name="action" value="freeform/settings/save-settings">
         {{ redirectInput('freeform/settings/spam') }}
         {{ csrfInput() }}
 
         {{ forms.lightswitchField({
+            first: true,
             label: "Freeform Honeypot"|t('freeform'),
             instructions: "Enable this to use Freeform's built in Honeypot spam protection."|t('freeform'),
             name: "settings[freeformHoneypot]",

@@ -8,6 +8,40 @@
     { label: "Forms"|t('freeform'), url: url('freeform/forms') },
 ] %}
 
+{% block actionButton %}
+
+    <div id="freeform-save-commands" class="buttons composer-save">
+        <div class="btngroup submit">
+            <input
+                type="submit"
+                value="{{ "Quick save"|t("freeform") }}"
+                class="btn submit"
+            />
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit gotoFormList">
+                            {{ "Save and finish"|t("freeform") }}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit gotoNewForm">
+                            {{ "Save and add another"|t("freeform") }}
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit duplicateForm">
+                            {{ "Save as a new form"|t("freeform") }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
 
 {% block header %}
     {{ block('pageTitle') }}

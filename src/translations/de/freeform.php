@@ -535,7 +535,14 @@ return [
     'Admin Recipients'                                                                                       => 'Admin-Empfänger',
     'Email address(es) to receive an email notification. Enter each on a new line.'                          => 'Email-Adressen, die eine Benachrichtigung erhalten. Eine Adresse pro Zeile.',
 
-    'This field is Required?'            => 'Dieses Feld ist benötigt?',
+    'This field is required?'            => 'Dieses Feld ist benötigt?',
+    'Use built-in Table JS?'             => 'Use built-in Table JS?',
+    'Configuration'                      => 'Configuration',
+    'Options Editor'                     => 'Options Editor',
+    'Attribute Editor'                   => 'Attribute Editor',
+    'Credit Card Number'                 => 'Credit Card Number',
+    'Expiry Date'                        => 'Expiry Date',
+    'CVC/CVV'                            => 'CVC/CVV',
     'Checked by default'                 => 'Standardmäßig ausgewählt',
     'Show all options in a single line?' => 'Zeige alle Optionen in einer Zeile?',
 

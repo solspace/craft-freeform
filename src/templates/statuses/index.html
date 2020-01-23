@@ -19,9 +19,7 @@
 
 {% set content %}
 
-    <h2>{{ "Statuses"|t("freeform") }}</h2>
-
-    <div id="nostatuses"{% if statuses %} class="hidden"{% endif %}>
+    <div id="nostatuses" class="padded{% if statuses %} hidden{% endif %}">
         <p>{{ "No statuses found"|t('freeform') }}</p>
     </div>
 
@@ -31,8 +29,8 @@
             <th scope="col">{{ "Name"|t('freeform') }}</th>
             <th scope="col">{{ "Handle"|t('freeform') }}</th>
             <th scope="col">{{ "Is Default"|t('freeform') }}</th>
-            <td class="thin"></td>
-            <td class="thin"></td>
+            <th class="thin"></th>
+            <th class="thin"></th>
             </thead>
             <tbody>
             {% for status in statuses %}
@@ -53,7 +51,7 @@
                         </code>
                     </td>
                     <td>{% if status.isDefault %}<span data-icon="check"></span>{% endif %}</td>
-                    <td><td class="thin"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a></td>
+                    <td class="thin"><a class="move icon" title="{{ 'Reorder'|t('freeform') }}" role="button"></a></td>
                     <td class="thin">
                         {% if currentUser.can("freeform-settingsAccess") and not status.isDefault %}
                             <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
@@ -66,6 +64,9 @@
     {% endif %}
 {% endset %}
 
+{% css %}
+    #content { padding: 0; }
+{% endcss %}
 
 {% js %}
     var adminTable = new Craft.AdminTable({

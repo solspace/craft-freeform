@@ -28,23 +28,25 @@ class ZohoDeal extends AbstractCRMIntegration
     const LOG_CATEGORY = 'Zoho';
     const MODULE       = 'Deals';
 
-    const DEAL_MODULE       = 'Deals';
-    const ACCOUNT_MODULE       = 'Accounts';
-    const CONTACT_MODULE       = 'Contacts';
+    const DEAL_MODULE    = 'Deals';
+    const ACCOUNT_MODULE = 'Accounts';
+    const CONTACT_MODULE = 'Contacts';
 
-    const DEAL_CATEGORY       = 'deal';
-    const ACCOUNT_CATEGORY       = 'account';
-    const CONTACT_CATEGORY       = 'contact';
+    const DEAL_CATEGORY    = 'deal';
+    const ACCOUNT_CATEGORY = 'account';
+    const CONTACT_CATEGORY = 'contact';
 
-    const DEFAULT_CONTACT_ROLE       = '4201883000000006871';
+    const DEFAULT_CONTACT_ROLE = '4201883000000006871';
 
-    const SETTING_SITE_CLIENT_ID     = 'client_id';
-    const SETTING_SITE_CLIENT_SECRET = 'client_secret';
-    const SETTING_REDIRECT_URL  = 'redirect_url';
-    const SETTING_GRANT_TOKEN   = 'grant_token';
-    const SETTING_ACCOUNT_URL   = 'account_url';
-    const SETTING_REFRESH_TOKEN   = 'refresh_token';
-    const SETTING_ACCESS_TOKEN_EXPIRES_IN   = 'accest_token_expires_in';
+    const SETTING_SITE_CLIENT_ID          = 'client_id';
+    const SETTING_SITE_CLIENT_SECRET      = 'client_secret';
+    const SETTING_REDIRECT_URL            = 'redirect_url';
+    const SETTING_GRANT_TOKEN             = 'grant_token';
+    const SETTING_ACCOUNT_URL             = 'account_url';
+    const SETTING_ACCESS_TOKEN_URL        = 'access_token_url';
+    const SETTING_API_ROOT_URL            = 'api_root_url';
+    const SETTING_REFRESH_TOKEN           = 'refresh_token';
+    const SETTING_ACCESS_TOKEN_EXPIRES_IN = 'accest_token_expires_in';
 
     /**
      * Returns a list of additional settings for this integration
@@ -87,7 +89,21 @@ class ZohoDeal extends AbstractCRMIntegration
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_ACCOUNT_URL,
                 'Account URL',
-                'Enter your Zoho Developer Account URL here (e.g. \'https://accounts.zoho.com\' or \'https://accounts.zoho.eu/developerconsole\').',
+                'Enter your Zoho Developer Account URL here (e.g. \'https://accounts.zoho.com\' or \'https://accounts.zoho.eu\').',
+                true
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_TEXT,
+                self::SETTING_ACCESS_TOKEN_URL,
+                'Access Token URL',
+                'Enter your Zoho Developer Access Token URL here (e.g. \'https://accounts.zoho.com/oauth/v2/token\' or \'https://accounts.zoho.eu/oauth/v2/token\').',
+                true
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_TEXT,
+                self::SETTING_API_ROOT_URL,
+                'API Root URL',
+                'Enter your Zoho Developer Root URL here (e.g. \'https://www.zohoapis.com/crm/v2\' or \'https://www.zohoapis.eu/crm/v2\').',
                 true
             ),
             new SettingBlueprint(
@@ -124,20 +140,22 @@ class ZohoDeal extends AbstractCRMIntegration
      */
     public function fetchAccessToken(): string
     {
-        $clientId     = $this->getClientId();
-        $clientSecret = $this->getClientSecret();
-        $redirectUri  = $this->getRedirectUrl();
-        $grantToken   = $this->getGrantToken();
-        $accountUrl   = $this->getAccountUrl();
+        $clientId       = $this->getClientId();
+        $clientSecret   = $this->getClientSecret();
+        $redirectUri    = $this->getRedirectUrl();
+        $grantToken     = $this->getGrantToken();
+        $accountUrl     = $this->getAccountUrl();
+        $accessTokenUrl = $this->getAccessTokenUrl();
+        $apiRootUrl     = $this->getApiRootUrl();
 
-        if (!$clientId || !$clientSecret || !$redirectUri || !$grantToken || !$accountUrl) {
+        if (!$clientId || !$clientSecret || !$redirectUri || !$grantToken || !$accessTokenUrl || !$apiRootUrl) {
             throw new IntegrationException('Some or all of the configuration values are missing');
         }
 
         $client = new Client([
             'headers' => [
                 'Authorization' => 'Basic ' . $clientId . ':' . $clientSecret,
-                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Content-Type'  => 'application/x-www-form-urlencoded',
             ],
         ]);
 
@@ -151,7 +169,7 @@ class ZohoDeal extends AbstractCRMIntegration
 
         try {
             $response = $client->post(
-                $accountUrl. '/oauth/v2/token',
+                $accountUrl . '/oauth/v2/token',
                 ['form_params' => $payload]
             );
 
@@ -211,7 +229,7 @@ class ZohoDeal extends AbstractCRMIntegration
      */
     public function pushObject(array $keyValueList, $formFields = null): bool
     {
-        $client   = $this->generateAuthorizedClient();
+        $client = $this->generateAuthorizedClient();
 
         $dealMapping = $contactMapping = $accountMapping = [];
         foreach ($keyValueList as $key => $value) {
@@ -235,19 +253,19 @@ class ZohoDeal extends AbstractCRMIntegration
         }
 
         // Push Account
-        $endpoint = $this->getEndpoint('/' . self::ACCOUNT_MODULE . '/upsert');
+        $endpoint  = $this->getEndpoint('/' . self::ACCOUNT_MODULE . '/upsert');
         $accountId = null;
 
         try {
             $response = $client->post(
                 $endpoint,
                 [
-                    'json'    => [
-                        'data' => [
-                            $accountMapping
+                    'json' => [
+                        'data'                   => [
+                            $accountMapping,
                         ],
                         'duplicate_check_fields' => [
-                            "Account_Name"
+                            "Account_Name",
                         ],
                     ],
                 ]
@@ -289,19 +307,19 @@ class ZohoDeal extends AbstractCRMIntegration
         }
 
         // Push Contact
-        $endpoint = $this->getEndpoint('/' . self::CONTACT_MODULE  . '/upsert');
+        $endpoint  = $this->getEndpoint('/' . self::CONTACT_MODULE . '/upsert');
         $contactId = null;
 
         try {
             $response = $client->post(
                 $endpoint,
                 [
-                    'json'    => [
-                        'data' => [
-                            $contactMapping
+                    'json' => [
+                        'data'                   => [
+                            $contactMapping,
                         ],
                         'duplicate_check_fields' => [
-                            "Email"
+                            "Email",
                         ],
                     ],
                 ]
@@ -344,13 +362,13 @@ class ZohoDeal extends AbstractCRMIntegration
 
         // Push Deal
         $endpoint = $this->getEndpoint('/' . self::DEAL_MODULE);
-        $dealId = null;
+        $dealId   = null;
 
         try {
             $response = $client->post(
                 $endpoint,
                 [
-                    'json'    => [
+                    'json' => [
                         'data' => [$dealMapping],
                     ],
                 ]
@@ -397,7 +415,7 @@ class ZohoDeal extends AbstractCRMIntegration
             $response = $client->put(
                 $endpoint,
                 [
-                    'json'    => [
+                    'json' => [
                         'data' => [
                             [
                                 "Contact_Role" => self::DEFAULT_CONTACT_ROLE,
@@ -454,7 +472,7 @@ class ZohoDeal extends AbstractCRMIntegration
 
         foreach ($fieldEndpoints as $item) {
             $category = $item['category'];
-            $module = $item['endpoint'];
+            $module   = $item['endpoint'];
 
             try {
                 $endpoint = $this->getEndpoint('/settings/fields?module=' . $module);
@@ -483,7 +501,7 @@ class ZohoDeal extends AbstractCRMIntegration
                 $fieldType = $this->convertFieldType($field->data_type, $jsonType);
 
                 $fieldObject = new FieldObject(
-                    $category. '___' . $field->api_name,
+                    $category . '___' . $field->api_name,
                     $field->field_label . " ($module)",
                     $fieldType
                 );
@@ -516,13 +534,13 @@ class ZohoDeal extends AbstractCRMIntegration
         $client = new Client([
             'headers' => [
                 'Authorization' => 'Basic ' . $clientId . ':' . $clientSecret,
-                'Content-Type' => 'application/x-www-form-urlencoded',
+                'Content-Type'  => 'application/x-www-form-urlencoded',
             ],
         ]);
 
         try {
             $response = $client->post(
-                $accountUrl. '/oauth/v2/token?refresh_token=' . $refreshToken . '&client_id=' . $clientId . '&client_secret=' . $clientSecret . '&grant_type=refresh_token'
+                $accountUrl . '/oauth/v2/token?refresh_token=' . $refreshToken . '&client_id=' . $clientId . '&client_secret=' . $clientSecret . '&grant_type=refresh_token'
             );
 
             $json = \GuzzleHttp\json_decode($response->getBody(), false);
@@ -584,7 +602,7 @@ class ZohoDeal extends AbstractCRMIntegration
      */
     protected function getAccessTokenUrl(): string
     {
-        return 'https://accounts.zoho.eu/oauth/v2/token';
+        return $this->getSetting(self::SETTING_ACCESS_TOKEN_URL);
     }
 
     /**
@@ -592,7 +610,7 @@ class ZohoDeal extends AbstractCRMIntegration
      */
     protected function getApiRootUrl(): string
     {
-        return 'https://www.zohoapis.com/crm/v2';
+        return $this->getSetting(self::SETTING_API_ROOT_URL);
     }
 
     /**
@@ -664,7 +682,7 @@ class ZohoDeal extends AbstractCRMIntegration
 
                 if ($this->refreshToken()) {
                     $newToken = $this->getAccessToken();
-                    $client = new Client([
+                    $client   = new Client([
                         'headers' => [
                             'Authorization' => 'Bearer ' . $newToken,
                             'Content-Type'  => 'application/json',

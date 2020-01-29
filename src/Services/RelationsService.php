@@ -3,20 +3,18 @@
 namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
-use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
+use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Freeform;
 
 class RelationsService extends BaseService
 {
     /**
-     * @param AfterSubmitEvent $event
+     * @param SubmitEvent $event
      *
      * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
-     * @throws \yii\base\Exception
      */
-    public function relate(AfterSubmitEvent $event)
+    public function relate(SubmitEvent $event)
     {
         if (!Freeform::getInstance()->isPro()) {
             return;
@@ -24,7 +22,7 @@ class RelationsService extends BaseService
 
         $form          = $event->getForm();
         $relationships = $form->getRelations()->getRelationships();
-        $submission    = $event->getSubmission();
+        $submission    = $event->getElement();
 
         if (empty($relationships) || !$submission || !$submission->id) {
             return;

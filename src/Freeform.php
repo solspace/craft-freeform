@@ -843,8 +843,8 @@ class Freeform extends Plugin
         );
 
         Event::on(
-            FormsService::class,
-            FormsService::EVENT_AFTER_SUBMIT,
+            SubmissionsService::class,
+            SubmissionsService::EVENT_AFTER_SUBMIT,
             [$this->relations, 'relate']
         );
 

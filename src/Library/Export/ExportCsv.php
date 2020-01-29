@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Library\Export;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Fields\TextareaField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 
 class ExportCsv extends AbstractExport
 {
@@ -85,8 +86,12 @@ class ExportCsv extends AbstractExport
                             $value = StringHelper::implodeRecursively(', ', (array) $value);
                         }
 
-                        if ($field && $field instanceof TextareaField && $this->isRemoveNewLines()) {
-                            $value = trim(preg_replace('/\s+/', ' ', $value));
+                        if ($field) {
+                            if ($field instanceof TextareaField && $this->isRemoveNewLines()) {
+                                $value = trim(preg_replace('/\s+/', ' ', $value));
+                            } else if ($field instanceof ObscureValueInterface) {
+                                $value = $field->getActualValue($value);
+                            }
                         }
                     }
 

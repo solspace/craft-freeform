@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.6.1 - 2020-01-29
+
+### Fixed
+- Fixed a bug where the Save button inside Composer form builder would disappear when changing a form's name.
+- Fixed a bug where API integrations would cause the Composer form builder to not load and/or display JS errors.
+- Fixed a bug where email notifications would not send if using the Relations feature and including the related element inside the notification template.
+- Fixed a bug where Dynamic Recipients fields were not always exporting as the email address value when using Quick Export.
+
 ## 3.6.0 - 2020-01-23
 
 > {warning} Freeform 3.6+ is now only available for Craft 3.4+, as this update includes various Craft 3.4+ compatibility fixes and changes. Also, existing Zoho CRM users will need to update and reauthorize their integrations due to a change made for better compatibility with European accounts.

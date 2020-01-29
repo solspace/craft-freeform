@@ -25,6 +25,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
@@ -371,6 +372,10 @@ class Submission extends Element
 
             if ($field instanceof RatingField) {
                 return (int) $value . '/' . $field->getMaxValue();
+            }
+
+            if ($field instanceof ObscureValueInterface) {
+                return (string) $field->getActualValue($value);
             }
 
             return Html::encode($value);

@@ -69,14 +69,21 @@ class StripeService extends Component
             $amount   = $dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount();
             $amount   = Stripe::toStripeAmount($amount, $currency);
 
+            $paymentIntentProperties = [
+                'payment_method'      => $token,
+                'amount'              => $amount,
+                'currency'            => $currency,
+                'confirmation_method' => 'manual',
+                'confirm'             => true,
+            ];
+
+            $mapping = $properties->getCustomerFieldMapping();
+            if (isset($mapping['email']) && $form->get($mapping['email'])) {
+                $paymentIntentProperties['receipt_email'] = $form->get($mapping['email'])->getValueAsString();
+            }
+
             try {
-                $paymentIntent = PaymentIntent::create([
-                    'payment_method'      => $token,
-                    'amount'              => $amount,
-                    'currency'            => $currency,
-                    'confirmation_method' => 'manual',
-                    'confirm'             => true,
-                ]);
+                $paymentIntent = PaymentIntent::create($paymentIntentProperties);
             } catch (\Exception $e) {
                 $paymentField->setValue('declined');
                 return;
@@ -122,7 +129,7 @@ class StripeService extends Component
         }
 
         $integration->prepareApi();
-        $plan  = $this->getPlan($form, $integration, $properties, $dynamicValues);
+        $plan = $this->getPlan($form, $integration, $properties, $dynamicValues);
         if (!$plan) {
             $form->addError('Could not create plan');
 

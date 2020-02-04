@@ -1,7 +1,11 @@
 # Solspace Freeform Changelog
 
-## 3.6.1 - 2020-01-29
+## 3.6.2 - 2020-02-04
+### Changed
+- Updated Composer form builder to now have floating/locking columns, as it did prior to 3.6 UI update.
+- Updated Payments integration to automatically map Email field mapping to Stripe's `reciept_email` field in addition to its `email` field, in order for Stripe to send email notification receipts to successful payments.
 
+## 3.6.1 - 2020-01-29
 ### Fixed
 - Fixed a bug where the Save button inside Composer form builder would disappear when changing a form's name.
 - Fixed a bug where API integrations would cause the Composer form builder to not load and/or display JS errors.

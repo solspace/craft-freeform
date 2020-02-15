@@ -56,14 +56,7 @@ class QuickExportController extends BaseController
 
         $firstForm = reset($forms);
 
-        $userId = \Craft::$app->user->getId();
-
-        /** @var ExportSettingRecord $settingRecord */
-        $settingRecord = ExportSettingRecord::findOne(
-            [
-                'userId' => $userId,
-            ]
-        );
+        $settingRecord = $this->getExportSettings();
 
         $setting = [];
         foreach ($forms as $form) {

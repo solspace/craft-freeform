@@ -9,6 +9,7 @@ use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Models\Settings;
 
 class RecaptchaService extends Component
@@ -27,7 +28,7 @@ class RecaptchaService extends Component
             if ($this->behaviourDisplayError()) {
                 $field->addError(Freeform::t('Please verify that you are not a robot.'));
             } else {
-                $event->getForm()->setMarkedAsSpam(true);
+                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA checkbox validation failed');
             }
         }
     }
@@ -45,7 +46,7 @@ class RecaptchaService extends Component
             if ($this->behaviourDisplayError()) {
                 $event->getForm()->addError(Freeform::t('Please verify that you are not a robot.'));
             } else {
-                $event->getForm()->setMarkedAsSpam(true);
+                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA invisible validation failed');
             }
         }
     }
@@ -63,7 +64,7 @@ class RecaptchaService extends Component
             if ($this->behaviourDisplayError()) {
                 $event->getForm()->addError(Freeform::t('Please verify that you are not a robot.'));
             } else {
-                $event->getForm()->setMarkedAsSpam(true);
+                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA score check failed');
             }
         }
     }

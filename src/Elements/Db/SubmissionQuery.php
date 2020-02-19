@@ -10,6 +10,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\FormRecord;
+use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Records\StatusRecord;
 
 class SubmissionQuery extends ElementQuery
@@ -34,6 +35,9 @@ class SubmissionQuery extends ElementQuery
 
     /** @var array */
     public $fieldSearch = [];
+
+    /** @var string */
+    public $spamReason;
 
     /** @var string */
     private $freeformStatus;
@@ -123,6 +127,18 @@ class SubmissionQuery extends ElementQuery
     }
 
     /**
+     * @param string $value
+     *
+     * @return SubmissionQuery
+     */
+    public function spamReason($value): SubmissionQuery
+    {
+        $this->spamReason = $value;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     protected function beforePrepare(): bool
@@ -140,14 +156,16 @@ class SubmissionQuery extends ElementQuery
             $formHandleToIdMap = array_map('intval', $formHandleToIdMap);
         }
 
-        $table       = Submission::TABLE_STD;
-        $formTable   = FormRecord::TABLE_STD;
-        $statusTable = StatusRecord::TABLE_STD;
+        $table           = Submission::TABLE_STD;
+        $formTable       = FormRecord::TABLE_STD;
+        $statusTable     = StatusRecord::TABLE_STD;
+        $spamReasonTable = SpamReasonRecord::TABLE_STD;
         $this->joinElementTable($table);
 
-        $hasFormJoin = false;
-        $hasStatusJoin = false;
-        $hasSubStatusJoin = false;
+        $hasFormJoin       = false;
+        $hasStatusJoin     = false;
+        $hasSubStatusJoin  = false;
+        $hasSpamReasonJoin = false;
         if (\is_array($this->join)) {
             foreach ($this->join as $joinData) {
                 if (isset($joinData[1]) && $joinData[1] === FormRecord::TABLE . ' ' . $formTable) {
@@ -158,6 +176,9 @@ class SubmissionQuery extends ElementQuery
                 }
                 if (isset($joinData[1]) && $joinData[1] === 'sub_' . StatusRecord::TABLE . ' ' . $statusTable) {
                     $hasSubStatusJoin = true;
+                }
+                if (isset($joinData[1]) && $joinData[1] === SpamReasonRecord::TABLE . ' ' . $spamReasonTable) {
+                    $hasSpamReasonJoin = true;
                 }
             }
         }
@@ -231,6 +252,14 @@ class SubmissionQuery extends ElementQuery
 
         if ($this->isSpam !== null) {
             $this->subQuery->andWhere(Db::parseParam($table . '.[[isSpam]]', $this->isSpam));
+        }
+
+        if (!empty($this->spamReason) && !$hasSpamReasonJoin) {
+            $this->innerJoin(
+                SpamReasonRecord::TABLE . " $spamReasonTable",
+                "$spamReasonTable.[[submissionId]] = $table.[[id]] AND $spamReasonTable.[[reasonType]] = :spamReason",
+                ['spamReason' => $this->spamReason]
+            );
         }
 
         if ($this->status) {

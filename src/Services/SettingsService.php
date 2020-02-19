@@ -22,6 +22,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Helpers\IpUtils;
 use Solspace\Freeform\Models\Settings;
 use Symfony\Component\Finder\Finder;
@@ -268,7 +269,7 @@ class SettingsService extends BaseService
         $form = $event->getForm();
 
         if ($this->isMinimumSubmissionTimePassed($form)) {
-            $event->getForm()->setMarkedAsSpam(true);
+            $event->getForm()->markAsSpam(SpamReason::TYPE_MINIMUM_SUBMIT_TIME, 'Minimum submit time check failed');
 
             if ($this->isSpamBehaviourDisplayErrors()) {
                 $event->getForm()->addError(Freeform::t('Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.'));
@@ -278,7 +279,7 @@ class SettingsService extends BaseService
         }
 
         if ($this->isMaximumSubmissionTimePassed($form)) {
-            $event->getForm()->setMarkedAsSpam(true);
+            $event->getForm()->markAsSpam(SpamReason::TYPE_MAXIMUM_SUBMIT_TIME, 'Maximum submit time check failed');
 
             if ($this->isSpamBehaviourDisplayErrors()) {
                 $event->getForm()->addError(Freeform::t('Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.'));
@@ -319,7 +320,15 @@ class SettingsService extends BaseService
                 if ($keywords && \in_array($field->getType(), $spamKeywordTypes, true)) {
                     foreach ($keywords as $keyword) {
                         if (ComparisonHelper::stringContainsWildcardKeyword($keyword, $field->getValueAsString())) {
-                            $event->getForm()->setMarkedAsSpam(true);
+                            $event->getForm()->markAsSpam(
+                                SpamReason::TYPE_BLOCKED_KEYWORDS,
+                                sprintf(
+                                    'Field "%s" contains a blocked keyword "%s" in the string "%s"',
+                                    $field->getHandle(),
+                                    $keyword,
+                                    $field->getValueAsString()
+                                )
+                            );
 
                             if ($this->isSpamBehaviourDisplayErrors()) {
                                 $event->getForm()->addError(Freeform::t('Form contains a restricted keyword'));
@@ -346,7 +355,14 @@ class SettingsService extends BaseService
                     foreach ($field->getValue() as $value) {
                         foreach ($emails as $email) {
                             if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
-                                $event->getForm()->setMarkedAsSpam(true);
+                                $event->getForm()->markAsSpam(
+                                    SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                                    sprintf(
+                                        'Email field "%s" contains a blocked email address "%s"',
+                                        $field->getHandle(),
+                                        $email
+                                    )
+                                );
 
                                 if ($this->isSpamBehaviourDisplayErrors()) {
                                     $event->getForm()->addError(Freeform::t('Form contains a blacklisted email'));
@@ -384,7 +400,13 @@ class SettingsService extends BaseService
 
         $remoteIp = \Craft::$app->request->getRemoteIP();
         if (IpUtils::checkIp($remoteIp, $spamIps)) {
-            $event->getForm()->setMarkedAsSpam(true);
+            $event->getForm()->markAsSpam(
+                SpamReason::TYPE_BLOCKED_IP,
+                sprintf(
+                    'Form submitted by a blacklisted IP "%s"',
+                    $remoteIp
+                )
+            );
             if ($this->isSpamBehaviourDisplayErrors()) {
                 $event->getForm()->addError(Freeform::t('Your IP has been blacklisted'));
             }

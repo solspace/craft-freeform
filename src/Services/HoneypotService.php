@@ -6,6 +6,7 @@ use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Session\Honeypot;
 
 class HoneypotService extends BaseService
@@ -98,7 +99,7 @@ class HoneypotService extends BaseService
             $event->addErrorToForm(Freeform::t($errorMessage));
         }
 
-        $event->getForm()->setMarkedAsSpam(true);
+        $event->getForm()->markAsSpam(SpamReason::TYPE_HONEYPOT, 'Honeypot check failed');
     }
 
     /**

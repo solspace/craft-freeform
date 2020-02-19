@@ -16,11 +16,14 @@ use craft\records\Asset as AssetRecord;
 use craft\records\Element;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\FieldRecord;
+use Solspace\Freeform\Records\SpamReasonRecord;
 
 class SpamSubmissionsService extends SubmissionsService implements SpamSubmissionHandlerInterface
 {
@@ -155,5 +158,27 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
         }
 
         \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);
+    }
+
+    /**
+     * @param SubmitEvent $event
+     */
+    public function persistSpamReasons(SubmitEvent $event)
+    {
+        $form       = $event->getForm();
+        $submission = $event->getSubmission();
+
+        if (!$submission->isSpam || !$form->isMarkedAsSpam()) {
+            return;
+        }
+
+        $spamReasons = $form->getSpamReasons();
+        foreach ($spamReasons as $reason) {
+            $record = new SpamReasonRecord();
+            $record->submissionId = $submission->getId();
+            $record->reasonType = $reason->getType();
+            $record->reasonMessage = $reason->getMessage();
+            $record->save();
+        }
     }
 }

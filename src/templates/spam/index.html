@@ -5,14 +5,34 @@
 {% set elementType = 'Solspace\\Freeform\\Elements\\SpamSubmission' %}
 
 {% block body %}
-{{ parent() }}
-<form method="post"
-      id="asset_download"
-      style="height: 0; width: 0; position: absolute; left: -99999px;">
-    <input type="hidden" name="action" value="assets/download-asset"/>
-    <input type="hidden" name="assetId" value=""/>
-    {{ csrfInput() }}
-</form>
+    {{ parent() }}
+    <form method="post"
+          id="asset_download"
+          style="height: 0; width: 0; position: absolute; left: -99999px;">
+        <input type="hidden" name="action" value="assets/download-asset"/>
+        <input type="hidden" name="assetId" value=""/>
+        {{ csrfInput() }}
+    </form>
+    <template id="spam-reasons">
+        <div class="btn menubtn">{{ "Reason"|t('freeform') }}</div>
+        <div class="menu">
+            <ul class="padded">
+                <li>
+                    <a data-reason="" class="sel">
+                        {{ "Reason"|t('freeform') }}
+                    </a>
+                </li>
+
+                {% for reason in spamReasons %}
+                    <li>
+                        <a data-reason="{{ reason }}">
+                            {{ reason|t('freeform') }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </template>
 {% endblock %}
 
 {% if formHandle is defined %}

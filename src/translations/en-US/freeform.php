@@ -715,4 +715,15 @@ return [
     'Payment type is not configured!'      => 'Payment type is not configured!',
     'Payment amount is not configured!'    => 'Payment amount is not configured!',
     'Subscription plan is not configured!' => 'Subscription plan is not configured!',
+
+    'Marked as spam because' => 'Marked as spam because',
+    'generic'                => 'Unknown',
+    'honeypot'               => 'Honeypot',
+    'js_test'                => 'JS Test',
+    'recaptcha'              => 'reCAPTCHA',
+    'blocked_keywords'       => 'Blocked Keywords',
+    'blocked_email_address'  => 'Blocked Email Address',
+    'blocked_ip'             => 'Blocked IP',
+    'minimum_submit_time'    => 'Minimum Submit Time',
+    'maximum_submit_time'    => 'Maximum Submit Time',
 ];

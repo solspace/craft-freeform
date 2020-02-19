@@ -38,9 +38,19 @@ class SubmitEvent extends CancelableArrayableEvent
     }
 
     /**
+     * @deprecated Use ::getSubmission() instead
+     *
      * @return Submission
      */
     public function getElement(): Submission
+    {
+        return $this->element;
+    }
+
+    /**
+     * @return Submission
+     */
+    public function getSubmission(): Submission
     {
         return $this->element;
     }

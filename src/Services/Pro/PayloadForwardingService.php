@@ -16,6 +16,7 @@ use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
+use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Services\BaseService;
 
@@ -46,7 +47,13 @@ class PayloadForwardingService extends BaseService
                     continue;
                 }
 
-                $payload[$field->getHandle()] = $field->getValue();
+                if ($field instanceof EmailField) {
+                    $value = $field->getValueAsString();
+                } else {
+                    $value = $field->getValue();
+                }
+
+                $payload[$field->getHandle()] = $value;
             }
 
             $payloadEvent = new PayloadForwardEvent(

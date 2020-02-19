@@ -30,6 +30,7 @@ use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\FormActionInterface;
 use Solspace\Freeform\Library\DataObjects\Relations;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
@@ -122,8 +123,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var bool */
     private $valid;
 
-    /** @var bool */
-    private $markedAsSpam;
+    /** @var SpamReason[] */
+    private $spamReasons;
 
     /** @var bool */
     private $ajaxEnabled;
@@ -205,7 +206,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->ipCollectingEnabled   = true;
         $this->customAttributes      = new CustomFormAttributes();
         $this->errors                = [];
-        $this->markedAsSpam          = false;
+        $this->spamReasons           = [];
         $this->submitted             = false;
 
         $this->layout = new Layout(
@@ -527,17 +528,41 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function isMarkedAsSpam(): bool
     {
-        return $this->markedAsSpam;
+        return !empty($this->spamReasons);
+    }
+
+    /**
+     * @return SpamReason[]
+     */
+    public function getSpamReasons(): array
+    {
+        return $this->spamReasons;
     }
 
     /**
      * @param bool $markedAsSpam
+     * @deprecated Use ::markAsSpam() instead
      *
      * @return Form
      */
     public function setMarkedAsSpam(bool $markedAsSpam): Form
     {
-        $this->markedAsSpam = $markedAsSpam;
+        if ($markedAsSpam) {
+            return $this->markAsSpam(SpamReason::TYPE_GENERIC, 'Reason not specified');
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param string $type
+     * @param string $message
+     *
+     * @return Form
+     */
+    public function markAsSpam(string $type, string $message): Form
+    {
+        $this->spamReasons[] = new SpamReason($type, $message);
 
         return $this;
     }

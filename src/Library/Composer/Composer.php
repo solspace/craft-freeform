@@ -131,7 +131,7 @@ class Composer
         $jsonObject->composer->properties = $this->properties;
         $jsonObject->context              = $this->context;
 
-        return json_encode($jsonObject, JSON_NUMERIC_CHECK);
+        return json_encode($jsonObject);
     }
 
     /**

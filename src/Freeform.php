@@ -980,6 +980,12 @@ class Freeform extends Plugin
             FormsService::EVENT_FORM_VALIDATE,
             [$this->settings, 'throttleSubmissions']
         );
+
+        Event::on(
+            SubmissionsService::class,
+            SubmissionsService::EVENT_AFTER_SUBMIT,
+            [$this->spamSubmissions, 'persistSpamReasons']
+        );
     }
 
     private function initPaymentAssets()

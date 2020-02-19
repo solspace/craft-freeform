@@ -27,9 +27,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValu
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Models\StatusModel;
+use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
 
 class Submission extends Element
@@ -66,6 +68,9 @@ class Submission extends Element
 
     /** @var string */
     public $ip;
+
+    /** @var SpamReason[] */
+    private $spamReasons;
 
     /** @var array */
     private $storedFieldValues;
@@ -249,6 +254,7 @@ class Submission extends Element
                 'id'            => ['label' => Freeform::t('ID')],
                 'incrementalId' => ['label' => Freeform::t('Freeform ID')],
                 'ip'            => ['label' => Freeform::t('IP Address')],
+                'spamReasons'   => ['label' => Freeform::t('Spam Reasons')],
             ];
 
             foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
@@ -311,12 +317,56 @@ class Submission extends Element
     }
 
     /**
+     * @return SpamReason[]
+     */
+    public function getSpamReasons(): array
+    {
+        if (null === $this->spamReasons) {
+            $data = (new Query())
+                ->select(['reasonType', 'reasonMessage'])
+                ->from(SpamReasonRecord::TABLE)
+                ->where(['submissionId' => $this->id])
+                ->all();
+
+            $reasons = [];
+            foreach ($data as $item) {
+                $reasons[] = new SpamReason($item['reasonType'], $item['reasonMessage']);
+            }
+
+            $this->spamReasons = $reasons;
+        }
+
+        return $this->spamReasons;
+    }
+
+    /**
      * @inheritDoc
      */
     protected function tableAttributeHtml(string $attribute): string
     {
         if ($attribute === 'status') {
             return $this->getStatusModel()->name;
+        }
+
+        if ($attribute === 'spamReasons') {
+            $spamReasons = $this->getSpamReasons();
+            if (empty($spamReasons)) {
+                return '';
+            }
+
+            $reasons = [];
+            foreach ($spamReasons as $reason) {
+                $reasons[] = $reason->getType();
+            }
+
+            $translatedReasons = [];
+            $reasons           = array_unique($reasons);
+            $reasons           = array_filter($reasons);
+            foreach ($reasons as $reason) {
+                $translatedReasons[] = Freeform::t($reason);
+            }
+
+            return implode(', ', $translatedReasons);
         }
 
         $value = $this->$attribute;
@@ -333,10 +383,10 @@ class Submission extends Element
                 return '';
             }
 
-            $width = $field->getWidth();
+            $width  = $field->getWidth();
             $height = $field->getHeight();
 
-            $ratio = $width / $height;
+            $ratio    = $width / $height;
             $newWidth = 50 * $ratio;
 
             return "<img height='50' width='{$newWidth}' src=\"{$value}\" />";

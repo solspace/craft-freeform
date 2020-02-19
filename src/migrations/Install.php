@@ -144,7 +144,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('integrationType', $this->string(50)->notNull())
                 ->addField('status', $this->string(50)->notNull())
                 ->addField('fieldHash', $this->string(20))
-                ->addIndex(['status'], true)
+                ->addIndex(['status'], false)
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('id', 'freeform_mailing_list_fields', 'id', ForeignKey::CASCADE),
 
@@ -234,6 +234,14 @@ class Install extends StreamlinedInstallMigration
                 ->addField('id', $this->primaryKey())
                 ->addField('submissionId', $this->integer()->notNull())
                 ->addField('note', $this->text())
+                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_spam_reason'))
+                ->addField('id', $this->primaryKey())
+                ->addField('submissionId', $this->integer()->notNull())
+                ->addField('reasonType', $this->string(100)->notNull())
+                ->addField('reasonMessage', $this->text())
+                ->addIndex(['submissionId', 'reasonType'])
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE),
         ];
     }

@@ -575,7 +575,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         setcookie(
             $name,
             $value,
-            (int) (time() + strtotime('+1 year')),
+            (int) strtotime('+1 year'),
             '/',
             \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
             true,

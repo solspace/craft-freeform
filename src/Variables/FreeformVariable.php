@@ -77,6 +77,8 @@ class FreeformVariable
             $isSpam = $attributes['includeSpam'] ? null : false;
             unset($attributes['includeSpam']);
             $query->isSpam($isSpam);
+        } else {
+            $query->isSpam(false);
         }
 
         if ($attributes) {

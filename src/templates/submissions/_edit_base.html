@@ -543,6 +543,21 @@
 
     {% endif %}
 
+    {% if submission.isSpam and submission.spamReasons %}
+
+        <div class="meta read-only">
+            <h5>{{ 'Marked as spam because'|t('freeform') }}:</h5>
+            {% for reason in submission.spamReasons %}
+                <div class="data">
+                    <div class="value" style="width: 100%">
+                        {{ reason.message }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
     {# TODO: move to payments module #}
     {% if payments is defined %}
         <div class="meta read-only">

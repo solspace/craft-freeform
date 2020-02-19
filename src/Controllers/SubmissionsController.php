@@ -17,6 +17,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
@@ -70,9 +71,10 @@ class SubmissionsController extends BaseController
         return $this->renderTemplate(
             $this->getTemplateBasePath(),
             [
-                'forms'      => $forms,
-                'statuses'   => $this->getStatusesService()->getAllStatuses(),
-                'formHandle' => $formHandle,
+                'forms'       => $forms,
+                'statuses'    => $this->getStatusesService()->getAllStatuses(),
+                'formHandle'  => $formHandle,
+                'spamReasons' => SpamReason::getReasons(),
             ]
         );
     }
@@ -123,7 +125,7 @@ class SubmissionsController extends BaseController
                     }
                 }
 
-                foreach($form->getForm()->getLayout()->getFields() as $field) {
+                foreach ($form->getForm()->getLayout()->getFields() as $field) {
                     if (!$field->getId()) {
                         continue;
                     }

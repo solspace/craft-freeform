@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 3.6.3 - 2020-02-19
+### Added
+- Added Spam Reasons feature for the Freeform Spam Folder. It will now log the reason Freeform considered the submission to be spam and placed in the Spam Folder.
+
+### Changed
+- Updated the POST Forwarding feature to now convert Email Address field data a string value instead of array.
+
+### Fixed
+- Fixed a bug where the API integration queue database table for spam submissions had an incorrect unique index.
+- Fixed a bug where Freeform would perform a numeric check on field hashes, and would cause issues if the hash resembled number notations.
+- Fixed a bug where Freeform form cookies were being set to expire in 50 years instead of 1 year.
+- Fixed a bug where the Quick Save button in Composer was getting incorrect positioning on smaller screens.
+
 ## 3.6.2 - 2020-02-04
 ### Changed
 - Updated Composer form builder to now have floating/locking columns, as it did prior to 3.6 UI update.

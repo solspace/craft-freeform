@@ -54,22 +54,18 @@ class QuickExportController extends BaseController
             }
         }
 
-        $firstForm = reset($forms);
-
-        $userId = \Craft::$app->user->getId();
-
-        /** @var ExportSettingRecord $settingRecord */
-        $settingRecord = ExportSettingRecord::findOne(
-            [
-                'userId' => $userId,
-            ]
-        );
+        $firstForm     = reset($forms);
+        $settingRecord = $this->getExportSettings();
 
         $setting = [];
         foreach ($forms as $form) {
             $storedFieldIds = $fieldSetting = [];
-            if (!$settingRecord || !$settingRecord->setting) {
+            if (!$settingRecord) {
                 continue;
+            }
+
+            if (!$settingRecord->setting) {
+                $settingRecord->setting = [];
             }
 
             $settingArray = is_array($settingRecord->setting) ? $settingRecord->setting : \GuzzleHttp\json_decode($settingRecord->setting, true);

@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.6.4 - 2020-02-21
+### Fixed
+- Fixed a bug where Quick Export was not working for some customers.
+
 ## 3.6.3 - 2020-02-19
 ### Added
 - Added Spam Reasons feature for the Freeform Spam Folder. It will now log the reason Freeform considered the submission to be spam and placed in the Spam Folder.

@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
 use craft\elements\Entry;
-use craft\fields\BaseOptionsField;
 use craft\fields\BaseRelationField;
 use craft\models\FieldLayout;
+use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
 use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 
@@ -80,6 +80,7 @@ class Entries extends AbstractConnection
 
         foreach ($transformers as $transformer) {
             $field = $fieldLayout->getFieldByHandle($transformer->getCraftFieldHandle());
+
             $entry->{$transformer->getCraftFieldHandle()} = $transformer->transformValueFor($field);
         }
 
@@ -88,7 +89,7 @@ class Entries extends AbstractConnection
         }
 
         $currentSiteId = \Craft::$app->sites->currentSite->id;
-        $siteIds = $entry->getSection()->getSiteIds();
+        $siteIds       = $entry->getSection()->getSiteIds();
         if (in_array($currentSiteId, $siteIds, false)) {
             $siteId = $currentSiteId;
         } else {
@@ -123,5 +124,15 @@ class Entries extends AbstractConnection
      */
     protected function beforeConnect(Element $element, ConnectionResult $result, array $transformers)
     {
+    }
+
+    /**
+     * @param Element                    $element
+     * @param ConnectionResult           $result
+     * @param AbstractFieldTransformer[] $keyValuePairs
+     */
+    protected function afterConnect(Element $element, ConnectionResult $result, array $keyValuePairs)
+    {
+        $this->applyRelations($element, $keyValuePairs);
     }
 }

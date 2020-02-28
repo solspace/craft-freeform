@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.6.5 - 2020-02-27
+### Fixed
+- Fixed a bug where Relation fields were not able to be mapped to with the Element Connections feature.
+- Fixed a bug where field variables could not be used in CC and BCC fields of email notification templates.
+- Fixed a bug where changing User groups (selecting different ones after the fact) for Element Connections would clear out existing field mapping.
+- Fixed various display/visual issues in Composer form builder under certain circumstances.
+- Fixed a bug where having more than 1 file upload field in a form and using the built-in AJAX would not display validation errors correctly in some cases.
+
 ## 3.6.4 - 2020-02-21
 ### Fixed
 - Fixed a bug where Quick Export was not working for some customers.
@@ -396,10 +404,10 @@
 ### Added
 - Added Active Campaign CRM API integration (Pro edition).
 
- ### Changed
+### Changed
 - Updated `carbon` dependency to `^1.22.1|^2.19` for better compatibility with other plugins, and to reduce the chances of seeing deprecation notice.
 
- ### Fixed
+### Fixed
 - Fixed a bug where single checkbox fields would always be checked by default when placed in multipage forms on page 2 or greater.
 - Fixed a bug where the Purge Submissions feature was not also removing associated Assets.
 - Fixed a bug where using AJAX and uploading files was keeping Asset files stored even when the form errored.

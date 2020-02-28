@@ -132,14 +132,16 @@ class MailerService extends BaseService implements MailHandlerInterface
                 }
 
                 if ($notification->getCc()) {
-                    $cc = StringHelper::extractSeparatedValues($notification->getCc());
+                    $cc = $this->renderString($notification->getCc(), $fieldValues);
+                    $cc = StringHelper::extractSeparatedValues($cc);
                     if (!empty($cc)) {
                         $email->setCc($this->parseEnvInArray($cc));
                     }
                 }
 
                 if ($notification->getBcc()) {
-                    $bcc = StringHelper::extractSeparatedValues($notification->getBcc());
+                    $bcc = $this->renderString($notification->getBcc(), $fieldValues);
+                    $bcc = StringHelper::extractSeparatedValues($bcc);
                     if (!empty($bcc)) {
                         $email->setBcc($this->parseEnvInArray($bcc));
                     }
@@ -228,7 +230,8 @@ class MailerService extends BaseService implements MailHandlerInterface
      *
      * @return array
      */
-    private function parseEnvInArray(array $array) {
+    private function parseEnvInArray(array $array)
+    {
         $parsed = [];
         foreach ($array as $key => $item) {
             $parsed[$key] = \Craft::parseEnv($item);

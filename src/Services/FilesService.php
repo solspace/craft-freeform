@@ -100,7 +100,8 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
                 $response = \Craft::$app->getElements()->saveElement($asset);
             } catch (\Exception $e) {
-                $errors[] = $e->getMessage();
+                \Craft::error($e->getMessage());
+                $errors[] = 'An error occured uploading the file';
             }
 
             if ($response) {

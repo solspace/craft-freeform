@@ -145,9 +145,14 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                     );
                 }
 
+                $enableMimeCheck = function_exists('mime_content_type');
+
                 foreach ($_FILES[$this->handle]['name'] as $index => $name) {
                     $extension       = pathinfo($name, PATHINFO_EXTENSION);
-                    $mime            = mime_content_type($_FILES[$this->handle]['tmp_name'][$index]);
+
+                    if ($enableMimeCheck) {
+                        $mime = mime_content_type($_FILES[$this->handle]['tmp_name'][$index]);
+                    }
                     $validExtensions = $this->getValidExtensions();
 
                     if (empty($_FILES[$this->handle]['tmp_name'][$index])) {
@@ -173,7 +178,9 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                             ['extension' => $extension]
                         );
                     }
-                    elseif ($mime) {
+
+                    // Check mime type if the server supports it and we haven't encountered any other errors
+                    if (!$uploadErrors && $enableMimeCheck) {
                         $mimeExtension = $this->mime2ext(strtolower($mime));
                         // Check for the correct mime type
                         if ($mimeExtension) {

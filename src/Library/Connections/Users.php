@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
 use craft\elements\User;
+use craft\fields\BaseRelationField;
 use craft\models\FieldLayout;
 use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
@@ -102,5 +103,7 @@ class Users extends AbstractConnection
         if ($this->active && \Craft::$app->getConfig()->getGeneral()->autoLoginAfterAccountActivation) {
             \Craft::$app->getUser()->login($element);
         }
+
+        $this->applyRelations($element, $keyValuePairs);
     }
 }

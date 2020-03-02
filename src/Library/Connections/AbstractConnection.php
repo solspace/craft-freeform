@@ -3,11 +3,15 @@
 namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
+use craft\base\ElementInterface;
+use craft\fields\BaseRelationField;
+use craft\models\FieldLayout;
 use Solspace\Commons\Configurations\BaseConfiguration;
 use Solspace\Freeform\Events\Connections\ConnectEvent;
 use Solspace\Freeform\Events\Connections\ValidateEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 use Solspace\Freeform\Library\Exceptions\Connections\ConnectionException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
@@ -16,9 +20,9 @@ use yii\base\Event;
 abstract class AbstractConnection extends BaseConfiguration implements ConnectionInterface
 {
     const EVENT_BEFORE_VALIDATE = 'beforeValidate';
-    const EVENT_AFTER_VALIDATE = 'afterValidate';
-    const EVENT_BEFORE_CONNECT = 'beforeConnect';
-    const EVENT_AFTER_CONNECT = 'afterConnect';
+    const EVENT_AFTER_VALIDATE  = 'afterValidate';
+    const EVENT_BEFORE_CONNECT  = 'beforeConnect';
+    const EVENT_AFTER_CONNECT   = 'afterConnect';
 
     /** @var Form */
     protected $form;
@@ -84,7 +88,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
 
 
     /**
-     * @param Form $form
+     * @param Form  $form
      * @param array $transformers
      *
      * @return ConnectionResult
@@ -116,7 +120,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
     }
 
     /**
-     * @param Form $form
+     * @param Form  $form
      * @param array $transformers
      *
      * @return ConnectionResult
@@ -199,6 +203,27 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
                 }
             } else {
                 $result->addFormErrors($fieldErrors);
+            }
+        }
+    }
+
+    /**
+     * @param ElementInterface       $element
+     * @param TransformerInterface[] $transformers
+     */
+    protected function applyRelations(ElementInterface $element, array $transformers)
+    {
+        $fieldLayout = $element->getFieldLayout();
+        if (null === $fieldLayout) {
+            $fieldLayout = new FieldLayout();
+        }
+
+        foreach ($transformers as $transformer) {
+            $field = $fieldLayout->getFieldByHandle($transformer->getCraftFieldHandle());
+
+            if ($field instanceof BaseRelationField) {
+                $value = $transformer->transformValueFor($field);
+                \Craft::$app->relations->saveRelations($field, $element, $value);
             }
         }
     }

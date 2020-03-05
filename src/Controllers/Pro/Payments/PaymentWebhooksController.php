@@ -43,7 +43,7 @@ class PaymentWebhooksController extends BaseController
             $event = \Stripe\Webhook::constructEvent($payload, $sigHeader, $endpointSecret);
         } catch (\UnexpectedValueException $e) {
             throw new HttpException(400, Freeform::t('Invalid payload'));
-        } catch (\Stripe\Error\SignatureVerification $e) {
+        } catch (\Stripe\Exception\SignatureVerificationException $e) {
             throw new HttpException(400, Freeform::t('Invalid signature'));
         }
 

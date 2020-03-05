@@ -25,8 +25,8 @@ use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Stripe as StripeAPI;
 use Stripe\Charge;
 use Stripe\Customer;
-use Stripe\Error\Card;
-use Stripe\Error\InvalidRequest;
+use Stripe\Exception\CardException as Card;
+use Stripe\Exception\InvalidRequestException as InvalidRequest;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Subscription;
@@ -566,7 +566,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         } catch (\Exception $e) {
             return $this->processError($e);
         }
-        $charge = $charge->__toArray();
+        $charge = $charge->toArray();
         //TODO: constants?
         $charge['type']   = 'charge';
         $charge['amount'] = self::fromStripeAmount($charge['amount'], $charge['currency']);
@@ -588,7 +588,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         } catch (\Exception $e) {
             return $this->processError($e);
         }
-        $subscription                     = $subscription->__toArray();
+        $subscription                     = $subscription->toArray();
         $subscription['type']             = 'subscription';
         $plan                             = $subscription['plan'];
         $subscription['plan']['amount']   = self::fromStripeAmount($plan['amount'], $plan['currency']);
@@ -781,12 +781,12 @@ class Stripe extends AbstractPaymentGatewayIntegration
             //TODO: we can request charge and get details, but we can end up with failure loop
             //TODO: validate that we have these?
 
-            if ($error->getPrevious() instanceof StripeAPI\Error\Base) {
+            if ($error->getPrevious() instanceof StripeAPI\Exception\ApiErrorException) {
                 $error = $error->getPrevious();
             }
 
-            if ($error instanceof StripeAPI\Error\Base) {
-                $data              = $error->jsonBody['error'];
+            if ($error instanceof StripeAPI\Exception\ApiErrorException) {
+                $data              = $error->getJsonBody()['error'];
                 $model->resourceId = $data['paymentIntentId'] ?? null;
             }
 
@@ -844,12 +844,12 @@ class Stripe extends AbstractPaymentGatewayIntegration
             //TODO: we can request charge and get details, but we can end up with failure loop
             //TODO: validate that we have these?
 
-            if ($error->getPrevious() instanceof StripeAPI\Error\Base) {
+            if ($error->getPrevious() instanceof StripeAPI\Exception\ApiErrorException) {
                 $error = $error->getPrevious();
             }
 
-            if ($error instanceof StripeAPI\Error\Base) {
-                $data              = $error->jsonBody['error'];
+            if ($error instanceof StripeAPI\Exception\ApiErrorException	) {
+                $data              = $error->getJsonBody()['error'];
                 $model->resourceId = isset($data['subscription']) ? $data['subscription'] : null;
             }
 
@@ -888,23 +888,23 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->lastError = $exception;
 
         switch (get_class($exception)) {
-            case 'Stripe\Error\Card':
+            case 'Stripe\Exception\CardException':
                 return false;
 
-            case 'Stripe\Error\InvalidRequest':
+            case 'Stripe\Exception\InvalidRequestException':
                 //Resource not found
                 if ($exception->getHttpStatus() == 404) {
                     return null;
                 }
 
             // intentional fall through
-            case 'Stripe\Error\Authentication':
-            case 'Stripe\Error\RateLimit':
-            case 'Stripe\Error\ApiConnection':
-            case 'Stripe\Error\Permission':
-            case 'Stripe\Error\Api':
-            case 'Stripe\Error\Idempotency':
-            case 'Stripe\Error\Base':
+            case 'Stripe\Exception\AuthenticationException':
+            case 'Stripe\Exception\RateLimitException':
+            case 'Stripe\Exception\ApiConnectionException':
+            case 'Stripe\Exception\PermissionException':
+            case 'Stripe\Exception\UnknownApiErrorException':
+            case 'Stripe\Exception\IdempotencyException':
+            case 'Stripe\Exception\ApiErrorException':
                 $message         = 'Error while processing your payment, please try later.';
                 $this->lastError = new \Exception($message, 0, $exception);
                 break;

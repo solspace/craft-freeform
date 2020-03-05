@@ -31,7 +31,7 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Models\IntegrationModel;
 use Stripe\Customer;
-use Stripe\Error\Card;
+use Stripe\Exception\CardException as Card;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Plan;

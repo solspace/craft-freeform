@@ -18,7 +18,7 @@
     "hashids/hashids": "^2.0",
     "egulias/email-validator": "^2.1",
     "nesbot/carbon": "^1.22.1|^2.19",
-    "stripe/stripe-php": "^6.6.0",
+    "stripe/stripe-php": "^7.27",
     "phpoffice/phpspreadsheet": "^1.6.0"
   },
   "require-dev": {

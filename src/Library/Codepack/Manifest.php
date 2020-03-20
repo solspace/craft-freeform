@@ -116,7 +116,7 @@ class Manifest
 
         foreach (self::$availableProperties as $property) {
             if (in_array($property, self::$requiredProperties, true)) {
-                if (!array_key_exists($property, $data)) {
+                if (!isset($data[$property])) {
                     throw new ManifestException(
                         sprintf('Mandatory "%s" property not defined in manifest.json', $property)
                     );

@@ -510,7 +510,7 @@ class Submission extends Element
             }
 
             $value = null;
-            if (array_key_exists($field->getHandle(), $values)) {
+            if (isset($values[$field->getHandle()])) {
                 $value = $values[$field->getHandle()];
             }
 
@@ -644,7 +644,7 @@ class Submission extends Element
     public function __isset($name): bool
     {
         $fields = $this->getFieldMetadata();
-        if (array_key_exists($name, $fields)) {
+        if (isset($fields[$name])) {
             return true;
         }
 

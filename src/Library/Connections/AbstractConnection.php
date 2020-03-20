@@ -197,7 +197,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
                 continue;
             }
 
-            if (\array_key_exists($field, $this->getMapping())) {
+            if (isset($this->getMapping()[$field])) {
                 foreach ($fieldErrors as $error) {
                     $result->addFieldError($this->getMapping()[$field], $error);
                 }

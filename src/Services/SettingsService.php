@@ -499,7 +499,7 @@ class SettingsService extends BaseService
         if (!$this->isAllowAdminEdit()) {
             unset($nav['hdspam']);
             foreach ($nav as $key => $value) {
-                if (!array_key_exists('heading', $value) && $this->isSectionASetting($key)) {
+                if (!isset($value['heading']) && $this->isSectionASetting($key)) {
                     unset($nav[$key]);
                 }
             }

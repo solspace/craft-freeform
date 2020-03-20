@@ -266,7 +266,7 @@ class SalesforceOpportunity extends AbstractCRMIntegration
 
                     // Checks which account's values we'll need to append to an existing SF value based on a form field type
                     if ($isAppendAccountData) {
-                        if (array_key_exists($key, $formFields)) {
+                        if (isset($formFields[$key])) {
                             if ($this->isAppendFieldType($formFields[$key])) {
                                 $appendAccountFields[] = $handle;
                             }
@@ -279,7 +279,7 @@ class SalesforceOpportunity extends AbstractCRMIntegration
 
                     // Checks which contact's values we'll need to append to an existing SF value based on a form field type
                     if ($isAppendContactData) {
-                        if (array_key_exists($key, $formFields)) {
+                        if (isset($formFields[$key])) {
                             if ($this->isAppendFieldType($formFields[$key])) {
                                 $appendContactFields[] = $handle;
                             }

@@ -124,7 +124,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     {
         $uploadErrors = [];
 
-        if (!array_key_exists($this->handle, self::$filesUploaded)) {
+        if (!isset(self::$filesUploaded[$this->handle])) {
             $exists = isset($_FILES[$this->handle]) && !empty($_FILES[$this->handle]['name']) && !$this->isHidden();
 
             if ($exists && !\is_array($_FILES[$this->handle]['name'])) {
@@ -205,7 +205,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
      */
     public function uploadFile()
     {
-        if (!array_key_exists($this->handle, self::$filesUploaded)) {
+        if (!isset(self::$filesUploaded[$this->handle])) {
             $response = $this->getForm()->getFileUploadHandler()->uploadFile($this, $this->getForm());
 
             self::$filesUploaded[$this->handle]       = null;
@@ -256,7 +256,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         $allowedExtensions = [];
         if ($selectedFileKinds) {
             foreach ($selectedFileKinds as $kind) {
-                if (array_key_exists($kind, $allFileKinds)) {
+                if (isset($allFileKinds[$kind])) {
                     $allowedExtensions = array_merge($allowedExtensions, $allFileKinds[$kind]);
                 }
             }

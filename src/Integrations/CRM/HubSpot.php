@@ -104,7 +104,7 @@ class HubSpot extends AbstractCRMIntegration
 
                     // Checks which contact's values we'll need to append to an existing HS values based on a form field type
                     if ($isAppendContactData) {
-                        if (array_key_exists($key, $formFields)) {
+                        if (isset($formFields[$key])) {
                             if ($this->isAppendFieldType($formFields[$key])) {
                                 $appendContactFields[] = $propName;
                             }
@@ -118,7 +118,7 @@ class HubSpot extends AbstractCRMIntegration
 
                     // Checks which company's values we'll need to append to an existing HS values based on a form field type
                     if ($isAppendCompanyData) {
-                        if (array_key_exists($key, $formFields)) {
+                        if (isset($formFields[$key])) {
                             if ($this->isAppendFieldType($formFields[$key])) {
                                 $appendCompanyFields[] = $propName;
                             }
@@ -489,9 +489,9 @@ class HubSpot extends AbstractCRMIntegration
     private function getEmailFieldValue($contactProps)
     {
         foreach ($contactProps as $contactProp) {
-            if (array_key_exists('property', $contactProp)) {
+            if (isset($contactProp['property'])) {
                 if ($contactProp['property'] === 'email') {
-                    if (array_key_exists('value', $contactProp)) {
+                    if (isset($contactProp['value'])) {
                         return $contactProp['value'];
                     }
                 }
@@ -511,9 +511,9 @@ class HubSpot extends AbstractCRMIntegration
     private function getDomainFieldValue($companyProps)
     {
         foreach ($companyProps as $companyProp) {
-            if (array_key_exists('name', $companyProp)) {
+            if (isset($companyProp['name'])) {
                 if ($companyProp['name'] === 'domain') {
-                    if (array_key_exists('value', $companyProp)) {
+                    if (isset($companyProp['value'])) {
                         return $companyProp['value'];
                     }
                 }

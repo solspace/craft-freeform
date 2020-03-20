@@ -706,11 +706,17 @@ class Stripe extends AbstractPaymentGatewayIntegration
             }
         }
 
+        $updateDataCallback = Freeform::getInstance()->getSettings()->stripePaymentDataCallback;
+
         try {
-            $updateData = [
-                'description' => 'Payment for FF Submission #' . $submissionId,
-                'metadata'    => ['submissionId' => $submissionId],
-            ];
+            if($updateDataCallback) {
+                $updateData = $updateDataCallback($paymentDetails->getSubmission());
+            } else {
+                $updateData = [
+                    'description' => 'Payment for FF Submission #' . $submissionId,
+                    'metadata'    => ['submissionId' => $submissionId],
+                ];
+            }
 
             if ($customer) {
                 $updateData['customer'] = $customer;

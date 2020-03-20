@@ -190,6 +190,9 @@ class Settings extends Model
     /** @var bool */
     public $hideBannerOldFreeform = false;
 
+    /** @var callable */
+    public $stripePaymentDataCallback = null;
+
     /**
      * Settings constructor.
      *

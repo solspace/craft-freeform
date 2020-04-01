@@ -12,7 +12,6 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Commons\Records\SerializableActiveRecord;
 use Solspace\Freeform\Library\DataObjects\EmailTemplate;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
 
@@ -34,9 +33,9 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
  * @property int    $sortOrder
  * @property string $cc
  * @property string $bcc
- * @property array  $presetAssets
+ * @property string $presetAssets
  */
-class NotificationRecord extends SerializableActiveRecord implements NotificationInterface, \JsonSerializable
+class NotificationRecord extends ActiveRecord implements NotificationInterface, \JsonSerializable
 {
     /** @var string */
     public $filepath;
@@ -111,14 +110,6 @@ EOT;
         $model->presetAssets       = $template->getPresetAssets();
 
         return $model;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getSerializableFields(): array
-    {
-        return ['presetAssets'];
     }
 
     /**
@@ -242,7 +233,11 @@ EOT;
      */
     public function getPresetAssets()
     {
-        return $this->presetAssets;
+        if ($this->presetAssets) {
+            return \GuzzleHttp\json_decode($this->presetAssets, true);
+        }
+
+        return null;
     }
 
     /**

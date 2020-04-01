@@ -11,7 +11,7 @@
 
 namespace Solspace\Freeform\Records;
 
-use Solspace\Commons\Records\SerializableActiveRecord;
+use craft\db\ActiveRecord;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
@@ -28,7 +28,7 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
  * @property string $instructions
  * @property array  $metaProperties
  */
-class FieldRecord extends SerializableActiveRecord
+class FieldRecord extends ActiveRecord
 {
     const TABLE = '{{%freeform_fields}}';
 
@@ -144,15 +144,5 @@ class FieldRecord extends SerializableActiveRecord
                 )
             );
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getSerializableFields(): array
-    {
-        return [
-            'metaProperties',
-        ];
     }
 }

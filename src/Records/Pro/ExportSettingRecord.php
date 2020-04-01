@@ -11,7 +11,7 @@
 
 namespace Solspace\Freeform\Records\Pro;
 
-use Solspace\Commons\Records\SerializableActiveRecord;
+use craft\db\ActiveRecord;
 
 /**
  * Class Freeform_ExportSettingRecord
@@ -20,7 +20,7 @@ use Solspace\Commons\Records\SerializableActiveRecord;
  * @property int   $userId
  * @property array $setting
  */
-class ExportSettingRecord extends SerializableActiveRecord
+class ExportSettingRecord extends ActiveRecord
 {
     const TABLE = '{{%freeform_export_settings}}';
 
@@ -45,16 +45,6 @@ class ExportSettingRecord extends SerializableActiveRecord
         $record->setting = [];
 
         return $record;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getSerializableFields(): array
-    {
-        return [
-            'setting',
-        ];
     }
 
     /**

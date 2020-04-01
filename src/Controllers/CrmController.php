@@ -298,9 +298,6 @@ class CrmController extends Controller
         $serviceProviderTypes = $this->getCRMService()->getAllCRMServiceProviders();
         $settingBlueprints    = $this->getCRMService()->getAllCRMSettingBlueprints();
 
-        \Craft::$app->view->registerCssFile('freeform/css/integrations.css');
-        \Craft::$app->view->registerJsFile('freeform/js/other/integrations.js');
-
         $variables = [
             'integration'          => $model,
             'blockTitle'           => $title,

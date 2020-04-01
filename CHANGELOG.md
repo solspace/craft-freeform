@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.6.6 - 2020-04-01
+### Changed
+- Updated file uploading to check mime type to help prevent possible security issues (e.g. stops `.txt` files being renamed to `.jpg`).
+- Updated Freeform Payments feature to use the Stripe PHP 7 library dependency, allowing for PHP 7.4 support.
+
+### Fixed
+- Fixed a bug where the Predefined Assets feature was not working correctly.
+- Fixed a bug where Table fields with many columns would distort the Composer form builder interface.
+- Fixed a bug where adding rows for Table fields on front end in IE 11 would not work correctly.
+- Fixed a bug where submitting forms containing reCAPTCHA v3 on IE 11 would not work correctly.
+- Fixed a bug where a JS error would occur when creating/editing CRM integrations.
+
 ## 3.6.5 - 2020-02-27
 ### Fixed
 - Fixed a bug where Relation fields were not able to be mapped to with the Element Connections feature.

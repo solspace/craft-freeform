@@ -269,7 +269,7 @@ class ExportProfileModel extends Model
 
                 $fieldId = $id;
                 if (is_numeric($id)) {
-                    $fieldId = Submission::getFieldColumnName($id);
+                    $fieldId = 's.[[' . Submission::getFieldColumnName($id) . ']]';
                 }
 
                 if ($fieldId === 'id') {
@@ -286,15 +286,15 @@ class ExportProfileModel extends Model
 
                 switch ($type) {
                     case '=':
-                        $conditions[] = "[[$fieldId]] = :field_$id";
+                        $conditions[] = "$fieldId = :field_$id";
                         break;
 
                     case '!=':
-                        $conditions[] = "[[$fieldId]] != :field_$id";
+                        $conditions[] = "$fieldId != :field_$id";
                         break;
 
                     case 'like':
-                        $conditions[] = "[[$fieldId]] LIKE :field_$id";
+                        $conditions[] = "$fieldId LIKE :field_$id";
                         break;
 
                     default:

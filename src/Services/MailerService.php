@@ -161,8 +161,9 @@ class MailerService extends BaseService implements MailHandlerInterface
                 continue;
             }
 
-            if ($notification->getPresetAssets() && is_array($notification->getPresetAssets()) && Freeform::getInstance()->isPro()) {
-                foreach ($notification->getPresetAssets() as $assetId) {
+            $presetAssets = $notification->getPresetAssets();
+            if ($presetAssets && is_array($presetAssets) && Freeform::getInstance()->isPro()) {
+                foreach ($presetAssets as $assetId) {
                     $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                     if ($asset) {
                         $email->attach($asset->getCopyOfFile());

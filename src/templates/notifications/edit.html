@@ -196,7 +196,7 @@
             name: "presetAssets",
             label: "Predefined Assets",
             instructions: "Select any Assets you wish to include as attachments on all email notifications using this template.",
-            elements: notification.presetAssets ? craft.assets.id(notification.presetAssets).all : [],
+            elements: notification.getPresetAssets() ? craft.assets.id(notification.getPresetAssets()).all : [],
             selectionLabel: "Choose assets",
             elementType: "craft\\elements\\Asset",
             sources: "*",

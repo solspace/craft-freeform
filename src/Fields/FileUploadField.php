@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValu
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
+use Solspace\Freeform\Library\Helpers\FileHelper;
 
 class FileUploadField extends AbstractField implements MultipleValueInterface, FileUploadInterface
 {
@@ -105,14 +106,14 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         $this->addInputAttribute('class', $attributes->getClass());
 
         return '<input '
-            . $this->getInputAttributesString()
-            . $this->getAttributeString('name', $this->getHandle() . '[]')
-            . $this->getAttributeString('type', $this->getType())
-            . $this->getAttributeString('id', $this->getIdAttribute())
-            . $this->getParameterString('multiple', $this->getFileCount() > 1)
-            . $this->getRequiredAttribute()
-            . $attributes->getInputAttributesAsString()
-            . '/>';
+               . $this->getInputAttributesString()
+               . $this->getAttributeString('name', $this->getHandle() . '[]')
+               . $this->getAttributeString('type', $this->getType())
+               . $this->getAttributeString('id', $this->getIdAttribute())
+               . $this->getParameterString('multiple', $this->getFileCount() > 1)
+               . $this->getRequiredAttribute()
+               . $attributes->getInputAttributesAsString()
+               . '/>';
     }
 
     /**
@@ -148,6 +149,22 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                 foreach ($_FILES[$this->handle]['name'] as $index => $name) {
                     $extension       = pathinfo($name, PATHINFO_EXTENSION);
                     $validExtensions = $this->getValidExtensions();
+
+                    // Check the mime type if the server supports it
+                    if (FileHelper::isMimeTypeCheckEnabled()) {
+                        $tmpName = $_FILES[$this->handle]['tmp_name'][$index];
+
+                        $mimeType      = FileHelper::getMimeType($tmpName);
+                        $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
+
+                        if ($mimeExtension) {
+                            $extension = $mimeExtension;
+                        } else {
+                            $uploadErrors[] = $this->translate(
+                                "Unknown file type"
+                            );
+                        }
+                    }
 
                     if (empty($_FILES[$this->handle]['tmp_name'][$index])) {
                         $errorCode = $_FILES[$this->handle]['error'][$index];

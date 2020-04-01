@@ -11,7 +11,7 @@
 
 namespace Solspace\Freeform\Records\Pro\Payments;
 
-use Solspace\Commons\Records\SerializableActiveRecord;
+use craft\db\ActiveRecord;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Records\IntegrationRecord;
 use yii\db\ActiveQuery;
@@ -30,7 +30,7 @@ use yii\db\ActiveQuery;
  * @property string $errorCode
  * @property string $errorMessage
  */
-class PaymentRecord extends SerializableActiveRecord
+class PaymentRecord extends ActiveRecord
 {
     const TABLE = '{{%freeform_payments_payments}}';
 
@@ -70,15 +70,5 @@ class PaymentRecord extends SerializableActiveRecord
     public function getSubscription(): ActiveQuery
     {
         return $this->hasOne(SubscriptionRecord::TABLE, ['subscriptionId' => 'id']);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getSerializableFields(): array
-    {
-        return [
-            'metadata',
-        ];
     }
 }

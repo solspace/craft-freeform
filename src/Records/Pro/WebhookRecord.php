@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Records\Pro;
 
-use Solspace\Commons\Records\SerializableActiveRecord;
+use craft\db\ActiveRecord;
 
 /**
  * @property int    $id
@@ -11,7 +11,7 @@ use Solspace\Commons\Records\SerializableActiveRecord;
  * @property string $webhook
  * @property array  $settings
  */
-class WebhookRecord extends SerializableActiveRecord
+class WebhookRecord extends ActiveRecord
 {
     const TABLE          = '{{%freeform_webhooks}}';
     const RELATION_TABLE = '{{%freeform_webhooks_form_relations}}';
@@ -22,14 +22,6 @@ class WebhookRecord extends SerializableActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
-    }
-
-    /**
-     * @return array
-     */
-    protected function getSerializableFields(): array
-    {
-        return ['settings'];
     }
 
     /**

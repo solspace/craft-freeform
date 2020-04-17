@@ -177,7 +177,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function hasFieldBeenSubmitted(AbstractField $field): bool
     {
-        return array_key_exists($field->getHandle(), $this->storedValues);
+        return isset($this->storedValues[$field->getHandle()]);
     }
 
     /**
@@ -198,7 +198,7 @@ class FormValueContext implements \JsonSerializable
                 return $this->request->getPost($fieldName);
             }
 
-            if (array_key_exists($fieldName, $this->storedValues)) {
+            if (isset($this->storedValues[$fieldName])) {
                 return $this->storedValues[$fieldName];
             }
         }

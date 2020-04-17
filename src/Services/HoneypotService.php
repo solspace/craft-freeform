@@ -63,7 +63,7 @@ class HoneypotService extends BaseService
 
         $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?: Honeypot::NAME_PREFIX;
         if (!$isEnhanced) {
-            if (array_key_exists($honeypotName, $postValues) && $postValues[$honeypotName] === '') {
+            if (isset($postValues[$honeypotName]) && $postValues[$honeypotName] === '') {
                 return;
             }
         } else {

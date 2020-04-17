@@ -56,6 +56,13 @@ class PayloadForwardingService extends BaseService
                 $payload[$field->getHandle()] = $value;
             }
 
+            $csrfTokenName = \Craft::$app->config->general->csrfTokenName;
+
+            $payload[$csrfTokenName]     = \Craft::$app->request->csrfToken;
+            $payload['submission-id']    = $submission->id;
+            $payload['submission-token'] = $submission->token;
+            $payload['submission-title'] = $submission->title;
+
             $payloadEvent = new PayloadForwardEvent(
                 new Client(),
                 new Request('POST', $url),
@@ -91,7 +98,7 @@ class PayloadForwardingService extends BaseService
                 ];
 
                 if ($status >= 200 && $status < 300) {
-                    if ($phrase){
+                    if ($phrase) {
                         if (strripos($logContext['response'], $phrase) !== false) {
                             $logger->error('POST forwarding failed', [$logContext]);
                         }

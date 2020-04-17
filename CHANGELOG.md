@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 3.6.7 - 2020-04-17
+### Added
+- Added developer events for Stripe Payments to modify the default description of payments in Stripe.
+- Added a hook for other plugins to include info in the CP submission edit view.
+
+### Changed
+- Updated Freeform to be compatible with PHP 7.4.
+- Updated the Constant Contact mailing list integration to use the new v3 API. The old v2 API option is now deprecated and still works for legacy.
+- Updated the POST Forwarding feature to also include the CSRF token, submission ID, submission token, and submission title.
+
+### Fixed
+- Fixed a bug where the submissions chart on the CP Submission index page was not correctly localizing.
+- Fixed a bug where Stripe Payment success/fail email notifications were not working.
+- Fixed a bug where using Stripe Payments and reCAPTCHA v3 together on a form would sometimes double-submit the form.
+- Fixed a visual issue with long option names on fields in the Conditional Rules area in Composer form builder.
+- Fixed a bug where removing rows for Table fields on front end in IE 11 would not work correctly.
+- Fixed a bug where Composer could give a deprecation notice about Code Packs.
+- Fixed a bug where there was no translation for "Tried uploading {count} files. Maximum {max} files allowed." front end error.
+
 ## 3.6.6 - 2020-04-01
 ### Changed
 - Updated file uploading to check mime type to help prevent possible security issues (e.g. stops `.txt` files being renamed to `.jpg`).

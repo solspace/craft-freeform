@@ -64,7 +64,7 @@ class WidgetsService extends Component
      */
     public function getRange($rangeType): array
     {
-        if (!array_key_exists($rangeType, self::$dateRanges)) {
+        if (!isset(self::$dateRanges[$rangeType])) {
             throw new FreeformException(sprintf("Range type '%s' not supported", $rangeType));
         }
 

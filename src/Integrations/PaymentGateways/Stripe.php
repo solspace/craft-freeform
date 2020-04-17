@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways;
 
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Events\Payments\UpdateDataEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
@@ -29,6 +30,7 @@ use Stripe\Exception\ApiErrorException;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Subscription;
+use yii\base\Event;
 use function strtolower;
 
 class Stripe extends AbstractPaymentGatewayIntegration
@@ -45,6 +47,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
     const PRODUCT_TYPE_SERVICE = 'service';
     const PRODUCT_TYPE_GOOD    = 'good';
+
+    const EVENT_UPDATE_PAYMENT_INTENT_DATA = 'updatePaymentIntentData';
+    const EVENT_UPDATE_SUBSCRIPTION_DATA   = 'updateSubscriptionData';
 
     const ZERO_DECIMAL_CURRENCIES = [
         'BIF',
@@ -333,7 +338,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
 
         $token        = $subscriptionDetails->getToken();
-        $submissionId = $subscriptionDetails->getSubmission()->getId();
+        $submission   = $subscriptionDetails->getSubmission();
+        $submissionId = $submission->getId();
 
         $subscription = $customer = null;
         try {
@@ -373,17 +379,30 @@ class Stripe extends AbstractPaymentGatewayIntegration
                     $invoice = Invoice::retrieve($invoice);
                 }
 
+                $paymentIntentDataEvent = new UpdateDataEvent(
+                    $submission,
+                    ['metadata' => ['subscription' => $subscription['id']]]
+                );
+
+                Event::trigger(self::class, self::EVENT_UPDATE_PAYMENT_INTENT_DATA, $paymentIntentDataEvent);
+                $compiledPaymentIntentData = $paymentIntentDataEvent->getCompiledData();
+
                 /** @var PaymentIntent $paymentIntent */
                 $paymentIntentId = $invoice->payment_intent;
                 $paymentIntent   = PaymentIntent::update(
                     $paymentIntentId,
-                    ['metadata' => ['subscription' => $subscription['id']]]
+                    $compiledPaymentIntentData
                 );
 
-                Subscription::update(
-                    $subscription->id,
+                $subscriptionDataEvent = new UpdateDataEvent(
+                    $submission,
                     ['metadata' => ['submission' => $submissionId]]
                 );
+
+                Event::trigger(self::class, self::EVENT_UPDATE_SUBSCRIPTION_DATA, $subscriptionDataEvent);
+                $compiledSubscriptionData = $subscriptionDataEvent->getCompiledData();
+
+                Subscription::update($subscription->id, $compiledSubscriptionData);
 
                 /** @var Charge $charge */
                 $charge = array_pop($paymentIntent->charges->data);
@@ -684,7 +703,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
     protected function processPaymentIntent(string $paymentIntentId, PaymentDetails $paymentDetails)
     {
         $this->prepareApi();
-        $submissionId = $paymentDetails->getSubmission()->getId();
+        $submission   = $paymentDetails->getSubmission();
+        $submissionId = $submission->getId();
 
         if ($paymentIntentId === 'declined') {
             $this->lastError = new \Exception('Your card was declined', 400);
@@ -706,16 +726,20 @@ class Stripe extends AbstractPaymentGatewayIntegration
         }
 
         try {
-            $updateData = [
-                'description' => 'Payment for FF Submission #' . $submissionId,
-                'metadata'    => ['submissionId' => $submissionId],
-            ];
+            $event = new UpdateDataEvent(
+                $submission,
+                ['metadata' => ['submissionId' => $submissionId]]
+            );
+            $event->addData('description', 'Payment for FF Submission #' . $submissionId);
+
+            Event::trigger(self::class, self::EVENT_UPDATE_PAYMENT_INTENT_DATA, $event);
+            $paymentIntentData = $event->getCompiledData();
 
             if ($customer) {
-                $updateData['customer'] = $customer;
+                $paymentIntentData['customer'] = $customer;
             }
 
-            $intent = PaymentIntent::update($paymentIntentId, $updateData);
+            $intent = PaymentIntent::update($paymentIntentId, $paymentIntentData);
             if ($intent->status === PaymentIntent::STATUS_REQUIRES_CONFIRMATION) {
                 $intent->confirm();
             }

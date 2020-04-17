@@ -541,6 +541,8 @@
             </div>
         </div>
 
+        {% hook 'freeform.submissions.edit.meta' %}
+
     {% endif %}
 
     {% if submission.isSpam and submission.spamReasons %}

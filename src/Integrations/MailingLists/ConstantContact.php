@@ -20,8 +20,8 @@ use Solspace\Freeform\Library\Integrations\MailingLists\MailingListOAuthConnecto
 
 class ConstantContact extends MailingListOAuthConnector
 {
-    const TITLE        = 'Constant Contact';
-    const LOG_CATEGORY = 'Constant Contact';
+    const TITLE        = 'Constant Contact (legacy)';
+    const LOG_CATEGORY = 'Constant Contact (legacy)';
 
     /**
      * Returns the MailingList service provider short name
@@ -31,7 +31,7 @@ class ConstantContact extends MailingListOAuthConnector
      */
     public function getServiceProvider(): string
     {
-        return 'Constant Contact';
+        return 'Constant Contact (legacy)';
     }
 
     /**

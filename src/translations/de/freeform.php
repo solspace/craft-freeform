@@ -273,6 +273,7 @@ return [
     "'{extension}' is not an allowed file extension"                                                                                                                                                                                                                                                         => "'{extension}' ist keine gestattete Dateiendung",
 
     'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB'                                                                                                                                            => 'Du hast versucht {fileSize}KB hochzuladen, die maximale Dateiupload-Größe ist jedoch {maxFileSize}KB',
+    'Tried uploading {count} files. Maximum {max} files allowed.'                                                                                                                                                                      => 'Tried uploading {count} files. Maximum {max} files allowed.',
     'Could not upload file'                                                                                                                                                                                                            => 'Konnte Datei nicht hochladen',
 
     // Fields

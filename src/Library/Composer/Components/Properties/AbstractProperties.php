@@ -84,7 +84,7 @@ abstract class AbstractProperties
         $manifest['type'] = 'string';
 
         foreach ($properties as $key => $value) {
-            if (!array_key_exists($key, $manifest)) {
+            if (!isset($manifest[$key])) {
                 continue;
             }
 

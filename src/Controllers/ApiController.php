@@ -11,10 +11,8 @@
 
 namespace Solspace\Freeform\Controllers;
 
-use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
-use craft\elements\db\ElementQueryInterface;
 use craft\helpers\ChartHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
@@ -453,21 +451,16 @@ class ApiController extends BaseController
         $startDateParam = \Craft::$app->request->post('startDate');
         $endDateParam   = \Craft::$app->request->post('endDate');
 
-        $startDate = DateTimeHelper::toDateTime($startDateParam);
-        $endDate = DateTimeHelper::toDateTime($endDateParam);
+        $startDate = DateTimeHelper::toDateTime($startDateParam, true);
+        $endDate   = DateTimeHelper::toDateTime($endDateParam, true);
 
         if ($startDate === false || $endDate === false) {
             throw new Exception('There was a problem calculating the start and end dates');
         }
 
-        // Start at midnight on the start date, end at midnight after the end date
-        $timeZone = new \DateTimeZone(\Craft::$app->getTimeZone());
-        $startDate = new \DateTime($startDate->format('Y-m-d'), $timeZone);
-        $endDate = new \DateTime($endDate->modify('+1 day')->format('Y-m-d'), $timeZone);
-
+        $endDate->modify('+1 day');
         $intervalUnit = ChartHelper::getRunChartIntervalUnit($startDate, $endDate);
-
-        $submissions = Submission::TABLE;
+        $submissions  = Submission::TABLE;
 
         // Prep the query
         $query = (new Query())
@@ -618,18 +611,18 @@ class ApiController extends BaseController
         // Assemble the data
         $rows = [];
 
-        $cursorDate = clone $startDate;
+        $cursorDate   = clone $startDate;
         $endTimestamp = $endDate->getTimestamp();
 
         while ($cursorDate->getTimestamp() < $endTimestamp) {
             $cursorEndDate = clone $cursorDate;
             $cursorEndDate->modify('+1 ' . $intervalUnit);
             $totalQuery = clone $query;
-            $total = (float)$totalQuery
+            $total      = (float) $totalQuery
                 ->andWhere(['>=', $dateColumn, Db::prepareDateForDb($cursorDate)])
                 ->andWhere(['<', $dateColumn, Db::prepareDateForDb($cursorEndDate)])
                 ->count('*');
-            $rows[] = [$cursorDate->format($phpDateFormat), $total];
+            $rows[]     = [$cursorDate->format($phpDateFormat), $total];
             $cursorDate = $cursorEndDate;
         }
 

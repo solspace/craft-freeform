@@ -338,7 +338,7 @@ class SubmissionQuery extends ElementQuery
         $table = Submission::TABLE_STD;
 
         foreach ($this->fieldSearch as $handle => $term) {
-            if (!array_key_exists($handle, $fieldHandleToIdMap)) {
+            if (!isset($fieldHandleToIdMap[$handle])) {
                 continue;
             }
 

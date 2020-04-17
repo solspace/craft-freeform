@@ -284,6 +284,7 @@ return [
     "'{extension}' is not an allowed file extension"                                                                                                                                                                                                                                                         => "'{extension}' is not an allowed file extension",
 
     'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB'                                                                                                                                            => 'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
+    'Tried uploading {count} files. Maximum {max} files allowed.'                                                                                                                                                                      => 'Tried uploading {count} files. Maximum {max} files allowed.',
     'Could not upload file'                                                                                                                                                                                                            => 'Could not upload file',
 
     // Fields

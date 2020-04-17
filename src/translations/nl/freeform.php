@@ -268,6 +268,7 @@ return [
     "'{extension}' is not an allowed file extension"                                                                                                                                                                                       => "'{extension}' is geen toegelaten bestandsextensie",
 
     "You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB"            => "Je probeerde {fileSize}KB aan bestanden te uploaden, maar de maximum bestandsgrootte is {maxFileSize}KB",
+    "Tried uploading {count} files. Maximum {max} files allowed."                                      => "Tried uploading {count} files. Maximum {max} files allowed.",
     "Could not upload file"                                                                            => "Kon bestand niet uploaden",
 
     // Velden

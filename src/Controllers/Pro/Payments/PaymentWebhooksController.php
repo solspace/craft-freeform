@@ -7,6 +7,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Stripe\Event;
+use Stripe\Subscription;
 use yii\web\HttpException;
 
 //TODO: create abstract controller
@@ -59,21 +60,25 @@ class PaymentWebhooksController extends BaseController
                 $this->getPaymentsNotificationService()->sendSubscriptionEnded($submissionId);
                 break;
             case Event::INVOICE_PAYMENT_SUCCEEDED:
-                return '';
-                //TODO: fix to correct path
-                $submissionId = $event->data->object->lines->data[0]->subscription;
-                if (!$submissionId) {
-                    throw new HttpException(400, $errorMessage);
+                $subscriptionId = $event->data->object->lines->data[0]->subscription;
+                $subscription = $integration->getSubscriptionDetails($subscriptionId);
+                if (!$subscription) {
+                    throw new HttpException(400, 'Could not send successful payment notification');
                 }
+
+                $submissionId = $subscription['metadata']['submission'];
+
                 $this->getPaymentsNotificationService()->sendSubscriptionPaymentSucceeded($submissionId);
                 break;
             case Event::INVOICE_PAYMENT_FAILED:
-                return '';
-                //TODO: fix to correct path
-                $submissionId = $event->data->object->lines->data[0]->subscription;
-                if (!$submissionId) {
-                    throw new HttpException(400, $errorMessage);
+                $subscriptionId = $event->data->object->lines->data[0]->subscription;
+                $subscription = $integration->getSubscriptionDetails($subscriptionId);
+                if (!$subscription) {
+                    throw new HttpException(400, 'Could not send failed payment notification');
                 }
+
+                $submissionId = $subscription['metadata']['submission'];
+
                 $this->getPaymentsNotificationService()->sendSubscriptionPaymentFailed($submissionId);
                 break;
             default:

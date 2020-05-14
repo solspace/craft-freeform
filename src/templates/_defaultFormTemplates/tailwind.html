@@ -108,7 +108,7 @@
             {% set fieldClass = fieldClass ~ (field.hasErrors ? " border-red-500") %}
 
             {# Set label class #}
-            {% set labelClass = standardLabelsClasses ~ "block uppercase" %}
+            {% set labelClass = standardLabelsClasses ~ " block uppercase" %}
             {% set labelClass = labelClass ~ (field.required ? " required" : "") %}
 
             {# Set error class #}

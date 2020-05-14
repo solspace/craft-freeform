@@ -135,7 +135,7 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
             ->select(['id', 'resourceId', 'name', 'memberCount'])
             ->from(MailingListRecord::TABLE)
             ->where(['integrationId' => $integration->getId()])
-            ->orderBy('dateCreated ASC')
+            ->orderBy(['name' => 'ASC', 'dateCreated' => 'ASC'])
             ->all();
 
         $lists = [];

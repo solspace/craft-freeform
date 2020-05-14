@@ -13,6 +13,7 @@ namespace Solspace\Freeform\Integrations\MailingLists;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
@@ -22,9 +23,10 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class MailChimp extends AbstractMailingListIntegration
 {
-    const SETTING_API_KEY       = 'api_key';
-    const SETTING_DOUBLE_OPT_IN = 'double_opt_in';
-    const SETTING_DATA_CENTER   = 'data_center';
+    const SETTING_API_KEY         = 'api_key';
+    const SETTING_DOUBLE_OPT_IN   = 'double_opt_in';
+    const SETTING_DATA_CENTER     = 'data_center';
+    const SETTING_INTEREST_GROUPS = 'interest_groups';
 
     const TITLE        = 'MailChimp';
     const LOG_CATEGORY = 'MailChimp';
@@ -59,6 +61,13 @@ class MailChimp extends AbstractMailingListIntegration
                 'This will be fetched automatically upon authorizing your credentials.',
                 false
             ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_INTERNAL,
+                self::SETTING_INTEREST_GROUPS,
+                'Interest Groups',
+                'This will be fetched automatically upon authorizing your credentials.',
+                false
+            ),
         ];
     }
 
@@ -70,17 +79,9 @@ class MailChimp extends AbstractMailingListIntegration
      */
     public function checkConnection(): bool
     {
-        $client = new Client();
-
         try {
-            $response = $client->get(
-                $this->getEndpoint('/'),
-                [
-                    'auth' => ['mailchimp', $this->getAccessToken()],
-                ]
-            );
-
-            $json = json_decode((string) $response->getBody());
+            $response = $this->get('/');
+            $json     = \GuzzleHttp\json_decode((string) $response->getBody());
 
             if (isset($json->error) && !empty($json->error)) {
                 throw new IntegrationException($json->error);
@@ -88,9 +89,7 @@ class MailChimp extends AbstractMailingListIntegration
 
             return isset($json->account_id) && !empty($json->account_id);
         } catch (RequestException $e) {
-            $this->getLogger()->error((string) $e->getRequest()->getBody());
-
-            throw new IntegrationException($e->getMessage(), $e->getCode(), $e->getPrevious());
+            $this->logErrorAndThrow($e);
         }
     }
 
@@ -106,9 +105,6 @@ class MailChimp extends AbstractMailingListIntegration
      */
     public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
     {
-        $client   = new Client();
-        $endpoint = $this->getEndpoint("lists/{$mailingList->getId()}");
-
         $isDoubleOptIn = $this->getSetting(self::SETTING_DOUBLE_OPT_IN);
 
         try {
@@ -119,8 +115,34 @@ class MailChimp extends AbstractMailingListIntegration
                     'status'        => $isDoubleOptIn ? 'pending' : 'subscribed',
                 ];
 
+
+                $marketingPermissions = $tags = [];
+                foreach ($mappedValues as $key => $value) {
+                    if (preg_match("/gdpr___(.*)/", $key, $matches)) {
+                        $marketingPermissions[] = [
+                            'marketing_permission_id' => $matches[1],
+                            'enabled'                 => !empty($value),
+                        ];
+
+                        unset($mappedValues[$key]);
+                    }
+
+                    if (preg_match("/tags___tags/", $key)) {
+                        $tags = explode(',', $value);
+                        $tags = array_map('trim', $tags);
+
+                        $memberData['tags'] = $tags;
+
+                        unset($mappedValues[$key]);
+                    }
+                }
+
                 if (!empty($mappedValues)) {
                     $memberData['merge_fields'] = $mappedValues;
+                }
+
+                if (!empty($marketingPermissions)) {
+                    $memberData['marketing_permissions'] = $marketingPermissions;
                 }
 
                 $members[] = $memberData;
@@ -128,20 +150,9 @@ class MailChimp extends AbstractMailingListIntegration
 
             $data = ['members' => $members, 'update_existing' => true];
 
-            $response = $client->post(
-                $endpoint,
-                [
-                    'auth' => ['mailchimp', $this->getAccessToken()],
-                    'json' => $data,
-                ]
-            );
+            $response = $this->post("lists/{$mailingList->getId()}", ['json' => $data]);
         } catch (RequestException $e) {
-            $responseBody = (string) $e->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
-
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not connect to API endpoint')
-            );
+            $this->logErrorAndThrow($e);
         }
 
         $statusCode = $response->getStatusCode();
@@ -153,9 +164,9 @@ class MailChimp extends AbstractMailingListIntegration
             );
         }
 
-        $jsonResponse = json_decode((string) $response->getBody());
+        $jsonResponse = \GuzzleHttp\json_decode((string) $response->getBody());
         if (isset($jsonResponse->error_count) && $jsonResponse->error_count > 0) {
-            $this->getLogger()->error(json_encode($jsonResponse->errors), ['response' => $jsonResponse]);
+            $this->getLogger()->error(\GuzzleHttp\json_encode($jsonResponse->errors), ['response' => $jsonResponse]);
 
             throw new IntegrationException(
                 $this->getTranslator()->translate('Could not add emails to lists')
@@ -211,19 +222,15 @@ class MailChimp extends AbstractMailingListIntegration
      * Builds ListObject objects based on the results
      * And returns them
      *
-     * @return \Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject[]
+     * @return ListObject[]
      * @throws IntegrationException
      */
     protected function fetchLists(): array
     {
-        $client   = new Client();
-        $endpoint = $this->getEndpoint('/lists');
-
         try {
-            $response = $client->get(
-                $endpoint,
+            $response = $this->get(
+                '/lists',
                 [
-                    'auth'  => ['mailchimp', $this->getAccessToken()],
                     'query' => [
                         'fields' => 'lists.id,lists.name,lists.stats.member_count',
                         'count'  => 999,
@@ -231,12 +238,7 @@ class MailChimp extends AbstractMailingListIntegration
                 ]
             );
         } catch (RequestException $e) {
-            $responseBody = (string) $e->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
-
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not connect to API endpoint')
-            );
+            $this->logErrorAndThrow($e);
         }
 
         if ($response->getStatusCode() !== 200) {
@@ -248,7 +250,7 @@ class MailChimp extends AbstractMailingListIntegration
             );
         }
 
-        $json = json_decode((string) $response->getBody());
+        $json = \GuzzleHttp\json_decode((string) $response->getBody());
 
         $lists = [];
         if (isset($json->lists)) {
@@ -278,30 +280,15 @@ class MailChimp extends AbstractMailingListIntegration
      */
     protected function fetchFields($listId): array
     {
-        $client   = new Client();
-        $endpoint = $this->getEndpoint("/lists/$listId/merge-fields");
-
         try {
-            $response = $client->get(
-                $endpoint,
-                [
-                    'auth'  => ['mailchimp', $this->getAccessToken()],
-                    'query' => [
-                        'count' => 999,
-                    ],
-                ]
-            );
+            $response = $this->get("/lists/$listId/merge-fields", ['query' => ['count' => 999]]);
         } catch (RequestException $e) {
-            $responseBody = (string) $e->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
-
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not connect to API endpoint')
-            );
+            $this->logErrorAndThrow($e);
         }
 
-        $json = json_decode((string) $response->getBody());
+        $json = \GuzzleHttp\json_decode((string) $response->getBody());
 
+        $fieldList = [];
         if (isset($json->merge_fields)) {
             $fieldList = [];
             foreach ($json->merge_fields as $field) {
@@ -337,11 +324,68 @@ class MailChimp extends AbstractMailingListIntegration
                     $field->required
                 );
             }
-
-            return $fieldList;
         }
 
-        return [];
+        // Fetch marketing permissions
+        try {
+            $response = $this->get(
+                "/lists/$listId/members",
+                [
+                    'query' => [
+                        'count'  => 1,
+                        'fields' => ['members.id', 'members.marketing_permissions'],
+                    ],
+                ]
+            );
+
+            $json    = \GuzzleHttp\json_decode((string) $response->getBody());
+            $members = $json->members ?? [];
+
+            if (!count($members)) {
+                try {
+                    $tempResponse = $this->post(
+                        "/lists/$listId/members",
+                        [
+                            'json' => [
+                                'email_address' => rand(10000, 99999) . '_temp@test.test',
+                                'status'        => 'subscribed',
+                            ],
+                        ]
+                    );
+
+                    $tempJson = \GuzzleHttp\json_decode((string) $tempResponse->getBody());
+
+                    $tempSubscriberHash   = $tempJson->id;
+                    $marketingPermissions = $tempJson->marketing_permissions ?? [];
+
+                    $this->delete("/lists/$listId/members/$tempSubscriberHash");
+                } catch (RequestException $e) {
+                    $marketingPermissions = [];
+                }
+            } else {
+                $marketing            = reset($members);
+                $marketingPermissions = $marketing->marketing_permissions ?? [];
+            }
+
+            foreach ($marketingPermissions as $permission) {
+                $fieldList[] = new FieldObject(
+                    'gdpr___' . $permission->marketing_permission_id,
+                    $permission->text . ' (GDPR)',
+                    FieldObject::TYPE_BOOLEAN,
+                    false
+                );
+            }
+
+        } catch (RequestException $e) {
+        }
+
+        $fieldList[] = new FieldObject(
+            'tags___tags',
+            'Tags (Tags)',
+            FieldObject::TYPE_STRING
+        );
+
+        return $fieldList;
     }
 
     /**
@@ -361,5 +405,66 @@ class MailChimp extends AbstractMailingListIntegration
         }
 
         return "https://$dataCenter.api.mailchimp.com/3.0/";
+    }
+
+    /**
+     * @param string $endpoint
+     * @param array  $requestParams
+     *
+     * @return ResponseInterface
+     */
+    private function get(string $endpoint, array $requestParams = [])
+    {
+        return $this->generateAuthorizedClient($requestParams)->get($this->getEndpoint($endpoint));
+    }
+
+    /**
+     * @param string $endpoint
+     * @param array  $requestParams
+     *
+     * @return ResponseInterface
+     */
+    private function post(string $endpoint, array $requestParams = []): ResponseInterface
+    {
+        return $this->generateAuthorizedClient($requestParams)->post($this->getEndpoint($endpoint));
+    }
+
+    /**
+     * @param string $endpoint
+     * @param array  $requestParams
+     *
+     * @return ResponseInterface
+     */
+    private function delete(string $endpoint, array $requestParams = []): ResponseInterface
+    {
+        return $this->generateAuthorizedClient($requestParams)->delete($this->getEndpoint($endpoint));
+    }
+
+    /**
+     * @param array $requestParams
+     *
+     * @return Client
+     */
+    private function generateAuthorizedClient(array $requestParams = []): Client
+    {
+        $config = array_merge(
+            ['auth' => ['mailchimp', $this->getAccessToken()]],
+            $requestParams
+        );
+
+        return new Client($config);
+    }
+
+    /**
+     * @param RequestException $e
+     */
+    private function logErrorAndThrow(RequestException $e)
+    {
+        $responseBody = (string) $e->getResponse()->getBody();
+        $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
+
+        throw new IntegrationException(
+            $this->getTranslator()->translate('Could not connect to API endpoint')
+        );
     }
 }

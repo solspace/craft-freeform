@@ -1,5 +1,25 @@
 # Solspace Freeform Changelog
 
+## 3.6.8 - 2020-05-14
+### Added
+- Added Pardot CRM integration.
+- Added ability to map GDPR consent / marketing settings to MailChimp contacts.
+- Added ability to map Tags to MailChimp contacts.
+- Added AFTER_UPDATE and BEFORE_UPDATE events to the submission save action.
+
+### Changed
+- Updated the ActiveCampaign integration to have a maximum limit of 50 mailing list instead of the default, 20.
+- Updated the `fieldIdPrefix` parameter to apply itself to Honeypot field ID's as well.
+- Updated Freeform Payments feature to log more detailed failure reasons in control panel.
+- Updated the MIME type security check on file uploads to include OpenDocument file type extensions.
+- Updated the Craft Campaign plugin mailing list connection in Composer to display and work with available mailing lists across multi-sites.
+- Updated the Constant Contact integration to no longer fail when a duplicate email address is submitted to it. Instead, it'll update the existing contact in Constant Contact, and allow for assignment to more than 1 mailing list.
+
+### Fixed
+- Fixed a bug where the Phone field error message (when no validation pattern is set) was not translatable.
+- Fixed a bug in the Tailwind example formatting template where a space was missing between some field classes.
+- Fixed a bug where the new Constant Contact integration would display an Unauthorized error in error log every day.
+
 ## 3.6.7 - 2020-04-17
 ### Added
 - Added developer events for Stripe Payments to modify the default description of payments in Stripe.

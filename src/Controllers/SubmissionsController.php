@@ -15,6 +15,7 @@ use craft\records\Asset;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
+use Solspace\Freeform\Events\Submissions\UpdateEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
@@ -32,6 +33,9 @@ use yii\web\Response;
 
 class SubmissionsController extends BaseController
 {
+    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
+    const EVENT_AFTER_UPDATE  = 'afterUpdate';
+
     const TEMPLATE_BASE_PATH          = 'freeform/submissions';
     const EVENT_REGISTER_INDEX_ASSETS = 'registerIndexAssets';
     const EVENT_REGISTER_EDIT_ASSETS  = 'registerEditAssets';
@@ -253,7 +257,12 @@ class SubmissionsController extends BaseController
         $model->statusId = $post['statusId'];
         $model->setFormFieldValues($post);
 
-        if (\Craft::$app->getElements()->saveElement($model)) {
+        $event = new UpdateEvent($model, $model->getForm());
+        $this->trigger(self::EVENT_BEFORE_UPDATE, $event);
+
+        if ($event->isValid && \Craft::$app->getElements()->saveElement($model)) {
+            $this->trigger(self::EVENT_AFTER_UPDATE, $event);
+
             // Return JSON response if the request is an AJAX request
             if (\Craft::$app->request->isAjax) {
                 return $this->asJson(['success' => true]);

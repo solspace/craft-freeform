@@ -71,7 +71,7 @@ class PhoneConstraint implements ConstraintInterface
         }
 
         if (!preg_match('/^\+?[0-9\- ,.\(\)]+$/', $value)) {
-            $violationList->addError('Phone number is invalid.');
+            $violationList->addError($this->message);
         }
 
         return $violationList;

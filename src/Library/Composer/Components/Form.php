@@ -1256,11 +1256,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getFieldPrefix()
     {
-        if (null === $this->getFormValueContext()) {
-            return $this->getCustomAttributes()->getFieldPrefix();
-        }
-
-        return $this->getFormValueContext()->getFieldPrefix();
+        return $this->getCustomAttributes()->getFieldIdPrefix();
     }
 
     /**

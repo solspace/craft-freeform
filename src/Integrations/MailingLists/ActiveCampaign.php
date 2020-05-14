@@ -131,7 +131,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
     public function checkConnection(): bool
     {
         $client   = $this->generateAuthorizedClient();
-        $endpoint = $this->getEndpoint('/lists');
+        $endpoint = $this->getEndpoint('/lists?limit=50');
 
         try {
             $response = $client->get($endpoint);
@@ -149,7 +149,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
     protected function fetchLists(): array
     {
         $client   = $this->generateAuthorizedClient();
-        $endpoint = $this->getEndpoint('/lists');
+        $endpoint = $this->getEndpoint('/lists?limit=50');
 
         try {
             $response = $client->get($endpoint);
@@ -193,7 +193,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
         ];
 
         $client   = $this->generateAuthorizedClient();
-        $response = $client->get($this->getEndpoint('/fields/'));
+        $response = $client->get($this->getEndpoint('/fields?limit=50'));
 
         $data = json_decode((string) $response->getBody());
         $data = $data->fields;

@@ -101,8 +101,14 @@ class ConstantContact3 extends MailingListOAuthConnector
 				return isset($json->lists);
 
 			} catch (RequestException $exception) {
-				$responseBody = (string) $exception->getResponse()->getBody();
-				$this->getLogger()->error($responseBody, ['exception' => $exception->getMessage()]);
+				$responseBody = (string) $exception->getResponse() ? $exception->getResponse()->getBody() : $exception->getResponse();
+
+				// We want to log errors when the error is caused
+				// by something else than a stale access token
+				if(! $refreshTokenIfExpired)
+				{
+					$this->getLogger()->error($responseBody, ['exception' => $exception->getMessage()]);
+				}
 
 				throw new IntegrationException(
 					$exception->getMessage(),
@@ -127,25 +133,17 @@ class ConstantContact3 extends MailingListOAuthConnector
 	{
 		$client = $this->generateAuthorizedClient();
 
-		// $event = new IntegrationValueMappingEvent($mappedValues);
-		// Event::trigger($this, self::EVENT_AFTER_SET_MAPPING, $event);
-
-		// $mappedValues = $event->getMappedValues();
-
 		try {
 			$data = array_merge(
 				[
-					'email_address'    => [
-						'address'            => $emails[0],
-						'permission_to_send' => 'implicit',
-					],
+					'email_address'    => $emails[0],
 					'create_source'    => 'Contact',
 					'list_memberships' => [$mailingList->getId()],
 				],
 				$mappedValues
 			);
 
-			$response = $client->post($this->getEndpoint('/contacts'), ['json' => $data]);
+			$response = $client->post($this->getEndpoint('/contacts/sign_up_form'), ['json' => $data]);
 		} catch (RequestException $e) {
 			$responseBody = (string) $e->getResponse()->getBody();
 			$this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
@@ -156,15 +154,13 @@ class ConstantContact3 extends MailingListOAuthConnector
 		}
 
 		$status = $response->getStatusCode();
-		if ($status !== 201) {
+		if (! in_array($status, [200, 201])) { // 200 Contact successfully update, 201 Contact successfully created
 			$this->getLogger()->error('Could not add contacts to list', ['response' => (string) $response->getBody()]);
 
 			throw new IntegrationException(
 				$this->getTranslator()->translate('Could not add emails to lists')
 			);
 		}
-
-		// Event::trigger($this, self::EVENT_AFTER_RESPONSE, new PushResponseEvent($response));
 
 		return $status === 201;
 	}
@@ -382,7 +378,7 @@ class ConstantContact3 extends MailingListOAuthConnector
 			$this->setAccessToken($json->access_token);
 			$this->setRefreshToken($json->refresh_token);
 
-			// The Record isn't being updated based on a regular
+			// The Record isn't being updated, as it would be with a regular
 			// form save, so we need to update the Record ourselves.
 			$this->updateAccessToken();
 			$this->updateSettings();

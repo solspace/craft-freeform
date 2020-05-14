@@ -84,8 +84,14 @@ class StripeService extends Component
 
             try {
                 $paymentIntent = PaymentIntent::create($paymentIntentProperties);
+			} catch(\Stripe\Exception\CardException $e) {
+				$paymentField->setValue('declined: ' . $e->getMessage() . " code: " . $e->getStripeCode() . ". decline_code: " . $e->getDeclineCode());
+				return;
+            } catch(\Stripe\Exception\ApiErrorException $e) {
+                $paymentField->setValue('declined: '.$e->getMessage());
+                return;
             } catch (\Exception $e) {
-                $paymentField->setValue('declined');
+                $paymentField->setValue('declined: '.$e->getMessage());
                 return;
             }
         } else {

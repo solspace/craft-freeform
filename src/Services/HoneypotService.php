@@ -249,13 +249,15 @@ class HoneypotService extends BaseService
 
         $hash = $honeypotHashes[$form->getHash()];
 
+        $fieldPrefix = $form->getFieldPrefix();
+
         $honeypot     = $this->getHoneypot($form);
         $honeypotName = $honeypot->getName();
         $output       = '<input '
             . 'type="text" '
             . 'value="' . ($this->isEnhanced() ? $hash : '') . '" '
             . 'name="' . $honeypotName . '" '
-            . 'id="' . $honeypotName . '" '
+            . 'id="' . $fieldPrefix . $honeypotName . '" '
             . 'aria-hidden="true" '
             . 'tabindex="-1" '
             . '/>';

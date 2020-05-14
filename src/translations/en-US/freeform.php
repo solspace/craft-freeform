@@ -675,6 +675,10 @@ return [
     'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.' => 'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.',
     'Specify a relative textual date string or static date for the latest date available for date picker and field validation.'   => 'Specify a relative textual date string or static date for the latest date available for date picker and field validation.',
 
+    // Phone field
+    'Invalid phone number'                                                                                                        => 'Invalid phone number',
+    'Phone number is invalid.'                                                                                                    => 'Phone number is invalid.',
+
     // Craft Dashboard Widgets
     'Customize the widget title. Leave blank for default.'                                                                        => 'Customize the widget title. Leave blank for default.',
     'Success Message'                                                                                                             => 'Success Message',

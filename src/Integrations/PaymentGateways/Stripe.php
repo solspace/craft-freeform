@@ -79,6 +79,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
     /** @var \Exception */
     protected $lastError = null;
+    protected $lastErrorDetails = null;
 
     public static function toStripeAmount($amount, $currency)
     {
@@ -639,6 +640,16 @@ class Stripe extends AbstractPaymentGatewayIntegration
         return $this->lastError;
     }
 
+	/**
+	 * Returns last error details happened during Stripe API calls
+	 *
+	 * @return \Exception|null
+	 */
+	public function getLastErrorDetails()
+	{
+		return $this->lastErrorDetails;
+	}
+
     /**
      * Returns link to stripe dashboard for selected resource
      *
@@ -706,8 +717,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $submission   = $paymentDetails->getSubmission();
         $submissionId = $submission->getId();
 
-        if ($paymentIntentId === 'declined') {
+        if (substr($paymentIntentId, 0, 8) == 'declined') {
             $this->lastError = new \Exception('Your card was declined', 400);
+            $this->lastErrorDetails = substr($paymentIntentId, 10);
             return false;
         }
 
@@ -800,6 +812,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         ]);
 
         $error = $this->getLastError();
+        $errorDetails = $this->getLastErrorDetails();
         if ($error) {
             //TODO: we can request charge and get details, but we can end up with failure loop
             //TODO: validate that we have these?
@@ -814,7 +827,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
             }
 
             $model->errorCode    = $error->getCode();
-            $model->errorMessage = $error->getMessage();
+            $model->errorMessage = $error->getMessage() . ($errorDetails ? ': ' . $errorDetails : null);
             $model->status       = PaymentRecord::STATUS_FAILED;
         } else {
             /** @var Charge $charge */

@@ -20,6 +20,8 @@ use Money\Number;
 use putyourlightson\campaign\Campaign as CampaignPlugin;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
+use putyourlightson\campaign\records\MailingListRecord;
+use putyourlightson\campaign\records\MailingListTypeRecord;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
@@ -64,11 +66,16 @@ class Campaign extends AbstractMailingListIntegration
     protected function fetchLists(): array
     {
         $lists = [];
-        foreach (MailingListElement::find()->all() as $list) {
-            $lists[] = new ListObject(
+        $mailingLists = MailingListElement::find()
+			->site('*')
+			->orderBy(['elements_sites.slug' => 'ASC', 'content.title' => 'ASC'])
+			->all();
+
+        foreach ($mailingLists as $list) {
+            $lists[] = 	new ListObject(
                 $this,
                 $list->id,
-                $list->title,
+				"(".$list->site.") ". $list->title,
                 $this->fetchFields($list->id),
                 $list->subscribedCount
             );
@@ -151,7 +158,7 @@ class Campaign extends AbstractMailingListIntegration
      */
     public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
     {
-        $mailingListElement = MailingListElement::find()->id($mailingList->getId())->one();
+        $mailingListElement = MailingListElement::find()->site('*')->id($mailingList->getId())->one();
         $source             = \Craft::$app->getRequest()->getReferrer();
 
         if ($mailingListElement === null) {

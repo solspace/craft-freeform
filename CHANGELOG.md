@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.6.9 - 2020-05-21
+### Added
+- Added ability for the Salesforce Lead API integration to optionally have submissions converted to Salesforce Contact Tasks for existing Contacts if the email address matches.
+
+### Changed
+- Updated the reCAPTCHA v2 Invisible and v3 spam protection features to optionally be enabled per form. Also now automatically disable reCAPTCHA on Payments enabled forms to prevent conflicts between reCAPTCHA and Stripe.
+- Updated the reCAPTCHA v2 Checkbox feature to no longer have ability to make it bypass error and send to Spam Folder.
+
+### Fixed
+- Fixed a bug where an error would show from Pardot about fields that aren't objects.
+- Fixed a bug where error messages from Craft for image uploads would trigger an error on `htmlentities()` method.
+
 ## 3.6.8 - 2020-05-14
 ### Added
 - Added Pardot CRM integration.

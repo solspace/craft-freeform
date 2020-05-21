@@ -62,19 +62,21 @@
             suggestEnvVars: true,
         }) }}
 
-        {{ forms.selectField({
-            label: "Failure Behavior"|t("freeform"),
-            name: "settings[recaptchaBehaviour]",
-            value: settings.spamFolderEnabled ? settings.recaptchaBehaviour : 'display_error',
-            errors: settings.errors("recaptchaBehaviour"),
-            options: {
-                "display_error": "Display Error"|t("freeform"),
-                "spam": {
-                    label: "Send to Freeform Spam Folder"|t("freeform"),
-                    disabled: not settings.spamFolderEnabled,
+        <div id="failure-behaviour" class="field {{ settings.recaptchaType == "v2_checkbox" ? "hidden" }}">
+            {{ forms.selectField({
+                label: "Failure Behavior"|t("freeform"),
+                name: "settings[recaptchaBehaviour]",
+                value: settings.spamFolderEnabled ? settings.recaptchaBehaviour : 'display_error',
+                errors: settings.errors("recaptchaBehaviour"),
+                options: {
+                    "display_error": "Display Error"|t("freeform"),
+                    "spam": {
+                        label: "Send to Freeform Spam Folder"|t("freeform"),
+                        disabled: not settings.spamFolderEnabled,
+                    }
                 }
-            }
-        }) }}
+            }) }}
+        </div>
 
         <div id="min-score" class="{{ settings.recaptchaType != "v3" ? "hidden" }}">
             {{ forms.selectField({
@@ -106,12 +108,19 @@
     (function() {
         var select = document.getElementById("recaptcha-type");
         var minScore = document.getElementById("min-score");
+        var failureBehaviour = document.getElementById("failure-behaviour");
         select.addEventListener("change", function (event) {
             var value = event.target.value;
             if (value === "v3") {
                 minScore.classList.remove("hidden");
             } else {
                 minScore.classList.add("hidden");
+            }
+
+            if (value === "v2_checkbox") {
+                failureBehaviour.classList.add("hidden");
+            } else {
+                failureBehaviour.classList.remove("hidden");
             }
         });
     })();

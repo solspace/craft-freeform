@@ -15,15 +15,15 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Fields\CheckboxGroupField;
+use Solspace\Freeform\Integrations\CRM\Salesforce\AbstractSalesforceIntegration;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
-class SalesforceOpportunity extends AbstractCRMIntegration
+class SalesforceOpportunity extends AbstractSalesforceIntegration
 {
     const TITLE        = 'Salesforce Opportunity';
     const LOG_CATEGORY = 'Salesforce';
@@ -656,6 +656,14 @@ class SalesforceOpportunity extends AbstractCRMIntegration
     /**
      * @return string
      */
+    protected function getAuthorizationCheckUrl(): string
+    {
+        return $this->getEndpoint('/sobjects/Opportunity/describe');
+    }
+
+    /**
+     * @return string
+     */
     protected function getApiRootUrl(): string
     {
         return $this->getInstanceUrl() . $this->getDataUrl();
@@ -723,112 +731,6 @@ class SalesforceOpportunity extends AbstractCRMIntegration
     private function getDataUrl()
     {
         return $this->getSetting(self::SETTING_DATA_URL);
-    }
-
-    /**
-     * @param bool $refreshTokenIfExpired
-     *
-     * @return Client
-     */
-    private function generateAuthorizedClient(bool $refreshTokenIfExpired = true): Client
-    {
-        $client = new Client([
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->getAccessToken(),
-                'Content-Type'  => 'application/json',
-            ],
-        ]);
-
-        if ($refreshTokenIfExpired) {
-            try {
-                $endpoint = $this->getEndpoint('/sobjects/Opportunity/describe');
-                $client->get($endpoint);
-            } catch (RequestException $e) {
-                if ($e->getCode() === 401) {
-                    $client = new Client([
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $this->fetchAccessToken(),
-                            'Content-Type'  => 'application/json',
-                        ],
-                    ]);
-                }
-            }
-        }
-
-        return $client;
-    }
-
-    /**
-     * @param string $query
-     * @param array  $params
-     *
-     * @return mixed
-     */
-    private function query(string $query, array $params = []): array
-    {
-        $client = $this->generateAuthorizedClient();
-
-        $params = array_map([$this, 'soqlEscape'], $params);
-        $query  = sprintf($query, ...$params);
-
-        try {
-            $response = $client->get(
-                $this->getEndpoint('/query'),
-                [
-                    'query' => [
-                        'q' => $query,
-                    ],
-                ]
-            );
-
-            $result = \GuzzleHttp\json_decode($response->getBody());
-
-            if ($result->totalSize === 0 || !$result->done) {
-                return [];
-            }
-
-            return $result->records;
-        } catch (RequestException $e) {
-            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
-
-            return [];
-        }
-    }
-
-    /**
-     * @param string $query
-     * @param array  $params
-     *
-     * @return mixed|null
-     */
-    private function querySingle(string $query, array $params = [])
-    {
-        $data = $this->query($query, $params);
-
-        if (\count($data) >= 1) {
-            return reset($data);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $str
-     *
-     * @return string
-     */
-    private function soqlEscape(string $str = ''): string
-    {
-        $characters  = [
-            '\\',
-            '\'',
-        ];
-        $replacement = [
-            '\\\\',
-            '\\\'',
-        ];
-
-        return str_replace($characters, $replacement, $str);
     }
 
     /**

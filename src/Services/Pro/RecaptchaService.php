@@ -9,6 +9,7 @@ use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Models\Settings;
 
@@ -19,17 +20,13 @@ class RecaptchaService extends Component
      */
     public function validateRecaptchaV2Checkbox(ValidateEvent $event)
     {
-        if ($this->isValidatable(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
+        if ($this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
             return;
         }
 
         $field = $event->getField();
         if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
-            if ($this->behaviourDisplayError()) {
-                $field->addError(Freeform::t('Please verify that you are not a robot.'));
-            } else {
-                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA checkbox validation failed');
-            }
+            $field->addError(Freeform::t('Please verify that you are not a robot.'));
         }
     }
 
@@ -38,7 +35,8 @@ class RecaptchaService extends Component
      */
     public function validateRecaptchaV2Invisible(FormValidateEvent $event)
     {
-        if ($this->isValidatable(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
+        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
+        if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
             return;
         }
 
@@ -56,7 +54,8 @@ class RecaptchaService extends Component
      */
     public function validateRecaptchaV3(FormValidateEvent $event)
     {
-        if ($this->isValidatable(Settings::RECAPTCHA_TYPE_V3)) {
+        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
+        if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
             return;
         }
 
@@ -74,8 +73,13 @@ class RecaptchaService extends Component
      */
     public function addRecaptchaJavascriptToForm(FormRenderEvent $event)
     {
+        $form  = $event->getForm();
         $model = $this->getSettings();
         if (!$model->recaptchaEnabled) {
+            return;
+        }
+
+        if ($model->isInvisibleRecaptchaSetUp() && !$form->isRecaptchaEnabled()) {
             return;
         }
 
@@ -148,7 +152,7 @@ class RecaptchaService extends Component
      *
      * @return bool
      */
-    private function isValidatable(string $type): bool
+    private function isRecaptchaTypeSkipped(string $type): bool
     {
         return !$this->getSettings()->recaptchaEnabled || $this->getSettings()->getRecaptchaType() !== $type;
     }

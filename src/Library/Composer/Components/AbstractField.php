@@ -641,6 +641,10 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $output = '<ul' . $this->getErrorAttributesString() . '>';
 
         foreach ($errors as $error) {
+            if (is_array($error)) {
+                $error = implode(', ', $error);
+            }
+
             $output .= '<li>' . htmlentities($error) . '</li>';
         }
 

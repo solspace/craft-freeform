@@ -572,6 +572,9 @@ return [
 
     'Enable AJAX'                                             => 'Enable AJAX',
     'Use Freeform\'s built-in automatic AJAX submit feature.' => 'Use Freeform\'s built-in automatic AJAX submit feature.',
+    'Enable reCAPTCHA' => 'Enable reCAPTCHA',
+    'Disabling this option removes the reCAPTCHA check for this specific form.' => 'Disabling this option removes the reCAPTCHA check for this specific form.',
+
 
     'Input attributes'                            => 'Input attributes',
     'Label attributes'                            => 'Label attributes',

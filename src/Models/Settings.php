@@ -439,6 +439,24 @@ class Settings extends Model
     }
 
     /**
+     * @return bool
+     */
+    public function isInvisibleRecaptchaSetUp(): bool
+    {
+        return $this->isRecaptchaInvisible($this->getRecaptchaType());
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function isRecaptchaInvisible(string $type): bool
+    {
+        return \in_array($type, [self::RECAPTCHA_TYPE_V2_INVISIBLE, self::RECAPTCHA_TYPE_V3], true);
+    }
+
+    /**
      * Takes a comma or newline (or both) separated string
      * and returns a cleaned up, unique value array
      *

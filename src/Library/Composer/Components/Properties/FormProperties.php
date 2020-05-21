@@ -61,6 +61,9 @@ class FormProperties extends AbstractProperties
     /** @var bool */
     protected $ajaxEnabled;
 
+    /** @var bool */
+    protected $recaptchaEnabled = true;
+
     /**
      * @return string
      */
@@ -190,6 +193,14 @@ class FormProperties extends AbstractProperties
     }
 
     /**
+     * @return bool
+     */
+    public function isRecaptchaEnabled(): bool
+    {
+        return (bool) $this->recaptchaEnabled;
+    }
+
+    /**
      * Return a list of all property fields and their type
      *
      * [propertyKey => propertyType, ..]
@@ -216,6 +227,7 @@ class FormProperties extends AbstractProperties
             'limitFormSubmissions'       => self::TYPE_STRING,
             'tagAttributes'              => self::TYPE_ARRAY,
             'ajaxEnabled'                => self::TYPE_BOOLEAN,
+            'recaptchaEnabled'           => self::TYPE_BOOLEAN,
         ];
     }
 }

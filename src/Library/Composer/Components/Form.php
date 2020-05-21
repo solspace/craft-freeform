@@ -129,6 +129,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var bool */
     private $ajaxEnabled;
 
+    /** @var bool */
+    private $recaptchaEnabled;
+
     /** @var SubmissionHandlerInterface */
     private $submissionHandler;
 
@@ -429,6 +432,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function isAjaxEnabled(): bool
     {
         return $this->ajaxEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecaptchaEnabled(): bool
+    {
+        return $this->recaptchaEnabled && !\count($this->getLayout()->getPaymentFields());
     }
 
     /**
@@ -1130,6 +1141,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->limitFormSubmissions       = $formProperties->getLimitFormSubmissions();
         $this->tagAttributes              = $formProperties->getTagAttributes();
         $this->ajaxEnabled                = $formProperties->isAjaxEnabled();
+        $this->recaptchaEnabled           = $formProperties->isRecaptchaEnabled();
     }
 
     /**

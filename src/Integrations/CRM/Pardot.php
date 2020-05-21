@@ -277,6 +277,14 @@ class Pardot extends AbstractCRMIntegration
         ];
 
         foreach ($data->result->customField as $field) {
+            if (is_array($field)) {
+                $field = (object) $field;
+            }
+
+            if (!is_object($field) || !isset($field->type)) {
+                continue;
+            }
+
             switch ($field->type) {
                 case 'Text':
                 case 'Textarea':

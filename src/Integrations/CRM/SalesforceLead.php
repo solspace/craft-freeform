@@ -11,33 +11,37 @@
 
 namespace Solspace\Freeform\Integrations\CRM;
 
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Integrations\CRM\Salesforce\AbstractSalesforceIntegration;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
-class SalesforceLead extends AbstractCRMIntegration
+class SalesforceLead extends AbstractSalesforceIntegration
 {
     const TITLE        = 'Salesforce Lead';
     const LOG_CATEGORY = 'Salesforce';
 
-    const SETTING_SITE_CLIENT_ID     = 'client_id';
-    const SETTING_SITE_CLIENT_SECRET = 'client_secret';
-    const SETTING_SITE_USER_LOGIN    = 'username';
-    const SETTING_SITE_USER_PASSWORD = 'password';
-    const SETTING_CLIENT_ID          = 'salesforce_client_id';
-    const SETTING_CLIENT_SECRET      = 'salesforce_client_secret';
-    const SETTING_USER_LOGIN         = 'salesforce_username';
-    const SETTING_USER_PASSWORD      = 'salesforce_password';
-    const SETTING_LEAD_OWNER         = 'salesforce_lead_owner';
-    const SETTING_SANDBOX            = 'salesforce_sandbox';
-    const SETTING_CUSTOM_URL         = 'salesforce_custom_url';
-    const SETTING_INSTANCE           = 'instance';
+    const SETTING_SITE_CLIENT_ID       = 'client_id';
+    const SETTING_SITE_CLIENT_SECRET   = 'client_secret';
+    const SETTING_SITE_USER_LOGIN      = 'username';
+    const SETTING_SITE_USER_PASSWORD   = 'password';
+    const SETTING_CLIENT_ID            = 'salesforce_client_id';
+    const SETTING_CLIENT_SECRET        = 'salesforce_client_secret';
+    const SETTING_USER_LOGIN           = 'salesforce_username';
+    const SETTING_USER_PASSWORD        = 'salesforce_password';
+    const SETTING_LEAD_OWNER           = 'salesforce_lead_owner';
+    const SETTING_SANDBOX              = 'salesforce_sandbox';
+    const SETTING_CUSTOM_URL           = 'salesforce_custom_url';
+    const SETTING_TASKS_FOR_DUPLICATES = 'tasks_for_duplicates';
+    const SETTING_TASKS_SUBJECT        = 'tasks_subject';
+    const SETTING_TASKS_DUE_DATE       = 'tasks_due_date';
+    const SETTING_INSTANCE             = 'instance';
 
     /**
      * Returns a list of additional settings for this integration
@@ -95,6 +99,27 @@ class SalesforceLead extends AbstractCRMIntegration
                 self::SETTING_CUSTOM_URL,
                 'Using custom URL?',
                 'Enable this if you connect to your Salesforce account with a custom company URL (e.g. \'mycompany.my.salesforce.com\').',
+                false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_BOOL,
+                self::SETTING_TASKS_FOR_DUPLICATES,
+                'Convert Leads to Contact Tasks for Returning Customers?',
+                'When a Salesforce Contact already exists with the same email address, create a new Task for the Contact instead of a new Lead.',
+                false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_TEXT,
+                self::SETTING_TASKS_SUBJECT,
+                'Task Subject',
+                'Enter the text you\'d like to have set for new Task subjects.',
+                false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_TEXT,
+                self::SETTING_TASKS_DUE_DATE,
+                'Task Due Date',
+                'Enter a relative textual date string for the Due Date of the newly created Task (e.g. \'2 days\').',
                 false
             ),
             new SettingBlueprint(
@@ -230,17 +255,56 @@ class SalesforceLead extends AbstractCRMIntegration
      * Push objects to the CRM
      *
      * @param array $keyValueList
+     * @param null  $formFields
      *
      * @return bool
-     * @throws \Exception
+     * @throws IntegrationException
      */
     public function pushObject(array $keyValueList, $formFields = null): bool
     {
-        $client   = $this->generateAuthorizedClient();
+        $client = $this->generateAuthorizedClient();
+
+        // Check for existing clients
+        if ($this->isCreateTasksForDuplicates() && isset($keyValueList['Email'])) {
+            $email = $keyValueList['Email'];
+
+            $contact = $this->querySingle("SELECT Id, Email FROM Contact WHERE Email = '%s' LIMIT 1", [$email]);
+            if ($contact) {
+                $description = '';
+                foreach ($keyValueList as $key => $value) {
+                    $description .= "$key: $value\n";
+                }
+
+                try {
+                    $dueDate = $this->getSetting(self::SETTING_TASKS_DUE_DATE) ?: '+2 days';
+                    $dueDate = new Carbon($dueDate, 'UTC');
+                } catch (\Exception $e) {
+                    $dueDate = new Carbon('+2 days', 'UTC');
+                    $this->getLogger()->error($e->getMessage());
+                };
+                $subject = $this->getSetting(self::SETTING_TASKS_SUBJECT) ?: 'New Followup';
+
+                $payload = [
+                    'Subject'      => $subject,
+                    'WhoId'        => $contact->Id,
+                    'Description'  => $description,
+                    'ActivityDate' => $dueDate->toDateString(),
+                ];
+
+                try {
+                    $endpoint = $this->getEndpoint('/sobjects/Task');
+                    $response = $client->post($endpoint, ['json' => $payload]);
+
+                    if ($response->getStatusCode() === 201) {
+                        return true;
+                    }
+                } catch (RequestException $exception) {
+                }
+            }
+        }
+
         $endpoint = $this->getEndpoint('/sobjects/Lead');
-
         $setOwner = $this->getSetting(self::SETTING_LEAD_OWNER);
-
         $keyValueList = array_filter($keyValueList);
 
         try {
@@ -466,6 +530,14 @@ class SalesforceLead extends AbstractCRMIntegration
     /**
      * @return string
      */
+    protected function getAuthorizationCheckUrl(): string
+    {
+        return $this->getEndpoint('/sobjects/Lead/describe');
+    }
+
+    /**
+     * @return string
+     */
     private function getLoginUrl(): string
     {
         $isSandboxMode = $this->getSetting(self::SETTING_SANDBOX);
@@ -510,35 +582,10 @@ class SalesforceLead extends AbstractCRMIntegration
     }
 
     /**
-     * @param bool $refreshTokenIfExpired
-     *
-     * @return Client
+     * @return bool
      */
-    private function generateAuthorizedClient(bool $refreshTokenIfExpired = true): Client
+    private function isCreateTasksForDuplicates(): bool
     {
-        $client = new Client([
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->getAccessToken(),
-                'Content-Type'  => 'application/json',
-            ],
-        ]);
-
-        if ($refreshTokenIfExpired) {
-            try {
-                $endpoint = $this->getEndpoint('/sobjects/Opportunity/describe');
-                $client->get($endpoint);
-            } catch (RequestException $e) {
-                if ($e->getCode() === 401) {
-                    $client = new Client([
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $this->fetchAccessToken(),
-                            'Content-Type'  => 'application/json',
-                        ],
-                    ]);
-                }
-            }
-        }
-
-        return $client;
+        return $this->getSetting(self::SETTING_TASKS_FOR_DUPLICATES) ?: false;
     }
 }

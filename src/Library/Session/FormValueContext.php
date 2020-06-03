@@ -17,15 +17,15 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
+use Solspace\Freeform\Models\Settings;
 
 class FormValueContext implements \JsonSerializable
 {
     const FORM_HASH_DELIMITER = '_';
     const FORM_HASH_KEY       = 'formHash';
-    const HASH_PATTERN        = '/^(?P<formId>[a-zA-Z0-9]+)_(?P<pageIndex>[a-zA-Z0-9]+)_(?P<payload>.*)$/';
+    const HASH_PATTERN        = '/^(?P<formId>[a-zA-Z0-9]+)_(?P<pageIndex>[a-zA-Z0-9]+)_(?P<payload>[a-zA-Z0-9]+)/';
 
-    const FORM_SESSION_TTL    = 10800; // 3 hours
-    const ACTIVE_SESSIONS_KEY = 'freeformActiveSessions';
+    const ACTIVE_SESSIONS_KEY    = 'freeformActiveSessions';
 
     const DEFAULT_PAGE_INDEX = 0;
 
@@ -59,6 +59,12 @@ class FormValueContext implements \JsonSerializable
 
     /** @var int */
     private $formInitTime;
+
+    /** @var int */
+    private $sessionMaxCount;
+
+    /** @var int */
+    private $sessionTTL;
 
     /**
      * @param string $hash
@@ -117,6 +123,11 @@ class FormValueContext implements \JsonSerializable
         $this->formId           = (int) $formId;
         $this->currentPageIndex = 0;
         $this->storedValues     = [];
+
+        /** @var Settings $settings */
+        $settings              = Freeform::getInstance()->getSettings();
+        $this->sessionMaxCount = $settings->sessionEntryMaxCount;
+        $this->sessionTTL      = $settings->sessionEntryTTL;
 
         $this->lastHash = $this->regenerateHash();
         $this->regenerateState();
@@ -350,8 +361,7 @@ class FormValueContext implements \JsonSerializable
         $encodedData    = \GuzzleHttp\json_encode($this, JSON_OBJECT_AS_ARRAY);
         $sessionHashKey = $this->getSessionHash($this->getLastHash());
 
-        $this->session->set($sessionHashKey, $encodedData);
-        $this->appendKeyToActiveSessions($sessionHashKey);
+        $this->appendSessionData($sessionHashKey, $encodedData);
     }
 
     /**
@@ -360,7 +370,7 @@ class FormValueContext implements \JsonSerializable
     public function cleanOutCurrentSession()
     {
         $sessionHashKey = $this->getSessionHash($this->getLastHash());
-        $this->session->remove($sessionHashKey);
+        $this->removeStateFromSession($sessionHashKey);
     }
 
     /**
@@ -369,7 +379,7 @@ class FormValueContext implements \JsonSerializable
     public function regenerateState()
     {
         $sessionHash  = $this->getSessionHash();
-        $sessionState = $this->session->get($sessionHash);
+        $sessionState = $this->getSessionState($sessionHash);
 
         if ($sessionHash && $sessionState) {
             $sessionState = \GuzzleHttp\json_decode($sessionState, true);
@@ -520,14 +530,36 @@ class FormValueContext implements \JsonSerializable
     {
         $instances = $this->getActiveSessionList();
 
-        foreach ($instances as $time => $hash) {
-            if ($time < time() - self::FORM_SESSION_TTL) {
-                $this->session->remove($hash);
-                unset($instances[$time]);
+        foreach ($instances as $hash => $encodedData) {
+            try {
+                $data = \GuzzleHttp\json_decode($encodedData, true);
+            } catch (\Exception $e) {
+                continue;
+            }
+
+            $time = $data['formInitTime'] ?? time();
+            if ($time < time() - $this->sessionTTL) {
+                unset($instances[$hash]);
             }
         }
 
+        $instanceCount = \count($instances);
+        if ($instanceCount > $this->sessionMaxCount) {
+            $offset = $instanceCount - $this->sessionMaxCount;
+            $instances = array_slice($instances, $offset, null, true);
+        }
+
         $this->session->set(self::ACTIVE_SESSIONS_KEY, $instances);
+    }
+
+    private function removeStateFromSession(string $hash)
+    {
+        $instances = $this->getActiveSessionList();
+
+        if (isset($instances[$hash])) {
+            unset($instances[$hash]);
+            $this->session->set(self::ACTIVE_SESSIONS_KEY, $instances);
+        }
     }
 
     /**
@@ -542,15 +574,31 @@ class FormValueContext implements \JsonSerializable
     }
 
     /**
+     * @param string $hash
+     *
+     * @return string|null
+     */
+    private function getSessionState(string $hash = null)
+    {
+        if (null === $hash) {
+            return null;
+        }
+
+        $instances = $this->getActiveSessionList();
+
+        return $instances[$hash] ?? null;
+    }
+
+    /**
      * Appends a session hash to active instances, for cleanup later
      *
      * @param string $sessionHash
+     * @param string $encodedData
      */
-    private function appendKeyToActiveSessions($sessionHash)
+    private function appendSessionData($sessionHash, $encodedData)
     {
         $instances = $this->getActiveSessionList();
-
-        $instances[time()] = $sessionHash;
+        $instances[$sessionHash] = $encodedData;
 
         $this->session->set(self::ACTIVE_SESSIONS_KEY, $instances);
     }

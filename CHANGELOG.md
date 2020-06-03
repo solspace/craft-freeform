@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.6.10 - 2020-06-03
+### Changed
+- Optimized data stored in session as well as introduced a hard limit on active form session instances.
+
+### Fixed
+- Fixed a bug where Salesforce Contact Tasks for the Leads integration were not being assigned the correct Salesforce user.
+- Fixed a bug where campaigns may not be able to be mapped correctly to the Pardot API integration.
+
 ## 3.6.9 - 2020-05-21
 ### Added
 - Added ability for the Salesforce Lead API integration to optionally have submissions converted to Salesforce Contact Tasks for existing Contacts if the email address matches.

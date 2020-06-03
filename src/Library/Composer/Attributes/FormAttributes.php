@@ -175,11 +175,6 @@ class FormAttributes
      */
     private function setFormValueContext(SessionInterface $session, RequestInterface $request)
     {
-        $hashPrefix = HashHelper::hash((int) $this->getId());
-
-        $this->formValueContext = $session->get(
-            $hashPrefix . '_form_context',
-            new FormValueContext($this->getId(), $session, $request)
-        );
+        $this->formValueContext = new FormValueContext($this->getId(), $session, $request);
     }
 }

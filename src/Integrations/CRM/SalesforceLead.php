@@ -254,8 +254,8 @@ class SalesforceLead extends AbstractSalesforceIntegration
     /**
      * Push objects to the CRM
      *
-     * @param array $keyValueList
-     * @param null  $formFields
+     * @param array                $keyValueList
+     * @param null|AbstractField[] $formFields
      *
      * @return bool
      * @throws IntegrationException
@@ -268,11 +268,11 @@ class SalesforceLead extends AbstractSalesforceIntegration
         if ($this->isCreateTasksForDuplicates() && isset($keyValueList['Email'])) {
             $email = $keyValueList['Email'];
 
-            $contact = $this->querySingle("SELECT Id, Email FROM Contact WHERE Email = '%s' LIMIT 1", [$email]);
+            $contact = $this->querySingle("SELECT Id, Email, OwnerId FROM Contact WHERE Email = '%s' LIMIT 1", [$email]);
             if ($contact) {
                 $description = '';
-                foreach ($keyValueList as $key => $value) {
-                    $description .= "$key: $value\n";
+                foreach ($formFields as $field) {
+                    $description .= "{$field->getLabel()}: {$field->getValueAsString()}\n";
                 }
 
                 try {
@@ -290,6 +290,10 @@ class SalesforceLead extends AbstractSalesforceIntegration
                     'Description'  => $description,
                     'ActivityDate' => $dueDate->toDateString(),
                 ];
+
+                if ($contact->OwnerId) {
+                    $payload['OwnerId'] = $contact->OwnerId;
+                }
 
                 try {
                     $endpoint = $this->getEndpoint('/sobjects/Task');

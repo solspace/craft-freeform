@@ -252,7 +252,7 @@ class Pardot extends AbstractCRMIntegration
                 FieldObject::TYPE_STRING
             ),
             new FieldObject(
-                'campaign',
+                'campaign_id',
                 'Campaign',
                 FieldObject::TYPE_STRING,
                 true

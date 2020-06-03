@@ -46,6 +46,9 @@ class Settings extends Model
     const DEFAULT_AJAX                = false;
     const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
 
+    const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
+    const DEFAULT_SESSION_ENTRY_TTL      = 10800; // 3 hours
+
     /** @var string */
     public $pluginName;
 
@@ -190,6 +193,12 @@ class Settings extends Model
     /** @var bool */
     public $hideBannerOldFreeform = false;
 
+    /** @var int */
+    public $sessionEntryMaxCount;
+
+    /** @var int */
+    public $sessionEntryTTL;
+
     /**
      * Settings constructor.
      *
@@ -242,6 +251,9 @@ class Settings extends Model
 
         $this->hideBannerDemo        = false;
         $this->hideBannerOldFreeform = false;
+
+        $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
+        $this->sessionEntryTTL      = self::DEFAULT_SESSION_ENTRY_TTL;
 
         parent::__construct($config);
     }

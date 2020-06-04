@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.6.11 - 2020-06-04
+### Fixed
+- Fixed a bug where the refresh token was not fetching for the Constant Contact mailing list integration.
+
 ## 3.6.10 - 2020-06-03
 ### Changed
 - Optimized data stored in session as well as introduced a hard limit on active form session instances.

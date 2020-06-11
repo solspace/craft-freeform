@@ -446,7 +446,11 @@ class FormsService extends BaseService implements FormHandlerInterface
     {
         static $pluginLoaded;
 
-        if (null === $pluginLoaded || $event->isNoScriptRenderEnabled()) {
+        if ($event->isNoScriptRenderEnabled() && !$event->isManualScriptLoading()) {
+            return;
+        }
+
+        if (null === $pluginLoaded) {
             $pluginJs = $this->getFreeformPluginScript();
 
             $event->appendJsToOutput($pluginJs);

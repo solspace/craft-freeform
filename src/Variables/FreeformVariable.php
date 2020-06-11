@@ -170,7 +170,7 @@ class FreeformVariable
      */
     public function loadFreeformScripts(Form $form): Markup
     {
-        $event = new FormRenderEvent($form);
+        $event = new FormRenderEvent($form, true);
         Event::trigger(FormsService::class, FormsService::EVENT_RENDER_CLOSING_TAG, $event);
 
         return Template::raw($event->getOutput());

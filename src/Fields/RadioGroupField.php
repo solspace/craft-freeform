@@ -70,6 +70,7 @@ class RadioGroupField extends AbstractExternalOptionsField implements SingleValu
                 . $this->getAttributeString('value', $option->getValue(), true, true)
                 . $this->getParameterString('checked', $option->isChecked())
                 . $attributes->getInputAttributesAsString()
+                . $this->getRequiredAttribute()
                 . '/>';
             $output .= $this->translate($option->getLabel());
             $output .= '</label>';

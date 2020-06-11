@@ -85,7 +85,7 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
         $this->onBeforeFetchAccessToken($code);
 
         if (null === $code) {
-            return null;
+            return '';
         }
 
         $payload = [

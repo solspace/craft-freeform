@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.6.12 - 2020-06-11
+### Changed
+- Updated the Zoho Lead and Deal CRM integrations to be simpler and correct a connection issue. You may need to recreate the integration inside Freeform settings if it doesn't begin to work immediately.
+
+### Fixed
+- Fixed a bug where Radio fields were not loading the `required` attribute when the `useRequiredAttribute: true` parameter was set.
+- Fixed the `freeform.loadFreeformScripts()` function to no longer load multiple instances of the same scripts in some cases.
+
 ## 3.6.11 - 2020-06-04
 ### Fixed
 - Fixed a bug where the refresh token was not fetching for the Constant Contact mailing list integration.

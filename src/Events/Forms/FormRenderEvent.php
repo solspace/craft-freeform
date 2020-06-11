@@ -20,15 +20,21 @@ class FormRenderEvent extends ArrayableEvent
     /** @var FormRenderObjectInterface[] */
     private $renderObjects;
 
+    /** @var bool */
+    private $manualScriptLoading;
+
     /**
      * FormRenderEvent constructor.
      *
      * @param Form $form
+     * @param bool $manualScriptLoading
      */
-    public function __construct(Form $form)
+    public function __construct(Form $form, bool $manualScriptLoading = false)
     {
         $this->form          = $form;
         $this->renderObjects = [];
+
+        $this->manualScriptLoading = $manualScriptLoading;
 
         parent::__construct();
     }
@@ -134,6 +140,14 @@ class FormRenderEvent extends ArrayableEvent
         $this->renderObjects[] = new CssObject($value, $replacements);
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isManualScriptLoading(): bool
+    {
+        return $this->manualScriptLoading;
     }
 
     /**

@@ -3,7 +3,7 @@
 
 {% block actionButton %}
 
-    {% if currentUser.can("freeform-formsManage") %}
+    {% if currentUser.can("freeform-formsCreate") %}
         <a class="btn submit add icon" href="{{ url('freeform/forms/new/') }}">
             {{ "New Form"|t('freeform') }}
         </a>
@@ -31,9 +31,11 @@
             </thead>
             <tbody>
             {% for form in forms %}
+                {% set canManage = currentUser.can("freeform-formsManage") or currentUser.can("freeform-formsManage:"~form.id) %}
+                {% set canDelete = currentUser.can("freeform-formsDelete") %}
                 <tr data-id="{{ form.id }}" data-name="{{ form.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        {% if currentUser.can("freeform-formsManage") %}
+                        {% if canManage %}
                             <a href="{{ url('freeform/forms/' ~ form.id) }}">
                                 {{ form.name }}
                             </a>
@@ -57,9 +59,14 @@
                         </div>
                     </td>
                     <td>
-                        <a href="{{ url('freeform/submissions/' ~ form.handle) }}">
-                            {{ totalSubmissionsByForm[form.id] is defined ? totalSubmissionsByForm[form.id] : 0 }}
-                        </a>
+                        {% set submissionCount = totalSubmissionsByForm[form.id] is defined ? totalSubmissionsByForm[form.id] : 0 %}
+                        {% if currentUser.can("freeform-submissionsAccess") %}
+                            <a href="{{ url('freeform/submissions/' ~ form.handle) }}">
+                                {{ submissionCount }}
+                            </a>
+                        {% else %}
+                            {{ submissionCount }}
+                        {% endif %}
                     </td>
                     <td class="spam-count" data-form-id="{{ form.id }}">
                         <span>
@@ -72,22 +79,25 @@
                             {% endif %}
                         </span>
 
-                        {% if not isSpamFolderEnabled %}
-                        <a class="reset-spam-count btn small icon-refresh"
-                           data-confirm-message="{{ "Are you sure you want to reset the spam count for '{formName}'"|t('freeform', {formName: form.name}) }}"
-                           data-form-id="{{ form.id }}"
-                        >{{ "Reset"|t('freeform') }}</a>
+                        {% if not isSpamFolderEnabled and canManage %}
+                            <a class="reset-spam-count btn small icon-refresh"
+                               data-confirm-message="{{ "Are you sure you want to reset the spam count for '{formName}'"|t('freeform', {formName: form.name}) }}"
+                               data-form-id="{{ form.id }}"
+                            >{{ "Reset"|t('freeform') }}</a>
                         {% endif %}
                     </td>
                     <td class="thin">
                         <div class="action-buttons">
-                            {% if currentUser.can("freeform-formsManage") %}
+                            {% if canManage %}
                                 <form method="post" action="{{ url("freeform/forms/duplicate") }}">
                                     {{ csrfInput() }}
                                     <input type="hidden" name="id" value="{{ form.id }}" />
                                     <a class="clone icon" title="{{ 'Clone'|t('freeform') }}" role="button"></a>
                                 </form>
-                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+
+                                {% if canDelete %}
+                                    <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </td>

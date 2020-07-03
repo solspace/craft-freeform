@@ -72,6 +72,7 @@ class SharpSpring extends AbstractCRMIntegration
 
             switch ($target) {
                 case 'contact':
+                case 'custom':
                     $contactProps[$propName] = $value;
                     break;
             }
@@ -140,25 +141,27 @@ class SharpSpring extends AbstractCRMIntegration
             $fields = $data['result']['field'];
         }
 
+        $suffix = ' (Contact)';
+
         $fieldList = [
-            new FieldObject('contact___emailAddress', 'Email', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___firstName', 'First Name', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___lastName', 'Last Name', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___website', 'Website', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___phoneNumber', 'Phone Number', FieldObject::TYPE_NUMERIC, false),
+            new FieldObject('contact___emailAddress', "Email$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___firstName', "First Name$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___lastName', "Last Name$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___website', "Website$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___phoneNumber', "Phone Number$suffix", FieldObject::TYPE_NUMERIC, false),
             new FieldObject(
-                'contact___phoneNumberExtension', 'Phone Number Extension', FieldObject::TYPE_NUMERIC, false
+                'contact___phoneNumberExtension', "Phone Number Extension$suffix", FieldObject::TYPE_NUMERIC, false
             ),
-            new FieldObject('contact___faxNumber', 'Fax Number', FieldObject::TYPE_NUMERIC, false),
-            new FieldObject('contact___mobilePhoneNumber', 'Mobile Phone Number', FieldObject::TYPE_NUMERIC, false),
-            new FieldObject('contact___street', 'Street Address', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___city', 'City', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___state', 'State', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___zipcode', 'Zip', FieldObject::TYPE_NUMERIC, false),
-            new FieldObject('contact___companyName', 'Company Name', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___industry', 'Industry', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___description', 'Description', FieldObject::TYPE_STRING, false),
-            new FieldObject('contact___title', 'Title', FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___faxNumber', "Fax Number$suffix", FieldObject::TYPE_NUMERIC, false),
+            new FieldObject('contact___mobilePhoneNumber', "Mobile Phone Number$suffix", FieldObject::TYPE_NUMERIC, false),
+            new FieldObject('contact___street', "Street Address$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___city', "City$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___state', "State$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___zipcode', "Zip$suffix", FieldObject::TYPE_NUMERIC, false),
+            new FieldObject('contact___companyName', "Company Name$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___industry', "Industry$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___description', "Description$suffix", FieldObject::TYPE_STRING, false),
+            new FieldObject('contact___title', "Title$suffix", FieldObject::TYPE_STRING, false),
         ];
 
         foreach ($fields as $field) {
@@ -199,8 +202,8 @@ class SharpSpring extends AbstractCRMIntegration
             }
 
             $fieldObject = new FieldObject(
-                $field->systemName,
-                $field->label,
+                'custom___' . $field->systemName,
+                $field->label . ' (Custom Fields)',
                 $type,
                 false
             );

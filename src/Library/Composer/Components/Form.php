@@ -168,6 +168,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var mixed */
     private $submitResult;
 
+    /** @var bool */
+    private $suppressionEnabled;
+
     /**
      * Form constructor.
      *
@@ -211,6 +214,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->errors                = [];
         $this->spamReasons           = [];
         $this->submitted             = false;
+        $this->suppressionEnabled    = false;
 
         $this->layout = new Layout(
             $this,
@@ -323,6 +327,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getInitTime(): string
     {
         return $this->getFormValueContext()->getInitTime();
+    }
+
+    /**
+     * @return string|int|null
+     */
+    public function getOverrideStatus()
+    {
+        return $this->getFormValueContext()->getDefaultStatus();
     }
 
     /**
@@ -1007,7 +1019,19 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getSuppressors(): Suppressors
     {
-        return new Suppressors($this->getFormValueContext()->getSuppressorData());
+        $suppressors = $this->suppressionEnabled ? true : $this->getFormValueContext()->getSuppressorData();
+
+        return new Suppressors($suppressors);
+    }
+
+    /**
+     * @return $this
+     */
+    public function enableSuppression(): Form
+    {
+        $this->suppressionEnabled = true;
+
+        return $this;
     }
 
     /**

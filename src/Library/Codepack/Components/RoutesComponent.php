@@ -118,6 +118,10 @@ class RoutesComponent extends AbstractJsonComponent
         }
 
         foreach ($existingRoutes as $uuid => $route) {
+            if (!isset($route['uriParts'])) {
+                continue;
+            }
+
             if (Json::encode($route['uriParts']) === Json::encode($uriParts)) {
                 return $uuid;
             }

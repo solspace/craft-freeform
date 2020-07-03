@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 3.7.0 - 2020-07-03
+### Added
+- Added more granular User permissions for form management. New permissions for Creating New Forms, Deleting Forms and per form management.
+- Added a setting to Payments integrations that allows you to suppress email notifications and API integrations if the payment fails.
+
+### Changed
+- Updated the `status` form parameter to allow updating of status upon editing of submissions in the front end.
+- Updated the Salesforce Lead CRM integration to allow mapping to relationship fields and subsquently the Lead Record Type field.
+- Updated the POST Forwarding feature to pass along IP address as well.
+- Updated uploading of images with EXIF rotation data to now correctly rotate the images upon upload.
+
+### Fixed
+- Fixed a bug where installing the Demo Templates could result in a `Undefined index: uriParts` error for some users.
+- Fixed a bug where the Export Profile `setting` column in the database could be too small and result in an error.
+- Fixed a bug where the SharpSpring CRM integration was not working correctly for mapping to custom fields.
+- Fixed a bug where removing a Payments setup from a form would not remove all traces and error on the front end when submitting the form.
+- Fixed a bug where clicking on Form filters in the Submissions index page would not update the URL to contain the handle.
+- Fixed a bug where the MailChimp mailing list integration Contact Tags were not being updated when submitting a submission.
+
 ## 3.6.12 - 2020-06-11
 ### Changed
 - Updated the Zoho Lead and Deal CRM integrations to be simpler and correct a connection issue. You may need to recreate the integration inside Freeform settings if it doesn't begin to work immediately.

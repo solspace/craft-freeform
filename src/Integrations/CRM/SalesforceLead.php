@@ -389,7 +389,7 @@ class SalesforceLead extends AbstractSalesforceIntegration
 
         $fieldList = [];
         foreach ($data->fields as $field) {
-            if (!$field->updateable || !empty($field->referenceTo)) {
+            if (!$field->updateable) {
                 continue;
             }
 
@@ -402,6 +402,7 @@ class SalesforceLead extends AbstractSalesforceIntegration
                 case 'address':
                 case 'picklist':
                 case 'phone':
+                case 'reference':
                     $type = FieldObject::TYPE_STRING;
                     break;
 

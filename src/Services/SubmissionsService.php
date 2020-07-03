@@ -234,6 +234,8 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $titleReplacements['dateCreated'] = $dateCreated->format('Y-m-d H:i:s');
         $fieldsByHandle                   = $form->getLayout()->getFieldsByHandle();
 
+        $customStatus = $form->getOverrideStatus();
+
         $statusId = $form->getDefaultStatus();
         if (!is_numeric($statusId)) {
             $status = Freeform::getInstance()->statuses->getStatusByHandle($statusId);
@@ -248,6 +250,8 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $submission->statusId    = $statusId;
             $submission->isSpam      = $form->isMarkedAsSpam();
             $submission->dateCreated = $dateCreated;
+        } else if ($customStatus) {
+            $submission->statusId = $statusId;
         }
 
         $submission->title = \Craft::$app->view->renderString(

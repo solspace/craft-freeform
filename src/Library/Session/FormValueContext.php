@@ -289,7 +289,7 @@ class FormValueContext implements \JsonSerializable
     }
 
     /**
-     * @return DynamicNotificationAttributes|null
+     * @return string|int|null
      */
     public function getDefaultStatus()
     {

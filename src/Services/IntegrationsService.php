@@ -16,6 +16,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
@@ -289,6 +290,13 @@ class IntegrationsService extends BaseService
     {
         $error = $integration->getLastError();
         $submission->addError($error->getMessage());
+
+        $settings = $integration->getSettings();
+        $suppress = $settings[Stripe::SETTING_SUPPRESS_ON_FAIL] ?? false;
+
+        if ((bool)$suppress) {
+            $submission->getForm()->enableSuppression();
+        }
     }
 
     /**

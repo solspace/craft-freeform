@@ -280,8 +280,6 @@ class FormsService extends BaseService implements FormHandlerInterface
      */
     public function deleteById($formId)
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
-
         $record = $this->getFormById($formId);
 
         if (!$record) {

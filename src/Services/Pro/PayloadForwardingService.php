@@ -62,6 +62,7 @@ class PayloadForwardingService extends BaseService
             $payload['submission-id']    = $submission->id;
             $payload['submission-token'] = $submission->token;
             $payload['submission-title'] = $submission->title;
+            $payload['submission-ip']    = $submission->ip;
 
             $payloadEvent = new PayloadForwardEvent(
                 new Client(),

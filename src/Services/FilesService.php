@@ -16,7 +16,9 @@ use craft\db\Query;
 use craft\elements\Asset;
 use craft\errors\InvalidSubpathException;
 use craft\errors\InvalidVolumeException;
+use craft\errors\UploadFailedException;
 use craft\helpers\Assets;
+use craft\helpers\Assets as AssetsHelper;
 use craft\records\Asset as AssetRecord;
 use craft\web\UploadedFile;
 use Solspace\Freeform\Events\Files\UploadEvent;
@@ -29,6 +31,7 @@ use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
 use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use craft\helpers\FileHelper;
+use yii\base\ErrorException;
 
 class FilesService extends BaseService implements FileUploadHandlerInterface
 {
@@ -91,12 +94,21 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 $filename = Assets::prepareAssetName($uploadedFile->name);
                 $asset    = new Asset();
 
-                $asset->tempFilePath           = $uploadedFile->tempName;
+                // Move the uploaded file to the temp folder
+                try {
+                    $tempPath = $uploadedFile->saveAsTempFile();
+                } catch (ErrorException $e) {
+                    throw new UploadFailedException(0, null, $e);
+                }
+
+                $asset->kind                   = AssetsHelper::getFileKindByExtension($uploadedFile->name);
+                $asset->tempFilePath           = $tempPath;
                 $asset->filename               = $filename;
                 $asset->setScenario(Asset::SCENARIO_CREATE);
                 $asset->newFolderId            = $folder->id;
                 $asset->volumeId               = $folder->volumeId;
                 $asset->avoidFilenameConflicts = true;
+                $asset->uploaderId             = \Craft::$app->getUser()->getId();
 
                 $response = \Craft::$app->getElements()->saveElement($asset);
             } catch (\Exception $e) {

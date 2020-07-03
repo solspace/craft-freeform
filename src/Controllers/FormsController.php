@@ -35,6 +35,7 @@ use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FormsService;
 use yii\db\Query;
+use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class FormsController extends BaseController
@@ -67,6 +68,8 @@ class FormsController extends BaseController
      */
     public function actionCreate(): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+
         $model = FormModel::create();
         $title = Freeform::t('Create a new form');
 
@@ -81,6 +84,7 @@ class FormsController extends BaseController
      */
     public function actionEdit(int $id = null): Response
     {
+        $this->requireFormManagePermission($id);
         $model = $this->getFormService()->getFormById($id);
 
         if (!$model) {
@@ -98,7 +102,6 @@ class FormsController extends BaseController
      */
     public function actionDuplicate(): Response
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
         $this->requirePostRequest();
 
         $id    = \Craft::$app->request->post('id');
@@ -109,6 +112,8 @@ class FormsController extends BaseController
                 Freeform::t('Form with ID {id} not found', ['id' => $id])
             );
         }
+
+        $this->requireFormManagePermission($id);
 
         $model->id = null;
         $layout    = Json::decode($model->layoutJson, true);
@@ -138,6 +143,8 @@ class FormsController extends BaseController
             \Craft::$app->session->setError($string);
         }
 
+        $this->addFormManagePermissionToUser($model->id);
+
         return $this->redirect('freeform/forms');
     }
 
@@ -147,8 +154,6 @@ class FormsController extends BaseController
      */
     public function actionSave(): Response
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
-
         $post = \Craft::$app->request->post();
 
         if (!isset($post['formId'])) {
@@ -162,6 +167,13 @@ class FormsController extends BaseController
         $formId        = $post['formId'];
         $form          = $this->getNewOrExistingForm($formId);
         $composerState = json_decode($post['composerState'], true);
+
+        $isNew = !$form->id;
+        if ($isNew) {
+            $this->requireFormCreatePermission();
+        } else {
+            $this->requireFormManagePermission($form->id);
+        }
 
         if (\Craft::$app->request->post('duplicate', false)) {
             $oldHandle = $composerState['composer']['properties']['form']['handle'];
@@ -205,6 +217,10 @@ class FormsController extends BaseController
         $form->setLayout($composer);
 
         if ($this->getFormService()->save($form)) {
+            if ($isNew) {
+                $this->addFormManagePermissionToUser($form->id);
+            }
+
             return $this->asJson(
                 [
                     'success' => true,
@@ -231,9 +247,8 @@ class FormsController extends BaseController
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
-
         $formId = \Craft::$app->request->post('id');
+        $this->requireFormManagePermission($formId);
 
         return $this->asJson(
             [
@@ -250,9 +265,9 @@ class FormsController extends BaseController
     public function actionResetSpamCounter(): Response
     {
         $this->requirePostRequest();
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 
         $formId = (int) \Craft::$app->request->post('formId');
+        $this->requireFormManagePermission($formId);
 
         if (!$formId) {
             return $this->asErrorJson(Freeform::t('No form ID specified'));
@@ -314,8 +329,6 @@ class FormsController extends BaseController
      */
     private function renderEditForm(string $title, FormModel $model): Response
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
-
         $translationCategories = include __DIR__ . '/../Resources/composer-translations.php';
 
         $this->view->registerAssetBundle(ComposerBuilderBundle::class);
@@ -596,5 +609,40 @@ class FormsController extends BaseController
     private function getEncodedJson($data): string
     {
         return json_encode($data, JSON_OBJECT_AS_ARRAY);
+    }
+
+    /**
+     * @param string|int $id
+     *
+     * @throws ForbiddenHttpException
+     */
+    private function requireFormManagePermission($id)
+    {
+        $managePermission = Freeform::PERMISSION_FORMS_MANAGE;
+        $nestedPermission = PermissionHelper::prepareNestedPermission($managePermission, $id);
+
+        $canManageAll = PermissionHelper::checkPermission($managePermission);
+        $canManageCurrent = PermissionHelper::checkPermission($nestedPermission);
+
+        if (!$canManageAll && !$canManageCurrent) {
+            throw new ForbiddenHttpException('User is not permitted to perform this action');
+        }
+    }
+
+    /**
+     * @throws ForbiddenHttpException
+     */
+    private function requireFormCreatePermission()
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+    }
+
+    private function addFormManagePermissionToUser($formId)
+    {
+        $userId = \Craft::$app->getUser()->id;
+        $permissions = \Craft::$app->getUserPermissions()->getPermissionsByUserId($userId);
+        $permissions[] = PermissionHelper::prepareNestedPermission(Freeform::PERMISSION_FORMS_MANAGE, $formId);
+
+        \Craft::$app->getUserPermissions()->saveUserPermissions($userId, $permissions);
     }
 }

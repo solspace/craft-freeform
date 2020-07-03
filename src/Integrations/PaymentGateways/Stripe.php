@@ -35,12 +35,13 @@ use function strtolower;
 
 class Stripe extends AbstractPaymentGatewayIntegration
 {
-    const SETTING_PUBLIC_KEY_LIVE = 'public_key_live';
-    const SETTING_SECRET_KEY_LIVE = 'secret_key_live';
-    const SETTING_PUBLIC_KEY_TEST = 'public_key_test';
-    const SETTING_SECRET_KEY_TEST = 'secret_key_test';
-    const SETTING_LIVE_MODE       = 'live_mode';
-    const SETTING_WEBHOOK_KEY     = 'webhook_key';
+    const SETTING_PUBLIC_KEY_LIVE  = 'public_key_live';
+    const SETTING_SECRET_KEY_LIVE  = 'secret_key_live';
+    const SETTING_PUBLIC_KEY_TEST  = 'public_key_test';
+    const SETTING_SECRET_KEY_TEST  = 'secret_key_test';
+    const SETTING_LIVE_MODE        = 'live_mode';
+    const SETTING_WEBHOOK_KEY      = 'webhook_key';
+    const SETTING_SUPPRESS_ON_FAIL = 'suppress_on_fail';
 
     const TITLE        = 'Stripe';
     const LOG_CATEGORY = 'Stripe';
@@ -115,6 +116,13 @@ class Stripe extends AbstractPaymentGatewayIntegration
     public static function getSettingBlueprints(): array
     {
         return [
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_BOOL,
+                self::SETTING_SUPPRESS_ON_FAIL,
+                'Suppress Email Notifications & Integrations when Payments Fail',
+                'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
+                false
+            ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_PUBLIC_KEY_LIVE,

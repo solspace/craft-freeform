@@ -166,6 +166,8 @@ class Freeform extends Plugin
     const VERSION_CACHE_TTL           = 86400; // 24-hours
 
     const PERMISSION_FORMS_ACCESS           = 'freeform-formsAccess';
+    const PERMISSION_FORMS_CREATE           = 'freeform-formsCreate';
+    const PERMISSION_FORMS_DELETE           = 'freeform-formsDelete';
     const PERMISSION_FORMS_MANAGE           = 'freeform-formsManage';
     const PERMISSION_FIELDS_ACCESS          = 'freeform-fieldsAccess';
     const PERMISSION_FIELDS_MANAGE          = 'freeform-fieldsManage';
@@ -697,13 +699,18 @@ class Freeform extends Plugin
                         ],
                     ];
 
-                    foreach ($forms as $form) {
-                        $permissionName = PermissionHelper::prepareNestedPermission(
-                            self::PERMISSION_SUBMISSIONS_MANAGE,
-                            $form->id
-                        );
+                    $formNestedPermissions = [
+                        self::PERMISSION_FORMS_CREATE => ['label' => self::t('Create New Forms')],
+                        self::PERMISSION_FORMS_DELETE => ['label' => self::t('Delete Forms')],
+                        self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage All Forms')],
+                    ];
 
-                        $submissionNestedPermissions[$permissionName] = ['label' => 'For ' . $form->name];
+                    foreach ($forms as $form) {
+                        $submissionPermissionName = PermissionHelper::prepareNestedPermission(self::PERMISSION_SUBMISSIONS_MANAGE, $form->id);
+                        $formPermissionName = PermissionHelper::prepareNestedPermission(self::PERMISSION_FORMS_MANAGE, $form->id);
+
+                        $submissionNestedPermissions[$submissionPermissionName] = ['label' => 'For ' . $form->name];
+                        $formNestedPermissions[$formPermissionName] = ['label' => 'For ' . $form->name];
                     }
 
                     $permissions = [
@@ -714,9 +721,7 @@ class Freeform extends Plugin
                         ],
                         self::PERMISSION_FORMS_ACCESS           => [
                             'label'  => self::t('Access Forms'),
-                            'nested' => [
-                                self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage Forms')],
-                            ],
+                            'nested' => $formNestedPermissions,
                         ],
                         self::PERMISSION_FIELDS_ACCESS          => [
                             'label'  => self::t('Access Fields'),

@@ -31,6 +31,9 @@ class MailChimp extends AbstractMailingListIntegration
     const TITLE        = 'MailChimp';
     const LOG_CATEGORY = 'MailChimp';
 
+    /** @var array */
+    private $existingTags;
+
     /**
      * Returns a list of additional settings for this integration
      * Could be used for anything, like - AccessTokens
@@ -81,7 +84,7 @@ class MailChimp extends AbstractMailingListIntegration
     {
         try {
             $response = $this->get('/');
-            $json     = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json     = \GuzzleHttp\json_decode((string)$response->getBody());
 
             if (isset($json->error) && !empty($json->error)) {
                 throw new IntegrationException($json->error);
@@ -106,76 +109,61 @@ class MailChimp extends AbstractMailingListIntegration
     public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
     {
         $isDoubleOptIn = $this->getSetting(self::SETTING_DOUBLE_OPT_IN);
+        $listId        = $mailingList->getId();
 
-        try {
-            $members = [];
-            foreach ($emails as $email) {
-                $memberData = [
-                    'email_address' => $email,
-                    'status'        => $isDoubleOptIn ? 'pending' : 'subscribed',
-                ];
+        foreach ($emails as $email) {
+            $emailHash  = md5($email);
+            $memberData = [
+                'email_address' => $email,
+                'status'        => $isDoubleOptIn ? 'pending' : 'subscribed',
+            ];
 
+            $marketingPermissions = $tags = [];
+            foreach ($mappedValues as $key => $value) {
+                if (preg_match("/gdpr___(.*)/", $key, $matches)) {
+                    $marketingPermissions[] = [
+                        'marketing_permission_id' => $matches[1],
+                        'enabled'                 => !empty($value),
+                    ];
 
-                $marketingPermissions = $tags = [];
-                foreach ($mappedValues as $key => $value) {
-                    if (preg_match("/gdpr___(.*)/", $key, $matches)) {
-                        $marketingPermissions[] = [
-                            'marketing_permission_id' => $matches[1],
-                            'enabled'                 => !empty($value),
-                        ];
-
-                        unset($mappedValues[$key]);
-                    }
-
-                    if (preg_match("/tags___tags/", $key)) {
-                        $tags = explode(',', $value);
-                        $tags = array_map('trim', $tags);
-
-                        $memberData['tags'] = $tags;
-
-                        unset($mappedValues[$key]);
-                    }
+                    unset($mappedValues[$key]);
                 }
 
-                if (!empty($mappedValues)) {
-                    $memberData['merge_fields'] = $mappedValues;
-                }
+                if (preg_match("/tags___tags/", $key)) {
+                    $tags = explode(',', $value);
+                    $tags = array_map('trim', $tags);
+                    $tags = array_filter($tags);
 
-                if (!empty($marketingPermissions)) {
-                    $memberData['marketing_permissions'] = $marketingPermissions;
+                    unset($mappedValues[$key]);
                 }
-
-                $members[] = $memberData;
             }
 
-            $data = ['members' => $members, 'update_existing' => true];
+            if (!empty($mappedValues)) {
+                $memberData['merge_fields'] = $mappedValues;
+            }
 
-            $response = $this->post("lists/{$mailingList->getId()}", ['json' => $data]);
-        } catch (RequestException $e) {
-            $this->logErrorAndThrow($e);
+            if (!empty($marketingPermissions)) {
+                $memberData['marketing_permissions'] = $marketingPermissions;
+            }
+
+            try {
+                $patchMemberData = $memberData;
+                unset($patchMemberData['email_address']);
+                $response = $this->patch("lists/$listId/members/$emailHash", ['json' => $patchMemberData]);
+                $this->getHandler()->onAfterResponse($this, $response);
+            } catch (RequestException $exception) {
+                try {
+                    $response = $this->post("lists/$listId/members", ['json' => $memberData]);
+                    $this->getHandler()->onAfterResponse($this, $response);
+                } catch (RequestException $e) {
+                    $this->logErrorAndThrow($e);
+                }
+            }
+
+            $this->manageTags($listId, $email, $tags);
         }
 
-        $statusCode = $response->getStatusCode();
-        if ($statusCode !== 200) {
-            $this->getLogger()->error('Could not add emails to lists', ['response' => (string) $response->getBody()]);
-
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not add emails to lists')
-            );
-        }
-
-        $jsonResponse = \GuzzleHttp\json_decode((string) $response->getBody());
-        if (isset($jsonResponse->error_count) && $jsonResponse->error_count > 0) {
-            $this->getLogger()->error(\GuzzleHttp\json_encode($jsonResponse->errors), ['response' => $jsonResponse]);
-
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not add emails to lists')
-            );
-        }
-
-        $this->getHandler()->onAfterResponse($this, $response);
-
-        return $statusCode === 200;
+        return true;
     }
 
     /**
@@ -250,7 +238,7 @@ class MailChimp extends AbstractMailingListIntegration
             );
         }
 
-        $json = \GuzzleHttp\json_decode((string) $response->getBody());
+        $json = \GuzzleHttp\json_decode((string)$response->getBody());
 
         $lists = [];
         if (isset($json->lists)) {
@@ -286,7 +274,7 @@ class MailChimp extends AbstractMailingListIntegration
             $this->logErrorAndThrow($e);
         }
 
-        $json = \GuzzleHttp\json_decode((string) $response->getBody());
+        $json = \GuzzleHttp\json_decode((string)$response->getBody());
 
         $fieldList = [];
         if (isset($json->merge_fields)) {
@@ -338,7 +326,7 @@ class MailChimp extends AbstractMailingListIntegration
                 ]
             );
 
-            $json    = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json    = \GuzzleHttp\json_decode((string)$response->getBody());
             $members = $json->members ?? [];
 
             if (!count($members)) {
@@ -347,13 +335,13 @@ class MailChimp extends AbstractMailingListIntegration
                         "/lists/$listId/members",
                         [
                             'json' => [
-                                'email_address' => rand(10000, 99999) . '_temp@test.test',
+                                'email_address' => rand(10000, 99999).'_temp@test.test',
                                 'status'        => 'subscribed',
                             ],
                         ]
                     );
 
-                    $tempJson = \GuzzleHttp\json_decode((string) $tempResponse->getBody());
+                    $tempJson = \GuzzleHttp\json_decode((string)$tempResponse->getBody());
 
                     $tempSubscriberHash   = $tempJson->id;
                     $marketingPermissions = $tempJson->marketing_permissions ?? [];
@@ -369,8 +357,8 @@ class MailChimp extends AbstractMailingListIntegration
 
             foreach ($marketingPermissions as $permission) {
                 $fieldList[] = new FieldObject(
-                    'gdpr___' . $permission->marketing_permission_id,
-                    $permission->text . ' (GDPR)',
+                    'gdpr___'.$permission->marketing_permission_id,
+                    $permission->text.' (GDPR)',
                     FieldObject::TYPE_BOOLEAN,
                     false
                 );
@@ -435,6 +423,17 @@ class MailChimp extends AbstractMailingListIntegration
      *
      * @return ResponseInterface
      */
+    private function patch(string $endpoint, array $requestParams = []): ResponseInterface
+    {
+        return $this->generateAuthorizedClient($requestParams)->patch($this->getEndpoint($endpoint));
+    }
+
+    /**
+     * @param string $endpoint
+     * @param array  $requestParams
+     *
+     * @return ResponseInterface
+     */
     private function delete(string $endpoint, array $requestParams = []): ResponseInterface
     {
         return $this->generateAuthorizedClient($requestParams)->delete($this->getEndpoint($endpoint));
@@ -460,11 +459,133 @@ class MailChimp extends AbstractMailingListIntegration
      */
     private function logErrorAndThrow(RequestException $e)
     {
-        $responseBody = (string) $e->getResponse()->getBody();
+        $responseBody = (string)$e->getResponse()->getBody();
         $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
 
         throw new IntegrationException(
             $this->getTranslator()->translate('Could not connect to API endpoint')
         );
+    }
+
+    /**
+     * Create tags and add them to a member.
+     *
+     * @param string $listId
+     * @param string $email
+     * @param array  $tags
+     */
+    private function addTagsForMember(string $listId, string $email, array $tags)
+    {
+        foreach ($tags as $tag) {
+            $tagId = $this->getOrCreateTag($listId, $tag);
+
+            try {
+                $this->post("lists/$listId/segments/$tagId/members", ['json' => ['email_address' => $email]]);
+            } catch (RequestException $exception) {
+                $this->getLogger()->error("Could not add a MailChimp tag '$tag' to user $email");
+            }
+        }
+    }
+
+    /**
+     * Delete tags for a member.
+     *
+     * @param string $listId
+     * @param string $emailHash
+     * @param array  $tagsToDelete
+     */
+    private function deleteTagsForMember(string $listId, string $emailHash, array $tagsToDelete)
+    {
+        foreach ($tagsToDelete as $tagId => $tagName) {
+            try {
+                $this->delete("lists/$listId/segments/$tagId/members/$emailHash");
+            } catch (RequestException $deleteException) {
+                $this->getLogger()->warning("Could not delete MailChimp tag '$tagName' (#$tagId)");
+            }
+        }
+    }
+
+    /**
+     * @param string $listId
+     *
+     * @return array
+     */
+    private function fetchTags(string $listId): array
+    {
+        if (null === $this->existingTags) {
+            try {
+                $response = $this->get(
+                    "lists/$listId/segments",
+                    ['query' => ['fields' => 'segments.id,segments.name', 'count' => 999]]
+                );
+                $data     = \GuzzleHttp\json_decode((string)$response->getBody());
+
+                $tags = [];
+                foreach ($data->segments as $tag) {
+                    $tags[$tag->id] = strtolower($tag->name);
+                }
+
+                $this->existingTags = $tags;
+            } catch (RequestException $e) {
+                $this->getLogger()->error('Could not fetch MailChimp tags');
+
+                $this->existingTags = [];
+            }
+        }
+
+        return $this->existingTags;
+    }
+
+    /**
+     * @param string $listId
+     * @param string $tagName
+     *
+     * @return string|int|null
+     */
+    private function getOrCreateTag(string $listId, string $tagName)
+    {
+        $existingTags     = $this->fetchTags($listId);
+        $tagNameLowerCase = strtolower($tagName);
+        if (\in_array($tagNameLowerCase, $existingTags, true)) {
+            return array_search($tagNameLowerCase, $existingTags, true);
+        }
+
+        try {
+            $response = $this->post("lists/$listId/segments", ['json' => ['name' => $tagName, 'static_segment' => []]]);
+            $data     = \GuzzleHttp\json_decode((string)$response->getBody());
+
+            return $data->id;
+        } catch (RequestException $e) {
+            $this->getLogger()->warning("Could not create a MailChimp tag '$tagName'");
+
+            return null;
+        }
+    }
+
+    /**
+     * @param string $listId
+     * @param string $email
+     * @param array  $tags
+     */
+    private function manageTags(string $listId, string $email, array $tags)
+    {
+        $emailHash = md5(strtolower($email));
+
+        try {
+            $response = $this->get("lists/$listId/members/$emailHash/tags", ['query' => ['count' => 999]]);
+            $data     = \GuzzleHttp\json_decode((string)$response->getBody());
+
+            $memberTags = [];
+            foreach ($data->tags as $tag) {
+                $memberTags[$tag->id] = $tag->name;
+            }
+
+            $tagsToAdd = array_diff($tags, $memberTags);
+            $this->addTagsForMember($listId, $email, $tagsToAdd);
+
+            $tagsToDelete = array_diff($memberTags, $tags);
+            $this->deleteTagsForMember($listId, $emailHash, $tagsToDelete);
+        } catch (RequestException $e) {
+        }
     }
 }

@@ -212,14 +212,7 @@ class Submission extends Element
 
             $formsService = Freeform::getInstance()->forms;
 
-            /** @var array|null $allowedFormIds */
-            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
-
             foreach ($formsService->getAllForms() as $form) {
-                if (null !== $allowedFormIds && !\in_array($form->id, $allowedFormIds, true)) {
-                    continue;
-                }
-
                 $items[] = [
                     'key'      => 'form:' . $form->id,
                     'label'    => $form->name,

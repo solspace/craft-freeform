@@ -163,7 +163,7 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_export_settings'))
                 ->addField('id', $this->primaryKey())
                 ->addField('userId', $this->integer()->notNull())
-                ->addField('setting', $this->text())
+                ->addField('setting', $this->mediumText())
                 ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
 
             // Payments

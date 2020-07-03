@@ -46,11 +46,12 @@ class StripeService extends Component
      */
     public function preProcessPayment(FormValidateEvent $event)
     {
-        $form        = $event->getForm();
-        $properties  = $form->getPaymentProperties();
-        $paymentType = $properties->getPaymentType();
+        $form          = $event->getForm();
+        $properties    = $form->getPaymentProperties();
+        $integrationId = $properties->getIntegrationId();
+        $paymentType   = $properties->getPaymentType();
 
-        if ($paymentType !== PaymentProperties::PAYMENT_TYPE_SINGLE || !$form->isValid()) {
+        if (!$integrationId || $paymentType !== PaymentProperties::PAYMENT_TYPE_SINGLE || !$form->isValid()) {
             return;
         }
 

@@ -56,7 +56,7 @@
 
             {% set columnClass = "form-group" %}
             {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-            {% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-xs-12" %}
+            {% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-12" %}
 
             {% set class = "form-control" ~ (field.hasErrors ? " is-invalid") %}
             {% if field.type == "file" %}

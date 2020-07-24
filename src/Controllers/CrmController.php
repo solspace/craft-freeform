@@ -40,6 +40,8 @@ class CrmController extends Controller
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
         }
+
+        parent::init();
     }
 
     /**

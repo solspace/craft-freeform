@@ -489,7 +489,15 @@ class FormsService extends BaseService implements FormHandlerInterface
      */
     public function shouldScrollToAnchor(Form $form): bool
     {
-        return $this->getSettingsService()->isAutoScrollToErrors() && $form->isFormPosted();
+        return $this->isAutoscrollToErrorsEnabled() && $form->isFormPosted();
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAutoscrollToErrorsEnabled(): bool
+    {
+        return $this->getSettingsService()->isAutoScrollToErrors();
     }
 
     /**

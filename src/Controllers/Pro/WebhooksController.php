@@ -24,6 +24,8 @@ class WebhooksController extends BaseController
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
         }
+
+        parent::init();
     }
 
     /**

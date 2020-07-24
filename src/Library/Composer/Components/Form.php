@@ -949,7 +949,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             }
         }
 
-        $output .= '<a id="' . $this->getAnchor() . '"></a>';
+        if ($this->formHandler->isAutoscrollToErrorsEnabled()) {
+            $output .= '<a id="'.$this->getAnchor().'"></a>';
+        }
+
         $output .= $this->formHandler->onRenderOpeningTag($this);
 
         return Template::raw($output);

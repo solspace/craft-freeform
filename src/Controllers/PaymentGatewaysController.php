@@ -25,6 +25,8 @@ class PaymentGatewaysController extends BaseController
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
         }
+
+        parent::init();
     }
 
     /**

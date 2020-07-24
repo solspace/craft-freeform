@@ -106,3 +106,17 @@
         </div>
     </div>
 </form>
+
+<script>
+  (function() {
+    var form = document.getElementById('export-csv-modal');
+    form.addEventListener('submit', function (event) {
+      var hiddenFormInputs = form.querySelectorAll('.form-field-list.hidden');
+      for (var i = 0; i < hiddenFormInputs.length; i++) {
+        hiddenFormInputs[i].remove();
+      }
+
+      return true;
+    });
+  })();
+</script>

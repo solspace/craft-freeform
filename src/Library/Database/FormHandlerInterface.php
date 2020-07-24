@@ -77,6 +77,11 @@ interface FormHandlerInterface
     /**
      * @return bool
      */
+    public function isAutoscrollToErrorsEnabled(): bool;
+
+    /**
+     * @return bool
+     */
     public function isFormSubmitDisable(): bool;
 
     /**

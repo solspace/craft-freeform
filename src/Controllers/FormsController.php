@@ -450,15 +450,20 @@ class FormsController extends BaseController
      */
     private function getSourceTargetsList(): array
     {
+        $select = [
+            '[[id]]',
+            '[[sectionId]]',
+            '[[name]]',
+            '[[hasTitleField]]',
+            '[[fieldLayoutId]]',
+        ];
+
+        if (version_compare(\Craft::$app->getVersion(), '3.5', '<')) {
+            $select[] = '[[titleLabel]]';
+        }
+
         $entryTypesQuery = (new Query())
-            ->select([
-                '[[id]]',
-                '[[sectionId]]',
-                '[[name]]',
-                '[[hasTitleField]]',
-                '[[titleLabel]]',
-                '[[fieldLayoutId]]',
-            ])
+            ->select($select)
             ->from('{{%entrytypes}}')
             ->orderBy(['sectionId' => SORT_ASC, 'sortOrder' => SORT_ASC]);
 
@@ -497,7 +502,7 @@ class FormsController extends BaseController
                 'key'                 => $entryType['id'],
                 'value'               => $entryType['name'],
                 'hasTitleField'       => (bool) $entryType['hasTitleField'],
-                'titleLabel'          => $entryType['titleLabel'],
+                'titleLabel'          => $entryType['titleLabel'] ?? \Craft::t('app', 'Title'),
                 'fieldLayoutFieldIds' => $fieldIds,
             ];
         }

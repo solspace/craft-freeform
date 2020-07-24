@@ -33,6 +33,8 @@ class SettingsController extends BaseController
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
         }
+
+        parent::init();
     }
 
     public function actionIndex()

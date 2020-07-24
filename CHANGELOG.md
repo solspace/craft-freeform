@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.7.1 - 2020-07-24
+### Changed
+- Updated the "Automatically Scroll to Form on Errors and Multipage forms?" feature/setting to no longer automatically insert an anchor at the top of the form if the setting is disabled.
+- Optimized the Quick Export feature to only post selected form export preferences.
+
+### Fixed
+- Fixed a couple of compatibility issues with Craft 3.5+.
+- Fixed a bug where the Bootstrap 4 formatting template used `col-xs-12` instead of `col-12`.
+
 ## 3.7.0 - 2020-07-03
 ### Added
 - Added more granular User permissions for form management. New permissions for Creating New Forms, Deleting Forms and per form management.

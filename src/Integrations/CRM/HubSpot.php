@@ -450,6 +450,7 @@ class HubSpot extends AbstractCRMIntegration
                 case 'string':
                 case 'enumeration':
                 case 'datetime':
+                case 'date':
                 case 'phone_number':
                     $type = FieldObject::TYPE_STRING;
                     break;

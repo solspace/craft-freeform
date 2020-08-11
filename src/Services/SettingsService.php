@@ -365,7 +365,7 @@ class SettingsService extends BaseService
                                 );
 
                                 if ($this->isSpamBehaviourDisplayErrors()) {
-                                    $event->getForm()->addError(Freeform::t('Form contains a blacklisted email'));
+                                    $event->getForm()->addError(Freeform::t('Form contains a blocked email'));
                                 }
 
                                 if ($showEmailsErrorBelowFields) {
@@ -384,7 +384,7 @@ class SettingsService extends BaseService
     /**
      * @param FormValidateEvent $event
      */
-    public function checkBlacklistedIps(FormValidateEvent $event)
+    public function checkBlockedIps(FormValidateEvent $event)
     {
         static $shouldCheckIp;
         static $spamIps;
@@ -403,12 +403,12 @@ class SettingsService extends BaseService
             $event->getForm()->markAsSpam(
                 SpamReason::TYPE_BLOCKED_IP,
                 sprintf(
-                    'Form submitted by a blacklisted IP "%s"',
+                    'Form submitted by a blocked IP "%s"',
                     $remoteIp
                 )
             );
             if ($this->isSpamBehaviourDisplayErrors()) {
-                $event->getForm()->addError(Freeform::t('Your IP has been blacklisted'));
+                $event->getForm()->addError(Freeform::t('Your IP has been blocked'));
             }
         }
     }

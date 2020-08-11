@@ -201,18 +201,30 @@ class Submission extends Element
         static $sources;
 
         if (null === $sources) {
+            $isAdmin        = PermissionHelper::isAdmin();
+
+            $formsService = Freeform::getInstance()->forms;
+            $forms        = $formsService->getAllForms();
+
+            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
+            if ($isAdmin) {
+                $allowedFormIds = array_keys($forms);
+            }
+
             $items = [
                 [
                     'key'      => '*',
                     'label'    => Freeform::t('All Submissions'),
-                    'criteria' => [],
+                    'criteria' => ['formId' => $allowedFormIds],
                 ],
-                ['heading' => Freeform::t('Forms')],
+                ['heading' => Freeform::t('Forms')]
             ];
 
-            $formsService = Freeform::getInstance()->forms;
+            foreach ($forms as $form) {
+                if (!in_array($form->id, $allowedFormIds, false)) {
+                    continue;
+                }
 
-            foreach ($formsService->getAllForms() as $form) {
                 $items[] = [
                     'key'      => 'form:' . $form->id,
                     'label'    => $form->name,

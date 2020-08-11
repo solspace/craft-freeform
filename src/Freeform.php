@@ -977,7 +977,7 @@ class Freeform extends Plugin
         Event::on(
             FormsService::class,
             FormsService::EVENT_FORM_VALIDATE,
-            [$this->settings, 'checkBlacklistedIps']
+            [$this->settings, 'checkBlockedIps']
         );
 
         Event::on(

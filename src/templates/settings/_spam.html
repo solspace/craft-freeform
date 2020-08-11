@@ -111,7 +111,7 @@
 
         {{ forms.textareaField({
             label: "Block Email addresses"|t('freeform'),
-            instructions: "Enter email addresses you would like blacklisted from being used in Email fields. Use '*' for wildcard, and separate multiples on new lines."|t('freeform'),
+            instructions: "Enter email addresses you would like blocked from being used in Email fields. Use '*' for wildcard, and separate multiples on new lines."|t('freeform'),
             name: "settings[blockedEmails]",
             rows: 5,
             value: settings.blockedEmails,
@@ -139,7 +139,7 @@
 
         {{ forms.textareaField({
             label: "Block Keywords"|t('freeform'),
-            instructions: "Enter keywords you would like blacklisted from being used in all text and textarea fields. Use '*' for wildcard, and separate multiples on new lines."|t('freeform'),
+            instructions: "Enter keywords you would like blocked from being used in all text and textarea fields. Use '*' for wildcard, and separate multiples on new lines."|t('freeform'),
             name: "settings[blockedKeywords]",
             rows: 5,
             value: settings.blockedKeywords,
@@ -167,7 +167,7 @@
 
         {{ forms.textareaField({
             label: "Block IP addresses"|t('freeform'),
-            instructions: "Enter IP addresses you would like blacklisted. Separate multiples on new lines."|t('freeform'),
+            instructions: "Enter IP addresses you would like blocked. Separate multiples on new lines."|t('freeform'),
             name: "settings[blockedIpAddresses]",
             rows: 5,
             value: settings.blockedIpAddresses,

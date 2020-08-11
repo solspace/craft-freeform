@@ -74,6 +74,16 @@ class RenderEmailEvent extends ArrayableEvent
     }
 
     /**
+     * @param string $key
+     *
+     * @return mixed|null
+     */
+    public function getFieldValue(string $key)
+    {
+        return $this->fieldValues[$key] ?? null;
+    }
+
+    /**
      * @param array $fieldValues
      *
      * @return RenderEmailEvent
@@ -81,6 +91,19 @@ class RenderEmailEvent extends ArrayableEvent
     public function setFieldValues(array $fieldValues): RenderEmailEvent
     {
         $this->fieldValues = $fieldValues;
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return RenderEmailEvent
+     */
+    public function setFieldValue(string $key, $value): RenderEmailEvent
+    {
+        $this->fieldValues[$key] = $value;
 
         return $this;
     }

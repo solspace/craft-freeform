@@ -2,8 +2,13 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
+use craft\base\ElementInterface;
+
 class ConnectionResult
 {
+    /** @var ElementInterface */
+    private $element;
+
     /** @var array */
     private $formErrors;
 
@@ -15,6 +20,7 @@ class ConnectionResult
      */
     public function __construct()
     {
+        $this->element     = null;
         $this->formErrors  = [];
         $this->fieldErrors = [];
     }

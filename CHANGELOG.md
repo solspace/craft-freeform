@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.7.2 - 2020-08-11
+### Added
+- Added the ability to access the newly created Craft Elements in email notification templates when using the Element Connections feature.
+
+### Fixed
+- Fixed a bug where Spam keyword blocking was not correctly working with cyrillic characters.
+- Fixed a bug where Radio fields with an option that contained an `&` symbol and set to be the default choice, would not render in the template as selected.
+- Fixed a bug where Datepicker localization wasn't respecting 4-character language codes.
+- Fixed a bug where user/group permissions were not correctly removing form category options in the Submissions CP index.
+
 ## 3.7.1 - 2020-07-24
 ### Changed
 - Updated the "Automatically Scroll to Form on Errors and Multipage forms?" feature/setting to no longer automatically insert an anchor at the top of the form if the setting is disabled.
@@ -222,7 +232,7 @@
 - Fixed a bug where Table field types could not be shown/hidden with Conditional Rules.
 - Fixed a bug where Dynamic Recipients fields would not map to API integrations correctly.
 - Fixed a bug where granting users/groups permissions to manage specific forms would not allow them to delete submissions.
-- Fixed a bug where whitelisting spam submissions would error if the email notification template uses a layout.
+- Fixed a bug where allowing spam submissions would error if the email notification template uses a layout.
 - Fixed a bug where the multi-page form `currentPage` property was resetting to `0` if page reloaded due to error, etc.
 - Fixed a bug where the CP individual submission page was not showing/hiding fields based on Conditional Rules.
 - Fixed a bug where the CP individual submission page was showing and validating reCAPTCHA.
@@ -661,7 +671,7 @@
 - Fixed a bug where adding a new File Upload field to a form that had defaults of no file kinds checked (implying allow ALL file types) would not save correctly to the form layout and error when submitting the form.
 - Fixed a bug where fields shown/hidden with Conditional Rules feature that were dependent on checkboxes were not being correctly included in email notifications or showing in the submission detail view in control panel.
 - Fixed a bug where attempting to change the status of a submission in the control panel was not working.
-- Fixed a bug where the "Manage All Submissions" user/group permission was not allowing users to view or whitelist spam submissions.
+- Fixed a bug where the "Manage All Submissions" user/group permission was not allowing users to view or allow spam submissions.
 
 ## 2.5.7 - 2018-12-20
 ### Changed
@@ -1020,7 +1030,7 @@
 ### Added
 - Added field option Element and Data Feeders for Checkbox group, Radio group, Select and Multi-select fieldtypes. You can now populate these fields with Entries, Categories, Tags, Users, or one of our many predefined options: States, Provinces, Countries, Languages, Number ranges, Year ranges, Months, Days and Days of the Week. Freeform Data Feeders also offer flexible control over formatting and/or which data fills option labels and option values.
 - Added Multi-select fieldtype.
-- Added Spam Folder feature. Never miss a valid lead again! You can optionally enable this to have submissions flagged as spam (from failed honeypot or blocked keywords/emails/IP addresses) be saved to the database an placed into Freeform's Spam Folder. Submissions can then be reviewed (and optionally edited) and whitelisted, retroactively generating missed email notifications and passing along of data to API integrations.
+- Added Spam Folder feature. Never miss a valid lead again! You can optionally enable this to have submissions flagged as spam (from failed honeypot or blocked keywords/emails/IP addresses) be saved to the database an placed into Freeform's Spam Folder. Submissions can then be reviewed (and optionally edited) and allowed, retroactively generating missed email notifications and passing along of data to API integrations.
 - Added Spam Protection options to ban email addresses, keywords and IP addresses. Wildcards are permitted on email addresses and keywords.
 - Added reCAPTCHA spam protection integration for Freeform Pro edition.
 

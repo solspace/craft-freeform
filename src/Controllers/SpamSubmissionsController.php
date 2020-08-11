@@ -42,7 +42,7 @@ class SpamSubmissionsController extends SubmissionsController
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function actionWhitelist()
+    public function actionAllow()
     {
         $post = \Craft::$app->request->post();
 
@@ -66,7 +66,7 @@ class SpamSubmissionsController extends SubmissionsController
 
         $model->setFormFieldValues($post);
 
-        if ($this->getSpamSubmissionsService()->whitelistSpamSubmission($model)) {
+        if ($this->getSpamSubmissionsService()->allowSpamSubmission($model)) {
             // Return JSON response if the request is an AJAX request
             if (\Craft::$app->request->isAjax) {
                 return $this->asJson(['success' => true]);

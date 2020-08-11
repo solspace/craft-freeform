@@ -9,12 +9,14 @@ use craft\models\FieldLayout;
 use Solspace\Commons\Configurations\BaseConfiguration;
 use Solspace\Freeform\Events\Connections\ConnectEvent;
 use Solspace\Freeform\Events\Connections\ValidateEvent;
+use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 use Solspace\Freeform\Library\Exceptions\Connections\ConnectionException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
+use Solspace\Freeform\Services\MailerService;
 use yii\base\Event;
 
 abstract class AbstractConnection extends BaseConfiguration implements ConnectionInterface
@@ -147,6 +149,22 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
             } else {
                 $this->afterConnect($element, $result, $transformers);
                 Event::trigger($this, self::EVENT_AFTER_CONNECT, $event);
+                Event::on(
+                    MailerService::class,
+                    MailerService::EVENT_BEFORE_RENDER,
+                    function (RenderEmailEvent $event) use ($element) {
+                        $value = $event->getFieldValue('element');
+                        if (null === $value) {
+                            $value = $element;
+                        } else if (is_array($value)) {
+                            $value[] = $element;
+                        } else {
+                            $value = [$value, $element];
+                        }
+
+                        $event->setFieldValue('element', $value);
+                    }
+                );
             }
         }
 

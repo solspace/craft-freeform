@@ -46,7 +46,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
      *
      * @return bool
      */
-    public function whitelistSpamSubmission(SpamSubmission $submission)
+    public function allowSpamSubmission(SpamSubmission $submission)
     {
         $submission->isSpam = false;
         \Craft::$app->getElements()->saveElement($submission);
@@ -73,7 +73,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     }
 
     /**
-     * Processes spam submission so it could be processed normally in case of whitelisting
+     * Processes spam submission so it could be processed normally in case of allowing
      *
      * @param Submission      $submission
      * @param AbstractField[] $mailingListOptedInFields

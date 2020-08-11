@@ -215,10 +215,6 @@ class FormValueContext implements \JsonSerializable
         }
 
         $default = $field->getValue();
-        if (\is_string($default)) {
-            $default = htmlspecialchars($default);
-        }
-
         if (Freeform::getInstance()->settings->getSettingsModel()->fillWithGet) {
             if ($field instanceof CheckboxField && !$field->isChecked()) {
                 $default = null;

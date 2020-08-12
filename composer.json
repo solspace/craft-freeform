@@ -13,7 +13,7 @@
     "craftcms/cms": "^3.4.0",
     "symfony/property-access": "^2.8|^3.0|^4.0",
     "symfony/finder": "^2.8|^3.0|^4.0",
-    "symfony/filesystem": "^2.8|^3.0|^4.0",
+    "symfony/filesystem": "^2.8|^3.0|^4.0|^5.0",
     "solspace/craft3-commons": "^1.0.21",
     "hashids/hashids": "^2.0",
     "egulias/email-validator": "^2.1",

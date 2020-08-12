@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.7.3 - 2020-08-12
+### Changed
+- Updated the `symfony/filesystem` requirement to allow v5.x.
+
 ## 3.7.2 - 2020-08-11
 ### Added
 - Added the ability to access the newly created Craft Elements in email notification templates when using the Element Connections feature.

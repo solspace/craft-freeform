@@ -207,7 +207,7 @@ class Submission extends Element
             $forms        = $formsService->getAllForms();
 
             $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
-            if ($isAdmin) {
+            if ($isAdmin || $allowedFormIds === null) {
                 $allowedFormIds = array_keys($forms);
             }
 

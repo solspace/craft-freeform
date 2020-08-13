@@ -201,13 +201,14 @@ class Submission extends Element
         static $sources;
 
         if (null === $sources) {
-            $isAdmin        = PermissionHelper::isAdmin();
+            $isAdmin = PermissionHelper::isAdmin();
+            $manageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
             $formsService = Freeform::getInstance()->forms;
             $forms        = $formsService->getAllForms();
 
             $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
-            if ($isAdmin) {
+            if ($isAdmin || $manageAll) {
                 $allowedFormIds = array_keys($forms);
             }
 

@@ -65,6 +65,8 @@ class SpamSubmissionsController extends SubmissionsController
         }
 
         $model->setFormFieldValues($post);
+        $model->title = $post['title'] ?? $model->title;
+        $model->statusId = $post['statusId'] ?? $model->statusId;
 
         if ($this->getSpamSubmissionsService()->allowSpamSubmission($model)) {
             // Return JSON response if the request is an AJAX request

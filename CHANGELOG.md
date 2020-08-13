@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.7.4 - 2020-08-13
+### Changed
+- Updated the `symfony/property-access` and `symfony/finder` requirements to allow v5.x.
+
+### Fixed
+- Fixed a bug where users/groups with the "Manage All Submissions" permission would see an error when viewing CP Submissions index.
+- Fixed a bug where the CP Submissions index chart was including submissions from all forms including ones a user/group doesn't have access to.
+- Fixed a bug where allowing a submission from the Spam Folder would not carry over any updates to the Title and Status.
+- Fixed a bug where Date fields were not able to be mapped to with the HubSpot API integration.
+
 ## 3.7.3 - 2020-08-12
 ### Changed
 - Updated the `symfony/filesystem` requirement to allow v5.x.

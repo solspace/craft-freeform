@@ -445,6 +445,13 @@ class ApiController extends BaseController
         $formId = null;
         if ($source && strpos($source, 'form:') === 0) {
             $formId = (int) substr($source, 5);
+        } else if ('*' === $source) {
+            $isAdmin = PermissionHelper::isAdmin();
+            $manageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+
+            if (!$isAdmin && !$manageAll) {
+                $formId = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
+            }
         }
 
         $isSpam         = \Craft::$app->request->post('isSpam');

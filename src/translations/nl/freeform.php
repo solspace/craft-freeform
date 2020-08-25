@@ -630,7 +630,7 @@ return [
     // Logboeken
     'Logs'                                                                                                                        => 'Logboeken',
     'View Log'                                                                                                                    => 'Bekijk logboek',
-    'Clear'                                                                                                                       => 'Duidelijk',
+    'Clear'                                                                                                                       => 'Wissen',
     'Errors'                                                                                                                      => 'Fouten',
     'Error Log'                                                                                                                   => 'Fout Logboek',
     'Error Log ({count})'                                                                                                         => 'Fout Logboek ({count})',

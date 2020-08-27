@@ -429,7 +429,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
 
             $label     = $item->$labelField ?? $defaultLabel;
             $value     = $item->$valueField ?? $item->id;
-            $options[] = new Option($label, $value, \in_array($value, $selectedValues, true));
+            $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
         }
 
         if ($config->getEmptyOption()) {

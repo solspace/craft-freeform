@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.7.5 - 2020-08-27
+### Fixed
+- Fixed a bug where data of the chosen option of a field being populated with Craft Entries or other elements was no longer being included in email notifications and the Submission object in templates.
+- Fixed a bug where selecting a user group option in the User Element Connection feature was no longer working.
+
 ## 3.7.4 - 2020-08-13
 ### Changed
 - Updated the `symfony/property-access` and `symfony/finder` requirements to allow v5.x.

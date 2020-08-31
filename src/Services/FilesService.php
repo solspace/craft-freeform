@@ -248,22 +248,23 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      * Remove all unfinalized assets which are older than the TTL
      * specified in settings
      *
+     * @param int $ageInMinutes
+     *
+     * @return int
      * @throws \Throwable
      * @throws \yii\db\Exception
      */
-    public function cleanUpUnfinalizedAssets()
+    public function cleanUpUnfinalizedAssets(int $ageInMinutes): int
     {
-        $hasBeenPurgedRecently = \Craft::$app->cache->get(static::CLEANUP_CACHE_KEY);
-        if ($hasBeenPurgedRecently) {
-            return;
-        }
-
         if (!\Craft::$app->db->tableExists(UnfinalizedFileRecord::TABLE)) {
-            return;
+            return 0;
         }
 
-        $date = new \DateTime('-180 minutes');
+        if ($ageInMinutes <= 0) {
+            return 0;
+        }
 
+        $date = new \DateTime("-{$ageInMinutes} minutes");
         $assetIds = (new Query())
             ->select(['assetId'])
             ->from(UnfinalizedFileRecord::TABLE)
@@ -273,12 +274,13 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             )
             ->column();
 
+        $deletedAssets = 0;
         if (!empty($assetIds)) {
             foreach ($assetIds as $assetId) {
                 try {
                     $asset = AssetRecord::find()->where(['id' => $assetId])->one();
-                    if ($asset) {
-                        $asset->delete();
+                    if ($asset && $asset->delete()) {
+                        $deletedAssets++;
                     }
                 } catch (\Exception $e) {
                 }
@@ -293,7 +295,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             }
         }
 
-        \Craft::$app->cache->set(static::CLEANUP_CACHE_KEY, true, static::CACHE_TTL);
+        return $deletedAssets;
     }
 
     /**

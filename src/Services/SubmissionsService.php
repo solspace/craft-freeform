@@ -16,6 +16,7 @@ use craft\db\Table;
 use craft\records\Asset as AssetRecord;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\PostProcessSubmissionEvent;
@@ -40,10 +41,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE  = 'afterDelete';
     const EVENT_POST_PROCESS  = 'postProcess';
-
-    const MIN_PURGE_AGE   = 7;
-    const PURGE_CACHE_KEY = 'freeform_purge_cache_key';
-    const PURGE_CACHE_TTL = 3600; // 1 hour
 
     /** @var Submission[] */
     private static $submissionCache      = [];
@@ -453,77 +450,80 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     /**
      * Removes all old submissions according to the submission age set in settings
+     *
+     * @param int $age
+     *
+     * @return array [submissions purged, assets purged]
      */
-    public function purgeSubmissions()
+    public function purgeSubmissions(int $age = null): array
     {
-        if (!Freeform::getInstance()->isPro()) {
-            return;
+        if (null === $age || $age <= 0 || !Freeform::getInstance()->isPro()) {
+            return [0, 0];
         }
 
-        $hasBeenPurgedRecently = \Craft::$app->cache->get(static::PURGE_CACHE_KEY);
-        if ($hasBeenPurgedRecently) {
-            return;
+        $date          = new \DateTime("-$age days");
+        $assetFieldIds = (new Query())
+            ->select(['id'])
+            ->from(FieldRecord::TABLE)
+            ->where(['type' => FieldInterface::TYPE_FILE])
+            ->column();
+
+        $columns = ['id'];
+        foreach ($assetFieldIds as $assetFieldId) {
+            $columns[] = Submission::getFieldColumnName($assetFieldId);
         }
 
-        $age = Freeform::getInstance()->settings->getPurgableSubmissionAgeInDays();
-        if (\is_int($age) && $age >= static::MIN_PURGE_AGE) {
-            $date          = new \DateTime("-$age days");
-            $assetFieldIds = (new Query())
-                ->select(['id'])
-                ->from(FieldRecord::TABLE)
-                ->where(['type' => FieldInterface::TYPE_FILE])
-                ->column();
+        $results = $this->findSubmissions()
+            ->select($columns)
+            ->andWhere(['<', 'dateCreated', $date->format('Y-m-d H:i:s')])
+            ->all();
 
-            $columns = ['id'];
-            foreach ($assetFieldIds as $assetFieldId) {
-                $columns[] = Submission::getFieldColumnName($assetFieldId);
-            }
+        $ids      = [];
+        $assetIds = [];
+        foreach ($results as $result) {
+            $ids[] = $result['id'];
+            unset ($result['id']);
 
-            $results = (new Query())
-                ->select($columns)
-                ->from(Submission::TABLE)
-                ->where(['<', 'dateCreated', $date->format('Y-m-d H:i:s')])
-                ->all();
-
-            $ids      = [];
-            $assetIds = [];
-            foreach ($results as $result) {
-                $ids[] = $result['id'];
-                unset ($result['id']);
-
-                foreach ($result as $values) {
-                    try {
-                        $values = \GuzzleHttp\json_decode($values);
-                        foreach ($values as $value) {
-                            $assetIds[] = $value;
-                        }
-                    } catch (\InvalidArgumentException $e) {
+            foreach ($result as $values) {
+                try {
+                    $values = \GuzzleHttp\json_decode($values);
+                    foreach ($values as $value) {
+                        $assetIds[] = $value;
                     }
-                }
-            }
-
-            \Craft::$app->db
-                ->createCommand()
-                ->delete(
-                    Element::tableName(),
-                    ['id' => $ids]
-                )
-                ->execute();
-
-            foreach ($assetIds as $assetId) {
-                if (is_numeric($assetId)) {
-                    try {
-                        $asset = AssetRecord::find()->where(['id' => $assetId])->one();
-                        if ($asset) {
-                            $asset->delete();
-                        }
-                    } catch (\Exception $e) {
-                    }
+                } catch (\InvalidArgumentException $e) {
                 }
             }
         }
 
-        \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);
+        $deletedSubmissions = \Craft::$app->db
+            ->createCommand()
+            ->delete(
+                Element::tableName(),
+                ['id' => $ids]
+            )
+            ->execute();
+
+        $deletedAssets = 0;
+        foreach ($assetIds as $assetId) {
+            if (is_numeric($assetId)) {
+                try {
+                    $asset = AssetRecord::find()->where(['id' => $assetId])->one();
+                    if ($asset && $asset->delete()) {
+                        $deletedAssets++;
+                    }
+                } catch (\Exception $e) {
+                }
+            }
+        }
+
+        return [$deletedSubmissions, $deletedAssets];
+    }
+
+    protected function findSubmissions(): Query
+    {
+        return (new Query())
+            ->from(Submission::TABLE)
+            ->where(['isSpam' => false]);
     }
 
     /**

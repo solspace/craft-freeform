@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use craft\db\Table;
 use Solspace\Commons\Helpers\ComparisonHelper;
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
@@ -30,6 +31,9 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class SettingsService extends BaseService
 {
+    const CACHE_KEY_PURGE = 'freeform-purge-cache-key';
+    const CACHE_TTL_SECONDS = 60 * 60; // 1 hour
+
     const EVENT_REGISTER_SETTINGS_NAVIGATION = 'registerSettingsNavigation';
 
     /** @var Settings */
@@ -224,13 +228,13 @@ class SettingsService extends BaseService
      */
     public function getPurgableSubmissionAgeInDays()
     {
-        $age = (int) $this->getSettingsModel()->purgableSubmissionAgeInDays;
+        $age = $this->getSettingsModel()->purgableSubmissionAgeInDays;
 
-        if (!$age || $age < SubmissionsService::MIN_PURGE_AGE) {
+        if (null === $age || '' === $age || (int) $age <= 0) {
             return null;
         }
 
-        return $age;
+        return (int) $age;
     }
 
     /**
@@ -238,13 +242,27 @@ class SettingsService extends BaseService
      */
     public function getPurgableSpamAgeInDays()
     {
-        $age = (int) $this->getSettingsModel()->purgableSpamAgeInDays;
+        $age = $this->getSettingsModel()->purgableSpamAgeInDays;
 
-        if (!$age || $age < SpamSubmissionsService::MIN_PURGE_AGE) {
+        if (null === $age || '' === $age || (int) $age <= 0) {
             return null;
         }
 
-        return $age;
+        return (int) $age;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getPurgableUnfinalizedAssetAgeInMinutes()
+    {
+        $age = $this->getSettingsModel()->purgableUnfinalizedAssetAgeInMinutes;
+
+        if (null === $age || '' === $age || (int) $age <= 0) {
+            return Settings::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
+        }
+
+        return (int) $age;
     }
 
     public function isRenderFormHtmlInCpViews(): bool
@@ -586,6 +604,11 @@ class SettingsService extends BaseService
         }
 
         return $hasOldFreeform;
+    }
+
+    public function getFailedNotificationRecipients(): array
+    {
+        return StringHelper::extractSeparatedValues($this->getSettingsModel()->alertNotificationRecipients ?? '');
     }
 
     /**

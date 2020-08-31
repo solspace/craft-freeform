@@ -880,9 +880,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     protected function validate(): array
     {
-        $form  = $this->getForm();
-        $rules = $form->getRuleProperties();
-
+        $form = $this->getForm();
         $form->getFieldHandler()->beforeValidate($this, $form);
 
         $errors = $this->getErrors();
@@ -893,21 +891,19 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             $value = $this->getValue();
         }
 
-        if ($this->isRequired()) {
-            if (!$rules || !$rules->isHidden($this, $form)) {
-                if (\is_array($value)) {
-                    $value = array_filter($value);
+        if ($this->isRequired() && !$this->isHidden()) {
+            if (\is_array($value)) {
+                $value = array_filter($value);
 
-                    if (empty($value)) {
-                        $errors[] = $this->translate('This field is required');
-                    }
-                } else if (null === $value || '' === \trim($value)) {
+                if (empty($value)) {
                     $errors[] = $this->translate('This field is required');
                 }
+            } else if (null === $value || '' === \trim($value)) {
+                $errors[] = $this->translate('This field is required');
             }
         }
 
-        if (!empty($value)) {
+        if (!empty($value) && !$this->isHidden()) {
             static $validator;
 
             if (null === $validator) {

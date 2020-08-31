@@ -720,6 +720,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         $formValueContext = $this->getFormValueContext();
+        $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
+        $formValueContext->appendStoredValues($submittedValues);
 
         if ($formValueContext->shouldFormWalkToPreviousPage()) {
             $this->retreatFormToPreviousPage();
@@ -727,9 +729,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
             return $this->submitResult;
         }
-
-        $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
-        $formValueContext->appendStoredValues($submittedValues);
 
         $pageJumpIndex = $this->formHandler->onBeforePageJump($this);
         if ($pageJumpIndex !== -999) {
@@ -860,8 +859,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function render(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
+        $formTemplate = $this->getCustomAttributes()->getFormattingTemplate() ?? $this->formTemplate;
 
-        return $this->formHandler->renderFormTemplate($this, $this->formTemplate);
+        return $this->formHandler->renderFormTemplate($this, $formTemplate);
     }
 
     /**

@@ -20,6 +20,7 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
+use Solspace\Freeform\Services\SettingsService;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
@@ -218,6 +219,10 @@ class SettingsController extends BaseController
 
         if (\Craft::$app->plugins->savePluginSettings($plugin, $postData)) {
             \Craft::$app->session->setNotice(Freeform::t('Settings Saved'));
+
+            if (isset($postData['purgableSubmissionAgeInDays']) || isset($postData['purgableSpamAgeInDays'])) {
+                \Craft::$app->cache->delete(SettingsService::CACHE_KEY_PURGE);
+            }
 
             return $this->redirectToPostedUrl();
         }

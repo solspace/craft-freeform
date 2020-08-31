@@ -97,6 +97,9 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var array */
     protected $relations;
 
+    /** @var string */
+    protected $formattingTemplate;
+
     /**
      * @return string|null
      */
@@ -351,5 +354,13 @@ class CustomFormAttributes extends AbstractAttributes
     public function getRelations()
     {
         return $this->relations;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getFormattingTemplate()
+    {
+        return $this->formattingTemplate;
     }
 }

@@ -39,8 +39,10 @@ interface FileUploadHandlerInterface
     /**
      * Remove all unfinalized assets which are older than the TTL
      * specified in settings
+     *
+     * @param int $ageInMinutes
      */
-    public function cleanUpUnfinalizedAssets();
+    public function cleanUpUnfinalizedAssets(int $ageInMinutes);
 
     /**
      * Returns an array of all file kinds

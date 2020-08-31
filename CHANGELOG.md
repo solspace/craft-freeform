@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 3.8.0 - 2020-08-31
+### Added
+- Added an Email Alert feature! It allows you to automatically send an email notication alerting the email address(es) specified when an email notification cannot be delivered. Very helpful for catching some website/email issues early.
+- Added Pipedrive Leads integration (previous Pipedrive integration is now named Pipedrive Deals).
+- Added ability to set a formatting template for a form at template level (e.g. `formattingTemplate: 'template-name.html'`).
+- Added Purge console commands for manually purging submissions, spam folder submissions and unfinalized Assets.
+
+### Changed
+- Updated reCAPTCHA to now work robustly with multi-page forms. Previously, you could not click the 'Previous' page button if reCAPTCHA v2 Invisible or v3 were enabled.
+- Updated the Conditional Rules feature to no longer validate and store data of fields that are hidden by the feature.
+
+### Fixed
+- Fixed a bug where the Submissions Purge and Spam Folder Purge features were not reliably working. Switched them to now use Craft jobs. Added more time interval options as well.
+- Fixed a bug where API integrations in the dropdown list were not being sorted alphabetically.
+
 ## 3.7.5 - 2020-08-27
 ### Fixed
 - Fixed a bug where data of the chosen option of a field being populated with Craft Entries or other elements was no longer being included in email notifications and the Submission object in templates.

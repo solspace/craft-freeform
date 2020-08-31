@@ -95,9 +95,12 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
                 continue;
             }
 
-            $value = $field->getValue();
-            if ($field instanceof StaticValueInterface && !empty($value)) {
-                $value = $field->getStaticValue();
+            $value = null;
+            if (!$field->isHidden()) {
+                $value = $field->getValue();
+                if ($field instanceof StaticValueInterface && !empty($value)) {
+                    $value = $field->getStaticValue();
+                }
             }
 
             $submittedValues[$field->getHandle()] = $value;

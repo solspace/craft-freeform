@@ -54,6 +54,9 @@ use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
+use Solspace\Freeform\Jobs\PurgeSpamJob;
+use Solspace\Freeform\Jobs\PurgeSubmissionsJob;
+use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
@@ -269,18 +272,12 @@ class Freeform extends Plugin
         $this->initPaymentAssets();
         $this->initHookHandlers();
         $this->initPaymentEventListeners();
+        $this->initCleanupJobs();
 
         if ($this->isPro() && $this->settings->getPluginName()) {
             $this->name = $this->settings->getPluginName();
         } else {
             $this->name = 'Freeform';
-        }
-
-        if ($this->isInstalled) {
-            // Perform unfinalized asset cleanup
-            $this->files->cleanUpUnfinalizedAssets();
-            $this->submissions->purgeSubmissions();
-            $this->spamSubmissions->purgeSubmissions();
         }
     }
 
@@ -443,7 +440,9 @@ class Freeform extends Plugin
 
     private function initControllerMap()
     {
-        if (!\Craft::$app->request->isConsoleRequest) {
+        if (\Craft::$app->request->isConsoleRequest) {
+            $this->controllerNamespace = 'Solspace\\Freeform\\Commands';
+        } else {
             $this->controllerMap = [
                 'dashboard'        => DashboardController::class,
                 'api'              => ApiController::class,
@@ -1043,5 +1042,31 @@ class Freeform extends Plugin
             FormsService::EVENT_AFTER_FORM_VALIDATE,
             [$this->stripe, 'preProcessSubscription']
         );
+    }
+
+    private function initCleanupJobs()
+    {
+        if ($this->isInstalled) {
+            if(\Craft::$app->cache->get(SettingsService::CACHE_KEY_PURGE)) {
+                return;
+            }
+
+            $assetAge = $this->settings->getPurgableUnfinalizedAssetAgeInMinutes();
+            if ($assetAge > 0) {
+                \Craft::$app->queue->push(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]));
+            }
+
+            $submissionAge = $this->settings->getPurgableSubmissionAgeInDays();
+            if ($submissionAge > 0) {
+                \Craft::$app->queue->push(new PurgeSubmissionsJob(['age' => $submissionAge]));
+            }
+
+            $spamAge = $this->settings->getPurgableSpamAgeInDays();
+            if ($spamAge > 0) {
+                \Craft::$app->queue->push(new PurgeSpamJob(['age' => $spamAge]));
+            }
+
+            \Craft::$app->cache->set(SettingsService::CACHE_KEY_PURGE, true, SettingsService::CACHE_TTL_SECONDS);
+        }
     }
 }

@@ -220,8 +220,10 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
         if (null === self::$integrations) {
             $event = new FetchMailingListTypesEvent();
             $this->trigger(self::EVENT_FETCH_TYPES, $event);
+            $types = $event->getTypes();
+            asort($types);
 
-            self::$integrations = $event->getTypes();
+            self::$integrations = $types;
         }
 
         return self::$integrations;

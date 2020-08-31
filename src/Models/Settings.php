@@ -49,6 +49,8 @@ class Settings extends Model
     const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
     const DEFAULT_SESSION_ENTRY_TTL      = 10800; // 3 hours
 
+    const DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES = 180;
+
     /** @var string */
     public $pluginName;
 
@@ -139,6 +141,9 @@ class Settings extends Model
     /** @var int */
     public $purgableSpamAgeInDays;
 
+    /** @var int */
+    public $purgableUnfinalizedAssetAgeInMinutes;
+
     /** @var string */
     public $salesforce_client_id;
 
@@ -199,6 +204,9 @@ class Settings extends Model
     /** @var int */
     public $sessionEntryTTL;
 
+    /** @var string */
+    public $alertNotificationRecipients;
+
     /**
      * Settings constructor.
      *
@@ -219,28 +227,30 @@ class Settings extends Model
         $this->scriptInsertLocation   = self::SCRIPT_INSERT_LOCATION_FOOTER;
         $this->formSubmitDisable      = false;
 
-        $this->freeformHoneypot              = true;
-        $this->customHoneypotName            = null;
-        $this->customErrorMessage            = null;
-        $this->freeformHoneypotEnhancement   = false;
-        $this->spamProtectionBehaviour       = self::PROTECTION_SIMULATE_SUCCESS;
-        $this->blockedEmails                 = null;
-        $this->blockedKeywords               = null;
-        $this->blockedEmailsError            = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
-        $this->blockedKeywordsError          = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
-        $this->blockedIpAddresses            = null;
-        $this->showErrorsForBlockedKeywords  = false;
-        $this->showErrorsForBlockedEmails    = false;
-        $this->spamFolderEnabled             = false;
-        $this->submissionThrottlingCount     = null;
-        $this->submissionThrottlingTimeFrame = null;
-        $this->purgableSubmissionAgeInDays   = null;
-        $this->purgableSpamAgeInDays         = null;
-        $this->renderFormHtmlInCpViews       = true;
-        $this->ajaxByDefault                 = self::DEFAULT_AJAX;
-        $this->autoScrollToErrors            = true;
-        $this->fillWithGet                   = false;
-        $this->formattingTemplate            = self::DEFAULT_FORMATTING_TEMPLATE;
+        $this->freeformHoneypot                     = true;
+        $this->customHoneypotName                   = null;
+        $this->customErrorMessage                   = null;
+        $this->freeformHoneypotEnhancement          = false;
+        $this->spamProtectionBehaviour              = self::PROTECTION_SIMULATE_SUCCESS;
+        $this->blockedEmails                        = null;
+        $this->blockedKeywords                      = null;
+        $this->blockedEmailsError                   = self::DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE;
+        $this->blockedKeywordsError                 = self::DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE;
+        $this->blockedIpAddresses                   = null;
+        $this->showErrorsForBlockedKeywords         = false;
+        $this->showErrorsForBlockedEmails           = false;
+        $this->spamFolderEnabled                    = false;
+        $this->submissionThrottlingCount            = null;
+        $this->submissionThrottlingTimeFrame        = null;
+        $this->purgableSubmissionAgeInDays          = null;
+        $this->purgableSpamAgeInDays                = null;
+        $this->purgableUnfinalizedAssetAgeInMinutes = self::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
+        $this->renderFormHtmlInCpViews              = true;
+        $this->ajaxByDefault                        = self::DEFAULT_AJAX;
+        $this->autoScrollToErrors                   = true;
+        $this->fillWithGet                          = false;
+        $this->formattingTemplate                   = self::DEFAULT_FORMATTING_TEMPLATE;
+        $this->alertNotificationRecipients          = null;
 
         $this->recaptchaEnabled   = false;
         $this->recaptchaKey       = null;

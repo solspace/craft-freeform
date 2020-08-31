@@ -66,8 +66,10 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
             $event = new FetchCrmTypesEvent();
 
             $this->trigger(self::EVENT_FETCH_TYPES, $event);
+            $types = $event->getTypes();
+            asort($types);
 
-            self::$integrations = $event->getTypes();
+            self::$integrations = $types;
         }
 
         return self::$integrations;

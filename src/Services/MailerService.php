@@ -30,14 +30,18 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
+use Solspace\Freeform\Records\NotificationRecord;
 use Twig\Error\LoaderError as TwigLoaderError;
+use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
 
 class MailerService extends BaseService implements MailHandlerInterface
 {
-    const EVENT_BEFORE_SEND   = 'beforeSend';
-    const EVENT_AFTER_SEND    = 'afterSend';
+    const EVENT_BEFORE_SEND = 'beforeSend';
+    const EVENT_AFTER_SEND = 'afterSend';
     const EVENT_BEFORE_RENDER = 'beforeRender';
+
+    const ERROR_CODE_LINES_PROXIMITY = 5;
 
     const LOG_CATEGORY = 'freeform_notifications';
 
@@ -60,16 +64,16 @@ class MailerService extends BaseService implements MailHandlerInterface
         array $fields,
         Submission $submission = null
     ): int {
-        $logger        = FreeformLogger::getInstance(FreeformLogger::MAILER);
+        $logger = FreeformLogger::getInstance(FreeformLogger::MAILER);
         $sentMailCount = 0;
-        $notification  = $this->getNotificationById($notificationId);
+        $notification = $this->getNotificationById($notificationId);
 
         if (!\is_array($recipients)) {
             $recipients = $recipients ? [$recipients] : [];
         }
 
         $previousRecipients = $recipients;
-        $recipients         = [];
+        $recipients = [];
         foreach ($previousRecipients as $index => $value) {
             $exploded = explode(',', $value);
             foreach ($exploded as $emailString) {
@@ -100,95 +104,27 @@ class MailerService extends BaseService implements MailHandlerInterface
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         foreach ($recipients as $recipientName => $emailAddress) {
-            $fromName  = $this->renderString(\Craft::parseEnv($notification->getFromName()), $fieldValues);
-            $fromEmail = $this->renderString(\Craft::parseEnv($notification->getFromEmail()), $fieldValues);
-
-            $email = new Message();
-
             try {
-                $email->variables = $fieldValues;
+                $email = $this->compileMessage($notification, $fieldValues);
+                $email->setTo([$emailAddress]);
 
-                $text    = $this->renderString($notification->getBodyText(), $fieldValues);
-                $html    = $this->renderString($notification->getBodyHtml(), $fieldValues);
-                $subject = $this->renderString($notification->getSubject(), $fieldValues);
-                $subject = htmlspecialchars_decode($subject, ENT_QUOTES);
+                if ($submission && $notification->isIncludeAttachmentsEnabled()) {
+                    foreach ($fields as $field) {
+                        if (!$field instanceof FileUploadInterface || !$field->getHandle()) {
+                            continue;
+                        }
 
-                $email
-                    ->setTo([$emailAddress])
-                    ->setFrom([$fromEmail => $fromName])
-                    ->setSubject($subject);
-
-                if (empty($text)) {
-                    $email
-                        ->setHtmlBody($html)
-                        ->setTextBody($html);
-                }
-                if (empty($html)) {
-                    $email->setTextBody($text);
-                } else {
-                    $email
-                        ->setHtmlBody($html)
-                        ->setTextBody($text);
-                }
-
-                if ($notification->getCc()) {
-                    $cc = $this->renderString($notification->getCc(), $fieldValues);
-                    $cc = StringHelper::extractSeparatedValues($cc);
-                    if (!empty($cc)) {
-                        $email->setCc($this->parseEnvInArray($cc));
-                    }
-                }
-
-                if ($notification->getBcc()) {
-                    $bcc = $this->renderString($notification->getBcc(), $fieldValues);
-                    $bcc = StringHelper::extractSeparatedValues($bcc);
-                    if (!empty($bcc)) {
-                        $email->setBcc($this->parseEnvInArray($bcc));
-                    }
-                }
-
-                if ($notification->getReplyToEmail()) {
-                    $replyTo = trim($this->renderString(\Craft::parseEnv($notification->getReplyToEmail()), $fieldValues));
-                    if (!empty($replyTo)) {
-                        $email->setReplyTo($replyTo);
-                    }
-                }
-            } catch (\Exception $e) {
-                $message = $e->getMessage();
-                $message = 'Email notification [' . $notification->getHandle() . ']: ' . $message;
-
-                $logger->error($message);
-                continue;
-            }
-
-            $presetAssets = $notification->getPresetAssets();
-            if ($presetAssets && is_array($presetAssets) && Freeform::getInstance()->isPro()) {
-                foreach ($presetAssets as $assetId) {
-                    $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-                    if ($asset) {
-                        $email->attach($asset->getCopyOfFile());
-                    }
-                }
-            }
-
-            if ($submission && $notification->isIncludeAttachmentsEnabled()) {
-                foreach ($fields as $field) {
-                    if (!$field instanceof FileUploadInterface || !$field->getHandle()) {
-                        continue;
-                    }
-
-                    $fieldValue = $submission->{$field->getHandle()}->getValue();
-                    $assetIds   = $fieldValue;
-                    foreach ($assetIds as $assetId) {
-                        $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-                        if ($asset) {
-                            $email->attach($asset->getCopyOfFile());
+                        $fieldValue = $submission->{$field->getHandle()}->getValue();
+                        $assetIds = $fieldValue;
+                        foreach ($assetIds as $assetId) {
+                            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                            if ($asset) {
+                                $email->attach($asset->getCopyOfFile());
+                            }
                         }
                     }
                 }
-            }
 
-            try {
                 $sendEmailEvent = new SendEmailEvent($email, $form, $notification, $fieldValues, $submission);
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
@@ -203,15 +139,21 @@ class MailerService extends BaseService implements MailHandlerInterface
                 if ($emailSent) {
                     $sentMailCount++;
                 }
-            } catch (\Exception $e) {
-                $message = $e->getMessage();
-                $message = 'Email notification [' . $notification->getHandle() . ']: ' . $message;
 
-                $logger->error($message);
+            } catch (\Exception $exception) {
+                $message = $exception->getMessage();
+                $context = [
+                    'template' => $notification->getHandle(),
+                    'file' => $exception->getFile(),
+                ];
+
+                $logger->error($message, $context);
+
+                $this->notifyAboutEmailSendingError($emailAddress, $notification, $exception, $form);
+            } finally {
+                \Craft::$app->view->setTemplateMode($templateMode);
             }
         }
-
-        \Craft::$app->view->setTemplateMode($templateMode);
 
         return $sentMailCount;
     }
@@ -250,10 +192,10 @@ class MailerService extends BaseService implements MailHandlerInterface
      */
     private function getFieldValues(array $fields, Form $form, Submission $submission = null): array
     {
-        $postedValues    = [];
-        $usableFields    = [];
+        $postedValues = [];
+        $usableFields = [];
         $fieldsAndBlocks = [];
-        $rules           = $form->getRuleProperties();
+        $rules = $form->getRuleProperties();
 
         foreach ($fields as $field) {
             if ($field instanceof HtmlField || $field instanceof RichTextField) {
@@ -276,26 +218,26 @@ class MailerService extends BaseService implements MailHandlerInterface
                 continue;
             }
 
-            $fieldsAndBlocks[]                 = $field;
-            $usableFields[]                    = $field;
+            $fieldsAndBlocks[] = $field;
+            $usableFields[] = $field;
             $postedValues[$field->getHandle()] = $field;
         }
 
         //TODO: offload this call to payments plugin with an event
         if ($submission && $form->getLayout()->getPaymentFields()) {
-            $payments                 = Freeform::getInstance()->payments->getPaymentDetails(
+            $payments = Freeform::getInstance()->payments->getPaymentDetails(
                 $submission->getId(),
                 $submission->getForm()
             );
             $postedValues['payments'] = $payments;
         }
 
-        $postedValues['allFields']          = $usableFields;
+        $postedValues['allFields'] = $usableFields;
         $postedValues['allFieldsAndBlocks'] = $fieldsAndBlocks;
-        $postedValues['form']               = $form;
-        $postedValues['submission']         = $submission;
-        $postedValues['dateCreated']        = new \DateTime();
-        $postedValues['token']              = $submission ? $submission->token : null;
+        $postedValues['form'] = $form;
+        $postedValues['submission'] = $submission;
+        $postedValues['dateCreated'] = new \DateTime();
+        $postedValues['token'] = $submission ? $submission->token : null;
 
         return $postedValues;
     }
@@ -319,5 +261,121 @@ class MailerService extends BaseService implements MailHandlerInterface
         return \Craft::$app->view->getTwig()
             ->createTemplate($template)
             ->render($variables);
+    }
+
+    private function notifyAboutEmailSendingError(
+        string $failedRecipient,
+        NotificationInterface $failedNotification,
+        \Exception $exception,
+        Form $form
+    ) {
+        $recipients = $this->getSettingsService()->getFailedNotificationRecipients();
+        if (!count($recipients)) {
+            return;
+        }
+
+        $templateMode = \Craft::$app->view->getTemplateMode();
+        \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
+
+        $notificationPath = __DIR__.'/../templates/_emailTemplates/error-notify.twig';
+        $notification = NotificationRecord::createFromTemplate($notificationPath);
+
+        $code = null;
+        if ($exception instanceof RuntimeError) {
+            $line = $exception->getTemplateLine();
+            $code = $exception->getSourceContext()->getCode();
+            $source = explode(PHP_EOL, $code);
+            $proximity = self::ERROR_CODE_LINES_PROXIMITY;
+
+            $code = [
+                'lines' => [
+                    'first' => max(1, $line - $proximity),
+                    'last' => min(count($source), $line + $proximity),
+                    'highlight' => $line,
+                ],
+                'source' => $source,
+            ];
+        }
+
+        $message = $this->compileMessage(
+            $notification,
+            [
+                'form' => $form,
+                'recipient' => $failedRecipient,
+                'exception' => $exception,
+                'notification' => $failedNotification,
+                'code' => $code,
+            ]
+        );
+
+        $message->setTo($recipients);
+
+        \Craft::$app->mailer->send($message);
+        \Craft::$app->view->setTemplateMode($templateMode);
+    }
+
+    private function compileMessage(NotificationInterface $notification, array $values): Message
+    {
+        $fromName = \Craft::parseEnv($this->renderString($notification->getFromName(), $values));
+        $fromEmail = \Craft::parseEnv($this->renderString($notification->getFromEmail(), $values));
+        $text = $this->renderString($notification->getBodyText(), $values);
+        $html = $this->renderString($notification->getBodyHtml(), $values);
+        $subject = $this->renderString($notification->getSubject(), $values);
+        $subject = htmlspecialchars_decode($subject, ENT_QUOTES);
+
+        $message = new Message();
+        $message->variables = $values;
+        $message
+            ->setFrom([$fromEmail => $fromName])
+            ->setSubject($subject);
+
+        if (empty($text)) {
+            $message
+                ->setHtmlBody($html)
+                ->setTextBody($html);
+        }
+
+        if (empty($html)) {
+            $message->setTextBody($text);
+        } else {
+            $message
+                ->setHtmlBody($html)
+                ->setTextBody($text);
+        }
+
+        if ($notification->getCc()) {
+            $cc = $this->renderString($notification->getCc(), $values);
+            $cc = StringHelper::extractSeparatedValues($cc);
+            if (!empty($cc)) {
+                $message->setCc($this->parseEnvInArray($cc));
+            }
+        }
+
+        if ($notification->getBcc()) {
+            $bcc = $this->renderString($notification->getBcc(), $values);
+            $bcc = StringHelper::extractSeparatedValues($bcc);
+            if (!empty($bcc)) {
+                $message->setBcc($this->parseEnvInArray($bcc));
+            }
+        }
+
+        if ($notification->getReplyToEmail()) {
+            $replyTo = trim(\Craft::parseEnv($this->renderString($notification->getReplyToEmail(), $values)));
+            if (!empty($replyTo)) {
+                $message->setReplyTo($replyTo);
+            }
+        }
+
+        $presetAssets = $notification->getPresetAssets();
+        if ($presetAssets && is_array($presetAssets) && Freeform::getInstance()->isPro()) {
+            foreach ($presetAssets as $assetId) {
+                $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                if ($asset) {
+                    $message->attach($asset->getCopyOfFile());
+                }
+            }
+        }
+
+        return $message;
     }
 }

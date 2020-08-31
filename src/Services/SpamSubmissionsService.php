@@ -14,10 +14,12 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use craft\records\Asset as AssetRecord;
 use craft\records\Element;
+use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
@@ -27,9 +29,6 @@ use Solspace\Freeform\Records\SpamReasonRecord;
 
 class SpamSubmissionsService extends SubmissionsService implements SpamSubmissionHandlerInterface
 {
-    const MIN_PURGE_AGE   = 3;
-    const PURGE_CACHE_KEY = 'freeform_purge_spam_cache_key';
-
     /**
      * @inheritdoc
      */
@@ -88,79 +87,6 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     }
 
     /**
-     * Removes all old spam submissions according to the spam age set in settings
-     */
-    public function purgeSubmissions()
-    {
-        $hasBeenPurgedRecently = \Craft::$app->cache->get(static::PURGE_CACHE_KEY);
-        if ($hasBeenPurgedRecently) {
-            return;
-        }
-
-        $age = Freeform::getInstance()->settings->getPurgableSpamAgeInDays();
-        if (\is_int($age) && $age >= static::MIN_PURGE_AGE) {
-            $date          = new \DateTime("-$age days");
-            $assetFieldIds = (new Query())
-                ->select(['id'])
-                ->from(FieldRecord::TABLE)
-                ->where(['type' => FieldInterface::TYPE_FILE])
-                ->column();
-
-            $columns = ['id'];
-            foreach ($assetFieldIds as $assetFieldId) {
-                $columns[] = Submission::getFieldColumnName($assetFieldId);
-            }
-
-            $results = (new Query())
-                ->select($columns)
-                ->from(Submission::TABLE)
-                ->where(['<', 'dateCreated', $date->format('Y-m-d H:i:s')])
-                ->andWhere(['isSpam' => true])
-                ->all();
-
-            $ids      = [];
-            $assetIds = [];
-            foreach ($results as $result) {
-                $ids[] = $result['id'];
-                unset ($result['id']);
-
-                foreach ($result as $values) {
-                    if (!$values) {
-                        continue;
-                    }
-
-                    $values = \GuzzleHttp\json_decode($values);
-                    foreach ($values as $value) {
-                        $assetIds[] = $value;
-                    }
-                }
-            }
-
-            \Craft::$app->db
-                ->createCommand()
-                ->delete(
-                    Element::tableName(),
-                    ['id' => $ids]
-                )
-                ->execute();
-
-            foreach ($assetIds as $assetId) {
-                if (is_numeric($assetId)) {
-                    try {
-                        $asset = AssetRecord::find()->where(['id' => $assetId])->one();
-                        if ($asset) {
-                            $asset->delete();
-                        }
-                    } catch (\Exception $e) {
-                    }
-                }
-            }
-        }
-
-        \Craft::$app->cache->set(static::PURGE_CACHE_KEY, true, static::PURGE_CACHE_TTL);
-    }
-
-    /**
      * @param SubmitEvent $event
      */
     public function persistSpamReasons(SubmitEvent $event)
@@ -180,5 +106,12 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
             $record->reasonMessage = $reason->getMessage();
             $record->save();
         }
+    }
+
+    protected function findSubmissions(): Query
+    {
+        return (new Query())
+            ->from(SpamSubmission::TABLE)
+            ->where(['isSpam' => true]);
     }
 }

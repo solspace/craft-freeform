@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.8.1 - 2020-09-09
+### Fixed
+- Fixed a bug where the Submissions Purge and Unfinalized Assets Purge jobs were not taking into account timezones, and could also sometimes get stuck in pending status.
+- Fixed a bug where selecting "Allowed File Kinds" checkboxes in File Upload fields were no longer working.
+- Fixed a bug where the Craft Campaign integration was not performing a duplicate contact check correctly and also not taking into account double opt-in settings.
+
 ## 3.8.0 - 2020-08-31
 ### Added
 - Added an Email Alert feature! It allows you to automatically send an email notication alerting the email address(es) specified when an email notification cannot be delivered. Very helpful for catching some website/email issues early.

@@ -33,6 +33,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
+use yii\db\Exception;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
 {
@@ -461,7 +462,9 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             return [0, 0];
         }
 
-        $date          = new \DateTime("-$age days");
+        $date = new \DateTime("-$age days");
+        $date->setTimezone(new \DateTimeZone('UTC'));
+
         $assetFieldIds = (new Query())
             ->select(['id'])
             ->from(FieldRecord::TABLE)
@@ -495,13 +498,17 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             }
         }
 
-        $deletedSubmissions = \Craft::$app->db
-            ->createCommand()
-            ->delete(
-                Element::tableName(),
-                ['id' => $ids]
-            )
-            ->execute();
+        $deletedSubmissions = 0;
+        try {
+            $deletedSubmissions = \Craft::$app->db
+                ->createCommand()
+                ->delete(
+                    Element::tableName(),
+                    ['id' => $ids]
+                )
+                ->execute();
+        } catch (\Exception $e) {
+        }
 
         $deletedAssets = 0;
         foreach ($assetIds as $assetId) {

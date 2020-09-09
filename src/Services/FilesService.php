@@ -19,6 +19,8 @@ use craft\errors\InvalidVolumeException;
 use craft\errors\UploadFailedException;
 use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Db;
 use craft\records\Asset as AssetRecord;
 use craft\web\UploadedFile;
 use Solspace\Freeform\Events\Files\UploadEvent;
@@ -252,7 +254,6 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      *
      * @return int
      * @throws \Throwable
-     * @throws \yii\db\Exception
      */
     public function cleanUpUnfinalizedAssets(int $ageInMinutes): int
     {
@@ -265,12 +266,13 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         $date = new \DateTime("-{$ageInMinutes} minutes");
+        $date->setTimezone(new \DateTimeZone('UTC'));
         $assetIds = (new Query())
             ->select(['assetId'])
             ->from(UnfinalizedFileRecord::TABLE)
             ->where(
                 '{{%freeform_unfinalized_files}}.[[dateCreated]] < :now',
-                ['now' => $date->format('Y-m-d H:i:s')]
+                ['now' => $date->format(DATE_ATOM)]
             )
             ->column();
 
@@ -285,13 +287,16 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 } catch (\Exception $e) {
                 }
 
-                \Craft::$app->db
-                    ->createCommand()
-                    ->delete(
-                        UnfinalizedFileRecord::TABLE,
-                        ['assetId' => $assetId]
-                    )
-                    ->execute();
+                try {
+                    \Craft::$app->db
+                        ->createCommand()
+                        ->delete(
+                            UnfinalizedFileRecord::TABLE,
+                            ['assetId' => $assetId]
+                        )
+                        ->execute();
+                } catch (\Exception $e) {
+                }
             }
         }
 

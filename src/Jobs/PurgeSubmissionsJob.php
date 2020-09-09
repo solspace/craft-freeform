@@ -12,7 +12,6 @@ class PurgeSubmissionsJob extends BaseJob
     public function execute($queue)
     {
         Freeform::getInstance()->submissions->purgeSubmissions($this->age);
-        $this->setProgress($queue, 1);
     }
 
     protected function defaultDescription()

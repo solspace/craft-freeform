@@ -11,17 +11,17 @@ use craft\fields\Email;
 use craft\fields\Entries;
 use craft\fields\Lightswitch;
 use craft\fields\MultiSelect;
+use craft\fields\Number;
 use craft\fields\PlainText;
 use craft\fields\RadioButtons;
 use craft\fields\Tags;
 use craft\fields\Url;
 use craft\fields\Users;
-use Money\Number;
 use putyourlightson\campaign\Campaign as CampaignPlugin;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
-use putyourlightson\campaign\records\MailingListRecord;
-use putyourlightson\campaign\records\MailingListTypeRecord;
+use putyourlightson\campaign\helpers\StringHelper;
+use putyourlightson\campaign\models\PendingContactModel;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
@@ -166,29 +166,42 @@ class Campaign extends AbstractMailingListIntegration
         }
 
         foreach ($emails as $email) {
-            $contact = CampaignPlugin::$plugin->contacts->getContactByEmail('name@email.com');
+            $contact = CampaignPlugin::$plugin->contacts->getContactByEmail($email);
 
             if ($contact === null) {
                 $contact = new ContactElement();
-
                 $contact->email = $email;
-                foreach ($mappedValues as $key => $value) {
-                    $contact->setFieldValue($key, $value);
+            }
+
+            foreach ($mappedValues as $key => $value) {
+                $contact->setFieldValue($key, $value);
+            }
+
+            // If verification required
+            if ($mailingListElement->getMailingListType()->subscribeVerificationRequired) {
+                $pendingContact = new PendingContactModel();
+                $pendingContact->pid = StringHelper::uniqueId('p');
+                $pendingContact->email = $email;
+                $pendingContact->mailingListId = $mailingListElement->id;
+                $pendingContact->source = $source;
+                $pendingContact->fieldData = $contact->getSerializedFieldValues();
+
+                if (CampaignPlugin::$plugin->pendingContacts->savePendingContact($pendingContact)) {
+                    CampaignPlugin::$plugin->forms->sendVerifySubscribeEmail(
+                        $pendingContact,
+                        $mailingListElement
+                    );
+                }
+            } else {
+                if (\Craft::$app->getElements()->saveElement($contact)) {
+                    CampaignPlugin::$plugin->forms->subscribeContact(
+                        $contact,
+                        $mailingListElement,
+                        'Freeform',
+                        $source
+                    );
                 }
             }
-
-            \Craft::$app->getElements()->saveElement($contact);
-
-            if (!$contact->id) {
-                continue;
-            }
-
-            CampaignPlugin::$plugin->tracker->subscribe(
-                $contact,
-                $mailingListElement,
-                'Freeform',
-                $source
-            );
         }
 
         return true;

@@ -274,6 +274,16 @@ class Pardot extends AbstractCRMIntegration
                 FieldObject::TYPE_NUMERIC,
                 true
             ),
+            new FieldObject(
+                'country',
+                'Country',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'job_title',
+                'Job Title',
+                FieldObject::TYPE_STRING
+            ),
         ];
 
         foreach ($data->result->customField as $field) {

@@ -220,6 +220,7 @@ class m180120_140521_CraftUpgrade extends Migration
         try {
             $prefix = \Craft::$app->db->tablePrefix;
             $this->dropForeignKey($prefix . 'freeform_fields_notificationId_fk', $table);
+            $this->dropForeignKey($prefix . 'freeform_fields_assetSourceId_fk', $table);
         } catch (\Exception $e) {
         }
 

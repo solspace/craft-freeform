@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.8.2 - 2020-09-25
+### Changed
+- Updated all API integration settings to have the ability to use environment variables.
+
+### Fixed
+- Fixed a bug where Signature fields were not showing up in the Conditional Rules feature.
+- Fixed a bug where editing submissions on the front end could be unreliable in rare cases, causing duplicate submissions to be created.
+- Fixed a bug where having different statuses set for multiple instances of the same form in the same template would not work correctly.
+- Fixed a bug where the Freeform Craft 3 migration could error when trying to migrate from very old versions of Freeform 1.x.
+- Fixed a bug where older legacy data from Dynamic Recipients fields might not show up correctly in exports.
+- Fixed a bug where Freeform status color styles might not show up correctly in edge cases.
+
 ## 3.8.1 - 2020-09-09
 ### Fixed
 - Fixed a bug where the Submissions Purge and Unfinalized Assets Purge jobs were not taking into account timezones, and could also sometimes get stuck in pending status.
@@ -8,7 +20,7 @@
 
 ## 3.8.0 - 2020-08-31
 ### Added
-- Added an Email Alert feature! It allows you to automatically send an email notication alerting the email address(es) specified when an email notification cannot be delivered. Very helpful for catching some website/email issues early.
+- Added an Email Alert feature! It allows you to automatically send an email notification alerting the email address(es) specified when an email notification cannot be delivered. Very helpful for catching some website/email issues early.
 - Added Pipedrive Leads integration (previous Pipedrive integration is now named Pipedrive Deals).
 - Added ability to set a formatting template for a form at template level (e.g. `formattingTemplate: 'template-name.html'`).
 - Added Purge console commands for manually purging submissions, spam folder submissions and unfinalized Assets.

@@ -16,6 +16,7 @@ use Solspace\Freeform\Fields\SubmitField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Models\Settings;
 
@@ -30,7 +31,6 @@ class FormValueContext implements \JsonSerializable
     const DEFAULT_PAGE_INDEX = 0;
 
     const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
-    const DATA_STATUS               = 'status';
     const DATA_SUBMISSION_TOKEN     = 'submissionToken';
     const DATA_SUPPRESS             = 'suppress';
     const DATA_RELATIONS            = 'relations';
@@ -289,7 +289,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function getDefaultStatus()
     {
-        return $this->customFormData[self::DATA_STATUS] ?? null;
+        return $this->request->getPost(Form::STATUS_KEY);
     }
 
     /**
@@ -297,7 +297,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function getSubmissionIdentificator()
     {
-        return $this->customFormData[self::DATA_SUBMISSION_TOKEN] ?? null;
+        return $this->request->getPost(Form::SUBMISSION_TOKEN_KEY);
     }
 
     /**

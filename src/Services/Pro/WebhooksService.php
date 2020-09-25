@@ -285,7 +285,7 @@ class WebhooksService extends BaseService
      */
     private function buildWebhook(WebhookModel $model): AbstractWebhook
     {
-        return new $model->type($model->getWebhook(), $model->getSettings());
+        return new $model->type(\Craft::parseEnv($model->getWebhook()), $model->getSettings());
     }
 
     /**

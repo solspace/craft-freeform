@@ -103,15 +103,14 @@
               value: value,
               required: setting.required,
               errors: integration.errors(className~setting.handle),
+              suggestEnvVars: true,
             } %}
 
-            {% if setting.type == "text" %}
-              {{ forms.textField(options) }}
+            {% if setting.type in ["text", "password"] %}
+              {{ forms.autosuggestField(options) }}
             {% elseif setting.type == "bool" %}
               {% set options = options|merge({on: value, value: 1}) %}
               {{ forms.lightswitchField(options) }}
-            {% elseif setting.type == "password" %}
-              {{ forms.passwordField(options) }}
             {% endif %}
           {% endfor %}
       </div>

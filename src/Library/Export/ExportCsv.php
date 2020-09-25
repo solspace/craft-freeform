@@ -81,7 +81,7 @@ class ExportCsv extends AbstractExport
                 if ($field && $field instanceof TableField) {
                     $values = array_merge($values, $this->extractTableRow(0, $value, $field));
                 } else {
-                    if ($value) {
+                    if ($value !== '' && $value !== null) {
                         if (is_array($value) || is_object($value)) {
                             $value = StringHelper::implodeRecursively(', ', (array) $value);
                         }
@@ -89,8 +89,6 @@ class ExportCsv extends AbstractExport
                         if ($field) {
                             if ($field instanceof TextareaField && $this->isRemoveNewLines()) {
                                 $value = trim(preg_replace('/\s+/', ' ', $value));
-                            } else if ($field instanceof ObscureValueInterface) {
-                                $value = $field->getActualValue($value);
                             }
                         }
                     }

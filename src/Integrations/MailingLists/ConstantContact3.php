@@ -406,7 +406,7 @@ class ConstantContact3 extends MailingListOAuthConnector
      */
     public function getRefreshToken()
     {
-        return $this->getSettings()[self::SETTING_REFRESH_TOKEN];
+        return $this->getSetting(self::SETTING_REFRESH_TOKEN);
     }
 
     /**

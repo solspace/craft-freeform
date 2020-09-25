@@ -24,6 +24,9 @@ class SubmissionIndexBundle extends AbstractFreeformAssetBundle
      */
     public function getStylesheets(): array
     {
-        return ['css/charts-explorer.css'];
+        return [
+            'css/charts-explorer.css',
+            'css/submissions-index.css',
+        ];
     }
 }

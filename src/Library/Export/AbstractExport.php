@@ -7,6 +7,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\Objects\Column;
@@ -122,7 +123,13 @@ abstract class AbstractExport implements ExportInterface
                         $handle = $field->getHandle();
 
                         if ($field instanceof MultipleValueInterface) {
-                            $value = (array) \GuzzleHttp\json_decode($value ?: '[]', true);
+                            if (preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
+                                $value = (array) \GuzzleHttp\json_decode($value, true);
+                            }
+                        }
+
+                        if ($field instanceof ObscureValueInterface) {
+                            $value = $field->getActualValue($value);
                         }
 
                         if ($field instanceof FileUploadField) {

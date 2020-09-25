@@ -32,7 +32,7 @@ class PaymentWebhooksController extends BaseController
             throw new HttpException(400, Freeform::t('Invalid integration'));
         }
 
-        $endpointSecret = $integration->getSettings()[Stripe::SETTING_WEBHOOK_KEY];
+        $endpointSecret = \Craft::parseEnv($integration->getSettings()[Stripe::SETTING_WEBHOOK_KEY]);
 
         if (!$endpointSecret) {
             throw new HttpException(400, Freeform::t('Integration is not configured properly'));

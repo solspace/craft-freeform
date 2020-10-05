@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.8.3 - 2020-10-05
+### Fixed
+- Fixed a potential security vulnerability.
+
 ## 3.8.2 - 2020-09-25
 ### Changed
 - Updated all API integration settings to have the ability to use environment variables.

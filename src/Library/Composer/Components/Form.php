@@ -47,9 +47,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 {
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
-    const PAGE_INDEX_KEY     = 'page_index';
-    const RETURN_URI_KEY     = 'formReturnUrl';
-    const DEFAULT_PAGE_INDEX = 0;
+    const PAGE_INDEX_KEY       = 'page_index';
+    const RETURN_URI_KEY       = 'formReturnUrl';
+    const STATUS_KEY           = 'formStatus';
+    const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
+    const DEFAULT_PAGE_INDEX   = 0;
 
     const LIMIT_COOKIE    = 'cookie';
     const LIMIT_IP_COOKIE = 'ip_cookie';
@@ -924,14 +926,29 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         if ($customAttributes->getReturnUrl()) {
             $output .= '<input type="hidden" '
-                . 'name="' . self:: RETURN_URI_KEY . '" '
+                . 'name="' . self::RETURN_URI_KEY . '" '
                 . 'value="' . \Craft::$app->security->hashData($customAttributes->getReturnUrl()) . '" '
+                . '/>';
+        }
+
+        if ($customAttributes->getStatus()) {
+            $output .= '<input type="hidden" '
+                . 'name="' . self::STATUS_KEY . '" '
+                . 'value="' . base64_encode(\Craft::$app->security->encryptByKey($customAttributes->getStatus())) . '" '
+                . '/>';
+        }
+
+
+        if ($customAttributes->getSubmissionToken()) {
+            $output .= '<input type="hidden" '
+                . 'name="' . self::SUBMISSION_TOKEN_KEY . '" '
+                . 'value="' . $customAttributes->getSubmissionToken() . '" '
                 . '/>';
         }
 
         $output .= '<input '
             . 'type="hidden" '
-            . 'name="' . FormValueContext:: FORM_HASH_KEY . '" '
+            . 'name="' . FormValueContext::FORM_HASH_KEY . '" '
             . 'value="' . $this->getHash() . '" '
             . '/>';
 
@@ -1183,8 +1200,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             ->setCustomFormData(
                 [
                     FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
-                    FormValueContext::DATA_STATUS               => $this->customAttributes->getStatus(),
-                    FormValueContext::DATA_SUBMISSION_TOKEN     => $this->customAttributes->getSubmissionToken(),
                     FormValueContext::DATA_SUPPRESS             => $this->customAttributes->getSuppress(),
                     FormValueContext::DATA_RELATIONS            => $this->customAttributes->getRelations(),
                     FormValueContext::DATA_PERSISTENT_VALUES    => $this->customAttributes->getOverrideValues(),

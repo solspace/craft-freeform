@@ -359,7 +359,7 @@ abstract class AbstractIntegration implements IntegrationInterface
                 return (bool) $this->settings[$handle];
             }
 
-            return $this->settings[$handle];
+            return \Craft::parseEnv($this->settings[$handle]);
         }
 
         if ($blueprint->isRequired()) {

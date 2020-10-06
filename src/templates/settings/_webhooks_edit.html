@@ -64,13 +64,14 @@
             required: true,
         }) }}
 
-        {{ forms.textField({
+        {{ forms.autosuggestField({
             label: "Webhook URL"|t('freeform'),
             instructions: "Enter the Webhook URL."|t('freeform'),
             name: 'webhook',
             value: webhook.webhook,
             errors: webhook.getErrors('webhook'),
             required: true,
+            suggestEnvVars: true,
         }) }}
 
         {{ forms.checkboxGroupField({

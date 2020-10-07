@@ -1046,7 +1046,7 @@ class Freeform extends Plugin
 
     private function initCleanupJobs()
     {
-        if ($this->isInstalled) {
+        if ($this->isInstalled && !\Craft::$app->request->getIsConsoleRequest()) {
             if(\Craft::$app->cache->get(SettingsService::CACHE_KEY_PURGE)) {
                 return;
             }

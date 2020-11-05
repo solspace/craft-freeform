@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.8.4 - 2020-10-07
+### Fixed
+- Fixed a bug where Freeform jobs would be created upon console request.
+
 ## 3.8.3 - 2020-10-05
 ### Fixed
 - Fixed a potential security vulnerability.

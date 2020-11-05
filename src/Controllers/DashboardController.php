@@ -3,9 +3,7 @@
 namespace Solspace\Freeform\Controllers;
 
 use Carbon\Carbon;
-use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Resources\Bundles\BannerBundle;
 use Solspace\Freeform\Resources\Bundles\ChartJsBundle;
 use Solspace\Freeform\Resources\Bundles\DashboardBundle;
@@ -19,69 +17,33 @@ class DashboardController extends BaseController
      */
     public function actionIndex(): Response
     {
-        $submissionCount = $this->getSubmissionsService()->getSubmissionCount();
-        $submissions     = Submission::find()->limit(10)->all();
-        $forms           = $this->getFormsService()->getAllForms();
-        $logReader       = $this->getLoggerService()->getLogReader();
+        $forms = $this->getFormsService()->getAllForms();
+        $logReader = $this->getLoggerService()->getLogReader();
 
-        $chartData = $this->getChartsService()
-            ->getLinearSubmissionChartData(
-                new Carbon('-60 days 00:00:00', 'UTC'),
-                new Carbon(null, 'UTC'),
-                array_keys($forms)
-            )
-            ->setLegends(false);
-
-        $pieChartData = $this->getChartsService()
-            ->getRadialFormSubmissionData(
-                new Carbon('-60 days 00:00:00', 'UTC'),
-                new Carbon(null, 'UTC'),
-                $forms
-            )
-            ->setLegends(false);
-
+        $totalSubmissions = $this->getSubmissionsService()->getSubmissionCount();
+        $totalSpam = $this->getSubmissionsService()->getSubmissionCount(null, null, true);
         $totalSubmissionsByForm = $this->getSubmissionsService()->getSubmissionCountByForm();
+        $totalSpamByForm = $this->getSubmissionsService()->getSubmissionCountByForm(true);
 
-        usort($forms, function (FormModel $a, FormModel $b) use ($totalSubmissionsByForm) {
-            $aSub = $totalSubmissionsByForm[$a->id] ?? 0;
-            $bSub = $totalSubmissionsByForm[$b->id] ?? 0;
-
-            return $bSub <=> $aSub;
-        });
-
-        $formList = \array_slice($forms, 0, 10, true);
-
-        $totalSpamSubmissions = $this->getSpamSubmissionsService()->getSubmissionCount(null, null, true);
-
-        $settingsService     = $this->getSettingsService();
-        $submissionPurge     = $settingsService->getPurgableSubmissionAgeInDays();
-        $isSpamFolderEnabled = $settingsService->isSpamFolderEnabled();
-        $spamPurge           = $settingsService->getPurgableSpamAgeInDays();
-
-        $settings = [
-            ['label' => 'Spam Protection', 'enabled' => $settingsService->isFreeformHoneypotEnabled()],
-            ['label' => 'Spam Folder', 'enabled' => $isSpamFolderEnabled],
-            [
-                'label'   => 'Spam Automatic Purge',
-                'enabled' => $isSpamFolderEnabled && $spamPurge,
-                'extra'   => $isSpamFolderEnabled && $spamPurge ? "$spamPurge days" : null,
-            ],
-            ['delimiter' => true],
-            [
-                'label'   => 'Automatic Submission Purge',
-                'enabled' => $submissionPurge,
-                'extra'   => $submissionPurge ? "$submissionPurge days" : null,
-            ],
-        ];
-
-        if (Freeform::getInstance()->isPro()) {
-            array_splice(
-                $settings,
-                3,
-                0,
-                [['label' => 'reCAPTCHA', 'enabled' => (bool) $settingsService->getSettingsModel()->recaptchaEnabled]]
-            );
+        if ($forms) {
+            $chartData = $this->getChartsService()
+                ->getStackedAreaChartData(
+                    new Carbon('-60 days'),
+                    new Carbon('now'),
+                    array_keys($forms)
+                )
+            ;
+        } else {
+            $chartData = $this->getChartsService()->getFakeStackedChartData();
         }
+
+        $formList = [];
+        foreach ($forms as $form) {
+            $formList[] = $form->getForm();
+        }
+
+        $settingsService = $this->getSettingsService();
+        $isSpamFolderEnabled = $settingsService->isSpamFolderEnabled();
 
         $integrations = $this->getIntegrationsService()->getAllIntegrations();
 
@@ -91,21 +53,49 @@ class DashboardController extends BaseController
         \Craft::$app->view->registerAssetBundle(BannerBundle::class);
         $this->getLoggerService()->registerJsTranslations($this->view);
 
+        $exportTypes = [
+            "excel" => "Excel",
+            "csv" => "CSV",
+            "json" => "JSON",
+            "xml" => "XML",
+            "text" => "Text",
+        ];
+
+        $updates = $whatsNew = [];
+        $updatesLevel = 'info';
+        if (Freeform::getInstance()->settings->getSettingsModel()->displayFeed) {
+            $messages = Freeform::getInstance()->feed->getUnreadFeedMessages();
+            foreach ($messages as $message) {
+                if ($message->type === 'new') {
+                    $whatsNew[] = $message;
+                    continue;
+                }
+
+                if ($updatesLevel !== 'critical' && in_array($message->type, ['critical', 'warning'], true)) {
+                    $updatesLevel = $message->type;
+                }
+
+                $updates[] = $message;
+            }
+        }
+
         return $this->renderTemplate(
             'freeform/dashboard',
             [
-                'submissionCount'      => $submissionCount,
-                'submissions'          => $submissions,
-                'submissionsByForm'    => $totalSubmissionsByForm,
-                'totalSpamSubmissions' => $totalSpamSubmissions,
-                'forms'                => $formList,
-                'formCount'            => \count($forms),
-                'integrations'         => $integrations,
-                'logReader'            => $logReader,
-                'isSpamFolderEnabled'  => $isSpamFolderEnabled,
-                'chartData'            => $chartData,
-                'pieChartData'         => $pieChartData,
-                'settings'             => $settings,
+                'totalSubmissions' => $totalSubmissions,
+                'totalSpam' => $totalSpam,
+                'submissionsByForm' => $totalSubmissionsByForm,
+                'spamByForm' => $totalSpamByForm,
+                'forms' => $formList,
+                'formCount' => \count($forms),
+                'integrations' => $integrations,
+                'logReader' => $logReader,
+                'isSpamFolderEnabled' => $isSpamFolderEnabled,
+                'chartData' => $chartData,
+                'exportTypes' => $exportTypes,
+                'whatsNew' => $whatsNew,
+                'updates' => $updates,
+                'updatesLevel' => $updatesLevel,
             ]
         );
     }

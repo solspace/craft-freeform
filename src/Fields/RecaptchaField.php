@@ -41,6 +41,8 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
 
         $key   = \Craft::parseEnv($settings->recaptchaKey);
         $type  = $settings->getRecaptchaType();
+        $theme = $settings->getRecaptchaTheme();
+        $size = $settings->getRecaptchaSize();
 
         switch ($type) {
             case Settings::RECAPTCHA_TYPE_V3:
@@ -49,11 +51,15 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
 
             case Settings::RECAPTCHA_TYPE_V2_CHECKBOX:
             default:
-                $output = '<div class="g-recaptcha" data-sitekey="' . ($key ?: 'invalid') . '"></div>';
-                $output .= '<input type="hidden" name="'
-                    . $this->getHandle()
+                $output = '<div class="g-recaptcha" '
+                    . 'data-sitekey="' . ($key ?: 'invalid') . '" '
+                    . 'data-theme="' . $theme . '" '
+                    . 'data-size="' . $size . '" '
+                    . '></div>'
+                    . '<input type="hidden" '
+                    . 'name="'. $this->getHandle() . '" '
                     . $this->getInputAttributesString()
-                    . '" />';
+                    . '/>';
 
                 return $output;
         }

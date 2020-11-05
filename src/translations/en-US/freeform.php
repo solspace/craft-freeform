@@ -221,6 +221,7 @@ return [
     'Add a submission'                                                                                                                                                                                                                                                                                       => 'Add a submission',
     'Submissions deleted'                                                                                                                                                                                                                                                                                    => 'Submissions deleted',
     'Are you sure you want to delete these submissions?'                                                                                                                                                                                                                                                     => 'Are you sure you want to delete these submissions?',
+    'Are you sure you want to delete this?'                                                                                                                                                                                                                                                                  => 'Are you sure you want to delete this?',
 
 
     // Properties

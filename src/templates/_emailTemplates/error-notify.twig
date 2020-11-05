@@ -39,6 +39,19 @@
 
 {% endblock %}
 
+{% block footerText %}
+    {{ "This email alert was generated automatically by <a href='{link}'>Solspace Freeform</a> from your Craft website.
+        You are receiving this email because you or someone else has configured your email address to
+        receive an email every time a form submission fails to send an email notification."
+    | t('freeform', { link: 'https://docs.solspace.com/craft/freeform/' })
+    | raw }}
+{% endblock %}
+
+{% set links = [
+    { url: cpUrl('freeform'), text: 'Visit your Freeform control panel' },
+    { url: cpUrl('freeform/settings/notices-and-alerts'), text: 'Update your Email Alert settings' },
+] %}
+
 {% block styles %}
     <style type="text/css">
         ol li::before {

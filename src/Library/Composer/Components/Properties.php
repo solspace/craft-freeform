@@ -19,6 +19,7 @@ use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\PageProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
+use Solspace\Freeform\Library\Composer\Components\Properties\ValidationProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
@@ -27,6 +28,7 @@ class Properties implements \JsonSerializable
 {
     const PAGE_PREFIX              = 'page';
     const FORM_HASH                = 'form';
+    const VALIDATION_HASH          = 'validation';
     const INTEGRATION_HASH         = 'integration';
     const CONNECTIONS_HASH         = 'connections';
     const RULES_HASH               = 'rules';
@@ -167,6 +169,24 @@ class Properties implements \JsonSerializable
             }
 
             $this->builtProperties[$hash] = new FormProperties($this->propertyList[$hash], $this->translator);
+        }
+
+        return $this->builtProperties[$hash];
+    }
+
+    /**
+     * @return ValidationProperties
+     * @throws ComposerException
+     */
+    public function getValidationProperties(): ValidationProperties
+    {
+        $hash = self::VALIDATION_HASH;
+        if (!isset($this->builtProperties[$hash])) {
+            if (!isset($this->propertyList[$hash])) {
+                $this->propertyList[$hash] = [];
+            }
+
+            $this->builtProperties[$hash] = new ValidationProperties($this->propertyList[$hash], $this->translator);
         }
 
         return $this->builtProperties[$hash];

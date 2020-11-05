@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\commerce\elements\Product;
 use craft\db\Query;
 use craft\elements\Asset;
 use craft\elements\Category;
@@ -402,6 +403,14 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                 $query = Asset::find()->volumeId($target)->siteId($siteId);
                 break;
 
+            case ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS:
+                if (!class_exists('craft\commerce\elements\Product')) {
+                    return [];
+                }
+
+                $query = Product::find()->typeId($target)->siteId($siteId);
+                break;
+
             case ExternalOptionsInterface::SOURCE_PREDEFINED:
                 return PredefinedOptionsFactory::create($target, $config, $selectedValues);
         }
@@ -427,8 +436,23 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                     break;
             }
 
-            $label     = $item->$labelField ?? $defaultLabel;
-            $value     = $item->$valueField ?? $item->id;
+            if ($source === ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS) {
+                try {
+                    $label = $item->getDefaultVariant()->getFieldValue($labelField);
+                } catch (\yii\base\Exception $exception) {
+                    $label = $item->$labelField ?? $defaultLabel;
+                }
+
+                try {
+                    $value = $item->getDefaultVariant()->getFieldValue($valueField);
+                } catch (\yii\base\Exception $exception) {
+                    $value = $item->$valueField ?? $item->id;
+                }
+            } else {
+                $label = $item->$labelField ?? $defaultLabel;
+                $value = $item->$valueField ?? $item->id;
+            }
+
             $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
         }
 

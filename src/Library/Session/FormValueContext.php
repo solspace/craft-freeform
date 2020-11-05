@@ -35,6 +35,7 @@ class FormValueContext implements \JsonSerializable
     const DATA_SUPPRESS             = 'suppress';
     const DATA_RELATIONS            = 'relations';
     const DATA_PERSISTENT_VALUES    = 'persistentValues';
+    const DATA_DISABLE_RECAPTCHA    = 'disableRecaptcha';
 
     /** @var int */
     private $formId;
@@ -282,6 +283,14 @@ class FormValueContext implements \JsonSerializable
     public function getRelationData()
     {
         return $this->customFormData[self::DATA_RELATIONS] ?? null;
+    }
+
+    /**
+     * @return null|bool
+     */
+    public function isDisableRecaptcha()
+    {
+        return $this->customFormData[self::DATA_DISABLE_RECAPTCHA] ?? null;
     }
 
     /**

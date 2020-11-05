@@ -226,6 +226,11 @@ class Pardot extends AbstractCRMIntegration
 
         $fieldList = [
             new FieldObject(
+                'salutation',
+                'Salutation',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
                 'first_name',
                 'First Name',
                 FieldObject::TYPE_STRING
@@ -242,9 +247,21 @@ class Pardot extends AbstractCRMIntegration
                 true
             ),
             new FieldObject(
+                'password',
+                'Password',
+                FieldObject::TYPE_STRING,
+                true
+            ),
+            new FieldObject(
                 'company',
                 'Company',
                 FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'prospect_account_id',
+                'Prospect Account Id',
+                FieldObject::TYPE_NUMERIC,
+                true
             ),
             new FieldObject(
                 'website',
@@ -252,9 +269,135 @@ class Pardot extends AbstractCRMIntegration
                 FieldObject::TYPE_STRING
             ),
             new FieldObject(
+                'job_title',
+                'Job Title',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'department',
+                'Department',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'country',
+                'Country',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'address_one',
+                'Address One',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'address_two',
+                'Address Two',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'city',
+                'City',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'state',
+                'State',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'territory',
+                'Territory',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'zip',
+                'Zip',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'phone',
+                'Phone',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'fax',
+                'Fax',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'source',
+                'Source',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'annual_revenue',
+                'Annual Revenue',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'employees',
+                'Employees',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'industry',
+                'Industry',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'years_in_business',
+                'Years in Business',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'comments',
+                'Comments',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'notes',
+                'Notes',
+                FieldObject::TYPE_STRING
+            ),
+            new FieldObject(
+                'score',
+                'Score',
+                FieldObject::TYPE_NUMERIC,
+                true
+            ),
+            new FieldObject(
+                'is_do_not_email',
+                'Do not email',
+                FieldObject::TYPE_BOOLEAN,
+                true
+            ),
+            new FieldObject(
+                'is_do_not_call',
+                'Do not call',
+                FieldObject::TYPE_BOOLEAN,
+                true
+            ),
+            new FieldObject(
+                'is_reviewed',
+                'Reviewed',
+                FieldObject::TYPE_BOOLEAN,
+                true
+            ),
+            new FieldObject(
+                'is_archived',
+                'Archived',
+                FieldObject::TYPE_BOOLEAN,
+                true
+            ),
+            new FieldObject(
+                'is_starred',
+                'Starred',
+                FieldObject::TYPE_NUMERIC,
+                true
+            ),
+            new FieldObject(
                 'campaign_id',
                 'Campaign',
-                FieldObject::TYPE_STRING,
+                FieldObject::TYPE_NUMERIC,
                 true
             ),
             new FieldObject(
@@ -267,12 +410,6 @@ class Pardot extends AbstractCRMIntegration
                 'assign_to',
                 'Assign To',
                 FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'score',
-                'Score',
-                FieldObject::TYPE_NUMERIC,
-                true
             ),
         ];
 

@@ -121,6 +121,16 @@
     }) }}
 
     {{ forms.autosuggestField({
+        label: "Reply-to Name"|t('freeform'),
+        instructions: "The reply-to name that the email will appear from in your email notification."|t('freeform'),
+        id: 'replyToName',
+        name: 'replyToName',
+        value: notification.replyToName,
+        errors: notification.getErrors('replyToName'),
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
         label: "CC"|t('freeform'),
         instructions: "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use."|t('freeform'),
         id: 'cc',

@@ -127,6 +127,7 @@ class NotificationsController extends BaseController
         $notification->cc                 = $request->post('cc');
         $notification->bcc                = $request->post('bcc');
         $notification->subject            = $request->post('subject');
+        $notification->replyToName        = $request->post('replyToName');
         $notification->replyToEmail       = $request->post('replyToEmail');
         $notification->bodyHtml           = $request->post('bodyHtml');
         $notification->bodyText           = $request->post('bodyText');

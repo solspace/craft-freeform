@@ -1,7 +1,6 @@
 <?php
 
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\ExpressForms\ExpressForms;
 use Solspace\Freeform\Freeform;
 
 $navItems = [];
@@ -17,7 +16,10 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)) 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
     && $this->settings->isSpamFolderEnabled()) {
     $spamCount        = $this->spamSubmissions->getSubmissionCount(null, null, true);
-    $navItems['spam'] = ['label' => Freeform::t("Spam ({$spamCount})"), 'url' => 'freeform/spam'];
+    $navItems['spam'] = ['label' => Freeform::t("Spam"), 'url' => 'freeform/spam'];
+    if ($spamCount) {
+        $navItems['spam']['badgeCount'] = $spamCount;
+    }
 }
 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS)) {

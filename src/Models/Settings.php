@@ -39,6 +39,10 @@ class Settings extends Model
     const RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR = 'display_error';
     const RECAPTCHA_BEHAVIOUR_SPAM          = 'spam';
 
+    const RECAPTCHA_THEME = 'light';
+    const RECAPTCHA_SIZE  = 'normal';
+    const RECAPTCHA_ERROR_MESSAGE  = 'Please verify that you are not a robot.';
+
     const SCRIPT_INSERT_LOCATION_FOOTER = 'footer';
     const SCRIPT_INSERT_LOCATION_FORM   = 'form';
     const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
@@ -177,6 +181,15 @@ class Settings extends Model
     /** @var string */
     public $recaptchaBehaviour;
 
+    /** @var string */
+    public $recaptchaTheme;
+
+    /** @var string */
+    public $recaptchaSize;
+
+    /** @var string */
+    public $recaptchaErrorMessage;
+
     /** @var bool */
     public $renderFormHtmlInCpViews;
 
@@ -206,6 +219,18 @@ class Settings extends Model
 
     /** @var string */
     public $alertNotificationRecipients;
+
+    /** @var string */
+    public $digestRecipients;
+
+    /** @var array */
+    public $displayFeed;
+
+    /** @var array */
+    public $feedInfo;
+
+    /** @var string */
+    public $badgeType;
 
     /**
      * Settings constructor.
@@ -239,7 +264,7 @@ class Settings extends Model
         $this->blockedIpAddresses                   = null;
         $this->showErrorsForBlockedKeywords         = false;
         $this->showErrorsForBlockedEmails           = false;
-        $this->spamFolderEnabled                    = false;
+        $this->spamFolderEnabled                    = true;
         $this->submissionThrottlingCount            = null;
         $this->submissionThrottlingTimeFrame        = null;
         $this->purgableSubmissionAgeInDays          = null;
@@ -251,13 +276,20 @@ class Settings extends Model
         $this->fillWithGet                          = false;
         $this->formattingTemplate                   = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients          = null;
+        $this->digestRecipients                     = null;
+        $this->displayFeed                          = true;
+        $this->feedInfo                             = [];
+        $this->badgeType                            = 'all';
 
-        $this->recaptchaEnabled   = false;
-        $this->recaptchaKey       = null;
-        $this->recaptchaSecret    = null;
-        $this->recaptchaType      = self::RECAPTCHA_TYPE_V2_CHECKBOX;
-        $this->recaptchaMinScore  = 0.5;
-        $this->recaptchaBehaviour = self::RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR;
+        $this->recaptchaEnabled      = false;
+        $this->recaptchaKey          = null;
+        $this->recaptchaSecret       = null;
+        $this->recaptchaType         = self::RECAPTCHA_TYPE_V2_CHECKBOX;
+        $this->recaptchaMinScore     = 0.5;
+        $this->recaptchaBehaviour    = self::RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR;
+        $this->recaptchaTheme        = self::RECAPTCHA_THEME;
+        $this->recaptchaSize         = self::RECAPTCHA_SIZE;
+        $this->recaptchaErrorMessage = self::RECAPTCHA_ERROR_MESSAGE;
 
         $this->hideBannerDemo        = false;
         $this->hideBannerOldFreeform = false;
@@ -458,6 +490,22 @@ class Settings extends Model
         }
 
         return $type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecaptchaTheme(): string
+    {
+        return $this->recaptchaTheme;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRecaptchaSize(): string
+    {
+        return $this->recaptchaSize;
     }
 
     /**

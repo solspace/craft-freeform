@@ -1,0 +1,40 @@
+<?php
+
+namespace Solspace\Freeform\Controllers;
+
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Records\FeedMessageRecord;
+
+class FeedsController extends BaseController
+{
+    public function actionShowSummary()
+    {
+        $this->requireAdmin(false);
+
+        return $this->asJson(Freeform::getInstance()->summary->getSummary()->statistics);
+    }
+
+    public function actionDismissMessage()
+    {
+        $this->requirePostRequest();
+
+        $id = $this->request->post('id');
+
+        if (Freeform::getInstance()->feed->markFeedMessageAsRead($id)) {
+            return $this->asJson(['success' => true]);
+        }
+
+        return $this->asJson(['success' => false]);
+    }
+
+    public function actionDismissType()
+    {
+        $this->requirePostRequest();
+
+        $type = $this->request->post('type');
+
+        Freeform::getInstance()->feed->markFeedCategoryAsRead($type);
+
+        return $this->asJson(['success' => true]);
+    }
+}

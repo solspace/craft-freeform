@@ -30,22 +30,22 @@ class ChartsService extends BaseService
         bool $aggregate = false
     ): LinearChartData {
         $submissions = Submission::TABLE;
-        
+
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;
         }
 
         $diff = $rangeStart->diffInDays($rangeEnd);
 
-        $labels      = $dates = [];
+        $labels = $dates = [];
         $dateContext = $rangeStart->copy();
         for ($i = 0; $i <= $diff; $i++) {
             $labels[] = $dateContext->format('M j');
-            $dates[]  = $dateContext->format('Y-m-d');
+            $dates[] = $dateContext->format('Y-m-d');
             $dateContext->addDay();
         }
 
-        $forms    = Freeform::getInstance()->forms->getAllForms();
+        $forms = Freeform::getInstance()->forms->getAllForms();
         $datasets = [];
         foreach ($formIds as $formId) {
             if (null !== $formId && !isset($forms[$formId])) {
@@ -55,9 +55,17 @@ class ChartsService extends BaseService
             $query = (new Query())
                 ->select(["DATE($submissions.[[dateCreated]]) as dt", "COUNT($submissions.[[id]]) as count"])
                 ->from(Submission::TABLE)
-                ->groupBy(['dt']);
+                ->groupBy(['dt'])
+            ;
 
-            $query->where(['between', "$submissions.[[dateCreated]]", $rangeStart->toDateTimeString(), $rangeEnd->toDateTimeString()]);
+            $query->where(
+                [
+                    'between',
+                    "$submissions.[[dateCreated]]",
+                    $rangeStart->toDateTimeString(),
+                    $rangeEnd->toDateTimeString(),
+                ]
+            );
 
             $form = null;
             if ($aggregate) {
@@ -121,7 +129,8 @@ class ChartsService extends BaseService
             ->from($submissions)
             ->where(['between', "$submissions.[[dateCreated]]", $rangeStart, $rangeEnd])
             ->andWhere(['IN', "$submissions.[[formId]]", $formIds])
-            ->groupBy(["$submissions.[[formId]]"]);
+            ->groupBy(["$submissions.[[formId]]"])
+        ;
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;
@@ -135,15 +144,15 @@ class ChartsService extends BaseService
 
         $labels = $data = $backgroundColors = $hoverBackgroundColors = $formsWithResults = [];
         foreach ($result as $item) {
-            $formId             = $item['formId'];
+            $formId = $item['formId'];
             $formsWithResults[] = $formId;
 
             $count = (int) $item['count'];
             $color = ColorHelper::getRGBColor($forms[$formId]->color);
 
-            $labels[]                = $forms[$formId]->name;
-            $data[]                  = $count;
-            $backgroundColors[]      = sprintf('rgba(%s,0.8)', implode(',', $color));
+            $labels[] = $forms[$formId]->name;
+            $data[] = $count;
+            $backgroundColors[] = sprintf('rgba(%s,0.8)', implode(',', $color));
             $hoverBackgroundColors[] = sprintf('rgba(%s,1)', implode(',', $color));
         }
 
@@ -154,9 +163,9 @@ class ChartsService extends BaseService
 
             $color = ColorHelper::getRGBColor($forms[$formId]->color);
 
-            $labels[]                = $forms[$formId]->name;
-            $data[]                  = 0;
-            $backgroundColors[]      = sprintf('rgba(%s,0.8)', implode(',', $color));
+            $labels[] = $forms[$formId]->name;
+            $data[] = 0;
+            $backgroundColors[] = sprintf('rgba(%s,0.8)', implode(',', $color));
             $hoverBackgroundColors[] = sprintf('rgba(%s,1)', implode(',', $color));
         }
 
@@ -164,7 +173,8 @@ class ChartsService extends BaseService
             ->setLabels($labels)
             ->setData($data)
             ->setBackgroundColors($backgroundColors)
-            ->setHoverBackgroundColors($hoverBackgroundColors);
+            ->setHoverBackgroundColors($hoverBackgroundColors)
+        ;
 
         return $radialChartData;
     }
@@ -183,5 +193,133 @@ class ChartsService extends BaseService
         $chartData->setDatasets($datasets);
 
         return $chartData;
+    }
+
+    /**
+     * @param Carbon $rangeStart
+     * @param Carbon $rangeEnd
+     * @param array  $formIds
+     * @param bool   $aggregate
+     *
+     * @return LinearChartData
+     * @throws \Exception
+     */
+    public function getStackedAreaChartData(
+        Carbon $rangeStart,
+        Carbon $rangeEnd,
+        array $formIds
+    ): array {
+        $submissions = Submission::TABLE;
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $elements = Table::ELEMENTS;
+        }
+
+        $forms = Freeform::getInstance()->forms->getAllForms();
+
+        $formData = $formInfo = [];
+        foreach ($formIds as $formId) {
+            if (null !== $formId && !isset($forms[$formId])) {
+                continue;
+            }
+
+            $form = $forms[$formId];
+
+            $query = (new Query())
+                ->select(["DATE($submissions.[[dateCreated]]) as dt", "COUNT($submissions.[[id]]) as count"])
+                ->from(Submission::TABLE)
+                ->groupBy(['dt'])
+            ;
+
+            $query
+                ->where(
+                    [
+                        'between',
+                        "$submissions.[[dateCreated]]",
+                        $rangeStart,
+                        $rangeEnd,
+                    ]
+                )
+                ->andWhere(["$submissions.[[formId]]" => $formId])
+            ;
+
+            if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+                $query->innerJoin(
+                    $elements,
+                    "$elements.[[id]] = $submissions.[[id]] AND $elements.[[dateDeleted]] IS NULL"
+                );
+            }
+
+            $result = $query->all();
+
+            $data = [];
+            foreach ($result as $item) {
+                $data[$item['dt']] = (int) $item['count'];
+            }
+
+            $formData[$form->handle] = $data;
+
+            $formInfo[] = [
+                'name' => $form->name,
+                'handle' => $form->handle,
+                'color' => $form->color,
+                'color_rgb' => ColorHelper::getRGBColor($form->color),
+            ];
+        }
+
+        $diff = $rangeStart->diffInDays($rangeEnd);
+
+        $chartData = [];
+        $dateContext = $rangeStart->copy();
+        for ($i = 0; $i <= $diff; $i++) {
+            $date = $dateContext->toDateString();
+            $data = ['date' => $dateContext->format('M j')];
+            foreach ($formData as $formHandle => $submissionCount) {
+                $data['form_'.$formHandle] = $submissionCount[$date] ?? 0;
+            }
+
+            $chartData[] = $data;
+            $dateContext->addDay();
+        }
+
+        return [
+            'dataset' => $chartData,
+            'info' => $formInfo,
+        ];
+    }
+
+
+    public function getFakeStackedChartData(): array
+    {
+        $formInfo = [
+            ['name' => 'Example Form 1', 'handle' => 'ex0', 'color' => '#ebebeb', 'color_rgb' => ColorHelper::getRGBColor('#ebebeb')],
+            ['name' => 'Example Form 2', 'handle' => 'ex1', 'color' => '#f3f3f3', 'color_rgb' => ColorHelper::getRGBColor('#f3f3f3')],
+            ['name' => 'Example Form 3', 'handle' => 'ex2', 'color' => '#e5e5e5', 'color_rgb' => ColorHelper::getRGBColor('#e5e5e5')],
+        ];
+
+        $data = [
+            [79, 29, 10],
+            [73, 25, 17],
+            [42, 33, 33],
+            [78, 50, 60],
+            [67, 40, 52],
+            [80, 43, 67],
+        ];
+
+        $date = (new Carbon())->subDays(count($data));
+
+        $chartData = [];
+        foreach ($data as $set) {
+            $row = ['date' => $date->addDay()->format('M j')];
+            foreach ($set as $i => $col) {
+                $row['form_ex'.$i] = $col;
+            }
+            $chartData[] = $row;
+        }
+
+        return [
+            'dataset' => $chartData,
+            'info' => $formInfo,
+        ];
     }
 }

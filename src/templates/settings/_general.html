@@ -49,6 +49,22 @@
     }) }}
 
     {{ forms.selectField({
+        label: "Plugin Badge"|t('freeform'),
+        instructions: "Select the options you'd like to be included in the plugin badge count (when applicable)."|t('freeform'),
+        name: "settings[badgeType]",
+        value: settings.badgeType,
+        errors: settings.errors("badgeType"),
+        options: {
+            '': "Don't Show" | t('freeform'),
+            all: "Update Notices, What's New, Logged Errors" | t('freeform'),
+            notices: "Update Notices only" | t('freeform'),
+            errors: "Logged Errors only" | t('freeform'),
+            submissions: "Submission Count" | t('freeform'),
+            spam: "Spam Folder Count" | t('freeform'),
+        },
+    }) }}
+
+    {{ forms.selectField({
         label: "Display Order of Fields in Composer"|t('freeform'),
         instructions: "The display order for the list of available fields in Composer."|t('freeform'),
         name: "settings[fieldDisplayOrder]",

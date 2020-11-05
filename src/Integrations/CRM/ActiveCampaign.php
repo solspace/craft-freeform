@@ -246,20 +246,19 @@ class ActiveCampaign extends AbstractCRMIntegration
         }
 
         if (!empty($deal)) {
-            if (!$this->getPipelineId()) {
-                throw new IntegrationException('Missing Pipeline ID for Active Campaign integration');
+            $pipelineId = $this->fetchPipelineId($deal['group'] ?? $this->getPipelineId());
+            if ($pipelineId) {
+                $deal['group'] = $pipelineId;
             }
 
-            if (!$this->getStageId()) {
-                throw new IntegrationException('Missing Stage ID for Active Campaign integration');
+            $stageId = $this->fetchStageId($deal['stage'] ?? $this->getStageId(), $pipelineId);
+            if ($stageId) {
+                $deal['stage'] = $stageId;
             }
 
-
-            $deal['group'] = $this->getPipelineId();
-            $deal['stage'] = $this->getStageId();
-
-            if ($this->getOnwerId()) {
-                $deal['owner'] = $this->getOnwerId();
+            $ownerId = $this->fetchOwnerId($deal['owner'] ?? $this->getOwnerId());
+            if ($ownerId) {
+                $deal['owner'] = $ownerId;
             }
 
             if ($contactId) {
@@ -443,69 +442,19 @@ class ActiveCampaign extends AbstractCRMIntegration
             return;
         }
 
-        $client = $this->generateAuthorizedClient();
-
-        $pipelineId = null;
-        if (is_numeric($pipeline)) {
-            $pipelineId = $pipeline;
-        } else {
-            try {
-                $response = $client->get(
-                    $this->getEndpoint('/dealGroups'),
-                    ['query' => ['filters[title]' => $pipeline]]
-                );
-
-                $json = \GuzzleHttp\json_decode($response->getBody(), false);
-                if (isset($json->dealGroups) && count($json->dealGroups)) {
-                    $item       = $json->dealGroups[0];
-                    $pipeline   = $item->title;
-                    $pipelineId = $item->id;
-                }
-            } catch (RequestException $e) {
-                $pipeline = '';
-            }
+        $pipelineId = $this->fetchPipelineId($pipeline);
+        if (!$pipelineId) {
+            $pipeline = '';
         }
 
-        $stageId = null;
-        if (is_numeric($stage)) {
-            $stageId = $stage;
-        } else {
-            try {
-                $query = ['filters[title]' => $stage];
-                if ($pipelineId) {
-                    $query['filters[d_groupid]'] = $pipelineId;
-                }
-                $response = $client->get(
-                    $this->getEndpoint('/dealStages'),
-                    ['query' => $query]
-                );
-
-                $json = \GuzzleHttp\json_decode($response->getBody(), false);
-                if (isset($json->dealStages) && count($json->dealStages)) {
-                    $item    = $json->dealStages[0];
-                    $stage   = $item->title;
-                    $stageId = $item->id;
-                }
-            } catch (RequestException $e) {
-                $stage = '';
-            }
+        $stageId = $this->fetchStageId($stage, $pipelineId);
+        if (!$stageId) {
+            $stage = '';
         }
 
-        $ownerId = null;
-        if (is_numeric($owner)) {
-            $ownerId = $owner;
-        } else {
-            try {
-                $response = $client->get($this->getEndpoint('/users/username/' . $owner));
-
-                $json = \GuzzleHttp\json_decode($response->getBody(), false);
-                if (isset($json->user)) {
-                    $owner   = $json->user->username;
-                    $ownerId = $json->user->id;
-                }
-            } catch (RequestException $e) {
-                $owner = '';
-            }
+        $ownerId = $this->fetchOwnerId($owner);
+        if (!$ownerId) {
+            $owner = '';
         }
 
         $this->setSetting(self::SETTING_PIPELINE, $pipeline);
@@ -578,7 +527,7 @@ class ActiveCampaign extends AbstractCRMIntegration
      * @return int|null
      * @throws IntegrationException
      */
-    private function getOnwerId()
+    private function getOwnerId()
     {
         return $this->getSetting(self::SETTING_OWNER_ID);
     }
@@ -612,5 +561,97 @@ class ActiveCampaign extends AbstractCRMIntegration
                 'Api-Token' => $this->getApiToken(),
             ],
         ]);
+    }
+
+    private function fetchPipelineId($pipeline = null)
+    {
+        if (!$pipeline) {
+            return null;
+        }
+
+        if (is_numeric($pipeline)) {
+            return $pipeline;
+        } else {
+            try {
+                $client = $this->generateAuthorizedClient();
+                $response = $client->get(
+                    $this->getEndpoint('/dealGroups'),
+                    ['query' => ['filters[title]' => $pipeline]]
+                );
+
+                $json = \GuzzleHttp\json_decode($response->getBody(), false);
+                if (isset($json->dealGroups) && count($json->dealGroups)) {
+                    $item = $json->dealGroups[0];
+
+                    return $item->id;
+                }
+            } catch (RequestException $e) {
+                $this->getLogger()->warning($e->getMessage());
+            }
+        }
+
+        return null;
+    }
+
+    private function fetchStageId($stage = null, $pipeline = null)
+    {
+        if (!$stage) {
+            return null;
+        }
+
+        $pipelineId = $this->fetchPipelineId($pipeline);
+
+        if (is_numeric($stage)) {
+            return $stage;
+        } else {
+            try {
+                $client = $this->generateAuthorizedClient();
+
+                $query = ['filters[title]' => $stage];
+                if ($pipelineId) {
+                    $query['filters[d_groupid]'] = $pipelineId;
+                }
+                $response = $client->get(
+                    $this->getEndpoint('/dealStages'),
+                    ['query' => $query]
+                );
+
+                $json = \GuzzleHttp\json_decode($response->getBody(), false);
+                if (isset($json->dealStages) && count($json->dealStages)) {
+                    $item    = $json->dealStages[0];
+
+                    return $item->id;
+                }
+            } catch (RequestException $e) {
+                $this->getLogger()->warning($e->getMessage());
+            }
+        }
+
+        return null;
+    }
+
+    private function fetchOwnerId($owner = null)
+    {
+        if (!$owner) {
+            return null;
+        }
+
+        if (is_numeric($owner)) {
+            return $owner;
+        } else {
+            try {
+                $client = $this->generateAuthorizedClient();
+                $response = $client->get($this->getEndpoint('/users/username/' . $owner));
+
+                $json = \GuzzleHttp\json_decode($response->getBody(), false);
+                if (isset($json->user)) {
+                    return $json->user->id;
+                }
+            } catch (RequestException $e) {
+                $this->getLogger()->warning($e->getMessage());
+            }
+        }
+
+        return null;
     }
 }

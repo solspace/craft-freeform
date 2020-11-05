@@ -62,6 +62,30 @@
             suggestEnvVars: true,
         }) }}
 
+        <div id="recaptcha-theme" class="field {{ settings.recaptchaType != 'v2_checkbox' ? 'hidden' }}">
+            {{ forms.selectField({
+                label: "Theme"|t("freeform"),
+                name: "settings[recaptchaTheme]",
+                value: settings.recaptchaTheme,
+                errors: settings.errors("recaptchaTheme"),
+                options: {
+                    "light": "Light"|t("freeform"),
+                    "dark": "Dark"|t("freeform"),
+                }
+            }) }}
+
+            {{ forms.selectField({
+                label: "Size"|t("freeform"),
+                name: "settings[recaptchaSize]",
+                value: settings.recaptchaSize,
+                errors: settings.errors("recaptchaSize"),
+                options: {
+                    "normal": "Normal"|t("freeform"),
+                    "compact": "Compact"|t("freeform"),
+                }
+            }) }}
+        </div>
+
         <div id="failure-behaviour" class="field {{ settings.recaptchaType == "v2_checkbox" ? "hidden" }}">
             {{ forms.selectField({
                 label: "Failure Behavior"|t("freeform"),
@@ -100,6 +124,13 @@
                 }
             }) }}
         </div>
+
+        {{ forms.textField({
+            label: "Error Message"|t('freeform'),
+            name: "settings[recaptchaErrorMessage]",
+            value: settings.recaptchaErrorMessage,
+            errors: settings.errors("recaptchaErrorMessage"),
+        }) }}
     </div>
 
 {% endblock %}
@@ -109,8 +140,10 @@
         var select = document.getElementById("recaptcha-type");
         var minScore = document.getElementById("min-score");
         var failureBehaviour = document.getElementById("failure-behaviour");
+        var theme = document.getElementById("recaptcha-theme");
         select.addEventListener("change", function (event) {
             var value = event.target.value;
+
             if (value === "v3") {
                 minScore.classList.remove("hidden");
             } else {
@@ -119,8 +152,10 @@
 
             if (value === "v2_checkbox") {
                 failureBehaviour.classList.add("hidden");
+                theme.classList.remove("hidden");
             } else {
                 failureBehaviour.classList.remove("hidden");
+                theme.classList.add("hidden");
             }
         });
     })();

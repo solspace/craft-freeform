@@ -25,6 +25,7 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
  * @property string $description
  * @property string $fromName
  * @property string $fromEmail
+ * @property string $replyToName
  * @property string $replyToEmail
  * @property bool   $includeAttachments
  * @property string $subject
@@ -103,6 +104,7 @@ EOT;
         $model->cc                 = $template->getCc();
         $model->bcc                = $template->getBcc();
         $model->subject            = $template->getSubject();
+        $model->replyToName        = $template->getReplyToName();
         $model->replyToEmail       = $template->getReplyToEmail();
         $model->bodyHtml           = $template->getBody();
         $model->bodyText           = $template->getBody();
@@ -186,6 +188,14 @@ EOT;
     public function getBcc()
     {
         return $this->bcc;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getReplyToName()
+    {
+        return $this->replyToName;
     }
 
     /**

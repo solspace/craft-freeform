@@ -26,7 +26,8 @@ class RecaptchaService extends Component
 
         $field = $event->getField();
         if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
-            $field->addError(Freeform::t('Please verify that you are not a robot.'));
+            $message = $this->getSettings()->recaptchaErrorMessage;
+            $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
         }
     }
 
@@ -42,7 +43,8 @@ class RecaptchaService extends Component
 
         if (!$this->validateResponse()) {
             if ($this->behaviourDisplayError()) {
-                $event->getForm()->addError(Freeform::t('Please verify that you are not a robot.'));
+                $message = $this->getSettings()->recaptchaErrorMessage;
+                $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
             } else {
                 $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA invisible validation failed');
             }
@@ -61,7 +63,8 @@ class RecaptchaService extends Component
 
         if (!$this->validateResponse()) {
             if ($this->behaviourDisplayError()) {
-                $event->getForm()->addError(Freeform::t('Please verify that you are not a robot.'));
+                $message = $this->getSettings()->recaptchaErrorMessage;
+                $event->getForm()->addError(Freeform::t($message ?: 'Your submission could not be processed.'));
             } else {
                 $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA score check failed');
             }

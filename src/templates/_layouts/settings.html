@@ -28,7 +28,9 @@
                     <li class="heading"><span>{{ item.heading }}</span></li>
                 {% else %}
                     <li>
-                        <a href="{{ url('freeform/settings/'~id) }}"{% if id == selectedItem %} class="sel"{% endif %}>{{ item.title }}</a>
+                        <a href="{{ url('freeform/settings/'~id) }}"{% if id == selectedItem %} class="sel"{% endif %}>
+                            {{ item.title | raw }}
+                        </a>
                     </li>
                 {% endif %}
             {% endfor %}

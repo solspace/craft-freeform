@@ -5,6 +5,7 @@
 
 {% set formHandle = craft.app.request.segment(3) %}
 {% set isSuccess  = craft.app.request.segment(4) == "success" %}
+{% set form = craft.freeform.form(formHandle) %}
 
 {% block content %}
 
@@ -12,7 +13,7 @@
         {% if isSuccess %}
             <div class="alert alert-success" role="alert">
                 <p class="lead">
-                    Form submitted successfully!
+                    {{ form.successMessage | t }}
                 </p>
             </div>
         {% endif %}

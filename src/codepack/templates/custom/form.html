@@ -56,7 +56,7 @@
 
         {% if isSuccess %}
             <div class="alert alert-success" role="alert">
-                Form submitted successfully!
+                {{ form.successMessage | t }}
             </div>
         {% endif %}
 

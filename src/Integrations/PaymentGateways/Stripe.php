@@ -405,7 +405,10 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
                 $subscriptionDataEvent = new UpdateDataEvent(
                     $submission,
-                    ['metadata' => ['submission' => $submissionId]]
+                    ['metadata' => [
+                        'submission' => $submissionId,
+                        'formHandle' => $submission->getForm()->getHandle(),
+                    ]]
                 );
 
                 Event::trigger(self::class, self::EVENT_UPDATE_SUBSCRIPTION_DATA, $subscriptionDataEvent);
@@ -748,7 +751,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         try {
             $event = new UpdateDataEvent(
                 $submission,
-                ['metadata' => ['submissionId' => $submissionId]]
+                ['metadata' => ['submissionId' => $submissionId, 'formHandle' => $submission->getForm()->getHandle()]]
             );
             $event->addData('description', 'Payment for FF Submission #' . $submissionId);
 

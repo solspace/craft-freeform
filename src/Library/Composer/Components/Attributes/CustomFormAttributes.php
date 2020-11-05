@@ -100,6 +100,9 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var string */
     protected $formattingTemplate;
 
+    /** @var bool */
+    protected $disableRecaptcha;
+
     /**
      * @return string|null
      */
@@ -362,5 +365,13 @@ class CustomFormAttributes extends AbstractAttributes
     public function getFormattingTemplate()
     {
         return $this->formattingTemplate;
+    }
+
+    /**
+     * @return null|bool
+     */
+    public function isDisableRecaptcha()
+    {
+        return $this->disableRecaptcha;
     }
 }

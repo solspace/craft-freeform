@@ -89,6 +89,9 @@ class Layout implements \JsonSerializable, \Iterator
     /** @var TableField[] */
     private $tableFields;
 
+    /** @var string[] */
+    private $fieldTypes;
+
     /** @var Properties */
     private $properties;
 
@@ -118,6 +121,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->properties = $properties;
         $this->layoutData = $layoutData;
         $this->translator = $translator;
+        $this->fieldTypes = [];
         $this->buildLayout($formValueContext);
     }
 
@@ -255,6 +259,16 @@ class Layout implements \JsonSerializable, \Iterator
     public function getFields(): array
     {
         return $this->fields;
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function hasFieldType(string $type): bool
+    {
+        return in_array(strtolower($type), $this->fieldTypes, true);
     }
 
     /**
@@ -519,6 +533,8 @@ class Layout implements \JsonSerializable, \Iterator
 
                     $pageFields[] = $field;
                     $allFields[]  = $field;
+
+                    $this->fieldTypes[] = $field->getType();
                 }
 
                 if (empty($fields)) {
@@ -537,6 +553,9 @@ class Layout implements \JsonSerializable, \Iterator
 
             $pageObjects[] = $page;
         }
+
+        $this->fieldTypes = array_unique($this->fieldTypes);
+        $this->fieldTypes = array_filter($this->fieldTypes);
 
         $this->pages              = $pageObjects;
         $this->rows               = $allRows;

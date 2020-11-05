@@ -93,13 +93,15 @@ class ExportProfilesService extends Component
             $record = new ExportProfileRecord();
         }
 
-        $record->name      = $model->name;
-        $record->formId    = $model->formId;
-        $record->limit     = $model->limit;
-        $record->dateRange = $model->dateRange;
-        $record->fields    = $model->fields;
-        $record->filters   = $model->filters;
-        $record->statuses  = $model->statuses;
+        $record->name       = $model->name;
+        $record->formId     = $model->formId;
+        $record->limit      = $model->limit;
+        $record->dateRange  = $model->dateRange;
+        $record->rangeStart = $model->rangeStart;
+        $record->rangeEnd   = $model->rangeEnd;
+        $record->fields     = $model->fields;
+        $record->filters    = $model->filters;
+        $record->statuses   = $model->statuses;
 
         $record->validate();
         $model->addErrors($record->getErrors());
@@ -232,6 +234,8 @@ class ExportProfilesService extends Component
                     'export_profiles.name',
                     'export_profiles.limit',
                     'export_profiles.dateRange',
+                    'export_profiles.rangeStart',
+                    'export_profiles.rangeEnd',
                     'export_profiles.fields',
                     'export_profiles.filters',
                     'export_profiles.statuses',

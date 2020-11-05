@@ -60,7 +60,7 @@
 
     <input type="hidden" name="action" value="{{ actionUrl }}">
     <input type="hidden" name="submissionId" value="{{ submission.id }}">
-    {{ redirectInput('freeform/submissions') }}
+    {{ redirectInput(redirectUrl is defined ? redirectUrl : 'freeform/submissions') }}
     {{ csrfInput() }}
 
 

@@ -16,10 +16,12 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\SiteEvent;
+use craft\helpers\Db;
 use craft\services\Dashboard;
 use craft\services\Fields;
 use craft\services\Sites;
 use craft\services\UserPermissions;
+use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -28,6 +30,7 @@ use Solspace\Freeform\Controllers\BannersController;
 use Solspace\Freeform\Controllers\CodepackController;
 use Solspace\Freeform\Controllers\CrmController;
 use Solspace\Freeform\Controllers\DashboardController;
+use Solspace\Freeform\Controllers\FeedsController;
 use Solspace\Freeform\Controllers\FieldsController;
 use Solspace\Freeform\Controllers\FormsController;
 use Solspace\Freeform\Controllers\LogsController;
@@ -62,6 +65,8 @@ use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\FeedRecord;
+use Solspace\Freeform\Records\LockRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\ChartsService;
@@ -71,15 +76,18 @@ use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\IntegrationsService;
+use Solspace\Freeform\Services\LockService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotesService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
+use Solspace\Freeform\Services\Pro\DigestService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
 use Solspace\Freeform\Services\Pro\PayloadForwardingService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
@@ -90,6 +98,7 @@ use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
 use Solspace\Freeform\Services\Pro\ProFormsService;
 use Solspace\Freeform\Services\Pro\RecaptchaService;
 use Solspace\Freeform\Services\Pro\RulesService;
+use Solspace\Freeform\Services\SummaryService;
 use Solspace\Freeform\Services\Pro\WebhooksService;
 use Solspace\Freeform\Services\Pro\WidgetsService;
 use Solspace\Freeform\Services\RelationsService;
@@ -141,6 +150,10 @@ use yii\web\ForbiddenHttpException;
  * @property WebhooksService             $webhooks
  * @property RelationsService            $relations
  * @property PayloadForwardingService    $payloadForwarding
+ * @property DigestService               $digest
+ * @property SummaryService              $summary
+ * @property FreeformFeedService         $feed
+ * @property LockService                 $lock
  */
 class Freeform extends Plugin
 {
@@ -197,6 +210,11 @@ class Freeform extends Plugin
     public static function getInstance(): Freeform
     {
         return parent::getInstance();
+    }
+
+    public static function isLocked(string $key, int $seconds): bool
+    {
+        return self::getInstance()->lock->isLocked($key, $seconds);
     }
 
     /**
@@ -273,6 +291,7 @@ class Freeform extends Plugin
         $this->initHookHandlers();
         $this->initPaymentEventListeners();
         $this->initCleanupJobs();
+        $this->initTasks();
 
         if ($this->isPro() && $this->settings->getPluginName()) {
             $this->name = $this->settings->getPluginName();
@@ -292,6 +311,10 @@ class Freeform extends Plugin
         $event         = new RegisterCpSubnavItemsEvent($subNavigation);
         $this->trigger(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
 
+        $badgeCount = $this->settings->getBadgeCount();
+        if ($badgeCount) {
+            $navItem['badgeCount'] = $badgeCount;
+        }
         $navItem['subnav'] = $event->getSubnavItems();
 
         return $navItem;
@@ -465,6 +488,7 @@ class Freeform extends Plugin
                 'payment-webhooks' => PaymentWebhooksController::class,
                 'webhooks'         => WebhooksController::class,
                 'banners'          => BannersController::class,
+                'feeds'            => FeedsController::class,
             ];
         }
     }
@@ -506,6 +530,10 @@ class Freeform extends Plugin
                 'relations'            => RelationsService::class,
                 'notes'                => NotesService::class,
                 'payloadForwarding'    => PayloadForwardingService::class,
+                'digest'               => DigestService::class,
+                'summary'              => SummaryService::class,
+                'feed'                 => FreeformFeedService::class,
+                'lock'                 => LockService::class,
             ]
         );
     }
@@ -1046,27 +1074,47 @@ class Freeform extends Plugin
 
     private function initCleanupJobs()
     {
-        if ($this->isInstalled && !\Craft::$app->request->getIsConsoleRequest()) {
-            if(\Craft::$app->cache->get(SettingsService::CACHE_KEY_PURGE)) {
-                return;
-            }
-
-            $assetAge = $this->settings->getPurgableUnfinalizedAssetAgeInMinutes();
-            if ($assetAge > 0) {
-                \Craft::$app->queue->push(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]));
-            }
-
-            $submissionAge = $this->settings->getPurgableSubmissionAgeInDays();
-            if ($submissionAge > 0) {
-                \Craft::$app->queue->push(new PurgeSubmissionsJob(['age' => $submissionAge]));
-            }
-
-            $spamAge = $this->settings->getPurgableSpamAgeInDays();
-            if ($spamAge > 0) {
-                \Craft::$app->queue->push(new PurgeSpamJob(['age' => $spamAge]));
-            }
-
-            \Craft::$app->cache->set(SettingsService::CACHE_KEY_PURGE, true, SettingsService::CACHE_TTL_SECONDS);
+        if (!$this->isInstalled || \Craft::$app->request->getIsConsoleRequest()) {
+            return;
         }
+
+        if (self::isLocked(SettingsService::CACHE_KEY_PURGE, SettingsService::CACHE_TTL_SECONDS)) {
+            return;
+        }
+
+        $assetAge = $this->settings->getPurgableUnfinalizedAssetAgeInMinutes();
+        if ($assetAge > 0) {
+            \Craft::$app->queue->push(new PurgeUnfinalizedAssetsJob(['age' => $assetAge]));
+        }
+
+        $submissionAge = $this->settings->getPurgableSubmissionAgeInDays();
+        if ($submissionAge > 0) {
+            \Craft::$app->queue->push(new PurgeSubmissionsJob(['age' => $submissionAge]));
+        }
+
+        $spamAge = $this->settings->getPurgableSpamAgeInDays();
+        if ($spamAge > 0) {
+            \Craft::$app->queue->push(new PurgeSpamJob(['age' => $spamAge]));
+        }
+    }
+
+    private function initTasks()
+    {
+        if (!$this->isInstalled || \Craft::$app->request->getIsConsoleRequest()) {
+            return;
+        }
+
+        Event::on(
+            Application::class,
+            Application::EVENT_AFTER_REQUEST,
+            function () {
+                if (!\Craft::$app->db->tableExists(FeedRecord::TABLE)) {
+                    return;
+                }
+
+                Freeform::getInstance()->feed->fetchFeed();
+                Freeform::getInstance()->digest->triggerDigest();
+            }
+        );
     }
 }

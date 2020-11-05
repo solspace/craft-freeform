@@ -52,9 +52,6 @@ class FormProperties extends AbstractProperties
     /** @var string */
     protected $optInDataStorageTargetHash;
 
-    /** @var string */
-    protected $limitFormSubmissions;
-
     /** @var array */
     protected $tagAttributes;
 
@@ -169,14 +166,6 @@ class FormProperties extends AbstractProperties
     }
 
     /**
-     * @return string|null
-     */
-    public function getLimitFormSubmissions()
-    {
-        return $this->limitFormSubmissions;
-    }
-
-    /**
      * @return array
      */
     public function getTagAttributes(): array
@@ -224,7 +213,6 @@ class FormProperties extends AbstractProperties
             'defaultStatus'              => self::TYPE_INTEGER,
             'formTemplate'               => self::TYPE_STRING,
             'optInDataStorageTargetHash' => self::TYPE_STRING,
-            'limitFormSubmissions'       => self::TYPE_STRING,
             'tagAttributes'              => self::TYPE_ARRAY,
             'ajaxEnabled'                => self::TYPE_BOOLEAN,
             'recaptchaEnabled'           => self::TYPE_BOOLEAN,

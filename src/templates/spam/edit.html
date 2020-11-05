@@ -6,6 +6,7 @@
 {% set saveShortcutRedirect = 'freeform/spam/{id}' %}
 {% set fullPageForm = true %}
 {% set actionUrl = 'freeform/spam-submissions/allow' %}
+{% set redirectUrl = 'freeform/spam' %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
@@ -16,6 +17,11 @@
 
 {% block actionButton %}
     <div class="buttons">
+        <div class="btngroup submit">
+            <button type="button" class="btn" id="delete-button" data-id="{{ submission.id }}">
+                {{ 'Delete'|t('freeform') }}
+            </button>
+        </div>
         <div class="btngroup submit">
             <input type="submit" class="btn submit" value="{{ 'Allow'|t('freeform') }}">
         </div>

@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadIn
 use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
+use Solspace\Freeform\Library\Composer\Components\Properties\ValidationProperties;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
@@ -132,6 +133,15 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     private $ajaxEnabled;
 
     /** @var bool */
+    private $showSpinner;
+
+    /** @var bool */
+    private $showLoadingText;
+
+    /** @var string */
+    private $loadingText;
+
+    /** @var bool */
     private $recaptchaEnabled;
 
     /** @var SubmissionHandlerInterface */
@@ -225,7 +235,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             $formAttributes->getFormValueContext(),
             $translator
         );
-        $this->buildFromData($properties->getFormProperties());
+
+        $this->buildFromData(
+            $properties->getFormProperties(),
+            $properties->getValidationProperties()
+        );
 
         $this->id             = $formAttributes->getId();
         $this->formAttributes = $formAttributes;
@@ -257,6 +271,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                 return null;
             }
         }
+    }
+
+    /**
+     * @param string $type
+     *
+     * @return bool
+     */
+    public function hasFieldType(string $type): bool
+    {
+        return $this->getLayout()->hasFieldType($type);
     }
 
     /**
@@ -451,9 +475,61 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /**
      * @return bool
      */
+    public function isShowSpinner(): bool
+    {
+        return $this->showSpinner;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShowLoadingText(): bool
+    {
+        return $this->showLoadingText;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLoadingText()
+    {
+        return $this->loadingText;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSuccessMessage(): string
+    {
+        return $this->getValidationProperties()->getSuccessMessage();
+    }
+
+    /**
+     * @return string
+     */
+    public function getErrorMessage(): string
+    {
+        return $this->getValidationProperties()->getErrorMessage();
+    }
+
+    /**
+     * @return bool
+     */
     public function isRecaptchaEnabled(): bool
     {
-        return $this->recaptchaEnabled && !\count($this->getLayout()->getPaymentFields());
+        if (!$this->recaptchaEnabled) {
+            return false;
+        }
+
+        if (\count($this->getLayout()->getPaymentFields())) {
+            return false;
+        }
+
+        if ($this->getFormValueContext()->isDisableRecaptcha()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -666,6 +742,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->valid = $isFormValid;
 
         return $this->valid;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isStoreData(): bool
+    {
+        return $this->storeData;
     }
 
     /**
@@ -913,6 +997,23 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         if ($this->formHandler->shouldScrollToAnchor($this)) {
             $attributes['data-scroll-to-anchor'] = $this->getAnchor();
+        }
+
+        if ($this->isShowSpinner()) {
+            $attributes['data-show-spinner'] = true;
+        }
+
+        if ($this->isShowLoadingText()) {
+            $attributes['data-show-loading-text'] = true;
+            $attributes['data-loading-text'] = $this->getLoadingText();
+        }
+
+        if ($this->getSuccessMessage()) {
+            $attributes['data-success-message'] = $this->getTranslator()->translate($this->getSuccessMessage(), [], 'app');
+        }
+
+        if ($this->getErrorMessage()) {
+            $attributes['data-error-message'] = $this->getTranslator()->translate($this->getErrorMessage(), [], 'app');
         }
 
         $attributes         = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
@@ -1165,9 +1266,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /**
      * Builds the form object based on $formData
      *
-     * @param FormProperties $formProperties
+     * @param FormProperties       $formProperties
+     * @param ValidationProperties $validationProperties
      */
-    private function buildFromData(FormProperties $formProperties)
+    private function buildFromData(FormProperties $formProperties, ValidationProperties $validationProperties)
     {
         $this->name                       = $formProperties->getName();
         $this->handle                     = $formProperties->getHandle();
@@ -1182,9 +1284,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->defaultStatus              = $formProperties->getDefaultStatus();
         $this->formTemplate               = $formProperties->getFormTemplate();
         $this->optInDataStorageTargetHash = $formProperties->getOptInDataStorageTargetHash();
-        $this->limitFormSubmissions       = $formProperties->getLimitFormSubmissions();
+        $this->limitFormSubmissions       = $validationProperties->getLimitFormSubmissions();
         $this->tagAttributes              = $formProperties->getTagAttributes();
         $this->ajaxEnabled                = $formProperties->isAjaxEnabled();
+        $this->showSpinner                = $validationProperties->isShowSpinner();
+        $this->showLoadingText            = $validationProperties->isShowLoadingText();
+        $this->loadingText                = $validationProperties->getLoadingText();
         $this->recaptchaEnabled           = $formProperties->isRecaptchaEnabled();
     }
 
@@ -1203,6 +1308,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                     FormValueContext::DATA_SUPPRESS             => $this->customAttributes->getSuppress(),
                     FormValueContext::DATA_RELATIONS            => $this->customAttributes->getRelations(),
                     FormValueContext::DATA_PERSISTENT_VALUES    => $this->customAttributes->getOverrideValues(),
+                    FormValueContext::DATA_DISABLE_RECAPTCHA    => $this->customAttributes->isDisableRecaptcha(),
                 ]
             )
             ->saveState();
@@ -1273,6 +1379,15 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         return $submission;
+    }
+
+    /**
+     * @return Properties\ValidationProperties
+     * @throws ComposerException
+     */
+    public function getValidationProperties()
+    {
+        return $this->properties->getValidationProperties();
     }
 
     /**

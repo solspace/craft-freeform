@@ -14,6 +14,8 @@ use yii\db\ActiveQuery;
  * @property string $name
  * @property int    $limit
  * @property string $dateRange
+ * @property string $rangeStart
+ * @property string $rangeEnd
  * @property array  $fields
  * @property array  $filters
  * @property array  $statuses
@@ -46,6 +48,18 @@ class ExportProfileRecord extends ActiveRecord
         return [
             [['name'], 'unique'],
             [['name', 'statuses'], 'required'],
+            [['rangeStart', 'rangeEnd'], 'validateDate'],
         ];
+    }
+
+    public function validateDate($attribute)
+    {
+        $value = $this->getAttribute($attribute);
+
+        try {
+            new \DateTime($value);
+        } catch (\Exception $exception) {
+            $this->addError($attribute, 'This is not a valid date');
+        }
     }
 }

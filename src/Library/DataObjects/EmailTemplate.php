@@ -43,6 +43,9 @@ class EmailTemplate
     private $bcc;
 
     /** @var string */
+    private $replyToName;
+
+    /** @var string */
     private $replyToEmail;
 
     /** @var bool */
@@ -80,6 +83,7 @@ class EmailTemplate
         $this->fromName     = $this->getMetadata('fromName', true);
         $this->cc           = $this->getMetadata('cc');
         $this->bcc          = $this->getMetadata('bcc');
+        $this->replyToName  = $this->getMetadata('replyToName');
         $this->replyToEmail = $this->getMetadata('replyToEmail');
         $this->subject      = $this->getMetadata('subject', true);
         $this->body         = preg_replace("/{#.*#}\n?/", "", $this->templateData);
@@ -149,6 +153,14 @@ class EmailTemplate
     public function getBcc()
     {
         return $this->bcc;
+    }
+
+    /**
+     * @return string
+     */
+    public function getReplyToName()
+    {
+        return $this->replyToName;
     }
 
     /**

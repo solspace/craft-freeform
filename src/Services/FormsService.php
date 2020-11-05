@@ -77,6 +77,13 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsById;
     }
 
+    public function getAllFormIds(): array
+    {
+        return $this->getFormQuery()
+            ->select('id')
+            ->column();
+    }
+
     /**
      * @param bool $indexById
      *
@@ -195,6 +202,13 @@ class FormsService extends BaseService implements FormHandlerInterface
         $record->color                      = $model->color;
         $record->optInDataStorageTargetHash = $model->optInDataStorageTargetHash;
         $record->limitFormSubmissions       = $model->limitFormSubmissions;
+
+        if ($isNew) {
+            $record->order = 1 + ((int) (new Query())
+                ->select('MAX([[order]])')
+                ->from(FormRecord::TABLE)
+                ->scalar());
+        }
 
         $record->validate();
         $model->addErrors($record->getErrors());
@@ -754,7 +768,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 ]
             )
             ->from(FormRecord::TABLE . ' forms')
-            ->orderBy(['forms.name' => SORT_ASC]);
+            ->orderBy(['forms.order' => SORT_ASC, 'forms.name' => SORT_ASC]);
     }
 
     /**

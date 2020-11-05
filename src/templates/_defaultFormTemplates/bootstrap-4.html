@@ -33,9 +33,15 @@
     </ul>
 {% endif %}
 
+{% if form.submittedSuccessfully %}
+    <div class="alert alert-success">
+        {{ form.successMessage | t }}
+    </div>
+{% endif %}
+
 {% if form.hasErrors %}
     <div class="alert alert-danger">
-        {{ "Error! Please review the form and try submitting again."|t('freeform') }}
+        {{ form.errorMessage | t }}
 
         {% if form.errors|length %}
             <ul class="mb-0">

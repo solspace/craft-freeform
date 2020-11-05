@@ -28,11 +28,12 @@ class CraftTranslator implements TranslatorInterface
      *
      * @param string $string
      * @param array  $variables
+     * @param string $category
      *
      * @return string
      */
-    public function translate($string, array $variables = []): string
+    public function translate($string, array $variables = [], string $category = 'freeform'): string
     {
-        return Freeform::t($string, $variables);
+        return \Craft::t($category, $string, $variables);
     }
 }

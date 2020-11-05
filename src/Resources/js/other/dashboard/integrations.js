@@ -1,1 +1,44 @@
-"use strict";function _defineProperty(t,a,e){return a in t?Object.defineProperty(t,a,{value:e,enumerable:!0,configurable:!0,writable:!0}):t[a]=e,t}!function(){$("*[data-auth-check]").each(function(){var t=$(this),a=t.data(),e=a.integrationId,r=a.integrationType,n=$("span[data-auth-indicator]",t),c=$("span[data-auth-text]:first",t);e&&$.ajax({url:Craft.getCpUrl("freeform/".concat(r,"/check")),data:_defineProperty({id:e},Craft.csrfTokenName,Craft.csrfTokenValue),type:"post",dataType:"json",success:function(t){t.success?(n.css({backgroundColor:"#27AE60"}),c.text(c.data("authSuccess"))):(n.css({backgroundColor:"#D0021B"}),c.text(c.data("authError")))}})})}();
+"use strict";
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+(function () {
+  "use strict";
+
+  $("*[data-auth-check]").each(function () {
+    var self = $(this);
+
+    var _self$data = self.data(),
+        id = _self$data.integrationId,
+        type = _self$data.integrationType;
+
+    var $statusIndicator = $("span[data-auth-indicator]", self);
+    var $statusText = $("span[data-auth-text]:first", self);
+
+    if (!id) {
+      return;
+    }
+
+    $.ajax({
+      url: Craft.getCpUrl("freeform/".concat(type, "/check")),
+      data: _defineProperty({
+        id: id
+      }, Craft.csrfTokenName, Craft.csrfTokenValue),
+      type: "post",
+      dataType: "json",
+      success: function success(json) {
+        if (json.success) {
+          $statusIndicator.css({
+            backgroundColor: "#27AE60"
+          });
+          $statusText.text($statusText.data("authSuccess"));
+        } else {
+          $statusIndicator.css({
+            backgroundColor: "#D0021B"
+          });
+          $statusText.text($statusText.data("authError"));
+        }
+      }
+    });
+  });
+})();

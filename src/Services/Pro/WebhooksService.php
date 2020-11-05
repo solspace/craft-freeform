@@ -245,7 +245,7 @@ class WebhooksService extends BaseService
     /**
      * @param Query $query
      *
-     * @return array|WebhookInterface[]
+     * @return array|WebhookModel[]
      */
     private function getAllWebhookModels(Query $query): array
     {

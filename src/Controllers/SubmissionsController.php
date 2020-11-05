@@ -185,7 +185,10 @@ class SubmissionsController extends BaseController
             );
         }
 
-        \Craft::$app->view->registerAssetBundle(SubmissionEditBundle::class);
+        $this->view->registerAssetBundle(SubmissionEditBundle::class);
+        $this->view->registerTranslations(Freeform::TRANSLATION_CATEGORY, [
+            'Are you sure you want to delete this?'
+        ]);
 
         $registerAssetsEvent = new RegisterEvent(\Craft::$app->view);
         $this->trigger(self::EVENT_REGISTER_EDIT_ASSETS, $registerAssetsEvent);

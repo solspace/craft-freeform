@@ -510,8 +510,9 @@ class SettingsService extends BaseService
             'crm'                  => ['title' => Freeform::t('CRM')],
             'payment-gateways'     => ['title' => Freeform::t('Payments')],
             'webhooks'             => ['title' => Freeform::t('Webhooks')],
-            'hdlogs'               => ['heading' => Freeform::t('Logs')],
-            'error-log'            => ['title' => Freeform::t('Error Log ({count})', ['count' => $errorCount])],
+            'hdalerts'             => ['heading' => Freeform::t('Reliability')],
+            'notices-and-alerts'   => ['title' => Freeform::t('Notices & Alerts')],
+            'error-log'            => ['title' => Freeform::t('Error Log <span class="badge">{count}</span>', ['count' => $errorCount])],
         ];
 
         if (!$this->isAllowAdminEdit()) {
@@ -609,6 +610,39 @@ class SettingsService extends BaseService
     public function getFailedNotificationRecipients(): array
     {
         return StringHelper::extractSeparatedValues($this->getSettingsModel()->alertNotificationRecipients ?? '');
+    }
+
+    public function getDigestRecipients(): array
+    {
+        return StringHelper::extractSeparatedValues($this->getSettingsModel()->digestRecipients ?? '');
+    }
+
+    public function getBadgeCount()
+    {
+        $type = $this->getSettingsModel()->badgeType;
+        if (!$type) {
+            return null;
+        }
+
+        $freeform = Freeform::getInstance();
+        if ($type === 'submissions') {
+            return $freeform->submissions->getSubmissionCount();
+        }
+
+        if ($type === 'spam') {
+            return $freeform->spamSubmissions->getSubmissionCount(null, null, true);
+        }
+
+        $total = 0;
+        if ($type === 'all' || $type === 'notices') {
+            $total += $freeform->feed->getUnreadCount();
+        }
+
+        if ($type === 'all' || $type === 'errors') {
+            $total += $freeform->logger->getLogReader()->count();
+        }
+
+        return $total;
     }
 
     /**

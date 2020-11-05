@@ -26,28 +26,25 @@
                 <tr>
                     <td style="font-size: 0.8em; color: #999999;">
                         <div style="padding: 20px 0;">
-                            {{ "This email alert was generated automatically by <a href='{link}'>Solspace Freeform</a> from your Craft website.
-                                You are receiving this email because you or someone else has configured your email address to
-                                receive an email every time a form submission fails to send an email notification."
-                            | t('freeform', { link: 'https://docs.solspace.com/craft/freeform/' })
-                            | raw }}
+                            {% block footerText %}{% endblock %}
                         </div>
 
-                        <table border="0" cellpadding="0" cellspacing="0">
-                            <tr>
-                                <td>
-                                    <a href="{{ cpUrl('freeform') }}">
-                                        Visit your Freeform control panel
-                                    </a>
-                                </td>
-                                <td style="padding: 0 10px;">|</td>
-                                <td>
-                                    <a href="{{ cpUrl('freeform/settings/email-templates') }}">
-                                        Update your Email Alert settings
-                                    </a>
-                                </td>
-                            </tr>
-                        </table>
+                        {% if links is defined %}
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    {% for link in links %}
+                                        <td>
+                                            <a href="{{ link.url }}">
+                                                {{ link.text | t('freeform') }}
+                                            </a>
+                                        </td>
+                                        {% if loop.index < (links | length) %}
+                                            <td style="padding: 0 10px;">|</td>
+                                        {% endif %}
+                                    {% endfor %}
+                                </tr>
+                            </table>
+                        {% endif %}
                     </td>
                 </tr>
             </table>

@@ -32,7 +32,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('optInDataStorageTargetHash', $this->string(20)->null())
                 ->addField('limitFormSubmissions', $this->string(20)->null())
                 ->addField('extraPostUrl', $this->string(255)->null())
-                ->addField('extraPostTriggerPhrase', $this->string(255)->null()),
+                ->addField('extraPostTriggerPhrase', $this->string(255)->null())
+                ->addField('order', $this->integer()),
 
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())
@@ -52,6 +53,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('description', $this->text())
                 ->addField('fromName', $this->string(255)->notNull())
                 ->addField('fromEmail', $this->string(255)->notNull())
+                ->addField('replyToName', $this->string(255))
                 ->addField('replyToEmail', $this->string(255))
                 ->addField('cc', $this->string(255))
                 ->addField('bcc', $this->string(255))
@@ -155,6 +157,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('name', $this->string(255)->notNull()->unique())
                 ->addField('limit', $this->integer())
                 ->addField('dateRange', $this->string(255))
+                ->addField('rangeStart', $this->string(255)->null())
+                ->addField('rangeEnd', $this->string(255)->null())
                 ->addField('fields', $this->text()->notNull())
                 ->addField('filters', $this->text())
                 ->addField('statuses', $this->text()->notNull())
@@ -243,6 +247,35 @@ class Install extends StreamlinedInstallMigration
                 ->addField('reasonMessage', $this->text())
                 ->addIndex(['submissionId', 'reasonType'])
                 ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_feeds'))
+                ->addField('id', $this->primaryKey())
+                ->addField('hash', $this->string()->notNull())
+                ->addField('min', $this->string())
+                ->addField('max', $this->string())
+                ->addField('issueDate', $this->dateTime()->notNull())
+                ->addIndex(['hash'], true),
+
+            (new Table('freeform_feed_messages'))
+                ->addField('id', $this->primaryKey())
+                ->addField('feedId', $this->integer()->notNull())
+                ->addField('message', $this->text()->notNull())
+                ->addField('conditions', $this->text()->notNull())
+                ->addField('type', $this->string()->notNull())
+                ->addField('seen', $this->boolean()->notNull()->defaultValue(false))
+                ->addField('issueDate', $this->dateTime()->notNull())
+                ->addForeignKey('feedId', 'freeform_feeds', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_lock'))
+                ->addField('id', $this->primaryKey())
+                ->addField('key', $this->string()->notNull())
+                ->addIndex(['key', 'dateCreated']),
+
+            (new Table('freeform_notification_log'))
+                ->addField('id', $this->primaryKey())
+                ->addField('type', $this->string(30)->notNull())
+                ->addField('name', $this->string())
+                ->addIndex(['type', 'dateCreated']),
         ];
     }
 }

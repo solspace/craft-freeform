@@ -17,6 +17,10 @@ use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 
 class ExportProfileModel extends Model
 {
+    const RANGE_TODAY = 'today';
+    const RANGE_YESTERDAY = 'yesterday';
+    const RANGE_CUSTOM = 'custom';
+
     /** @var int */
     public $id;
 
@@ -31,6 +35,12 @@ class ExportProfileModel extends Model
 
     /** @var string */
     public $dateRange;
+
+    /** @var string */
+    public $rangeStart;
+
+    /** @var string */
+    public $rangeEnd;
 
     /** @var array */
     public $fields;
@@ -102,26 +112,36 @@ class ExportProfileModel extends Model
      */
     public function getDateRangeEnd()
     {
+        if ($this->dateRange === self::RANGE_CUSTOM) {
+            return (new \DateTime($this->rangeEnd))->setTime(23, 59, 59);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getDateRangeStart()
+    {
         if (empty($this->dateRange)) {
             return null;
         }
 
         if (is_numeric($this->dateRange)) {
-            $time = new \DateTime("-{$this->dateRange} days");
-            $time->setTime(0, 0, 0);
-
-            return $time;
+            return (new \DateTime("-{$this->dateRange} days"))->setTime(0, 0, 0);
         }
 
         switch ($this->dateRange) {
-            case 'today':
-                return (new \DateTime('now'))->setTime(0, 0, 0);
+            case self::RANGE_CUSTOM:
+                return (new \DateTime($this->rangeStart))->setTime(0, 0, 0);
 
-            case 'yesterday':
+            case self::RANGE_YESTERDAY:
                 return (new \DateTime('-1 day'))->setTime(0, 0, 0);
 
+            case self::RANGE_TODAY:
             default:
-                return new \DateTime('now');
+                return (new \DateTime('now'))->setTime(0, 0, 0);
         }
     }
 
@@ -213,6 +233,8 @@ class ExportProfileModel extends Model
             'name',
             'limit',
             'dateRange',
+            'rangeStart',
+            'rangeEnd',
             'fields',
             'statuses',
             'filters',
@@ -255,9 +277,15 @@ class ExportProfileModel extends Model
         $conditions = ['s.[[formId]] = :formId', 's.[[isSpam]] = false'];
         $parameters = ['formId' => $this->formId];
 
+        $dateRangeStart = $this->getDateRangeStart();
+        if ($dateRangeStart) {
+            $conditions[]               = 's.[[dateCreated]] >= :dateRangeStart';
+            $parameters['dateRangeStart'] = $dateRangeStart->format('Y-m-d H:i:s');
+        }
+
         $dateRangeEnd = $this->getDateRangeEnd();
         if ($dateRangeEnd) {
-            $conditions[]               = 's.[[dateCreated]] >= :dateRangeEnd';
+            $conditions[]               = 's.[[dateCreated]] <= :dateRangeEnd';
             $parameters['dateRangeEnd'] = $dateRangeEnd->format('Y-m-d H:i:s');
         }
 

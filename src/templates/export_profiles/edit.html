@@ -65,6 +65,8 @@
             value: profile.dateRange,
             options: {
                 '': 'None',
+                'custom': 'Custom Range',
+                'presets': { optgroup: 'Presets' },
                 'today': 'Today',
                 'yesterday': 'Yesterday',
                 7: 'Last 7 days',
@@ -73,6 +75,24 @@
             },
             errors: profile.getErrors('dateRange'),
         }) }}
+
+        <div id="date-range" class="field {{ profile.dateRange != 'custom' ? 'hidden' }}">
+            {{ forms.textField({
+                label: "Range Start"|t,
+                instructions: "Enter the beginning of the time period. Specify an exact date (e.g. '2020-09-01') or use something relative like '15 days ago'. Default is 'today'."|t,
+                name: 'rangeStart',
+                value: profile.rangeStart,
+                errors: profile.getErrors('rangeStart'),
+            }) }}
+
+            {{ forms.textField({
+                label: "Range End"|t,
+                instructions: "Enter the end of the time period. Specify an exact date (e.g. '2020-09-30') or use something relative like '15 days ago'. Default is 'today'."|t,
+                name: 'rangeEnd',
+                value: profile.rangeEnd,
+                errors: profile.getErrors('rangeEnd'),
+            }) }}
+        </div>
 
         {{ forms.textField({
             label: "Limit"|t,
@@ -227,3 +247,19 @@
         }
     </style>
 {% endblock %}
+
+{% js %}
+    (function() {
+        var select = document.getElementById("dateRange");
+        var range = document.getElementById("date-range");
+
+        select.addEventListener("change", function (event) {
+            var value = event.target.value;
+            if (value === "custom") {
+                range.classList.remove("hidden");
+            } else {
+                range.classList.add("hidden");
+            }
+        });
+    })();
+{% endjs %}

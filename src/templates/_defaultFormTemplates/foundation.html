@@ -34,9 +34,16 @@
     <br />
 {% endif %}
 
+{% if form.submittedSuccessfully %}
+    <div class="callout success">
+        {{ form.successMessage | t }}
+    </div>
+{% endif %}
+
+
 {% if form.hasErrors %}
     <div class="callout alert">
-        {{ "Error! Please review the form and try submitting again."|t('freeform') }}
+        {{ form.errorMessage | t }}
 
         {% if form.errors|length %}
             <ul>

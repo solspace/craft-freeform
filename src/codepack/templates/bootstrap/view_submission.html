@@ -11,16 +11,16 @@
         {% set submissionId = craft.app.request.segment(5) %}
         {% set isSuccess    = craft.app.request.segment(6) == "success" %}
 
+        {% set form = craft.freeform.form(formHandle) %}
+
         {% if isSuccess %}
             <div class="alert alert-success" role="alert">
-                Form submitted successfully!
+                {{ form.successMessage | t }}
             </div>
         {% endif %}
 
         {# Allow Admins only to view submission data for Demo Templates by default #}
         {% if currentUser and currentUser.admin %}
-
-            {% set form = craft.freeform.form(formHandle) %}
             {% set submission = craft.freeform.submissions({
                 id: submissionId,
                 form: formHandle,

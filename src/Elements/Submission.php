@@ -12,6 +12,7 @@ use craft\helpers\UrlHelper;
 use LitEmoji\LitEmoji;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
 use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
@@ -21,6 +22,7 @@ use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Fields\Pro\RatingField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
+use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -372,13 +374,28 @@ class Submission extends Element
                 $translatedReasons[] = Freeform::t($reason);
             }
 
-            return implode(', ', $translatedReasons);
+            return StringHelper::implodeRecursively(', ', $translatedReasons);
         }
 
         $value = $this->$attribute;
 
         if (\is_array($value)) {
-            return Html::decode(implode(', ', $value));
+            return Html::decode(StringHelper::implodeRecursively(', ', $value));
+        }
+
+        if ($value instanceof TableField) {
+            $rows = $value->getValue();
+            $value = '<table>';
+            foreach ($rows as $row) {
+                $value .= '<tr>';
+                foreach ($row as $val) {
+                    $value .= '<td>' . $val . '</td>';
+                }
+                $value .= '</tr>';
+            }
+            $value .= '</table>';
+
+            return Html::decode($value);
         }
 
         if ($value instanceof SignatureField) {

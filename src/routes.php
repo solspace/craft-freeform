@@ -19,8 +19,11 @@ return [
     'freeform'                                                       => 'freeform/settings/default-view',
     'freeform/forms'                                                 => 'freeform/forms/index',
     'freeform/forms/duplicate'                                       => 'freeform/forms/duplicate',
+    'freeform/forms/reset-spam-counter'                              => 'freeform/forms/reset-spam-counter',
+    'freeform/forms/sort'                                            => 'freeform/forms/sort',
     'freeform/forms/new'                                             => 'freeform/forms/create',
     'freeform/forms/save'                                            => 'freeform/forms/save',
+    'freeform/forms/export'                                          => 'freeform/forms/export',
     'freeform/forms/<id:\d+>'                                        => 'freeform/forms/edit',
     'freeform/forms/delete'                                          => 'freeform/forms/delete',
     // Fields
@@ -50,7 +53,8 @@ return [
     'freeform/submissions/<formHandle:[a-zA-Z0-9\-_]+>'              => 'freeform/submissions/index',
     // Spam
     'freeform/spam'                                                  => 'freeform/spam-submissions/index',
-    'freeform/spam/allow'                                        => 'freeform/spam-submissions/allow',
+    'freeform/spam/allow'                                            => 'freeform/spam-submissions/allow',
+    'freeform/spam/delete'                                           => 'freeform/spam-submissions/delete',
     'freeform/spam/<id:\d+>'                                         => 'freeform/spam-submissions/edit',
     'freeform/spam/<formHandle:[a-zA-Z0-9\-_]+>'                     => 'freeform/spam-submissions/index',
     // Errors
@@ -86,6 +90,7 @@ return [
     'freeform/settings'                                              => 'freeform/settings/index',
     'freeform/settings/general'                                      => 'freeform/settings/provide-setting',
     'freeform/settings/email-templates'                              => 'freeform/settings/provide-setting',
+    'freeform/settings/notices-and-alerts'                           => 'freeform/settings/provide-setting',
     'freeform/settings/formatting-templates'                         => 'freeform/settings/provide-setting',
     'freeform/settings/spam'                                         => 'freeform/settings/provide-setting',
     'freeform/settings/add-demo-template'                            => 'freeform/settings/add-demo-template',
@@ -113,4 +118,8 @@ return [
     // Banners
     'freeform/banners/dismiss/demo'                                  => 'freeform/banners/dismiss-demo',
     'freeform/banners/dismiss/old-freeform'                          => 'freeform/banners/dismiss-old-freeform',
+    // Feeds
+    'freeform/feeds/show-summary'                                    => 'freeform/feeds/show-summary',
+    'freeform/feeds/dismiss-message'                                 => 'freeform/feeds/dismiss-message',
+    'freeform/feeds/dismiss-type'                                    => 'freeform/feeds/dismiss-type',
 ];

@@ -1,45 +1,12 @@
-{% include "freeform/dashboard/_assets/header" with {
-    title: "Errors"|t("freeform"),
-    count: logReader|length,
-    links: [
-        { link: url("freeform/settings/error-log"), label: "View Log"|t("freeform"), permission: "freeform-settingsAccess" },
-        { link: url("freeform/logs/clear"), label: "Clear"|t("freeform"), class: "submit clear-logs", permission: "freeform-settingsAccess" },
-    ]
-} %}
-
-
 {% if logReader|length %}
-    <table class="data fullwidth">
-        <thead>
-        <tr>
-            <th>{{ "Type"|t('freeform') }}</th>
-            <th>{{ "Level"|t('freeform') }}</th>
-            <th>{{ "Date"|t('freeform') }}</th>
-            <th>{{ "Details"|t('freeform') }}</th>
-        </tr>
-        </thead>
-
-        <tbody>
-        {% for line in logReader.lastLines(5) %}
-            <tr>
-                <td class="nowrap">
-                    {{ line.logger }}
-                </td>
-                <td class="nowrap">
-                <span class="badge log-level-{{ line.level|lower }}">
-                    {{ line.level|lower }}
-                </span>
-                </td>
-                <td class="nowrap code">
-                    {{ line.date|datetime }}
-                </td>
-                <td style="color: #b1b1b1; width: 70%;">
-                    {{ line.message }}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-{% else %}
-    {{ "Everything appears to be okay right now! No errors were found."|t("freeform") }}
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="banner banner-critical banner-single">
+                There are currently
+                <a href="{{ cpUrl('freeform/settings/error-log') }}">
+                    {{ logReader | length }} logged errors</a>
+                in the Freeform error log.
+            </div>
+        </div>
+    </div>
 {% endif %}

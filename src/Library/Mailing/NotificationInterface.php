@@ -41,6 +41,11 @@ interface NotificationInterface
     /**
      * @return string|null
      */
+    public function getReplyToName();
+
+    /**
+     * @return string|null
+     */
     public function getReplyToEmail();
 
     /**

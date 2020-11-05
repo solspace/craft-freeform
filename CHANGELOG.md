@@ -1,5 +1,41 @@
 # Solspace Freeform Changelog
 
+## 3.9.0 - 2020-11-05
+### Added
+- Added an 'Important Update Notices' area in the Dashboard that keeps you informed about issues that may specifically affect your site.
+- Added a 'What's New' area in the Dashboard that lets you know about new features available in the current version you've just updated to.
+- Added a 'Weekly Digest' email notification that will keep you in the loop about your website's Freeform form performance and status. It includes a snapshot of the previous week's performance and any logged errors and upgrade notices.
+- Added the ability to designate general success and error messages for each form inside the form builder.
+- Added settings in form builder for the ability to set and define 'Loading...' indicators on your submit buttons in forms.
+- Added setting to display a plugin badge for Freeform navigation menu. Choose whether to show the error/notice count, spam submission count, submission count when enabled.
+- Added ability to populate multi-option field types with Commerce Products.
+- Added options to set the reCAPTCHA 'Theme' (light/dark), 'Size' (normal/compact) and custom 'Error Message'.
+- Added ability to disable reCAPTCHA for forms at template level (use `disableRecaptcha: true`).
+- Added optional 'Reply-to Name' field for email notification templates to apply a name to the Reply-to email address.
+- Added `$form->hasFieldType(string $type);` better field type presence checking in forms.
+
+### Changed
+- Redesigned the Dashboard to be cleaner and now include a built-in notices and warnings area to provide you with more peace of mind as it keeps you informed about issues and new features that may specifically affect your site.
+- Updated Export Profiles to have more flexible date range options.
+- Updated demo templates and sample formatting templates to account for general success and error messages, as well as 'Loading' indicator and text if set inside the form builder.
+- Updated Signature images to be added as an attachment in email notifications if the 'Include Attachments' setting is enabled.
+- Updated Stripe payment data to have the ability to include the form handle in metadata.
+- Updated Payments behavior to no longer trigger email notifications, Element Connections, and API integrations when the payment is declined.
+- Updated the built-in Spam Folder to be enabled by default on new installs.
+- Updated Spam Folder individual submission view to include a 'Delete' button, and to have both the 'Delete' and 'Approve' buttons return you to the Spam Folder page for a more intuitive flow.
+- Updated reCAPTCHA v3 default error message to be more applicable to the context.
+- Updated the Pardot integration to include mapping to many other Pardot fields.
+
+### Deprecated
+- Deprecated the 'Reload form' option for the 'Spam Protection Behavior' setting. The Freeform settings interface will no longer show this option and we recommend you choose a different option. In the meantime, you can continue to use this setting by manually specifying it in your Project Config file.
+
+### Fixed
+- Fixed a bug where mapping the Stage inside field mapping would not override the Stage set inside the ActiveCampaign CRM integration settings.
+- Fixed a bug where AJAX submissions were not being reset in the form if editing a submission on front end.
+- Fixed a bug where Craft Solo users might notice an error when creating new forms.
+- Fixed a bug where very wide Table fields with many columns would overflow past the field layout in CP Submissions detail view.
+- Fixed a bug where the property editor column in the Composer form builder was clipping the top few pixels of text.
+
 ## 3.8.4 - 2020-10-07
 ### Fixed
 - Fixed a bug where Freeform jobs would be created upon console request.

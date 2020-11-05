@@ -723,8 +723,12 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     {
         $attribute = '';
 
-        if ($this->isRequired() && $this->getCustomAttributes()->getUseRequiredAttribute()) {
-            $attribute = ' required';
+        if ($this->isRequired()) {
+            $attribute = ' data-required';
+
+            if ($this->getCustomAttributes()->getUseRequiredAttribute()) {
+                $attribute = ' required';
+            }
         }
 
         return $attribute;

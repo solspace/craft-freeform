@@ -11,6 +11,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
 use craft\records\Asset as AssetRecord;
@@ -128,11 +129,13 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     /**
      * Returns submission count by form ID
      *
-     * @param bool $isSpam
+     * @param bool        $isSpam
+     * @param Carbon|null $rangeStart
+     * @param Carbon|null $rangeEnd
      *
      * @return array
      */
-    public function getSubmissionCountByForm(bool $isSpam = false): array
+    public function getSubmissionCountByForm(bool $isSpam = false, Carbon $rangeStart = null, Carbon $rangeEnd = null): array
     {
         $submissions = Submission::TABLE;
         $query       = (new Query())
@@ -140,6 +143,14 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             ->from($submissions)
             ->filterWhere(['isSpam' => $isSpam])
             ->groupBy("$submissions.[[formId]]");
+
+        if ($rangeStart) {
+            $query->andWhere(['>=', "$submissions.[[dateCreated]]", $rangeStart]);
+        }
+
+        if ($rangeEnd) {
+            $query->andWhere(['<=', "$submissions.[[dateCreated]]", $rangeEnd]);
+        }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Element::tableName();
@@ -293,13 +304,14 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $this->markFormAsSubmitted($form);
 
-        $connectionsService->connect($form);
-        $integrationsService->processPayments($submission);
-        $integrationsService->sendOutEmailNotifications($submission);
+        if ($integrationsService->processPayments($submission)) {
+            $connectionsService->connect($form);
+            $integrationsService->sendOutEmailNotifications($submission);
 
-        if ($form->hasOptInPermission()) {
-            $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);
-            $integrationsService->pushToCRM($submission);
+            if ($form->hasOptInPermission()) {
+                $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);
+                $integrationsService->pushToCRM($submission);
+            }
         }
 
         $formsService->setPostedCookie($form);

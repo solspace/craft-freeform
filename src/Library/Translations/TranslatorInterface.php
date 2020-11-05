@@ -25,8 +25,9 @@ interface TranslatorInterface
      *
      * @param string $string
      * @param array  $variables
+     * @param string $category
      *
      * @return string
      */
-    public function translate($string, array $variables = []): string;
+    public function translate($string, array $variables = [], string $category = 'freeform'): string;
 }

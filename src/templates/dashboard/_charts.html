@@ -1,28 +1,129 @@
+{% include "freeform/dashboard/_assets/header" with {
+  title: "Submissions"|t("freeform"),
+  count: totalSubmissions,
+  links: [
+    { link: url("freeform/submissions"), label: "Manage"|t("freeform"), class: "", permission: "freeform-submissionsManage" },
+    craft.freeform.pro ? { link: url("freeform/export-profiles"), label: "Export"|t("freeform"), class: "", permission: "freeform-submissionsManage" } : null,
+    isSpamFolderEnabled ? { link: url("freeform/spam"), label: "Spam ("~totalSpam~")"|t("freeform"), class: "submit", permission: "freeform-submissionsManage" } : null,
+  ],
+} %}
+
 {% set ID = random() %}
-<canvas
-        style="margin-top: 20px;"
-        id="submission-chart-{{ ID }}"
-        width="100%"
-        height="40%"
-/>
 
-{% js %}
-    $(function () {
-    setTimeout(function() {
-    var ctx       = document.getElementById("submission-chart-{{ ID }}").getContext("2d");
+<!-- Styles -->
+<style>
+    #submission-chart-{{ ID }} {
+        width: 100%;
+        height: 300px;
+    }
+</style>
+
+<!-- Resources -->
+<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
+<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+
+<!-- Chart code -->
+<script>
+  am4core.ready(function() {
+
+    // Themes begin
+    am4core.useTheme(am4themes_animated);
+    // Themes end
+
+    var chart = am4core.create("submission-chart-{{ ID }}", am4charts.XYChart);
     var chartData = {{ chartData|json_encode|raw }};
-    var incrementSkip = 10;
 
-    chartData.options.scales.xAxes[0].ticks = {
-    callback: function (value, index, values) {
-    return index % incrementSkip === 0 ? value : null;
+    chart.data = chartData.dataset;
+
+    chart.dateFormatter.inputDateFormat = "yyyy-MM-dd";
+    //chart.dateFormatter.dateFormat = 'MMM, yyyy, d';
+    var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
+    dateAxis.renderer.minGridDistance = 90;
+    dateAxis.startLocation = 0.5;
+    dateAxis.endLocation = 0.5;
+    dateAxis.tooltip.disabled = false;
+    dateAxis.baseInterval = {
+      timeUnit: "day",
+      count: 1
     }
-    }
 
-    ctx.fillColor = "#000";
-    ctx.fillText("123%", 100 - 20, 100, 200);
+    {% if totalSubmissions == 0 %}
 
-    var myChart = new Chart(ctx, chartData);
-    }, 200);
+      var label = chart.createChild(am4core.Label);
+      label.text = '{{ "No data available for this period yet" | t('freeforml') }}';
+      label.fontSize = 15;
+      label.fill = '#bbbdbe';
+      label.horizontalCenter = "middle";
+      label.verticalCenter = "middle";
+      label.isMeasured = false;
+      label.x = am4core.percent(45);
+      label.y = am4core.percent(50);
+
+    {% endif %}
+
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.tooltip.disabled = false;
+    valueAxis.min = 0;
+    valueAxis.integersOnly = true;
+
+    // Add a legend
+    chart.legend = new am4charts.Legend();
+    chart.legend.position = "right";
+    chart.legend.scrollable = true;
+    chart.legend.useDefaultMarker = false;
+
+    chart.legend.itemContainers.template.paddingTop = 0;
+    chart.legend.itemContainers.template.paddingBottom = 0;
+
+    chart.legend.labels.template.textDecoration = "none";
+    chart.legend.valueLabels.template.textDecoration = "none";
+
+    let as = chart.legend.labels.template.states.getKey("active");
+    as.properties.textDecoration = "line-through";
+    as.properties.fill = am4core.color("#000");
+
+    let as2 = chart.legend.valueLabels.template.states.getKey("active");
+    as2.properties.textDecoration = "line-through";
+    as2.properties.fill = am4core.color("#1a1a1a");
+
+    chartData.info.forEach((form, idx) => {
+      var series = chart.series.push(new am4charts.LineSeries());
+      series.dataFields.dateX = "date";
+      series.dataFields.valueY = "form_" + form.handle;
+      series.name = form.name;
+
+      series.strokeWidth = 2;
+      series.stroke = am4core.color(form.color);
+      series.stacked = false;
+      series.tensionX = 0.77;
+
+      series.legendSettings.labelText = "[bold {stroke}]{name}[/]";
+      series.legendSettings.itemValueText = "[bold]{valueY}[/]";
+
+      series.showTooltipOn = "hover";
+      series.tooltip.zindex = 1000;
+      series.tooltip.getStrokeFromObject = true;
+      series.tooltip.getFillFromObject = false;
+      series.tooltipHTML = "<span style='font-size:14px; color:#000000;'>" + form.name + ": <b>{valueY.value}</b></span>";
     });
-{% endjs %}
+
+
+    chart.cursor = new am4charts.XYCursor();
+    chart.cursor.xAxis = dateAxis;
+    chart.cursor.maxTooltipDistance = -1;
+
+    chart.scrollbarX = new am4core.Scrollbar();
+    chart.scrollbarX.minHeight = 4;
+    chart.scrollbarX.startGrip.width = 16;
+    chart.scrollbarX.startGrip.height = 16;
+    chart.scrollbarX.startGrip.icon.disabled = true;
+    chart.scrollbarX.endGrip.width = chart.scrollbarX.startGrip.width;
+    chart.scrollbarX.endGrip.height = chart.scrollbarX.startGrip.height;
+    chart.scrollbarX.endGrip.icon.disabled = true;
+
+  }); // end am4core.ready()
+</script>
+
+<!-- HTML -->
+<div id="submission-chart-{{ ID }}"></div>

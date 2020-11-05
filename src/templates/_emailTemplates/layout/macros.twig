@@ -1,5 +1,16 @@
+{% macro headline(text, subtext) %}
+    <div style="margin-bottom: 30px;">
+        <h1 style="margin: 0; padding: 0; font-size: 1.8em; color: #0053a8">{{ text }}</h1>
+        {% if subtext is defined and subtext | length %}
+            <div style="margin-top: 5px; font-size: 1.3em; color: #0053a8;">
+                {{ subtext }}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
 {% macro title(text, error = false) %}
-    <h2 style="margin: 0; padding: 0 0 10px; font-size: {{ error ? "1.8em" : "1.3em" }}; color: {{ error ? '#ff0000' : '#0b0706'}}">{{ text }}</h2>
+    <h2 style="margin: 0; padding: 0 0 20px; font-size: {{ error ? "1.8em" : "1.3em" }}; color: {{ error ? '#ff0000' : '#0b0706' }}">{{ text }}</h2>
 {% endmacro %}
 
 {% macro heading(text) %}
@@ -28,25 +39,39 @@
                 </tr>
             {% endfor %}
         </table>
-
-
-
-{#        <ol start="{{ context.lines.first + 1 }}">#}
-{#            {% for line in context.lines.first..context.lines.last %}#}
-{#                <li>#}
-{#                    <pre style="display: block; background: #f5f5f5; min-height: 18px; margin: 0; padding: 10px; color: #6a6a6a; font-size: 0.9em; line-height: 18px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;">#}
-{#                        {{- context.source[line] -}}#}
-{#                    </pre>#}
-{#                </li>#}
-{#            {% endfor %}#}
-{#        </ol>#}
-
-
-
-{#        <code style="display: block; white-space: pre; background: #f5f5f5; margin: 0; padding: 10px; color: #6a6a6a; font-size: 0.9em; line-height: 18px; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;">#}
-{#            {% for line in context.lines.first..context.lines.last %}#}
-{#                <div>{{ context.source[line] }}</div>#}
-{#            {% endfor %}#}
-{#        </code>#}
     </div>
+{% endmacro %}
+
+{% macro tableHeadings(columns) %}
+    <thead>
+    <tr>
+        {% for column in columns %}
+            <td style="
+                text-align: {{ column.align ?? 'left' }};
+                background: #e8f7ff;
+                font-weight: normal;
+                padding: {{ column.padding ?? '5px 10px' }};
+            ">
+                {{ column.html | raw }}
+            </td>
+        {% endfor %}
+    </tr>
+    </thead>
+{% endmacro %}
+
+{% macro tableRow(columns) %}
+    <tr>
+        {% for column in columns %}
+            <td style="
+                width: {{ column.width ?? 'auto' }};
+                text-align: {{ column.align ?? 'left' }};
+                vertical-align: {{ column.valign ?? 'top' }};
+                padding: {{ column.padding ?? '5px 10px' }};
+                color: {{ column.color ?? '#000000' }};
+                white-space: {{ column.nowrap is defined and column.nowrap ? 'nowrap' : 'normal' }};
+            ">
+                {{ column.html | raw }}
+            </td>
+        {% endfor %}
+    </tr>
 {% endmacro %}

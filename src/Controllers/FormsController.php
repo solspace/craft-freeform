@@ -12,18 +12,23 @@
 namespace Solspace\Freeform\Controllers;
 
 use craft\base\Field;
+use craft\commerce\Plugin as Commerce;
+use craft\db\Table;
 use craft\elements\User;
 use craft\helpers\Assets;
 use craft\helpers\Json;
 use craft\records\Volume;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Composer;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Export\AbstractExport;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Session\CraftRequest;
 use Solspace\Freeform\Library\Session\CraftSession;
@@ -36,6 +41,7 @@ use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FormsService;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class FormsController extends BaseController
@@ -134,18 +140,17 @@ class FormsController extends BaseController
 
         $this->getFormsService()->save($model);
 
-        if ($model->getErrors()) {
-            $string = '';
-            foreach ($model->getErrors() as $errors) {
-                $string .= implode(', ', $errors);
-            }
-
-            \Craft::$app->session->setError($string);
+        $errors = [];
+        foreach ($model->getErrors() as $errors) {
+            $errors[] = implode(', ', $errors);
         }
 
         $this->addFormManagePermissionToUser($model->id);
 
-        return $this->redirect('freeform/forms');
+        return $this->asJson([
+            'errors' => $errors,
+            'success' => count($errors) === 0,
+        ]);
     }
 
     /**
@@ -291,6 +296,90 @@ class FormsController extends BaseController
     }
 
     /**
+     * @return Response
+     * @throws NotFoundHttpException
+     */
+    public function actionSort(): Response
+    {
+        $this->requirePostRequest();
+
+        if (\Craft::$app->request->isAjax) {
+            $order = \Craft::$app->request->post('order', []);
+
+            foreach ($order as $index => $id) {
+                \Craft::$app->db->createCommand()
+                    ->update(
+                        FormRecord::TABLE,
+                        ['order' => $index + 1],
+                        ['id' => $id]
+                    )
+                    ->execute();
+            }
+
+            return $this->asJson(['success' => true]);
+        }
+
+        throw new NotFoundHttpException();
+    }
+
+    public function actionExport()
+    {
+        $this->requirePostRequest();
+        $request = $this->request;
+
+        $id = $request->post('id');
+        $type = $request->post('type', 'csv');
+
+        if (!Freeform::getInstance()->isPro()) {
+            $type = 'csv';
+        }
+
+        $formModel = $this->getFormsService()->getFormById($id);
+        if (!$formModel) {
+            throw new NotFoundHttpException('Form not found');
+        }
+
+        $canManageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+        if (!$canManageAll) {
+            PermissionHelper::requirePermission(
+                PermissionHelper::prepareNestedPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $id)
+            );
+        }
+
+        $selectFields = ['[[s.id]]', '[[s.ip]]', '[[s.dateCreated]]', '[[c.title]]'];
+
+        $form = $formModel->getForm();
+        foreach ($form->getLayout()->getFields() as $field) {
+            if ($field instanceof NoStorageInterface || !$field->getId()) {
+                continue;
+            }
+
+            $selectFields[] = '[[s.' . Submission::getFieldColumnName($field->getId()) . ']]';
+        }
+
+        $query = (new Query())
+            ->select($selectFields)
+            ->from(Submission::TABLE . ' s')
+            ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
+            ->where(['s.[[formId]]' => $id]);
+
+        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
+            $elements = Table::ELEMENTS;
+            $query->innerJoin(
+                $elements . ' e',
+                'e.[[id]] = s.[[id]] AND e.[[dateDeleted]] IS NULL'
+            );
+        }
+
+        $data = $query->all();
+
+        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
+        $exporter       = AbstractExport::create($type, $form, $data, $removeNewlines);
+
+        $this->getExportProfileService()->export($exporter, $form);
+    }
+
+    /**
      * @return FormsService
      */
     private function getFormService(): FormsService
@@ -351,6 +440,9 @@ class FormsController extends BaseController
 
         $isPro = Freeform::getInstance()->isPro();
 
+        $commerce = \Craft::$app->projectConfig->get('plugins.commerce');
+        $isCommerceEnabled = $commerce && ($commerce['enabled'] ?? false);
+
         $templateVariables = [
             'form'                      => $model,
             'title'                     => $title,
@@ -378,6 +470,7 @@ class FormsController extends BaseController
             'isRecaptchaEnabled'        => $settings->recaptchaEnabled,
             'isInvisibleRecaptchaSetUp' => $settings->isInvisibleRecaptchaSetUp(),
             'isPaymentEnabled'          => $isPro,
+            'isCommerceEnabled'         => $isCommerceEnabled,
             'sourceTargets'             => $this->getEncodedJson($this->getSourceTargetsList()),
             'craftFields'               => $this->getEncodedJson($this->getCraftFields()),
             'customFields'              => $this->getEncodedJson($this->getAllCustomFieldList()),
@@ -407,6 +500,14 @@ class FormsController extends BaseController
             ['key' => 'lastName', 'value' => \Craft::t('app', 'Last Name')],
             ['key' => 'fullName', 'value' => \Craft::t('app', 'Full Name')],
             ['key' => 'filename', 'value' => \Craft::t('app', 'Filename')],
+
+            ['key' => 'defaultSku', 'value' => \Craft::t('app', 'SKU')],
+            ['key' => 'defaultPrice', 'value' => \Craft::t('app', 'Price')],
+            ['key' => 'defaultHeight', 'value' => \Craft::t('app', 'Height')],
+            ['key' => 'defaultLength', 'value' => \Craft::t('app', 'Length')],
+            ['key' => 'defaultWidth', 'value' => \Craft::t('app', 'Width')],
+            ['key' => 'defaultWeight', 'value' => \Craft::t('app', 'Weight')],
+            ['key' => 'expiryDate', 'value' => \Craft::t('app', 'Expiry Date')],
         ];
 
         /** @var Field[] $fields */
@@ -578,13 +679,29 @@ class FormsController extends BaseController
             ];
         }
 
-        return [
+        $sourceTargets =  [
             ExternalOptionsInterface::SOURCE_ENTRIES    => $sectionList,
             ExternalOptionsInterface::SOURCE_CATEGORIES => $categoryList,
             ExternalOptionsInterface::SOURCE_TAGS       => $tagList,
             ExternalOptionsInterface::SOURCE_USERS      => $userList,
             ExternalOptionsInterface::SOURCE_ASSETS     => $volumeList,
         ];
+
+        $commercePlugin = \Craft::$app->projectConfig->get('plugins.commerce');
+        if ($commercePlugin && ($commercePlugin['enabled'] ?? false)) {
+            $productTypes = Commerce::getInstance()->productTypes->getAllProductTypes();
+            $productTypeList = [0 => ['key' => '', 'value' => Freeform::t('All Product Types')]];
+            foreach ($productTypes as $productType) {
+                $productTypeList[] = [
+                    'key' => $productType->id,
+                    'value' => $productType->name,
+                ];
+            }
+
+            $sourceTargets[ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS] = $productTypeList;
+        }
+
+        return $sourceTargets;
     }
 
     /**
@@ -644,6 +761,10 @@ class FormsController extends BaseController
 
     private function addFormManagePermissionToUser($formId)
     {
+        if (\Craft::$app->getEdition() !== \Craft::Pro) {
+            return;
+        }
+
         $userId = \Craft::$app->getUser()->id;
         $permissions = \Craft::$app->getUserPermissions()->getPermissionsByUserId($userId);
         $permissions[] = PermissionHelper::prepareNestedPermission(Freeform::PERMISSION_FORMS_MANAGE, $formId);

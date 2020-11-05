@@ -36,6 +36,20 @@ class SpamSubmissionsController extends SubmissionsController
         return $this->getSpamSubmissionsService();
     }
 
+    public function actionDelete()
+    {
+        $this->requirePostRequest();
+
+        $id = $this->request->post('id');
+        $submission = $this->getSubmissionsService()->getSubmissionById($id);
+
+        if ($submission) {
+            $this->getSubmissionsService()->delete([$submission]);
+        }
+
+        return $this->asJson(['success' => true]);
+    }
+
     /**
      * @return \yii\web\Response
      * @throws FreeformException

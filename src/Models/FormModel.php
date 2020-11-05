@@ -12,6 +12,7 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use craft\db\Query;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
@@ -23,6 +24,7 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Session\CraftRequest;
 use Solspace\Freeform\Library\Session\CraftSession;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
+use Solspace\Freeform\Records\FormRecord;
 
 /**
  * Class Freeform_FormModel

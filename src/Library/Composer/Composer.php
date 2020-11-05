@@ -29,11 +29,11 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 class Composer
 {
-    const KEY_COMPOSER   = 'composer';
+    const KEY_COMPOSER = 'composer';
     const KEY_PROPERTIES = 'properties';
-    const KEY_LAYOUT     = 'layout';
-    const KEY_CONTEXT    = 'context';
-    const KEY_PAYMENT    = 'payment';
+    const KEY_LAYOUT = 'layout';
+    const KEY_CONTEXT = 'context';
+    const KEY_PAYMENT = 'payment';
 
     /** @var Form */
     private $form;
@@ -99,14 +99,14 @@ class Composer
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->formHandler           = $formHandler;
-        $this->fieldHandler          = $fieldHandler;
-        $this->submissionHandler     = $submissionHandler;
+        $this->formHandler = $formHandler;
+        $this->fieldHandler = $fieldHandler;
+        $this->submissionHandler = $submissionHandler;
         $this->spamSubmissionHandler = $spamSubmissionHandler;
-        $this->fileUploadHandler     = $fileUploadHandler;
-        $this->statusHandler         = $statusHandler;
-        $this->translator            = $translator;
-        $this->logger                = $logger;
+        $this->fileUploadHandler = $fileUploadHandler;
+        $this->statusHandler = $statusHandler;
+        $this->translator = $translator;
+        $this->logger = $logger;
 
         $this->composerState = $composerState;
         $this->validateComposerData($formAttributes);
@@ -125,11 +125,11 @@ class Composer
      */
     public function getComposerStateJSON(): string
     {
-        $jsonObject                       = new \stdClass();
-        $jsonObject->composer             = new \stdClass();
-        $jsonObject->composer->layout     = $this->form->getLayout();
+        $jsonObject = new \stdClass();
+        $jsonObject->composer = new \stdClass();
+        $jsonObject->composer->layout = $this->form->getLayout();
         $jsonObject->composer->properties = $this->properties;
-        $jsonObject->context              = $this->context;
+        $jsonObject->context = $this->context;
 
         return json_encode($jsonObject);
     }
@@ -188,7 +188,7 @@ class Composer
             );
         }
 
-        $properties       = $composer[self::KEY_PROPERTIES];
+        $properties = $composer[self::KEY_PROPERTIES];
         $this->properties = new Properties($properties, $this->translator);
 
         if (!isset($composer[self::KEY_LAYOUT])) {
@@ -240,7 +240,7 @@ class Composer
         $formAttributes = new FormAttributes(null, new CraftSession(), new CraftRequest());
 
         $this->context = new Context([]);
-        $this->form    = new Form(
+        $this->form = new Form(
             $this->properties,
             $formAttributes,
             [[]],
@@ -261,45 +261,51 @@ class Composer
     private function getDefaultProperties(): array
     {
         return [
-            Properties::PAGE_PREFIX . '0'        => [
-                'type'  => Properties::PAGE_PREFIX,
+            Properties::PAGE_PREFIX.'0' => [
+                'type' => Properties::PAGE_PREFIX,
                 'label' => 'Page 1',
             ],
-            Properties::FORM_HASH                => [
-                'type'                  => Properties::FORM_HASH,
-                'name'                  => '',
-                'handle'                => '',
-                'color'                 => '#' . substr(md5(random_int(111, 999) . time()), 0, 6),
+            Properties::FORM_HASH => [
+                'type' => Properties::FORM_HASH,
+                'name' => '',
+                'handle' => '',
+                'color' => '#'.substr(md5(random_int(111, 999).time()), 0, 6),
                 'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',
-                'description'           => '',
-                'formTemplate'          => $this->formHandler->getDefaultFormattingTemplate(),
-                'returnUrl'             => '',
-                'storeData'             => true,
-                'defaultStatus'         => $this->statusHandler->getDefaultStatusId(),
-                'ajaxEnabled'           => $this->formHandler->isAjaxEnabledByDefault(),
+                'description' => '',
+                'formTemplate' => $this->formHandler->getDefaultFormattingTemplate(),
+                'returnUrl' => '',
+                'storeData' => true,
+                'defaultStatus' => $this->statusHandler->getDefaultStatusId(),
+                'ajaxEnabled' => $this->formHandler->isAjaxEnabledByDefault(),
             ],
-            Properties::INTEGRATION_HASH         => [
-                'type'          => Properties::INTEGRATION_HASH,
+            Properties::VALIDATION_HASH => [
+                'type' => Properties::VALIDATION_HASH,
+                'validationType' => 'submit',
+                'successMessage' => '',
+                'errorMessage' => '',
+            ],
+            Properties::INTEGRATION_HASH => [
+                'type' => Properties::INTEGRATION_HASH,
                 'integrationId' => 0,
-                'mapping'       => new \stdClass(),
+                'mapping' => new \stdClass(),
             ],
-            Properties::CONNECTIONS_HASH         => [
+            Properties::CONNECTIONS_HASH => [
                 'type' => Properties::CONNECTIONS_HASH,
                 'list' => null,
             ],
-            Properties::RULES_HASH               => [
+            Properties::RULES_HASH => [
                 'type' => Properties::RULES_HASH,
                 'list' => new \stdClass(),
             ],
             Properties::ADMIN_NOTIFICATIONS_HASH => [
-                'type'           => Properties::ADMIN_NOTIFICATIONS_HASH,
+                'type' => Properties::ADMIN_NOTIFICATIONS_HASH,
                 'notificationId' => 0,
-                'recipients'     => '',
+                'recipients' => '',
             ],
-            Properties::PAYMENT_HASH             => [
-                'type'          => Properties::PAYMENT_HASH,
+            Properties::PAYMENT_HASH => [
+                'type' => Properties::PAYMENT_HASH,
                 'integrationId' => 0,
-                'mapping'       => new \stdClass(),
+                'mapping' => new \stdClass(),
             ],
         ];
     }

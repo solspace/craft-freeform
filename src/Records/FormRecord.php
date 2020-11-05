@@ -42,6 +42,7 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property int    $optInDataStorageTargetHash
  * @property int    $limitFormSubmissions
  * @property string $color
+ * @property int    $order
  */
 class FormRecord extends ActiveRecord
 {

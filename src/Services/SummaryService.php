@@ -40,6 +40,7 @@ class SummaryService extends Component
         $summary = new InstallSummary();
 
         $system = new System();
+        $system->databaseDriver = \Craft::$app->getDb()->getDriverName();
         $system->phpVersion = phpversion();
         $system->craftVersion = $craft->version;
         $system->craftEdition = strtolower($craft->getEditionName());

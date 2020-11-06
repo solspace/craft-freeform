@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.9.1 - 2020-11-06
+### Added
+- Added support for the 'testToEmailAddress' Craft config setting.
+
+### Fixed
+- Fixed a bug where sites using PostgreSQL would get an error when updating.
+- Fixed a bug where the Dashboard submissions chart was not considering current timezone.
+
 ## 3.9.0 - 2020-11-05
 ### Added
 - Added an 'Important Update Notices' area in the Dashboard that keeps you informed about issues that may specifically affect your site.

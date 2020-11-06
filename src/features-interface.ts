@@ -13,6 +13,7 @@ type SpamProtectionBehaviour =
   | 'simulate_success'
   | 'reload_form';
 
+type DatabaseDriver = 'mysql' | 'pgsql';
 type JSInsertLocation = 'footer' | 'form' | 'none';
 type RecaptchaType = 'v2' | 'v2checkbox' | 'v3';
 type Edition = 'pro' | 'lite';
@@ -28,6 +29,7 @@ interface Features {
   version: string;
   statistics: {
     system: {
+      databaseDriver: DatabaseDriver,
       phpVersion: string;
       craftVersion: string;
       craftEdition: Edition;

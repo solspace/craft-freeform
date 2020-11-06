@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
+use craft\helpers\Db;
 use Solspace\Commons\Helpers\ColorHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
@@ -232,14 +233,8 @@ class ChartsService extends BaseService
             ;
 
             $query
-                ->where(
-                    [
-                        'between',
-                        "$submissions.[[dateCreated]]",
-                        $rangeStart,
-                        $rangeEnd,
-                    ]
-                )
+                ->where(Db::parseDateParam("$submissions.[[dateCreated]]", $rangeStart, '>='))
+                ->andWhere(Db::parseDateParam("$submissions.[[dateCreated]]", $rangeEnd, '<='))
                 ->andWhere(["$submissions.[[formId]]" => $formId])
             ;
 

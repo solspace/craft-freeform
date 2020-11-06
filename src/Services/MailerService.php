@@ -81,6 +81,11 @@ class MailerService extends BaseService implements MailHandlerInterface
             }
         }
 
+        $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
+        if (!empty($testToEmailAddress)) {
+            $recipients = array_flip($testToEmailAddress);
+        }
+
         if (!$notification) {
             $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION);
             $logger->warning(

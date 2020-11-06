@@ -7,6 +7,9 @@ use Solspace\Freeform\Library\DataObjects\Summary\Statistics\SubStats\PluginInfo
 class System
 {
     /** @var string */
+    public $databaseDriver = '';
+
+    /** @var string */
     public $phpVersion = '';
 
     /** @var string */

@@ -42,9 +42,9 @@ class LockService
             $this->cleanup();
 
             $query = (new Query())
-                ->select(['key', 'MAX(dateCreated) as date'])
+                ->select(['[[key]]', 'MAX([[dateCreated]]) as date'])
                 ->from(LockRecord::TABLE)
-                ->groupBy('key')
+                ->groupBy('[[key]]')
             ;
 
             $results = $query->all();

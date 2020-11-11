@@ -34,13 +34,6 @@
     <br />
 {% endif %}
 
-{% if form.submittedSuccessfully %}
-    <div class="callout success">
-        {{ form.successMessage | t }}
-    </div>
-{% endif %}
-
-
 {% if form.hasErrors %}
     <div class="callout alert">
         {{ form.errorMessage | t }}

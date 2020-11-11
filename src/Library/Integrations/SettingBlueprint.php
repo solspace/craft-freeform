@@ -34,6 +34,9 @@ class SettingBlueprint
     /** @var bool */
     private $required;
 
+    /** @var mixed */
+    private $defaultValue;
+
     /**
      * SettingObject constructor.
      *
@@ -42,19 +45,22 @@ class SettingBlueprint
      * @param string $label
      * @param string $instructions
      * @param bool   $required
+     * @param mixed  $defaultValue
      */
     public function __construct(
         $type,
         $handle,
         $label,
         $instructions,
-        $required = false
+        $required = false,
+        $defaultValue = null
     ) {
         $this->type         = $type;
         $this->handle       = $handle;
         $this->label        = $label;
         $this->instructions = $instructions;
         $this->required     = (bool)$required;
+        $this->defaultValue = $defaultValue;
     }
 
     /**
@@ -95,5 +101,13 @@ class SettingBlueprint
     public function isRequired(): bool
     {
         return $this->required;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
     }
 }

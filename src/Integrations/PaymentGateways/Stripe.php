@@ -42,6 +42,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     const SETTING_LIVE_MODE        = 'live_mode';
     const SETTING_WEBHOOK_KEY      = 'webhook_key';
     const SETTING_SUPPRESS_ON_FAIL = 'suppress_on_fail';
+    const SETTING_SEND_ON_SUCCESS = 'send_on_success';
 
     const TITLE        = 'Stripe';
     const LOG_CATEGORY = 'Stripe';
@@ -122,6 +123,14 @@ class Stripe extends AbstractPaymentGatewayIntegration
                 'Suppress Email Notifications & Integrations when Payments Fail',
                 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
                 false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_BOOL,
+                self::SETTING_SEND_ON_SUCCESS,
+                'Send Success Email from Stripe to Submitter',
+                "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, which will then automatically trigger Stripe sending a success email notification.",
+                false,
+                true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_TEXT,
@@ -349,6 +358,11 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $token        = $subscriptionDetails->getToken();
         $submission   = $subscriptionDetails->getSubmission();
         $submissionId = $submission->getId();
+
+        if (strpos($token, 'declined:') === 0) {
+            $this->lastError = new \Exception($token);
+            return false;
+        }
 
         $subscription = $customer = null;
         try {
@@ -706,6 +720,10 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->lastError = null;
     }
 
+    public function sendOnSuccess(): bool
+    {
+        return $this->getSetting(self::SETTING_SEND_ON_SUCCESS) ?? true;
+    }
 
     /**
      * @return bool

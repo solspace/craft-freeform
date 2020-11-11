@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.9.2 - 2020-11-11
+### Added
+- Added support for mapping to Contact Tags in the ActiveCampaign Mailing List API integration.
+- Added a setting to Payments to disable passing of an email address to the Stripe `receipt_email`, which causes Stripe to automatically send their own email notification to the customer.
+
+### Fixed
+- Fixed a bug where the default Formatting Templates might show an extra success banner under certain circumstances.
+- Fixed a bug where the loading indicator feature was not working correctly on Payment forms.
+- Fixed a bug where declined or high risk Subscription payments were not correctly erroring on the front end.
+- Fixed a bug where some field errors were not being escaped.
+
 ## 3.9.1 - 2020-11-06
 ### Added
 - Added support for the 'testToEmailAddress' Craft config setting.

@@ -80,7 +80,9 @@ class StripeService extends Component
 
             $mapping = $properties->getCustomerFieldMapping();
             if (isset($mapping['email']) && $form->get($mapping['email'])) {
-                $paymentIntentProperties['receipt_email'] = $form->get($mapping['email'])->getValueAsString();
+                if ($integration->sendOnSuccess()) {
+                    $paymentIntentProperties['receipt_email'] = $form->get($mapping['email'])->getValueAsString();
+                }
             }
 
             try {
@@ -143,7 +145,19 @@ class StripeService extends Component
             return;
         }
 
-        $subscription = $this->getSubscription($token, $plan, $dynamicValues);
+        try {
+            $subscription = $this->getSubscription($token, $plan, $dynamicValues);
+        } catch(\Stripe\Exception\CardException $e) {
+            $paymentField->setValue('declined: ' . $e->getMessage());
+            return;
+        } catch(\Stripe\Exception\ApiErrorException $e) {
+            $paymentField->setValue('declined: '.$e->getMessage());
+            return;
+        } catch (\Exception $e) {
+            $paymentField->setValue('declined: '.$e->getMessage());
+            return;
+        }
+
         if ($subscription) {
             $invoice = $this->getInvoice($subscription);
 
@@ -151,6 +165,11 @@ class StripeService extends Component
                 $paymentIntent = $this->getPaymentIntent($invoice);
                 if ($paymentIntent->status === PaymentIntent::STATUS_REQUIRES_ACTION) {
                     $form->addAction(new SubscriptionPaymentIntentAction($subscription, $paymentIntent));
+                } else if ($paymentIntent->status === PaymentIntent::STATUS_REQUIRES_PAYMENT_METHOD) {
+                    if ($paymentIntent->charges->first()->failure_code === 'card_declined') {
+                        $paymentField->setValue('declined: ' . $paymentIntent->charges->first()->failure_message);
+                        return;
+                    }
                 }
             }
 

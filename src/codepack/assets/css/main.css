@@ -110,8 +110,8 @@ ul.errors {
 }
 
 button[type=submit].ff-loading {
-  display: -ms-flexbox;
-  display: flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
   -ms-flex-wrap: nowrap;
   flex-wrap: nowrap;
   -ms-flex-align: center;

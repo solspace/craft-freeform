@@ -94,6 +94,8 @@
             {% set value = "" %}
             {% if integration.settings is not null and integration.settings[setting.handle] is defined %}
               {% set value = integration.settings[setting.handle] %}
+            {% elseif setting.defaultValue %}
+              {% set value = setting.defaultValue %}
             {% endif %}
             {% set options = {
               label: setting.label|t('freeform'),

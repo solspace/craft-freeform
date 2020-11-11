@@ -465,7 +465,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
                 'placeholder',
                 $this->translate($attributes->getPlaceholder() ?: $this->getPlaceholder())
             )
-            . $this->getAttributeString('value', $this->getValue(), false)
+            . $this->getAttributeString('value', $this->getValue())
             . $this->getRequiredAttribute()
             . $attributes->getInputAttributesAsString()
             . '/>';

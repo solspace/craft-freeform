@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\MailingLists;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
@@ -59,6 +60,19 @@ class ActiveCampaign extends AbstractMailingListIntegration
         $endpoint = $this->getEndpoint('/contact/sync');
 
         $contactId = null;
+
+        $tags = [];
+        if (isset($mappedValues['tags'])) {
+            $initialTags = $mappedValues['tags'];
+            $tags = [];
+            foreach ($initialTags as $tag) {
+                $tags = array_merge($tags, explode(';', $tag));
+            }
+
+            $tags = array_map('trim', $tags);
+
+            unset($mappedValues['tags']);
+        }
 
         /**
          * Create contact with standard fields
@@ -116,6 +130,21 @@ class ActiveCampaign extends AbstractMailingListIntegration
                 $this->getHandler()->onAfterResponse($this, $response);
             } catch (RequestException $exception) {
                 throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
+            }
+        }
+
+        if ($contactId && $tags) {
+            foreach ($tags as $tag) {
+                $tagId = $this->getTagId($tag, $client);
+                if ($tagId) {
+                    try {
+                        $client->post(
+                            $this->getEndpoint('/contactTags'),
+                            ['json' => ['contactTag' => ['contact' => $contactId, 'tag' => $tagId]]]
+                        );
+                    } catch (RequestException $exception) {
+                    }
+                }
             }
         }
 
@@ -190,6 +219,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
             new FieldObject('firstName', 'First Name', FieldObject::TYPE_STRING, false),
             new FieldObject('lastName', 'Last Name', FieldObject::TYPE_STRING, false),
             new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, false),
+            new FieldObject('tags', 'Tags', FieldObject::TYPE_ARRAY, false),
         ];
 
         $client   = $this->generateAuthorizedClient();
@@ -279,6 +309,51 @@ class ActiveCampaign extends AbstractMailingListIntegration
     private function generateAuthorizedClient(): Client
     {
         return new Client(['headers' => ['Api-Token' => $this->getSetting(self::SETTING_API_KEY)]]);
+    }
+
+    /**
+     * @param string $name
+     * @param Client $client
+     *
+     * @return int|string|null
+     */
+    private function getTagId(string $name, Client $client)
+    {
+        static $tags;
+
+        if (null === $tags) {
+            $tags = [];
+            try {
+                $response = $client->get($this->getEndpoint('/tags'));
+                $data = json_decode($response->getBody());
+                foreach ($data->tags as $item) {
+                    if ($item->tagType !== 'contact') {
+                        continue;
+                    }
+
+                    $tags[$item->id] = $item->tag;
+                }
+            } catch (RequestException $exception) {
+            }
+        }
+
+        foreach ($tags as $id => $tag) {
+            if (strtolower($name) === strtolower($tag)) {
+                return $id;
+            }
+        }
+
+        try {
+            $response = $client->post(
+                $this->getEndpoint('/tags'),
+                ['json' => ['tag' => ['tag' => $name, 'tagType' => 'contact', 'description' => '']]]
+            );
+            $data = json_decode($response->getBody());
+
+            return $data->tag->id;
+        } catch (RequestException $exception) {
+            return null;
+        }
     }
 }
 

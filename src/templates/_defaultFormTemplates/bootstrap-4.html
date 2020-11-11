@@ -33,12 +33,6 @@
     </ul>
 {% endif %}
 
-{% if form.submittedSuccessfully %}
-    <div class="alert alert-success">
-        {{ form.successMessage | t }}
-    </div>
-{% endif %}
-
 {% if form.hasErrors %}
     <div class="alert alert-danger">
         {{ form.errorMessage | t }}

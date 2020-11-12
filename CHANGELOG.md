@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.9.3 - 2020-11-12
+### Fixed
+- Fixed a bug where the 'getTestToEmailAddress' addition to Freeform would error on Craft versions below 3.5.0.
+
 ## 3.9.2 - 2020-11-11
 ### Added
 - Added support for mapping to Contact Tags in the ActiveCampaign Mailing List API integration.

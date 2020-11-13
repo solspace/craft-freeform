@@ -18,7 +18,7 @@ class FeedsController extends BaseController
     {
         $this->requirePostRequest();
 
-        $id = $this->request->post('id');
+        $id = \Craft::$app->request->post('id');
 
         if (Freeform::getInstance()->feed->markFeedMessageAsRead($id)) {
             return $this->asJson(['success' => true]);
@@ -31,7 +31,7 @@ class FeedsController extends BaseController
     {
         $this->requirePostRequest();
 
-        $type = $this->request->post('type');
+        $type = \Craft::$app->request->post('type');
 
         Freeform::getInstance()->feed->markFeedCategoryAsRead($type);
 

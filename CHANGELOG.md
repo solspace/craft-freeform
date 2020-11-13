@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.9.4 - 2020-11-13
+### Added
+- Added the submission token to the AJAX response when submitting forms.
+
+### Fixed
+- Fixed a bug where Dynamic Recipients fields were not showing the new Commerce Products source option.
+- Fixed a bug where dismissing Update and What's New notices was not working on Craft versions below 3.5.0.
+
 ## 3.9.3 - 2020-11-12
 ### Fixed
 - Fixed a bug where the 'getTestToEmailAddress' addition to Freeform would error on Craft versions below 3.5.0.

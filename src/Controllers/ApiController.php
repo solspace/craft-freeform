@@ -136,6 +136,7 @@ class ApiController extends BaseController
                 'success'      => $success,
                 'finished'     => $success && !$form->isMultipage(),
                 'submissionId' => $submission ? $submission->id : null,
+                'submissionToken' => $submission ? $submission->token : null,
                 'actions'      => $form->getActions(),
                 'errors'       => $fieldErrors,
                 'formErrors'   => $form->getErrors(),

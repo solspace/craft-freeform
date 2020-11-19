@@ -263,7 +263,7 @@ class HoneypotService extends BaseService
             . '/>';
 
         $output = '<div style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true" tabindex="-1">'
-            . '<label aria-hidden="true" tabindex="-1" for="' . $honeypotName . '">Leave this field blank</label>'
+            . '<label aria-hidden="true" tabindex="-1" for="' . $fieldPrefix . $honeypotName . '">Leave this field blank</label>'
             . $output
             . '</div>';
 

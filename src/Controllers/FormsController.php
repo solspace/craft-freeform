@@ -17,6 +17,8 @@ use craft\db\Table;
 use craft\elements\User;
 use craft\helpers\Assets;
 use craft\helpers\Json;
+use craft\records\UserPermission;
+use craft\records\UserPermission_UserGroup;
 use craft\records\Volume;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
@@ -102,6 +104,35 @@ class FormsController extends BaseController
         return $this->renderEditForm($model->name, $model);
     }
 
+    private function updateGroupPermissions(string $permissionName, $id, $newId)
+    {
+        $name = strtolower($permissionName.':'.(int) $id);
+        $newName = strtolower($permissionName.':'.(int) $newId);
+
+        $permissionId = (new Query())
+            ->select('id')
+            ->from(Table::USERPERMISSIONS)
+            ->where(['name' => $name])
+            ->scalar();
+
+        $groupIds = (new Query())
+            ->select('groupId')
+            ->from(Table::USERPERMISSIONS_USERGROUPS)
+            ->where(['permissionId' => $permissionId])
+            ->column();
+
+        foreach ($groupIds as $groupId) {
+            $permission = new UserPermission();
+            $permission->name = $newName;
+            $permission->save();
+
+            $groupPermission = new UserPermission_UserGroup();
+            $groupPermission->groupId = $groupId;
+            $groupPermission->permissionId = $permission->id;
+            $groupPermission->save();
+        }
+    }
+
     /**
      * @return Response
      * @throws FreeformException
@@ -126,7 +157,7 @@ class FormsController extends BaseController
         $oldHandle = $model->handle;
 
         if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-            list($string, $mainPart, $iterator) = $matches;
+            [$string, $mainPart, $iterator] = $matches;
 
             $newHandle = $mainPart . ((int) $iterator + 1);
         } else {
@@ -144,6 +175,9 @@ class FormsController extends BaseController
         foreach ($model->getErrors() as $errors) {
             $errors[] = implode(', ', $errors);
         }
+
+        $this->updateGroupPermissions(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $id, $model->id);
+        $this->updateGroupPermissions(Freeform::PERMISSION_FORMS_MANAGE, $id, $model->id);
 
         $this->addFormManagePermissionToUser($model->id);
 
@@ -184,7 +218,7 @@ class FormsController extends BaseController
             $oldHandle = $composerState['composer']['properties']['form']['handle'];
 
             if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-                list($string, $mainPart, $iterator) = $matches;
+                [$string, $mainPart, $iterator] = $matches;
 
                 $newHandle = $mainPart . ((int) $iterator + 1);
             } else {

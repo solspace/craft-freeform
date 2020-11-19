@@ -44,8 +44,8 @@
                         {% endif %}
                     </th>
                     <td data-title="{{ 'Handle'|t('freeform') }}">
-                        <code>
-                            {{ form.handle }}
+                        <code title="{{ form.handle }}">
+                            {{ form.handle|truncate(50) }}
                         </code>
                     </td>
                     <td>
@@ -89,12 +89,7 @@
                     <td class="thin">
                         <div class="action-buttons">
                             {% if canManage %}
-                                <form method="post" action="{{ url("freeform/forms/duplicate") }}">
-                                    {{ csrfInput() }}
-                                    <input type="hidden" name="id" value="{{ form.id }}" />
-                                    <a class="clone icon" title="{{ 'Clone'|t('freeform') }}" role="button"></a>
-                                </form>
-
+                                <a class="clone icon" title="{{ 'Clone'|t('freeform') }}" role="button" data-id="{{ form.id }}"></a>
                                 {% if canDelete %}
                                     <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                                 {% endif %}

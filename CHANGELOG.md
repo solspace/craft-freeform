@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.9.5 - 2020-11-19
+### Fixed
+- Fixed a bug where the 'Previous' button was not working correctly in multi-page forms.
+- Fixed a bug where duplicating forms from the Forms CP index page was not working correctly.
+- Fixed a bug where duplicating forms was not retaining the user group permissions for Freeform.
+- Fixed a bug where the Weekly Digest email subject was showing a less useful date and used site name instead of system name.
+- Fixed a bug where the `fieldIdPrefix` parameter was not adding the prefix to the `for` attribute in the Honeypot field label.
+- Fixed a bug where users without permission to Export Profiles could still see the 'Export' button in the dashboard.
+- Fixed a bug where an empty tooltip would display when clicking the info icon for Update Notices and What's New features.
+- Fixed a bug where fields and forms with very long handle values could force other parts of their respective CP index pages out of view.
+
 ## 3.9.4 - 2020-11-13
 ### Added
 - Added the submission token to the AJAX response when submitting forms.

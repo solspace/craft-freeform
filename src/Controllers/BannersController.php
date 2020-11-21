@@ -17,15 +17,4 @@ class BannersController extends BaseController
 
         return $this->asJson(['success' => $success]);
     }
-
-    /**
-     * @return Response
-     */
-    public function actionDismissOldFreeform(): Response
-    {
-        $plugin  = Freeform::getInstance();
-        $success = \Craft::$app->plugins->savePluginSettings($plugin, ['hideBannerOldFreeform' => true]);
-
-        return $this->asJson(['success' => $success]);
-    }
 }

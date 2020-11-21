@@ -157,7 +157,7 @@ class FormsController extends BaseController
         $oldHandle = $model->handle;
 
         if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-            [$string, $mainPart, $iterator] = $matches;
+            list($string, $mainPart, $iterator) = $matches;
 
             $newHandle = $mainPart . ((int) $iterator + 1);
         } else {
@@ -218,7 +218,7 @@ class FormsController extends BaseController
             $oldHandle = $composerState['composer']['properties']['form']['handle'];
 
             if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-                [$string, $mainPart, $iterator] = $matches;
+                list($string, $mainPart, $iterator) = $matches;
 
                 $newHandle = $mainPart . ((int) $iterator + 1);
             } else {

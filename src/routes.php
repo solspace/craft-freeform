@@ -117,7 +117,6 @@ return [
     'freeform/payment-subscription/<id:\d+>/cancel/<validationKey>'  => 'freeform/subscriptions/cancel',
     // Banners
     'freeform/banners/dismiss/demo'                                  => 'freeform/banners/dismiss-demo',
-    'freeform/banners/dismiss/old-freeform'                          => 'freeform/banners/dismiss-old-freeform',
     // Feeds
     'freeform/feeds/show-summary'                                    => 'freeform/feeds/show-summary',
     'freeform/feeds/dismiss-message'                                 => 'freeform/feeds/dismiss-message',

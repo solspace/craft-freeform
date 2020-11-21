@@ -175,6 +175,7 @@ class SummaryService extends Component
         $forms->limitSubmissionRate = $composer->limitSubmissionRate;
         $forms->formTagAttributes = $composer->formTagAttributes;
         $forms->adminNotifications = $composer->adminNotifications;
+        $forms->loadingIndicators = $composer->loadingIndicators;
         $forms->conditionalRules->fields = $composer->conditionalRulesFields;
         $forms->conditionalRules->pages = $composer->conditionalRulesPages;
         $forms->elementConnections->entries = $composer->elementConnectionsEntries;
@@ -271,6 +272,7 @@ class SummaryService extends Component
         $limitSubmissionRate = false;
         $formTagAttributes = false;
         $adminNotifications = false;
+        $loadingIndicators = false;
         $conditionalRulesFields = false;
         $conditionalRulesPages = false;
         $elementConnectionsEntries = false;
@@ -314,6 +316,10 @@ class SummaryService extends Component
             if ($form->getAdminNotificationProperties()->getRecipients() && $form->getAdminNotificationProperties(
                 )->getNotificationId()) {
                 $adminNotifications = true;
+            }
+
+            if ($form->isShowLoadingText() || $form->isShowSpinner()) {
+                $loadingIndicators = true;
             }
 
             foreach ($form->getPages() as $page) {
@@ -384,6 +390,7 @@ class SummaryService extends Component
             'limitSubmissionRate' => $limitSubmissionRate,
             'formTagAttributes' => $formTagAttributes,
             'adminNotifications' => $adminNotifications,
+            'loadingIndicators' => $loadingIndicators,
             'conditionalRulesFields' => $conditionalRulesFields,
             'conditionalRulesPages' => $conditionalRulesPages,
             'elementConnectionsEntries' => $elementConnectionsEntries,

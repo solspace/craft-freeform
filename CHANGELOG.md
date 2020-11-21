@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.9.6 - 2020-11-20
+### Fixed
+- Fixed a bug where the Forms CP pages would error on sites using PHP 7.0.
+
 ## 3.9.5 - 2020-11-19
 ### Fixed
 - Fixed a bug where the 'Previous' button was not working correctly in multi-page forms.

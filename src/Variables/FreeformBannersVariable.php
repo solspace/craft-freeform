@@ -28,23 +28,4 @@ class FreeformBannersVariable
     {
         return !(bool) Freeform::getInstance()->settings->getSettingsModel()->hideBannerDemo;
     }
-
-    /**
-     * @return bool
-     */
-    public function getShowOldFreeform(): bool
-    {
-        $hasOldFreeform = $this->getSettingsService()->isOldFreeformInstalled();
-        $hideBanner     = (bool) $this->getSettingsService()->getSettingsModel()->hideBannerOldFreeform;
-
-        return $hasOldFreeform && !$hideBanner;
-    }
-
-    /**
-     * @return SettingsService
-     */
-    private function getSettingsService(): SettingsService
-    {
-        return Freeform::getInstance()->settings;
-    }
 }

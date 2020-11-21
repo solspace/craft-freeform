@@ -1,22 +1,22 @@
 type DefaultView =
-  | 'dashboard'
-  | 'forms'
-  | 'submissions'
-  | 'fields'
-  | 'notifications'
-  | 'settings'
-  | 'resources'
-  | 'export-profiles';
+  | "dashboard"
+  | "forms"
+  | "submissions"
+  | "fields"
+  | "notifications"
+  | "settings"
+  | "resources"
+  | "export-profiles";
 
 type SpamProtectionBehaviour =
-  | 'display_errors'
-  | 'simulate_success'
-  | 'reload_form';
+  | "display_errors"
+  | "simulate_success"
+  | "reload_form";
 
-type DatabaseDriver = 'mysql' | 'pgsql';
-type JSInsertLocation = 'footer' | 'form' | 'none';
-type RecaptchaType = 'v2' | 'v2checkbox' | 'v3';
-type Edition = 'pro' | 'lite';
+type DatabaseDriver = "mysql" | "pgsql";
+type JSInsertLocation = "footer" | "form" | "none";
+type RecaptchaType = "v2" | "v2checkbox" | "v3";
+type Edition = "pro" | "lite";
 
 interface PluginInfo {
   version: string;
@@ -29,7 +29,7 @@ interface Features {
   version: string;
   statistics: {
     system: {
-      databaseDriver: DatabaseDriver,
+      databaseDriver: DatabaseDriver;
       phpVersion: string;
       craftVersion: string;
       craftEdition: Edition;
@@ -138,6 +138,7 @@ interface Features {
       limitSubmissionRate: boolean;
       formTagAttributes: boolean;
       adminNotifications: boolean;
+      loadingIndicators: boolean;
       conditionalRules: {
         fields: boolean;
         pages: boolean;

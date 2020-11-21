@@ -34,6 +34,9 @@ class Forms
     /** @var bool */
     public $adminNotifications = false;
 
+    /** @var bool */
+    public $loadingIndicators = false;
+
     /** @var ConditionalRules */
     public $conditionalRules;
 

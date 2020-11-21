@@ -1,7 +1,0 @@
-{% if craft.freeformBanners.showOldFreeform and currentUser is defined and currentUser.admin %}
-    <div class="alert alert-danger alert-dismissible">
-        <a class="close" data-icon="remove" href="{{ cpUrl("freeform/banners/dismiss/old-freeform") }}"></a>
-
-        {{ 'There is an old freeform installation in Craft! <a href="{link}" class="alert-link">Click here for instruction on how to remove it.</a>'|t('freeform', {link: url('freeform/settings/demo-templates')})|raw }}
-    </div>
-{% endif %}

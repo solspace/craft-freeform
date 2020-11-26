@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.9.7 - 2020-11-26
+### Fixed
+- Fixed a bug where reCAPTCHA was not working correctly with IE 11.
+
 ## 3.9.6 - 2020-11-20
 ### Fixed
 - Fixed a bug where the Forms CP pages would error on sites using PHP 7.0.

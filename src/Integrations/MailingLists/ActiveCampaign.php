@@ -178,7 +178,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
     protected function fetchLists(): array
     {
         $client   = $this->generateAuthorizedClient();
-        $endpoint = $this->getEndpoint('/lists?limit=50');
+        $endpoint = $this->getEndpoint('/lists?limit=999');
 
         try {
             $response = $client->get($endpoint);
@@ -223,7 +223,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
         ];
 
         $client   = $this->generateAuthorizedClient();
-        $response = $client->get($this->getEndpoint('/fields?limit=50'));
+        $response = $client->get($this->getEndpoint('/fields?limit=999'));
 
         $data = json_decode((string) $response->getBody());
         $data = $data->fields;

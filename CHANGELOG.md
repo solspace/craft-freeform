@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.9.8 - 2020-12-01
+### Fixed
+- Fixed a bug where the Dashboard submissions chart would include spam submissions.
+- Fixed a bug where the Dashboard submissions chart would not display correctly in Firefox.
+- Fixed a bug where the Active Campaign mailing list API integration was limited to fetching 50 mailing lists.
+- Fixed a bug where the Email Notifications CP page was not displaying the file name for file-based email notification templates.
+
 ## 3.9.7 - 2020-11-26
 ### Fixed
 - Fixed a bug where reCAPTCHA was not working correctly with IE 11.

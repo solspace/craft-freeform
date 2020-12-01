@@ -236,6 +236,7 @@ class ChartsService extends BaseService
                 ->where(Db::parseDateParam("$submissions.[[dateCreated]]", $rangeStart, '>='))
                 ->andWhere(Db::parseDateParam("$submissions.[[dateCreated]]", $rangeEnd, '<='))
                 ->andWhere(["$submissions.[[formId]]" => $formId])
+                ->andWhere(["$submissions.[[isSpam]]" => false])
             ;
 
             if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
@@ -268,7 +269,7 @@ class ChartsService extends BaseService
         $dateContext = $rangeStart->copy();
         for ($i = 0; $i <= $diff; $i++) {
             $date = $dateContext->toDateString();
-            $data = ['date' => $dateContext->format('M j')];
+            $data = ['date' => $dateContext->format('Y-m-d')];
             foreach ($formData as $formHandle => $submissionCount) {
                 $data['form_'.$formHandle] = $submissionCount[$date] ?? 0;
             }

@@ -83,7 +83,7 @@
             </thead>
             <tbody>
             {# File based templates #}
-            {% for notification in notifications if notification.fileBasedTemplate %}
+            {% for filename, notification in notifications if notification.fileBasedTemplate %}
                 <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         {{ notification.name }}
@@ -97,7 +97,7 @@
                         {{ notification.description }}
                     </td>
                     <td data-title="{{ "File Name"|t('freeform') }}">
-                        <code>{{ notification.id }}</code>
+                        <code>{{ filename }}</code>
                     </td>
                 </tr>
             {% endfor %}

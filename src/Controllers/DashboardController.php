@@ -22,7 +22,7 @@ class DashboardController extends BaseController
 
         $totalSubmissions = $this->getSubmissionsService()->getSubmissionCount();
         $totalSpam = $this->getSubmissionsService()->getSubmissionCount(null, null, true);
-        $totalSubmissionsByForm = $this->getSubmissionsService()->getSubmissionCountByForm();
+        $totalSubmissionsByForm = $this->getSubmissionsService()->getSubmissionCountByForm(false);
         $totalSpamByForm = $this->getSubmissionsService()->getSubmissionCountByForm(true);
 
         if ($forms) {

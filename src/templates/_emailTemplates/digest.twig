@@ -87,7 +87,7 @@
                         },
                         { html: data.logger, color: color, nowrap: true },
                         { html: data.date | date, color: color, nowrap: true },
-                        { html: data.message | truncate(50), color: color },
+                        { html: data.message | truncater(50), color: color },
                     ]) }}
                 {% endfor %}
                 </tbody>

@@ -106,6 +106,7 @@ use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SpamSubmissionsService;
 use Solspace\Freeform\Services\StatusesService;
 use Solspace\Freeform\Services\SubmissionsService;
+use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformPaymentsVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
@@ -660,6 +661,8 @@ class Freeform extends Plugin
                 $event->sender->set('freeformPayments', FreeformPaymentsVariable::class);
             }
         );
+
+        \Craft::$app->view->registerTwigExtension(new FreeformTwigFilters());
     }
 
     private function initWidgets()

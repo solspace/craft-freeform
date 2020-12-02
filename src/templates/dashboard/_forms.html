@@ -16,11 +16,12 @@
                         <a class="form-name" href="{{ cpUrl("freeform/forms/" ~ form.id) }}">
                             {{ form.name }}
                         </a>
-                        <div class="form-handle"
-                             title="{{ "Handle for this Form"|t("freeform") }}">{{ form.handle }}</div>
+                        <div class="form-handle" title="{{ "Handle for this Form"|t("freeform") }}">
+                            {{ form.handle|truncater(30) }}
+                        </div>
 
                         <p class="form-description">
-                            {{ form.description ?? "No description"|t("freeform") }}
+                            {{ form.description|truncater(80) }}
                         </p>
                     </div>
 

@@ -48,11 +48,11 @@
                     </th>
                     <td data-title="{{ 'Handle'|t('freeform') }}">
                         <code>
-                            {{ notification.handle }}
+                            {{ notification.handle|truncater(40) }}
                         </code>
                     </td>
                     <td style="width: 50%;">
-                        {{ notification.description }}
+                        {{ notification.description|truncater(80) }}
                     </td>
                     <td class="thin">
                         {% if currentUser.can("freeform-notificationsManage") %}
@@ -94,7 +94,7 @@
                         </code>
                     </td>
                     <td style="width: 50%;">
-                        {{ notification.description }}
+                        {{ notification.description|truncater(80) }}
                     </td>
                     <td data-title="{{ "File Name"|t('freeform') }}">
                         <code>{{ filename }}</code>

@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.9.9 - 2020-12-02
+### Fixed
+- Fixed a bug where older installs of Craft (3.5.9 and lower) could experience an error in the Forms and Fields CP index pages due to the `truncate` filter not existing yet.
+
 ## 3.9.8 - 2020-12-01
 ### Fixed
 - Fixed a bug where the Dashboard submissions chart would include spam submissions.

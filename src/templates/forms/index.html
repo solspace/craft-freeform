@@ -45,17 +45,12 @@
                     </th>
                     <td data-title="{{ 'Handle'|t('freeform') }}">
                         <code title="{{ form.handle }}">
-                            {{ form.handle|truncate(50) }}
+                            {{ form.handle|truncater(50) }}
                         </code>
                     </td>
                     <td>
                         <div style="overflow: hidden; height: 18px;" title="{{ form.description }}">
-                            {% set desc = form.description %}
-                            {% if desc|length > 80 %}
-                                {% set desc = desc|slice(0, 80)|trim ~ "..." %}
-                            {% endif %}
-
-                            {{ desc|replace("\n", " ")|trim }}
+                            {{ form.description|truncater(80) }}
                         </div>
                     </td>
                     <td>

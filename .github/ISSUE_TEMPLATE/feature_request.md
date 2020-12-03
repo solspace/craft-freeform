@@ -1,6 +1,6 @@
 ---
-name: Feature request
-about: Suggest an idea for Freeform
+name: Feature Request
+about: Suggest an idea for Freeform.
 title: ''
 labels: enhancement
 assignees: ''

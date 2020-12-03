@@ -1,13 +1,13 @@
 ---
-name: Bug report
-about: Create a report to help us improve Freeform
+name: Bug Report
+about: Create a report to help us improve Freeform.
 title: ''
 labels: ''
 assignees: ''
 
 ---
 
-**Describe the bug or issue**
+**Describe the bug or issue you're experiencing**
 
 
 **Steps to reproduce**

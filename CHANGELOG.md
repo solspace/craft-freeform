@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.10.0-beta.1 - 2020-12-XX
+## 3.10.0-beta.1 - 2020-12-09
 
 ### Added
 - Added support for GraphQL.

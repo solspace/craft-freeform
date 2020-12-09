@@ -3,7 +3,7 @@ $(() => {
   const purgeToggle = $("input[name='purge-toggle']").parents('.lightswitch');
   purgeToggle.on({
     change: function () {
-      var isOn = $('input', this).val();
+      const isOn = $('input', this).val();
       if (!isOn) {
         $('select#purge-value').val(0);
       }
@@ -21,4 +21,26 @@ $(() => {
       }
     },
   });
+
+  const scriptInsertLocation = $('select[name="settings[scriptInsertLocation]"]');
+  const warningText = $('#script-insert-warning').text();
+  scriptInsertLocation.on({
+    change: function () {
+      const value = $(this).val();
+      const parent = $(this).parents('.field:first');
+
+      if (value === 'manual') {
+        const warning = document.createElement('div');
+        warning.classList.add('warning', 'with-icon');
+        warning.innerText = warningText;
+
+        console.log(parent, warning);
+        parent.append(warning);
+      } else {
+        parent.find('.warning.with-icon').remove();
+      }
+    },
+  });
+
+  scriptInsertLocation.trigger('change');
 });

@@ -151,8 +151,12 @@
             "footer": "Page Footer"|t('freeform'),
             "form": "Inside Form"|t('freeform'),
             "manual": "None (add manually)"|t('freeform'),
-        }
+        },
     }) }}
+
+    <div id="script-insert-warning" class="hidden">
+        {{- "With 'None' chosen, please be sure to manually load Freeform's JS by adding the 'freeform.loadFreeformScripts()' function to your template(s) where you'd like it to insert the JS and pass it the form handle."|t('freeform') -}}
+    </div>
 
     {{ forms.lightswitchField({
         label: "Hide 'Install Demo' alert message?"|t('freeform'),

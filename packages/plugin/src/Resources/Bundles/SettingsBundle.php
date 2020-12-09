@@ -17,6 +17,6 @@ class SettingsBundle extends AbstractFreeformAssetBundle
      */
     public function getStylesheets(): array
     {
-        return ['css/settings.css'];
+        return ['css/cp/settings/settings.css'];
     }
 }

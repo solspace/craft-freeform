@@ -77,6 +77,9 @@ class FieldGenerator extends AbstractGenerator
                     'fields' => function () use ($fields) {
                         return $fields;
                     },
+                    'resolveType' => function () use ($typeName) {
+                        return $typeName;
+                    },
                 ]
             )
         );

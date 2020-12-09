@@ -1,8 +1,8 @@
 ---
-name: Bug Report
-about: Create a report to help us improve Freeform.
+name: Report an Issue
+about: Create a report about a bug or something that isn't working correctly in Freeform.
 title: ''
-labels: bug
+labels: issue
 assignees: ''
 
 ---

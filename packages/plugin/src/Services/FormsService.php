@@ -94,7 +94,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         $offset = $arguments['offset'] ?? null;
 
-        unset($arguments['limit'], $arguments['orderBy'], $arguments['sortBy'], $arguments['offset']);
+        unset($arguments['limit'], $arguments['orderBy'], $arguments['sort'], $arguments['offset']);
 
         $query = $this->getFormQuery()
             ->where($arguments)

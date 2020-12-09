@@ -41,7 +41,7 @@ class FormArguments extends Arguments
                 'description' => 'Order forms by a specific property',
             ],
             'sort' => [
-                'name' => 'sortBy',
+                'name' => 'sort',
                 'type' => Type::string(),
                 'description' => 'Sort the forms by `asc` or `desc` order',
             ],

@@ -49,6 +49,7 @@ class FieldGenerator extends AbstractGenerator
         $fieldTypes[FreeformFieldInterface::TYPE_RECAPTCHA] = FreeformFieldInterface::TYPE_RECAPTCHA;
         $fieldTypes[FreeformFieldInterface::TYPE_CONFIRMATION] = FreeformFieldInterface::TYPE_CONFIRMATION;
         $fieldTypes[FreeformFieldInterface::TYPE_PASSWORD] = FreeformFieldInterface::TYPE_PASSWORD;
+        $fieldTypes[FreeformFieldInterface::TYPE_CREDIT_CARD_DETAILS] = FreeformFieldInterface::TYPE_CREDIT_CARD_DETAILS;
 
         foreach ($fieldTypes as $fieldType => $fieldTypeName) {
             $typeName = FieldType::getTypeFromString($fieldType);

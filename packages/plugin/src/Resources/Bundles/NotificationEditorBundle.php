@@ -10,9 +10,9 @@ class NotificationEditorBundle extends AbstractFreeformAssetBundle
     public function getScripts(): array
     {
         return [
-            'js/lib/ace/ace.js',
-            'js/lib/ace/mode-html.js',
-            'js/lib/ace/theme-github.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/mode-html.min.js',
+            'https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/theme-github.min.js',
         ];
     }
 }

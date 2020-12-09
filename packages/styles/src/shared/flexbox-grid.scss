@@ -1,0 +1,29 @@
+@import "variables";
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  margin-bottom: 20px;
+
+  @for $i from 1 through 12 {
+    .col-xs-#{$i} {
+      flex: 0 0;
+      flex-basis: percentage(($i / 12) - 0.01);
+    }
+  }
+
+  @media (min-width: $screen-sm) {
+    @for $i from 1 through 12 {
+      .col-md-#{$i} {
+        flex: 0 0;
+        flex-basis: percentage(($i / 12) - 0.01);
+      }
+    }
+  }
+
+  .centered {
+    align-self: center;
+  }
+}

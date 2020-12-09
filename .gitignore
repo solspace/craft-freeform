@@ -1,1 +1,17 @@
 .DS_Store
+.idea
+.vscode
+*.code-workspace
+
+vendor/
+node_modules/
+
+yarn-error.log
+lerna-debug.log
+
+yarndeploy.sh
+yarninstall.sh
+yarnstart.sh
+
+.phpunit.result.cache
+.php_cs.cache

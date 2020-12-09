@@ -1,0 +1,19 @@
+{
+  "name": "@ff/styles",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm run clean && npm run build && node-sass -r --watch src -o ../plugin/src/Resources/css",
+    "build": "npm run clean && node-sass -r src -o ../plugin/src/Resources/css",
+    "clean": "rm -rf ../plugin/src/Resources/css",
+    "test": ""
+  },
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "devDependencies": {
+    "node-sass": "^5.0.0"
+  },
+  "dependencies": {
+    "craftcms-sass": "^3.5.1",
+    "react-tippy": "^1.4.0"
+  }
+}

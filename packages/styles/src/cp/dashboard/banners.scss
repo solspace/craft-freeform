@@ -1,0 +1,142 @@
+$spacer: 1rem !default;
+$spacer-x: $spacer !default;
+$spacer-y: $spacer !default;
+
+$border-radius: 5px !default;
+$border-width: 1px !default;
+
+$state-success-text: #3c763d !default;
+$state-success-bg: #dff0d8 !default;
+$state-success-border: $state-success-bg !default;
+
+$state-info-text: #1180bf !default;
+$state-info-bg: #e4edf6 !default;
+$state-info-border: $state-info-bg !default;
+
+$state-warning-text: #8a6d3b !default;
+$state-warning-bg: #fcf8e3 !default;
+$state-warning-border: $state-warning-bg !default;
+
+$state-danger-text: #a94442 !default;
+$state-danger-bg: #f2dede !default;
+$state-danger-border: $state-danger-bg !default;
+
+$alert-padding: 10px 15px !default;
+$alert-border-radius: $border-radius !default;
+$alert-link-font-weight: bold !default;
+$alert-border-width: $border-width !default;
+
+$alert-success-bg: $state-success-bg !default;
+$alert-success-text: $state-success-text !default;
+$alert-success-border: $state-success-border !default;
+
+$alert-info-bg: $state-info-bg !default;
+$alert-info-text: $state-info-text !default;
+$alert-info-border: $state-info-border !default;
+
+$alert-warning-bg: $state-warning-bg !default;
+$alert-warning-text: $state-warning-text !default;
+$alert-warning-border: $state-warning-border !default;
+
+$alert-danger-bg: $state-danger-bg !default;
+$alert-danger-text: $state-danger-text !default;
+$alert-danger-border: $state-danger-border !default;
+
+// Alerts
+
+@mixin alert-variant($background, $border, $body-color) {
+  $lighterColour: lighten($background, 5);
+
+  border-color: $border;
+  color: $body-color;
+  background: $background;
+
+  hr {
+    border-top-color: darken($border, 5%);
+  }
+  .alert-link {
+    color: darken($body-color, 5%);
+  }
+}
+
+//
+// Base styles
+//
+
+.alert {
+  padding: $alert-padding;
+  margin-bottom: $spacer-y;
+  border: $alert-border-width solid transparent;
+  border-radius: $alert-border-radius;
+
+  font-size: 14px;
+
+  // Improve alignment and spacing of inner content
+  > p,
+  > ul {
+    margin-bottom: 0;
+  }
+  > p + p {
+    margin-top: 5px;
+  }
+}
+
+// Headings for larger alerts
+.alert-heading {
+  // Specified to prevent conflicts of changing $headings-color
+  color: inherit;
+}
+
+// Provide class for links that match alerts
+.alert-link {
+  font-weight: $alert-link-font-weight;
+}
+
+// Dismissible alerts
+//
+// Expand the right padding and account for the close button's positioning.
+
+.alert-dismissible {
+  position: relative;
+  padding-right: ($alert-padding + 20);
+
+  // Adjust close link position
+  .close {
+    position: absolute;
+    top: 9px;
+    right: 10px;
+    color: inherit;
+
+    font-size: 18px;
+
+    &:before {
+      font-family: Craft, sans-serif;
+      content: 'remove';
+      margin-left: 2px;
+    }
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+}
+
+// Alternate styles
+//
+// Generate contextual modifier classes for colorizing the alert.
+
+.alert-success {
+  @include alert-variant($alert-success-bg, $alert-success-border, $alert-success-text);
+}
+
+.alert-info {
+  @include alert-variant($alert-info-bg, $alert-info-border, $alert-info-text);
+}
+
+.alert-warning {
+  @include alert-variant($alert-warning-bg, $alert-warning-border, $alert-warning-text);
+}
+
+.alert-danger {
+  @include alert-variant($alert-danger-bg, $alert-danger-border, $alert-danger-text);
+}

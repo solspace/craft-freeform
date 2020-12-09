@@ -1,0 +1,58 @@
+.formhash-fieldname-rating-wrapper {
+  float: left;
+
+  &:not(:checked) {
+    > input {
+      position: absolute;
+      left: -9999px;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    > label {
+      float: right;
+      //width: 1em;
+      //padding: 0 .1em;
+      overflow: hidden;
+      white-space: nowrap;
+      cursor: pointer;
+      font-size: 200%;
+      font-weight: 100;
+      line-height: 1.2;
+      color: coloridle;
+      font-family: sans-serif;
+
+      &:before {
+        content: '★ ';
+        border: none;
+      }
+
+      &:after {
+        content: '';
+        display: none;
+      }
+    }
+
+    > label:hover,
+    > label:hover ~ label {
+      color: colorhover;
+    }
+  }
+
+  > input:checked ~ label {
+    color: colorselected;
+  }
+
+  > input:checked + label:hover,
+  > input:checked + label:hover ~ label,
+  > input:checked ~ label:hover,
+  > input:checked ~ label:hover ~ label,
+  > label:hover ~ input:checked ~ label {
+    color: colorhover;
+  }
+
+  > label:active {
+    position: relative;
+    top: 2px;
+    left: 2px;
+  }
+}

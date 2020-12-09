@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="100" height="100" viewBox="0, 0, 100, 100">
+  <g id="Layer_1">
+    <g id="Checkboxes">
+      <path d="M31.5,35 L91.5,35" fill-opacity="0" stroke="#000000" stroke-width="4"/>
+      <path d="M31.5,52 L91.5,52" fill-opacity="0" stroke="#000000" stroke-width="4"/>
+      <path d="M31.5,69.5 L91.5,69.5" fill-opacity="0" stroke="#000000" stroke-width="4"/>
+      <path d="M25.061,25.419 L27.419,27.788 L16.028,39.235 L14.849,40.419 L13.67,39.235 L7.419,32.953 L9.777,30.584 L14.849,35.681 L25.061,25.419 z" fill="#000000"/>
+      <path d="M25.061,42 L27.419,44.369 L16.028,55.816 L14.849,57 L13.67,55.816 L7.419,49.534 L9.777,47.165 L14.849,52.262 L25.061,42 z" fill="#000000"/>
+      <path d="M25.061,59 L27.419,61.369 L16.028,72.816 L14.849,74 L13.67,72.816 L7.419,66.534 L9.777,64.165 L14.849,69.262 L25.061,59 z" fill="#000000"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+.composer-one-line-items {
+    > div {
+      display: flex;
+      flex-wrap: wrap;
+
+      > div {
+        padding-right: 10px;
+      }
+    }
+  }

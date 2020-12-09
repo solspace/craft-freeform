@@ -1,0 +1,865 @@
+@import "../../../../node_modules/craftcms-sass/mixins";
+@import "../../../shared/variables";
+@import "../../../shared/bootstrap/mixins/clearfix";
+@import "./option-table";
+@import "./colorpicker";
+@import "./builder-items";
+@import "./property-editor";
+@import "./walkthrough";
+@import "./rules";
+@import "./connections";
+@import "../../../shared/extendable-classes";
+@import "./builder/quill";
+@import '../../../../node_modules/react-tippy/dist/tippy';
+
+$sidebarMinWidth: 18%;
+
+#main > div.padded {
+  padding: 0 !important;
+}
+
+#header {
+  display: flex;
+}
+
+#content {
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+
+  padding: 0 !important;
+}
+
+.composer-actions {
+  display: none;
+
+  > li {
+    display: block;
+    margin: 0 2px;
+    cursor: pointer;
+
+    width: 16px;
+    height: 16px;
+
+    text-align: center;
+    font-size: $font-size;
+
+    &:after {
+      font-family: Craft, sans-serif;
+      color: $color-action-button;
+    }
+
+    &.composer-action-integrations:after {
+      content: "\77";
+    }
+
+    &.composer-action-settings:after {
+      content: "settings";
+    }
+
+    &.composer-action-move:after {
+      content: "\e617";
+    }
+
+    &.composer-action-remove {
+      &:hover:after {
+        color: $color-error;
+      }
+
+      &:after {
+        content: "remove";
+      }
+    }
+  }
+
+  &.composer-row-actions {
+    position: absolute;
+    top: 16px;
+    right: 27px;
+  }
+
+  &.composer-column-actions {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+  }
+
+  &.composer-connection-actions,
+  &.composer-rule-actions {
+    display: block;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1;
+  }
+}
+
+.composer-action-icon {
+  display: block;
+  margin: 0 2px;
+  cursor: pointer;
+
+  width: 16px;
+  height: 16px;
+
+  text-align: center;
+  font-size: $font-size;
+
+  &:after {
+    font-family: Craft, sans-serif;
+    color: $color-action-button;
+  }
+
+  &.remove {
+    &:hover:after {
+      color: $color-error;
+    }
+
+    &:after {
+      content: "remove";
+    }
+  }
+}
+
+.composer-html-content {
+  @extend %reset-lists;
+  @extend %reset-headings;
+
+  ul, ol {
+    padding-left: 30px !important;
+
+    li {
+      padding-left: 5px;
+    }
+  }
+}
+
+#freeform-builder {
+  position: fixed;
+  top: (74px + 74px);
+  right: 24px;
+  bottom: 24px;
+  left: (225px + 24px);
+  z-index: 1;
+
+  padding-bottom: 0 !important;
+
+  @media (max-width: 1199px) {
+    left: 24px;
+  }
+}
+
+.builder-interface {
+  height: 100%;
+
+  hr {
+    margin: 16px -20px;
+    border-top: 1px solid $color-hr;
+  }
+
+  .builder-blocks {
+    display: flex;
+    align-content: stretch;
+    height: 100%;
+
+    > div {
+      @include shadow();
+
+      display: flex;
+      align-content: stretch;
+
+      &.lefty {
+        flex: 1 0 75%;
+        display: flex;
+        align-content: stretch;
+
+        .field-list {
+          overflow: auto;
+          border-top-left-radius: $largeBorderRadius;
+          border-bottom-left-radius: $largeBorderRadius;
+        }
+
+        .builder {
+          flex: 1;
+          padding: 0;
+
+          border-top-right-radius: $largeBorderRadius;
+          border-bottom-right-radius: $largeBorderRadius;
+
+          .layout {
+            height: calc(100% - 45px);
+            overflow-y: auto;
+          }
+        }
+      }
+
+      &.righty {
+        margin-left: $spacing;
+        flex: $propertyEditorFlex;
+
+        .select:not(.selectize) select {
+          max-width: 250px;
+        }
+
+        .property-editor {
+          display: flex;
+          flex-direction: column;
+          border-radius: $largeBorderRadius;
+
+          .property-wrapper {
+            flex-grow: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-bottom: 24px;
+            padding-top: 2px;
+          }
+
+          > div {
+            padding: 0 $spacing-wide;
+
+            h4 {
+              margin: 14px 0;
+            }
+
+            hr {
+              margin-top: 20px !important;
+            }
+          }
+
+          > h3, p {
+            padding-left: 15px;
+          }
+        }
+      }
+      //padding: $spacing $spacing-wide ($spacing * 6);
+    }
+
+    h3 {
+      margin: 0 !important;
+      font-size: 1.15rem;
+      font-weight: 500;
+    }
+
+    h5 {
+      @extend %h5;
+    }
+
+    .tabs {
+      .tab-list-wrapper {
+        display: flex;
+        justify-content: space-between;
+
+        background: $color-bg-tabs;
+        box-shadow: inset 0 -1px 0 $color-tab-border;
+
+        > ul {
+          flex: 1 1 auto;
+
+          width: 400px;
+          display: flex;
+          flex-wrap: nowrap;
+          overflow-x: auto;
+          overflow-y: hidden;
+          overflow-scrolling: touch;
+          -ms-overflow-style: -ms-autohiding-scrollbar;
+
+          > li {
+            position: relative;
+            flex: 0 0 150px;
+            overflow: hidden;
+
+            cursor: pointer;
+            display: block;
+            height: 40px;
+            padding: $spacing 18px 0;
+            margin: 0 0 -1px 0;
+
+            box-sizing: border-box;
+
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-top: none;
+
+            font-size: $font-size;
+            color: $color-tab-text;
+            white-space: nowrap;
+
+            > span {
+              display: block;
+              overflow: hidden;
+            }
+
+            &:first-child {
+              border-left: none;
+            }
+
+            &.active {
+              background: $color-white;
+              border: 1px solid $color-tab-border;
+              border-bottom: none;
+              border-top: none;
+
+              &:first-child {
+                border-left: none;
+              }
+            }
+
+            &.has-hover {
+              background: #d3d6d9;
+              transition: background-color .2s ease-out;
+            }
+
+            &:hover {
+              text-decoration: none;
+            }
+
+            .composer-page-actions {
+              display: inline-flex;
+              position: absolute;
+              top: 1px;
+              right: 0;
+
+              .composer-action-remove {
+                font-size: 12px;
+              }
+            }
+          }
+        }
+
+        .tab-list-controls {
+          flex: 0 0 38px;
+
+          > .new {
+            position: relative;
+            top: 10px;
+            left: 9px;
+
+            height: 24px;
+            padding: 3px 6px;
+
+            border: none;
+            border-radius: 3px;
+
+            color: #5d6a76;
+
+            font-size: 13px;
+            background: #d5dce5;
+
+            &:hover {
+              text-decoration: none;
+            }
+
+            &:after {
+              content: "plus";
+              position: relative;
+              top: 1px;
+
+              font-family: Craft, sans-serif;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+%h3 {
+  padding: 0;
+
+  font-size: 1.10rem !important;
+  font-weight: 700 !important;
+  color: $color-headings;
+
+  @extend %craftHeading;
+}
+
+%h4 {
+  margin: 14px 15px;
+  font-size: 14px;
+  font-weight: 700;
+  color: $color-headings;
+}
+
+%h5 {
+  font-size: 11px;
+  font-weight: bold;
+
+  @extend %craftHeading;
+}
+
+%h6 {
+
+  @extend %craftHeading;
+}
+
+%craftHeading {
+  &.craft-header {
+    position: relative;
+    z-index: 1;
+    padding: 0 0px 10px;
+    margin: 0;
+
+    color: #777777;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+}
+
+.sticky {
+  background: $color-cp-bg-blue;
+  z-index: 1000;
+
+  > div {
+    margin-bottom: 10px;
+  }
+}
+
+.field-list {
+  padding: 20px;
+  background: $color-cp-bg-gray;
+  flex: $fieldListFlex;
+
+  .sticky {
+    background: $color-cp-bg-gray;
+  }
+
+  > div {
+    margin: 0 0 10px;
+
+    .composer-fields {
+      margin-bottom: 10px;
+    }
+
+    ul {
+      li {
+        position: relative;
+
+        display: block;
+        margin: 0 0 5px;
+        padding: $spacing-short $spacing $spacing-short 35px;
+
+        cursor: move;
+
+        background: #fafdfe;
+        border: 1px dashed $color-field-border;
+        border-radius: 5px;
+
+        color: $color-field-text;
+
+        transition: background $anim-speed $anim-ease;
+
+        svg {
+          position: absolute;
+          left: 8px;
+          top: 4px;
+
+          width: 21px;
+          height: 21px;
+        }
+
+        &.is-dragging {
+          background: $color-droppable;
+        }
+
+        .composer-label-badge {
+          display: block;
+          padding: 0;
+          margin: 0;
+        }
+      }
+    }
+  }
+}
+
+.property-editor {
+  background: $color-cp-bg-gray;
+  flex: 1;
+  border-left: 1px solid #dadde2;
+
+  overflow: hidden;
+
+  .composer-form-settings {
+    padding: 0 !important;
+
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: nowrap;
+
+    flex: 0 0 39px;
+
+    > * {
+      flex: 1 0;
+
+      &:first-child > a{
+        border-left: none !important;
+      }
+    }
+
+    a {
+      padding: 9px 0 0;
+      height: 39px;
+      box-sizing: border-box;
+      display: block;
+
+      text-align: center;
+      font-size: 16px;
+      text-decoration: none;
+
+      color: $color-input-text;
+      background: rgba(205, 216, 228, 1.00);
+      border-left: 1px solid #e0e5eb;
+      border-bottom: 1px solid #e0e5eb;
+
+      &:before {
+        font-family: "solspace-freeform-craft", sans-serif;
+      }
+
+      &.active {
+        background: $color-cp-bg-gray;
+        color: #2A313B;
+        border-bottom: 1px solid transparent;
+      }
+
+      &.form-settings:before {
+        font-family: Craft, sans-serif;
+        content: "settings";
+        line-height: 22px;
+      }
+
+      &.validation-settings:before {
+        content: "\e815";
+      }
+
+      &.notification-settings:before {
+        content: "\e800";
+      }
+
+      &.connection-settings:before {
+        content: "\e813";
+      }
+
+      &.rules:before {
+        content: "\e818";
+      }
+
+      &.crm-settings:before {
+        content: "\f0ee";
+      }
+
+      &.payment-settings:before {
+        content: "\f155";
+      }
+    }
+  }
+
+  input {
+    outline: none;
+  }
+
+  select {
+    max-width: 100%;
+  }
+
+  h3 {
+    @extend %h3;
+    display: flex;
+    justify-content: space-between;
+    flex: 0 0 21px;
+
+    padding: $spacing-wide 0 0;
+  }
+
+  h4 {
+    @extend %h4;
+  }
+
+  h5 {
+    @extend %h5;
+  }
+
+  h6 {
+    @extend %h6;
+  }
+
+  *[readonly] {
+    background: $color-input-readonly;
+    border: 1px solid $color-input-readonly-border;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    color: $color-tab-text;
+  }
+
+  .ace_editor {
+    border: 1px solid $color-input-border;
+    border-radius: 3px;
+  }
+}
+
+.composer-group-values {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: $spacing-short;
+
+  input[type=text] {
+    display: block;
+    flex: 1 1 45%;
+    width: 45% !important;
+    margin-right: $spacing-short !important;
+  }
+
+  input[type=checkbox] {
+    flex: 0 0 10%;
+    margin: 9px auto 0 !important;
+  }
+}
+
+.composer-options-show-custom-values {
+  display: block;
+  margin-bottom: $spacing-short;
+
+  > input {
+    margin-right: $spacing-short;
+  }
+}
+
+.composer-add-new-field-wrapper, .composer-add-new-notification-wrapper, .composer-add-new-template-wrapper {
+  margin-top: $spacing;
+
+  &.active {
+    padding: $spacing;
+
+    background: $color-white;
+    border: 1px dashed $color-field-border;
+  }
+
+  > button {
+    margin: 0 auto;
+
+    font-size: 13px;
+  }
+}
+
+.composer-new-field-form {
+  .btn.submit {
+    margin-right: $spacing;
+  }
+
+  .field {
+    margin: 10px 0 7px;
+  }
+}
+
+.composer-submit-positioning {
+  display: flex;
+  justify-content: space-between;
+
+  > div {
+    flex: 1 0 0;
+    text-align: center;
+
+    &:first-child {
+      text-align: left;
+    }
+
+    &:last-child {
+      text-align: right;
+    }
+
+    > label {
+      > span {
+        display: block;
+      }
+    }
+  }
+}
+
+.composer-submit-position-wrapper {
+  display: flex;
+
+  &.composer-submit-position-spread {
+    justify-content: space-between;
+    padding-right: 25px;
+  }
+
+  &.composer-submit-position-left {
+    justify-content: flex-start;
+  }
+
+  &.composer-submit-position-center {
+    justify-content: center;
+  }
+
+  &.composer-submit-position-right {
+    justify-content: flex-end;
+    padding-right: 25px;
+  }
+
+  > input:not(:first-child) {
+    margin-left: 5px;
+  }
+}
+
+.composer-property-item {
+  margin: 16px 0;
+
+  .composer-property-heading {
+    margin-bottom: 4px;
+
+    > label {
+      position: relative;
+      color: $color-column-label;
+
+      .ff-info {
+        margin-left: 5px;
+      }
+
+      &.required:after {
+        position: relative;
+        left: -4px;
+        top: -5px;
+
+        margin: -2px -5px 0 7px;
+      }
+    }
+
+    .composer-property-instructions {
+      margin-top: 4px;
+
+      font-size: 11px;
+      line-height: 1.4;
+      color: $color-column-instructions;
+    }
+  }
+
+  .composer-property-input {
+    input, textarea {
+      &:not([type=checkbox]),
+      &:not([type=radio]) {
+        width: 100%;
+        min-height: 30px;
+
+        padding: 5px 7px;
+        margin: 0;
+
+        box-sizing: border-box;
+        transition: box-shadow linear 100ms;
+
+        @include input-styles();
+
+        font-size: 13px;
+        line-height: 16px;
+        color: $color-input-text;
+        font-family: HelveticaNeue, sans-serif;
+
+        &:focus {
+          outline: none;
+        }
+
+        &[readonly] {
+          background: $color-input-readonly;
+          border: 1px solid $color-input-readonly-border;
+          box-shadow: $shadow-readonly-input;
+          color: $color-input-readonly-text;
+        }
+
+        &.code {
+          font-family: Menlo, monospace;
+          font-size: 0.9em !important;
+          color: $color-input-disabled-text;
+        }
+      }
+
+      &[type=radio], &[type=checkbox] {
+        width: auto;
+        margin-right: $spacing-short;
+        min-height: 0;
+      }
+    }
+  }
+
+  .select {
+    max-width: 100%;
+
+    > select {
+      max-width: 100%;
+    }
+  }
+
+  .composer-property-checkbox .ff-info {
+    margin-left: 5px;
+  }
+
+  .composer-property-checkbox-list {
+    label {
+      display: block;
+    }
+  }
+
+  label > input[type=radio] {
+    margin-right: 5px;
+  }
+}
+
+.errors {
+  > * {
+    margin-bottom: $spacing-short;
+
+    font-size: 12px;
+    color: $color-error;
+
+    &:before {
+      content: "·";
+      padding-right: 5px;
+    }
+  }
+}
+
+.ff-info {
+  vertical-align: bottom;
+  display: inline-block !important;
+  margin-left: 5px;
+
+  width: 1em;
+  height: 1.375em;
+  text-align: center;
+  cursor: pointer;
+  overflow: hidden;
+
+  &:before {
+    font-family: 'Craft';
+    speak: none;
+    font-feature-settings: "liga", "dlig";
+    text-rendering: optimizeLegibility;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    text-align: center;
+    font-style: normal;
+    word-wrap: normal !important;
+    user-select: none;
+    vertical-align: baseline;
+    width: 100%;
+    line-height: 1.375;
+    content: 'info';
+    color: #b9bfc6;
+  }
+
+  &:hover:before {
+    color: #0d78f2;
+  }
+}
+
+#main {
+  position: relative;
+}
+
+[id="react-joyride:0"] {
+  > div > span {
+    visibility: visible !important;
+  }
+}

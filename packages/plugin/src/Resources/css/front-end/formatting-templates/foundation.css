@@ -1,0 +1,59 @@
+/* Freeform default Foundation CSS */
+button[type=submit].ff-loading {
+  display: inline-flex;
+  flex-wrap: nowrap;
+  align-items: center; }
+  button[type=submit].ff-loading:before {
+    content: '';
+    display: block;
+    flex: 1 0 11px;
+    width: 11px;
+    height: 11px;
+    margin-right: 10px;
+    border-style: solid;
+    border-width: 2px;
+    border-color: transparent transparent white white;
+    border-radius: 50%;
+    animation: ff-loading .5s linear infinite; }
+
+@keyframes ff-loading {
+  0% {
+    transform: rotate(0); }
+  100% {
+    transform: rotate(1turn); } }
+
+label.required:after {
+  content: "*";
+  color: #d00;
+  margin-left: 5px;
+  font-size: 12px;
+  font-family: serif;
+  font-weight: 700; }
+
+.submit {
+  margin-top: 15px; }
+
+.submit-align-left {
+  text-align: left; }
+  .submit-align-left button:not(:first-of-type) {
+    margin-left: 5px; }
+
+.submit-align-center {
+  text-align: center; }
+  .submit-align-center button:not(:first-of-type) {
+    margin-left: 5px; }
+
+.submit-align-right {
+  text-align: right; }
+  .submit-align-right button:not(:first-of-type) {
+    margin-left: 5px; }
+
+.submit-align-spread button:first-child {
+  float: left; }
+
+.submit-align-spread button:last-child {
+  float: right; }
+
+.form-rating-field-wrapper label {
+  margin-left: 0;
+  margin-right: 0; }

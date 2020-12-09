@@ -1,0 +1,47 @@
+.opinion-scale ul {
+  list-style: none;
+  margin: 0;
+  padding: 0; }
+
+.opinion-scale .opinion-scale-scales {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  grid-gap: 0; }
+  .opinion-scale .opinion-scale-scales > * > label {
+    display: block;
+    padding: 6px 12px;
+    margin: 0 0 5px;
+    border: 1px solid #CCCCCC;
+    border-left: none;
+    white-space: nowrap;
+    text-align: center;
+    color: black !important;
+    cursor: pointer; }
+  .opinion-scale .opinion-scale-scales > * input {
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    visibility: hidden; }
+    .opinion-scale .opinion-scale-scales > * input:checked ~ label {
+      background: #E6E6E6; }
+  .opinion-scale .opinion-scale-scales > *:first-child > label {
+    border-left: 1px solid #CCCCCC;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px; }
+  .opinion-scale .opinion-scale-scales > *:last-child > label {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px; }
+
+.opinion-scale ul.opinion-scale-legends {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+  grid-gap: 0; }
+  .opinion-scale ul.opinion-scale-legends li {
+    text-align: center; }
+  .opinion-scale ul.opinion-scale-legends li:first-child {
+    text-align: left; }
+  .opinion-scale ul.opinion-scale-legends li:last-child {
+    text-align: right; }

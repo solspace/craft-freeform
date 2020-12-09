@@ -1,0 +1,45 @@
+/* Freeform default Foundation CSS */
+@import 'spinner';
+
+label.required:after {
+  content: "*";
+  color: #d00;
+  margin-left: 5px;
+  font-size: 12px;
+  font-family: serif;
+  font-weight: 700
+}
+
+.submit {
+  margin-top: 15px
+}
+
+$alignments: left, center, right;
+@each $alignment in $alignments {
+  &.submit-align-#{$alignment} {
+    text-align: $alignment;
+
+    button:not(:first-of-type) {
+      margin-left: 5px
+    }
+  }
+}
+
+.submit-align-spread {
+  button {
+    &:first-child {
+      float: left
+    }
+
+    &:last-child {
+      float: right;
+    }
+  }
+}
+
+.form-rating-field-wrapper {
+  label {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}

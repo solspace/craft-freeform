@@ -1,0 +1,55 @@
+%reset-headings {
+  h1, h2, h3, h4, h5, h6 {
+    margin: 20px 0 !important;
+    padding: 0 !important;
+
+    border: 0 !important;
+
+    vertical-align: baseline;
+    font-size: 100%;
+    font-family: inherit !important;
+    font-weight: normal !important;
+    text-transform: none !important;
+
+    color: #000000 !important;
+  }
+
+  h1 {
+    font-size: 25px !important;
+  }
+
+  h2 {
+    font-size: 23px !important;
+  }
+
+  h3 {
+    font-size: 21px !important;
+  }
+
+  h4 {
+    font-size: 19px !important;
+  }
+
+  h5 {
+    font-size: 17px !important;
+  }
+
+  h6 {
+    font-size: 15px;
+  }
+}
+
+%reset-lists {
+  ul {
+    display: block;
+    list-style-type: disc;
+    margin: 1em 0;
+    padding-left: 40px;
+  }
+  ol {
+    display: block;
+    list-style-type: decimal;
+    margin: 1em 0;
+    padding-left: 40px;
+  }
+}

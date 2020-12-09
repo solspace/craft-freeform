@@ -1,0 +1,101 @@
+@import "../../shared/variables";
+@import "../../shared/extendable-classes";
+@import "../../front-end/fields/opinion-scale";
+
+$spacing: 10px;
+$gutter: 10px;
+.fields-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 (-($gutter)) 0;
+  padding: 0;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  > div {
+    flex: 1 1 0;
+    padding: $spacing $gutter;
+  }
+
+  @extend %reset-lists;
+  @extend %reset-headings;
+
+  .fields-column {
+    overflow: hidden;
+
+    .field {
+      overflow-y: inherit;
+      overflow-x: auto;
+    }
+  }
+
+  .field-required {
+    .field.checkboxfield {
+      label {
+        &:after {
+          position: relative;
+          top: 2px;
+
+          content: "*";
+          margin: 0 0 0 7px;
+
+          font-family: Craft, sans-serif;
+          font-size: 19px;
+          line-height: 12px;
+          color: #da5a47;
+        }
+      }
+    }
+  }
+}
+
+#status-menu-btn {
+  background: none;
+  border: none;
+  box-shadow: none;
+
+  padding-left: 0;
+
+  &:focus {
+    outline: none;
+    box-shadow: none;
+  }
+}
+
+.tab-content {
+  margin: 0;
+}
+
+.input {
+  > input {
+    margin-top: 3px;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+}
+
+.multiselect select {
+  width: 100%;
+}
+
+.file-preview {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+label.required:after {
+  margin: -12px 0 0 5px !important;
+}
+
+#content {
+  border-radius: 0 5px 5px 5px;
+}
+
+#details {
+  padding-top: 40px;
+}

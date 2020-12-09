@@ -1,0 +1,32 @@
+button[type=submit] {
+  &.ff-loading {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    align-items: center;
+
+    &:before {
+      content: '';
+      display: block;
+      flex: 1 0 11px;
+
+      width: 11px;
+      height: 11px;
+      margin-right: 10px;
+
+      border-style: solid;
+      border-width: 2px;
+      border-color: transparent transparent white white;
+      border-radius: 50%;
+      animation: ff-loading .5s linear infinite;
+    }
+  }
+}
+
+@keyframes ff-loading {
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(1turn);
+  }
+}

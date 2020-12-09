@@ -1,0 +1,188 @@
+.composer-option-table {
+  > table {
+    width: 100%;
+    overflow: hidden;
+
+    border-radius: 5px;
+    border: 1px solid #cdd8e4;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    box-shadow: 0 1px 5px -1px rgba(31, 41, 51, 0.2);
+
+    thead {
+      tr {
+        th {
+          border-radius: 4px 4px 0 0;
+
+          padding: 6px 10px;
+
+          background: #f3f7fc;
+          border-bottom: 1px solid rgba(51, 64, 77, 0.1);
+          box-shadow: 0 2px 1px -2px rgba(0, 0, 0, 0.2);
+          white-space: nowrap;
+
+          font-weight: bold;
+          vertical-align: top;
+          font-size: 11px;
+          color: #7b8793;
+          text-align: left;
+
+          &.action {
+            padding: 4px 0;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          padding: 3px 10px !important;
+          background: white !important;
+
+          border: {
+            top: 1px solid rgba(0, 0, 0, 0.07);
+            left: 1px solid rgba(0, 0, 0, 0.07);
+          }
+
+          vertical-align: middle;
+          text-align: center;
+
+          &:first-child {
+            border-left: none;
+          }
+
+          input, textarea {
+            @include sans-serif-font();
+
+            display: block;
+            overflow: hidden;
+
+            width: 100%;
+            padding: 0px !important;
+            box-sizing: border-box;
+
+            border: none !important;
+            background: #fff !important;
+            box-shadow: none !important;
+
+            font-size: 14px;
+            line-height: 20px;
+            color: #3f4d5a;
+
+            resize: none;
+
+            &.code {
+              color: $color-input-text !important;
+            }
+          }
+
+          &.composer-option-row-checkbox {
+            padding: 0 10px;
+
+            > input {
+              margin: 0 !important;
+            }
+          }
+
+          &.action {
+            background: $color-action-background;
+            padding: 0 5px !important;
+
+            & + .action {
+              border-left: none;
+            }
+          }
+
+          .select {
+            display: block !important;
+            margin: 3px 3px !important;
+
+            > select {
+              width: 100%;
+              padding: 4px 20px 5px 8px !important;
+
+              font-size: 11px;
+              font-family: Menlo, monospace;
+
+              &.small {
+                min-width: 105px;
+                max-width: 130px;
+              }
+            }
+          }
+
+          &.read-only {
+            max-width: 93px;
+            word-wrap: break-word;
+
+            padding: 3px 10px;
+            color: $color-input-readonly-text;
+
+            text-align: left;
+          }
+        }
+
+        &:first-child {
+          td {
+            border-top: none;
+          }
+        }
+      }
+    }
+  }
+
+  table + .btn.add {
+    display: block;
+    width: 100%;
+
+    border-radius: 0 0 3px 3px;
+    border: 1px dashed rgba(0, 0, 0, 0.2);
+    border-top: none;
+
+    background: none;
+    box-shadow: none;
+
+    color: $color-input-text;
+  }
+
+  .action {
+    > a {
+      &:after {
+        position: relative;
+        top: 1px;
+
+        font-family: Craft;
+        font-size: 13px;
+        color: rgba(0, 0, 0, 0.2);
+      }
+
+      &.delete:after {
+        content: "\f00d";
+      }
+
+      &.delete:hover:after {
+        color: $color-error !important;
+      }
+
+      &.move:after {
+        content: "\e617";
+      }
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+.option-table-add {
+  height: auto;
+
+  select {
+    font-size: 11px !important;
+    padding: 2px 22px 2px 10px !important;
+  }
+}

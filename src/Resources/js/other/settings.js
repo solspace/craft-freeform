@@ -1,1 +1,0 @@
-"use strict";$(function(){var e=$("input[name='purge-toggle']").parents(".lightswitch");e.on({change:function(){var e=$("input",this).val();e||$("select#purge-value").val(0)}});var t=$("select#spam-protection-behaviour");t.on({change:function(){var e=$("#custom-spam-error-message");"display_errors"===$(this).val()?e.show("fast"):e.hide("fast")}})});

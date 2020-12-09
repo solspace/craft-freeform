@@ -1,0 +1,162 @@
+/* Freeform default Grid CSS */
+@import 'spinner';
+
+$errorColor: #721c24;
+
+@mixin clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+.freeform-pages {
+  padding: 0;
+  margin: 0 0 10px;
+
+  list-style: none;
+  @include clearfix;
+
+  li {
+    float: left;
+    margin: 0 10px 0 0;
+  }
+}
+
+$gutter: 15px;
+.freeform-row {
+  @include clearfix;
+  display: block;
+  margin: 0 (-$gutter);
+
+  .freeform-column {
+    @include clearfix;
+
+    display: block;
+    padding: 10px $gutter;
+
+    float: left;
+
+    box-sizing: border-box;
+
+    > .freeform-row:first-child {
+      margin-top: -10px;
+    }
+
+    label {
+      display: block;
+    }
+
+    .input-group-one-line {
+      label {
+        display: inline-block;
+        padding-right: 10px;
+      }
+    }
+
+    .freeform-label {
+      font-weight: bold;
+
+      &.freeform-required {
+        &:after {
+          content: "*";
+          margin-left: 5px;
+
+          color: red;
+        }
+      }
+    }
+
+    .freeform-input {
+      width: 100%;
+      display: block;
+
+      box-sizing: border-box;
+
+      &[type=checkbox], &[type=radio] {
+        width: auto;
+        display: inline;
+
+        margin-right: 5px;
+      }
+
+      &.StripeElement {
+        padding: 4px 2px;
+        border: 1px solid #CCCCCC;
+        height: 30px;
+      }
+    }
+
+    .freeform-input-only-label {
+      font-weight: normal;
+
+      > .freeform-input {
+        display: inline-block;
+        width: auto;
+        margin-right: 5px;
+      }
+    }
+
+    .freeform-errors, .ff-errors {
+      list-style: none;
+      padding: 0;
+      margin: 5px 0 0;
+
+      > li {
+        color: red;
+      }
+    }
+
+    .freeform-instructions {
+      margin:  0 0 5px;
+      font-size: 13px;
+      color: #ABA7A7;
+    }
+
+    $alignments: left, center, right;
+    @each $alignment in $alignments {
+      &.freeform-column-content-align-#{$alignment} {
+        text-align: $alignment;
+
+        button:not(:first-of-type) {
+          margin-left: 5px;
+        }
+      }
+    }
+
+    &.freeform-column-content-align-spread {
+      button:first-child {
+        float: left;
+      }
+
+      button:last-child {
+        float: right;
+      }
+    }
+  }
+
+  @for $i from 1 through 12 {
+    .freeform-column-#{$i} {
+      width: (100% / 12) * $i;
+    }
+  }
+}
+
+.ff-form-errors {
+  padding: 15px;
+
+  border: 1px solid #f5c6cb;
+  background: #f8d7da;
+  border-radius: 5px;
+
+  color: $errorColor;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.freeform-form-has-errors {
+  color: red;
+}

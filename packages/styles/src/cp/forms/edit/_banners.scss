@@ -1,0 +1,172 @@
+$radius: 5px;
+
+.banner {
+  border-width: 1px;
+  border-style: solid;
+  border-color: cadetblue;
+  border-radius: $radius;
+
+  padding: 0;
+  margin-bottom: 20px;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &.banner-single {
+    padding: 10px 15px;
+  }
+
+  font-size: 15px;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    font-weight: bold;
+  }
+
+  > div {
+    position: relative;
+    display: block;
+
+    padding: 10px 15px;
+
+    > span {
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    > .button {
+      position: absolute;
+      top: 7px;
+      right: 5px;
+      z-index: 1;
+
+      display: block;
+      padding: 3px 25px 2px 7px;
+
+      border-radius: $radius;
+      background: #FFFFFF;
+      color: #686867;
+
+      font-size: 12px;
+      font-weight: bold;
+
+      text-decoration: none;
+
+      &:after {
+        position: absolute;
+        right: 6px;
+        top: 2px;
+
+        content: 'remove';
+        display: block;
+
+        color: rgba(123, 135, 147, 0.5);
+        font-family: Craft, sans-serif;
+        font-weight: normal;
+        font-size: 14px;
+      }
+    }
+  }
+
+  > table {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+
+    border-collapse: collapse;
+    font-size: 14px;
+
+    tr {
+      td {
+        padding: 0 10px;
+        margin: 0;
+
+        vertical-align: middle;
+
+        &.message {
+          width: 90%;
+        }
+
+        &.icon {
+          padding-left: 15px;
+          padding-right: 0;
+          width: 20px;
+
+          svg {
+            position: relative;
+            top: 2px;
+
+            width: 20px;
+            height: 20px;
+          }
+        }
+
+        &.date {
+          white-space: nowrap;
+        }
+
+        &.action-buttons {
+          white-space: nowrap;
+
+          .mark-as-read {
+            display: block;
+            text-decoration: none;
+
+            &:after {
+              content: 'remove';
+              display: block;
+
+              color: rgba(123, 135, 147, 0.5);
+              font-family: Craft, sans-serif;
+              font-weight: normal;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  $styles: (
+    "warning": #f28d02,
+    "critical": #cf0000,
+    "info": #009ada,
+    "new": #028052
+  );
+
+  @each $name, $color in $styles {
+    &.banner-#{$name} {
+      border-color: $color;
+      color: $color;
+
+      > div {
+        background-color: $color;
+      }
+
+      > table {
+        tr {
+          @each $subName, $subColor in $styles {
+            &[data-type="#{$subName}"] {
+              td {
+                color: #3f4d5a;
+
+                &.icon {
+                  svg {
+                    fill: $subColor;
+                  }
+                }
+              }
+            }
+          }
+
+          &:nth-child(even) td {
+            background: scale-color($color, $alpha: -95%);
+            //background: #f4f7fb;
+          }
+        }
+      }
+    }
+  }
+}

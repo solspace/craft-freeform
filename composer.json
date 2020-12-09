@@ -1,7 +1,7 @@
 {
   "name": "solspace/craft-freeform",
   "description": "The most reliable, intuitive and powerful form builder for Craft.",
-  "version": "3.9.9",
+  "version": "3.10.0-alpha.1",
   "type": "craft-plugin",
   "authors": [
     {
@@ -22,12 +22,23 @@
     "phpoffice/phpspreadsheet": "^1.6.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^6.1"
+    "phpunit/phpunit": "^9.3.0",
+    "friendsofphp/php-cs-fixer": "^2.16",
+    "brainmaestro/composer-git-hooks": "^2.8"
   },
   "autoload": {
     "psr-4": {
-      "Solspace\\Freeform\\": "src/"
+      "Solspace\\Freeform\\": "packages/plugin/src/",
+      "Solspace\\Tests\\Freeform\\": "packages/plugin/tests"
     }
+  },
+  "scripts": {
+    "test:unit": "vendor/bin/phpunit --configuration ./phpunit.xml",
+    "fix": "vendor/bin/php-cs-fixer fix --diff",
+    "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "cghooks": "vendor/bin/cghooks",
+    "post-install-cmd": "cghooks add --ignore-lock",
+    "post-update-cmd": "cghooks update"
   },
   "extra": {
     "schemaVersion": "3.1.0",
@@ -39,6 +50,21 @@
     "documentationUrl": "https://docs.solspace.com/craft/freeform/v3/",
     "changelogUrl": "https://raw.githubusercontent.com/solspace/craft3-freeform/v3/CHANGELOG.md",
     "hasSettings": true,
-    "hasCpSection": true
+    "hasCpSection": true,
+    "hooks": {
+      "pre-commit": [
+        "set -e",
+        "npm -v",
+        "php -v",
+        "printf '\\n\\e[32m######### Linting Scripts #########\\e[0m\\n\\n'",
+        "npm run lint",
+        "printf '\\n\\e[32m######### Validating Composer #########\\e[0m\\n\\n'",
+        "composer validate",
+        "printf '\\n\\e[32m######### Running Unit Tests #########\\e[0m\\n\\n'",
+        "composer run test:unit",
+        "printf '\\n\\e[32m######### Running CS Fixer dry run #########\\e[0m\\n\\n'",
+        "composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)"
+      ]
+    }
   }
 }

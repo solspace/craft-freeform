@@ -1,0 +1,32 @@
+{
+  "root": true,
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true,
+      "legacyDecorators": true
+    }
+  },
+  "settings": {
+    "react": {
+      "version": "17.0"
+    }
+  },
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+  "plugins": [],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommended"],
+  "rules": {
+    "no-console": "off",
+    "no-prototype-builtins": "off",
+    "no-undef": "off",
+    "react/no-find-dom-node": "off",
+    "no-case-declarations": "off"
+  },
+  "overrides": []
+}

@@ -1,0 +1,13 @@
+.field-type {
+  display: none;
+}
+
+.field-settings {
+  display: none;
+}
+
+table.value-group {
+  &.hide-custom-values .field-value {
+    display: none;
+  }
+}

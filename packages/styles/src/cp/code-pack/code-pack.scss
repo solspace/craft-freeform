@@ -1,0 +1,130 @@
+@import "../../shared/mixins";
+
+#components-wrapper {
+  @include clearfix;
+  margin: 25px -10px 0;
+
+  > div {
+    position: relative;
+    box-sizing: border-box;
+
+    float: left;
+    width: 50%;
+
+    padding: 0 10px;
+    margin: 0 0 25px;
+
+    &:last-child {
+      width: 100%;
+    }
+  }
+
+  @media only screen and (max-width: 1430px) {
+    > div {
+      width: 100%;
+    }
+  }
+}
+
+ul.directory-structure {
+  @extend %gradient-bg;
+
+  ul {
+    margin-left: 20px;
+  }
+
+  li:before {
+    font-family: 'Craft';
+    font-size: 16px;
+    padding-right: 5px;
+  }
+
+  li.dir {
+    font-weight: bold;
+
+    &:before {
+      font-weight: normal;
+      content: "categories";
+    }
+  }
+
+  li.file {
+    font-weight: normal;
+
+    &:before {
+      content: "templates";
+    }
+  }
+
+  &.routes {
+    > li {
+      @include clearfix;
+
+      .route {
+        float: left;
+
+        font-weight: normal;
+
+        &:before {
+          position: relative;
+          top: 1px;
+          padding: 0 5px 0 0;
+
+          font-weight: normal;
+          font-family: 'Craft';
+          font-size: 10px;
+          content: 'routes';
+        }
+      }
+
+      .template {
+        float: right;
+
+        color: #CCC;
+        font-size: 12px;
+      }
+    }
+  }
+}
+
+ul.section-structure {
+  > li {
+    padding-left: 10px;
+    @include clearfix;
+    @extend %bordered-padding;
+
+    > div {
+      float: left;
+      @extend %gradient-bg;
+
+      margin: 0 10px 0 0;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      > table {
+        tr:last-child td {
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+
+%bordered-padding {
+  padding: 8px;
+  border: 1px solid rgba(115, 127, 140, 0.15);
+  border-radius: 2px;
+}
+
+%gradient-bg {
+  @extend %bordered-padding;
+  background-image: linear-gradient(#f7f7f8, #f4f5f6);
+}
+
+#add-demo-template {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}

@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 3.10.0-beta.1 - 2020-12-XX
+
+### Added
+- Added support for GraphQL.
+- Added the ability to specify a custom Payment description inside the form builder to show inside Stripe payments.
+- Added ability to specify a Text-only version of email notifications when using the template file approach (`{# text #}{# /text #}`).
+
+### Changed
+- Updated AJAX to work with multipage forms.
+- Updated Payments to work with multipage forms.
+- Overhauled the Freeform Javascript plugin to be more robust, reworked the API to make it way more developer friendly. Made it easier for anyone to adjust or complement form functionality regardless of their particular site setup.
+- Updated the 'Disable Submit Button on Form Submit?' setting to be on by default for new installs.
+- Updated Freeform to automatically generate Text-only versions when no Text-only version is specified in the email notification template.
+- Updated the CP Forms index to order forms alphabetically again (vs using the custom order specified on the Dashboard).
+
 ## 3.9.9 - 2020-12-02
 
 ### Fixed

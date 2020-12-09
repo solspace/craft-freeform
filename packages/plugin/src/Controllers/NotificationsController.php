@@ -104,6 +104,7 @@ class NotificationsController extends BaseController
         $notification->replyToEmail = $request->post('replyToEmail');
         $notification->bodyHtml = $request->post('bodyHtml');
         $notification->bodyText = $request->post('bodyText');
+        $notification->autoText = (bool) $request->post('autoText');
         $notification->includeAttachments = (bool) $request->post('includeAttachments');
         $notification->presetAssets = $request->post('presetAssets');
 

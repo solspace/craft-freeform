@@ -64,6 +64,9 @@ class EmailTemplate
     /** @var string */
     private $textBody;
 
+    /** @var bool */
+    private $autoText;
+
     /**
      * EmailTemplate constructor.
      *
@@ -97,8 +100,9 @@ class EmailTemplate
         if (preg_match($textPattern, $body, $textMatches)) {
             $text = $textMatches[2];
             $body = preg_replace($textPattern, '', $this->templateData);
+            $this->autoText = false;
         } else {
-            $text = strip_tags($text);
+            $this->autoText = true;
         }
 
         $body = preg_replace("/{#.*#}\n?/", '', $body);
@@ -225,6 +229,11 @@ class EmailTemplate
     public function getTextBody()
     {
         return $this->textBody;
+    }
+
+    public function isAutoText(): bool
+    {
+        return (bool) $this->autoText;
     }
 
     /**

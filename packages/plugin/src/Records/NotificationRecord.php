@@ -36,6 +36,7 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
  * @property string $cc
  * @property string $bcc
  * @property string $presetAssets
+ * @property bool   $autoText
  */
 class NotificationRecord extends ActiveRecord implements NotificationInterface, \JsonSerializable
 {
@@ -54,6 +55,7 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
         $record->fromEmail = \Craft::$app->systemSettings->getSetting('email', 'fromEmail');
         $record->fromName = \Craft::$app->systemSettings->getSetting('email', 'fromName');
         $record->subject = 'New submission from {{ form.name }}';
+        $record->autoText = true;
         $record->bodyHtml = <<<'EOT'
 <p>Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}</p>
 <ul>
@@ -102,6 +104,7 @@ EOT;
         $model->bodyText = $template->getTextBody();
         $model->includeAttachments = $includeAttachments;
         $model->presetAssets = $template->getPresetAssets();
+        $model->autoText = $template->isAutoText();
 
         return $model;
     }
@@ -200,7 +203,16 @@ EOT;
 
     public function getBodyText(): string
     {
+        if ($this->isAutoText()) {
+            return strip_tags($this->bodyHtml);
+        }
+
         return $this->bodyText;
+    }
+
+    public function isAutoText(): bool
+    {
+        return (bool) $this->autoText;
     }
 
     /**

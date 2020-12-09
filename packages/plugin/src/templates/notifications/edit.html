@@ -187,17 +187,29 @@
     </style>
     <div id="editor">{{ notification.bodyHtml }}</div>
 
-    {{ forms.textareaField({
-        label: "Email Body (Text)"|t('freeform'),
-        instructions: "The text content of the email notification. If you wish to send out both HTML and Text options, fill out both the HTML and Text body fields. See documentation for availability of variables."|t('freeform'),
-        id: "emailBodyText",
-        name: "bodyText",
-        class: "code",
-        value: notification.bodyText,
-        errors: notification.getErrors("bodyText"),
-        required: false,
-        rows: 20,
+
+    {{ forms.lightswitchField({
+        label: "Auto 'Text-Only' version?"|t('freeform'),
+        instructions: "When enabled, Freeform will automatically provide a Text-only version of the notification based on the HTML version."|t('freeform'),
+        name: "autoText",
+        on: notification.autoText,
+        errors: notification.getErrors("autoText"),
+        reverseToggle: 'text-body',
     }) }}
+
+    <div id="text-body" class="field {{ notification.autoText ? ' hidden' }}">
+        {{ forms.textareaField({
+            label: "Email Body (Text)"|t('freeform'),
+            instructions: "The text content of the email notification. If you wish to send out both HTML and Text options, fill out both the HTML and Text body fields. See documentation for availability of variables."|t('freeform'),
+            id: "emailBodyText",
+            name: "bodyText",
+            class: "code",
+            value: notification.bodyText,
+            errors: notification.getErrors("bodyText"),
+            required: false,
+            rows: 20,
+        }) }}
+    </div>
 
     {% if craft.freeform.pro %}
 

@@ -169,7 +169,7 @@ class SettingsController extends BaseController
 
         $errors = [];
         $settings = $this->getSettingsModel();
-        $extension = '.html';
+        $extension = '.twig';
 
         $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
         $templateName = \Craft::$app->request->post('templateName');

@@ -22,8 +22,9 @@ class FormResolver extends Resolver
         $arguments['limit'] = 1;
 
         $forms = Freeform::getInstance()->forms->getResolvedForms($arguments);
+        $form = reset($forms);
 
-        return reset($forms);
+        return $form ?: null;
     }
 
     private static function getArguments(array $arguments)

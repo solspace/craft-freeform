@@ -6,7 +6,14 @@ use craft\events\RegisterGqlQueriesEvent;
 use craft\events\RegisterGqlSchemaComponentsEvent;
 use craft\events\RegisterGqlTypesEvent;
 use craft\services\Gql;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\PageInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\RowInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\KeyValueMapInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Queries\FreeformQuery;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
@@ -21,6 +28,13 @@ class GraphQLBundle implements BundleInterface
             Gql::EVENT_REGISTER_GQL_TYPES,
             function (RegisterGqlTypesEvent $event) {
                 $event->types[] = FreeformInterface::class;
+                $event->types[] = FormInterface::class;
+                $event->types[] = FieldInterface::class;
+                $event->types[] = PageInterface::class;
+                $event->types[] = RowInterface::class;
+                $event->types[] = KeyValueMapInterface::class;
+                $event->types[] = OptionsInterface::class;
+                $event->types[] = ScalesInterface::class;
             }
         );
 

@@ -369,13 +369,14 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector
 
             case 'list':
             case 'picklist':
-
-                if ($jsonType == 'jsonobject') {
+            case 'multiselectpicklist':
+                
+                if ($jsonType == 'jsonobject' || $jsonType == 'jsonarray') {
                     $type = FieldObject::TYPE_ARRAY;
                 } else {
                     $type = FieldObject::TYPE_STRING;
                 }
-
+                
                 break;
 
             case 'integer':

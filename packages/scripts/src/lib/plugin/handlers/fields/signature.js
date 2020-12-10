@@ -53,7 +53,12 @@ class Signature {
       }
 
       if (value) {
-        signaturePad.fromDataURL(value);
+        const img = new Image();
+        signaturePad.clear();
+        img.src = value;
+        img.onload = () => {
+          canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
       }
     });
   };

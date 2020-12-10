@@ -11,6 +11,8 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FreeformInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\PageInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\RowInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\KeyValueMapInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
@@ -35,6 +37,8 @@ class GraphQLBundle implements BundleInterface
                 $event->types[] = KeyValueMapInterface::class;
                 $event->types[] = OptionsInterface::class;
                 $event->types[] = ScalesInterface::class;
+                $event->types[] = HoneypotInterface::class;
+                $event->types[] = CsrfTokenInterface::class;
             }
         );
 

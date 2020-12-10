@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects;
 
-use Solspace\Freeform\Bundles\GraphQL\Arguments\SimpleObjects\KeyValueMapArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\SimpleObjects\EmptyArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\ScalesType;
@@ -16,7 +16,7 @@ class ScalesGenerator extends AbstractGenerator
 
     public static function getArgumentsClass(): string
     {
-        return KeyValueMapArguments::class;
+        return EmptyArguments::class;
     }
 
     public static function getInterfaceClass(): string

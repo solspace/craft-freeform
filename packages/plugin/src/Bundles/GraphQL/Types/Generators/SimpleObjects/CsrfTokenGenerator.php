@@ -3,15 +3,15 @@
 namespace Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects;
 
 use Solspace\Freeform\Bundles\GraphQL\Arguments\SimpleObjects\EmptyArguments;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
-use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\OptionsType;
+use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\CsrfTokenType;
 
-class OptionsGenerator extends AbstractGenerator
+class CsrfTokenGenerator extends AbstractGenerator
 {
     public static function getTypeClass(): string
     {
-        return OptionsType::class;
+        return CsrfTokenType::class;
     }
 
     public static function getArgumentsClass(): string
@@ -21,11 +21,11 @@ class OptionsGenerator extends AbstractGenerator
 
     public static function getInterfaceClass(): string
     {
-        return OptionsInterface::class;
+        return CsrfTokenInterface::class;
     }
 
     public static function getDescription(): string
     {
-        return 'A key=>value object';
+        return 'A fresh csrf token';
     }
 }

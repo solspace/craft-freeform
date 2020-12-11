@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.10.0-beta.2 - 2020-12-11
+
+### Added
+- Added Honeypot, CSRF, form hash and a lot more fields to form queries for GraphQL.
+- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
+
+### Fixed
+- Fixed a bug where there were some missing implementations for GraphQL schema.
+- Fixed a bug where Signature fields were redrawing incorrectly on high DPI displays.
+
 ## 3.10.0-beta.1 - 2020-12-09
 
 ### Added
@@ -18,7 +28,6 @@
 ## 3.9.9 - 2020-12-02
 
 ### Fixed
-
 - Fixed a bug where older installs of Craft (3.5.9 and lower) could experience an error in the Forms and Fields CP index pages due to the `truncate` filter not existing yet.
 
 ## 3.9.8 - 2020-12-01

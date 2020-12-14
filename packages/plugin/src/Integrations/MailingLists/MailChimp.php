@@ -107,6 +107,7 @@ class MailChimp extends AbstractMailingListIntegration
         $listId = $mailingList->getId();
 
         foreach ($emails as $email) {
+            $email = strtolower($email);
             $emailHash = md5($email);
             $memberData = [
                 'email_address' => $email,

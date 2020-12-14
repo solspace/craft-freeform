@@ -3,11 +3,14 @@
 ## 3.10.0-beta.3 - xxx
 
 ### Added
-- Added the "step" property to Number fields in Form Builder
+- Added the "step" property to Number fields in Form Builder.
 
 ### Fixed
-- Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp
-- Fixed Weekly Digest and Email Error Notifications not respecting the "testToEmailAddress" config setting
+- Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp.
+- Fixed Weekly Digest and Email Error Notifications not respecting the "testToEmailAddress" config setting.
+
+### Changed
+- Updated Weekly Digest email form names to link to submissions pages instead of form edit view.
 
 ## 3.10.0-beta.2 - 2020-12-11
 

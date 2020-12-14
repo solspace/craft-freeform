@@ -59,6 +59,11 @@ class DigestService extends Component
         $mailer = $freeform->mailer;
         $settingsService = $freeform->settings;
 
+        $isProduction = 'production' === strtolower(\Craft::$app->getConfig()->env);
+        if ($settingsService->isDigestOnlyOnProduction() && !$isProduction) {
+            return;
+        }
+
         $recipients = $settingsService->getDigestRecipients();
         if (!\count($recipients)) {
             return;

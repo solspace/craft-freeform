@@ -224,6 +224,9 @@ class Settings extends Model
     /** @var string */
     public $digestRecipients;
 
+    /** @var bool */
+    public $digestOnlyOnProduction;
+
     /** @var array */
     public $displayFeed;
 
@@ -276,6 +279,7 @@ class Settings extends Model
         $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients = null;
         $this->digestRecipients = null;
+        $this->digestOnlyOnProduction = false;
         $this->displayFeed = true;
         $this->feedInfo = [];
         $this->badgeType = 'all';

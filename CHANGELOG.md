@@ -4,6 +4,7 @@
 
 ### Added
 - Added the "step" property to Number fields in Form Builder.
+- Added a setting which lets you send weekly digests only on production environments
 
 ### Fixed
 - Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp.

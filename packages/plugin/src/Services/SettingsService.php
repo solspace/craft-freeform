@@ -543,6 +543,11 @@ class SettingsService extends BaseService
         return StringHelper::extractSeparatedValues($this->getSettingsModel()->digestRecipients ?? '');
     }
 
+    public function isDigestOnlyOnProduction(): bool
+    {
+        return (bool) $this->getSettingsModel()->digestOnlyOnProduction;
+    }
+
     public function getBadgeCount()
     {
         $type = $this->getSettingsModel()->badgeType;

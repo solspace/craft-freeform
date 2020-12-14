@@ -33,6 +33,14 @@
         errors: settings.getErrors("digestRecipients"),
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Send Notifications on Live Environment only?"|t('freeform'),
+        instructions: "If this setting is enabled, Freeform will only send out Weekly Digest emails when the Craft environment is set to production."|t('freeform'),
+        name: "settings[digestOnlyOnProduction]",
+        on: settings.digestOnlyOnProduction,
+        errors: settings.getErrors("digestOnlyOnProduction"),
+    }) }}
+
     <hr>
 
     {{ forms.lightswitchField({

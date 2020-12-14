@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { translate } from '../../app';
+import { translate } from '@ff/app';
 import BasePropertyEditor from './BasePropertyEditor';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
 import CustomProperty from './PropertyItems/CustomProperty';
-import ExternalOptionsProperty from './PropertyItems/ExternalOptionsProperty';
-import SelectProperty from './PropertyItems/SelectProperty';
 import TextareaProperty from './PropertyItems/TextareaProperty';
 import TextProperty from './PropertyItems/TextProperty';
 
@@ -27,6 +25,7 @@ export default class Number extends BasePropertyEditor {
       maxValue: PropTypes.number,
       decimalCount: PropTypes.number,
       allowNegative: PropTypes.bool.isRequired,
+      step: PropTypes.number,
     }).isRequired,
   };
 
@@ -35,7 +34,7 @@ export default class Number extends BasePropertyEditor {
       properties: { label, value, handle, placeholder, required, instructions },
     } = this.context;
     const {
-      properties: { minLength, maxLength, minValue, maxValue },
+      properties: { minLength, maxLength, minValue, maxValue, step },
     } = this.context;
     const {
       properties: { decimalCount, allowNegative },
@@ -156,6 +155,15 @@ export default class Number extends BasePropertyEditor {
           placeholder="Leave blank for no decimals."
           value={decimalCount ? decimalCount : ''}
           isNumeric={true}
+          onChangeHandler={this.update}
+        />
+
+        <TextProperty
+          label="Step"
+          instructions="The step"
+          name="step"
+          placeholder="1"
+          value={step ? step : ''}
           onChangeHandler={this.update}
         />
 

@@ -89,6 +89,7 @@ const validProperties = [
   'tableLayout',
   'useScript',
   'description',
+  'step',
 ];
 
 export default class PropertyHelper {

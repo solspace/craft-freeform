@@ -64,6 +64,14 @@
 }) }}
 
 {{ forms.textField({
+    label: "Step"|t('freeform'),
+    instructions: "Step increment property"|t('freeform'),
+    name: "types[number][step]",
+    value: field.getMetaProperty('step'),
+    size: 10,
+}) }}
+
+{{ forms.textField({
     label: "Decimal Count"|t('freeform'),
     instructions: "The number of decimal places allowed"|t('freeform'),
     name: "types[number][decimalCount]",

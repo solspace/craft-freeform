@@ -28,6 +28,9 @@ class NumberField extends TextField
     /** @var bool */
     protected $allowNegative;
 
+    /** @var float */
+    protected $step;
+
     /**
      * @return null|mixed|string
      */
@@ -91,6 +94,11 @@ class NumberField extends TextField
         return $this->allowNegative;
     }
 
+    public function getStep(): float
+    {
+        return $this->step;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -149,10 +157,5 @@ class NumberField extends TextField
         $output .= '/>';
 
         return $output;
-    }
-
-    private function getStep(): float
-    {
-        return 1 / (10 ** $this->getDecimalCount());
     }
 }

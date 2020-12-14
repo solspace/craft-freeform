@@ -235,6 +235,7 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['decimalSeparator'] = $this->getMetaProperty('decimalSeparator', '.');
             $returnArray['thousandsSeparator'] = $this->getMetaProperty('thousandsSeparator', ',');
             $returnArray['allowNegative'] = $this->getMetaProperty('allowNegative', false);
+            $returnArray['step'] = $this->getMetaProperty('step');
         }
 
         if (FieldInterface::TYPE_RATING === $this->type) {

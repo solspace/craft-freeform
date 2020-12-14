@@ -179,6 +179,12 @@ class FieldGenerator extends AbstractGenerator
                 'description' => 'Number of decimals',
             ];
 
+            $fieldDefinitions['step'] = [
+                'name' => 'step',
+                'type' => Type::float(),
+                'description' => 'Step increment property',
+            ];
+
             $fieldDefinitions['decimalSeparator'] = [
                 'name' => 'decimalSeparator',
                 'type' => Type::string(),

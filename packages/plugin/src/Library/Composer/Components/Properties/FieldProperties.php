@@ -163,6 +163,9 @@ class FieldProperties extends AbstractProperties
     /** @var bool */
     protected $allowNegative;
 
+    /** @var float */
+    protected $step;
+
     /** @var string */
     protected $pattern;
 
@@ -657,6 +660,14 @@ class FieldProperties extends AbstractProperties
     }
 
     /**
+     * @return null|float
+     */
+    public function getStep()
+    {
+        return $this->step;
+    }
+
+    /**
      * @return null|string
      */
     public function getDecimalSeparator()
@@ -1002,6 +1013,7 @@ class FieldProperties extends AbstractProperties
             'decimalSeparator' => self::TYPE_STRING,
             'thousandsSeparator' => self::TYPE_STRING,
             'allowNegative' => self::TYPE_BOOLEAN,
+            'step' => self::TYPE_DOUBLE,
             'pattern' => self::TYPE_STRING,
             'targetFieldHash' => self::TYPE_STRING,
             'message' => self::TYPE_STRING,

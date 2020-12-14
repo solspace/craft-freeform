@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.10.0-beta.3 - xxx
+
+### Added
+- Added the "step" property to Number fields in Form Builder
+
+### Fixed
+- Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp
+
 ## 3.10.0-beta.2 - 2020-12-11
 
 ### Added

@@ -7,6 +7,7 @@
 
 ### Fixed
 - Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp
+- Fixed Weekly Digest and Email Error Notifications not respecting the "testToEmailAddress" config setting
 
 ## 3.10.0-beta.2 - 2020-12-11
 

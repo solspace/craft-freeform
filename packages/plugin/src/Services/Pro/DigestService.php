@@ -69,6 +69,7 @@ class DigestService extends Component
 
         $notification = NotificationRecord::createFromTemplate(self::TEMPLATE_PATH);
 
+        $recipients = $mailer->processRecipients($recipients);
         $message = $mailer->compileMessage(
             $notification,
             [

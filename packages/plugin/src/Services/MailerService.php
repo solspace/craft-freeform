@@ -69,25 +69,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         $sentMailCount = 0;
         $notification = $this->getNotificationById($notificationId);
 
-        if (!\is_array($recipients)) {
-            $recipients = $recipients ? [$recipients] : [];
-        }
-
-        $previousRecipients = $recipients;
-        $recipients = [];
-        foreach ($previousRecipients as $index => $value) {
-            $exploded = explode(',', $value);
-            foreach ($exploded as $emailString) {
-                $recipients[] = trim($emailString);
-            }
-        }
-
-        if (version_compare(\Craft::$app->getVersion(), '3.5', '>=')) {
-            $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
-            if (!empty($testToEmailAddress)) {
-                $recipients = array_flip($testToEmailAddress);
-            }
-        }
+        $recipients = $this->processRecipients($recipients);
 
         if (!$notification) {
             $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION);
@@ -280,6 +262,30 @@ class MailerService extends BaseService implements MailHandlerInterface
         return $message;
     }
 
+    public function processRecipients($recipients): array
+    {
+        if (version_compare(\Craft::$app->getVersion(), '3.5', '>=')) {
+            $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
+            if (!empty($testToEmailAddress)) {
+                return array_flip($testToEmailAddress);
+            }
+        }
+
+        if (!\is_array($recipients)) {
+            $recipients = $recipients ? [$recipients] : [];
+        }
+
+        $processedRecipients = [];
+        foreach ($recipients as $index => $value) {
+            $exploded = explode(',', $value);
+            foreach ($exploded as $emailString) {
+                $processedRecipients[] = trim($emailString);
+            }
+        }
+
+        return $processedRecipients;
+    }
+
     /**
      * @return array
      */
@@ -359,6 +365,8 @@ class MailerService extends BaseService implements MailHandlerInterface
         if (!\count($recipients)) {
             return;
         }
+
+        $recipients = $this->processRecipients($recipients);
 
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);

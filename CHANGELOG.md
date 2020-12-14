@@ -5,6 +5,7 @@
 ### Added
 - Added the "step" property to Number fields in Form Builder.
 - Added a setting which lets you send weekly digests only on production environments
+- Added custom plugin name instead of "Solspace Freeform" in weekly digest and notification error emails
 
 ### Fixed
 - Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp.

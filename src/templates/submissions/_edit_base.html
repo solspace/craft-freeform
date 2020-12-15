@@ -156,7 +156,7 @@
                                         {{ forms.textareaField(options|merge({
                                             placeholder: field.placeholder,
                                             rows: field.rows,
-                                            value: value|escape
+                                            value: value
                                         })) }}
                                     {% elseif field.type == "select" %}
                                         {{ forms.selectField(options|merge({

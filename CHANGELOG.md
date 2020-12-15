@@ -10,6 +10,7 @@
 ### Fixed
 - Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp.
 - Fixed Weekly Digest and Email Error Notifications not respecting the "testToEmailAddress" config setting.
+- Fixed unnecessary escaping of textarea fields in submission edit view
 
 ### Changed
 - Updated Weekly Digest email form names to link to submissions pages instead of form edit view.

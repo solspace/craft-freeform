@@ -267,7 +267,11 @@ class MailerService extends BaseService implements MailHandlerInterface
         if (version_compare(\Craft::$app->getVersion(), '3.5', '>=')) {
             $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
             if (!empty($testToEmailAddress)) {
-                return array_flip($testToEmailAddress);
+                if (\is_array($testToEmailAddress)) {
+                    return array_flip($testToEmailAddress);
+                }
+
+                return [$testToEmailAddress];
             }
         }
 

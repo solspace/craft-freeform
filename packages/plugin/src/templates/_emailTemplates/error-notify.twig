@@ -9,7 +9,7 @@
 
 {% block content %}
 
-    {{ macros.heading('{name} ALERT' | t('freeform', { name: craft.freeform.name })) }}
+    {{ macros.heading('{name} Alert' | t('freeform', { name: craft.freeform.name })) }}
     {{ macros.title('Failed to send email notification!' | t('freeform'), true) }}
 
     {% set text = "{name} failed to send the <b>{notification}</b> email notification to <b>{recipient}</b> for the <b>{form}</b> form on {date}. The error received was:"

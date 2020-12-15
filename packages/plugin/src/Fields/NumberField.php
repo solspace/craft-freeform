@@ -94,7 +94,7 @@ class NumberField extends TextField
         return $this->allowNegative;
     }
 
-    public function getStep(): float
+    public function getStep()
     {
         return $this->step;
     }

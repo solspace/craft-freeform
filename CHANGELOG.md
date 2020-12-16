@@ -1,19 +1,20 @@
 # Solspace Freeform Changelog
 
-## 3.10.0-beta.3 - xxx
+## 3.10.0-beta.3 - 2020-12-16
 
 ### Added
-- Added the "step" property to Number fields in Form Builder.
-- Added a setting which lets you send weekly digests only on production environments
-- Added custom plugin name instead of "Solspace Freeform" in weekly digest and notification error emails
-
-### Fixed
-- Fixed an issue that didn't properly detect duplicates when passing non-lowercase emails to MailChimp.
-- Fixed Weekly Digest and Email Error Notifications not respecting the "testToEmailAddress" config setting.
-- Fixed unnecessary escaping of textarea fields in submission edit view
+- Added the 'step' property setting to Number fields in form builder.
+- Added a setting which lets you send Weekly Digest email notifications only on production environments (looking for 'production' environment name).
+- Added a built-in feedback widget to show only during beta releases for ease of reporting beta issues.
 
 ### Changed
-- Updated Weekly Digest email form names to link to submissions pages instead of form edit view.
+- Updated the Weekly Digest and Email Alert email notifications to reference the custom plugin name (when specified) instead of 'Freeform' (Pro).
+- Updated the Weekly Digest email notifications' form names to link to submissions pages instead of form edit view.
+
+### Fixed
+- Fixed a bug where the MailChimp mailing list integration was not properly detecting duplicates when passing non-lowercase emails.
+- Fixed a bug where the Weekly Digest and Email Alert email notifications were not respecting the "testToEmailAddress" config setting.
+- Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
 
 ## 3.10.0-beta.2 - 2020-12-11
 
@@ -39,6 +40,14 @@
 - Updated the 'Disable Submit Button on Form Submit?' setting to be on by default for new installs.
 - Updated Freeform to automatically generate Text-only versions when no Text-only version is specified in the email notification template.
 - Updated the CP Forms index to order forms alphabetically again (vs using the custom order specified on the Dashboard).
+
+## 3.9.10 - 2020-12-16
+### Added
+- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
+
+### Fixed
+- Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
+- Fixed a potential issue with the 3.9 migration that might affect a small number of customers.
 
 ## 3.9.9 - 2020-12-02
 

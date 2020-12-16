@@ -166,6 +166,11 @@ class FreeformVariable
         return Freeform::getInstance()->isPro();
     }
 
+    public function getVersion(): string
+    {
+        return Freeform::getInstance()->version;
+    }
+
     public function notifications(): NotificationsService
     {
         return Freeform::getInstance()->notifications;

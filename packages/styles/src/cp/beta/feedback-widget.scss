@@ -1,0 +1,113 @@
+#freeform-beta-feedback-widget {
+  position: fixed;
+  z-index: 100;
+  bottom: 10px;
+  right: 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 180px;
+  height: 32px;
+
+  overflow: hidden;
+
+  background-color: #e4edf6;
+  border: 1px solid #394b60;
+  border-radius: 4px;
+
+  transition: width 0.2s ease-out, height 0.2s ease-out;
+
+  &.expanded {
+    width: 350px;
+    height: 350px;
+  }
+
+  &.submitted {
+    width: 120px;
+
+    > a,
+    > div {
+      display: none;
+    }
+
+    > span {
+      display: block;
+    }
+  }
+
+  > a,
+  > span {
+    flex: 0;
+
+    padding: 6px 20px;
+
+    color: #394b60;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  > span {
+    display: none;
+    text-align: center;
+  }
+
+  > div {
+    > form {
+      flex: 1;
+
+      padding: 0 20px;
+
+      > div {
+        padding: 5px 0;
+
+        &.stars {
+          display: flex;
+          justify-content: flex-start;
+
+          .star {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+
+            > div {
+              background-color: #333;
+              clip-path: polygon(
+                50% 0%,
+                61% 35%,
+                98% 35%,
+                68% 57%,
+                79% 91%,
+                50% 70%,
+                21% 91%,
+                32% 57%,
+                2% 35%,
+                39% 35%
+              );
+              display: inline-block;
+              height: 100%;
+              width: 100%;
+
+              transition: background-color 0.2s ease-out;
+            }
+
+            &.selected {
+              > div {
+                background-color: gold;
+              }
+            }
+
+            &.hover {
+              > div {
+                background-color: rgb(199, 169, 1);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

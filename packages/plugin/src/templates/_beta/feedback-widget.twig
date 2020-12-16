@@ -1,0 +1,31 @@
+<div id="freeform-beta-feedback-widget">
+	<a>3.10 Beta Feedback</a>
+	<span>Thank you!</span>
+	<div>
+		<form>
+			<input type="hidden" name="domain" value="{{ siteUrl }}"/>
+			<input type="hidden" name="craftVersion" value="{{ craft.app.version }}"/>
+			<input type="hidden" name="freeformVersion" value="{{ craft.freeform.version }}"/>
+			<div>{{ "How are things going with the Beta today?" }}</div>
+			<div class="stars">
+				<input type="hidden" name="rating" value="0"/>
+				{% for value in 1..5 %}
+					<div class="star" data-value="{{ value }}">
+						<div></div>
+					</div>
+				{% endfor %}
+			</div>
+			<div>
+				<textarea rows="5" class="text fullwidth" name="feedback" placeholder="{{ "Let us know your issues or feedback..." }}"></textarea>
+			</div>
+			<div>{{ "Your email address (optional)" }}</div>
+			<div>
+				<input type="text" class="text fullwidth" name="email" value="{{ craft.app.user.identity.email }}"/>
+			</div>
+			<div>
+				<button class="btn submit" type="submit">Send</button>
+				<button class="btn" data-type="cancel" type="button">Cancel</button>
+			</div>
+		</form>
+	</div>
+</div>

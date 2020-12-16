@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft.
  *
@@ -25,6 +26,7 @@ use craft\services\UserPermissions;
 use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use craft\web\View;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\ApiController;
 use Solspace\Freeform\Controllers\BannersController;
@@ -69,6 +71,7 @@ use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FeedRecord;
 use Solspace\Freeform\Records\StatusRecord;
+use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\ConnectionsService;
@@ -279,6 +282,7 @@ class Freeform extends Plugin
         $this->initHoneypot();
         $this->initConnections();
         $this->initSpamCheck();
+        $this->initBetaAssets();
         $this->initPaymentAssets();
         $this->initHookHandlers();
         $this->initPaymentEventListeners();
@@ -982,6 +986,25 @@ class Freeform extends Plugin
             SubmissionsService::EVENT_AFTER_SUBMIT,
             [$this->spamSubmissions, 'persistSpamReasons']
         );
+    }
+
+    private function initBetaAssets()
+    {
+        $version = $this->getVersion();
+        if (!preg_match('/alpha|beta/', $version)) {
+            return;
+        }
+
+        $request = \Craft::$app->request;
+        if (!$request->isConsoleRequest) {
+            if ($request->isCpRequest && preg_match('/^freeform\//', $request->getPathInfo())) {
+                \Craft::$app->view->registerAssetBundle(BetaBundle::class, View::POS_END);
+
+                \Craft::$app->view->hook('cp.layouts.base', function (array &$context) {
+                    return \Craft::$app->view->renderTemplate('freeform/_beta/feedback-widget');
+                });
+            }
+        }
     }
 
     private function initPaymentAssets()

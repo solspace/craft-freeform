@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.9.10 - 2020-12-16
+### Added
+- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
+
+### Fixed
+- Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
+- Fixed a potential issue with the 3.9 migration that might affect a small number of customers.
+
 ## 3.9.9 - 2020-12-02
 ### Fixed
 - Fixed a bug where older installs of Craft (3.5.9 and lower) could experience an error in the Forms and Fields CP index pages due to the `truncate` filter not existing yet.

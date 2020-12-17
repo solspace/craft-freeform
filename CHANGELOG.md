@@ -2,7 +2,7 @@
 
 ## 3.9.11 - 2020-12-17
 ### Fixed
-- Fixed ActiveContact not pulling in mailing lists above 100
+- Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
 
 ## 3.9.10 - 2020-12-16
 ### Added

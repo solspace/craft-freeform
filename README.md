@@ -4,7 +4,15 @@ Freeform is the most reliable, intuitive and powerful form builder for Craft. Ef
 ![Screenshot](src/icon.svg)
 
 ## Overview
-Freeform is the most reliable, intuitive and powerful form building plugin for Craft. Everything is at your fingertips in our elegant form builder. It gives you full control to create simple or complex multi-page forms, as well as connect your forms to many popular API integrations. Templating is easy and highly customizable. Our ready-to-go templates and features will have you ready in minutes! No other form plugin even comes close to comparing! Stop wasting valuable development hours wrestling with and tuning the Craft Contact Form or other alternatives. You can trust Freeform (and the team behind it) to deliver the quality and support you expect and deserve.
 
-## Documentation
-Full documentation for Freeform can be found on the [Solspace documentation website](https://docs.solspace.com/craft/freeform/v3/).
+Freeform is the most reliable, intuitive and powerful form building plugin for Craft. Everything is at your fingertips in our elegant form builder. It gives you full control to create simple or complex multi-page forms, as well as connect your forms to many built-in popular API integrations. Templating is easy and highly customizable. Our ready-to-go templates and features will have you ready in minutes! You can trust Freeform and the team behind it to deliver the quality and support you expect and deserve. [Craft themselves trust Freeform for their own contact form](https://craftcms.com/contact)!
+
+## Helpful Links
+
+- [Buy Freeform at the Plugin Store](https://plugins.craftcms.com/freeform)
+- [Freeform Documentation](https://docs.solspace.com/craft/freeform/v3/)
+- [Report an Issue](https://github.com/solspace/craft3-freeform/issues)
+- [Feature Requests](https://github.com/solspace/craft3-freeform/discussions)
+- [Ask a Question](https://github.com/solspace/craft3-freeform/discussions)
+- [Private Support Ticket](https://docs.solspace.com/craft/freeform/v3/support.html)
+- [Craft Stack Exchange](https://craftcms.stackexchange.com/questions/tagged/solspace)

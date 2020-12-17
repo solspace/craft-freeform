@@ -257,29 +257,42 @@ class ActiveCampaign extends AbstractMailingListIntegration
     protected function fetchLists(): array
     {
         $client = $this->generateAuthorizedClient();
-        $endpoint = $this->getEndpoint('/lists?limit=999');
 
-        try {
-            $response = $client->get($endpoint);
-        } catch (RequestException $exception) {
-            $responseBody = (string) $exception->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $exception->getMessage()]);
-
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not connect to API endpoint')
-            );
-        }
-
-        $json = \GuzzleHttp\json_decode((string) $response->getBody());
+        $limit = 100;
+        $offset = 0;
 
         $lists = [];
-        foreach ($json->lists as $list) {
-            $lists[] = new ListObject(
-                $this,
-                $list->id,
-                $list->name,
-                $this->fetchFields($list->id)
-            );
+        while (null !== $offset) {
+            $endpoint = $this->getEndpoint("/lists?limit={$limit}&offset={$offset}&orders[name]=ASC");
+
+            try {
+                $response = $client->get($endpoint);
+            } catch (RequestException $exception) {
+                $responseBody = (string) $exception->getResponse()->getBody();
+                $this->getLogger()->error($responseBody, ['exception' => $exception->getMessage()]);
+
+                throw new IntegrationException(
+                    $this->getTranslator()->translate('Could not connect to API endpoint')
+                );
+            }
+
+            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+
+            $offset += $limit;
+
+            $total = (int) $json->meta->total;
+            if ($total <= $offset) {
+                $offset = null;
+            }
+
+            foreach ($json->lists as $list) {
+                $lists[] = new ListObject(
+                    $this,
+                    $list->id,
+                    $list->name,
+                    $this->fetchFields($list->id)
+                );
+            }
         }
 
         return $lists;

@@ -991,7 +991,7 @@ class Freeform extends Plugin
     private function initBetaAssets()
     {
         $disableFeedback = \Craft::parseEnv('$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET');
-        if ($disableFeedback) {
+        if ($disableFeedback && '$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET' !== $disableFeedback) {
             return;
         }
 

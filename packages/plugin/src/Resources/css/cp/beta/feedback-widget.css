@@ -12,9 +12,28 @@
   border: 1px solid #394b60;
   border-radius: 4px;
   transition: width 0.2s ease-out, height 0.2s ease-out; }
+  #freeform-beta-feedback-widget > a {
+    position: relative;
+    transition: all 0.7s ease-out; }
+    #freeform-beta-feedback-widget > a > span {
+      display: none; }
+    #freeform-beta-feedback-widget > a > span.icon {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      display: none; }
   #freeform-beta-feedback-widget.expanded {
     width: 350px;
     height: 350px; }
+    #freeform-beta-feedback-widget.expanded > a {
+      background: #394b60;
+      color: white; }
+      #freeform-beta-feedback-widget.expanded > a > span {
+        display: inline; }
+        #freeform-beta-feedback-widget.expanded > a > span.icon {
+          display: block; }
+          #freeform-beta-feedback-widget.expanded > a > span.icon:before {
+            color: white; }
   #freeform-beta-feedback-widget.submitted {
     width: 120px; }
     #freeform-beta-feedback-widget.submitted > a,
@@ -45,15 +64,15 @@
         #freeform-beta-feedback-widget > div > form > div.stars .star {
           width: 30px;
           height: 30px;
-          cursor: pointer; }
-          #freeform-beta-feedback-widget > div > form > div.stars .star > div {
-            background-color: #333;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            display: inline-block;
-            height: 100%;
-            width: 100%;
-            transition: background-color 0.2s ease-out; }
-          #freeform-beta-feedback-widget > div > form > div.stars .star.selected > div {
-            background-color: gold; }
-          #freeform-beta-feedback-widget > div > form > div.stars .star.hover > div {
-            background-color: #c7a901; }
+          cursor: pointer;
+          color: #6c7a8c; }
+          #freeform-beta-feedback-widget > div > form > div.stars .star .star-filled {
+            display: none; }
+          #freeform-beta-feedback-widget > div > form > div.stars .star .star-empty {
+            display: block; }
+          #freeform-beta-feedback-widget > div > form > div.stars .star.selected .star-filled, #freeform-beta-feedback-widget > div > form > div.stars .star.hover .star-filled {
+            display: block; }
+          #freeform-beta-feedback-widget > div > form > div.stars .star.selected .star-empty, #freeform-beta-feedback-widget > div > form > div.stars .star.hover .star-empty {
+            display: none; }
+          #freeform-beta-feedback-widget > div > form > div.stars .star.hover .star-filled {
+            color: #9cabba; }

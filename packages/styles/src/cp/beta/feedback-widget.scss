@@ -18,9 +18,43 @@
 
   transition: width 0.2s ease-out, height 0.2s ease-out;
 
+  > a {
+    position: relative;
+    transition: all 0.7s ease-out;
+
+    > span {
+      display: none;
+    }
+
+    > span.icon {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+
+      display: none;
+    }
+  }
+
   &.expanded {
     width: 350px;
     height: 350px;
+
+    > a {
+      background: #394b60;
+      color: white;
+
+      > span {
+        display: inline;
+
+        &.icon {
+          display: block;
+
+          &:before {
+            color: white;
+          }
+        }
+      }
+    }
   }
 
   &.submitted {
@@ -72,37 +106,30 @@
             width: 30px;
             height: 30px;
             cursor: pointer;
+            color: #6c7a8c;
 
-            > div {
-              background-color: #333;
-              clip-path: polygon(
-                50% 0%,
-                61% 35%,
-                98% 35%,
-                68% 57%,
-                79% 91%,
-                50% 70%,
-                21% 91%,
-                32% 57%,
-                2% 35%,
-                39% 35%
-              );
-              display: inline-block;
-              height: 100%;
-              width: 100%;
-
-              transition: background-color 0.2s ease-out;
+            .star-filled {
+              display: none;
             }
 
-            &.selected {
-              > div {
-                background-color: gold;
+            .star-empty {
+              display: block;
+            }
+
+            &.selected,
+            &.hover {
+              .star-filled {
+                display: block;
+              }
+
+              .star-empty {
+                display: none;
               }
             }
 
             &.hover {
-              > div {
-                background-color: rgb(199, 169, 1);
+              .star-filled {
+                color: #9cabba;
               }
             }
           }

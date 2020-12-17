@@ -2,6 +2,9 @@
 
 ## 3.10.0-beta.4 - 2020-12-17
 
+### Changed
+- Updated the Beta Feedback widget look and feel
+
 ### Fixed
 - Fixed ActiveContact not pulling in mailing lists above 100
 

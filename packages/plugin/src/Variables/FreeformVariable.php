@@ -166,9 +166,18 @@ class FreeformVariable
         return Freeform::getInstance()->isPro();
     }
 
-    public function getVersion(): string
+    public function getVersion(int $marks = null): string
     {
-        return Freeform::getInstance()->version;
+        $version = Freeform::getInstance()->version;
+
+        if (null === $marks) {
+            return $version;
+        }
+
+        $points = explode('.', $version);
+        $points = \array_slice($points, 0, $marks);
+
+        return implode('.', $points);
     }
 
     public function notifications(): NotificationsService

@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const ratingInput = widget.querySelector<HTMLInputElement>('input[name="rating"]');
   const buttons = widget.querySelectorAll<HTMLButtonElement>('button');
 
+  widget.style.display = null;
+
   const toggleClass = () => {
     widget.classList.toggle('expanded');
   };

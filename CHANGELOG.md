@@ -1,5 +1,9 @@
 # Solspace Freeform Changelog
 
+## 3.9.11 - 2020-12-17
+### Fixed
+- Fixed ActiveContact not pulling in mailing lists above 100
+
 ## 3.9.10 - 2020-12-16
 ### Added
 - Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))

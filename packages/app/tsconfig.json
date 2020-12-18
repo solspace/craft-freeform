@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../plugin/src/Resources/js/app/",
+    "jsx": "react",
+    "lib": ["ES6", "DOM"],
+    "resolveJsonModule": true,
+    "paths": {
+      "@ff-app/*": ["app/src/*"],
+      "@ff-setup/*": ["app/src/setup/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

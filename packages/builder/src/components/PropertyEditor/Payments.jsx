@@ -1,15 +1,15 @@
+import { fetchPaymentGatewaysIfNeeded, invalidatePaymentGateways } from '@ff/builder/actions/PaymentGateways';
+import * as consts from '@ff/builder/constants/Payments';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import * as consts from '@ff/constants/Payments';
 import BasePropertyEditor from './BasePropertyEditor';
-import RequirePro from './Components/RequirePro';
-import SelectProperty from './PropertyItems/SelectProperty';
-import CustomProperty from './PropertyItems/CustomProperty';
 import IntegrationMappingTable from './Components/IntegrationMappingTable/IntegrationMappingTable';
 import PaymentFieldsMapping from './Components/Payments/PaymentFieldsMapping';
 import PaymentNotifications from './Components/Payments/PaymentNotifications';
-import { fetchPaymentGatewaysIfNeeded, invalidatePaymentGateways } from '@ff/actions/PaymentGateways';
+import RequirePro from './Components/RequirePro';
+import CustomProperty from './PropertyItems/CustomProperty';
+import SelectProperty from './PropertyItems/SelectProperty';
 
 @connect(
   (state) => ({

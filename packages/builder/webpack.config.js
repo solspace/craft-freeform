@@ -8,44 +8,48 @@ module.exports = {
   target: 'web',
 
   entry: {
-    setup: path.resolve(__dirname, 'src/setup/index.tsx'),
+    builder: path.resolve(__dirname, 'src/app.jsx'),
   },
   output: {
     filename: '[name].js',
     chunkFilename: '[name].js',
     publicPath: '/',
-    path: path.resolve(__dirname, '../plugin/src/Resources/js/app'),
+    path: path.resolve(__dirname, '../plugin/src/Resources/js/builder'),
   },
 
   module: {
     rules: [
       {
-        test: /\.ts(x?)$/,
+        test: /\.(js|jsx)$/,
         exclude: /node_modules/,
-        use: [{ loader: 'ts-loader' }],
+        use: {
+          loader: 'babel-loader',
+        },
       },
       {
         test: /\.css$/,
         use: ['style-loader', { loader: 'css-loader' }],
       },
       {
-        test: /\.svg$/,
-        loader: '@svgr/webpack',
-      },
-      {
-        test: /\.(png|jpg|jpeg|gif)$/i,
+        test: /\.(png|jpg|jpeg|svg|gif)$/i,
         use: [{ loader: 'url-loader' }],
+      },
+      // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'source-map-loader',
       },
     ],
   },
 
-  devtool: isProd ? false : 'eval-cheap-source-map',
+  devtool: isProd ? false : 'eval-source-map',
 
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.js', '.jsx', '.styl'],
     alias: {
-      '@ff-app': path.resolve(__dirname, 'src/'),
-      '@ff-setup': path.resolve(__dirname, 'src/setup/'),
+      '@ff/builder': path.resolve(__dirname, 'src/'),
     },
   },
 
@@ -53,6 +57,8 @@ module.exports = {
     usedExports: true,
     minimizer: [
       new TerserPlugin({
+        cache: true,
+        sourceMap: !isProd,
         parallel: true,
         terserOptions: {
           compress: true,

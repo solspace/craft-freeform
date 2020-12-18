@@ -1,9 +1,9 @@
+import { fetchPaymentGatewaysIfNeeded, invalidatePaymentGateways } from '@ff/builder/actions/PaymentGateways';
+import * as Currencies from '@ff/builder/constants/Currencies';
+import * as consts from '@ff/builder/constants/Payments';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchPaymentGatewaysIfNeeded, invalidatePaymentGateways } from '@ff/actions/PaymentGateways';
-import * as Currencies from '@ff/constants/Currencies';
-import * as consts from '@ff/constants/Payments';
 import BasePropertyEditor from '../../BasePropertyEditor';
 import CustomProperty from '../../PropertyItems/CustomProperty';
 import NumberProperty from '../../PropertyItems/NumberPoperty';

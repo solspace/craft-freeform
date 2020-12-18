@@ -1,6 +1,6 @@
+import { translate } from '@ff/builder/app';
 import PropTypes from 'prop-types';
 import React from 'react';
-import { translate } from '@ff/app';
 import BasePropertyEditor from './BasePropertyEditor';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';

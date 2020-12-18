@@ -1,6 +1,7 @@
 {
   "packages": [
     "packages/app",
+    "packages/builder",
     "packages/scripts",
     "packages/styles"
   ],

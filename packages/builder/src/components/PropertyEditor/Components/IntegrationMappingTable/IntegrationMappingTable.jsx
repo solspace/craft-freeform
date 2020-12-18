@@ -1,6 +1,6 @@
+import { translate } from '@ff/builder/app';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import { translate } from '@ff/app';
 import MappingRow from './MappingRow';
 
 const PATTERN_HANDLE = /^(\w+)___(.*)$/;

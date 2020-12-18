@@ -1,4 +1,4 @@
-import { translate } from '@ff/app';
+import { translate } from '@ff/builder/app';
 
 const validProperties = [
   'hash',

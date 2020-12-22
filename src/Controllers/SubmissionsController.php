@@ -210,10 +210,6 @@ class SubmissionsController extends BaseController
             'note'               => $noteRecord ? $noteRecord->note : null,
             'continueEditingUrl' => 'freeform/submissions/{id}',
         ];
-        $paymentDetails = $this->getSubmissionPaymentDetails($submission);
-        if ($paymentDetails) {
-            $variables['payments'] = $paymentDetails;
-        }
 
         $paymentDetails = $this->getSubmissionPaymentDetails($submission);
         if ($paymentDetails) {

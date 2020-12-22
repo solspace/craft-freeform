@@ -46,7 +46,7 @@ class SubscriptionRecord extends ActiveRecord
      */
     public function getSubmission(): ActiveQuery
     {
-        return $this->hasOne(Submission::TABLE, ['submissionId' => 'id']);
+        return $this->hasOne(Submission::class, ['submissionId' => 'id']);
     }
 
     /**
@@ -54,6 +54,6 @@ class SubscriptionRecord extends ActiveRecord
      */
     public function getPlan(): ActiveQuery
     {
-        return $this->hasOne(SubscriptionPlanRecord::TABLE, ['planId' => 'id']);
+        return $this->hasOne(SubscriptionPlanRecord::class, ['planId' => 'id']);
     }
 }

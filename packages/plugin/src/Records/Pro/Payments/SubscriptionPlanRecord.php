@@ -36,6 +36,6 @@ class SubscriptionPlanRecord extends ActiveRecord
      */
     public function getIntegration(): ActiveQuery
     {
-        return $this->hasOne(IntegrationRecord::TABLE, ['integrationId' => 'id']);
+        return $this->hasOne(IntegrationRecord::class, ['integrationId' => 'id']);
     }
 }

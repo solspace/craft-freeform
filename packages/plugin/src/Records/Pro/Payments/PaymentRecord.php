@@ -51,7 +51,7 @@ class PaymentRecord extends ActiveRecord
      */
     public function getIntegration(): ActiveQuery
     {
-        return $this->hasOne(IntegrationRecord::TABLE, ['integrationId' => 'id']);
+        return $this->hasOne(IntegrationRecord::class, ['integrationId' => 'id']);
     }
 
     /**
@@ -59,7 +59,7 @@ class PaymentRecord extends ActiveRecord
      */
     public function getSubmission(): ActiveQuery
     {
-        return $this->hasOne(Submission::TABLE, ['submissionId' => 'id']);
+        return $this->hasOne(Submission::class, ['submissionId' => 'id']);
     }
 
     /**
@@ -67,6 +67,6 @@ class PaymentRecord extends ActiveRecord
      */
     public function getSubscription(): ActiveQuery
     {
-        return $this->hasOne(SubscriptionRecord::TABLE, ['subscriptionId' => 'id']);
+        return $this->hasOne(SubscriptionRecord::class, ['subscriptionId' => 'id']);
     }
 }

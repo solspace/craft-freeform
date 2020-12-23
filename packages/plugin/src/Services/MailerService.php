@@ -94,6 +94,10 @@ class MailerService extends BaseService implements MailHandlerInterface
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         foreach ($recipients as $recipientName => $emailAddress) {
+            if (filter_var($recipientName, FILTER_VALIDATE_EMAIL)) {
+                $emailAddress = $recipientName;
+            }
+
             try {
                 $email = $this->compileMessage($notification, $fieldValues);
                 $email->setTo([$emailAddress]);

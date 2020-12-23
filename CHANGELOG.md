@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.10.0-beta.4 - Unreleased
+## 3.10.0-beta.4 - 2020-12-23
 
 ### Added
 - Added a setting to disable the Beta Feedback widget (add `FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET=1` to your .ENV file).

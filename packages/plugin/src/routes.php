@@ -122,5 +122,5 @@ return [
     'freeform/feeds/dismiss-message' => 'freeform/feeds/dismiss-message',
     'freeform/feeds/dismiss-type' => 'freeform/feeds/dismiss-type',
     // Setup
-    'freeform/setup' => 'freeform/setup',
+    'freeform/welcome' => 'freeform/welcome-screen',
 ];

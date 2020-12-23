@@ -8,6 +8,7 @@
     "watch": "webpack --watch",
     "clean": "rm -rf ../plugin/src/Resources/js/app",
     "compile": "webpack",
+    "lint": "eslint -c .eslintrc.json .",
     "test": "jest --maxWorkers=4",
     "test:coverage": "jest --maxWorkers=4 --collect-coverage",
     "test:watch": "jest --watch --maxWorkers=4"
@@ -21,18 +22,21 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.21.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-transition-group": "^4.4.1",
+    "recoil": "^0.1.2",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
     "@svgr/webpack": "^5.5.0",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/react-transition-group": "^4.4.0",
     "@types/styled-components": "^5.1.6",
     "@types/webpack": "^4.41.25",
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
     "autoprefixer": "^10.1.0",
     "css-loader": "^5.0.1",
     "identity-obj-proxy": "^3.0.0",

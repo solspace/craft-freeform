@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Resources\Bundles;
 
-class SetupScreenBundle extends AbstractFreeformAssetBundle
+class WelcomeScreenBundle extends AbstractFreeformAssetBundle
 {
     /**
      * {@inheritDoc}
@@ -11,7 +11,7 @@ class SetupScreenBundle extends AbstractFreeformAssetBundle
     {
         return [
             'js/app/vendor.js',
-            'js/app/setup.js',
+            'js/app/welcome-screen.js',
         ];
     }
 

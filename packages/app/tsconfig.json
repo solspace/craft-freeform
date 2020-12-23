@@ -7,7 +7,7 @@
     "resolveJsonModule": true,
     "paths": {
       "@ff-app/*": ["app/src/*"],
-      "@ff-setup/*": ["app/src/setup/*"]
+      "@ff-welcome-screen/*": ["app/src/welcome-screen/*"]
     }
   },
   "exclude": ["node_modules"]

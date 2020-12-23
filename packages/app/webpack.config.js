@@ -8,7 +8,7 @@ module.exports = {
   target: 'web',
 
   entry: {
-    setup: path.resolve(__dirname, 'src/setup/index.tsx'),
+    'welcome-screen': path.resolve(__dirname, 'src/welcome-screen/index.tsx'),
   },
   output: {
     filename: '[name].js',
@@ -45,7 +45,7 @@ module.exports = {
     extensions: ['.ts', '.tsx', '.js'],
     alias: {
       '@ff-app': path.resolve(__dirname, 'src/'),
-      '@ff-setup': path.resolve(__dirname, 'src/setup/'),
+      '@ff-welcome-screen': path.resolve(__dirname, 'src/welcome-screen/'),
     },
   },
 

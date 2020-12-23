@@ -6,6 +6,7 @@
     "build": "npm run clean && NODE_ENV=production npm run compile",
     "watch": "webpack --watch",
     "clean": "rm -rf ../plugin/src/Resources/js/builder",
+    "lint": "eslint -c .eslintrc.json .",
     "compile": "webpack",
     "test": "jest --maxWorkers=4"
   },

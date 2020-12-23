@@ -47,10 +47,10 @@ use Solspace\Freeform\Controllers\Pro\QuickExportController;
 use Solspace\Freeform\Controllers\Pro\WebhooksController;
 use Solspace\Freeform\Controllers\ResourcesController;
 use Solspace\Freeform\Controllers\SettingsController;
-use Solspace\Freeform\Controllers\SetupController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
 use Solspace\Freeform\Controllers\SubmissionsController;
+use Solspace\Freeform\Controllers\WelcomeScreenController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
@@ -478,7 +478,7 @@ class Freeform extends Plugin
                 'webhooks' => WebhooksController::class,
                 'banners' => BannersController::class,
                 'feeds' => FeedsController::class,
-                'setup' => SetupController::class,
+                'welcome-screen' => WelcomeScreenController::class,
             ];
         }
     }

@@ -1,9 +1,9 @@
 {
   "packages": [
-    "packages/app",
     "packages/builder",
     "packages/scripts",
-    "packages/styles"
+    "packages/styles",
+    "packages/app"
   ],
   "version": "1.0.0"
 }

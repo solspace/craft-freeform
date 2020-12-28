@@ -1,12 +1,16 @@
 # Solspace Freeform Changelog
 
-## 3.10.0-beta.4 - 2020-12-17
+## 3.10.0-beta.4 - 2020-12-23
+
+### Added
+- Added a setting to disable the Beta Feedback widget (add `FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET=1` to your .ENV file).
 
 ### Changed
-- Updated the Beta Feedback widget look and feel
+- Minor improvements to the Beta Feedback widget look and feel.
 
 ### Fixed
-- Fixed ActiveContact not pulling in mailing lists above 100
+- Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
+- Fixed a bug where the Weekly Digest and Email Alert email notifications were still not behaving correctly with the "testToEmailAddress" config setting.
 
 ## 3.10.0-beta.3 - 2020-12-16
 
@@ -48,6 +52,10 @@
 - Updated the 'Disable Submit Button on Form Submit?' setting to be on by default for new installs.
 - Updated Freeform to automatically generate Text-only versions when no Text-only version is specified in the email notification template.
 - Updated the CP Forms index to order forms alphabetically again (vs using the custom order specified on the Dashboard).
+
+## 3.9.11 - 2020-12-17
+### Fixed
+- Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
 
 ## 3.9.10 - 2020-12-16
 ### Added

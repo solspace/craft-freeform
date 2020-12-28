@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ParagraphElement = styled.p`
+export const ParagraphElement = styled.div`
   display: block;
   max-width: 840px;
   padding: 0;

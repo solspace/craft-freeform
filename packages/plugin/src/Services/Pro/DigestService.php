@@ -12,6 +12,15 @@ use yii\base\Component;
 
 class DigestService extends Component
 {
+    const FREQUENCY_DAILY = 'daily';
+    const FREQUENCY_WEEKLY_SUNDAYS = 'weekly-sundays';
+    const FREQUENCY_WEEKLY_MONDAYS = 'weekly-mondays';
+    const FREQUENCY_WEEKLY_TUESDAYS = 'weekly-tuesdays';
+    const FREQUENCY_WEEKLY_WEDNESDAYS = 'weekly-wednesdays';
+    const FREQUENCY_WEEKLY_THURSDAYS = 'weekly-thursdays';
+    const FREQUENCY_WEEKLY_FRIDAYS = 'weekly-fridays';
+    const FREQUENCY_WEEKLY_SATURDAYS = 'weekly-saturdays';
+
     const CACHE_KEY_DIGEST = 'freeform-digest-cache-key';
     const CACHE_TTL_DIGEST = 60 * 60 * 3; // every 3h
 

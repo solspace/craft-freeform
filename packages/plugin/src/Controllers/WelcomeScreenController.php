@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Controllers;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\WelcomeScreenBundle;
 use yii\web\Response;
 
@@ -11,6 +12,6 @@ class WelcomeScreenController extends BaseController
     {
         WelcomeScreenBundle::register(\Craft::$app->getView());
 
-        return $this->renderTemplate('freeform/welcome');
+        return $this->renderTemplate('freeform/welcome', ['settings' => Freeform::getInstance()->getSettings()]);
     }
 }

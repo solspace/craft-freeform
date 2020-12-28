@@ -5,6 +5,7 @@ import { ButtonRow, Wrapper } from './ButtonCollection.styles';
 export interface Button {
   label: string;
   cta?: boolean;
+  disabled?: boolean;
   onClick?: () => void;
 }
 
@@ -27,7 +28,12 @@ const ButtonCollection: React.FC<Props> = ({ step, buttons }) => {
         >
           <ButtonRow>
             {row.map((button, index) => (
-              <button key={index} onClick={button.onClick} className={`btn ${button.cta && 'submit'}`}>
+              <button
+                key={index}
+                disabled={button.disabled}
+                onClick={button.onClick}
+                className={`btn ${button.cta ? 'submit' : ''} ${button.disabled ? 'disabled' : ''}`}
+              >
                 {button.label}
               </button>
             ))}

@@ -10,7 +10,7 @@ const Dots: React.FC<Props> = ({ count, step }) => {
   const renderRows = (): React.ReactElement[] => {
     const rows: React.ReactElement[] = [];
     for (let i = 1; i <= count; i++) {
-      rows.push(<Dot />);
+      rows.push(<Dot key={i} />);
     }
 
     return rows;

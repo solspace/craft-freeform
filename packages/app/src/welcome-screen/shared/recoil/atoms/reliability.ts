@@ -1,31 +1,10 @@
 import { atom } from 'recoil';
+import { ReliabilityInterface } from '../../interfaces/settings';
+import settingDefaults from '../../requests/default-data';
 
-export enum DigestFrequency {
-  Weekly = 'weekly',
-  Monthly = 'monthly',
-}
-
-interface ReliabilityInterface {
-  errorRecipients: string;
-  updateNotices: boolean;
-  digestRecipients: string;
-  digestFrequency: DigestFrequency;
-  clientDigestRecipients: string;
-  clientDigestFrequency: DigestFrequency;
-  digestProductionOnly: boolean;
-}
-
-const reliabilityState = atom<ReliabilityInterface>({
+const ReliabilityState = atom<ReliabilityInterface>({
   key: 'reliability',
-  default: {
-    errorRecipients: '',
-    updateNotices: true,
-    digestRecipients: '',
-    digestFrequency: DigestFrequency.Weekly,
-    clientDigestRecipients: '',
-    clientDigestFrequency: DigestFrequency.Weekly,
-    digestProductionOnly: false,
-  },
+  default: settingDefaults.reliability,
 });
 
-export default reliabilityState;
+export default ReliabilityState;

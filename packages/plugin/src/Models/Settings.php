@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Models;
 use craft\base\Model;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -224,6 +225,15 @@ class Settings extends Model
     /** @var string */
     public $digestRecipients;
 
+    /** @var string */
+    public $digestFrequency;
+
+    /** @var string */
+    public $clientDigestRecipients;
+
+    /** @var string */
+    public $clientDigestFrequency;
+
     /** @var bool */
     public $digestOnlyOnProduction;
 
@@ -279,6 +289,9 @@ class Settings extends Model
         $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients = null;
         $this->digestRecipients = null;
+        $this->digestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
+        $this->clientDigestRecipients = null;
+        $this->clientDigestFrequency = DigestService::FREQUENCY_WEEKLY_MONDAYS;
         $this->digestOnlyOnProduction = false;
         $this->displayFeed = true;
         $this->feedInfo = [];

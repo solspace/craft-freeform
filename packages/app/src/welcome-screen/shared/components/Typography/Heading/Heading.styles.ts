@@ -12,5 +12,5 @@ export const Logo = styled.div`
   display: flex;
   justify-content: center;
 
-  margin: 0 0 20px;
+  margin: 20px 0 20px;
 `;

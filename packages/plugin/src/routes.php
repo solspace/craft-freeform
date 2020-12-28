@@ -123,4 +123,8 @@ return [
     'freeform/feeds/dismiss-type' => 'freeform/feeds/dismiss-type',
     // Setup
     'freeform/welcome' => 'freeform/welcome-screen',
+    // REST
+    'freeform/api/settings/general' => 'freeform/rest-settings/general',
+    'freeform/api/settings/spam' => 'freeform/rest-settings/spam',
+    'freeform/api/settings/reliability' => 'freeform/rest-settings/reliability',
 ];

@@ -1,4 +1,5 @@
 export const easings = {
+  linear: 'linear',
   out: {
     default: 'ease-out',
     quint: 'cubic-bezier(0.22, 1, 0.36, 1)',

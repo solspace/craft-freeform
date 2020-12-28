@@ -3,27 +3,53 @@ import { CSSTransition } from 'react-transition-group';
 import { NavigationWrapper, Step, StepContainer, Wrapper } from './App.styles';
 import ButtonCollection, { Button } from './shared/components/ButtonCollection/ButtonCollection';
 import Dots from './shared/components/Dots/Dots';
+import { generateUrl } from './shared/requests/generate-url';
 import Finalize from './Steps/Finalize/Finalize';
 import General from './Steps/General/General';
 import Reliability from './Steps/Reliability/Reliability';
 import Spam from './Steps/Spam/Spam';
 import Welcome from './Steps/Welcome/Welcome';
 
-const duration = 300;
+const duration = 500;
 
 const App: React.FC = () => {
   const [step, setStep] = useState(0);
+  const [finalized, setFinalized] = useState(false);
+  const [containerHeight, setContainerHeight] = useState(300);
 
   const views: ReactElement[] = [
     <Welcome key="welcome" />,
     <General key="general" />,
     <Spam key="spam" />,
     <Reliability key="reliability" />,
-    <Finalize key="finalize" />,
+    <Finalize
+      key="finalize"
+      successCallback={(): void => {
+        setFinalized(true);
+      }}
+    />,
   ];
 
-  const next = (): void => setStep(step + 1);
-  const prev = (): void => setStep(step - 1);
+  const updateContainerHeight = (nextStep: number): void => {
+    let height = 300;
+    if (nextStep > 0 && nextStep < 4) {
+      height = 640;
+    } else if (nextStep >= 4) {
+      height = 400;
+    }
+
+    setContainerHeight(height);
+  };
+
+  const next = (): void => {
+    setStep(step + 1);
+    updateContainerHeight(step + 1);
+  };
+
+  const prev = (): void => {
+    setStep(step - 1);
+    updateContainerHeight(step - 1);
+  };
 
   const buttons: Button[][] = [
     [{ label: 'Skip All' }, { label: 'Continue', cta: true, onClick: next }],
@@ -37,16 +63,41 @@ const App: React.FC = () => {
       { label: 'Finish', cta: true, onClick: next },
     ],
     [
-      { label: 'Dashboard', onClick: prev },
-      { label: 'Settings' },
-      { label: 'Install Demo Templates' },
-      { label: 'Close Wizard', cta: true, onClick: next },
+      {
+        label: 'Dashboard',
+        disabled: !finalized,
+        onClick: (): void => {
+          window.location.href = generateUrl('/dashboard');
+        },
+      },
+      {
+        label: 'Settings',
+        disabled: !finalized,
+        onClick: (): void => {
+          window.location.href = generateUrl('/settings');
+        },
+      },
+      {
+        label: 'Install Demo Templates',
+        disabled: !finalized,
+        onClick: (): void => {
+          window.location.href = generateUrl('/settings/demo-templates');
+        },
+      },
+      {
+        label: 'Close Wizard',
+        disabled: !finalized,
+        cta: true,
+        onClick: (): void => {
+          window.location.href = generateUrl('/forms');
+        },
+      },
     ],
   ];
 
   return (
     <Wrapper>
-      <StepContainer>
+      <StepContainer height={containerHeight}>
         {views.map((view, idx) => (
           <CSSTransition
             unmountOnExit
@@ -63,9 +114,7 @@ const App: React.FC = () => {
 
       <CSSTransition appear in timeout={500} classNames="animation">
         <NavigationWrapper>
-          <ButtonCollection step={step} buttons={buttons}>
-            <button className="btn">Test</button>
-          </ButtonCollection>
+          <ButtonCollection step={step} buttons={buttons} />
           <Dots step={step} count={views.length} />
         </NavigationWrapper>
       </CSSTransition>

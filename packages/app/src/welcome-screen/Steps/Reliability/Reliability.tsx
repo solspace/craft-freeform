@@ -4,7 +4,8 @@ import SelectField, { Options } from '@ff-app/welcome-screen/shared/components/f
 import TextField from '@ff-app/welcome-screen/shared/components/form/TextField/TextField';
 import Heading from '@ff-app/welcome-screen/shared/components/Typography/Heading/Heading';
 import Paragraph from '@ff-app/welcome-screen/shared/components/Typography/Paragraph/Paragraph';
-import ReliabilityState, { DigestFrequency } from '@ff-app/welcome-screen/shared/recoil/atoms/reliability';
+import { DigestFrequency } from '@ff-app/welcome-screen/shared/interfaces/settings';
+import ReliabilityState from '@ff-app/welcome-screen/shared/recoil/atoms/reliability';
 import React from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useRecoilState } from 'recoil';
@@ -13,8 +14,14 @@ const Reliability: React.FC = () => {
   const [state, setState] = useRecoilState(ReliabilityState);
 
   const digestFrequencyOptions: Options<DigestFrequency> = [
-    { value: DigestFrequency.Weekly, label: 'Weekly' },
-    { value: DigestFrequency.Monthly, label: 'Monthly' },
+    { value: DigestFrequency.Daily, label: 'Daily' },
+    { value: DigestFrequency.WeeklySundays, label: 'Weekly - Sundays' },
+    { value: DigestFrequency.WeeklyMondays, label: 'Weekly - Mondays' },
+    { value: DigestFrequency.WeeklyTuesdays, label: 'Weekly - Tuesdays' },
+    { value: DigestFrequency.WeeklyWednesdays, label: 'Weekly - Wednesdays' },
+    { value: DigestFrequency.WeeklyThursdays, label: 'Weekly - Thursdays' },
+    { value: DigestFrequency.WeeklyFridays, label: 'Weekly - Fridays' },
+    { value: DigestFrequency.WeeklySaturdays, label: 'Weekly - Saturdays' },
   ];
 
   return (

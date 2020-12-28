@@ -3,11 +3,11 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div``;
 
-export const StepContainer = styled.div`
-  display: flex;
-  align-items: center;
-
-  min-height: 700px;
+interface StepContainerProps {
+  height: number;
+}
+export const StepContainer = styled.div<StepContainerProps>`
+  height: ${({ height }): number => height}px;
   padding: 0 40px;
 
   transition: all 0.2s ease-out;
@@ -20,7 +20,7 @@ export const Step = styled.div`
   opacity: 1;
   transform: translateX(0);
 
-  transition: all 500ms ${easings.out.quart};
+  transition: all 500ms ${easings.out.default};
 
   &.animation {
     &-enter,
@@ -31,10 +31,11 @@ export const Step = styled.div`
 
     &-exit {
       position: absolute;
+      top: 24px;
       left: 0;
       right: 0;
 
-      transition: all 500ms ${easings.out.quart};
+      transition: all 500ms ${easings.out.default};
 
       &-active {
         opacity: 0;

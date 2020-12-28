@@ -1,25 +1,10 @@
 import { atom } from 'recoil';
+import { SpamInterface } from '../../interfaces/settings';
+import settingDefaults from '../../requests/default-data';
 
-export enum SpamBehaviour {
-  SimulateSuccess = 'simulate_success',
-  DisplayErrors = 'display_errors',
-}
-
-interface SpamInterface {
-  honeypot: boolean;
-  enhancedHoneypot: boolean;
-  spamFolder: boolean;
-  spamBehaviour: SpamBehaviour;
-}
-
-const spamState = atom<SpamInterface>({
+const SpamState = atom<SpamInterface>({
   key: 'spam',
-  default: {
-    honeypot: true,
-    enhancedHoneypot: false,
-    spamFolder: true,
-    spamBehaviour: SpamBehaviour.SimulateSuccess,
-  },
+  default: settingDefaults.spam,
 });
 
-export default spamState;
+export default SpamState;

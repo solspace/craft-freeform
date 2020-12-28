@@ -5,7 +5,8 @@ import SelectField, { Options } from '@ff-app/welcome-screen/shared/components/f
 import Heading from '@ff-app/welcome-screen/shared/components/Typography/Heading/Heading';
 import Paragraph from '@ff-app/welcome-screen/shared/components/Typography/Paragraph/Paragraph';
 import { Italics } from '@ff-app/welcome-screen/shared/components/Typography/Typography.styles';
-import SpamState, { SpamBehaviour } from '@ff-welcome-screen/shared/recoil/atoms/spam';
+import { SpamBehaviour } from '@ff-app/welcome-screen/shared/interfaces/settings';
+import SpamState from '@ff-welcome-screen/shared/recoil/atoms/spam';
 import React from 'react';
 import { CSSTransition } from 'react-transition-group';
 import { useRecoilState } from 'recoil';

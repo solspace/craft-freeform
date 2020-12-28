@@ -46,6 +46,7 @@ use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
 use Solspace\Freeform\Controllers\Pro\QuickExportController;
 use Solspace\Freeform\Controllers\Pro\WebhooksController;
 use Solspace\Freeform\Controllers\ResourcesController;
+use Solspace\Freeform\Controllers\REST\SettingsController as RESTSettingsController;
 use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
@@ -479,6 +480,7 @@ class Freeform extends Plugin
                 'banners' => BannersController::class,
                 'feeds' => FeedsController::class,
                 'welcome-screen' => WelcomeScreenController::class,
+                'rest-settings' => RESTSettingsController::class,
             ];
         }
     }

@@ -5,16 +5,13 @@ import TextField from '@ff-app/welcome-screen/shared/components/form/TextField/T
 import Heading from '@ff-app/welcome-screen/shared/components/Typography/Heading/Heading';
 import Paragraph from '@ff-app/welcome-screen/shared/components/Typography/Paragraph/Paragraph';
 import { Italics } from '@ff-app/welcome-screen/shared/components/Typography/Typography.styles';
-import generalState, {
-  DefaultView,
-  FormattingTemplate,
-  JSInsertLocation,
-} from '@ff-welcome-screen/shared/recoil/atoms/general';
+import GeneralState from '@ff-app/welcome-screen/shared/recoil/atoms/general';
+import { DefaultView, FormattingTemplate, JSInsertLocation } from '@ff-welcome-screen/shared/interfaces/settings';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 
 const General: React.FC = () => {
-  const [state, setState] = useRecoilState(generalState);
+  const [state, setState] = useRecoilState(GeneralState);
 
   const defaultViewOptions: Options<DefaultView> = [
     { value: DefaultView.Dashboard, label: 'Dashboard' },
@@ -23,13 +20,18 @@ const General: React.FC = () => {
   ];
 
   const formattingTemplateOptions: Options<FormattingTemplate> = [
+    { value: FormattingTemplate.Bootstrap, label: 'Bootstrap' },
+    { value: FormattingTemplate.Bootstrap4, label: 'Bootstrap 4' },
     { value: FormattingTemplate.Flexbox, label: 'Flexbox' },
+    { value: FormattingTemplate.Foundation, label: 'Foundation' },
+    { value: FormattingTemplate.Grid, label: 'Grid' },
+    { value: FormattingTemplate.Tailwind, label: 'Tailwind' },
   ];
 
   const jsInsertLocationOptions: Options<JSInsertLocation> = [
     { value: JSInsertLocation.Footer, label: 'Footer' },
     { value: JSInsertLocation.Form, label: 'Form' },
-    { value: JSInsertLocation.None, label: 'None' },
+    { value: JSInsertLocation.Manual, label: 'Manual' },
   ];
 
   return (

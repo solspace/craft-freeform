@@ -32,7 +32,7 @@ const General: React.FC = () => {
   ];
 
   const jsInsertLocationOptions: Options<JSInsertLocation> = [
-    { value: JSInsertLocation.Footer, label: 'Footer' },
+    { value: JSInsertLocation.Footer, label: 'Footer (recommended)' },
     { value: JSInsertLocation.Form, label: 'Form' },
     { value: JSInsertLocation.Manual, label: 'Manual' },
   ];

@@ -45,7 +45,7 @@ const Spam: React.FC = () => {
 
         <CSSTransition mountOnEnter unmountOnExit in={state.honeypot} timeout={300} classNames="animation">
           <LightSwitchField
-            description="Would you like to enable the Javascript Enhancement for the Freeform Honeypot?"
+            description="Would you like to enable the javascript enhancement for the Freeform Honeypot?"
             value={state.enhancedHoneypot}
             onChange={(value): void => {
               setState((oldState) => ({
@@ -57,7 +57,7 @@ const Spam: React.FC = () => {
         </CSSTransition>
 
         <LightSwitchField
-          description="Would you like to enable the built-in Freeform Spam Folder to catch all spammy submissions and false positives? Highly recommended as it will allow you to retrieve incorrectly flagged submissions rather than losing the data forever."
+          description="Would you like to enable the built-in Freeform Spam Folder to catch all spammy submissions and false positives? This is strongly recommended as it will allow you to retrieve incorrectly flagged submissions rather than losing the data forever."
           value={state.spamFolder}
           onChange={(value): void => {
             setState((oldState) => ({

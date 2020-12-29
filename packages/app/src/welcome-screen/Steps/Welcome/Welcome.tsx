@@ -5,7 +5,7 @@ import React from 'react';
 const Welcome: React.FC = () => {
   return (
     <div>
-      <Heading>Welcome to Freeform</Heading>
+      <Heading>Welcome to Freeform!</Heading>
 
       <Paragraph>
         <em>Thank you for choosing Freeform, the most reliable form builder for Craft!</em> We know you have options,
@@ -13,9 +13,9 @@ const Welcome: React.FC = () => {
       </Paragraph>
 
       <Paragraph>
-        To streamline your initial setup of Freeform, we've included a fast and easy way to review and adjust most
-        Freeform settings in this post-install wizard. To proceed, click <em>Continue</em>. If you'd like to skip this,
-        just click the <em>Skip All</em> button below.
+        To streamline and guide you through your initial setup of Freeform, we've included a fast and easy way to review
+        and adjust most Freeform settings in this post-install wizard. To proceed, click <em>Continue</em>. If you'd
+        like to skip this, just click the <em>Skip All</em> button below.
       </Paragraph>
     </div>
   );

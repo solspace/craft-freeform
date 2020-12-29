@@ -57,7 +57,7 @@ const Reliability: React.FC = () => {
         />
 
         <TextField
-          description="Which email address should Freeform send Developer Digest emails to? Includes a snapshot of the previous period's performance and any logged errors and upgrade notices."
+          description="Which email address should Freeform send Developer Digest emails to? This includes a snapshot of the previous period’s performance and any logged errors and upgrade notices."
           value={state.digestRecipients}
           onChange={(event): void => {
             setState((originalState) => ({
@@ -82,7 +82,7 @@ const Reliability: React.FC = () => {
         </CSSTransition>
 
         <TextField
-          description="Would you like Freeform to send a client-friendly Stats-only Digest email to the client's email address as well"
+          description="Would you like Freeform to send a client-friendly Stats-only Digest email to the client’s email address as well?"
           value={state.clientDigestRecipients}
           onChange={(event): void => {
             setState((originalState) => ({

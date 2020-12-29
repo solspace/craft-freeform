@@ -27,6 +27,7 @@ use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Helpers\IpUtils;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -541,6 +542,21 @@ class SettingsService extends BaseService
     public function getDigestRecipients(): array
     {
         return StringHelper::extractSeparatedValues($this->getSettingsModel()->digestRecipients ?? '');
+    }
+
+    public function getDigestFrequency(): int
+    {
+        return (int) ($this->getSettingsModel()->digestFrequency ?? DigestService::FREQUENCY_WEEKLY_MONDAYS);
+    }
+
+    public function getClientDigestRecipients(): array
+    {
+        return StringHelper::extractSeparatedValues($this->getSettingsModel()->clientDigestRecipients ?? '');
+    }
+
+    public function getClientDigestFrequency(): int
+    {
+        return (int) ($this->getSettingsModel()->clientDigestFrequency ?? DigestService::FREQUENCY_WEEKLY_MONDAYS);
     }
 
     public function isDigestOnlyOnProduction(): bool

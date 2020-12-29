@@ -28,14 +28,14 @@ export interface GeneralInterface {
 }
 
 export enum DigestFrequency {
-  Daily = 'daily',
-  WeeklySundays = 'weekly-sunday',
-  WeeklyMondays = 'weekly-mondays',
-  WeeklyTuesdays = 'weekly-tuesdays',
-  WeeklyWednesdays = 'weekly-wednesdays',
-  WeeklyThursdays = 'weekly-thursdays',
-  WeeklyFridays = 'weekly-fridays',
-  WeeklySaturdays = 'weekly-saturdays',
+  Daily = '-1',
+  WeeklySundays = '0',
+  WeeklyMondays = '1',
+  WeeklyTuesdays = '2',
+  WeeklyWednesdays = '3',
+  WeeklyThursdays = '4',
+  WeeklyFridays = '5',
+  WeeklySaturdays = '6',
 }
 
 export interface ReliabilityInterface {

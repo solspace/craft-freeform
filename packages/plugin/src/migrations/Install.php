@@ -56,6 +56,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('bcc', $this->string(255))
                 ->addField('bodyHtml', $this->text())
                 ->addField('bodyText', $this->text())
+                ->addField('autoText', $this->boolean()->notNull()->defaultValue(true))
                 ->addField('includeAttachments', $this->boolean()->defaultValue(true))
                 ->addField('presetAssets', $this->string(255))
                 ->addField('sortOrder', $this->integer()),

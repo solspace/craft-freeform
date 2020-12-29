@@ -30,9 +30,9 @@
 				"errorRecipients": "{{ settings.alertNotificationRecipients }}",
 				"updateNotices": {{ settings.displayFeed ? 'true' : 'false' }},
 				"digestRecipients": "{{ settings.digestRecipients }}",
-				"digestFrequency": "{{ settings.digestFrequency }}",
+				"digestFrequency": {{ settings.digestFrequency }},
 				"clientDigestRecipients": "{{ settings.clientDigestRecipients }}",
-				"clientDigestFrequency": "{{ settings.clientDigestFrequency }}",
+				"clientDigestFrequency": {{ settings.clientDigestFrequency }},
 				"digestProductionOnly": {{ settings.digestOnlyOnProduction ? 'true' : 'false' }}
 			}
 		}

@@ -12,13 +12,20 @@
 
     {{ macros.heading('{name} Digest' | t('freeform', { name: craft.freeform.name })) }}
 
-    {{ macros.headline(
-        'Weekly Digest ({siteName})' | t('freeform', { siteName: craft.app.systemName }),
-        '{start} - {end}' | t('freeform', {
-            start: rangeStart|date("long"),
-            end: rangeEnd|date("long"),
-        })
-    ) }}
+    {% if daily %}
+        {{ macros.headline(
+            'Daily Digest ({siteName})' | t('freeform', { siteName: craft.app.systemName }),
+            rangeStart|date("long")
+        ) }}
+    {% else %}
+        {{ macros.headline(
+            'Weekly Digest ({siteName})' | t('freeform', { siteName: craft.app.systemName }),
+            '{start} - {end}' | t('freeform', {
+                start: rangeStart|date("long"),
+                end: rangeEnd|date("long"),
+            })
+        ) }}
+    {% endif %}
 
     {% if forms | length %}
         <div style="margin-bottom: 40px;">
@@ -55,91 +62,103 @@
         </div>
     {% endif %}
 
-    {% if errors %}
+    {% if fullDigest %}
         <div style="margin-bottom: 40px;">
             {{ macros.title('Errors That May Require Attention' | t('freeform')) }}
 
-            <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
-                {{ macros.tableHeadings([
-                    { html: null },
-                    { html: "Type" | t('freeform') },
-                    { html: "Date" | t('freeform') },
-                    { html: "Details" | t('freeform') },
-                ]) }}
-                <tbody>
-                {% for data in errors %}
-                    {% set color = '#FF0000' %}
-                    {% set srcSet = [iconUrl~'alert-critical-1x.png', iconUrl~'alert-critical-2x.png 2x'] %}
-                    {% set icon = iconUrl~'alert-critical-1x.png' %}
-                    {% if data.level == 'WARNING' %}
-                        {% set color = '#ffc107' %}
-                        {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
-                        {% set icon = iconUrl~'alert-warning-1x.png' %}
-                    {% endif %}
 
-                    {{ macros.tableRow([
-                        {
-                            html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.level~'" />',
-                            padding: '5px 0 5px 10px',
-                            width: '12px',
-                            color: color,
-                            align: 'center',
-                        },
-                        { html: data.logger, color: color, nowrap: true },
-                        { html: data.date | date, color: color, nowrap: true },
-                        { html: data.message | truncater(50), color: color },
+            {% if errors|length %}
+                <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
+                    {{ macros.tableHeadings([
+                        { html: null },
+                        { html: "Type" | t('freeform') },
+                        { html: "Date" | t('freeform') },
+                        { html: "Details" | t('freeform') },
                     ]) }}
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    {% endif %}
-
-    {% if updates|length %}
-        <div style="margin-bottom: 40px;">
-            {{ macros.title('Available Updates' | t('freeform')) }}
-            {{ macros.paragraph(
-                'The following updates and notices are available for your site. Please review and take any action necessary.' | t('freeform'))
-            }}
-
-            <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
-                {{ macros.tableHeadings([
-                    { html: null },
-                    { html: "Date Issued" | t('freeform') },
-                    { html: "Details" | t('freeform') },
-                ]) }}
-                <tbody>
-                {% for data in updates %}
-                    {% set color = '#000000' %}
-                    {% if data.type == 'critical' %}
+                    <tbody>
+                    {% for data in errors %}
                         {% set color = '#FF0000' %}
                         {% set srcSet = [iconUrl~'alert-critical-1x.png', iconUrl~'alert-critical-2x.png 2x'] %}
                         {% set icon = iconUrl~'alert-critical-1x.png' %}
-                    {% elseif data.type == 'warning' %}
-                        {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
-                        {% set icon = iconUrl~'alert-warning-1x.png' %}
-                    {% elseif data.type == 'info' %}
-                        {% set srcSet = [iconUrl~'alert-info-1x.png', iconUrl~'alert-info-2x.png 2x'] %}
-                        {% set icon = iconUrl~'alert-info-1x.png' %}
-                    {% else %}
-                        {% set srcSet = [iconUrl~'update-1x.png', iconUrl~'update-2x.png 2x'] %}
-                        {% set icon = iconUrl~'update-1x.png' %}
-                    {% endif %}
+                        {% if data.level == 'WARNING' %}
+                            {% set color = '#ffc107' %}
+                            {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-warning-1x.png' %}
+                        {% endif %}
 
-                    {{ macros.tableRow([
-                        {
-                            html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.type~'" />',
-                            padding: '5px 0 5px 10px',
-                            width: '12px',
-                            color: color,
-                            align: 'center',
-                        },
-                        { html: data.issueDate | date, color: color, nowrap: true },
-                        { html: data.message, color: color },
+                        {{ macros.tableRow([
+                            {
+                                html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.level~'" />',
+                                padding: '5px 0 5px 10px',
+                                width: '12px',
+                                color: color,
+                                align: 'center',
+                            },
+                            { html: data.logger, color: color, nowrap: true },
+                            { html: data.date | date, color: color, nowrap: true },
+                            { html: data.message | truncater(50), color: color },
+                        ]) }}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+
+                {{ macros.paragraph('No errors to report for this period.' | t('freeform')) }}
+
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            {{ macros.title('Available Updates' | t('freeform')) }}
+
+            {% if updates|length %}
+                {{ macros.paragraph(
+                    'The following updates and notices are available for your site. Please review and take any action necessary.' | t('freeform')) }}
+
+                
+                <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
+                    {{ macros.tableHeadings([
+                        { html: null },
+                        { html: "Date Issued" | t('freeform') },
+                        { html: "Details" | t('freeform') },
                     ]) }}
-                {% endfor %}
-                </tbody>
-            </table>
+                    <tbody>
+                    {% for data in updates %}
+                        {% set color = '#000000' %}
+                        {% if data.type == 'critical' %}
+                            {% set color = '#FF0000' %}
+                            {% set srcSet = [iconUrl~'alert-critical-1x.png', iconUrl~'alert-critical-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-critical-1x.png' %}
+                        {% elseif data.type == 'warning' %}
+                            {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-warning-1x.png' %}
+                        {% elseif data.type == 'info' %}
+                            {% set srcSet = [iconUrl~'alert-info-1x.png', iconUrl~'alert-info-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-info-1x.png' %}
+                        {% else %}
+                            {% set srcSet = [iconUrl~'update-1x.png', iconUrl~'update-2x.png 2x'] %}
+                            {% set icon = iconUrl~'update-1x.png' %}
+                        {% endif %}
+
+                        {{ macros.tableRow([
+                            {
+                                html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.type~'" />',
+                                padding: '5px 0 5px 10px',
+                                width: '12px',
+                                color: color,
+                                align: 'center',
+                            },
+                            { html: data.issueDate | date, color: color, nowrap: true },
+                            { html: data.message, color: color },
+                        ]) }}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+
+                {{ macros.paragraph('There are currently no important updates or notices for your site.' | t('freeform')) }}
+
+            {% endif %}
         </div>
     {% endif %}
 

@@ -25,7 +25,7 @@
 
     {{ forms.textField({
         class: "code",
-        label: "Weekly Digest Email"|t('freeform'),
+        label: "Developer Digest Email"|t('freeform'),
         instructions: "Send weekly emails to the email address(es) below every Monday morning. This will include a snapshot of the previous week's performance and any logged errors and upgrade notices."|t('freeform'),
         placeholder: "e.g john@smith.com, bethany@corporation.com",
         name: "settings[digestRecipients]",
@@ -34,26 +34,26 @@
     }) }}
 
     {{ forms.selectField({
-        label: "Weekly Digest Email Frequency"|t('freeform'),
+        label: "Developer Digest Email Frequency"|t('freeform'),
         instructions: ""|t('freeform'),
         name: "settings[digestFrequency]",
         value: settings.digestFrequency,
         errors: settings.errors("digestFrequency"),
         options: {
-            daily: "Daily" | t('freeform'),
-            "weekly-sundays": "Weekly - Sundays" | t('freeform'),
-            "weekly-mondays": "Weekly - Mondays" | t('freeform'),
-            "weekly-tuesdays": "Weekly - Tuesdays" | t('freeform'),
-            "weekly-wednesdays": "Weekly - Wednesdays" | t('freeform'),
-            "weekly-thursdays": "Weekly - Thursdays" | t('freeform'),
-            "weekly-fridays": "Weekly - Fridays" | t('freeform'),
-            "weekly-saturdays": "Weekly - Saturdays" | t('freeform'),
+            "-1": "Daily" | t('freeform'),
+            "0": "Weekly - Sundays" | t('freeform'),
+            "1": "Weekly - Mondays" | t('freeform'),
+            "2": "Weekly - Tuesdays" | t('freeform'),
+            "3": "Weekly - Wednesdays" | t('freeform'),
+            "4": "Weekly - Thursdays" | t('freeform'),
+            "5": "Weekly - Fridays" | t('freeform'),
+            "6": "Weekly - Saturdays" | t('freeform'),
         },
     }) }}
 
     {{ forms.textField({
         class: "code",
-        label: "Client Digest Email"|t('freeform'),
+        label: "Stats Digest Email"|t('freeform'),
         instructions: "Send weekly emails to the email address(es) below every Monday morning. This will include a snapshot of the previous week's performance and any logged errors and upgrade notices."|t('freeform'),
         placeholder: "e.g john@smith.com, bethany@corporation.com",
         name: "settings[clientDigestRecipients]",
@@ -62,20 +62,20 @@
     }) }}
 
     {{ forms.selectField({
-        label: "Client Digest Email Frequency"|t('freeform'),
+        label: "Stats Digest Email Frequency"|t('freeform'),
         instructions: ""|t('freeform'),
         name: "settings[clientDigestFrequency]",
         value: settings.clientDigestFrequency,
         errors: settings.errors("clientDigestFrequency"),
         options: {
-            daily: "Daily" | t('freeform'),
-            "weekly-sundays": "Weekly - Sundays" | t('freeform'),
-            "weekly-mondays": "Weekly - Mondays" | t('freeform'),
-            "weekly-tuesdays": "Weekly - Tuesdays" | t('freeform'),
-            "weekly-wednesdays": "Weekly - Wednesdays" | t('freeform'),
-            "weekly-thursdays": "Weekly - Thursdays" | t('freeform'),
-            "weekly-fridays": "Weekly - Fridays" | t('freeform'),
-            "weekly-saturdays": "Weekly - Saturdays" | t('freeform'),
+            "-1": "Daily" | t('freeform'),
+            "0": "Weekly - Sundays" | t('freeform'),
+            "1": "Weekly - Mondays" | t('freeform'),
+            "2": "Weekly - Tuesdays" | t('freeform'),
+            "3": "Weekly - Wednesdays" | t('freeform'),
+            "4": "Weekly - Thursdays" | t('freeform'),
+            "5": "Weekly - Fridays" | t('freeform'),
+            "6": "Weekly - Saturdays" | t('freeform'),
         },
     }) }}
 

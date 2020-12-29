@@ -58,9 +58,9 @@ class SettingsController extends BaseController
                 'alertNotificationRecipients' => $this->request->getBodyParam('errorRecipients'),
                 'displayFeed' => $this->request->getBodyParam('updateNotices', true),
                 'digestRecipients' => $this->request->getBodyParam('digestRecipients'),
-                'digestFrequency' => $this->request->getBodyParam('digestFrequency'),
+                'digestFrequency' => (int) $this->request->getBodyParam('digestFrequency'),
                 'clientDigestRecipients' => $this->request->getBodyParam('clientDigestRecipients'),
-                'clientDigestFrequency' => $this->request->getBodyParam('clientDigestFrequency'),
+                'clientDigestFrequency' => (int) $this->request->getBodyParam('clientDigestFrequency'),
                 'digestOnlyOnProduction' => $this->request->getBodyParam('digestProductionOnly', false),
             ]
         );

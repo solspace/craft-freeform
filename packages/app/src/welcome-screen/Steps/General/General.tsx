@@ -42,7 +42,7 @@ const General: React.FC = () => {
       <Heading>General Setup</Heading>
       <Paragraph>
         Freeform includes a wide variety of settings that allow you to customize your form management experience. These
-        can later be adjusted by going to the
+        can later be adjusted by going to the{' '}
         <Italics>
           Freeform {'->'} Settings {'->'} General Settings
         </Italics>{' '}

@@ -26,7 +26,7 @@
     {{ forms.textField({
         class: "code",
         label: "Developer Digest Email"|t('freeform'),
-        instructions: "Send weekly emails to the email address(es) below every Monday morning. This will include a snapshot of the previous week's performance and any logged errors and upgrade notices."|t('freeform'),
+        instructions: "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices."|t('freeform'),
         placeholder: "e.g john@smith.com, bethany@corporation.com",
         name: "settings[digestRecipients]",
         value: settings.digestRecipients,
@@ -35,7 +35,7 @@
 
     {{ forms.selectField({
         label: "Developer Digest Email Frequency"|t('freeform'),
-        instructions: ""|t('freeform'),
+        instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
         name: "settings[digestFrequency]",
         value: settings.digestFrequency,
         errors: settings.errors("digestFrequency"),
@@ -54,7 +54,7 @@
     {{ forms.textField({
         class: "code",
         label: "Stats Digest Email"|t('freeform'),
-        instructions: "Send weekly emails to the email address(es) below every Monday morning. This will include a snapshot of the previous week's performance and any logged errors and upgrade notices."|t('freeform'),
+        instructions: "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This is the same as the Developer one above, but only includes a snapshot of the previous period's performance."|t('freeform'),
         placeholder: "e.g john@smith.com, bethany@corporation.com",
         name: "settings[clientDigestRecipients]",
         value: settings.clientDigestRecipients,
@@ -63,7 +63,7 @@
 
     {{ forms.selectField({
         label: "Stats Digest Email Frequency"|t('freeform'),
-        instructions: ""|t('freeform'),
+        instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
         name: "settings[clientDigestFrequency]",
         value: settings.clientDigestFrequency,
         errors: settings.errors("clientDigestFrequency"),
@@ -81,7 +81,7 @@
 
     {{ forms.lightswitchField({
         label: "Send Notifications on Live Environment only?"|t('freeform'),
-        instructions: "If this setting is enabled, Freeform will only send out Weekly Digest emails when the Craft environment is set to production."|t('freeform'),
+        instructions: "If this setting is enabled, Freeform will only send out Digest emails when the Craft environment is set to production."|t('freeform'),
         name: "settings[digestOnlyOnProduction]",
         on: settings.digestOnlyOnProduction,
         errors: settings.getErrors("digestOnlyOnProduction"),

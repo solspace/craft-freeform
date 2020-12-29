@@ -5,7 +5,7 @@
 ### Added
 - Added a client-friendly stats-only Digest email option (in addition to the 'developer' one with alerts and notices).
 - Added the ability to choose between weekly or daily Digest email notifications.
-- Added the ability to choose which day of the week thr weekly digest is sent on.
+- Added the ability to choose which day of the week that the weekly digest is sent on.
 - Added a post-install welcome / settings wizard to streamline and guide setting up new installs of Freeform.
 
 ### Changed

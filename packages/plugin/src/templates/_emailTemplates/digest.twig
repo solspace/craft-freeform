@@ -1,4 +1,4 @@
-{# subject: Your {{ rangeEnd.copy.addDay|date }} Weekly Digest for {{ craft.app.systemName }} #}
+{# subject: {{ craft.freeform.name }} {{ daily ? 'Daily' : 'Weekly' }} Digest for {{ rangeStart|date("long") }}{% if not daily %} - {{ rangeEnd|date("long") }}{% endif %} ({{ craft.app.systemName }}) #}
 {# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
 {# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
 {# includeAttachments: false #}
@@ -115,7 +115,7 @@
                 {{ macros.paragraph(
                     'The following updates and notices are available for your site. Please review and take any action necessary.' | t('freeform')) }}
 
-                
+
                 <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
                     {{ macros.tableHeadings([
                         { html: null },

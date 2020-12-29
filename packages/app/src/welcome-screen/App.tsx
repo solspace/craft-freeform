@@ -52,7 +52,15 @@ const App: React.FC = () => {
   };
 
   const buttons: Button[][] = [
-    [{ label: 'Skip All' }, { label: 'Continue', cta: true, onClick: next }],
+    [
+      {
+        label: 'Skip All',
+        onClick: (): void => {
+          window.location.href = generateUrl('/dashboard');
+        },
+      },
+      { label: 'Continue', cta: true, onClick: next },
+    ],
     [{ label: 'Next', cta: true, onClick: next }],
     [
       { label: 'Back', onClick: prev },

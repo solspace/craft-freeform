@@ -64,13 +64,6 @@ const App: React.FC = () => {
     ],
     [
       {
-        label: 'Dashboard',
-        disabled: !finalized,
-        onClick: (): void => {
-          window.location.href = generateUrl('/dashboard');
-        },
-      },
-      {
         label: 'Settings',
         disabled: !finalized,
         onClick: (): void => {
@@ -89,7 +82,7 @@ const App: React.FC = () => {
         disabled: !finalized,
         cta: true,
         onClick: (): void => {
-          window.location.href = generateUrl('/forms');
+          window.location.href = generateUrl('/dashboard');
         },
       },
     ],

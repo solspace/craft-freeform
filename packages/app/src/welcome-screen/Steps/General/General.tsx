@@ -52,7 +52,7 @@ const General: React.FC = () => {
       <FormWrapper>
         {isPro && (
           <TextField
-            description="This is a long description Freeform includes a wide variety of settings that allow you to customize your form management experience. These can later be adjusted by going to the"
+            description="Rename the plugin name to something more intuitive for your clients (optional)"
             value={state.name}
             onChange={(event): void => {
               setState((originalState) => ({

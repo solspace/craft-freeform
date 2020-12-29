@@ -49,7 +49,7 @@ class Settings extends Model
     const SCRIPT_INSERT_LOCATION_FORM = 'form';
     const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
 
-    const DEFAULT_AJAX = false;
+    const DEFAULT_AJAX = true;
     const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
 
     const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;

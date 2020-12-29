@@ -6,6 +6,11 @@
 
 	<script type="application/json" id="setting-defaults">
 		{
+			"settings": {
+				"freeform": {
+					"pro": {{ craft.freeform.pro ? 'true' : 'false' }}
+				}
+			},
 			"general": {
 				"name": "{{ settings.pluginName }}",
 				"defaultView": "{{ settings.defaultView }}",

@@ -6,9 +6,12 @@ import Heading from '@ff-app/welcome-screen/shared/components/Typography/Heading
 import Paragraph from '@ff-app/welcome-screen/shared/components/Typography/Paragraph/Paragraph';
 import { Italics } from '@ff-app/welcome-screen/shared/components/Typography/Typography.styles';
 import GeneralState from '@ff-app/welcome-screen/shared/recoil/atoms/general';
+import settingDefaults from '@ff-app/welcome-screen/shared/requests/default-data';
 import { DefaultView, FormattingTemplate, JSInsertLocation } from '@ff-welcome-screen/shared/interfaces/settings';
 import React from 'react';
 import { useRecoilState } from 'recoil';
+
+const isPro = settingDefaults.settings.freeform.pro;
 
 const General: React.FC = () => {
   const [state, setState] = useRecoilState(GeneralState);
@@ -47,16 +50,18 @@ const General: React.FC = () => {
       </Paragraph>
 
       <FormWrapper>
-        <TextField
-          description="This is a long description Freeform includes a wide variety of settings that allow you to customize your form management experience. These can later be adjusted by going to the"
-          value={state.name}
-          onChange={(event): void => {
-            setState((originalState) => ({
-              ...originalState,
-              name: event.target.value,
-            }));
-          }}
-        />
+        {isPro && (
+          <TextField
+            description="This is a long description Freeform includes a wide variety of settings that allow you to customize your form management experience. These can later be adjusted by going to the"
+            value={state.name}
+            onChange={(event): void => {
+              setState((originalState) => ({
+                ...originalState,
+                name: event.target.value,
+              }));
+            }}
+          />
+        )}
 
         <SelectField
           description="Which page should be loaded when you click on the Freeform link in the CP nav?"

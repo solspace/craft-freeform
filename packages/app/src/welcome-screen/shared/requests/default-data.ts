@@ -1,6 +1,11 @@
 import { GeneralInterface, ReliabilityInterface, SpamInterface } from '../interfaces/settings';
 
 interface Defaults {
+  settings: {
+    freeform: {
+      pro: boolean;
+    };
+  };
   general: GeneralInterface;
   spam: SpamInterface;
   reliability: ReliabilityInterface;

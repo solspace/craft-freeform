@@ -1,0 +1,21 @@
+.action-buttons {
+  display: flex;
+
+  > * {
+    padding: 0 0 0 5px;
+  }
+
+  .icon.clone {
+    &:before {
+      font-family: 'solspace-freeform-craft', sans-serif;
+      content: '\e819';
+      color: rgba(0, 0, 0, 0.2);
+    }
+
+    &:hover {
+      &:before {
+        color: #0a0d0f;
+      }
+    }
+  }
+}

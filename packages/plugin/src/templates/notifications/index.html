@@ -55,9 +55,12 @@
                         {{ notification.description|truncater(80) }}
                     </td>
                     <td class="thin">
+                        <div class='action-buttons'>
                         {% if currentUser.can("freeform-notificationsManage") %}
+                            <a class="clone icon" data-id="{{ notification.id }}" title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
                             <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                         {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

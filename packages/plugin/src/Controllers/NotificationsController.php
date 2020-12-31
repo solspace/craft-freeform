@@ -17,6 +17,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationEditorBundle;
+use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
 use Solspace\Freeform\Services\NotificationsService;
 use yii\base\InvalidParamException;
 use yii\web\ForbiddenHttpException;
@@ -33,6 +34,7 @@ class NotificationsController extends BaseController
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
 
+        $this->view->registerAssetBundle(NotificationIndexBundle::class);
         $notifications = $this->getNotificationService()->getAllNotifications();
 
         return $this->renderTemplate(
@@ -134,6 +136,45 @@ class NotificationsController extends BaseController
                 'errors' => $notification->getErrors(),
             ]
         );
+    }
+
+    public function actionDuplicate(): Response
+    {
+        $this->requirePostRequest();
+
+        $id = $this->request->post('id');
+        $notification = NotificationRecord::findOne(['id' => $id]);
+
+        if (!$notification) {
+            return $this->asJson(['success' => false, 'errors' => ['Notification doesn\'t exist']]);
+        }
+
+        $record = new NotificationRecord();
+
+        $record->setAttributes($notification->getAttributes(), false);
+        $record->id = null;
+        $record->dateCreated = null;
+        $record->dateUpdated = null;
+        $record->uid = null;
+
+        while (true) {
+            $handle = $record->handle;
+            if (preg_match('/-(\d+)$/', $handle, $matches)) {
+                $number = (int) $matches[1];
+                $handle = preg_replace('/-\d+$/', '-'.($number + 1), $handle);
+            } else {
+                $handle .= '-1';
+            }
+            $record->handle = $handle;
+
+            if (!NotificationRecord::findOne(['handle' => $handle])) {
+                break;
+            }
+        }
+
+        $record->save();
+
+        return $this->asJson(['success' => true]);
     }
 
     /**

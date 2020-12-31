@@ -45,6 +45,7 @@ return [
     'freeform/notifications/<id:\d+>' => 'freeform/notifications/edit',
     'freeform/notifications/save' => 'freeform/notifications/save',
     'freeform/notifications/delete' => 'freeform/notifications/delete',
+    'freeform/notifications/duplicate' => 'freeform/notifications/duplicate',
     // Submissions
     'freeform/submissions' => 'freeform/submissions/index',
     'freeform/submissions/export' => 'freeform/submissions/export',

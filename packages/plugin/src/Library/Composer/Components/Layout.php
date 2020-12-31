@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldIn
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PhoneMaskInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecaptchaInterface;
@@ -47,6 +48,9 @@ class Layout implements \JsonSerializable, \Iterator
 
     /** @var AbstractField[]|CheckboxGroupField[]|TextField[] */
     private $fields;
+
+    /** @var AbstractField[]|CheckboxGroupField[]|TextField[] */
+    private $valueFields;
 
     /** @var AbstractField[] */
     private $fieldsById;
@@ -238,6 +242,11 @@ class Layout implements \JsonSerializable, \Iterator
     public function getFields(): array
     {
         return $this->fields;
+    }
+
+    public function getValueFields(): array
+    {
+        return $this->valueFields;
     }
 
     public function hasFieldType(string $type): bool
@@ -474,6 +483,7 @@ class Layout implements \JsonSerializable, \Iterator
         $pageObjects = [];
         $allRows = [];
         $allFields = [];
+        $valueFields = [];
         $hiddenFields = [];
         $recipientFields = [];
         $fileUploadFields = [];
@@ -537,6 +547,10 @@ class Layout implements \JsonSerializable, \Iterator
                         $hiddenFields[] = $field;
                     } else {
                         $fields[] = $field;
+                    }
+
+                    if (!$field instanceof NoStorageInterface) {
+                        $valueFields[] = $field;
                     }
 
                     if ($field instanceof FileUploadInterface) {
@@ -608,6 +622,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->pages = $pageObjects;
         $this->rows = $allRows;
         $this->fields = $allFields;
+        $this->valueFields = $valueFields;
         $this->hiddenFields = $hiddenFields;
         $this->recipientFields = $recipientFields;
         $this->fileUploadFields = $fileUploadFields;

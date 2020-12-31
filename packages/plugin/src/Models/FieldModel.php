@@ -293,6 +293,10 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['useScript'] = $this->getMetaProperty('useScript', true);
         }
 
+        if (FieldInterface::TYPE_HTML === $this->type) {
+            $returnArray['twig'] = $this->getMetaProperty('twig', false);
+        }
+
         if (\in_array(
             $this->type,
             [FieldInterface::TYPE_HIDDEN, FieldInterface::TYPE_HTML, FieldInterface::TYPE_SUBMIT],
@@ -437,6 +441,7 @@ class FieldModel extends Model implements \JsonSerializable
             'maxLength' => self::PROPERTY_TYPE_INT,
             'minValue' => self::PROPERTY_TYPE_INT,
             'maxValue' => self::PROPERTY_TYPE_INT,
+            'twig' => self::PROPERTY_TYPE_BOOL,
         ];
 
         if (isset($customTypes[$name])) {

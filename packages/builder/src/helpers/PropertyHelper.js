@@ -90,6 +90,7 @@ const validProperties = [
   'useScript',
   'description',
   'step',
+  'twig',
 ];
 
 export default class PropertyHelper {

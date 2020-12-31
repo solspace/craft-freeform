@@ -246,6 +246,12 @@ class Settings extends Model
     /** @var string */
     public $badgeType;
 
+    /** @var bool */
+    public $twigInHtml;
+
+    /** @var bool */
+    public $twigInHtmlIsolatedMode;
+
     /**
      * Settings constructor.
      */
@@ -312,6 +318,9 @@ class Settings extends Model
 
         $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
         $this->sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;
+
+        $this->twigInHtml = true;
+        $this->twigInHtmlIsolatedMode = true;
 
         parent::__construct($config);
     }

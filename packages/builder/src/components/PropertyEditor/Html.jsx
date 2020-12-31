@@ -2,10 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import AceEditor from 'react-ace';
 import BasePropertyEditor from './BasePropertyEditor';
+import { CheckboxProperty } from './PropertyItems';
 import TextProperty from './PropertyItems/TextProperty';
-import 'brace/ext/language_tools';
-import 'brace/mode/html';
 import 'brace/theme/chrome';
+import 'brace/mode/html';
+import 'brace/ext/language_tools';
 
 export default class Html extends BasePropertyEditor {
   static contextTypes = {
@@ -15,6 +16,7 @@ export default class Html extends BasePropertyEditor {
       type: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
+      twig: PropTypes.boolean,
     }).isRequired,
   };
 
@@ -27,7 +29,7 @@ export default class Html extends BasePropertyEditor {
   render() {
     const {
       hash,
-      properties: { value },
+      properties: { value, twig },
     } = this.context;
 
     return (
@@ -42,6 +44,14 @@ export default class Html extends BasePropertyEditor {
         />
 
         <hr />
+
+        <CheckboxProperty
+          label="Allow Twig"
+          instructions="Used to enable twig in HTML blocks"
+          name="twig"
+          checked={twig}
+          onChangeHandler={this.update}
+        />
 
         <AceEditor
           mode="html"

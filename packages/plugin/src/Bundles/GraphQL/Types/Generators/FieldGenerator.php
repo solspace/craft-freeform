@@ -546,6 +546,14 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
+        if (FreeformFieldInterface::TYPE_HTML === $typeName) {
+            $fieldDefinitions['twig'] = [
+                'name' => 'twig',
+                'type' => Type::boolean(),
+                'description' => 'Should twig be allowed in this field',
+            ];
+        }
+
         return $fieldDefinitions;
     }
 

@@ -12,15 +12,25 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleStaticValueTrait;
+use Solspace\Freeform\Library\Helpers\IsolatedTwig;
+use Solspace\Freeform\Models\Settings;
 
 class HtmlField extends AbstractField implements SingleValueInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;
+
+    protected $twig;
+
+    public function isTwig(): bool
+    {
+        return (bool) $this->twig;
+    }
 
     /**
      * Return the field TYPE.
@@ -35,6 +45,24 @@ class HtmlField extends AbstractField implements SingleValueInterface, InputOnly
      */
     public function getInputHtml(): string
     {
+        if ($this->isTwig()) {
+            /** @var Settings $settings */
+            $settings = Freeform::getInstance()->getSettings();
+            if ($settings->twigInHtml) {
+                $variables = [
+                    'form' => $this->getForm(),
+                    'fields' => $this->getForm()->getLayout()->getValueFields(),
+                    'allFields' => $this->getForm()->getLayout()->getFields(),
+                ];
+
+                if ($settings->twigInHtmlIsolatedMode) {
+                    return (new IsolatedTwig())->render($this->getValue(), $variables);
+                }
+
+                return \Craft::$app->view->renderString($this->getValue(), $variables);
+            }
+        }
+
         return $this->getValue();
     }
 }

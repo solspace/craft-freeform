@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.0-beta.6 - Unreleased
+
+### Added
+- Added the ability to render Twig in HTML Blocks
+
 ## 3.10.0-beta.5 - 2020-12-29
 
 ### Added

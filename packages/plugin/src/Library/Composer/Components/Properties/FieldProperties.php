@@ -277,6 +277,9 @@ class FieldProperties extends AbstractProperties
     /** @var array */
     protected $legends;
 
+    /** @var bool */
+    protected $twig;
+
     /**
      * @return null|string
      */
@@ -955,6 +958,11 @@ class FieldProperties extends AbstractProperties
         return $this->legends ?? [];
     }
 
+    public function isTwig(): bool
+    {
+        return (bool) $this->twig;
+    }
+
     /**
      * Return a list of all property fields and their type.
      *
@@ -1052,6 +1060,7 @@ class FieldProperties extends AbstractProperties
             'tableLayout' => self::TYPE_ARRAY,
             'maxRows' => self::TYPE_INTEGER,
             'useScript' => self::TYPE_BOOLEAN,
+            'twig' => self::TYPE_BOOLEAN,
         ];
     }
 }

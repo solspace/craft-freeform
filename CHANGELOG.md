@@ -4,6 +4,7 @@
 
 ### Added
 - Added the ability to render Twig in HTML Blocks
+- Added better descriptions to reCAPTCHA check failures
 
 ## 3.10.0-beta.5 - 2020-12-29
 

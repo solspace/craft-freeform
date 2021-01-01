@@ -3,7 +3,7 @@
  * Freeform for Craft.
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2020, Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2021, Solspace, Inc.
  *
  * @see          https:   //solspace.com/craft/freeform
  *

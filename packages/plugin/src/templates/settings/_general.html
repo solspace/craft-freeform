@@ -28,8 +28,8 @@
 
     {{ forms.lightswitchField({
         first: not craft.freeform.pro,
-        label: "Show Composer Tutorial"|t('freeform'),
-        instructions: "Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
+        label: "Show Form Builder Tutorial"|t('freeform'),
+        instructions: "Enable this to show the interactive tutorial again in Form Builder. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
         name: "settings[showTutorial]",
         on: settings.showTutorial,
         errors: settings.errors("showTutorial"),
@@ -65,8 +65,8 @@
     }) }}
 
     {{ forms.selectField({
-        label: "Display Order of Fields in Composer"|t('freeform'),
-        instructions: "The display order for the list of available fields in Composer."|t('freeform'),
+        label: "Display Order of Fields in Form Builder"|t('freeform'),
+        instructions: "The display order for the list of available fields in the Form Builder."|t('freeform'),
         name: "settings[fieldDisplayOrder]",
         value: settings.fieldDisplayOrder,
         errors: settings.errors("fieldDisplayOrder"),
@@ -77,8 +77,8 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Render HTML inside Composer & Submissions view?"|t('freeform'),
-        instructions: "Live rendering HTML in HTML blocks, field labels and option labels inside the Composer interface can sometimes conflict with Freeform's display of the form preview inside the control panel. In cases like these, you'll need to disable this setting to prevent HTML from rendering automatically."|t('freeform'),
+        label: "Render HTML inside Form Builder & Submissions view?"|t('freeform'),
+        instructions: "Live rendering HTML in HTML blocks, field labels and option labels inside the Form Builder interface can sometimes conflict with Freeform's display of the form preview inside the control panel. In cases like these, you'll need to disable this setting to prevent HTML from rendering automatically."|t('freeform'),
         name: "settings[renderFormHtmlInCpViews]",
         on: settings.renderFormHtmlInCpViews,
         errors: settings.errors("renderFormHtmlInCpViews"),
@@ -122,7 +122,7 @@
 
     {{ forms.lightswitchField({
         label: "Include Default Freeform Formatting Templates"|t('freeform'),
-        instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer."|t('freeform'),
+        instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Form Builder."|t('freeform'),
         name: "settings[defaultTemplates]",
         on: settings.defaultTemplates,
         errors: settings.errors("defaultTemplates"),

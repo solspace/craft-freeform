@@ -164,7 +164,7 @@ class Composer
 
         if (!isset($composerState[self::KEY_COMPOSER])) {
             throw new ComposerException(
-                $this->translator->translate('No composer data present')
+                $this->translator->translate('No form builder data present')
             );
         }
 
@@ -172,7 +172,7 @@ class Composer
 
         if (!isset($composer[self::KEY_PROPERTIES])) {
             throw new ComposerException(
-                $this->translator->translate('Composer has no properties')
+                $this->translator->translate('Form Builder has no properties')
             );
         }
 

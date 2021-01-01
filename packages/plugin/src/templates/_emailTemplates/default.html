@@ -1,4 +1,4 @@
-{# subject: New submission from your {{ form.name }} form #}
+{# subject: New submission on your {{ form.name }} form #}
 {# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
 {# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
 {# replyToName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
@@ -9,7 +9,7 @@
 {# presetAssets: #}
 {# description: New submission sample email template #}
 
-<h2>New submission from your {{ form.name }} form</h2>
+<h2>New submission on your {{ form.name }} form</h2>
 
 <p>Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}</p>
 <ul>

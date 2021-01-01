@@ -52,7 +52,7 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
         $record = new self();
         $record->fromEmail = \Craft::$app->systemSettings->getSetting('email', 'fromEmail');
         $record->fromName = \Craft::$app->systemSettings->getSetting('email', 'fromName');
-        $record->subject = 'New submission from {{ form.name }}';
+        $record->subject = 'New submission on your {{ form.name }} form';
         $record->autoText = true;
         $record->bodyHtml = <<<'EOT'
 <p>Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}</p>

@@ -19,7 +19,7 @@ class ResourcesController extends BaseController
         ResourcesBundle::register(\Craft::$app->getView());
 
         return $this->renderTemplate('freeform/resources/community', [
-            'icons' => $this->getIcons(['so', 'discord']),
+            'icons' => $this->getIcons(['so', 'discord', 'feedback']),
         ]);
     }
 

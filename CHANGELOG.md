@@ -10,9 +10,10 @@
 ### Changed
 - Updated reCAPTCHA error logging to include better descriptions for failures.
 - Updated references to 'Composer' (Freeform's form builder) to 'Form Builder'.
+- Updated the settings page to have a new category 'Form Builder'.
 
 ### Fixed
-- Fixed a bug where uploaded asset ID's weren't being set as the FileField value after upload
+- Fixed a bug where uploaded asset ID's weren't being set as the FileField value after upload.
 
 ## 3.10.0-beta.5 - 2020-12-29
 

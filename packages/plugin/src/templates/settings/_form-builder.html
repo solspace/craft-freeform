@@ -1,0 +1,87 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = "Form Builder Settings"|t("freeform") %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/form-builder') }}
+    {{ csrfInput() }}
+
+    {{ forms.selectField({
+        first: true,
+        label: "Display Order of Fields in Form Builder"|t('freeform'),
+        instructions: "The display order for the list of available fields in the Form Builder."|t('freeform'),
+        name: "settings[fieldDisplayOrder]",
+        value: settings.fieldDisplayOrder,
+        errors: settings.errors("fieldDisplayOrder"),
+        options: {
+            type: "Field type, Field name (alphabetical)",
+            name: "Field name (alphabetical)",
+        },
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Render HTML inside Form Builder & Submissions view?"|t('freeform'),
+        instructions: "Live rendering HTML in HTML blocks, field labels and option labels inside the Form Builder interface can sometimes conflict with Freeform's display of the form preview inside the control panel. In cases like these, you'll need to disable this setting to prevent HTML from rendering automatically."|t('freeform'),
+        name: "settings[renderFormHtmlInCpViews]",
+        on: settings.renderFormHtmlInCpViews,
+        errors: settings.errors("renderFormHtmlInCpViews"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Allow Twig to be Enabled for each HTML block?"|t('freeform'),
+        instructions: "When enabled, you'll see a checkbox that lets you allow the inclusion of Twig code inside your HTML block fields inside the form builder."|t('freeform'),
+        toggle: 'isolated-twig',
+        name: "settings[twigInHtml]",
+        on: settings.twigInHtml,
+        errors: settings.errors("twigInHtml"),
+    }) }}
+
+    <div id="isolated-twig" class="field {{ not settings.twigInHtml ? 'hidden' }}">
+        {{ forms.lightswitchField({
+            label: "Render HTML block Twig in isolated mode?"|t('freeform'),
+            instructions: "When enabled, only the Freeform 'form' and 'fields' variables will be available, the rest of Craft's variables will not be included."|t('freeform'),
+            name: "settings[twigInHtmlIsolatedMode]",
+            on: settings.twigInHtmlIsolatedMode,
+            errors: settings.errors("twigInHtmlIsolatedMode"),
+        }) }}
+    </div>
+
+    {{ forms.lightswitchField({
+        label: "AJAX Enabled for Forms by Default"|t('freeform'),
+        instructions: 'By default, the "Enable AJAX" feature checkbox will be checked for new forms.'|t('freeform'),
+        name: "settings[ajaxByDefault]",
+        on: settings.ajaxByDefault,
+        errors: settings.errors("ajaxByDefault"),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Default Formatting Template"|t('freeform'),
+        instructions: "The default formatting template for new forms."|t('freeform'),
+        name: "settings[formattingTemplate]",
+        value: settings.formattingTemplate,
+        errors: settings.errors("formattingTemplate"),
+        options: formattingTemplateList,
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Include Default Freeform Formatting Templates"|t('freeform'),
+        instructions: "Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Form Builder."|t('freeform'),
+        name: "settings[defaultTemplates]",
+        on: settings.defaultTemplates,
+        errors: settings.errors("defaultTemplates"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        first: not craft.freeform.pro,
+        label: "Show Form Builder Tutorial"|t('freeform'),
+        instructions: "Enable this to show the interactive tutorial again in Form Builder. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
+        name: "settings[showTutorial]",
+        on: settings.showTutorial,
+        errors: settings.errors("showTutorial"),
+    }) }}
+
+{% endblock %}

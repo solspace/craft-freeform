@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.10.0-beta.6 - Unreleased
+## 3.10.0-beta.6 - 2021-01-04
 
 ### Added
 - Added the ability to render Twig in form layout HTML blocks, allowing for things like having users review entered data from previous pages, etc.
@@ -10,10 +10,11 @@
 ### Changed
 - Updated reCAPTCHA error logging to include better descriptions for failures.
 - Updated references to 'Composer' (Freeform's form builder) to 'Form Builder'.
-- Updated the settings page to have a new category 'Form Builder'.
+- Updated the settings page to have a new category for form builder-specific settings.
+- Updated email notification templates to automatically trim stray spaces for email fields.
 
 ### Fixed
-- Fixed a bug where uploaded asset ID's weren't being set as the FileField value after upload.
+- Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
 
 ## 3.10.0-beta.5 - 2020-12-29
 

@@ -195,8 +195,8 @@ class MailerService extends BaseService implements MailHandlerInterface
 
     public function compileMessage(NotificationInterface $notification, array $values): Message
     {
-        $fromName = \Craft::parseEnv($this->renderString($notification->getFromName(), $values));
-        $fromEmail = \Craft::parseEnv($this->renderString($notification->getFromEmail(), $values));
+        $fromName = trim(\Craft::parseEnv($this->renderString($notification->getFromName(), $values)));
+        $fromEmail = trim(\Craft::parseEnv($this->renderString($notification->getFromEmail(), $values)));
         $text = $this->renderString($notification->getBodyText(), $values);
         $html = $this->renderString($notification->getBodyHtml(), $values);
         $subject = $this->renderString($notification->getSubject(), $values);
@@ -297,7 +297,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     {
         $parsed = [];
         foreach ($array as $key => $item) {
-            $parsed[$key] = \Craft::parseEnv($item);
+            $parsed[$key] = trim(\Craft::parseEnv($item));
         }
 
         return $parsed;

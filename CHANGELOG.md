@@ -7,6 +7,9 @@
 - Added better descriptions to reCAPTCHA check failures
 - Added a button for duplicating Email Notifications
 
+### Fixed
+- Fixed a bug where uploaded asset ID's weren't being set as the FileField value after upload
+
 ## 3.10.0-beta.5 - 2020-12-29
 
 ### Added

@@ -123,6 +123,8 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             }
         }
 
+        $field->setValue($uploadedAssetIds);
+
         $this->trigger(self::EVENT_AFTER_UPLOAD, new UploadEvent($field));
 
         if ($uploadedAssetIds) {

@@ -3,9 +3,13 @@
 ## 3.10.0-beta.6 - Unreleased
 
 ### Added
-- Added the ability to render Twig in HTML Blocks
-- Added better descriptions to reCAPTCHA check failures
-- Added a button for duplicating Email Notifications
+- Added the ability to render Twig in form layout HTML blocks, allowing for things like having users review entered data from previous pages, etc.
+- Added the ability to duplicate Email Notification templates.
+- Added the ability to delete all submissions at once (including paginated results) for a form.
+
+### Changed
+- Updated reCAPTCHA error logging to include better descriptions for failures.
+- Updated references to 'Composer' (Freeform's form builder) to 'Form Builder'.
 
 ### Fixed
 - Fixed a bug where uploaded asset ID's weren't being set as the FileField value after upload

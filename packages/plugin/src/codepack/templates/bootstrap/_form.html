@@ -6,17 +6,6 @@
 
 {% if form %}
 
-    {# Display a tip for built-in AJAX and multi-page users #}
-    {% if form.ajaxEnabled and form.pages|length > 1 %}
-        <div class="alert alert-warning">
-            <h5 class="alert-heading">Please note...</h5>
-            <p class="mb-0">
-                You currently have built-in AJAX enabled for this form. Freeform does not currently work with AJAX and multi-page forms.
-                Submitting to the next page for this form will not work at this time.
-            </p>
-        </div>
-    {% endif %}
-
     {# Display a tip for forms with submit limit setting enabled #}
     {% if form.limitFormSubmissions %}
         <div class="alert alert-warning">

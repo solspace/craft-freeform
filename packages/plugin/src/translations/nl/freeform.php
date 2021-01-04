@@ -1,12 +1,10 @@
 <?php
 /**
- * Freeform for Craft.
+ * Freeform for Craft CMS
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2020, Solspace, Inc.
- *
- * @see          https://docs.solspace.com/craft/freeform
- *
+ * @copyright     Copyright (c) 2008-2021, Solspace, Inc.
+ * @see           https://docs.solspace.com/craft/freeform
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -68,8 +66,8 @@ return [
 
     // Layout
     'This field is required' => 'Dit veld is verplicht',
-    'Composer has no properties' => 'Composer heeft geen eigenschappen',
-    'No composer data present' => 'Geen composer gegevens aanwezig',
+    'Form Builder has no properties' => 'Form Builder heeft geen eigenschappen',
+    'No form builder data present' => 'Geen form builder gegevens aanwezig',
     'No context specified' => 'Geen context opgeheven',
     'No properties available' => 'Geen eigenschappen beschikbaar',
     'No form settings specified' => 'Geen formuliereninstellingen opgegeven',
@@ -157,18 +155,18 @@ return [
     'Default View' => 'Standaardweergave',
     'Default Email Notification Creation Method' => 'Standaardmethode voor het maken van e-mailnotificaties',
     'The default page to go to when clicking the Freeform nav item.' => 'De standaardpagina om naar te gaan wanneer geklikt wordt op het Freeform nav item.',
-    'Provide a relative path to the Craft root folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps Composer locate these files when setting up notifications.' => 'Geef een relatief pad op naar de Craft-hoofdmap waar uw map met e-mail templates zich bevindt. Hiermee kunt u Twig templatebestanden gebruiken voor uw e-mailopmaak, en helpt Composer deze bestanden te vinden bij het instellen van notificaties.',
-    "Which storage method to use when creating new email notifications with 'Add New Notification' option in Composer." => "Welke opslagmethode moet worden gebruikt bij het maken van nieuwe e-mail notificaties met de optie 'Voeg nieuwe notificatie toe' in Composer.",
-    'Display Order of Fields in Composer' => 'Volgorde van velden weergeven in Composer',
-    'The display order for the list of available fields in Composer.' => 'De weergave volgorde voor de lijst met beschikbare velden in composer.',
-    'Show Composer Tutorial' => 'Toon Composer handleiding',
-    'Enable this to show the interactive tutorial again in Composer. This setting disables again when the tutorial is completed or skipped.' => 'Schakel dit in om de interactieve handleiding opnieuw te tonen in Composer. Deze instelling zet zichzelf terug wanneer de handleiding is voltooid of overgeslagen.',
-    'Render HTML inside Composer & Submissions view?' => 'HTML weergeven in de weergave Componist & Inzendingen?',
+    'Provide a relative path to the Craft root folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps the Form Builder locate these files when setting up notifications.' => 'Geef een relatief pad op naar de Craft-hoofdmap waar uw map met e-mail templates zich bevindt. Hiermee kunt u Twig templatebestanden gebruiken voor uw e-mailopmaak, en helpt Form Builder deze bestanden te vinden bij het instellen van notificaties.',
+    "Which storage method to use when creating new email notifications with 'Add New Notification' option in Form Builder." => "Welke opslagmethode moet worden gebruikt bij het maken van nieuwe e-mail notificaties met de optie 'Voeg nieuwe notificatie toe' in Form Builder.",
+    'Display Order of Fields in Form Builder' => 'Volgorde van velden weergeven in Form Builder',
+    'The display order for the list of available fields in Form Builder.' => 'De weergave volgorde voor de lijst met beschikbare velden in Form Builder.',
+    'Show Form Builder Tutorial' => 'Toon Form Builder handleiding',
+    'Enable this to show the interactive tutorial again in the Form Builder. This setting disables again when the tutorial is completed or skipped.' => 'Schakel dit in om de interactieve handleiding opnieuw te tonen in Form Builder. Deze instelling zet zichzelf terug wanneer de handleiding is voltooid of overgeslagen.',
+    'Render HTML inside Form Builder & Submissions view?' => 'HTML weergeven in de weergave Componist & Inzendingen?',
     'AJAX Enabled for Forms by Default' => 'AJAX standaard ingeschakeld voor formulieren',
     'By default, the "Enable AJAX" feature checkbox will be checked for new forms.' => 'Standaard wordt het selectievakje "AJAX inschakelen" aangevinkt voor nieuwe formulieren.',
-    'Live rendering HTML in HTML blocks, field labels and option labels inside the Composer interface can sometimes conflict with Freeform\'s display of the form preview inside the control panel. In cases like these, you\'ll need to disable this setting to prevent HTML from rendering automatically.' => 'Live rendering HTML in HTML blokken, veldlabels en optielabels in de Composer-interface kan soms conflicten geven met Freeform\’s weergave van de formulieren voorvertoning in het bedieningspaneel.  In dit soort gevallen, heb je dit nodig om deze instelling uit te schakelen om te voorkomen dat HTML automatisch rendert.',
+    'Live rendering HTML in HTML blocks, field labels and option labels inside the Form Builder interface can sometimes conflict with Freeform\'s display of the form preview inside the control panel. In cases like these, you\'ll need to disable this setting to prevent HTML from rendering automatically.' => 'Live rendering HTML in HTML blokken, veldlabels en optielabels in de Form Builder-interface kan soms conflicten geven met Freeform\’s weergave van de formulieren voorvertoning in het bedieningspaneel.  In dit soort gevallen, heb je dit nodig om deze instelling uit te schakelen om te voorkomen dat HTML automatisch rendert.',
     'Include Default Freeform Formatting Templates' => 'Standaardsjablonen voor vrije opmaak opnemen',
-    'Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Composer.' => 'Schakel dit uit om de standaard Freeform-opmaaksjablonen te verbergen in de lijst met opmaaksjabloonopties in Composer.',
+    'Disable this to hide the default Freeform formatting templates in the Formatting Template options list inside Form Builder.' => 'Schakel dit uit om de standaard Freeform-opmaaksjablonen te verbergen in de lijst met opmaaksjabloonopties in Form Builder.',
     'Remove Newlines from Textareas for Exporting' => 'Newlines verwijderen uit tekstgebieden voor export',
     'Enable this to have newlines removed from Textarea fields in submissions when exporting.' => 'Schakel dit in om nieuwe regels uit tekstvelden in inzendingen te laten verwijderen bij het exporteren.',
     'Fill Form Values from the GET Query String?' => 'Formulierwaarden invullen uit de GET Query String?',
@@ -299,7 +297,7 @@ return [
     'The handle "{handle}" is a reserved keyword and cannot be used.' => 'De ingang "{handle}" is een gereserveerd trefwoord en kan niet gebruikt worden.',
     'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.' => 'Terwijl gegevens worden doorgegeven aan de mailinglijstprovider, slaat Freeform niet op of de velden voor de mailinglijst al dan niet zijn aangemeld.',
 
-    // Composer
+    // Form Builder
     'No Value set' => 'Geen waarde ingesteld',
     'No Target Field' => 'Geen doelveld',
     'No Template' => 'Geen template',
@@ -570,7 +568,7 @@ return [
     'Multi-page Forms' => 'Formulieren voor meerdere pagina\'s',
     'To create multi-page forms, click the + button to add more pages. You can edit the names of the pages in the Property Editor in the right column. To rearrange pages, click and drag page tabs to shuffle order. To move fields from one page to another, drag and drop fields onto the page tab you\'d like it to be on.' => 'Om formulieren met meerdere pagina\'s te maken, klikt u op de knop + om meer pagina\'s toe te voegen. U kunt de namen van de pagina\'s in de eigenschappeneditor in de rechterkolom bewerken. Als u pagina\'s opnieuw wilt rangschikken, klikt en sleept u paginatabs om de volgorde te wijzigen. Om velden van de ene pagina naar de andere, sleep en zet de velden neer op het tabblad pagina waar u ze wilt hebben staan.',
     'Property Editor' => 'Eigenschap Editor',
-    'This is where all your configuration will happen. Clicking on any field, page tab, etc in Composer layout area will load its configuration options here.' => 'Hier zal al uw configuratie gebeuren. Klikken op een willekeurig veld, paginatabblad, enz. In het layoutgebied van de Composer laadt de configuratie-opties hier.',
+    'This is where all your configuration will happen. Clicking on any field, page tab, etc in Form Builder layout area will load its configuration options here.' => 'Hier zal al uw configuratie gebeuren. Klikken op een willekeurig veld, paginatabblad, enz. In het layoutgebied van de Form Builder laadt de configuratie-opties hier.',
 
     'Field Property Editor' => 'Veldeneigenschap Editor',
     'Reset to default values' => 'Resetten naar standaardwaardes',

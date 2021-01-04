@@ -1,12 +1,10 @@
 <?php
 /**
- * Freeform for Craft.
+ * Freeform for Craft CMS
  *
  * @author        Solspace, Inc.
- * @copyright     Copyright (c) 2008-2020, Solspace, Inc.
- *
- * @see          https://docs.solspace.com/craft/freeform
- *
+ * @copyright     Copyright (c) 2008-2021, Solspace, Inc.
+ * @see           https://docs.solspace.com/craft/freeform
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -164,7 +162,7 @@ class Composer
 
         if (!isset($composerState[self::KEY_COMPOSER])) {
             throw new ComposerException(
-                $this->translator->translate('No composer data present')
+                $this->translator->translate('No form builder data present')
             );
         }
 
@@ -172,7 +170,7 @@ class Composer
 
         if (!isset($composer[self::KEY_PROPERTIES])) {
             throw new ComposerException(
-                $this->translator->translate('Composer has no properties')
+                $this->translator->translate('Form Builder has no properties')
             );
         }
 

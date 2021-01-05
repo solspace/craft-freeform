@@ -1,90 +1,47 @@
 # Solspace Freeform Changelog
 
-## 3.10.0-beta.7 - Unreleased
-
-### Added
-- Added "Google Tag Manager" support
-
-## 3.10.0-beta.6 - 2021-01-04
-
-### Added
-- Added the ability to render Twig in form layout HTML blocks, allowing for things like having users review entered data from previous pages, etc.
-- Added the ability to duplicate Email Notification templates.
-- Added the ability to delete all submissions at once (including paginated results) for a form.
-
-### Changed
-- Updated reCAPTCHA error logging to include better descriptions for failures.
-- Updated references to 'Composer' (Freeform's form builder) to 'Form Builder'.
-- Updated the settings page to have a new category for form builder-specific settings.
-- Updated email notification templates to automatically trim stray spaces for email fields.
-
-### Fixed
-- Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
-- Fixed autocomplete not being turned off on datepicker enabled fields.
-
-## 3.10.0-beta.5 - 2020-12-29
-
-### Added
-- Added a client-friendly stats-only Digest email option (in addition to the 'developer' one with alerts and notices).
-- Added the ability to choose between weekly or daily Digest email notifications.
-- Added the ability to choose which day of the week that the weekly digest is sent on.
-- Added a post-install welcome / settings wizard to streamline and guide setting up new installs of Freeform.
-
-### Changed
-- Updated the Digest email notifications to account for new intervals, and updated the language of subject lines.
-
-## 3.10.0-beta.4 - 2020-12-23
-
-### Added
-- Added a setting to disable the Beta Feedback widget (add `FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET=1` to your .ENV file).
-
-### Changed
-- Minor improvements to the Beta Feedback widget look and feel.
-
-### Fixed
-- Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
-- Fixed a bug where the Weekly Digest and Email Alert email notifications were still not behaving correctly with the "testToEmailAddress" config setting.
-
-## 3.10.0-beta.3 - 2020-12-16
-
-### Added
-- Added the 'step' property setting to Number fields in form builder.
-- Added a setting which lets you send Weekly Digest email notifications only on production environments (looking for 'production' environment name).
-- Added a built-in feedback widget to show only during beta releases for ease of reporting beta issues.
-
-### Changed
-- Updated the Weekly Digest and Email Alert email notifications to reference the custom plugin name (when specified) instead of 'Freeform' (Pro).
-- Updated the Weekly Digest email notifications' form names to link to submissions pages instead of form edit view.
-
-### Fixed
-- Fixed a bug where the MailChimp mailing list integration was not properly detecting duplicates when passing non-lowercase emails.
-- Fixed a bug where the Weekly Digest and Email Alert email notifications were not respecting the "testToEmailAddress" config setting.
-- Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
-
-## 3.10.0-beta.2 - 2020-12-11
-
-### Added
-- Added Honeypot, CSRF, form hash and a lot more fields to form queries for GraphQL.
-- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
-
-### Fixed
-- Fixed a bug where there were some missing implementations for GraphQL schema.
-- Fixed a bug where Signature fields were redrawing incorrectly on high DPI displays.
-
-## 3.10.0-beta.1 - 2020-12-09
+## 3.10.0 - 2021-01-05
 
 ### Added
 - Added support for GraphQL.
+- Added support for Google Tag Manager with AJAX.
 - Added the ability to specify a custom Payment description inside the form builder to show inside Stripe payments.
 - Added ability to specify a Text-only version of email notifications when using the template file approach (`{# text #}{# /text #}`).
+- Added the ability to render Twig in form layout HTML blocks, allowing for things like having users review entered data from previous pages, etc.
+- Added the ability to duplicate Email Notification templates.
+- Added the ability to delete all submissions at once (including paginated results) for a form.
+- Added a client-friendly stats-only Digest email option (in addition to the 'developer' one with alerts and notices).
+- Added the ability to choose between weekly or daily Digest email notifications.
+- Added the ability to choose which day of the week that the weekly digest is sent on.
+- Added a setting which lets you send Weekly Digest email notifications only on production environments (looking for 'production' environment name).
+- Added a post-install welcome / settings wizard to streamline and guide setting up new installs of Freeform.
+- Added the 'step' property setting to Number fields in form builder.
+- Added a built-in feedback widget to show only during beta releases for ease of reporting beta issues.
+- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
 
 ### Changed
 - Updated AJAX to work with multipage forms.
 - Updated Payments to work with multipage forms.
 - Overhauled the Freeform Javascript plugin to be more robust, reworked the API to make it way more developer friendly. Made it easier for anyone to adjust or complement form functionality regardless of their particular site setup.
-- Updated the 'Disable Submit Button on Form Submit?' setting to be on by default for new installs.
 - Updated Freeform to automatically generate Text-only versions when no Text-only version is specified in the email notification template.
+- Updated reCAPTCHA error logging to include better descriptions for failures.
+- Updated references to 'Composer' (Freeform's form builder) to 'Form Builder'.
+- Updated the settings page to have a new category for form builder-specific settings.
+- Updated email notification templates to automatically trim stray spaces for email fields.
+- Updated the Digest email notifications to account for new intervals, and updated the language of subject lines.
+- Updated the Weekly Digest and Email Alert email notifications to reference the custom plugin name (when specified) instead of 'Freeform' (Pro).
+- Updated the Weekly Digest email notifications' form names to link to submissions pages instead of form edit view.
 - Updated the CP Forms index to order forms alphabetically again (vs using the custom order specified on the Dashboard).
+- Updated the 'Disable Submit Button on Form Submit?' setting to be on by default for new installs.
+
+### Fixed
+- Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
+- Fixed autocomplete not being turned off on datepicker enabled fields.
+- Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
+- Fixed a bug where the MailChimp mailing list integration was not properly detecting duplicates when passing non-lowercase emails.
+- Fixed a bug where the Weekly Digest and Email Alert email notifications were not respecting the "testToEmailAddress" config setting.
+- Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
+- Fixed a bug where Signature fields were redrawing incorrectly on high DPI displays.
 
 ## 3.9.11 - 2020-12-17
 ### Fixed

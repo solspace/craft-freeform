@@ -92,14 +92,15 @@ class FreeformVariable
             return false;
         }
 
-        return (bool) \Craft::$app->db
-            ->createCommand()
-            ->delete(
-                Submission::TABLE,
-                ['token' => $token]
-            )
-            ->execute()
-        ;
+        $submission = Submission::findOne(['token' => $token]);
+
+        if ($submission) {
+            Freeform::getInstance()->submissions->delete([$submission]);
+
+            return true;
+        }
+
+        return false;
     }
 
     public function getSettings(): Settings

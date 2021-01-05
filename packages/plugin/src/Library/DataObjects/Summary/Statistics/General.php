@@ -18,6 +18,9 @@ class General
     /** @var bool */
     public $exportProfiles = false;
 
+    /** @var bool */
+    public $gtm = false;
+
     /** @var string[] */
     public $crm = [];
 

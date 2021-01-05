@@ -62,6 +62,15 @@ class FormProperties extends AbstractProperties
     /** @var bool */
     protected $recaptchaEnabled = true;
 
+    /** @var bool */
+    protected $gtmEnabled = false;
+
+    /** @var string */
+    protected $gtmId;
+
+    /** @var string */
+    protected $gtmEventName;
+
     public function getName(): string
     {
         return $this->name;
@@ -151,6 +160,21 @@ class FormProperties extends AbstractProperties
         return (bool) $this->recaptchaEnabled;
     }
 
+    public function isGtmEnabled(): bool
+    {
+        return (bool) $this->gtmEnabled;
+    }
+
+    public function getGtmId(): string
+    {
+        return $this->gtmId ?? '';
+    }
+
+    public function getGtmEventName(): string
+    {
+        return $this->gtmEventName ?? '';
+    }
+
     /**
      * Return a list of all property fields and their type.
      *
@@ -176,6 +200,9 @@ class FormProperties extends AbstractProperties
             'tagAttributes' => self::TYPE_ARRAY,
             'ajaxEnabled' => self::TYPE_BOOLEAN,
             'recaptchaEnabled' => self::TYPE_BOOLEAN,
+            'gtmEnabled' => self::TYPE_BOOLEAN,
+            'gtmId' => self::TYPE_STRING,
+            'gtmEventName' => self::TYPE_STRING,
         ];
     }
 }

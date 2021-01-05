@@ -56,6 +56,7 @@ interface Features {
       customFormattingTemplates: boolean;
       exportProfiles: boolean;
       crm: string[];
+      gtm: boolean;
       mailingLists: string[];
       webhooks: string[];
       paymentGateways: string[];

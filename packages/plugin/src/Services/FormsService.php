@@ -230,6 +230,9 @@ class FormsService extends BaseService implements FormHandlerInterface
         $record->color = $model->color;
         $record->optInDataStorageTargetHash = $model->optInDataStorageTargetHash;
         $record->limitFormSubmissions = $model->limitFormSubmissions;
+        $record->gtmEnabled = $model->gtmEnabled;
+        $record->gtmId = $model->gtmId;
+        $record->gtmEventName = $model->gtmEventName;
 
         if ($isNew) {
             $record->order = 1 + ((int) (new Query())

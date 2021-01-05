@@ -48,6 +48,9 @@ export default class Form extends BasePropertyEditor {
       optInDataStorageTargetHash: PropTypes.string,
       ajaxEnabled: PropTypes.bool,
       recaptchaEnabled: PropTypes.bool,
+      gtmEnabled: PropTypes.bool,
+      gtmId: PropTypes.string,
+      gtmEventName: PropTypes.string,
     }).isRequired,
     canManageSettings: PropTypes.bool.isRequired,
     isDefaultTemplates: PropTypes.bool.isRequired,
@@ -82,6 +85,8 @@ export default class Form extends BasePropertyEditor {
       ajaxEnabled = false,
       recaptchaEnabled = true,
     } = properties;
+
+    const { gtmEnabled = false, gtmId = '', gtmEventName = '' } = properties;
 
     const { formStatuses, solspaceTemplates, templates, composerProperties } = this.props;
     const { canManageSettings, isPro, isInvisibleRecaptchaSetUp } = this.context;
@@ -241,6 +246,43 @@ export default class Form extends BasePropertyEditor {
           nullable={true}
           options={this.getCheckboxFields()}
         />
+
+        {ajaxEnabled && (
+          <>
+            <hr />
+
+            <CheckboxProperty
+              label="Google Tag Manager"
+              instructions="Enable Google Tag Manager to push successful form submission events to the Data Layer"
+              bold={true}
+              name="gtmEnabled"
+              checked={gtmEnabled}
+              onChangeHandler={this.update}
+            />
+
+            {gtmEnabled && (
+              <>
+                <TextProperty
+                  label="Event Name"
+                  instructions="Specify a custom event name that you wish to assign to a successful form submission."
+                  placeholder="form-submitted"
+                  name="gtmEventName"
+                  value={gtmEventName}
+                  onChangeHandler={this.update}
+                />
+
+                <TextProperty
+                  label="GTM Account ID (optional)"
+                  instructions="Add this if you want Google Tag Manager scripts added to your page by Freeform. Leave blank if you are adding your own GTM scripts."
+                  placeholder="GTM-XXXXXXX"
+                  name="gtmId"
+                  value={gtmId}
+                  onChangeHandler={this.update}
+                />
+              </>
+            )}
+          </>
+        )}
 
         <hr />
 

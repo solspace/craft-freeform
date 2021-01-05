@@ -44,6 +44,9 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  * @property string $optInDataStorageTargetHash
  * @property string $limitFormSubmissions
  * @property string $color
+ * @property bool   $gtmEnabled
+ * @property string $gtmId
+ * @property string $gtmEventName
  */
 class FormModel extends Model
 {
@@ -94,6 +97,16 @@ class FormModel extends Model
 
     /** @var string */
     public $color;
+
+    /** @var bool */
+    public $gtmEnabled;
+
+    /** @var string */
+    public $gtmId;
+
+    /** @var string */
+    public $gtmEventName;
+
     /** @var int[] */
     private static $spamBlockCountCache;
 
@@ -130,6 +143,9 @@ class FormModel extends Model
         $this->optInDataStorageTargetHash = $form->getOptInDataStorageTargetHash();
         $this->limitFormSubmissions = $form->getLimitFormSubmissions();
         $this->layoutJson = $composer->getComposerStateJSON();
+        $this->gtmEnabled = $form->isGtmEnabled();
+        $this->gtmId = $form->getGtmId();
+        $this->gtmEventName = $form->getGtmEventName();
     }
 
     /**

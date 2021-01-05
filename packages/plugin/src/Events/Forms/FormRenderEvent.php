@@ -8,8 +8,10 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\CssObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\ExternalJavascriptObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\FormRenderObjectInterface;
+use Solspace\Freeform\Library\DataObjects\FormRenderObject\HtmlObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\JavascriptObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\StringObject;
+use yii\web\View;
 
 class FormRenderEvent extends ArrayableEvent
 {
@@ -84,9 +86,20 @@ class FormRenderEvent extends ArrayableEvent
         return $this;
     }
 
-    public function appendJsToOutput(string $value, array $replacements = []): self
+    public function appendHtmlToOutput(string $value, int $position = View::POS_END): self
     {
-        $this->renderObjects[] = new JavascriptObject($value, $replacements);
+        $this->renderObjects[] = new HtmlObject($value, [], $position);
+
+        return $this;
+    }
+
+    public function appendJsToOutput(
+        string $value,
+        array $replacements = [],
+        int $position = View::POS_END,
+        array $options = []
+    ): self {
+        $this->renderObjects[] = new JavascriptObject($value, $replacements, $position, $options);
 
         return $this;
     }

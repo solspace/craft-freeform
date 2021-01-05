@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.0-beta.7 - Unreleased
+
+### Added
+- Added "Google Tag Manager" support
+
 ## 3.10.0-beta.6 - 2021-01-04
 
 ### Added

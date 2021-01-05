@@ -6,6 +6,7 @@ import TableHandler from '@lib/plugin/handlers/fields/table';
 import RecaptchaHandler from '@lib/plugin/handlers/form/recaptcha';
 import RuleSetHandler from '@lib/plugin/handlers/form/rule-set';
 import StripeHandler from '@lib/plugin/handlers/form/stripe-handler';
+import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { addClass, getClassArray, removeClass } from '@lib/plugin/helpers/elements';
 import 'core-js/stable';
@@ -49,6 +50,7 @@ export default class Freeform {
     InputMaskHandler,
     SignatureHandler,
     TableHandler,
+    GoogleTagManager,
   ];
 
   _beforeSubmitCallbackStack = [];

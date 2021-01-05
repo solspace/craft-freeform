@@ -34,6 +34,9 @@ use Solspace\Freeform\Freeform;
  * @property int    $limitFormSubmissions
  * @property string $color
  * @property int    $order
+ * @property bool   $gtmEnabled
+ * @property string $gtmId
+ * @property string $gtmEventName
  */
 class FormRecord extends ActiveRecord
 {

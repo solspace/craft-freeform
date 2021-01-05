@@ -193,6 +193,15 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var bool */
     private $suppressionEnabled;
 
+    /** @var bool */
+    private $gtmEnabled;
+
+    /** @var string */
+    private $gtmId;
+
+    /** @var string */
+    private $gtmEventName;
+
     /**
      * Form constructor.
      *
@@ -226,6 +235,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->spamReasons = [];
         $this->submitted = false;
         $this->suppressionEnabled = false;
+        $this->gtmEnabled = false;
 
         $this->layout = new Layout(
             $this,
@@ -465,6 +475,21 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         return true;
+    }
+
+    public function isGtmEnabled(): bool
+    {
+        return (bool) $this->gtmEnabled;
+    }
+
+    public function getGtmId(): string
+    {
+        return $this->gtmId ?? '';
+    }
+
+    public function getGtmEventName(): string
+    {
+        return $this->gtmEventName ?? '';
     }
 
     public function isMultiPage(): bool
@@ -1367,6 +1392,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->showLoadingText = $validationProperties->isShowLoadingText();
         $this->loadingText = $validationProperties->getLoadingText();
         $this->recaptchaEnabled = $formProperties->isRecaptchaEnabled();
+        $this->gtmEnabled = $formProperties->isGtmEnabled();
+        $this->gtmId = $formProperties->getGtmId();
+        $this->gtmEventName = $formProperties->getGtmEventName();
     }
 
     /**

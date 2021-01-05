@@ -27,7 +27,7 @@ class m201209_162655_AddAutoTextColumnToNotifications extends Migration
     public function safeDown()
     {
         try {
-            if (!$this->db->columnExists('{{%freeform_notifications}}', 'autoText')) {
+            if ($this->db->columnExists('{{%freeform_notifications}}', 'autoText')) {
                 $this->dropColumn('{{%freeform_notifications}}', 'autoText');
             }
         } catch (\Exception $e) {

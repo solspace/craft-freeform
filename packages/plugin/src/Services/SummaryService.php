@@ -83,6 +83,7 @@ class SummaryService extends Component
         $general->fileNotifications = $hasFileNotifications;
         $general->customFormattingTemplates = \count($freeform->settings->getCustomFormTemplates()) > 0;
         $general->exportProfiles = \count($freeform->exportProfiles->getAllProfiles()) > 0;
+        $general->gtm = $composer->gtmEnabled;
         $general->crm = $this->getCrmIntegrations();
         $general->mailingLists = $this->getMailingListIntegrations();
         $general->webhooks = $this->getWebhooks();
@@ -277,6 +278,7 @@ class SummaryService extends Component
         $conditionalRulesPages = false;
         $elementConnectionsEntries = false;
         $elementConnectionsUsers = false;
+        $gtmEnabled = false;
 
         foreach ($forms as $formModel) {
             $form = $formModel->getForm();
@@ -320,6 +322,10 @@ class SummaryService extends Component
 
             if ($form->isShowLoadingText() || $form->isShowSpinner()) {
                 $loadingIndicators = true;
+            }
+
+            if ($form->isGtmEnabled()) {
+                $gtmEnabled = true;
             }
 
             foreach ($form->getPages() as $page) {
@@ -395,6 +401,7 @@ class SummaryService extends Component
             'conditionalRulesPages' => $conditionalRulesPages,
             'elementConnectionsEntries' => $elementConnectionsEntries,
             'elementConnectionsUsers' => $elementConnectionsUsers,
+            'gtmEnabled' => $gtmEnabled,
         ];
     }
 

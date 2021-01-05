@@ -30,7 +30,10 @@ class Install extends StreamlinedInstallMigration
                 ->addField('limitFormSubmissions', $this->string(20)->null())
                 ->addField('extraPostUrl', $this->string(255)->null())
                 ->addField('extraPostTriggerPhrase', $this->string(255)->null())
-                ->addField('order', $this->integer()),
+                ->addField('order', $this->integer())
+                ->addField('gtmEnabled', $this->boolean()->defaultValue(false))
+                ->addField('gtmId', $this->string()->null())
+                ->addField('gtmEventName', $this->string()->null()),
 
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())

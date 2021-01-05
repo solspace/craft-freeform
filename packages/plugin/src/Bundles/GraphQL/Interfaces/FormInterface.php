@@ -133,6 +133,21 @@ class FormInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The submit button loading label text',
             ],
+            'gtmEnabled' => [
+                'name' => 'gtmEnabled',
+                'type' => Type::boolean(),
+                'description' => 'Is Google Tag Manager enabled',
+            ],
+            'gtmId' => [
+                'name' => 'gtmId',
+                'type' => Type::string(),
+                'description' => 'The Google Tag Manager ID',
+            ],
+            'gtmEventName' => [
+                'name' => 'gtmEventName',
+                'type' => Type::string(),
+                'description' => 'The name of the Event that will be added to Google Tag Manager\'s data layer ',
+            ],
             'recaptchaEnabled' => [
                 'name' => 'recaptchaEnabled',
                 'type' => Type::boolean(),

@@ -104,6 +104,15 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var bool */
     protected $disableRecaptcha;
 
+    /** @var bool */
+    protected $gtmEnabled;
+
+    /** @var string */
+    protected $gtmId;
+
+    /** @var string */
+    protected $gtmEventName;
+
     /**
      * @return null|string
      */
@@ -371,5 +380,29 @@ class CustomFormAttributes extends AbstractAttributes
     public function isDisableRecaptcha()
     {
         return $this->disableRecaptcha;
+    }
+
+    /**
+     * @return null|bool
+     */
+    public function isGtmEnabled()
+    {
+        return $this->gtmEnabled;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGtmId()
+    {
+        return $this->gtmId;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGtmEventName()
+    {
+        return $this->gtmEventName;
     }
 }

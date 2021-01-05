@@ -15,6 +15,7 @@
 
 ### Fixed
 - Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
+- Fixed autocomplete not being turned off on datepicker enabled fields.
 
 ## 3.10.0-beta.5 - 2020-12-29
 

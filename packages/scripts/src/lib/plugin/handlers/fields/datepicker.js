@@ -53,6 +53,8 @@ class DatePicker {
       };
 
       const instance = flatpickr(picker, assembledOptions);
+      picker.setAttribute('autocomplete', 'off');
+
       this.freeform._dispatchEvent('flatpickr-ready', { detail: instance, flatpickr: instance });
 
       if (!this.loadedLocales.includes(locale)) {

@@ -1,1 +1,0 @@
-"use strict";var form=document.getElementById("main-form");form.dataset.ffRulesEnabled=!0;

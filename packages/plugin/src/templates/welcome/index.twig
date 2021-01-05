@@ -1,0 +1,49 @@
+{% extends "freeform/_layouts/main" %}
+
+{% set title = "Freeform Setup"|t('freeform') %}
+
+{% block content %}
+
+	<script type="application/json" id="setting-defaults">
+		{
+			"settings": {
+				"freeform": {
+					"pro": {{ craft.freeform.pro ? 'true' : 'false' }}
+				}
+			},
+			"general": {
+				"name": "{{ settings.pluginName }}",
+				"defaultView": "{{ settings.defaultView }}",
+				"ajax": {{ settings.ajaxByDefault ? 'true' : 'false' }},
+				"defaultFormattingTemplate": "{{ settings.formattingTemplate }}",
+				"disableSubmit": {{ settings.formSubmitDisable ? 'true' : 'false' }},
+				"autoScroll": {{ settings.autoScrollToErrors ? 'true' : 'false' }},
+				"jsInsertLocation": "{{ settings.scriptInsertLocation }}"
+			},
+			"spam": {
+				"honeypot": {{ settings.freeformHoneypot ? 'true' : 'false' }},
+				"enhancedHoneypot": {{ settings.freeformHoneypotEnhancement ? 'true' : 'false' }},
+				"spamFolder": {{ settings.spamFolderEnabled ? 'true' : 'false' }},
+				"spamBehaviour": "{{ settings.spamProtectionBehaviour }}"
+			},
+			"reliability": {
+				"errorRecipients": "{{ settings.alertNotificationRecipients }}",
+				"updateNotices": {{ settings.displayFeed ? 'true' : 'false' }},
+				"digestRecipients": "{{ settings.digestRecipients }}",
+				"digestFrequency": {{ settings.digestFrequency }},
+				"clientDigestRecipients": "{{ settings.clientDigestRecipients }}",
+				"clientDigestFrequency": {{ settings.clientDigestFrequency }},
+				"digestProductionOnly": {{ settings.digestOnlyOnProduction ? 'true' : 'false' }}
+			}
+		}
+	</script>
+
+	<div id="welcome-screen" style="min-height: 400px;"></div>
+
+	<style>
+		#header {
+			display: none;
+		}
+	</style>
+
+{% endblock %}

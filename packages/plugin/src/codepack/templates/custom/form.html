@@ -1,0 +1,98 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% set formHandle = craft.app.request.segment(3) %}
+{% set form = craft.freeform.form(formHandle) %}
+
+{% set isSuccess  = craft.app.request.segment(4) == "success" %}
+
+{% block content %}
+
+    <div class="container">
+
+        {# Display a tip for demo templates #}
+        <div class="alert alert-info" role="alert">
+            <h5 class="alert-heading">For your information...</h5>
+            <p class="mb-0">
+                You currently have the <b><i>{{ form.formTemplate }}</i></b> formatting template assigned to this form. Within your regular site templates,
+                be sure to specify any necessary CSS, JS and framework libraries to have the correct styles show up for the form.
+            </p>
+        {% if form.formTemplate == "foundation.html" %}
+            <hr>
+            <p class="mb-0">
+                We've detected you're using the <b>Foundation</b> sample formatting template and have automatically loaded the Foundation library inside this demo.
+                The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
+            </p>
+        {% elseif ( form.formTemplate == "bootstrap.html" ) or ( form.formTemplate == "bootstrap-4.html" ) %}
+            <hr>
+            <p class="mb-0">
+                We've detected you're using the <b>Bootstrap</b> sample formatting template and have automatically loaded the Bootstrap library inside this demo.
+            </p>
+        {% endif %}
+        </div>
+
+        {# Display a tip for forms with submit limit setting enabled #}
+        {% if form.limitFormSubmissions %}
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">Please note...</h5>
+                <p class="mb-0">
+                    You currently have a the user submit limit setting enabled (<i>{% if form.limitFormSubmissions == "ip_cookie" %}IP/Cookie combo{% else %}Cookie only{% endif %}</i>) for this form.
+                </p>
+            </div>
+        {% endif %}
+
+        {% if isSuccess %}
+            <div class="alert alert-success" role="alert">
+                {{ form.successMessage | t }}
+            </div>
+        {% endif %}
+
+        {% if form %}
+
+            <h3>{{ form.name }}</h3>
+            <br />
+
+            {{ form.render }}
+
+        {% else %}
+            <div class="alert alert-danger">
+                Form with the handle '{{ formHandle }}' does not exist.
+            </div>
+        {% endif %}
+
+    </div>
+
+{% endblock %}
+
+{% block headerCss %}
+    {{ parent() }}
+    {% if form %}
+        {% if form.formTemplate == "foundation.html" %}
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/css/foundation.min.css">
+            <style>
+                [type=checkbox], [type=file], [type=radio] {
+                    margin: 0;
+                }
+                ul.menu .is-active {
+                    color: white;
+                    background: grey;
+                }
+            </style>
+        {% endif %}
+        {% if form.formTemplate == "tailwind.html" %}
+            <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+        {% endif %}
+    {% endif %}
+{% endblock %}
+
+{% block footerJs %}
+    {{ parent() }}
+    {% if form %}
+        {% if form.formTemplate == "foundation.html" %}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/js/foundation.min.js"></script>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+

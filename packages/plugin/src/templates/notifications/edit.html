@@ -1,0 +1,258 @@
+{% extends "freeform/_layouts/main" %}
+{% import "_includes/forms" as forms %}
+
+{% set selectedSubnavItem = "notifications" %}
+{% set saveShortcutRedirect = 'freeform/notifications/{id}' %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url('freeform') },
+    { label: "Notifications"|t('freeform'), url: url('freeform/notifications') },
+] %}
+
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t('freeform') }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ url('freeform/notifications/new')|hash }}">
+                            {{ "Save and add another"|t('freeform') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/notifications/save">
+    {{ redirectInput('freeform/notifications') }}
+    {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        first: true,
+        label: "Name"|t('freeform'),
+        instructions: "What this notification template will be called in the CP."|t('freeform'),
+        id: 'name',
+        name: 'name',
+        value: notification.name,
+        errors: notification.getErrors('name'),
+        autofocus: true,
+        required: true
+    }) }}
+
+    {{ forms.textField({
+        label: "Handle"|t('freeform'),
+        instructions: "How you’ll refer to this notification template in the templates."|t('freeform'),
+        id: 'handle',
+        class: 'code',
+        name: 'handle',
+        value: notification.handle,
+        errors: notification.getErrors('handle'),
+        required: true
+    }) }}
+
+    {{ forms.textareaField({
+        label: "Description"|t('freeform'),
+        instructions: "Description of this notification."|t('freeform'),
+        id: 'description',
+        name: 'description',
+        value: notification.description,
+        errors: notification.getErrors('description'),
+        required: false
+    }) }}
+
+    <hr>
+
+    {{ forms.textField({
+        label: "Subject"|t('freeform'),
+        instructions: "The subject line for the email notification."|t('freeform'),
+        id: 'subject',
+        name: 'subject',
+        value: notification.subject,
+        errors: notification.getErrors('subject'),
+        required: true
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "From Email"|t('freeform'),
+        instructions: "The email address that the email will appear from in your email notification."|t('freeform'),
+        id: 'fromEmail',
+        name: 'fromEmail',
+        value: notification.fromEmail,
+        errors: notification.getErrors('fromEmail'),
+        required: true,
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "From Name"|t('freeform'),
+        instructions: "The name that the email will appear from in your email notification."|t('freeform'),
+        id: 'fromName',
+        name: 'fromName',
+        value: notification.fromName,
+        errors: notification.getErrors('fromName'),
+        required: true,
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Reply-to Email"|t('freeform'),
+        instructions: "The reply-to email address for your email notification. Leave blank to use 'From Email' address."|t('freeform'),
+        id: 'replyToEmail',
+        name: 'replyToEmail',
+        value: notification.replyToEmail,
+        errors: notification.getErrors('replyToEmail'),
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "Reply-to Name"|t('freeform'),
+        instructions: "The reply-to name that the email will appear from in your email notification."|t('freeform'),
+        id: 'replyToName',
+        name: 'replyToName',
+        value: notification.replyToName,
+        errors: notification.getErrors('replyToName'),
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "CC"|t('freeform'),
+        instructions: "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use."|t('freeform'),
+        id: 'cc',
+        name: 'cc',
+        value: notification.cc,
+        errors: notification.getErrors('cc'),
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.autosuggestField({
+        label: "BCC"|t('freeform'),
+        instructions: "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use."|t('freeform'),
+        id: 'bcc',
+        name: 'bcc',
+        value: notification.bcc,
+        errors: notification.getErrors('bcc'),
+        suggestEnvVars: true,
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Include Attachments?"|t('freeform'),
+        instructions: "Include uploaded files as attachments in email notification."|t('freeform'),
+        name: "includeAttachments",
+        on: notification.includeAttachments,
+        errors: notification.getErrors("includeAttachments"),
+    }) }}
+
+    {{ forms.textareaField({
+        label: "Email Body (HTML)"|t('freeform'),
+        instructions: "The HTML content of the email notification. If you wish to use Text only, leave this empty and fill out the Text body (below). See documentation for availability of variables."|t('freeform'),
+        id: "emailBody",
+        name: "bodyHtml",
+        value: notification.bodyHtml,
+        errors: notification.getErrors("bodyHtml"),
+        required: false,
+    }) }}
+
+    <style>
+        #editor {
+            display: none;
+            overflow: hidden;
+
+            width: 100%;
+            height: 400px;
+            margin-top: -20px;
+
+            border-radius: 3px;
+            border: 1px solid #e3e5e8;
+        }
+
+        #emailBody {
+            display: none;
+        }
+    </style>
+    <div id="editor">{{ notification.bodyHtml }}</div>
+
+
+    {{ forms.lightswitchField({
+        label: "Auto 'Text-Only' version?"|t('freeform'),
+        instructions: "When enabled, Freeform will automatically provide a Text-only version of the notification based on the HTML version."|t('freeform'),
+        name: "autoText",
+        on: notification.autoText,
+        errors: notification.getErrors("autoText"),
+        reverseToggle: 'text-body',
+    }) }}
+
+    <div id="text-body" class="field {{ notification.autoText ? ' hidden' }}">
+        {{ forms.textareaField({
+            label: "Email Body (Text)"|t('freeform'),
+            instructions: "The text content of the email notification. If you wish to send out both HTML and Text options, fill out both the HTML and Text body fields. See documentation for availability of variables."|t('freeform'),
+            id: "emailBodyText",
+            name: "bodyText",
+            class: "code",
+            value: notification.bodyText,
+            errors: notification.getErrors("bodyText"),
+            required: false,
+            rows: 20,
+        }) }}
+    </div>
+
+    {% if craft.freeform.pro %}
+
+        {{ forms.elementSelectField({
+            id: "preset-assets",
+            name: "presetAssets",
+            label: "Predefined Assets",
+            instructions: "Select any Assets you wish to include as attachments on all email notifications using this template.",
+            elements: notification.getPresetAssets() ? craft.assets.id(notification.getPresetAssets()).all : [],
+            selectionLabel: "Choose assets",
+            elementType: "craft\\elements\\Asset",
+            sources: "*",
+            criteria: {
+                kind: [],
+                enabledForSite: null,
+                siteId: craft.app.sites.currentSite.id,
+            },
+            viewMode: "list",
+            limit: "",
+            defaultFieldLayoutId: null,
+            modalSettings: {
+                hideSidebar: 0,
+            }
+        }) }}
+
+    {% endif %}
+
+{% endblock %}
+
+{% js %}
+    {% if not notification.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/github");
+    var textarea = $('textarea[name="bodyHtml"]').hide();
+
+    editor.getSession().setValue(textarea.val());
+    editor.getSession().on('change', function(){
+    textarea.val(editor.getSession().getValue());
+    });
+
+    editor.getSession().setUseWorker(false);
+    editor.getSession().setMode("ace/mode/html");
+
+    document.getElementById("editor").style.display = "block";
+{% endjs %}

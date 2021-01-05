@@ -1,0 +1,159 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = "General Settings"|t("freeform") %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/general') }}
+    {{ csrfInput() }}
+
+    {% if craft.freeform.pro %}
+
+        {{ forms.textField({
+            first: true,
+            class: "code",
+            label: "Custom Plugin Name"|t('freeform'),
+            instructions: "Override the plugin name by specifying your own here."|t('freeform'),
+            placeholder: craft.freeform.name,
+            id: "pluginName",
+            name: "settings[pluginName]",
+            value: settings.pluginName,
+            errors: settings.getErrors("pluginName"),
+        }) }}
+
+    {% endif %}
+
+    {{ forms.selectField({
+        label: "Default View"|t('freeform'),
+        instructions: "The default page to go to when clicking the Freeform nav item."|t('freeform'),
+        name: "settings[defaultView]",
+        value: settings.defaultView,
+        errors: settings.errors("defaultView"),
+        options: {
+            dashboard: "Dashboard",
+            forms: "Form view",
+            submissions: "Submission view",
+        },
+    }) }}
+
+    {{ forms.selectField({
+        label: "Plugin Badge"|t('freeform'),
+        instructions: "Select the options you'd like to be included in the plugin badge count (when applicable)."|t('freeform'),
+        name: "settings[badgeType]",
+        value: settings.badgeType,
+        errors: settings.errors("badgeType"),
+        options: {
+            '': "Don't Show" | t('freeform'),
+            all: "Update Notices, What's New, Logged Errors" | t('freeform'),
+            notices: "Update Notices only" | t('freeform'),
+            errors: "Logged Errors only" | t('freeform'),
+            submissions: "Submission Count" | t('freeform'),
+            spam: "Spam Folder Count" | t('freeform'),
+        },
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
+        instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
+        name: "settings[removeNewlines]",
+        on: settings.removeNewlines,
+        errors: settings.errors("removeNewlines"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Fill Form Values from the GET Query String?"|t('freeform'),
+        instructions: "Enable this to be able to fill form field values from a GET query string in URI."|t('freeform'),
+        name: "settings[fillWithGet]",
+        on: settings.fillWithGet,
+        errors: settings.errors("fillWithGet"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Disable Submit Button on Form Submit?"|t('freeform'),
+        instructions: "Enable this to automatically disable the form's submit button when the form is submitted. This will prevent the form from double-submitting."|t('freeform'),
+        name: "settings[formSubmitDisable]",
+        on: settings.formSubmitDisable,
+        errors: settings.errors("formSubmitDisable"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Automatically Scroll to Form on Errors and Multipage forms?"|t('freeform'),
+        instructions: "Enable this to have Freeform use JS to automatically scroll the page down to the form upon submit when there are errors or the form is continuing to the next page in multipage forms."|t('freeform'),
+        name: "settings[autoScrollToErrors]",
+        on: settings.autoScrollToErrors,
+        errors: settings.errors("autoScrollToErrors"),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Freeform Javascript Insertion Location"|t('freeform'),
+        instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
+        name: "settings[scriptInsertLocation]",
+        value: settings.scriptInsertLocation,
+        errors: settings.errors("scriptInsertLocation"),
+        options: {
+            "footer": "Page Footer"|t('freeform'),
+            "form": "Inside Form"|t('freeform'),
+            "manual": "None (add manually)"|t('freeform'),
+        },
+    }) }}
+
+    <div id="script-insert-warning" class="hidden">
+        {{- "With 'None' chosen, please be sure to manually load Freeform's JS by adding the 'freeform.loadFreeformScripts()' function to your template(s) where you'd like it to insert the JS and pass it the form handle."|t('freeform') -}}
+    </div>
+
+    {{ forms.lightswitchField({
+        label: "Hide 'Install Demo' alert message?"|t('freeform'),
+        instructions: "Hides the alert message suggesting to install demo templates when this setting is enabled."|t('freeform'),
+        name: 'settings[hideBannerDemo]',
+        on: settings.hideBannerDemo,
+        errors: settings.getErrors('hideBannerDemo')
+    }) }}
+
+    {% if craft.freeform.pro %}
+
+        <hr>
+
+        {{ forms.lightswitchField({
+            label: "Automatically Purge Submission Data"|t('freeform'),
+            instructions: "If you wish to have Freeform automatically purge submission data after a specified number of days, enable this setting and specify the number of days after submission date it should purge submissions."|t('freeform'),
+            warning: "Enabling this and saving this settings page will result in purging beginning.",
+            name: "purge-toggle",
+            on: settings.purgableSubmissionAgeInDays,
+            toggle: "purge",
+            errors: settings.errors("purgableSubmissionAgeInDays"),
+        }) }}
+
+        <div id="purge" class="field {{ not settings.purgableSubmissionAgeInDays ? 'hidden' }}">
+            {{ forms.selectField({
+                label: "Days After Submission Date to Purge"|t('freeform'),
+                instructions: "Select the number of days after submissions have been submitted for Freeform to begin automatically purging. This process will only run every hour, and only when Freeform is accessed on the front end in templates or in the control panel."|t('freeform'),
+                name: "settings[purgableSubmissionAgeInDays]",
+                value: settings.purgableSubmissionAgeInDays,
+                errors: settings.errors("purgableSubmissionAgeInDays"),
+                id: "purge-value",
+                options: {
+                    0: "Please select"|t("freeform"),
+                    1: "1 day"|t("freeform"),
+                    2: "2 days"|t("freeform"),
+                    3: "3 days"|t("freeform"),
+                    4: "4 days"|t("freeform"),
+                    5: "5 days"|t("freeform"),
+                    6: "6 days"|t("freeform"),
+                    7: "7 days"|t("freeform"),
+                    14: "14 days"|t("freeform"),
+                    30: "30 days"|t("freeform"),
+                    60: "60 days"|t("freeform"),
+                    90: "90 days"|t("freeform"),
+                    120: "120 days"|t("freeform"),
+                    180: "180 days"|t("freeform"),
+                    365: "365 days"|t("freeform"),
+                }
+            }) }}
+        </div>
+
+    {% endif %}
+
+{% endblock %}

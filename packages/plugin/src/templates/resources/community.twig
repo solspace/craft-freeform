@@ -1,0 +1,65 @@
+{% extends "freeform/resources/_layout" %}
+
+{% set title = "Community"|t("freeform") %}
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Resources"|t("freeform"), url: url("freeform/resources") },
+] %}
+
+{% block content %}
+
+    <p>
+        {{ "The Craft community is diverse, inclusive, and amazingly helpful. You can interact with others in the Craft community in a couple of different ways:"|t("freeform") }}
+    </p>
+
+    {% set items = [
+        {
+            icon: icons.so,
+            label: "Stack Exchange",
+            description: "Craft's Stack Exchange Q&A site is a great place to get help and help others. Tag questions with 'plugin-freeform'.",
+            link: "https://craftcms.stackexchange.com/questions/tagged/plugin-freeform",
+            linkText: "Visit"
+        },
+        {
+            icon: icons.discord,
+            label: "Craft Discord",
+            description: "If you have a quick question about something, Craft Discord group will likely get you a quick response.",
+            link: "https://craftcms.com/discord",
+            linkText: "Get an Invite",
+        },
+        {
+            icon: icons.feedback,
+            label: "GitHub Discussion",
+            description: "Have any questions? Have any ideas you'd like to share? Visit our GitHub Discussions area!",
+            link: "https://github.com/solspace/craft3-freeform/discussions",
+            linkText: "Visit",
+        },
+    ] %}
+
+    <ul class="cards">
+        {% for item in items %}
+            <li>
+                <div class="community-card">
+                    <div class="icon">
+                        {{ item.icon|raw }}
+                    </div>
+                    <h3>
+                        <a href="{{ item.link }}" target="_blank">
+                            {{ item.label }}
+                        </a>
+                    </h3>
+                    <p class="description">
+                        {{ item.description|t('freeform') }}
+                    </p>
+                </div>
+
+                <div class="card-footer centered">
+                    <a href="{{ item.link }}" class="btn submit" target="_blank">
+                        {{ item.linkText|t("freeform") }}
+                    </a>
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}

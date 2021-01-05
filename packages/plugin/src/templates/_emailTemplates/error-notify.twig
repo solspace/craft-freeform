@@ -1,0 +1,66 @@
+{# subject: {{ craft.freeform.name }} Alert: Failed to send email notification! #}
+{# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
+{# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
+{# replyToEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
+{# includeAttachments: false #}
+
+{% extends 'freeform/_emailTemplates/layout/solspace' %}
+{% import 'freeform/_emailTemplates/layout/macros' as macros %}
+
+{% block content %}
+
+    {{ macros.heading('{name} Alert' | t('freeform', { name: craft.freeform.name })) }}
+    {{ macros.title('Failed to send email notification!' | t('freeform'), true) }}
+
+    {% set text = "{name} failed to send the <b>{notification}</b> email notification to <b>{recipient}</b> for the <b>{form}</b> form on {date}. The error received was:"
+    | t('freeform', {
+        name: craft.freeform.name,
+        notification: notification.name,
+        form: form.name,
+        recipient: recipient | escape,
+        date: "now" | datetime
+    }) %}
+
+    {{ macros.paragraph(text) }}
+    <div style="font-style: italic; color: #FF0000;">
+        {{ macros.paragraph(exception.message) }}
+    </div>
+
+    {% if exception.sourceContext is defined %}
+        {{ macros.code(code) }}
+    {% endif %}
+
+    {{ macros.title("Troubleshooting" | t('freeform')) }}
+
+    {% set troubleshootText = "The most common reason why an email notification fails is due to a naming error of a variable in the template. It could be that you're manually calling a field handle incorrectly, or that the field you're calling is empty or no longer exists for the form. Please carefully review you form inside the form builder and compare it to the email notification template and ensure all values are correct." | t('freeform') %}
+    {{ macros.paragraph(troubleshootText, 'small') }}
+
+    {% set subText = "Check out our <a href='{link}'>Common Issues documentation</a> for more information." | t('freeform', { link: 'https://docs.solspace.com/craft/freeform/v3/setup/common-issues.html' }) %}
+    {{ macros.paragraph(subText, 'small') }}
+
+{% endblock %}
+
+{% block footerText %}
+    {{ "This email alert was generated automatically by <a href='{link}'>{name}</a> from your Craft website.
+        You are receiving this email because you or someone else has configured your email address to
+        receive an email every time a form submission fails to send an email notification."
+    | t('freeform', { link: 'https://docs.solspace.com/craft/freeform/', name: craft.freeform.name })
+    | raw }}
+{% endblock %}
+
+{% set links = [
+    { url: cpUrl('freeform'), text: 'Visit your {name} control panel' | t('freeform', { name: craft.freeform.name }) },
+    { url: cpUrl('freeform/settings/notices-and-alerts'), text: 'Update your Email Alert settings' | t('freeform') },
+] %}
+
+{% block styles %}
+    <style type="text/css">
+        ol li::before {
+            background: #f5f5f5;
+            color: #6a6a6a;
+            font-size: 1em;
+            line-height: 18px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+    </style>
+{% endblock %}

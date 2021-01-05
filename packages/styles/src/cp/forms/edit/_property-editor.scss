@@ -1,0 +1,26 @@
+.property-editor {
+
+  .composer-property-flex {
+    display: flex;
+
+    > * {
+      margin-right: 10px !important;
+
+      &:last-child {
+        margin-right: 0 !important;
+     }
+    }
+  }
+
+  .property-reset {
+    margin-right: 15px;
+    margin-bottom: -5px;
+
+    &:before {
+      font-family: Craft, sans-serif;
+      content: "refresh";
+
+      padding-right: 5px;
+    }
+  }
+}

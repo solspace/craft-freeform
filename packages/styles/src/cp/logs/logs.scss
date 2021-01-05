@@ -1,0 +1,44 @@
+.badge {
+  display: inline-block;
+  padding: 0 5px;
+  box-sizing: border-box;
+
+  border-radius: 3px;
+
+  color: #fff;
+  font-size: 11px;
+  font-weight: bold;
+
+  &.log-level-debug {
+    background-color: #CCCCCC;
+  }
+  &.log-level-info {
+    background-color: #6c757d;
+  }
+  &.log-level-notice {
+    background-color: #28a745;
+  }
+  &.log-level-warning {
+    background-color: #ffc107;
+  }
+  &.log-level-error {
+    background-color: #dc3545;
+  }
+  &.log-level-critical {
+    background-color: #dc3545;
+  }
+  &.log-level-alert {
+    background-color: #dc3545;
+  }
+  &.log-level-emergency {
+    background-color: #dc3545;
+  }
+}
+
+.log-message {
+  color: #b1b1b1;
+  width: 70%;
+
+  word-break: break-word;
+  overflow-wrap: break-word;
+}

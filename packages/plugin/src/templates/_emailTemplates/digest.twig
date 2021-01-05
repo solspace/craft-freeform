@@ -1,0 +1,190 @@
+{# subject: {{ craft.freeform.name }} {{ daily ? 'Daily' : 'Weekly' }} Digest for {{ rangeStart|date("long") }}{% if not daily %} - {{ rangeEnd|date("long") }}{% endif %} ({{ craft.app.systemName }}) #}
+{# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
+{# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
+{# includeAttachments: false #}
+
+{% extends 'freeform/_emailTemplates/layout/solspace' %}
+{% import 'freeform/_emailTemplates/layout/macros' as macros %}
+
+{% set iconUrl = 'https://api.solspace.com/assets/' %}
+
+{% block content %}
+
+    {{ macros.heading('{name} Digest' | t('freeform', { name: craft.freeform.name })) }}
+
+    {% if daily %}
+        {{ macros.headline(
+            'Daily Digest ({siteName})' | t('freeform', { siteName: craft.app.systemName }),
+            rangeStart|date("long")
+        ) }}
+    {% else %}
+        {{ macros.headline(
+            'Weekly Digest ({siteName})' | t('freeform', { siteName: craft.app.systemName }),
+            '{start} - {end}' | t('freeform', {
+                start: rangeStart|date("long"),
+                end: rangeEnd|date("long"),
+            })
+        ) }}
+    {% endif %}
+
+    {% if forms | length %}
+        <div style="margin-bottom: 40px;">
+            {{ macros.title('Form Performance' | t('freeform')) }}
+
+            <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
+                {{ macros.tableHeadings([
+                    { html: null },
+                    { html: "Form" | t('freeform') },
+                    { html: "New Submissions" | t('freeform'), align: 'center' },
+                    { html: "New Spam" | t('freeform'), align: 'center' },
+                ]) }}
+                <tbody>
+                {% for data in forms %}
+                    {{ macros.tableRow([
+                        {
+                            html: '<span style="background: ' ~ data.form.color ~ '; width: 10px; height: 10px; display: block; border-radius: 50%; border: 1px solid transparent;"></span>',
+                            padding: '5px 0 5px 10px',
+                            width: '12px',
+                        },
+                        { html: '<a href="' ~ cpUrl('freeform/submissions/' ~ data.form.handle, null, 'https') ~ '">' ~ data.form.name ~ '</a>' },
+                        {
+                            html: '<a href="' ~ cpUrl('freeform/submissions/' ~ data.form.handle, null, 'https') ~ '">' ~ data.submissions ~ '</a>',
+                            align: "center",
+                        },
+                        {
+                            html: '<a href="' ~ cpUrl('freeform/spam/' ~ data.form.handle, null, 'https') ~ '">' ~ data.spam ~ '</a>',
+                            align: "center",
+                        },
+                    ]) }}
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+
+    {% if fullDigest %}
+        <div style="margin-bottom: 40px;">
+            {{ macros.title('Errors That May Require Attention' | t('freeform')) }}
+
+
+            {% if errors|length %}
+                <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
+                    {{ macros.tableHeadings([
+                        { html: null },
+                        { html: "Type" | t('freeform') },
+                        { html: "Date" | t('freeform') },
+                        { html: "Details" | t('freeform') },
+                    ]) }}
+                    <tbody>
+                    {% for data in errors %}
+                        {% set color = '#FF0000' %}
+                        {% set srcSet = [iconUrl~'alert-critical-1x.png', iconUrl~'alert-critical-2x.png 2x'] %}
+                        {% set icon = iconUrl~'alert-critical-1x.png' %}
+                        {% if data.level == 'WARNING' %}
+                            {% set color = '#ffc107' %}
+                            {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-warning-1x.png' %}
+                        {% endif %}
+
+                        {{ macros.tableRow([
+                            {
+                                html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.level~'" />',
+                                padding: '5px 0 5px 10px',
+                                width: '12px',
+                                color: color,
+                                align: 'center',
+                            },
+                            { html: data.logger, color: color, nowrap: true },
+                            { html: data.date | date, color: color, nowrap: true },
+                            { html: data.message | truncater(50), color: color },
+                        ]) }}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+
+                {{ macros.paragraph('No errors to report for this period.' | t('freeform')) }}
+
+            {% endif %}
+        </div>
+
+        <div style="margin-bottom: 40px;">
+            {{ macros.title('Available Updates' | t('freeform')) }}
+
+            {% if updates|length %}
+                {{ macros.paragraph(
+                    'The following updates and notices are available for your site. Please review and take any action necessary.' | t('freeform')) }}
+
+
+                <table style="width: 100%; border-collapse: collapse; padding: 0; margin: 0; border: none;">
+                    {{ macros.tableHeadings([
+                        { html: null },
+                        { html: "Date Issued" | t('freeform') },
+                        { html: "Details" | t('freeform') },
+                    ]) }}
+                    <tbody>
+                    {% for data in updates %}
+                        {% set color = '#000000' %}
+                        {% if data.type == 'critical' %}
+                            {% set color = '#FF0000' %}
+                            {% set srcSet = [iconUrl~'alert-critical-1x.png', iconUrl~'alert-critical-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-critical-1x.png' %}
+                        {% elseif data.type == 'warning' %}
+                            {% set srcSet = [iconUrl~'alert-warning-1x.png', iconUrl~'alert-warning-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-warning-1x.png' %}
+                        {% elseif data.type == 'info' %}
+                            {% set srcSet = [iconUrl~'alert-info-1x.png', iconUrl~'alert-info-2x.png 2x'] %}
+                            {% set icon = iconUrl~'alert-info-1x.png' %}
+                        {% else %}
+                            {% set srcSet = [iconUrl~'update-1x.png', iconUrl~'update-2x.png 2x'] %}
+                            {% set icon = iconUrl~'update-1x.png' %}
+                        {% endif %}
+
+                        {{ macros.tableRow([
+                            {
+                                html: '<img srcset="'~(srcSet|join(', '))~'" src="'~icon~'" alt="'~data.type~'" />',
+                                padding: '5px 0 5px 10px',
+                                width: '12px',
+                                color: color,
+                                align: 'center',
+                            },
+                            { html: data.issueDate | date, color: color, nowrap: true },
+                            { html: data.message, color: color },
+                        ]) }}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+
+                {{ macros.paragraph('There are currently no important updates or notices for your site.' | t('freeform')) }}
+
+            {% endif %}
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block footerText %}
+    {{ "This email alert was generated automatically by <a href='{link}'>{name}</a> from your Craft website.
+        You are receiving this email because you or someone else has configured your email address to
+        receive a digest email informing you about your forms, submission data and any issues."
+    | t('freeform', { link: 'https://docs.solspace.com/craft/freeform/', name: craft.freeform.name })
+    | raw }}
+{% endblock %}
+
+{% set links = [
+    { url: cpUrl('freeform'), text: 'Visit your {name} control panel' | t('freeform', { name: craft.freeform.name }) },
+    { url: cpUrl('freeform/settings/notices-and-alerts'), text: 'Update your Digest settings' | t('freeform') },
+] %}
+
+{% block styles %}
+    <style type="text/css">
+        ol li::before {
+            background: #f5f5f5;
+            color: #6a6a6a;
+            font-size: 1em;
+            line-height: 18px;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+        }
+    </style>
+{% endblock %}

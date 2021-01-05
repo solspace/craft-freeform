@@ -1,0 +1,658 @@
+{% extends "freeform/_layouts/main" %}
+{% import "_includes/forms" as forms %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t('freeform') }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block mainFormAttributes %}
+    {{ parent() }}
+    enctype="multipart/form-data"
+    data-id="{{ form.anchor }}"
+    data-freeform
+    {{ form.ruleProperties ? 'data-has-rules' : '' }}
+{% endblock %}
+
+{% block body %}
+    {{ parent() }}
+    <form method="post"
+          id="asset_download"
+          style="height: 0; width: 0; position: absolute; left: -99999px;">
+        <input type="hidden" name="action" value="assets/download-asset" />
+        <input type="hidden" name="assetId" value="" />
+        {{ csrfInput() }}
+    </form>
+{% endblock %}
+
+{% block tabs %}
+    <nav id="tabs">
+        <ul>
+            {% for page in layout.pages %}
+                {% set tabIsSelected = loop.first -%}
+                {% set class = tab.class ?? '' -%}
+                <li data-id="{{ page.index }}">
+                    {{ tag('a', {
+                        id: "tab-tab-" ~ page.index,
+                        class: ['tab', tabIsSelected ? 'sel', class]|filter,
+                        href: '#tab-' ~ page.index,
+                        title: page.label,
+                        'aria-label': page.label,
+                        html: page.label|e ~ (class == 'error' ? ' <span data-icon="alert"></span>'),
+                    }) }}
+                </li>
+            {% endfor %}
+        </ul>
+        <button type="button" id="overflow-tab-btn" data-icon="ellipsis" class="btn menubtn hidden"></button>
+        <div id="overflow-tab-menu" class="menu">
+            <ul role="listbox"></ul>
+        </div>
+    </nav>
+{% endblock %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="{{ actionUrl }}">
+    <input type="hidden" name="submissionId" value="{{ submission.id }}">
+    {{ redirectInput(redirectUrl is defined ? redirectUrl : 'freeform/submissions') }}
+    {{ csrfInput() }}
+
+
+    <div id="fields">
+        {% for page in layout.pages %}
+            <div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
+                {% for field in layout.hiddenFields if field.pageIndex == page.index and field.type not in ["mailing_list"] %}
+                    {% set fieldHandle = field.handle %}
+
+                    <div class="fields-row">
+                        <div class="fields-column">
+                            {% set options = {
+                                label: field.label,
+                                name: fieldHandle,
+                                id: fieldHandle,
+                                value: attribute(submission, fieldHandle),
+                                required: field.required,
+                                errors: submission.errors(fieldHandle),
+                                first: loop.index0 == 0,
+                            } %}
+
+                            {{ forms.textField(options) }}
+                        </div>
+                    </div>
+                {% endfor %}
+
+                {% for row in page %}
+                    <div class="fields-row">
+                        {%- for field in row if field.type not in ["submit", "confirmation", "password"] -%}
+                            <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
+                                {% set fieldHandle = field.handle %}
+
+                                {% if field.canStoreValues %}
+                                    {% set value = attribute(submission, fieldHandle).value %}
+
+                                    {% set options = {
+                                        label: field.label,
+                                        name: fieldHandle,
+                                        id: fieldHandle,
+                                        value: value,
+                                        required: field.required,
+                                        errors: submission.errors(fieldHandle),
+                                        first: loop.index0 == 0,
+                                    } %}
+
+                                    {% if field.type in ["text", "datetime", "number", "phone", "regex", "website"] %}
+                                        {{ forms.textField(options|merge({
+                                            placeholder: field.placeholder,
+                                        })) }}
+                                    {% elseif field.type == "checkbox" %}
+                                        {% set checkboxInput %}
+                                            {{ forms.checkboxField({
+                                                label: field.label,
+                                                name: fieldHandle,
+                                                id: fieldHandle,
+                                                checked: value ? true : false,
+                                                value: field.staticValue,
+                                            }) }}
+                                        {% endset %}
+
+                                        {{ forms.field({
+                                            label: null,
+                                            class: "checkbox-field",
+                                            errors: submission.errors(fieldHandle),
+                                            required: field.required,
+                                        }, checkboxInput) }}
+                                    {% elseif field.type == "email" %}
+                                        {% set emailValue = value %}
+
+                                        {% set emailInputs %}
+                                            {% for value in emailValue %}
+                                                {{ forms.text(options|merge({
+                                                    name: fieldHandle ~ "[]",
+                                                    value: value,
+                                                    placeholder: field.placeholder,
+                                                })) }}
+                                            {% else %}
+                                                {{ forms.text(options|merge({
+                                                    name: fieldHandle ~ "[]",
+                                                    value: "",
+                                                    placeholder: field.placeholder,
+                                                })) }}
+                                            {% endfor %}
+                                        {% endset %}
+
+                                        {{ forms.field({
+                                            label:    field.label,
+                                            errors:   submission.getErrors(fieldHandle),
+                                            required: field.required,
+                                        }, emailInputs) }}
+
+                                    {% elseif field.type == "textarea" %}
+                                        {{ forms.textareaField(options|merge({
+                                            placeholder: field.placeholder,
+                                            rows: field.rows,
+                                            value: value
+                                        })) }}
+                                    {% elseif field.type == "select" %}
+                                        {{ forms.selectField(options|merge({
+                                            options: field.options,
+                                        })) }}
+                                    {% elseif field.type == "multiple_select" %}
+                                        {{ forms.multiselectField(options|merge({
+                                            options: field.optionsAsKeyValuePairs,
+                                            values: value,
+                                        })) }}
+                                    {% elseif field.type == "checkbox_group" %}
+                                        {{ forms.checkboxSelectField(options|merge({
+                                            showAllOption: false,
+                                            options: field.optionsAsKeyValuePairs,
+                                            values: value,
+                                        })) }}
+                                    {% elseif field.type == "dynamic_recipients" %}
+                                        {% if field.showAsRadio %}
+                                            {{ forms.radioGroupField(options|merge({
+                                                options: field.optionsAsKeyValuePairs,
+                                                name: fieldHandle~"[]",
+                                                value: value|first,
+                                            })) }}
+                                        {% elseif field.showAsCheckboxes %}
+                                            {{ forms.checkboxSelectField(options|merge({
+                                                showAllOption: false,
+                                                options: field.optionsAsKeyValuePairs,
+                                                values: value,
+                                            })) }}
+                                        {% else %}
+                                            {{ forms.selectField(options|merge({
+                                                options: field.optionsAsKeyValuePairs,
+                                                value: value|first,
+                                                name: fieldHandle~"[]",
+                                            })) }}
+                                        {% endif %}
+                                    {% elseif field.type == "radio_group" %}
+                                        {{ forms.radioGroupField(options|merge({
+                                            options: field.optionsAsKeyValuePairs,
+                                        })) }}
+                                    {% elseif field.type == "rating" %}
+
+                                        <div class="field">
+                                            <div class="heading">
+                                                <label>{{ field.label }}</label>
+                                            </div>
+                                            <div>
+                                                {% set field = field.setValue(value) %}
+                                                {{ field.renderInput }}
+                                            </div>
+                                        </div>
+
+                                    {% elseif field.type == "opinion_scale" %}
+                                        {% set field = field.setValue(value) %}
+
+                                        <div class="field">
+                                            <div class="heading">
+                                                {{ field.label }}
+                                            </div>
+                                            <div class="opinion-scale">
+                                                <ul class="opinion-scale-scales">
+                                                    {% for index, scale in field.scales %}
+                                                        <li>
+                                                            <input type="radio"
+                                                                   id="{{ field.handle ~ '-' ~ index }}"
+                                                                   name="{{ field.handle }}"
+                                                                   autocomplete="off"
+                                                                   value="{{ scale.value }}"
+                                                                    {{ field.value == scale.value ? "checked" }}
+                                                            />
+                                                            <label for="{{ field.handle ~ '-' ~ index }}">
+                                                                {{ scale.label ?? scale.value }}
+                                                            </label>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+                                                <ul class="opinion-scale-legends">
+                                                    {% for legend in field.legends %}
+                                                        <li>{{ legend.legend|t("app") }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    {% elseif field.type == "file" %}
+                                        <div class="field">
+                                            <div class="heading">
+                                                <label>{{ field.label }}</label>
+                                            </div>
+                                            <div class="file-preview">
+                                                {% set assets = submission.getAssets('field_' ~ field.id) %}
+
+                                                {% if assets %}
+                                                    {% for asset in assets if asset is not null %}
+                                                        {% set thumbSizes = [30, 60, 100, 200] %}
+                                                        {% set srcset = "" %}
+                                                        {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
+                                                        {% set srcset = srcset|trim(", ") %}
+
+                                                        <div class="element small hasthumb">
+                                                            <input type="hidden" name="{{ field.handle }}[]"
+                                                                   value="{{ asset.id }}">
+                                                            <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>
+                                                            <div class="elementthumb">
+                                                                <img sizes="30px" srcset="{{ srcset }}" alt="">
+                                                            </div>
+                                                            <label>
+                                                                <a href="javascript:;" data-asset-id="{{ asset.id }}">
+                                                                    {{ asset.title }}
+                                                                </a>
+                                                            </label>
+                                                        </div>
+                                                    {% endfor %}
+                                                {% else %}
+                                                    {{ "No files uploaded"|t('freeform') }}
+                                                {% endif %}
+                                            </div>
+                                            <div class="field">
+                                                <input type="file" name="{{ field.handle }}[]" multiple />
+                                            </div>
+                                        </div>
+
+                                    {% elseif field.type == "signature" %}
+
+                                        <div class="field">
+                                            <div class="heading">
+                                                <label>{{ field.label }}</label>
+                                            </div>
+                                            <div class="signature-wrapper">
+                                                <input type="hidden" name="{{ field.handle }}" value="{{ submission[field.handle] }}" />
+                                                <canvas data-image="{{ submission[field.handle] }}"
+                                                        width="{{ field.width }}"
+                                                        height="{{ field.height }}"
+                                                        style="border: 1px solid {{ field.borderColor }}; padding: 1px;"
+                                                >Your browser does not support canvas</canvas>
+
+                                                <div class="btngroup small download-signature-links">
+                                                    <a href="javascript:;"
+                                                       data-type="png"
+                                                       class="btn small">PNG</a>
+                                                    <a href="javascript:;"
+                                                       data-type="jpg"
+                                                       class="btn small">JPG</a>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    {% elseif field.type == "table" %}
+
+                                        <div class="field" data-freeform-table>
+                                            <div class="heading">
+                                                <label>{{ field.label }}</label>
+                                            </div>
+                                            <table class="shadow-box editable fullwidth">
+                                                <thead>
+                                                <tr>
+                                                    {% for column in field.tableLayout %}
+                                                        <th>
+                                                            {{ column.label }}
+                                                        </th>
+                                                    {% endfor %}
+                                                    <th></th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                {% if submission[field.handle].value is empty %}
+                                                    <tr>
+                                                        {% for index, column in field.tableLayout %}
+                                                            {% set colName = field.handle ~ "[0][" ~ index ~ "]" %}
+                                                            {% set colType = column.type|default("text") %}
+                                                            {% set colClass = "" %}
+                                                            {% if colType == "text" %}
+                                                                {% set colClass = "textual" %}
+                                                            {% elseif colType == "select" %}
+                                                                {% set colClass = "thin" %}
+                                                            {% endif %}
+                                                            <td class="{{ colClass }}">
+                                                                {% switch colType %}
+                                                                {% case "select" %}
+                                                                    <div class="select small">
+                                                                        <select name="{{ colName }}"
+                                                                                data-default-value="{{ column.value|default("") }}"
+                                                                        >
+                                                                            {% for option in column.value|default("")|split(";") %}
+                                                                                <option value="{{ option }}">
+                                                                                    {{ option }}
+                                                                                </option>
+                                                                            {% endfor %}
+                                                                        </select>
+                                                                    </div>
+                                                                {% case "checkbox" %}
+                                                                    <input type="checkbox"
+                                                                           data-default-value="{{ column.value|default("Yes") }}"
+                                                                           name="{{ colName }}"
+                                                                           value="{{ column.value|default("Yes") }}"
+                                                                    />
+                                                                {% default %}
+                                                                    <textarea name="{{ colName }}"
+                                                                              data-default-value="{{ column.value|default("") }}"
+                                                                              rows="1"
+                                                                    >
+                                                                        {{- column.value|default("") -}}
+                                                                    </textarea>
+                                                                {% endswitch %}
+                                                            </td>
+                                                        {% endfor %}
+                                                        <td class="thin action">
+                                                            <a class="delete icon"
+                                                               data-freeform-table-remove-row
+                                                               title="Delete"></a>
+                                                        </td>
+                                                    </tr>
+                                                {% else %}
+                                                    {% for rowIndex, row in submission[field.handle].value %}
+                                                        <tr>
+                                                            {% for index, column in field.tableLayout %}
+                                                                {% set colName = field.handle ~ "[" ~ rowIndex ~ "][" ~ index ~ "]" %}
+                                                                {% set colValue = row[index]|default("") %}
+                                                                {% set colType = column.type|default("text") %}
+                                                                {% set colClass = "" %}
+                                                                {% if colType == "text" %}
+                                                                    {% set colClass = "textual" %}
+                                                                {% elseif colType == "select" %}
+                                                                    {% set colClass = "thin" %}
+                                                                {% endif %}
+                                                                <td class="{{ colClass }}">
+                                                                    {% switch colType %}
+                                                                    {% case "select" %}
+                                                                        <div class="select small">
+                                                                            <select name="{{ colName }}"
+                                                                                    data-default-value="{{ column.value|default("") }}"
+                                                                            >
+                                                                                {% for option in column.value|default("")|split(";") %}
+                                                                                    <option value="{{ option }}"{{ option == colValue ? " selected" }}>
+                                                                                        {{ option }}
+                                                                                    </option>
+                                                                                {% endfor %}
+                                                                            </select>
+                                                                        </div>
+                                                                    {% case "checkbox" %}
+                                                                        <input type="checkbox"
+                                                                               name="{{ colName }}"
+                                                                               data-default-value="{{ column.value|default("Yes") }}"
+                                                                               value="{{ column.value|default("Yes") }}"
+                                                                                {{ colValue ? "checked" }}
+                                                                        />
+                                                                    {% default %}
+                                                                        <textarea name="{{ colName }}"
+                                                                                  data-default-value="{{ column.value|default("") }}"
+                                                                                  rows="1"
+                                                                        >
+                                                                            {{- colValue -}}
+                                                                        </textarea>
+                                                                    {% endswitch %}
+                                                                </td>
+                                                            {% endfor %}
+                                                            <td class="thin action">
+                                                                <a class="delete icon"
+                                                                   data-freeform-table-remove-row
+                                                                   title="Delete"></a>
+                                                            </td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                {% endif %}
+                                                </tbody>
+                                            </table>
+                                            <div class="btn add icon"
+                                                 data-freeform-table-add-row
+                                                 tabindex="0">
+                                                {{ "Add a row"|t }}
+                                            </div>
+                                        </div>
+
+                                    {% endif %}
+
+                                {% else %}
+                                    {% if field.type == "mailing_list" %}
+                                        <div class="field">
+                                            <div class="heading">
+                                                <label>{{ field.label }}</label>
+                                            </div>
+
+                                            <div class="error" style="font-size: 12px;">
+                                                {{ 'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.'|t('freeform') }}
+                                            </div>
+                                        </div>
+                                    {% elseif field.type == "html" %}
+                                        {% if craft.freeform.settings.renderFormHtmlInCpViews %}
+                                            {{ field.render }}
+                                        {% else %}
+                                            {{ "Live HTML rendering currently disabled."|t("freeform") }}
+                                        {% endif %}
+                                    {% elseif field.type != "recaptcha" %}
+                                        {{ field.render }}
+                                    {% endif %}
+                                {% endif %}
+
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
+
+    {{ craft.freeform.loadFreeformScripts(form) }}
+
+    <script>
+        function removeAsset(element) {
+          if (confirm('Are you sure?')) {
+            $(element).parents(".element:first").remove();
+          }
+        }
+    </script>
+
+{% endblock %}
+
+{% block details %}
+
+    <div id="settings" class="meta">
+
+        {{ forms.textField({
+            label: "Title"|t('freeform'),
+            id: 'title',
+            name: 'title',
+            value: submission.title,
+            placeholder: "Enter title"|t('freeform'),
+            errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
+        }) }}
+
+        {% set statusField %}
+            <div>
+                {% set selectedStatus = statuses[submission.statusId] ? statuses[submission.statusId] : statuses|first %}
+
+                <a id="status-menu-btn" class="btn menubtn" href="#">
+                    <span class="status {{ selectedStatus.color }}"></span>
+                    {{ selectedStatus.name|t('freeform')|title }}
+                </a>
+                <div class="menu" id="status-menu-select">
+                    <ul class="padded">
+                        {% for status in statuses %}
+                            <li>
+                                <a {% if selectedStatus.color == status.color %}class="sel"{% endif %}
+                                   data-id="{{ status.id }}"
+                                   data-name="{{ status.name }}"
+                                   data-color="{{ status.color }}"
+                                   href="#">
+                                    <span class="status {{ status.color }}"></span>
+                                    {{ status.name|t('freeform')|title }}
+                                </a>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endset %}
+
+        {{ forms.field({
+            label: 'Status'|t('freeform'),
+        }, statusField) }}
+
+        {{ forms.hidden({
+            id: "statusId",
+            name: "statusId",
+            value: submission.statusId,
+            errors: [],
+            required: true
+        }) }}
+
+    </div>
+
+
+    {% if submission.id %}
+
+        <div class="meta read-only">
+            <div class="data">
+                <h5 class="heading">{{ "Date Created"|t('freeform') }}</h5>
+                <div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Date Updated"|t('freeform') }}</h5>
+                <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
+            </div>
+        </div>
+
+        {% hook 'freeform.submissions.edit.meta' %}
+
+    {% endif %}
+
+    {% if submission.isSpam and submission.spamReasons %}
+
+        <div class="meta read-only">
+            <h5>{{ 'Marked as spam because'|t('freeform') }}:</h5>
+            {% for reason in submission.spamReasons %}
+                <div class="data">
+                    <div class="value" style="width: 100%">
+                        {{ reason.message }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+    {# TODO: move to payments module #}
+    {% if payments is defined %}
+        <div class="meta read-only">
+            <h4>Payments</h4>
+            <div class="data">
+                <h5 class="heading">{{ "Gateway"|t('freeform') }}</h5>
+                <div class="value">{{ payments.gateway|t('freeform') }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Type"|t('freeform') }}</h5>
+                <div class="value">{{ payments.type|t('freeform')|capitalize }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
+                <div class="value">
+                    {% include 'freeform/_components/fields/paymentStatus.html' with { payment: payments } %}
+                </div>
+            </div>
+
+            {% if payments.errorMessage %}
+                <div class="data">
+                    <h5 class="heading">{{ "Error"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.errorMessage }}</div>
+                </div>
+            {% elseif payments.type == 'single' %}
+                <div class="data">
+                    <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.amount }} {{ payments.currency|upper }}</div>
+                </div>
+            {% else %}
+                {% if payments.status == 'active' %}
+                    <div class="data">
+                        <h5 class="heading"></h5>
+                        <div class="value">
+                            <a href="{{ payments.unsubscribeUrl }}" target="_blank">
+                                {{ "Cancel Subscription"|t('freeform') }}
+                            </a>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="data">
+                    <h5 class="heading">{{ "Plan"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.plan ? payments.plan.name : 'Unknown' }}</div>
+                </div>
+                <div class="data">
+                    <h5 class="heading">{{ "Amount"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.amount }} {{ payments.currency|upper }}</div>
+                </div>
+                <div class="data">
+                    <h5 class="heading">{{ "Interval"|t('freeform') }}</h5>
+                    <div class="value">{{ payments.interval|capitalize }}</div>
+                </div>
+            {% endif %}
+
+            {% if not payments.errorMessage %}
+                <div class="data">
+                    <h5 class="heading">{{ "Card Number"|t('freeform') }}</h5>
+                    <div class="value">
+                        {% include 'freeform/_components/fields/paymentCard.html' with { payment: payments } %}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if payments.externalDashboardLink %}
+                <div class="data">
+                    <h5 class="heading"></h5>
+                    <div class="value"><a href={{ payments.externalDashboardLink }} target="_blank">
+                            {{ "See in"|t('freeform') }}
+                            {{ payments.serviceProvider|t('freeform') }}<span class="icon-link-ext"></span>
+                        </a>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+        <hr>
+
+    {% endif %}
+
+    <textarea class="text freeform-submission-note"
+              id="freeform-submission-note"
+              name="freeform-submission-note"
+              placeholder="{{ 'Notes about your changes'|t('freeform') }}"
+              spellcheck="false"
+              style="width: 100%; margin: 0; min-height: 100px;">{% if note %}{{ note }}{% endif %}</textarea>
+
+{% endblock %}

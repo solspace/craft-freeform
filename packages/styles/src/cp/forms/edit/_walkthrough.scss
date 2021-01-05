@@ -1,0 +1,47 @@
+$salmon: #c96252;
+$blue: #33aaff;
+
+.joyride-tooltip {
+  &__header {
+    padding-bottom: $spacing-wide !important;
+    border-bottom: 1px solid $salmon !important;
+  }
+
+  &__button {
+    &--skip {
+      color: $salmon !important;
+    }
+
+    &--primary {
+      background-color: transparent !important;
+      //background-image: linear-gradient(white, #fafafa) !important;
+      background-image: linear-gradient(#da5a47, #cc5643);
+      color: #FFFFFF !important;
+      //color: #29323d !important;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 20, 0.1) !important;
+    }
+
+    &--secondary {
+      color: #29323d !important;
+    }
+  }
+}
+
+
+.joyride-beacon {
+  &__inner, &__outer {
+  }
+
+  &__inner {
+    background-color: $blue !important;
+  }
+
+  &__outer {
+    background-color: rgba($blue, 0.3) !important;
+    border-color: $blue !important;
+  }
+}
+
+
+.joyride-overlay {
+}

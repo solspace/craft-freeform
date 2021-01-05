@@ -1,0 +1,27 @@
+.freeform-colorpicker-preview-wrapper {
+  padding: 5px;
+  background: #fff;
+  border-radius: 1px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
+  display: inline-block;
+  cursor: pointer;
+
+  .freeform-colorpicker-preview {
+    width: 36px;
+    height: 14px;
+    border-radius: 2px;
+  }
+}
+
+.freeform-colorpicker-wrapper {
+  position: absolute;
+  z-index: 2;
+
+  .freeform-colorpicker-cover {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}

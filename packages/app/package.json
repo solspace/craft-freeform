@@ -1,0 +1,56 @@
+{
+  "name": "@ff/app",
+  "version": "1.0.0",
+  "description": "Freeform App",
+  "scripts": {
+    "dev": "npm run clean && npm run watch",
+    "build": "npm run clean && NODE_ENV=production npm run compile",
+    "watch": "webpack --watch",
+    "clean": "rm -rf ../plugin/src/Resources/js/app",
+    "compile": "webpack",
+    "lint": "eslint -c .eslintrc.json .",
+    "test": "jest --maxWorkers=4",
+    "test:coverage": "jest --maxWorkers=4 --collect-coverage",
+    "test:watch": "jest --watch --maxWorkers=4"
+  },
+  "keywords": [
+    "Freeform",
+    "Craft CMS",
+    "App"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-transition-group": "^4.4.1",
+    "recoil": "^0.1.2",
+    "styled-components": "^5.2.1"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^5.5.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-transition-group": "^4.4.0",
+    "@types/styled-components": "^5.1.6",
+    "@types/webpack": "^4.41.25",
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
+    "autoprefixer": "^10.1.0",
+    "css-loader": "^5.0.1",
+    "identity-obj-proxy": "^3.0.0",
+    "style-loader": "^2.0.0",
+    "terser-webpack-plugin": "^5.0.3",
+    "ts-loader": "^8.0.12",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.11.0",
+    "webpack-cli": "^4.2.0"
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "not IE_Mob 11",
+    "last 2 versions"
+  ]
+}

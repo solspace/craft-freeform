@@ -1,0 +1,91 @@
+@import "../../../shared/variables";
+
+.composer-rule-page-block {
+  margin: 0 -18px;
+  padding: $spacing-wide 18px;
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:last-child {
+    margin-bottom: $spacing-wide;
+  }
+
+  &:nth-child(even) {
+    background: #ebf0fa;
+    border-top: 1px solid #e1e5eb;
+    border-bottom: 1px solid #e1e5eb;
+  }
+
+  > div {
+    position: relative;
+
+    .page-block-header {
+      color: $color-column-label;
+      margin: 0 0 $spacing;
+    }
+
+    .rule-block {
+      margin-top: $spacing-wide;
+
+      .add-new-rule {
+        select {
+          width: 100px;
+          font-size: 11px;
+          padding: 2px 22px 2px 10px !important;
+        }
+      }
+
+      .rule-block-header {
+        display: flex;
+        justify-content: space-between;
+
+        > div:first-child {
+          color: $color-column-label;
+          margin: 4px 0 5px;
+        }
+      }
+
+      .rule-item {
+        margin-top: $spacing;
+
+        .rule-header {
+          color: $color-column-label;
+          font-weight: 700;
+          font-size: 0.8rem;
+        }
+
+        .criteria-block {
+          margin: 5px 0 0;
+
+          > li {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 5px;
+
+            &.add-criteria {
+              margin-top: 10px;
+            }
+
+            .rule-criteria-hash {
+              width: 30%;
+            }
+
+            .rule-criteria-equals {
+              text-align: center;
+              width: 50px;
+            }
+
+            .rule-criteria-remove {
+              margin: 0 2px 5px;
+              text-decoration: none;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,81 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = "Formatting Templates"|t("freeform") %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/formatting-templates') }}
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        first: true,
+        class: "code",
+        label: "Directory Path"|t('freeform'),
+        instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. This allows you to use Twig templates for your form formatting, and helps the Form Builder locate these files to assign one of them to a form."|t('freeform'),
+        placeholder: "e.g. freeform_formatting/",
+        id: "formTemplateDirectory",
+        name: "settings[formTemplateDirectory]",
+        value: settings.formTemplateDirectory,
+        errors: settings.getErrors("formTemplateDirectory"),
+    }) }}
+
+    {% if settings.absoluteFormTemplateDirectory %}
+
+        {% set templateFiles = craft.freeform.settings.listTemplatesInFormTemplateDirectory() %}
+
+
+        <div id="components-wrapper">
+            <div>
+                <button type="button" class="btn submit small icon add" id="add-demo-template">
+                    {{ "Add a sample template"|t('freeform') }}
+                </button>
+
+                <ul class="directory-structure">
+                    <li class="dir">
+                        <span>{{ settings.formTemplateDirectory }}</span>
+                        <ul>
+                            {% for file in templateFiles %}
+                                <li class="file">
+                                    <span>{{ file }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% js %}
+    var data = {
+        templateName: "sampletemplate",
+    };
+
+    data["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
+
+    $("#add-demo-template").on({
+        click: function() {
+            $.ajax({
+                url: "{{ url("freeform/settings/add-demo-template") }}",
+                type: "post",
+                dataType: "json",
+                data: data,
+                success: function(response) {
+                    if (!response.errors.length) {
+                        window.location.reload();
+                    } else {
+                        for (var i = 0; i < response.errors.length; i++ ) {
+                            var message = response.errors[i];
+                            Craft.cp.displayNotification("error", message);
+                        }
+                    }
+                }
+            });
+        }
+    });
+{% endjs %}

@@ -1,0 +1,140 @@
+#freeform-beta-feedback-widget {
+  position: fixed;
+  z-index: 100;
+  bottom: 10px;
+  right: 10px;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 180px;
+  height: 32px;
+
+  overflow: hidden;
+
+  background-color: #e4edf6;
+  border: 1px solid #394b60;
+  border-radius: 4px;
+
+  transition: width 0.2s ease-out, height 0.2s ease-out;
+
+  > a {
+    position: relative;
+    transition: all 0.7s ease-out;
+
+    > span {
+      display: none;
+    }
+
+    > span.icon {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+
+      display: none;
+    }
+  }
+
+  &.expanded {
+    width: 350px;
+    height: 350px;
+
+    > a {
+      background: #394b60;
+      color: white;
+
+      > span {
+        display: inline;
+
+        &.icon {
+          display: block;
+
+          &:before {
+            color: white;
+          }
+        }
+      }
+    }
+  }
+
+  &.submitted {
+    width: 120px;
+
+    > a,
+    > div {
+      display: none;
+    }
+
+    > span {
+      display: block;
+    }
+  }
+
+  > a,
+  > span {
+    flex: 0;
+
+    padding: 6px 20px;
+
+    color: #394b60;
+    font-weight: bold;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  > span {
+    display: none;
+    text-align: center;
+  }
+
+  > div {
+    > form {
+      flex: 1;
+
+      padding: 0 20px;
+
+      > div {
+        padding: 5px 0;
+
+        &.stars {
+          display: flex;
+          justify-content: flex-start;
+
+          .star {
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            color: #6c7a8c;
+
+            .star-filled {
+              display: none;
+            }
+
+            .star-empty {
+              display: block;
+            }
+
+            &.selected,
+            &.hover {
+              .star-filled {
+                display: block;
+              }
+
+              .star-empty {
+                display: none;
+              }
+            }
+
+            &.hover {
+              .star-filled {
+                color: #9cabba;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

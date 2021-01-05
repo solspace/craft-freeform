@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="100" height="100" viewBox="0, 0, 100, 100">
+  <g id="Layer_1">
+    <g id="Credit_Card">
+      <path d="M84,21.333 C87.866,21.333 91,24.467 91,28.333 L91,71 C91,74.866 87.866,78 84,78 L16,78 C12.134,78 9,74.866 9,71 L9,28.333 C9,24.467 12.134,21.333 16,21.333 L84,21.333 z M84,25.333 L16,25.333 C14.343,25.333 13,26.676 13,28.333 L13,71 C13,72.657 14.343,74 16,74 L84,74 C85.657,74 87,72.657 87,71 L87,28.333 C87,26.676 85.657,25.333 84,25.333 z" fill="#000000"/>
+      <path d="M12.167,38.5 L88.833,38.5" fill-opacity="0" stroke="#000000" stroke-width="12"/>
+    </g>
+  </g>
+</svg>

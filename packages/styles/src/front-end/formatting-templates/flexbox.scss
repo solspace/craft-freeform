@@ -1,0 +1,148 @@
+/* Freeform default Flexbox CSS */
+@import 'spinner';
+
+$errorColor: #721c24;
+
+.freeform-pages {
+  display: flex;
+
+  padding: 0;
+  margin: 0 0 10px;
+
+  list-style: none;
+
+  li {
+    margin: 0 10px 0 0;
+  }
+}
+
+$gutter: 15px;
+.freeform-row {
+  display: flex;
+  justify-content: space-between;
+
+  margin: 0 (-$gutter);
+
+  .freeform-column {
+    flex: 1 0;
+    padding: 10px 0;
+    margin: 0 $gutter;
+
+    box-sizing: border-box;
+
+    > .freeform-row:first-child {
+      margin-top: -10px;
+    }
+
+    label {
+      display: block;
+    }
+
+    .input-group-one-line {
+      display: flex;
+      flex-wrap: wrap;
+
+      label {
+        padding-right: 10px;
+      }
+    }
+
+    .freeform-label {
+      font-weight: bold;
+
+      &.freeform-required {
+        &:after {
+          content: "*";
+          margin-left: 5px;
+
+          color: red;
+        }
+      }
+    }
+
+    .freeform-input {
+      width: 100%;
+      display: block;
+
+      box-sizing: border-box;
+
+      &[type=checkbox], &[type=radio] {
+        width: auto;
+        display: inline;
+
+        margin-right: 5px;
+      }
+
+      &.StripeElement {
+        padding: 4px 2px;
+        border: 1px solid #CCCCCC;
+        height: 30px;
+      }
+    }
+
+    .freeform-input-only-label {
+      font-weight: normal;
+
+      > .freeform-input {
+        display: inline-block;
+        width: auto;
+        margin-right: 5px;
+      }
+    }
+
+    .freeform-errors, .ff-errors {
+      list-style: none;
+      padding: 0;
+      margin: 5px 0 0;
+
+      > li {
+        color: red;
+      }
+    }
+
+    .freeform-instructions {
+      margin:  0 0 5px;
+      font-size: 13px;
+      color: #ABA7A7;
+    }
+
+    $alignments: left, center, right, spread;
+    @each $alignment in $alignments {
+      &.freeform-column-content-align-#{$alignment} {
+        display: flex;
+
+        > button:not(:first-of-type) {
+          margin-left: 5px;
+        }
+
+        @if $alignment == left {
+          justify-content: flex-start;
+        } @else if $alignment == right {
+          justify-content: flex-end;
+        } @else if $alignment == spread {
+          justify-content: space-between;
+        } @else {
+          justify-content: $alignment;
+        }
+      }
+    }
+  }
+}
+
+.ff-form-errors {
+  padding: 15px;
+
+  border: 1px solid #f5c6cb;
+  background: #f8d7da;
+  border-radius: 5px;
+
+  color: $errorColor;
+
+  > p {
+    margin: 0;
+  }
+}
+
+.freeform-form-has-errors {
+  color: $errorColor;
+}

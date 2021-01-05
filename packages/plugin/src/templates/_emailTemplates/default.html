@@ -1,0 +1,29 @@
+{# subject: New submission on your {{ form.name }} form #}
+{# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
+{# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
+{# replyToName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
+{# replyToEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
+{# cc: #}
+{# bcc: #}
+{# includeAttachments: true #}
+{# presetAssets: #}
+{# description: New submission sample email template #}
+
+<h2>New submission on your {{ form.name }} form</h2>
+
+<p>Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}</p>
+<ul>
+    {% for field in allFields %}
+        <li>{{ field.label }}: {{ field.valueAsString }}</li>
+    {% endfor %}
+</ul>
+
+{# text #}
+Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}
+
+# {{ submission.title }}
+
+{% for field in allFields %}
+    - {{ field.label }}: {{ field.valueAsString }}
+{% endfor %}
+{# /text #}

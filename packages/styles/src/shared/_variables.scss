@@ -1,0 +1,79 @@
+// COLORS
+
+$color-cp-bg-gray: rgba(243, 247, 253, 1.00);
+$color-cp-bg-blue: #edf0f3;
+$color-cp-bg-white: #FFFFFF;
+$color-bg-tabs: $color-cp-bg-gray;
+
+$color-white: #FFFFFF;
+
+$color-field-text: #000000;
+$color-field-border: #DDDDDD;
+$color-column-label: #55606e;
+$color-column-instructions: #8f98a3;
+$color-row-border: #EDEDED;
+$color-tab-border: #e3e5e8;
+$color-tab-text: #555555;
+$color-input-text: #29323d;
+$color-select-text: $color-input-text;
+$color-input-border: #b8c2cc;
+$color-input-readonly-text: #555555;
+$color-input-readonly: #ECECEC;
+$color-input-readonly-border: #c2d1de;
+$color-input-disabled-text: #ABA7A7;
+
+$color-placeholder: #fffc00;
+$color-placeholder-hover: #f4f7fc;
+$color-placeholder-border: #dddddd;
+
+$color-row-bg: $color-placeholder;
+$color-row-border: #DBDCDF;
+$color-row-actions-bg: #EBECEF;
+$color-row-actions-text: #BBBDBE;
+
+$color-headings: #2b323c;
+
+$color-droppable: #EBF4F9;
+$color-action-button: #BCBEBF;
+$color-action-background: #ebedef;
+
+$color-hr: #e0e5eb;
+
+$color-error: #da5a47;
+$color-preview: rgba(#f8ff0e, 0.5);
+
+// Shadows
+$shadow-readonly-input: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+$shadow-select: 0 0 2px rgba(51, 170, 255, 0), inset 0 0 0 1px rgba(51, 170, 255, 0);
+
+// ANIMATION
+
+$anim-speed: .2s;
+$anim-ease: ease-out;
+
+// Sizes
+
+$spacing: 10px;
+$spacing-short: 3px;
+$spacing-wide: 15px;
+$double-spacing: 40px;
+$font-size: 14px;
+
+$builderFlex: 1 1 60%;
+$fieldListFlex: 0 1 200px;
+$propertyEditorFlex: 0 1 25%;
+
+// Extra small screen / phone
+$screen-xs: 480px !default;
+
+// Small screen / tablet
+//** Deprecated `$screen-sm` as of v3.0.1
+$screen-sm: 768px !default;
+
+// Medium screen / desktop
+//** Deprecated `$screen-md` as of v3.0.1
+$screen-md: 992px !default;
+
+// Large screen / wide desktop
+//** Deprecated `$screen-lg` as of v3.0.1
+$screen-lg: 1200px !default;

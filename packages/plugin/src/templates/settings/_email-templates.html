@@ -1,0 +1,90 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = "Email Templates"|t("freeform") %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/email-templates') }}
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        class: "code",
+        label: "Directory Path"|t('freeform'),
+        instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps the Form Builder locate these files when setting up notifications."|t('freeform'),
+        placeholder: "e.g. freeform_emails/",
+        id: "emailTemplateDirectory",
+        name: "settings[emailTemplateDirectory]",
+        value: settings.emailTemplateDirectory,
+        errors: settings.getErrors("emailTemplateDirectory"),
+    }) }}
+
+    {% if settings.absoluteEmailTemplateDirectory %}
+        {{ forms.selectField({
+            label: "Default Email Notification Creation Method"|t('freeform'),
+            instructions: "Which storage method to use when creating new email notifications with 'Add New Notification' option in Form Builder."|t('freeform'),
+            name: "settings[emailTemplateStorage]",
+            options: {
+                "db": "Database Entry",
+                "template": "Template File",
+            },
+            value: settings.emailTemplateStorage,
+            errors: settings.getErrors("emailTemplateStorage"),
+        }) }}
+
+        {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
+
+        <div id="components-wrapper">
+            <div>
+                <button type="button" class="btn submit small icon add" id="add-demo-template">
+                    {{ "Add an email template"|t('freeform') }}
+                </button>
+
+                <ul class="directory-structure">
+                    <li class="dir">
+                        <span>{{ settings.emailTemplateDirectory }}</span>
+                        <ul>
+                            {% for file in templateFiles %}
+                                <li class="file">
+                                    <span>{{ file }}</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% js %}
+    var data = {
+        templateName: "sample_template",
+    };
+
+    data["{{ craft.app.config.general.csrfTokenName }}"] = "{{ craft.app.request.csrfToken }}";
+
+    $("#add-demo-template").on({
+        click: function() {
+            $.ajax({
+                url: "{{ url("freeform/settings/add-email-template") }}",
+                type: "post",
+                dataType: "json",
+                data: data,
+                success: function(response) {
+                    if (!response.errors.length) {
+                        window.location.reload();
+                    } else {
+                        for (var i = 0; i < response.errors.length; i++ ) {
+                            var message = response.errors[i];
+                            Craft.cp.displayNotification("error", message);
+                        }
+                    }
+                }
+            });
+        }
+    });
+{% endjs %}

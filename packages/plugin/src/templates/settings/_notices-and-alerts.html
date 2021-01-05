@@ -1,0 +1,115 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% import "_includes/forms" as forms %}
+
+{% set title = "Notices & Alerts"|t("freeform") %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/settings/save-settings">
+    {{ redirectInput('freeform/settings/notices-and-alerts') }}
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        first: true,
+        class: "code",
+        label: "Send Email Alerts for Failed Notifications"|t('freeform'),
+        instructions: "Send an email notification alerting the email address(es) below when an email notification cannot be delivered."|t('freeform'),
+        placeholder: "e.g john@smith.com, bethany@corporation.com",
+        name: "settings[alertNotificationRecipients]",
+        value: settings.alertNotificationRecipients,
+        errors: settings.getErrors("alertNotificationRecipients"),
+    }) }}
+
+    <hr>
+
+    {{ forms.textField({
+        class: "code",
+        label: "Developer Digest Email"|t('freeform'),
+        instructions: "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices."|t('freeform'),
+        placeholder: "e.g john@smith.com, bethany@corporation.com",
+        name: "settings[digestRecipients]",
+        value: settings.digestRecipients,
+        errors: settings.getErrors("digestRecipients"),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Developer Digest Email Frequency"|t('freeform'),
+        instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
+        name: "settings[digestFrequency]",
+        value: settings.digestFrequency,
+        errors: settings.errors("digestFrequency"),
+        options: {
+            "-1": "Daily" | t('freeform'),
+            "0": "Weekly - Sundays" | t('freeform'),
+            "1": "Weekly - Mondays" | t('freeform'),
+            "2": "Weekly - Tuesdays" | t('freeform'),
+            "3": "Weekly - Wednesdays" | t('freeform'),
+            "4": "Weekly - Thursdays" | t('freeform'),
+            "5": "Weekly - Fridays" | t('freeform'),
+            "6": "Weekly - Saturdays" | t('freeform'),
+        },
+    }) }}
+
+    {{ forms.textField({
+        class: "code",
+        label: "Stats Digest Email"|t('freeform'),
+        instructions: "Send weekly or daily emails on the day specified (if using 'Weekly') to the email address(es) below. This is the same as the Developer one above, but only includes a snapshot of the previous period's performance."|t('freeform'),
+        placeholder: "e.g john@smith.com, bethany@corporation.com",
+        name: "settings[clientDigestRecipients]",
+        value: settings.clientDigestRecipients,
+        errors: settings.getErrors("clientDigestRecipients"),
+    }) }}
+
+    {{ forms.selectField({
+        label: "Stats Digest Email Frequency"|t('freeform'),
+        instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning from the period before that date."|t('freeform'),
+        name: "settings[clientDigestFrequency]",
+        value: settings.clientDigestFrequency,
+        errors: settings.errors("clientDigestFrequency"),
+        options: {
+            "-1": "Daily" | t('freeform'),
+            "0": "Weekly - Sundays" | t('freeform'),
+            "1": "Weekly - Mondays" | t('freeform'),
+            "2": "Weekly - Tuesdays" | t('freeform'),
+            "3": "Weekly - Wednesdays" | t('freeform'),
+            "4": "Weekly - Thursdays" | t('freeform'),
+            "5": "Weekly - Fridays" | t('freeform'),
+            "6": "Weekly - Saturdays" | t('freeform'),
+        },
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Send Notifications on Live Environment only?"|t('freeform'),
+        instructions: "If this setting is enabled, Freeform will only send out Digest emails when the Craft environment is set to production."|t('freeform'),
+        name: "settings[digestOnlyOnProduction]",
+        on: settings.digestOnlyOnProduction,
+        errors: settings.getErrors("digestOnlyOnProduction"),
+    }) }}
+
+    <hr>
+
+    {{ forms.lightswitchField({
+        label: "Display Update Warnings & Notices"|t('freeform'),
+        instructions: "Freeform will detect if any important updates, notices or warnings are available for this site specifically, and display them on the dashboard. Examples of this might be expiring API integrations and fixes to bugs that likely affect your current site. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com."|t('freeform'),
+        name: "settings[displayFeed]",
+        on: settings.displayFeed,
+        errors: settings.getErrors("displayFeed"),
+    }) }}
+
+    {{ forms.checkboxSelectField({
+        label: 'Additional Optional Checks' | t('freeform'),
+        instructions: "Help us provide you with more tailored warnings and notices by selecting any of the options below that may affect your site. Freeform's update notices check cannot detect template-level things or flows, so by selecting options below, Freeform will know to check against these as well and provide you with more robust warnings and alerts. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com." | t('freeform'),
+        name: 'settings[feedInfo]',
+        values: settings.feedInfo,
+        options: [
+            { label: 'Site uses a JS framework (Vue.js, React.js, etc.)', value: 'jsFramework' },
+            { label: 'Caching on at least some forms', value: 'caching' },
+            { label: 'Custom module or plugin for Freeform', value: 'customModule' },
+            { label: 'Alert me on any GDPR-related improvements or fixes', value: 'gdpr' },
+            { label: 'Make use of Editing submissions on front-end', value: 'editingSubmissions' },
+            { label: 'Display submission data on front-end', value: 'displayingSubmissions' },
+        ],
+    }) }}
+
+{% endblock %}

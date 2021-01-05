@@ -1,0 +1,125 @@
+ul.cards {
+  display: grid !important;
+  grid-template-columns: auto auto auto;
+  column-gap: 20px;
+  row-gap: 20px;
+
+  @media (min-width: 1550px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  margin-top: 40px;
+
+  &:focus {
+    outline: none;
+  }
+
+  > li {
+    $speed: .5s;
+
+    display: grid;
+    grid-template-rows: auto 60px;
+
+    background: white;
+    border: 1px solid #E2E2E5;
+    border-radius: 5px;
+
+    text-align: center;
+    transition: all $speed ease-out;
+
+    &:focus {
+      outline: none;
+    }
+
+    .centered {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-footer {
+      color: #9E9E9E;
+      background: #F3F5F8;
+      border-top: 1px solid #e2e2e5;
+      transition: all $speed ease-out;
+
+      > div {
+        font-weight: normal;
+        font-size: 16px;
+        display: none;
+      }
+    }
+
+    &.inactive {
+      border: 1px dashed #e2e2e5;
+
+      .card-footer {
+        color: #9E9E9E;
+        background: #F3F5F8;
+        border-top: 1px dashed #e2e2e5;
+
+
+        .inactive {
+          display: block;
+        }
+      }
+    }
+
+    &.active {
+      $color: #67AC5B;
+      border-color: $color;
+
+      h3 {
+        color: $color;
+      }
+
+      .card-footer {
+        color: white;
+        background: $color;
+
+        .active {
+          display: block;
+        }
+      }
+    }
+
+    &.checking {
+      $color: #9E9E9E;
+      border-color: $color;
+
+      .card-footer {
+        color: white;
+        background: $color;
+
+        .checking {
+          display: block;
+
+          > div {
+            position: relative;
+            padding-left: 30px;
+
+            .loader {
+              position: absolute;
+              left: 0;
+              top: 0;
+            }
+          }
+        }
+      }
+    }
+
+    &.errors {
+      $color: #E15241;
+      border-color: $color;
+
+      .card-footer {
+        color: white !important;
+        background: $color;
+
+        .errors {
+          display: block;
+        }
+      }
+    }
+  }
+}

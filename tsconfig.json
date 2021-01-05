@@ -1,0 +1,16 @@
+{
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "rootDir": "./",
+    "baseUrl": "./packages",
+    "allowJs": false
+  }
+}

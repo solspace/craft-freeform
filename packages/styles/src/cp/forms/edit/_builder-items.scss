@@ -1,0 +1,397 @@
+$minRowHeight: 60px;
+
+.builder {
+  position: relative;
+  background: $color-cp-bg-white;
+  flex: $builderFlex;
+
+  overflow: hidden;
+
+  .layout {
+    padding: 7px 0 0;
+  }
+
+  .composer-row-placeholder {
+    padding: 10px 10px;
+    opacity: 0;
+
+    > div {
+      overflow: hidden;
+      height: 1px;
+
+      border-top: 1px dashed $color-placeholder-border;
+    }
+
+    &.active {
+      opacity: 1;
+    }
+  }
+
+  .composer-form-actions {
+    position: absolute;
+    top: 11px;
+    right: 8px;
+
+    display: inline-flex;
+  }
+
+  .composer-row {
+    position: relative;
+
+    min-height: $minRowHeight;
+    padding: 0;
+
+    background: $color-white;
+
+    .composer-row-placeholder {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+
+      padding: 0 10px;
+    }
+
+    .composer-column-container {
+      position: relative;
+
+      display: flex;
+      justify-content: space-around;
+      align-items: stretch;
+
+      margin: 0 10px;
+
+      .composer-column {
+        position: relative;
+        flex: 1;
+
+        overflow: hidden;
+        border-radius: 5px;
+        border: 1px dashed transparent;
+
+        transition: background $anim-speed $anim-ease;
+
+        > div {
+          padding: 7px 8px;
+        }
+
+        &.composer-column-active {
+          background: rgba($color-placeholder, 0.2);
+          border-color: rgba($color-placeholder-border, 0.9);
+          border-radius: 5px;
+        }
+
+        &:hover {
+          background: $color-placeholder-hover;
+        }
+
+        &.composer-column-placeholder {
+          > div {
+            height: 100%;
+            min-height: 30px;
+
+            border: 1px dashed $color-placeholder-border;
+            border-radius: 5px;
+            background: rgba($color-placeholder, 0.2);
+            box-sizing: border-box;
+
+            transition: all 0.15s $anim-ease;
+          }
+        }
+
+        .composer-column-actions {
+          left: auto;
+          right: 8px;
+          top: 12px;
+          z-index: 2;
+        }
+
+        &, & * {
+          cursor: pointer;
+        }
+
+        & input:focus {
+          border-color: $color-input-border;
+          box-shadow: none;
+        }
+
+        &.can-receive {
+          background: $color-droppable;
+        }
+
+        input, textarea, select, button {
+          pointer-events: none;
+        }
+
+        label.composer-field-required {
+          > span.required:after {
+            margin: -12px 0 0 4px;
+          }
+        }
+
+        .composer-field-checkbox-single {
+          position: relative;
+          display: inline-block;
+          padding-left: 21px;
+
+          height: 16px;
+          line-height: 16px;
+          cursor: pointer;
+          clear: none;
+
+          input {
+            display: none;
+          }
+
+          &:before {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 16px !important;
+            height: 16px;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            content: '.';
+            font-size: 0;
+            background-color: #fbfcfe;
+            border: 1px solid rgba(96, 125, 159, 0.4);
+            background-clip: padding-box;
+            border-radius: 3px;
+          }
+
+          &.checked::before {
+            content: 'check';
+            font-size: 15px;
+
+            font-family: 'Craft';
+            speak: none;
+            font-feature-settings: "liga", "dlig";
+            text-rendering: optimizeLegibility;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            direction: ltr;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: inline-block;
+            text-align: center;
+            font-style: normal;
+            vertical-align: middle;
+            word-wrap: normal !important;
+            user-select: none;
+            opacity: 0.8;
+            line-height: 16px;
+            color: #1f2933;
+          }
+
+          span {
+            margin-left: $spacing-short !important;
+          }
+        }
+
+        .composer-column-instructions {
+          position: relative;
+          top: -5px;
+
+          color: #8f98a3;
+          font-family: HelveticaNeue;
+          font-size: 11px;
+        }
+
+        label {
+          display: block;
+          margin-bottom: 8px;
+          color: $color-column-label;
+
+          > input[type=checkbox], > input[type=radio] {
+            margin-right: 8px;
+          }
+
+          &.badge-only {
+            .composer-label-badge {
+              padding: 0;
+              margin: 0 5px 0 0;
+            }
+          }
+
+          &.composer-field-label {
+            font-weight: 700;
+          }
+        }
+
+        &:hover .composer-actions {
+          display: inline-flex;
+        }
+
+        .input-wrapper {
+          position: relative;
+        }
+
+        svg:not(.asset) {
+          position: absolute;
+          right: 4px;
+          bottom: 4px;
+
+          width: 25px;
+          height: 25px;
+
+          opacity: 0.5;
+          pointer-events: none;
+        }
+
+        .composer-ft-textarea-wrapper,
+        .composer-ft-select-wrapper,
+        .composer-ft-multiple-select-wrapper,
+        .composer-ft-checkbox-wrapper,
+        .composer-ft-checkbox-group-wrapper,
+        .composer-ft-radio-group-wrapper,
+        .composer-ft-dynamic-recipients-wrapper,
+        .composer-ft-file-wrapper,
+        .composer-ft-rating-wrapper,
+        .composer-ft-opinion-scale-wrapper {
+          svg {
+            display: none;
+          }
+        }
+
+        .composer-ft-file-wrapper {
+          .input-wrapper {
+            position: relative;
+            height: 19px;
+
+            input[type=file] {
+              position: absolute;
+              left: 0;
+              top: 0;
+              right: 0;
+              
+              width: 100%;
+            }
+          }
+        }
+
+        .composer-ft-select-wrapper, .composer-ft-dynamic-recipients-wrapper {
+          .select, .select select {
+            width: 100%;
+          }
+        }
+
+        .composer-ft-table-wrapper {
+          .table {
+            width: 100px;
+          }
+        }
+
+        .composer-ft-rating-wrapper {
+
+          .rating {
+            display: flex;
+            justify-content: flex-start;
+            flex-wrap: wrap;
+
+            > span {
+              display: block;
+              cursor: pointer;
+
+              font-size: 200%;
+              font-weight: 100;
+              font-family: sans-serif;
+
+              &:after {
+                content: '★ ';
+              }
+
+              &:last-child {
+                margin: 0 0 5px;
+              }
+            }
+          }
+        }
+
+        .composer-row {
+          background-color: unset;
+
+          .composer-column {
+            padding-left: 0;
+            padding-right: 0;
+
+            &:hover {
+              background-color: unset;
+            }
+          }
+
+          .composer-column-container {
+            padding-left: 0;
+            padding-right: 0;
+          }
+        }
+      }
+    }
+  }
+}
+
+.composer-label-badge {
+  display: inline-block;
+  padding: 0 7px;
+  margin: 0 0 0 5px;
+
+  color: #BBBDBE;
+
+  border-radius: 4px;
+
+  font-size: 12px;
+  font-weight: normal;
+
+  &.composer-label-badge-warning,
+  &.composer-label-badge-visibility,
+  &.composer-label-badge-loudspeaker,
+  &.composer-label-badge-template {
+    &:before {
+      position: relative;
+
+      margin-right: $spacing-short;
+
+      font-family: Craft, sans-serif;
+    }
+  }
+
+  &.composer-label-badge-warning {
+    color: #e69647;
+    top: 1px;
+
+    &:before {
+      content: "alert";
+    }
+  }
+
+  &.composer-label-badge-visibility {
+    color: $color-column-label;
+
+    &:before {
+      font-family: solspace-freeform-craft;
+      content: "\e801";
+    }
+  }
+
+  &.composer-label-badge-loudspeaker {
+    color: $color-column-label;
+
+    &:before {
+      font-family: solspace-freeform-craft;
+      content: "\e806";
+    }
+  }
+
+  &.composer-label-badge-template {
+    color: $color-column-label;
+
+    &:before {
+      font-family: solspace-freeform-craft;
+      content: "\f121";
+    }
+  }
+}
+
+@import "./builder/one-line";
+@import "./builder/fields/opinion-scale";

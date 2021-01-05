@@ -1,0 +1,54 @@
+@import "../main";
+@import "../../shared/variables";
+@import "../../shared/alerts";
+
+#auth-checker {
+  margin-bottom: 10px;
+
+  > div {
+    display: none;
+
+    &:before {
+      content: "";
+      position: relative;
+      top: 1px;
+
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+
+      margin-right: 5px;
+
+      background: #CCD1D6;
+      border: 1px solid #CCD1D6;
+      border-radius: 10px;
+    }
+  }
+
+  .authorized {
+    &:before {
+      border-color: #27AE60;
+      background: #27AE60;
+    }
+  }
+
+  .not-authorized {
+    &:before {
+      border-color: #D0021B;
+      background: #D0021B;
+    }
+
+    .errors {
+      color: #D0021B;
+    }
+  }
+
+  .pending-status-check {
+    display: block;
+  }
+}
+
+
+.alert {
+  margin-top: 30px;
+}

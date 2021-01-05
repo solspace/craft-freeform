@@ -1,0 +1,80 @@
+$borderColor: #CCCCCC;
+
+.opinion-scale {
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .opinion-scale-scales {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    grid-gap: 0;
+
+    > * {
+      > label {
+        display: block;
+        padding: 6px 12px;
+        margin: 0 0 5px;
+
+        border: 1px solid $borderColor;
+        border-left: none;
+
+        white-space: nowrap;
+        text-align: center;
+        color: black !important;
+        cursor: pointer;
+      }
+
+      input {
+        position: absolute;
+        left: -9999px;
+        top: -9999px;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        visibility: hidden;
+
+        &:checked ~ label {
+          background: #E6E6E6;
+        }
+      }
+
+      $rad: 3px;
+      &:first-child {
+        > label {
+          border-left: 1px solid $borderColor;
+
+          border-top-left-radius: $rad;
+          border-bottom-left-radius: $rad;
+        }
+      }
+
+      &:last-child {
+        > label {
+          border-top-right-radius: $rad;
+          border-bottom-right-radius: $rad;
+        }
+      }
+    }
+  }
+
+  ul.opinion-scale-legends {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    grid-gap: 0;
+
+    li {
+      text-align: center;
+    }
+
+    li:first-child {
+      text-align: left;
+    }
+
+    li:last-child {
+      text-align: right;
+    }
+  }
+}

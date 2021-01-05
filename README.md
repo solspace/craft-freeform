@@ -1,7 +1,8 @@
 # Solspace Freeform plugin for Craft CMS 3.x
+
 Freeform is the most reliable, intuitive and powerful form builder for Craft. Effortlessly build beautiful forms in minutes!
 
-![Screenshot](src/icon.svg)
+![Freeform icon](packages/plugin/src/icon.svg)
 
 ## Overview
 

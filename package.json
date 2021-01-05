@@ -1,0 +1,28 @@
+{
+  "name": "root",
+  "private": true,
+  "description": "Freeform plugin for Craft CMS",
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.13.0",
+    "eslint-config-prettier": "^6.15.0",
+    "eslint-config-react": "^1.1.7",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.5",
+    "lerna": "^3.22.1",
+    "prettier": "^2.1.2",
+    "typescript": "^4.1.2"
+  },
+  "scripts": {
+    "dev": "lerna run --parallel dev",
+    "build": "lerna run --parallel build",
+    "format": "prettier --write '**/*.{ts,tsx,md,json,js,jsx,css}'",
+    "format:verify": "prettier --list-different '**/*.{ts,tsx,md,json,js,jsx,css}'",
+    "lint": "lerna run --parallel lint",
+    "postinstall": "npm run bootstrap",
+    "bootstrap": "lerna bootstrap --loglevel warn --concurrency 4",
+    "test": "lerna run test"
+  },
+  "author": "Solspace, Inc.",
+  "license": "ISC"
+}

@@ -1,0 +1,97 @@
+@import "../../shared/flexbox-grid";
+@import "../../shared/color-indicator";
+@import "../../shared/variables";
+@import "../settings/form-cards";
+@import "../forms/edit/banners";
+
+#main-content {
+  #content-container, #content {
+    max-width: 100%;
+  }
+}
+
+.dashboard {
+  .heading {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    margin: $spacing-wide 0;
+
+    .hero {
+      font-size: 1.5rem;
+      margin: auto ($spacing-wide * 3) auto 0;
+
+      small {
+        color: $color-row-actions-text;
+      }
+    }
+  }
+
+  table {
+    td, th {
+      padding-right: $spacing-wide;
+    }
+  }
+}
+
+.setting-circles {
+  li {
+    padding: 5px 15px;
+  }
+
+  li.delimiter {
+    display: block;
+    padding: 0;
+    margin: 10px 0;
+    width: 100%;
+    height: 1px;
+
+    background-color: #E8EAEC;
+    font-size: 0;
+  }
+}
+
+.integration-list {
+  display: flex;
+
+  > li {
+    margin: 0 40px 20px 0;
+  }
+}
+
+#error-log-table {
+  overflow-y: auto;
+  overflow-x: scroll;
+}
+
+.info-popup {
+  &:before, &:hover:before {
+    content: 'info';
+    color: white;
+    font-family: 'Craft';
+    speak: none;
+    font-feature-settings: "liga", "dlig";
+    text-rendering: optimizeLegibility;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: inline-block;
+    text-align: center;
+    font-style: normal;
+    word-wrap: normal !important;
+    user-select: none;
+    opacity: 0.8;
+    vertical-align: baseline;
+    line-height: 1.375;
+  }
+}
+
+.tippy-content {
+  padding: 15px;
+  color: dimgrey;
+  font-size: 16px;
+}

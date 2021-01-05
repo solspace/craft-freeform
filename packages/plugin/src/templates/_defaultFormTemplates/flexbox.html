@@ -1,0 +1,89 @@
+{% css formCss %}
+
+{{ form.renderTag }}
+
+<script>
+  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+  if (form) {
+    form.addEventListener("freeform-stripe-styling", function (event) {
+      event.detail.base = {
+        fontSize: "16px",
+        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+      }
+    })
+  }
+</script>
+
+{% if form.pages|length > 1 %}
+    <ul class="freeform-pages">
+        {% for page in form.pages %}
+            <li>
+                {% if form.currentPage.index == page.index %}
+                    <b>{{ page.label }}</b>
+                {% else %}
+                    {{ page.label }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if not form.ajaxEnabled and form.submittedSuccessfully %}
+    <div class="freeform-alert freeform-alert-success">
+        {{ form.successMessage | t }}
+    </div>
+{% endif %}
+
+{% if form.hasErrors %}
+    <div class="freeform-form-has-errors">
+        {{ form.errorMessage | t }}
+
+        {% if form.errors|length %}
+            <ul>
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% for row in form %}
+<div class="freeform-row {{ form.customAttributes.rowClass }}">
+    {% for field in row %}
+    {% set columnClass = "freeform-column " ~ form.customAttributes.columnClass %}
+    {% if field.type == "submit" %}
+        {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
+    {% endif %}
+    <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
+        {{ field.render({
+            class: field.type not in ["submit", "signature"] ? "freeform-input" : "",
+            labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
+            errorClass: "freeform-errors",
+            instructionsClass: "freeform-instructions",
+        }) }}
+
+        {# FOR FREEFORM PAYMENTS #}
+        {% if field.layoutRows is defined %}
+            {% for layoutRow in field.layoutRows %}
+                <div class="freeform-row {{ form.customAttributes.rowClass }}">
+                    {% for layoutField in layoutRow %}
+                        <div class="{{ columnClass }}">
+                            {{ layoutField.render({
+                                class: "freeform-input",
+                                labelClass: "freeform-label" ~ (layoutField.inputOnly ? " freeform-input-only-label" : "") ~ (layoutField.required ? " freeform-required" : ""),
+                                errorClass: "freeform-errors",
+                                instructionsClass: "freeform-instructions",
+                            }) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+{{ form.renderClosingTag }}

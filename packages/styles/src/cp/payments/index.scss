@@ -1,0 +1,37 @@
+.label.payment-status {
+  display: inline-block;
+  border-radius: 3px;
+  padding: 0 7px;
+  font-size: 11px;
+  line-height: 22px;
+  height: 22px;
+  color: white;
+  text-transform: uppercase;
+  text-decoration: none;
+  letter-spacing: 0.5px;
+
+  &.unknown {
+    /* TODO: get normal color */
+    background: gray;
+  }
+
+  &.active, &.paid, &.succeeded {
+    /* TODO: get normal color */
+    background: green;
+  }
+
+  &.failed {
+    /* TODO: get normal color */
+    background: red;
+  }
+
+  &.inactive {
+    /* TODO: get normal color */
+    background: darkgray;
+  }
+
+  &.incomplete {
+    background: #c5d0db;
+    color: #FFFFFF;
+  }
+}

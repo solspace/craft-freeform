@@ -1,5 +1,7 @@
 import { EVENT_AJAX_SUCCESS } from '../../constants/event-types';
 
+const EVENT_GTM_DATA_LAYER_PUSH = 'freeform-gtm-data-layer-push';
+
 /* eslint-disable no-undef */
 class GoogleTagManager {
   freeform;
@@ -22,6 +24,7 @@ class GoogleTagManager {
     this.form.addEventListener(EVENT_AJAX_SUCCESS, (event) => {
       const response = event.response;
 
+      const pushEvent = freeform._dispatchEvent(EVENT_GTM_DATA_LAYER_PUSH, { payload: {} });
       const payload = {
         event: eventName,
         form: handle,
@@ -29,6 +32,7 @@ class GoogleTagManager {
           id: response.submissionId,
           token: response.submissionToken,
         },
+        ...pushEvent.payload,
       };
 
       window.dataLayer.push(payload);

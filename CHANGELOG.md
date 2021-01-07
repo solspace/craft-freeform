@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.1 - Unreleased
+
+### Added
+- Added file based email notification editing in the control panel.
+
 ## 3.10.0 - 2021-01-05
 
 ### Added

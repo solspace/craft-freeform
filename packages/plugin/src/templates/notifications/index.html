@@ -7,9 +7,26 @@
 
     {% if currentUser.can("freeform-notificationsManage") %}
         <div class="buttons">
-            <a class="btn submit add icon" href="{{ url('freeform/notifications/new/') }}">
-                {{ "New Email Template"|t('freeform') }}
-            </a>
+
+            <div class="btngroup submit">
+                <a class="btn submit add icon" href="{{ url('freeform/notifications/new/') }}">
+                    {{ "New Email Template"|t('freeform') }}
+                </a>
+
+                <div class="btn submit menubtn"></div>
+                <div class="menu">
+                    <ul>
+                        <li>
+                            <a href="{{ url('freeform/notifications/new-file') }}">
+                                {{ "New file-based template"|t('freeform') }}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+
+
         </div>
     {% endif %}
 
@@ -75,32 +92,44 @@
 
 
     {% if hasFileTemplates %}
-        <h2 style="margin-top: 60px;">{{ "Template Files"|t('freeform') }} <span class="code disabled">({{ settings.emailTemplateDirectory }})</span></h2>
+        <h2 style="margin-top: 60px;">
+            {{ "Template Files"|t('freeform') }}
+            <span class="code disabled">({{ settings.emailTemplateDirectory }})</span>
+        </h2>
 
         <table id="emailnotifications" class="data fullwidth collapsible">
             <thead>
             <th scope="col">{{ "Name"|t('freeform') }}</th>
-            <th scope="col">{{ "Handle"|t('freeform') }}</th>
             <th scope="col">{{ "Description"|t('freeform') }}</th>
             <td class="col">{{ "File Name"|t('freeform') }}</td>
+            <td class="thin"></td>
             </thead>
             <tbody>
             {# File based templates #}
             {% for filename, notification in notifications if notification.fileBasedTemplate %}
-                <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
+                <tr data-id="{{ notification.filepath }}" data-name="{{ notification.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        {{ notification.name }}
+                        {% if currentUser.can("freeform-notificationsManage") %}
+                            <a href="{{ url('freeform/notifications/' ~ notification.filepath) }}">
+                                {{ notification.name }}
+                            </a>
+                        {% else %}
+                            {{ notification.name }}
+                        {% endif %}
                     </th>
-                    <td data-title="{{ 'Handle'|t('freeform') }}">
-                        <code>
-                            {{ notification.handle }}
-                        </code>
-                    </td>
                     <td style="width: 50%;">
                         {{ notification.description|truncater(80) }}
                     </td>
                     <td data-title="{{ "File Name"|t('freeform') }}">
                         <code>{{ filename }}</code>
+                    </td>
+                    <td class="thin">
+                        <div class='action-buttons'>
+                            {% if currentUser.can("freeform-notificationsManage") %}
+                                <a class="clone icon" data-id="{{ notification.filepath }}" title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
+                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}

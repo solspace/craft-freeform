@@ -46,11 +46,6 @@ class NotificationsController extends BaseController
         );
     }
 
-    /**
-     * @throws ForbiddenHttpException
-     * @throws InvalidParamException
-     * @throws HttpException
-     */
     public function actionCreate(): Response
     {
         $record = NotificationRecord::create();
@@ -59,12 +54,28 @@ class NotificationsController extends BaseController
         return $this->renderEditForm($record, $title);
     }
 
+    public function actionCreateFile(): Response
+    {
+        $date = (new \DateTime())->format('Y-m-d');
+        $name = "new-template-{$date}";
+
+        $record = $this->getNotificationService()->createNewFileNotification($name);
+        $record->name = "New Template on {$date}";
+        $record->handle = $name;
+
+        $title = Freeform::t('Create a new email notification template');
+
+        return $this->renderEditForm($record, $title);
+    }
+
     /**
+     * @param mixed $id
+     *
      * @throws ForbiddenHttpException
      * @throws InvalidParamException
      * @throws HttpException
      */
-    public function actionEdit(int $id): Response
+    public function actionEdit($id): Response
     {
         $record = $this->getNotificationService()->getNotificationById($id);
 
@@ -92,7 +103,7 @@ class NotificationsController extends BaseController
         $post = $request->post();
 
         $notificationId = $post['notificationId'] ?? null;
-        $notification = $this->getNewOrExistingNotification((int) $notificationId);
+        $notification = $this->getNewOrExistingNotification($notificationId);
 
         $notification->name = $request->post('name');
         $notification->handle = $request->post('handle');
@@ -143,10 +154,19 @@ class NotificationsController extends BaseController
         $this->requirePostRequest();
 
         $id = $this->request->post('id');
-        $notification = NotificationRecord::findOne(['id' => $id]);
+        $notification = $this->getNotificationService()->getNotificationById($id);
 
         if (!$notification) {
             return $this->asJson(['success' => false, 'errors' => ['Notification doesn\'t exist']]);
+        }
+
+        if ($notification->isFileBasedTemplate()) {
+            $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
+            $original = $emailDirectory.'/'.$notification->filepath;
+            $new = $emailDirectory.'/'.$notification->handle.' copy.twig';
+            copy($original, $new);
+
+            return $this->asJson(['success' => true]);
         }
 
         $record = new NotificationRecord();
@@ -220,9 +240,11 @@ class NotificationsController extends BaseController
     }
 
     /**
+     * @param mixed $id
+     *
      * @throws FreeformException
      */
-    private function getNewOrExistingNotification(int $id): NotificationRecord
+    private function getNewOrExistingNotification($id): NotificationRecord
     {
         if ($id) {
             $notification = $this->getNotificationService()->getNotificationById($id);

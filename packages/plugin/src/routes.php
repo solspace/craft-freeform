@@ -42,10 +42,12 @@ return [
     // Notifications
     'freeform/notifications' => 'freeform/notifications/index',
     'freeform/notifications/new' => 'freeform/notifications/create',
-    'freeform/notifications/<id:\d+>' => 'freeform/notifications/edit',
+    'freeform/notifications/new-file' => 'freeform/notifications/create-file',
     'freeform/notifications/save' => 'freeform/notifications/save',
     'freeform/notifications/delete' => 'freeform/notifications/delete',
     'freeform/notifications/duplicate' => 'freeform/notifications/duplicate',
+    'freeform/notifications/<id:\d+>' => 'freeform/notifications/edit',
+    'freeform/notifications/<id:[^\/]+>' => 'freeform/notifications/edit',
     // Submissions
     'freeform/submissions' => 'freeform/submissions/index',
     'freeform/submissions/export' => 'freeform/submissions/export',

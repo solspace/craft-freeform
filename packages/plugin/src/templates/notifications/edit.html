@@ -41,6 +41,7 @@
     <input type="hidden" name="action" value="freeform/notifications/save">
     {{ redirectInput('freeform/notifications') }}
     {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
+    {% if notification.filepath %}<input type="hidden" name="notificationId" value="{{ notification.filepath }}">{% endif %}
     {{ csrfInput() }}
 
     {{ forms.textField({
@@ -55,16 +56,33 @@
         required: true
     }) }}
 
-    {{ forms.textField({
-        label: "Handle"|t('freeform'),
-        instructions: "How you’ll refer to this notification template in the templates."|t('freeform'),
-        id: 'handle',
-        class: 'code',
-        name: 'handle',
-        value: notification.handle,
-        errors: notification.getErrors('handle'),
-        required: true
-    }) }}
+    {% if notification.fileBasedTemplate %}
+
+        {{ forms.textField({
+            label: "File name"|t('freeform'),
+            instructions: "File name of the template without the extension."|t('freeform'),
+            id: 'handle',
+            class: 'code',
+            name: 'handle',
+            value: notification.handle,
+            errors: notification.getErrors('handle'),
+            required: true
+        }) }}
+
+    {% else %}
+
+        {{ forms.textField({
+            label: "Handle"|t('freeform'),
+            instructions: "How you’ll refer to this notification template in the templates."|t('freeform'),
+            id: 'handle',
+            class: 'code',
+            name: 'handle',
+            value: notification.handle,
+            errors: notification.getErrors('handle'),
+            required: true
+        }) }}
+
+    {% endif %}
 
     {{ forms.textareaField({
         label: "Description"|t('freeform'),

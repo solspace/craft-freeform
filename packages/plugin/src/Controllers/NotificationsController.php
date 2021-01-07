@@ -171,7 +171,7 @@ class NotificationsController extends BaseController
         if ($notification->isFileBasedTemplate()) {
             $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
             $original = $emailDirectory.'/'.$notification->filepath;
-            $new = $emailDirectory.'/'.$notification->handle.' copy.twig';
+            $new = $emailDirectory.'/'.$notification->handle.'-copy.twig';
             copy($original, $new);
 
             return $this->asJson(['success' => true]);

@@ -187,6 +187,13 @@ class NotificationsService extends BaseService
             return false;
         }
 
+        if ($record->isFileBasedTemplate()) {
+            $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
+            unlink($emailDirectory.'/'.$record->filepath);
+
+            return true;
+        }
+
         $beforeDeleteEvent = new DeleteEvent($record);
         $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
 

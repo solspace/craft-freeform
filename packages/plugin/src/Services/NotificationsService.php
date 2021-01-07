@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\Services;
 
 use craft\helpers\FileHelper;
-use craft\helpers\StringHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Notifications\DeleteEvent;
 use Solspace\Freeform\Events\Notifications\SaveEvent;
@@ -226,7 +225,7 @@ class NotificationsService extends BaseService
         $extension = '.twig';
 
         $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
-        $templateName = StringHelper::toSnakeCase($name);
+        $templateName = $name;
 
         $templatePath = $templateDirectory.'/'.$templateName.$extension;
 

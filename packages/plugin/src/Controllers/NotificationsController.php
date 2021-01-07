@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Controllers;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationEditorBundle;
 use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
@@ -37,9 +38,16 @@ class NotificationsController extends BaseController
         $this->view->registerAssetBundle(NotificationIndexBundle::class);
         $notifications = $this->getNotificationService()->getAllNotifications();
 
+        $settingsModel = $this->getSettingsService()->getSettingsModel();
+
+        $filesEnabled = !empty($settingsModel->emailTemplateDirectory);
+        $filesByDefault = Settings::EMAIL_TEMPLATE_STORAGE_FILE === $settingsModel->emailTemplateStorage;
+
         return $this->renderTemplate(
             'freeform/notifications',
             [
+                'filesEnabled' => $filesEnabled,
+                'filesByDefault' => $filesEnabled && $filesByDefault,
                 'notifications' => $notifications,
                 'settings' => Freeform::getInstance()->settings->getSettingsModel(),
             ]

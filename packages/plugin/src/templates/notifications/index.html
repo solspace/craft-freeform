@@ -9,22 +9,35 @@
         <div class="buttons">
 
             <div class="btngroup submit">
-                <a class="btn submit add icon" href="{{ url('freeform/notifications/new/') }}">
-                    {{ "New Email Template"|t('freeform') }}
-                </a>
+                {% if filesByDefault %}
+                    <a class="btn submit add icon" href="{{ url('freeform/notifications/new-file') }}">
+                        {{ "New File Template"|t('freeform') }}
+                    </a>
+                {% else %}
+                    <a class="btn submit add icon" href="{{ url('freeform/notifications/new') }}">
+                        {{ "New Email Template"|t('freeform') }}
+                    </a>
+                {% endif %}
 
-                <div class="btn submit menubtn"></div>
-                <div class="menu">
-                    <ul>
-                        <li>
-                            <a href="{{ url('freeform/notifications/new-file') }}">
-                                {{ "New file-based template"|t('freeform') }}
-                            </a>
-                        </li>
-                    </ul>
-                </div>
+                {% if filesEnabled %}
+                    <div class="btn submit menubtn"></div>
+                    <div class="menu">
+                        <ul>
+                            <li>
+                                {% if not filesByDefault %}
+                                    <a href="{{ url('freeform/notifications/new-file') }}">
+                                        {{ "New File Template"|t('freeform') }}
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url('freeform/notifications/new') }}">
+                                        {{ "New Email Template"|t('freeform') }}
+                                    </a>
+                                {% endif %}
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
-
 
 
         </div>
@@ -73,10 +86,11 @@
                     </td>
                     <td class="thin">
                         <div class='action-buttons'>
-                        {% if currentUser.can("freeform-notificationsManage") %}
-                            <a class="clone icon" data-id="{{ notification.id }}" title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
-                            <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
-                        {% endif %}
+                            {% if currentUser.can("freeform-notificationsManage") %}
+                                <a class="clone icon" data-id="{{ notification.id }}"
+                                   title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
+                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                            {% endif %}
                         </div>
                     </td>
                 </tr>
@@ -126,7 +140,8 @@
                     <td class="thin">
                         <div class='action-buttons'>
                             {% if currentUser.can("freeform-notificationsManage") %}
-                                <a class="clone icon" data-id="{{ notification.filepath }}" title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
+                                <a class="clone icon" data-id="{{ notification.filepath }}"
+                                   title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
                                 <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                             {% endif %}
                         </div>

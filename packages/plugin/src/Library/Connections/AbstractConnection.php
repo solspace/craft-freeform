@@ -115,7 +115,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
                 return $result;
             }
 
-            if (!\Craft::$app->elements->saveElement($element)) {
+            if (!\Craft::$app->elements->saveElement($element, true, true, true)) {
                 $this->attachErrors($result, $element);
             } else {
                 $this->afterConnect($element, $result, $transformers);

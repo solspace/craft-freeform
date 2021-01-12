@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.1 - Unreleased
+
+### Fixed
+- Fixed Freeform CP Widgets with charts not loading the chart lib
+
 ## 3.10.0 - 2021-01-05
 
 ### Added

@@ -63,7 +63,7 @@ export default class Html extends BasePropertyEditor {
           highlightActiveLine={true}
           showGutter={false}
           fontSize={12}
-          width="325px"
+          width="100%"
           editorProps={{ $blockScrolling: 'Infinity' }}
         />
       </div>

@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed Freeform CP Widgets with charts not loading the chart lib
+- Fixed an issue where the Form Builder HTML editor would go outside of screen on smaller screens 
 
 ## 3.10.0 - 2021-01-05
 

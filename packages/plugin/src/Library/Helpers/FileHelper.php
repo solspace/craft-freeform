@@ -200,6 +200,8 @@ class FileHelper
         'application/zip' => 'zip',
         'application/x-zip-compressed' => 'zip',
         'application/s-compressed' => 'zip',
+        'application/x-empty' => 'txt',
+        'inode/x-empty' => 'txt',
         'multipart/x-zip' => 'zip',
         'text/x-scriptzsh' => 'zsh',
     ];

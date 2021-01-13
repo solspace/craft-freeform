@@ -405,6 +405,10 @@ class Pardot extends AbstractCRMIntegration
             ),
         ];
 
+        if (!$data || !isset($data->result)) {
+            return $fieldList;
+        }
+
         foreach ($data->result->customField as $field) {
             if (\is_array($field)) {
                 $field = (object) $field;

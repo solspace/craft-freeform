@@ -24,9 +24,6 @@ class FormRenderEvent extends ArrayableEvent
     /** @var bool */
     private $manualScriptLoading;
 
-    /**
-     * FormRenderEvent constructor.
-     */
     public function __construct(Form $form, bool $manualScriptLoading = false)
     {
         $this->form = $form;

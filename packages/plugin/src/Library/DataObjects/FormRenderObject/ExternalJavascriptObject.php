@@ -2,18 +2,19 @@
 
 namespace Solspace\Freeform\Library\DataObjects\FormRenderObject;
 
+use Solspace\Commons\Helpers\StringHelper;
+
 class ExternalJavascriptObject extends AbstractFormRenderObject
 {
-    /**
-     * Attach the object to view.
-     */
     public function attachToView()
     {
-        \Craft::$app->view->registerJsFile($this->getValue());
+        \Craft::$app->view->registerJsFile($this->getValue(), $this->options);
     }
 
     public function getOutput(): string
     {
-        return '<script src="'.$this->getValue().'"></script>';
+        $options = StringHelper::compileAttributeStringFromArray($this->options);
+
+        return '<script src="'.$this->getValue().'"'.$options.'></script>';
     }
 }

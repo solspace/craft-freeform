@@ -2,6 +2,9 @@
 
 ## 3.10.1 - Unreleased
 
+### Added
+- Added events for modifying included script tags and honeypot
+
 ### Fixed
 - Fixed Freeform CP Widgets with charts not loading the chart lib
 - Fixed an issue where the Form Builder HTML editor would go outside of screen on smaller screens 

@@ -1,12 +1,13 @@
 # Solspace Freeform Changelog
 
-## 3.10.1 - Unreleased
+## 3.10.1 - 2021-01-14
 
 ### Fixed
-- Fixed Freeform CP Widgets with charts not loading the chart lib
-- Fixed an issue where the Form Builder HTML editor would go outside of screen on smaller screens 
-- Fixed not having mime-types for empty text file uploads
-- Fixed a potential issue with Pardot accounts that don't have custom fields
+- Fixed a bug where Freeform CP Widgets with charts were not loading the chart library.
+- Fixed a bug where creating new elements would not automatically update the Craft search indexes.
+- Fixed a bug where the Form Builder HTML editor would go outside of viewing area on smaller screens.
+- Fixed a bug where there were no valid mime-types for empty text file uploads.
+- Fixed a potential issue with Pardot accounts that don't have custom fields.
 
 ## 3.10.0 - 2021-01-05
 

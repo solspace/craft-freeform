@@ -1,9 +1,11 @@
 # Solspace Freeform Changelog
 
-## 3.10.1 - 2021-01-14
+## 3.10.2 - Unreleased
 
 ### Added
 - Added events for modifying included script tags and honeypot
+
+## 3.10.1 - 2021-01-14
 
 ### Fixed
 - Fixed a bug where Freeform CP Widgets with charts were not loading the chart library.

@@ -5,6 +5,9 @@
 ### Added
 - Added events for modifying included script tags and honeypot
 
+### Changed
+- Updated HTML fields in submissions view to no longer render twig
+
 ### Fixed
 - Fixed places which caused incompatibility with Craft 3.4.x
 

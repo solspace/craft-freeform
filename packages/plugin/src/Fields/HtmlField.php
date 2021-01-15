@@ -46,6 +46,10 @@ class HtmlField extends AbstractField implements SingleValueInterface, InputOnly
     public function getInputHtml(): string
     {
         if ($this->isTwig()) {
+            if (\Craft::$app->request->getIsCpRequest()) {
+                return $this->getValue();
+            }
+
             /** @var Settings $settings */
             $settings = Freeform::getInstance()->getSettings();
             if ($settings->twigInHtml) {

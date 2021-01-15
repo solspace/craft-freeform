@@ -1,15 +1,15 @@
 # Solspace Freeform Changelog
 
-## 3.10.2 - Unreleased
+## 3.10.2 - 2021-01-15
 
 ### Added
-- Added events for modifying included script tags and honeypot
+- Added developer events for modifying included Freeform script tags and honeypot.
 
 ### Changed
-- Updated HTML fields in submissions view to no longer render twig
+- Updated HTML block fields in to no longer render Twig code inside the CP submissions view to prevent potential issues.
 
 ### Fixed
-- Fixed places which caused incompatibility with Craft 3.4.x
+- Fixed a bug where Freeform was incompatible with Craft 3.4.x in some places and could error.
 
 ## 3.10.1 - 2021-01-14
 
@@ -64,6 +64,7 @@
 - Fixed a bug where Signature fields were redrawing incorrectly on high DPI displays.
 
 ## 3.9.11 - 2020-12-17
+
 ### Fixed
 - Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
 

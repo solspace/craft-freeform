@@ -5,6 +5,9 @@
 ### Added
 - Added events for modifying included script tags and honeypot
 
+### Fixed
+- Fixed places which caused incompatibility with Craft 3.4.x
+
 ## 3.10.1 - 2021-01-14
 
 ### Fixed

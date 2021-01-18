@@ -205,7 +205,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             ->from(UnfinalizedFileRecord::TABLE)
             ->where(
                 '{{%freeform_unfinalized_files}}.[[dateCreated]] < :now',
-                ['now' => $date->format(DATE_ATOM)]
+                ['now' => $date->format(\DATE_ATOM)]
             )
             ->column()
         ;

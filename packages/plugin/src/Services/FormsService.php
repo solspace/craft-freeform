@@ -61,7 +61,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         if (null === self::$formsById || !self::$allFormsLoaded) {
             $query = $this->getFormQuery();
             if ($orderByName) {
-                $query->orderBy(['forms.name' => SORT_ASC]);
+                $query->orderBy(['forms.name' => \SORT_ASC]);
             }
 
             $results = $query->all();
@@ -87,7 +87,7 @@ class FormsService extends BaseService implements FormHandlerInterface
     {
         $limit = $arguments['limit'] ?? null;
         $sort = strtolower($arguments['sort'] ?? 'asc');
-        $sort = 'desc' === $sort ? SORT_DESC : SORT_ASC;
+        $sort = 'desc' === $sort ? \SORT_DESC : \SORT_ASC;
 
         $orderBy = $arguments['orderBy'] ?? 'order';
         $orderBy = [$orderBy => $sort];
@@ -606,7 +606,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function getFormattingTemplateCss(string $templateName): string
     {
-        $fileName = pathinfo($templateName, PATHINFO_FILENAME);
+        $fileName = pathinfo($templateName, \PATHINFO_FILENAME);
         $cssFilePath = \Yii::getAlias('@freeform').'/Resources/css/front-end/formatting-templates/'.$fileName.'.css';
         if (file_exists($cssFilePath)) {
             return file_get_contents($cssFilePath);
@@ -728,7 +728,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 ]
             )
             ->from(FormRecord::TABLE.' forms')
-            ->orderBy(['forms.order' => SORT_ASC, 'forms.name' => SORT_ASC])
+            ->orderBy(['forms.order' => \SORT_ASC, 'forms.name' => \SORT_ASC])
         ;
     }
 

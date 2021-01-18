@@ -324,7 +324,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
             )
             ->from(IntegrationRecord::TABLE.' integration')
             ->where(['type' => $this->getIntegrationType()])
-            ->orderBy(['id' => SORT_ASC])
+            ->orderBy(['id' => \SORT_ASC])
         ;
     }
 

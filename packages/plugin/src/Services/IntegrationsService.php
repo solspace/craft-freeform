@@ -314,7 +314,7 @@ class IntegrationsService extends BaseService
                 ]
             )
             ->from(IntegrationRecord::TABLE.' integration')
-            ->orderBy(['id' => SORT_ASC])
+            ->orderBy(['id' => \SORT_ASC])
         ;
     }
 

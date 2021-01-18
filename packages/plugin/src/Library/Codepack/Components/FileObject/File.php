@@ -19,7 +19,7 @@ class File extends FileObject
      */
     protected function __construct(string $path)
     {
-        $file = pathinfo($path, PATHINFO_BASENAME);
+        $file = pathinfo($path, \PATHINFO_BASENAME);
 
         $this->folder = false;
         $this->path = $path;

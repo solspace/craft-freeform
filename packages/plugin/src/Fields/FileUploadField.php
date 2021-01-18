@@ -176,7 +176,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                 }
 
                 foreach ($_FILES[$this->handle]['name'] as $index => $name) {
-                    $extension = pathinfo($name, PATHINFO_EXTENSION);
+                    $extension = pathinfo($name, \PATHINFO_EXTENSION);
                     $validExtensions = $this->getValidExtensions();
 
                     // Check the mime type if the server supports it
@@ -199,13 +199,13 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                         $errorCode = $_FILES[$this->handle]['error'][$index];
 
                         switch ($errorCode) {
-                            case UPLOAD_ERR_INI_SIZE:
-                            case UPLOAD_ERR_FORM_SIZE:
+                            case \UPLOAD_ERR_INI_SIZE:
+                            case \UPLOAD_ERR_FORM_SIZE:
                                 $uploadErrors[] = $this->translate('File size too large');
 
                                 break;
 
-                            case UPLOAD_ERR_PARTIAL:
+                            case \UPLOAD_ERR_PARTIAL:
                                 $uploadErrors[] = $this->translate('The file was only partially uploaded');
 
                                 break;

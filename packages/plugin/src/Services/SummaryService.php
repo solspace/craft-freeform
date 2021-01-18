@@ -41,7 +41,7 @@ class SummaryService extends Component
 
         $system = new System();
         $system->databaseDriver = \Craft::$app->getDb()->getDriverName();
-        $system->phpVersion = PHP_VERSION;
+        $system->phpVersion = \PHP_VERSION;
         $system->craftVersion = $craft->version;
         $system->craftEdition = strtolower($craft->getEditionName());
         $system->formFieldType = \Craft::$app->fields->getFieldsByElementType(FormFieldType::class) > 0;

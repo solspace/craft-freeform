@@ -96,7 +96,7 @@ class FormRenderEvent extends ArrayableEvent
         int $position = View::POS_END,
         array $options = []
     ): self {
-        $this->renderObjects[] = new JavascriptObject($value, $replacements, $position, $options);
+        $this->renderObjects[] = new JavascriptObject($value, $replacements, $options, $position);
 
         return $this;
     }

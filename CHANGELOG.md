@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.2.1 - 2021-01-18
+
+### Fixed
+- Fixed a bug where front end forms could display an error when loading in some rare cases.
+
 ## 3.10.2 - 2021-01-15
 
 ### Added

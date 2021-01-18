@@ -76,11 +76,11 @@ class EmailTemplate
     {
         $this->templateData = file_get_contents($filePath);
 
-        $this->handle = pathinfo($filePath, PATHINFO_FILENAME);
+        $this->handle = pathinfo($filePath, \PATHINFO_FILENAME);
 
         $name = $this->getMetadata('templateName');
         if (!$name) {
-            $name = StringHelper::camelize(StringHelper::humanize(pathinfo($filePath, PATHINFO_FILENAME)));
+            $name = StringHelper::camelize(StringHelper::humanize(pathinfo($filePath, \PATHINFO_FILENAME)));
         }
 
         $this->name = $name;

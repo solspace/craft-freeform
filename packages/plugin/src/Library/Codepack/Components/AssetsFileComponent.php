@@ -48,7 +48,7 @@ class AssetsFileComponent extends AbstractFileComponent
             );
         }
 
-        $extension = strtolower(pathinfo($newFilePath, PATHINFO_EXTENSION));
+        $extension = strtolower(pathinfo($newFilePath, \PATHINFO_EXTENSION));
 
         // Prevent from editing anything other than css and js files
         if (!\in_array($extension, self::$modifiableFileExtensions, true)) {

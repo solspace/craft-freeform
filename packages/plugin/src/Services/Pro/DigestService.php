@@ -159,7 +159,7 @@ class DigestService extends Component
         $messages = FeedMessageRecord::find()
             ->where(['seen' => false])
             ->andWhere(['!=', 'type', 'new'])
-            ->orderBy(['issueDate' => SORT_DESC])
+            ->orderBy(['issueDate' => \SORT_DESC])
             ->all()
         ;
 

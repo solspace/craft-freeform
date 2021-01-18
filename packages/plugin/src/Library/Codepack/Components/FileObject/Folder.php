@@ -29,7 +29,7 @@ class Folder extends FileObject implements \Iterator
      */
     protected function __construct(string $path)
     {
-        $folder = pathinfo($path, PATHINFO_BASENAME);
+        $folder = pathinfo($path, \PATHINFO_BASENAME);
 
         $this->folder = true;
         $this->path = $path;

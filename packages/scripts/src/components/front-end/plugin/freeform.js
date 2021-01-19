@@ -20,6 +20,7 @@ export default class Freeform {
   form;
   options = {
     ajax: false,
+    disableReset: false,
     disableSubmit: false,
     scrollToAnchor: false,
     showSpinner: false,
@@ -83,6 +84,7 @@ export default class Freeform {
 
     const options = {
       ajax: form.getAttribute('data-ajax') !== null,
+      disableReset: form.getAttribute('data-disable-reset') !== null,
       scrollToAnchor: form.getAttribute('data-scroll-to-anchor'),
       disableSubmit: form.getAttribute('data-disable-submit') !== null,
       hasRules: form.getAttribute('data-has-rules') !== null,
@@ -606,7 +608,7 @@ export default class Freeform {
             }
 
             if (finished) {
-              if (!form.querySelector('input[name="formSubmissionToken"]')) {
+              if (!this.options.disableReset) {
                 // Reset the form so that the user may enter fresh information
                 // if a submission is not being edited
                 form.reset();

@@ -281,6 +281,11 @@ class FormValueContext implements \JsonSerializable
         return $this->request->getPost(Form::SUBMISSION_TOKEN_KEY);
     }
 
+    public function getEditableElementId()
+    {
+        return $this->request->getPost(Form::ELEMENT_ID_KEY);
+    }
+
     /**
      * @return array|mixed
      */

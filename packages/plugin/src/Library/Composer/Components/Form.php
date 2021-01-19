@@ -15,6 +15,9 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
+use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Fields\HiddenField;
@@ -47,15 +50,24 @@ use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 use Twig\Markup;
 use yii\base\Arrayable;
+use yii\base\Event;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 {
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
+    const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
+    const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
+    const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
+    const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
+    const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
+    const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
+
     const PAGE_INDEX_KEY = 'page_index';
     const RETURN_URI_KEY = 'formReturnUrl';
     const STATUS_KEY = 'formStatus';
     const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
+    const ELEMENT_ID_KEY = 'formElementId';
     const DEFAULT_PAGE_INDEX = 0;
 
     const LIMIT_COOKIE = 'cookie';
@@ -202,6 +214,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var string */
     private $gtmEventName;
 
+    /** @var bool */
+    private $disableAjaxReset;
+
     /**
      * Form constructor.
      *
@@ -236,6 +251,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->submitted = false;
         $this->suppressionEnabled = false;
         $this->gtmEnabled = false;
+        $this->disableAjaxReset = false;
 
         $this->layout = new Layout(
             $this,
@@ -350,6 +366,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getSubmissionTitleFormat(): string
     {
         return $this->submissionTitleFormat;
+    }
+
+    public function getEditableElementId()
+    {
+        return $this->getFormValueContext()->getEditableElementId();
     }
 
     public function getDescription(): string
@@ -582,6 +603,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this;
     }
 
+    public function disableAjaxReset(): self
+    {
+        $this->disableAjaxReset = true;
+
+        return $this;
+    }
+
     public function markAsSpam(string $type, string $message): self
     {
         $this->spamReasons[] = new SpamReason($type, $message);
@@ -743,7 +771,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $submission = null;
 
-        if ($this->storeData && $this->hasOptInPermission()) {
+        $storeSubmissionEvent = new StoreSubmissionEvent($this);
+        Event::trigger(self::class, self::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
+
+        if ($this->storeData && $this->hasOptInPermission() && $storeSubmissionEvent->isValid) {
             $submission = $this->saveStoredStateToDatabase();
         } else {
             $submission = $this->getSubmissionHandler()->createSubmissionFromForm($this);
@@ -835,13 +866,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->formHandler->renderFormTemplate($this, $formTemplate);
     }
 
-    /**
-     * @param array $customFormAttributes
-     */
     public function renderTag(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
         $customAttributes = $this->getCustomAttributes();
+
+        $output = '';
+
+        $beforeTag = new RenderTagEvent($this);
+        Event::trigger(self::class, self::EVENT_RENDER_AFTER_OPEN_TAG, $beforeTag);
+        $output .= $beforeTag->getChunksAsString();
 
         $attributes = CustomFormAttributes::extractAttributes($this->tagAttributes, $this, ['form' => $this]);
         if ($customAttributes->getId()) {
@@ -900,12 +934,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             $attributes['data-error-message'] = $this->getTranslator()->translate($this->getErrorMessage(), [], 'app');
         }
 
+        if ($this->disableAjaxReset) {
+            $attributes['data-disable-reset'] = true;
+        }
+
         $attributes['data-freeform'] = true;
 
         $attributes = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
         $compiledAttributes = $this->formHandler->onAttachFormAttributes($this, $attributes);
 
-        $output = "<form {$compiledAttributes}>".PHP_EOL;
+        $output .= "<form {$compiledAttributes}>".\PHP_EOL;
 
         if (!$customAttributes->getAction()) {
             $output .= '<input type="hidden" name="action" value="'.$this->formAttributes->getActionUrl().'" />';
@@ -958,13 +996,26 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $output .= $this->formHandler->onRenderOpeningTag($this);
 
+        $afterTag = new RenderTagEvent($this);
+        Event::trigger(self::class, self::EVENT_RENDER_AFTER_OPEN_TAG, $afterTag);
+        $output .= $afterTag->getChunksAsString();
+
         return Template::raw($output);
     }
 
     public function renderClosingTag(): Markup
     {
         $output = $this->formHandler->onRenderClosingTag($this);
+
+        $beforeTag = new RenderTagEvent($this);
+        Event::trigger(self::class, self::EVENT_RENDER_BEFORE_CLOSING_TAG, $beforeTag);
+        $output .= $beforeTag->getChunksAsString();
+
         $output .= '</form>';
+
+        $afterTag = new RenderTagEvent($this);
+        Event::trigger(self::class, self::EVENT_RENDER_AFTER_CLOSING_TAG, $afterTag);
+        $output .= $afterTag->getChunksAsString();
 
         return Template::raw($output);
     }
@@ -1006,9 +1057,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return new Suppressors($suppressors);
     }
 
-    /**
-     * @return $this
-     */
     public function enableSuppression(): self
     {
         $this->suppressionEnabled = true;
@@ -1021,48 +1069,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return new Relations($this->getFormValueContext()->getRelationData());
     }
 
-    /**
-     * @return $this
-     */
     public function setAttributes(array $attributes = null): self
     {
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);
             $this->setSessionCustomFormData();
+
+            $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes);
+            Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
+
             $this->populateFromSubmission($this->customAttributes->getSubmissionToken());
-        }
-
-        return $this;
-    }
-
-    /**
-     * @param null|int|string|Submission $token
-     */
-    public function populateFromSubmission($token = null): self
-    {
-        if (null === $token || !Freeform::getInstance()->isPro()) {
-            return $this;
-        }
-
-        $submission = Freeform::getInstance()->submissions->getSubmissionByToken($token);
-        if ($submission instanceof Submission) {
-            foreach ($this->getLayout()->getFields() as $field) {
-                if ($field instanceof DynamicRecipientField) {
-                    continue;
-                }
-
-                $hasPostValue = isset($_POST[$field->getHandle()]);
-                if (!$hasPostValue && isset($submission->{$field->getHandle()})) {
-                    $submissionField = $submission->{$field->getHandle()};
-                    $value = $submissionField->getValue();
-
-                    if ($submissionField instanceof CheckboxField) {
-                        $field->setIsCheckedByPost((bool) $value);
-                    }
-
-                    $field->setValue($value);
-                }
-            }
         }
 
         return $this;
@@ -1365,6 +1381,38 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         return $this->jsonSerialize();
+    }
+
+    private function populateFromSubmission($token = null): self
+    {
+        if (null === $token || !Freeform::getInstance()->isPro()) {
+            return $this;
+        }
+
+        $this->disableAjaxReset();
+
+        $submission = Freeform::getInstance()->submissions->getSubmissionByToken($token);
+        if ($submission instanceof Submission) {
+            foreach ($this->getLayout()->getFields() as $field) {
+                if ($field instanceof DynamicRecipientField) {
+                    continue;
+                }
+
+                $hasPostValue = isset($_POST[$field->getHandle()]);
+                if (!$hasPostValue && isset($submission->{$field->getHandle()})) {
+                    $submissionField = $submission->{$field->getHandle()};
+                    $value = $submissionField->getValue();
+
+                    if ($submissionField instanceof CheckboxField) {
+                        $field->setIsCheckedByPost((bool) $value);
+                    }
+
+                    $field->setValue($value);
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**

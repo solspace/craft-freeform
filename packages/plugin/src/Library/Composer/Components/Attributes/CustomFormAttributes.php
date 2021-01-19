@@ -113,6 +113,9 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var string */
     protected $gtmEventName;
 
+    /** @var int|string */
+    protected $elementId;
+
     /**
      * @return null|string
      */
@@ -404,5 +407,13 @@ class CustomFormAttributes extends AbstractAttributes
     public function getGtmEventName()
     {
         return $this->gtmEventName;
+    }
+
+    /**
+     * @return int|string
+     */
+    public function getElementId()
+    {
+        return $this->elementId;
     }
 }

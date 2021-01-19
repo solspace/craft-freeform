@@ -3,10 +3,11 @@
 namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\elements\User;
 use craft\models\FieldLayout;
-use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
+use yii\base\UnknownPropertyException;
 
 class Users extends AbstractConnection
 {
@@ -27,13 +28,14 @@ class Users extends AbstractConnection
         return !empty($this->group);
     }
 
-    /**
-     * @param TransformerInterface[] $transformers
-     */
-    protected function buildElement(array $transformers): Element
+    protected function buildElement(array $transformers, ElementInterface $element = null): Element
     {
-        $user = new User();
-        $user->pending = !$this->active;
+        if ($element instanceof User) {
+            $user = $element;
+        } else {
+            $user = new User();
+            $user->pending = !$this->active;
+        }
 
         $fieldLayout = $user->getFieldLayout();
         if (!$fieldLayout) {
@@ -45,7 +47,15 @@ class Users extends AbstractConnection
             $field = $fieldLayout->getFieldByHandle($handle);
             $value = $transformer->transformValueFor($field);
 
-            $user->{$handle} = $value;
+            if ($user->id && empty($value) && \in_array($handle, ['newPassword', 'photoId'], true)) {
+                continue;
+            }
+
+            try {
+                $user->setFieldValue($handle, $value);
+            } catch (UnknownPropertyException $e) {
+                $user->{$handle} = $value;
+            }
         }
 
         if (!$this->active && $this->sendActivation) {

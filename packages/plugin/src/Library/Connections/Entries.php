@@ -3,11 +3,12 @@
 namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\elements\Entry;
 use craft\models\FieldLayout;
 use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
-use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
+use yii\base\UnknownPropertyException;
 
 class Entries extends AbstractConnection
 {
@@ -54,15 +55,18 @@ class Entries extends AbstractConnection
         return ['slug'];
     }
 
-    /**
-     * @param TransformerInterface[] $transformers
-     */
-    protected function buildElement(array $transformers): Element
+    protected function buildElement(array $transformers, ElementInterface $element = null): Element
     {
-        $entry = new Entry([
-            'sectionId' => $this->getSection(),
-            'typeId' => $this->getEntryType(),
-        ]);
+        if ($element instanceof Entry) {
+            $entry = $element;
+        } else {
+            $entry = new Entry(
+                [
+                    'sectionId' => $this->getSection(),
+                    'typeId' => $this->getEntryType(),
+                ]
+            );
+        }
 
         $fieldLayout = $entry->getFieldLayout();
         if (null === $fieldLayout) {
@@ -72,7 +76,14 @@ class Entries extends AbstractConnection
         foreach ($transformers as $transformer) {
             $field = $fieldLayout->getFieldByHandle($transformer->getCraftFieldHandle());
 
-            $entry->{$transformer->getCraftFieldHandle()} = $transformer->transformValueFor($field);
+            $craftField = $transformer->getCraftFieldHandle();
+            $value = $transformer->transformValueFor($field);
+
+            try {
+                $element->setFieldValue($craftField, $value);
+            } catch (UnknownPropertyException $e) {
+                $element->{$craftField} = $value;
+            }
         }
 
         if (!$entry->slug) {

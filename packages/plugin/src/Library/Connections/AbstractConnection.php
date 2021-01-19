@@ -7,6 +7,7 @@ use craft\base\ElementInterface;
 use craft\fields\BaseRelationField;
 use craft\models\FieldLayout;
 use Solspace\Commons\Configurations\BaseConfiguration;
+use Solspace\Freeform\Bundles\Form\ElementEdit\ElementEditBundle;
 use Solspace\Freeform\Events\Connections\ConnectEvent;
 use Solspace\Freeform\Events\Connections\ValidateEvent;
 use Solspace\Freeform\Events\Mailer\RenderEmailEvent;
@@ -73,8 +74,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
     public function validate(Form $form, array $transformers): ConnectionResult
     {
         $result = new ConnectionResult();
-
-        $element = $this->buildElement($transformers);
+        $element = $this->buildElement($transformers, $this->extractElement($form));
 
         $event = new ValidateEvent($form, $this, $element, $transformers);
         Event::trigger($this, self::EVENT_BEFORE_VALIDATE, $event);
@@ -105,7 +105,7 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
     {
         $result = $this->validate($form, $transformers);
         if ($result->isSuccessful()) {
-            $element = $this->buildElement($transformers);
+            $element = $this->buildElement($transformers, $this->extractElement($form));
             $this->beforeConnect($element, $result, $transformers);
 
             $event = new ConnectEvent($form, $this, $element);
@@ -208,5 +208,19 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
         }
     }
 
-    abstract protected function buildElement(array $keyValueMap): Element;
+    abstract protected function buildElement(array $keyValueMap, ElementInterface $element = null): Element;
+
+    /**
+     * @return null|ElementInterface
+     */
+    private function extractElement(Form $form)
+    {
+        $element = null;
+        if ($form->getEditableElementId()) {
+            $elementId = ElementEditBundle::getDecryptedElementId($form->getEditableElementId());
+            $element = \Craft::$app->elements->getElementById($elementId);
+        }
+
+        return $element;
+    }
 }

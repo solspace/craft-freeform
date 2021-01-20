@@ -58,8 +58,6 @@
         "php -v",
         "printf '\\n\\e[32m######### Linting Scripts #########\\e[0m\\n\\n'",
         "npm run lint",
-        "printf '\\n\\e[32m######### Validating Composer #########\\e[0m\\n\\n'",
-        "composer validate",
         "printf '\\n\\e[32m######### Running Unit Tests #########\\e[0m\\n\\n'",
         "composer run test:unit",
         "printf '\\n\\e[32m######### Running CS Fixer dry run #########\\e[0m\\n\\n'",

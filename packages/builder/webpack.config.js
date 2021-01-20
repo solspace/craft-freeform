@@ -31,7 +31,19 @@ module.exports = {
         use: ['style-loader', { loader: 'css-loader' }],
       },
       {
-        test: /\.(png|jpg|jpeg|svg|gif)$/i,
+        test: /\.svg$/,
+        use: [
+          { loader: 'babel-loader' },
+          {
+            loader: 'react-svg-loader',
+            options: {
+              jsx: true,
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(png|jpg|jpeg|gif)$/i,
         use: [{ loader: 'url-loader' }],
       },
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.

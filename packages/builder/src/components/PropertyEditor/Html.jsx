@@ -1,12 +1,38 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import AceEditor from 'react-ace';
+import styled from 'styled-components';
 import BasePropertyEditor from './BasePropertyEditor';
 import { CheckboxProperty } from './PropertyItems';
 import TextProperty from './PropertyItems/TextProperty';
-import 'brace/theme/chrome';
-import 'brace/mode/html';
-import 'brace/ext/language_tools';
+
+import CompressIcon from '@ff/builder/assets/icons/compress-solid.svg';
+import ExpandIcon from '@ff/builder/assets/icons/expand-solid.svg';
+
+import 'ace-builds';
+import AceEditor from 'react-ace';
+
+import 'ace-builds/src-noconflict/mode-twig';
+import 'ace-builds/src-noconflict/mode-html';
+import 'ace-builds/src-noconflict/theme-chrome';
+import 'ace-builds/src-noconflict/ext-language_tools';
+
+const Button = styled.div`
+  margin-top: 10px;
+
+  &.fullscreen {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 2;
+
+    margin-top: 0;
+  }
+
+  svg {
+    width: 15px;
+    height: 15px;
+  }
+`;
 
 export default class Html extends BasePropertyEditor {
   static contextTypes = {
@@ -23,10 +49,33 @@ export default class Html extends BasePropertyEditor {
   constructor(props, context) {
     super(props, context);
 
+    this.state = { fullscreen: false };
+    this.editor = React.createRef();
     this.updateHtmlValue = this.updateHtmlValue.bind(this);
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevState.fullscreen !== this.state.fullscreen) {
+      this.editor.current.editor.resize();
+    }
+  }
+
   render() {
+    const { fullscreen } = this.state;
+
+    const style = !fullscreen
+      ? {}
+      : {
+          width: 'auto',
+          height: 'auto',
+          position: 'absolute',
+          zIndex: 1,
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+        };
+
     const {
       hash,
       properties: { value, twig },
@@ -54,7 +103,9 @@ export default class Html extends BasePropertyEditor {
         />
 
         <AceEditor
-          mode="html"
+          ref={this.editor}
+          name="html-editor"
+          mode={twig ? 'twig' : 'html'}
           theme="chrome"
           value={value}
           onChange={this.updateHtmlValue}
@@ -65,7 +116,19 @@ export default class Html extends BasePropertyEditor {
           fontSize={12}
           width="100%"
           editorProps={{ $blockScrolling: 'Infinity' }}
+          style={style}
+          setOptions={{ useWorker: false }}
         />
+
+        <Button
+          className={`btn ${fullscreen && 'fullscreen'}`}
+          onClick={() => {
+            this.setState({ fullscreen: !fullscreen });
+          }}
+        >
+          {fullscreen ? <CompressIcon /> : <ExpandIcon />}
+          <span style={{ paddingLeft: 5 }}>{fullscreen ? 'Exit fullscreen mode' : 'Edit in fullscreen mode'}</span>
+        </Button>
       </div>
     );
   }

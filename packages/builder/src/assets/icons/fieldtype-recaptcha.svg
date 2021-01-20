@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="100" height="100" viewBox="0, 0, 100, 100">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="100%" height="100%" viewBox="0, 0, 100, 100">
   <g id="Layer_1">
     <g id="reCAPTCHA">
       <path d="M84.979,49.951 C84.978,49.449 84.966,48.95 84.944,48.454 L84.944,20.144 L77.117,27.971 C70.712,20.13 60.968,15.122 50.053,15.122 C38.695,15.122 28.604,20.544 22.225,28.94 L35.054,41.903 C36.311,39.578 38.097,37.581 40.25,36.073 C42.49,34.325 45.663,32.896 50.053,32.896 C50.583,32.896 50.992,32.958 51.293,33.075 C56.732,33.504 61.446,36.506 64.222,40.862 L55.142,49.943 C66.643,49.898 79.636,49.871 84.978,49.949" fill="#1C3AA9"/>

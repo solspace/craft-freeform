@@ -943,7 +943,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $attributes = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
         $compiledAttributes = $this->formHandler->onAttachFormAttributes($this, $attributes);
 
-        $output .= "<form {$compiledAttributes}>".\PHP_EOL;
+        $output = "<form {$compiledAttributes}>".\PHP_EOL;
 
         if (!$customAttributes->getAction()) {
             $output .= '<input type="hidden" name="action" value="'.$this->formAttributes->getActionUrl().'" />';

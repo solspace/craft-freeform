@@ -94,7 +94,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         foreach ($recipients as $recipientName => $emailAddress) {
-            if (filter_var($recipientName, FILTER_VALIDATE_EMAIL)) {
+            if (filter_var($recipientName, \FILTER_VALIDATE_EMAIL)) {
                 $emailAddress = $recipientName;
             }
 
@@ -200,7 +200,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         $text = $this->renderString($notification->getBodyText(), $values);
         $html = $this->renderString($notification->getBodyHtml(), $values);
         $subject = $this->renderString($notification->getSubject(), $values);
-        $subject = htmlspecialchars_decode($subject, ENT_QUOTES);
+        $subject = htmlspecialchars_decode($subject, \ENT_QUOTES);
 
         $message = new Message();
         $message->variables = $values;
@@ -382,7 +382,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         if ($exception instanceof RuntimeError) {
             $line = $exception->getTemplateLine();
             $code = $exception->getSourceContext()->getCode();
-            $source = explode(PHP_EOL, $code);
+            $source = explode(\PHP_EOL, $code);
             $proximity = self::ERROR_CODE_LINES_PROXIMITY;
 
             $code = [

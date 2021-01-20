@@ -116,7 +116,7 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
             $output .= $this->getAttributeString('value', $i, false);
             $output .= $this->getParameterString('checked', (int) $this->getValue() === $i);
             $output .= $attributes->getInputAttributesAsString();
-            $output .= ' />'.PHP_EOL;
+            $output .= ' />'.\PHP_EOL;
 
             $output .= '<label';
             $output .= $this->getAttributeString('for', $starId);
@@ -134,7 +134,7 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
         $freeform = \Yii::getAlias('@freeform');
         $cssPath = $freeform.'/Resources/css/front-end/fields/rating.css';
 
-        $output = '<style>'.PHP_EOL;
+        $output = '<style>'.\PHP_EOL;
         $output .= @file_get_contents($cssPath);
         $output .= '</style>';
 

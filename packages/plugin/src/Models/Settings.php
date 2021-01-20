@@ -566,7 +566,7 @@ class Settings extends Model
         $files = [];
         foreach ($fileIterator as $file) {
             $path = $file->getRealPath();
-            $files[$path] = pathinfo($path, PATHINFO_BASENAME);
+            $files[$path] = pathinfo($path, \PATHINFO_BASENAME);
         }
 
         return $files;

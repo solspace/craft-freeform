@@ -574,7 +574,7 @@ class FormsController extends BaseController
         $entryTypesQuery = (new Query())
             ->select($select)
             ->from('{{%entrytypes}}')
-            ->orderBy(['sectionId' => SORT_ASC, 'sortOrder' => SORT_ASC])
+            ->orderBy(['sectionId' => \SORT_ASC, 'sortOrder' => \SORT_ASC])
         ;
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
@@ -586,7 +586,7 @@ class FormsController extends BaseController
         $fieldLayoutFields = (new Query())
             ->select(['fieldId', 'layoutId'])
             ->from('{{%fieldlayoutfields}}')
-            ->orderBy(['sortOrder' => SORT_ASC])
+            ->orderBy(['sortOrder' => \SORT_ASC])
             ->all()
         ;
 
@@ -737,7 +737,7 @@ class FormsController extends BaseController
      */
     private function getEncodedJson($data): string
     {
-        return json_encode($data, JSON_OBJECT_AS_ARRAY);
+        return json_encode($data, \JSON_OBJECT_AS_ARRAY);
     }
 
     /**

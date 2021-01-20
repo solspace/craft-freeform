@@ -173,8 +173,8 @@ class PredefinedOptionsFactory
         $valueFormat = self::getDayFormatFromType($this->getConfig()->getValueType());
 
         foreach (range(1, 31) as $dayIndex) {
-            $label = 'd' === $labelFormat ? str_pad($dayIndex, 2, '0', STR_PAD_LEFT) : $dayIndex;
-            $value = 'd' === $valueFormat ? str_pad($dayIndex, 2, '0', STR_PAD_LEFT) : $dayIndex;
+            $label = 'd' === $labelFormat ? str_pad($dayIndex, 2, '0', \STR_PAD_LEFT) : $dayIndex;
+            $value = 'd' === $valueFormat ? str_pad($dayIndex, 2, '0', \STR_PAD_LEFT) : $dayIndex;
 
             $options[] = new Option($label, $value, $this->isChecked($value));
         }

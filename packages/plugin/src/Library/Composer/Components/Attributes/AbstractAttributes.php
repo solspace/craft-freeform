@@ -52,7 +52,7 @@ abstract class AbstractAttributes
                 continue;
             }
 
-            $attribute = htmlentities($attribute, ENT_QUOTES);
+            $attribute = htmlentities($attribute, \ENT_QUOTES);
 
             if (!$value) {
                 if (!isset($byAttribute[$attribute])) {
@@ -62,7 +62,7 @@ abstract class AbstractAttributes
                 continue;
             }
 
-            $value = htmlentities($value, ENT_QUOTES);
+            $value = htmlentities($value, \ENT_QUOTES);
 
             if (isset($byAttribute[$attribute])) {
                 $byAttribute[$attribute] .= ' '.$value;

@@ -401,7 +401,7 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                 ]
             )
             ->from(MailingListRecord::TABLE.'list')
-            ->orderBy(['id' => SORT_ASC])
+            ->orderBy(['id' => \SORT_ASC])
         ;
     }
 }

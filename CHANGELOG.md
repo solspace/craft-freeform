@@ -1,9 +1,9 @@
 # Solspace Freeform Changelog
 
-## 3.10.2.2 - Unreleased
+## 3.10.3 - 2021-01-22
 
 ### Fixed
-- Fixed a bug in export profiles migration that prevented updating profiles with no date ranges set 
+- Fixed a bug in the Export Profiles migration that prevented updating profiles with no date ranges set.
 
 ## 3.10.2.1 - 2021-01-18
 

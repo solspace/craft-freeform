@@ -16,8 +16,8 @@ class m201027_103933_AddExportProfileDateRanges extends Migration
     {
         try {
             if (!$this->db->columnExists('{{%freeform_export_profiles}}', 'rangeStart')) {
-                $this->addColumn('{{%freeform_export_profiles}}', 'rangeStart', $this->string(255)->notNull());
-                $this->addColumn('{{%freeform_export_profiles}}', 'rangeEnd', $this->string(255)->notNull());
+                $this->addColumn('{{%freeform_export_profiles}}', 'rangeStart', $this->string(255)->null());
+                $this->addColumn('{{%freeform_export_profiles}}', 'rangeEnd', $this->string(255)->null());
             }
         } catch (\Exception $e) {
         }

@@ -31,6 +31,7 @@ class ComposerApp extends Component {
     isRulesEnabled: PropTypes.bool.isRequired,
     isInvisibleRecaptchaSetUp: PropTypes.bool.isRequired,
     isCommerceEnabled: PropTypes.bool.isRequired,
+    isCalendarEnabled: PropTypes.bool.isRequired,
     renderHtml: PropTypes.bool.isRequired,
     reservedKeywords: PropTypes.array.isRequired,
   };
@@ -53,6 +54,7 @@ class ComposerApp extends Component {
     isInvisibleRecaptchaSetUp: PropTypes.bool.isRequired,
     isDefaultTemplates: PropTypes.bool.isRequired,
     isCommerceEnabled: PropTypes.bool.isRequired,
+    isCalendarEnabled: PropTypes.bool.isRequired,
     renderHtml: PropTypes.bool.isRequired,
     reservedKeywords: PropTypes.array.isRequired,
   };
@@ -72,6 +74,7 @@ class ComposerApp extends Component {
     isDefaultTemplates: this.props.defaultTemplates,
     isInvisibleRecaptchaSetUp: this.props.isInvisibleRecaptchaSetUp,
     isCommerceEnabled: this.props.isCommerceEnabled,
+    isCalendarEnabled: this.props.isCalendarEnabled,
     renderHtml: this.props.renderHtml,
     reservedKeywords: this.props.reservedKeywords,
   });

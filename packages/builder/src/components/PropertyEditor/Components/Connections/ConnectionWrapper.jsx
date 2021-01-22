@@ -4,13 +4,19 @@ import { translate } from '../../../../app';
 import { SelectProperty } from '../../PropertyItems';
 import Entries from './Entries';
 import Users from './Users';
+import CalendarEvents from './CalendarEvents';
 
 const map = {
   entries: Entries,
   users: Users,
+  calendar: CalendarEvents,
 };
 
 export default class ConnectionWrapper extends Component {
+  static contextTypes = {
+    isCalendarEnabled: PropTypes.bool,
+  };
+
   static propTypes = {
     index: PropTypes.number.isRequired,
     connection: PropTypes.object.isRequired,
@@ -19,6 +25,7 @@ export default class ConnectionWrapper extends Component {
   };
 
   render() {
+    const { isCalendarEnabled } = this.context;
     const { connection, updateConnection, index } = this.props;
 
     let element = null;
@@ -26,6 +33,15 @@ export default class ConnectionWrapper extends Component {
       const ReactElement = map[connection.type];
 
       element = <ReactElement connection={connection} updateConnection={updateConnection} index={index} />;
+    }
+
+    const options = [
+      { key: 'entries', value: translate('Entries', {}, 'app') },
+      { key: 'users', value: translate('Users', {}, 'app') },
+    ];
+
+    if (isCalendarEnabled) {
+      options.push({ key: 'calendar', value: translate('Calendar Events') });
     }
 
     return (
@@ -39,10 +55,7 @@ export default class ConnectionWrapper extends Component {
           name="type"
           value={connection.type}
           onChangeHandler={this.updateConnection}
-          options={[
-            { key: 'entries', value: translate('Entries', {}, 'app') },
-            { key: 'users', value: translate('Users', {}, 'app') },
-          ]}
+          options={options}
         />
 
         {element}

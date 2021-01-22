@@ -56,6 +56,9 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
             case 'users':
                 return new Users($configuration);
 
+            case 'calendar':
+                return new CalendarEvents($configuration);
+
             default:
                 throw new ConnectionException(Freeform::t('Invalid type "{{type}}" supplied.', ['type' => $configuration['type']]));
         }

@@ -698,6 +698,9 @@ return [
     'Payments are not set up for the form' => 'Payments are not set up for the form',
     'No submissions found' => 'No submissions found',
 
+    'Unsubscribed successfully' => 'Unsubscribed successfully',
+    'Error during subscription cancellation' => 'Error during subscription cancellation',
+
     'Payment gateway is not configured!' => 'Payment gateway is not configured!',
     'Payment type is not configured!' => 'Payment type is not configured!',
     'Payment amount is not configured!' => 'Payment amount is not configured!',

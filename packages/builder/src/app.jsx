@@ -196,6 +196,7 @@ ReactDOM.render(
       reservedKeywords={reservedKeywords}
       isInvisibleRecaptchaSetUp={isInvisibleRecaptchaSetUp}
       isCommerceEnabled={isCommerceEnabled}
+      isCalendarEnabled={isCalendarEnabled}
       csrf={{
         name: Craft.csrfTokenName ? Craft.csrfTokenName : 'csrfToken',
         token: Craft.csrfTokenValue ? Craft.csrfTokenValue : '',

@@ -21,6 +21,7 @@ use craft\helpers\Json;
 use craft\records\UserPermission;
 use craft\records\UserPermission_UserGroup;
 use craft\records\Volume;
+use Solspace\Calendar\Calendar;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
@@ -457,7 +458,9 @@ class FormsController extends BaseController
         $isPro = Freeform::getInstance()->isPro();
 
         $commerce = \Craft::$app->projectConfig->get('plugins.commerce');
+        $calendar = \Craft::$app->projectConfig->get('plugins.calendar');
         $isCommerceEnabled = $commerce && ($commerce['enabled'] ?? false);
+        $isCalendarEnabled = $calendar && ($calendar['enabled'] ?? false);
 
         $templateVariables = [
             'form' => $model,
@@ -487,6 +490,7 @@ class FormsController extends BaseController
             'isInvisibleRecaptchaSetUp' => $settings->isInvisibleRecaptchaSetUp(),
             'isPaymentEnabled' => $isPro,
             'isCommerceEnabled' => $isCommerceEnabled,
+            'isCalendarEnabled' => $isCalendarEnabled,
             'sourceTargets' => $this->getEncodedJson($this->getSourceTargetsList()),
             'craftFields' => $this->getEncodedJson($this->getCraftFields()),
             'customFields' => $this->getEncodedJson($this->getAllCustomFieldList()),
@@ -711,6 +715,27 @@ class FormsController extends BaseController
             }
 
             $sourceTargets[ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS] = $productTypeList;
+        }
+
+        $calendarPlugin = \Craft::$app->projectConfig->get('plugins.calendar');
+        if ($calendarPlugin && ($calendarPlugin['enabled'] ?? false)) {
+            $calendars = Calendar::getInstance()->calendars->getAllAllowedCalendars();
+            $calendarList = [];
+            foreach ($calendars as $calendar) {
+                $fieldIds = [];
+                if (isset($fieldByLayoutGroupId[$calendar->fieldLayoutId])) {
+                    $fieldIds = $fieldByLayoutGroupId[$calendar->fieldLayoutId];
+                }
+
+                $calendarList[] = [
+                    'key' => $calendar->id,
+                    'value' => $calendar->name,
+                    'hasTitleField' => (bool) $calendar->hasTitleField,
+                    'titleLabel' => $calendar->titleLabel ?? \Craft::t('app', 'Title'),
+                    'fieldLayoutFieldIds' => $fieldIds,
+                ];
+            }
+            $sourceTargets[ExternalOptionsInterface::SOURCE_CALENDAR] = $calendarList;
         }
 
         return $sourceTargets;

@@ -11,6 +11,7 @@ interface ExternalOptionsInterface extends OptionsInterface
     const SOURCE_USERS = 'users';
     const SOURCE_ASSETS = 'assets';
     const SOURCE_COMMERCE_PRODUCTS = 'commerce_products';
+    const SOURCE_CALENDAR = 'calendar';
     const SOURCE_PREDEFINED = 'predefined';
 
     const PREDEFINED_DAYS = 'days';

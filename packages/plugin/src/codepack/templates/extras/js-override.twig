@@ -1,0 +1,41 @@
+{% extends "freeform-demo/_layout" %}
+{% set pageTitle = "Custom" %} 
+{% set page = "custom" %} 
+
+{% set form = craft.freeform.form("jsOverride") %}
+
+{% block content %}
+
+    {{ form.renderTag }}
+        {% for column in form %}
+            {% for field in column %}
+            {{ field.render }}
+            {% endfor %}
+        {% endfor %}
+    {{ form.renderClosingTag  }} 
+
+    <script>
+
+        const myForm = document.getElementById("jsOverride");
+        document.addEventListener("freeform-on-submit", function (event) {
+            const form = event.form;
+            const isBackButtonPressed = event.isBackButtonPressed;
+            
+            if (isBackButtonPressed) {
+                alert("Going Backward!");
+                return;
+            }
+
+            const name = form.querySelector('input[name="firstName"]').value;
+            if (name !== 'Andris') {
+                alert("You're not Andris");
+                event.preventDefault();
+            } 
+
+            form.querySelector('input[name="firstName"]').value = 'Unknown';
+
+        });
+
+    </script>
+
+{% endblock %}

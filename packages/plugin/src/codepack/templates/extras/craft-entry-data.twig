@@ -1,0 +1,20 @@
+{% extends "freeform-demo/_layout" %}
+{% set pageTitle = "Custom" %}
+{% set page = "custom" %}
+
+{% set form = craft.freeform.form("craftEntryData") %}
+
+{% block content %}
+
+  {{ craft.freeform.form("craft-entry-data", {
+    labelClass: "form-label",
+    inputClass: "form-control",
+    overrideValues: {
+      firstName: currentUser.name,
+      lastName: currentUser.lastName,
+      anotherField: "something else",
+      stateSelect: "AZ",
+    }
+  }).render() }}
+
+{% endblock %}

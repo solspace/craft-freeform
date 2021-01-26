@@ -273,7 +273,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             try {
                 return $this->getLayout()->getFieldByHash($fieldHandle);
             } catch (FreeformException $e) {
-                return null;
+                try {
+                    return $this->getLayout()->getSpecialField($fieldHandle);
+                } catch (FreeformException $e) {
+                    return null;
+                }
             }
         }
     }
@@ -905,7 +909,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $attributes = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
         $compiledAttributes = $this->formHandler->onAttachFormAttributes($this, $attributes);
 
-        $output = "<form {$compiledAttributes}>".PHP_EOL;
+        $output = "<form {$compiledAttributes}>".\PHP_EOL;
 
         if (!$customAttributes->getAction()) {
             $output .= '<input type="hidden" name="action" value="'.$this->formAttributes->getActionUrl().'" />';

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.4 - Unreleased
+
+### Added
+- Added a way to conveniently get a reCaptcha checkbox field instance from a form with `form.get('recaptcha')`
+
 ## 3.10.3 - 2021-01-22
 
 ### Fixed

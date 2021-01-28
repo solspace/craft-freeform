@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed a bug where creating new formatting templates was not possible through CP
+- Fixed an issue where "Conditional Rules" editor would go out of screen on smaller screens
 
 ## 3.10.4 - 2021-01-26
 

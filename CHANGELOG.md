@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.5 - Unreleased
+
+### Fixed
+- Fixed a bug where creating new formatting templates was not possible through CP
+
 ## 3.10.4 - 2021-01-26
 
 ### Added

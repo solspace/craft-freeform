@@ -122,7 +122,6 @@ class FreeformFeedService extends Component
             $record->min = $item->getAffectedVersions()->min;
             $record->max = $item->getAffectedVersions()->max;
             $record->issueDate = Carbon::createFromTimestampUTC($item->getTimestamp());
-            $record->save();
 
             if ($installDate && $installDate->gt($record->issueDate)) {
                 continue;
@@ -131,6 +130,8 @@ class FreeformFeedService extends Component
             if ($record->min && version_compare($currentVersion, $record->min, '<')) {
                 continue;
             }
+
+            $record->save();
 
             if ($record->max && version_compare($currentVersion, $record->max, '>')) {
                 continue;

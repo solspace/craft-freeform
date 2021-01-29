@@ -1,9 +1,24 @@
 # Solspace Freeform Changelog
 
-## 3.10.2.2 - Unreleased
+## 3.10.5 - Unreleased
 
 ### Fixed
-- Fixed a bug in export profiles migration that prevented updating profiles with no date ranges set 
+- Fixed a bug where creating new formatting templates was not possible through CP
+- Fixed an issue where "Conditional Rules" editor would go out of screen on smaller screens
+- Fixed "What's New" from skipping some updates that might be relevant in the future
+
+### Changed
+- Improved MailChimp behaviour when adding new or changing existing audience members
+
+## 3.10.4 - 2021-01-26
+
+### Added
+- Added a way to conveniently get a reCAPTCHA v2 Checkbox field instance from a manually constructed form with `form.get('recaptcha')`.
+
+## 3.10.3 - 2021-01-22
+
+### Fixed
+- Fixed a bug in the Export Profiles migration that prevented updating profiles with no date ranges set.
 
 ## 3.10.2.1 - 2021-01-18
 

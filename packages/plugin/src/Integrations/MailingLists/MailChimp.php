@@ -112,6 +112,7 @@ class MailChimp extends AbstractMailingListIntegration
             $memberData = [
                 'email_address' => $email,
                 'status' => $isDoubleOptIn ? 'pending' : 'subscribed',
+                'status_if_new' => $isDoubleOptIn ? 'pending' : 'subscribed',
             ];
 
             $marketingPermissions = $tags = [];
@@ -143,17 +144,10 @@ class MailChimp extends AbstractMailingListIntegration
             }
 
             try {
-                $patchMemberData = $memberData;
-                unset($patchMemberData['email_address']);
-                $response = $this->patch("lists/{$listId}/members/{$emailHash}", ['json' => $patchMemberData]);
+                $response = $this->put("lists/{$listId}/members/{$emailHash}", ['json' => $memberData]);
                 $this->getHandler()->onAfterResponse($this, $response);
             } catch (RequestException $exception) {
-                try {
-                    $response = $this->post("lists/{$listId}/members", ['json' => $memberData]);
-                    $this->getHandler()->onAfterResponse($this, $response);
-                } catch (RequestException $e) {
-                    $this->logErrorAndThrow($e);
-                }
+                $this->logErrorAndThrow($exception);
             }
 
             $this->manageTags($listId, $email, $tags);
@@ -404,9 +398,9 @@ class MailChimp extends AbstractMailingListIntegration
         return $this->generateAuthorizedClient($requestParams)->post($this->getEndpoint($endpoint));
     }
 
-    private function patch(string $endpoint, array $requestParams = []): ResponseInterface
+    private function put(string $endpoint, array $requestParams = []): ResponseInterface
     {
-        return $this->generateAuthorizedClient($requestParams)->patch($this->getEndpoint($endpoint));
+        return $this->generateAuthorizedClient($requestParams)->put($this->getEndpoint($endpoint));
     }
 
     private function delete(string $endpoint, array $requestParams = []): ResponseInterface

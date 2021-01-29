@@ -289,7 +289,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             try {
                 return $this->getLayout()->getFieldByHash($fieldHandle);
             } catch (FreeformException $e) {
-                return null;
+                try {
+                    return $this->getLayout()->getSpecialField($fieldHandle);
+                } catch (FreeformException $e) {
+                    return null;
+                }
             }
         }
     }

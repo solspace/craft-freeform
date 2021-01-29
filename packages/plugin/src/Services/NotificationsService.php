@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\helpers\FileHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Notifications\DeleteEvent;
 use Solspace\Freeform\Events\Notifications\SaveEvent;
@@ -130,6 +131,10 @@ class NotificationsService extends BaseService
      */
     public function save(NotificationRecord $record): bool
     {
+        if ($record->isFileBasedTemplate()) {
+            return $this->saveNotificationAsFile($record);
+        }
+
         $isNew = !$record->id;
 
         // Replace all &nbsp; occurrences with a blank space, since it might mess up
@@ -182,6 +187,13 @@ class NotificationsService extends BaseService
             return false;
         }
 
+        if ($record->isFileBasedTemplate()) {
+            $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
+            unlink($emailDirectory.'/'.$record->filepath);
+
+            return true;
+        }
+
         $beforeDeleteEvent = new DeleteEvent($record);
         $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
 
@@ -212,5 +224,71 @@ class NotificationsService extends BaseService
 
             throw $exception;
         }
+    }
+
+    public function createNewFileNotification(string $name): NotificationRecord
+    {
+        $settings = $this->getSettingsService()->getSettingsModel();
+        $extension = '.twig';
+
+        $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
+        $templateName = $name;
+
+        $templatePath = $templateDirectory.'/'.$templateName.$extension;
+
+        FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
+
+        return $this->getNotificationById($templateName.$extension);
+    }
+
+    private function saveNotificationAsFile(NotificationRecord $record)
+    {
+        $emailDirectory = Freeform::getInstance()->settings->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
+
+        $filepath = $emailDirectory.'/'.$record->filepath;
+        if (!file_exists($filepath)) {
+            $record->addError('handle', 'File does not exist');
+
+            return false;
+        }
+
+        $includeAttachments = $record->isIncludeAttachmentsEnabled() ? 'true' : 'false';
+        $presetAssets = $record->getPresetAssets() ? implode(',', $record->getPresetAssets()) : '';
+
+        $output = '';
+        $output .= "{# subject: {$record->getSubject()} #}".\PHP_EOL;
+        $output .= "{# fromEmail: {$record->getFromEmail()} #}".\PHP_EOL;
+        $output .= "{# fromName: {$record->getFromName()} #}".\PHP_EOL;
+        $output .= "{# replyToName: {$record->getReplyToName()} #}".\PHP_EOL;
+        $output .= "{# replyToEmail: {$record->getReplyToEmail()} #}".\PHP_EOL;
+        $output .= "{# cc: {$record->getCc()} #}".\PHP_EOL;
+        $output .= "{# bcc: {$record->getBcc()} #}".\PHP_EOL;
+        $output .= "{# includeAttachments: {$includeAttachments} #}".\PHP_EOL;
+        $output .= "{# presetAssets: {$presetAssets} #}".\PHP_EOL;
+        $output .= "{# templateName: {$record->name} #}".\PHP_EOL;
+        $output .= "{# description: {$record->description} #}".\PHP_EOL;
+        $output .= \PHP_EOL;
+
+        $output .= $record->getBodyHtml();
+        $output .= \PHP_EOL;
+
+        if (!$record->isAutoText()) {
+            $output .= '{# text #}'.\PHP_EOL;
+            $output .= $record->getBodyText();
+            $output .= \PHP_EOL.'{# /text #}';
+            $output .= \PHP_EOL;
+        }
+
+        $newName = $record->handle.'.twig';
+        if ($newName !== $record->filepath) {
+            unlink($filepath);
+            $filepath = $emailDirectory.'/'.$newName;
+        }
+
+        $resource = fopen($filepath, 'w');
+        fwrite($resource, $output);
+        fclose($resource);
+
+        return true;
     }
 }

@@ -89,7 +89,7 @@ EOT;
         }
 
         $model = new self();
-        $model->filepath = pathinfo($filePath, PATHINFO_BASENAME);
+        $model->filepath = pathinfo($filePath, \PATHINFO_BASENAME);
         $model->name = $template->getName();
         $model->handle = $template->getHandle();
         $model->description = $template->getDescription();

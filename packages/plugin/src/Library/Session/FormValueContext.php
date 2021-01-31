@@ -328,7 +328,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function saveState()
     {
-        $encodedData = \GuzzleHttp\json_encode($this, JSON_OBJECT_AS_ARRAY);
+        $encodedData = \GuzzleHttp\json_encode($this, \JSON_OBJECT_AS_ARRAY);
         $sessionHashKey = $this->getSessionHash($this->getLastHash());
 
         $this->appendSessionData($sessionHashKey, $encodedData);
@@ -498,7 +498,7 @@ class FormValueContext implements \JsonSerializable
             $payload
         );
 
-        return htmlentities($hash, ENT_QUOTES, 'UTF-8');
+        return htmlentities($hash, \ENT_QUOTES, 'UTF-8');
     }
 
     private function hashFormId(): string

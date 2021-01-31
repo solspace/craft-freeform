@@ -375,6 +375,20 @@ class Layout implements \JsonSerializable, \Iterator
         );
     }
 
+    public function getSpecialField(string $name): AbstractField
+    {
+        $name = strtolower($name);
+        if ('recaptcha' === $name && $this->hasRecaptchaFields()) {
+            $fields = $this->getRecaptchaFields();
+
+            return reset($fields);
+        }
+
+        throw new FreeformException(
+            $this->translate("Special Field with name '{name}' not found", ['name' => $name])
+        );
+    }
+
     /**
      * @return AbstractField[]|RecipientInterface[]
      */

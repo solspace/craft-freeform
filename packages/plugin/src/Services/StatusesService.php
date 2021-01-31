@@ -100,7 +100,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
         return (new Query())
             ->select(['id'])
             ->from(StatusRecord::TABLE)
-            ->orderBy(['name' => SORT_ASC])
+            ->orderBy(['name' => \SORT_ASC])
             ->column()
         ;
     }
@@ -316,7 +316,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
                 ]
             )
             ->from(StatusRecord::TABLE.' statuses')
-            ->orderBy(['statuses.sortOrder' => SORT_ASC])
+            ->orderBy(['statuses.sortOrder' => \SORT_ASC])
         ;
     }
 }

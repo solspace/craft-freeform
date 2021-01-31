@@ -96,9 +96,9 @@ class FieldsService extends BaseService implements FieldHandlerInterface
 
             $orderBy = [];
             if (Freeform::FIELD_DISPLAY_ORDER_TYPE === $fieldDisplayOrder) {
-                $orderBy['fields.type'] = SORT_ASC;
+                $orderBy['fields.type'] = \SORT_ASC;
             }
-            $orderBy['fields.label'] = SORT_ASC;
+            $orderBy['fields.label'] = \SORT_ASC;
 
             $results = $this->getQuery()
                 ->orderBy($orderBy)
@@ -411,7 +411,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         }
 
         $orderBy = $config->getOrderBy() ?? 'id';
-        $sort = 'desc' === strtolower($config->getSort()) ? SORT_DESC : SORT_ASC;
+        $sort = 'desc' === strtolower($config->getSort()) ? \SORT_DESC : \SORT_ASC;
         $query->orderBy([$orderBy => $sort]);
 
         $items = $query->all();
@@ -523,7 +523,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                 ]
             )
             ->from(FieldRecord::TABLE.' fields')
-            ->orderBy(['fields.label' => SORT_ASC])
+            ->orderBy(['fields.label' => \SORT_ASC])
         ;
     }
 

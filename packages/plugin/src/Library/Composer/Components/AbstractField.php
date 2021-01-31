@@ -275,7 +275,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             return $this->renderRaw('');
         }
 
-        $data = \GuzzleHttp\json_encode($rule, JSON_HEX_APOS);
+        $data = \GuzzleHttp\json_encode($rule, \JSON_HEX_APOS);
 
         return $this->renderRaw(" data-ff-rule='{$data}'");
     }
@@ -601,7 +601,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $output = '<label'.$forAttribute.$this->getLabelAttributesString().'>';
         $output .= $this->getLabel();
         $output .= '</label>';
-        $output .= PHP_EOL;
+        $output .= \PHP_EOL;
 
         return $output;
     }
@@ -620,7 +620,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $output = '<div'.$this->getInstructionAttributesString().'>';
         $output .= $this->getInstructions();
         $output .= '</div>';
-        $output .= PHP_EOL;
+        $output .= \PHP_EOL;
 
         return $output;
     }

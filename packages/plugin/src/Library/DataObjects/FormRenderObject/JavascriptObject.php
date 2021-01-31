@@ -9,19 +9,13 @@ class JavascriptObject extends AbstractFormRenderObject
 {
     private $position;
 
-    private $options;
-
-    public function __construct($value, array $replacements = [], int $position = View::POS_END, array $options = [])
+    public function __construct($value, array $replacements = [], array $options = [], int $position = View::POS_END)
     {
-        parent::__construct($value, $replacements);
+        parent::__construct($value, $replacements, $options);
 
         $this->position = $position;
-        $this->options = $options;
     }
 
-    /**
-     * Attach the object to view.
-     */
     public function attachToView()
     {
         \Craft::$app->view->registerScript($this->getValue(), $this->position, $this->options);

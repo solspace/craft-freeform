@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
+use Solspace\Freeform\Events\Honeypot\RenderHoneypotEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
@@ -12,6 +13,8 @@ use Solspace\Freeform\Library\Session\Honeypot;
 class HoneypotService extends BaseService
 {
     const FORM_HONEYPOT_KEY = 'freeformHoneypotHashList';
+
+    const EVENT_RENDER_HONEYPOT = 'renderHoneypot';
 
     const MAX_HONEYPOT_TTL = 10800; // 3 Hours
     const MAX_HONEYPOT_COUNT = 100;   // Limit the number of maximum honeypot values per session
@@ -137,12 +140,15 @@ class HoneypotService extends BaseService
             .'tabindex="-1" '
             .'/>';
 
-        $output = '<div style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true" tabindex="-1">'
+        $output = '<div class="'.$fieldPrefix.$honeypotName.'" style="position: absolute !important; width: 0 !important; height: 0 !important; overflow: hidden !important;" aria-hidden="true" tabindex="-1">'
             .'<label aria-hidden="true" tabindex="-1" for="'.$fieldPrefix.$honeypotName.'">Leave this field blank</label>'
             .$output
             .'</div>';
 
-        return $output;
+        $event = new RenderHoneypotEvent($output);
+        $this->trigger(self::EVENT_RENDER_HONEYPOT, $event);
+
+        return $event->getOutput();
     }
 
     private function getNewHoneypot(): Honeypot

@@ -28,7 +28,7 @@ class SanitizeHelper
             return $return;
         }
 
-        return htmlspecialchars($value, ENT_QUOTES);
+        return htmlspecialchars($value, \ENT_QUOTES);
     }
 
     public static function cleanUpTwigCondition(string $condition)

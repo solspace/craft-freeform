@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Controllers\REST;
 
+use craft\web\Request;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
@@ -22,13 +23,13 @@ class SettingsController extends BaseController
         $this->requirePostRequest();
         $this->saveSettings(
             [
-                'pluginName' => $this->request->getBodyParam('name'),
-                'defaultView' => $this->request->getBodyParam('defaultView', 'dashboard'),
-                'ajaxByDefault' => $this->request->getBodyParam('ajax', true),
-                'formattingTemplate' => $this->request->getBodyParam('defaultFormattingTemplate', 'flexbox'),
-                'formSubmitDisable' => $this->request->getBodyParam('disableSubmit', true),
-                'autoScrollToErrors' => $this->request->getBodyParam('autoScroll', true),
-                'scriptInsertLocation' => $this->request->getBodyParam('jsInsertLocation', Settings::SCRIPT_INSERT_LOCATION_FOOTER),
+                'pluginName' => $this->getRequest()->getBodyParam('name'),
+                'defaultView' => $this->getRequest()->getBodyParam('defaultView', 'dashboard'),
+                'ajaxByDefault' => $this->getRequest()->getBodyParam('ajax', true),
+                'formattingTemplate' => $this->getRequest()->getBodyParam('defaultFormattingTemplate', 'flexbox'),
+                'formSubmitDisable' => $this->getRequest()->getBodyParam('disableSubmit', true),
+                'autoScrollToErrors' => $this->getRequest()->getBodyParam('autoScroll', true),
+                'scriptInsertLocation' => $this->getRequest()->getBodyParam('jsInsertLocation', Settings::SCRIPT_INSERT_LOCATION_FOOTER),
             ]
         );
 
@@ -40,10 +41,10 @@ class SettingsController extends BaseController
         $this->requirePostRequest();
         $this->saveSettings(
             [
-                'freeformHoneypot' => $this->request->getBodyParam('honeypot', true),
-                'freeformHoneypotEnhancement' => $this->request->getBodyParam('enhancedHoneypot', false),
-                'spamFolderEnabled' => $this->request->getBodyParam('spamFolder', true),
-                'spamProtectionBehaviour' => $this->request->getBodyParam('spamBehaviour'),
+                'freeformHoneypot' => $this->getRequest()->getBodyParam('honeypot', true),
+                'freeformHoneypotEnhancement' => $this->getRequest()->getBodyParam('enhancedHoneypot', false),
+                'spamFolderEnabled' => $this->getRequest()->getBodyParam('spamFolder', true),
+                'spamProtectionBehaviour' => $this->getRequest()->getBodyParam('spamBehaviour'),
             ]
         );
 
@@ -55,13 +56,13 @@ class SettingsController extends BaseController
         $this->requirePostRequest();
         $this->saveSettings(
             [
-                'alertNotificationRecipients' => $this->request->getBodyParam('errorRecipients'),
-                'displayFeed' => $this->request->getBodyParam('updateNotices', true),
-                'digestRecipients' => $this->request->getBodyParam('digestRecipients'),
-                'digestFrequency' => (int) $this->request->getBodyParam('digestFrequency'),
-                'clientDigestRecipients' => $this->request->getBodyParam('clientDigestRecipients'),
-                'clientDigestFrequency' => (int) $this->request->getBodyParam('clientDigestFrequency'),
-                'digestOnlyOnProduction' => $this->request->getBodyParam('digestProductionOnly', false),
+                'alertNotificationRecipients' => $this->getRequest()->getBodyParam('errorRecipients'),
+                'displayFeed' => $this->getRequest()->getBodyParam('updateNotices', true),
+                'digestRecipients' => $this->getRequest()->getBodyParam('digestRecipients'),
+                'digestFrequency' => (int) $this->getRequest()->getBodyParam('digestFrequency'),
+                'clientDigestRecipients' => $this->getRequest()->getBodyParam('clientDigestRecipients'),
+                'clientDigestFrequency' => (int) $this->getRequest()->getBodyParam('clientDigestFrequency'),
+                'digestOnlyOnProduction' => $this->getRequest()->getBodyParam('digestProductionOnly', false),
             ]
         );
 
@@ -79,5 +80,10 @@ class SettingsController extends BaseController
     private function returnSuccess(): Response
     {
         return $this->asJson(['success' => true]);
+    }
+
+    private function getRequest(): Request
+    {
+        return \Craft::$app->request;
     }
 }

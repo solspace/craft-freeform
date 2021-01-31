@@ -88,7 +88,7 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 
         $submissions = Submission::find()
             ->formId($formIdList)
-            ->orderBy(['id' => SORT_DESC])
+            ->orderBy(['id' => \SORT_DESC])
             ->limit((int) $this->limit)
         ;
 

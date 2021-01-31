@@ -230,7 +230,7 @@ class ExportProfilesService extends Component
                 ]
             )
             ->from(ExportProfileRecord::TABLE.' export_profiles')
-            ->orderBy(['export_profiles.id' => SORT_ASC])
+            ->orderBy(['export_profiles.id' => \SORT_ASC])
         ;
     }
 

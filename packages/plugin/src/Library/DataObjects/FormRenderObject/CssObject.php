@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Library\DataObjects\FormRenderObject;
 
+use Solspace\Commons\Helpers\StringHelper;
+
 class CssObject extends AbstractFormRenderObject
 {
     /**
@@ -9,11 +11,13 @@ class CssObject extends AbstractFormRenderObject
      */
     public function attachToView()
     {
-        \Craft::$app->view->registerCss($this->getValue());
+        \Craft::$app->view->registerCss($this->getValue(), $this->options);
     }
 
     public function getOutput(): string
     {
-        return '<style rel="stylesheet">'.$this->getValue().'</style>';
+        $options = StringHelper::compileAttributeStringFromArray($this->options);
+
+        return '<style rel="stylesheet"'.$options.'>'.$this->getValue().'</style>';
     }
 }

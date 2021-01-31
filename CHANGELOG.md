@@ -1,12 +1,49 @@
 # Solspace Freeform Changelog
 
-## 3.10.1 - Unreleased
+## 3.10.5 - Unreleased
 
 ### Fixed
-- Fixed Freeform CP Widgets with charts not loading the chart lib
-- Fixed an issue where the Form Builder HTML editor would go outside of screen on smaller screens 
-- Fixed not having mime-types for empty text file uploads
-- Fixed a potential issue with Pardot accounts that don't have custom fields
+- Fixed a bug where creating new formatting templates was not possible through CP
+- Fixed an issue where "Conditional Rules" editor would go out of screen on smaller screens
+- Fixed "What's New" from skipping some updates that might be relevant in the future
+
+### Changed
+- Improved MailChimp behaviour when adding new or changing existing audience members
+
+## 3.10.4 - 2021-01-26
+
+### Added
+- Added a way to conveniently get a reCAPTCHA v2 Checkbox field instance from a manually constructed form with `form.get('recaptcha')`.
+
+## 3.10.3 - 2021-01-22
+
+### Fixed
+- Fixed a bug in the Export Profiles migration that prevented updating profiles with no date ranges set.
+
+## 3.10.2.1 - 2021-01-18
+
+### Fixed
+- Fixed a bug where front end forms could display an error when loading in some rare cases.
+
+## 3.10.2 - 2021-01-15
+
+### Added
+- Added developer events for modifying included Freeform script tags and honeypot.
+
+### Changed
+- Updated HTML block fields in to no longer render Twig code inside the CP submissions view to prevent potential issues.
+
+### Fixed
+- Fixed a bug where Freeform was incompatible with Craft 3.4.x in some places and could error.
+
+## 3.10.1 - 2021-01-14
+
+### Fixed
+- Fixed a bug where Freeform CP Widgets with charts were not loading the chart library.
+- Fixed a bug where creating new elements would not automatically update the Craft search indexes.
+- Fixed a bug where the Form Builder HTML editor would go outside of viewing area on smaller screens.
+- Fixed a bug where there were no valid mime-types for empty text file uploads.
+- Fixed a potential issue with Pardot accounts that don't have custom fields.
 
 ## 3.10.0 - 2021-01-05
 
@@ -52,6 +89,7 @@
 - Fixed a bug where Signature fields were redrawing incorrectly on high DPI displays.
 
 ## 3.9.11 - 2020-12-17
+
 ### Fixed
 - Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
 

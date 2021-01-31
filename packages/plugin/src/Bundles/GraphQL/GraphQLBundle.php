@@ -25,6 +25,10 @@ class GraphQLBundle implements BundleInterface
 {
     public function __construct()
     {
+        if (version_compare(\Craft::$app->version, '3.5.0', '<')) {
+            return;
+        }
+
         Event::on(
             Gql::class,
             Gql::EVENT_REGISTER_GQL_TYPES,

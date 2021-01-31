@@ -406,7 +406,7 @@ class Settings extends Model
         $contents = file_get_contents($path);
 
         if ('flexbox' === $name) {
-            $css = file_get_contents(__DIR__.'/../Resources/css/form-formatting-templates/flexbox.css');
+            $css = file_get_contents(__DIR__.'/../Resources/css/front-end/formatting-templates/flexbox.css');
             $contents = str_replace('{% css formCss %}', "<style>{$css}</style>", $contents);
         }
 
@@ -566,7 +566,7 @@ class Settings extends Model
         $files = [];
         foreach ($fileIterator as $file) {
             $path = $file->getRealPath();
-            $files[$path] = pathinfo($path, PATHINFO_BASENAME);
+            $files[$path] = pathinfo($path, \PATHINFO_BASENAME);
         }
 
         return $files;

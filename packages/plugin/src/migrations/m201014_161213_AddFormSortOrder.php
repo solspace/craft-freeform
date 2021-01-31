@@ -23,7 +23,7 @@ class m201014_161213_AddFormSortOrder extends Migration
             $forms = (new Query())
                 ->select('id')
                 ->from('{{%freeform_forms}}')
-                ->orderBy(['id' => SORT_ASC])
+                ->orderBy(['id' => \SORT_ASC])
                 ->column()
             ;
 

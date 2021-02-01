@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\db\Query;
 use craft\helpers\FileHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Notifications\DeleteEvent;
@@ -81,6 +82,15 @@ class NotificationsService extends BaseService
         }
 
         return self::$notificationCache;
+    }
+
+    public function getDatabaseNotificationCount(): int
+    {
+        return (int) (new Query())
+            ->select('id')
+            ->from(NotificationRecord::TABLE)
+            ->count()
+        ;
     }
 
     /**
@@ -241,7 +251,7 @@ class NotificationsService extends BaseService
         return $this->getNotificationById($templateName.$extension);
     }
 
-    private function saveNotificationAsFile(NotificationRecord $record)
+    public function saveNotificationAsFile(NotificationRecord $record)
     {
         $emailDirectory = Freeform::getInstance()->settings->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
 

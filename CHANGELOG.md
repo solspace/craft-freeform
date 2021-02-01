@@ -1,44 +1,59 @@
 # Solspace Freeform Changelog
 
+## 3.11.0 - Unreleased
+
+### Added
+
+- Added a migration tool for migrating from DB to File email notifications
+
 ## 3.10.5 - Unreleased
 
 ### Fixed
+
 - Fixed a bug where creating new formatting templates was not possible through CP
 - Fixed an issue where "Conditional Rules" editor would go out of screen on smaller screens
 - Fixed "What's New" from skipping some updates that might be relevant in the future
 
 ### Changed
+
 - Improved MailChimp behaviour when adding new or changing existing audience members
 
 ## 3.10.4 - 2021-01-26
 
 ### Added
+
 - Added a way to conveniently get a reCAPTCHA v2 Checkbox field instance from a manually constructed form with `form.get('recaptcha')`.
 
 ## 3.10.3 - 2021-01-22
 
 ### Fixed
+
 - Fixed a bug in the Export Profiles migration that prevented updating profiles with no date ranges set.
 
 ## 3.10.2.1 - 2021-01-18
 
 ### Fixed
+
 - Fixed a bug where front end forms could display an error when loading in some rare cases.
 
 ## 3.10.2 - 2021-01-15
 
 ### Added
+
 - Added developer events for modifying included Freeform script tags and honeypot.
 
 ### Changed
+
 - Updated HTML block fields in to no longer render Twig code inside the CP submissions view to prevent potential issues.
 
 ### Fixed
+
 - Fixed a bug where Freeform was incompatible with Craft 3.4.x in some places and could error.
 
 ## 3.10.1 - 2021-01-14
 
 ### Fixed
+
 - Fixed a bug where Freeform CP Widgets with charts were not loading the chart library.
 - Fixed a bug where creating new elements would not automatically update the Craft search indexes.
 - Fixed a bug where the Form Builder HTML editor would go outside of viewing area on smaller screens.
@@ -48,6 +63,7 @@
 ## 3.10.0 - 2021-01-05
 
 ### Added
+
 - Added support for GraphQL.
 - Added support for Google Tag Manager with AJAX.
 - Added the ability to specify a custom Payment description inside the form builder to show inside Stripe payments.
@@ -65,6 +81,7 @@
 - Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
 
 ### Changed
+
 - Updated AJAX to work with multipage forms.
 - Updated Payments to work with multipage forms.
 - Overhauled the Freeform Javascript plugin to be more robust, reworked the API to make it way more developer friendly. Made it easier for anyone to adjust or complement form functionality regardless of their particular site setup.
@@ -80,6 +97,7 @@
 - Updated the 'Disable Submit Button on Form Submit?' setting to be on by default for new installs.
 
 ### Fixed
+
 - Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
 - Fixed autocomplete not being turned off on datepicker enabled fields.
 - Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
@@ -91,19 +109,24 @@
 ## 3.9.11 - 2020-12-17
 
 ### Fixed
+
 - Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
 
 ## 3.9.10 - 2020-12-16
+
 ### Added
+
 - Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
 
 ### Fixed
+
 - Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
 - Fixed a potential issue with the 3.9 migration that might affect a small number of customers.
 
 ## 3.9.9 - 2020-12-02
 
 ### Fixed
+
 - Fixed a bug where older installs of Craft (3.5.9 and lower) could experience an error in the Forms and Fields CP index pages due to the `truncate` filter not existing yet.
 
 ## 3.9.8 - 2020-12-01

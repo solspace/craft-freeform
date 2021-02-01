@@ -19,7 +19,7 @@
                     </a>
                 {% endif %}
 
-                {% if filesEnabled %}
+                {% if filesEnabled and useDbNotifications %}
                     <div class="btn submit menubtn"></div>
                     <div class="menu">
                         <ul>
@@ -49,64 +49,62 @@
 
 {% set content %}
 
-    <h2>{{ "Database Entry Templates"|t('freeform') }}</h2>
+    {% if useDbNotifications %}
+        <div style="margin-bottom: 60px;">
+            <h2>{{ "Database Entry Templates"|t('freeform') }}</h2>
 
-    <div id="nonotifications"{% if notifications %} class="hidden"{% endif %}>
-        <p>{{ "No notifications found"|t('freeform') }}</p>
-    </div>
+            <div id="nonotifications" class="{{ dbNotificationCount > 0 ? 'hidden' }}">
+                <p>{{ "No notifications found"|t('freeform') }}</p>
+            </div>
 
-    {% if notifications|length %}
-        <table id="emailnotifications" class="data fullwidth collapsible">
-            <thead>
-            <th scope="col">{{ "Name"|t('freeform') }}</th>
-            <th scope="col">{{ "Handle"|t('freeform') }}</th>
-            <th scope="col">{{ "Description"|t('freeform') }}</th>
-            <td class="thin"></td>
-            </thead>
-            <tbody>
-            {# Database based templates #}
-            {% for notification in notifications if not notification.fileBasedTemplate %}
-                <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
-                    <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                        {% if currentUser.can("freeform-notificationsManage") %}
-                            <a href="{{ url('freeform/notifications/' ~ notification.id) }}">
-                                {{ notification.name }}
-                            </a>
-                        {% else %}
-                            {{ notification.name }}
-                        {% endif %}
-                    </th>
-                    <td data-title="{{ 'Handle'|t('freeform') }}">
-                        <code>
-                            {{ notification.handle|truncater(40) }}
-                        </code>
-                    </td>
-                    <td style="width: 50%;">
-                        {{ notification.description|truncater(80) }}
-                    </td>
-                    <td class="thin">
-                        <div class='action-buttons'>
-                            {% if currentUser.can("freeform-notificationsManage") %}
-                                <a class="clone icon" data-id="{{ notification.id }}"
-                                   title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
-                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
-                            {% endif %}
-                        </div>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+            {% if dbNotificationCount > 0 %}
+                <table id="emailnotifications" class="data fullwidth collapsible">
+                    <thead>
+                    <th scope="col">{{ "Name"|t('freeform') }}</th>
+                    <th scope="col">{{ "Handle"|t('freeform') }}</th>
+                    <th scope="col">{{ "Description"|t('freeform') }}</th>
+                    <td class="thin"></td>
+                    </thead>
+                    <tbody>
+                    {# Database based templates #}
+                    {% for notification in notifications if not notification.fileBasedTemplate %}
+                        <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
+                            <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
+                                {% if currentUser.can("freeform-notificationsManage") %}
+                                    <a href="{{ url('freeform/notifications/' ~ notification.id) }}">
+                                        {{ notification.name }}
+                                    </a>
+                                {% else %}
+                                    {{ notification.name }}
+                                {% endif %}
+                            </th>
+                            <td data-title="{{ 'Handle'|t('freeform') }}">
+                                <code>
+                                    {{ notification.handle|truncater(40) }}
+                                </code>
+                            </td>
+                            <td style="width: 50%;">
+                                {{ notification.description|truncater(80) }}
+                            </td>
+                            <td class="thin">
+                                <div class='action-buttons'>
+                                    {% if currentUser.can("freeform-notificationsManage") %}
+                                        <a class="clone icon" data-id="{{ notification.id }}"
+                                           title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
+                                        <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+        </div>
     {% endif %}
 
-    {% set hasFileTemplates = false %}
-    {% for notification in notifications if notification.fileBasedTemplate %}
-        {% set hasFileTemplates = true %}
-    {% endfor %}
-
-
-    {% if hasFileTemplates %}
-        <h2 style="margin-top: 60px;">
+    {% if fileNotificationCount > 0 %}
+        <h2>
             {{ "Template Files"|t('freeform') }}
             <span class="code disabled">({{ settings.emailTemplateDirectory }})</span>
         </h2>

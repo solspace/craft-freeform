@@ -131,4 +131,6 @@ return [
     'freeform/api/settings/general' => 'freeform/rest-settings/general',
     'freeform/api/settings/spam' => 'freeform/rest-settings/spam',
     'freeform/api/settings/reliability' => 'freeform/rest-settings/reliability',
+    // Migrations
+    'freeform/migrate/notifications/db-to-file' => 'freeform/migrate-notifications/db-to-file',
 ];

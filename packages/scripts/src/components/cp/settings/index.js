@@ -43,4 +43,49 @@ $(() => {
   });
 
   scriptInsertLocation.trigger('change');
+
+  const notificationsMigrator = $('#notifications-migrator');
+  if (notificationsMigrator) {
+    const button = $('#migrate', notificationsMigrator);
+
+    button.on({
+      click: (event) => {
+        if (!confirm('Are you sure you want to migrate database notifications to file based ones?')) {
+          event.preventDefault();
+          event.stopPropagation();
+          return false;
+        }
+
+        const removeDbNotifications = $('#remove-files', notificationsMigrator).is(':checked');
+
+        $.ajax({
+          url: Craft.getCpUrl('freeform/migrate/notifications/db-to-file'),
+          type: 'post',
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify({
+            removeDbNotifications,
+            [Craft.csrfTokenName]: Craft.csrfTokenValue,
+          }),
+          success: (response) => {
+            if (response.success) {
+              notificationsMigrator.html(
+                $(`<div class="pane">
+                  <p>
+                    <span class="checkmark-icon"></span>
+                    Migrated successfully
+                  </p> 
+                </div>
+                `)
+              );
+            }
+          },
+        });
+
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      },
+    });
+  }
 });

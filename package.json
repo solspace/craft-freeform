@@ -25,5 +25,8 @@
     "test": "lerna run test"
   },
   "author": "Solspace, Inc.",
-  "license": "ISC"
+  "license": "ISC",
+  "volta": {
+    "node": "15.7.0"
+  }
 }

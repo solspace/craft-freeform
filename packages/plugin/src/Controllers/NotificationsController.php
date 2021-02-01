@@ -38,6 +38,8 @@ class NotificationsController extends BaseController
         $this->view->registerAssetBundle(NotificationIndexBundle::class);
         $notifications = $this->getNotificationService()->getAllNotifications();
 
+        $dbNotificationCount = $this->getNotificationService()->getDatabaseNotificationCount();
+
         $settingsModel = $this->getSettingsService()->getSettingsModel();
 
         $filesEnabled = !empty($settingsModel->emailTemplateDirectory);
@@ -49,6 +51,9 @@ class NotificationsController extends BaseController
                 'filesEnabled' => $filesEnabled,
                 'filesByDefault' => $filesEnabled && $filesByDefault,
                 'notifications' => $notifications,
+                'dbNotificationCount' => $dbNotificationCount,
+                'fileNotificationCount' => \count($notifications) - $dbNotificationCount,
+                'useDbNotifications' => $dbNotificationCount > 0 || !$filesByDefault,
                 'settings' => Freeform::getInstance()->settings->getSettingsModel(),
             ]
         );

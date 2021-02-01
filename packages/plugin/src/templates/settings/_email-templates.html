@@ -11,6 +11,7 @@
     {{ csrfInput() }}
 
     {{ forms.textField({
+        first: true,
         class: "code",
         label: "Directory Path"|t('freeform'),
         instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps the Form Builder locate these files when setting up notifications."|t('freeform'),
@@ -37,7 +38,7 @@
         {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
 
         <div id="components-wrapper">
-            <div>
+            <div style="margin: 0;">
                 <button type="button" class="btn submit small icon add" id="add-demo-template">
                     {{ "Add an email template"|t('freeform') }}
                 </button>
@@ -56,6 +57,40 @@
                 </ul>
             </div>
         </div>
+
+        {% if craft.freeform.notifications.databaseNotificationCount > 0 %}
+            <div class="field" id="notifications-migrator">
+                <div class="heading">
+                    <label>
+                        {{ 'Migrate from Database to Files'|t('freeform') }}
+                    </label>
+                </div>
+                <div class="instructions">
+                    <p>
+                        {{ 'Use this to migrate from database templates to file based templates'|t('freeform') }}
+                    </p>
+                </div>
+                <div class="input">
+                    <div style="margin-bottom: 10px;">
+                        <input
+                            type="checkbox"
+                            class="checkbox"
+                            name="removeFiles"
+                            value="1"
+                            id="remove-files"
+                            checked
+                        />
+                        <label for="remove-files">
+                            {{ "Remove database files after migration?" }}
+                        </label>
+                    </div>
+
+                    <button class="btn" id="migrate">
+                        {{ "Migrate"|t('freeform') }}
+                    </button>
+                </div>
+            </div>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

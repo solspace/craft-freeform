@@ -1,14 +1,15 @@
 # Solspace Freeform Changelog
 
-## 3.10.5 - Unreleased
+## 3.10.5 - 2021-02-02
+
+### Added
+- Added support for Birthday field types in the MailChimp mailing list integration.
 
 ### Fixed
-- Fixed a bug where creating new formatting templates was not possible through CP
-- Fixed an issue where "Conditional Rules" editor would go out of screen on smaller screens
-- Fixed "What's New" from skipping some updates that might be relevant in the future
-
-### Changed
-- Improved MailChimp behaviour when adding new or changing existing audience members
+- Fixed a bug where adding the sample formatting template through the CP was not working correctly.
+- Fixed a bug where the "Conditional Rules" editor in CP form builder would run off the screen on smaller screens.
+- Fixed a bug where File Upload fields might log errors in some rare cases.
+- Fixed an issue where the "What's New" dashboard feature could skip some updates that might be relevant in the future.
 
 ## 3.10.4 - 2021-01-26
 

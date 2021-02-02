@@ -165,7 +165,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                 $_FILES[$this->handle]['type'] = [$_FILES[$this->handle]['type']];
             }
 
-            if ($exists && $_FILES[$this->handle]['name'][0]) {
+            if ($exists && is_countable($_FILES[$this->handle]['name'])) {
                 $fileCount = \count($_FILES[$this->handle]['name']);
 
                 if ($fileCount > $this->getFileCount()) {

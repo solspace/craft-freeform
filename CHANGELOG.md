@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.10.5 - Unreleased
+
+### Fixed
+- Fixed a bug where creating new formatting templates was not possible through CP
+- Fixed an issue where "Conditional Rules" editor would go out of screen on smaller screens
+- Fixed "What's New" from skipping some updates that might be relevant in the future
+
+### Changed
+- Improved MailChimp behaviour when adding new or changing existing audience members
+
 ## 3.10.4 - 2021-01-26
 
 ### Added

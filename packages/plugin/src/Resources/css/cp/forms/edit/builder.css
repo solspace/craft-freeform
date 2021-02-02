@@ -2115,6 +2115,12 @@
         flex: 1 0 75%;
         display: flex;
         align-content: stretch; }
+        @media screen and (max-width: 1560px) {
+          .builder-interface .builder-blocks > div.lefty {
+            flex: 1 0 70%; } }
+        @media screen and (max-width: 1300px) {
+          .builder-interface .builder-blocks > div.lefty {
+            flex: 1 0 65%; } }
         .builder-interface .builder-blocks > div.lefty .field-list {
           overflow: auto;
           border-top-left-radius: 5px;
@@ -2130,6 +2136,12 @@
       .builder-interface .builder-blocks > div.righty {
         margin-left: 10px;
         flex: 0 1 25%; }
+        @media screen and (max-width: 1560px) {
+          .builder-interface .builder-blocks > div.righty {
+            flex: 0 1 30%; } }
+        @media screen and (max-width: 1300px) {
+          .builder-interface .builder-blocks > div.righty {
+            flex: 0 1 35%; } }
         .builder-interface .builder-blocks > div.righty .select:not(.selectize) select {
           max-width: 250px; }
         .builder-interface .builder-blocks > div.righty .property-editor {

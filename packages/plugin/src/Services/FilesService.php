@@ -61,6 +61,10 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             return null;
         }
 
+        if (!is_countable($_FILES[$field->getHandle()]['name'])) {
+            return null;
+        }
+
         $uploadedFileCount = \count($_FILES[$field->getHandle()]['name']);
 
         $beforeUploadEvent = new UploadEvent($field);

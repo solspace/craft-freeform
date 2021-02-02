@@ -4,8 +4,9 @@
 
 ### Added
 - Added the ability to edit other Craft Elements, including special support for Craft Users.
+- Added the ability to map to Calendar Events with the Element Connections feature.
 - Added a full screen HTML & Twig editor inside the form builder.
-- Added ability to update file-based email notification templates directly inside the CP (optional).
+- Added the ability to update file-based email notification templates directly inside the CP (optional).
 - Added a migration tool for migrating from Database to File-based email notifications.
 
 ## 3.10.5 - 2021-02-02

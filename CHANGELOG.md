@@ -1,22 +1,23 @@
 # Solspace Freeform Changelog
 
-## 3.11.0 - Unreleased
+## 3.11.0-beta.1 - Unreleased
 
 ### Added
+- Added the ability to edit other Craft Elements, including special support for Craft Users.
+- Added a full screen HTML & Twig editor inside the form builder.
+- Added ability to update file-based email notification templates directly inside the CP (optional).
+- Added a migration tool for migrating from Database to File-based email notifications.
 
-- Added a migration tool for migrating from DB to File email notifications
+## 3.10.5 - 2021-02-02
 
-## 3.10.5 - Unreleased
+### Added
+- Added support for Birthday field types in the MailChimp mailing list integration.
 
 ### Fixed
-
-- Fixed a bug where creating new formatting templates was not possible through CP
-- Fixed an issue where "Conditional Rules" editor would go out of screen on smaller screens
-- Fixed "What's New" from skipping some updates that might be relevant in the future
-
-### Changed
-
-- Improved MailChimp behaviour when adding new or changing existing audience members
+- Fixed a bug where adding the sample formatting template through the CP was not working correctly.
+- Fixed a bug where the "Conditional Rules" editor in CP form builder would run off the screen on smaller screens.
+- Fixed a bug where File Upload fields might log errors in some rare cases.
+- Fixed an issue where the "What's New" dashboard feature could skip some updates that might be relevant in the future.
 
 ## 3.10.4 - 2021-01-26
 

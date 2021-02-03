@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Migrations\Notifications;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
@@ -45,6 +46,10 @@ class NotificationsMigrator
             if ($removeDbNotifications) {
                 $notification->delete();
             }
+        }
+
+        if ($removeDbNotifications) {
+            Freeform::getInstance()->settings->saveSettings(['emailTemplateStorage' => 'template']);
         }
 
         return true;

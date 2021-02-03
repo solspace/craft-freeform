@@ -593,6 +593,14 @@ class SettingsService extends BaseService
         return $total;
     }
 
+    public function saveSettings(array $data)
+    {
+        $plugin = Freeform::getInstance();
+        $plugin->setSettings($data);
+
+        return \Craft::$app->plugins->savePluginSettings($plugin, $data);
+    }
+
     private function isMinimumSubmissionTimePassed(Form $form): bool
     {
         $initTime = $form->getInitTime();

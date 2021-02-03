@@ -216,10 +216,7 @@ class SettingsController extends BaseController
         $this->requirePostRequest();
         $postData = \Craft::$app->request->post('settings', []);
 
-        $plugin = Freeform::getInstance();
-        $plugin->setSettings($postData);
-
-        if (\Craft::$app->plugins->savePluginSettings($plugin, $postData)) {
+        if ($this->getSettingsService()->saveSettings($postData)) {
             \Craft::$app->session->setNotice(Freeform::t('Settings Saved'));
 
             if (isset($postData['purgableSubmissionAgeInDays']) || isset($postData['purgableSpamAgeInDays'])) {
@@ -229,6 +226,7 @@ class SettingsController extends BaseController
             return $this->redirectToPostedUrl();
         }
 
+        $plugin = Freeform::getInstance();
         $errors = $plugin->getSettings()->getErrors();
         \Craft::$app->session->setError(
             implode("\n", \Solspace\Commons\Helpers\StringHelper::flattenArrayValues($errors))

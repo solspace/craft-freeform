@@ -64,7 +64,7 @@ export default class Html extends BasePropertyEditor {
     const { fullscreen } = this.state;
 
     const style = !fullscreen
-      ? {}
+      ? { height: 150 }
       : {
           width: 'auto',
           height: 'auto',

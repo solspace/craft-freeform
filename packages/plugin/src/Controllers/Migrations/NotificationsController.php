@@ -10,7 +10,7 @@ class NotificationsController extends BaseController
 {
     private $migrator;
 
-    public function __construct($id, $module, $config = [], NotificationsMigrator $migrator = null)
+    public function __construct($id, $module, $config = [], NotificationsMigrator $migrator)
     {
         parent::__construct($id, $module, $config);
 

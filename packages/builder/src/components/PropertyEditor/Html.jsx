@@ -16,7 +16,7 @@ import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/theme-chrome';
 import 'ace-builds/src-noconflict/ext-language_tools';
 
-const Button = styled.div`
+export const Button = styled.div`
   margin-top: 10px;
 
   &.fullscreen {

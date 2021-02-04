@@ -179,10 +179,15 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                     $extension = pathinfo($name, \PATHINFO_EXTENSION);
                     $validExtensions = $this->getValidExtensions();
 
-                    // Check the mime type if the server supports it
-                    if (FileHelper::isMimeTypeCheckEnabled()) {
-                        $tmpName = $_FILES[$this->handle]['tmp_name'][$index];
+                    $tmpName = $_FILES[$this->handle]['tmp_name'][$index];
+                    $errorCode = $_FILES[$this->handle]['error'][$index];
 
+                    if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
+                        continue;
+                    }
+
+                    // Check the mime type if the server supports it
+                    if (FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
                         $mimeType = FileHelper::getMimeType($tmpName);
                         $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
 
@@ -195,9 +200,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                         }
                     }
 
-                    if (empty($_FILES[$this->handle]['tmp_name'][$index])) {
-                        $errorCode = $_FILES[$this->handle]['error'][$index];
-
+                    if (empty($tmpName)) {
                         switch ($errorCode) {
                             case \UPLOAD_ERR_INI_SIZE:
                             case \UPLOAD_ERR_FORM_SIZE:

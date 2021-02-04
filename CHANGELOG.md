@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.6 - 2021-02-04
+
+### Fixed
+- Fixed a bug where non-AJAX forms with an empty file upload field would trigger an error.
+
 ## 3.10.5 - 2021-02-02
 
 ### Added

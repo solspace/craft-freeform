@@ -48,7 +48,7 @@ export default class RichText extends BasePropertyEditor {
     } = this.context;
 
     const style = !fullscreen
-      ? { marginTop: 20 }
+      ? { height: 200, marginBottom: 40 }
       : {
           width: 'auto',
           height: 'auto',
@@ -89,7 +89,7 @@ export default class RichText extends BasePropertyEditor {
           }}
         >
           {fullscreen ? <CompressIcon /> : <ExpandIcon />}
-          <span style={{ paddingLeft: 5 }}>{fullscreen ? 'Exit fullscreen mode' : 'Edit in fullscreen mode'}</span>
+          <span style={{ paddingLeft: 5 }}>{fullscreen ? 'Exit Fullscreen mode' : 'Edit in Fullscreen mode'}</span>
         </Button>
       </div>
     );

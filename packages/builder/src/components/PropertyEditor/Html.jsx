@@ -64,7 +64,7 @@ export default class Html extends BasePropertyEditor {
     const { fullscreen } = this.state;
 
     const style = !fullscreen
-      ? { height: 150 }
+      ? { height: 200 }
       : {
           width: 'auto',
           height: 'auto',
@@ -96,7 +96,7 @@ export default class Html extends BasePropertyEditor {
 
         <CheckboxProperty
           label="Allow Twig"
-          instructions="Used to enable twig in HTML blocks"
+          instructions="Used to enable Twig in HTML blocks"
           name="twig"
           checked={twig}
           onChangeHandler={this.update}
@@ -127,7 +127,7 @@ export default class Html extends BasePropertyEditor {
           }}
         >
           {fullscreen ? <CompressIcon /> : <ExpandIcon />}
-          <span style={{ paddingLeft: 5 }}>{fullscreen ? 'Exit fullscreen mode' : 'Edit in fullscreen mode'}</span>
+          <span style={{ paddingLeft: 5 }}>{fullscreen ? 'Exit Fullscreen mode' : 'Edit in Fullscreen mode'}</span>
         </Button>
       </div>
     );

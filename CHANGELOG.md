@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.10.6.1 - Unreleased
+
+### Fixed
+- fixed an issue with Guzzle 7.x on Craft 3.6.x when purging submissions
+
 ## 3.10.6 - 2021-02-04
 
 ### Fixed

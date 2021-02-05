@@ -9,6 +9,16 @@
 - Added the ability to update file-based email notification templates directly inside the CP (optional).
 - Added a migration tool for migrating from Database to File-based email notifications.
 
+## 3.10.6.1 - Unreleased
+
+### Fixed
+- fixed an issue with Guzzle 7.x on Craft 3.6.x when purging submissions
+
+## 3.10.6 - 2021-02-04
+
+### Fixed
+- Fixed a bug where non-AJAX forms with an empty file upload field would trigger an error.
+
 ## 3.10.5 - 2021-02-02
 
 ### Added

@@ -219,7 +219,7 @@ class FileHelper
      */
     public static function getMimeType(string $filePath)
     {
-        if (!self::isMimeTypeCheckEnabled()) {
+        if (empty($filePath) || !self::isMimeTypeCheckEnabled()) {
             return false;
         }
 

@@ -479,6 +479,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             unset($result['id']);
 
             foreach ($result as $values) {
+                if (!\is_string($values)) {
+                    continue;
+                }
+
                 try {
                     $values = \GuzzleHttp\json_decode($values);
                     foreach ($values as $value) {

@@ -571,9 +571,8 @@
   box-sizing: border-box;
   font-family: Helvetica, Arial, sans-serif;
   font-size: 13px;
-  height: 100%;
-  margin: 0px;
-  position: relative; }
+  margin: 0;
+  height: 100%; }
 
 .ql-container.ql-disabled .ql-tooltip {
   visibility: hidden; }
@@ -593,6 +592,7 @@
   padding: 0; }
 
 .ql-editor {
+  background: white;
   box-sizing: border-box;
   line-height: 1.42;
   height: 100%;
@@ -622,6 +622,9 @@
   margin: 0;
   padding: 0;
   counter-reset: list-1 list-2 list-3 list-4 list-5 list-6 list-7 list-8 list-9; }
+
+.ql-editor p {
+  padding: 0 !important; }
 
 .ql-editor ul[data-checked=true],
 .ql-editor ul[data-checked=false] {

@@ -51,7 +51,7 @@ export default class RichText extends BasePropertyEditor {
       ? { height: 200, marginBottom: 40 }
       : {
           width: 'auto',
-          height: 'auto',
+          height: 'calc(100% - 42px)',
           position: 'absolute',
           zIndex: 1,
           top: 0,

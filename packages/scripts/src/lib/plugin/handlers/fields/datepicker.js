@@ -28,7 +28,7 @@ class DatePicker {
   }
 
   reload = () => {
-    const pickers = this.freeform.form.querySelectorAll('*[data-datepicker]');
+    const pickers = this.freeform.form.querySelectorAll('*[data-datepicker][data-datepicker-enabled]');
     pickers.forEach((picker) => {
       const locale = picker.getAttribute('data-datepicker-locale');
       const options = {

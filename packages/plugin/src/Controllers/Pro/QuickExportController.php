@@ -12,6 +12,7 @@ use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\AbstractExport;
@@ -114,11 +115,34 @@ class QuickExportController extends BaseController
             foreach ($form->getLayout()->getFields() as $field) {
                 if (
                     $field instanceof NoStorageInterface
-                    || $field instanceof CreditCardDetailsField
                     || $field instanceof SignatureField
                     || !$field->getId()
                     || \in_array($field->getId(), $storedFieldIds, true)
                 ) {
+                    continue;
+                }
+
+                if ($field instanceof CreditCardDetailsField) {
+                    $fieldSetting['cc_amount'] = [
+                        'label' => 'Payment Amount',
+                        'checked' => true,
+                    ];
+
+                    $fieldSetting['cc_currency'] = [
+                        'label' => 'Payment Currency',
+                        'checked' => true,
+                    ];
+
+                    $fieldSetting['cc_status'] = [
+                        'label' => 'Payment Status',
+                        'checked' => true,
+                    ];
+
+                    $fieldSetting['cc_card'] = [
+                        'label' => 'Payment Card',
+                        'checked' => true,
+                    ];
+
                     continue;
                 }
 
@@ -186,6 +210,13 @@ class QuickExportController extends BaseController
         $form = $formModel->getForm();
         $fieldData = $exportFields[$form->getId()];
 
+        $paymentProperties = $form->getPaymentProperties();
+        $hasPaymentSingles = $hasPaymentSubscriptions = false;
+        if ($paymentProperties) {
+            $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
+            $hasPaymentSubscriptions = !$hasPaymentSingles;
+        }
+
         $settings->setting = $exportFields;
         $settings->save();
 
@@ -198,7 +229,38 @@ class QuickExportController extends BaseController
             }
 
             $fieldName = is_numeric($fieldId) ? Submission::getFieldColumnName($fieldId) : $fieldId;
-            $fieldName = 'title' === $fieldName ? 'c.'.$fieldName : 's.'.$fieldName;
+
+            switch ($fieldName) {
+                case 'title':
+                    $fieldName = 'c.'.$fieldName;
+
+                    break;
+
+                case 'cc_status':
+                    $fieldName = 'p.status as cc_status';
+
+                    break;
+
+                case 'cc_amount':
+                    $fieldName = 'p.amount as cc_amount';
+
+                    break;
+
+                case 'cc_currency':
+                    $fieldName = 'p.currency as cc_currency';
+
+                    break;
+
+                case 'cc_card':
+                    $fieldName = 'p.last4 as cc_card';
+
+                    break;
+
+                default:
+                    $fieldName = 's.'.$fieldName;
+
+                    break;
+            }
 
             $searchableFields[] = $fieldName;
         }
@@ -209,6 +271,12 @@ class QuickExportController extends BaseController
             ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
             ->where(['s.[[formId]]' => $form->getId()])
         ;
+
+        if ($hasPaymentSingles) {
+            $query->leftJoin('{{%freeform_payments_payments}} p', 'p.[[submissionId]] = s.[[id]]');
+        } elseif ($hasPaymentSubscriptions) {
+            $query->leftJoin('{{%freeform_payments_subscriptions}} p', 'p.[[submissionId]] = s.[[id]]');
+        }
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $elements = Table::ELEMENTS;

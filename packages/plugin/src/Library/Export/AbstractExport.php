@@ -150,6 +150,31 @@ abstract class AbstractExport implements ExportInterface
 
                             break;
 
+                        case 'cc_type':
+                            $label = 'Payment Type';
+
+                            break;
+
+                        case 'cc_amount':
+                            $label = 'Payment Amount';
+
+                            break;
+
+                        case 'cc_currency':
+                            $label = 'Payment Currency';
+
+                            break;
+
+                        case 'cc_card':
+                            $label = 'Payment Card';
+
+                            break;
+
+                        case 'cc_status':
+                            $label = 'Payment Status';
+
+                            break;
+
                         default:
                             $label = ucfirst($label);
 

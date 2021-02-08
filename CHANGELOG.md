@@ -1,9 +1,13 @@
 # Solspace Freeform Changelog
 
-## 3.10.6.1 - Unreleased
+## 3.10.7 - 2021-02-08
+
+### Added
+- Added ability to include Payment info when exporting submission data.
 
 ### Fixed
-- fixed an issue with Guzzle 7.x on Craft 3.6.x when purging submissions
+- Fixed a bug where Purge Submissions jobs would fail due to an issue with Guzzle 7.x on Craft 3.6.x.
+- Fixed a bug where the datepicker JS would load on all Date/Time fields regardless of their setting for using the built-in datepicker JS.
 
 ## 3.10.6 - 2021-02-04
 

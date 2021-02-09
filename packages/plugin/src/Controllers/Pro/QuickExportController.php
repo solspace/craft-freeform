@@ -29,6 +29,7 @@ class QuickExportController extends BaseController
     public function actionExportDialogue(): Response
     {
         $formId = \Craft::$app->request->getParam('formId');
+        $isSpam = 'true' === \Craft::$app->request->getParam('isSpam');
 
         $allowedFormIds = $this->getSubmissionsService()->getAllowedSubmissionFormIds();
 
@@ -172,6 +173,7 @@ class QuickExportController extends BaseController
                 'forms' => $forms,
                 'fields' => $fields,
                 'selectedFormId' => $selectedFormId,
+                'isSpam' => $isSpam,
             ]
         );
     }
@@ -191,6 +193,7 @@ class QuickExportController extends BaseController
         $formId = \Craft::$app->request->post('form_id');
         $exportType = \Craft::$app->request->post('export_type');
         $exportFields = \Craft::$app->request->post('export_fields');
+        $isSpam = (bool) \Craft::$app->request->post('spam');
 
         $formModel = $this->getFormsService()->getFormById($formId);
         if (!$formModel) {
@@ -211,11 +214,8 @@ class QuickExportController extends BaseController
         $fieldData = $exportFields[$form->getId()];
 
         $paymentProperties = $form->getPaymentProperties();
-        $hasPaymentSingles = $hasPaymentSubscriptions = false;
-        if ($paymentProperties) {
-            $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
-            $hasPaymentSubscriptions = !$hasPaymentSingles;
-        }
+        $hasPaymentSingles = PaymentProperties::PAYMENT_TYPE_SINGLE === $paymentProperties->getPaymentType();
+        $hasPaymentSubscriptions = !$hasPaymentSingles && null !== $paymentProperties->getPaymentType();
 
         $settings->setting = $exportFields;
         $settings->save();
@@ -270,6 +270,7 @@ class QuickExportController extends BaseController
             ->from(Submission::TABLE.' s')
             ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
             ->where(['s.[[formId]]' => $form->getId()])
+            ->andWhere(['s.[[isSpam]]' => $isSpam])
         ;
 
         if ($hasPaymentSingles) {

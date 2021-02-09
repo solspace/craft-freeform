@@ -22,6 +22,7 @@
 <form id="export-csv-modal" method="post">
     {{ csrfInput() }}
     <input type="hidden" name="action" value="freeform/quick-export" />
+    <input type="hidden" name="spam" value="{{ isSpam ? "1" }}" />
 
     <div class="header">
         <h1>{{ "Export data"|t }}</h1>

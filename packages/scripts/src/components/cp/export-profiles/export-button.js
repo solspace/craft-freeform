@@ -24,6 +24,7 @@ $('div.btn', button).on({
       type: 'get',
       data: {
         formId,
+        isSpam: window.freeformSpamView ?? false,
       },
       success: (response) => {
         const content = $('<div id="export-modal-wrapper" class="modal fitted">');

@@ -35,6 +35,10 @@
     </template>
 {% endblock %}
 
+{% js %}
+    window.freeformSpamView = true;
+{% endjs %}
+
 {% if formHandle is defined %}
     {% js %}
         window.defaultFormHandle = '{{ formHandle }}';

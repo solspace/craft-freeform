@@ -109,7 +109,7 @@ abstract class AbstractExport implements ExportInterface
                             $value = $field->getActualValue($value);
                         }
 
-                        if ($field instanceof FileUploadField) {
+                        if ($field instanceof FileUploadField && \is_array($value)) {
                             $urls = [];
 
                             foreach ($value as $assetId) {

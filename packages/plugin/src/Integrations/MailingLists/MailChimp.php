@@ -147,6 +147,18 @@ class MailChimp extends AbstractMailingListIntegration
                 $response = $this->put("lists/{$listId}/members/{$emailHash}", ['json' => $memberData]);
                 $this->getHandler()->onAfterResponse($this, $response);
             } catch (RequestException $exception) {
+                $json = json_decode($exception->getResponse()->getBody());
+                if (isset($json->status) && 400 === $json->status) {
+                    if (isset($json->title) && 'member in compliance state' === strtolower($json->title)) {
+                        try {
+                            $memberData['status'] = 'pending';
+                            $response = $this->put("lists/{$listId}/members/{$emailHash}", ['json' => $memberData]);
+                            $this->getHandler()->onAfterResponse($this, $response);
+                        } catch (RequestException $e) {
+                        }
+                    }
+                }
+
                 $this->logErrorAndThrow($exception);
             }
 

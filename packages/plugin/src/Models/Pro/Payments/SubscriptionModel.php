@@ -60,7 +60,7 @@ class SubscriptionModel extends AbstractPaymentModel
         $resourceId = $this->resourceId;
         $validationKey = sha1($resourceId);
 
-        return UrlHelper::cpUrl("freeform/payment-subscription/{$id}/cancel/{$validationKey}");
+        return UrlHelper::siteUrl("freeform/payment-subscription/{$id}/cancel/{$validationKey}");
     }
 
     /**

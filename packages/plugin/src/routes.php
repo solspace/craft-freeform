@@ -114,9 +114,6 @@ return [
     'freeform/export-profiles/delete' => 'freeform/export-profiles/delete',
     'freeform/export-profiles/new/<formHandle:[0-9a-zA-Z_\-]+>' => 'freeform/export-profiles/create',
     'freeform/export-profiles/<id:\d+>' => 'freeform/export-profiles/edit',
-    // Payments
-    'freeform/payment-webhooks/stripe' => 'freeform/payment-webhooks/stripe',
-    'freeform/payment-subscription/<id:\d+>/cancel/<validationKey>' => 'freeform/subscriptions/cancel',
     // Banners
     'freeform/banners/dismiss/demo' => 'freeform/banners/dismiss-demo',
     // Feeds

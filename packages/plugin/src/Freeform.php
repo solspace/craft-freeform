@@ -642,6 +642,15 @@ class Freeform extends Plugin
                 $event->rules = array_merge($event->rules, $routes);
             }
         );
+
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $routes = include __DIR__.'/site-routes.php';
+                $event->rules = array_merge($event->rules, $routes);
+            }
+        );
     }
 
     private function initTwigVariables()

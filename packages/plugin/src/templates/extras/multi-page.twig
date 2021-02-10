@@ -1,0 +1,86 @@
+{% extends "freeform-demo/_layout" %}
+{% set pageTitle = "Custom" %} 
+{% set page = "custom" %} 
+
+{% set form = craft.freeform.form("multiPage") %}
+
+
+{% block content %} 
+
+    {{ form.renderTag({returnUrl:"freeform-demo/extras/multi-page"}) }}
+
+    {% if form.hasErrors %}
+        <div class: "freeform-form-has-errors"> 
+            {{ "there was an error submiting this form"|t }}
+
+            {% if form.errors|length %}
+                <ul> 
+                    {% for error in form.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul> 
+            {% endif %}
+        </div> 
+    {% endif %}
+
+    {% set firstName = form.get ("firstName") %}
+    {% set lastName = form.get ("lastName") %}
+    {% set companyName = form.get ("companyName") %}
+    {% set city = form.get ("city") %}
+    {% set email = form.get ("email") %}
+    {% set address = form.get ("address") %}
+    {% set website = form.get ("website") %}
+    {% set zipCode = form.get ("zipCode") %}
+
+
+    <ul class="formPages">
+        {% if form.currentPage.index == 0 %}
+            <li><b>First page</b></li>
+        {% elseif form.currentPage.index == 1 %}
+            <li><b>Second page</b></li>
+        {% endif %}
+    </ul>
+
+    {% if form.currentPage.index == 0 %}
+        <label>{{ firstName.label }}</label>
+        <input name="{{ firstName.handle }}" value="{{ firstName.value }}" />
+        {{ firstName.renderErrors() }}
+
+        <label>{{ lastName.label }}</label>
+        <input name="{{ lastName.handle }}" value="{{ lastName.value }}" />
+        {{ lastName.renderErrors() }}
+
+        <label>{{ city.label }}</label>
+        <input name="{{ city.handle }}" value="{{ city.value }}" />
+        {{ city.renderErrors() }}
+
+        <label>{{ email.label }}</label>
+        <input name="email" />
+        {{ email.renderErrors() }}
+
+        <button type="submit">Continue</button>
+
+
+    {% elseif form.currentPage.index == 1 %}
+        {{ companyName.renderLabel() }}        
+        {{ companyName.renderInput() }}
+
+        <label>{{ address.label }}</label>
+        <input name="{{ address.handle }}" value="{{ address.value }}" />
+        {{ address.renderErrors() }}
+
+        <label>{{ website.label }}</label>
+        <input name="{{ website.handle }}" value="{{ website.value }}" />
+        {{ website.renderErrors() }}
+
+        <label>{{ zipCode.label }}</label>
+        <input name="{{ zipCode.handle }}" value="{{ zipCode.value }}" />
+        {{ zipCode.renderErrors() }}
+
+        <button class="pageBtn" type="submit">Previus</button>
+        <button class="pageBtn" type="submit">Finish</button>
+
+
+
+    {% endif %}
+{% endblock %} 

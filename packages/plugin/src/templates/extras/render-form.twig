@@ -1,0 +1,20 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "Custom" %}
+
+{% block content %}
+
+{% set  entry = craft.entries.one %}
+    {% for entry in craft.entries.section('equipment').limit(15) %}
+        <div class="entry">
+            <h2><a href="{{ entry.url }}">{{ entry.title }}</a></h2>
+
+            {% if entry.news is defined and entry.news.name is  not empty %}
+                <h3>{{ entry.news.name }}</h3>
+                {{ entry.news.render() }}
+            {% endif %}
+        </div>
+    {% endfor %}
+
+{% endblock %}

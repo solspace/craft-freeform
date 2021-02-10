@@ -1,0 +1,26 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "custom" %}
+
+{% block content %}
+
+<div class="container">
+
+    <div>
+        {{ craft.freeform.form('myFirstForm', {
+            fieldIdPrefix: 'my-first-form-',
+        }).render() }}
+    </div>
+
+    <div>
+        <p>Description here</p>
+
+        {{ craft.freeform.form('mySecondForm', {
+            fieldIdPrefix: 'my-second-form-',
+        }).render() }}
+    </div>
+
+</div>
+
+{% endblock %}

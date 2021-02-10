@@ -1,0 +1,18 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "Custom" %}
+
+{% block content %}
+
+        {% if craft.app.request.getQueryParam('success') == 1 %}
+            <div class="callout success">Your message has been sent.</div>
+        {% endif %}
+
+        {{ craft.freeform.form("submitSamePage", {
+            returnUrl: "freeform-demo/extras/submit-same-page/?success=1",
+            submitClass: "button",
+            }
+        ).render() }}
+
+{% endblock %}

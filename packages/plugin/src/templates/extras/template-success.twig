@@ -1,0 +1,31 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "Custom" %}
+
+{% set form = craft.freeform.form('templateSuccess') %}
+
+{% block footerJs %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        var form = $('form[data-id={{ form.anchor }}]');
+
+        console.log(form);
+
+        document.addEventListener('freeform-render-success', function (event) {
+
+            event.preventDefault();
+
+            $('#form-wrapper').load('/freeform-demo/extras/responses/success-message');
+        });
+    </script>
+{% endblock %}
+
+{% block content  %}
+
+    <div id="form-wrapper">
+        {{ form.render }}
+    </div>
+
+{% endblock %}

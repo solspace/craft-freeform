@@ -1,0 +1,52 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "custom" %}
+
+
+{% block content %}
+
+<b><p>Please fill the blank fields<p>
+
+{{ craft.freeform.form("deliveryDate").render() }}
+
+    <script>
+
+        document.addEventListener("flatpickr-before-init", (event) => {
+
+            event.options.static = true;
+            event.options.clickOpens = true;
+            event.options.dateFormat = "d-m-Y h:i K",
+            event.options.minDate = "today",
+            event.options.maxDate = new Date().fp_incr(14),
+            event.options.minTime = "08:00",
+            event.options.maxTime = "17.00",
+            event.options.defaultHours = 8;
+            event.options.disable = [
+                function(date) {
+
+                    return (date.getDay() === 0 || date.getDay() === 6);
+                }
+            ];
+            flatpickr.l10ns.default.firstDayOfWeek = 1;
+        })
+
+        document.addEventListener("flatpickr-ready", (event) => {
+
+            var instance = event.flatpickr;
+
+            var input = instance.input;
+
+            input.parentNode.classList.add("form-control");
+            input.classList.remove("form-control");
+            input.style.border = "none";
+            input.style.margin = "0px";
+            input.style.padding = "0px";
+            input.style.width = "100%";
+            input.style.outline = "none";
+
+        })
+
+    </script>
+
+{% endblock %}

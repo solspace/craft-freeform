@@ -1,0 +1,23 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %} 
+{% set page = "custom" %} 
+
+{% block content %}
+
+{% set submissions = craft.freeform.submissions({ form: 'editSubmissions' }).all %}
+
+{{ craft.freeform.form("twigCache").render({
+	submissionToken: "tAGYiIBriEdsH5kA5Y2I6C0dYTKzaMiLAClkv4C7WL6zrpM7j99aWj8iydFK2BaRjBNT8JsB1RABmUbyFdps2WMJjvncKKfmoxmI",
+	suppress: {
+		api: true,
+		connections: true,
+		adminNotifications: true,
+		dynamicRecipients: true,
+		submitterNotifications: true,
+		payments: true,
+		webhooks: true,
+	},
+}) }}
+
+{% endblock %}

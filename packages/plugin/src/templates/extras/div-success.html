@@ -1,0 +1,33 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "Custom" %}
+
+{% block footerJs %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        document.addEventListener('freeform-render-success', function (event) {
+
+            event.preventDefault();
+
+            $('#form-wrapper').html($('#custom-content').html("Thank you!"));
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div id="custom-content">
+    <h3>Thank you!</h3>
+    <p>
+        We have received your submission. You may now
+        <a href="{{ siteUrl('https://images.app.goo.gl/xRKLqpnW8LAbV82k9') }}">download the PDF guide</a>.
+    </p>
+</div>
+
+<div id="form-wrapper">
+    {{ craft.freeform.form('divSuccess').render }}
+</div>
+
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "Custom" %}
+
+{% set form = craft.freeform.form("twigCache") %}
+
+{% block content %}
+
+<div class= "mainContent">
+    <h1 class="title">Welcome to my site</h1>
+        <p class="description">
+        Please write your user name!
+        </p>
+
+        <p class="userName">
+            {% cache %}
+                {{ random(50, 100) }}
+                {{ form.render }}
+            {% endcache %}
+        </p>
+        {{ random(50, 100) }}
+</div>
+
+
+    <script>
+        var form = document.querySelector('.mainContent form');
+
+        var formHashInput = form.querySelector('input[name=formHash]');
+        formHashInput.setAttribute('value', '{{ form.hash }}');
+
+        var csrfInput = form.querySelector('input[name={{ craft.app.config.general.csrfTokenName|e('js') }}]');
+        csrfInput.value = '{{ craft.app.request.csrfToken|e('js') }}';
+    </script>
+
+{% endblock %}

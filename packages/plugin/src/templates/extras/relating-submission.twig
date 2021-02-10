@@ -1,0 +1,20 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "Custom" %}
+
+{% block content %}
+    <h1> Render basic submission form in the craft element<h1>
+    
+    <br>{% set  entry = craft.entries.one %}
+    <h2>{{ entry.title }}</h2>
+    <p>Posted on {{ entry.postDate.format('d.m.Y') }}</p>
+    <p>{{ entry.id }}</p>
+
+    {{ craft.freeform.form("productReviewsForm").render({
+        relations: {
+            productReviews: entry.fields,
+        },
+    }) }}
+
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %}
+{% set page = "Custom" %}
+
+{% block headerCss %}
+    <link rel="stylesheet" href="/assets/freeform-demo/css/parsley.css" />
+{% endblock %}
+
+{% block footerJs %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.js"></script>
+    <script>
+        document.addEventListener("freeform-render-field-errors", function (event) {
+
+            event.preventDefault();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+    {% set form = craft.freeform.form("parsley", {
+        formAttributes: { "data-parsley-validate": true }
+    }) %}
+
+
+    {{ form.renderTag({}) }}
+        {% for column  in form %}
+            <div>
+                {% for field in column %}
+                    <div>
+                        {% set attr = {} %}
+                        {% if field.required %}
+                            {% set attr = attr|merge({'required':true}) %}
+                        {% endif %}
+
+                        {% if field.type in ['number', 'phone'] %}
+                            {% set attr = attr|merge({'data-parsley-type':'digits'}) %}
+                        {% endif %}
+
+                        {% if field.type == 'email' %}
+                            {% set attr = attr|merge({'data-parsley-type':'email'}) %}
+                        {% endif %}
+
+                        {{ field.render({
+                            inputAttributes: attr
+                        }) }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    {{ form.renderClosingTag }}
+
+{% endblock %}

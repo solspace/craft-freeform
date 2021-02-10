@@ -1,0 +1,88 @@
+{% extends "freeform-demo/_layout" %}
+
+{% set pageTitle = "Custom" %} 
+{% set page = "custom" %} 
+
+{% block content %}
+
+{% set form = craft.freeform.form("basicManual") %}
+
+{{ form.renderTag({returnUrl: "freeform-demo/extra/manual-form"}) }}
+
+	{% if form.hasErrors %}
+		<div class="freeform-form-has-errors">
+			{{ "There was an error submitting this form"|t }}
+
+			{% if form.errors|length %}
+				<ul>
+					{% for error in form.errors %}
+						<li>{{ error }}</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</div>
+	{% endif %}
+
+	{% set firstName = form.get("firstName") %}
+	{% set company = form.get("company") %}
+	{% set lastName = form.get("lastName") %}
+	{% set recipients = form.get("recipients") %}
+
+	<label>{{ firstName.label }}</label>
+	<input name="{{ firstName.handle }}" value="{{ firstName.value }}" />
+	{{ firstName.renderErrors() }}
+
+	<label>{{ lastName.label }}</label>
+	<input name="{{ lastName.handle }}" value="{{ lastName.value }}" />
+	{{ lastName.renderErrors() }}
+	{{ company.renderLabel() }}
+	{{ company.renderInput() }}
+	{{ company.renderErrors() }}
+
+	<label>Email Address</label>
+	<input name="email" />
+	{{ form.get("email").renderErrors() }}
+
+	<label>Phone</label>
+	<input name="phone" />
+	{% if form.get("phone").hasErrors %}
+		This field is required!
+	{% endif %}
+
+	<label>Recipient</label>
+	<select name="{{ recipients.handle }}" type="dynamic_recipients">
+	{% for recipients in recipients.options %}
+		<option value="{{ loop.index0 }}">{{ recipients.label }}</option>
+	{% endfor %}
+	</select>
+
+	
+
+
+
+	<button type="submit">Submit</button>
+	
+	{% set submissions = craft.freeform.submissions({
+		formId: 12,
+		orderBy: "firstName DESC",
+		fieldSearch: {
+			firstName: "Andris",
+			lastName: "Gutmanis",
+		}
+	}) %}
+
+	<h2>Submissions</h2>
+
+	{% for submission in submissions %}
+		<div>
+			<div>
+				{{ submission.title }} - 
+				{{ submission.firstName }}
+				{{ submission.lastName }}
+			</div>
+		</div>
+	{% endfor %}
+
+{{ form.renderClosingTag }}
+
+{% endblock %}

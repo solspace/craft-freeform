@@ -135,7 +135,7 @@ class RecaptchaHandler {
       const { isBackButtonPressed } = event;
       this.isBackButtonPressed = isBackButtonPressed;
 
-      grecaptcha.ready(() => grecaptcha.execute(this.recaptchaElement));
+      grecaptcha.ready(() => grecaptcha.execute());
     });
 
     this.form.addEventListener(EVENT_AJAX_AFTER_SUBMIT, () => {

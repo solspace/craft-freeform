@@ -48,7 +48,6 @@ class AdminNotificationProperties extends AbstractProperties
             try {
                 $recipients = \Craft::$app->getView()->renderString($recipients, $submission->toArray());
             } catch (\Throwable $e) {
-
             }
         }
 

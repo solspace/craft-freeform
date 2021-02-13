@@ -133,7 +133,7 @@ class IntegrationsService extends BaseService
         if (!$suppressors->isAdminNotifications() && $adminNotifications->getNotificationId()) {
             $mailer->sendEmail(
                 $form,
-                $adminNotifications->getRecipientArray(),
+                $adminNotifications->getRecipientArray($submission),
                 $adminNotifications->getNotificationId(),
                 $fields,
                 $submission

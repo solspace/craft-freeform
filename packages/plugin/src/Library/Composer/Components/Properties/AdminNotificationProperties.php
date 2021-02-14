@@ -12,6 +12,8 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
+use Solspace\Freeform\Elements\Submission;
+
 class AdminNotificationProperties extends AbstractProperties
 {
     /** @var int */
@@ -39,9 +41,17 @@ class AdminNotificationProperties extends AbstractProperties
     /**
      * Gets all recipients as an array.
      */
-    public function getRecipientArray(): array
+    public function getRecipientArray(Submission $submission = null): array
     {
         $recipients = $this->getRecipients();
+
+        // Handle any Twig used in the recipients, and swallow any errors
+        if ($submission) {
+            try {
+                $recipients = \Craft::$app->getView()->renderString($recipients, $submission->toArray());
+            } catch (\Throwable $e) {
+            }
+        }
 
         if (empty($recipients)) {
             return [];

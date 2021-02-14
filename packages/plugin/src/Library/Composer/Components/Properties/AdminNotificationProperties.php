@@ -12,6 +12,8 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
+use Solspace\Freeform\Elements\Submission;
+
 class AdminNotificationProperties extends AbstractProperties
 {
     /** @var int */

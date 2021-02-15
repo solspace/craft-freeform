@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.10.8 - Unreleased
+
+### Added
+- Added ability to include Twig in the Admin Recipients email textarea in the form builder (for more complex conditional notifications).
+- Added the possibility to re-subscribe people to MailChimp.
+- Added customization options for the form auto-scroll feature (to account for floating navigation, etc).
+
+### Fixed
+- Fixed a bug where reCAPTCHA v2 Invisible would sometimes conflict with other scripts on the page and not work correctly.
+- Fixed a bug where the Payments subscription cancelation URL was not correct. 
+
 ## 3.10.7 - 2021-02-08
 
 ### Added

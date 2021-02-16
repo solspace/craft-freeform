@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.10.8 - Unreleased
+## 3.10.8 - 2021-02-16
 
 ### Added
 - Added ability to include Twig in the Admin Recipients email textarea in the form builder (for more complex conditional notifications).

@@ -1,4 +1,5 @@
 import {
+  EVENT_TABLE_AFTER_REMOVE_ROW,
   EVENT_TABLE_AFTER_ROW_ADDED,
   EVENT_TABLE_ON_REMOVE_ROW,
   EVENT_TABLE_ON_ADD_ROW,
@@ -94,13 +95,14 @@ class Table {
       return;
     }
 
+    const table = event.target.closest('table');
     const row = event.target.closest('tr');
-    this.freeform._dispatchEvent(EVENT_TABLE_ON_REMOVE_ROW, {
-      table: event.target.closest('table'),
-      row,
-    });
+
+    this.freeform._dispatchEvent(EVENT_TABLE_ON_REMOVE_ROW, { table, row });
 
     row.remove();
+
+    this.freeform._dispatchEvent(EVENT_TABLE_AFTER_REMOVE_ROW, { table });
   };
 }
 

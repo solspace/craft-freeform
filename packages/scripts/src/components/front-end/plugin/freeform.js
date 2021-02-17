@@ -23,6 +23,8 @@ export default class Freeform {
     disableReset: false,
     disableSubmit: false,
     scrollToAnchor: false,
+    scrollOffset: 0,
+    scrollElement: window,
     showSpinner: false,
     showLoadingText: false,
     loadingText: null,
@@ -115,8 +117,10 @@ export default class Freeform {
         this._attachListeners();
         this._initHandlers();
 
-        if (this.options.scrollToAnchor) {
-          form.scrollIntoView();
+        const { scrollToAnchor, scrollOffset, scrollElement } = this.options;
+        if (scrollToAnchor) {
+          const y = form.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
+          scrollElement.scrollTo({ top: y, behavior: 'smooth' });
         }
 
         this.unlockSubmit(true);

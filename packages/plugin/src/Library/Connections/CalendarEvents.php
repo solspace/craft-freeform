@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\Connections;
 
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\models\FieldLayout;
 use Solspace\Calendar\Elements\Event;
 use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
@@ -60,11 +61,15 @@ class CalendarEvents extends AbstractConnection
     /**
      * @param TransformerInterface[] $transformers
      */
-    protected function buildElement(array $transformers): Element
+    protected function buildElement(array $transformers, ElementInterface $element = null): Element
     {
-        $event = new Event([
-            'calendarId' => $this->getCalendar(),
-        ]);
+        if ($element instanceof Event) {
+            $event = $element;
+        } else {
+            $event = new Event([
+                'calendarId' => $this->getCalendar(),
+            ]);
+        }
 
         $fieldLayout = $event->getFieldLayout();
         if (null === $fieldLayout) {

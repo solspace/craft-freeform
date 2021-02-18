@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.11.0-beta.1 - Unreleased
+## 3.11.0-beta.1 - 2021-02-18
 
 ### Added
 - Added the ability to edit other Craft Elements, including special support for Craft Users.

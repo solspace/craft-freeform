@@ -9,6 +9,9 @@
 - Added the ability to update file-based email notification templates directly inside the CP (optional).
 - Added a migration tool for migrating from Database to File-based email notifications.
 
+### Changed
+- Updated exporting to no longer export submissions flagged as spam (unless you're exporting directly from the Spam folder).
+
 ## 3.10.8 - 2021-02-16
 
 ### Added

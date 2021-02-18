@@ -1,3 +1,10 @@
+import {
+  EVENT_TABLE_AFTER_REMOVE_ROW,
+  EVENT_TABLE_AFTER_ROW_ADDED,
+  EVENT_TABLE_ON_REMOVE_ROW,
+  EVENT_TABLE_ON_ADD_ROW,
+} from '@lib/plugin/constants/event-types';
+
 class Table {
   PATTERN = /([^[]+)\[(\d+)\](\[\d+\])$/g;
 
@@ -39,7 +46,7 @@ class Table {
         };
 
         button.addEventListener('click', () => {
-          const referenceRow = table.querySelector('tbody > tr:first-child');
+          const referenceRow = table.querySelector('tbody > tr:last-child');
 
           if (referenceRow) {
             const cloneRow = referenceRow.cloneNode(true);
@@ -66,7 +73,17 @@ class Table {
               removeRowButton.addEventListener('click', this.removeRow);
             }
 
+            this.freeform._dispatchEvent(EVENT_TABLE_ON_ADD_ROW, {
+              table,
+              row: cloneRow,
+            });
+
             table.querySelector('tbody').appendChild(cloneRow);
+
+            this.freeform._dispatchEvent(EVENT_TABLE_AFTER_ROW_ADDED, {
+              table,
+              row: cloneRow,
+            });
           }
         });
       }
@@ -78,7 +95,14 @@ class Table {
       return;
     }
 
-    event.target.closest('tr').remove();
+    const table = event.target.closest('table');
+    const row = event.target.closest('tr');
+
+    this.freeform._dispatchEvent(EVENT_TABLE_ON_REMOVE_ROW, { table, row });
+
+    row.remove();
+
+    this.freeform._dispatchEvent(EVENT_TABLE_AFTER_REMOVE_ROW, { table });
   };
 }
 

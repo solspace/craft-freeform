@@ -9,3 +9,8 @@ export const EVENT_AJAX_SUCCESS = 'freeform-ajax-success';
 export const EVENT_AJAX_ERROR = 'freeform-ajax-error';
 export const EVENT_AJAX_BEFORE_SUBMIT = 'freeform-ajax-before-submit';
 export const EVENT_AJAX_AFTER_SUBMIT = 'freeform-ajax-after-submit';
+
+export const EVENT_TABLE_ON_ADD_ROW = 'freeform-field-table-on-add-row';
+export const EVENT_TABLE_AFTER_ROW_ADDED = 'freeform-field-table-after-row-added';
+export const EVENT_TABLE_ON_REMOVE_ROW = 'freeform-field-table-on-remove-row';
+export const EVENT_TABLE_AFTER_REMOVE_ROW = 'freeform-field-table-after-remove-row';

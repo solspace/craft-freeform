@@ -15,7 +15,7 @@
     "symfony/finder": "^2.8|^3.0|^4.0|^5.0",
     "symfony/filesystem": "^2.8|^3.0|^4.0|^5.0",
     "solspace/craft3-commons": "^1.0.21",
-    "hashids/hashids": "^2.0",
+    "hashids/hashids": "^2.0|^3.0|^4.0",
     "egulias/email-validator": "^2.1",
     "nesbot/carbon": "^1.22.1|^2.19",
     "stripe/stripe-php": "^7.27.3",

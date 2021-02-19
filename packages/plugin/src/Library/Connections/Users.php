@@ -30,7 +30,7 @@ class Users extends AbstractConnection
 
     protected function buildElement(array $transformers, ElementInterface $element = null): Element
     {
-        if ($element instanceof User) {
+        if ($element instanceof User && !\Craft::$app->getUser()->getIsGuest()) {
             $user = $element;
         } else {
             $user = new User();

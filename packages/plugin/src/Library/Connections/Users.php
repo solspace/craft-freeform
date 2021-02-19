@@ -32,7 +32,10 @@ class Users extends AbstractConnection
 
     protected function buildElement(array $transformers, ElementInterface $element = null): Element
     {
-        if ($element instanceof User && !\Craft::$app->getUser()->getIsGuest()) {
+        $currentUser = \Craft::$app->getUser();
+        $canEdit = $currentUser->can('editUsers') || $element->id === $currentUser->id;
+
+        if ($element instanceof User && $canEdit && !$currentUser->getIsGuest()) {
             $user = $element;
             self::$existingUserCache[$user->id] = $user;
         } else {

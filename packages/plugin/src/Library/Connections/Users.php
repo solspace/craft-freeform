@@ -20,6 +20,8 @@ class Users extends AbstractConnection
     /** @var bool */
     protected $sendActivation = true;
 
+    private static $existingUserCache = [];
+
     /**
      * {@inheritDoc}
      */
@@ -32,6 +34,7 @@ class Users extends AbstractConnection
     {
         if ($element instanceof User && !\Craft::$app->getUser()->getIsGuest()) {
             $user = $element;
+            self::$existingUserCache[$user->id] = $user;
         } else {
             $user = new User();
             $user->pending = !$this->active;
@@ -78,22 +81,24 @@ class Users extends AbstractConnection
      */
     protected function afterConnect(Element $element, ConnectionResult $result, array $keyValuePairs)
     {
-        $validGroupIds = [];
+        if (!isset(self::$existingUserCache[$element->id])) {
+            $validGroupIds = [];
 
-        if (!\is_array($this->group) && !empty($this->group)) {
-            $this->group = [$this->group];
-        }
-
-        foreach ($this->group as $groupId) {
-            $group = \Craft::$app->userGroups->getGroupById($this->castToInt($groupId));
-
-            if ($group) {
-                $validGroupIds[] = $group->id;
+            if (!\is_array($this->group) && !empty($this->group)) {
+                $this->group = [$this->group];
             }
-        }
 
-        if ($validGroupIds) {
-            \Craft::$app->getUsers()->assignUserToGroups($element->id, $validGroupIds);
+            foreach ($this->group as $groupId) {
+                $group = \Craft::$app->userGroups->getGroupById($this->castToInt($groupId));
+
+                if ($group) {
+                    $validGroupIds[] = $group->id;
+                }
+            }
+
+            if ($validGroupIds) {
+                \Craft::$app->getUsers()->assignUserToGroups($element->id, $validGroupIds);
+            }
         }
 
         if (!$this->active && $this->sendActivation && User::STATUS_PENDING === $element->status) {

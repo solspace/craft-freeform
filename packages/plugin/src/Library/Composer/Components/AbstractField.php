@@ -314,7 +314,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             $this->errors = [];
         }
 
-        return $this->errors;
+        return array_values($this->errors);
     }
 
     public function hasErrors(): bool

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use Carbon\Carbon;
+use Carbon\Exceptions\InvalidFormatException;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -215,7 +216,10 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     public function getCarbon()
     {
         if ($this->getValue()) {
-            return Carbon::createFromFormat($this->getFormat(), $this->getValue());
+            try {
+                return Carbon::createFromFormat($this->getFormat(), $this->getValue());
+            } catch (InvalidFormatException $exception) {
+            }
         }
 
         return null;

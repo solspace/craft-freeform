@@ -55,7 +55,7 @@ class CalendarEvents extends AbstractConnection
 
     protected static function getSuppressableErrorFieldHandles(): array
     {
-        return [];
+        return ['slug'];
     }
 
     /**
@@ -82,6 +82,10 @@ class CalendarEvents extends AbstractConnection
             $event->{$transformer->getCraftFieldHandle()} = $transformer->transformValueFor($field);
         }
 
+        if (!$event->slug) {
+            $event->slug = $event->title;
+        }
+
         $currentSiteId = \Craft::$app->sites->currentSite->id;
 
         $event->siteId = $currentSiteId;
@@ -100,6 +104,7 @@ class CalendarEvents extends AbstractConnection
         if (!$calendar->hasTitleField && !$element->title) {
             // If no title is present - generate one to remove errors
             $element->title = sha1(uniqid('', true).time());
+            $element->slug = $element->title;
         }
     }
 

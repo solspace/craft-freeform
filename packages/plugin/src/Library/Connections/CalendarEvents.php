@@ -9,6 +9,7 @@ use Solspace\Calendar\Elements\Event;
 use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
 use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
+use yii\base\UnknownPropertyException;
 
 class CalendarEvents extends AbstractConnection
 {
@@ -77,9 +78,19 @@ class CalendarEvents extends AbstractConnection
         }
 
         foreach ($transformers as $transformer) {
-            $field = $fieldLayout->getFieldByHandle($transformer->getCraftFieldHandle());
+            $craftFieldHandle = $transformer->getCraftFieldHandle();
+            $field = $fieldLayout->getFieldByHandle($craftFieldHandle);
+            $value = $transformer->transformValueFor($field);
 
-            $event->{$transformer->getCraftFieldHandle()} = $transformer->transformValueFor($field);
+            try {
+                $event->{$craftFieldHandle} = $value;
+            } catch (\Exception $exception) {
+            }
+
+            try {
+                $element->setFieldValue($craftFieldHandle, $value);
+            } catch (UnknownPropertyException $e) {
+            }
         }
 
         if (!$event->slug) {

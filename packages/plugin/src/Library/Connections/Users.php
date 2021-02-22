@@ -66,10 +66,11 @@ class Users extends AbstractConnection
             try {
                 $user->{$handle} = $value;
             } catch (\Exception $exception) {
-                try {
-                    $user->setFieldValue($handle, $value);
-                } catch (UnknownPropertyException $e) {
-                }
+            }
+
+            try {
+                $user->setFieldValue($handle, $value);
+            } catch (UnknownPropertyException $e) {
             }
         }
 
@@ -119,7 +120,10 @@ class Users extends AbstractConnection
             } catch (\Throwable $e) {
                 \Craft::$app->getErrorHandler()->logException($e);
                 \Craft::$app->getSession()->setError(
-                    \Craft::t('app', 'User saved, but couldn’t send verification email. Check your email settings.')
+                    \Craft::t(
+                        'app',
+                        'User saved, but couldn’t send verification email. Check your email settings.'
+                    )
                 )
                 ;
             }

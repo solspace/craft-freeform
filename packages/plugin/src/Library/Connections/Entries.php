@@ -82,10 +82,11 @@ class Entries extends AbstractConnection
             try {
                 $element->{$craftField} = $value;
             } catch (\Exception $e) {
-                try {
-                    $element->setFieldValue($craftField, $value);
-                } catch (UnknownPropertyException $e) {
-                }
+            }
+
+            try {
+                $element->setFieldValue($craftField, $value);
+            } catch (UnknownPropertyException $e) {
             }
         }
 

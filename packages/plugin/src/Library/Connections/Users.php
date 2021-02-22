@@ -6,6 +6,7 @@ use craft\base\Element;
 use craft\base\ElementInterface;
 use craft\elements\User;
 use craft\models\FieldLayout;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 use yii\base\UnknownPropertyException;
 
@@ -35,7 +36,7 @@ class Users extends AbstractConnection
         $currentUser = \Craft::$app->getUser();
 
         $isGuest = $currentUser->isGuest;
-        $canEditUsers = $currentUser->can('editUsers');
+        $canEditUsers = PermissionHelper::checkPermission('editUsers');
         $isAdmin = $currentUser->getIsAdmin();
         $isOwnAccount = $element && $element->id === $currentUser->id;
 

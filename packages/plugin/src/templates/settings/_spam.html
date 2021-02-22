@@ -143,7 +143,7 @@
 
         {{ forms.textareaField({
             label: "Block Keywords"|t('freeform'),
-            instructions: "Enter keywords you would like blocked from being used in all text and textarea fields. Use '*' for wildcard, and separate multiples on new lines."|t('freeform'),
+            instructions: "Enter keywords you would like blocked from being used in all text and textarea fields. Use '*' for wildcard, and separate multiples on new lines. When attempting to block individual characters (e.g. Russian letters) or partial words or strings, be sure to make good use of the wildcard character by placing one before and after!"|t('freeform'),
             name: "settings[blockedKeywords]",
             rows: 5,
             value: settings.blockedKeywords,

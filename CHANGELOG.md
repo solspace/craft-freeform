@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.11.0-beta.2 - 2021-02-25
+
+### Fixed
+- Fixed various issues with the Element editing feature.
+- Fixed a bug where error handling wasn't always reliable when there were errors with submitting new Calendar Events via the Element Connections feature.
+
 ## 3.11.0-beta.1 - 2021-02-18
 
 ### Added

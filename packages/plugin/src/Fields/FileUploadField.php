@@ -24,8 +24,17 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
 {
     use FileUploadTrait;
     use MultipleValueTrait;
+
     const DEFAULT_MAX_FILESIZE_KB = 2048;
     const DEFAULT_FILE_COUNT = 1;
+
+    const FILE_KEYS = [
+        'name',
+        'tmp_name',
+        'error',
+        'size',
+        'type',
+    ];
 
     /** @var array */
     protected $fileKinds;
@@ -88,15 +97,14 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         $attributes = $this->getCustomAttributes();
         $this->addInputAttribute('class', $attributes->getClass());
 
-        return '<input '
-               .$this->getInputAttributesString()
-               .$this->getAttributeString('name', $this->getHandle().'[]')
-               .$this->getAttributeString('type', $this->getType())
-               .$this->getAttributeString('id', $this->getIdAttribute())
-               .$this->getParameterString('multiple', $this->getFileCount() > 1)
-               .$this->getRequiredAttribute()
-               .$attributes->getInputAttributesAsString()
-               .'/>';
+        return '<input '.$this->getInputAttributesString().$this->getAttributeString(
+            'name',
+            $this->getHandle().'[]'
+        ).$this->getAttributeString('type', $this->getType()).$this->getAttributeString(
+            'id',
+            $this->getIdAttribute()
+        ).$this->getParameterString('multiple', $this->getFileCount() > 1).$this->getRequiredAttribute(
+            ).$attributes->getInputAttributesAsString().'/>';
     }
 
     /**
@@ -154,19 +162,19 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     {
         $uploadErrors = [];
 
-        if (!isset(self::$filesUploaded[$this->handle])) {
-            $exists = isset($_FILES[$this->handle]) && !empty($_FILES[$this->handle]['name']) && !$this->isHidden();
+        $handle = $this->handle;
+        if (!isset(self::$filesUploaded[$handle])) {
+            $exists = isset($_FILES[$handle]) && !empty($_FILES[$handle]['name']) && !$this->isHidden();
 
-            if ($exists && !\is_array($_FILES[$this->handle]['name'])) {
-                $_FILES[$this->handle]['name'] = [$_FILES[$this->handle]['name']];
-                $_FILES[$this->handle]['tmp_name'] = [$_FILES[$this->handle]['tmp_name']];
-                $_FILES[$this->handle]['error'] = [$_FILES[$this->handle]['error']];
-                $_FILES[$this->handle]['size'] = [$_FILES[$this->handle]['size']];
-                $_FILES[$this->handle]['type'] = [$_FILES[$this->handle]['type']];
+            if ($exists && !\is_array($_FILES[$handle]['name'])) {
+                foreach (self::FILE_KEYS as $key) {
+                    $_FILES[$handle][$key] = [$_FILES[$handle][$key]];
+                }
             }
 
-            if ($exists && is_countable($_FILES[$this->handle]['name'])) {
-                $fileCount = \count($_FILES[$this->handle]['name']);
+            $uploadedFiles = 0;
+            if ($exists && is_countable($_FILES[$handle]['name'])) {
+                $fileCount = \count($_FILES[$handle]['name']);
 
                 if ($fileCount > $this->getFileCount()) {
                     $uploadErrors[] = $this->translate(
@@ -175,12 +183,12 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                     );
                 }
 
-                foreach ($_FILES[$this->handle]['name'] as $index => $name) {
+                foreach ($_FILES[$handle]['name'] as $index => $name) {
                     $extension = pathinfo($name, \PATHINFO_EXTENSION);
                     $validExtensions = $this->getValidExtensions();
 
-                    $tmpName = $_FILES[$this->handle]['tmp_name'][$index];
-                    $errorCode = $_FILES[$this->handle]['error'][$index];
+                    $tmpName = $_FILES[$handle]['tmp_name'][$index];
+                    $errorCode = $_FILES[$handle]['error'][$index];
 
                     if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
                         continue;
@@ -224,27 +232,31 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                         );
                     }
 
-                    $fileSizeKB = ceil($_FILES[$this->handle]['size'][$index] / 1024);
+                    $fileSizeKB = ceil($_FILES[$handle]['size'][$index] / 1024);
                     if ($fileSizeKB > $this->getMaxFileSizeKB()) {
                         $uploadErrors[] = $this->translate(
                             'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
                             ['fileSize' => $fileSizeKB, 'maxFileSize' => $this->getMaxFileSizeKB()]
                         );
                     }
+
+                    ++$uploadedFiles;
                 }
-            } elseif ($this->isRequired() && !$this->isHidden()) {
+            }
+
+            if (!$uploadedFiles && $this->isRequired() && !$this->isHidden()) {
                 $uploadErrors[] = $this->translate('This field is required');
             }
 
             // if there are errors - prevent the file from being uploaded
             if ($uploadErrors || $this->isHidden()) {
-                self::$filesUploaded[$this->handle] = null;
+                self::$filesUploaded[$handle] = null;
             }
 
-            self::$filesUploadedErrors[$this->handle] = $uploadErrors;
+            self::$filesUploadedErrors[$handle] = $uploadErrors;
         }
 
-        return self::$filesUploadedErrors[$this->handle];
+        return self::$filesUploadedErrors[$handle];
     }
 
     /**

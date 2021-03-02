@@ -1,3 +1,10 @@
+import 'core-js/features/array/includes';
+import 'core-js/features/array/for-each';
+import 'core-js/features/get-iterator';
+import 'core-js/features/object/assign';
+import '@lib/polyfills/for-each';
+import '@lib/polyfills/remove';
+
 import * as EventTypes from '@lib/plugin/constants/event-types';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
@@ -716,19 +723,6 @@ export default class Freeform {
     return event;
   };
 }
-
-// Add remove prototypes
-Element.prototype.remove = function () {
-  this.parentElement.removeChild(this);
-};
-
-NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
-  for (var i = this.length - 1; i >= 0; i--) {
-    if (this[i] && this[i].parentElement) {
-      this[i].parentElement.removeChild(this[i]);
-    }
-  }
-};
 
 // Attach to all forms
 const forms = document.querySelectorAll('form[data-freeform]');

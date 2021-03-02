@@ -9,8 +9,6 @@ import StripeHandler from '@lib/plugin/handlers/form/stripe-handler';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { addClass, getClassArray, removeClass } from '@lib/plugin/helpers/elements';
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = 'form_previous_page_button';

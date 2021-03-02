@@ -167,7 +167,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $beforeSubmitEvent = new SubmitEvent($submission, $form);
         $this->trigger(self::EVENT_BEFORE_SUBMIT, $beforeSubmitEvent);
 
-        if ($beforeSubmitEvent->isValid && \Craft::$app->getElements()->saveElement($submission)) {
+        if (!$beforeSubmitEvent->isValid) {
+            return null;
+        }
+
+        $updateSearchIndex = (bool) $this->getSettingsService()->getSettingsModel()->updateSearchIndexes;
+        if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
             $this->finalizeFormFiles($form);
             $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($submission, $form));
 

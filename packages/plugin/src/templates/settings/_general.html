@@ -56,6 +56,14 @@
     }) }}
 
     {{ forms.lightswitchField({
+        label: "Enable search index updating on new submissions?"|t('freeform'),
+        instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
+        name: "settings[updateSearchIndexes]",
+        on: settings.updateSearchIndexes,
+        errors: settings.errors("updateSearchIndexes"),
+    }) }}
+
+    {{ forms.lightswitchField({
         label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
         instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
         name: "settings[removeNewlines]",

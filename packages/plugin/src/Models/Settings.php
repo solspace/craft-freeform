@@ -252,6 +252,9 @@ class Settings extends Model
     /** @var bool */
     public $twigInHtmlIsolatedMode;
 
+    /** @var bool */
+    public $updateSearchIndexes;
+
     /**
      * Settings constructor.
      */
@@ -321,6 +324,8 @@ class Settings extends Model
 
         $this->twigInHtml = true;
         $this->twigInHtmlIsolatedMode = true;
+
+        $this->updateSearchIndexes = true;
 
         parent::__construct($config);
     }

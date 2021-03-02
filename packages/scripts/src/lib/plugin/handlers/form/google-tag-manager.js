@@ -13,8 +13,7 @@ class GoogleTagManager {
     this.freeform = freeform;
     this.form = freeform.form;
 
-    const gtmEnabled = this.form.dataset.gtm !== undefined;
-    if (!gtmEnabled) {
+    if (!this.freeform.has('data-gtm')) {
       return;
     }
 

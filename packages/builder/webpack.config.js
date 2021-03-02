@@ -1,5 +1,6 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -56,6 +57,8 @@ module.exports = {
     ],
   },
 
+  plugins: [new NodePolyfillPlugin()],
+
   devtool: isProd ? false : 'eval-source-map',
 
   resolve: {
@@ -69,8 +72,6 @@ module.exports = {
     usedExports: true,
     minimizer: [
       new TerserPlugin({
-        cache: true,
-        sourceMap: !isProd,
         parallel: true,
         terserOptions: {
           compress: true,

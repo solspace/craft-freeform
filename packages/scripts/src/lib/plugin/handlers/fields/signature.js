@@ -4,6 +4,9 @@ class Signature {
   scriptAdded = false;
   constructor(freeform) {
     this.freeform = freeform;
+    if (!this.freeform.has('data-scripts-signature')) {
+      return;
+    }
 
     if (!this.scriptAdded) {
       const script = document.createElement('script');
@@ -20,6 +23,10 @@ class Signature {
   }
 
   reload = () => {
+    if (!this.freeform.has('data-scripts-signature')) {
+      return;
+    }
+
     const canvasFields = this.freeform.form.querySelectorAll('canvas[data-signature-field]');
     canvasFields.forEach((canvas) => {
       const onEnd = () => {

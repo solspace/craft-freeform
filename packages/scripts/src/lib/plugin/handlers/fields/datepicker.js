@@ -8,6 +8,10 @@ class DatePicker {
   constructor(freeform) {
     this.freeform = freeform;
 
+    if (!this.freeform.has('data-scripts-datepicker')) {
+      return;
+    }
+
     if (!this.scriptAdded) {
       const script = document.createElement('script');
       script.src = '//cdnjs.cloudflare.com/ajax/libs/flatpickr/4.6.6/flatpickr.min.js';
@@ -28,6 +32,10 @@ class DatePicker {
   }
 
   reload = () => {
+    if (!this.freeform.has('data-scripts-datepicker')) {
+      return;
+    }
+
     const pickers = this.freeform.form.querySelectorAll('*[data-datepicker][data-datepicker-enabled]');
     pickers.forEach((picker) => {
       const locale = picker.getAttribute('data-datepicker-locale');

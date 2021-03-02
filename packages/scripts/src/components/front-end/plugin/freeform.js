@@ -146,6 +146,10 @@ export default class Freeform {
     this._initializedHandlers.forEach((handler) => (handler.reload ? handler.reload() : null));
   };
 
+  has = (attribute) => {
+    return form.getAttribute(attribute) !== null;
+  };
+
   /**
    * Allows setting any options
    *

@@ -5,6 +5,10 @@ class InputMask {
   constructor(freeform) {
     this.freeform = freeform;
 
+    if (!this.freeform.has('data-scripts-js-mask')) {
+      return;
+    }
+
     if (!this.scriptAdded) {
       const script = document.createElement('script');
       script.src = '//unpkg.com/imask';
@@ -20,6 +24,10 @@ class InputMask {
   }
 
   reload = () => {
+    if (!this.freeform.has('data-scripts-js-mask')) {
+      return;
+    }
+
     const maskedInputs = this.freeform.form.querySelectorAll('*[data-masked-input]');
     maskedInputs.forEach((input) => {
       const mask = input.getAttribute('data-pattern');

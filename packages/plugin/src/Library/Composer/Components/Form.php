@@ -1077,13 +1077,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     {
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);
-            $this->setSessionCustomFormData();
 
             $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes);
             Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
 
             $this->populateFromSubmission($this->customAttributes->getSubmissionToken());
         }
+
+        $this->setSessionCustomFormData();
 
         return $this;
     }

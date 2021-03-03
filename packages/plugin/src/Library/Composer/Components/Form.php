@@ -5,7 +5,7 @@
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2021, Solspace, Inc.
  *
- * @see          https:   //solspace.com/craft/freeform
+ * @see           https:   //solspace.com/craft/freeform
  *
  * @license       https:   //solspace.com/software/license-agreement
  */
@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
@@ -61,6 +62,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
     const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
     const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
+    const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
 
     const PAGE_INDEX_KEY = 'page_index';
@@ -870,6 +872,63 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->formHandler->renderFormTemplate($this, $formTemplate);
     }
 
+    public function json(array $customFormAttributes = null): Markup
+    {
+        $this->setAttributes($customFormAttributes);
+        $customAttributes = $this->getCustomAttributes();
+
+        $isMultipart = \count($this->getLayout()->getFileUploadFields());
+
+        $object = [
+            'anchor' => $this->getAnchor(),
+            'hash' => $this->getHash(),
+            'handle' => $this->handle,
+            'action' => $this->formAttributes->getActionUrl(),
+            'ajax' => $this->isAjaxEnabled(),
+            'disableSubmit' => $this->formHandler->isFormSubmitDisable(),
+            'disableReset' => $this->disableAjaxReset,
+            'showSpinner' => $this->isShowSpinner(),
+            'showLoadingText' => $this->isShowLoadingText(),
+            'loadingText' => $this->getLoadingText(),
+            'class' => trim($customAttributes->getClass().' '.($attributes['class'] ?? '')),
+            'method' => $customAttributes->getMethod() ?: 'post',
+            'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
+        ];
+
+        $successMessage = null;
+        if ($this->getSuccessMessage()) {
+            $object['successMessage'] = $this->getTranslator()->translate($this->getSuccessMessage(), [], 'app');
+        }
+
+        $errorMessage = null;
+        if ($this->getErrorMessage()) {
+            $object['errorMessage'] = $this->getTranslator()->translate($this->getErrorMessage(), [], 'app');
+        }
+
+        $returnUrl = null;
+        if ($customAttributes->getReturnUrl()) {
+            $object['returnUrl'] = \Craft::$app->security->hashData($customAttributes->getReturnUrl());
+        }
+
+        $status = null;
+        if ($customAttributes->getStatus()) {
+            $object['status'] = base64_encode(\Craft::$app->security->encryptByKey($customAttributes->getStatus()));
+        }
+
+        if ($this->formAttributes->isCsrfEnabled()) {
+            $object['csrf'] = [
+                'name' => $this->formAttributes->getCsrfTokenName(),
+                'token' => $this->formAttributes->getCsrfToken(),
+            ];
+        }
+
+        $event = new OutputAsJsonEvent($this, $object);
+        Event::trigger(self::class, self::EVENT_OUTPUT_AS_JSON, $event);
+        $object = $event->getJsonObject();
+
+        return Template::raw(json_encode((object) $object, \JSON_PRETTY_PRINT));
+    }
+
     public function renderTag(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
@@ -931,7 +990,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         if ($this->getSuccessMessage()) {
-            $attributes['data-success-message'] = $this->getTranslator()->translate($this->getSuccessMessage(), [], 'app');
+            $attributes['data-success-message'] = $this->getTranslator()->translate(
+                $this->getSuccessMessage(),
+                [],
+                'app'
+            )
+            ;
         }
 
         if ($this->getErrorMessage()) {
@@ -954,31 +1018,24 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         if ($customAttributes->getReturnUrl()) {
-            $output .= '<input type="hidden" '
-                .'name="'.self::RETURN_URI_KEY.'" '
-                .'value="'.\Craft::$app->security->hashData($customAttributes->getReturnUrl()).'" '
-                .'/>';
+            $output .= '<input type="hidden" '.'name="'.self::RETURN_URI_KEY.'" '.'value="'.\Craft::$app->security->hashData(
+                $customAttributes->getReturnUrl()
+            ).'" '.'/>';
         }
 
         if ($customAttributes->getStatus()) {
-            $output .= '<input type="hidden" '
-                .'name="'.self::STATUS_KEY.'" '
-                .'value="'.base64_encode(\Craft::$app->security->encryptByKey($customAttributes->getStatus())).'" '
-                .'/>';
+            $output .= '<input type="hidden" '.'name="'.self::STATUS_KEY.'" '.'value="'.base64_encode(
+                \Craft::$app->security->encryptByKey($customAttributes->getStatus())
+            ).'" '.'/>';
         }
 
         if ($customAttributes->getSubmissionToken()) {
-            $output .= '<input type="hidden" '
-                .'name="'.self::SUBMISSION_TOKEN_KEY.'" '
-                .'value="'.$customAttributes->getSubmissionToken().'" '
-                .'/>';
+            $output .= '<input type="hidden" '.'name="'.self::SUBMISSION_TOKEN_KEY.'" '.'value="'.$customAttributes->getSubmissionToken(
+                ).'" '.'/>';
         }
 
-        $output .= '<input '
-            .'type="hidden" '
-            .'name="'.FormValueContext::FORM_HASH_KEY.'" '
-            .'value="'.$this->getHash().'" '
-            .'/>';
+        $output .= '<input '.'type="hidden" '.'name="'.FormValueContext::FORM_HASH_KEY.'" '.'value="'.$this->getHash(
+            ).'" '.'/>';
 
         if ($this->formAttributes->isCsrfEnabled()) {
             $csrfTokenName = $this->formAttributes->getCsrfTokenName();
@@ -1138,12 +1195,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         foreach ($this->getLayout()->getFields() as $field) {
-            if (
-                $field instanceof HiddenField
-                || $field instanceof StaticValueInterface
-                || $field instanceof PersistentValueInterface
-                || $field instanceof NoStorageInterface
-            ) {
+            if ($field instanceof HiddenField || $field instanceof StaticValueInterface || $field instanceof PersistentValueInterface || $field instanceof NoStorageInterface) {
                 continue;
             }
 
@@ -1455,18 +1507,15 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     private function setSessionCustomFormData(): self
     {
-        $this
-            ->getFormValueContext()
-            ->setCustomFormData(
-                [
-                    FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
-                    FormValueContext::DATA_SUPPRESS => $this->customAttributes->getSuppress(),
-                    FormValueContext::DATA_RELATIONS => $this->customAttributes->getRelations(),
-                    FormValueContext::DATA_PERSISTENT_VALUES => $this->customAttributes->getOverrideValues(),
-                    FormValueContext::DATA_DISABLE_RECAPTCHA => $this->customAttributes->isDisableRecaptcha(),
-                ]
-            )
-            ->saveState()
+        $this->getFormValueContext()->setCustomFormData(
+            [
+                FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
+                FormValueContext::DATA_SUPPRESS => $this->customAttributes->getSuppress(),
+                FormValueContext::DATA_RELATIONS => $this->customAttributes->getRelations(),
+                FormValueContext::DATA_PERSISTENT_VALUES => $this->customAttributes->getOverrideValues(),
+                FormValueContext::DATA_DISABLE_RECAPTCHA => $this->customAttributes->isDisableRecaptcha(),
+            ]
+        )->saveState()
         ;
 
         return $this;

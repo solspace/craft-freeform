@@ -67,6 +67,7 @@ use Solspace\Freeform\Jobs\PurgeSubmissionsJob;
 use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Models\FieldModel;
@@ -946,6 +947,12 @@ class Freeform extends Plugin
     private function initHoneypot()
     {
         if ($this->settings->isFreeformHoneypotEnabled()) {
+            Event::on(
+                Form::class,
+                Form::EVENT_OUTPUT_AS_JSON,
+                [$this->honeypot, 'addHoneypotToJson']
+            );
+
             Event::on(
                 FormsService::class,
                 FormsService::EVENT_RENDER_OPENING_TAG,

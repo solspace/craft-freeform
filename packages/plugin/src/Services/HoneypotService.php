@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
+use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Honeypot\RenderHoneypotEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -45,6 +46,16 @@ class HoneypotService extends BaseService
     public function addHoneyPotInputToForm(FormRenderEvent $event)
     {
         $event->appendToOutput($this->getHoneypotInput($event->getForm()));
+    }
+
+    public function addHoneypotToJson(OutputAsJsonEvent $event)
+    {
+        $honeypot = $this->getHoneypot($event->getForm());
+
+        $event->add('honeypot', [
+            'name' => $honeypot->getName(),
+            'value' => $honeypot->getHash(),
+        ]);
     }
 
     public function validateFormHoneypot(FormValidateEvent $event)

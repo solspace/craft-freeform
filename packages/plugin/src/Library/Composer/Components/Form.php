@@ -1032,9 +1032,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     {
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);
-            $this->setSessionCustomFormData();
             $this->populateFromSubmission($this->customAttributes->getSubmissionToken());
         }
+
+        $this->setSessionCustomFormData();
 
         return $this;
     }

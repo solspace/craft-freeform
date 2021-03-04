@@ -6,7 +6,7 @@ const isProd = process.env.NODE_ENV === 'production';
 
 module.exports = {
   mode: isProd ? 'production' : 'development',
-  target: 'web',
+  target: ['web', 'es5'],
 
   entry: {
     builder: path.resolve(__dirname, 'src/app.jsx'),

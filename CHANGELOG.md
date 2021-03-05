@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.10.9 - 2021-03-05
+
+### Added
+- Added a setting to disable Search Index updating after each submission of a Freeform form.
+- Added developer events for manipulating Table fields.
+
+### Fixed
+- Fixed a bug where session data could sometimes not be written when no custom attributes were passed.
+- Fixed a bug where empty required File Upload fields could sometimes not show an error/halt the form.
+- Fixed a bug where creating new fields in the Field Manager would not show a clear error about a field handle already existing.
+- Fixed a bug where an error could sometimes be incorrectly logged for the MailChimp integration.
+
 ## 3.10.8 - 2021-02-16
 
 ### Added

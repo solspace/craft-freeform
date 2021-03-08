@@ -196,8 +196,7 @@ class FieldsController extends Controller
 
         \Craft::$app->session->setError(Freeform::t('Field not saved'));
 
-        // Send the event back to the template
-        \Craft::$app->urlManager->setRouteParams(['field' => $field, 'errors' => $field->getErrors()]);
+        return $this->renderEditForm($field, $field->label);
     }
 
     /**

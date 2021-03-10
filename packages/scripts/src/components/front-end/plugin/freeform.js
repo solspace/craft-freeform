@@ -150,7 +150,7 @@ export default class Freeform {
   };
 
   has = (attribute) => {
-    return form.getAttribute(attribute) !== null;
+    return this.form.getAttribute(attribute) !== null;
   };
 
   /**

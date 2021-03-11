@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Elements\Db;
 
 use craft\db\Query;
+use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -12,6 +13,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Records\StatusRecord;
+use yii\db\Expression;
 
 class SubmissionQuery extends ElementQuery
 {
@@ -307,6 +309,7 @@ class SubmissionQuery extends ElementQuery
         }
 
         $this->prepareFieldSearch();
+        $this->prepareSearch();
 
         return parent::beforePrepare();
     }
@@ -332,6 +335,42 @@ class SubmissionQuery extends ElementQuery
             $columnName = Submission::getFieldColumnName($fieldHandleToIdMap[$handle]);
 
             $this->subQuery->andWhere(Db::parseParam($table.'.[['.$columnName.']]', $term));
+        }
+    }
+
+    /**
+     * Parses the fieldSearch variable and attaches the WHERE conditions to the query.
+     */
+    private function prepareSearch()
+    {
+        if (!$this->search) {
+            return;
+        }
+
+        $search = trim($this->search, '%');
+        $this->search = null;
+
+        $fieldIds = Freeform::getInstance()->fields->getAllFieldIds();
+        $table = Submission::TABLE;
+
+        //$this->subQuery->innerJoin(['cnt' => Table::CONTENT, '[[cnt.elementId]] = [[elements.id]]']);
+
+        $queryChunks = ['[[content.title]] LIKE :searchBoth'];
+        foreach ($fieldIds as $id) {
+            $columnName = Submission::getFieldColumnName($id);
+            $queryChunks[] = "{$table}.[[{$columnName}]] LIKE :search";
+        }
+
+        if ($queryChunks) {
+            $this->subQuery->andWhere(
+                new Expression(
+                    implode(' OR ', $queryChunks),
+                    [
+                        'search' => $search.'%',
+                        'searchBoth' => '%'.$search.'%',
+                    ]
+                )
+            );
         }
     }
 }

@@ -54,6 +54,7 @@ export default class PageBlock extends Component {
     addGotoRule: PropTypes.func,
     removeGotoRule: PropTypes.func,
     toggleShow: PropTypes.func,
+    showHandles: PropTypes.bool,
   };
 
   getFieldPropsByHash = (hash) => {
@@ -68,11 +69,12 @@ export default class PageBlock extends Component {
   render() {
     const { properties, layout, page, pageHash, fieldRules, gotoRules } = this.props;
     const { addFieldRule, addGotoRule, removeFieldRule, removeGotoRule, removePageBlock } = this.props;
+    const { showHandles = false } = this.props;
 
     const { toggleShow, toggleMatchAll } = this.props;
 
-    const availableCriteriaFields = getAvailableFields(properties, layout, pageHash, RULE_CRITERIA_SUPPORTED_TYPES);
-    const availableFields = getAvailableFields(properties, layout, pageHash, RULE_SUPPORTED_TYPES);
+    const availableCriteriaFields = getAvailableFields(properties, layout, pageHash, RULE_CRITERIA_SUPPORTED_TYPES, showHandles);
+    const availableFields = getAvailableFields(properties, layout, pageHash, RULE_SUPPORTED_TYPES, showHandles);
     const availablePages = getAvailablePages(properties);
 
     const fieldRuleElements = [];
@@ -169,7 +171,7 @@ export default class PageBlock extends Component {
   }
 }
 
-const getAvailableFields = (properties, layout, pageHash, supportedTypes) => {
+const getAvailableFields = (properties, layout, pageHash, supportedTypes, showHandles) => {
   const usableFields = [];
   const pageFields = [];
 
@@ -192,6 +194,9 @@ const getAvailableFields = (properties, layout, pageHash, supportedTypes) => {
 
     if (DYNAMIC_FIELD_TYPES.indexOf(item.type) !== -1) {
       label = `${label} (${key})`;
+    } else if (showHandles) {
+      const handle = item.handle ?? key;
+      label += ` (${handle})`;
     }
 
     usableFields.push({

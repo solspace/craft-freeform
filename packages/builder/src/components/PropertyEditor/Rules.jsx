@@ -6,6 +6,7 @@ import { translate } from '../../app';
 import { PAGE } from '../../constants/FieldTypes';
 import BasePropertyEditor from './BasePropertyEditor';
 import PageBlock from './Components/Rules/PageBlock';
+import { CheckboxProperty } from './PropertyItems';
 
 @connect(
   (state) => ({
@@ -29,12 +30,19 @@ export default class Rules extends BasePropertyEditor {
     properties: PropTypes.object,
   };
 
+  constructor(props, context) {
+    super(props, context);
+
+    this.state = { showHandles: false };
+  }
+
   render() {
     const { properties, addPageBlock } = this.props;
     const { rules } = properties;
     const list = [];
     const availablePages = getAvailablePages(properties);
     const usedPageHashes = [];
+    const { showHandles } = this.state;
 
     if (rules && rules.list) {
       for (const [hash, rule] of Object.entries(rules.list)) {
@@ -47,7 +55,15 @@ export default class Rules extends BasePropertyEditor {
 
         usedPageHashes.push(hash);
 
-        list.push(<PageBlock pageHash={hash} page={pageProps} fieldRules={fieldRules} gotoRules={gotoRules} />);
+        list.push(
+          <PageBlock
+            pageHash={hash}
+            page={pageProps}
+            fieldRules={fieldRules}
+            gotoRules={gotoRules}
+            showHandles={showHandles}
+          />
+        );
       }
     }
 
@@ -76,6 +92,15 @@ export default class Rules extends BasePropertyEditor {
             </select>
           </div>
         )}
+
+        <CheckboxProperty
+          label="Show field handles?"
+          instructions="Enable this to also show the field handle for all fields for better clarity if you have several fields with the same label."
+          checked={this.state.showHandles}
+          onChangeHandler={() => {
+            this.setState({ showHandles: !this.state.showHandles });
+          }}
+        />
       </div>
     );
   }

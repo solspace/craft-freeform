@@ -957,7 +957,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         if ($this->formHandler->isAutoscrollToErrorsEnabled()) {
-            $output .= '<a id="'.$this->getAnchor().'"></a>';
+            $output .= '<div id="'.$this->getAnchor().'" data-scroll-anchor></div>';
         }
 
         $output .= $this->formHandler->onRenderOpeningTag($this);

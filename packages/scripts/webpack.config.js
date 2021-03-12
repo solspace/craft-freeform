@@ -43,7 +43,7 @@ module.exports = {
     ],
   },
 
-  devtool: isProd ? false : 'source-map',
+  devtool: isProd ? false : 'eval-source-map',
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
     alias: {

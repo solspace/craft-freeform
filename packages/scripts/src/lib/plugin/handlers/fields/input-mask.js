@@ -11,7 +11,7 @@ class InputMask {
 
     if (!this.scriptAdded) {
       const script = document.createElement('script');
-      script.src = '//unpkg.com/imask';
+      script.src = 'https://cdnjs.cloudflare.com/ajax/libs/imask/6.0.7/imask.min.js';
       script.async = false;
       script.defer = false;
       script.addEventListener('load', () => {

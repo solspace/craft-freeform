@@ -122,6 +122,8 @@
 
                             {% if setting.type in ["text", "password"] %}
                                 {{ forms.autosuggestField(options) }}
+                            {% elseif setting.type == "auto" %}
+                                {{ forms.textField(options|merge({ readonly: true })) }}
                             {% elseif setting.type == "bool" %}
                                 {% set options = options|merge({on: value, value: 1}) %}
                                 {{ forms.lightswitchField(options) }}

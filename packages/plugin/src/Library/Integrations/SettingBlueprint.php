@@ -17,6 +17,7 @@ class SettingBlueprint
     const TYPE_INTERNAL = 'internal';
     const TYPE_CONFIG = 'config';
     const TYPE_TEXT = 'text';
+    const TYPE_AUTO = 'auto';
     const TYPE_PASSWORD = 'password';
     const TYPE_BOOL = 'bool';
 

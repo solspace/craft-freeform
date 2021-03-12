@@ -27,7 +27,7 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector
     {
         return [
             new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
+                SettingBlueprint::TYPE_AUTO,
                 self::SETTING_RETURN_URI,
                 'OAuth 2.0 Return URI',
                 'You must specify this as the Return URI in your app settings to be able to authorize your credentials. DO NOT CHANGE THIS.',

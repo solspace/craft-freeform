@@ -57,8 +57,6 @@ module.exports = {
     usedExports: true,
     minimizer: [
       new TerserPlugin({
-        cache: true,
-        sourceMap: !isProd,
         parallel: true,
         terserOptions: {
           compress: true,

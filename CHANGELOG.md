@@ -30,6 +30,17 @@
 ### Changed
 - Updated exporting to no longer export submissions flagged as spam (unless you're exporting directly from the Spam folder).
 
+## 3.10.10 - 2021-03-15
+
+### Added
+- Added a toggle for showing field handles in the Conditional Rules feature selectors.
+
+### Changed
+- Changed the automatic scroll anchor tag from `<a>` to `<div>` (when reloading the page for errors or loading the next page on non-AJAX forms).
+
+### Fixed
+- Fixed a bug where a source map loading error would occur in the browser console when loading Freeform forms.
+
 ## 3.10.9 - 2021-03-05
 
 ### Added

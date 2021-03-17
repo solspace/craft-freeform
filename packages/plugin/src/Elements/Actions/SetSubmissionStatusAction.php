@@ -73,7 +73,7 @@ class SetSubmissionStatusAction extends ElementAction
         }
 
         if (null === $isAdmin) {
-            $isAdmin = PermissionHelper::isAdmin();
+            $isAdmin = PermissionHelper::isAdmin() || PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
         }
 
         foreach ($submissions as $submission) {

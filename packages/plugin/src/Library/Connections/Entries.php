@@ -80,12 +80,12 @@ class Entries extends AbstractConnection
             $value = $transformer->transformValueFor($field);
 
             try {
-                $element->{$craftField} = $value;
+                $entry->{$craftField} = $value;
             } catch (\Exception $e) {
             }
 
             try {
-                $element->setFieldValue($craftField, $value);
+                $entry->setFieldValue($craftField, $value);
             } catch (UnknownPropertyException $e) {
             }
         }

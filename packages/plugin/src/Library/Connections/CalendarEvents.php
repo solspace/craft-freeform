@@ -88,7 +88,7 @@ class CalendarEvents extends AbstractConnection
             }
 
             try {
-                $element->setFieldValue($craftFieldHandle, $value);
+                $event->setFieldValue($craftFieldHandle, $value);
             } catch (UnknownPropertyException $e) {
             }
         }

@@ -633,6 +633,26 @@ class Stripe extends AbstractPaymentGatewayIntegration
     }
 
     /**
+     * @param mixed $id
+     *
+     * @throws \Exception
+     *
+     * @return bool|\Stripe\PaymentIntent
+     */
+    public function getPaymentIntentDetails($id)
+    {
+        $this->prepareApi();
+
+        try {
+            $paymentIntent = StripeAPI\PaymentIntent::retrieve($id);
+        } catch (\Exception $e) {
+            return $this->processError($e);
+        }
+
+        return $paymentIntent;
+    }
+
+    /**
      * Perform anything necessary before this integration is saved.
      */
     public function onBeforeSave(IntegrationStorageInterface $model)

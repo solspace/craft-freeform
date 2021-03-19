@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.11.0-beta.4 - 2021-03-19
+
+### Added
+- Added export profile developer events, allowing the addition of custom exporters.
+
+### Fixed
+- Fixed a bug where changing the status of submissions from the CP Submissions index page would not work for user groups with the "Manage All Submissions" permission.
+- Fixed a bug where the OAuth Return URI field would clear its value when creating a new integration, making it difficult to copy/paste during set up.
+- Fixed a bug in the Element Connections feature that prevented it from working correctly.
+- Fixed a bug where the Stripe Payments integration was not sending emails for charge success and failure events.
+
 ## 3.11.0-beta.3 - 2021-03-11
 
 ### Added

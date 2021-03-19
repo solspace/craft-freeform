@@ -79,7 +79,7 @@
             {{ forms.lightswitchField({
                 label: "Automatically Purge Spam Submissions"|t('freeform'),
                 instructions: "If you wish to have Freeform automatically purge submissions flagged as spam after a specified number of days, enable this setting and specify the number of days after submission date it should purge spammy submissions."|t('freeform'),
-                warning: "Enabling this and saving this settings page will begin the purging of submissions flagged as spam, and cannot be undone.",
+                warning: "Enabling this and saving this settings page will result in the purging of submissions flagged as spam feature beginning, and cannot be undone (it may not happen immediately, and may take a couple hours before the next process runs).",
                 name: "purge-toggle",
                 on: settings.purgableSpamAgeInDays,
                 toggle: "purge",

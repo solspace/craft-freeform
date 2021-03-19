@@ -6,6 +6,11 @@ use Solspace\Commons\Helpers\StringHelper;
 
 class ExportText extends AbstractExport
 {
+    public static function getLabel(): string
+    {
+        return 'Text';
+    }
+
     public function getMimeType(): string
     {
         return 'text/plain';

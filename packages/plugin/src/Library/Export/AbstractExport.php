@@ -31,27 +31,6 @@ abstract class AbstractExport implements ExportInterface
         $this->rows = $this->parseSubmissionDataIntoRows($submissionData);
     }
 
-    public static function create(string $type, Form $form, array $data, bool $removeNewlines = false): ExportInterface
-    {
-        switch ($type) {
-            case 'json':
-                return new ExportJson($form, $data, $removeNewlines);
-
-            case 'xml':
-                return new ExportXml($form, $data, $removeNewlines);
-
-            case 'text':
-                return new ExportText($form, $data, $removeNewlines);
-
-            case 'excel':
-                return new ExportExcel($form, $data, $removeNewlines);
-
-            case 'csv':
-            default:
-                return new ExportCsv($form, $data, $removeNewlines);
-        }
-    }
-
     public function getForm(): Form
     {
         return $this->form;

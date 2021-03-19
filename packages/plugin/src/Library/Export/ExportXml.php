@@ -9,6 +9,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValu
 
 class ExportXml extends AbstractExport
 {
+    public static function getLabel(): string
+    {
+        return 'XML';
+    }
+
     public function getMimeType(): string
     {
         return 'text/xml';

@@ -4,10 +4,17 @@ namespace Solspace\Freeform\Services\Pro;
 
 use craft\db\Query;
 use Solspace\Freeform\Events\ExportProfiles\DeleteEvent;
+use Solspace\Freeform\Events\ExportProfiles\RegisterExporterEvent;
 use Solspace\Freeform\Events\ExportProfiles\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Export\ExportCsv;
+use Solspace\Freeform\Library\Export\ExportExcel;
 use Solspace\Freeform\Library\Export\ExportInterface;
+use Solspace\Freeform\Library\Export\ExportJson;
+use Solspace\Freeform\Library\Export\ExportText;
+use Solspace\Freeform\Library\Export\ExportXml;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Records\Pro\ExportProfileRecord;
 use yii\base\Component;
@@ -19,10 +26,43 @@ class ExportProfilesService extends Component
     const EVENT_AFTER_SAVE = 'afterSave';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE = 'afterDelete';
+    const EVENT_REGISTER_EXPORTER = 'registerExporter';
 
     /** @var ExportProfileModel[] */
     private static $profileCache;
     private static $allProfilesLoaded;
+    private static $exporters;
+
+    public function getExporters(): array
+    {
+        if (null === self::$exporters) {
+            $event = new RegisterExporterEvent();
+
+            $event
+                ->addExporter('excel', ExportExcel::class)
+                ->addExporter('csv', ExportCsv::class)
+                ->addExporter('json', ExportJson::class)
+                ->addExporter('xml', ExportXml::class)
+                ->addExporter('text', ExportText::class)
+            ;
+
+            $this->trigger(self::EVENT_REGISTER_EXPORTER, $event);
+
+            self::$exporters = $event->getExporters();
+        }
+
+        return self::$exporters;
+    }
+
+    public function getExporterTypes(): array
+    {
+        $types = [];
+        foreach ($this->getExporters() as $type => $exporterClass) {
+            $types[$type] = $exporterClass::getLabel();
+        }
+
+        return $types;
+    }
 
     /**
      * @return ExportProfileModel[]
@@ -182,6 +222,18 @@ class ExportProfilesService extends Component
 
             throw $exception;
         }
+    }
+
+    public function createExporter(string $type, Form $form, array $data, bool $removeNewlines = false): ExportInterface
+    {
+        $exporters = $this->getExporters();
+        if (!isset($exporters[$type])) {
+            throw new FreeformException("Cannot export type `{$type}`");
+        }
+
+        $class = $exporters[$type];
+
+        return new $class($form, $data, $removeNewlines);
     }
 
     public function export(ExportInterface $exporter, Form $form)

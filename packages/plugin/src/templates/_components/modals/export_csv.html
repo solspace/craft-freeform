@@ -34,11 +34,9 @@
             </div>
             <div class="select">
                 <select class="select" name="export_type">
-                    <option value="excel" selected>Excel</option>
-                    <option value="csv">CSV</option>
-                    <option value="json">JSON</option>
-                    <option value="xml">XML</option>
-                    <option value="text">Text</option>
+                    {% for type, exporter in exporters %}
+                        <option value="{{ type }}">{{ exporter }}</option>
+                    {% endfor %}
                 </select>
             </div>
         </div>

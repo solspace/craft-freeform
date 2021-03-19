@@ -11,6 +11,8 @@ interface ExportInterface
      */
     public function __construct(Form $form, array $submissionData);
 
+    public static function getLabel(): string;
+
     public function getMimeType(): string;
 
     public function getFileExtension(): string;

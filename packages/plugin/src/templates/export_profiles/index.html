@@ -77,11 +77,9 @@
                     </td>
                     <td>
                         <div class="btngroup small file-download-list">
-                            <a data-type="excel" class="btn small">Excel</a>
-                            <a data-type="csv" class="btn small">CSV</a>
-                            <a data-type="json" class="btn small">JSON</a>
-                            <a data-type="xml" class="btn small">XML</a>
-                            <a data-type="text" class="btn small">Text</a>
+                            {% for type, exporter in exporters %}
+                                <a data-type="{{ type }}" class="btn small">{{ exporter }}</a>
+                            {% endfor %}
                         </div>
                         <form method="post" style="position: absolute; left:-9999px; top: -9999px;">
                             {{ csrfInput() }}

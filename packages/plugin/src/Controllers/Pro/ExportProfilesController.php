@@ -7,7 +7,6 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Export\AbstractExport;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 use Solspace\Freeform\Resources\Bundles\ExportProfileBundle;
 use Solspace\Freeform\Resources\Bundles\SettingsBundle;
@@ -29,6 +28,7 @@ class ExportProfilesController extends BaseController
             'freeform/export_profiles',
             [
                 'exportProfiles' => $exportProfiles,
+                'exporters' => $exportProfileService->getExporterTypes(),
             ]
         );
     }
@@ -157,7 +157,7 @@ class ExportProfilesController extends BaseController
         $data = $profile->getSubmissionData();
 
         $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
-        $exporter = AbstractExport::create($type, $form, $data, $removeNewlines);
+        $exporter = $this->getExportProfileService()->createExporter($type, $form, $data, $removeNewlines);
 
         $this->getExportProfileService()->export($exporter, $form);
     }

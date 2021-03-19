@@ -8,6 +8,11 @@ use yii\base\ErrorException;
 
 class ExportExcel extends ExportCsv
 {
+    public static function getLabel(): string
+    {
+        return 'Excel';
+    }
+
     public function getMimeType(): string
     {
         return 'application/vnd.ms-excel';

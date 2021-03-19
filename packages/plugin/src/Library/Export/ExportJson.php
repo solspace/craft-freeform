@@ -4,6 +4,11 @@ namespace Solspace\Freeform\Library\Export;
 
 class ExportJson extends AbstractExport
 {
+    public static function getLabel(): string
+    {
+        return 'JSON';
+    }
+
     public function getMimeType(): string
     {
         return 'application/octet-stream';

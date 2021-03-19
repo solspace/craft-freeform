@@ -8,6 +8,11 @@ use Solspace\Freeform\Fields\TextareaField;
 
 class ExportCsv extends AbstractExport
 {
+    public static function getLabel(): string
+    {
+        return 'CSV';
+    }
+
     public function getMimeType(): string
     {
         return 'text/csv';

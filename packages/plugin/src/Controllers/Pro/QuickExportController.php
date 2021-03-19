@@ -15,7 +15,6 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Export\AbstractExport;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -174,6 +173,7 @@ class QuickExportController extends BaseController
                 'fields' => $fields,
                 'selectedFormId' => $selectedFormId,
                 'isSpam' => $isSpam,
+                'exporters' => $this->getExportProfileService()->getExporterTypes(),
             ]
         );
     }
@@ -290,7 +290,7 @@ class QuickExportController extends BaseController
         $data = $query->all();
 
         $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
-        $exporter = AbstractExport::create($exportType, $form, $data, $removeNewlines);
+        $exporter = $this->getExportProfileService()->createExporter($exportType, $form, $data, $removeNewlines);
 
         $this->getExportProfileService()->export($exporter, $form);
     }

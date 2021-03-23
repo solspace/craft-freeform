@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Elements\Db;
 
 use craft\db\Query;
-use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -353,11 +352,17 @@ class SubmissionQuery extends ElementQuery
         $fieldIds = Freeform::getInstance()->fields->getAllFieldIds();
         $table = Submission::TABLE;
 
-        //$this->subQuery->innerJoin(['cnt' => Table::CONTENT, '[[cnt.elementId]] = [[elements.id]]']);
+        $schema = \Craft::$app->db->getTableSchema(Submission::TABLE);
+        $existingColumns = $schema->getColumnNames();
 
         $queryChunks = ['[[content.title]] LIKE :searchBoth'];
         foreach ($fieldIds as $id) {
             $columnName = Submission::getFieldColumnName($id);
+
+            if (!\in_array($columnName, $existingColumns, true)) {
+                continue;
+            }
+
             $queryChunks[] = "{$table}.[[{$columnName}]] LIKE :search";
         }
 

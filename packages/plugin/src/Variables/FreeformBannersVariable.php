@@ -21,6 +21,11 @@ class FreeformBannersVariable
 {
     public function getShowDemoTemplates(): bool
     {
-        return !(bool) Freeform::getInstance()->settings->getSettingsModel()->hideBannerDemo;
+        $settingsService = Freeform::getInstance()->settings;
+        if (!$settingsService->isAllowAdminEdit()) {
+            return false;
+        }
+
+        return !(bool) $settingsService->getSettingsModel()->hideBannerDemo;
     }
 }

@@ -52,7 +52,7 @@ class ExportXml extends AbstractExport
                                 }
                             }
                         }
-                    } else {
+                    } elseif (\is_array($value)) {
                         foreach ($value as $item) {
                             $node->addChild('item', htmlspecialchars($item));
                         }

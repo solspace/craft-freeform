@@ -4,6 +4,11 @@ namespace Solspace\Freeform\FieldTypes;
 
 use craft\base\ElementInterface;
 use craft\base\Field;
+use craft\helpers\Gql as GqlHelper;
+use craft\services\Gql as GqlService;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\FormArguments;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormResolver;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Models\FormModel;
@@ -96,6 +101,22 @@ class FormFieldType extends Field
         }
 
         return null;
+    }
+
+    public function getContentGqlType()
+    {
+        $gqlType = [
+            'name' => $this->handle,
+            'type' => FormInterface::getType(),
+            'args' => FormArguments::getArguments(),
+            'resolve' => FormResolver::class.'::resolveOne',
+        ];
+
+        if (version_compare(\Craft::$app->getVersion(), '3.6', '>=')) {
+            $gqlType['complexity'] = GqlHelper::relatedArgumentComplexity(GqlService::GRAPHQL_COMPLEXITY_EAGER_LOAD);
+        }
+
+        return $gqlType;
     }
 
     /**

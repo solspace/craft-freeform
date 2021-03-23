@@ -80,7 +80,6 @@ export default class Freeform {
     this.id = form.dataset.id;
     this.form = form;
 
-    this.lockSubmit(undefined, true);
     this._setInstances();
 
     const options = {
@@ -120,8 +119,6 @@ export default class Freeform {
           const y = form.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
           scrollElement.scrollTo({ top: y, behavior: 'smooth' });
         }
-
-        this.unlockSubmit(true);
       }
     }, 50);
   }

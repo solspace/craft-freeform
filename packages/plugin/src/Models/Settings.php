@@ -94,6 +94,9 @@ class Settings extends Model
     public $formSubmitDisable;
 
     /** @var bool */
+    public $rememberPageSubmitOrder;
+
+    /** @var bool */
     public $freeformHoneypot;
 
     /** @var bool */
@@ -272,6 +275,7 @@ class Settings extends Model
         $this->footerScripts = false;
         $this->scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
         $this->formSubmitDisable = true;
+        $this->rememberPageSubmitOrder = true;
 
         $this->freeformHoneypot = true;
         $this->customHoneypotName = null;

@@ -20,23 +20,23 @@ class HashHelper
     const MIN_LENGTH = 9;
 
     /** @var Hashids */
-    private static $hashids;
+    private static $hashids = [];
 
-    public static function hash(int $id): string
+    public static function hash(int $id, string $salt = null): string
     {
-        return self::getHashids()->encode($id);
+        return self::getHashids($salt)->encode($id);
     }
 
-    public static function decode(string $hash): int
+    public static function decode(string $hash, string $salt = null): int
     {
-        $idList = self::getHashids()->decode($hash);
+        $idList = self::getHashids($salt)->decode($hash);
 
         return array_pop($idList);
     }
 
-    public static function decodeMultiple(string $hash): array
+    public static function decodeMultiple(string $hash, string $salt = null): array
     {
-        return self::getHashids()->decode($hash);
+        return self::getHashids($salt)->decode($hash);
     }
 
     /**
@@ -54,12 +54,15 @@ class HashHelper
         return $hash;
     }
 
-    private static function getHashids(): Hashids
+    private static function getHashids(string $salt = null): Hashids
     {
-        if (null === self::$hashids) {
-            self::$hashids = new Hashids(self::SALT, self::MIN_LENGTH);
+        $key = sha1($salt);
+        if (!isset(self::$hashids[$key])) {
+            $salt .= \Craft::$app->getConfig()->getGeneral()->securityKey;
+
+            self::$hashids[$key] = new Hashids($salt, self::MIN_LENGTH);
         }
 
-        return self::$hashids;
+        return self::$hashids[$key];
     }
 }

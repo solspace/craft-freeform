@@ -43,7 +43,7 @@ class RenderTagEvent extends ArrayableEvent
     public function addChunk(string $chunk, $position = self::POSITION_END): self
     {
         if (null === $position || self::POSITION_END === $position || !is_numeric($position)) {
-            $this->chunks = $chunk;
+            $this->chunks[] = $chunk;
         }
 
         if (self::POSITION_BEGINNING === $position) {

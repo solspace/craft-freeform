@@ -44,6 +44,9 @@ class FormValueContext implements \JsonSerializable
     /** @var int */
     private $currentPageIndex;
 
+    /** @var int[] */
+    private $pageHistory;
+
     /** @var array */
     private $storedValues;
 
@@ -68,6 +71,9 @@ class FormValueContext implements \JsonSerializable
     /** @var int */
     private $sessionTTL;
 
+    /** @var bool */
+    private $rememberPageOrder;
+
     /**
      * SessionFormContext constructor.
      *
@@ -82,12 +88,14 @@ class FormValueContext implements \JsonSerializable
         $this->request = $request;
         $this->formId = (int) $formId;
         $this->currentPageIndex = 0;
+        $this->pageHistory = [];
         $this->storedValues = [];
 
         /** @var Settings $settings */
         $settings = Freeform::getInstance()->getSettings();
         $this->sessionMaxCount = $settings->sessionEntryMaxCount;
         $this->sessionTTL = $settings->sessionEntryTTL;
+        $this->rememberPageOrder = $settings->rememberPageSubmitOrder;
 
         $this->lastHash = $this->regenerateHash();
         $this->regenerateState();
@@ -108,19 +116,21 @@ class FormValueContext implements \JsonSerializable
 
     /**
      * @param string $hash
+     * @param mixed  $formId
      *
      * @return null|int
      */
-    public static function getPageIndexFromHash($hash)
+    public static function getPageIndexFromHash($hash, $formId)
     {
         list($_, $pageIndexHash) = self::getHashParts($hash);
 
-        return HashHelper::decode($pageIndexHash);
+        return HashHelper::decode($pageIndexHash, $formId);
     }
 
     public function reset()
     {
         $this->currentPageIndex = 0;
+        $this->pageHistory = [];
         $this->storedValues = [];
 
         $this->lastHash = $this->regenerateHash(true);
@@ -149,7 +159,7 @@ class FormValueContext implements \JsonSerializable
 
     public function getCurrentPageIndex(): int
     {
-        return $this->currentPageIndex;
+        return $this->currentPageIndex ?? 0;
     }
 
     /**
@@ -306,7 +316,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function advanceToNextPage()
     {
-        ++$this->currentPageIndex;
+        $this->pageHistory[] = $this->currentPageIndex++;
         $this->regenerateHash();
     }
 
@@ -315,7 +325,12 @@ class FormValueContext implements \JsonSerializable
      */
     public function retreatToPreviousPage()
     {
-        --$this->currentPageIndex;
+        if ($this->rememberPageOrder) {
+            $this->currentPageIndex = array_pop($this->pageHistory);
+        } else {
+            $this->currentPageIndex = max(0, $this->currentPageIndex - 1);
+        }
+
         $this->regenerateHash();
     }
 
@@ -324,6 +339,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function jumpToPageIndex(int $pageIndex)
     {
+        $this->pageHistory[] = $this->currentPageIndex;
         $this->currentPageIndex = $pageIndex;
         $this->regenerateHash();
     }
@@ -333,7 +349,7 @@ class FormValueContext implements \JsonSerializable
      */
     public function saveState()
     {
-        $encodedData = \GuzzleHttp\json_encode($this, \JSON_OBJECT_AS_ARRAY);
+        $encodedData = json_encode($this);
         $sessionHashKey = $this->getSessionHash($this->getLastHash());
 
         $this->appendSessionData($sessionHashKey, $encodedData);
@@ -359,14 +375,16 @@ class FormValueContext implements \JsonSerializable
         $sessionState = $this->getSessionState($sessionHash);
 
         if ($sessionHash && $sessionState && !$forceRegenerate) {
-            $sessionState = \GuzzleHttp\json_decode($sessionState, true);
+            $sessionState = json_decode($sessionState, true);
 
             $this->currentPageIndex = $sessionState['currentPageIndex'];
+            $this->pageHistory = $sessionState['pageHistory'];
             $this->storedValues = $sessionState['storedValues'];
             $this->customFormData = $sessionState['customFormData'];
             $this->formInitTime = $sessionState['formInitTime'];
         } else {
             $this->currentPageIndex = self::DEFAULT_PAGE_INDEX;
+            $this->pageHistory = [];
             $this->storedValues = [];
             $this->customFormData = [];
             $this->formInitTime = time();
@@ -414,6 +432,7 @@ class FormValueContext implements \JsonSerializable
     {
         return [
             'currentPageIndex' => $this->currentPageIndex,
+            'pageHistory' => $this->pageHistory,
             'storedValues' => $this->storedValues,
             'customFormData' => $this->customFormData,
             'formInitTime' => $this->formInitTime,
@@ -513,7 +532,7 @@ class FormValueContext implements \JsonSerializable
 
     private function hashPageIndex(): string
     {
-        return HashHelper::sha1($this->currentPageIndex, 4, 10);
+        return HashHelper::hash($this->currentPageIndex ?? 0, $this->formId);
     }
 
     /**
@@ -525,7 +544,7 @@ class FormValueContext implements \JsonSerializable
 
         foreach ($instances as $hash => $encodedData) {
             try {
-                $data = \GuzzleHttp\json_decode($encodedData, true);
+                $data = json_decode($encodedData, true);
             } catch (\Exception $e) {
                 continue;
             }

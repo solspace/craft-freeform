@@ -171,6 +171,11 @@ class SettingsService extends BaseService
         return (bool) $this->getSettingsModel()->formSubmitDisable;
     }
 
+    public function isRememberSubmitOrder(): bool
+    {
+        return (bool) $this->getSettingsModel()->rememberPageSubmitOrder;
+    }
+
     public function isAutoScrollToErrors(): bool
     {
         return (bool) $this->getSettingsModel()->autoScrollToErrors;

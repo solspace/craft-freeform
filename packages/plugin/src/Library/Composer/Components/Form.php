@@ -937,7 +937,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $output = '';
 
         $beforeTag = new RenderTagEvent($this);
-        Event::trigger(self::class, self::EVENT_RENDER_AFTER_OPEN_TAG, $beforeTag);
+        Event::trigger(self::class, self::EVENT_RENDER_BEFORE_OPEN_TAG, $beforeTag);
         $output .= $beforeTag->getChunksAsString();
 
         $attributes = CustomFormAttributes::extractAttributes($this->tagAttributes, $this, ['form' => $this]);

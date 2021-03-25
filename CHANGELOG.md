@@ -41,6 +41,17 @@
 ### Changed
 - Updated exporting to no longer export submissions flagged as spam (unless you're exporting directly from the Spam folder).
 
+## 3.10.11 - 2021-03-25
+
+### Changed
+- Updated the `egulias/email-validator` dependency version requirements to include `3.x` for compatibility with other plugins using it.
+
+### Fixed
+- Fixed a bug where changing the status of submissions from the CP Submissions index page would not work for user groups with the "Manage All Submissions" permission.
+- Fixed a bug where the Stripe Payments integration was not sending emails for charge success and failure events.
+- Fixed a bug where exporting submissions as XML could sometimes fail if it contained empty array field data.
+- Fixed a bug where the Freeform JS plugin `init` included automatic submit disabling that could potentially interfere with some site setups.
+
 ## 3.10.10 - 2021-03-15
 
 ### Added

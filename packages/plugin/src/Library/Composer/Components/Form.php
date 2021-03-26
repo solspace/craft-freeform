@@ -15,13 +15,17 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
+use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Fields\HiddenField;
+use Solspace\Freeform\Form\Bags\AttributeBag;
+use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
@@ -57,6 +61,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 {
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
+    const EVENT_FORM_LOADED = 'form-loaded';
     const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
     const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
     const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
@@ -64,6 +69,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
     const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
+    const EVENT_SUBMIT = 'submit';
 
     const PAGE_INDEX_KEY = 'page_index';
     const RETURN_URI_KEY = 'formReturnUrl';
@@ -74,6 +80,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     const LIMIT_COOKIE = 'cookie';
     const LIMIT_IP_COOKIE = 'ip_cookie';
+
+    /** @var PropertyBag */
+    private $propertyBag;
+
+    /** @var AttributeBag */
+    private $attributeBag;
 
     /** @var int */
     private $id;
@@ -237,6 +249,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
+        $this->propertyBag = new PropertyBag();
+        $this->attributeBag = new AttributeBag();
+
         $this->properties = $properties;
         $this->formHandler = $formHandler;
         $this->fieldHandler = $fieldHandler;
@@ -273,6 +288,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->formAttributes = $formAttributes;
 
         $this->getCurrentPage();
+
+        Event::trigger(self::class, self::EVENT_FORM_LOADED, new FormLoadedEvent($this));
     }
 
     public function __toString(): string
@@ -303,6 +320,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function hasFieldType(string $type): bool
     {
         return $this->getLayout()->hasFieldType($type);
+    }
+
+    public function getPropertyBag(): PropertyBag
+    {
+        return $this->propertyBag;
+    }
+
+    public function getAttributeBag(): AttributeBag
+    {
+        return $this->attributeBag;
     }
 
     public function getId(): int
@@ -733,6 +760,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     {
         if ($this->submitted) {
             throw new FreeformException('Form already submitted');
+        }
+
+        $event = new SubmitEvent($this);
+        Event::trigger(self::class, self::EVENT_SUBMIT, $event);
+
+        if (!$event->isValid) {
+            return false;
         }
 
         $this->submitted = true;

@@ -2,6 +2,17 @@
 
 ## 3.11.0-beta.5 - Unreleased
 
+### Added
+- Added GraphQL support to the Forms fieldtype.
+- Added support for Freeform to track page movement in multi-page forms, allowing for robust movement when using the "Previous" button and Conditional Rules page skipping logic.
+
+### Changed
+- Updated the "Install Demo Templates" banner to be hidden automatically if the `allowAdminChanges` Craft config setting is enabled.
+
+### Fixed
+- Fixed a bug where searching on the CP Submissions index could sometimes trigger an error a column was missing.
+- Fixed a bug where Freeform would log a "Slug cannot be blank" error in the Freeform logs when a form is not fully submitted (triggers error/reloads form) with Element Connections.
+
 ## 3.11.0-beta.4 - 2021-03-19
 
 ### Added

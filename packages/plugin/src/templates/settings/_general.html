@@ -80,8 +80,8 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Remember the page order?"|t('freeform'),
-        instructions: "Enable this to remember the page order the form was submitted on when going back."|t('freeform'),
+        label: "Remember the Page Order in Multi-page forms?"|t('freeform'),
+        instructions: "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms."|t('freeform'),
         name: "settings[rememberPageSubmitOrder]",
         on: settings.rememberPageSubmitOrder,
         errors: settings.errors("rememberPageSubmitOrder"),

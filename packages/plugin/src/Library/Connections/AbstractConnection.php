@@ -16,7 +16,6 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Connections\Transformers\TransformerInterface;
 use Solspace\Freeform\Library\DataObjects\ConnectionResult;
 use Solspace\Freeform\Library\Exceptions\Connections\ConnectionException;
-use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Services\MailerService;
 use yii\base\Event;
 
@@ -168,16 +167,9 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
 
     protected function attachErrors(ConnectionResult $result, Element $element)
     {
-        $reflectionClass = new \ReflectionClass($this);
-
         $errors = $element->getErrors();
         foreach ($errors as $field => $fieldErrors) {
             if (\in_array($field, static::getSuppressableErrorFieldHandles(), true)) {
-                Freeform::getInstance()->logger
-                    ->getLogger(FreeformLogger::ELEMENT_CONNECTION)
-                    ->error(implode(', ', $fieldErrors), ['connection' => $reflectionClass->getShortName()])
-                ;
-
                 continue;
             }
 

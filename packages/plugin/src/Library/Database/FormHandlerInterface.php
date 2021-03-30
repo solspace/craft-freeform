@@ -17,17 +17,23 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 
 interface FormHandlerInterface
 {
+    /** @deprecated */
     const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
+    /** @deprecated */
     const EVENT_AFTER_SUBMIT = 'afterSubmit';
     const EVENT_PAGE_JUMP = 'pageJump';
     const EVENT_BEFORE_SAVE = 'beforeSave';
     const EVENT_AFTER_SAVE = 'afterSave';
     const EVENT_BEFORE_DELETE = 'beforeDelete';
     const EVENT_AFTER_DELETE = 'afterDelete';
+
+    /** @deprecated */
     const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
+    /** @deprecated */
     const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
     const EVENT_FORM_VALIDATE = 'validateForm';
     const EVENT_AFTER_FORM_VALIDATE = 'afterValidateForm';
+    /** @deprecated */
     const EVENT_ATTACH_FORM_ATTRIBUTES = 'attachFormAttributes';
     const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
 
@@ -64,6 +70,8 @@ interface FormHandlerInterface
     /**
      * Do something before the form is saved
      * Return bool determines whether the form should be saved or not.
+     *
+     * @deprecated use Form::EVENT_SUBMIT instead
      */
     public function onBeforeSubmit(Form $form): bool;
 
@@ -91,11 +99,19 @@ interface FormHandlerInterface
 
     /**
      * Attach any custom form attributes to the form tag.
+     *
+     * @deprecated Use Form::EVENT_ATTACH_TAG_ATTRIBUTES event instead
      */
     public function onAttachFormAttributes(Form $form, array $attributes = []);
 
+    /**
+     * @deprecated Use Form::EVENT_BEFORE_VALIDATE. This event will no longer be used in Freeform 4.x.
+     */
     public function onFormValidate(Form $form);
 
+    /**
+     * @deprecated Use Form::EVENT_AFTER_VALIDATE. This event will no longer be used in Freeform 4.x.
+     */
     public function onAfterFormValidate(Form $form);
 
     /**

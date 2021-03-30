@@ -18,7 +18,6 @@ use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
 use Solspace\Freeform\Models\Pro\Payments\SubscriptionPlanModel;
 
-//TODO: document
 interface PaymentGatewayIntegrationInterface
 {
     /**

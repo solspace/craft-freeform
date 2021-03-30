@@ -1,12 +1,13 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\Context\Session;
+namespace Solspace\Freeform\Bundles\Form\Context\Rendering;
 
+use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class RenderTags
+class HtmlContext
 {
     public function __construct()
     {

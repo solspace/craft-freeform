@@ -14,7 +14,7 @@ class SubmitEvent extends CancelableArrayableEvent
     /** @var Form */
     private $form;
 
-    public function __construct(Submission $element, Form $form)
+    public function __construct(Form $form, Submission $element)
     {
         $this->element = $element;
         $this->form = $form;

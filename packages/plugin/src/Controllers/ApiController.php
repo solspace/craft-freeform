@@ -63,10 +63,10 @@ class ApiController extends BaseController
         $form = $formModel->getForm();
         $isAjaxRequest = \Craft::$app->request->getIsAjax();
 
-        if ($form->isValid()) {
+        if ($form->validate()) {
             $submission = $form->submit();
 
-            if (false !== $submission && $submission->getErrors()) {
+            if ($submission && $submission->getErrors()) {
                 $form->addErrors(array_keys($submission->getErrors()));
             }
 

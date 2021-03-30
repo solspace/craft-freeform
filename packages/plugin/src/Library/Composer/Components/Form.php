@@ -15,12 +15,14 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
+use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Fields\HiddenField;
@@ -70,6 +72,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
     const EVENT_SUBMIT = 'submit';
+    const EVENT_AFTER_SUBMIT = 'after-submit';
+    const EVENT_BEFORE_VALIDATE = 'before-validate';
+    const EVENT_AFTER_VALIDATE = 'after-validate';
+    const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-attributes';
+
+    const PROPERTY_STORED_VALUES = 'storedValues';
+    const PROPERTY_PAGE_INDEX = 'pageIndex';
+    const PROPERTY_PAGE_HISTORY = 'pageHistory';
 
     const PAGE_INDEX_KEY = 'page_index';
     const RETURN_URI_KEY = 'formReturnUrl';
@@ -198,12 +208,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var array */
     private $tagAttributes;
 
-    /** @var int */
-    private $cachedPageIndex;
-
-    /** @var bool */
-    private $valid;
-
     /** @var bool */
     private $submitted;
 
@@ -212,9 +216,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     /** @var bool */
     private $formSaved;
-
-    /** @var mixed */
-    private $submitResult;
 
     /** @var bool */
     private $suppressionEnabled;
@@ -416,22 +417,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         /** @var Page $page */
         static $page;
 
-        $index = $this->getFormValueContext()->getCurrentPageIndex();
-
-        if (null === $page || $this->cachedPageIndex !== $index || $page->getIndex() !== $index) {
-            if (!isset($this->layout->getPages()[$index])) {
-                throw new FreeformException(
-                    $this->getTranslator()->translate(
-                        "The provided page index '{pageIndex}' does not exist in form '{formName}'",
-                        ['pageIndex' => $index, 'formName' => $this->getName()]
-                    )
-                );
-            }
-
-            $page = $this->layout->getPages()[$index];
+        $index = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
+        if (null === $page || $page->getIndex() !== $index) {
+            $page = $this->layout->getPage($index);
 
             $this->currentPageRows = $page->getRows();
-            $this->cachedPageIndex = $index;
         }
 
         return $page;
@@ -650,30 +640,21 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this;
     }
 
-    public function isValid(): bool
+    public function validate(): bool
     {
-        if (null !== $this->valid) {
-            return $this->valid;
+        $event = new ValidationEvent($this);
+        Event::trigger(self::class, self::EVENT_BEFORE_VALIDATE, $event);
+
+        if (!$event->isValid) {
+            return $event->isValidationOverride();
         }
-
-        if ($this->getFormValueContext()->shouldFormWalkToPreviousPage()) {
-            $this->valid = true;
-
-            return $this->valid;
-        }
-
-        if (!$this->isPagePosted()) {
-            $this->valid = false;
-
-            return $this->valid;
-        }
-
-        $currentPageFields = $this->getCurrentPage()->getFields();
 
         $this->formHandler->onFormValidate($this);
 
+        $currentPageFields = $this->getCurrentPage()->getFields();
+
         $isFormValid = true;
-        foreach ($this->getCurrentPage()->getFields() as $field) {
+        foreach ($currentPageFields as $field) {
             if (!$field->isValid()) {
                 $isFormValid = false;
             }
@@ -709,18 +690,19 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
                 $this->formHandler->incrementSpamBlockCount($this);
             }
 
-            $this->valid = $simulateSuccess;
-
-            return $this->valid;
+            return $simulateSuccess;
         }
-
-        $this->valid = $isFormValid;
 
         $this->formHandler->onAfterFormValidate($this);
 
-        $this->valid = $isFormValid;
+        $event = new ValidationEvent($this);
+        Event::trigger(self::class, self::EVENT_AFTER_VALIDATE, $event);
 
-        return $this->valid;
+        if (!$event->isValid) {
+            return $event->isValidationOverride();
+        }
+
+        return $isFormValid;
     }
 
     public function isStoreData(): bool
@@ -740,7 +722,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function hasErrors(): bool
     {
-        return ($this->isPagePosted() && !$this->isValid()) || 0 != \count($this->getErrors());
+        return ($this->isPagePosted() && !$this->validate()) || 0 != \count($this->getErrors());
     }
 
     public function isSubmittedSuccessfully(): bool
@@ -762,13 +744,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             throw new FreeformException('Form already submitted');
         }
 
-        $event = new SubmitEvent($this);
-        Event::trigger(self::class, self::EVENT_SUBMIT, $event);
-
-        if (!$event->isValid) {
-            return false;
-        }
-
         $this->submitted = true;
         $this->finished = false;
 
@@ -776,57 +751,25 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             return $this->processSpamSubmissionWithoutSpamFolder();
         }
 
-        $formValueContext = $this->getFormValueContext();
-        $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
-        $formValueContext->appendStoredValues($submittedValues);
+        $event = new SubmitEvent($this);
+        Event::trigger(self::class, self::EVENT_SUBMIT, $event);
 
-        if ($formValueContext->shouldFormWalkToPreviousPage()) {
-            $this->retreatFormToPreviousPage();
+        if (!$event->isValid || !empty($this->getActions()) || !$this->formHandler->onBeforeSubmit($this)) {
+            Event::trigger(self::class, self::EVENT_AFTER_SUBMIT, $event);
 
             return false;
         }
 
-        if (!empty($this->getActions())) {
-            return false;
-        }
+        $submission = $this->getSubmissionHandler()->createSubmissionFromForm($this);
 
-        $pageJumpIndex = $this->formHandler->onBeforePageJump($this);
-        if (-999 !== $pageJumpIndex) {
-            if (null !== $pageJumpIndex) {
-                $this->jumpFormToPage($pageJumpIndex);
-
-                return false;
-            }
-
-            if (!$this->isLastPage()) {
-                $this->advanceFormToNextPage();
-
-                return false;
-            }
-
-            if (!$this->formHandler->onBeforeSubmit($this)) {
-                return false;
-            }
-        }
-
-        $submission = null;
-
-        $storeSubmissionEvent = new StoreSubmissionEvent($this);
+        $storeSubmissionEvent = new StoreSubmissionEvent($this, $submission);
         Event::trigger(self::class, self::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
 
-        if ($this->storeData && $this->hasOptInPermission() && $storeSubmissionEvent->isValid) {
-            $submission = $this->saveStoredStateToDatabase();
-        } else {
-            $submission = $this->getSubmissionHandler()->createSubmissionFromForm($this);
+        if ($this->storeData && $storeSubmissionEvent->isValid && $this->hasOptInPermission()) {
+            $this->submissionHandler->storeSubmission($this, $submission);
         }
 
         $this->finished = true;
-
-        if (!$submission) {
-            $formValueContext->cleanOutCurrentSession();
-
-            return false;
-        }
 
         $mailingListOptInFields = $this->getMailingListOptedInFields();
         if ($this->isMarkedAsSpam()) {
@@ -837,9 +780,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             $this->submissionHandler->postProcessSubmission($submission, $mailingListOptInFields);
         }
 
-        $formValueContext->cleanOutCurrentSession();
+        Event::trigger(self::class, self::EVENT_AFTER_SUBMIT, $event);
 
-        return $submission->getId() ? $submission : false;
+        return $submission;
     }
 
     public function isReachedPostingLimit(): bool
@@ -852,9 +795,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->formHandler->isSpamFolderEnabled() && $this->storeData;
     }
 
-    /**
-     * @throws FreeformException
-     */
     public function processSpamSubmissionWithoutSpamFolder(): bool
     {
         $formValueContext = $this->getFormValueContext();
@@ -868,8 +808,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $submittedValues = $this->getCurrentPage()->getStorableFieldValues();
         $formValueContext->appendStoredValues($submittedValues);
-
-        $this->advanceFormToNextPage();
 
         return false;
     }
@@ -1043,7 +981,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $attributes['data-freeform'] = true;
 
         $attributes = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
-        $compiledAttributes = $this->formHandler->onAttachFormAttributes($this, $attributes);
+
+        $event = new AttachFormAttributesEvent($this, $attributes);
+        Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
+
+        $compiledAttributes = $this->formHandler->onAttachFormAttributes($this, $event->getAttributes());
 
         $output .= "<form {$compiledAttributes}>".\PHP_EOL;
 
@@ -1167,7 +1109,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function setAttributes(array $attributes = null): self
     {
         if (null !== $attributes) {
-            $this->customAttributes->mergeAttributes($attributes);
+            $this->propertyBag->merge($attributes);
+            $this->customAttributes->mergeAttributes($this->getPropertyBag()->jsonSerialize());
 
             $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes);
             Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
@@ -1221,7 +1164,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function reset()
     {
-        $this->cachedPageIndex = null;
         $this->getFormValueContext()->reset();
 
         if ($this->getAssociatedSubmissionToken()) {
@@ -1541,15 +1483,17 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     private function setSessionCustomFormData(): self
     {
-        $this->getFormValueContext()->setCustomFormData(
-            [
-                FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
-                FormValueContext::DATA_SUPPRESS => $this->customAttributes->getSuppress(),
-                FormValueContext::DATA_RELATIONS => $this->customAttributes->getRelations(),
-                FormValueContext::DATA_PERSISTENT_VALUES => $this->customAttributes->getOverrideValues(),
-                FormValueContext::DATA_DISABLE_RECAPTCHA => $this->customAttributes->isDisableRecaptcha(),
-            ]
-        )->saveState()
+        $this->getFormValueContext()
+            ->setCustomFormData(
+                [
+                    FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
+                    FormValueContext::DATA_SUPPRESS => $this->customAttributes->getSuppress(),
+                    FormValueContext::DATA_RELATIONS => $this->customAttributes->getRelations(),
+                    FormValueContext::DATA_PERSISTENT_VALUES => $this->customAttributes->getOverrideValues(),
+                    FormValueContext::DATA_DISABLE_RECAPTCHA => $this->customAttributes->isDisableRecaptcha(),
+                ]
+            )
+            ->saveState()
         ;
 
         return $this;
@@ -1558,60 +1502,5 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     private function getFormValueContext(): FormValueContext
     {
         return $this->formAttributes->getFormValueContext();
-    }
-
-    /**
-     * Set the form to advance to next page and flush cached data.
-     */
-    private function advanceFormToNextPage()
-    {
-        $formValueContext = $this->getFormValueContext();
-
-        $formValueContext->advanceToNextPage();
-        $formValueContext->saveState();
-
-        $this->cachedPageIndex = null;
-    }
-
-    /**
-     * Set the form to retreat to previous page and flush cached data.
-     */
-    private function retreatFormToPreviousPage()
-    {
-        $formValueContext = $this->getFormValueContext();
-
-        $formValueContext->retreatToPreviousPage();
-        $formValueContext->saveState();
-
-        $this->cachedPageIndex = null;
-    }
-
-    /**
-     * Target the form to a specific page index and flush cached data.
-     */
-    private function jumpFormToPage(int $pageIndex)
-    {
-        $formValueContext = $this->getFormValueContext();
-
-        $formValueContext->jumpToPageIndex($pageIndex);
-        $formValueContext->saveState();
-
-        $this->cachedPageIndex = null;
-    }
-
-    /**
-     * Store the submitted state in the database.
-     *
-     * @return bool|mixed
-     */
-    private function saveStoredStateToDatabase()
-    {
-        $submission = $this->getSubmissionHandler()->storeSubmission($this);
-
-        if ($submission) {
-            $this->formSaved = true;
-        }
-
-        return $submission;
     }
 }

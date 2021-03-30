@@ -12,19 +12,17 @@
 
 namespace Solspace\Freeform\Library\Database;
 
-use Craft\NotificationModel;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
 interface SubmissionHandlerInterface
 {
     /**
      * Stores the submitted fields to database.
-     *
-     * @return null|NotificationModel
      */
-    public function storeSubmission(Form $form);
+    public function storeSubmission(Form $form, Submission $submission): bool;
 
     /**
      * Finalize all files uploaded in this form, so that they don' get deleted.

@@ -164,6 +164,20 @@ class Layout implements \JsonSerializable, \Iterator
         return $this->pages;
     }
 
+    public function getPage(int $index): Page
+    {
+        if (!isset($this->pages[$index])) {
+            throw new FreeformException(
+                Freeform::t(
+                    "The provided page index '{pageIndex}' does not",
+                    ['pageIndex' => $index]
+                )
+            );
+        }
+
+        return $this->pages[$index];
+    }
+
     /**
      * @return AbstractField[]|NoRenderInterface[]
      */

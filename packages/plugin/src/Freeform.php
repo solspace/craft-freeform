@@ -907,8 +907,8 @@ class Freeform extends Plugin
             );
 
             Event::on(
-                FormsService::class,
-                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
+                Form::class,
+                Form::EVENT_ATTACH_TAG_ATTRIBUTES,
                 [$this->rules, 'addAttributesToFormTag']
             );
 

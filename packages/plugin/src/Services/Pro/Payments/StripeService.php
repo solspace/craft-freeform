@@ -48,7 +48,7 @@ class StripeService extends Component
         $integrationId = $properties->getIntegrationId();
         $paymentType = $properties->getPaymentType();
 
-        if (!$integrationId || PaymentProperties::PAYMENT_TYPE_SINGLE !== $paymentType || !$form->isValid()) {
+        if (!$integrationId || PaymentProperties::PAYMENT_TYPE_SINGLE !== $paymentType || !$form->validate()) {
             return;
         }
 
@@ -122,7 +122,7 @@ class StripeService extends Component
             PaymentProperties::PAYMENT_TYPE_PREDEFINED_SUBSCRIPTION,
         ];
 
-        if (!\in_array($paymentType, $subscriptionTypes, true) || !$form->isValid()) {
+        if (!\in_array($paymentType, $subscriptionTypes, true) || !$form->validate()) {
             return;
         }
 

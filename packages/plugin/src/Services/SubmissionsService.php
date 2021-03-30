@@ -157,29 +157,25 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     /**
      * Stores the submitted fields to database.
-     *
-     * @return null|Submission
      */
-    public function storeSubmission(Form $form)
+    public function storeSubmission(Form $form, Submission $submission): bool
     {
-        $submission = $this->createSubmissionFromForm($form);
-
-        $beforeSubmitEvent = new SubmitEvent($submission, $form);
+        $beforeSubmitEvent = new SubmitEvent($form, $submission);
         $this->trigger(self::EVENT_BEFORE_SUBMIT, $beforeSubmitEvent);
 
         if (!$beforeSubmitEvent->isValid) {
-            return null;
+            return false;
         }
 
         $updateSearchIndex = (bool) $this->getSettingsService()->getSettingsModel()->updateSearchIndexes;
         if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
             $this->finalizeFormFiles($form);
-            $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($submission, $form));
+            $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($form, $submission));
 
-            return $submission;
+            return true;
         }
 
-        return null;
+        return false;
     }
 
     /**

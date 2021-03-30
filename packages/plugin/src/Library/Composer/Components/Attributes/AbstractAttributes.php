@@ -87,7 +87,7 @@ abstract class AbstractAttributes
         $output = [];
         foreach ($attributes as $attribute => $value) {
             if (null === $value) {
-                $output[] = "{$attribute}";
+                $output[] = (string) $attribute;
             } else {
                 $output[] = "{$attribute}=\"{$value}\"";
             }
@@ -98,8 +98,6 @@ abstract class AbstractAttributes
 
     /**
      * Merges the passed attributes into the existing ones.
-     *
-     * @throws FreeformException
      */
     public function mergeAttributes(array $attributes = null)
     {
@@ -107,8 +105,6 @@ abstract class AbstractAttributes
             foreach ($attributes as $key => $value) {
                 if (property_exists($this, $key)) {
                     $this->{$key} = $value;
-                } else {
-                    throw new FreeformException(sprintf("Invalid attribute '%s' provided", $key));
                 }
             }
         }

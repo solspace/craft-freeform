@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\Context\Session\Storage;
+namespace Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;

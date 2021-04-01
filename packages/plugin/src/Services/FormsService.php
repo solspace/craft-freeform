@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use craft\helpers\Template;
+use craft\helpers\UrlHelper;
 use craft\records\Element;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
@@ -475,7 +476,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
     }
 
-    public function addFormPluginJavascript(FormRenderEvent $event)
+    public function addFormPluginScripts(FormRenderEvent $event)
     {
         static $pluginLoaded;
 
@@ -484,10 +485,11 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         if (null === $pluginLoaded) {
-            $assetPath = \Yii::getAlias('@freeform/Resources/js/scripts/front-end/plugin/freeform.js');
-            $publishedUrl = \Craft::$app->assetManager->getPublishedUrl($assetPath, true);
+            $jsHash = sha1_file($this->getSettingsService()->getPluginJsPath());
+            $cssHash = sha1_file($this->getSettingsService()->getPluginCssPath());
 
-            $event->appendExternalJsToOutput($publishedUrl);
+            $event->appendExternalJsToOutput(UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]));
+            $event->appendExternalCssToOutput(UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]));
             $pluginLoaded = true;
         }
     }

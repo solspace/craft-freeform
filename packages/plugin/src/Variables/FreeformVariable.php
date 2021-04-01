@@ -13,9 +13,9 @@
 namespace Solspace\Freeform\Variables;
 
 use craft\helpers\Template;
+use craft\helpers\UrlHelper;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Session\Honeypot;
@@ -27,8 +27,8 @@ use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
+use Solspace\Freeform\Services\SettingsService;
 use Twig\Markup;
-use yii\base\Event;
 
 class FreeformVariable
 {
@@ -105,7 +105,7 @@ class FreeformVariable
 
     public function getSettings(): Settings
     {
-        return Freeform::getInstance()->settings->getSettingsModel();
+        return $this->getSettingsService()->getSettingsModel();
     }
 
     public function name(): string
@@ -136,15 +136,29 @@ class FreeformVariable
 
     public function getSettingsNavigation(): array
     {
-        return Freeform::getInstance()->settings->getSettingsNavigation();
+        return $this->getSettingsService()->getSettingsNavigation();
     }
 
-    public function loadFreeformScripts(Form $form): Markup
+    /**
+     * @deprecated use the ::loadFreeformPlugin() method from now on
+     */
+    public function loadFreeformScripts(): Markup
     {
-        $event = new FormRenderEvent($form, true);
-        Event::trigger(FormsService::class, FormsService::EVENT_RENDER_CLOSING_TAG, $event);
+        return $this->loadFreeformPlugin();
+    }
 
-        return Template::raw($event->getOutput());
+    public function loadFreeformPlugin(string $attributes = null, string $styleAttributes = null): Markup
+    {
+        $jsHash = sha1_file($this->getSettingsService()->getPluginJsPath());
+        $cssHash = sha1_file($this->getSettingsService()->getPluginCssPath());
+
+        $js = UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]);
+        $css = UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]);
+
+        $output = '<script type="text/javascript" src="'.$js.'" '.$attributes.'></script>'.\PHP_EOL;
+        $output .= '<link rel="stylesheet" href="'.$css.'" '.$styleAttributes.' />';
+
+        return Template::raw($output);
     }
 
     /**
@@ -191,14 +205,16 @@ class FreeformVariable
         return Freeform::getInstance()->forms;
     }
 
+    private function getSettingsService(): SettingsService
+    {
+        return Freeform::getInstance()->settings;
+    }
+
     private function getHoneypotService(): HoneypotService
     {
         return Freeform::getInstance()->honeypot;
     }
 
-    /**
-     * Returns payments service.
-     */
     private function getPaymentsService(): PaymentsService
     {
         return Freeform::getInstance()->payments;

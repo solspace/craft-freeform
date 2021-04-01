@@ -9,6 +9,7 @@ import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
 import TableHandler from '@lib/plugin/handlers/fields/table';
 import RecaptchaHandler from '@lib/plugin/handlers/form/recaptcha';
+import HoneypotHandler from '@lib/plugin/handlers/form/honeypot';
 import RuleSetHandler from '@lib/plugin/handlers/form/rule-set';
 import StripeHandler from '@lib/plugin/handlers/form/stripe-handler';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
@@ -52,6 +53,7 @@ export default class Freeform {
     StripeHandler,
     RuleSetHandler,
     RecaptchaHandler,
+    HoneypotHandler,
     DatePickerHandler,
     InputMaskHandler,
     SignatureHandler,

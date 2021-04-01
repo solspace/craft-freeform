@@ -6,6 +6,7 @@ use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\CssObject;
+use Solspace\Freeform\Library\DataObjects\FormRenderObject\ExternalCssObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\ExternalJavascriptObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\FormRenderObjectInterface;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\HtmlObject;
@@ -111,6 +112,13 @@ class FormRenderEvent extends ArrayableEvent
     public function appendCssToOutput(string $value, array $replacements = []): self
     {
         $this->renderObjects[] = new CssObject($value, $replacements);
+
+        return $this;
+    }
+
+    public function appendExternalCssToOutput(string $value, array $replacements = []): self
+    {
+        $this->renderObjects[] = new ExternalCssObject($value, $replacements);
 
         return $this;
     }

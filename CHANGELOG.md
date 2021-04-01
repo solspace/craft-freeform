@@ -5,8 +5,6 @@
 ### Changed
 - Reworked the way Freeform's JS and CSS are loaded by the plugin in front end templates. Developers can now also manually load the Freeform JS in templates with `<script src="/freeform/plugin.js"></script>` and the CSS (currently only applicable to the Opinion field type) with `<link rel="stylesheet" href="/freeform/plugin.css">`.
 
-please be sure to manually
-
 ## 3.11.0-beta.5 - 2021-03-25
 
 ### Added

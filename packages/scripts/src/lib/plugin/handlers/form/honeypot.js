@@ -13,7 +13,12 @@ class HoneypotHandler {
         return;
       }
 
-      event.form.querySelector(`[name="${honeypotName}"]`).value = honeypotValue;
+      const element = event.form.querySelector(`[name="${honeypotName}"]`);
+      if (!element) {
+        return;
+      }
+
+      element.value = honeypotValue;
     });
   }
 

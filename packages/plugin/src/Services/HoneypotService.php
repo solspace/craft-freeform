@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
@@ -29,14 +30,17 @@ class HoneypotService extends BaseService
     /**
      * Adds honeypot javascript to forms.
      */
-    public function addFormJavascript(FormRenderEvent $event)
+    public function addFormAttributes(AttachFormAttributesEvent $event)
     {
         $isHoneypotEnabled = $this->getSettingsService()->isFreeformHoneypotEnabled();
         $isEnhanced = $this->isEnhanced();
 
         if ($isHoneypotEnabled && $isEnhanced) {
-            $script = $this->getHoneypotJavascriptScript($event->getForm());
-            $event->appendJsToOutput($script);
+            $honeypot = $this->getHoneypot($event->getForm());
+
+            $event->attachAttribute('data-honeypot', true);
+            $event->attachAttribute('data-honeypot-name', $honeypot->getName());
+            $event->attachAttribute('data-honeypot-value', $honeypot->getHash());
         }
     }
 

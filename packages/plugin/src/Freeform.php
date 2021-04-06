@@ -102,7 +102,6 @@ use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\Pro\Payments\StripeService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionPlansService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
-use Solspace\Freeform\Services\Pro\ProFormsService;
 use Solspace\Freeform\Services\Pro\RecaptchaService;
 use Solspace\Freeform\Services\Pro\RulesService;
 use Solspace\Freeform\Services\Pro\WebhooksService;
@@ -149,7 +148,6 @@ use yii\web\ForbiddenHttpException;
  * @property ExportProfilesService       $exportProfiles
  * @property RecaptchaService            $recaptcha
  * @property RulesService                $rules
- * @property ProFormsService             $proForms
  * @property PaymentNotificationsService $paymentNotifications
  * @property PaymentsService             $payments
  * @property StripeService               $stripe
@@ -514,7 +512,6 @@ class Freeform extends Plugin
                 'exportProfiles' => ExportProfilesService::class,
                 'recaptcha' => RecaptchaService::class,
                 'rules' => RulesService::class,
-                'proForms' => ProFormsService::class,
                 'paymentNotifications' => PaymentNotificationsService::class,
                 'payments' => PaymentsService::class,
                 'stripe' => StripeService::class,
@@ -808,7 +805,7 @@ class Freeform extends Plugin
         Event::on(
             FormsService::class,
             FormsService::EVENT_RENDER_CLOSING_TAG,
-            [$this->forms, 'addFormPluginJavascript']
+            [$this->forms, 'addFormPluginScripts']
         );
 
         Event::on(
@@ -902,13 +899,7 @@ class Freeform extends Plugin
 
             Event::on(
                 FormsService::class,
-                FormsService::EVENT_RENDER_CLOSING_TAG,
-                [$this->proForms, 'addOpinionScaleStyles']
-            );
-
-            Event::on(
-                Form::class,
-                Form::EVENT_ATTACH_TAG_ATTRIBUTES,
+                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
                 [$this->rules, 'addAttributesToFormTag']
             );
 
@@ -955,14 +946,14 @@ class Freeform extends Plugin
 
             Event::on(
                 FormsService::class,
-                FormsService::EVENT_RENDER_OPENING_TAG,
-                [$this->honeypot, 'addHoneyPotInputToForm']
+                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
+                [$this->honeypot, 'addFormAttributes']
             );
 
             Event::on(
                 FormsService::class,
-                FormsService::EVENT_RENDER_CLOSING_TAG,
-                [$this->honeypot, 'addFormJavascript']
+                FormsService::EVENT_RENDER_OPENING_TAG,
+                [$this->honeypot, 'addHoneyPotInputToForm']
             );
 
             Event::on(

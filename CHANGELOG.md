@@ -1,6 +1,22 @@
 # Solspace Freeform Changelog
 
-## 3.11.0-beta.5 - Unreleased
+## 3.11.0-beta.6 - 2021-04-01
+
+### Changed
+- Reworked the way Freeform's JS and CSS are loaded by the plugin in front end templates. Developers can now also manually load the Freeform JS in templates with `<script src="/freeform/plugin.js"></script>` and the CSS (currently only applicable to the Opinion field type) with `<link rel="stylesheet" href="/freeform/plugin.css">`.
+
+## 3.11.0-beta.5 - 2021-03-25
+
+### Added
+- Added GraphQL support to the Forms fieldtype.
+- Added support for Freeform to track page movement in multi-page forms, allowing for robust movement when using the "Previous" button and Conditional Rules page skipping logic.
+
+### Changed
+- Updated the "Install Demo Templates" banner to be hidden automatically if the `allowAdminChanges` Craft config setting is enabled.
+
+### Fixed
+- Fixed a bug where searching on the CP Submissions index could sometimes trigger an error a column was missing.
+- Fixed a bug where Freeform would log a "Slug cannot be blank" error in the Freeform logs when a form is not fully submitted (triggers error/reloads form) with Element Connections.
 
 ## 3.11.0-beta.4 - 2021-03-19
 

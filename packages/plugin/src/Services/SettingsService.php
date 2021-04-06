@@ -606,6 +606,16 @@ class SettingsService extends BaseService
         return \Craft::$app->plugins->savePluginSettings($plugin, $data);
     }
 
+    public function getPluginJsPath(): string
+    {
+        return \Yii::getAlias('@freeform/Resources/js/scripts/front-end/plugin/freeform.js');
+    }
+
+    public function getPluginCssPath(): string
+    {
+        return \Yii::getAlias('@freeform/Resources/css/front-end/plugin/freeform.css');
+    }
+
     private function isMinimumSubmissionTimePassed(Form $form): bool
     {
         $initTime = $form->getInitTime();

@@ -10,7 +10,8 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "devDependencies": {
-    "node-sass": "^5.0.0"
+    "node-sass": "^5.0.0",
+    "y18n": ">=4.0.1"
   },
   "dependencies": {
     "craftcms-sass": "^3.5.1",

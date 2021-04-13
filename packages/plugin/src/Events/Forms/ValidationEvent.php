@@ -32,7 +32,7 @@ class ValidationEvent extends CancelableArrayableEvent
         return $this->form;
     }
 
-    public function isValidationOverride(): bool
+    public function getValidationOverride(): bool
     {
         return $this->validationOverride;
     }

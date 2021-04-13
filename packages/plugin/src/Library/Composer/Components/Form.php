@@ -17,10 +17,9 @@ use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
+use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
-use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
@@ -58,6 +57,7 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 use Twig\Markup;
 use yii\base\Arrayable;
 use yii\base\Event;
+use yii\web\Request;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 {
@@ -76,6 +76,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_BEFORE_VALIDATE = 'before-validate';
     const EVENT_AFTER_VALIDATE = 'after-validate';
     const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-attributes';
+    const EVENT_BEFORE_HANDLE_REQUEST = 'before-handle-request';
+    const EVENT_AFTER_HANDLE_REQUEST = 'after-handle-request';
 
     const PROPERTY_STORED_VALUES = 'storedValues';
     const PROPERTY_PAGE_INDEX = 'pageIndex';
@@ -87,6 +89,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
     const ELEMENT_ID_KEY = 'formElementId';
     const DEFAULT_PAGE_INDEX = 0;
+
+    const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
+    const DATA_SUBMISSION_TOKEN = 'submissionToken';
+    const DATA_SUPPRESS = 'suppress';
+    const DATA_RELATIONS = 'relations';
+    const DATA_PERSISTENT_VALUES = 'persistentValues';
+    const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
     const LIMIT_COOKIE = 'cookie';
     const LIMIT_IP_COOKIE = 'ip_cookie';
@@ -202,17 +211,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var FreeformLogger */
     private $logger;
 
-    /** @var CustomFormAttributes */
-    private $customAttributes;
-
     /** @var array */
     private $tagAttributes;
 
     /** @var bool */
-    private $submitted;
+    private $finished;
 
     /** @var bool */
-    private $finished;
+    private $valid;
 
     /** @var bool */
     private $formSaved;
@@ -231,6 +237,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     /** @var bool */
     private $disableAjaxReset;
+
+    /** @var bool */
+    private $pagePosted;
+
+    /** @var bool */
+    private $formPosted;
 
     /**
      * Form constructor.
@@ -253,6 +265,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->propertyBag = new PropertyBag();
         $this->attributeBag = new AttributeBag();
 
+        $this->finished = false;
+        $this->valid = false;
+        $this->pagePosted = false;
+        $this->formPosted = false;
+
         $this->properties = $properties;
         $this->formHandler = $formHandler;
         $this->fieldHandler = $fieldHandler;
@@ -263,10 +280,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->logger = $logger;
         $this->storeData = true;
         $this->ipCollectingEnabled = true;
-        $this->customAttributes = new CustomFormAttributes();
         $this->errors = [];
         $this->spamReasons = [];
-        $this->submitted = false;
         $this->suppressionEnabled = false;
         $this->gtmEnabled = false;
         $this->disableAjaxReset = false;
@@ -394,7 +409,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getOverrideStatus()
     {
-        return $this->getFormValueContext()->getDefaultStatus();
+        return \Craft::$app->request->post(self::STATUS_KEY);
     }
 
     public function getSubmissionTitleFormat(): string
@@ -404,7 +419,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function getEditableElementId()
     {
-        return $this->getFormValueContext()->getEditableElementId();
+        return \Craft::$app->request->post(self::ELEMENT_ID_KEY);
     }
 
     public function getDescription(): string
@@ -445,7 +460,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getAnchor(): string
     {
         $hash = $this->getHash();
-        $id = $this->customAttributes->getId() ?: $this->getId();
+        $id = $this->getPropertyBag()->get('id', $this->getId());
         $hashedId = substr(sha1($id.$this->getHandle()), 0, 6);
 
         return "{$hashedId}-form-{$hash}";
@@ -456,11 +471,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getDefaultStatus()
     {
-        if (null !== $this->getFormValueContext()->getDefaultStatus()) {
-            return $this->getFormValueContext()->getDefaultStatus();
-        }
-
-        return $this->defaultStatus;
+        return $this->getOverrideStatus() ?? $this->defaultStatus;
     }
 
     /**
@@ -514,7 +525,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             return false;
         }
 
-        if ($this->getFormValueContext()->isDisableRecaptcha()) {
+        if ($this->getPropertyBag()->get(self::DATA_DISABLE_RECAPTCHA)) {
             return false;
         }
 
@@ -539,11 +550,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function isMultiPage(): bool
     {
         return \count($this->getPages()) > 1;
-    }
-
-    public function isFinished(): bool
-    {
-        return (bool) $this->finished;
     }
 
     /**
@@ -640,89 +646,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this;
     }
 
-    public function validate(): bool
-    {
-        $event = new ValidationEvent($this);
-        Event::trigger(self::class, self::EVENT_BEFORE_VALIDATE, $event);
-
-        if (!$event->isValid) {
-            return $event->isValidationOverride();
-        }
-
-        $this->formHandler->onFormValidate($this);
-
-        $currentPageFields = $this->getCurrentPage()->getFields();
-
-        $isFormValid = true;
-        foreach ($currentPageFields as $field) {
-            if (!$field->isValid()) {
-                $isFormValid = false;
-            }
-        }
-
-        if ($this->errors) {
-            $isFormValid = false;
-        }
-
-        if ($isFormValid) {
-            foreach ($currentPageFields as $field) {
-                if ($field instanceof FileUploadInterface) {
-                    try {
-                        $field->uploadFile();
-                    } catch (\Exception $e) {
-                        $isFormValid = false;
-                        $this->logger->error($e->getMessage(), ['field' => $field]);
-                    }
-
-                    if ($field->hasErrors()) {
-                        $isFormValid = false;
-                    }
-                }
-            }
-        }
-
-        if ($isFormValid && $this->isMarkedAsSpam()) {
-            $simulateSuccess = $this->formHandler->isSpamBehaviourSimulateSuccess();
-
-            if ($simulateSuccess && $this->isLastPage()) {
-                $this->formHandler->incrementSpamBlockCount($this);
-            } elseif (!$simulateSuccess) {
-                $this->formHandler->incrementSpamBlockCount($this);
-            }
-
-            return $simulateSuccess;
-        }
-
-        $this->formHandler->onAfterFormValidate($this);
-
-        $event = new ValidationEvent($this);
-        Event::trigger(self::class, self::EVENT_AFTER_VALIDATE, $event);
-
-        if (!$event->isValid) {
-            return $event->isValidationOverride();
-        }
-
-        return $isFormValid;
-    }
-
     public function isStoreData(): bool
     {
         return $this->storeData;
     }
 
-    public function isPagePosted(): bool
-    {
-        return $this->getFormValueContext()->hasPageBeenPosted();
-    }
-
-    public function isFormPosted(): bool
-    {
-        return $this->getFormValueContext()->hasFormBeenPosted();
-    }
-
     public function hasErrors(): bool
     {
-        return ($this->isPagePosted() && !$this->validate()) || 0 != \count($this->getErrors());
+        return \count($this->getErrors()) > 0;
     }
 
     public function isSubmittedSuccessfully(): bool
@@ -730,59 +661,76 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->getSubmissionHandler()->wasFormFlashSubmitted($this);
     }
 
-    /**
-     * Submit and store the form values in either session or database
-     * depending on the current form page.
-     *
-     * @throws FreeformException
-     *
-     * @return bool|Submission Returns false if submission was not saved, otherwise returns saved submission object
-     */
-    public function submit()
+    public function isValid(): bool
     {
-        if ($this->submitted) {
-            throw new FreeformException('Form already submitted');
+        return $this->valid;
+    }
+
+    /**
+     * @deprecated use ::isPagePosted() or ::isFormPosted() instead
+     */
+    public function isSubmitted(): bool
+    {
+        return $this->isPagePosted();
+    }
+
+    public function isFinished(): bool
+    {
+        return $this->finished;
+    }
+
+    public function setFinished(bool $value): self
+    {
+        $this->finished = $value;
+
+        return $this;
+    }
+
+    public function isPagePosted(): bool
+    {
+        return $this->pagePosted;
+    }
+
+    public function setPagePosted(bool $pagePosted): self
+    {
+        $this->pagePosted = $pagePosted;
+
+        return $this;
+    }
+
+    public function isFormPosted(): bool
+    {
+        return $this->formPosted;
+    }
+
+    public function setFormPosted(bool $formPosted): self
+    {
+        $this->formPosted = $formPosted;
+
+        return $this;
+    }
+
+    public function getCustomAttributes(): PropertyBag
+    {
+        return $this->getPropertyBag();
+    }
+
+    public function handleRequest(Request $request)
+    {
+        $method = strtoupper($this->formAttributes->getMethod());
+        if ($method !== $request->getMethod()) {
+            return;
         }
 
-        $this->submitted = true;
-        $this->finished = false;
+        $event = new HandleRequestEvent($this, $request);
+        Event::trigger(self::class, self::EVENT_BEFORE_HANDLE_REQUEST, $event);
 
-        if ($this->isMarkedAsSpam() && !$this->isSpamFolderEnabled()) {
-            return $this->processSpamSubmissionWithoutSpamFolder();
+        if ($this->isPagePosted()) {
+            $this->validate();
         }
 
-        $event = new SubmitEvent($this);
-        Event::trigger(self::class, self::EVENT_SUBMIT, $event);
-
-        if (!$event->isValid || !empty($this->getActions()) || !$this->formHandler->onBeforeSubmit($this)) {
-            Event::trigger(self::class, self::EVENT_AFTER_SUBMIT, $event);
-
-            return false;
-        }
-
-        $submission = $this->getSubmissionHandler()->createSubmissionFromForm($this);
-
-        $storeSubmissionEvent = new StoreSubmissionEvent($this, $submission);
-        Event::trigger(self::class, self::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
-
-        if ($this->storeData && $storeSubmissionEvent->isValid && $this->hasOptInPermission()) {
-            $this->submissionHandler->storeSubmission($this, $submission);
-        }
-
-        $this->finished = true;
-
-        $mailingListOptInFields = $this->getMailingListOptedInFields();
-        if ($this->isMarkedAsSpam()) {
-            if ($submission->getId()) {
-                $this->spamSubmissionHandler->postProcessSubmission($submission, $mailingListOptInFields);
-            }
-        } else {
-            $this->submissionHandler->postProcessSubmission($submission, $mailingListOptInFields);
-        }
-
-        Event::trigger(self::class, self::EVENT_AFTER_SUBMIT, $event);
-
-        return $submission;
+        $event = new HandleRequestEvent($this, $request);
+        Event::trigger(self::class, self::EVENT_AFTER_HANDLE_REQUEST, $event);
     }
 
     public function isReachedPostingLimit(): bool
@@ -839,7 +787,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function render(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
-        $formTemplate = $this->getCustomAttributes()->getFormattingTemplate() ?? $this->formTemplate;
+        $formTemplate = $this->getPropertyBag()->get('formattingTemplate', $this->formTemplate);
 
         return $this->formHandler->renderFormTemplate($this, $formTemplate);
     }
@@ -847,7 +795,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function json(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
-        $customAttributes = $this->getCustomAttributes();
+        $bag = $this->getPropertyBag();
 
         $isMultipart = \count($this->getLayout()->getFileUploadFields());
 
@@ -862,8 +810,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             'showSpinner' => $this->isShowSpinner(),
             'showLoadingText' => $this->isShowLoadingText(),
             'loadingText' => $this->getLoadingText(),
-            'class' => trim($customAttributes->getClass().' '.($attributes['class'] ?? '')),
-            'method' => $customAttributes->getMethod() ?: 'post',
+            'class' => trim($bag->get('class', '')),
+            'method' => $bag->get('method', 'post'),
             'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
         ];
 
@@ -878,13 +826,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         }
 
         $returnUrl = null;
-        if ($customAttributes->getReturnUrl()) {
-            $object['returnUrl'] = \Craft::$app->security->hashData($customAttributes->getReturnUrl());
+        if ($bag->get('returnUrl')) {
+            $object['returnUrl'] = \Craft::$app->security->hashData($bag->get('returnUrl'));
         }
 
         $status = null;
-        if ($customAttributes->getStatus()) {
-            $object['status'] = base64_encode(\Craft::$app->security->encryptByKey($customAttributes->getStatus()));
+        if ($bag->get('status')) {
+            $object['status'] = base64_encode(\Craft::$app->security->encryptByKey($bag->get('status')));
         }
 
         if ($this->formAttributes->isCsrfEnabled()) {
@@ -904,7 +852,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function renderTag(array $customFormAttributes = null): Markup
     {
         $this->setAttributes($customFormAttributes);
-        $customAttributes = $this->getCustomAttributes();
+        $bag = $this->getPropertyBag();
 
         $output = '';
 
@@ -913,24 +861,24 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $output .= $beforeTag->getChunksAsString();
 
         $attributes = CustomFormAttributes::extractAttributes($this->tagAttributes, $this, ['form' => $this]);
-        if ($customAttributes->getId()) {
-            $attributes['id'] = $customAttributes->getId();
+        if ($bag->get('id')) {
+            $attributes['id'] = $bag->get('id');
         }
 
-        if ($customAttributes->getName()) {
-            $attributes['name'] = $customAttributes->getName();
+        if ($bag->get('name')) {
+            $attributes['name'] = $bag->get('name');
         }
 
-        if (!isset($attributes['method']) || $customAttributes->getMethod()) {
-            $attributes['method'] = $customAttributes->getMethod() ?: 'post';
+        if (!isset($attributes['method']) || $bag->get('method')) {
+            $attributes['method'] = $bag->get('method', 'post');
         }
 
-        if ($customAttributes->getClass()) {
-            $attributes['class'] = trim($customAttributes->getClass().' '.($attributes['class'] ?? ''));
+        if ($bag->get('class')) {
+            $attributes['class'] = trim($bag->get('class').' '.($attributes['class'] ?? ''));
         }
 
-        if ($customAttributes->getAction()) {
-            $attributes['action'] = $customAttributes->getAction();
+        if ($bag->get('action')) {
+            $attributes['action'] = $bag->get('action');
         }
 
         if (\count($this->getLayout()->getFileUploadFields())) {
@@ -980,7 +928,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $attributes['data-freeform'] = true;
 
-        $attributes = array_merge($attributes, $customAttributes->getFormAttributes() ?: []);
+        $attributes = array_merge($attributes, $bag->get('formAttributes', []));
 
         $event = new AttachFormAttributesEvent($this, $attributes);
         Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
@@ -989,25 +937,22 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $output .= "<form {$compiledAttributes}>".\PHP_EOL;
 
-        if (!$customAttributes->getAction()) {
+        if (!$bag->get('action')) {
             $output .= '<input type="hidden" name="action" value="'.$this->formAttributes->getActionUrl().'" />';
         }
 
-        if ($customAttributes->getReturnUrl()) {
-            $output .= '<input type="hidden" '.'name="'.self::RETURN_URI_KEY.'" '.'value="'.\Craft::$app->security->hashData(
-                $customAttributes->getReturnUrl()
-            ).'" '.'/>';
+        if ($bag->get('returnUrl')) {
+            $hashedReturnUrl = \Craft::$app->security->hashData($bag->get('returnUrl'));
+            $output .= '<input type="hidden" '.'name="'.self::RETURN_URI_KEY.'" '.'value="'.$hashedReturnUrl.'" '.'/>';
         }
 
-        if ($customAttributes->getStatus()) {
-            $output .= '<input type="hidden" '.'name="'.self::STATUS_KEY.'" '.'value="'.base64_encode(
-                \Craft::$app->security->encryptByKey($customAttributes->getStatus())
-            ).'" '.'/>';
+        if ($bag->get('status')) {
+            $encryptedStatus = base64_encode(\Craft::$app->security->encryptByKey($bag->get('status')));
+            $output .= '<input type="hidden" '.'name="'.self::STATUS_KEY.'" '.'value="'.$encryptedStatus.'" '.'/>';
         }
 
-        if ($customAttributes->getSubmissionToken()) {
-            $output .= '<input type="hidden" '.'name="'.self::SUBMISSION_TOKEN_KEY.'" '.'value="'.$customAttributes->getSubmissionToken(
-                ).'" '.'/>';
+        if ($bag->get('submissionToken')) {
+            $output .= '<input type="hidden" '.'name="'.self::SUBMISSION_TOKEN_KEY.'" '.'value="'.$bag->get('submissionToken').'" '.'/>';
         }
 
         $output .= '<input '.'type="hidden" '.'name="'.FormValueContext::FORM_HASH_KEY.'" '.'value="'.$this->getHash(
@@ -1082,14 +1027,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->tagAttributes ?? [];
     }
 
-    public function getCustomAttributes(): CustomFormAttributes
-    {
-        return $this->customAttributes;
-    }
-
     public function getSuppressors(): Suppressors
     {
-        $suppressors = $this->suppressionEnabled ? true : $this->getFormValueContext()->getSuppressorData();
+        $suppressors = $this->suppressionEnabled ? true : $this->getPropertyBag()->get(self::DATA_SUPPRESS);
 
         return new Suppressors($suppressors);
     }
@@ -1103,22 +1043,19 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function getRelations(): Relations
     {
-        return new Relations($this->getFormValueContext()->getRelationData());
+        return new Relations($this->getPropertyBag()->get(self::DATA_RELATIONS));
     }
 
     public function setAttributes(array $attributes = null): self
     {
         if (null !== $attributes) {
             $this->propertyBag->merge($attributes);
-            $this->customAttributes->mergeAttributes($this->getPropertyBag()->jsonSerialize());
 
             $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes);
             Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
 
-            $this->populateFromSubmission($this->customAttributes->getSubmissionToken());
+            $this->populateFromSubmission($this->getPropertyBag()->get('submissionToken'));
         }
-
-        $this->setSessionCustomFormData();
 
         return $this;
     }
@@ -1159,7 +1096,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function hasFieldBeenSubmitted(AbstractField $field): bool
     {
-        return $this->getFormValueContext()->hasFieldBeenSubmitted($field);
+        return isset($this->getPropertyBag()->get(self::PROPERTY_STORED_VALUES, [])[$field->getHandle()]);
     }
 
     public function reset()
@@ -1206,7 +1143,12 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getDynamicNotificationData()
     {
-        return $this->getFormValueContext()->getDynamicNotificationData();
+        $data = $this->getPropertyBag()->get(self::DATA_DYNAMIC_TEMPLATE_KEY);
+        if ($data) {
+            return new DynamicNotificationAttributes($data);
+        }
+
+        return null;
     }
 
     /**
@@ -1216,7 +1158,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getAssociatedSubmissionToken()
     {
-        return $this->getFormValueContext()->getSubmissionIdentificator();
+        return \Craft::$app->request->post(self::SUBMISSION_TOKEN_KEY);
     }
 
     /**
@@ -1224,7 +1166,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
      */
     public function getFieldPrefix()
     {
-        return $this->getCustomAttributes()->getFieldIdPrefix();
+        return $this->getPropertyBag()->get('fieldIdPrefix');
     }
 
     /**
@@ -1416,6 +1358,78 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->jsonSerialize();
     }
 
+    private function validate()
+    {
+        $event = new ValidationEvent($this);
+        Event::trigger(self::class, self::EVENT_BEFORE_VALIDATE, $event);
+
+        if (!$event->isValid) {
+            $this->valid = $event->getValidationOverride();
+
+            return;
+        }
+
+        $this->formHandler->onFormValidate($this);
+
+        $currentPageFields = $this->getCurrentPage()->getFields();
+
+        $isFormValid = true;
+        foreach ($currentPageFields as $field) {
+            if (!$field->isValid()) {
+                $isFormValid = false;
+            }
+        }
+
+        if ($this->errors) {
+            $isFormValid = false;
+        }
+
+        if ($isFormValid) {
+            foreach ($currentPageFields as $field) {
+                if ($field instanceof FileUploadInterface) {
+                    try {
+                        $field->uploadFile();
+                    } catch (\Exception $e) {
+                        $isFormValid = false;
+                        $this->logger->error($e->getMessage(), ['field' => $field]);
+                    }
+
+                    if ($field->hasErrors()) {
+                        $isFormValid = false;
+                    }
+                }
+            }
+        }
+
+        if ($isFormValid && $this->isMarkedAsSpam()) {
+            $simulateSuccess = $this->formHandler->isSpamBehaviourSimulateSuccess();
+
+            if ($simulateSuccess && $this->isLastPage()) {
+                $this->formHandler->incrementSpamBlockCount($this);
+            } elseif (!$simulateSuccess) {
+                $this->formHandler->incrementSpamBlockCount($this);
+            }
+
+            $this->valid = $simulateSuccess;
+
+            return;
+        }
+
+        $this->formHandler->onAfterFormValidate($this);
+
+        $event = new ValidationEvent($this);
+        Event::trigger(self::class, self::EVENT_AFTER_VALIDATE, $event);
+
+        if (!$event->isValid) {
+            $this->valid = $event->getValidationOverride();
+
+            return;
+        }
+
+        $this->valid = $isFormValid;
+    }
+
+    // TODO: pull this out the Form and into a feature bundle
     private function populateFromSubmission($token = null): self
     {
         if (null === $token || !Freeform::getInstance()->isPro()) {
@@ -1476,27 +1490,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->gtmEnabled = $formProperties->isGtmEnabled();
         $this->gtmId = $formProperties->getGtmId();
         $this->gtmEventName = $formProperties->getGtmEventName();
-    }
-
-    /**
-     * Adds any custom form data items to the form value context session.
-     */
-    private function setSessionCustomFormData(): self
-    {
-        $this->getFormValueContext()
-            ->setCustomFormData(
-                [
-                    FormValueContext::DATA_DYNAMIC_TEMPLATE_KEY => $this->customAttributes->getDynamicNotification(),
-                    FormValueContext::DATA_SUPPRESS => $this->customAttributes->getSuppress(),
-                    FormValueContext::DATA_RELATIONS => $this->customAttributes->getRelations(),
-                    FormValueContext::DATA_PERSISTENT_VALUES => $this->customAttributes->getOverrideValues(),
-                    FormValueContext::DATA_DISABLE_RECAPTCHA => $this->customAttributes->isDisableRecaptcha(),
-                ]
-            )
-            ->saveState()
-        ;
-
-        return $this;
     }
 
     private function getFormValueContext(): FormValueContext

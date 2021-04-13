@@ -34,7 +34,7 @@ class ElementEditBundle implements BundleInterface
     public function populateFormWithElementValues(UpdateAttributesEvent $event)
     {
         $form = $event->getForm();
-        $elementId = $form->getCustomAttributes()->getElementId();
+        $elementId = $form->getPropertyBag()->get('elementId');
 
         if (null === $elementId || !Freeform::getInstance()->isPro()) {
             return;
@@ -71,7 +71,7 @@ class ElementEditBundle implements BundleInterface
     public function addElementToFormTag(RenderTagEvent $event)
     {
         $form = $event->getForm();
-        $element = $form->getCustomAttributes()->getElementId();
+        $element = $form->getPropertyBag()->get('elementId');
         if (!$element) {
             return;
         }

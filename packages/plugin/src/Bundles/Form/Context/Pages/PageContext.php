@@ -2,8 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Pages;
 
-use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\SubmitField;
 use Solspace\Freeform\Freeform;
@@ -15,29 +14,41 @@ class PageContext
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'onValidate']);
-        Event::on(Form::class, Form::EVENT_SUBMIT, [$this, 'pageNavigation']);
+        Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleNavigateBack']);
+        Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'handleNavigateForward'], null, false);
     }
 
     public function onValidate(ValidationEvent $event)
     {
         $form = $event->getForm();
-
-        $isPagePosted = SessionContext::isPagePosted($form, $form->getCurrentPage());
-        if (!$isPagePosted) {
+        if (!$form->isPagePosted()) {
             $event->isValid = false;
-
-            return;
-        }
-
-        $shouldWalkBack = null !== \Craft::$app->request->post(SubmitField::PREVIOUS_PAGE_INPUT_NAME);
-        if ($shouldWalkBack) {
-            $event->setValidationOverride(true);
 
             return;
         }
     }
 
-    public function pageNavigation(SubmitEvent $event)
+    public function handleNavigateBack(HandleRequestEvent $event)
+    {
+        $form = $event->getForm();
+        $bag = $form->getPropertyBag();
+
+        if (!$form->isPagePosted()) {
+            return;
+        }
+
+        $shouldWalkBack = null !== \Craft::$app->request->post(SubmitField::PREVIOUS_PAGE_INPUT_NAME);
+        if ($shouldWalkBack) {
+            $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
+            $index = array_pop($pageHistory) ?? 0;
+
+            $bag->set(Form::PROPERTY_PAGE_INDEX, $index);
+            $bag->set(Form::PROPERTY_PAGE_HISTORY, $pageHistory);
+            $form->setPagePosted(false);
+        }
+    }
+
+    public function handleNavigateForward(HandleRequestEvent $event)
     {
         $form = $event->getForm();
         $bag = $form->getPropertyBag();
@@ -45,22 +56,7 @@ class PageContext
         $pageIndex = $bag->get(Form::PROPERTY_PAGE_INDEX, 0);
         $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
 
-        $isPagePosted = SessionContext::isPagePosted($form, $form->getCurrentPage());
-        if (!$isPagePosted) {
-            $event->isValid = false;
-
-            return;
-        }
-
-        $shouldWalkBack = null !== \Craft::$app->request->post(SubmitField::PREVIOUS_PAGE_INPUT_NAME);
-        if ($shouldWalkBack) {
-            $index = array_pop($pageHistory) ?? 0;
-
-            $bag->set(Form::PROPERTY_PAGE_INDEX, $index);
-            $bag->set(Form::PROPERTY_PAGE_HISTORY, $pageHistory);
-
-            $event->isValid = false;
-
+        if (!$form->isPagePosted() || !$form->isValid()) {
             return;
         }
 
@@ -72,8 +68,6 @@ class PageContext
             $bag->set(Form::PROPERTY_PAGE_INDEX, $pageIndex);
             $bag->set(Form::PROPERTY_PAGE_HISTORY, $pageHistory);
 
-            $event->isValid = false;
-
             return;
         }
 
@@ -84,7 +78,11 @@ class PageContext
             $bag->set(Form::PROPERTY_PAGE_INDEX, $pageIndex);
             $bag->set(Form::PROPERTY_PAGE_HISTORY, $pageHistory);
 
-            $event->isValid = false;
+            return;
+        }
+
+        if ($pageIndex === $totalPages - 1) {
+            $form->setFinished(true);
 
             return;
         }

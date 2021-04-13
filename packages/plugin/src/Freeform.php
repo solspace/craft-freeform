@@ -51,6 +51,7 @@ use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
 use Solspace\Freeform\Controllers\StatusesController;
 use Solspace\Freeform\Controllers\SubmissionsController;
+use Solspace\Freeform\Controllers\SubmitController;
 use Solspace\Freeform\Controllers\WelcomeScreenController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
@@ -458,6 +459,7 @@ class Freeform extends Plugin
             $this->controllerMap = [
                 'dashboard' => DashboardController::class,
                 'api' => ApiController::class,
+                'submit' => SubmitController::class,
                 'codepack' => CodepackController::class,
                 'crm' => CrmController::class,
                 'mailing-lists' => MailingListsController::class,

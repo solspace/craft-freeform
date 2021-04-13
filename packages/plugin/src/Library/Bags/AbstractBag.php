@@ -9,6 +9,21 @@ abstract class AbstractBag implements BagInterface
     /** @var array */
     protected $contents = [];
 
+    public function __get($name)
+    {
+        return $this->get($name);
+    }
+
+    public function __set($name, $value)
+    {
+        return $this->set($name, $value);
+    }
+
+    public function __isset($name)
+    {
+        return true;
+    }
+
     public function isset(string $key): bool
     {
         return isset($this->contents[$key]);

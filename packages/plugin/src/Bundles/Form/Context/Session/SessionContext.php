@@ -6,8 +6,8 @@ use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\FormContextStorageInterface;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PHPSessionFormContextStorage;
+use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Page;
@@ -30,8 +30,8 @@ class SessionContext
         $this->storage = new PHPSessionFormContextStorage();
 
         Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'onFormRender']);
-        Event::on(Form::class, Form::EVENT_SUBMIT, [$this, 'retrieveContext']);
-        Event::on(Form::class, Form::EVENT_AFTER_SUBMIT, [$this, 'storeContext']);
+        Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
+        Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'storeContext']);
     }
 
     public function onFormRender(RenderTagEvent $event)
@@ -51,7 +51,7 @@ class SessionContext
         $this->storage->persist();
     }
 
-    public function retrieveContext(SubmitEvent $event)
+    public function retrieveContext(HandleRequestEvent $event)
     {
         $form = $event->getForm();
         $bag = $this->getBag($form);
@@ -62,22 +62,11 @@ class SessionContext
         }
 
         $form->getPropertyBag()->merge($bag);
-
-        $isPagePosted = self::isPagePosted($form, $form->getCurrentPage());
-        if (!$isPagePosted) {
-            return;
-        }
-
-        $valueContext = $form->getPropertyBag()->get(Form::PROPERTY_STORED_VALUES, []);
-        $submittedValues = $form->getCurrentPage()->getStorableFieldValues();
-        foreach ($submittedValues as $key => $value) {
-            $valueContext[$key] = $value;
-        }
-
-        $form->getPropertyBag()->set(Form::PROPERTY_STORED_VALUES, $valueContext);
+        $form->setFormPosted(self::isFormPosted($form));
+        $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPage()));
     }
 
-    public function storeContext(SubmitEvent $event)
+    public function storeContext(HandleRequestEvent $event)
     {
         $form = $event->getForm();
         $propertyBag = $form->getPropertyBag();
@@ -108,7 +97,17 @@ class SessionContext
 
     public static function isFormPosted(Form $form): bool
     {
-        return null !== \Craft::$app->getRequest()->post(self::KEY_FORM);
+        return $form->getId() === self::getPostedFormId();
+    }
+
+    public static function getPostedFormId()
+    {
+        $hash = \Craft::$app->getRequest()->post(self::KEY_FORM);
+        if (null === $hash) {
+            return null;
+        }
+
+        return HashHelper::decode($hash);
     }
 
     public static function isPagePosted(Form $form, Page $page): bool

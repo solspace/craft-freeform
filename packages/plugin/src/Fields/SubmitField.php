@@ -92,7 +92,7 @@ class SubmitField extends AbstractField implements SingleValueInterface, InputOn
     {
         $attributes = $this->getCustomAttributes();
         $submitClass = $attributes->getInputClassOnly();
-        $formSubmitClass = $this->getForm()->getCustomAttributes()->getSubmitClass();
+        $formSubmitClass = $this->getForm()->getPropertyBag()->get('submitClass', '');
 
         $submitClass = trim($submitClass.' '.$formSubmitClass);
 

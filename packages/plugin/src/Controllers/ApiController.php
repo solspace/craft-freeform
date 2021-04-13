@@ -23,11 +23,9 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
-use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\NotificationRecord;
 use yii\base\Exception;
@@ -37,85 +35,6 @@ use yii\web\Response;
 
 class ApiController extends BaseController
 {
-    /** @var bool */
-    protected $allowAnonymous = true;
-
-    /**
-     * @throws FreeformException
-     *
-     * @return null|Response
-     */
-    public function actionForm()
-    {
-        $this->requirePostRequest();
-
-        $hash = \Craft::$app->request->post(FormValueContext::FORM_HASH_KEY);
-        $formId = FormValueContext::getFormIdFromHash($hash);
-
-        $formModel = $this->getFormsService()->getFormById($formId);
-
-        if (!$formModel) {
-            throw new FreeformException(
-                \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId])
-            );
-        }
-
-        $form = $formModel->getForm();
-        $isAjaxRequest = \Craft::$app->request->getIsAjax();
-
-        if ($form->validate()) {
-            $submission = $form->submit();
-
-            if ($submission && $submission->getErrors()) {
-                $form->addErrors(array_keys($submission->getErrors()));
-            }
-
-            if (!$form->getErrors() && !$form->getActions() && $form->isFinished()) {
-                //TODO: check if it required payment and payment succeeded
-                //TODO: if payment failed than display error message
-
-                $postedReturnUrl = \Craft::$app->request->post(Form::RETURN_URI_KEY);
-                if ($postedReturnUrl) {
-                    $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
-                    if (false === $returnUrl) {
-                        $returnUrl = $form->getReturnUrl();
-                    }
-                } else {
-                    $returnUrl = $form->getReturnUrl();
-                }
-
-                $returnUrl = \Craft::$app->view->renderString(
-                    $returnUrl,
-                    [
-                        'form' => $form,
-                        'submission' => $submission,
-                    ]
-                );
-
-                if (false === $submission) {
-                    $submission = null;
-                }
-
-                $returnUrl = Freeform::getInstance()->forms->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
-                if (!$returnUrl) {
-                    $returnUrl = \Craft::$app->request->getUrl();
-                }
-
-                $form->reset();
-
-                return $isAjaxRequest ? $this->toAjaxResponse($form, $submission, $returnUrl) : $this->redirect($returnUrl);
-            }
-        }
-
-        if ($form->isMarkedAsSpam() && $this->getSettingsService()->isSpamBehaviourReloadForm()) {
-            return $this->redirect(\Craft::$app->request->getUrl());
-        }
-
-        if ($isAjaxRequest) {
-            return $this->toAjaxResponse($form);
-        }
-    }
-
     /**
      * GET fields.
      *
@@ -512,41 +431,6 @@ class ApiController extends BaseController
         $options = $this->getFieldsService()->getOptionsFromSource($source, $target, $configuration);
 
         return $this->asJson(['data' => $options]);
-    }
-
-    /**
-     * @param string $returnUrl
-     */
-    private function toAjaxResponse(Form $form, Submission $submission = null, string $returnUrl = null): Response
-    {
-        $honeypot = Freeform::getInstance()->honeypot->getHoneypot($form);
-        $fieldErrors = [];
-        foreach ($form->getLayout()->getFields() as $field) {
-            if ($field->hasErrors()) {
-                $fieldErrors[$field->getHandle()] = $field->getErrors();
-            }
-        }
-
-        $success = !$form->hasErrors() && !$form->getActions();
-
-        return $this->asJson(
-            [
-                'success' => $success,
-                'multipage' => $form->isMultiPage(),
-                'finished' => $form->isFinished(),
-                'submissionId' => $submission ? $submission->id : null,
-                'submissionToken' => $submission ? $submission->token : null,
-                'actions' => $form->getActions(),
-                'errors' => $fieldErrors,
-                'formErrors' => $form->getErrors(),
-                'returnUrl' => $returnUrl,
-                'honeypot' => [
-                    'name' => $honeypot->getName(),
-                    'hash' => $honeypot->getHash(),
-                ],
-                'html' => $form->render(),
-            ]
-        );
     }
 
     /**

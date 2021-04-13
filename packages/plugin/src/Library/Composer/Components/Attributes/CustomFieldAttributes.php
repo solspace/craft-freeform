@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Attributes;
 
+use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 
 class CustomFieldAttributes extends AbstractAttributes
@@ -73,8 +74,8 @@ class CustomFieldAttributes extends AbstractAttributes
     /** @var AbstractField */
     private $field;
 
-    /** @var CustomFormAttributes */
-    private $formAttributes;
+    /** @var PropertyBag */
+    private $formProperties;
 
     /**
      * CustomFieldAttributes constructor.
@@ -82,12 +83,12 @@ class CustomFieldAttributes extends AbstractAttributes
     public function __construct(
         AbstractField $field,
         array $attributes = null,
-        CustomFormAttributes $formAttributes = null
+        PropertyBag $formPropertyBag = null
     ) {
         parent::__construct($attributes);
 
         $this->field = $field;
-        $this->formAttributes = $formAttributes;
+        $this->formProperties = $formPropertyBag;
     }
 
     /**
@@ -104,8 +105,8 @@ class CustomFieldAttributes extends AbstractAttributes
     public function getClass()
     {
         $value = $this->class;
-        if (null !== $this->formAttributes) {
-            $value = $this->combineClassStrings($value, $this->formAttributes->getInputClass());
+        if (null !== $this->formProperties) {
+            $value = $this->combineClassStrings($value, $this->formProperties->get('inputClass'));
         }
 
         return $this->extractClassValue($value);
@@ -125,8 +126,8 @@ class CustomFieldAttributes extends AbstractAttributes
     public function getLabelClass()
     {
         $value = $this->labelClass;
-        if (null !== $this->formAttributes) {
-            $value = $this->combineClassStrings($value, $this->formAttributes->getLabelClass());
+        if (null !== $this->formProperties) {
+            $value = $this->combineClassStrings($value, $this->formProperties->get('labelClass'));
         }
 
         return $this->extractClassValue($value);
@@ -138,8 +139,8 @@ class CustomFieldAttributes extends AbstractAttributes
     public function getErrorClass()
     {
         $value = $this->errorClass;
-        if (null !== $this->formAttributes) {
-            $value = $this->combineClassStrings($value, $this->formAttributes->getErrorClass());
+        if (null !== $this->formProperties) {
+            $value = $this->combineClassStrings($value, $this->formProperties->get('errorClass'));
         }
 
         return $this->extractClassValue($value);
@@ -151,8 +152,8 @@ class CustomFieldAttributes extends AbstractAttributes
     public function getInstructionsClass()
     {
         $value = $this->instructionsClass;
-        if (null !== $this->formAttributes) {
-            $value = $this->combineClassStrings($value, $this->formAttributes->getInstructionsClass());
+        if (null !== $this->formProperties) {
+            $value = $this->combineClassStrings($value, $this->formProperties->get('instructionsClass'));
         }
 
         return $this->extractClassValue($value);
@@ -164,8 +165,8 @@ class CustomFieldAttributes extends AbstractAttributes
     public function isInstructionsBelowField()
     {
         $value = $this->instructionsBelowField;
-        if (!$value && null !== $this->formAttributes) {
-            $value = $this->formAttributes->isInstructionsBelowField();
+        if (!$value && null !== $this->formProperties) {
+            $value = $this->formProperties->get('instructionsBelowField');
         }
 
         return $value;
@@ -186,8 +187,8 @@ class CustomFieldAttributes extends AbstractAttributes
     {
         $value = $this->overrideValue;
 
-        if (null === $value && null !== $this->formAttributes) {
-            $overrideValues = $this->formAttributes->getOverrideValues();
+        if (null === $value && null !== $this->formProperties) {
+            $overrideValues = $this->formProperties->get('overrideValues');
 
             if ($overrideValues && isset($overrideValues[$this->field->getHandle()])) {
                 $value = $overrideValues[$this->field->getHandle()];
@@ -218,7 +219,7 @@ class CustomFieldAttributes extends AbstractAttributes
      */
     public function getInputAttributesAsString()
     {
-        $formInputAttributes = $this->formAttributes ? $this->formAttributes->getInputAttributes() : [];
+        $formInputAttributes = $this->formProperties->get('inputAttributes', []);
         $inputAttributes = $this->getInputAttributes();
 
         if ($formInputAttributes) {
@@ -243,8 +244,8 @@ class CustomFieldAttributes extends AbstractAttributes
     {
         $value = $this->useRequiredAttribute;
 
-        if (null === $value && null !== $this->formAttributes) {
-            $value = $this->formAttributes->getUseRequiredAttribute();
+        if (null === $value && null !== $this->formProperties) {
+            $value = $this->formProperties->get('useRequiredAttribute');
         }
 
         return $value;
@@ -255,7 +256,7 @@ class CustomFieldAttributes extends AbstractAttributes
      */
     public function getFieldIdPrefix()
     {
-        return $this->formAttributes->getFieldIdPrefix();
+        return $this->formProperties->get('fieldIdPrefix');
     }
 
     /**
@@ -324,13 +325,8 @@ class CustomFieldAttributes extends AbstractAttributes
 
     /**
      * Takes a two class strings, explodes them into arrays, merges, then returns a glued string.
-     *
-     * @param string $classStringA
-     * @param string $classStringB
-     *
-     * @return string
      */
-    private function combineClassStrings($classStringA = null, $classStringB = null)
+    private function combineClassStrings(string $classStringA = null, string $classStringB = null): string
     {
         $classListA = explode(' ', $classStringA ?: '');
         $classListB = explode(' ', $classStringB ?: '');

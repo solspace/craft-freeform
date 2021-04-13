@@ -237,7 +237,7 @@ class FormModel extends Model
         $attributes = new FormAttributes($this->id, $this->uid, new CraftSession(), new CraftRequest());
         if (!\Craft::$app->request->isConsoleRequest) {
             $attributes
-                ->setActionUrl('freeform/api/form')
+                ->setActionUrl('freeform/submit')
                 ->setCsrfEnabled(\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection)
                 ->setCsrfToken(\Craft::$app->request->csrfToken)
                 ->setCsrfTokenName(\Craft::$app->getConfig()->getGeneral()->csrfTokenName)

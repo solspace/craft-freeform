@@ -83,7 +83,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     final public function __construct(Form $form)
     {
         $this->form = $form;
-        $this->customAttributes = new CustomFieldAttributes($this, [], $this->getForm()->getCustomAttributes());
+        $this->customAttributes = new CustomFieldAttributes($this, [], $this->getForm()->getPropertyBag());
         $this->inputClasses = [];
     }
 
@@ -125,6 +125,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             $field->staticValue = $field->getValue();
         }
 
+        return $field;
+        // TODO: perform this in the context bundle
         if ($field instanceof PersistentValueInterface) {
             $persistentValues = $formValueContext->getPersistentValues();
             $field->setValue($persistentValues[$field->getHandle()] ?? $field->getValue());

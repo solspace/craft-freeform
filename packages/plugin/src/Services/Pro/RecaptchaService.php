@@ -88,7 +88,7 @@ class RecaptchaService extends Component
         if (Settings::RECAPTCHA_TYPE_V3 === $type) {
             $event->attachAttribute(
                 'data-recaptcha-action',
-                $event->getForm()->getCustomAttributes()->getRecaptchaAction() ?? 'homepage'
+                $event->getForm()->getPropertyBag()->get('recaptchaAction') ?? 'homepage'
             );
         }
     }

@@ -258,6 +258,9 @@ class Settings extends Model
     /** @var bool */
     public $updateSearchIndexes;
 
+    /** @var bool */
+    public $formFieldShowOnlyAllowedForms;
+
     /**
      * Settings constructor.
      */
@@ -330,6 +333,8 @@ class Settings extends Model
         $this->twigInHtmlIsolatedMode = true;
 
         $this->updateSearchIndexes = true;
+
+        $this->formFieldShowOnlyAllowedForms = false;
 
         parent::__construct($config);
     }

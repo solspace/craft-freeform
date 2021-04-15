@@ -47,17 +47,28 @@ class FormFieldType extends Field
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
-        $forms = Freeform::getInstance()->forms->getAllForms();
+        $freeform = Freeform::getInstance();
 
-        $formOptions = [
-            '' => Freeform::t('Select a form'),
-        ];
+        $forms = $freeform->forms->getAllForms();
 
-        /** @var FormModel $form */
+        if ($freeform->settings->isFormFieldShowOnlyAllowedForms()) {
+            $allowedIds = $freeform->submissions->getAllowedReadFormIds();
+        } else {
+            $allowedIds = $freeform->forms->getAllFormIds();
+        }
+
+        $formOptions = ['' => Freeform::t('Select a form')];
+
         foreach ($forms as $form) {
+            if (!\is_array($form) && !$form instanceof FormModel) {
+                continue;
+            }
+
             if (\is_array($form)) {
-                $formOptions[(int) $form['id']] = $form['name'];
-            } elseif ($form instanceof FormModel) {
+                $form = (object) $form;
+            }
+
+            if (\in_array($form->id, $allowedIds, false)) {
                 $formOptions[(int) $form->id] = $form->name;
             }
         }

@@ -334,7 +334,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function delete(array $submissions): bool
     {
-        $allowedFormIds = $this->getAllowedSubmissionFormIds();
+        $allowedFormIds = $this->getAllowedWriteFormIds();
         if (!$submissions) {
             return false;
         }
@@ -343,7 +343,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         try {
             foreach ($submissions as $submission) {
-                if (null !== $allowedFormIds && !\in_array($submission->formId, $allowedFormIds, false)) {
+                if (!\in_array($submission->formId, $allowedFormIds, false)) {
                     continue;
                 }
 
@@ -427,20 +427,28 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return (bool) \Craft::$app->session->getFlash(Form::SUBMISSION_FLASH_KEY.$form->getId(), false);
     }
 
-    /**
-     * Either returns an array of allowed form ID's
-     * for which the user can edit submissions
-     * or NULL if *all* form submissions can be edited.
-     *
-     * @return null|array
-     */
-    public function getAllowedSubmissionFormIds()
+    public function getAllowedWriteFormIds(): array
     {
         if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
-            return null;
+            return $this->getFormsService()->getAllFormIds();
         }
 
         return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+    }
+
+    public function getAllowedReadFormIds(): array
+    {
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_READ)) {
+            return $this->getFormsService()->getAllFormIds();
+        }
+
+        $writeIds = $this->getAllowedWriteFormIds();
+        $readIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_READ);
+
+        $ids = array_merge($writeIds, $readIds);
+        $ids = array_filter($ids);
+
+        return array_unique($ids);
     }
 
     /**

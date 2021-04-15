@@ -515,7 +515,6 @@ class Submission extends Element
     public function beforeDelete(): bool
     {
         $canModifyAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-
         if ($canModifyAll) {
             return true;
         }
@@ -556,16 +555,10 @@ class Submission extends Element
         static $sources;
 
         if (null === $sources) {
-            $isAdmin = PermissionHelper::isAdmin();
-            $manageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-
             $formsService = Freeform::getInstance()->forms;
             $forms = $formsService->getAllForms();
 
-            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
-            if ($isAdmin || $manageAll) {
-                $allowedFormIds = array_keys($forms);
-            }
+            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedReadFormIds();
 
             $items = [
                 [

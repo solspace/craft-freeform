@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Elements\Db;
 use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -196,14 +195,6 @@ class SubmissionQuery extends ElementQuery
 
         $this->query->select($select);
 
-        $request = \Craft::$app->request;
-        if (null === $this->formId && $request->getIsCpRequest() && 'index' === $request->post('context')) {
-            if (!PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
-                $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-                $this->formId = $allowedFormIds;
-            }
-        }
-
         $formHandle = $this->form;
         if ($formHandle instanceof Form) {
             $formHandle = $formHandle->getHandle();
@@ -213,7 +204,7 @@ class SubmissionQuery extends ElementQuery
             $this->formId = $formHandleToIdMap[$formHandle];
         }
 
-        if ($this->formId) {
+        if (null !== $this->formId) {
             $this->subQuery->andWhere(Db::parseParam($table.'.[[formId]]', $this->formId));
 
             if (is_numeric($this->formId)) {
@@ -222,6 +213,16 @@ class SubmissionQuery extends ElementQuery
                     $selectedForm = $form->getForm();
                 }
             }
+        }
+
+        $request = \Craft::$app->request;
+
+        $isEmptyFormId = empty($this->formId);
+        $isCpRequest = $request->getIsCpRequest();
+        $isIndex = 'index' === $request->post('context');
+        if ($isEmptyFormId && $isCpRequest && $isIndex) {
+            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedReadFormIds();
+            $this->subQuery->andWhere([$table.'.[[formId]]' => $allowedFormIds]);
         }
 
         if ($this->statusId) {

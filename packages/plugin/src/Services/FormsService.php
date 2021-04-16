@@ -16,6 +16,7 @@ use craft\db\Query;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\records\Element;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -137,6 +138,15 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return $list;
+    }
+
+    public function getAllowedFormIds(): array
+    {
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_MANAGE)) {
+            return $this->getAllFormIds();
+        }
+
+        return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_FORMS_MANAGE);
     }
 
     /**

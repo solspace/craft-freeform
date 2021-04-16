@@ -52,7 +52,7 @@ class FormFieldType extends Field
         $forms = $freeform->forms->getAllForms();
 
         if ($freeform->settings->isFormFieldShowOnlyAllowedForms()) {
-            $allowedIds = $freeform->submissions->getAllowedReadFormIds();
+            $allowedIds = $freeform->forms->getAllowedFormIds();
         } else {
             $allowedIds = $freeform->forms->getAllFormIds();
         }

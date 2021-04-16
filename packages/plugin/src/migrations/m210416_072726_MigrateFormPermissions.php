@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use craft\db\Query;
+use craft\records\UserPermission;
 use craft\records\UserPermission_UserGroup;
 use yii\db\Expression;
 

@@ -64,8 +64,8 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Enable only showing Forms with read permissions in Form Field Type?"|t('freeform'),
-        instructions: "Enable this to only show Forms with read permissions in Form Field Type."|t('freeform'),
+        label: "Only show Forms with permissions in Form Field Type?"|t('freeform'),
+        instructions: "Enable this to only show forms the user or group has permissions to manage in the list of options for the Form Field Type."|t('freeform'),
         name: "settings[formFieldShowOnlyAllowedForms]",
         on: settings.formFieldShowOnlyAllowedForms,
         errors: settings.errors("formFieldShowOnlyAllowedForms"),

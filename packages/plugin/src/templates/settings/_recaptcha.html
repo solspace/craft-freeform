@@ -62,6 +62,14 @@
             suggestEnvVars: true,
         }) }}
 
+        {{ forms.lightswitchField({
+            label: "Only load reCAPTCHA scripts once the user interacts with the form?"|t('freeform'),
+            instructions: "If you'd like to have reCAPTCHA and its associated scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting."|t('freeform'),
+            name: "settings[recaptchaLazyLoad]",
+            on: settings.recaptchaLazyLoad,
+            errors: settings.errors("recaptchaLazyLoad"),
+        }) }}
+
         <div id="recaptcha-theme" class="field {{ settings.recaptchaType != 'v2_checkbox' ? 'hidden' }}">
             {{ forms.selectField({
                 label: "Theme"|t("freeform"),

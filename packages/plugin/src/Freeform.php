@@ -192,11 +192,15 @@ class Freeform extends Plugin
     const PERMISSION_FORMS_CREATE = 'freeform-formsCreate';
     const PERMISSION_FORMS_DELETE = 'freeform-formsDelete';
     const PERMISSION_FORMS_MANAGE = 'freeform-formsManage';
+    const PERMISSION_FORMS_MANAGE_INDIVIDUAL = 'freeform-formsManageIndividual';
     const PERMISSION_FIELDS_ACCESS = 'freeform-fieldsAccess';
     const PERMISSION_FIELDS_MANAGE = 'freeform-fieldsManage';
     const PERMISSION_SETTINGS_ACCESS = 'freeform-settingsAccess';
     const PERMISSION_SUBMISSIONS_ACCESS = 'freeform-submissionsAccess';
+    const PERMISSION_SUBMISSIONS_READ = 'freeform-submissionsRead';
+    const PERMISSION_SUBMISSIONS_READ_INDIVIDUAL = 'freeform-submissionsReadIndividual';
     const PERMISSION_SUBMISSIONS_MANAGE = 'freeform-submissionsManage';
+    const PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL = 'freeform-submissionsManageIndividual';
     const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
     const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
     const PERMISSION_DASHBOARD_ACCESS = 'freeform-dashboardAccess';
@@ -448,7 +452,8 @@ class Freeform extends Plugin
             [
                 'settings' => $this->getSettings(),
             ]
-        );
+        )
+            ;
     }
 
     private function initControllerMap()
@@ -542,12 +547,9 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Integrations\CRM';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->depth(0)
-                    ->in(__DIR__.'/Integrations/CRM/')
+                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
+                    __DIR__.'/Integrations/CRM/'
+                )
                 ;
 
                 foreach ($files as $file) {
@@ -567,12 +569,9 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Integrations\MailingLists';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->depth(0)
-                    ->in(__DIR__.'/Integrations/MailingLists/')
+                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
+                    __DIR__.'/Integrations/MailingLists/'
+                )
                 ;
 
                 foreach ($files as $file) {
@@ -592,12 +591,9 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Integrations\PaymentGateways';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->depth(0)
-                    ->in(__DIR__.'/Integrations/PaymentGateways/')
+                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
+                    __DIR__.'/Integrations/PaymentGateways/'
+                )
                 ;
 
                 foreach ($files as $file) {
@@ -617,12 +613,9 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Webhooks\Integrations';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->depth(0)
-                    ->in(__DIR__.'/Webhooks/Integrations/')
+                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
+                    __DIR__.'/Webhooks/Integrations/'
+                )
                 ;
 
                 foreach ($files as $file) {
@@ -681,12 +674,9 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Widgets';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*Widget.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->notName('Abstract*.php')
-                    ->in(__DIR__.'/Widgets/')
+                $files = $finder->name('*Widget.php')->files()->ignoreDotFiles(true)->notName('Abstract*.php')->in(
+                    __DIR__.'/Widgets/'
+                )
                 ;
 
                 foreach ($files as $file) {
@@ -727,37 +717,54 @@ class Freeform extends Plugin
                 function (RegisterUserPermissionsEvent $event) {
                     $forms = $this->forms->getAllForms();
 
-                    $submissionNestedPermissions = [
-                        self::PERMISSION_SUBMISSIONS_MANAGE => [
-                            'label' => self::t(
-                                'Manage All Submissions'
-                            ),
-                        ],
-                    ];
-
-                    $formNestedPermissions = [
-                        self::PERMISSION_FORMS_CREATE => ['label' => self::t('Create New Forms')],
-                        self::PERMISSION_FORMS_DELETE => ['label' => self::t('Delete Forms')],
-                        self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage All Forms')],
-                    ];
-
+                    $readPermissions = $managePermissions = $formPermissions = [];
                     foreach ($forms as $form) {
-                        $submissionPermissionName = PermissionHelper::prepareNestedPermission(self::PERMISSION_SUBMISSIONS_MANAGE, $form->id);
-                        $formPermissionName = PermissionHelper::prepareNestedPermission(self::PERMISSION_FORMS_MANAGE, $form->id);
+                        $readKey = PermissionHelper::prepareNestedPermission(
+                            self::PERMISSION_SUBMISSIONS_READ,
+                            $form->id
+                        );
+                        $manageKey = PermissionHelper::prepareNestedPermission(
+                            self::PERMISSION_SUBMISSIONS_MANAGE,
+                            $form->id
+                        );
+                        $formPermissionName = PermissionHelper::prepareNestedPermission(
+                            self::PERMISSION_FORMS_MANAGE,
+                            $form->id
+                        );
 
-                        $submissionNestedPermissions[$submissionPermissionName] = ['label' => 'For '.$form->name];
-                        $formNestedPermissions[$formPermissionName] = ['label' => 'For '.$form->name];
+                        $readPermissions[$readKey] = ['label' => $form->name];
+                        $managePermissions[$manageKey] = ['label' => $form->name];
+                        $formPermissions[$formPermissionName] = ['label' => $form->name];
                     }
 
                     $permissions = [
                         self::PERMISSION_DASHBOARD_ACCESS => ['label' => self::t('Access Dashboard')],
                         self::PERMISSION_SUBMISSIONS_ACCESS => [
                             'label' => self::t('Access Submissions'),
-                            'nested' => $submissionNestedPermissions,
+                            'nested' => [
+                                self::PERMISSION_SUBMISSIONS_READ => ['label' => self::t('Read All Submissions')],
+                                self::PERMISSION_SUBMISSIONS_READ_INDIVIDUAL => [
+                                    'label' => self::t('Read Submissions by Form'),
+                                    'nested' => $readPermissions,
+                                ],
+                                self::PERMISSION_SUBMISSIONS_MANAGE => ['label' => self::t('Manage All Submissions')],
+                                self::PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL => [
+                                    'label' => self::t('Manage Submissions by Form'),
+                                    'nested' => $managePermissions,
+                                ],
+                            ],
                         ],
                         self::PERMISSION_FORMS_ACCESS => [
                             'label' => self::t('Access Forms'),
-                            'nested' => $formNestedPermissions,
+                            'nested' => [
+                                self::PERMISSION_FORMS_CREATE => ['label' => self::t('Create New Forms')],
+                                self::PERMISSION_FORMS_DELETE => ['label' => self::t('Delete Forms')],
+                                self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage All Forms')],
+                                self::PERMISSION_FORMS_MANAGE_INDIVIDUAL => [
+                                    'label' => self::t('Manage Forms Individually'),
+                                    'nested' => $formPermissions,
+                                ],
+                            ],
                         ],
                         self::PERMISSION_FIELDS_ACCESS => [
                             'label' => self::t('Access Fields'),
@@ -818,33 +825,23 @@ class Freeform extends Plugin
                     $oldId = $event->oldPrimarySiteId;
                     $newId = $event->site->id;
 
-                    $ids = (new Query())
-                        ->select('[[id]]')
-                        ->from('{{%elements}}')
-                        ->where(['[[type]]' => Submission::class])
-                        ->column()
+                    $ids = (new Query())->select('[[id]]')->from('{{%elements}}')->where(
+                        ['[[type]]' => Submission::class]
+                    )->column()
                     ;
 
-                    \Craft::$app
-                        ->db
-                        ->createCommand()
-                        ->update(
-                            '{{%elements_sites}}',
-                            ['siteId' => $newId],
-                            ['siteId' => $oldId, 'elementId' => $ids]
-                        )
-                        ->execute()
+                    \Craft::$app->db->createCommand()->update(
+                        '{{%elements_sites}}',
+                        ['siteId' => $newId],
+                        ['siteId' => $oldId, 'elementId' => $ids]
+                    )->execute()
                     ;
 
-                    \Craft::$app
-                        ->db
-                        ->createCommand()
-                        ->update(
-                            '{{%content}}',
-                            ['siteId' => $newId],
-                            ['siteId' => $oldId, 'elementId' => $ids]
-                        )
-                        ->execute()
+                    \Craft::$app->db->createCommand()->update(
+                        '{{%content}}',
+                        ['siteId' => $newId],
+                        ['siteId' => $oldId, 'elementId' => $ids]
+                    )->execute()
                     ;
                 }
             }
@@ -1019,9 +1016,12 @@ class Freeform extends Plugin
             if ($request->isCpRequest && preg_match('/^freeform\//', $request->getPathInfo())) {
                 \Craft::$app->view->registerAssetBundle(BetaBundle::class, View::POS_END);
 
-                \Craft::$app->view->hook('cp.layouts.base', function (array &$context) {
-                    return \Craft::$app->view->renderTemplate('freeform/_beta/feedback-widget');
-                });
+                \Craft::$app->view->hook(
+                    'cp.layouts.base',
+                    function (array &$context) {
+                        return \Craft::$app->view->renderTemplate('freeform/_beta/feedback-widget');
+                    }
+                );
             }
         }
     }

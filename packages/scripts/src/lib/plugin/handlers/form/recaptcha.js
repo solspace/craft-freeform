@@ -14,6 +14,7 @@ class RecaptchaHandler {
   version;
   siteKey;
   action;
+  lazyLoad = false;
 
   recaptchaElement;
   isTokenSet = false;
@@ -25,7 +26,7 @@ class RecaptchaHandler {
     this.freeform = freeform;
     this.form = freeform.form;
 
-    const { recaptcha, recaptchaKey, recaptchaAction } = this.form.dataset;
+    const { recaptcha, recaptchaKey, recaptchaAction, recaptchaLazyLoad } = this.form.dataset;
 
     if (!recaptcha) {
       return;
@@ -34,29 +35,40 @@ class RecaptchaHandler {
     this.version = recaptcha;
     this.siteKey = recaptchaKey;
     this.action = recaptchaAction;
+    this.lazyLoad = recaptchaLazyLoad !== undefined;
 
-    if (!this.scriptAdded) {
-      let url = this._URL;
-      switch (this.version) {
-        case this._V3:
-          url += `?render=${this.siteKey}`;
-          break;
+    const loadScripts = () => {
+      this.form.removeEventListener('input', loadScripts);
 
-        case this._V2_CHECKBOX:
-          url += '?render=explicit';
-          break;
+      if (!this.scriptAdded) {
+        let url = this._URL;
+        switch (this.version) {
+          case this._V3:
+            url += `?render=${this.siteKey}`;
+            break;
+
+          case this._V2_CHECKBOX:
+            url += '?render=explicit';
+            break;
+        }
+
+        const script = document.createElement('script');
+        script.src = url;
+        script.async = true;
+        script.defer = true;
+        script.addEventListener('load', this.renderRecaptcha);
+        document.body.appendChild(script);
+
+        this.scriptAdded = true;
+      } else {
+        this.renderRecaptcha();
       }
+    };
 
-      const script = document.createElement('script');
-      script.src = url;
-      script.async = true;
-      script.defer = true;
-      script.addEventListener('load', this.renderRecaptcha);
-      document.body.appendChild(script);
-
-      this.scriptAdded = true;
+    if (this.lazyLoad) {
+      this.form.addEventListener('input', loadScripts);
     } else {
-      this.renderRecaptcha();
+      loadScripts();
     }
   }
 

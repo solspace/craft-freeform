@@ -326,7 +326,7 @@ class ApiController extends BaseController
             $manageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
 
             if (!$isAdmin && !$manageAll) {
-                $formId = Freeform::getInstance()->submissions->getAllowedSubmissionFormIds();
+                $formId = Freeform::getInstance()->submissions->getAllowedReadFormIds();
             }
         }
 

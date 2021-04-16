@@ -84,6 +84,7 @@ class RecaptchaService extends Component
 
         $event->attachAttribute('data-recaptcha', $type);
         $event->attachAttribute('data-recaptcha-key', $recaptchaKey);
+        $event->attachAttribute('data-recaptcha-lazy-load', (bool) $settings->recaptchaLazyLoad);
 
         if (Settings::RECAPTCHA_TYPE_V3 === $type) {
             $event->attachAttribute(

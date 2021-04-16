@@ -616,6 +616,11 @@ class SettingsService extends BaseService
         return \Yii::getAlias('@freeform/Resources/css/front-end/plugin/freeform.css');
     }
 
+    public function isFormFieldShowOnlyAllowedForms(): bool
+    {
+        return (bool) $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
+    }
+
     private function isMinimumSubmissionTimePassed(Form $form): bool
     {
         $initTime = $form->getInitTime();

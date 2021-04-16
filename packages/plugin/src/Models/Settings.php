@@ -177,6 +177,9 @@ class Settings extends Model
     /** @var string */
     public $recaptchaSecret;
 
+    /** @var bool */
+    public $recaptchaLazyLoad;
+
     /** @var string */
     public $recaptchaType;
 
@@ -258,6 +261,9 @@ class Settings extends Model
     /** @var bool */
     public $updateSearchIndexes;
 
+    /** @var bool */
+    public $formFieldShowOnlyAllowedForms;
+
     /**
      * Settings constructor.
      */
@@ -313,6 +319,7 @@ class Settings extends Model
         $this->recaptchaEnabled = false;
         $this->recaptchaKey = null;
         $this->recaptchaSecret = null;
+        $this->recaptchaLazyLoad = false;
         $this->recaptchaType = self::RECAPTCHA_TYPE_V2_CHECKBOX;
         $this->recaptchaMinScore = 0.5;
         $this->recaptchaBehaviour = self::RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR;
@@ -330,6 +337,8 @@ class Settings extends Model
         $this->twigInHtmlIsolatedMode = true;
 
         $this->updateSearchIndexes = true;
+
+        $this->formFieldShowOnlyAllowedForms = false;
 
         parent::__construct($config);
     }

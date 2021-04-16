@@ -30,7 +30,7 @@ class QuickExportController extends BaseController
         $formId = \Craft::$app->request->getParam('formId');
         $isSpam = 'true' === \Craft::$app->request->getParam('isSpam');
 
-        $allowedFormIds = $this->getSubmissionsService()->getAllowedSubmissionFormIds();
+        $allowedFormIds = $this->getSubmissionsService()->getAllowedReadFormIds();
 
         /** @var Form[] $forms */
         $forms = [];
@@ -200,8 +200,7 @@ class QuickExportController extends BaseController
             return;
         }
 
-        $canManageAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-        if (!$canManageAll) {
+        if (!PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
             PermissionHelper::requirePermission(
                 PermissionHelper::prepareNestedPermission(
                     Freeform::PERMISSION_SUBMISSIONS_MANAGE,

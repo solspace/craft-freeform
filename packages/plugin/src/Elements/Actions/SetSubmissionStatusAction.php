@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Elements\Actions;
 
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 
@@ -66,14 +65,8 @@ class SetSubmissionStatusAction extends ElementAction
         $failCount = 0;
 
         static $allowedFormIds;
-        static $isAdmin;
-
         if (null === $allowedFormIds) {
-            $allowedFormIds = PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
-        }
-
-        if (null === $isAdmin) {
-            $isAdmin = PermissionHelper::isAdmin() || PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+            $allowedFormIds = Freeform::getInstance()->submissions->getAllowedWriteFormIds();
         }
 
         foreach ($submissions as $submission) {
@@ -82,7 +75,7 @@ class SetSubmissionStatusAction extends ElementAction
                 continue;
             }
 
-            if (!$isAdmin && !\in_array($submission->formId, $allowedFormIds, false)) {
+            if (!\in_array($submission->formId, $allowedFormIds, false)) {
                 continue;
             }
 

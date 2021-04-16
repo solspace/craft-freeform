@@ -10,10 +10,13 @@
     {{ redirectInput('freeform/settings/general') }}
     {{ csrfInput() }}
 
+    <h2 class="first">{{ "General Settings"|t('freeform') }}</h2>
+
+    <h3>{{ "Control Panel"|t('freeform') }}</h3>
+
     {% if craft.freeform.pro %}
 
         {{ forms.textField({
-            first: true,
             class: "code",
             label: "Custom Plugin Name"|t('freeform'),
             instructions: "Override the plugin name by specifying your own here."|t('freeform'),
@@ -56,28 +59,16 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Enable Search Index Updating on New Submissions?"|t('freeform'),
-        instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
-        name: "settings[updateSearchIndexes]",
-        on: settings.updateSearchIndexes,
-        errors: settings.errors("updateSearchIndexes"),
+        label: "Hide 'Install Demo' alert message?"|t('freeform'),
+        instructions: "Hides the alert message suggesting to install demo templates when this setting is enabled."|t('freeform'),
+        name: 'settings[hideBannerDemo]',
+        on: settings.hideBannerDemo,
+        errors: settings.getErrors('hideBannerDemo')
     }) }}
 
-    {{ forms.lightswitchField({
-        label: "Only show Forms with permissions in Form Field Type?"|t('freeform'),
-        instructions: "Enable this to only show forms the user or group has permissions to manage in the list of options for the Form Field Type."|t('freeform'),
-        name: "settings[formFieldShowOnlyAllowedForms]",
-        on: settings.formFieldShowOnlyAllowedForms,
-        errors: settings.errors("formFieldShowOnlyAllowedForms"),
-    }) }}
+    <hr>
 
-    {{ forms.lightswitchField({
-        label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
-        instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
-        name: "settings[removeNewlines]",
-        on: settings.removeNewlines,
-        errors: settings.errors("removeNewlines"),
-    }) }}
+    <h3>{{ "Form Behavior"|t('freeform') }}</h3>
 
     {{ forms.lightswitchField({
         label: "Fill Form Values from the GET Query String?"|t('freeform'),
@@ -85,14 +76,6 @@
         name: "settings[fillWithGet]",
         on: settings.fillWithGet,
         errors: settings.errors("fillWithGet"),
-    }) }}
-
-    {{ forms.lightswitchField({
-        label: "Remember the Page Order in Multi-page forms?"|t('freeform'),
-        instructions: "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms."|t('freeform'),
-        name: "settings[rememberPageSubmitOrder]",
-        on: settings.rememberPageSubmitOrder,
-        errors: settings.errors("rememberPageSubmitOrder"),
     }) }}
 
     {{ forms.lightswitchField({
@@ -111,6 +94,14 @@
         errors: settings.errors("autoScrollToErrors"),
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Remember the Page Order in Multi-page forms?"|t('freeform'),
+        instructions: "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms."|t('freeform'),
+        name: "settings[rememberPageSubmitOrder]",
+        on: settings.rememberPageSubmitOrder,
+        errors: settings.errors("rememberPageSubmitOrder"),
+    }) }}
+
     {{ forms.selectField({
         label: "Freeform Javascript Insertion Location"|t('freeform'),
         instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
@@ -125,20 +116,42 @@
     }) }}
 
     <div id="script-insert-warning" class="hidden">
-        {{- "With 'None' chosen, please be sure to manually load Freeform's JS and CSS with '/freeform/plugin.js' and '/freeform/plugin.css' in your template(s)."|t('freeform') -}}
+        {{- "With 'None' chosen, please be sure to manually load Freeform's JS and CSS with the 'freeform.loadFreeformPlugin()' function in your template(s)."|t('freeform') -}}
     </div>
 
+    <hr>
+
+    <h3>{{ "Element Field Type"|t('freeform') }}</h3>
+
     {{ forms.lightswitchField({
-        label: "Hide 'Install Demo' alert message?"|t('freeform'),
-        instructions: "Hides the alert message suggesting to install demo templates when this setting is enabled."|t('freeform'),
-        name: 'settings[hideBannerDemo]',
-        on: settings.hideBannerDemo,
-        errors: settings.getErrors('hideBannerDemo')
+        label: "Restrict Form options in Form Field Type to User permissions?"|t('freeform'),
+        instructions: "Enable this to only show forms the user or group has permissions to manage in the list of options for the Form Element Field Type (relating forms in Entries, etc)."|t('freeform'),
+        name: "settings[formFieldShowOnlyAllowedForms]",
+        on: settings.formFieldShowOnlyAllowedForms,
+        errors: settings.errors("formFieldShowOnlyAllowedForms"),
+    }) }}
+
+    <hr>
+
+    <h3>{{ "Submission Data"|t('freeform') }}</h3>
+
+    {{ forms.lightswitchField({
+        label: "Enable Search Index Updating on New Submissions?"|t('freeform'),
+        instructions: "Enable this to have Craft update search indexes whenever a new submission is created."|t('freeform'),
+        name: "settings[updateSearchIndexes]",
+        on: settings.updateSearchIndexes,
+        errors: settings.errors("updateSearchIndexes"),
+    }) }}
+
+    {{ forms.lightswitchField({
+        label: "Remove Newlines from Textareas for Exporting"|t('freeform'),
+        instructions: "Enable this to have newlines removed from Textarea fields in submissions when exporting."|t('freeform'),
+        name: "settings[removeNewlines]",
+        on: settings.removeNewlines,
+        errors: settings.errors("removeNewlines"),
     }) }}
 
     {% if craft.freeform.pro %}
-
-        <hr>
 
         {{ forms.lightswitchField({
             label: "Automatically Purge Submission Data"|t('freeform'),

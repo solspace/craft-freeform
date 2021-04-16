@@ -10,6 +10,8 @@
     {{ redirectInput('freeform/settings/recaptcha') }}
     {{ csrfInput() }}
 
+    <h2 class="first">{{ "reCAPTCHA Settings"|t('freeform') }}</h2>
+
     {{ forms.lightswitchField({
         first: true,
         label: "Enable reCAPTCHA?"|t('freeform'),
@@ -37,6 +39,7 @@
         {{ forms.selectField({
             label: "reCAPTCHA type"|t('freeform'),
             instructions: "Choose which type of reCAPTCHA you want to use."|t('freeform'),
+            warning: "Please be sure the selection here matches the reCAPTCHA type on the Google reCAPTCHA site admin console.",
             id: "recaptcha-type",
             name: "settings[recaptchaType]",
             value: settings.recaptchaType,
@@ -61,6 +64,10 @@
             errors: settings.errors("recaptchaSecret"),
             suggestEnvVars: true,
         }) }}
+
+        <hr>
+
+        <h3>{{ "Behavior & Configuration"|t('freeform') }}</h3>
 
         {{ forms.lightswitchField({
             label: "Only load reCAPTCHA scripts once the user interacts with the form?"|t('freeform'),

@@ -10,8 +10,9 @@
     {{ redirectInput('freeform/settings/form-builder') }}
     {{ csrfInput() }}
 
+    <h2 class="first">{{ "Form Builder Settings"|t('freeform') }}</h2>
+
     {{ forms.selectField({
-        first: true,
         label: "Display Order of Fields in Form Builder"|t('freeform'),
         instructions: "The display order for the list of available fields in the Form Builder."|t('freeform'),
         name: "settings[fieldDisplayOrder]",

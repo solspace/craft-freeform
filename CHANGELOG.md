@@ -1,63 +1,38 @@
 # Solspace Freeform Changelog
 
-## 3.11.0-beta.6 - 2021-04-01
+## 3.11.0 - 2021-04-20
+
+### Added
+- Added the ability to edit other Craft Elements, including special support for Craft Users.
+- Added the ability to map to Calendar Events with the Element Connections feature.
+- Added a full screen HTML & Twig and Rich Text editor inside the form builder.
+- Added the ability to update file-based email notification templates directly inside the CP (optional).
+- Added a migration tool for migrating from Database to File-based email notifications.
+- Added support for searching by submissions' field values in the CP Submissions index.
+- Added a toggle for showing field handles in the Conditional Rules feature selectors.
+- Added GraphQL support to the Forms fieldtype.
+- Added support for Freeform to track page movement in multi-page forms, allowing for robust movement when using the "Previous" button and Conditional Rules page skipping logic.
+- Added more granular submission viewing and management permissions. You can now set read-only permissions in addition to management permissions.
+- Added a setting that allows you to optionally restrict the Forms element field type to only show forms which the user has manage permissions for.
+- Added ability to load reCAPTCHA scripts (and checkbox field if using v2 Checkbox) only once the site visitor interacts with the form.
+- Added JSON export of a form instance for frontend frameworks (`freeform.form('myForm').json`).
+- Added export profile developer events, allowing the addition of custom exporters.
+- Added a developer event for modifying the AJAX response payload.
 
 ### Changed
 - Reworked the way Freeform's JS and CSS are loaded by the plugin in front end templates. Developers can now also manually load the Freeform JS in templates with `<script src="/freeform/plugin.js"></script>` and the CSS (currently only applicable to the Opinion field type) with `<link rel="stylesheet" href="/freeform/plugin.css">`.
-
-## 3.11.0-beta.5 - 2021-03-25
-
-### Added
-- Added GraphQL support to the Forms fieldtype.
-- Added support for Freeform to track page movement in multi-page forms, allowing for robust movement when using the "Previous" button and Conditional Rules page skipping logic.
-
-### Changed
+- Updated Freeform's JS to no longer fetch field specific scripts if the fields aren't present in the form.
+- Updated Freeform's JS to no longer include excess polyfills.
+- Changed the automatic scroll anchor tag from `<a>` to `<div>` (when reloading the page for errors or loading the next page on non-AJAX forms).
+- Updated exporting to no longer export submissions flagged as spam (unless you're exporting directly from the Spam folder).
 - Updated the "Install Demo Templates" banner to be hidden automatically if the `allowAdminChanges` Craft config setting is enabled.
 
 ### Fixed
 - Fixed a bug where searching on the CP Submissions index could sometimes trigger an error a column was missing.
 - Fixed a bug where Freeform would log a "Slug cannot be blank" error in the Freeform logs when a form is not fully submitted (triggers error/reloads form) with Element Connections.
-
-## 3.11.0-beta.4 - 2021-03-19
-
-### Added
-- Added export profile developer events, allowing the addition of custom exporters.
-
-### Fixed
 - Fixed a bug where changing the status of submissions from the CP Submissions index page would not work for user groups with the "Manage All Submissions" permission.
-- Fixed a bug where the OAuth Return URI field would clear its value when creating a new integration, making it difficult to copy/paste during set up.
-- Fixed a bug in the Element Connections feature that prevented it from working correctly.
+- Fixed a bug where the 'OAuth Return URI' field would clear its value when creating a new integration, making it difficult to copy/paste during set up.
 - Fixed a bug where the Stripe Payments integration was not sending emails for charge success and failure events.
-
-## 3.11.0-beta.3 - 2021-03-11
-
-### Added
-- Added support for searching by submissions' field values in the CP Submissions index.
-- Added a toggle for showing field handles in the Conditional Rules feature selectors.
-- Added JSON export of a form instance for frontend frameworks (`freeform.form('myForm').json`).
-
-### Changed
-- Updated Freeform's JS to no longer fetch field specific scripts if the fields aren't present in the form.
-- Updated Freeform's JS to no longer include excess polyfills.
-- Changed the automatic scroll anchor tag from `<a>` to `<div>` (when reloading the page for errors or loading the next page on non-AJAX forms).
-
-## 3.11.0-beta.2 - 2021-02-25
-
-### Fixed
-- Fixed various issues with the Element editing feature.
-- Fixed a bug where error handling wasn't always reliable when there were errors with submitting new Calendar Events via the Element Connections feature.
-
-## 3.11.0-beta.1 - 2021-02-18
-
-### Added
-- Added the ability to edit other Craft Elements, including special support for Craft Users.
-- Added the ability to map to Calendar Events with the Element Connections feature.
-- Added a full screen HTML & Twig editor inside the form builder.
-- Added the ability to update file-based email notification templates directly inside the CP (optional).
-- Added a migration tool for migrating from Database to File-based email notifications.
-
-### Changed
-- Updated exporting to no longer export submissions flagged as spam (unless you're exporting directly from the Spam folder).
 
 ## 3.10.11 - 2021-03-25
 

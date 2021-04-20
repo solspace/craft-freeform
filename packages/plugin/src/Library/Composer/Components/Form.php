@@ -75,6 +75,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const LIMIT_COOKIE = 'cookie';
     const LIMIT_IP_COOKIE = 'ip_cookie';
 
+    const EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD = 'prepareAjaxResponsePayload';
+
     /** @var int */
     private $id;
 

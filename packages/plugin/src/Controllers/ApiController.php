@@ -21,6 +21,7 @@ use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -30,6 +31,7 @@ use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewa
 use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\NotificationRecord;
+use yii\base\Event;
 use yii\base\Exception;
 use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
@@ -529,24 +531,27 @@ class ApiController extends BaseController
 
         $success = !$form->hasErrors() && !$form->getActions();
 
-        return $this->asJson(
-            [
-                'success' => $success,
-                'multipage' => $form->isMultiPage(),
-                'finished' => $form->isFinished(),
-                'submissionId' => $submission ? $submission->id : null,
-                'submissionToken' => $submission ? $submission->token : null,
-                'actions' => $form->getActions(),
-                'errors' => $fieldErrors,
-                'formErrors' => $form->getErrors(),
-                'returnUrl' => $returnUrl,
-                'honeypot' => [
-                    'name' => $honeypot->getName(),
-                    'hash' => $honeypot->getHash(),
-                ],
-                'html' => $form->render(),
-            ]
-        );
+        $payload = [
+            'success' => $success,
+            'multipage' => $form->isMultiPage(),
+            'finished' => $form->isFinished(),
+            'submissionId' => $submission ? $submission->id : null,
+            'submissionToken' => $submission ? $submission->token : null,
+            'actions' => $form->getActions(),
+            'errors' => $fieldErrors,
+            'formErrors' => $form->getErrors(),
+            'returnUrl' => $returnUrl,
+            'honeypot' => [
+                'name' => $honeypot->getName(),
+                'hash' => $honeypot->getHash(),
+            ],
+            'html' => $form->render(),
+        ];
+
+        $event = new PrepareAjaxResponsePayloadEvent($form, $payload);
+        Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);
+
+        return $this->asJson($event->getPayload());
     }
 
     /**

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.11.1 - 2021-04-22
+
+### Fixed
+- Fixed an issue with submissions and element indexing requests.
+
 ## 3.11.0 - 2021-04-20
 
 ### Added

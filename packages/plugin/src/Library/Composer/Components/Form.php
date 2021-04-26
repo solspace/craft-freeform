@@ -693,6 +693,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $this->formHandler->onAfterFormValidate($this);
 
+        if (!empty($this->getErrors())) {
+            $isFormValid = false;
+        }
+
+        foreach ($this->getCurrentPage()->getFields() as $field) {
+            if (!$field->isValid()) {
+                $isFormValid = false;
+            }
+        }
+
         $this->valid = $isFormValid;
 
         return $this->valid;

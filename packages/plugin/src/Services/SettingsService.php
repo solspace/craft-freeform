@@ -166,6 +166,11 @@ class SettingsService extends BaseService
         return Settings::SCRIPT_INSERT_LOCATION_MANUAL === $this->getSettingsModel()->scriptInsertLocation;
     }
 
+    public function scriptInsertType(): string
+    {
+        return $this->getSettingsModel()->scriptInsertType;
+    }
+
     public function isFormSubmitDisable(): bool
     {
         return (bool) $this->getSettingsModel()->formSubmitDisable;

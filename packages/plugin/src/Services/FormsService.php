@@ -32,6 +32,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
 use yii\base\InvalidCallException;
 use yii\base\ViewNotFoundException;
@@ -490,16 +491,46 @@ class FormsService extends BaseService implements FormHandlerInterface
     {
         static $pluginLoaded;
 
+        $insertType = $this->getSettingsService()->scriptInsertType();
+
         if ($event->isNoScriptRenderEnabled() && !$event->isManualScriptLoading()) {
             return;
         }
 
         if (null === $pluginLoaded) {
-            $jsHash = sha1_file($this->getSettingsService()->getPluginJsPath());
-            $cssHash = sha1_file($this->getSettingsService()->getPluginCssPath());
+            $jsPath = $this->getSettingsService()->getPluginJsPath();
+            $cssPath = $this->getSettingsService()->getPluginCssPath();
 
-            $event->appendExternalJsToOutput(UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]));
-            $event->appendExternalCssToOutput(UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]));
+            switch ($insertType) {
+                case Settings::SCRIPT_INSERT_TYPE_INLINE:
+                    $js = file_get_contents($jsPath);
+                    $css = file_get_contents($cssPath);
+
+                    $event->appendJsToOutput($js);
+                    $event->appendCssToOutput($css);
+
+                    break;
+
+                case Settings::SCRIPT_INSERT_TYPE_FILES:
+                    $jsUrl = \Craft::$app->assetManager->getPublishedUrl($jsPath, true);
+                    $cssUrl = \Craft::$app->assetManager->getPublishedUrl($cssPath, true);
+
+                    $event->appendExternalJsToOutput($jsUrl);
+                    $event->appendExternalCssToOutput($cssUrl);
+
+                    break;
+
+                case Settings::SCRIPT_INSERT_TYPE_POINTERS:
+                default:
+                    $jsHash = sha1_file($jsPath);
+                    $cssHash = sha1_file($cssPath);
+
+                    $event->appendExternalJsToOutput(UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]));
+                    $event->appendExternalCssToOutput(UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]));
+
+                    break;
+            }
+
             $pluginLoaded = true;
         }
     }

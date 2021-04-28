@@ -49,6 +49,10 @@ class Settings extends Model
     const SCRIPT_INSERT_LOCATION_FORM = 'form';
     const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
 
+    const SCRIPT_INSERT_TYPE_FILES = 'files';
+    const SCRIPT_INSERT_TYPE_POINTERS = 'pointers';
+    const SCRIPT_INSERT_TYPE_INLINE = 'inline';
+
     const DEFAULT_AJAX = true;
     const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
 
@@ -89,6 +93,9 @@ class Settings extends Model
 
     /** @var string */
     public $scriptInsertLocation;
+
+    /** @var string */
+    public $scriptInsertType;
 
     /** @var bool */
     public $formSubmitDisable;
@@ -280,6 +287,7 @@ class Settings extends Model
         $this->removeNewlines = false;
         $this->footerScripts = false;
         $this->scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
+        $this->scriptInsertType = self::SCRIPT_INSERT_TYPE_POINTERS;
         $this->formSubmitDisable = true;
         $this->rememberPageSubmitOrder = true;
 

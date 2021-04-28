@@ -103,7 +103,7 @@
     }) }}
 
     {{ forms.selectField({
-        label: "Freeform Javascript Insertion Location"|t('freeform'),
+        label: "Freeform Script Insertion Location"|t('freeform'),
         instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
         name: "settings[scriptInsertLocation]",
         value: settings.scriptInsertLocation,
@@ -112,6 +112,19 @@
             "footer": "Page Footer"|t('freeform'),
             "form": "Inside Form"|t('freeform'),
             "manual": "None (add manually)"|t('freeform'),
+        },
+    }) }}
+
+    {{ forms.selectField({
+        label: "Freeform Script Insert Type"|t('freeform'),
+        instructions: "Specify the way Freeform scripts are inserted."|t('freeform'),
+        name: "settings[scriptInsertType]",
+        value: settings.scriptInsertType,
+        errors: settings.errors("scriptInsertType"),
+        options: {
+            "pointers": "As Static Urls (recommended)"|t('freeform'),
+            "files": "As Files"|t('freeform'),
+            "inline": "Inline"|t('freeform'),
         },
     }) }}
 

@@ -1,11 +1,22 @@
 # Solspace Freeform Changelog
 
+## 3.11.2 - 2021-04-28
+
+### Added
+- Added a new 'Freeform Script Insert Type' setting so you can now choose whether you want Freeform scripts loaded as static URLs, files, or inline.
+
+### Fixed
+- Fixed an issue where sites with server rules applied to JS and CSS files could cause Freeform forms to no longer submit correctly.
+- Fixed a bug where the 'Previous' button was not correctly going backwards in Safari.
+
 ## 3.11.1 - 2021-04-22
 
 ### Fixed
 - Fixed an issue with submissions and element indexing requests.
 
 ## 3.11.0 - 2021-04-20
+
+> {warning} Freeform 3.11+ introduces changes to how its front-end scripts are inserted into pages (as static URLs). If you have server rules applied to JS and CSS files, you may run into issues. If this is the case, you can switch the behavior back to previous approaches ('As Files' introduced in 3.10 or 'Inline' as it worked previously before 3.10+). This is a new setting available in the General Settings of Freeform or with Project Config as `scriptInsertType: files`.
 
 ### Added
 - Added the ability to edit other Craft Elements, including special support for Craft Users.

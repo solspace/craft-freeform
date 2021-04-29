@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.11.3 - 2021-04-29
+
+### Added
+- Added a post validation check for form errors.
+
+### Fixed
+- Fixed a bug where the 3.11.0 user group permission migrations would not work correctly on setups with `allowAdminChanges` disabled.
+
 ## 3.11.2 - 2021-04-28
 
 ### Added

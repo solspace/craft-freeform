@@ -654,7 +654,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
             }
         }
 
-        if ($this->errors) {
+        if (!empty($this->getErrors())) {
             $isFormValid = false;
         }
 
@@ -693,17 +693,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $this->formHandler->onAfterFormValidate($this);
 
-// ISSUES WITH RECAPTCHA - commenting out for now 2021/04/28
-//
-//        if (!empty($this->getErrors())) {
-//            $isFormValid = false;
-//        }
-//
-//        foreach ($this->getCurrentPage()->getFields() as $field) {
-//            if (!$field->isValid()) {
-//                $isFormValid = false;
-//            }
-//        }
+        if (!empty($this->getErrors())) {
+            $isFormValid = false;
+        }
 
         $this->valid = $isFormValid;
 

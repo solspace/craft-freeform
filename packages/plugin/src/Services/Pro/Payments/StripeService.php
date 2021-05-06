@@ -65,7 +65,10 @@ class StripeService extends Component
         if (0 === strpos($token, 'pm_')) {
             $currency = $dynamicValues[PaymentProperties::FIELD_CURRENCY] ?? $properties->getCurrency();
             $amount = $dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount();
-            $amount = Stripe::toStripeAmount($amount, $currency);
+
+            if (!\in_array(strtoupper($currency), Stripe::ZERO_DECIMAL_CURRENCIES)) {
+                $amount = (int) ceil(bcmul($amount, 100));
+            }
 
             $paymentIntentProperties = [
                 'payment_method' => $token,

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.11.4 - 2021-05-06
+
+### Fixed
+- Fixed a bug where some amounts could add 1 cent to the amount sent off to Stripe in the Payments integration.
+- Fixed a bug where the Status sort order select was not working in Postgres.
+
 ## 3.11.3 - 2021-04-29
 
 ### Added

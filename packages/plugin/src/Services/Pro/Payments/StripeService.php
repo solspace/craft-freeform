@@ -67,7 +67,13 @@ class StripeService extends Component
             $amount = $dynamicValues[PaymentProperties::FIELD_AMOUNT] ?? $properties->getAmount();
 
             if (!\in_array(strtoupper($currency), Stripe::ZERO_DECIMAL_CURRENCIES)) {
-                $amount = (int) ceil(bcmul($amount, 100));
+                if (\function_exists('bcmul')) {
+                    $amount = (int) ceil(bcmul($amount, 100));
+                } elseif (\function_exists('gmp_mul')) {
+                    $amount = (int) ceil(gmp_mul($amount, 100));
+                } else {
+                    $amount = (int) ceil($amount * 100);
+                }
             }
 
             $paymentIntentProperties = [

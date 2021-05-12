@@ -283,7 +283,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
     public function getNextSortOrder(): int
     {
         $maxSortOrder = (new Query())
-            ->select('MAX(sortOrder)')
+            ->select('MAX([[sortOrder]])')
             ->from(StatusRecord::TABLE)
             ->scalar()
         ;

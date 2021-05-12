@@ -4,6 +4,7 @@ import 'core-js/features/get-iterator';
 import 'core-js/features/object/assign';
 
 import * as EventTypes from '@lib/plugin/constants/event-types';
+import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
@@ -50,6 +51,7 @@ export default class Freeform {
 
   _initializedHandlers = [];
   _handlers = [
+    BackButtonHandler,
     StripeHandler,
     RuleSetHandler,
     RecaptchaHandler,
@@ -274,6 +276,7 @@ export default class Freeform {
    */
   _attachListeners = () => {
     this.form.addEventListener('submit', this._onSubmit);
+
     const inputs = this.form.querySelectorAll('input, select, textarea');
     for (let i = 0; i < inputs.length; i++) {
       const input = inputs[i];
@@ -331,14 +334,6 @@ export default class Freeform {
       this._onSubmitAjax(event);
 
       return false;
-    } else {
-      if (event.submitter && event.submitter.name === Freeform._BACK_BUTTON_NAME) {
-        const back = document.createElement('input');
-        back.type = 'hidden';
-        back.name = Freeform._BACK_BUTTON_NAME;
-        back.value = '';
-        this.form.appendChild(back);
-      }
     }
 
     return true;

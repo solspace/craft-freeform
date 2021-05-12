@@ -742,14 +742,22 @@ class Freeform extends Plugin
                         self::PERMISSION_SUBMISSIONS_ACCESS => [
                             'label' => self::t('Access Submissions'),
                             'nested' => [
-                                self::PERMISSION_SUBMISSIONS_READ => ['label' => self::t('Read All Submissions')],
+                                self::PERMISSION_SUBMISSIONS_READ => [
+                                    'label' => self::t('Read All Submissions'),
+                                    'info' => self::t("If you'd like to give users access to read all forms' submissions, check off this checkbox. It will also override any selections in the 'Read Submissions by Form' settings. 'Manage' permissions will also override any 'Read' permissions."),
+                                ],
                                 self::PERMISSION_SUBMISSIONS_READ_INDIVIDUAL => [
                                     'label' => self::t('Read Submissions by Form'),
+                                    'info' => self::t("If you'd like to give users access to read only some forms' submissions, check off the ones here. These selections will be overridden by the 'Read All Submissions' checkbox. 'Manage' permissions will also override any 'Read' permissions."),
                                     'nested' => $readPermissions,
                                 ],
-                                self::PERMISSION_SUBMISSIONS_MANAGE => ['label' => self::t('Manage All Submissions')],
+                                self::PERMISSION_SUBMISSIONS_MANAGE => [
+                                    'label' => self::t('Manage All Submissions'),
+                                    'info' => self::t("If you'd like to give users access to manage all forms' submissions, check off this checkbox. It will also override any selections in the 'Manage Submissions by Form' settings. 'Manage' permissions will also override any 'Read' permissions."),
+                                ],
                                 self::PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL => [
                                     'label' => self::t('Manage Submissions by Form'),
+                                    'info' => self::t("If you'd like to give users access to manage only some forms' submissions, check off the ones here. These selections will be overridden by the 'Manage All Submissions' checkbox. 'Manage' permissions will also override any 'Read' permissions."),
                                     'nested' => $managePermissions,
                                 ],
                             ],
@@ -759,9 +767,13 @@ class Freeform extends Plugin
                             'nested' => [
                                 self::PERMISSION_FORMS_CREATE => ['label' => self::t('Create New Forms')],
                                 self::PERMISSION_FORMS_DELETE => ['label' => self::t('Delete Forms')],
-                                self::PERMISSION_FORMS_MANAGE => ['label' => self::t('Manage All Forms')],
+                                self::PERMISSION_FORMS_MANAGE => [
+                                    'label' => self::t('Manage All Forms'),
+                                    'info' => self::t("If you'd like to give users access to all forms, check off this checkbox. It will also override any selections in the 'Manage Forms Individually' settings."),
+                                ],
                                 self::PERMISSION_FORMS_MANAGE_INDIVIDUAL => [
                                     'label' => self::t('Manage Forms Individually'),
+                                    'info' => self::t("If you'd like to give users access to only some forms, check off the ones here. These selections will be overridden by the 'Manage All Forms' checkbox."),
                                     'nested' => $formPermissions,
                                 ],
                             ],

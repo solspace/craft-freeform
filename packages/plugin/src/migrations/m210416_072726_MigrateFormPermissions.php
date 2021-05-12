@@ -78,6 +78,11 @@ class m210416_072726_MigrateFormPermissions extends Migration
             ->column()
         ;
 
+        $projectConfig = \Craft::$app->getProjectConfig();
+        if ($projectConfig->readOnly) {
+            return true;
+        }
+
         foreach ($groupIds as $groupId) {
             $permissions = $userPermissions->getPermissionsByGroupId($groupId);
 

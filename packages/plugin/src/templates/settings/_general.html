@@ -103,7 +103,7 @@
     }) }}
 
     {{ forms.selectField({
-        label: "Freeform Javascript Insertion Location"|t('freeform'),
+        label: "Freeform Script Insertion Location"|t('freeform'),
         instructions: "The location of where you want Freeform to insert its scripts for form and field functionality."|t('freeform'),
         name: "settings[scriptInsertLocation]",
         value: settings.scriptInsertLocation,
@@ -112,6 +112,24 @@
             "footer": "Page Footer"|t('freeform'),
             "form": "Inside Form"|t('freeform'),
             "manual": "None (add manually)"|t('freeform'),
+        },
+    }) }}
+
+    {{ forms.selectField({
+        label: "Freeform Script Insert Type"|t('freeform'),
+        instructions: "Specify the way Freeform scripts are inserted."|t('freeform'),
+        tip: "
+            <b>As Static URLs</b> (recommended) offers built-in browser caching and a static endpoint that delivers the latest Freeform scripts, but are not physical files and therefore cannot have server rules applied.
+            <b>As Files</b> (recommended if having issues with Static URLs) are actual physical files generated inside of the 'cpresources' folder by Craft's asset manager with no caching. 
+            <b>Inline</b> will add the scripts as inline scripts and may be useful as a workaround if the other 2 options are not working. This doesn't allow for caching, and pollutes the source code.
+        ",
+        name: "settings[scriptInsertType]",
+        value: settings.scriptInsertType,
+        errors: settings.errors("scriptInsertType"),
+        options: {
+            "pointers": "As Static URLs (recommended)"|t('freeform'),
+            "files": "As Files"|t('freeform'),
+            "inline": "Inline"|t('freeform'),
         },
     }) }}
 

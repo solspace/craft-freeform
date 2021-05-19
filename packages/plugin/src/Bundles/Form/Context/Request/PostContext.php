@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -24,6 +25,9 @@ class PostContext
 
         foreach ($form->getCurrentPage()->getFields() as $field) {
             $postedValue = $request->post($field->getHandle());
+            if ($field instanceof CheckboxField) {
+                $postedValue = (bool) $postedValue;
+            }
 
             $field->setValue($postedValue);
         }

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Pages;
 
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\SubmitField;
 use Solspace\Freeform\Freeform;
@@ -15,7 +16,8 @@ class PageContext
     {
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'onValidate']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleNavigateBack']);
-        Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'handleNavigateForward'], null, false);
+        Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'handleNavigateForward']);
+        Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'handleReset']);
     }
 
     public function onValidate(ValidationEvent $event)
@@ -23,8 +25,6 @@ class PageContext
         $form = $event->getForm();
         if (!$form->isPagePosted()) {
             $event->isValid = false;
-
-            return;
         }
     }
 
@@ -86,5 +86,14 @@ class PageContext
 
             return;
         }
+    }
+
+    public function handleReset(ResetEvent $event)
+    {
+        $form = $event->getForm();
+        $bag = $form->getPropertyBag();
+
+        $bag->set(Form::PROPERTY_PAGE_INDEX, 0);
+        $bag->set(Form::PROPERTY_PAGE_HISTORY, []);
     }
 }

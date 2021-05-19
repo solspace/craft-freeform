@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Controllers;
 
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Freeform;
@@ -50,8 +51,8 @@ class SubmitController extends BaseController
         $isAjaxRequest = $request->getIsAjax();
 
         $form->handleRequest($request);
+        $submission = $this->getSubmissionsService()->createSubmissionFromForm($form);
         if ($form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
-            $submission = $this->getSubmissionsService()->createSubmissionFromForm($form);
             $this->handleSubmission($form, $submission);
 
             if (!$form->hasErrors()) {
@@ -72,16 +73,18 @@ class SubmitController extends BaseController
         }
 
         if ($isAjaxRequest) {
-            return $this->toAjaxResponse($form);
+            return $this->toAjaxResponse($form, $submission);
         }
     }
 
     private function handleSubmission(Form $form, Submission $submission)
     {
-        $event = new SubmitEvent($form);
+        $formHandler = Freeform::getInstance()->forms;
+
+        $event = new SubmitEvent($form, $submission);
         Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
 
-        if (!$event->isValid || !empty($form->getActions()) || !$this->formHandler->onBeforeSubmit($this)) {
+        if (!$event->isValid || !empty($form->getActions()) || !$formHandler->onBeforeSubmit($form)) {
             return false;
         }
 
@@ -105,7 +108,7 @@ class SubmitController extends BaseController
             $this->getSubmissionsService()->postProcessSubmission($submission, $mailingListOptInFields);
         }
 
-        Event::trigger(self::class, self::EVENT_AFTER_SUBMIT, $event);
+        Event::trigger(self::class, Form::EVENT_AFTER_SUBMIT, $event);
     }
 
     private function getReturnUrl(Form $form, Submission $submission): string
@@ -150,23 +153,31 @@ class SubmitController extends BaseController
 
         $success = !$form->hasErrors() && !$form->getActions();
 
-        return $this->asJson(
-            [
-                'success' => $success,
-                'multipage' => $form->isMultiPage(),
-                'finished' => $form->isFinished(),
-                'submissionId' => $submission->id ?? null,
-                'submissionToken' => $submission->token ?? null,
-                'actions' => $form->getActions(),
-                'errors' => $fieldErrors,
-                'formErrors' => $form->getErrors(),
-                'returnUrl' => $returnUrl,
-                'honeypot' => [
-                    'name' => $honeypot->getName(),
-                    'hash' => $honeypot->getHash(),
-                ],
-                'html' => $form->render(),
-            ]
-        );
+        $payload = [
+            'success' => $success,
+            'multipage' => $form->isMultiPage(),
+            'finished' => $form->isFinished(),
+            'submissionId' => $submission->id ?? null,
+            'submissionToken' => $submission->token ?? null,
+            'actions' => $form->getActions(),
+            'errors' => $fieldErrors,
+            'formErrors' => $form->getErrors(),
+            'returnUrl' => $returnUrl,
+            'honeypot' => [
+                'name' => $honeypot->getName(),
+                'hash' => $honeypot->getHash(),
+            ],
+        ];
+
+        if ($form->isFinished()) {
+            $form->reset();
+        }
+
+        $payload['html'] = $form->render();
+
+        $event = new PrepareAjaxResponsePayloadEvent($form, $payload);
+        Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);
+
+        return $this->asJson($payload);
     }
 }

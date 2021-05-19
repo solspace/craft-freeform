@@ -19,12 +19,13 @@ use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
+use Solspace\Freeform\Events\Forms\PersistStateEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\DynamicRecipientField;
-use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
@@ -32,9 +33,6 @@ use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
@@ -78,6 +76,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-attributes';
     const EVENT_BEFORE_HANDLE_REQUEST = 'before-handle-request';
     const EVENT_AFTER_HANDLE_REQUEST = 'after-handle-request';
+    const EVENT_BEFORE_RESET = 'before-reset-form';
+    const EVENT_AFTER_RESET = 'after-reset-form';
+    const EVENT_PERSIST_STATE = 'persist-state';
 
     const PROPERTY_STORED_VALUES = 'storedValues';
     const PROPERTY_PAGE_INDEX = 'pageIndex';
@@ -733,6 +734,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $event = new HandleRequestEvent($this, $request);
         Event::trigger(self::class, self::EVENT_AFTER_HANDLE_REQUEST, $event);
+        Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
 
     public function isReachedPostingLimit(): bool
@@ -1055,8 +1057,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
             $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes);
             Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
-
-            $this->populateFromSubmission($this->getPropertyBag()->get('submissionToken'));
         }
 
         return $this;
@@ -1103,19 +1103,15 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function reset()
     {
-        $this->getFormValueContext()->reset();
+        $event = new ResetEvent($this);
+        Event::trigger(self::class, self::EVENT_BEFORE_RESET, $event);
 
-        if ($this->getAssociatedSubmissionToken()) {
+        if (!$event->isValid) {
             return;
         }
 
-        foreach ($this->getLayout()->getFields() as $field) {
-            if ($field instanceof HiddenField || $field instanceof StaticValueInterface || $field instanceof PersistentValueInterface || $field instanceof NoStorageInterface) {
-                continue;
-            }
-
-            $field->setValue(null);
-        }
+        Event::trigger(self::class, self::EVENT_AFTER_RESET, $event);
+        Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
 
     /**

@@ -6,6 +6,7 @@ use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\FormContextStorageInterface;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PHPSessionFormContextStorage;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Freeform;
@@ -31,7 +32,7 @@ class SessionContext
 
         Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'onFormRender']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
-        Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'storeContext']);
+        Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
     }
 
     public function onFormRender(RenderTagEvent $event)
@@ -66,7 +67,7 @@ class SessionContext
         $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPage()));
     }
 
-    public function storeContext(HandleRequestEvent $event)
+    public function storeContext(FormEventInterface $event)
     {
         $form = $event->getForm();
         $propertyBag = $form->getPropertyBag();

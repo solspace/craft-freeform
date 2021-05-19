@@ -6,6 +6,7 @@ class RequestContext
 {
     public function __construct()
     {
+        new EditElementContext();
         new GetContext();
         new StorageContext();
         new PostContext();

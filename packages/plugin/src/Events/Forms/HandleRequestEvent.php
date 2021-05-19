@@ -3,10 +3,11 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\web\Request;
 
-class HandleRequestEvent extends ArrayableEvent
+class HandleRequestEvent extends ArrayableEvent implements FormEventInterface
 {
     /** @var Form */
     private $form;

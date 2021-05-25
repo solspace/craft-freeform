@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Fields\Pro\Payments;
 
-use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
@@ -10,8 +9,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueI
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
-use Solspace\Freeform\Library\Session\CraftRequest;
-use Solspace\Freeform\Library\Session\CraftSession;
 
 class CreditCardDetailsField extends AbstractField implements SingleValueInterface, PaymentInterface, ExtraFieldInterface
 {
@@ -66,21 +63,19 @@ class CreditCardDetailsField extends AbstractField implements SingleValueInterfa
         $children = $this->getChildren();
         $form = $this->getForm();
         $translator = $form->getTranslator();
-        $formAttributes = new FormAttributes(null, null, new CraftSession(), new CraftRequest());
-        $valueContext = $formAttributes->getFormValueContext();
         $currentPage = $form->getCurrentPage();
 
         //TODO: make all field names in form of snake case string constants
         $properties = new FieldProperties($children[CreditCardNumberField::FIELD_NAME], $translator);
-        $numberField = CreditCardNumberField::createFromProperties($form, $properties, $valueContext, $currentPage);
+        $numberField = CreditCardNumberField::createFromProperties($form, $properties, $currentPage);
         $numberField->setAttributes(['id' => $id.'_card_number']);
 
         $properties = new FieldProperties($children[CreditCardExpiryField::FIELD_NAME], $translator);
-        $expiryField = CreditCardExpiryField::createFromProperties($form, $properties, $valueContext, $currentPage);
+        $expiryField = CreditCardExpiryField::createFromProperties($form, $properties, $currentPage);
         $expiryField->setAttributes(['id' => $id.'_card_expiry']);
 
         $properties = new FieldProperties($children[CreditCardCvcField::FIELD_NAME], $translator);
-        $cvcField = CreditCardCvcField::createFromProperties($form, $properties, $valueContext, $currentPage);
+        $cvcField = CreditCardCvcField::createFromProperties($form, $properties, $currentPage);
         $cvcField->setAttributes(['id' => $id.'_card_cvc']);
 
         $layout = [];

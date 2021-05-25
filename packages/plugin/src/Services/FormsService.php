@@ -719,7 +719,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         $event = new AttachFormAttributesEvent($form, $attributes);
         $this->trigger(self::EVENT_ATTACH_FORM_ATTRIBUTES, $event);
 
-        return $event->getCompiledAttributeString();
+        return $event->getAttributes();
     }
 
     /**

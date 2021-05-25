@@ -25,7 +25,6 @@ use Solspace\Calendar\Calendar;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -33,8 +32,6 @@ use Solspace\Freeform\Library\Composer\Composer;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
-use Solspace\Freeform\Library\Session\CraftRequest;
-use Solspace\Freeform\Library\Session\CraftSession;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\FieldRecord;
@@ -79,9 +76,6 @@ class FormsController extends BaseController
         return $this->renderEditForm($title, $model);
     }
 
-    /**
-     * @throws FreeformException
-     */
     public function actionEdit(int $id = null): Response
     {
         $this->requireFormManagePermission($id);
@@ -96,9 +90,6 @@ class FormsController extends BaseController
         return $this->renderEditForm($model->name, $model);
     }
 
-    /**
-     * @throws FreeformException
-     */
     public function actionDuplicate(): Response
     {
         $this->requirePostRequest();
@@ -149,9 +140,6 @@ class FormsController extends BaseController
         ]);
     }
 
-    /**
-     * @throws FreeformException
-     */
     public function actionSave(): Response
     {
         $post = \Craft::$app->request->post();
@@ -190,18 +178,9 @@ class FormsController extends BaseController
         }
 
         try {
-            $freeform = Freeform::getInstance();
-
-            $formAttributes = new FormAttributes($formId, $form->uid, new CraftSession(), new CraftRequest());
             $composer = new Composer(
+                $form,
                 $composerState,
-                $formAttributes,
-                $freeform->forms,
-                $freeform->fields,
-                $freeform->submissions,
-                $freeform->spamSubmissions,
-                $freeform->files,
-                $freeform->statuses,
                 new CraftTranslator(),
                 FreeformLogger::getInstance(FreeformLogger::FORM)
             );
@@ -239,9 +218,6 @@ class FormsController extends BaseController
         return $this->asJson(['success' => false, 'errors' => $errors]);
     }
 
-    /**
-     * Deletes a form.
-     */
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -255,11 +231,6 @@ class FormsController extends BaseController
         );
     }
 
-    /**
-     * Resets the spam counter for a specific form.
-     *
-     * @return bool|Response
-     */
     public function actionResetSpamCounter(): Response
     {
         $this->requirePostRequest();
@@ -289,9 +260,6 @@ class FormsController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @throws NotFoundHttpException
-     */
     public function actionSort(): Response
     {
         $this->requirePostRequest();
@@ -410,11 +378,6 @@ class FormsController extends BaseController
         return Freeform::getInstance()->forms;
     }
 
-    /**
-     * @param int $formId
-     *
-     * @throws FreeformException
-     */
     private function getNewOrExistingForm($formId): FormModel
     {
         if ($formId) {
@@ -756,19 +719,11 @@ class FormsController extends BaseController
         return $fields;
     }
 
-    /**
-     * @param mixed $data
-     */
     private function getEncodedJson($data): string
     {
         return json_encode($data, \JSON_OBJECT_AS_ARRAY);
     }
 
-    /**
-     * @param int|string $id
-     *
-     * @throws ForbiddenHttpException
-     */
     private function requireFormManagePermission($id)
     {
         $managePermission = Freeform::PERMISSION_FORMS_MANAGE;
@@ -782,9 +737,6 @@ class FormsController extends BaseController
         }
     }
 
-    /**
-     * @throws ForbiddenHttpException
-     */
     private function requireFormCreatePermission()
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);

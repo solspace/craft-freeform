@@ -92,8 +92,8 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
         foreach ($spamReasons as $reason) {
             $record = new SpamReasonRecord();
             $record->submissionId = $submission->getId();
-            $record->reasonType = $reason->getType();
-            $record->reasonMessage = $reason->getMessage();
+            $record->reasonType = $reason['type'];
+            $record->reasonMessage = $reason['message'];
             $record->save();
         }
     }

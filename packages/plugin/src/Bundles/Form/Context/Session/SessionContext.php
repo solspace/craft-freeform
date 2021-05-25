@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\FormContextStorageInterface;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PHPSessionFormContextStorage;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Freeform;
@@ -30,9 +31,24 @@ class SessionContext
     {
         $this->storage = new PHPSessionFormContextStorage();
 
+        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'onFormLoad']);
         Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'onFormRender']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
+    }
+
+    public function onFormLoad(FormLoadedEvent $event)
+    {
+        $form = $event->getForm();
+        $bag = $form->getPropertyBag();
+
+        $formHash = self::getFormHash($form);
+        $pageHash = self::getPageHash($form);
+        $sessionToken = self::getFormSessionToken($form);
+
+        $hash = "{$formHash}-{$pageHash}-{$sessionToken}";
+
+        $bag->set(Form::HASH_KEY, $hash);
     }
 
     public function onFormRender(RenderTagEvent $event)

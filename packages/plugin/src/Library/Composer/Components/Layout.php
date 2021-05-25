@@ -32,7 +32,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInt
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Factories\ComposerFieldFactory;
-use Solspace\Freeform\Library\Session\FormValueContext;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 class Layout implements \JsonSerializable, \Iterator
@@ -108,14 +107,11 @@ class Layout implements \JsonSerializable, \Iterator
 
     /**
      * Layout constructor.
-     *
-     * @param Properties $properties
      */
     public function __construct(
         Form $form,
         array $layoutData,
-        Properties $properties = null,
-        FormValueContext $formValueContext,
+        Properties $properties,
         TranslatorInterface $translator
     ) {
         $this->form = $form;
@@ -123,7 +119,7 @@ class Layout implements \JsonSerializable, \Iterator
         $this->layoutData = $layoutData;
         $this->translator = $translator;
         $this->fieldTypes = [];
-        $this->buildLayout($formValueContext);
+        $this->buildLayout();
     }
 
     public function hasDatepickerEnabledFields(): bool
@@ -504,7 +500,7 @@ class Layout implements \JsonSerializable, \Iterator
      *
      * @throws ComposerException
      */
-    private function buildLayout(FormValueContext $formValueContext)
+    private function buildLayout()
     {
         $isPro = Freeform::getInstance()->isPro();
 
@@ -563,7 +559,6 @@ class Layout implements \JsonSerializable, \Iterator
                     $field = ComposerFieldFactory::createFromProperties(
                         $this->form,
                         $fieldProperties,
-                        $formValueContext,
                         $pageIndex
                     );
 

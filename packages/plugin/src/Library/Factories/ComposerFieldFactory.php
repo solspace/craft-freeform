@@ -17,7 +17,6 @@ use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
-use Solspace\Freeform\Library\Session\FormValueContext;
 use Stringy\Stringy;
 
 class ComposerFieldFactory
@@ -26,15 +25,9 @@ class ComposerFieldFactory
     private static $proFieldNamespace = 'Solspace\Freeform\Fields\Pro';
     private static $paymentsFieldNamespace = 'Solspace\Freeform\Fields\Pro\Payments';
 
-    /**
-     * @param int $pageIndex
-     *
-     * @throws ComposerException
-     */
     public static function createFromProperties(
         Form $form,
         FieldProperties $properties,
-        FormValueContext $formValueContext,
         $pageIndex
     ): AbstractField {
         /** @var AbstractField $className */
@@ -73,6 +66,6 @@ class ComposerFieldFactory
             );
         }
 
-        return $className::createFromProperties($form, $properties, $formValueContext, $pageIndex);
+        return $className::createFromProperties($form, $properties, $pageIndex);
     }
 }

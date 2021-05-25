@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
@@ -14,9 +13,6 @@ class AttachFormAttributesEvent extends ArrayableEvent
     /** @var array */
     private $attributes;
 
-    /**
-     * AttachFormAttributes constructor.
-     */
     public function __construct(Form $form, array $attributes = [])
     {
         $this->form = $form;
@@ -25,9 +21,6 @@ class AttachFormAttributesEvent extends ArrayableEvent
         parent::__construct([]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['form', 'attributes'];
@@ -43,11 +36,13 @@ class AttachFormAttributesEvent extends ArrayableEvent
         return $this->attributes;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
+    public function setAttributes(array $value): self
+    {
+        $this->attributes = $value;
+
+        return $this;
+    }
+
     public function attachAttribute(string $name, $value): self
     {
         $this->attributes[$name] = $value;
@@ -55,9 +50,6 @@ class AttachFormAttributesEvent extends ArrayableEvent
         return $this;
     }
 
-    /**
-     * @return $this
-     */
     public function removeAttribute(string $name): self
     {
         if (isset($this->attributes[$name])) {
@@ -65,13 +57,5 @@ class AttachFormAttributesEvent extends ArrayableEvent
         }
 
         return $this;
-    }
-
-    /**
-     * Compiles all of the attributes into a string.
-     */
-    public function getCompiledAttributeString(): string
-    {
-        return StringHelper::compileAttributeStringFromArray($this->attributes);
     }
 }

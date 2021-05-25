@@ -14,18 +14,15 @@ namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\ConstraintInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Validator;
-use Solspace\Freeform\Library\Session\FormValueContext;
 use Stringy\Stringy;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Symfony\Component\PropertyAccess\PropertyAccess;
@@ -98,7 +95,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     final public static function createFromProperties(
         Form $form,
         FieldProperties $properties,
-        FormValueContext $formValueContext,
         $pageIndex
     ): self {
         $calledClass = static::class;
@@ -123,23 +119,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
         if ($field instanceof StaticValueInterface) {
             $field->staticValue = $field->getValue();
-        }
-
-        return $field;
-        // TODO: perform this in the context bundle
-        if ($field instanceof PersistentValueInterface) {
-            $persistentValues = $formValueContext->getPersistentValues();
-            $field->setValue($persistentValues[$field->getHandle()] ?? $field->getValue());
-        } else {
-            $storedValue = $formValueContext->getStoredValue($field);
-            $field->setValue($storedValue);
-        }
-
-        if ($field instanceof CheckboxField) {
-            $storedValue = $formValueContext->getStoredValue($field);
-            if ($formValueContext->hasFormBeenPosted() || null !== $storedValue) {
-                $field->setIsCheckedByPost((bool) $storedValue);
-            }
         }
 
         return $field;

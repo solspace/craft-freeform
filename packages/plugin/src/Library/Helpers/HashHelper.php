@@ -22,7 +22,7 @@ class HashHelper
     /** @var Hashids */
     private static $hashids = [];
 
-    public static function hash(int $id, string $salt = null): string
+    public static function hash(int $id = null, string $salt = null): string
     {
         return self::getHashids($salt)->encode($id);
     }

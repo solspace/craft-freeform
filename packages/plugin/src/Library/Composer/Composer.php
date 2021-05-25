@@ -13,20 +13,13 @@
 namespace Solspace\Freeform\Library\Composer;
 
 use Psr\Log\LoggerInterface;
-use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Context;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties;
-use Solspace\Freeform\Library\Database\FieldHandlerInterface;
-use Solspace\Freeform\Library\Database\FormHandlerInterface;
-use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
-use Solspace\Freeform\Library\Database\StatusHandlerInterface;
-use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
-use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
-use Solspace\Freeform\Library\Session\CraftRequest;
-use Solspace\Freeform\Library\Session\CraftSession;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
+use Solspace\Freeform\Models\FormModel;
 
 class Composer
 {
@@ -39,6 +32,9 @@ class Composer
     /** @var Form */
     private $form;
 
+    /** @var FormModel */
+    private $formModel;
+
     /** @var Context */
     private $context;
 
@@ -48,61 +44,27 @@ class Composer
     /** @var array */
     private $composerState;
 
-    /** @var FormHandlerInterface */
-    private $formHandler;
-
-    /** @var SubmissionHandlerInterface */
-    private $submissionHandler;
-
-    /** @var SpamSubmissionHandlerInterface */
-    private $spamSubmissionHandler;
-
-    /** @var FileUploadHandlerInterface */
-    private $fileUploadHandler;
-
     /** @var TranslatorInterface */
     private $translator;
 
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var StatusHandlerInterface */
-    private $statusHandler;
-
-    /** @var FieldHandlerInterface */
-    private $fieldHandler;
-
     /**
-     * Composer constructor.
-     *
-     * @param array          $composerState
-     * @param FormAttributes $formAttributes
-     *
      * @throws ComposerException
      */
     public function __construct(
+        FormModel $formModel,
         array $composerState = null,
-        FormAttributes $formAttributes = null,
-        FormHandlerInterface $formHandler,
-        FieldHandlerInterface $fieldHandler,
-        SubmissionHandlerInterface $submissionHandler,
-        SpamSubmissionHandlerInterface $spamSubmissionHandler,
-        FileUploadHandlerInterface $fileUploadHandler,
-        StatusHandlerInterface $statusHandler,
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->formHandler = $formHandler;
-        $this->fieldHandler = $fieldHandler;
-        $this->submissionHandler = $submissionHandler;
-        $this->spamSubmissionHandler = $spamSubmissionHandler;
-        $this->fileUploadHandler = $fileUploadHandler;
-        $this->statusHandler = $statusHandler;
+        $this->formModel = $formModel;
         $this->translator = $translator;
         $this->logger = $logger;
 
         $this->composerState = $composerState;
-        $this->validateComposerData($formAttributes);
+        $this->validateComposerData();
     }
 
     /**
@@ -152,7 +114,7 @@ class Composer
      *
      * @throws ComposerException
      */
-    private function validateComposerData(FormAttributes $formAttributes)
+    private function validateComposerData()
     {
         $composerState = $this->composerState;
 
@@ -202,14 +164,9 @@ class Composer
         }
 
         $this->form = new Form(
+            $this->formModel,
             $this->properties,
-            $formAttributes,
             $composer[self::KEY_LAYOUT],
-            $this->formHandler,
-            $this->fieldHandler,
-            $this->submissionHandler,
-            $this->spamSubmissionHandler,
-            $this->fileUploadHandler,
             $this->translator,
             $this->logger
         );
@@ -218,35 +175,25 @@ class Composer
     /**
      * This method sets defaults for all composer items
      * It happens if a new Form Model is created.
-     *
-     * @throws ComposerException
      */
     private function setDefaults()
     {
         $this->properties = new Properties($this->getDefaultProperties(), $this->translator);
 
-        $formAttributes = new FormAttributes(null, null, new CraftSession(), new CraftRequest());
-
         $this->context = new Context([]);
         $this->form = new Form(
+            $this->formModel,
             $this->properties,
-            $formAttributes,
             [[]],
-            $this->formHandler,
-            $this->fieldHandler,
-            $this->submissionHandler,
-            $this->spamSubmissionHandler,
-            $this->fileUploadHandler,
             $this->translator,
             $this->logger
         );
     }
 
-    /**
-     * @throws \Exception
-     */
     private function getDefaultProperties(): array
     {
+        $freeform = Freeform::getInstance();
+
         return [
             Properties::PAGE_PREFIX.'0' => [
                 'type' => Properties::PAGE_PREFIX,
@@ -259,11 +206,11 @@ class Composer
                 'color' => '#'.substr(md5(random_int(111, 999).time()), 0, 6),
                 'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',
                 'description' => '',
-                'formTemplate' => $this->formHandler->getDefaultFormattingTemplate(),
+                'formTemplate' => $freeform->forms->getDefaultFormattingTemplate(),
                 'returnUrl' => '',
                 'storeData' => true,
-                'defaultStatus' => $this->statusHandler->getDefaultStatusId(),
-                'ajaxEnabled' => $this->formHandler->isAjaxEnabledByDefault(),
+                'defaultStatus' => $freeform->statuses->getDefaultStatusId(),
+                'ajaxEnabled' => $freeform->forms->isAjaxEnabledByDefault(),
             ],
             Properties::VALIDATION_HASH => [
                 'type' => Properties::VALIDATION_HASH,

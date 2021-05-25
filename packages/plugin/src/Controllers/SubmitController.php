@@ -68,10 +68,6 @@ class SubmitController extends BaseController
             }
         }
 
-        if ($form->isMarkedAsSpam() && $this->getSettingsService()->isSpamBehaviourReloadForm()) {
-            return $this->redirect($request->getUrl());
-        }
-
         if ($isAjaxRequest) {
             return $this->toAjaxResponse($form, $submission);
         }

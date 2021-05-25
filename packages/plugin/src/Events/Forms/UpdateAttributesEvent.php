@@ -35,4 +35,27 @@ class UpdateAttributesEvent extends ArrayableEvent
     {
         return $this->attributes;
     }
+
+    public function setAttributes(array $attributes): self
+    {
+        $this->attributes = $attributes;
+
+        return $this;
+    }
+
+    public function addAttribute(string $key, $value): self
+    {
+        $this->attributes[$key] = $value;
+
+        return $this;
+    }
+
+    public function removeAttribute(string $key): self
+    {
+        if (isset($this->attributes[$key])) {
+            unset($this->attributes[$key]);
+        }
+
+        return $this;
+    }
 }

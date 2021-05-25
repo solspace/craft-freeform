@@ -1,0 +1,44 @@
+<?php
+
+namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
+
+use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
+use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Composer\Components\Form;
+use yii\base\Event;
+
+class ReturnUrlInput implements BundleInterface
+{
+    public function __construct()
+    {
+        Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
+        Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachToJson']);
+    }
+
+    public function attachInput(RenderTagEvent $event)
+    {
+        $form = $event->getForm();
+        $bag = $form->getPropertyBag();
+
+        if ($bag->get('returnUrl')) {
+            $name = Form::RETURN_URI_KEY;
+            $value = $this->getHashedUrl($bag->get('returnUrl'));
+
+            $event->addChunk('<input type="hidden" '.'name="'.$name.'" '.'value="'.$value.'" '.'/>');
+        }
+    }
+
+    public function attachToJson(OutputAsJsonEvent $event)
+    {
+        $bag = $event->getForm()->getPropertyBag();
+        if ($bag->get('returnUrl')) {
+            $event->add('returnUrl', $this->getHashedUrl($bag->get('returnUrl')));
+        }
+    }
+
+    private function getHashedUrl($url): string
+    {
+        return \Craft::$app->security->hashData($url);
+    }
+}

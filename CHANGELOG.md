@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.11.4.1 - 2021-05-12
+
+### Fixed
+- Fixed a bug where the Stripe Payments integration could error if the BC Math PHP extension is not enabled on the server. Added a fallback for GMP and basic multiplication for calculating amounts.
+
 ## 3.11.4 - 2021-05-06
 
 ### Fixed

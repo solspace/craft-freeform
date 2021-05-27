@@ -5,14 +5,13 @@ import { addFieldToNewRow } from '../actions/Actions';
 import FieldGroup from '../components/FieldList/FieldGroup';
 import MailingListFieldGroup from '../components/FieldList/MailingListFieldGroup';
 import SpecialFieldGroup from '../components/FieldList/SpecialFieldGroup';
-import FieldHelper from '../helpers/FieldHelper';
 
 @connect(
   (state) => ({
     fields: state.fields.fields,
     specialFields: state.specialFields,
     mailingListFields: state.mailingLists.list,
-    layout: state.composer.layout,
+    properties: state.composer.properties,
   }),
   (dispatch) => ({
     onFieldClick: (hash, properties, pageIndex) => {
@@ -22,7 +21,7 @@ import FieldHelper from '../helpers/FieldHelper';
 )
 export default class FieldList extends Component {
   static propTypes = {
-    layout: PropTypes.array.isRequired,
+    properties: PropTypes.object.isRequired,
     fields: PropTypes.array.isRequired,
     specialFields: PropTypes.array.isRequired,
     mailingListFields: PropTypes.array.isRequired,
@@ -50,20 +49,14 @@ export default class FieldList extends Component {
   }
 
   getUsedFields() {
-    const { layout, fields } = this.props;
-    const fieldIds = fields.map((field) => field.id);
+    const { properties } = this.props;
 
     const usedFields = [];
 
-    for (const rows of layout) {
-      for (const row of rows) {
-        for (const hash of row.columns) {
-          const id = FieldHelper.deHashId(hash);
-
-          if (fieldIds.indexOf(id) !== -1) {
-            usedFields.push(id);
-          }
-        }
+    // eslint-disable-next-line no-unused-vars
+    for (const [key, value] of Object.entries(properties)) {
+      if (value.id !== undefined) {
+        usedFields.push(value.id);
       }
     }
 

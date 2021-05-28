@@ -202,9 +202,7 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector
 
         $response = $client->get($endpoint);
 
-        $json = json_decode((string) $response->getBody(), true);
-
-        return !empty($json);
+        return $response->getStatusCode() >= 200 && $response->getStatusCode() < 300;
     }
 
     /**

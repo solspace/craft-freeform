@@ -2,10 +2,13 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Session;
 
+use Carbon\Carbon;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
+use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\DatabaseStorage;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\FormContextStorageInterface;
-use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PHPSessionFormContextStorage;
+use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PayloadStorage;
+use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\SessionStorage;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
@@ -29,7 +32,9 @@ class SessionContext
 
     public function __construct()
     {
-        $this->storage = new PHPSessionFormContextStorage();
+        //$this->storage = new DatabaseStorage();
+        //$this->storage = new PayloadStorage();
+        $this->storage = new SessionStorage();
 
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'onFormLoad']);
         Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'onFormRender']);
@@ -54,17 +59,18 @@ class SessionContext
     public function onFormRender(RenderTagEvent $event)
     {
         $form = $event->getForm();
-        list($key) = $this->getTokens($form);
+        list($key) = self::getTokens($form);
 
-        $bag = $this->storage->getBag($key);
+        $bag = $this->storage->getBag($key, $form);
         if (null !== $bag) {
             return;
         }
 
-        $bag = new SessionBag();
-        $bag->merge($form->getPropertyBag());
+        $bag = new SessionBag($form->getId());
+        $bag->setProperties($form->getPropertyBag()->toArray());
+        $bag->setAttributes($form->getAttributeBag()->toArray());
 
-        $this->storage->registerBag($key, $bag);
+        $this->storage->registerBag($key, $bag, $form);
         $this->storage->persist();
     }
 
@@ -78,7 +84,8 @@ class SessionContext
             return;
         }
 
-        $form->getPropertyBag()->merge($bag);
+        $form->getPropertyBag()->merge($bag->getProperties());
+        $form->getAttributeBag()->merge($bag->getAttributes());
         $form->setFormPosted(self::isFormPosted($form));
         $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPage()));
     }
@@ -86,16 +93,17 @@ class SessionContext
     public function storeContext(FormEventInterface $event)
     {
         $form = $event->getForm();
-        $propertyBag = $form->getPropertyBag();
-        $sessionBag = $this->getBag($form);
 
+        $sessionBag = $this->getBag($form);
         if (null === $sessionBag) {
             $form->addError(Freeform::t('Form has expired'));
 
             return;
         }
 
-        $sessionBag->merge($propertyBag);
+        $sessionBag->setProperties($form->getPropertyBag()->toArray());
+        $sessionBag->setAttributes($form->getAttributeBag()->toArray());
+        $sessionBag->setLastUpdate(new Carbon());
 
         $this->storage->persist();
     }
@@ -158,14 +166,7 @@ class SessionContext
         return self::$requestTokenCache[$formHash];
     }
 
-    private function getBag(Form $form): SessionBag
-    {
-        list($key) = $this->getTokens($form);
-
-        return $this->storage->getBag($key);
-    }
-
-    private function getTokens(Form $form): array
+    public static function getTokens(Form $form): array
     {
         $formHash = self::getFormHash($form);
         $sessionToken = self::getFormSessionToken($form);
@@ -173,5 +174,15 @@ class SessionContext
         $key = $formHash.'-'.$sessionToken;
 
         return [$key, $formHash, $sessionToken];
+    }
+
+    /**
+     * @return null|SessionBag
+     */
+    private function getBag(Form $form)
+    {
+        list($key) = self::getTokens($form);
+
+        return $this->storage->getBag($key, $form);
     }
 }

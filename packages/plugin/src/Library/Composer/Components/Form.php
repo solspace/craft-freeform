@@ -686,6 +686,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $event = new HandleRequestEvent($this, $request);
         Event::trigger(self::class, self::EVENT_BEFORE_HANDLE_REQUEST, $event);
 
+        if (!$event->isValid) {
+            return;
+        }
+
         if ($this->isPagePosted()) {
             $this->validate();
         }

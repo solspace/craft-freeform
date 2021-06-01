@@ -7,7 +7,12 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 abstract class AbstractBag implements BagInterface
 {
     /** @var array */
-    protected $contents = [];
+    protected $contents;
+
+    public function __construct(array $contents = [])
+    {
+        $this->contents = $contents;
+    }
 
     public function __get($name)
     {
@@ -61,9 +66,14 @@ abstract class AbstractBag implements BagInterface
         return $this;
     }
 
-    public function jsonSerialize(): array
+    public function toArray(): array
     {
         return $this->contents;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->toArray();
     }
 
     public function getIterator(): \ArrayIterator

@@ -120,7 +120,7 @@
         instructions: "Specify the way Freeform scripts are inserted."|t('freeform'),
         tip: "
             <b>As Static URLs</b> (recommended) offers built-in browser caching and a static endpoint that delivers the latest Freeform scripts, but are not physical files and therefore cannot have server rules applied.
-            <b>As Files</b> (recommended if having issues with Static URLs) are actual physical files generated inside of the 'cpresources' folder by Craft's asset manager with no caching. 
+            <b>As Files</b> (recommended if having issues with Static URLs) are actual physical files generated inside of the 'cpresources' folder by Craft's asset manager with no caching.
             <b>Inline</b> will add the scripts as inline scripts and may be useful as a workaround if the other 2 options are not working. This doesn't allow for caching, and pollutes the source code.
         ",
         name: "settings[scriptInsertType]",
@@ -130,6 +130,20 @@
             "pointers": "As Static URLs (recommended)"|t('freeform'),
             "files": "As Files"|t('freeform'),
             "inline": "Inline"|t('freeform'),
+        },
+    }) }}
+
+
+    {{ forms.selectField({
+        label: "Freeform Session Context"|t('freeform'),
+        instructions: "Choose the way form context is passed between form submits."|t('freeform'),
+        name: "settings[sessionContext]",
+        value: settings.sessionContext,
+        errors: settings.errors("sessionContext"),
+        options: {
+            "payload": "As an encrypted payload (recommended)"|t('freeform'),
+            "session": "Using PHP's sessions"|t('freeform'),
+            "database": "Using a database table"|t('freeform'),
         },
     }) }}
 

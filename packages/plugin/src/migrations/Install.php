@@ -277,6 +277,17 @@ class Install extends StreamlinedInstallMigration
                 ->addField('type', $this->string(30)->notNull())
                 ->addField('name', $this->string())
                 ->addIndex(['type', 'dateCreated']),
+
+            (new Table('freeform_session_context'))
+                ->addField('id', $this->primaryKey())
+                ->addField('contextKey', $this->string(100)->notNull())
+                ->addField('sessionId', $this->string(100)->notNull())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('propertyBag', $this->mediumText())
+                ->addField('attributeBag', $this->mediumText())
+                ->addIndex(['contextKey', 'formId'])
+                ->addIndex(['sessionId'])
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
         ];
     }
 }

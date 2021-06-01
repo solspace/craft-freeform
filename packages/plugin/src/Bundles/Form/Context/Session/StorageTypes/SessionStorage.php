@@ -4,14 +4,15 @@ namespace Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
+use Solspace\Freeform\Library\Composer\Components\Form;
 
-class PHPSessionFormContextStorage implements FormContextStorageInterface
+class SessionStorage implements FormContextStorageInterface
 {
     const KEY = 'freeform_session';
 
     private $context;
 
-    private $maxInstanceCount = 3;
+    private $maxInstanceCount = 50;
 
     public function __construct()
     {
@@ -21,12 +22,12 @@ class PHPSessionFormContextStorage implements FormContextStorageInterface
     /**
      * @return null|SessionBag
      */
-    public function getBag(string $key)
+    public function getBag(string $key, Form $form)
     {
         return $this->context[$key] ?? null;
     }
 
-    public function registerBag(string $key, SessionBag $bag): self
+    public function registerBag(string $key, SessionBag $bag, Form $form): self
     {
         $this->context[$key] = $bag;
 
@@ -48,12 +49,14 @@ class PHPSessionFormContextStorage implements FormContextStorageInterface
         foreach ($storedContext as $key => $value) {
             try {
                 $lastUpdate = new Carbon($value['utime']);
-                $bag = $value['bag'] ?? [];
+                $formId = $value['formId'] ?? null;
+                $properties = $value['properties'] ?? [];
+                $attributes = $value['attributes'] ?? [];
             } catch (\Exception $exception) {
                 continue;
             }
 
-            $context[$key] = new SessionBag($bag, $lastUpdate);
+            $context[$key] = new SessionBag($formId, $properties, $attributes, $lastUpdate);
         }
 
         $this->context = $context;

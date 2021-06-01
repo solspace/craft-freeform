@@ -21,7 +21,6 @@ use craft\errors\UploadFailedException;
 use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\FileHelper;
-use craft\records\Asset as AssetRecord;
 use craft\web\UploadedFile;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\FileUploadField;
@@ -218,8 +217,8 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         if (!empty($assetIds)) {
             foreach ($assetIds as $assetId) {
                 try {
-                    $asset = AssetRecord::find()->where(['id' => $assetId])->one();
-                    if ($asset && $asset->delete()) {
+                    $asset = \Craft::$app->assets->getAssetById($assetId);
+                    if ($asset && \Craft::$app->elements->deleteElement($asset)) {
                         ++$deletedAssets;
                     }
                 } catch (\Exception $e) {

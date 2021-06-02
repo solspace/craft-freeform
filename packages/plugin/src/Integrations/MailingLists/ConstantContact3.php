@@ -123,6 +123,29 @@ class ConstantContact3 extends MailingListOAuthConnector
     {
         $client = $this->generateAuthorizedClient();
 
+        $values = [];
+        foreach ($mappedValues as $key => $value) {
+            if (preg_match('/^street_address_(.*)/', $key, $matches)) {
+                if (!isset($values['street_address'])) {
+                    $values['street_address'] = [];
+                }
+
+                $values['street_address'][$matches[1]] = $value;
+            } elseif (preg_match('/^custom_(.*)/', $key, $matches)) {
+                if (!isset($values['custom_fields'])) {
+                    $values['custom_fields'] = [];
+                }
+
+                $values['custom_fields'][] = ['custom_field_id' => $matches[1], 'value' => $value];
+            } else {
+                $values[$key] = $value;
+            }
+        }
+
+        if (isset($values['street_address']) && !isset($values['street_address']['kind'])) {
+            $values['street_address']['kind'] = 'home';
+        }
+
         try {
             $data = array_merge(
                 [
@@ -130,7 +153,7 @@ class ConstantContact3 extends MailingListOAuthConnector
                     'create_source' => 'Contact',
                     'list_memberships' => [$mailingList->getId()],
                 ],
-                $mappedValues
+                $values
             );
 
             $response = $client->post($this->getEndpoint('/contacts/sign_up_form'), ['json' => $data]);
@@ -259,7 +282,7 @@ class ConstantContact3 extends MailingListOAuthConnector
             );
         }
 
-        $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+        $json = json_decode((string) $response->getBody(), false);
 
         $lists = [];
         foreach ($json->lists as $list) {
@@ -285,15 +308,49 @@ class ConstantContact3 extends MailingListOAuthConnector
      */
     protected function fetchFields($listId): array
     {
-        return [
+        $client = $this->generateAuthorizedClient();
+        $endpoint = $this->getEndpoint('/contact_custom_fields');
+
+        try {
+            $response = $client->get($endpoint);
+        } catch (RequestException $e) {
+            $responseBody = (string) $e->getResponse()->getBody();
+            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
+
+            throw new IntegrationException(
+                $this->getTranslator()->translate('Could not connect to API endpoint')
+            );
+        }
+
+        $json = json_decode((string) $response->getBody(), false);
+
+        $fields = [
             new FieldObject('first_name', 'First Name', FieldObject::TYPE_STRING, false),
             new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, false),
             new FieldObject('job_title', 'Job Title', FieldObject::TYPE_STRING, false),
             new FieldObject('company_name', 'Company Name', FieldObject::TYPE_STRING, false),
-            new FieldObject('cell_phone', 'Cell Phone', FieldObject::TYPE_STRING, false),
-            new FieldObject('home_phone', 'Home Phone', FieldObject::TYPE_STRING, false),
-            new FieldObject('fax', 'Fax', FieldObject::TYPE_STRING, false),
+            new FieldObject('phone_number', 'Phone Number', FieldObject::TYPE_STRING, false),
+            new FieldObject('anniversary', 'Anniversary', FieldObject::TYPE_STRING, false),
+            new FieldObject('birthday_month', 'Birthday Month', FieldObject::TYPE_NUMERIC, false),
+            new FieldObject('birthday_day', 'Birthday Day', FieldObject::TYPE_NUMERIC, false),
+            new FieldObject('street_address_kind', 'Address: Kind', FieldObject::TYPE_STRING, false),
+            new FieldObject('street_address_street', 'Address: Street', FieldObject::TYPE_STRING, false),
+            new FieldObject('street_address_city', 'Address: City', FieldObject::TYPE_STRING, false),
+            new FieldObject('street_address_state', 'Address: State', FieldObject::TYPE_STRING, false),
+            new FieldObject('street_address_postal_code', 'Address: Postal Code', FieldObject::TYPE_STRING, false),
+            new FieldObject('street_address_country', 'Address: Country', FieldObject::TYPE_STRING, false),
         ];
+
+        foreach ($json->custom_fields as $field) {
+            $fields[] = new FieldObject(
+                'custom_'.$field->custom_field_id,
+                $field->label,
+                FieldObject::TYPE_STRING,
+                false
+            );
+        }
+
+        return $fields;
     }
 
     /**

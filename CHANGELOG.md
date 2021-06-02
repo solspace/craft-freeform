@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.11.5 - Unreleased
+
+### Added
+- Added support for mapping to custom fields and more standard fields in the Constant Contact integration.
+
+### Fixed
+- Fixed a bug where the form builder would still showing fields added to the layout (rather than removing them from the list).
+- Fixed a bug where the Zoho authentication check was partially flawed.
+- Fixed a bug where GraphQL form fields were not resolving the selected form.
+
 ## 3.11.4.1 - 2021-05-12
 
 ### Fixed

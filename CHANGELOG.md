@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.11.5 - Unreleased
+## 3.11.5 - 2021-06-03
 
 ### Added
 - Added support for mapping to custom fields and more standard fields in the Constant Contact integration.

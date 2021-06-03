@@ -53,6 +53,10 @@ class Settings extends Model
     const SCRIPT_INSERT_TYPE_POINTERS = 'pointers';
     const SCRIPT_INSERT_TYPE_INLINE = 'inline';
 
+    const CONTEXT_TYPE_PAYLOAD = 'payload';
+    const CONTEXT_TYPE_SESSION = 'session';
+    const CONTEXT_TYPE_DATABASE = 'database';
+
     const DEFAULT_AJAX = true;
     const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
 
@@ -271,6 +275,18 @@ class Settings extends Model
     /** @var bool */
     public $formFieldShowOnlyAllowedForms;
 
+    /** @var string */
+    public $sessionContext;
+
+    /** @var int */
+    public $sessionContextTimeToLiveMinutes;
+
+    /** @var int */
+    public $sessionContextCount;
+
+    /** @var string */
+    public $sessionContextSecret;
+
     /**
      * Settings constructor.
      */
@@ -347,6 +363,11 @@ class Settings extends Model
         $this->updateSearchIndexes = true;
 
         $this->formFieldShowOnlyAllowedForms = false;
+
+        $this->sessionContext = self::CONTEXT_TYPE_PAYLOAD;
+        $this->sessionContextTimeToLiveMinutes = 180;
+        $this->sessionContextCount = 100;
+        $this->sessionContextSecret = '';
 
         parent::__construct($config);
     }
@@ -532,6 +553,21 @@ class Settings extends Model
     public function isRecaptchaInvisible(string $type): bool
     {
         return \in_array($type, [self::RECAPTCHA_TYPE_V2_INVISIBLE, self::RECAPTCHA_TYPE_V3], true);
+    }
+
+    public function getSessionContextTimeToLiveMinutes(): int
+    {
+        return (int) \Craft::parseEnv($this->sessionContextTimeToLiveMinutes);
+    }
+
+    public function getSessionContextCount(): int
+    {
+        return (int) \Craft::parseEnv($this->sessionContextCount);
+    }
+
+    public function getSessionContextSecret(): string
+    {
+        return \Craft::parseEnv($this->sessionContextSecret);
     }
 
     /**

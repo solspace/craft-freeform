@@ -17,10 +17,10 @@ class DatabaseStorage implements FormContextStorageInterface
 
     private $activeRecordsPerSession;
 
-    public function __construct()
+    public function __construct(int $timeToLiveInMinutes, int $activeRecordsPerSession)
     {
-        $this->referenceDate = new Carbon('-'.(60 * 3).' minutes');
-        $this->activeRecordsPerSession = 5;
+        $this->referenceDate = new Carbon('-'.$timeToLiveInMinutes.' minutes');
+        $this->activeRecordsPerSession = $activeRecordsPerSession;
     }
 
     /**

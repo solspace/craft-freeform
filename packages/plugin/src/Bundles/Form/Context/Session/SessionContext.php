@@ -17,6 +17,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Page;
 use Solspace\Freeform\Library\Helpers\HashHelper;
+use Solspace\Freeform\Models\Settings;
 use yii\base\Event;
 
 class SessionContext
@@ -32,9 +33,28 @@ class SessionContext
 
     public function __construct()
     {
-        //$this->storage = new DatabaseStorage();
-        //$this->storage = new PayloadStorage();
-        $this->storage = new SessionStorage();
+        $context = Freeform::getInstance()->settings->getSettingsModel()->sessionContext;
+        $ttl = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextTimeToLiveMinutes();
+        $count = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextCount();
+        $secret = Freeform::getInstance()->settings->getSettingsModel()->getSessionContextSecret();
+
+        switch ($context) {
+            case Settings::CONTEXT_TYPE_DATABASE:
+                $this->storage = new DatabaseStorage($ttl, $count);
+
+                break;
+
+            case Settings::CONTEXT_TYPE_SESSION:
+                $this->storage = new SessionStorage($ttl, $count);
+
+                break;
+
+            case Settings::CONTEXT_TYPE_PAYLOAD:
+            default:
+                $this->storage = new PayloadStorage($secret);
+
+                break;
+        }
 
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'onFormLoad']);
         Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'onFormRender']);
@@ -96,8 +116,6 @@ class SessionContext
 
         $sessionBag = $this->getBag($form);
         if (null === $sessionBag) {
-            $form->addError(Freeform::t('Form has expired'));
-
             return;
         }
 

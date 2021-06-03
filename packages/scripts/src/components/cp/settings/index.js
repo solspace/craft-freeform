@@ -1,5 +1,34 @@
 // eslint-disable no-undef
 $(() => {
+  const sessionTime = $('#session-time');
+  const sessionCount = $('#session-count');
+  const sessionSecret = $('#session-secret');
+
+  const sessionContext = $('select#session-context');
+  sessionContext.on({
+    change: function () {
+      const self = $(this);
+      const value = self.val();
+
+      switch (value) {
+        case 'payload':
+          sessionSecret.removeClass('hidden');
+          sessionCount.addClass('hidden');
+          sessionTime.addClass('hidden');
+
+          break;
+
+        case 'session':
+        case 'database':
+          sessionSecret.addClass('hidden');
+          sessionCount.removeClass('hidden');
+          sessionTime.removeClass('hidden');
+
+          break;
+      }
+    },
+  });
+
   const purgeToggle = $("input[name='purge-toggle']").parents('.lightswitch');
   purgeToggle.on({
     change: function () {

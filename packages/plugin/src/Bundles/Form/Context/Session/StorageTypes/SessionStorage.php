@@ -10,12 +10,17 @@ class SessionStorage implements FormContextStorageInterface
 {
     const KEY = 'freeform_session';
 
+    /** @var SessionBag[] */
     private $context;
 
-    private $maxInstanceCount = 50;
+    private $referenceDate;
 
-    public function __construct()
+    private $maxInstanceCount;
+
+    public function __construct(int $timeToLiveInMinutes, int $maxInstanceCount)
     {
+        $this->referenceDate = new Carbon('-'.$timeToLiveInMinutes.' minutes');
+        $this->maxInstanceCount = $maxInstanceCount;
         $this->loadContext();
     }
 
@@ -36,7 +41,7 @@ class SessionStorage implements FormContextStorageInterface
 
     public function persist()
     {
-        $this->cleanUpSession($this->context);
+        $this->cleanUpSession();
         \Craft::$app->getSession()->set(self::KEY, json_encode($this->context));
     }
 
@@ -62,15 +67,26 @@ class SessionStorage implements FormContextStorageInterface
         $this->context = $context;
     }
 
-    private function cleanUpSession(array &$context)
+    private function cleanUpSession()
     {
-        uasort($context, static function (SessionBag $a, SessionBag $b) {
+        uasort($this->context, static function (SessionBag $a, SessionBag $b) {
             return $b->getLastUpdate()->timestamp <=> $a->getLastUpdate()->timestamp;
         });
+
+        $context = [];
+        foreach ($this->context as $key => $bag) {
+            if ($bag->getLastUpdate()->lt($this->referenceDate)) {
+                continue;
+            }
+
+            $context[$key] = $bag;
+        }
 
         $instanceCount = \count($context);
         if ($instanceCount > $this->maxInstanceCount) {
             array_splice($context, $this->maxInstanceCount);
         }
+
+        $this->context = $context;
     }
 }

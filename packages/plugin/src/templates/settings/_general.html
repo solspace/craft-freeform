@@ -137,6 +137,7 @@
     {{ forms.selectField({
         label: "Freeform Session Context"|t('freeform'),
         instructions: "Choose the way form context is passed between form submits."|t('freeform'),
+        id: 'session-context',
         name: "settings[sessionContext]",
         value: settings.sessionContext,
         errors: settings.errors("sessionContext"),
@@ -146,6 +147,44 @@
             "database": "Using a database table"|t('freeform'),
         },
     }) }}
+
+    <div id="session-time" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
+        {{ forms.autosuggestField({
+            class: "code",
+            label: "Session length in minutes"|t('freeform'),
+            instructions: "Specify when the sessions should expire. Set to 0 for unlimited."|t('freeform'),
+            name: "settings[sessionContextTimeToLiveMinutes]",
+            value: settings.sessionContextTimeToLiveMinutes,
+            errors: settings.getErrors("sessionContextTimeToLiveMinutes"),
+            suggestEnvVars: true,
+        }) }}
+    </div>
+
+    <div id="session-count" class="field {{ settings.sessionContext not in ["session", "database"] ? "hidden" }}">
+        {{ forms.autosuggestField({
+            class: "code",
+            label: "Amount of active forms per user"|t('freeform'),
+            instructions: "Specify the amount of active forms a user can have."|t('freeform'),
+            name: "settings[sessionContextCount]",
+            value: settings.sessionContextCount,
+            errors: settings.getErrors("sessionContextCount"),
+            suggestEnvVars: true,
+        }) }}
+    </div>
+
+    <div id="session-secret"  class="field {{ settings.sessionContext not in ["payload"] ? "hidden" }}">
+        {{ forms.autosuggestField({
+            class: "code",
+            label: "Secret key"|t('freeform'),
+            instructions: "Specify a secret key to encrypt the form payload with. Will use server key if left empty."|t('freeform'),
+            name: "settings[sessionContextSecret]",
+            value: settings.sessionContextSecret,
+            errors: settings.getErrors("sessionContextSecret"),
+            suggestEnvVars: true,
+        }) }}
+    </div>
+
+
 
     <div id="script-insert-warning" class="hidden">
         {{- "With 'None' chosen, please be sure to manually load Freeform's JS and CSS with the 'freeform.loadFreeformPlugin()' function in your template(s)."|t('freeform') -}}

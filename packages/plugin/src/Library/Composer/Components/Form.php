@@ -395,15 +395,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function getCurrentPage(): Page
     {
-        /** @var Page $page */
-        static $page;
-
         $index = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
-        if (null === $page || $page->getIndex() !== $index) {
-            $page = $this->layout->getPage($index);
+        $page = $this->layout->getPage($index);
 
-            $this->currentPageRows = $page->getRows();
-        }
+        $this->currentPageRows = $page->getRows();
 
         return $page;
     }
@@ -898,12 +893,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function setAttributes(array $attributes = null): self
     {
-        if (null !== $attributes) {
-            $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes);
-            Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
+        $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes ?? []);
+        Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
 
-            $this->propertyBag->merge($updateAttributesEvent->getAttributes());
-        }
+        $this->propertyBag->merge($updateAttributesEvent->getAttributes());
 
         return $this;
     }

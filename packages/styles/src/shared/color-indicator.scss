@@ -1,3 +1,5 @@
+@use "sass:math";
+
 .color-indicator {
   $size: 10px;
 
@@ -9,5 +11,5 @@
 
   box-shadow: inset 0 0 1px rgba(#000000, 0.6);
 
-  border-radius: ($size / 2);
+  border-radius: math.div($size, 2);
 }

@@ -3,23 +3,26 @@
   text-transform: uppercase;
   font-family: HelveticaNeue, sans-serif;
   font-size: 11px;
-  font-weight: bold; }
-
+  font-weight: bold;
+}
 .freeform-widget-statistics .freeform-widget-statistics-container .freeform-widget-digit {
   display: inline-block;
   min-width: 50px;
   padding-right: 4px;
   text-align: right;
   font-weight: bold;
-  white-space: nowrap; }
-
+  white-space: nowrap;
+}
 .freeform-widget-statistics .freeform-widget-statistics-container.freeform-widget-statistics-main {
-  font-size: 20px; }
-  .freeform-widget-statistics .freeform-widget-statistics-container.freeform-widget-statistics-main .freeform-widget-description {
-    font-size: 14px; }
-
+  font-size: 20px;
+}
+.freeform-widget-statistics .freeform-widget-statistics-container.freeform-widget-statistics-main .freeform-widget-description {
+  font-size: 14px;
+}
 .freeform-widget-statistics .freeform-widget-statistics-container.freeform-widget-statistics-secondary {
   color: #a1a1a1;
-  font-size: 14px; }
-  .freeform-widget-statistics .freeform-widget-statistics-container.freeform-widget-statistics-secondary .freeform-widget-description {
-    font-size: 12px; }
+  font-size: 14px;
+}
+.freeform-widget-statistics .freeform-widget-statistics-container.freeform-widget-statistics-secondary .freeform-widget-description {
+  font-size: 12px;
+}

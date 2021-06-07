@@ -1,3 +1,5 @@
+@use "sass:math";
+
 /* Freeform default Grid CSS */
 @import 'spinner';
 
@@ -138,7 +140,7 @@ $gutter: 15px;
 
   @for $i from 1 through 12 {
     .freeform-column-#{$i} {
-      width: (100% / 12) * $i;
+      width: math.div(100%, 12) * $i;
     }
   }
 }

@@ -16,7 +16,7 @@ label.required:after {
 
 $alignments: left, center, right;
 @each $alignment in $alignments {
-  &.submit-align-#{$alignment} {
+  .submit-align-#{$alignment} {
     text-align: $alignment;
 
     button:not(:first-of-type) {

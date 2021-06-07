@@ -16,7 +16,8 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInte
 
 class HiddenField extends TextField implements NoRenderInterface
 {
-    const MAXIMUM_FIELD_LENGTH = 250;
+    // Temporary change for those working around field limits until refactoring to field types happens in 3.12.x
+    const MAXIMUM_FIELD_LENGTH = 5000;
 
     /**
      * Return the field TYPE.

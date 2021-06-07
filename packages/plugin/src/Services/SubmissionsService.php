@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
-use craft\records\Asset as AssetRecord;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\SpamSubmission;
@@ -524,8 +523,8 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         foreach ($assetIds as $assetId) {
             if (is_numeric($assetId)) {
                 try {
-                    $asset = AssetRecord::find()->where(['id' => $assetId])->one();
-                    if ($asset && $asset->delete()) {
+                    $asset = \Craft::$app->assets->getAssetById($assetId);
+                    if ($asset && \Craft::$app->elements->deleteElement($asset)) {
                         ++$deletedAssets;
                     }
                 } catch (\Exception $e) {

@@ -116,7 +116,7 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
             );
         }
 
-        if (!isset($json->refresh_token)) {
+        if ($this instanceof RefreshTokenInterface && !isset($json->refresh_token)) {
             throw new IntegrationException(
                 $this->getTranslator()->translate(
                     "No 'refresh_token' present in auth response for {serviceProvider}. Enable offline-access for your app.",

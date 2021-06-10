@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.11.6 - 2021-06-10
+
+### Fixed
+- Fixed a bug where adding contents to a Table field inside the form builder wouldn't work if you clicked the Table field in the list to add it to the layout.
+- Fixed a bug where the Purge Submissions feature was not removing the File Upload field type's actual file from the server.
+- Adjusted Hidden fields to no longer have a forced max length of 250 as a temporary workaround for those that have switched the field to TEXT in the database to collect longer data.
+
 ## 3.11.5 - 2021-06-03
 
 ### Added

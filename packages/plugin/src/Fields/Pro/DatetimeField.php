@@ -226,6 +226,21 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     }
 
     /**
+     * @return null|Carbon
+     */
+    public function getCarbonUtc()
+    {
+        if ($this->getValue()) {
+            try {
+                return Carbon::createFromFormat($this->getFormat(), $this->getValue(), 'UTC');
+            } catch (InvalidFormatException $exception) {
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * {@inheritDoc}
      */
     public function getConstraints(): array

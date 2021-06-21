@@ -4,12 +4,14 @@ namespace Solspace\Freeform\Integrations\CRM;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
+use Solspace\Freeform\Library\Integrations\CRM\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
-class PardotV5 extends CRMOAuthConnector
+class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
 {
     const TITLE = 'Pardot (v5)';
     const LOG_CATEGORY = 'Pardot';
@@ -41,6 +43,13 @@ class PardotV5 extends CRMOAuthConnector
                     'Refresh Token',
                     'Refresh token set automatically'
                 ),
+                new SettingBlueprint(
+                    SettingBlueprint::TYPE_INTERNAL,
+                    self::SETTING_REFRESH_TOKEN,
+                    'Refresh Token',
+                    'You should not set this',
+                    false
+                ),
             ]
         );
     }
@@ -67,6 +76,53 @@ class PardotV5 extends CRMOAuthConnector
         header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($payload));
 
         exit();
+    }
+
+    public function refreshToken(): bool
+    {
+        $clientId = $this->getClientId();
+        $clientSecret = $this->getClientSecret();
+        $refreshToken = $this->getRefreshToken();
+
+        if (!$clientId || !$clientSecret || !$refreshToken) {
+            throw new IntegrationException('Some or all of the configuration values are missing');
+        }
+
+        $client = new Client();
+
+        $payload = [
+            'refresh_token' => $refreshToken,
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'grant_type' => 'refresh_token',
+        ];
+
+        try {
+            $response = $client->post($this->getAccessTokenUrl(), ['query' => $payload]);
+
+            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+
+            if (!isset($json->access_token)) {
+                throw new IntegrationException(
+                    $this->getTranslator()->translate(
+                        "No 'access_token' present in auth response for {serviceProvider}",
+                        ['serviceProvider' => $this->getServiceProvider()]
+                    )
+                );
+            }
+
+            $this->setAccessToken($json->access_token);
+            $this->setAccessTokenUpdated(true);
+
+            $this->onAfterFetchAccessToken($json);
+        } catch (RequestException $e) {
+            $responseBody = (string) $e->getResponse()->getBody();
+            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
+
+            throw $e;
+        }
+
+        return true;
     }
 
     /**
@@ -421,6 +477,18 @@ class PardotV5 extends CRMOAuthConnector
         return 'https://pi.pardot.com/api/';
     }
 
+    protected function getRefreshToken()
+    {
+        return $this->getSetting(self::SETTING_REFRESH_TOKEN);
+    }
+
+    protected function onAfterFetchAccessToken(\stdClass $responseData)
+    {
+        if (isset($responseData->refresh_token)) {
+            $this->setSetting(self::SETTING_REFRESH_TOKEN, $responseData->refresh_token);
+        }
+    }
+
     private function getBusinessUnitId()
     {
         return $this->getSetting(self::SETTING_BUSINESS_UNIT_ID);
@@ -451,16 +519,20 @@ class PardotV5 extends CRMOAuthConnector
                 }
             } catch (RequestException $e) {
                 if (401 === $e->getCode()) {
-                    $client = new Client([
-                        'headers' => [
-                            'Authorization' => 'Bearer '.$this->fetchAccessToken(),
-                            'Pardot-Business-Unit-Id' => $this->getBusinessUnitId(),
-                            'Content-Type' => 'application/json',
-                        ],
-                        'query' => [
-                            'format' => 'json',
-                        ],
-                    ]);
+                    if ($this->refreshToken()) {
+                        $client = new Client(
+                            [
+                                'headers' => [
+                                    'Authorization' => 'Bearer '.$this->getAccessToken(),
+                                    'Pardot-Business-Unit-Id' => $this->getBusinessUnitId(),
+                                    'Content-Type' => 'application/json',
+                                ],
+                                'query' => [
+                                    'format' => 'json',
+                                ],
+                            ]
+                        );
+                    }
                 }
             }
         }

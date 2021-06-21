@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.11.7 - 2021-06-21
+
+### Added
+- Added an updated OAuth version of the Pardot integration to be compatible with the new API. Recommended replacement to anyone currently using the old Pardot integration.
+- Added support for custom date fields in the HubSpot integration.
+
+### Fixed
+- Fixed a bug where searching on submissions inside the Freeform CP could sometimes trigger an error.
+- Fixed a bug where entering an invalid path to the template folders that contain Formatting Templates and Email Templates could sometimes cause the settings page to crash.
+
 ## 3.11.6 - 2021-06-10
 
 ### Fixed

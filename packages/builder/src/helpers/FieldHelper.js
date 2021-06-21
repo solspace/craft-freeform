@@ -2,6 +2,10 @@ import { deHashId, hashFromTime, hashId } from './Utilities';
 
 export default class FieldHelper {
   static hashField(field) {
+    if (field.hash) {
+      return field.hash;
+    }
+
     if (field.id) {
       return hashId(field.id);
     }

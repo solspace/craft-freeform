@@ -20,6 +20,8 @@ class FieldObject implements \JsonSerializable
     const TYPE_FLOAT = 'float';
     const TYPE_DATE = 'date';
     const TYPE_DATETIME = 'datetime';
+    const TYPE_TIMESTAMP = 'timestamp';
+    const TYPE_MICROTIME = 'microtime';
     const TYPE_BOOLEAN = 'boolean';
 
     /** @var string */

@@ -189,8 +189,17 @@ class SubmissionQuery extends ElementQuery
             $table.'.[[ip]]',
         ];
 
+        $schema = \Craft::$app->db->getTableSchema(Submission::TABLE, true);
+        $existingColumns = $schema->getColumnNames();
+
         foreach (Freeform::getInstance()->fields->getAllFieldIds() as $id) {
-            $select[] = $table.'.'.Submission::FIELD_COLUMN_PREFIX.$id;
+            $columnName = Submission::getFieldColumnName($id);
+
+            if (!\in_array($columnName, $existingColumns, true)) {
+                continue;
+            }
+
+            $select[] = $table.'.[['.$columnName.']]';
         }
 
         $this->query->select($select);
@@ -353,7 +362,7 @@ class SubmissionQuery extends ElementQuery
         $fieldIds = Freeform::getInstance()->fields->getAllFieldIds();
         $table = Submission::TABLE;
 
-        $schema = \Craft::$app->db->getTableSchema(Submission::TABLE);
+        $schema = \Craft::$app->db->getTableSchema(Submission::TABLE, true);
         $existingColumns = $schema->getColumnNames();
 
         $queryChunks = ['[[content.title]] LIKE :searchBoth'];

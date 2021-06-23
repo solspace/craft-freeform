@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.11.8 - 2021-06-23
+
+### Fixed
+- Fixed a bug where searching on submissions inside the Freeform CP could still sometimes trigger an error.
+- Fixed a bug where forms were not being correctly parsed within other element types when using GraphQL.
+
 ## 3.11.7 - 2021-06-21
 
 ### Added

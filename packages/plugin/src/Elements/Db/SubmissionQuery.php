@@ -360,7 +360,7 @@ class SubmissionQuery extends ElementQuery
         $this->search = null;
 
         $fieldIds = Freeform::getInstance()->fields->getAllFieldIds();
-        $table = Submission::TABLE;
+        $table = Submission::TABLE_STD;
 
         $schema = \Craft::$app->db->getTableSchema(Submission::TABLE, true);
         $existingColumns = $schema->getColumnNames();

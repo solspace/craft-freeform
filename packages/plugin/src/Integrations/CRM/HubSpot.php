@@ -426,10 +426,14 @@ class HubSpot extends AbstractCRMIntegration
             switch ($field->type) {
                 case 'string':
                 case 'enumeration':
-                case 'datetime':
-                case 'date':
                 case 'phone_number':
                     $type = FieldObject::TYPE_STRING;
+
+                    break;
+
+                case 'datetime':
+                case 'date':
+                    $type = FieldObject::TYPE_MICROTIME;
 
                     break;
 

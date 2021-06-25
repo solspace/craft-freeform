@@ -626,9 +626,14 @@ class Settings extends Model
         ;
 
         $files = [];
-        foreach ($fileIterator as $file) {
-            $path = $file->getRealPath();
-            $files[$path] = pathinfo($path, \PATHINFO_BASENAME);
+
+        try {
+            foreach ($fileIterator as $file) {
+                $path = $file->getRealPath();
+                $files[$path] = pathinfo($path, \PATHINFO_BASENAME);
+            }
+        } catch (\RuntimeException $e) {
+            return [];
         }
 
         return $files;

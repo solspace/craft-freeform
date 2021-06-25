@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Resolvers;
 
-use craft\elements\Entry;
+use craft\base\ElementInterface;
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
@@ -22,7 +22,7 @@ class FormResolver extends Resolver
         $arguments = self::getArguments($arguments);
         $arguments['limit'] = 1;
 
-        if ($source instanceof Entry) {
+        if ($source instanceof ElementInterface) {
             return $source->getFieldValue($resolveInfo->fieldName);
         }
 

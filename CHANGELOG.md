@@ -1,5 +1,28 @@
 # Solspace Freeform Changelog
 
+## 3.11.8 - 2021-06-23
+
+### Fixed
+- Fixed a bug where searching on submissions inside the Freeform CP could still sometimes trigger an error.
+- Fixed a bug where forms were not being correctly parsed within other element types when using GraphQL.
+
+## 3.11.7 - 2021-06-21
+
+### Added
+- Added an updated OAuth version of the Pardot integration to be compatible with the new API. Recommended replacement to anyone currently using the old Pardot integration.
+- Added support for custom date fields in the HubSpot integration.
+
+### Fixed
+- Fixed a bug where searching on submissions inside the Freeform CP could sometimes trigger an error.
+- Fixed a bug where entering an invalid path to the template folders that contain Formatting Templates and Email Templates could sometimes cause the settings page to crash.
+
+## 3.11.6 - 2021-06-10
+
+### Fixed
+- Fixed a bug where adding contents to a Table field inside the form builder wouldn't work if you clicked the Table field in the list to add it to the layout.
+- Fixed a bug where the Purge Submissions feature was not removing the File Upload field type's actual file from the server.
+- Adjusted Hidden fields to no longer have a forced max length of 250 as a temporary workaround for those that have switched the field to TEXT in the database to collect longer data.
+
 ## 3.11.5 - 2021-06-03
 
 ### Added

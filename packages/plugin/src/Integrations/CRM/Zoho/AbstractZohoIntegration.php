@@ -6,11 +6,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
+use Solspace\Freeform\Library\Integrations\CRM\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
-abstract class AbstractZohoIntegration extends CRMOAuthConnector
+abstract class AbstractZohoIntegration extends CRMOAuthConnector implements RefreshTokenInterface
 {
     const SETTING_REFRESH_TOKEN = 'refresh_token';
     const SETTING_DOMAIN = 'domain';

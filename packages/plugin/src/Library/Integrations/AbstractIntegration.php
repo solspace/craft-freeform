@@ -236,6 +236,26 @@ abstract class AbstractIntegration implements IntegrationInterface
 
                 return (string) $value;
 
+            case FieldObject::TYPE_TIMESTAMP:
+            case FieldObject::TYPE_MICROTIME:
+                if ($field instanceof DatetimeField) {
+                    $carbon = $field->getCarbonUtc();
+                    if ($carbon) {
+                        if (DatetimeField::DATETIME_TYPE_DATE === $field->getDateTimeType()) {
+                            $carbon->setTime(0, 0);
+                        }
+
+                        $timestamp = $carbon->getTimestamp();
+                        if (FieldObject::TYPE_MICROTIME === $fieldObject->getType()) {
+                            $timestamp *= 1000;
+                        }
+
+                        return $timestamp;
+                    }
+                }
+
+                return (int) $value;
+
             case FieldObject::TYPE_BOOLEAN:
                 return (bool) $value;
 

@@ -158,7 +158,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         $endpoint = $this->getPardotEndpoint('prospect', 'create/email/'.$email);
 
         try {
-            $response = $client->get(
+            $response = $client->post(
                 $endpoint,
                 ['query' => $keyValueList]
             );

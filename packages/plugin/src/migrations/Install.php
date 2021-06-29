@@ -270,7 +270,8 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_lock'))
                 ->addField('id', $this->primaryKey())
                 ->addField('key', $this->string()->notNull())
-                ->addIndex(['key', 'dateCreated']),
+                ->addIndex(['key', 'dateCreated'])
+                ->addIndex(['dateCreated']),
 
             (new Table('freeform_notification_log'))
                 ->addField('id', $this->primaryKey())

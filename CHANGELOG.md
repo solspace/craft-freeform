@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.11.9 - Unreleased
+
+### Fixed
+- Fixed a potential performance issue with the Freeform services check (e.g. Update Notices, Purge Submissions, etc) by adding a `dateCreated` index for the `freeform_lock` table.
+- Fixed a bug where the new Pardot v5 integration could trigger a 400 error when posting data.
+
 ## 3.11.8 - 2021-06-23
 
 ### Fixed

@@ -205,6 +205,7 @@ class StripeHandler {
     this.stripe = Stripe(this.publicKey);
     this.elements = this.stripe.elements();
     this.cardNumber = this.elements.create('cardNumber', {
+      showIcon: true,
       placeholder: numberPlaceholder ? numberPlaceholder.value : '',
       style,
     });

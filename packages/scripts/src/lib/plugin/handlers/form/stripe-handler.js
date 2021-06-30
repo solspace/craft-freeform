@@ -195,7 +195,12 @@ class StripeHandler {
     const expiryPlaceholder = expiryDiv.attributes.placeholder;
     const cvcPlaceholder = cvcDiv.attributes.placeholder;
 
-    const event = this.freeform._dispatchEvent('freeform-stripe-styling', { detail: {}, style: {} });
+    const event = this.freeform._dispatchEvent('freeform-stripe-styling', {
+      detail: {},
+      style: {},
+      showCardIcon: false,
+    });
+
     const style = {
       ...event.detail,
       ...event.style,
@@ -205,7 +210,7 @@ class StripeHandler {
     this.stripe = Stripe(this.publicKey);
     this.elements = this.stripe.elements();
     this.cardNumber = this.elements.create('cardNumber', {
-      showIcon: true,
+      showIcon: event.showCardIcon,
       placeholder: numberPlaceholder ? numberPlaceholder.value : '',
       style,
     });

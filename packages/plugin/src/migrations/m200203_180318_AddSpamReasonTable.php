@@ -17,28 +17,30 @@ class m200203_180318_AddSpamReasonTable extends Migration
      */
     public function safeUp()
     {
-        $this->createTable(
-            self::TARGET_TABLE,
-            [
-                'id' => $this->primaryKey(),
-                'submissionId' => $this->integer()->notNull(),
-                'reasonType' => $this->string(100)->notNull(),
-                'reasonMessage' => $this->text(),
-                'dateCreated' => $this->dateTime(),
-                'dateUpdated' => $this->dateTime(),
-                'uid' => $this->uid(),
-            ]
-        );
+        if (!$this->db->tableExists(self::TARGET_TABLE)) {
+            $this->createTable(
+                self::TARGET_TABLE,
+                [
+                    'id' => $this->primaryKey(),
+                    'submissionId' => $this->integer()->notNull(),
+                    'reasonType' => $this->string(100)->notNull(),
+                    'reasonMessage' => $this->text(),
+                    'dateCreated' => $this->dateTime(),
+                    'dateUpdated' => $this->dateTime(),
+                    'uid' => $this->uid(),
+                ]
+            );
 
-        $this->createIndex(null, self::TARGET_TABLE, ['submissionId', 'reasonType'], false);
-        $this->addForeignKey(
-            'freeform_spam_reason_submissionId_fk',
-            self::TARGET_TABLE,
-            'submissionId',
-            '{{%freeform_submissions}}',
-            'id',
-            ForeignKey::CASCADE
-        );
+            $this->createIndex(null, self::TARGET_TABLE, ['submissionId', 'reasonType'], false);
+            $this->addForeignKey(
+                'freeform_spam_reason_submissionId_fk',
+                self::TARGET_TABLE,
+                'submissionId',
+                '{{%freeform_submissions}}',
+                'id',
+                ForeignKey::CASCADE
+            );
+        }
 
         return true;
     }

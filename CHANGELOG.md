@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.11.9 - 2021-07-01
+
+### Added
+- Added ability to display the Stripe credit card icon on Credit Card fields (with `event.showCardIcon = true` for the `freeform-stripe-styling` event).
+
+### Fixed
+- Fixed a potential performance issue with the Freeform services check (e.g. Update Notices, Purge Submissions, etc) by adding a `dateCreated` index for the `freeform_lock` table.
+- Fixed a bug where the new Pardot v5 integration could trigger a 400 error when posting data.
+- Fixed a bug where using the `overrideValues` parameter to set a value on a number field would not correctly handle decimals in some cases.
+- Fixed a bug where the "spam reasons" feature database table migration could error in some cases.
+
 ## 3.11.8 - 2021-06-23
 
 ### Fixed

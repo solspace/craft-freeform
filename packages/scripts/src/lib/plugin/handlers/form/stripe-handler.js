@@ -82,7 +82,7 @@ class StripeHandler {
   };
 
   _handleSubmit = (event) => {
-    if (!this._isStripePresent()) {
+    if (!this._isStripePresent() || event.isBackButtonPressed) {
       return;
     }
 

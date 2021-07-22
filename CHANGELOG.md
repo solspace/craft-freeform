@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.11.10 - 2021-07-22
+
+### Fixed
+- Fixed a bug where sites using GMP and Stripe could run into issues when payment amounts included decimals/cents.
+- Fixed a bug where multipage Stripe Payment forms could not go back to the previous page unless credit card details were filled out.
+
 ## 3.11.9 - 2021-07-01
 
 ### Added

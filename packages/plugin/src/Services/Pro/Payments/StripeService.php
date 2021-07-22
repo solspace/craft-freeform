@@ -69,8 +69,6 @@ class StripeService extends Component
             if (!\in_array(strtoupper($currency), Stripe::ZERO_DECIMAL_CURRENCIES)) {
                 if (\function_exists('bcmul')) {
                     $amount = (int) ceil(bcmul($amount, 100));
-                } elseif (\function_exists('gmp_mul')) {
-                    $amount = (int) ceil(gmp_mul($amount, 100));
                 } else {
                     $amount = (int) ceil($amount * 100);
                 }

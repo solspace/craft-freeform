@@ -393,7 +393,12 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
                 $paymentIntentDataEvent = new UpdateDataEvent(
                     $submission,
-                    ['metadata' => ['subscription' => $subscription['id']]]
+                    [
+                        'metadata' => [
+                            'submissionId' => $submissionId,
+                            'subscription' => $subscription['id'],
+                        ],
+                    ]
                 );
 
                 Event::trigger(self::class, self::EVENT_UPDATE_PAYMENT_INTENT_DATA, $paymentIntentDataEvent);
@@ -409,7 +414,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
                 $subscriptionDataEvent = new UpdateDataEvent(
                     $submission,
                     ['metadata' => [
-                        'submission' => $submissionId,
+                        'submissionId' => $submissionId,
                         'formHandle' => $submission->getForm()->getHandle(),
                     ]]
                 );

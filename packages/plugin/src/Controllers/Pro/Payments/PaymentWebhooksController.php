@@ -84,7 +84,10 @@ class PaymentWebhooksController extends BaseController
                     throw new HttpException(400, 'Could not send successful payment notification');
                 }
 
-                $submissionId = $subscription['metadata']['submission'];
+                $submissionId = $subscription['metadata']['submissionId'] ?? null;
+                if (!$submissionId) {
+                    throw new HttpException(400, 'Missing submissions ID in payment details');
+                }
 
                 $this->getPaymentsNotificationService()->sendSubscriptionPaymentSucceeded($submissionId);
 
@@ -97,7 +100,10 @@ class PaymentWebhooksController extends BaseController
                     throw new HttpException(400, 'Could not send failed payment notification');
                 }
 
-                $submissionId = $subscription['metadata']['submission'];
+                $submissionId = $subscription['metadata']['submissionId'] ?? null;
+                if (!$submissionId) {
+                    throw new HttpException(400, 'Missing submissions ID in payment details');
+                }
 
                 $this->getPaymentsNotificationService()->sendSubscriptionPaymentFailed($submissionId);
 
@@ -125,8 +131,8 @@ class PaymentWebhooksController extends BaseController
         if ($subscriptionId) {
             $subscription = $integration->getSubscriptionDetails($subscriptionId);
 
-            if (isset($subscription['metadata']['submission'])) {
-                return $subscription['metadata']['submission'];
+            if (isset($subscription['metadata']['submissionId'])) {
+                return $subscription['metadata']['submissionId'];
             }
         }
 

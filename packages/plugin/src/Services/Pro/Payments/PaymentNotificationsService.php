@@ -59,7 +59,7 @@ class PaymentNotificationsService extends Component
         $paymentProps = $form->getPaymentProperties();
         $customerMap = $paymentProps->getCustomerFieldMapping();
         //TODO: hardcoded  string  is  bad, also stripe prefix, me dont like it
-        $emailFieldHandle = $customerMap['email'];
+        $emailFieldHandle = $customerMap['email'] ?? null;
         if (!$emailFieldHandle) {
             return;
         }

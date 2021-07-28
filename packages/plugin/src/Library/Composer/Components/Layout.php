@@ -556,11 +556,15 @@ class Layout implements \JsonSerializable, \Iterator
                 foreach ($columns as $fieldHash) {
                     $fieldProperties = $this->properties->getFieldProperties($fieldHash);
 
-                    $field = ComposerFieldFactory::createFromProperties(
-                        $this->form,
-                        $fieldProperties,
-                        $pageIndex
-                    );
+                    try {
+                        $field = ComposerFieldFactory::createFromProperties(
+                            $this->form,
+                            $fieldProperties,
+                            $pageIndex
+                        );
+                    } catch (\Exception $exception) {
+                        continue;
+                    }
 
                     if (!$isPro && $field instanceof ExtraFieldInterface) {
                         continue;

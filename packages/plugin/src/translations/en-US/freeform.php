@@ -379,7 +379,7 @@ return [
     'Submission Title' => 'Submission Title',
     'What the auto-generated submission titles should look like.' => 'What the auto-generated submission titles should look like.',
     'Return URL' => 'Return URL',
-    'The URL the form will redirect to after successful submit.' => 'The URL the form will redirect to after successful submit.',
+    'The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set.' => 'The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set.',
     'Default Status' => 'Default Status',
     'The default status to be assigned to new submissions.' => 'The default status to be assigned to new submissions.',
     'Formatting Template' => 'Formatting Template',
@@ -554,7 +554,7 @@ return [
     'Show all options in a single line?' => 'Show all options in a single line?',
 
     'Enable AJAX' => 'Enable AJAX',
-    'Use Freeform\'s built-in automatic AJAX submit feature.' => 'Use Freeform\'s built-in automatic AJAX submit feature.',
+    'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.' => 'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.',
     'Enable reCAPTCHA' => 'Enable reCAPTCHA',
     'Disabling this option removes the reCAPTCHA check for this specific form.' => 'Disabling this option removes the reCAPTCHA check for this specific form.',
 

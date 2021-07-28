@@ -355,7 +355,7 @@ return [
     'Submission Title' => 'Einreichungs-Titel',
     'What the auto-generated submission titles should look like.' => 'Wie der automatisch generierte Einreichungs-Titel aussehen soll.',
     'Return URL' => 'Rückkehr-URL',
-    'The URL the form will redirect to after successful submit.' => 'Die URL, zu der das Formular nach erfolgreichem Absenden weiterleitet.',
+    'The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set.' => 'Die URL, zu der das Formular nach erfolgreichem Absenden weiterleitet.',
     'Default Status' => 'Standard-Status',
     'The default status to be assigned to new submissions.' => 'Der standardmäßige Status, der neuen Einreichungen zugewiesen wird.',
     'Formatting Template' => 'Formatierungs-Template',
@@ -530,7 +530,7 @@ return [
     'Show all options in a single line?' => 'Zeige alle Optionen in einer Zeile?',
 
     'Enable AJAX' => 'Aktiviere AJAX',
-    'Use Freeform\'s built-in automatic AJAX submit feature.' => 'Verwende das automatische AJAX Submit-Feature von Freeform.',
+    'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.' => 'Verwende das automatische AJAX Submit-Feature von Freeform.',
     'Enable reCAPTCHA' => 'Aktivieren Sie reCAPTCHA',
     'Disabling this option removes the reCAPTCHA check for this specific form.' => 'Durch Deaktivieren dieser Option wird die reCAPTCHA-Prüfung für dieses bestimmte Formular entfernt.',
 

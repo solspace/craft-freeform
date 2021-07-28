@@ -167,7 +167,7 @@ export default class Form extends BasePropertyEditor {
 
         <TextProperty
           label="Return URL"
-          instructions="The URL the form will redirect to after successful submit."
+          instructions="The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set."
           name="returnUrl"
           value={returnUrl}
           onChangeHandler={this.update}
@@ -201,7 +201,7 @@ export default class Form extends BasePropertyEditor {
         <CheckboxProperty
           label="Enable AJAX"
           bold={true}
-          instructions="Use Freeform's built-in automatic AJAX submit feature."
+          instructions="Use Freeform's built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set."
           name="ajaxEnabled"
           checked={ajaxEnabled}
           onChangeHandler={this.update}

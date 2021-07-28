@@ -367,7 +367,7 @@ return [
     'Submission Title' => 'Inzending titel',
     'What the auto-generated submission titles should look like.' => 'Hoe de automatisch gegenereerde indieningstitels eruit moeten zien.',
     'Return URL' => 'Terugkeer URL',
-    'The URL the form will redirect to after successful submit.' => 'De URL waarnaar het formulier wordt omgeleid na het verzenden.',
+    'The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set.' => 'De URL waarnaar het formulier wordt omgeleid na het verzenden.',
     'Default Status' => 'Standaard Status',
     'The default status to be assigned to new submissions.' => 'De standaardstatus die moet worden toegewezen aan nieuwe inzendingen.',
     'Formatting Template' => 'Template opmaken',
@@ -544,7 +544,7 @@ return [
     'Show all options in a single line?' => 'Alle opties op één regel weergeven?',
 
     'Enable AJAX' => 'Schakel AJAX in',
-    'Use Freeform\'s built-in automatic AJAX submit feature.' => 'Geburik Freeform\'s ingebouwde automatische AJAX verzendfunctie.',
+    'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.' => 'Geburik Freeform\'s ingebouwde automatische AJAX verzendfunctie.',
     'Enable reCAPTCHA' => 'Schakel reCAPTCHA in',
     'Disabling this option removes the reCAPTCHA check for this specific form.' => 'Als u deze optie uitschakelt, wordt de reCAPTCHA-controle voor dit specifieke formulier verwijderd.',
 

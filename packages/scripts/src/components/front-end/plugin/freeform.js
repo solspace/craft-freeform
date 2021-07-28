@@ -120,7 +120,6 @@ export default class Freeform {
         };
 
         this._setUp();
-        this._attachListeners();
         this._initHandlers();
 
         const { scrollToAnchor, scrollOffset, scrollElement } = this.options;
@@ -133,6 +132,8 @@ export default class Freeform {
   }
 
   _setUp = () => {
+    this._attachListeners();
+
     const submitButtons = this.form.querySelectorAll('button[type="submit"]');
     submitButtons.forEach((button) => {
       button.dataset.originalText = button.innerText;

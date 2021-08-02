@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\DynamicRecipientField;
@@ -16,18 +17,33 @@ class EditElementContext
 
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'handleRequest']);
+        Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleRequest']);
+        Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'handleRender']);
     }
 
-    public function handleRequest(RenderTagEvent $event)
+    public function handleRequest(HandleRequestEvent $event)
     {
         $form = $event->getForm();
-        $submissionToken = $form->getPropertyBag()->get(self::SUBMISSION_TOKEN_KEY);
-        if (!$submissionToken) {
+        $token = $form->getAssociatedSubmissionToken();
+
+        $this->applySubmissionToForm($form, $token);
+    }
+
+    public function handleRender(RenderTagEvent $event)
+    {
+        $form = $event->getForm();
+        $token = $form->getPropertyBag()->get(self::SUBMISSION_TOKEN_KEY);
+
+        $this->applySubmissionToForm($form, $token);
+    }
+
+    private function applySubmissionToForm(Form $form, string $token = null)
+    {
+        if (!$token) {
             return;
         }
 
-        $submission = Freeform::getInstance()->submissions->getSubmissionByToken($submissionToken);
+        $submission = Freeform::getInstance()->submissions->getSubmissionByToken($token);
         if (!$submission instanceof Submission) {
             return;
         }

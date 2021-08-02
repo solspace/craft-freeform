@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Records;
 use craft\db\ActiveRecord;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 /**
@@ -82,26 +81,7 @@ class FieldRecord extends ActiveRecord
      */
     public function getColumnType(): string
     {
-        $columnType = 'varchar(100)';
-
-        switch ($this->type) {
-            case FieldInterface::TYPE_CHECKBOX_GROUP:
-            case FieldInterface::TYPE_MULTIPLE_SELECT:
-            case FieldInterface::TYPE_EMAIL:
-            case FieldInterface::TYPE_TEXTAREA:
-            case FieldInterface::TYPE_SIGNATURE:
-            case FieldInterface::TYPE_TABLE:
-                $columnType = 'text';
-
-                break;
-
-            case FieldInterface::TYPE_HIDDEN:
-                $columnType = 'varchar(250)';
-
-                break;
-        }
-
-        return $columnType;
+        return 'text';
     }
 
     /**

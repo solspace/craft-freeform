@@ -31,7 +31,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueI
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Records\FieldRecord;
-use Solspace\Freeform\Records\UnfinalizedFileRecord;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
 {
@@ -168,7 +167,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $updateSearchIndex = (bool) $this->getSettingsService()->getSettingsModel()->updateSearchIndexes;
         if (\Craft::$app->getElements()->saveElement($submission, true, true, $updateSearchIndex)) {
-            $this->finalizeFormFiles($form);
             $this->trigger(self::EVENT_AFTER_SUBMIT, new SubmitEvent($form, $submission));
 
             return true;
@@ -298,28 +296,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $formsService->setPostedCookie($form);
         $formsService->onAfterSubmit($form, $submission);
-    }
-
-    /**
-     * Finalize all files uploaded in this form, so that they don' get deleted.
-     */
-    public function finalizeFormFiles(Form $form)
-    {
-        $assetIds = [];
-
-        foreach ($form->getLayout()->getFileUploadFields() as $field) {
-            $assetIds = array_merge($assetIds, $field->getValue());
-        }
-
-        if (empty($assetIds)) {
-            return;
-        }
-
-        $records = UnfinalizedFileRecord::findAll(['assetId' => $assetIds]);
-
-        foreach ($records as $record) {
-            $record->delete();
-        }
     }
 
     /**

@@ -104,7 +104,7 @@ class SubmitController extends BaseController
             $this->getSubmissionsService()->postProcessSubmission($submission, $mailingListOptInFields);
         }
 
-        Event::trigger(self::class, Form::EVENT_AFTER_SUBMIT, $event);
+        Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
     }
 
     private function getReturnUrl(Form $form, Submission $submission): string

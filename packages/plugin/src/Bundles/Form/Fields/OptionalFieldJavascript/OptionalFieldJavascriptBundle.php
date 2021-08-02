@@ -7,7 +7,7 @@ use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Pro\PhoneField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
-use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class OptionalFieldJavascriptBundle implements BundleInterface
@@ -15,8 +15,8 @@ class OptionalFieldJavascriptBundle implements BundleInterface
     public function __construct()
     {
         Event::on(
-            FormsService::class,
-            FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
+            Form::class,
+            Form::EVENT_ATTACH_TAG_ATTRIBUTES,
             function (AttachFormAttributesEvent $event) {
                 $form = $event->getForm();
 

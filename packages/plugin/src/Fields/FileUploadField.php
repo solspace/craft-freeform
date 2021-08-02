@@ -12,6 +12,8 @@
 
 namespace Solspace\Freeform\Fields;
 
+use craft\elements\Asset;
+use craft\elements\db\AssetQuery;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -73,6 +75,11 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         return self::TYPE_FILE;
     }
 
+    public function getAssets(): AssetQuery
+    {
+        return Asset::find()->id($this->getValue());
+    }
+
     public function getFileKinds(): array
     {
         if (!\is_array($this->fileKinds)) {
@@ -97,14 +104,14 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         $attributes = $this->getCustomAttributes();
         $this->addInputAttribute('class', $attributes->getClass());
 
-        return '<input '.$this->getInputAttributesString().$this->getAttributeString(
-            'name',
-            $this->getHandle().'[]'
-        ).$this->getAttributeString('type', $this->getType()).$this->getAttributeString(
-            'id',
-            $this->getIdAttribute()
-        ).$this->getParameterString('multiple', $this->getFileCount() > 1).$this->getRequiredAttribute(
-            ).$attributes->getInputAttributesAsString().'/>';
+        $inputAttributes = $this->getInputAttributesString().$attributes->getInputAttributesAsString();
+        $name = $this->getAttributeString('name', $this->getHandle().'[]');
+        $type = $this->getAttributeString('type', $this->getType());
+        $id = $this->getAttributeString('id', $this->getIdAttribute());
+        $isMultiple = $this->getParameterString('multiple', $this->getFileCount() > 1);
+        $isRequired = $this->getRequiredAttribute();
+
+        return '<input '.$inputAttributes.$name.$type.$id.$isMultiple.$isRequired.'/>';
     }
 
     /**
@@ -262,7 +269,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     /**
      * Returns an array of all valid file extensions for this field.
      */
-    private function getValidExtensions(): array
+    protected function getValidExtensions(): array
     {
         $allFileKinds = $this->getForm()->getFileUploadHandler()->getFileKinds();
 

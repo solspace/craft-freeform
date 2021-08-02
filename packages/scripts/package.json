@@ -16,19 +16,25 @@
     "@babel/core": "^7.13.8",
     "@babel/plugin-proposal-class-properties": "^7.13.0",
     "@babel/preset-env": "^7.13.9",
+    "@babel/preset-typescript": "^7.14.5",
+    "@types/axios": "^0.14.0",
     "babel-loader": "^8.2.2",
     "css-loader": "^5.1.1",
     "elliptic": "^6.5.4",
     "glob": "^7.1.6",
+    "ssri": ">=8.0.1",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.17",
     "typescript": "^4.2.3",
     "webpack": "^5.24.4",
     "webpack-cli": "^4.5.0",
-    "y18n": ">=4.0.1",
-    "ssri": ">=8.0.1"
+    "y18n": ">=4.0.1"
   },
   "dependencies": {
-    "core-js": "^3.9.1"
+    "axios": "^0.21.1",
+    "clsx": "^1.1.1",
+    "core-js": "^3.9.1",
+    "pretty-bytes": "^5.6.0",
+    "microtip": "^0.2.2"
   }
 }

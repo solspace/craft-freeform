@@ -46,6 +46,7 @@ interface FieldInterface
     const TYPE_SIGNATURE = 'signature';
     const TYPE_TABLE = 'table';
     const TYPE_INVISIBLE = 'invisible';
+    const TYPE_DRAG_AND_DROP_FILE = 'drag_and_drop_file';
 
     const TYPE_CREDIT_CARD_DETAILS = 'cc_details';
     const TYPE_CREDIT_CARD_NUMBER = 'cc_number';

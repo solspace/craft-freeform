@@ -25,7 +25,7 @@
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",
-    "friendsofphp/php-cs-fixer": "^2.16",
+    "friendsofphp/php-cs-fixer": "^2.19",
     "brainmaestro/composer-git-hooks": "^2.8"
   },
   "autoload": {

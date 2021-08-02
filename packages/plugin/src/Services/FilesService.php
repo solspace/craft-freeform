@@ -22,8 +22,10 @@ use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\FileHelper;
 use craft\web\UploadedFile;
+use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Pro\DragAndDropFileField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
@@ -107,7 +109,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                 $asset->filename = $filename;
                 $asset->setScenario(Asset::SCENARIO_CREATE);
                 $asset->newFolderId = $folder->id;
-                $asset->volumeId = $folder->volumeId;
+                $asset->setVolumeId($folder->volumeId);
                 $asset->avoidFilenameConflicts = true;
                 $asset->uploaderId = \Craft::$app->getUser()->getId();
 
@@ -135,6 +137,88 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         return new FileUploadResponse(null, $errors);
+    }
+
+    public function uploadDragAndDropFile(DragAndDropFileField $field, Form $form)
+    {
+        if (!$field->getAssetSourceId()) {
+            return null;
+        }
+
+        if (!$_FILES || !isset($_FILES[$field->getHandle()])) {
+            return null;
+        }
+
+        if (is_countable($_FILES[$field->getHandle()]['name'])) {
+            return null;
+        }
+
+        $beforeUploadEvent = new UploadEvent($field);
+        $this->trigger(self::EVENT_BEFORE_UPLOAD, $beforeUploadEvent);
+
+        if (!$beforeUploadEvent->isValid) {
+            return null;
+        }
+
+        $assetService = \Craft::$app->assets;
+
+        if (!$field->getDefaultUploadLocation()) {
+            $folder = $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
+        } else {
+            $folder = $this->getFolder($field->getAssetSourceId(), $field->getDefaultUploadLocation(), $form);
+        }
+
+        $errors = [];
+        $uploadedFile = UploadedFile::getInstanceByName($field->getHandle());
+        if (!$uploadedFile) {
+            return null;
+        }
+
+        $asset = null;
+        $uploadedSuccessfully = false;
+
+        try {
+            $filename = Assets::prepareAssetName($uploadedFile->name);
+            $asset = new Asset();
+
+            // Move the uploaded file to the temp folder
+            try {
+                $tempPath = $uploadedFile->saveAsTempFile();
+            } catch (ErrorException $e) {
+                throw new UploadFailedException(0, null, $e);
+            }
+
+            $asset->kind = AssetsHelper::getFileKindByExtension($uploadedFile->name);
+            $asset->tempFilePath = $tempPath;
+            $asset->filename = $filename;
+            $asset->setScenario(Asset::SCENARIO_CREATE);
+            $asset->setVolumeId($folder->volumeId);
+            $asset->newFolderId = $folder->id;
+            $asset->avoidFilenameConflicts = true;
+            $asset->uploaderId = \Craft::$app->getUser()->getId();
+
+            $uploadedSuccessfully = \Craft::$app->getElements()->saveElement($asset);
+        } catch (\Exception $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if ($uploadedSuccessfully) {
+            $assetId = $asset->id;
+            $formToken = SessionContext::getFormSessionToken($form);
+
+            $this->markAssetUnfinalized($assetId, $field, $formToken);
+        } elseif ($asset) {
+            $errors = array_merge($errors, $asset->getErrors());
+            $asset = null;
+        }
+
+        if (\count($errors)) {
+            $field->addErrors($errors);
+        }
+
+        $this->trigger(self::EVENT_AFTER_UPLOAD, new UploadEvent($field));
+
+        return $asset;
     }
 
     public function _volumeIdBySourceKey(string $sourceKey)
@@ -176,12 +260,14 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      * Stores the unfinalized assetId in the database
      * So that it can be deleted later if the form hasn't been finalized.
      *
-     * @param int $assetId
+     * @param mixed $assetId
      */
-    public function markAssetUnfinalized($assetId)
+    public function markAssetUnfinalized($assetId, FileUploadField $field = null, string $formToken = null)
     {
         $record = new UnfinalizedFileRecord();
         $record->assetId = $assetId;
+        $record->fieldHandle = $field ? $field->getHandle() : null;
+        $record->formToken = $formToken;
         $record->save(false);
     }
 

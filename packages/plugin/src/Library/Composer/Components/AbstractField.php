@@ -149,6 +149,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             self::TYPE_SIGNATURE => 'Signature',
             self::TYPE_TABLE => 'Table',
             self::TYPE_INVISIBLE => 'Invisible',
+            self::TYPE_DRAG_AND_DROP_FILE => 'Drag & Drop File',
         ];
     }
 

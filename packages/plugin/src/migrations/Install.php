@@ -125,7 +125,9 @@ class Install extends StreamlinedInstallMigration
 
             (new Table('freeform_unfinalized_files'))
                 ->addField('id', $this->primaryKey())
-                ->addField('assetId', $this->integer()->notNull()),
+                ->addField('contextId', $this->string(255))
+                ->addField('assetId', $this->integer()->notNull())
+                ->addIndex(['contextId']),
 
             (new Table('freeform_submissions'))
                 ->addField('id', $this->primaryKey())

@@ -9,6 +9,10 @@ use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FieldGenerator;
 
 class FieldInterface extends AbstractInterface
 {
+    const EVENT_TRANSFORM_FROM_POST = 'transformFromPost';
+    const EVENT_TRANSFORM_FROM_STORAGE = 'transformFromStorage';
+    const EVENT_TRANSFORM_FROM_DATABASE = 'transformFromDatabase';
+
     public static function getName(): string
     {
         return 'FreeformFormFieldInterface';

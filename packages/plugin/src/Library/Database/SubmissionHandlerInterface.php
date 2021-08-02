@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -23,11 +24,6 @@ interface SubmissionHandlerInterface
      * Stores the submitted fields to database.
      */
     public function storeSubmission(Form $form, Submission $submission): bool;
-
-    /**
-     * Finalize all files uploaded in this form, so that they don' get deleted.
-     */
-    public function finalizeFormFiles(Form $form);
 
     /**
      * Add a session flash variable that the form has been submitted.

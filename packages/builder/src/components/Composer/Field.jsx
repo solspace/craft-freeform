@@ -6,6 +6,7 @@ import CheckboxGroup from './FieldTypes/CheckboxGroup';
 import Confirmation from './FieldTypes/Confirmation';
 import Datetime from './FieldTypes/Datetime';
 import DynamicRecipients from './FieldTypes/DynamicRecipients';
+import DragAndDropFile from './FieldTypes/DragAndDropFile';
 import Email from './FieldTypes/Email';
 import File from './FieldTypes/File';
 import Hidden from './FieldTypes/Hidden';
@@ -67,6 +68,7 @@ const fieldTypes = {
   cc_number: CreditCardNumber,
   cc_cvc: CreditCardCvc,
   cc_exp_date: CreditCardExpDate,
+  drag_and_drop_file: DragAndDropFile,
 };
 
 export default class Field extends Component {

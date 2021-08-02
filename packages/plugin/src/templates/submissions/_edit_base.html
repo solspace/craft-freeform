@@ -250,7 +250,7 @@
                                             </div>
                                         </div>
 
-                                    {% elseif field.type == "file" %}
+                                    {% elseif field.type in ["file", "drag_and_drop_file"] %}
                                         <div class="field">
                                             <div class="heading">
                                                 <label>{{ field.label }}</label>
@@ -265,7 +265,7 @@
                                                         {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}
                                                         {% set srcset = srcset|trim(", ") %}
 
-                                                        <div class="element small hasthumb">
+                                                        <div class="element small removable hasthumb" style="padding-right: 20px;">
                                                             <input type="hidden" name="{{ field.handle }}[]"
                                                                    value="{{ asset.id }}">
                                                             <a href="javascript:;" onclick="removeAsset(this);" class="icon delete"></a>

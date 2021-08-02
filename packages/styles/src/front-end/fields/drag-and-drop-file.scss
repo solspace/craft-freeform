@@ -1,0 +1,220 @@
+@import '../../shared/media-queries';
+
+$gap: 20px;
+$border-radius: 7px;
+
+$color-grey: #e5e5e5;
+$color-fill: #077bff;
+
+@mixin progress-bg($base: $color-grey, $fill: $color-fill, $progress: var(--progress)) {
+  background: $base;
+
+  &:after {
+    content: '';
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+
+    display: block;
+    width: $progress;
+    height: inherit;
+
+    background-color: $fill;
+    transition: background-color 0.5s ease-out;
+  }
+}
+
+.freeform-file-upload {
+  padding: 67px $gap;
+  height: auto;
+
+  border: 3px dashed #3a85ee;
+  background: #ffffff;
+  color: #000000;
+  text-align: center;
+
+  &[data-dragging] {
+    border-style: solid;
+    background-color: #e7e7e7;
+    color: #c6c6c6;
+  }
+
+  &[data-contains-files] {
+    padding: $gap;
+
+    [data-placeholder] {
+      display: none;
+    }
+  }
+
+  [data-preview-zone] {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: $gap;
+
+    @include sm {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include md {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    @include lg {
+      grid-template-columns: repeat(8, 1fr);
+    }
+
+    [data-file-preview] {
+      &.animation-enter {
+        opacity: 0;
+        transform: scale(0.1);
+      }
+
+      opacity: 1;
+      transform: scale(1);
+      transition: all 0.3s ease-out;
+
+      &:hover {
+        z-index: 2;
+      }
+
+      [data-thumbnail] {
+        position: relative;
+
+        width: 100%;
+        height: 0;
+        padding-bottom: 100%;
+
+        background: #969797;
+        background-size: cover;
+        background-position: center center;
+
+        [data-extension-label] {
+          position: absolute;
+          left: 0;
+          right: 0;
+          top: calc(50% - (36px / 2));
+
+          display: block;
+          user-select: none;
+
+          color: #ffffff;
+          font-size: 24px;
+          text-align: center;
+        }
+
+        &[data-has-preview] [data-extension-label] {
+          display: none;
+        }
+
+        [data-progress] {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+
+          width: 100%;
+          height: 4px;
+          overflow: hidden;
+
+          @include progress-bg();
+          transition: opacity 0.5s ease-out 3s;
+        }
+
+        [data-remove-button] {
+          cursor: pointer;
+          position: absolute;
+          right: -9px;
+          top: -9px;
+
+          display: flex;
+          justify-content: center;
+          align-items: center;
+
+          width: 20px;
+          height: 20px;
+
+          background: #e6e5e5;
+          color: #878787;
+
+          border: 1px solid #e6e5e5;
+          border-radius: 50%;
+
+          &:hover {
+            background: #027bff;
+            color: #ffffff;
+            border: 1px solid #027bff;
+          }
+        }
+
+        [data-errors] {
+          cursor: pointer;
+          position: absolute;
+          right: -12px;
+          bottom: -10px;
+          z-index: 2;
+
+          width: 26px;
+          height: 26px;
+
+          background: #ff0300;
+          color: #ffffff;
+
+          border: 1px solid #ff0300;
+          border-radius: 50%;
+
+          &[aria-label=''],
+          &:not([aria-label]) {
+            display: none;
+          }
+
+          &[aria-label] + [data-progress]:after {
+            background: #ff0300;
+          }
+        }
+      }
+
+      [data-filename],
+      [data-filesize] {
+        display: block;
+        margin: 0;
+        padding: 0;
+
+        text-align: left;
+      }
+
+      [data-filename] {
+        color: #6b6b6b;
+        word-break: break-all;
+      }
+
+      [data-filesize] {
+        color: #bfbfbf;
+      }
+
+      &[data-completed] {
+        [data-progress] {
+          opacity: 0;
+
+          &:after {
+            background: rgb(33, 221, 33);
+          }
+        }
+      }
+    }
+  }
+
+  [data-global-loading] {
+    color: #ffffff;
+
+    &:before {
+      @include progress-bg();
+      width: 100%;
+    }
+  }
+
+  [data-global-messages] {
+    color: #a73636;
+  }
+}

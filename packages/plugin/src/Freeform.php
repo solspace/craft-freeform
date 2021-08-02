@@ -34,6 +34,7 @@ use Solspace\Freeform\Controllers\CrmController;
 use Solspace\Freeform\Controllers\DashboardController;
 use Solspace\Freeform\Controllers\FeedsController;
 use Solspace\Freeform\Controllers\FieldsController;
+use Solspace\Freeform\Controllers\FileUploadController;
 use Solspace\Freeform\Controllers\FormsController;
 use Solspace\Freeform\Controllers\LogsController;
 use Solspace\Freeform\Controllers\MailingListsController;
@@ -488,6 +489,7 @@ class Freeform extends Plugin
                 'welcome-screen' => WelcomeScreenController::class,
                 'rest-settings' => RESTSettingsController::class,
                 'migrate-notifications' => MigrateNotificationsController::class,
+                'file-upload' => FileUploadController::class,
             ];
         }
     }

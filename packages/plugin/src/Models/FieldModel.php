@@ -197,6 +197,10 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['fileKinds'] = $this->getMetaProperty('fileKinds', ['image', 'pdf']);
         }
 
+        if (FieldInterface::TYPE_DRAG_AND_DROP_FILE === $this->type) {
+            //$returnArray[''] = $this->getMetaProperty('twig');
+        }
+
         if (\in_array($this->type, [FieldInterface::TYPE_RADIO_GROUP, FieldInterface::TYPE_SELECT], true)) {
             $returnArray['showCustomValues'] = $this->hasCustomOptionValues();
             $returnArray['value'] = $this->getMetaProperty('value', '');

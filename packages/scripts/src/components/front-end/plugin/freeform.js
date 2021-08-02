@@ -8,6 +8,7 @@ import BackButtonHandler from '@lib/plugin/handlers/fields/back-button';
 import DatePickerHandler from '@lib/plugin/handlers/fields/datepicker';
 import InputMaskHandler from '@lib/plugin/handlers/fields/input-mask';
 import SignatureHandler from '@lib/plugin/handlers/fields/signature';
+import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import TableHandler from '@lib/plugin/handlers/fields/table';
 import RecaptchaHandler from '@lib/plugin/handlers/form/recaptcha';
 import HoneypotHandler from '@lib/plugin/handlers/form/honeypot';
@@ -61,6 +62,7 @@ export default class Freeform {
     SignatureHandler,
     TableHandler,
     GoogleTagManager,
+    DragAndDropHandler,
   ];
 
   _beforeSubmitCallbackStack = [];
@@ -706,12 +708,12 @@ export default class Freeform {
     const event = this._createNewEvent(eventName, bubbles, cancelable);
     Object.assign(event, parameters);
 
-    if (!element) {
-      element = this.form;
-    }
-
-    element.dispatchEvent(event);
     document.dispatchEvent(event);
+    this.form.dispatchEvent(event);
+
+    if (element) {
+      element.dispatchEvent(event);
+    }
 
     return event;
   };

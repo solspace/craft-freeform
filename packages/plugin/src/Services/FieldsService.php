@@ -35,6 +35,7 @@ use Solspace\Freeform\Fields\MultipleSelectField;
 use Solspace\Freeform\Fields\NumberField;
 use Solspace\Freeform\Fields\Pro\ConfirmationField;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Pro\DragAndDropFileField;
 use Solspace\Freeform\Fields\Pro\InvisibleField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Pro\PasswordField;
@@ -183,6 +184,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
             SignatureField::class,
             TableField::class,
             InvisibleField::class,
+            DragAndDropFileField::class,
         ];
 
         $fetchTypesEvent = new FetchFieldTypes($fieldTypes);

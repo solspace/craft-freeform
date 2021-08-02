@@ -6,7 +6,6 @@ import BasePropertyEditor from './BasePropertyEditor';
 import { AttributeEditorProperty } from './PropertyItems';
 import CheckboxListProperty from './PropertyItems/CheckboxListProperty';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
-import ExternalOptionsProperty from './PropertyItems/ExternalOptionsProperty';
 import SelectProperty from './PropertyItems/SelectProperty';
 import TextareaProperty from './PropertyItems/TextareaProperty';
 import TextProperty from './PropertyItems/TextProperty';
@@ -56,7 +55,6 @@ export default class File extends BasePropertyEditor {
 
     const {
       properties: {
-        type,
         label,
         handle,
         required,

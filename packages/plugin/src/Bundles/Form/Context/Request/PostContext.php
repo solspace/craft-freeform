@@ -2,8 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
+use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
-use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -19,17 +20,21 @@ class PostContext
         $form = $event->getForm();
         $request = $event->getRequest();
 
+        if ($request->getHeaders()->get('Freeform-Preflight')) {
+            return;
+        }
+
         if ('POST' !== $request->getMethod() || !$form->isPagePosted()) {
             return;
         }
 
         foreach ($form->getCurrentPage()->getFields() as $field) {
             $postedValue = $request->post($field->getHandle());
-            if ($field instanceof CheckboxField) {
-                $postedValue = (bool) $postedValue;
-            }
 
-            $field->setValue($postedValue);
+            $event = new TransformValueEvent($field, $postedValue);
+            Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);
+
+            $field->setValue($event->getValue());
         }
     }
 }

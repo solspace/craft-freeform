@@ -13,6 +13,8 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use Solspace\Freeform\Fields\CheckboxGroupField;
+use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Fields\MailingListField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
@@ -122,31 +124,49 @@ class Layout implements \JsonSerializable, \Iterator
         $this->buildLayout();
     }
 
+    /**
+     * @deprecated use `hasFields(DatetimeField::class)` instead
+     */
     public function hasDatepickerEnabledFields(): bool
     {
         return (bool) \count($this->datepickerFields);
     }
 
+    /**
+     * @deprecated use `hasFields(PhoneField::class)` instead
+     */
     public function hasPhonePatternFields(): bool
     {
         return (bool) \count($this->phoneFields);
     }
 
+    /**
+     * @deprecated use `hasFields(RecaptchaField::class)` instead
+     */
     public function hasRecaptchaFields(): bool
     {
         return (bool) \count($this->recaptchaFields);
     }
 
+    /**
+     * @deprecated use `hasFields(OpinionScaleField::class)` instead
+     */
     public function hasOpinionScaleFields(): bool
     {
         return (bool) \count($this->opinionScaleFields);
     }
 
+    /**
+     * @deprecated use `hasFields(SignatureField::class)` instead
+     */
     public function hasSignatureFields(): bool
     {
         return (bool) \count($this->signatureFields);
     }
 
+    /**
+     * @deprecated use `hasFields(TableField::class)` instead
+     */
     public function hasTableFields(): bool
     {
         return (bool) \count($this->tableFields);
@@ -175,7 +195,9 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @return AbstractField[]|NoRenderInterface[]
+     * @deprecated use `getFields(HiddenField::class)` instead
+     *
+     * @return HiddenField[]
      */
     public function getHiddenFields(): array
     {
@@ -183,7 +205,9 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @return AbstractField[]|FileUploadInterface[]
+     * @deprecated use `getFields(TableField::class)` instead
+     *
+     * @return FileUploadField[]
      */
     public function getFileUploadFields(): array
     {
@@ -191,7 +215,9 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @return AbstractField[]|MailingListInterface[]
+     * @deprecated use `getFields(MailingListField::class)` instead
+     *
+     * @return MailingListInterface[]
      */
     public function getMailingListFields(): array
     {
@@ -199,7 +225,9 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @return AbstractField[]|DatetimeInterface[]
+     * @deprecated use `getFields(DatetimeField::class)` instead
+     *
+     * @return DatetimeInterface[]
      */
     public function getDatepickerFields(): array
     {
@@ -207,7 +235,9 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @return AbstractField[]|PhoneMaskInterface[]
+     * @deprecated use `getFields(PhoneField::class)` instead
+     *
+     * @return PhoneMaskInterface[]
      */
     public function getPhoneFields(): array
     {
@@ -215,7 +245,9 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @return AbstractField[]|RecaptchaInterface[]
+     * @deprecated use `getFields(RecaptchaField::class)` instead
+     *
+     * @return RecaptchaInterface[]
      */
     public function getRecaptchaFields(): array
     {
@@ -223,6 +255,8 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
+     * @deprecated use `getFields(OpinionScaleField::class)` instead
+     *
      * @return OpinionScaleField[]
      */
     public function getOpinionScaleFields(): array
@@ -231,6 +265,8 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
+     * @deprecated use `getFields(SignatureField::class)` instead
+     *
      * @return SignatureField[]
      */
     public function getSignatureFields(): array
@@ -239,6 +275,8 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
+     * @deprecated use `getFields(TableField::class)` instead
+     *
      * @return TableField[]
      */
     public function getTableFields(): array
@@ -247,10 +285,28 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @return AbstractField[]
+     * @param class-string $implements
      */
-    public function getFields(): array
+    public function hasFields(string $implements): bool
     {
+        return \count($this->getFields($implements)) > 0;
+    }
+
+    /**
+     * @template T
+     *
+     * @param class-string<T>|null $implements
+     *
+     * @return AbstractField[]|T[]
+     */
+    public function getFields(string $implements = null): array
+    {
+        if (null !== $implements) {
+            return array_filter($this->fields, function (AbstractField $field) use ($implements) {
+                return $field instanceof $implements;
+            });
+        }
+
         return $this->fields;
     }
 
@@ -504,6 +560,7 @@ class Layout implements \JsonSerializable, \Iterator
     {
         $isPro = Freeform::getInstance()->isPro();
 
+        // TODO: remove these, use the `getField()` method by specifying type
         $pageObjects = [];
         $allRows = [];
         $allFields = [];

@@ -19,8 +19,10 @@ use yii\db\ActiveQuery;
 /**
  * Class Freeform_FieldRecord.
  *
- * @property int $id
- * @property int $assetId
+ * @property int    $id
+ * @property int    $assetId
+ * @property string $formToken
+ * @property string $fieldHandle
  */
 class UnfinalizedFileRecord extends ActiveRecord
 {

@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   text-align: center;
 `;
 
-export default class DragAndDropFile extends HtmlInput {
+export default class FileDragAndDrop extends HtmlInput {
   static propTypes = {
     properties: PropTypes.shape({
       label: PropTypes.string.isRequired,

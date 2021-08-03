@@ -6,7 +6,7 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\Pro\DragAndDropFileField;
+use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
@@ -49,7 +49,7 @@ class FileUploadBundle implements BundleInterface
     public function handleDnDPost(TransformValueEvent $event)
     {
         $field = $event->getField();
-        if (!$field instanceof DragAndDropFileField) {
+        if (!$field instanceof FileDragAndDropField) {
             return;
         }
 

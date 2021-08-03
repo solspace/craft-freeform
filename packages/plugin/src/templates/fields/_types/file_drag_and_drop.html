@@ -1,0 +1,61 @@
+{% import "_includes/forms" as forms %}
+
+{{ forms.selectField({
+    label: "Asset Source"|t('freeform'),
+    instructions: "Select a default asset source for uploaded files."|t('freeform'),
+    name: "types[file_drag_and_drop][assetSourceId]",
+    value: field.metaProperty('assetSourceId'),
+    options: ["Select an asset source"|t('freeform')]|merge(assetSources),
+    errors: field.getErrors("assetSourceId"),
+}) }}
+
+{{ forms.textField({
+    label: "Upload Location Subfolder"|t('freeform'),
+    instructions: "The subfolder path that files should be uploaded to. May contain {{ form.handle }} or {{ form.id }} variables as well."|t('freeform'),
+    placeholder: "path/to/subfolder",
+    name: "types[file_drag_and_drop][defaultUploadLocation]",
+    value: field.metaProperty('defaultUploadLocation', ''),
+    errors: field.getErrors("defaultUploadLocation"),
+}) }}
+
+{{ forms.textField({
+    label: "File Count"|t('freeform'),
+    instructions: "Specify the maximum uploadable file count."|t('freeform'),
+    name: "types[file_drag_and_drop][fileCount]",
+    value: field.metaProperty('fileCount', 1),
+    errors: field.getErrors("fileCount"),
+}) }}
+
+{{ forms.textField({
+    label: "Maximum File Size"|t('freeform'),
+    instructions: "Specify the default maximum file size, in KB."|t('freeform'),
+    name: "types[file_drag_and_drop][maxFileSizeKB]",
+    value: field.metaProperty('maxFileSizeKB', 2048),
+    errors: field.getErrors("maxFileSizeKB"),
+}) }}
+
+{% if field.id %}
+    {% set selectedFileKinds = field.metaProperty('fileKinds', []) %}
+{% else %}
+    {% set selectedFileKinds = field.metaProperty('fileKinds', ["image", "pdf"]) %}
+{% endif %}
+
+{% set fileKindsInput %}
+    <div id="restrict-allowed-types">
+        <input type="hidden" name="types[file][fileKinds]" value="" />
+        {% for key, option in fileKinds %}
+            {{ forms.checkboxField({
+                label: option.label,
+                id: 'allowedKinds-'~key,
+                name: 'types[file_drag_and_drop][fileKinds][]',
+                value: key,
+                checked: (key in selectedFileKinds)
+            }) }}
+        {% endfor %}
+    </div>
+{% endset %}
+
+{{ forms.field({
+    label: "Allowed File Types"|t('freeform'),
+    instructions: "Select the file types to be allowed by default. Leaving all unchecked will allow all file types."|t('freeform'),
+}, fileKindsInput) }}

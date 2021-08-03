@@ -197,7 +197,7 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['fileKinds'] = $this->getMetaProperty('fileKinds', ['image', 'pdf']);
         }
 
-        if (FieldInterface::TYPE_DRAG_AND_DROP_FILE === $this->type) {
+        if (FieldInterface::TYPE_FILE_DRAG_AND_DROP === $this->type) {
             //$returnArray[''] = $this->getMetaProperty('twig');
         }
 

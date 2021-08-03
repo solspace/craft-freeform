@@ -137,6 +137,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             self::TYPE_CHECKBOX_GROUP => 'Checkbox group',
             self::TYPE_RADIO_GROUP => 'Radio group',
             self::TYPE_FILE => 'File upload',
+            self::TYPE_FILE_DRAG_AND_DROP => 'Drag & Drop File',
             self::TYPE_DYNAMIC_RECIPIENTS => 'Dynamic Recipients',
             self::TYPE_DATETIME => 'Date & Time',
             self::TYPE_NUMBER => 'Number',
@@ -149,7 +150,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             self::TYPE_SIGNATURE => 'Signature',
             self::TYPE_TABLE => 'Table',
             self::TYPE_INVISIBLE => 'Invisible',
-            self::TYPE_DRAG_AND_DROP_FILE => 'Drag & Drop File',
         ];
     }
 

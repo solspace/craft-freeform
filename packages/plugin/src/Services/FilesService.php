@@ -25,7 +25,7 @@ use craft\web\UploadedFile;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\Pro\DragAndDropFileField;
+use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
@@ -139,7 +139,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         return new FileUploadResponse(null, $errors);
     }
 
-    public function uploadDragAndDropFile(DragAndDropFileField $field, Form $form)
+    public function uploadDragAndDropFile(FileDragAndDropField $field, Form $form)
     {
         if (!$field->getAssetSourceId()) {
             return null;

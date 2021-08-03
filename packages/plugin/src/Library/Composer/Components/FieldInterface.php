@@ -31,6 +31,7 @@ interface FieldInterface
     const TYPE_EMAIL = 'email';
     const TYPE_MAILING_LIST = 'mailing_list';
     const TYPE_FILE = 'file';
+    const TYPE_FILE_DRAG_AND_DROP = 'file_drag_and_drop';
     const TYPE_PASSWORD = 'password';
 
     const TYPE_RICH_TEXT = 'rich_text';
@@ -46,7 +47,6 @@ interface FieldInterface
     const TYPE_SIGNATURE = 'signature';
     const TYPE_TABLE = 'table';
     const TYPE_INVISIBLE = 'invisible';
-    const TYPE_DRAG_AND_DROP_FILE = 'drag_and_drop_file';
 
     const TYPE_CREDIT_CARD_DETAILS = 'cc_details';
     const TYPE_CREDIT_CARD_NUMBER = 'cc_number';

@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Controllers;
 use craft\db\Query;
 use craft\elements\Asset;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
-use Solspace\Freeform\Fields\Pro\DragAndDropFileField;
+use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
@@ -27,7 +27,7 @@ class FileUploadController extends BaseController
         $form = $this->getVerifiedForm();
         $field = $form->get($handle);
 
-        if (!$field instanceof DragAndDropFileField) {
+        if (!$field instanceof FileDragAndDropField) {
             return $this->createErrorResponse(['Invalid field type']);
         }
 
@@ -56,7 +56,7 @@ class FileUploadController extends BaseController
 
         $token = SessionContext::getFormSessionToken($form);
 
-        if (!$field instanceof DragAndDropFileField) {
+        if (!$field instanceof FileDragAndDropField) {
             return $this->createErrorResponse(['Invalid file upload field used']);
         }
 
@@ -109,7 +109,7 @@ class FileUploadController extends BaseController
             if ($submission) {
                 try {
                     $field = $submission->{$handle};
-                    if ($field instanceof DragAndDropFileField) {
+                    if ($field instanceof FileDragAndDropField) {
                         $uploadedAssets = $field->getValue();
                         $uploadedFileExists = \in_array($asset->id, $uploadedAssets, false);
 

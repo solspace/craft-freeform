@@ -6,16 +6,16 @@ use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 
-class DragAndDropFileField extends FileUploadField implements ExtraFieldInterface
+class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface
 {
     public function getType(): string
     {
-        return self::TYPE_DRAG_AND_DROP_FILE;
+        return self::TYPE_FILE_DRAG_AND_DROP;
     }
 
     public static function getFieldType(): string
     {
-        return self::TYPE_DRAG_AND_DROP_FILE;
+        return self::TYPE_FILE_DRAG_AND_DROP;
     }
 
     public function getInputHtml(): string

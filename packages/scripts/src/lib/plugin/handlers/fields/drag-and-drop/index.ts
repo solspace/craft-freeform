@@ -4,11 +4,10 @@ import type Freeform from '@components/front-end/plugin/freeform';
 import { EVENT_DND_ON_CHANGE } from '@lib/plugin/constants/event-types';
 
 import { handleFileUpload, loadExistingUploads } from './file-upload';
-import type { ChangeEvent, UploadProgress } from './types';
+import type { ChangeEvent } from './types';
 
 class DragAndDropFile {
   freeform;
-  currentUploads: WeakMap<HTMLElement, UploadProgress> = new WeakMap();
 
   constructor(freeform: Freeform) {
     this.freeform = freeform;

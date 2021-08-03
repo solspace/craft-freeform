@@ -8,12 +8,17 @@ use Solspace\Freeform\Library\Helpers\FileHelper;
 
 class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface
 {
-    public function getType(): string
+    public static function getFieldTypeName(): string
+    {
+        return 'File Drag & Drop';
+    }
+
+    public static function getFieldType(): string
     {
         return self::TYPE_FILE_DRAG_AND_DROP;
     }
 
-    public static function getFieldType(): string
+    public function getType(): string
     {
         return self::TYPE_FILE_DRAG_AND_DROP;
     }

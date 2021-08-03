@@ -6,11 +6,13 @@ import HtmlInput from './HtmlInput';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  padding: 10px 0;
+  padding: 67px 20px;
 
-  border-radius: 5px;
-  border: 3px dashed grey;
-  background: lightgrey;
+  border-radius: 7px;
+  border: 3px dashed #3a85ee;
+  background: #ffffff;
+
+  font-size: 16px;
   text-align: center;
 `;
 
@@ -24,7 +26,7 @@ export default class FileDragAndDrop extends HtmlInput {
   };
 
   getClassName() {
-    return 'DragAndDropFile';
+    return 'FileDragAndDrop';
   }
 
   getType() {
@@ -45,6 +47,10 @@ export default class FileDragAndDrop extends HtmlInput {
   }
 
   renderInput() {
-    return <Wrapper>Drag & Drop a file</Wrapper>;
+    return (
+      <Wrapper>
+        <strong>Choose a file</strong> or drag it here
+      </Wrapper>
+    );
   }
 }

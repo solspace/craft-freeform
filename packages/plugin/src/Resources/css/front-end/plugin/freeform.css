@@ -58,6 +58,7 @@
 .freeform-file-upload {
   padding: 67px 20px;
   height: auto;
+  border-radius: 7px;
   border: 3px dashed #3a85ee;
   background: #ffffff;
   color: #000000;
@@ -198,10 +199,12 @@
   text-align: left;
 }
 .freeform-file-upload [data-preview-zone] [data-file-preview] [data-filename] {
+  font-size: 0.875rem;
   color: #6b6b6b;
   word-break: break-all;
 }
 .freeform-file-upload [data-preview-zone] [data-file-preview] [data-filesize] {
+  font-size: 0.8125rem;
   color: #bfbfbf;
 }
 .freeform-file-upload [data-preview-zone] [data-file-preview][data-completed] [data-progress] {
@@ -209,25 +212,4 @@
 }
 .freeform-file-upload [data-preview-zone] [data-file-preview][data-completed] [data-progress]:after {
   background: #21dd21;
-}
-.freeform-file-upload [data-global-loading] {
-  color: #ffffff;
-}
-.freeform-file-upload [data-global-loading]:before {
-  background: #e5e5e5;
-  width: 100%;
-}
-.freeform-file-upload [data-global-loading]:before:after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  display: block;
-  width: var(--progress);
-  height: inherit;
-  background-color: #077bff;
-  transition: background-color 0.5s ease-out;
-}
-.freeform-file-upload [data-global-messages] {
-  color: #a73636;
 }

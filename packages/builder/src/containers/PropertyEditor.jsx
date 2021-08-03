@@ -81,7 +81,7 @@ const propertyTypes = {
   signature: Signature,
   table: Table,
   invisible: Invisible,
-  drag_and_drop_file: File,
+  file_drag_and_drop: File,
 };
 
 const crmPropertyTypes = {

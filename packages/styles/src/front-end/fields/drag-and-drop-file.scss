@@ -29,6 +29,7 @@ $color-fill: #077bff;
   padding: 67px $gap;
   height: auto;
 
+  border-radius: 7px;
   border: 3px dashed #3a85ee;
   background: #ffffff;
   color: #000000;
@@ -185,11 +186,13 @@ $color-fill: #077bff;
       }
 
       [data-filename] {
+        font-size: 0.875rem;
         color: #6b6b6b;
         word-break: break-all;
       }
 
       [data-filesize] {
+        font-size: 0.8125rem;
         color: #bfbfbf;
       }
 
@@ -203,18 +206,5 @@ $color-fill: #077bff;
         }
       }
     }
-  }
-
-  [data-global-loading] {
-    color: #ffffff;
-
-    &:before {
-      @include progress-bg();
-      width: 100%;
-    }
-  }
-
-  [data-global-messages] {
-    color: #a73636;
   }
 }

@@ -6,7 +6,7 @@ import CheckboxGroup from './FieldTypes/CheckboxGroup';
 import Confirmation from './FieldTypes/Confirmation';
 import Datetime from './FieldTypes/Datetime';
 import DynamicRecipients from './FieldTypes/DynamicRecipients';
-import FileDragAndDrop from './FieldTypes/DragAndDropFile';
+import FileDragAndDrop from './FieldTypes/FileDragAndDrop';
 import Email from './FieldTypes/Email';
 import File from './FieldTypes/File';
 import Hidden from './FieldTypes/Hidden';

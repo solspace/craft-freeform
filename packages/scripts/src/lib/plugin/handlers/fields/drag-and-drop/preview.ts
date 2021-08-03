@@ -29,7 +29,7 @@ const createContainer = ({
 
   const filename = document.createElement('span');
   filename.setAttribute('data-filename', '');
-  filename.innerText = truncate(name, 13);
+  filename.innerText = truncate(name, 14);
   filename.title = name;
 
   const filesize = document.createElement('span');

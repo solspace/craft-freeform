@@ -166,7 +166,7 @@ class FileUploadController extends BaseController
         $form = $formModel->getForm();
         $form->handleRequest($request);
 
-        if ($form->isFormPosted() && $form->isValid() && !$form->getActions()) {
+        if ($form->isFormPosted()) {
             return $form;
         }
 

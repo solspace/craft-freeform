@@ -1,5 +1,6 @@
 import * as ActionTypes from '../constants/ActionTypes';
 import * as FieldTypes from '../constants/FieldTypes';
+import camelCase from 'lodash.camelcase';
 
 export function properties(state = [], action) {
   switch (action.type) {
@@ -180,6 +181,13 @@ export function modifyGroupValues(state = [], action) {
           clonedState[hash].options = clonedState[hash].options.map((item) => ({
             label: item.label,
             value: item.label,
+          }));
+        }
+      } else {
+        if (clonedState[hash].options) {
+          clonedState[hash].options = clonedState[hash].options.map((item) => ({
+            label: item.label,
+            value: camelCase(item.label),
           }));
         }
       }

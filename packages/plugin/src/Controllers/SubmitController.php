@@ -139,7 +139,6 @@ class SubmitController extends BaseController
 
     private function toAjaxResponse(Form $form, Submission $submission, string $returnUrl = null): Response
     {
-        $honeypot = Freeform::getInstance()->honeypot->getHoneypot($form);
         $fieldErrors = [];
         foreach ($form->getLayout()->getFields() as $field) {
             if ($field->hasErrors()) {
@@ -147,7 +146,7 @@ class SubmitController extends BaseController
             }
         }
 
-        $success = !$form->hasErrors() && !$form->getActions();
+        $success = !$form->hasErrors() && empty($fieldErrors) && !$form->getActions();
 
         $payload = [
             'success' => $success,
@@ -159,10 +158,6 @@ class SubmitController extends BaseController
             'errors' => $fieldErrors,
             'formErrors' => $form->getErrors(),
             'returnUrl' => $returnUrl,
-            'honeypot' => [
-                'name' => $honeypot->getName(),
-                'hash' => $honeypot->getHash(),
-            ],
         ];
 
         if ($form->isFinished()) {
@@ -174,6 +169,6 @@ class SubmitController extends BaseController
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);
         Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);
 
-        return $this->asJson($payload);
+        return $this->asJson($event->getPayload());
     }
 }

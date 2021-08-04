@@ -620,6 +620,7 @@ export default class Freeform {
                 // Reset the form so that the user may enter fresh information
                 // if a submission is not being edited
                 form.reset();
+                this._dispatchEvent(EventTypes.EVENT_ON_RESET);
               }
 
               this._renderSuccessBanner();

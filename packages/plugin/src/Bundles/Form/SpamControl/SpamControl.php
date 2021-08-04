@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\SpamControl;
 
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
@@ -17,6 +18,7 @@ class SpamControl implements BundleInterface
     {
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'redirectPage']);
         Event::on(Form::class, Form::EVENT_AFTER_VALIDATE, [$this, 'handleValidation']);
+        Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'handleAjaxPayload']);
     }
 
     public function redirectPage(HandleRequestEvent $event)
@@ -43,11 +45,29 @@ class SpamControl implements BundleInterface
         }
     }
 
+    public function handleAjaxPayload(PrepareAjaxResponsePayloadEvent $event)
+    {
+        if (!$this->isHoneypotEnabled()) {
+            return;
+        }
+
+        $honeypot = Freeform::getInstance()->honeypot->getHoneypot($event->getForm());
+        $event->add('honeypot', [
+            'name' => $honeypot->getName(),
+            'hash' => $honeypot->getHash(),
+        ]);
+    }
+
     private function getSpamReasons(Form $form)
     {
         $bag = $form->getPropertyBag();
 
         return $bag->get(Form::PROPERTY_SPAM_REASONS, []);
+    }
+
+    private function isHoneypotEnabled(): bool
+    {
+        return $this->getSettingsService()->isFreeformHoneypotEnabled();
     }
 
     private function getFormsService(): FormsService

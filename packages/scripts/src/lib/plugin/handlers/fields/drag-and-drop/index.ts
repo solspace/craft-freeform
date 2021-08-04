@@ -1,7 +1,8 @@
 import 'microtip/microtip.css';
 
 import type Freeform from '@components/front-end/plugin/freeform';
-import { EVENT_DND_ON_CHANGE } from '@lib/plugin/constants/event-types';
+import { EVENT_DND_ON_CHANGE, EVENT_ON_RESET } from '@lib/plugin/constants/event-types';
+import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 
 import { handleFileUpload, loadExistingUploads } from './file-upload';
 import type { ChangeEvent } from './types';
@@ -15,6 +16,7 @@ class DragAndDropFile {
   }
 
   reload = (): void => {
+    const form = this.freeform.form;
     const fileUploads = this.freeform.form.querySelectorAll<HTMLElement>('[data-freeform-file-upload]');
     fileUploads.forEach((fileUpload) => {
       fileUpload.addEventListener('dragenter', this.handleDrag(fileUpload));
@@ -24,6 +26,7 @@ class DragAndDropFile {
       fileUpload.addEventListener(EVENT_DND_ON_CHANGE, this.handleChanges);
 
       loadExistingUploads(fileUpload, this.freeform);
+      form.addEventListener(EVENT_ON_RESET, this.handleReset(fileUpload));
     });
   };
 
@@ -85,6 +88,14 @@ class DragAndDropFile {
         const file = files.item(i);
         handleFileUpload(file, handle, container, previewZone, this.freeform);
       }
+    };
+  };
+
+  handleReset = (container: HTMLElement): EventListenerOrEventListenerObject => {
+    return (): void => {
+      const items = container.querySelectorAll('[data-file-preview]');
+      items.forEach((item) => item.parentNode.removeChild(item));
+      dispatchCustomEvent(EVENT_DND_ON_CHANGE, { container }, container);
     };
   };
 }

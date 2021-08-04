@@ -1,4 +1,5 @@
 export const EVENT_READY = 'freeform-ready';
+export const EVENT_ON_RESET = 'freeform-on-reset';
 export const EVENT_ON_SUBMIT = 'freeform-on-submit';
 export const EVENT_REMOVE_MESSAGES = 'freeform-remove-messages';
 export const EVENT_FIELD_REMOVE_MESSAGES = 'freeform-remove-field-messages';

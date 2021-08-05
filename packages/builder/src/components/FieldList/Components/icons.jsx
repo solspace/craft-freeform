@@ -7,6 +7,7 @@ import datetime from '@ff/builder/assets/icons/fieldtype-datetime.svg';
 import dynamic_recipients from '@ff/builder/assets/icons/fieldtype-dynamic-recipients.svg';
 import email from '@ff/builder/assets/icons/fieldtype-email.svg';
 import file from '@ff/builder/assets/icons/fieldtype-file.svg';
+import file_drag_and_drop from '@ff/builder/assets/icons/fieldtype-file-drag-drop.svg';
 import hidden from '@ff/builder/assets/icons/fieldtype-hidden.svg';
 import invisible from '@ff/builder/assets/icons/fieldtype-hidden.svg';
 import html from '@ff/builder/assets/icons/fieldtype-html.svg';
@@ -35,6 +36,7 @@ const svgs = {
   textarea,
   hidden,
   file,
+  file_drag_and_drop,
   email,
   checkbox,
   checkbox_group,

@@ -1,5 +1,5 @@
 import Hashids from 'hashids';
-import { camelize } from 'underscore.string';
+import camelCase from 'lodash.camelcase';
 
 const minHashLength = 9;
 const hashids = new Hashids('composer', minHashLength);
@@ -50,7 +50,7 @@ export function getHandleValue(value, autoCamelize = true) {
   let handleValue = value;
 
   if (autoCamelize) {
-    handleValue = camelize(value, true);
+    handleValue = camelCase(value);
   }
 
   handleValue = handleValue.replace(/[^a-zA-Z0-9\-_]/g, '');

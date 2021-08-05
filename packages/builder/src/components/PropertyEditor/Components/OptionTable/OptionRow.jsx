@@ -1,3 +1,4 @@
+import camelCase from 'lodash.camelcase';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
@@ -103,7 +104,7 @@ export default class OptionRow extends Component {
     const { hash, index } = this.props;
 
     const label = ReactDOM.findDOMNode(this.refs.label).value;
-    let value = label;
+    let value = camelCase(label);
 
     const valueInput = ReactDOM.findDOMNode(this.refs.value);
     if (valueInput && event.target.dataset.type === 'value') {

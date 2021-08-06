@@ -40,6 +40,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= '<div data-preview-zone></div>';
         $output .= '<div data-global-loading></div>';
         $output .= '<div data-messages></div>';
+        $output .= '<input type="file" multiple />';
         $output .= '</div>';
 
         return $output;

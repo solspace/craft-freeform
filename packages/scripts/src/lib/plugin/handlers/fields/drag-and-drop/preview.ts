@@ -89,6 +89,10 @@ export const createPreviewContainer: CreatePreviewContainer = (metadata, freefor
     container.classList.remove('animation-enter');
   }, 10);
 
+  // Prevent click-through for the preview container
+  // so that the click-to-upload doesn't get triggered
+  event.container.addEventListener('click', (event) => event.stopPropagation());
+
   return event.container;
 };
 

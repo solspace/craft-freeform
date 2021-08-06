@@ -23,10 +23,15 @@ class DragAndDropFile {
       fileUpload.addEventListener('dragleave', this.handleDragLeave(fileUpload));
       fileUpload.addEventListener('dragover', this.handleDrag(fileUpload));
       fileUpload.addEventListener('drop', this.handleDrop(fileUpload));
+      fileUpload.addEventListener('click', this.handleClick(fileUpload));
       fileUpload.addEventListener(EVENT_DND_ON_CHANGE, this.handleChanges);
 
       loadExistingUploads(fileUpload, this.freeform);
       form.addEventListener(EVENT_ON_RESET, this.handleReset(fileUpload));
+
+      fileUpload
+        .querySelector<HTMLInputElement>(`input[type=file]`)
+        .addEventListener('change', this.handleManualUpload(fileUpload));
     });
   };
 
@@ -88,6 +93,34 @@ class DragAndDropFile {
         const file = files.item(i);
         handleFileUpload(file, handle, container, previewZone, this.freeform);
       }
+    };
+  };
+
+  handleClick = (container: HTMLElement): EventListenerOrEventListenerObject => {
+    return (): void => {
+      const input = container.querySelector<HTMLInputElement>('input[type="file"]');
+      if (!input) {
+        throw new Error('File upload corrupted');
+      }
+
+      input.click();
+    };
+  };
+
+  handleManualUpload = (container: HTMLElement): EventListenerOrEventListenerObject => {
+    return (event: Event): void => {
+      const handle = container.dataset.freeformFileUpload;
+      const input = event.target as HTMLInputElement;
+      const { files } = input;
+
+      const previewZone = container.querySelector('[data-preview-zone]');
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files.item(i);
+        handleFileUpload(file, handle, container, previewZone, this.freeform);
+      }
+
+      input.value = null;
     };
   };
 

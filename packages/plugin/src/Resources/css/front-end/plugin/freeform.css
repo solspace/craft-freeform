@@ -63,6 +63,10 @@
   background: #ffffff;
   color: #000000;
   text-align: center;
+  cursor: pointer;
+}
+.freeform-file-upload input[type=file] {
+  display: none;
 }
 .freeform-file-upload[data-dragging] {
   border-style: solid;
@@ -96,6 +100,7 @@
   }
 }
 .freeform-file-upload [data-preview-zone] [data-file-preview] {
+  cursor: initial;
   opacity: 1;
   transform: scale(1);
   transition: all 0.3s ease-out;

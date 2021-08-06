@@ -35,6 +35,12 @@ $color-fill: #077bff;
   color: #000000;
   text-align: center;
 
+  cursor: pointer;
+
+  input[type='file'] {
+    display: none;
+  }
+
   &[data-dragging] {
     border-style: solid;
     background-color: #e7e7e7;
@@ -67,6 +73,8 @@ $color-fill: #077bff;
     }
 
     [data-file-preview] {
+      cursor: initial;
+
       &.animation-enter {
         opacity: 0;
         transform: scale(0.1);

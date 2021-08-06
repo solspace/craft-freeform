@@ -63,7 +63,9 @@ class FileUploadBundle implements BundleInterface
         $ids = [];
         foreach ($uids as $uid) {
             $asset = \Craft::$app->getElements()->getElementByUid($uid);
-            $ids[] = $asset->id;
+            if ($asset) {
+                $ids[] = $asset->id;
+            }
         }
 
         $event->setValue($ids);

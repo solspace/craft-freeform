@@ -1,6 +1,25 @@
 {% import "_includes/forms" as forms %}
 
 {{ forms.selectField({
+    label: "Style"|t('freeform'),
+    instructions: "Select style."|t('freeform'),
+    name: "types[file_drag_and_drop][theme]",
+    value: field.metaProperty('theme', 'light'),
+    options: {
+        light: 'Light',
+        dark: 'Dark',
+    },
+    errors: field.getErrors("theme"),
+}) }}
+
+{{ forms.colorField({
+    label: "Accent Color"|t('freeform'),
+    id: "accent",
+    name: "types[file_drag_and_drop][accent]",
+    value: field.getMetaProperty('accent', '#3a85ee'),
+}) }}
+
+{{ forms.selectField({
     label: "Asset Source"|t('freeform'),
     instructions: "Select a default asset source for uploaded files."|t('freeform'),
     name: "types[file_drag_and_drop][assetSourceId]",

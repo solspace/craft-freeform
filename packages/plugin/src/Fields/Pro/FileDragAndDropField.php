@@ -51,12 +51,13 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= '<div data-freeform-file-upload="'.$this->getHandle().'" ';
         $output .= 'data-file-count="'.\count($this->getValue()).'" ';
         $output .= 'data-theme="'.$this->getTheme().'" ';
+        $output .= 'data-message-progress="'.$this->translate('Upload in progress...').'" ';
+        $output .= 'data-message-complete="'.$this->translate('Upload complete!').'" ';
         $output .= 'style="border-color: '.$this->getAccent().';" ';
         $output .= $this->getInputAttributesString();
         $output .= '>';
         $output .= '<div data-placeholder>';
-        $output .= '<strong>Choose a file</strong>';
-        $output .= '<span> or drag it here</span>';
+        $output .= $this->translate('<strong>Drag and drop files here</strong> or click to upload');
         $output .= '</div>';
         $output .= '<div data-preview-zone></div>';
         $output .= '<div data-global-loading></div>';

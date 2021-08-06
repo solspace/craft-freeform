@@ -55,7 +55,7 @@ export default class FileDragAndDrop extends HtmlInput {
 
     return (
       <Wrapper accent={accent} theme={theme}>
-        <strong>Choose a file</strong> or drag it here
+        <strong>Drag and drop files here</strong> or click to upload
       </Wrapper>
     );
   }

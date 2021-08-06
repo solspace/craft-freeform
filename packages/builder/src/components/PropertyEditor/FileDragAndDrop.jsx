@@ -120,8 +120,8 @@ export default class FileDragAndDrop extends BasePropertyEditor {
         <h4>{translate('Configuration')}</h4>
 
         <SelectProperty
-          label="Theme"
-          instructions="Select the color theme."
+          label="Style"
+          instructions="Select style."
           name="theme"
           value={theme}
           onChangeHandler={this.update}
@@ -132,8 +132,8 @@ export default class FileDragAndDrop extends BasePropertyEditor {
         />
 
         <ColorProperty
-          label="Accent"
-          instructions="Select accent"
+          label="Accent Color"
+          instructions="Select accent color"
           name="accent"
           value={accent}
           onChangeHandler={this.updateKeyValue}

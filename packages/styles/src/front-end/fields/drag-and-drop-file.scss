@@ -37,8 +37,17 @@ $color-fill: #077bff;
 
   cursor: pointer;
 
+  &[data-theme='dark'] {
+    background: #222222;
+    color: #656666;
+  }
+
   input[type='file'] {
     display: none;
+  }
+
+  [data-placeholder] {
+    font-size: 1.25rem;
   }
 
   &[data-dragging] {

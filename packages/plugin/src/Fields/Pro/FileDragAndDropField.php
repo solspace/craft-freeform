@@ -8,6 +8,25 @@ use Solspace\Freeform\Library\Helpers\FileHelper;
 
 class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface
 {
+    const DEFAULT_ACCENT = '#3a85ee';
+    const DEFAULT_THEME = 'light';
+
+    /** @var string */
+    protected $accent;
+
+    /** @var string */
+    protected $theme;
+
+    public function getAccent()
+    {
+        return $this->accent;
+    }
+
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
     public static function getFieldTypeName(): string
     {
         return 'File Drag & Drop';
@@ -31,6 +50,8 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output = '';
         $output .= '<div data-freeform-file-upload="'.$this->getHandle().'" ';
         $output .= 'data-file-count="'.\count($this->getValue()).'" ';
+        $output .= 'data-theme="'.$this->getTheme().'" ';
+        $output .= 'style="border-color: '.$this->getAccent().';" ';
         $output .= $this->getInputAttributesString();
         $output .= '>';
         $output .= '<div data-placeholder>';

@@ -91,6 +91,8 @@ const validProperties = [
   'description',
   'step',
   'twig',
+  'accent',
+  'theme',
 ];
 
 export default class PropertyHelper {

@@ -5,14 +5,17 @@ import Badge from './Components/Badge';
 import HtmlInput from './HtmlInput';
 import styled from 'styled-components';
 
+const defaultAccent = '#3a85ee';
+
 const Wrapper = styled.div`
   padding: 67px 20px;
 
   border-radius: 7px;
-  border: 3px dashed #3a85ee;
-  background: #ffffff;
+  border: 3px dashed ${({ accent }) => accent};
+  background: ${({ theme }) => (theme === 'dark' ? '#222222' : '#ffffff')};
+  color: ${({ theme }) => (theme === 'dark' ? '#656666' : '#000')};
 
-  font-size: 16px;
+  font-size: 1.25rem;
   text-align: center;
 `;
 
@@ -22,6 +25,7 @@ export default class FileDragAndDrop extends HtmlInput {
       label: PropTypes.string.isRequired,
       required: PropTypes.bool.isRequired,
       assetSourceId: PropTypes.number,
+      accent: PropTypes.string,
     }).isRequired,
   };
 
@@ -47,8 +51,10 @@ export default class FileDragAndDrop extends HtmlInput {
   }
 
   renderInput() {
+    const { accent = defaultAccent, theme = 'light' } = this.props.properties;
+
     return (
-      <Wrapper>
+      <Wrapper accent={accent} theme={theme}>
         <strong>Choose a file</strong> or drag it here
       </Wrapper>
     );

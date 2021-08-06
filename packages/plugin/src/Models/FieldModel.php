@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -14,6 +15,7 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
@@ -186,7 +188,7 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['configuration'] = $this->getMetaProperty('target', null);
         }
 
-        if (FieldInterface::TYPE_FILE === $this->type) {
+        if (\in_array($this->type, [FieldInterface::TYPE_FILE, FieldInterface::TYPE_FILE_DRAG_AND_DROP], true)) {
             $returnArray['assetSourceId'] = (int) $this->getMetaProperty('assetSourceId', 0);
             $returnArray['maxFileSizeKB'] = (int) $this->getMetaProperty(
                 'maxFileSizeKB',
@@ -198,7 +200,8 @@ class FieldModel extends Model implements \JsonSerializable
         }
 
         if (FieldInterface::TYPE_FILE_DRAG_AND_DROP === $this->type) {
-            //$returnArray[''] = $this->getMetaProperty('twig');
+            $returnArray['accent'] = $this->getMetaProperty('accent', FileDragAndDropField::DEFAULT_ACCENT);
+            $returnArray['theme'] = $this->getMetaProperty('theme', FileDragAndDropField::DEFAULT_THEME);
         }
 
         if (\in_array($this->type, [FieldInterface::TYPE_RADIO_GROUP, FieldInterface::TYPE_SELECT], true)) {

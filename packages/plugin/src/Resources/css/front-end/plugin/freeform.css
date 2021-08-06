@@ -65,8 +65,15 @@
   text-align: center;
   cursor: pointer;
 }
+.freeform-file-upload[data-theme=dark] {
+  background: #222222;
+  color: #656666;
+}
 .freeform-file-upload input[type=file] {
   display: none;
+}
+.freeform-file-upload [data-placeholder] {
+  font-size: 1.25rem;
 }
 .freeform-file-upload[data-dragging] {
   border-style: solid;

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -279,6 +280,12 @@ class FieldProperties extends AbstractProperties
 
     /** @var bool */
     protected $twig;
+
+    /** @var string */
+    protected $accent;
+
+    /** @var string */
+    protected $theme;
 
     /**
      * @return null|string
@@ -963,6 +970,16 @@ class FieldProperties extends AbstractProperties
         return (bool) $this->twig;
     }
 
+    public function getAccent()
+    {
+        return $this->accent;
+    }
+
+    public function getTheme()
+    {
+        return $this->theme;
+    }
+
     /**
      * Return a list of all property fields and their type.
      *
@@ -1061,6 +1078,8 @@ class FieldProperties extends AbstractProperties
             'maxRows' => self::TYPE_INTEGER,
             'useScript' => self::TYPE_BOOLEAN,
             'twig' => self::TYPE_BOOLEAN,
+            'accent' => self::TYPE_STRING,
+            'theme' => self::TYPE_STRING,
         ];
     }
 }

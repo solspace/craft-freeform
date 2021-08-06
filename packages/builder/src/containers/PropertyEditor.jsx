@@ -19,6 +19,7 @@ import DateTime from '../components/PropertyEditor/Datetime';
 import DynamicRecipients from '../components/PropertyEditor/DynamicRecipients';
 import Email from '../components/PropertyEditor/Email';
 import File from '../components/PropertyEditor/File';
+import FileDragAndDrop from '../components/PropertyEditor/FileDragAndDrop';
 import Form from '../components/PropertyEditor/Form';
 import Hidden from '../components/PropertyEditor/Hidden';
 import Html from '../components/PropertyEditor/Html';
@@ -81,7 +82,7 @@ const propertyTypes = {
   signature: Signature,
   table: Table,
   invisible: Invisible,
-  file_drag_and_drop: File,
+  file_drag_and_drop: FileDragAndDrop,
 };
 
 const crmPropertyTypes = {

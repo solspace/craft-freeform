@@ -87,7 +87,6 @@ export const handleFileUpload = (
   const previewContainer = createPreviewContainer({ name, extension, size }, freeform);
   const thumbnail = previewContainer.querySelector<HTMLElement>('[data-thumbnail]');
   const removeButton = previewContainer.querySelector<HTMLElement>('[data-remove-button]');
-  const errorContainer = previewContainer.querySelector<HTMLElement>('[data-errors]');
 
   if (isImage(extension)) {
     const reader = new FileReader();
@@ -160,7 +159,7 @@ export const handleFileUpload = (
       if (error?.response?.data?.type === ErrorTypes.FieldError) {
         const { messages } = error?.response?.data as FieldError;
 
-        addFieldErrors(container, errorContainer, messages, freeform);
+        addFieldErrors(container, previewContainer, messages, freeform);
       } else {
         console.warn(error);
       }

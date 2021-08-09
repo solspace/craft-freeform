@@ -8,7 +8,7 @@ export const dispatchCustomEvent = <T extends ObjectLiteral>(
   parameters: T = {} as T,
   element: HTMLElement
 ): T & Event => {
-  const bubbles = parameters.bubbles ?? false;
+  const bubbles = parameters.bubbles ?? true;
   const cancelable = parameters.cancelable ?? true;
 
   delete parameters.bubbles;

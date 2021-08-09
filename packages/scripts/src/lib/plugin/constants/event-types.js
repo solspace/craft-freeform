@@ -20,6 +20,7 @@ export const EVENT_DND_RENDER_PREVIEW = 'freeform-field-dnd-on-render-preview';
 export const EVENT_DND_RENDER_PREVIEW_REMOVE_BUTTON = 'freeform-field-dnd-on-render-preview-remove-button';
 
 export const EVENT_DND_RENDER_ERROR_CONTAINER = 'freeform-field-dnd-render-error-container';
+export const EVENT_DND_SHOW_GLOBAL_MESSAGE = 'freeform-field-dnd-show-global-message';
 export const EVENT_DND_APPEND_ERRORS = 'freeform-field-dnd-append-errors';
 export const EVENT_DND_CLEAR_ERRORS = 'freeform-field-dnd-clear-errors';
 export const EVENT_DND_ON_CHANGE = 'freeform-field-dnd-on-change';

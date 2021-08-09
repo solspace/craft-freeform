@@ -36,7 +36,7 @@ export const clearErrors = (container: HTMLElement, errorContainer: HTMLElement,
 
 export const addFieldErrors = (
   container: HTMLElement,
-  errorContainer: HTMLElement,
+  previewContainer: HTMLElement,
   errors: string[],
   freeform: Freeform
 ): void => {
@@ -45,5 +45,8 @@ export const addFieldErrors = (
     return;
   }
 
+  const errorContainer = previewContainer.querySelector<HTMLElement>('[data-errors]');
+
+  previewContainer.setAttribute('data-has-errors', '');
   errorContainer.setAttribute('aria-label', errors.join('; '));
 };

@@ -64,6 +64,28 @@ $color-fill: #077bff;
     }
   }
 
+  [data-messages] {
+    margin: 0;
+    padding: 0 20px;
+
+    > li {
+      margin: 0;
+      padding: 0;
+      text-align: left;
+
+      opacity: 1;
+      transition: all 0.3s ease-out;
+
+      &[data-error] {
+        color: #ff0300;
+      }
+
+      &[data-animate-fade-out] {
+        opacity: 0;
+      }
+    }
+  }
+
   [data-preview-zone] {
     display: grid;
     grid-template-columns: repeat(1, 1fr);

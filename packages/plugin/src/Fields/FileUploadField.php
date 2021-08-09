@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -92,6 +93,11 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     public function getMaxFileSizeKB(): int
     {
         return $this->maxFileSizeKB ?: self::DEFAULT_MAX_FILESIZE_KB;
+    }
+
+    public function getMaxFileSizeBytes(): int
+    {
+        return $this->getMaxFileSizeKB() * 1000;
     }
 
     public function getFileCount(): int

@@ -86,6 +86,23 @@
 .freeform-file-upload[data-contains-files] [data-placeholder] {
   display: none;
 }
+.freeform-file-upload [data-messages] {
+  margin: 0;
+  padding: 0 20px;
+}
+.freeform-file-upload [data-messages] > li {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  opacity: 1;
+  transition: all 0.3s ease-out;
+}
+.freeform-file-upload [data-messages] > li[data-error] {
+  color: #ff0300;
+}
+.freeform-file-upload [data-messages] > li[data-animate-fade-out] {
+  opacity: 0;
+}
 .freeform-file-upload [data-preview-zone] {
   display: grid;
   grid-template-columns: repeat(1, 1fr);

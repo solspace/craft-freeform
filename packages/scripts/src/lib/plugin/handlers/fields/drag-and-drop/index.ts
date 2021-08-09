@@ -5,6 +5,7 @@ import { EVENT_DND_ON_CHANGE, EVENT_ON_RESET } from '@lib/plugin/constants/event
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 
 import { handleFileUpload, loadExistingUploads } from './file-upload';
+import { showError } from './messaging';
 import type { ChangeEvent } from './types';
 
 class DragAndDropFile {
@@ -82,17 +83,10 @@ class DragAndDropFile {
 
       this.detachDragState(container);
 
-      const handle = container.dataset.freeformFileUpload;
-
       const dataTransfer = event.dataTransfer;
       const files = dataTransfer.files;
 
-      const previewZone = container.querySelector('[data-preview-zone]');
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files.item(i);
-        handleFileUpload(file, handle, container, previewZone, this.freeform);
-      }
+      this.initFileUpload(files, container);
     };
   };
 
@@ -109,19 +103,36 @@ class DragAndDropFile {
 
   handleManualUpload = (container: HTMLElement): EventListenerOrEventListenerObject => {
     return (event: Event): void => {
-      const handle = container.dataset.freeformFileUpload;
       const input = event.target as HTMLInputElement;
       const { files } = input;
 
-      const previewZone = container.querySelector('[data-preview-zone]');
-
-      for (let i = 0; i < files.length; i++) {
-        const file = files.item(i);
-        handleFileUpload(file, handle, container, previewZone, this.freeform);
-      }
-
+      this.initFileUpload(files, container);
       input.value = null;
     };
+  };
+
+  initFileUpload = (files: FileList, container: HTMLElement): void => {
+    const { freeformFileUpload: handle, maxFiles, maxSize } = container.dataset;
+    const { messageSize, messageFiles } = container.dataset;
+    const previewZone = container.querySelector('[data-preview-zone]');
+
+    let fileCount = container.querySelectorAll('[data-file-preview]:not([data-has-errors])').length;
+
+    for (let i = 0; i < files.length; i++) {
+      if (fileCount >= parseInt(maxFiles)) {
+        showError(container, messageFiles);
+        break;
+      }
+
+      const file = files.item(i);
+      if (file.size > parseInt(maxSize)) {
+        showError(container, messageSize);
+        continue;
+      }
+
+      handleFileUpload(file, handle, container, previewZone, this.freeform);
+      fileCount++;
+    }
   };
 
   handleReset = (container: HTMLElement): EventListenerOrEventListenerObject => {

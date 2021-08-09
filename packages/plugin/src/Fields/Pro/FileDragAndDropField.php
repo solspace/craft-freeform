@@ -47,12 +47,25 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $attributes = $this->getCustomAttributes();
         $this->addInputAttribute('class', 'freeform-file-upload '.$attributes->getClass());
 
+        $messageFiles = $this->translate(
+            'Maximum file upload limit of {limit} reached',
+            ['limit' => $this->getFileCount()]
+        );
+        $messageSize = $this->translate(
+            'Maximum file upload size is {maxFileSize}KB',
+            ['maxFileSize' => $this->getMaxFileSizeKB()]
+        );
+
         $output = '';
         $output .= '<div data-freeform-file-upload="'.$this->getHandle().'" ';
         $output .= 'data-file-count="'.\count($this->getValue()).'" ';
+        $output .= 'data-max-files="'.$this->getFileCount().'" ';
+        $output .= 'data-max-size="'.$this->getMaxFileSizeBytes().'" ';
         $output .= 'data-theme="'.$this->getTheme().'" ';
         $output .= 'data-message-progress="'.$this->translate('Upload in progress...').'" ';
         $output .= 'data-message-complete="'.$this->translate('Upload complete!').'" ';
+        $output .= 'data-message-files="'.$messageFiles.'" ';
+        $output .= 'data-message-size="'.$messageSize.'" ';
         $output .= 'style="border-color: '.$this->getAccent().';" ';
         $output .= $this->getInputAttributesString();
         $output .= '>';
@@ -61,7 +74,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= '</div>';
         $output .= '<div data-preview-zone></div>';
         $output .= '<div data-global-loading></div>';
-        $output .= '<div data-messages></div>';
+        $output .= '<ul data-messages></ul>';
         $output .= '<input type="file" multiple />';
         $output .= '</div>';
 

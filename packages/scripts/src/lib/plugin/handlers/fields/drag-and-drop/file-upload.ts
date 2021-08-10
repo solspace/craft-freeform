@@ -117,6 +117,11 @@ export const handleFileUpload = (
         dispatchCustomEvent(EVENT_DND_ON_UPLOAD_PROGRESS, { total, loaded, percent }, container);
 
         previewContainer.style.setProperty('--progress', `${percent}%`);
+
+        if (percent >= 98) {
+          // Prevent files from being removed if they're uploaded already, but still being processed
+          removeButton.removeEventListener('click', handleCancelRequest);
+        }
       },
     })
     .then((response) => {

@@ -45,7 +45,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', 'freeform-file-upload '.$attributes->getClass());
+        $this->addInputAttribute('class', 'freeform-file-drag-and-drop '.$attributes->getClass());
 
         $messageFiles = $this->translate(
             'Maximum file upload limit of {limit} reached',
@@ -69,12 +69,11 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= 'style="border-color: '.$this->getAccent().';" ';
         $output .= $this->getInputAttributesString();
         $output .= '>';
-        $output .= '<div data-placeholder>';
+        $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';
         $output .= $this->translate('<strong>Drag and drop files here</strong> or click to upload');
         $output .= '</div>';
-        $output .= '<div data-preview-zone></div>';
-        $output .= '<div data-global-loading></div>';
-        $output .= '<ul data-messages></ul>';
+        $output .= '<div data-preview-zone class="freeform-file-drag-and-drop__preview-zone"></div>';
+        $output .= '<ul data-messages class="freeform-file-drag-and-drop__messages"></ul>';
         $output .= '<input type="file" multiple />';
         $output .= '</div>';
 

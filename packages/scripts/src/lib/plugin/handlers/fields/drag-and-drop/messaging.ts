@@ -1,4 +1,5 @@
 import { EVENT_DND_SHOW_GLOBAL_MESSAGE } from '@lib/plugin/constants/event-types';
+import { addDnDClass } from '@lib/plugin/helpers/classes';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 
 const DEFAULT_TTL = 4000;
@@ -8,6 +9,8 @@ export const showError = (container: HTMLElement, message: string, ttl: number =
   const messageItem = document.createElement('li');
   messageItem.setAttribute('data-error', '');
   messageItem.innerText = message;
+  addDnDClass(messageItem, 'messages', 'message');
+  addDnDClass(messageItem, 'messages', 'message', 'error');
 
   const event = dispatchCustomEvent(EVENT_DND_SHOW_GLOBAL_MESSAGE, { messageItem }, container);
   appendToErrorList(container, event.messageItem, ttl);

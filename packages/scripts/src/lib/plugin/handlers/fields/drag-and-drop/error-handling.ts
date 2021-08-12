@@ -4,6 +4,7 @@ import {
   EVENT_DND_CLEAR_ERRORS,
   EVENT_DND_RENDER_ERROR_CONTAINER,
 } from '@lib/plugin/constants/event-types';
+import { addDnDClass } from '@lib/plugin/helpers/classes';
 
 type RenderErrorContainerEvent = Event & {
   container: HTMLElement;
@@ -15,6 +16,7 @@ export const createErrorContainer = (freeform: Freeform): HTMLElement => {
   container.setAttribute('data-errors', '');
   container.setAttribute('data-microtip-position', 'top');
   container.setAttribute('role', 'tooltip');
+  addDnDClass(container, 'preview-zone', 'file-preview', 'thumbnail', 'errors');
 
   const event = freeform._dispatchEvent(
     EVENT_DND_RENDER_ERROR_CONTAINER,

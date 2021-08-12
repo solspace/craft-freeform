@@ -109,6 +109,8 @@ export default class OptionRow extends Component {
     const valueInput = ReactDOM.findDOMNode(this.refs.value);
     if (valueInput && event.target.dataset.type === 'value') {
       value = valueInput.value;
+    } else if (!valueInput) {
+      value = label;
     }
 
     this.props.updateValueSet(hash, index, value, label);

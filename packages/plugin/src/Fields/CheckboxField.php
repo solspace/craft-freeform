@@ -46,10 +46,6 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             return $this->checkedByPost;
         }
 
-        if (null !== $this->getValueOverride()) {
-            return (bool) $this->getValueOverride();
-        }
-
         return $this->checked;
     }
 

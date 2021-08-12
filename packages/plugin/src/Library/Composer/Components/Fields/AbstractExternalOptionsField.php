@@ -60,10 +60,6 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
             $values = $this->value;
         }
 
-        if (null !== $this->getValueOverride()) {
-            $values = $this->getValueOverride();
-        }
-
         if ($this instanceof DynamicRecipientField) {
             $actualValues = [];
             foreach ($this->values as $value) {

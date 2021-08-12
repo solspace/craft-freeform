@@ -62,9 +62,6 @@ class CustomFormAttributes extends AbstractAttributes
     /** @var string */
     protected $action;
 
-    /** @var array */
-    protected $overrideValues;
-
     /** @var bool */
     protected $useRequiredAttribute;
 
@@ -242,14 +239,6 @@ class CustomFormAttributes extends AbstractAttributes
     public function getAction()
     {
         return $this->action;
-    }
-
-    /**
-     * @return null|array
-     */
-    public function getOverrideValues()
-    {
-        return $this->overrideValues;
     }
 
     /**

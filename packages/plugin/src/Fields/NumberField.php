@@ -36,10 +36,6 @@ class NumberField extends TextField
      */
     public function getValue()
     {
-        if ($this->getValueOverride()) {
-            return $this->getValueOverride();
-        }
-
         $value = parent::getValue();
         $value = str_replace(',', '.', $value);
         if (is_numeric($value)) {

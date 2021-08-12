@@ -181,24 +181,6 @@ class CustomFieldAttributes extends AbstractAttributes
     }
 
     /**
-     * @return mixed
-     */
-    public function getOverrideValue()
-    {
-        $value = $this->overrideValue;
-
-        if (null === $value && null !== $this->formProperties) {
-            $overrideValues = $this->formProperties->get('overrideValues');
-
-            if ($overrideValues && isset($overrideValues[$this->field->getHandle()])) {
-                $value = $overrideValues[$this->field->getHandle()];
-            }
-        }
-
-        return $value;
-    }
-
-    /**
      * @return array
      */
     public function getInputAttributes()

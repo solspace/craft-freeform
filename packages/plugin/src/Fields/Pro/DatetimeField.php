@@ -190,10 +190,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     {
         $value = $this->value;
 
-        if ($this->getValueOverride()) {
-            $value = $this->getValueOverride();
-        }
-
         if (empty($value)) {
             $value = $this->getInitialValue();
 

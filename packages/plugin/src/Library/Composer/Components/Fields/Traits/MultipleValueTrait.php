@@ -29,15 +29,6 @@ trait MultipleValueTrait
      */
     public function getValue()
     {
-        $valueOverride = $this->getValueOverride();
-        if ($valueOverride) {
-            if (!\is_array($valueOverride)) {
-                return [$valueOverride];
-            }
-
-            return $valueOverride;
-        }
-
         $values = $this->values;
 
         if (!\is_array($values) && !empty($values)) {

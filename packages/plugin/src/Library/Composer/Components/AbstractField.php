@@ -430,16 +430,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     }
 
     /**
-     * Gets the overridden value if any present.
-     *
-     * @return mixed
-     */
-    public function getValueOverride()
-    {
-        return $this->getCustomAttributes()->getOverrideValue();
-    }
-
-    /**
      * An alias for ::setCustomAttributes().
      */
     public function setAttributes(array $attributes = null)

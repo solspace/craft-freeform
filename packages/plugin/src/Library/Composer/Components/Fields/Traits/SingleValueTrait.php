@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use LitEmoji\LitEmoji;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
@@ -27,12 +26,7 @@ trait SingleValueTrait
      */
     public function getValue()
     {
-        if ($this->getValueOverride()) {
-            return $this->getValueOverride();
-        }
-
         return (string) $this->value;
-        // return (string) LitEmoji::shortcodeToUnicode($this->value);
     }
 
     /**

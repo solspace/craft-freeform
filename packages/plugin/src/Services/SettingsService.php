@@ -468,6 +468,7 @@ class SettingsService extends BaseService
             'hdalerts' => ['heading' => Freeform::t('Reliability')],
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'error-log' => ['title' => Freeform::t('Error Log <span class="badge">{count}</span>', ['count' => $errorCount])],
+            'diagnostics' => ['title' => Freeform::t('Diagnostics')],
         ];
 
         if (!$this->isAllowAdminEdit()) {

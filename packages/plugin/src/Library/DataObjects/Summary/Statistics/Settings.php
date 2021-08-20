@@ -34,6 +34,9 @@ class Settings
     /** @var string */
     public $jsInsertLocation = '';
 
+    /** @var string */
+    public $jsInsertType = '';
+
     /** @var bool */
     public $purgeSubmissions = false;
 

@@ -1,0 +1,169 @@
+.diagnostic-color {
+  &-error {
+    color: #d52817;
+  }
+
+  &-pass {
+    color: #60aa55;
+  }
+
+  &-base {
+    color: #5a6875;
+  }
+
+  &-pass, &-base {
+    font-style: italic;
+  }
+
+  &-error, &-pass, &-base {
+    font-weight: bold;
+  }
+}
+
+.banner {
+  margin-bottom: 20px;
+
+  border-radius: 6px;
+  border-style: solid;
+  border-width: 2px;
+
+  overflow: hidden;
+
+  h2 {
+    margin: 0;
+    padding: 10px 10px;
+    color: #ffffff;
+  }
+
+  ul {
+    margin: 0;
+    padding: 15px 20px;
+
+    > li {
+      &:not(:last-child) {
+        padding-bottom: 15px;
+      }
+
+
+      h4 {
+        margin: 0;
+        padding: 0;
+      }
+
+      p {
+        margin: 0;
+        padding: 0;
+
+        line-height: 16px;
+      }
+    }
+  }
+
+  &-info {
+    display: grid;
+    grid-template-columns: 60px auto;
+    gap: 20px;
+
+    padding: 10px 20px;
+
+    background: #60aa55;
+    color: #ffffff;
+
+    .heading {
+      margin: 0;
+      padding: 10px 0 5px;
+
+      font-size: 28px;
+    }
+
+    p {
+      margin: 0;
+      padding: 0;
+    }
+
+    .checkmark-icon {
+      display: block;
+      height: 50px;
+      width: 50px;
+
+      border-radius: 50%;
+      background: #ffffff;
+
+      &:before {
+        color: #60aa55;
+        font-size: 50px;
+      }
+    }
+  }
+
+  &-warning, &-suggestions {
+    svg {
+      position: relative;
+      top: 2px;
+
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  &-warning {
+    border-color: #f28d03;
+
+    h2 {
+      background: #f28d03;
+    }
+  }
+
+  &-suggestions {
+    border-color: #009adb;
+
+    h2 {
+      background: #009adb;
+    }
+  }
+}
+
+.gridy {
+  display: grid;
+  gap: 40px;
+  grid-template-columns: 30% auto;
+}
+
+.diag-list {
+  > ul {
+    > li {
+      padding: 1px 0;
+
+      h3 {
+        padding: 5px 0 0;
+        margin: 0;
+      }
+
+      > ul:not(.notices) {
+        padding-left: 10px;
+
+        > li {
+          padding: 1px 0;
+          list-style: '-' inside;
+        }
+      }
+
+      ul.notices {
+        padding-left: 10px;
+
+        > li {
+          color: #009adb;
+          font-style: italic;
+
+          svg {
+            position: relative;
+            top: 1px;
+
+            width: 14px;
+            height: 14px;
+          }
+        }
+      }
+    }
+  }
+}

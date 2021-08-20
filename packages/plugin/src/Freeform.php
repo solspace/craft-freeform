@@ -32,6 +32,7 @@ use Solspace\Freeform\Controllers\BannersController;
 use Solspace\Freeform\Controllers\CodepackController;
 use Solspace\Freeform\Controllers\CrmController;
 use Solspace\Freeform\Controllers\DashboardController;
+use Solspace\Freeform\Controllers\DiagnosticsController;
 use Solspace\Freeform\Controllers\FeedsController;
 use Solspace\Freeform\Controllers\FieldsController;
 use Solspace\Freeform\Controllers\FileUploadController;
@@ -82,6 +83,7 @@ use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\DashboardService;
+use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
@@ -162,6 +164,7 @@ use yii\web\ForbiddenHttpException;
  * @property SummaryService              $summary
  * @property FreeformFeedService         $feed
  * @property LockService                 $lock
+ * @property DiagnosticsService          $diagnostics
  */
 class Freeform extends Plugin
 {
@@ -450,11 +453,8 @@ class Freeform extends Plugin
     {
         return \Craft::$app->getView()->renderTemplate(
             'freeform/settings',
-            [
-                'settings' => $this->getSettings(),
-            ]
-        )
-            ;
+            ['settings' => $this->getSettings()]
+        );
     }
 
     private function initControllerMap()
@@ -490,6 +490,7 @@ class Freeform extends Plugin
                 'rest-settings' => RESTSettingsController::class,
                 'migrate-notifications' => MigrateNotificationsController::class,
                 'file-upload' => FileUploadController::class,
+                'diagnostics' => DiagnosticsController::class,
             ];
         }
     }
@@ -534,6 +535,7 @@ class Freeform extends Plugin
                 'summary' => SummaryService::class,
                 'feed' => FreeformFeedService::class,
                 'lock' => LockService::class,
+                'diagnostics' => DiagnosticsService::class,
             ]
         );
     }

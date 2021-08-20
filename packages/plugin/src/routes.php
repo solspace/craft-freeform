@@ -64,6 +64,8 @@ return [
     'freeform/settings/error-log' => 'freeform/logs/error',
     'freeform/logs/clear' => 'freeform/logs/clear',
 
+    // Diagnostics
+    'freeform/settings/diagnostics' => 'freeform/diagnostics/index',
     // Mailing Lists
     'freeform/settings/mailing-lists' => 'freeform/mailing-lists/index',
     'freeform/settings/mailing-lists/new' => 'freeform/mailing-lists/create',

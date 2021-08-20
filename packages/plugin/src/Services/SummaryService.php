@@ -106,8 +106,9 @@ class SummaryService extends Component
         $settings->disableSubmit = $settingsService->isFormSubmitDisable();
         $settings->autoScroll = $settingsService->isAutoScrollToErrors();
         $settings->jsInsertLocation = $settingsService->getSettingsModel()->scriptInsertLocation;
-        $settings->purgeSubmissions = (bool) $settingsService->getPurgableSpamAgeInDays();
-        $settings->purgeInterval = $settingsService->getPurgableSpamAgeInDays();
+        $settings->jsInsertType = $settingsService->getSettingsModel()->scriptInsertType;
+        $settings->purgeSubmissions = (bool) $settingsService->getPurgableSubmissionAgeInDays();
+        $settings->purgeInterval = $settingsService->getPurgableSubmissionAgeInDays();
         $settings->formattingTemplatesPath = (bool) $settingsService->getSettingsModel()->formTemplateDirectory;
         $settings->sendAlertsOnFailedNotifications = (bool) $settingsService->getFailedNotificationRecipients();
         $settings->notificationTemplatesPath = (bool) $settingsService->getSettingsModel()->emailTemplateDirectory;

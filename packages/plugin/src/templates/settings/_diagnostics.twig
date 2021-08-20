@@ -2,7 +2,7 @@
 
 {% import "_includes/forms" as forms %}
 
-{% set title = "Diagnostics"|t("freeform") %}
+{% set title = "Diagnostics (beta)"|t("freeform") %}
 
 {% macro boolColor(bool, yes, no) %}
     {% if bool %}
@@ -39,7 +39,7 @@
 
 {% block content %}
 
-    <h2 class="first">{{ "Diagnostics"|t('freeform') }}</h2>
+    <h2 class="first">{{ "Diagnostics (beta)"|t('freeform') }}</h2>
 
     {% if not warnings|length and not suggestions|length %}
         <div class="banner banner-info">

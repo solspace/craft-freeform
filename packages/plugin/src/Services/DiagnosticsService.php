@@ -139,7 +139,7 @@ class DiagnosticsService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                'PHP Sessions [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
+                'PHP Sessions: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                 \PHP_SESSION_ACTIVE === session_status() && isset($_SESSION) && session_id(),
                 [
                     new WarningValidator(
@@ -254,7 +254,7 @@ class DiagnosticsService extends BaseService
                 'Craft Email configuration: <b>{{ value.transport }}</b>',
                 ['transport' => $emailTransport, 'issues' => $emailIssues],
                 [
-                    new WarningValidator(
+                    new SuggestionValidator(
                         function ($value) {
                             return 'misaligned_from' !== $value['issues'];
                         },
@@ -602,10 +602,10 @@ class DiagnosticsService extends BaseService
     {
         switch ($this->getSummary()->statistics->settings->jsInsertType) {
             case Settings::SCRIPT_INSERT_TYPE_POINTERS:
-                return 'File Pointers';
+                return 'As Static URLs';
 
             case Settings::SCRIPT_INSERT_TYPE_FILES:
-                return 'Static Files';
+                return 'As Files';
 
             case Settings::SCRIPT_INSERT_TYPE_INLINE:
                 return 'Inline Scripts';

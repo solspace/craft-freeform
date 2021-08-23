@@ -20,6 +20,8 @@ class DragAndDropFile {
     const form = this.freeform.form;
     const fileUploads = this.freeform.form.querySelectorAll<HTMLElement>('[data-freeform-file-upload]');
     fileUploads.forEach((fileUpload) => {
+      fileUpload.style.setProperty('--accent', fileUpload.dataset.accent);
+
       fileUpload.addEventListener('dragenter', this.handleDrag(fileUpload));
       fileUpload.addEventListener('dragleave', this.handleDragLeave(fileUpload));
       fileUpload.addEventListener('dragover', this.handleDrag(fileUpload));

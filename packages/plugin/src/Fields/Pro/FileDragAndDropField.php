@@ -66,7 +66,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= 'data-message-complete="'.$this->translate('Upload complete!').'" ';
         $output .= 'data-message-files="'.$messageFiles.'" ';
         $output .= 'data-message-size="'.$messageSize.'" ';
-        $output .= 'style="border-color: '.$this->getAccent().';" ';
+        $output .= 'data-accent="'.$this->getAccent().'" ';
         $output .= $this->getInputAttributesString();
         $output .= '>';
         $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';

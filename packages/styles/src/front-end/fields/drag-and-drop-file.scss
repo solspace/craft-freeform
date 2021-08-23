@@ -26,21 +26,18 @@ $color-fill: #077bff;
 }
 
 .freeform-file-drag-and-drop {
+  --accent: #3a85ee;
+
   padding: 67px $gap;
   height: auto;
 
   border-radius: 7px;
-  border: 3px dashed #3a85ee;
+  border: 2px dashed var(--accent);
   background: #ffffff;
   color: #000000;
   text-align: center;
 
   cursor: pointer;
-
-  &[data-theme='dark'] {
-    background: #222222;
-    color: #656666;
-  }
 
   input[type='file'] {
     display: none;
@@ -181,10 +178,12 @@ $color-fill: #077bff;
           border: 1px solid #e6e5e5;
           border-radius: 50%;
 
+          transition: all 0.2s ease-out;
+
           &:hover {
-            background: #027bff;
+            background: var(--accent);
             color: #ffffff;
-            border: 1px solid #027bff;
+            border: 1px solid var(--accent);
           }
         }
 
@@ -242,6 +241,38 @@ $color-fill: #077bff;
           &:after {
             background: rgb(33, 221, 33);
           }
+        }
+      }
+    }
+  }
+
+  &[data-theme='dark'] {
+    background: #222222;
+    color: #656666;
+
+    &[data-dragging] {
+      background-color: #171717;
+    }
+
+    [data-preview-zone] {
+      [data-file-preview] {
+        [data-filename], [data-placeholder] {
+          color: #bababa;
+        }
+
+        [data-remove-button] {
+          color: #bababa;
+          border-color: #666666;
+          background-color: #666666;
+        }
+
+        [data-filesize] {
+          color: #666666;
+        }
+
+        [data-errors]:after {
+          background: #dadada;
+          color: #000000;
         }
       }
     }

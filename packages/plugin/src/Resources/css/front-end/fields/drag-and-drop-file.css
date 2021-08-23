@@ -1,16 +1,13 @@
 .freeform-file-drag-and-drop {
+  --accent: #3a85ee;
   padding: 67px 20px;
   height: auto;
   border-radius: 7px;
-  border: 3px dashed #3a85ee;
+  border: 2px dashed var(--accent);
   background: #ffffff;
   color: #000000;
   text-align: center;
   cursor: pointer;
-}
-.freeform-file-drag-and-drop[data-theme=dark] {
-  background: #222222;
-  color: #656666;
 }
 .freeform-file-drag-and-drop input[type=file] {
   display: none;
@@ -138,11 +135,12 @@
   color: #878787;
   border: 1px solid #e6e5e5;
   border-radius: 50%;
+  transition: all 0.2s ease-out;
 }
 .freeform-file-drag-and-drop [data-preview-zone] [data-file-preview] [data-thumbnail] [data-remove-button]:hover {
-  background: #027bff;
+  background: var(--accent);
   color: #ffffff;
-  border: 1px solid #027bff;
+  border: 1px solid var(--accent);
 }
 .freeform-file-drag-and-drop [data-preview-zone] [data-file-preview] [data-thumbnail] [data-errors] {
   cursor: pointer;
@@ -184,4 +182,26 @@
 }
 .freeform-file-drag-and-drop [data-preview-zone] [data-file-preview][data-completed] [data-progress]:after {
   background: #21dd21;
+}
+.freeform-file-drag-and-drop[data-theme=dark] {
+  background: #222222;
+  color: #656666;
+}
+.freeform-file-drag-and-drop[data-theme=dark][data-dragging] {
+  background-color: #171717;
+}
+.freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-filename], .freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-placeholder] {
+  color: #bababa;
+}
+.freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-remove-button] {
+  color: #bababa;
+  border-color: #666666;
+  background-color: #666666;
+}
+.freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-filesize] {
+  color: #666666;
+}
+.freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-errors]:after {
+  background: #dadada;
+  color: #000000;
 }

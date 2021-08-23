@@ -466,7 +466,7 @@ class DiagnosticsService extends BaseService
                     ),
                     new WarningNoticeValidator(
                         function ($value) {
-                            return 'files' !== $value;
+                            return 'files' === $value;
                         },
                         '',
                         'The Database storage method has been deprecated but will continue to work. You should consider switching to File-based soon.'

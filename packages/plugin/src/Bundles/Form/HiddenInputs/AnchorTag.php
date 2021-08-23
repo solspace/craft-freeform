@@ -22,7 +22,7 @@ class AnchorTag implements BundleInterface
         $form = $event->getForm();
 
         if (Freeform::getInstance()->forms->isAutoscrollToErrorsEnabled()) {
-            $event->addChunk('<div id="'.$form->getAnchor().'" data-scroll-anchor></div>');
+            $event->addChunk('<div id="'.$form->getAnchor().'" data-scroll-anchor style="display: none;"></div>');
         }
     }
 

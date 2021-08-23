@@ -12,10 +12,14 @@ class NotificationItem
     /** @var Markup */
     private $message;
 
-    public function __construct(Markup $heading, Markup $message)
+    /** @var string */
+    private $type;
+
+    public function __construct(Markup $heading, Markup $message, string $type)
     {
         $this->heading = $heading;
         $this->message = $message;
+        $this->type = $type;
     }
 
     public function getHeading(): Markup
@@ -26,5 +30,10 @@ class NotificationItem
     public function getMessage(): Markup
     {
         return $this->message;
+    }
+
+    public function getType(): string
+    {
+        return $this->type;
     }
 }

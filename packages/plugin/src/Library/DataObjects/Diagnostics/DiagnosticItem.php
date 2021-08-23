@@ -6,6 +6,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\AbstractValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
+use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningNoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Twig\Markup;
 
@@ -104,13 +105,15 @@ class DiagnosticItem
     {
         foreach ($this->validators as $validator) {
             if (!$validator->validate($this->value)) {
+                $reflection = new \ReflectionClass($validator);
+
                 $heading = Freeform::t($validator->getHeading());
                 $message = Freeform::t($validator->getMessage());
 
                 $heading = $this->renderMarkup($heading, ['value' => $this->value, 'extra' => $validator->getExtraProperties()]);
                 $message = $this->renderMarkup($message, ['value' => $this->value, 'extra' => $validator->getExtraProperties()]);
 
-                $notificationItem = new NotificationItem($heading, $message);
+                $notificationItem = new NotificationItem($heading, $message, $reflection->getShortName());
 
                 switch (\get_class($validator)) {
                     case WarningValidator::class:
@@ -124,6 +127,7 @@ class DiagnosticItem
                         break;
 
                     case NoticeValidator::class:
+                    case WarningNoticeValidator::class:
                         $this->notices[] = $notificationItem;
 
                         break;

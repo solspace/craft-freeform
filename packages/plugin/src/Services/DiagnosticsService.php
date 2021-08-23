@@ -13,6 +13,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
+use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningNoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Models\Settings;
@@ -377,6 +378,14 @@ class DiagnosticsService extends BaseService
                     }
                 ),
                 new DiagnosticItem(
+                    'Freeform Session Context: [color]{{ value|capitalize }}[/color]',
+                    $this->getSettingsService()->getSettingsModel()->sessionContext,
+                    [],
+                    function () {
+                        return DiagnosticItem::COLOR_BASE;
+                    }
+                ),
+                new DiagnosticItem(
                     'Enable Search Index Updating on New Submissions: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                     $this->getSettingsService()->getSettingsModel()->updateSearchIndexes,
                     [],
@@ -455,9 +464,9 @@ class DiagnosticsService extends BaseService
                         'Update your Email Notification templates',
                         'It appears you’re still using the database option for storing Email Notification templates. These will continue to work, but this approach has been deprecated as of Freeform 3.11. You should consider using the migration utility in the Email Notifications Settings area to convert these to file-based notification templates. Once doing so, you can continue to edit them inside the Freeform control panel, but they will be stored as files instead.'
                     ),
-                    new NoticeValidator(
+                    new WarningNoticeValidator(
                         function ($value) {
-                            return 'files' === $value;
+                            return 'files' !== $value;
                         },
                         '',
                         'The Database storage method has been deprecated but will continue to work. You should consider switching to File-based soon.'
@@ -485,7 +494,7 @@ class DiagnosticsService extends BaseService
             ),
             new DiagnosticItem(
                 'Update Warnings & Notices: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
-                (bool) $this->getSettingsService()->getSettingsModel()->badgeType,
+                (bool) $this->getSettingsService()->getSettingsModel()->displayFeed,
                 [
                     new SuggestionValidator(
                         function ($value) {
@@ -502,7 +511,19 @@ class DiagnosticsService extends BaseService
             new DiagnosticItem(
                 'Errors logged: [color]{{ value ? value~" errors found" : "None found" }}[/color]',
                 Freeform::getInstance()->logger->getLogReader()->count(),
-                [],
+                [
+                    new WarningValidator(
+                        function ($value) {
+                            return !$value;
+                        },
+                        '{{ extra.count }} Errors logged in the Freeform Error Log',
+                        "Please check out the Freeform error log to see the issues logged. These could potentially be harmless notices or issues that are preventing Freeform from working correctly. Also take note of the dates for each, as it's possible they may just be old errors that are no longer an issue. <a href=\"{{ extra.url }}\">View Freeform error log ></a>",
+                        [
+                            'url' => UrlHelper::cpUrl('freeform/settings/error-log'),
+                            'count' => Freeform::getInstance()->logger->getLogReader()->count(),
+                        ]
+                    ),
+                ],
                 function ($value) {
                     return $value > 0 ? DiagnosticItem::COLOR_ERROR : DiagnosticItem::COLOR_BASE;
                 }

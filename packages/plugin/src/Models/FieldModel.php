@@ -200,8 +200,13 @@ class FieldModel extends Model implements \JsonSerializable
         }
 
         if (FieldInterface::TYPE_FILE_DRAG_AND_DROP === $this->type) {
-            $returnArray['accent'] = $this->getMetaProperty('accent', FileDragAndDropField::DEFAULT_ACCENT);
             $returnArray['theme'] = $this->getMetaProperty('theme', FileDragAndDropField::DEFAULT_THEME);
+            $returnArray['accent'] = $this->getMetaProperty('accent', FileDragAndDropField::DEFAULT_ACCENT);
+            $returnArray['placeholder'] = $this->getMetaProperty('placeholder', FileDragAndDropField::DEFAULT_ACCENT);
+
+            if ($returnArray['accent'] && '#' !== substr($returnArray['accent'], 0, 1)) {
+                $returnArray['accent'] = '#'.$returnArray['accent'];
+            }
         }
 
         if (\in_array($this->type, [FieldInterface::TYPE_RADIO_GROUP, FieldInterface::TYPE_SELECT], true)) {

@@ -23,6 +23,7 @@ export default class FileDragAndDrop extends HtmlInput {
   static propTypes = {
     properties: PropTypes.shape({
       label: PropTypes.string.isRequired,
+      placeholder: PropTypes.string,
       required: PropTypes.bool.isRequired,
       assetSourceId: PropTypes.number,
       accent: PropTypes.string,
@@ -51,11 +52,15 @@ export default class FileDragAndDrop extends HtmlInput {
   }
 
   renderInput() {
-    const { accent = defaultAccent, theme = 'light' } = this.props.properties;
+    const {
+      accent = defaultAccent,
+      theme = 'light',
+      placeholder = 'Drag and drop files here or click to upload',
+    } = this.props.properties;
 
     return (
       <Wrapper accent={accent} theme={theme}>
-        <strong>Drag and drop files here</strong> or click to upload
+        {placeholder}
       </Wrapper>
     );
   }

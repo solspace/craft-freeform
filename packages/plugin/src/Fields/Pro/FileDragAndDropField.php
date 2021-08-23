@@ -10,12 +10,16 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 {
     const DEFAULT_ACCENT = '#3a85ee';
     const DEFAULT_THEME = 'light';
+    const DEFAULT_PLACEHOLDER = 'Drag and drop files here or click to upload';
 
     /** @var string */
     protected $accent;
 
     /** @var string */
     protected $theme;
+
+    /** @var string */
+    protected $placeholder;
 
     public function getAccent()
     {
@@ -25,6 +29,11 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public function getTheme()
     {
         return $this->theme;
+    }
+
+    public function getPlaceholder(): string
+    {
+        return $this->placeholder ?? self::DEFAULT_PLACEHOLDER;
     }
 
     public static function getFieldTypeName(): string
@@ -70,7 +79,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= $this->getInputAttributesString();
         $output .= '>';
         $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';
-        $output .= $this->translate('<strong>Drag and drop files here</strong> or click to upload');
+        $output .= $this->translate($this->placeholder);
         $output .= '</div>';
         $output .= '<div data-preview-zone class="freeform-file-drag-and-drop__preview-zone"></div>';
         $output .= '<ul data-messages class="freeform-file-drag-and-drop__messages"></ul>';

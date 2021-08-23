@@ -36,6 +36,7 @@ export default class FileDragAndDrop extends BasePropertyEditor {
       type: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
       handle: PropTypes.string.isRequired,
+      placeholder: PropTypes.string,
       assetSourceId: PropTypes.number.isRequired,
       required: PropTypes.bool,
       fileKinds: PropTypes.array,
@@ -60,6 +61,7 @@ export default class FileDragAndDrop extends BasePropertyEditor {
       properties: {
         label,
         handle,
+        placeholder,
         required,
         assetSourceId,
         fileKinds,
@@ -112,6 +114,15 @@ export default class FileDragAndDrop extends BasePropertyEditor {
           instructions="Field specific user instructions."
           name="instructions"
           value={instructions}
+          onChangeHandler={this.update}
+        />
+
+        <TextProperty
+          label="Placeholder"
+          instructions="Field placeholder."
+          name="placeholder"
+          placeholder="Drag and drop files here or click to upload"
+          value={placeholder}
           onChangeHandler={this.update}
         />
 

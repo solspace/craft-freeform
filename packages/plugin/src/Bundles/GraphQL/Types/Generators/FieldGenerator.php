@@ -204,7 +204,7 @@ class FieldGenerator extends AbstractGenerator
             ];
         }
 
-        if (FreeformFieldInterface::TYPE_FILE === $typeName) {
+        if (\in_array($typeName, [FreeformFieldInterface::TYPE_FILE, FreeformFieldInterface::TYPE_FILE_DRAG_AND_DROP])) {
             $fieldDefinitions['fileKinds'] = [
                 'name' => 'fileKinds',
                 'type' => Type::listOf(Type::string()),
@@ -221,6 +221,26 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'fileCount',
                 'type' => Type::int(),
                 'description' => 'Number of allowed simultaneous file uploads',
+            ];
+        }
+
+        if (FreeformFieldInterface::TYPE_FILE_DRAG_AND_DROP === $typeName) {
+            $fieldDefinitions['theme'] = [
+                'name' => 'theme',
+                'type' => Type::string(),
+                'description' => 'Color theme of the drag & drop field',
+            ];
+
+            $fieldDefinitions['accent'] = [
+                'name' => 'accent',
+                'type' => Type::string(),
+                'description' => 'Accent color',
+            ];
+
+            $fieldDefinitions['placeholder'] = [
+                'name' => 'placeholder',
+                'type' => Type::string(),
+                'description' => 'Placeholder text to show when there are no files',
             ];
         }
 

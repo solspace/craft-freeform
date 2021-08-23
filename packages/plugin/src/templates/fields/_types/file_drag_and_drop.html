@@ -1,5 +1,16 @@
 {% import "_includes/forms" as forms %}
 
+{{ forms.textField({
+    label: "Placeholder"|t('freeform'),
+    instructions: "The text shown when there are no uploaded files."|t('freeform'),
+    placeholder: 'Drag and drop files here or click to upload',
+    id: "placeholder",
+    name: "types[file_drag_and_drop][placeholder]",
+    value: field.getMetaProperty("placeholder"),
+    errors: field.getErrors("placeholder"),
+    required: false
+}) }}
+
 {{ forms.selectField({
     label: "Style"|t('freeform'),
     instructions: "Select style."|t('freeform'),
@@ -61,16 +72,13 @@
 
 {% set fileKindsInput %}
     <div id="restrict-allowed-types">
-        <input type="hidden" name="types[file][fileKinds]" value="" />
-        {% for key, option in fileKinds %}
-            {{ forms.checkboxField({
-                label: option.label,
-                id: 'allowedKinds-'~key,
-                name: 'types[file_drag_and_drop][fileKinds][]',
-                value: key,
-                checked: (key in selectedFileKinds)
-            }) }}
-        {% endfor %}
+        {{ forms.checkboxGroup({
+            label: "Allowed File Types"|t('freeform'),
+            instructions: "Select the file types to be allowed by default. Leaving all unchecked will allow all file types."|t('freeform'),
+            options: fileKindOptions,
+            name: 'types[file_drag_and_drop][fileKinds]',
+            values: selectedFileKinds,
+        }) }}
     </div>
 {% endset %}
 

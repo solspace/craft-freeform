@@ -227,11 +227,20 @@ class FieldsController extends Controller
     {
         $this->view->registerAssetBundle(FieldEditorBundle::class);
 
+        $fileKindOptions = [];
+        foreach (Assets::getFileKinds() as $key => $item) {
+            $fileKindOptions[] = [
+                'label' => $item['label'],
+                'value' => $key,
+            ];
+        }
+
         $variables = [
             'field' => $model,
             'title' => $title,
             'fieldTypes' => $this->getFieldsService()->getFieldTypes(),
             'fileKinds' => Assets::getFileKinds(),
+            'fileKindOptions' => $fileKindOptions,
             'assetSources' => $this->getFilesService()->getAssetSourceList(),
             'continueEditingUrl' => 'freeform/fields/{id}',
         ];

@@ -1148,8 +1148,11 @@ class Freeform extends Plugin
             $classMap = ClassMapGenerator::createMap(__DIR__.'/Bundles');
             foreach ($classMap as $class => $path) {
                 $reflectionClass = new \ReflectionClass($class);
-                if ($reflectionClass->implementsInterface(BundleInterface::class) && !$reflectionClass->isAbstract(
-                    ) && !$reflectionClass->isInterface()) {
+                if (
+                    $reflectionClass->implementsInterface(BundleInterface::class)
+                    && !$reflectionClass->isAbstract()
+                    && !$reflectionClass->isInterface()
+                ) {
                     $reflectionClass->newInstance();
                 }
             }

@@ -97,7 +97,7 @@ class FormAttributesBundle implements BundleInterface
         $bag = $form->getPropertyBag();
         $attributeBag = $form->getAttributeBag();
 
-        $comboBag = new PropertyBag();
+        $comboBag = new PropertyBag($form);
         $comboBag->merge($attributeBag);
         $comboBag->merge($bag->get('formAttributes', []));
         $comboBag->merge($bag->get('attributes', []));

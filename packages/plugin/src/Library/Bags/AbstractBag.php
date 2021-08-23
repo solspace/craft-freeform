@@ -2,7 +2,9 @@
 
 namespace Solspace\Freeform\Library\Bags;
 
+use Solspace\Freeform\Events\Bags\BagModificationEvent;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use yii\base\Event;
 
 abstract class AbstractBag implements BagInterface
 {
@@ -36,18 +38,28 @@ abstract class AbstractBag implements BagInterface
 
     public function get(string $key, $defaultValue = null)
     {
-        return $this->contents[$key] ?? $defaultValue;
+        $value = $this->contents[$key] ?? $defaultValue;
+        $event = new BagModificationEvent($this, $key, $value);
+        Event::trigger(static::class, static::EVENT_ON_GET, $event);
+
+        return $event->getValue();
     }
 
     public function set(string $key, $value): BagInterface
     {
         $this->contents[$key] = $value;
+        Event::trigger(static::class, static::EVENT_ON_SET, new BagModificationEvent($this, $key, $value));
 
         return $this;
     }
 
     public function remove(string $key): BagInterface
     {
+        Event::trigger(
+            static::class,
+            static::EVENT_ON_REMOVE,
+            new BagModificationEvent($this, $key, $this->contents[$key] ?? null)
+        );
         unset($this->contents[$key]);
 
         return $this;
@@ -60,7 +72,7 @@ abstract class AbstractBag implements BagInterface
         }
 
         foreach ($bag as $key => $value) {
-            $this->contents[$key] = $value;
+            $this->set($key, $value);
         }
 
         return $this;

@@ -154,6 +154,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     /** @var Layout */
     private $layout;
 
+    /** @var Page */
+    private $currentPage;
+
     /** @var Row[] */
     private $currentPageRows;
 
@@ -236,8 +239,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
-        $this->propertyBag = new PropertyBag();
-        $this->attributeBag = new AttributeBag();
+        $this->propertyBag = new PropertyBag($this);
+        $this->attributeBag = new AttributeBag($this);
 
         $this->finished = false;
         $this->valid = false;
@@ -269,7 +272,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->id = $formModel->id;
         $this->uid = $formModel->uid;
 
-        $this->getCurrentPage();
+        $pageIndex = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
+        $this->setCurrentPage($pageIndex);
 
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new FormLoadedEvent($this));
     }
@@ -395,12 +399,19 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function getCurrentPage(): Page
     {
-        $index = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
-        $page = $this->layout->getPage($index);
+        return $this->currentPage;
+    }
 
-        $this->currentPageRows = $page->getRows();
+    public function setCurrentPage(int $index): self
+    {
+        if (!$this->currentPage || $index !== $this->currentPage->getIndex()) {
+            $page = $this->layout->getPage($index);
 
-        return $page;
+            $this->currentPage = $page;
+            $this->currentPageRows = $page->getRows();
+        }
+
+        return $this;
     }
 
     public function getReturnUrl(): string

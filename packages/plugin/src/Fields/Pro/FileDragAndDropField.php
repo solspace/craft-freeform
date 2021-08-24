@@ -67,6 +67,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         $output = '';
         $output .= '<div data-freeform-file-upload="'.$this->getHandle().'" ';
+        $output .= 'data-error-append-target="'.$this->getHandle().'" ';
         $output .= 'data-file-count="'.\count($this->getValue()).'" ';
         $output .= 'data-max-files="'.$this->getFileCount().'" ';
         $output .= 'data-max-size="'.$this->getMaxFileSizeBytes().'" ';
@@ -101,7 +102,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         $file = $_FILES[$handle] ?? null;
         if (!$file) {
-            if ($this->isRequired()) {
+            if ($this->isRequired() && empty($this->getValue())) {
                 return [$this->translate('This field is required')];
             }
 

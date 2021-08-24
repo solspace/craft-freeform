@@ -61,7 +61,8 @@ $color-fill: #077bff;
     }
   }
 
-  [data-messages] {
+  [data-messages],
+  [data-field-errors] {
     margin: 0;
     padding: 0 20px;
 
@@ -81,6 +82,10 @@ $color-fill: #077bff;
         opacity: 0;
       }
     }
+  }
+
+  [data-field-errors] > li {
+    color: #ff0300;
   }
 
   [data-preview-zone] {
@@ -256,7 +261,8 @@ $color-fill: #077bff;
 
     [data-preview-zone] {
       [data-file-preview] {
-        [data-filename], [data-placeholder] {
+        [data-filename],
+        [data-placeholder] {
           color: #bababa;
         }
 

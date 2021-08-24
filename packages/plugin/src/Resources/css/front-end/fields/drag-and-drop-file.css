@@ -26,22 +26,29 @@
 .freeform-file-drag-and-drop[data-contains-files] [data-placeholder] {
   display: none;
 }
-.freeform-file-drag-and-drop [data-messages] {
+.freeform-file-drag-and-drop [data-messages],
+.freeform-file-drag-and-drop [data-field-errors] {
   margin: 0;
   padding: 0 20px;
 }
-.freeform-file-drag-and-drop [data-messages] > li {
+.freeform-file-drag-and-drop [data-messages] > li,
+.freeform-file-drag-and-drop [data-field-errors] > li {
   margin: 0;
   padding: 0;
   text-align: left;
   opacity: 1;
   transition: all 0.3s ease-out;
 }
-.freeform-file-drag-and-drop [data-messages] > li[data-error] {
+.freeform-file-drag-and-drop [data-messages] > li[data-error],
+.freeform-file-drag-and-drop [data-field-errors] > li[data-error] {
   color: #ff0300;
 }
-.freeform-file-drag-and-drop [data-messages] > li[data-animate-fade-out] {
+.freeform-file-drag-and-drop [data-messages] > li[data-animate-fade-out],
+.freeform-file-drag-and-drop [data-field-errors] > li[data-animate-fade-out] {
   opacity: 0;
+}
+.freeform-file-drag-and-drop [data-field-errors] > li {
+  color: #ff0300;
 }
 .freeform-file-drag-and-drop [data-preview-zone] {
   display: grid;
@@ -190,7 +197,8 @@
 .freeform-file-drag-and-drop[data-theme=dark][data-dragging] {
   background-color: #171717;
 }
-.freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-filename], .freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-placeholder] {
+.freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-filename],
+.freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-placeholder] {
   color: #bababa;
 }
 .freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-remove-button] {

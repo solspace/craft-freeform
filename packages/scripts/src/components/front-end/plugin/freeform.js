@@ -454,6 +454,7 @@ export default class Freeform {
     for (const key in errors) {
       const messages = errors[key];
       const errorsList = document.createElement('ul');
+      errorsList.setAttribute('data-field-errors', '');
       addClass(errorsList, errorClassList);
 
       for (let messageIndex = 0; messageIndex < messages.length; messageIndex++) {
@@ -464,13 +465,24 @@ export default class Freeform {
       }
 
       const inputList = form.querySelectorAll(
-        `*[name="${key}"], *[name="${key}[0][0]"], *[type=file][name="${key}"], *[type=file][name="${key}[]"]`
+        `
+          [name="${key}"],
+          [name="${key}[0][0]"],
+          [type=file][name="${key}"],
+          [type=file][name="${key}[]"],
+          [data-error-append-target="${key}"]
+        `
       );
+
       for (let inputIndex = 0; inputIndex < inputList.length; inputIndex++) {
         const input = inputList[inputIndex];
 
-        addClass(input, errorClassField);
-        input.parentElement.appendChild(errorsList);
+        if (input.dataset.errorAppendTarget !== undefined) {
+          input.appendChild(errorsList);
+        } else {
+          addClass(input, errorClassField);
+          input.parentElement.appendChild(errorsList);
+        }
       }
 
       const groupInputList = form.querySelectorAll(

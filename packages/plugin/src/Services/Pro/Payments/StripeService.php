@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Services\Pro\Payments;
 
 use craft\base\Component;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
-use Solspace\Freeform\Events\Forms\FormValidateEvent;
+use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SinglePaymentAction;
@@ -31,7 +31,6 @@ use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Models\IntegrationModel;
 use Stripe\Customer;
-use Stripe\Error\Card;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Plan;
@@ -41,7 +40,7 @@ class StripeService extends Component
 {
     const FIELD_GROUP_TYPES = [FieldInterface::TYPE_CHECKBOX_GROUP, FieldInterface::TYPE_RADIO_GROUP];
 
-    public function preProcessPayment(FormValidateEvent $event)
+    public function preProcessPayment(ValidationEvent $event)
     {
         $form = $event->getForm();
         $properties = $form->getPaymentProperties();
@@ -115,10 +114,7 @@ class StripeService extends Component
         $paymentField->setValue($paymentIntent->id);
     }
 
-    /**
-     * @return bool|void
-     */
-    public function preProcessSubscription(FormValidateEvent $event)
+    public function preProcessSubscription(ValidationEvent $event)
     {
         $form = $event->getForm();
         $properties = $form->getPaymentProperties();
@@ -223,7 +219,7 @@ class StripeService extends Component
         $isSubscription = PaymentProperties::PAYMENT_TYPE_SINGLE !== $props->getPaymentType();
 
         if (0 === \count($paymentFields)) {
-            return [];
+            return (object) [];
         }
 
         $paymentField = $paymentFields[0];

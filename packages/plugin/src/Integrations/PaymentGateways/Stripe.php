@@ -302,7 +302,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
     public function fetchProduct($id)
     {
-        $product = null;
         $this->prepareApi();
 
         try {

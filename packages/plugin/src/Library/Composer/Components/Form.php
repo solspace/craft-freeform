@@ -1248,16 +1248,14 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $this->getFormHandler()->onAfterFormValidate($this);
 
+        $this->valid = $isFormValid;
+
         $event = new ValidationEvent($this);
         Event::trigger(self::class, self::EVENT_AFTER_VALIDATE, $event);
 
         if (!$event->isValid) {
             $this->valid = $event->getValidationOverride();
-
-            return;
         }
-
-        $this->valid = $isFormValid;
     }
 
     /**

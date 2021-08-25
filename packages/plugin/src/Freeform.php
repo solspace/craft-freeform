@@ -280,6 +280,7 @@ class Freeform extends Plugin
         parent::init();
         \Yii::setAlias('@freeform', __DIR__);
 
+        // TODO: refactor these into separate bundles
         $this->initControllerMap();
         $this->initServices();
         $this->initRoutes();
@@ -295,7 +296,6 @@ class Freeform extends Plugin
         $this->initBetaAssets();
         $this->initPaymentAssets();
         $this->initHookHandlers();
-        $this->initPaymentEventListeners();
         $this->initCleanupJobs();
         $this->initTasks();
         $this->initBundles();
@@ -1073,25 +1073,6 @@ class Freeform extends Plugin
 
         SubmissionHookHandler::registerHooks();
         FormHookHandler::registerHooks();
-    }
-
-    private function initPaymentEventListeners()
-    {
-        if (!$this->isPro()) {
-            return;
-        }
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_AFTER_FORM_VALIDATE,
-            [$this->stripe, 'preProcessPayment']
-        );
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_AFTER_FORM_VALIDATE,
-            [$this->stripe, 'preProcessSubscription']
-        );
     }
 
     private function initCleanupJobs()

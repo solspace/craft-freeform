@@ -34,7 +34,7 @@ $color-fill: #077bff;
   border-radius: 7px;
   border: 2px dashed var(--accent);
   background: #ffffff;
-  color: #000000;
+  color: #282828;
   text-align: center;
 
   cursor: pointer;
@@ -230,13 +230,13 @@ $color-fill: #077bff;
 
       [data-filename] {
         font-size: 0.875rem;
-        color: #6b6b6b;
+        color: #5c5c5c;
         word-break: break-all;
       }
 
       [data-filesize] {
         font-size: 0.8125rem;
-        color: #bfbfbf;
+        color: #b1b1b1;
       }
 
       &[data-completed] {
@@ -273,7 +273,7 @@ $color-fill: #077bff;
         }
 
         [data-filesize] {
-          color: #666666;
+          color: #787878;
         }
 
         [data-errors]:after {

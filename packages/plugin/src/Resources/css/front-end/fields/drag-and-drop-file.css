@@ -5,7 +5,7 @@
   border-radius: 7px;
   border: 2px dashed var(--accent);
   background: #ffffff;
-  color: #000000;
+  color: #282828;
   text-align: center;
   cursor: pointer;
 }
@@ -177,12 +177,12 @@
 }
 .freeform-file-drag-and-drop [data-preview-zone] [data-file-preview] [data-filename] {
   font-size: 0.875rem;
-  color: #6b6b6b;
+  color: #5c5c5c;
   word-break: break-all;
 }
 .freeform-file-drag-and-drop [data-preview-zone] [data-file-preview] [data-filesize] {
   font-size: 0.8125rem;
-  color: #bfbfbf;
+  color: #b1b1b1;
 }
 .freeform-file-drag-and-drop [data-preview-zone] [data-file-preview][data-completed] [data-progress] {
   opacity: 0;
@@ -207,7 +207,7 @@
   background-color: #666666;
 }
 .freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-filesize] {
-  color: #666666;
+  color: #787878;
 }
 .freeform-file-drag-and-drop[data-theme=dark] [data-preview-zone] [data-file-preview] [data-errors]:after {
   background: #dadada;

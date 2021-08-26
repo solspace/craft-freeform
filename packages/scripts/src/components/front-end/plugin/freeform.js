@@ -215,20 +215,22 @@ export default class Freeform {
     }
   }
 
-  lockSubmit = (submitter, force = false) => {
+  lockSubmit = (force = false) => {
     const { disableSubmit, showSpinner, showLoadingText } = this.options;
-
-    if (submitter && showSpinner) {
-      submitter.classList.add('ff-loading');
-    }
-
-    if (submitter && showLoadingText) {
-      submitter.innerText = submitter.dataset.loadingText;
-    }
 
     const submitButtons = this._getSubmitButtons();
     for (let i = 0; i < submitButtons.length; i++) {
       const submit = submitButtons[i];
+
+      if (submit.name !== this.options.prevButtonName) {
+        if (showSpinner) {
+          submit.classList.add('ff-loading');
+        }
+
+        if (showLoadingText) {
+          submit.intterText = submit.dataset.loadingText;
+        }
+      }
 
       if (disableSubmit || force) {
         submit.disabled = true;
@@ -298,7 +300,7 @@ export default class Freeform {
    * @private
    */
   _onSubmit = (event) => {
-    this.lockSubmit(event.submitter);
+    this.lockSubmit();
 
     const { form, options } = this;
     let callbacksPassThrough = true;

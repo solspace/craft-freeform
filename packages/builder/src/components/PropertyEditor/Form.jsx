@@ -100,7 +100,7 @@ export default class Form extends BasePropertyEditor {
     }
 
     const solspaceTemplateList = [];
-    solspaceTemplates.map((item, i) => {
+    solspaceTemplates.map((item) => {
       solspaceTemplateList.push({
         key: item.fileName,
         value: item.name,
@@ -114,6 +114,9 @@ export default class Form extends BasePropertyEditor {
         value: item.name,
       });
     });
+
+    solspaceTemplateList.sort((a, b) => a.value.localeCompare(b.value));
+    templateList.sort((a, b) => a.value.localeCompare(b.value));
 
     let optionGroups = [];
     if (isDefaultTemplates || !templateList.length) {

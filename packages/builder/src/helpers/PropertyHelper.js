@@ -164,6 +164,9 @@ export default class PropertyHelper {
       }
     }
 
+    dbNotificationList.sort((a, b) => a.value.localeCompare(b.value));
+    templateNotificationList.sort((a, b) => a.value.localeCompare(b.value));
+
     if (dbNotificationList.length) {
       notificationList.push({
         label: translate('DB Notifications'),

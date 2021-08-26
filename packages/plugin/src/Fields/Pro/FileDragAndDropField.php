@@ -80,7 +80,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= $this->getInputAttributesString();
         $output .= '>';
         $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';
-        $output .= $this->translate($this->placeholder);
+        $output .= $this->translate($this->getPlaceholder());
         $output .= '</div>';
         $output .= '<div data-preview-zone class="freeform-file-drag-and-drop__preview-zone"></div>';
         $output .= '<ul data-messages class="freeform-file-drag-and-drop__messages"></ul>';

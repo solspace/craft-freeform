@@ -228,7 +228,7 @@ export default class Freeform {
         }
 
         if (showLoadingText) {
-          submit.intterText = submit.dataset.loadingText;
+          submit.innerText = submit.dataset.loadingText;
         }
       }
 

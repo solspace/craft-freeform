@@ -582,8 +582,15 @@ class Settings extends Model
             return [];
         }
 
-        $array = preg_split('/[\ \n\,]+/', $value);
+        $array = preg_split('/\s+(?=([^"]*"[^"]*")*[^"]*$)|\n|,/', $value);
         $array = array_map('trim', $array);
+        $array = array_map(
+            function ($value) {
+                return trim($value, '"');
+            },
+            $array
+        );
+        $array = array_filter($array);
         $array = array_unique($array);
 
         return array_filter($array);

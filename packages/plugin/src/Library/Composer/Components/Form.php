@@ -606,6 +606,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $bag = $this->getPropertyBag();
 
         $reasons = $this->getSpamReasons();
+
+        foreach ($reasons as $reason) {
+            if ($reason['type'] === $type && $reason['message'] === $message) {
+                return $this;
+            }
+        }
+
         $reasons[] = ['type' => $type, 'message' => $message];
 
         $bag->set(self::PROPERTY_SPAM_REASONS, $reasons);

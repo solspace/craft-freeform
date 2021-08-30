@@ -292,7 +292,6 @@ class Freeform extends Plugin
         $this->initEventListeners();
         $this->initHoneypot();
         $this->initConnections();
-        $this->initSpamCheck();
         $this->initBetaAssets();
         $this->initPaymentAssets();
         $this->initHookHandlers();
@@ -985,33 +984,6 @@ class Freeform extends Plugin
             FormsService::class,
             FormsService::EVENT_FORM_VALIDATE,
             [$this->connections, 'validateConnections']
-        );
-    }
-
-    private function initSpamCheck()
-    {
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_FORM_VALIDATE,
-            [$this->settings, 'checkSubmissionForSpam']
-        );
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_FORM_VALIDATE,
-            [$this->settings, 'checkBlockedIps']
-        );
-
-        Event::on(
-            FormsService::class,
-            FormsService::EVENT_FORM_VALIDATE,
-            [$this->settings, 'throttleSubmissions']
-        );
-
-        Event::on(
-            SubmissionsService::class,
-            SubmissionsService::EVENT_AFTER_SUBMIT,
-            [$this->spamSubmissions, 'persistSpamReasons']
         );
     }
 

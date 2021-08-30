@@ -16,12 +16,10 @@ use craft\db\Query;
 use craft\records\Element;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Records\SpamReasonRecord;
 
 class SpamSubmissionsService extends SubmissionsService implements SpamSubmissionHandlerInterface
 {
@@ -77,25 +75,6 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
         }
 
         Freeform::getInstance()->integrationsQueue->enqueueIntegrations($submission, $mailingListOptedInFields);
-    }
-
-    public function persistSpamReasons(SubmitEvent $event)
-    {
-        $form = $event->getForm();
-        $submission = $event->getSubmission();
-
-        if (!$submission->isSpam || !$form->isMarkedAsSpam()) {
-            return;
-        }
-
-        $spamReasons = $form->getSpamReasons();
-        foreach ($spamReasons as $reason) {
-            $record = new SpamReasonRecord();
-            $record->submissionId = $submission->getId();
-            $record->reasonType = $reason['type'];
-            $record->reasonMessage = $reason['message'];
-            $record->save();
-        }
     }
 
     protected function findSubmissions(): Query

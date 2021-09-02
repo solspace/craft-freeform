@@ -17,6 +17,12 @@ class ResetBundle implements BundleInterface
     {
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'checkSubmissionToken']);
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'resetFieldValues']);
+        Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'resetInitTime']);
+    }
+
+    public function resetInitTime(ResetEvent $event)
+    {
+        $event->getForm()->getPropertyBag()->set(Form::INIT_TIME_KEY, time());
     }
 
     public function checkSubmissionToken(ResetEvent $event)

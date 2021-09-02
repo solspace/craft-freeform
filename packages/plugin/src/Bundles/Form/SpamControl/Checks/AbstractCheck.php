@@ -23,7 +23,7 @@ abstract class AbstractCheck implements BundleInterface
         $this->settingsService = Freeform::getInstance()->settings;
         $this->settings = $this->settingsService->getSettingsModel();
 
-        Event::on(Form::class, Form::EVENT_AFTER_VALIDATE, [$this, 'handleCheck']);
+        Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleCheck']);
     }
 
     abstract public function handleCheck(ValidationEvent $event);

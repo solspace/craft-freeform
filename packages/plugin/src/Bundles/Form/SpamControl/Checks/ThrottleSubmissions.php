@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
+use craft\db\Query;
 use craft\db\Table;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\ValidationEvent;

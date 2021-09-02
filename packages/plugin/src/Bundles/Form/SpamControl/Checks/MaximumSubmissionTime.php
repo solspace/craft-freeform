@@ -15,12 +15,12 @@ class MaximumSubmissionTime extends AbstractCheck
             return;
         }
 
-        $event->getForm()->markAsSpam(SpamReason::TYPE_MAXIMUM_SUBMIT_TIME, 'Maximum submit time check failed');
-
         if ($this->isDisplayErrors()) {
             $event->getForm()->addError(
                 Freeform::t('Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.')
             );
+        } else {
+            $event->getForm()->markAsSpam(SpamReason::TYPE_MAXIMUM_SUBMIT_TIME, 'Maximum submit time check failed');
         }
     }
 

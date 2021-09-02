@@ -19,16 +19,16 @@ class BlacklistedIps extends AbstractCheck
 
         $remoteIp = \Craft::$app->request->getRemoteIP();
         if (IpUtils::checkIp($remoteIp, $spamIps)) {
-            $event->getForm()->markAsSpam(
-                SpamReason::TYPE_BLOCKED_IP,
-                sprintf(
-                    'Form submitted by a blocked IP "%s"',
-                    $remoteIp
-                )
-            );
-
             if ($this->isDisplayErrors()) {
                 $event->getForm()->addError(Freeform::t('Your IP has been blocked'));
+            } else {
+                $event->getForm()->markAsSpam(
+                    SpamReason::TYPE_BLOCKED_IP,
+                    sprintf(
+                        'Form submitted by a blocked IP "%s"',
+                        $remoteIp
+                    )
+                );
             }
         }
     }

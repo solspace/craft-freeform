@@ -619,15 +619,13 @@ export default class Freeform {
 
       if (request.status === 200) {
         const response = JSON.parse(request.response);
-        const { success, finished, actions = [], errors, formErrors, honeypot, multipage } = response;
+        const { success, finished, actions = [], errors, formErrors, honeypot } = response;
 
         if (!actions.length) {
           if (success) {
-            if (multipage) {
-              form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
-              this._resetHandlers();
-              this._setUp();
-            }
+            form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
+            this._resetHandlers();
+            this._setUp();
 
             if (finished) {
               if (!this.options.disableReset) {

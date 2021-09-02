@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Services;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\Pro\DigestService;
@@ -417,25 +416,5 @@ class SettingsService extends BaseService
     public function isFormFieldShowOnlyAllowedForms(): bool
     {
         return (bool) $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
-    }
-
-    private function isMinimumSubmissionTimePassed(Form $form): bool
-    {
-        $initTime = $form->getInitTime();
-        $timeFormAlive = time() - $initTime;
-
-        $minTime = $this->getSettingsModel()->minimumSubmitTime;
-
-        return $minTime && $timeFormAlive <= $minTime;
-    }
-
-    private function isMaximumSubmissionTimePassed(Form $form): bool
-    {
-        $initTime = $form->getInitTime();
-        $timeFormAlive = time() - $initTime;
-
-        $maxTime = $this->getSettingsModel()->formSubmitExpiration;
-
-        return $maxTime && $timeFormAlive >= $maxTime * 60;
     }
 }

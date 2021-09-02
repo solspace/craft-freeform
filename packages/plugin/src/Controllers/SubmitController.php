@@ -158,13 +158,8 @@ class SubmitController extends BaseController
             'errors' => $fieldErrors,
             'formErrors' => $form->getErrors(),
             'returnUrl' => $returnUrl,
+            'html' => $form->render(),
         ];
-
-        if ($form->isFinished()) {
-            $form->reset();
-        }
-
-        $payload['html'] = $form->render();
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);
         Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);

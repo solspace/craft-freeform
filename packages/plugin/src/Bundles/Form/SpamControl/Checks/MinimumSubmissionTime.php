@@ -15,12 +15,12 @@ class MinimumSubmissionTime extends AbstractCheck
             return;
         }
 
-        $event->getForm()->markAsSpam(SpamReason::TYPE_MINIMUM_SUBMIT_TIME, 'Minimum submit time check failed');
-
         if ($this->isDisplayErrors()) {
             $event->getForm()->addError(
                 Freeform::t('Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.')
             );
+        } else {
+            $event->getForm()->markAsSpam(SpamReason::TYPE_MINIMUM_SUBMIT_TIME, 'Minimum submit time check failed');
         }
     }
 

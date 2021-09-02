@@ -25,6 +25,7 @@ use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
@@ -369,7 +370,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->getPropertyBag()->get(self::HASH_KEY, '');
     }
 
-    public function getInitTime(): string
+    public function getInitTime(): int
     {
         return $this->getPropertyBag()->get(self::INIT_TIME_KEY, 0);
     }
@@ -824,7 +825,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
         $output .= "<form {$compiledAttributes}>".\PHP_EOL;
 
-        $hiddenFields = $this->layout->getHiddenFields();
+        $hiddenFields = $this->layout->getFields(HiddenField::class);
         foreach ($hiddenFields as $field) {
             if ($field->getPageIndex() === $this->getCurrentPage()->getIndex()) {
                 $output .= $field->renderInput();

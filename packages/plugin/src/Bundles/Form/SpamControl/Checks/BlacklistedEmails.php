@@ -27,21 +27,21 @@ class BlacklistedEmails extends AbstractCheck
                     foreach ($field->getValue() as $value) {
                         foreach ($emails as $email) {
                             if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
-                                $event->getForm()->markAsSpam(
-                                    SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                                    sprintf(
-                                        'Email field "%s" contains a blocked email address "%s"',
-                                        $field->getHandle(),
-                                        $email
-                                    )
-                                );
-
                                 if ($this->isDisplayErrors()) {
                                     $form->addError(Freeform::t('Form contains a blocked email'));
-                                }
 
-                                if ($showErrorBelowFields) {
-                                    $field->addError(Freeform::t($emailsMessage, ['email' => $value]));
+                                    if ($showErrorBelowFields) {
+                                        $field->addError(Freeform::t($emailsMessage, ['email' => $value]));
+                                    }
+                                } else {
+                                    $event->getForm()->markAsSpam(
+                                        SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                                        sprintf(
+                                            'Email field "%s" contains a blocked email address "%s"',
+                                            $field->getHandle(),
+                                            $email
+                                        )
+                                    );
                                 }
 
                                 break;

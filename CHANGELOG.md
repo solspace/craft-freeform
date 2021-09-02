@@ -1,5 +1,33 @@
 # Solspace Freeform Changelog
 
+## 3.12.0-beta.4 - 2021-09-02
+
+### Added
+- Added support for blocking phrases in spam keyword blocking feature (e.g. "generate new leads").
+
+### Changed
+- Updated newly created Text, Hidden, Invisible, Phone, Regex, and Website field types from `VARCHAR` to `TEXT` in database. Changed all other newly created field types to be `VARCHAR(255)` instead of `VARCHAR(100)`. This is not a retroactive change - it will affect the creation of new fields only.
+- Updated the SharpSpring CRM integration to work with the latest API changes.
+
+### Fixed
+- Fixed a bug where spam reasons in the submission view page would show up as many times as there are pages when a multi-page form triggered spam blocking protection.
+- Fixed a bug where attempting to sort on Spam Reasons in the Spam folder would trigger errors. Sorting by Spam Reasons is disabled for now.
+- Fixed a bug where submitting an AJAX form a second time (whole new second submission) would always fail the spam test when the "Minimum Submit Time" setting was enabled.
+
+## 3.12.0-beta.3 - 2021-08-26
+
+### Added
+- Added a Drag & Drop File Upload field type (Pro).
+- Added self-diagnostics page to help troubleshoot issues and identify potential issues.
+
+### Changed
+- Overhauled form processing to allow for alternative session storage options including the new Encrypted Payload default as well as a database table approach.
+- Updated the custom formatting templates and email notification templates lists to be ordered alphabetically in the form builder.
+
+### Fixed
+- Fixed a bug where the auto-scroll anchor inserted in Freeform forms could sometimes impact form styling. Added a `display:none;` inline CSS to the `div`.
+- Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
+
 ## 3.11.10 - 2021-07-22
 
 ### Fixed

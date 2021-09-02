@@ -74,9 +74,6 @@ class SessionContext
         $hash = "{$formHash}-{$pageHash}-{$sessionToken}";
 
         $bag->set(Form::HASH_KEY, $hash);
-        if (!$bag->get(Form::INIT_TIME_KEY)) {
-            $bag->set(Form::INIT_TIME_KEY, time());
-        }
     }
 
     public function onFormRender(RenderTagEvent $event)

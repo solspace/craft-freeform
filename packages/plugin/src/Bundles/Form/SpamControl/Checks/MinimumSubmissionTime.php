@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
+use Solspace\Freeform\Bundles\Form\SpamControl\FormInitTime;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -26,7 +27,7 @@ class MinimumSubmissionTime extends AbstractCheck
 
     private function isMinimumSubmissionTimePassed(Form $form): bool
     {
-        $initTime = $form->getInitTime();
+        $initTime = $form->getPropertyBag()->get(FormInitTime::KEY, 0);
         $timeFormAlive = time() - $initTime;
 
         $minTime = $this->getSettings()->minimumSubmitTime;

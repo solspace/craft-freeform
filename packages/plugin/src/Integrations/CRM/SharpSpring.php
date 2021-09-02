@@ -133,7 +133,7 @@ class SharpSpring extends AbstractCRMIntegration
      */
     public function fetchFields(): array
     {
-        $response = $this->getResponse($this->generatePayload('getFields', ['isCustom' => "1"]));
+        $response = $this->getResponse($this->generatePayload('getFields', ['isCustom' => '1']));
         $data = json_decode((string) $response->getBody(), true);
 
         $fields = [];
@@ -168,8 +168,7 @@ class SharpSpring extends AbstractCRMIntegration
         ];
 
         foreach ($fields as $field) {
-            
-            $field = (object)$field;
+            $field = (object) $field;
             if (!$field || !\is_object($field)) {
                 continue;
             }

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\SpamControl;
 
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
+use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Freeform;
@@ -22,6 +23,7 @@ class SpamControl implements BundleInterface
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'redirectPage']);
         Event::on(Form::class, Form::EVENT_AFTER_VALIDATE, [$this, 'handleValidation']);
         Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'handleAjaxPayload']);
+        Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'handleFormReset']);
 
         Event::on(
             SubmissionsService::class,
@@ -42,15 +44,13 @@ class SpamControl implements BundleInterface
     {
         $form = $event->getForm();
         if ($form->isMarkedAsSpam()) {
-            $simulateSuccess = $this->getFormsService()->isSpamBehaviourSimulateSuccess();
-
-            if ($simulateSuccess && $form->isLastPage()) {
-                $this->getFormsService()->incrementSpamBlockCount($form);
-            } elseif (!$simulateSuccess) {
-                $this->getFormsService()->incrementSpamBlockCount($form);
+            if (!$form->isValid()) {
+                return;
             }
 
-            $event->setValidationOverride($simulateSuccess);
+            if ($form->isLastPage()) {
+                $this->getFormsService()->incrementSpamBlockCount($form);
+            }
         }
     }
 
@@ -84,6 +84,11 @@ class SpamControl implements BundleInterface
             $record->reasonMessage = $reason['message'];
             $record->save();
         }
+    }
+
+    public function handleFormReset(ResetEvent $event)
+    {
+        $event->getForm()->getPropertyBag()->set(Form::PROPERTY_SPAM_REASONS, []);
     }
 
     private function getSpamReasons(Form $form)

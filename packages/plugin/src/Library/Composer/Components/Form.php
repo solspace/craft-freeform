@@ -58,7 +58,6 @@ use yii\web\Request;
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 {
     const HASH_KEY = 'hash';
-    const INIT_TIME_KEY = 'init-time';
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
     const EVENT_FORM_LOADED = 'form-loaded';
@@ -368,11 +367,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function getHash(): string
     {
         return $this->getPropertyBag()->get(self::HASH_KEY, '');
-    }
-
-    public function getInitTime(): int
-    {
-        return $this->getPropertyBag()->get(self::INIT_TIME_KEY, 0);
     }
 
     /**

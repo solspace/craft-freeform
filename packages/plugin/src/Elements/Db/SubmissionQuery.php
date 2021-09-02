@@ -304,6 +304,10 @@ class SubmissionQuery extends ElementQuery
                     continue;
                 }
 
+                if ('spamReasons' === $key) {
+                    continue;
+                }
+
                 if ($selectedForm) {
                     $field = $selectedForm->get($key);
                     if ($field) {

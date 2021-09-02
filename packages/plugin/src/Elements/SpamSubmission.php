@@ -43,6 +43,14 @@ class SpamSubmission extends Submission
         return false;
     }
 
+    public static function sortOptions(): array
+    {
+        $attributes = parent::sortOptions();
+        unset($attributes['spamReasons']);
+
+        return $attributes;
+    }
+
     /**
      * {@inheritdoc}
      */

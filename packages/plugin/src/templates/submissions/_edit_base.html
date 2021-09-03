@@ -41,7 +41,8 @@
 {% endblock %}
 
 {% block tabs %}
-    <nav id="tabs">
+    <header id="content-header" class="pane-header">
+    <nav id="tabs" class="pane-tabs">
         <ul>
             {% for page in layout.pages %}
                 {% set tabIsSelected = loop.first -%}
@@ -63,6 +64,7 @@
             <ul role="listbox"></ul>
         </div>
     </nav>
+    </header>
 {% endblock %}
 
 {% block content %}

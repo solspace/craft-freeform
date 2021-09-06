@@ -45,7 +45,11 @@ class SessionContext
                 break;
 
             case Settings::CONTEXT_TYPE_SESSION:
-                $this->storage = new SessionStorage($ttl, $count);
+                if (\Craft::$app->request->isConsoleRequest) {
+                    $this->storage = new PayloadStorage($secret);
+                } else {
+                    $this->storage = new SessionStorage($ttl, $count);
+                }
 
                 break;
 

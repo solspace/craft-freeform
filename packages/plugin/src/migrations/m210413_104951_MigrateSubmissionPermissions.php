@@ -6,6 +6,7 @@ use craft\db\Migration;
 use craft\db\Query;
 use craft\records\UserPermission;
 use craft\records\UserPermission_UserGroup;
+use Solspace\Freeform\Freeform;
 use yii\db\Expression;
 
 /**
@@ -18,6 +19,10 @@ class m210413_104951_MigrateSubmissionPermissions extends Migration
      */
     public function safeUp()
     {
+        if (!Freeform::getInstance()->isPro()) {
+            return true;
+        }
+
         $managePerm = (new Query())
             ->select('id')
             ->from('{{%userpermissions}}')

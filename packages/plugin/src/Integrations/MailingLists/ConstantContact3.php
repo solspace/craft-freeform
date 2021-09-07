@@ -97,14 +97,6 @@ class ConstantContact3 extends MailingListOAuthConnector
 
                 return isset($json->lists);
             } catch (RequestException $exception) {
-                $responseBody = (string) $exception->getResponse()->getBody();
-
-                // We want to log errors when the error is caused
-                // by something else than a stale access token
-                if (!$refreshTokenIfExpired) {
-                    $this->getLogger()->error($responseBody, ['exception' => $exception->getMessage()]);
-                }
-
                 throw new IntegrationException(
                     $exception->getMessage(),
                     $exception->getCode(),

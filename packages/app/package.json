@@ -26,7 +26,10 @@
     "react-dom": "^16.13.1",
     "react-transition-group": "^4.4.1",
     "recoil": "^0.1.2",
-    "styled-components": "^5.2.1"
+    "styled-components": "^5.2.1",
+    "path-parse": "^1.0.7",
+    "postcss": "^8.3.6",
+    "browserslist": "^4.17.0"
   },
   "devDependencies": {
     "@svgr/webpack": "^5.5.0",

@@ -295,7 +295,7 @@ class Layout implements \JsonSerializable, \Iterator
     /**
      * @template T
      *
-     * @param class-string<T>|null $implements
+     * @param null|class-string<T> $implements
      *
      * @return AbstractField[]|T[]
      */

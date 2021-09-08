@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.12.0-beta.5 - 2021-09-08
+
+### Added
+- Added a Bootstrap 5 example formatting template.
+
+### Fixed
+- Fixed a bug where the display of the page tabs inside the CP Submission detail pages were not compatible with Craft 3.7+.
+- Fixed a bug where the 3.11.0 permissions migration can trigger an error on the Craft Solo edition.
+- Fixed a bug where the Constant Contact integration would routinely trigger an authentication error in Freeform log.
+
 ## 3.12.0-beta.4 - 2021-09-02
 
 ### Added
@@ -23,10 +33,12 @@
 ### Changed
 - Overhauled form processing to allow for alternative session storage options including the new Encrypted Payload default as well as a database table approach.
 - Updated the custom formatting templates and email notification templates lists to be ordered alphabetically in the form builder.
+- Updated field option values to automatically appear as camelCase instead of an exact clone of what is typed as field option label.
 
 ### Fixed
 - Fixed a bug where the auto-scroll anchor inserted in Freeform forms could sometimes impact form styling. Added a `display:none;` inline CSS to the `div`.
 - Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
+- FIxed a bug where the "loading" indicators for the submit button were not working in Safari.
 
 ## 3.11.10 - 2021-07-22
 

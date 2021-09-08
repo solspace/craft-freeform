@@ -284,7 +284,7 @@ export default class ExternalOptionsProperty extends BasePropertyItem {
     return (
       <CustomProperty
         label="Options"
-        instructions="Options for this field"
+        instructions="Options for this field. Option values should be unique."
         content={
           <OptionTable
             value={value}
@@ -556,7 +556,7 @@ export default class ExternalOptionsProperty extends BasePropertyItem {
     const optionsProperty = (
       <CustomProperty
         label="Options"
-        instructions="Options for this field"
+        instructions="Options for this field. Option values should be unique."
         content={<PredefinedOptionTable value={value} values={values} options={options} />}
       />
     );

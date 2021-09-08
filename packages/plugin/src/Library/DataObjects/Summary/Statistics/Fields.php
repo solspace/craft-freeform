@@ -35,6 +35,9 @@ class Fields
     public $file = false;
 
     /** @var bool */
+    public $fileDragAndDrop = false;
+
+    /** @var bool */
     public $number = false;
 
     /** @var bool */

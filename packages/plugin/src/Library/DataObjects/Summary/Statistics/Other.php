@@ -21,4 +21,7 @@ class Other
 
     /** @var bool */
     public $displayingSubmissions = false;
+
+    /** @var bool */
+    public $graphQL = false;
 }

@@ -206,6 +206,7 @@ class SummaryService extends Component
         $other->gdpr = \in_array('gdpr', $feedInfo, true);
         $other->editingSubmissions = \in_array('editingSubmissions', $feedInfo, true);
         $other->displayingSubmissions = \in_array('displayingSubmissions', $feedInfo, true);
+        $other->graphQL = \in_array('graphQL', $feedInfo, true);
 
         $summary->statistics->other = $other;
 

@@ -37,6 +37,9 @@ class Settings
     /** @var string */
     public $jsInsertType = '';
 
+    /** @var string */
+    public $sessionContextType = '';
+
     /** @var bool */
     public $purgeSubmissions = false;
 

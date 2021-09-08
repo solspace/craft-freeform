@@ -107,6 +107,7 @@ class SummaryService extends Component
         $settings->autoScroll = $settingsService->isAutoScrollToErrors();
         $settings->jsInsertLocation = $settingsService->getSettingsModel()->scriptInsertLocation;
         $settings->jsInsertType = $settingsService->getSettingsModel()->scriptInsertType;
+        $settings->sessionContextType = $settingsService->getSettingsModel()->sessionContext;
         $settings->purgeSubmissions = (bool) $settingsService->getPurgableSubmissionAgeInDays();
         $settings->purgeInterval = $settingsService->getPurgableSubmissionAgeInDays();
         $settings->formattingTemplatesPath = (bool) $settingsService->getSettingsModel()->formTemplateDirectory;

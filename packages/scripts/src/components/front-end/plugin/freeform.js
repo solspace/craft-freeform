@@ -124,14 +124,19 @@ export default class Freeform {
         this._setUp();
         this._initHandlers();
 
-        const { scrollToAnchor, scrollOffset, scrollElement } = this.options;
+        const { scrollToAnchor } = this.options;
         if (scrollToAnchor) {
-          const y = form.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
-          scrollElement.scrollTo({ top: y, behavior: 'smooth' });
+          this._scrollToForm();
         }
       }
     }, 50);
   }
+
+  _scrollToForm = () => {
+    const { scrollOffset, scrollElement } = this.options;
+    const y = form.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
+    scrollElement.scrollTo({ top: y, behavior: 'smooth' });
+  };
 
   _setUp = () => {
     this._attachListeners();
@@ -668,6 +673,9 @@ export default class Freeform {
         console.error(request);
       }
 
+      if (this.options.scrollToAnchor) {
+        this._scrollToForm();
+      }
       this.unlockSubmit(form);
     };
 

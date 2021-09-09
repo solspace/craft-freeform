@@ -7,7 +7,13 @@ import Paragraph from '@ff-app/welcome-screen/shared/components/Typography/Parag
 import { Italics } from '@ff-app/welcome-screen/shared/components/Typography/Typography.styles';
 import GeneralState from '@ff-app/welcome-screen/shared/recoil/atoms/general';
 import settingDefaults from '@ff-app/welcome-screen/shared/requests/default-data';
-import { DefaultView, FormattingTemplate, JSInsertLocation } from '@ff-welcome-screen/shared/interfaces/settings';
+import {
+  DefaultView,
+  FormattingTemplate,
+  JSInsertLocation,
+  JSInsertType,
+  SessionType,
+} from '@ff-welcome-screen/shared/interfaces/settings';
 import React from 'react';
 import { useRecoilState } from 'recoil';
 
@@ -25,6 +31,7 @@ const General: React.FC = () => {
   const formattingTemplateOptions: Options<FormattingTemplate> = [
     { value: FormattingTemplate.Bootstrap, label: 'Bootstrap' },
     { value: FormattingTemplate.Bootstrap4, label: 'Bootstrap 4' },
+    { value: FormattingTemplate.Bootstrap5, label: 'Bootstrap 5' },
     { value: FormattingTemplate.Flexbox, label: 'Flexbox' },
     { value: FormattingTemplate.Foundation, label: 'Foundation' },
     { value: FormattingTemplate.Grid, label: 'Grid' },
@@ -35,6 +42,18 @@ const General: React.FC = () => {
     { value: JSInsertLocation.Footer, label: 'Footer (recommended)' },
     { value: JSInsertLocation.Form, label: 'Form' },
     { value: JSInsertLocation.Manual, label: 'Manual' },
+  ];
+
+  const jsInsertTypeOptions: Options<JSInsertType> = [
+    { value: JSInsertType.Static, label: 'As Static URLs (recommended)' },
+    { value: JSInsertType.Files, label: 'As Files' },
+    { value: JSInsertType.Inline, label: 'Inline' },
+  ];
+
+  const sessionTypeOptions: Options<SessionType> = [
+    { value: SessionType.Payload, label: 'As an encrypted payload (recommended)' },
+    { value: SessionType.PHPSessions, label: "Using PHP's sessions" },
+    { value: SessionType.Database, label: 'Using a database table' },
   ];
 
   return (
@@ -121,13 +140,37 @@ const General: React.FC = () => {
         />
 
         <SelectField
-          description="Where would you like Freeform to insert its javascript snippets in your templates that load forms?"
+          description="Where would you like Freeform to insert its scripts in your templates that load forms?"
           value={state.jsInsertLocation}
           options={jsInsertLocationOptions}
           onChange={(event): void => {
             setState((oldState) => ({
               ...oldState,
               jsInsertLocation: event.target.value as JSInsertLocation,
+            }));
+          }}
+        />
+
+        <SelectField
+          description="How should Freeform insert its scripts in your templates that load forms?"
+          value={state.jsInsertType}
+          options={jsInsertTypeOptions}
+          onChange={(event): void => {
+            setState((oldState) => ({
+              ...oldState,
+              jsInsertType: event.target.value as JSInsertType,
+            }));
+          }}
+        />
+
+        <SelectField
+          description="How should form data be passed between form submits?"
+          value={state.sessionType}
+          options={sessionTypeOptions}
+          onChange={(event): void => {
+            setState((oldState) => ({
+              ...oldState,
+              sessionType: event.target.value as SessionType,
             }));
           }}
         />

@@ -33,7 +33,7 @@ const App: React.FC = () => {
   const updateContainerHeight = (nextStep: number): void => {
     let height = 300;
     if (nextStep > 0 && nextStep < 4) {
-      height = 640;
+      height = 734;
     } else if (nextStep >= 4) {
       height = 400;
     }

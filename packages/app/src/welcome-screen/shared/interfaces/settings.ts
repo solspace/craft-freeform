@@ -6,6 +6,7 @@ export enum DefaultView {
 export enum FormattingTemplate {
   Bootstrap = 'bootstrap.html',
   Bootstrap4 = 'bootstrap-4.html',
+  Bootstrap5 = 'bootstrap-5.html',
   Flexbox = 'flexbox.html',
   Foundation = 'foundation.html',
   Grid = 'grid.html',
@@ -16,6 +17,16 @@ export enum JSInsertLocation {
   Form = 'form',
   Manual = 'manual',
 }
+export enum JSInsertType {
+  Static = 'static',
+  Files = 'files',
+  Inline = 'inline',
+}
+export enum SessionType {
+  Payload = 'payload',
+  PHPSessions = 'session',
+  Database = 'database',
+}
 
 export interface GeneralInterface {
   name: string;
@@ -25,6 +36,8 @@ export interface GeneralInterface {
   disableSubmit: boolean;
   autoScroll: boolean;
   jsInsertLocation: JSInsertLocation;
+  jsInsertType: JSInsertType;
+  sessionType: SessionType;
 }
 
 export enum DigestFrequency {

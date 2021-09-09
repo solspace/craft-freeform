@@ -30,6 +30,8 @@ class SettingsController extends BaseController
                 'formSubmitDisable' => $this->getRequest()->getBodyParam('disableSubmit', true),
                 'autoScrollToErrors' => $this->getRequest()->getBodyParam('autoScroll', true),
                 'scriptInsertLocation' => $this->getRequest()->getBodyParam('jsInsertLocation', Settings::SCRIPT_INSERT_LOCATION_FOOTER),
+                'scriptInsertType' => $this->getRequest()->getBodyParam('jsInsertType', Settings::SCRIPT_INSERT_TYPE_INLINE),
+                'sessionContext' => $this->getRequest()->getBodyParam('sessionType', Settings::CONTEXT_TYPE_PAYLOAD),
             ]
         );
 

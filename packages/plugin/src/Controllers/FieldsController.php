@@ -41,6 +41,9 @@ class FieldsController extends Controller
 
         $fieldsService = $this->getFieldsService();
         $fields = $fieldsService->getAllFields();
+        usort($fields, function (FieldModel $a, FieldModel $b) {
+            return $a->label <=> $b->label;
+        });
 
         \Craft::$app->view->registerAssetBundle(FormIndexBundle::class);
 

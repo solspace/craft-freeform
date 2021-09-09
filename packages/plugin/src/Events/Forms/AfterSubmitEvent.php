@@ -6,6 +6,9 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
+/**
+ * @deprecated this will be removed in v4
+ */
 class AfterSubmitEvent extends ArrayableEvent
 {
     /** @var Form */

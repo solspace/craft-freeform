@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Services\Pro;
 
 use craft\db\Query;
-use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
+use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
 use Solspace\Freeform\Events\Webhooks\SaveEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -24,7 +24,7 @@ class WebhooksService extends BaseService
     /** @var array */
     private static $providers;
 
-    public function triggerWebhooks(AfterSubmitEvent $event)
+    public function triggerWebhooks(SubmitEvent $event)
     {
         $form = $event->getForm();
         if ($form->getSuppressors()->isWebhooks()) {

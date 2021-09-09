@@ -15,9 +15,11 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Psr\Log\LoggerInterface;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\Forms\HydrateEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\PersistStateEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
@@ -78,6 +80,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_BEFORE_RESET = 'before-reset-form';
     const EVENT_AFTER_RESET = 'after-reset-form';
     const EVENT_PERSIST_STATE = 'persist-state';
+    const EVENT_HYDRATE_FORM = 'hydrate-form';
 
     const PROPERTY_STORED_VALUES = 'storedValues';
     const PROPERTY_PAGE_INDEX = 'pageIndex';
@@ -132,12 +135,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     /** @var string */
     private $returnUrl;
-
-    /** @var string */
-    private $extraPostUrl;
-
-    /** @var string */
-    private $extraPostTriggerPhrase;
 
     /** @var bool */
     private $storeData;
@@ -414,14 +411,24 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $this->returnUrl ?: '';
     }
 
+    /**
+     * @deprecated will be removed in v4
+     */
     public function getExtraPostUrl(): string
     {
-        return $this->extraPostUrl ?: '';
+        $bag = $this->getPropertyBag()->get(PayloadForwarding::BAG_KEY, []);
+
+        return $bag[PayloadForwarding::KEY_URL] ?? '';
     }
 
+    /**
+     * @deprecated will be removed in v4
+     */
     public function getExtraPostTriggerPhrase(): string
     {
-        return $this->extraPostTriggerPhrase ?: '';
+        $bag = $this->getPropertyBag()->get(PayloadForwarding::BAG_KEY, []);
+
+        return $bag[PayloadForwarding::KEY_TRIGGER_PHRASE] ?? '';
     }
 
     public function getAnchor(): string
@@ -1271,8 +1278,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->submissionTitleFormat = $formProperties->getSubmissionTitleFormat();
         $this->description = $formProperties->getDescription();
         $this->returnUrl = $formProperties->getReturnUrl();
-        $this->extraPostUrl = $formProperties->getExtraPostUrl();
-        $this->extraPostTriggerPhrase = $formProperties->getExtraPostTriggerPhrase();
         $this->storeData = $formProperties->isStoreData();
         $this->ipCollectingEnabled = $formProperties->isIpCollectingEnabled();
         $this->defaultStatus = $formProperties->getDefaultStatus();
@@ -1287,6 +1292,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         $this->gtmEnabled = $formProperties->isGtmEnabled();
         $this->gtmId = $formProperties->getGtmId();
         $this->gtmEventName = $formProperties->getGtmEventName();
+
+        $event = new HydrateEvent($this, $formProperties, $validationProperties);
+        Event::trigger(self::class, self::EVENT_HYDRATE_FORM, $event);
 
         $this->getAttributeBag()->merge(CustomFormAttributes::extractAttributes($formProperties->getTagAttributes()));
     }

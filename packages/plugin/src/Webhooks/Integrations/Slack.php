@@ -3,13 +3,13 @@
 namespace Solspace\Freeform\Webhooks\Integrations;
 
 use GuzzleHttp\Client;
-use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
+use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Webhooks\AbstractWebhook;
 
 class Slack extends AbstractWebhook
 {
-    public function triggerWebhook(AfterSubmitEvent $event): bool
+    public function triggerWebhook(SubmitEvent $event): bool
     {
         $form = $event->getForm();
         $submission = $event->getSubmission();

@@ -936,15 +936,9 @@ class Freeform extends Plugin
             );
 
             Event::on(
-                FormsService::class,
-                FormsService::EVENT_AFTER_SUBMIT,
+                Form::class,
+                Form::EVENT_AFTER_SUBMIT,
                 [$this->webhooks, 'triggerWebhooks']
-            );
-
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_AFTER_SUBMIT,
-                [$this->payloadForwarding, 'forward']
             );
         }
     }

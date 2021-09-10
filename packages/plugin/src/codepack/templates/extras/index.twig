@@ -1,0 +1,96 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% set segment1 = craft.app.request.segment(1) %}
+{% set segment2 = craft.app.request.segment(2) %}
+{% set segment3 = craft.app.request.segment(3) %}
+{% set segment4 = craft.app.request.segment(4) %}
+
+{% block content %}
+
+<div class="container">
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Example Name</th>
+            <th>Description</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>✅ <a href="{{ siteUrl }}demo/extras/current-user-data/">Populate a form with Current User Data</a></td>
+                <td>This example shows you how to populate a form with some User account values from the currently logged in user.</td>
+            </tr>
+            <tr>
+                <td>✅ <a href="{{ siteUrl }}demo/extras/craft-entry-data/">Populate a form with Craft Entry Data</a></td>
+                <td>This example shows how to populate some of a form's fields with some data from a Craft Entry.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/delivery-date/">delivery-date</a></td>
+                <td>The following example shows how flatpickr works together with DateTime field type.</td>
+            </tr>
+            <tr>
+                <td>✅ <a href="{{ siteUrl }}demo/extras/div-success/"> Alternate Success Markup from Div after AJAX Submit</a></td>
+                <td>This example shows how to override the default AJAX success message and load a success markup from a div instead.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/edit-submissions/">edit-submissions</a></td>
+                <td>The exapmle rendering the form that allows editing a specific submission and suppresses all of the email notifications.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/js-override/">js-override</a></td>
+                <td>This example manually load the Freeform JS elsewhere in your template</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/manual-form/">manual-form</a></td>
+                <td>The example formatting form completely manually</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/multi-page/">multi-page</a></td>
+                <td>The example showing the iterating through pages</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/multiple-forms/">multiple-forms</a></td>
+                <td>The example showing the iterating through pages</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/parsley/">parsley</a></td>
+                <td>The example will show you how to implement form validation for your Freeform forms with Parsley.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/populate-field/">populate-field</a></td>
+                <td>The example populate field options such as Selects, Checkbox Groups or Radio Groups dynamically at template level.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/relating-submission/">relating-submission</a></td>
+                <td>The example pairing the Freeform Submissions element fieldtype with the relations parameter in the freeform.form function</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/render-form/">render-form</a></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/return-url-form/">return-url-form</a></td>
+                <td>The example allows the user to control where the form returns to upon success.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/submit-same-page/">submit-same-page</a></td>
+                <td>The exapmle adding a query in the success URL instead of an additional segment.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/template-success">template-success</a></td>
+                <td>The following example override the default AJAX success message and instead load success markup from template.</td>
+            </tr>
+            <tr>
+                <td><a href="{{ siteUrl }}demo/extras/twig-cache">twig-cache</a></td>
+                <td>The example using simple "Craft Caching", you'll need to make sure that you are refreshing the "CSRF token"</td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

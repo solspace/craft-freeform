@@ -15,6 +15,7 @@ use Solspace\Freeform\Library\Session\Honeypot;
 class HoneypotService extends BaseService
 {
     const FORM_HONEYPOT_KEY = 'freeformHoneypotHashList';
+    const HONEYPOT_DISABLE_KEY = 'disableHoneypot';
 
     const EVENT_RENDER_HONEYPOT = 'renderHoneypot';
 
@@ -32,7 +33,7 @@ class HoneypotService extends BaseService
      */
     public function addFormAttributes(AttachFormAttributesEvent $event)
     {
-        $isHoneypotEnabled = $this->getSettingsService()->isFreeformHoneypotEnabled();
+        $isHoneypotEnabled = $this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm());
         $isEnhanced = $this->isEnhanced();
 
         if ($isHoneypotEnabled && $isEnhanced) {
@@ -49,11 +50,19 @@ class HoneypotService extends BaseService
      */
     public function addHoneyPotInputToForm(FormRenderEvent $event)
     {
+        if (!$this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm())) {
+            return;
+        }
+
         $event->appendToOutput($this->getHoneypotInput($event->getForm()));
     }
 
     public function addHoneypotToJson(OutputAsJsonEvent $event)
     {
+        if (!$this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm())) {
+            return;
+        }
+
         $honeypot = $this->getHoneypot($event->getForm());
 
         $event->add('honeypot', [
@@ -64,7 +73,7 @@ class HoneypotService extends BaseService
 
     public function validateFormHoneypot(FormValidateEvent $event)
     {
-        if (!$this->getSettingsService()->isFreeformHoneypotEnabled()) {
+        if (!$this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm())) {
             return;
         }
 
@@ -115,6 +124,10 @@ class HoneypotService extends BaseService
 
     public function getHoneypotJavascriptScript(Form $form): string
     {
+        if (!$this->getSettingsService()->isFreeformHoneypotEnabled($form)) {
+            return '';
+        }
+
         $honeypot = $this->getHoneypot($form);
 
         return 'var o = document.getElementsByName("'.$honeypot->getName().'"); for (var i in o) { if (!o.hasOwnProperty(i)) {continue;} o[i].value = "'.$honeypot->getHash().'"; }';

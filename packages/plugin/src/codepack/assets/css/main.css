@@ -4,6 +4,11 @@ body {
   margin-top: 100px !important;
 }
 
+p, ol li, ul li {
+  font-size: 1rem !important;
+  font-weight: normal;
+}
+
 footer {
   margin-top: 50px;
   padding: 25px 0;

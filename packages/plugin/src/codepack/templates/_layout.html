@@ -30,11 +30,14 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item {{ page == "bootstrap" ? 'active' }}">
+            <li class="nav-item {{ page == 'bootstrap' ? 'active' }}">
                 <a class="nav-link" href="{{ siteUrl }}demo/bootstrap">Bootstrap Example</a>
             </li>
-            <li class="nav-item {{ page == "custom" ? 'active' }}">
+            <li class="nav-item {{ page == 'custom' ? 'active' }}">
                 <a class="nav-link" href="{{ siteUrl }}demo/custom">Custom Formatting Template</a>
+            </li>
+            <li class="nav-item {{ page == 'extras' ? 'active' }}">
+                <a class="nav-link" href="{{ siteUrl }}demo/extras">Extras</a>
             </li>
         </ul>
         <div class="navbar-nav dropdown">

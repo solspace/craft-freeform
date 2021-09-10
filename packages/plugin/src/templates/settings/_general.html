@@ -95,8 +95,8 @@
     }) }}
 
     {{ forms.lightswitchField({
-        label: "Automatically Scroll to top of the Form on submit?"|t('freeform'),
-        instructions: "Enable this to have Freeform use JS to automatically scroll the top of the form on submit."|t('freeform'),
+        label: "Automatically Scroll to top of the Form on AJAX submit?"|t('freeform'),
+        instructions: "Enable this when using AJAX to have Freeform use JS to automatically scroll the top of the form on submit. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight."|t('freeform'),
         name: "settings[autoScroll]",
         on: settings.autoScroll,
         errors: settings.errors("autoScroll"),

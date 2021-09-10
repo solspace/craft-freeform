@@ -95,6 +95,14 @@
     }) }}
 
     {{ forms.lightswitchField({
+        label: "Automatically Scroll to top of the Form on submit?"|t('freeform'),
+        instructions: "Enable this to have Freeform use JS to automatically scroll the top of the form on submit."|t('freeform'),
+        name: "settings[autoScroll]",
+        on: settings.autoScroll,
+        errors: settings.errors("autoScroll"),
+    }) }}
+
+    {{ forms.lightswitchField({
         label: "Remember the Page Order in Multi-page forms?"|t('freeform'),
         instructions: "When enabled, Freeform will take into account Conditional Rules page skipping when the user clicks the 'Previous' button on multi-page forms."|t('freeform'),
         name: "settings[rememberPageSubmitOrder]",

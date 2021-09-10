@@ -28,6 +28,7 @@ export default class Freeform {
     ajax: false,
     disableReset: false,
     disableSubmit: false,
+    autoScroll: false,
     scrollToAnchor: false,
     scrollOffset: 0,
     scrollElement: window,
@@ -96,6 +97,7 @@ export default class Freeform {
       ajax: form.getAttribute('data-ajax') !== null,
       disableReset: form.getAttribute('data-disable-reset') !== null,
       scrollToAnchor: form.getAttribute('data-scroll-to-anchor'),
+      autoScroll: form.getAttribute('data-auto-scroll') !== null,
       disableSubmit: form.getAttribute('data-disable-submit') !== null,
       hasRules: form.getAttribute('data-has-rules') !== null,
       showSpinner: form.getAttribute('data-show-spinner') !== null,
@@ -668,14 +670,16 @@ export default class Freeform {
           response,
           cancelable: false,
         });
+
+        if (this.options.autoScroll) {
+          this._scrollToForm();
+        }
+
         this._onAfterSubmit(event, form, response);
       } else {
         console.error(request);
       }
 
-      if (this.options.scrollToAnchor) {
-        this._scrollToForm();
-      }
       this.unlockSubmit(form);
     };
 

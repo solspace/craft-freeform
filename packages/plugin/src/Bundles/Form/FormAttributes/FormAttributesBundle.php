@@ -73,6 +73,11 @@ class FormAttributesBundle implements BundleInterface
             $event->attachAttribute('enctype', 'multipart/form-data');
         }
 
+        $autoScroll = Freeform::getInstance()->settings->getSettingsModel()->autoScroll;
+        if ($autoScroll) {
+            $event->attachAttribute('data-auto-scroll', $autoScroll);
+        }
+
         if ($formService->shouldScrollToAnchor($form)) {
             $event->attachAttribute('data-scroll-to-anchor', $form->getAnchor());
         }

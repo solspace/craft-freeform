@@ -219,6 +219,9 @@ class Settings extends Model
     public $autoScrollToErrors;
 
     /** @var bool */
+    public $autoScroll;
+
+    /** @var bool */
     public $fillWithGet;
 
     /** @var string */
@@ -328,6 +331,7 @@ class Settings extends Model
         $this->renderFormHtmlInCpViews = true;
         $this->ajaxByDefault = self::DEFAULT_AJAX;
         $this->autoScrollToErrors = true;
+        $this->autoScroll = true;
         $this->fillWithGet = false;
         $this->formattingTemplate = self::DEFAULT_FORMATTING_TEMPLATE;
         $this->alertNotificationRecipients = null;

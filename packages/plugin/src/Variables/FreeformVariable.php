@@ -64,6 +64,11 @@ class FreeformVariable
         return $forms ?: [];
     }
 
+    public function submissionCount(Form $form)
+    {
+        return Freeform::getInstance()->submissions->getSubmissionCount([$form->getId()]);
+    }
+
     public function submissions(array $attributes = null): SubmissionQuery
     {
         $query = Submission::find();

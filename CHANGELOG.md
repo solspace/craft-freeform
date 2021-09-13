@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 3.12.0-beta.6 - 2021-09-13
+
+### Added
+- Added the ability to limit how many submissions a form can have.
+- Added a setting to automatically scroll to the top of the Form on AJAX submits. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight.
+- Added ability to disable the Freeform Honeypot per form at template level.
+- Added ability to set payload forwarding to form render params.
+
+### Changed
+- Updated the CP Field Manager page to sort fields alphabetically.
+- Updated demo templates to include more complex form examples (more on the way).
+- Adjusted the Session Context setting to default storage to PHP sessions for existing installs.
+
+### Fixed
+- Fixed a bug where the Stripe integration could sometimes incorrectly log errors in the Freeform error log.
+
 ## 3.12.0-beta.5 - 2021-09-08
 
 ### Added

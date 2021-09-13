@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Controllers\Pro\Payments;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
-use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Stripe\Event;
 use Stripe\Subscription;
 use yii\web\HttpException;
@@ -149,16 +148,6 @@ class PaymentWebhooksController extends BaseController
             return null;
         }
 
-        $errorMessage = Freeform::t('Event is not linked to freeform submission');
-
-        $this->getLoggerService()
-            ->getLogger(FreeformLogger::STRIPE)
-            ->error(
-                $errorMessage,
-                ['stripe_event' => json_encode($event)]
-            )
-        ;
-
-        throw new HttpException(400, $errorMessage);
+        throw new HttpException(400, Freeform::t('Event is not linked to freeform submission'));
     }
 }

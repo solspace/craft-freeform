@@ -368,7 +368,7 @@ class Settings extends Model
 
         $this->formFieldShowOnlyAllowedForms = false;
 
-        $this->sessionContext = self::CONTEXT_TYPE_PAYLOAD;
+        $this->sessionContext = self::CONTEXT_TYPE_SESSION;
         $this->sessionContextTimeToLiveMinutes = 180;
         $this->sessionContextCount = 100;
         $this->sessionContextSecret = '';

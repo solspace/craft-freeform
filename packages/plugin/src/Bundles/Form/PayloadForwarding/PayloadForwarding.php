@@ -17,12 +17,12 @@ use yii\base\Event;
 
 class PayloadForwarding implements BundleInterface
 {
-    const BAG_KEY = 'payloadForwarding';
+    const BAG_KEY = 'postForwarding';
 
     const KEY_URL = 'url';
     const KEY_TRIGGER_PHRASE = 'triggerPhrase';
 
-    const EVENT_PAYLOAD_FORWARDING = 'payloadForwarding';
+    const EVENT_POST_FORWARDING = 'postForwarding';
 
     public function __construct()
     {
@@ -94,7 +94,7 @@ class PayloadForwarding implements BundleInterface
 
         // @deprecated remove in v4
         Event::trigger(PayloadForwardingService::class, PayloadForwardingService::BEFORE_PAYLOAD_FORWARD, $payloadEvent);
-        Event::trigger(self::class, self::EVENT_PAYLOAD_FORWARDING, $payloadEvent);
+        Event::trigger(self::class, self::EVENT_POST_FORWARDING, $payloadEvent);
 
         if (!$payloadEvent->isValid) {
             return;

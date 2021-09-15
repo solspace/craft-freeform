@@ -56,6 +56,16 @@
 - Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
 - FIxed a bug where the "loading" indicators for the submit button were not working in Safari.
 
+## 3.11.11 - 2021-09-15
+
+### Changed
+- Updated the SharpSpring CRM integration to work with the latest API changes.
+
+### Fixed
+- Fixed a bug where Freeform could sometimes log an error for successful Stripe payments. 
+- Fixed a potential issue with Stripe subscription payments.
+- Fixed a bug where multi-page forms were not clearing visual errors correctly (after correction) when using with AJAX.
+
 ## 3.11.10 - 2021-07-22
 
 ### Fixed

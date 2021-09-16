@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   padding: 67px 20px;
 
   border-radius: 7px;
-  border: 3px dashed ${({ accent }) => accent};
+  border: 2px dashed ${({ accent }) => accent};
   background: ${({ theme }) => (theme === 'dark' ? '#222222' : '#ffffff')};
   color: ${({ theme }) => (theme === 'dark' ? '#656666' : '#000')};
 

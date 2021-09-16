@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 

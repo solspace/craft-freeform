@@ -17,6 +17,10 @@ use Twig\Markup;
 
 interface FieldInterface
 {
+    const EVENT_TRANSFORM_FROM_POST = 'transform-from-post';
+    const EVENT_TRANSFORM_FROM_STORAGE = 'transform-from-storage';
+    const EVENT_TRANSFORM_FROM_DATABASE = 'transform-from-database';
+
     const TYPE_TEXT = 'text';
     const TYPE_TEXTAREA = 'textarea';
     const TYPE_HIDDEN = 'hidden';

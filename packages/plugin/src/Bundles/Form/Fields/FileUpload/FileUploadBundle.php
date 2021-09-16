@@ -2,12 +2,12 @@
 
 namespace Solspace\Freeform\Bundles\Form\Fields\FileUpload;
 
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\Event;

@@ -20,4 +20,5 @@ return [
     'demo/bootstrap/<slug:[^\/]+>/success' => ['template' => 'demo/bootstrap/view'],
     'demo/custom/<slug:[^\/]+>' => ['template' => 'demo/custom/form'],
     'demo/custom/<slug:[^\/]+>/success' => ['template' => 'demo/custom/form'],
+    'demo/extras/suppress-edit-submissions/edit/<token\w+>' => ['template' => 'demo/extras/suppress-edit-submissions'],
 ];

@@ -43,5 +43,10 @@
     "urlParts": ["custom\\/",["slug","[^\\\\\\/]+"], "\\/success"],
     "urlPattern": "custom/{slug}/success",
     "template": "/custom/form"
+  },
+  {
+    "urlParts": ["extras\\/suppress-edit-submissions\\/edit\\/", ["token","\\\\w+"]],
+    "urlPattern": "extras/suppress-edit-submissions/edit/{token}",
+    "template": "/extras/suppress-edit-submissions"
   }
 ]

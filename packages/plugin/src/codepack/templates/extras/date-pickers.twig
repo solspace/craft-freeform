@@ -1,0 +1,73 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Extras" %}
+{% set page = "extras" %}
+
+{# Replace 'freeformDatePicker' with your form handle #}
+{% set form = craft.freeform.form("freeformDatePicker") %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Adjustments to a Date Field Date/Time Picker</h2>
+    <p>The following example shows some ways to manipulate a Date &amp; Time field type using Freeform's developer events.</p>
+    <hr />
+
+    {% if form %}
+
+        <h3>{{ form.name }}</h3>
+        <br />
+
+        {{ form.render() }}
+
+        <script>
+        
+            {# Replace flatpickr instance options as you wish #}
+            document.addEventListener("flatpickr-before-init", (event) => {
+                // event.options object contains the whole options object that will be passed to the flatpickr instance
+                event.options.defaultHour = 8; // starts the time picker at 8:00 am
+                event.options.minuteIncrement = 15; // moves the time picker in 15 minute increments instead of 1
+                event.options.minTime = "08:00"; // sets minimum start time to 8:00 am
+                event.options.maxTime = "17.00"; // sets maximum start time to 5:00 pm
+                flatpickr.l10ns.default.firstDayOfWeek = 1; // sets first day of week to Monday
+                event.options.disable = [ // disables Sundays and Saturdays from being available options in datepicker
+                    function(date) {
+                        return (date.getDay() === 0 || date.getDay() === 6);
+                    }
+                ];
+            })
+
+        </script>
+
+    {% else %}
+    {# Show instructions to developer if they wish to see this page work correctly #}
+
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
+            <p>
+                In order to view this page live, you'll need to make some adjustments to this template or your test form:
+                <ol class="mb-0">
+                    <li>Rename your test form handle to <code>freeformDatePicker</code> or adjust the form handle name inside this template to match your test form.</li>
+                    <li>
+                        Make sure your test form includes the following field (at minimum):
+                        <ul>
+                            <li>Date field of the Date &amp; Time field type (Pro only).</li>
+                            <li>
+                                Set the following configuration for this field as:
+                                <ul>
+                                    <li><b>Type</b> set to <i>Both</i></li>
+                                    <li><b>Use the Freeform datepicker for this field?</b> checked/enabled</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

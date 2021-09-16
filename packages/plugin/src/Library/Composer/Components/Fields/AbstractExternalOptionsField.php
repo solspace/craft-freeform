@@ -62,8 +62,10 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
 
         if ($this instanceof DynamicRecipientField) {
             $actualValues = [];
-            foreach ($this->values as $value) {
-                $actualValues[] = $this->getActualValue($value);
+            if (\is_array($this->values)) {
+                foreach ($this->values as $value) {
+                    $actualValues[] = $this->getActualValue($value);
+                }
             }
 
             $values = $actualValues;

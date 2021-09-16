@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Controllers;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
+use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Freeform;
@@ -129,7 +130,13 @@ class SubmitController extends BaseController
             ]
         );
 
+        /** @deprecated  */
         $returnUrl = Freeform::getInstance()->forms->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
+
+        $event = new ReturnUrlEvent($form, $submission, $returnUrl);
+        Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);
+        $returnUrl = $event->getReturnUrl();
+
         if (!$returnUrl) {
             $returnUrl = $request->getUrl();
         }

@@ -31,10 +31,13 @@ interface FormHandlerInterface
     const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
     /** @deprecated */
     const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
+    /** @deprecated  */
     const EVENT_FORM_VALIDATE = 'validateForm';
+    /** @deprecated  */
     const EVENT_AFTER_FORM_VALIDATE = 'afterValidateForm';
     /** @deprecated */
     const EVENT_ATTACH_FORM_ATTRIBUTES = 'attachFormAttributes';
+    /** @deprecated */
     const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
 
     /**
@@ -77,6 +80,8 @@ interface FormHandlerInterface
 
     /**
      * Do something after the form is saved.
+     *
+     * @deprecated use Form::EVENT_AFTER_SUBMIT instead
      */
     public function onAfterSubmit(Form $form, Submission $submission = null);
 
@@ -89,11 +94,15 @@ interface FormHandlerInterface
 
     /**
      * Attach anything to the form after opening tag.
+     *
+     * @deprecated Use Form::EVENT_RENDER_AFTER_OPEN_TAG event instead
      */
     public function onRenderOpeningTag(Form $form): string;
 
     /**
      * Attach anything to the form before the closing tag.
+     *
+     * @deprecated Use Form::EVENT_RENDER_AFTER_CLOSING_TAG event instead
      */
     public function onRenderClosingTag(Form $form): string;
 
@@ -115,10 +124,7 @@ interface FormHandlerInterface
     public function onAfterFormValidate(Form $form);
 
     /**
-     * @param Submission $submission
-     * @param string     $returnUrl
-     *
-     * @return null|string
+     * @deprecated Use Form::EVENT_GENERATE_RETURN_URL. This event will no longer be used in Freeform 4.x
      */
     public function onAfterGenerateReturnUrl(Form $form, Submission $submission = null, string $returnUrl = null);
 }

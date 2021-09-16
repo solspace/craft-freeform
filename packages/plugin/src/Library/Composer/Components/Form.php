@@ -81,6 +81,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_AFTER_RESET = 'after-reset-form';
     const EVENT_PERSIST_STATE = 'persist-state';
     const EVENT_HYDRATE_FORM = 'hydrate-form';
+    const EVENT_GENERATE_RETURN_URL = 'generate-return-url';
 
     const PROPERTY_STORED_VALUES = 'storedValues';
     const PROPERTY_PAGE_INDEX = 'pageIndex';

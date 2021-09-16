@@ -658,9 +658,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return '';
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onBeforeSubmit(Form $form): bool
     {
         $event = new BeforeSubmitEvent($form);
@@ -669,18 +666,12 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $event->isValid;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onAfterSubmit(Form $form, Submission $submission = null)
     {
         $event = new AfterSubmitEvent($form, $submission);
         $this->trigger(self::EVENT_AFTER_SUBMIT, $event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onBeforePageJump(Form $form)
     {
         $event = new PageJumpEvent($form);
@@ -689,9 +680,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $event->getJumpToIndex();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onRenderOpeningTag(Form $form): string
     {
         $event = new FormRenderEvent($form);
@@ -700,9 +688,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $event->getOrAttachOutputToView();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onRenderClosingTag(Form $form): string
     {
         $event = new FormRenderEvent($form);
@@ -711,9 +696,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $event->getOrAttachOutputToView();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onAttachFormAttributes(Form $form, array $attributes = [])
     {
         $event = new AttachFormAttributesEvent($form, $attributes);
@@ -722,27 +704,18 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $event->getAttributes();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onFormValidate(Form $form)
     {
         $event = new FormValidateEvent($form);
         $this->trigger(self::EVENT_FORM_VALIDATE, $event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onAfterFormValidate(Form $form)
     {
         $event = new FormValidateEvent($form);
         $this->trigger(self::EVENT_AFTER_FORM_VALIDATE, $event);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function onAfterGenerateReturnUrl(Form $form, Submission $submission = null, string $returnUrl = null)
     {
         $event = new ReturnUrlEvent($form, $submission, $returnUrl);

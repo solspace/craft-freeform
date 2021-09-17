@@ -322,6 +322,8 @@ export default class Freeform {
     if (onSubmitEvent.defaultPrevented) {
       event.preventDefault();
       event.stopPropagation();
+      this.unlockSubmit(form);
+
       return false;
     }
 

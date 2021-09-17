@@ -157,6 +157,12 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
             return $options[$obscureValue]->getValue();
         }
 
+        foreach ($options as $option) {
+            if ($option->getValue() === $obscureValue) {
+                return $option->getValue();
+            }
+        }
+
         return null;
     }
 

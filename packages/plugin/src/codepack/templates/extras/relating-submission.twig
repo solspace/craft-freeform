@@ -1,0 +1,61 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Extras" %}
+{% set page = "extras" %}
+
+
+{# Replace 'freeformRelateSubmission' with your form handle. #}
+{% set form = craft.freeform.form("freeformRelateSubmission") %}
+
+{# Replace 'freeform-test' with your Craft Entry slug. #}
+{% set entry = craft.entries().slug('freeform-test').one %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Relating Submissions to Elements<h2>
+    <p>The following example will relate the newly created submission to another element (in this case a Craft Entry) via the Freeform Submission relation element field type.</p>
+    <hr />
+
+    {% if entry and form %}
+
+        <div class="alert alert-secondary mb-5" role="alert">
+            <p class="mb-3 font-italic">Craft Entry:</p>
+            <h2>{{ entry.title }} <small>({{ entry.id }})</small></h2>
+            <p class="mb-0">Posted on {{ entry.postDate.format('F d, Y') }}</p>
+        </div>
+
+        <h3 class="mb-5">{{ form.name }}</h3>
+
+        {# Adjust 'relations' parameter as you please #}
+        {{ form.render({
+            relations: {
+                productReviews: entry.id,
+            }
+        }) }}
+
+    {% else %}
+    {# Show instructions to developer if they wish to see this page work correctly #}
+
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
+            <p>
+                In order to view this page live, you'll need to make some adjustments to this template or on your test from:
+                <ol class="mb-0">
+                    <li>Rename your test form handle to <code>freeformRelateSubmission</code> or adjust the form handle name inside this template to match your test form.</li>
+                    <li>
+                        Make sure you have a Craft Entry with a slug of <code>freeform-test</code> and includes the following Craft fields at minimum, or adjust the values inside this template:
+                        <ul>
+                            <li>Freeform Submissions field type with a handle of <code>productReviews</code> and the <b>Sources</b> setting include the <code>freeformRelateSubmission</code> form.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Extras" %}
+{% set page = "extras" %}
+
+{# Replace 'freeformParsley' with your form handle. #}
+{% set form = craft.freeform.form("freeformParsley") %}
+
+{# Load in custom CSS for Parsley #}
+{% block headerCss %}
+    <link rel="stylesheet" href="{{ siteUrl }}assets/demo/css/parsley.css" />
+{% endblock %}
+
+{# Load Parsley JS and Freeform JS listener #}
+{% block footerJs %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.js"></script>
+    <script>
+        document.addEventListener("freeform-render-field-errors", function (event) {
+            event.preventDefault();
+        });
+    </script>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Form Validation with Parsley</h2>
+    <p>This example will show you how to implement form validation for your Freeform forms with <a href="https://parsleyjs.org/">Parsley JS</a>.</p>
+    <hr />
+
+    {% if form %}
+
+        <h3 class="mb-5">{{ form.name }}</h3>
+
+        {{ form.renderTag({
+            formAttributes: { "data-parsley-validate": true }
+        }) }}
+            {% for column in form %}
+                <div>
+                    {% for field in column %}
+                        <div class="form-field">
+                            {% set attr = {} %}
+                            {% if field.required %}
+                                {% set attr = attr|merge({'required':true}) %}
+                            {% endif %}
+
+                            {% if field.type in ['number', 'phone'] %}
+                                {% set attr = attr|merge({'data-parsley-type':'digits'}) %}
+                            {% endif %}
+
+                            {% if field.type == 'email' %}
+                                {% set attr = attr|merge({'data-parsley-type':'email'}) %}
+                            {% endif %}
+
+                            {{ field.render({
+                                inputAttributes: attr
+                            }) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        {{ form.renderClosingTag }}
+
+    {% else %}
+    {# Show instructions to developer if they wish to see this page work correctly #}
+
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
+            <p>
+                In order to view this page live, you'll need to make some adjustments to this template or your test form:
+                <ol class="mb-0">
+                    <li>Rename your test form handle to <code>freeformParsley</code> or adjust the form handle name inside this template to match your test form.</li>
+                    <li>Make sure your test form includes at least a few fields that are required and/or of Email field type to see Parsley in action.</li>
+                </ol>
+            </p>
+        </div>
+    
+    {% endif %}
+
+</div>
+
+{% endblock %}

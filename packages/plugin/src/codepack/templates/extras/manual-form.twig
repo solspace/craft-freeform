@@ -16,8 +16,7 @@
 
 	{% if form %}
 
-		<h3> {{ form.name }}</h3> 
-		<br />
+		<h3 class="mb-5">{{ form.name }}</h3>
 
 		{# Replace "freeform-demo/extra/manual-form" where to return after the form will be submitted, or remove it to have it respect the value set inside the form builder #}
 		{{ form.renderTag({returnUrl: "demo/extras/manual-form"}) }}

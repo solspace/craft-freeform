@@ -3,28 +3,20 @@
 {% set pageTitle = "Extras" %}
 {% set page = "extras" %}
 
-{# Replace 'freeformDivSuccess' with your form handle. #}
-{% set form = craft.freeform.form("freeformDivSuccess") %}
+{# Replace 'freeformAjaxTemplateSuccess' with your form handle. #}
+{% set form = craft.freeform.form("freeformAjaxTemplateSuccess") %}
 
 {% block content %}
 
 <div class="container">
 
-    <h2>Alternate Success Markup from Div after AJAX Submit<h2>
-    <p>The following example will override the default AJAX success message and load a success markup from a <code>div</code> instead.<p> 
+    <h2>Alternate Success from Template after AJAX Submit<h2>
+    <p>This example shows how to override the default AJAX success message and load a success message from another template instead.<p> 
     <hr />
 
     {% if form %}
 
         <h3 class="mb-5">{{ form.name }}</h3>
-
-        <div id="custom-content" style="display:none;">
-            <h3>Thank you!</h3>
-            <p>
-                We have received your submission. You may now
-                <a href="{{ siteUrl('#') }}">download the PDF guide</a>.
-            </p>
-        </div>
 
         <div id="form-wrapper">
 
@@ -40,7 +32,7 @@
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or your test form:
                 <ol class="mb-0">
-                    <li>Rename your test form handle to <code>freeformDivSuccess</code> or adjust the form handle name inside this template to match your test form.</li>
+                    <li>Rename your test form handle to <code>freeformAjaxTemplateSuccess</code> or adjust the form handle name inside this template to match your test form.</li>
                 </ol>
             </p>
         </div>
@@ -55,14 +47,16 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script type="text/javascript">
-        document.addEventListener('freeform-render-success', function (event) {
+        // Find the form element, can be a specific ID or just look for any forms
+        var form = $('form[data-id]');
+        form.on('freeform-render-success', function (event) {
             // Disable the default success rendering
             event.preventDefault();
 
             // We locate the 'form-wrapper' DIV element which contains our form
             // and we swap its contents (the whole form) with the HTML that we
-            // fetch from any other element already present on the page
-            $('#form-wrapper').html($('#custom-content').html());
+            // fetch from the "/demo/extras/responses/ajax-success-message" template
+            $('#form-wrapper').load('{{ siteUrl }}demo/extras/responses/ajax-success-message');
         });
     </script>
 

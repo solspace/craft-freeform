@@ -1,0 +1,74 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Extras" %}
+{% set page = "extras" %}
+
+{# Replace 'freeform-test' with your Craft Entry slug. #}
+{% set entry = craft.entries().slug('freeform-test').one %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Freeform Form Element Field Type<h2>
+    <p>This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.</p>
+    <hr />
+
+    {# Make sure the test Craft entry exists #}
+    {% if entry %}
+
+        <div class="alert alert-secondary" role="alert">
+            <p class="mb-3 font-italic">Craft Entry:</p>
+            <h2>{{ entry.title }} <small>({{ entry.id }})</small></h2>
+            <p class="mb-0">Posted on {{ entry.postDate.format('F d, Y') }}</p>
+        </div>
+
+        {# Make sure the test Freeform Form field type exists #}
+        {% if entry['freeformForm'] is defined %}
+            {# Check if there's a value for the Freeform Form field type #}
+            {% if entry.freeformForm  | length %}
+                <h3 class="mb-5">{{ entry.freeformForm.name }}</h3>
+                {# Apply additional parameters as you please #}
+                {{ entry.freeformForm.render({
+                    id: "my-test-form",
+                    overrideValues: {
+                        productTitle: entry.title,
+                    }
+                }) }}
+            {% else %}
+                <p class="text-danger font-weight-bold">You currently do not have a form assigned to this Craft Entry.</p>
+            {% endif %}
+        {% else %}
+            <p class="text-danger font-weight-bold">You currently do not have a Freeform Form field type with the handle of <code>freeformForm</code> added to this Craft Section.</p>
+        {% endif %}
+
+    {% else %}
+
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
+            <p>
+                In order to view this page live, you'll need to make some adjustments to this template or on your test from:
+                <ol class="mb-0">
+                    <li>Rename your test form handle to <code>freeformFormFieldType</code> or adjust the form handle name inside this template to match your test form.</li>
+                    <li>
+                        Make sure your test form includes the following Freeform fields at minimum, or adjust the overrides inside this template:
+                        <ul>
+                            <li>Product Title field (text or hidden) with handle of <code>productTitle</code>.</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Make sure you have a Craft Entry with a slug of <code>freeform-test</code> and includes the following Craft fields at minimum, or adjust the code inside this template:
+                        <ul>
+                            <li>Title field</li>
+                            <li>Freeform Form element field type with a handle of <code>freeformForm</code> and the <code>freeformFormFieldType</code> form assigned to it.</li>
+                        </ul>
+                    </li>
+                </ol>
+            </p>
+        </div>
+
+    {% endif %}
+    
+</div> 
+
+{% endblock %}

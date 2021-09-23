@@ -33,6 +33,14 @@
 
         <h3 class="mb-5">{{ form.name }}</h3>
 
+    {# Simpler approach without additional Parsley validation available too
+        {{ form.render({
+            formAttributes: { "data-parsley-validate": true },
+            useRequiredAttribute: true
+        }) }}
+    #}
+
+    {# Also see Parsley site's example for more info: https://parsleyjs.org/doc/examples/simple.html #}
         {{ form.renderTag({
             formAttributes: { "data-parsley-validate": true }
         }) }}
@@ -71,7 +79,7 @@
                 In order to view this page live, you'll need to make some adjustments to this template or your test form:
                 <ol class="mb-0">
                     <li>Rename your test form handle to <code>freeformParsley</code> or adjust the form handle name inside this template to match your test form.</li>
-                    <li>Make sure your test form includes at least a few fields that are required and/or of Email field type to see Parsley in action.</li>
+                    <li>Make sure your test form includes at least a few fields that are required and/or of Email field type and/or Phone field type (Pro only) to see Parsley in action.</li>
                 </ol>
             </p>
         </div>

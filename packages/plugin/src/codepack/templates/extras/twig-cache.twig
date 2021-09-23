@@ -1,0 +1,78 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Extras" %}
+{% set page = "extras" %}
+
+{# Replace 'freeformTwigCache' with your form handle #}
+{% set form = craft.freeform.form("freeformTwigCache") %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Twig Template Caching on Forms</h2>
+    <p>The following example shows how to refresh the CSRF token and other parts of Freeform when using Twig Caching on a template that contains a form.</p>
+    <hr />
+
+    {% if form %}
+
+        {% cache for 10 minutes %}
+
+            <div class="alert alert-secondary mb-5" role="alert">
+                <p class="mb-2 font-italic">
+                    Randomly Generated Number<br />
+                    <small>(this number will stay the same for 10 minutes, proving the cache is still present for the rest of the page)</small>
+                </p>
+                <h2 class="mb-0">{{ random(5000, 10000) }}</h2>
+            </div>
+
+            <h3 class="mb-5">{{ form.name }}</h3>
+
+            {{ form.render }}
+
+        {% endcache %}
+
+        {# Script for updating the form's Hash, JS Honeypot and CSRF token loads after #}
+        <script>
+            // Get a fresh Honeypot via `craft.freeform.honeypot()` service
+            // UNCOMMENT 1 LINE BELOW IF USING JS ENHANCEMENT ON HONEYPOT
+            // var honeypot = JSON.parse('{{ craft.freeform.honeypot(form)|json_encode|raw }}');
+
+            // Find the corresponding Form
+            var form = document.querySelector('form');
+
+            // Locate and update the Hash input
+            var formHashInput = form.querySelector('input[name=formHash]');
+            formHashInput.setAttribute('value', '{{ form.hash }}');
+
+            // Locate and update the JS Honeypot input
+            // UNCOMMENT 4 LINES BELOW IF USING JS ENHANCEMENT ON HONEYPOT
+            // var honeypotInput = form.querySelector('input[name^="freeform_form_handle"]');
+            // honeypotInput.setAttribute('id', honeypot.name);
+            // honeypotInput.setAttribute('name', honeypot.name);
+            // honeypotInput.value = honeypot.hash;
+
+            // Locate and update the CSRF input
+            var csrfInput = form.querySelector('input[name={{ craft.app.config.general.csrfTokenName|e('js') }}]');
+            csrfInput.value = '{{ craft.app.request.csrfToken|e('js') }}';
+        </script>
+        
+    {% else %}
+    {# Show instructions to developer if they wish to see this page work correctly #}
+
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
+            <p>
+                In order to view this page live, you'll need to make some adjustments to this template or your test form:
+                <ol class="mb-0">
+                    <li>Rename your test form handle to <code>freeformTwigCache</code> or adjust the form handle name inside this template to match your test form.</li>
+                    <li>If using the <b>Javascript Enhancment</b> setting for the Freeform Honeypot, either disable that now, or follow the instructions inside the code of this page by uncommenting a few lines in the JS.</li>
+                </ol>
+            </p>
+        </div>
+    
+    {% endif %}
+
+</div>
+
+{% endblock %}

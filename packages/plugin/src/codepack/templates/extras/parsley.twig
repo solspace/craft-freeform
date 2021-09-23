@@ -31,16 +31,16 @@
 
     {% if form %}
 
-        <h3 class="mb-5">{{ form.name }}</h3>
+        <h3 class="mb-3">{{ form.name }}</h3>
 
-    {# Simpler approach without additional Parsley validation available too
-        {{ form.render({
-            formAttributes: { "data-parsley-validate": true },
-            useRequiredAttribute: true
-        }) }}
-    #}
+        {# Simpler approach without additional Parsley validation available too
+            {{ form.render({
+                formAttributes: { "data-parsley-validate": true },
+                useRequiredAttribute: true
+            }) }}
+        #}
 
-    {# Also see Parsley site's example for more info: https://parsleyjs.org/doc/examples/simple.html #}
+        {# Also see Parsley site's example for more info: https://parsleyjs.org/doc/examples/simple.html #}
         {{ form.renderTag({
             formAttributes: { "data-parsley-validate": true }
         }) }}

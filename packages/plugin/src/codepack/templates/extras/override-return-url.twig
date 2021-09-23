@@ -1,0 +1,92 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Extras" %}
+{% set page = "extras" %}
+
+{# Replace 'freeformOverrideReturnUrl' with your form handle #}
+{% set form = craft.freeform.form("freeformOverrideReturnUrl") %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Overiding Success Return URL</h2>
+    <p>This example shows how to manipulate a form to allow a user to override the Return URL for successful submits. This could be done via a checkbox, select field, radio group, or hidden field. This specific example just uses a checkbox that is paired with the Submit button for a simpler setup.</p>
+    <hr />
+
+    {% if form %}
+
+        <h3 class="mb-3">{{ form.name }}</h3>
+
+        <style>.freeform-pages{display:-ms-flexbox;display:flex;padding:0;margin:0 0 10px;list-style:none}.freeform-pages li{margin:0 10px 0 0}.freeform-row{display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between;margin:0 -15px}.freeform-row .freeform-column{-ms-flex:1 0;flex:1 0;padding:10px 0;margin:0 15px;box-sizing:border-box}.freeform-row .freeform-column>.freeform-row:first-child{margin-top:-10px}.freeform-row .freeform-column label{display:block}.freeform-row .freeform-column .input-group-one-line{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap}.freeform-row .freeform-column .input-group-one-line label{padding-right:10px}.freeform-row .freeform-column .freeform-label{font-weight:bold}.freeform-row .freeform-column .freeform-label.freeform-required:after{content:"*";margin-left:5px;color:red}.freeform-row .freeform-column .freeform-input{width:100%;display:block;box-sizing:border-box}.freeform-row .freeform-column .freeform-input[type=checkbox],.freeform-row .freeform-column .freeform-input[type=radio]{width:auto;display:inline;margin-right:5px}.freeform-row .freeform-column .freeform-input.StripeElement{padding:4px 2px;border:1px solid #CCCCCC;height:30px}.freeform-row .freeform-column .freeform-input-only-label{font-weight:normal}.freeform-row .freeform-column .freeform-input-only-label>.freeform-input{display:inline-block;width:auto;margin-right:5px}.freeform-row .freeform-column .freeform-errors,.freeform-row .freeform-column .ff-errors{list-style:none;padding:0;margin:5px 0 0}.freeform-row .freeform-column .freeform-errors>li,.freeform-row .freeform-column .ff-errors>li{color:red}.freeform-row .freeform-column .freeform-instructions{margin:0 0 5px;font-size:13px;color:#ABA7A7}.freeform-row .freeform-column.freeform-column-content-align-left{display:-ms-flexbox;display:flex;-ms-flex-pack:start;justify-content:flex-start}.freeform-row .freeform-column.freeform-column-content-align-left>button:not(:first-of-type){margin-left:5px}.freeform-row .freeform-column.freeform-column-content-align-center{display:-ms-flexbox;display:flex;-ms-flex-pack:center;justify-content:center}.freeform-row .freeform-column.freeform-column-content-align-center>button:not(:first-of-type){margin-left:5px}.freeform-row .freeform-column.freeform-column-content-align-right{display:-ms-flexbox;display:flex;-ms-flex-pack:end;justify-content:flex-end}.freeform-row .freeform-column.freeform-column-content-align-right>button:not(:first-of-type){margin-left:5px}.freeform-row .freeform-column.freeform-column-content-align-spread{display:-ms-flexbox;display:flex;-ms-flex-pack:justify;justify-content:space-between}.freeform-row .freeform-column.freeform-column-content-align-spread>button:not(:first-of-type){margin-left:5px}.ff-form-errors{padding:15px;border:1px solid #f5c6cb;background:#f8d7da;border-radius:5px;color:#721c24}.ff-form-errors>p{margin:0}.freeform-form-has-errors{color:#721c24}</style>
+
+        {# Set the default success return path in CP or below #}
+        {{ form.renderTag({returnUrl: "demo/extras/override-return-url/default-path"}) }}
+
+        {% if form.hasErrors %}
+            <div class="freeform-form-has-errors">
+                {{ "Error! Please review the form and try submitting again."|t('freeform') }}
+                {% if form.errors|length %}
+                    <ul>
+                        {% for error in form.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% for row in form %}
+        <div class="freeform-row {{ form.customAttributes.rowClass }}">
+            {% for field in row %}
+                {% set columnClass = "freeform-column " ~ form.customAttributes.columnClass %}
+                {# Seperate handling of Submit button and our special checkbox (pairing these together in this context may be simplest) #}
+                {% if field.type == "submit" %}
+                    {% set columnClass = columnClass ~ " freeform-column-content-align-" %}
+                    <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
+                        {# This is where the magic happens for overriding the Return URL #}
+                        <label for="form-return-url-checkbox">
+                            {# Be sure to include the brackets and 'hash' filter for the Return URL #}
+                            <input type="checkbox" name="formReturnUrl" id="form-return-url-checkbox" value="{{ 'demo/extras/somewhere-special'|hash }}" />
+                            Do something special for return...
+                        </label>
+                        {{ field.render({
+                            class: field.type not in ["submit", "signature"] ? "freeform-input" : "",
+                        }) }}
+                    </div>
+                {% else %}
+                    <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
+                        {{ field.render({
+                            class: field.type not in ["submit", "signature"] ? "freeform-input" : "",
+                            labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
+                            errorClass: "freeform-errors",
+                            instructionsClass: "freeform-instructions",
+                        }) }}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endfor %}
+
+        {{ form.renderClosingTag }}
+    
+    {% else %}
+    {# Show instructions to developer if they wish to see this page work correctly #}
+
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
+            <p>
+                In order to view this page live, you'll need to make some adjustments to this template or on your test from:
+                <ol class="mb-0">
+                    <li>Rename your test form handle to <code>freeformOverrideReturnUrl</code> or adjust the form handle name inside this template to match your test form.</li>
+                    <li>Be sure to disable the <b>Enable AJAX</b> setting inside the form builder for this form.</li>
+                    <li>Make sure your test form includes a Submit button in the form builder layout.</li>
+                </ol>
+            </p>
+        </div>
+    
+    {% endif %}
+    
+</div>
+
+{% endblock %}

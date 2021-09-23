@@ -16,7 +16,7 @@
 
     {% if form %}
 
-        <h3 class="mb-5">{{ form.name }} <small class="text-muted">(1st instance)</small></h3>
+        <h3 class="mb-3">{{ form.name }} <small class="text-muted">(1st instance)</small></h3>
 
         {# Apply 'id' and 'fieldIdPrefix' parameters with unique values #}
         {{ form.render({
@@ -24,7 +24,7 @@
             fieldIdPrefix: 'first-form-'
         }) }}
 
-        <h3 class="mb-5">{{ form.name }} <small class="text-muted">(2nd instance)</small></h3>
+        <h3 class="mb-3">{{ form.name }} <small class="text-muted">(2nd instance)</small></h3>
 
         {# Apply 'id' and 'fieldIdPrefix' parameters with unique values #}
         {{ form.render({

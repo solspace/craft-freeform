@@ -27,7 +27,7 @@
         {% if entry['freeformForm'] is defined %}
             {# Check if there's a value for the Freeform Form field type #}
             {% if entry.freeformForm  | length %}
-                <h3 class="mb-5">{{ entry.freeformForm.name }}</h3>
+                <h3 class="mb-3">{{ entry.freeformForm.name }}</h3>
                 {# Apply additional parameters as you please #}
                 {{ entry.freeformForm.render({
                     id: "my-test-form",

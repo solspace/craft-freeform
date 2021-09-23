@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Bundles\Form\FormAttributes;
 
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
-use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bags\BagInterface;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
@@ -102,10 +101,11 @@ class FormAttributesBundle implements BundleInterface
         $bag = $form->getPropertyBag();
         $attributeBag = $form->getAttributeBag();
 
-        $comboBag = new PropertyBag($form);
-        $comboBag->merge($attributeBag);
-        $comboBag->merge($bag->get('formAttributes', []));
-        $comboBag->merge($bag->get('attributes', []));
+        $attributeBag->merge($bag->get('formAttributes', []));
+        $attributeBag->merge($bag->get('attributes', []));
+
+        $bag->remove('formAttributes');
+        $bag->remove('attributes');
     }
 
     private function attachConditionally(AttachFormAttributesEvent $event, BagInterface $bag, string $key)

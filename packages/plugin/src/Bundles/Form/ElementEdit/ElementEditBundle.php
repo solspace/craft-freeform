@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
-use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
+use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -21,7 +21,7 @@ class ElementEditBundle implements BundleInterface
 
         Event::on(
             Form::class,
-            Form::EVENT_UPDATE_ATTRIBUTES,
+            Form::EVENT_SET_PROPERTIES,
             [$this, 'populateFormWithElementValues']
         );
     }
@@ -31,7 +31,7 @@ class ElementEditBundle implements BundleInterface
         return \Craft::$app->security->decryptByKey(base64_decode($encryptedElementId));
     }
 
-    public function populateFormWithElementValues(UpdateAttributesEvent $event)
+    public function populateFormWithElementValues(SetPropertiesEvent $event)
     {
         $form = $event->getForm();
         $elementId = $form->getPropertyBag()->get('elementId');

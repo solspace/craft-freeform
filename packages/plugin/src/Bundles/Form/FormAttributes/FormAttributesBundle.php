@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\FormAttributes;
 
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
-use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
+use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bags\BagInterface;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
@@ -22,12 +22,12 @@ class FormAttributesBundle implements BundleInterface
 
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_UPDATE_ATTRIBUTES, [$this, 'prepareAttributes']);
+        Event::on(Form::class, Form::EVENT_SET_PROPERTIES, [$this, 'separateAttributesFromProperties']);
+        Event::on(Form::class, Form::EVENT_SET_PROPERTIES, [$this, 'extractAttributesFromProperties']);
         Event::on(Form::class, Form::EVENT_ATTACH_TAG_ATTRIBUTES, [$this, 'setConditionalAttributes']);
-        Event::on(Form::class, Form::EVENT_UPDATE_ATTRIBUTES, [$this, 'separateAttributesFromProperties']);
     }
 
-    public function separateAttributesFromProperties(UpdateAttributesEvent $event)
+    public function separateAttributesFromProperties(SetPropertiesEvent $event)
     {
         $form = $event->getForm();
         $attributes = $event->getAttributes();
@@ -36,7 +36,6 @@ class FormAttributesBundle implements BundleInterface
         foreach ($attributes as $key => $value) {
             if (\in_array($key, self::$attributeKeys, true)) {
                 $attributesForAttributeBag[$key] = $value;
-                $event->removeAttribute($key);
             }
         }
 
@@ -45,6 +44,19 @@ class FormAttributesBundle implements BundleInterface
         if (null === $form->getAttributeBag()->get('method')) {
             $form->getAttributeBag()->set('method', 'post');
         }
+    }
+
+    public function extractAttributesFromProperties(SetPropertiesEvent $event)
+    {
+        $form = $event->getForm();
+        $bag = $form->getPropertyBag();
+        $attributeBag = $form->getAttributeBag();
+
+        $attributeBag->merge($bag->get('formAttributes', []));
+        $attributeBag->merge($bag->get('attributes', []));
+
+        $bag->remove('formAttributes');
+        $bag->remove('attributes');
     }
 
     public function setConditionalAttributes(AttachFormAttributesEvent $event)
@@ -93,19 +105,6 @@ class FormAttributesBundle implements BundleInterface
         if ($form->getErrorMessage()) {
             $event->attachAttribute('data-error-message', \Craft::t('app', $form->getErrorMessage()));
         }
-    }
-
-    public function prepareAttributes(UpdateAttributesEvent $event)
-    {
-        $form = $event->getForm();
-        $bag = $form->getPropertyBag();
-        $attributeBag = $form->getAttributeBag();
-
-        $attributeBag->merge($bag->get('formAttributes', []));
-        $attributeBag->merge($bag->get('attributes', []));
-
-        $bag->remove('formAttributes');
-        $bag->remove('attributes');
     }
 
     private function attachConditionally(AttachFormAttributesEvent $event, BagInterface $bag, string $key)

@@ -24,6 +24,7 @@ use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\PersistStateEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
+use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
@@ -69,6 +70,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
     const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
     const EVENT_OUTPUT_AS_JSON = 'output-as-json';
+    const EVENT_SET_PROPERTIES = 'set-properties';
+    /** @deprecated use EVENT_SET_PROPERTIES instead. */
     const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
     const EVENT_SUBMIT = 'submit';
     const EVENT_AFTER_SUBMIT = 'after-submit';
@@ -804,9 +807,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return Template::raw(json_encode((object) $object, \JSON_PRETTY_PRINT));
     }
 
-    public function renderTag(array $customFormAttributes = null): Markup
+    public function renderTag(array $renderProperties = null): Markup
     {
-        $this->setAttributes($customFormAttributes);
+        $this->setProperties($renderProperties);
 
         $output = '';
 
@@ -912,14 +915,28 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return new Relations($this->getPropertyBag()->get(self::DATA_RELATIONS));
     }
 
-    public function setAttributes(array $attributes = null): self
+    public function setProperties(array $properties = null): self
     {
-        $updateAttributesEvent = new UpdateAttributesEvent($this, $attributes ?? []);
-        Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $updateAttributesEvent);
+        $this->propertyBag->merge($properties ?? []);
 
-        $this->propertyBag->merge($updateAttributesEvent->getAttributes());
+        Event::trigger(
+            self::class,
+            self::EVENT_SET_PROPERTIES,
+            new SetPropertiesEvent($this, $properties ?? [])
+        );
 
         return $this;
+    }
+
+    /**
+     * @deprecated Use ::setProperties() instead. Will be removed in Freeform 4.x
+     */
+    public function setAttributes(array $attributes = null): self
+    {
+        $event = new UpdateAttributesEvent($this, $attributes ?? []);
+        Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $event);
+
+        return $this->setProperties($event->getAttributes());
     }
 
     public function getTranslator(): TranslatorInterface

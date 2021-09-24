@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.11.11.1 - 2021-09-24
+
+### Fixed
+- Fixed a bug where the SharpSpring CRM integration wasn't working fully with custom fields.
+
 ## 3.11.11 - 2021-09-15
 
 ### Changed

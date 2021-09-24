@@ -27,9 +27,15 @@ class HashHelper
         return self::getHashids($salt)->encode($id);
     }
 
-    public static function decode(string $hash, string $salt = null): int
+    /**
+     * @return null|int
+     */
+    public static function decode(string $hash, string $salt = null)
     {
         $idList = self::getHashids($salt)->decode($hash);
+        if (!$idList) {
+            return null;
+        }
 
         return array_pop($idList);
     }

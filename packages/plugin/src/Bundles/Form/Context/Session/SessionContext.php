@@ -22,9 +22,7 @@ use yii\base\Event;
 
 class SessionContext
 {
-    const KEY_SESSION_TOKEN = 'freeform_form_token';
-    const KEY_PAGE = 'freeform_page';
-    const KEY_FORM = 'freeform_form';
+    const KEY_HASH = 'formHash';
 
     private static $requestTokenCache = [];
 
@@ -64,6 +62,31 @@ class SessionContext
         Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'onFormRender']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
+
+        Event::on(
+            Form::class,
+            Form::EVENT_RENDER_AFTER_OPEN_TAG,
+            [$this, 'addHiddenInputs']
+        );
+    }
+
+    public function addHiddenInputs(RenderTagEvent $event)
+    {
+        $form = $event->getForm();
+
+        $formHash = self::getFormHash($form);
+        $pageHash = self::getPageHash($form);
+        $sessionToken = self::getFormSessionToken($form);
+
+        $hash = "{$formHash}-{$pageHash}-{$sessionToken}";
+
+        $event->addChunk(
+            sprintf(
+                '<input type="hidden" name="%s" value="%s" />',
+                self::KEY_HASH,
+                $hash
+            )
+        );
     }
 
     public function onFormLoad(FormLoadedEvent $event)
@@ -132,7 +155,7 @@ class SessionContext
 
     public static function getFormHash(Form $form): string
     {
-        return HashHelper::hash($form->getId());
+        return HashHelper::hash($form->getId(), \Craft::$app->getConfig()->getGeneral()->securityKey);
     }
 
     public static function getPageHash(Form $form): string
@@ -149,12 +172,12 @@ class SessionContext
 
     public static function getPostedFormId()
     {
-        $hash = \Craft::$app->getRequest()->post(self::KEY_FORM);
-        if (null === $hash) {
+        list($formHash) = self::getPostedHashParts();
+        if (null === $formHash) {
             return null;
         }
 
-        return HashHelper::decode($hash);
+        return HashHelper::decode($formHash, \Craft::$app->getConfig()->getGeneral()->securityKey);
     }
 
     public static function isPagePosted(Form $form, Page $page): bool
@@ -163,7 +186,7 @@ class SessionContext
             return false;
         }
 
-        $postedPageToken = \Craft::$app->getRequest()->post(self::KEY_PAGE);
+        list($_, $postedPageToken) = self::getPostedHashParts();
         $postedPageIndex = HashHelper::decode($postedPageToken, $form->getId());
 
         return $postedPageIndex === $page->getIndex();
@@ -171,12 +194,9 @@ class SessionContext
 
     public static function getFormSessionToken(Form $form)
     {
-        $request = \Craft::$app->request;
-
         $formHash = self::getFormHash($form);
-        $postedFormHash = $request->post(self::KEY_FORM);
-        $postedSessionHash = $request->post(self::KEY_SESSION_TOKEN);
 
+        list($postedFormHash, $_, $postedSessionHash) = self::getPostedHashParts();
         if ($postedFormHash === $formHash) {
             return $postedSessionHash;
         }
@@ -196,6 +216,19 @@ class SessionContext
         $key = $formHash.'-'.$sessionToken;
 
         return [$key, $formHash, $sessionToken];
+    }
+
+    private static function getPostedHashParts(): array
+    {
+        $hash = \Craft::$app->getRequest()->post(self::KEY_HASH);
+
+        try {
+            list($formHash, $pageHash, $sessionToken) = explode('-', $hash);
+        } catch (\Exception $exception) {
+            return [null, null, null];
+        }
+
+        return [$formHash, $pageHash, $sessionToken];
     }
 
     /**

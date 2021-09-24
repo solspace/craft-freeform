@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Bundles\Form\Context;
 
 use Solspace\Freeform\Bundles\Form\Context\Pages\PageContext;
-use Solspace\Freeform\Bundles\Form\Context\Rendering\HtmlContext;
 use Solspace\Freeform\Bundles\Form\Context\Request\OverrideContext;
 use Solspace\Freeform\Bundles\Form\Context\Request\RequestContext;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
@@ -17,6 +16,5 @@ class ContextBundle implements BundleInterface
         new SessionContext();
         new PageContext();
         new RequestContext();
-        new HtmlContext();
     }
 }

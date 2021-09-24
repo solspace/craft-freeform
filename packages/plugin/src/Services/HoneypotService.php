@@ -165,6 +165,7 @@ class HoneypotService extends BaseService
             .'name="'.$honeypotName.'" '
             .'id="'.$fieldPrefix.$honeypotName.'" '
             .'aria-hidden="true" '
+            .'autocomplete="off" '
             .'tabindex="-1" '
             .'/>';
 

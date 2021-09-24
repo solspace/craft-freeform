@@ -133,12 +133,12 @@ class SharpSpring extends AbstractCRMIntegration
      */
     public function fetchFields(): array
     {
-        $response = $this->getResponse($this->generatePayload('getFields', ['isCustom' => '1']));
-        $data = json_decode((string) $response->getBody(), true);
-
+        $response = $this->getResponse($this->generatePayload('getFields', ['where' => ['isCustom' => '1']]));
+        $json = (string) $response->getBody();
+        $data = json_decode($json, true);
         $fields = [];
         if (isset($data['result']['field'])) {
-            $fields = $data['result']['field'];
+           $fields = $data['result']['field'];
         }
 
         $suffix = ' (Contact)';

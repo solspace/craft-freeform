@@ -56,6 +56,11 @@
 - Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
 - FIxed a bug where the "loading" indicators for the submit button were not working in Safari.
 
+## 3.11.11.1 - 2021-09-24
+
+### Fixed
+- Fixed a bug where the SharpSpring CRM integration wasn't working fully with custom fields.
+
 ## 3.11.11 - 2021-09-15
 
 ### Changed

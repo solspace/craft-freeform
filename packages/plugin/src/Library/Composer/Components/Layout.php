@@ -292,6 +292,17 @@ class Layout implements \JsonSerializable, \Iterator
         return \count($this->getFields($implements)) > 0;
     }
 
+    public function getFieldErrorCount(): int
+    {
+        $fields = $this->getFields();
+        $errorCount = 0;
+        foreach ($fields as $field) {
+            $errorCount += \count($field->getErrors());
+        }
+
+        return $errorCount;
+    }
+
     /**
      * @template T
      *

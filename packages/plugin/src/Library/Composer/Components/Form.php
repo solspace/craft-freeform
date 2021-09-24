@@ -633,7 +633,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function hasErrors(): bool
     {
-        return \count($this->getErrors()) > 0;
+        $errorCount = \count($this->getErrors());
+        $errorCount += $this->getLayout()->getFieldErrorCount();
+
+        return $errorCount > 0;
     }
 
     public function isSubmittedSuccessfully(): bool

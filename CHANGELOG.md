@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.12.0-beta.7 - 2021-09-27
+
+### Added
+- Added 'Extras' section to demo template to show additional common uses with forms.
+- Added support for 'epub' mime type in file validation.
+
+### Changed
+- Updated to the Honeypot field to include `autocomplete="off"`.
+
+### Fixed
+- Fixed several 3.12-related bugs that involved form submitting/processing.
+
 ## 3.12.0-beta.6 - 2021-09-13
 
 ### Added

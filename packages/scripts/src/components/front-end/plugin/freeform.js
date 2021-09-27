@@ -136,7 +136,7 @@ export default class Freeform {
 
   _scrollToForm = () => {
     const { scrollOffset, scrollElement } = this.options;
-    const y = form.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
+    const y = this.form.getBoundingClientRect().top + window.pageYOffset + scrollOffset;
     scrollElement.scrollTo({ top: y, behavior: 'smooth' });
   };
 

@@ -53,18 +53,18 @@ return [
     'Checking credentials...' => 'Inloggegevens controleren...',
 
     // Mailinglijst Controller
-    'New Mailing List Integration' => 'Nieuwe mailinglijst integratie',
-    'No Mailing List integrations exist yet' => 'Er bestaan nog geen mailinglijst-integraties',
-    'Mailing Lists' => 'Mailinglijsten',
+    'New Email Marketing Integration' => 'Nieuwe mailinglijst integratie',
+    'No Email Marketing integrations exist yet' => 'Er bestaan nog geen mailinglijst-integraties',
+    'Email Marketing' => 'Mailinglijsten',
     'Service Provider' => 'Dienstverlener',
     'Last Updated' => 'Laatst aangepast',
     'Create new mailing list' => 'Creëer nieuwe mailinglijst',
-    'Mailing List integration with ID {id} not found' => 'Mailinglijst integratie met ID {id} niet gevonden',
-    'Mailing List Integration saved' => 'Mailinglijstintegratie opgeslagen',
-    'Mailing List Integration not saved' => 'Mailinglijstintegratie niet opgeslagen',
+    'Email Marketing integration with ID {id} not found' => 'Mailinglijst integratie met ID {id} niet gevonden',
+    'Email Marketing Integration saved' => 'Mailinglijstintegratie opgeslagen',
+    'Email Marketing Integration not saved' => 'Mailinglijstintegratie niet opgeslagen',
     "Mailing list with handle '{handle}' not found" => "Mailinglijst met handle '{handle}' niet gevonden",
-    'Add a Mailing List integration' => 'Voeg een Mailing lijst integratie toe',
-    'Shop for more Mailing List integrations on the {link_open}Solspace Freeform Marketplace{link_close}' => 'Vind meer mailinglijst integraties op de {link_open}Solspace Freeform Marketplace{link_close}',
+    'Add a Email Marketing integration' => 'Voeg een Mailing lijst integratie toe',
+    'Shop for more Email Marketing integrations on the {link_open}Solspace Freeform Marketplace{link_close}' => 'Vind meer mailinglijst integraties op de {link_open}Solspace Freeform Marketplace{link_close}',
 
     // Layout
     'This field is required' => 'Dit veld is verplicht',
@@ -258,7 +258,7 @@ return [
     'Email notification template with ID {id} not found' => 'E-mail notificatie template met ID {id} niet gevonden',
 
     // Mailingliisten service
-    'Mailing List integration with ID {id} not found' => 'Mailinglijst integratie met ID {id} niet gevonden',
+    'Email Marketing integration with ID {id} not found' => 'Mailinglijst integratie met ID {id} niet gevonden',
 
     // Emailveld
     '{email} is not a valid email address' => '{email} is geen geldig e-mailadres',
@@ -297,7 +297,7 @@ return [
     'Allowed File Types' => 'Toegelaten bestandstypes',
     'Select the file types to be allowed by default. Leaving all unchecked will allow all file types.' => 'Selecteer de standaard toegelaten bestandstypes. Alles onaangekruist laten wil zeggen dat alle bestandstypes toegelaten zijn.',
     'The handle "{handle}" is a reserved keyword and cannot be used.' => 'De ingang "{handle}" is een gereserveerd trefwoord en kan niet gebruikt worden.',
-    'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.' => 'Terwijl gegevens worden doorgegeven aan de mailinglijstprovider, slaat Freeform niet op of de velden voor de mailinglijst al dan niet zijn aangemeld.',
+    'While data is passed along to the Email Marketing provider, Freeform does not store whether or not Email Marketing fields were opted in.' => 'Terwijl gegevens worden doorgegeven aan de mailinglijstprovider, slaat Freeform niet op of de velden voor de mailinglijst al dan niet zijn aangemeld.',
 
     // Form Builder
     'No Value set' => 'Geen waarde ingesteld',
@@ -392,7 +392,7 @@ return [
     'Used to access this field on the frontend.' => 'Gebruikt om toegang te krijgen tot dit veld op de frontend.',
     'Field Mapping' => 'Veldmapping',
     'Map CRM fields to your Freeform fields.' => 'Wijs CRM-velden toe aan uw Freeform-velden.',
-    'Map Mailing List fields to your Freeform fields.' => 'Map mailinglijstvelden toewijzen aan uw Freeform-velden.',
+    'Map Email Marketing fields to your Freeform fields.' => 'Map mailinglijstvelden toewijzen aan uw Freeform-velden.',
     'Integration' => 'Integratie',
     'Choose an integration type' => 'Kies een integratietype',
     'Choose an integration...' => 'Kies een integratie...',

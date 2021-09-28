@@ -1,13 +1,13 @@
 {% extends "freeform/_layouts/settings" %}
 
-{% set title = "Mailing Lists"|t("freeform") %}
+{% set title = "Email Marketing"|t("freeform") %}
 
 {% block actionButton %}
 
     {% if currentUser.can("freeform-settingsAccess") and providers|length > 0 %}
         <div class="buttons">
             <a href="{{ url('freeform/settings/mailing-lists/new') }}" class="btn submit add icon">
-                {{ "New Mailing List Integration"|t('freeform') }}
+                {{ "New Email Marketing Integration"|t('freeform') }}
             </a>
         </div>
     {% endif %}
@@ -17,7 +17,7 @@
 {% block content %}
 
     <div id="no-mailing-integrations" class="padded{% if integrations|length %} hidden{% endif %}">
-        <p>{{ "No Mailing List integrations exist yet"|t('freeform') }}</p>
+        <p>{{ "No Email Marketing integrations exist yet"|t('freeform') }}</p>
     </div>
 
     {% if integrations|length %}

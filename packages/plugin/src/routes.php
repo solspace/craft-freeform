@@ -66,7 +66,7 @@ return [
 
     // Diagnostics
     'freeform/settings/diagnostics' => 'freeform/diagnostics/index',
-    // Mailing Lists
+    // Email Marketing
     'freeform/settings/mailing-lists' => 'freeform/mailing-lists/index',
     'freeform/settings/mailing-lists/new' => 'freeform/mailing-lists/create',
     'freeform/settings/mailing-lists/<id:\d+>' => 'freeform/mailing-lists/edit',

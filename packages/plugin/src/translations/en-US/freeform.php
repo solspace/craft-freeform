@@ -51,16 +51,16 @@ return [
     'Click here to re-authorize' => 'Click here to re-authorize',
     'Checking credentials...' => 'Checking credentials...',
 
-    // Mailing List Controller
-    'New Mailing List Integration' => 'New Mailing List Integration',
-    'No Mailing List integrations exist yet' => 'No Mailing List integrations exist yet',
-    'Mailing Lists' => 'Mailing Lists',
+    // Email Marketing Controller
+    'New Email Marketing Integration' => 'New Email Marketing Integration',
+    'No Email Marketing integrations exist yet' => 'No Email Marketing integrations exist yet',
+    'Email Marketing' => 'Email Marketing',
     'Create new mailing list' => 'Create new mailing list',
-    'Mailing List integration with ID {id} not found' => 'Mailing List integration with ID {id} not found',
-    'Mailing List Integration saved' => 'Mailing List Integration saved',
-    'Mailing List Integration not saved' => 'Mailing List Integration not saved',
+    'Email Marketing integration with ID {id} not found' => 'Email Marketing integration with ID {id} not found',
+    'Email Marketing Integration saved' => 'Email Marketing Integration saved',
+    'Email Marketing Integration not saved' => 'Email Marketing Integration not saved',
     "Mailing list with handle '{handle}' not found" => "Mailing list with handle '{handle}' not found",
-    'Add a Mailing List integration' => 'Add a Mailing List integration',
+    'Add a Email Marketing integration' => 'Add a Email Marketing integration',
 
     // Layout
     'This field is required' => 'This field is required',
@@ -298,7 +298,7 @@ return [
     'Allowed File Types' => 'Allowed File Types',
     'Select the file types to be allowed by default. Leaving all unchecked will allow all file types.' => 'Select the file types to be allowed by default. Leaving all unchecked will allow all file types.',
     'The handle "{handle}" is a reserved keyword and cannot be used.' => 'The handle "{handle}" is a reserved keyword and cannot be used.',
-    'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.' => 'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.',
+    'While data is passed along to the Email Marketing provider, Freeform does not store whether or not Email Marketing fields were opted in.' => 'While data is passed along to the Email Marketing provider, Freeform does not store whether or not Email Marketing fields were opted in.',
 
     // Form Builder
     'No Value set' => 'No Value set',
@@ -404,7 +404,7 @@ return [
     'Used to access this field on the frontend.' => 'Used to access this field on the frontend.',
     'Field Mapping' => 'Field Mapping',
     'Map CRM fields to your Freeform fields.' => 'Map CRM fields to your Freeform fields.',
-    'Map Mailing List fields to your Freeform fields.' => 'Map Mailing List fields to your Freeform fields.',
+    'Map Email Marketing fields to your Freeform fields.' => 'Map Email Marketing fields to your Freeform fields.',
     'Integration' => 'Integration',
     'Choose an integration type' => 'Choose an integration type',
     'Choose an integration...' => 'Choose an integration...',

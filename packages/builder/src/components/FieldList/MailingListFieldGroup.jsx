@@ -31,7 +31,7 @@ export default class MailingListFieldGroup extends Component {
 
     return (
       <div className="composer-mailing-list-fields">
-        <h5 className="craft-header">{translate('Mailing Lists')}</h5>
+        <h5 className="craft-header">{translate('Email Marketing')}</h5>
         <ul>
           {fields.map((field, index) => (
             <Field

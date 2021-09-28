@@ -266,7 +266,7 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
             }
         }
 
-        throw new IntegrationException('Could not get Mailing List settings');
+        throw new IntegrationException('Could not get Email Marketing settings');
     }
 
     /**

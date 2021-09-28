@@ -87,7 +87,7 @@ return [
     'Used to access this field on the frontend.',
     'Field Mapping',
     'Map CRM fields to your Freeform fields.',
-    'Map Mailing List fields to your Freeform fields.',
+    'Map Email Marketing fields to your Freeform fields.',
     'Integration',
     'Choose an integration type',
     'Choose an integration...',

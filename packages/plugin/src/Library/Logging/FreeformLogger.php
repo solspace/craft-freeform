@@ -31,7 +31,7 @@ class FreeformLogger
     const FORM = 'Form';
     const EMAIL_NOTIFICATION = 'Email Notification';
     const CRM_INTEGRATION = 'CRM Integration';
-    const MAILING_LIST_INTEGRATION = 'Mailing List Integration';
+    const MAILING_LIST_INTEGRATION = 'Email Marketing Integration';
     const STRIPE = 'Stripe';
     const DASHBOARD = 'Dashboard';
     const MAILER = 'Mailer service';

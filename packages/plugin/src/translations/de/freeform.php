@@ -51,16 +51,16 @@ return [
     'Click here to re-authorize' => 'Hier klicken, um erneut zu autorisieren',
     'Checking credentials...' => 'Prüfe Zugangsdaten...',
 
-    // Mailing List Controller
-    'New Mailing List Integration' => 'Neue Mailing List-Integration',
-    'No Mailing List integrations exist yet' => 'Es existieren noch keine Mailing List-Integrationen',
-    'Mailing Lists' => 'Mailing Lists',
-    'Create new mailing list' => 'Neue Mailing List anlegen',
-    'Mailing List integration with ID {id} not found' => 'Mailing List-Integration mit ID {id} nicht gefunden',
-    'Mailing List Integration saved' => 'Mailing List Integration gespeichert',
-    'Mailing List Integration not saved' => 'Mailing List Integration nicht gespeichert',
-    "Mailing list with handle '{handle}' not found" => "Mailing list mit Handle '{handle}' nicht gefunden",
-    'Add a Mailing List integration' => 'Mailing List-Integration hinzufügen',
+    // Email Marketing Controller
+    'New Email Marketing Integration' => 'Neue Email Marketing-Integration',
+    'No Email Marketing integrations exist yet' => 'Es existieren noch keine Email Marketing-Integrationen',
+    'Email Marketing' => 'Email Marketing',
+    'Create new Email Marketing' => 'Neue Email Marketing anlegen',
+    'Email Marketing integration with ID {id} not found' => 'Email Marketing-Integration mit ID {id} nicht gefunden',
+    'Email Marketing Integration saved' => 'Email Marketing Integration gespeichert',
+    'Email Marketing Integration not saved' => 'Email Marketing Integration nicht gespeichert',
+    "Email Marketing with handle '{handle}' not found" => "Email Marketing mit Handle '{handle}' nicht gefunden",
+    'Add an Email Marketing integration' => 'Email Marketing-Integration hinzufügen',
 
     // Layout
     'This field is required' => 'Dieses Feld wird benötigt',
@@ -286,7 +286,7 @@ return [
     'Allowed File Types' => 'Erlaubte Dateitypen',
     'Select the file types to be allowed by default. Leaving all unchecked will allow all file types.' => 'Wähle die Dateitypen, die standardmäßig gestattet sind. Sind keine ausgewählt, so sind alle Dateitypen gestattet.',
     'The handle "{handle}" is a reserved keyword and cannot be used.' => 'Der Handle "{handle}" ist ein reserviertes Schlüsselwort und kann nicht verwendet werden.',
-    'While data is passed along to the Mailing List provider, Freeform does not store whether or not Mailing List fields were opted in.' => 'Während die Daten zum Mailingliste-Provider übertragen werden, speichert Freeform nicht, ob Mailingliste-Felder ausgewählt waren',
+    'While data is passed along to the Email Marketing provider, Freeform does not store whether or not Email Marketing fields were opted in.' => 'Während die Daten zum Mailingliste-Provider übertragen werden, speichert Freeform nicht, ob Mailingliste-Felder ausgewählt waren',
 
     // Form Builder
     'No Value set' => 'Kein Wert gesetzt',
@@ -380,7 +380,7 @@ return [
     'Used to access this field on the frontend.' => 'Verwendet, um auf dieses Feld im Frontend zuzugreifen.',
     'Field Mapping' => 'Field Mapping',
     'Map CRM fields to your Freeform fields.' => 'CRM-Felder den Freeform-Feldern zuweisen.',
-    'Map Mailing List fields to your Freeform fields.' => 'Mailing-Liste Felder den Freeform-Feldern zuweisen',
+    'Map Email Marketing fields to your Freeform fields.' => 'Mailing-Liste Felder den Freeform-Feldern zuweisen',
     'Integration' => 'Integration',
     'Choose an integration type' => 'Wähle einen Integrationstyp',
     'Choose an integration...' => 'Wähle eine Integration...',

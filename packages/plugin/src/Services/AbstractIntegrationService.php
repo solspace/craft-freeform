@@ -155,7 +155,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
 
             if (!$record) {
                 throw new IntegrationException(
-                    Freeform::t('Mailing List integration with ID {id} not found', ['id' => $model->id])
+                    Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $model->id])
                 );
             }
         }

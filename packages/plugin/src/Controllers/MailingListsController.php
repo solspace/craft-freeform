@@ -87,7 +87,7 @@ class MailingListsController extends BaseController
         }
 
         if (!$model) {
-            throw new HttpException(404, Freeform::t('Mailing List integration not found'));
+            throw new HttpException(404, Freeform::t('Email Marketing integration not found'));
         }
 
         return $this->renderEditForm($model, $model->name);
@@ -105,7 +105,7 @@ class MailingListsController extends BaseController
         if (!$model) {
             throw new \HttpException(
                 404,
-                Freeform::t('Mailing List integration with ID {id} not found', ['id' => $id])
+                Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $id])
             );
         }
 
@@ -142,7 +142,7 @@ class MailingListsController extends BaseController
 
         if (!$model) {
             throw new NotFoundHttpException(
-                Freeform::t('Mailing List integration with ID {id} not found', ['id' => $id])
+                Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $id])
             );
         }
 
@@ -200,8 +200,8 @@ class MailingListsController extends BaseController
                 return $this->asJson(['success' => true]);
             }
 
-            \Craft::$app->session->setNotice(Freeform::t('Mailing List Integration saved'));
-            \Craft::$app->session->setFlash('Mailing List Integration saved');
+            \Craft::$app->session->setNotice(Freeform::t('Email Marketing Integration saved'));
+            \Craft::$app->session->setFlash('Email Marketing Integration saved');
 
             return $this->redirectToPostedUrl($model);
         }
@@ -211,7 +211,7 @@ class MailingListsController extends BaseController
             return $this->asJson(['success' => false]);
         }
 
-        \Craft::$app->session->setError(Freeform::t('Mailing List Integration not saved'));
+        \Craft::$app->session->setError(Freeform::t('Email Marketing Integration not saved'));
 
         return $this->renderEditForm($model, $model->name);
     }
@@ -304,10 +304,10 @@ class MailingListsController extends BaseController
 
         if ($this->getMailingListsService()->save($model)) {
             // Return JSON response if the request is an AJAX request
-            \Craft::$app->session->setNotice(Freeform::t('Mailing List Integration saved'));
-            \Craft::$app->session->setFlash(Freeform::t('Mailing List Integration saved'));
+            \Craft::$app->session->setNotice(Freeform::t('Email Marketing Integration saved'));
+            \Craft::$app->session->setFlash(Freeform::t('Email Marketing Integration saved'));
         } else {
-            \Craft::$app->session->setError(Freeform::t('Mailing List Integration not saved'));
+            \Craft::$app->session->setError(Freeform::t('Email Marketing Integration not saved'));
         }
 
         return $this->redirect(UrlHelper::cpUrl('freeform/settings/mailing-lists/'.$model->handle));

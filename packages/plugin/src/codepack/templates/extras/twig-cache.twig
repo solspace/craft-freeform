@@ -32,11 +32,10 @@
 
         {% endcache %}
 
-        {# Script for updating the form's Hash, JS Honeypot and CSRF token loads after #}
+        {# Script for updating the form's Hash, JS Honeypot and CSRF token #}
         <script>
-            // Get a fresh Honeypot via `craft.freeform.honeypot()` service
-            // UNCOMMENT 1 LINE BELOW IF USING JS ENHANCEMENT ON HONEYPOT
-            // var honeypot = JSON.parse('{{ craft.freeform.honeypot(form)|json_encode|raw }}');
+            // Get a fresh JS Honeypot via `craft.freeform.honeypot()` service (if applicable)
+            var honeypot = JSON.parse('{{ craft.freeform.honeypot(form)|json_encode|raw }}');
 
             // Find the corresponding Form
             var form = document.querySelector('form');
@@ -45,12 +44,11 @@
             var formHashInput = form.querySelector('input[name=formHash]');
             formHashInput.setAttribute('value', '{{ form.hash }}');
 
-            // Locate and update the JS Honeypot input
-            // UNCOMMENT 4 LINES BELOW IF USING JS ENHANCEMENT ON HONEYPOT
-            // var honeypotInput = form.querySelector('input[name^="freeform_form_handle"]');
-            // honeypotInput.setAttribute('id', honeypot.name);
-            // honeypotInput.setAttribute('name', honeypot.name);
-            // honeypotInput.value = honeypot.hash;
+            // Locate and update the JS Honeypot input (if applicable)
+            var honeypotInput = form.querySelector('input[name^="freeform_form_handle"]');
+            honeypotInput.setAttribute('id', honeypot.name);
+            honeypotInput.setAttribute('name', honeypot.name);
+            honeypotInput.value = honeypot.hash;
 
             // Locate and update the CSRF input
             var csrfInput = form.querySelector('input[name={{ craft.app.config.general.csrfTokenName|e('js') }}]');

@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
-use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -11,10 +11,10 @@ class GetContext
 {
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'handleRequest']);
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'handleRequest']);
     }
 
-    public function handleRequest(RenderTagEvent $event)
+    public function handleRequest(FormEventInterface $event)
     {
         $form = $event->getForm();
         foreach ($form->getLayout()->getFields() as $field) {

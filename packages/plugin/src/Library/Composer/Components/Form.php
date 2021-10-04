@@ -22,6 +22,7 @@ use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\HydrateEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\PersistStateEvent;
+use Solspace\Freeform\Events\Forms\RegisterContextEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
@@ -65,6 +66,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     const EVENT_FORM_LOADED = 'form-loaded';
     const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
+    const EVENT_REGISTER_CONTEXT = 'register-context';
     const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
     const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
     const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
@@ -761,22 +763,29 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
         return $fields;
     }
 
+    public function registerContext(array $renderProperties = null)
+    {
+        Event::trigger(self::class, self::EVENT_REGISTER_CONTEXT, new RegisterContextEvent($this));
+
+        $this->setProperties($renderProperties);
+    }
+
     /**
      * Render a predefined template.
      *
-     * @param array $customFormAttributes
+     * @param array $renderProperties
      */
-    public function render(array $customFormAttributes = null): Markup
+    public function render(array $renderProperties = null): Markup
     {
-        $this->setAttributes($customFormAttributes);
+        $this->registerContext($renderProperties);
         $formTemplate = $this->getPropertyBag()->get('formattingTemplate', $this->formTemplate);
 
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }
 
-    public function json(array $customFormAttributes = null): Markup
+    public function json(array $renderProperties = null): Markup
     {
-        $this->setAttributes($customFormAttributes);
+        $this->registerContext($renderProperties);
         $bag = $this->getPropertyBag();
 
         $isMultipart = \count($this->getLayout()->getFileUploadFields());
@@ -812,7 +821,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
 
     public function renderTag(array $renderProperties = null): Markup
     {
-        $this->setProperties($renderProperties);
+        $this->registerContext($renderProperties);
 
         $output = '';
 

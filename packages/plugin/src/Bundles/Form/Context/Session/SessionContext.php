@@ -58,8 +58,8 @@ class SessionContext
                 break;
         }
 
-        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'onFormLoad']);
-        Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'onFormRender']);
+        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'registerFormHash']);
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormContext']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
 
@@ -89,7 +89,7 @@ class SessionContext
         );
     }
 
-    public function onFormLoad(FormLoadedEvent $event)
+    public function registerFormHash(FormLoadedEvent $event)
     {
         $form = $event->getForm();
         $bag = $form->getPropertyBag();
@@ -103,7 +103,7 @@ class SessionContext
         $bag->set(Form::HASH_KEY, $hash);
     }
 
-    public function onFormRender(RenderTagEvent $event)
+    public function registerFormContext(FormEventInterface $event)
     {
         $form = $event->getForm();
         list($key) = self::getTokens($form);

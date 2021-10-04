@@ -88,7 +88,6 @@ class SubmissionsController extends BaseController
 
         $submissions = $this->getSubmissionsService()->getAsArray($submissionIds);
 
-        $form = null;
         if ($submissions) {
             $formId = $submissions[0]['formId'];
             $form = $this->getFormsService()->getFormById($formId);

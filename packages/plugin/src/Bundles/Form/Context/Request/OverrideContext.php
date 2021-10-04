@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
-use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -10,10 +10,10 @@ class OverrideContext
 {
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'handleOverride']);
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'handleOverride']);
     }
 
-    public function handleOverride(RenderTagEvent $event)
+    public function handleOverride(FormEventInterface $event)
     {
         $form = $event->getForm();
         $overrideValues = $form->getPropertyBag()->get('overrideValues');

@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
-use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Freeform;
@@ -18,7 +18,7 @@ class EditElementContext
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleRequest']);
-        Event::on(Form::class, Form::EVENT_RENDER_BEFORE_OPEN_TAG, [$this, 'handleRender']);
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'handleRender']);
     }
 
     public function handleRequest(HandleRequestEvent $event)
@@ -29,7 +29,7 @@ class EditElementContext
         $this->applySubmissionToForm($form, $token);
     }
 
-    public function handleRender(RenderTagEvent $event)
+    public function handleRender(FormEventInterface $event)
     {
         $form = $event->getForm();
         $token = $form->getPropertyBag()->get(self::SUBMISSION_TOKEN_KEY);

@@ -12,7 +12,7 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class Pardot extends AbstractCRMIntegration
 {
-    const TITLE = 'Pardot';
+    const TITLE = 'Pardot (legacy)';
     const LOG_CATEGORY = 'Pardot';
 
     const SETTING_EMAIL = 'email';

@@ -88,7 +88,7 @@
 				<label>State</label>
 				<select name="state">
 					{# You may also manually hardcode each option as well, as long as these options exist inside the form builder #}
-					{% for option in ​state.options %}
+					{% for option in state.options %}
 						<option value="{{ option.value }}" {{ option.checked ? "selected" : "" }}>{{ option.label }}</option>
 					{% endfor %}
 				</select>

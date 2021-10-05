@@ -11,6 +11,8 @@ import type { ChangeEvent } from './types';
 class DragAndDropFile {
   freeform;
 
+  private currentFileUploads = 0;
+
   constructor(freeform: Freeform) {
     this.freeform = freeform;
     this.reload();
@@ -132,8 +134,15 @@ class DragAndDropFile {
         continue;
       }
 
-      handleFileUpload(file, handle, container, previewZone, this.freeform);
+      this.currentFileUploads++;
+
+      handleFileUpload(file, handle, container, previewZone, this.freeform).finally(() => {
+        this.currentFileUploads--;
+        this.handleUploadLockdown();
+      });
+
       fileCount++;
+      this.handleUploadLockdown();
     }
   };
 
@@ -143,6 +152,14 @@ class DragAndDropFile {
       items.forEach((item) => item.parentNode.removeChild(item));
       dispatchCustomEvent(EVENT_DND_ON_CHANGE, { container }, container);
     };
+  };
+
+  handleUploadLockdown = (): void => {
+    if (this.currentFileUploads > 0) {
+      this.freeform.lockSubmit();
+    } else {
+      this.freeform.unlockSubmit();
+    }
   };
 }
 

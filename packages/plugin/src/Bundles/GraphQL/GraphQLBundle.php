@@ -18,10 +18,10 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Queries\FreeformQuery;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
-class GraphQLBundle implements BundleInterface
+class GraphQLBundle extends FeatureBundle
 {
     public function __construct()
     {

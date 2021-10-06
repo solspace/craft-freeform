@@ -6,11 +6,11 @@ use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Fields\Pro\PhoneField;
 use Solspace\Freeform\Fields\Pro\SignatureField;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class OptionalFieldJavascriptBundle implements BundleInterface
+class OptionalFieldJavascriptBundle extends FeatureBundle
 {
     public function __construct()
     {

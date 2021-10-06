@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Migrations\Notifications;
 
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 
-class NotificationsMigratorBundle implements BundleInterface
+class NotificationsMigratorBundle extends FeatureBundle
 {
     public function __construct()
     {

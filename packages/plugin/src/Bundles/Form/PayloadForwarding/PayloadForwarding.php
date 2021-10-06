@@ -9,13 +9,13 @@ use Solspace\Freeform\Events\Forms\HydrateEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
 use Solspace\Freeform\Fields\EmailField;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Services\Pro\PayloadForwardingService;
 use yii\base\Event;
 
-class PayloadForwarding implements BundleInterface
+class PayloadForwarding extends FeatureBundle
 {
     const BAG_KEY = 'postForwarding';
 

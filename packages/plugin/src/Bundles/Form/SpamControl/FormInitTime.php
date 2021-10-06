@@ -4,11 +4,11 @@ namespace Solspace\Freeform\Bundles\Form\SpamControl;
 
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class FormInitTime implements BundleInterface
+class FormInitTime extends FeatureBundle
 {
     const KEY = 'init-time';
 

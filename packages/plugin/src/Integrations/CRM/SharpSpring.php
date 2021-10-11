@@ -138,7 +138,7 @@ class SharpSpring extends AbstractCRMIntegration
         $data = json_decode($json, true);
         $fields = [];
         if (isset($data['result']['field'])) {
-           $fields = $data['result']['field'];
+            $fields = $data['result']['field'];
         }
 
         $suffix = ' (Contact)';
@@ -168,8 +168,7 @@ class SharpSpring extends AbstractCRMIntegration
         ];
 
         foreach ($fields as $field) {
-            
-            $field = (object)$field;
+            $field = (object) $field;
             if (!$field || !\is_object($field)) {
                 continue;
             }

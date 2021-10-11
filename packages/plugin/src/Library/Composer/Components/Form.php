@@ -53,7 +53,7 @@ use Twig\Markup;
 use yii\base\Arrayable;
 use yii\base\Event;
 
-class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
+class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
 {
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
@@ -1415,6 +1415,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable
     public function offsetUnset($offset)
     {
         throw new FreeformException('Form ArrayAccess does not allow unsetting values');
+    }
+
+    public function count()
+    {
+        return \count($this->currentPageRows);
     }
 
     public function isLastPage(): bool

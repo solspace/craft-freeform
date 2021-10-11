@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
@@ -496,12 +497,12 @@ class Settings extends Model
 
     public function isLimitByCookie(): bool
     {
-        return self::LIMIT_COOKIE === $this->limitFormSubmissions;
+        return Form::LIMIT_COOKIE === $this->limitFormSubmissions;
     }
 
     public function isLimitByIpCookie(): bool
     {
-        return self::LIMIT_IP_COOKIE === $this->limitFormSubmissions;
+        return Form::LIMIT_IP_COOKIE === $this->limitFormSubmissions;
     }
 
     public function getRecaptchaType(): string

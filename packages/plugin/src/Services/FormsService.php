@@ -608,6 +608,10 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function setPostedCookie(Form $form)
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
         $name = $this->getPostingLimitCookieName($form);
         $value = time();
         setcookie(

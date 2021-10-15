@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
+use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
@@ -37,7 +38,7 @@ class FormInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return [
+        return TypeManager::prepareFieldDefinitions([
             'id' => [
                 'name' => 'id',
                 'type' => Type::int(),
@@ -194,6 +195,6 @@ class FormInterface extends AbstractInterface
                 'args' => FieldArguments::getArguments(),
                 'description' => "Form's fields",
             ],
-        ];
+        ], static::getName());
     }
 }

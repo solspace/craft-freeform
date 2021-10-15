@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
+use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
@@ -32,7 +33,7 @@ class RowInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return [
+        return TypeManager::prepareFieldDefinitions([
             'id' => [
                 'name' => 'id',
                 'type' => Type::string(),
@@ -45,6 +46,6 @@ class RowInterface extends AbstractInterface
                 'args' => FieldArguments::getArguments(),
                 'description' => "Row's fields",
             ],
-        ];
+        ], static::getName());
     }
 }

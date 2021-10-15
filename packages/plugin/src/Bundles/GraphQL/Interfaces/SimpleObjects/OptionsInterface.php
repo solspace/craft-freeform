@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
+use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\OptionsGenerator;
@@ -31,7 +32,7 @@ class OptionsInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return [
+        return TypeManager::prepareFieldDefinitions([
             'value' => [
                 'name' => 'value',
                 'type' => Type::string(),
@@ -47,6 +48,6 @@ class OptionsInterface extends AbstractInterface
                 'type' => Type::boolean(),
                 'description' => 'Is the option checked',
             ],
-        ];
+        ], static::getName());
     }
 }

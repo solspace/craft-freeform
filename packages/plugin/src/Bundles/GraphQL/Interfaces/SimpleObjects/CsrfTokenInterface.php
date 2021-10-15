@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
+use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\CsrfTokenGenerator;
@@ -31,7 +32,7 @@ class CsrfTokenInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return [
+        return TypeManager::prepareFieldDefinitions([
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
@@ -42,6 +43,6 @@ class CsrfTokenInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'Value of the CSRF Token',
             ],
-        ];
+        ], static::getName());
     }
 }

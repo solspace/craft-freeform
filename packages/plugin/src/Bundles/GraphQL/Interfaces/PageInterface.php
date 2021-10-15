@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
+use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\PageGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\PageType;
@@ -30,7 +31,7 @@ class PageInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return [
+        return TypeManager::prepareFieldDefinitions([
             'index' => [
                 'name' => 'index',
                 'type' => Type::int(),
@@ -47,6 +48,6 @@ class PageInterface extends AbstractInterface
                 'type' => Type::listOf(RowInterface::getType()),
                 'description' => "Page's rows",
             ],
-        ];
+        ], static::getName());
     }
 }

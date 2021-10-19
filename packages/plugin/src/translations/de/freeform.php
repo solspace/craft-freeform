@@ -117,9 +117,9 @@ return [
     'The name that the email will appear from in your email notification.' => 'Der Name des Senders deiner Email-Benachrichtigung',
     "The reply-to email address for your email notification. Leave blank to use 'From Email' address." => 'Die Antwort-Emailadresse für deine Email-Benachrichtigung. Leer lassen, um die Sender-Adresse zu verwenden.',
     'CC' => 'CC',
-    "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use." => "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use.",
+    "The email address(es) you would like to be CC'd in the email notification. Separate multiples with commas. Leave blank to not use." => "Die E-Mail-Adresse, die Sie in der E-Mail-Benachrichtigung mit CC versehen möchten. Trennen Sie Vielfache durch Kommas. Lassen Sie das Feld leer, um es nicht zu verwenden.",
     'BCC' => 'BCC',
-    "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use." => "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use.",
+    "The email address(es) you would like to be BCC'd in the email notification. Separate multiples with commas. Leave blank to not use." => "Die E-Mail-Adresse, die Sie in der E-Mail-Benachrichtigung mit BCC versehen möchten. Trennen Sie Vielfache durch Kommas. Lassen Sie das Feld leer, um es nicht zu verwenden.",
     'Email Body (HTML)' => 'Email Body (HTML)',
     'Email Body (Text)' => 'Email Body (Text)',
     'The HTML content of the email notification. If you wish to use Text only, leave this empty and fill out the Text body (below). See documentation for availability of variables.' => 'Der HTML-Inhalt der Email-Benachrichtigung. Wenn du Text only verwenden möchtest, lass dieses Feld leer und pflege nur den Text Body (unten). Beachte die Dokumentation zur Verwendung von Variablen.',
@@ -249,15 +249,63 @@ return [
     // Mailer service
     'Email notification template with ID {id} not found' => 'Email-Benachrichtigungs-Template mit ID {id} nicht gefunden',
 
+    // Text field
+    'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'Die zulässige maximale Länge beträgt {{max}} Zeichen. Die aktuelle Größe ist {{difference}} Zeichen zu lang.',
+
+    // reCAPTCHA field
+    'Please verify that you are not a robot.' => 'Bitte vergewissern Sie sich, dass Sie kein Roboter sind.',
+
+    // Confirm field
+    'This value must match the value for {targetFieldLabel}' => 'Dieser Wert muss mit dem Wert für {targetFieldLabel} übereinstimmen',
+
     // Email field
     '{email} is not a valid email address' => '{email} ist keine gültige Email-Adresse',
 
+    // Date field
+    '"{value}" does not conform to "{format}" format.' => '"{value}" entspricht nicht dem "{format}" Format.',
+    'Date "{date}" must be after "{minDate}"' => 'Datum "{date}" muss nach "{minDate}" liegen',
+    'Date "{date}" must be before "{maxDate}"' => 'Datum "{date}" muss vor "{maxDate}" liegen',
+    'Min Date' => 'Mindestdatum',
+    'Max Date' => 'Max. Datum',
+    'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.' => 'Definiere ein zugehöriges Datum für das frühestmögliche Datum, das im Datepicker und bei der Feldverifikation verfügbar ist.',
+    'Specify a relative textual date string or static date for the latest date available for date picker and field validation.' => 'Definiere ein zugehöriges Datum für das spätestmögliche Datum, das im Datepicker und bei der Feldverifikation verfügbar ist.',
+
+    // Phone field
+    'Invalid phone number' => 'Ungültige Telefonnummer',
+    'Phone number is invalid.' => 'Telefonnummer ist ungültig.',
+
+    // Rating field
+    'Rating must be between {{min}} and {{max}}' => 'Die Bewertung muss zwischen {{min}} und {{max}} liegen',
+
+    // Website field
+    'Website not valid' => 'Webseite nicht gültig',
+
     // File Upload field
     "'{extension}' is not an allowed file extension" => "'{extension}' ist keine gestattete Dateiendung",
-
     'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB' => 'Du hast versucht {fileSize}KB hochzuladen, die maximale Dateiupload-Größe ist jedoch {maxFileSize}KB',
-    'Tried uploading {count} files. Maximum {max} files allowed.' => 'Tried uploading {count} files. Maximum {max} files allowed.',
+    'Tried uploading {count} files. Maximum {max} files allowed.' => 'Versucht, {count} Dateien hochzuladen. Maximal {max} Dateien zulässig.',
     'Could not upload file' => 'Konnte Datei nicht hochladen',
+    'The file was only partially uploaded' => 'Die Datei wurde nur teilweise hochgeladen',
+    'File size too large' => 'Dateigröße zu groß',
+
+    // File Upload Drag and Drop field
+    'Maximum file upload limit of {limit} reached' => 'Maximales Datei-Upload-Limit von {limit} erreicht',
+    'Maximum file upload size is {maxFileSize}KB' => 'Die maximale Datei-Upload-Größe beträgt {maxFileSize}KB',
+    'Upload in progress...' => 'Hochladen läuft...',
+    'Upload complete!' => 'Hochladen abgeschlossen!',
+    'Multiple field uploads not supported' => 'Das Hochladen mehrerer Felder wird nicht unterstützt',
+    'Unknown file type' => 'Unbekannter Dateityp',
+
+    // Number field
+    'Value must be numeric' => 'Wert muss numerisch sein',
+    'The value must be no more than {{max}}' => 'Der Wert darf nicht größer als {{max}} sein.',
+    'The value must be no less than {{min}}' => 'Der Wert darf nicht kleiner als {{min}} sein.',
+    'The value must be between {{min}} and {{max}}' => 'Der Wert muss zwischen {{min}} und {{max}} liegen.',
+    '{{dec}} decimal places allowed' => '{{dec}} Dezimalstellen erlaubt',
+    'Only positive numbers allowed' => 'Nur positive Zahlen erlaubt',
+    'The value must be no more than {{max}} characters' => 'Der Wert darf nicht mehr als {{max}} Zeichen umfassen',
+    'The value must be no less than {{min}} characters' => 'Der Wert darf nicht weniger als {{min}} Zeichen umfassen',
+    'The value must be between {{min}} and {{max}} characters' => 'Der Wert muss zwischen {{min}} und {{max}} Zeichen liegen',
 
     // Fields
     'Create a new field' => 'Erstelle ein neues Feld',
@@ -618,15 +666,6 @@ return [
     'You don\'t have any submissions yet!' => 'Du hast noch keine Einreichungen!',
     'You haven\'t created any forms yet!' => 'Du hast noch keine Formulare erstellt!',
     'Are you sure you want to clear the Error log?' => 'Bist du dir sicher, dass du den Error Log leeren möchtest?',
-
-    // Date field
-    '"{value}" does not conform to "{format}" format.' => '"{value}" entspricht nicht dem "{format}" Format.',
-    'Date "{date}" must be after "{minDate}"' => 'Datum "{date}" muss nach "{minDate}" liegen',
-    'Date "{date}" must be before "{maxDate}"' => 'Datum "{date}" muss vor "{maxDate}" liegen',
-    'Min Date' => 'Min Date',
-    'Max Date' => 'Max Date',
-    'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.' => 'Definiere ein zugehöriges Datum für das frühestmögliche Datum, das im Datepicker und bei der Feldverifikation verfügbar ist.',
-    'Specify a relative textual date string or static date for the latest date available for date picker and field validation.' => 'Definiere ein zugehöriges Datum für das spätestmögliche Datum, das im Datepicker und bei der Feldverifikation verfügbar ist.',
 
     // Craft Dashboard Widgets
     'Customize the widget title. Leave blank for default.' => 'Passe den Widget-Titel an. Leer lassen für standardmäßigen Titel.',

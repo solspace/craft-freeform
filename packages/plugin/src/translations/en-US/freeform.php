@@ -11,6 +11,7 @@
  */
 
 return [
+
     // Universal
     'Save and continue editing' => 'Save and continue editing',
     'Save and add another' => 'Save and add another',
@@ -261,15 +262,63 @@ return [
     // Mailer service
     'Email notification template with ID {id} not found' => 'Email notification template with ID {id} not found',
 
+    // Text field
+    'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.',
+
+    // reCAPTCHA field
+    'Please verify that you are not a robot.' => 'Please verify that you are not a robot.',
+
+    // Confirm field
+    'This value must match the value for {targetFieldLabel}' => 'This value must match the value for {targetFieldLabel}',
+
     // Email field
     '{email} is not a valid email address' => '{email} is not a valid email address',
 
+    // Date field
+    '"{value}" does not conform to "{format}" format.' => '"{value}" does not conform to "{format}" format.',
+    'Date "{date}" must be after "{minDate}"' => 'Date "{date}" must be after "{minDate}"',
+    'Date "{date}" must be before "{maxDate}"' => 'Date "{date}" must be before "{maxDate}"',
+    'Min Date' => 'Min Date',
+    'Max Date' => 'Max Date',
+    'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.' => 'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.',
+    'Specify a relative textual date string or static date for the latest date available for date picker and field validation.' => 'Specify a relative textual date string or static date for the latest date available for date picker and field validation.',
+
+    // Phone field
+    'Invalid phone number' => 'Invalid phone number',
+    'Phone number is invalid.' => 'Phone number is invalid.',
+
+    // Rating field
+    'Rating must be between {{min}} and {{max}}' => 'Rating must be between {{min}} and {{max}}',
+
+    // Website field
+    'Website not valid' => 'Website not valid',
+
     // File Upload field
     "'{extension}' is not an allowed file extension" => "'{extension}' is not an allowed file extension",
-
     'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB' => 'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
     'Tried uploading {count} files. Maximum {max} files allowed.' => 'Tried uploading {count} files. Maximum {max} files allowed.',
     'Could not upload file' => 'Could not upload file',
+    'The file was only partially uploaded' => 'The file was only partially uploaded',
+    'File size too large' => 'File size too large',
+
+    // File Upload Drag and Drop field
+    'Maximum file upload limit of {limit} reached' => 'Maximum file upload limit of {limit} reached',
+    'Maximum file upload size is {maxFileSize}KB' => 'Maximum file upload size is {maxFileSize}KB',
+    'Upload in progress...' => 'Upload in progress...',
+    'Upload complete!' => 'Upload complete!',
+    'Multiple field uploads not supported' => 'Multiple field uploads not supported',
+    'Unknown file type' => 'Unknown file type',
+
+    // Number field
+    'Value must be numeric' => 'Value must be numeric',
+    'The value must be no more than {{max}}' => 'The value must be no more than {{max}}',
+    'The value must be no less than {{min}}' => 'The value must be no less than {{min}}',
+    'The value must be between {{min}} and {{max}}' => 'The value must be between {{min}} and {{max}}',
+    '{{dec}} decimal places allowed' => '{{dec}} decimal places allowed',
+    'Only positive numbers allowed' => 'Only positive numbers allowed',
+    'The value must be no more than {{max}} characters' => 'The value must be no more than {{max}} characters',
+    'The value must be no less than {{min}} characters' => 'The value must be no less than {{min}} characters',
+    'The value must be between {{min}} and {{max}} characters' => 'The value must be between {{min}} and {{max}} characters',
 
     // Fields
     'Create a new field' => 'Create a new field',
@@ -647,19 +696,6 @@ return [
     'You don\'t have any submissions yet!' => 'You don\'t have any submissions yet!',
     'You haven\'t created any forms yet!' => 'You haven\'t created any forms yet!',
     'Are you sure you want to clear the Error log?' => 'Are you sure you want to clear the Error log?',
-
-    // Date field
-    '"{value}" does not conform to "{format}" format.' => '"{value}" does not conform to "{format}" format.',
-    'Date "{date}" must be after "{minDate}"' => 'Date "{date}" must be after "{minDate}"',
-    'Date "{date}" must be before "{maxDate}"' => 'Date "{date}" must be before "{maxDate}"',
-    'Min Date' => 'Min Date',
-    'Max Date' => 'Max Date',
-    'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.' => 'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.',
-    'Specify a relative textual date string or static date for the latest date available for date picker and field validation.' => 'Specify a relative textual date string or static date for the latest date available for date picker and field validation.',
-
-    // Phone field
-    'Invalid phone number' => 'Invalid phone number',
-    'Phone number is invalid.' => 'Phone number is invalid.',
 
     // Craft Dashboard Widgets
     'Customize the widget title. Leave blank for default.' => 'Customize the widget title. Leave blank for default.',

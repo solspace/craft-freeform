@@ -260,15 +260,63 @@ return [
     // Mailingliisten service
     'Email Marketing integration with ID {id} not found' => 'Mailinglijst integratie met ID {id} niet gevonden',
 
-    // Emailveld
+    // Text field
+    'The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.' => 'De toegestane maximale lengte is {{max}} tekens. Huidige grootte is {{difference}} tekens te lang.',
+
+    // reCAPTCHA field
+    'Please verify that you are not a robot.' => 'Controleer of u geen robot bent.',
+
+    // Confirm field
+    'This value must match the value for {targetFieldLabel}' => 'Deze waarde moet overeenkomen met de waarde voor {targetFieldLabel}',
+
+    // Email field
     '{email} is not a valid email address' => '{email} is geen geldig e-mailadres',
 
-    // Bestanden upload veld
-    "'{extension}' is not an allowed file extension" => "'{extension}' is geen toegelaten bestandsextensie",
+    // Date field
+    '"{value}" does not conform to "{format}" format.' => '"{value}" komt niet overeen met de indeling "{format}".',
+    'Date "{date}" must be after "{minDate}"' => 'Datum "{date}" moet na "{minDate}"',
+    'Date "{date}" must be before "{maxDate}"' => 'Datum "{date}" moet zijn voor "{maxDate}"',
+    'Min Date' => 'Min Datum',
+    'Max Date' => 'Max Datum',
+    'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.' => 'Geef een relatieve tekstuele datumreeks of statische datum op voor de vroegst beschikbare datum voor datumkiezer en veldvalidatie.',
+    'Specify a relative textual date string or static date for the latest date available for date picker and field validation.' => 'Geef een relatieve tekstuele datumreeks of statische datum op voor de laatst beschikbare datum voor datumkiezer en veldvalidatie.',
 
+    // Phone field
+    'Invalid phone number' => 'Ongeldig telefoonnummer',
+    'Phone number is invalid.' => 'Telefoonnummer is ongeldig.',
+
+    // Rating field
+    'Rating must be between {{min}} and {{max}}' => 'Beoordeling moet tussen {{min}} en {{max}} liggen',
+
+    // Website field
+    'Website not valid' => 'Website niet geldig',
+
+    // File Upload field
+    "'{extension}' is not an allowed file extension" => "'{extension}' is geen toegelaten bestandsextensie",
     'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB' => 'Je probeerde {fileSize}KB aan bestanden te uploaden, maar de maximum bestandsgrootte is {maxFileSize}KB',
-    'Tried uploading {count} files. Maximum {max} files allowed.' => 'Tried uploading {count} files. Maximum {max} files allowed.',
+    'Tried uploading {count} files. Maximum {max} files allowed.' => 'Probeerde {count} bestanden te uploaden. Maximaal {max} bestanden toegestaan.',
     'Could not upload file' => 'Kon bestand niet uploaden',
+    'The file was only partially uploaded' => 'Het bestand is slechts gedeeltelijk geüpload',
+    'File size too large' => 'Bestandsgrootte te groot',
+
+    // File Upload Drag and Drop field
+    'Maximum file upload limit of {limit} reached' => 'Maximale uploadlimiet van {limit} bereikt',
+    'Maximum file upload size is {maxFileSize}KB' => 'Maximale bestandsuploadgrootte is {maxFileSize}KB',
+    'Upload in progress...' => 'Bezig met uploaden...',
+    'Upload complete!' => 'Upload compleet!',
+    'Multiple field uploads not supported' => 'Meerdere velduploads worden niet ondersteund',
+    'Unknown file type' => 'Onbekend bestandstype',
+
+    // Number field
+    'Value must be numeric' => 'Waarde moet numeriek zijn',
+    'The value must be no more than {{max}}' => 'De waarde mag niet meer zijn dan {{max}}',
+    'The value must be no less than {{min}}' => 'De waarde mag niet kleiner zijn dan {{min}}',
+    'The value must be between {{min}} and {{max}}' => 'De waarde moet tussen {{min}} en {{max}} liggen',
+    '{{dec}} decimal places allowed' => '{{dec}} decimalen toegestaan',
+    'Only positive numbers allowed' => 'Alleen positieve getallen toegestaan',
+    'The value must be no more than {{max}} characters' => 'De waarde mag niet meer dan {{max}} tekens bevatten',
+    'The value must be no less than {{min}} characters' => 'De waarde mag niet minder zijn dan {{min}} tekens',
+    'The value must be between {{min}} and {{max}} characters' => 'De waarde moet tussen {{min}} en {{max}} tekens zijn',
 
     // Velden
     'Create a new field' => 'Maak een nieuw veld aan',
@@ -634,15 +682,6 @@ return [
     'You don\'t have any submissions yet!' => 'U hebt nog geen inzendingen!',
     'You haven\'t created any forms yet!' => 'U heeft nog geen formulieren gemaakt!',
     'Are you sure you want to clear the Error log?' => 'Weet u zeker dat u het foutenlogboek wilt wissen?',
-
-    // Datum veld
-    '"{value}" does not conform to "{format}" format.' => '"{value}" komt niet overeen met de indeling "{format}".',
-    'Date "{date}" must be after "{minDate}"' => 'Datum "{date}" moet na "{minDate}"',
-    'Date "{date}" must be before "{maxDate}"' => 'Datum "{date}" moet zijn voor "{maxDate}"',
-    'Min Date' => 'Min Datum',
-    'Max Date' => 'Max Datum',
-    'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.' => 'Geef een relatieve tekstuele datumreeks of statische datum op voor de vroegst beschikbare datum voor datumkiezer en veldvalidatie.',
-    'Specify a relative textual date string or static date for the latest date available for date picker and field validation.' => 'Geef een relatieve tekstuele datumreeks of statische datum op voor de laatst beschikbare datum voor datumkiezer en veldvalidatie.',
 
     // Craft Dashboard Widgets
     'Customize the widget title. Leave blank for default.' => 'Pas de widgettitel aan. Standaard leeg laten.',

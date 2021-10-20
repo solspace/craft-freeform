@@ -6,7 +6,6 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Fields\CheckboxField;
-use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -50,10 +49,6 @@ class EditElementContext
 
         $form->disableAjaxReset();
         foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof DynamicRecipientField) {
-                continue;
-            }
-
             if (isset($submission->{$field->getHandle()})) {
                 $submissionField = $submission->{$field->getHandle()};
                 $value = $submissionField->getValue();

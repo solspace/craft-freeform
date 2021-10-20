@@ -20,7 +20,6 @@ use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Fields\CheckboxField;
-use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Attributes\FormAttributes;
@@ -1462,10 +1461,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         $submission = Freeform::getInstance()->submissions->getSubmissionByToken($token);
         if ($submission instanceof Submission) {
             foreach ($this->getLayout()->getFields() as $field) {
-                if ($field instanceof DynamicRecipientField) {
-                    continue;
-                }
-
                 $hasPostValue = isset($_POST[$field->getHandle()]);
                 if (!$hasPostValue && isset($submission->{$field->getHandle()})) {
                     $submissionField = $submission->{$field->getHandle()};

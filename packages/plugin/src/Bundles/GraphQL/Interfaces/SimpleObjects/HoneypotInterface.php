@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
+use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\HoneypotGenerator;
@@ -31,7 +32,7 @@ class HoneypotInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return [
+        return TypeManager::prepareFieldDefinitions([
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
@@ -47,6 +48,6 @@ class HoneypotInterface extends AbstractInterface
                 'type' => Type::int(),
                 'description' => 'Timstamp of the creation date',
             ],
-        ];
+        ], static::getName());
     }
 }

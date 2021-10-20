@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
+use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\KeyValueMapGenerator;
@@ -31,7 +32,7 @@ class KeyValueMapInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return [
+        return TypeManager::prepareFieldDefinitions([
             'key' => [
                 'name' => 'key',
                 'type' => Type::string(),
@@ -42,6 +43,6 @@ class KeyValueMapInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The value',
             ],
-        ];
+        ], static::getName());
     }
 }

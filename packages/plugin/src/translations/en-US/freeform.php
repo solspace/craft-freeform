@@ -11,7 +11,6 @@
  */
 
 return [
-
     // Universal
     'Save and continue editing' => 'Save and continue editing',
     'Save and add another' => 'Save and add another',

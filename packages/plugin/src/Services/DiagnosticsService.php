@@ -62,7 +62,7 @@ class DiagnosticsService extends BaseService
                     ),
                     new SuggestionValidator(
                         function ($value) {
-                            return version_compare($value, '8.0', '<');
+                            return version_compare($value, '8.1', '<');
                         },
                         'Potential PHP Compatibility issue',
                         "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please check Freeform for updates to confirm you're using a version that has been tested for compatibility with this version of PHP."

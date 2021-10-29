@@ -46,7 +46,7 @@ export default class Save extends BasePropertyEditor {
 
         <TextProperty
           label="Save button Label"
-          instructions="The label of the save button"
+          instructions="The label of the Save &amp; Continue Later button."
           name="label"
           value={label}
           onChangeHandler={this.update}
@@ -55,8 +55,8 @@ export default class Save extends BasePropertyEditor {
         <hr />
 
         <TextProperty
-          label="Redirect URL"
-          instructions="The URL that will be redirected to with the token and key"
+          label="Return URL"
+          instructions="The URL the user will be redirected to after saving. Can use {token} and {key}."
           name="url"
           value={url}
           onChangeHandler={this.update}

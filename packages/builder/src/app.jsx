@@ -36,7 +36,7 @@ const specialFields = [
   },
   {
     type: FieldTypes.SAVE,
-    label: translate('Save'),
+    label: translate('Save & Continue Later'),
     position: 'left',
   },
   {

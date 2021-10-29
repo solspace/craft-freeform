@@ -68,6 +68,18 @@
 - Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
 - FIxed a bug where the "loading" indicators for the submit button were not working in Safari.
 
+## 3.11.12 - 2021-10-29
+
+### Added
+- Added support for 'epub' mime type in file validation.
+- Added `implements \Countable` to the `Form` object to support Twig loop variables.
+- Added field definitions in TypeManager::prepareFieldDefinitions in GraphQL.
+
+### Fixed
+- Fixed a bug where Dynamic Recipients fields would not populate their existing value when editing submission on the front end.
+- Fixed a bug where the Constant Contact integration would incorrectly log failed connection checks.
+- Fixed a bug where entry reindexing would sometimes fail on cookie set.
+
 ## 3.11.11.1 - 2021-09-24
 
 ### Fixed

@@ -54,7 +54,7 @@ class SaveForm extends FeatureBundle
         }
 
         $form = $event->getForm();
-        if ($form->hasErrors() || $form->isMarkedAsSpam()) {
+        if (\count($form->getErrors()) || $form->isMarkedAsSpam()) {
             return;
         }
 

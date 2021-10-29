@@ -43,6 +43,8 @@ class m210527_071651_AddDbSessionStorage extends Migration
                 ForeignKey::CASCADE
             );
         }
+
+        return true;
     }
 
     /**

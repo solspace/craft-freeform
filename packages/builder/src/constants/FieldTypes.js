@@ -27,6 +27,7 @@ export const HTML = 'html';
 export const RICH_TEXT = 'rich_text';
 export const MAILING_LIST = 'mailing_list';
 export const SUBMIT = 'submit';
+export const SAVE = 'save';
 export const RECAPTCHA = 'recaptcha';
 export const PASSWORD = 'password';
 

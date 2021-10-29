@@ -9,6 +9,8 @@ use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\DatabaseStorage;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\FormContextStorageInterface;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\PayloadStorage;
 use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\SessionStorage;
+use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
+use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
@@ -62,6 +64,7 @@ class SessionContext
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormContext']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
+        Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'cleanupOnSave']);
 
         Event::on(
             Form::class,
@@ -87,6 +90,11 @@ class SessionContext
                 $hash
             )
         );
+    }
+
+    public function cleanupOnSave(SaveFormEvent $event)
+    {
+        $event->getForm()->getPropertyBag()->remove(Form::HASH_KEY);
     }
 
     public function registerFormHash(FormLoadedEvent $event)

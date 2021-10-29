@@ -26,6 +26,7 @@ import Regex from './FieldTypes/Regex';
 import Select from './FieldTypes/Select';
 import Signature from './FieldTypes/Signature';
 import Submit from './FieldTypes/Submit';
+import Save from './FieldTypes/Save';
 import Text from './FieldTypes/Text';
 import Textarea from './FieldTypes/Textarea';
 import Table from './FieldTypes/Table';
@@ -45,6 +46,7 @@ const fieldTypes = {
   html: Html,
   rich_text: RichText,
   submit: Submit,
+  save: Save,
   radio_group: RadioGroup,
   select: Select,
   multiple_select: MultipleSelect,

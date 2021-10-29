@@ -35,6 +35,11 @@ const specialFields = [
     visible: true,
   },
   {
+    type: FieldTypes.SAVE,
+    label: translate('Save'),
+    position: 'left',
+  },
+  {
     type: FieldTypes.HTML,
     label: 'HTML',
     value: '<div>Html content</div>',

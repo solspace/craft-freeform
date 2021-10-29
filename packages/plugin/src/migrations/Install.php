@@ -294,6 +294,17 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['contextKey', 'formId'])
                 ->addIndex(['sessionId'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_saved_forms'))
+                ->addField('id', $this->primaryKey())
+                ->addField('sessionId', $this->string(100))
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('token', $this->string(100)->notNull())
+                ->addField('payload', $this->mediumText())
+                ->addIndex(['token'])
+                ->addIndex(['dateCreated'])
+                ->addIndex(['sessionId'])
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
         ];
     }
 }

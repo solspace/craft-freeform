@@ -216,12 +216,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             }
 
             $savableFields[$field->getHandle()] = $value;
-            $titleReplacements[$field->getHandle()] = $value;
         }
 
         $dateCreated = new \DateTime();
 
-        $titleReplacements['dateCreated'] = $dateCreated->format('Y-m-d H:i:s');
         $fieldsByHandle = $form->getLayout()->getFieldsByHandle();
 
         $statusId = $form->getDefaultStatus();

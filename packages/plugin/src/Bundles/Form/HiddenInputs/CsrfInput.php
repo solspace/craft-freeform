@@ -4,11 +4,11 @@ namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
 
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class CsrfInput implements BundleInterface
+class CsrfInput extends FeatureBundle
 {
     public function __construct()
     {

@@ -7,8 +7,10 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class SubmissionTokenInput extends FeatureBundle
+class FreeformActionInput extends FeatureBundle
 {
+    const NAME = 'freeform-action';
+
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
@@ -16,13 +18,6 @@ class SubmissionTokenInput extends FeatureBundle
 
     public function attachInput(RenderTagEvent $event)
     {
-        $bag = $event->getForm()->getPropertyBag();
-
-        if ($bag->get('submissionToken')) {
-            $name = Form::SUBMISSION_TOKEN_KEY;
-            $value = $bag->get('submissionToken');
-
-            $event->addChunk('<input type="hidden" '.'name="'.$name.'" '.'value="'.$value.'" '.'/>');
-        }
+        $event->addChunk('<input type="hidden" name="'.self::NAME.'" value="submit" />');
     }
 }

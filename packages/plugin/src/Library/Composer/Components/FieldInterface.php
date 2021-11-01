@@ -31,6 +31,7 @@ interface FieldInterface
     const TYPE_RADIO_GROUP = 'radio_group';
     const TYPE_HTML = 'html';
     const TYPE_SUBMIT = 'submit';
+    const TYPE_SAVE = 'save';
     const TYPE_DYNAMIC_RECIPIENTS = 'dynamic_recipients';
     const TYPE_EMAIL = 'email';
     const TYPE_MAILING_LIST = 'mailing_list';

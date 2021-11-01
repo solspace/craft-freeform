@@ -41,6 +41,7 @@ import Rules from '../components/PropertyEditor/Rules';
 import Select from '../components/PropertyEditor/Select';
 import Signature from '../components/PropertyEditor/Signature';
 import Submit from '../components/PropertyEditor/Submit';
+import Save from '../components/PropertyEditor/Save';
 import Table from '../components/PropertyEditor/Table';
 import Text from '../components/PropertyEditor/Text';
 import Textarea from '../components/PropertyEditor/Textarea';
@@ -61,6 +62,7 @@ const propertyTypes = {
   html: Html,
   rich_text: RichText,
   submit: Submit,
+  save: Save,
   select: Select,
   multiple_select: MultipleSelect,
   checkbox: Checkbox,
@@ -222,6 +224,7 @@ export default class PropertyEditor extends Component {
         FieldTypes.ADMIN_NOTIFICATIONS,
         FieldTypes.PAGE,
         FieldTypes.SUBMIT,
+        FieldTypes.SAVE,
         FieldTypes.CONNECTIONS,
         FieldTypes.PAYMENT,
         FieldTypes.HTML,

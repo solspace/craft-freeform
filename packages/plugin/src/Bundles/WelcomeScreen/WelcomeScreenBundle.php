@@ -6,10 +6,10 @@ use craft\events\PluginEvent;
 use craft\helpers\UrlHelper;
 use craft\services\Plugins;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
-class WelcomeScreenBundle implements BundleInterface
+class WelcomeScreenBundle extends FeatureBundle
 {
     public function __construct()
     {

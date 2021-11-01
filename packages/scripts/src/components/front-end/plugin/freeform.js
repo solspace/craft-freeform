@@ -15,6 +15,7 @@ import HoneypotHandler from '@lib/plugin/handlers/form/honeypot';
 import RuleSetHandler from '@lib/plugin/handlers/form/rule-set';
 import StripeHandler from '@lib/plugin/handlers/form/stripe-handler';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
+import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { addClass, getClassArray, removeClass } from '@lib/plugin/helpers/elements';
 
@@ -64,6 +65,7 @@ export default class Freeform {
     TableHandler,
     GoogleTagManager,
     DragAndDropHandler,
+    SaveFormHandler,
   ];
 
   _beforeSubmitCallbackStack = [];
@@ -287,16 +289,30 @@ export default class Freeform {
    * @private
    */
   _attachListeners = () => {
-    this.form.addEventListener('submit', this._onSubmit);
+    const form = this.form;
+    const actionInput = this.form.querySelector('input[name=freeform-action]');
 
-    const inputs = this.form.querySelectorAll('input, select, textarea');
-    for (let i = 0; i < inputs.length; i++) {
-      const input = inputs[i];
+    const actionButtons = form.querySelectorAll('[data-freeform-action]');
 
-      input.addEventListener('change', (event) => {
-        this._removeMessageFrom(event.target);
+    if (actionInput) {
+      actionButtons.forEach((button) =>
+        button.addEventListener('click', () => (actionInput.value = button.getAttribute('data-freeform-action')))
+      );
+
+      // Reset the action-input after each submit
+      form.addEventListener(EventTypes.EVENT_AJAX_AFTER_SUBMIT, () => {
+        actionInput.value = 'submit';
       });
     }
+
+    form.addEventListener('submit', this._onSubmit);
+
+    const inputs = form.querySelectorAll('input, select, textarea');
+    inputs.forEach((input) =>
+      input.addEventListener('change', (event) => {
+        this._removeMessageFrom(event.target);
+      })
+    );
   };
 
   /**
@@ -655,6 +671,8 @@ export default class Freeform {
             this._renderFieldErrors(errors);
             this._renderFormErrors(formErrors);
           }
+        } else {
+          this._dispatchEvent(EventTypes.EVENT_HANDLE_ACTIONS, { response, actions, cancelable: false });
         }
 
         if (honeypot) {
@@ -679,7 +697,10 @@ export default class Freeform {
 
         this._onAfterSubmit(event, form, response);
       } else {
-        console.error(request);
+        const response = request.response;
+
+        this._dispatchEvent(EventTypes.EVENT_AJAX_ERROR, { request, response });
+        this._onFailedSubmit(event, form, response);
       }
 
       this.unlockSubmit(form);

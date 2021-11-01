@@ -287,6 +287,9 @@ class FieldProperties extends AbstractProperties
     /** @var string */
     protected $theme;
 
+    /** @var string */
+    protected $url;
+
     /**
      * @return null|string
      */
@@ -980,6 +983,11 @@ class FieldProperties extends AbstractProperties
         return $this->theme;
     }
 
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
     /**
      * Return a list of all property fields and their type.
      *
@@ -1080,6 +1088,7 @@ class FieldProperties extends AbstractProperties
             'twig' => self::TYPE_BOOLEAN,
             'accent' => self::TYPE_STRING,
             'theme' => self::TYPE_STRING,
+            'url' => self::TYPE_STRING,
         ];
     }
 }

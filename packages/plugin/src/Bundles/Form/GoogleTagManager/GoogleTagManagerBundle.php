@@ -4,12 +4,12 @@ namespace Solspace\Freeform\Bundles\Form\GoogleTagManager;
 
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormRenderEvent;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Services\FormsService;
 use yii\base\Event;
 use yii\web\View;
 
-class GoogleTagManagerBundle implements BundleInterface
+class GoogleTagManagerBundle extends FeatureBundle
 {
     public function __construct()
     {

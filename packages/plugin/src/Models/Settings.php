@@ -66,6 +66,9 @@ class Settings extends Model
 
     const DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES = 180;
 
+    const SAVE_FORM_TTL = 30;
+    const SAVE_FORM_SESSION_LIMIT = 10;
+
     /** @var string */
     public $pluginName;
 
@@ -291,6 +294,12 @@ class Settings extends Model
     /** @var string */
     public $sessionContextSecret;
 
+    /** @var int */
+    public $saveFormTtl;
+
+    /** @var int */
+    public $saveFormSessionLimit;
+
     /**
      * Settings constructor.
      */
@@ -373,6 +382,9 @@ class Settings extends Model
         $this->sessionContextTimeToLiveMinutes = 180;
         $this->sessionContextCount = 100;
         $this->sessionContextSecret = '';
+
+        $this->saveFormTtl = self::SAVE_FORM_TTL;
+        $this->saveFormSessionLimit = self::SAVE_FORM_SESSION_LIMIT;
 
         parent::__construct($config);
     }

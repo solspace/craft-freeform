@@ -6,9 +6,9 @@ use Solspace\Freeform\Bundles\Form\Context\Pages\PageContext;
 use Solspace\Freeform\Bundles\Form\Context\Request\OverrideContext;
 use Solspace\Freeform\Bundles\Form\Context\Request\RequestContext;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 
-class ContextBundle implements BundleInterface
+class ContextBundle extends FeatureBundle
 {
     public function __construct()
     {

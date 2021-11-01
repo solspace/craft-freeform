@@ -1093,6 +1093,11 @@ class Freeform extends Plugin
 
         if (null === $initialized) {
             $classMap = ClassMapGenerator::createMap(__DIR__.'/Bundles');
+
+            /** @var \ReflectionClass[][] $loadableClasses */
+            $loadableClasses = [];
+
+            /** @var BundleInterface $class */
             foreach ($classMap as $class => $path) {
                 $reflectionClass = new \ReflectionClass($class);
                 if (
@@ -1100,7 +1105,16 @@ class Freeform extends Plugin
                     && !$reflectionClass->isAbstract()
                     && !$reflectionClass->isInterface()
                 ) {
-                    $reflectionClass->newInstance();
+                    $priority = $class::getPriority();
+                    $loadableClasses[$priority][] = $reflectionClass;
+                }
+            }
+
+            ksort($loadableClasses, \SORT_NUMERIC);
+
+            foreach ($loadableClasses as $classes) {
+                foreach ($classes as $class) {
+                    $class->newInstance();
                 }
             }
 

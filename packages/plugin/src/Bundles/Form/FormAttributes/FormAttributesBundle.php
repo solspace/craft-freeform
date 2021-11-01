@@ -6,11 +6,11 @@ use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bags\BagInterface;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class FormAttributesBundle implements BundleInterface
+class FormAttributesBundle extends FeatureBundle
 {
     private static $attributeKeys = [
         'id',

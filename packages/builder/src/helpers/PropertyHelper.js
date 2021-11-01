@@ -93,6 +93,7 @@ const validProperties = [
   'twig',
   'accent',
   'theme',
+  'url',
 ];
 
 export default class PropertyHelper {

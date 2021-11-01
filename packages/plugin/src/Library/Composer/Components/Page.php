@@ -67,10 +67,20 @@ class Page implements \JsonSerializable, \Iterator, \ArrayAccess
     }
 
     /**
+     * @template T
+     *
+     * @param null|class-string<T> $implements
+     *
      * @return FieldInterface[]
      */
-    public function getFields(): array
+    public function getFields(string $implements = null): array
     {
+        if (null !== $implements) {
+            return array_filter($this->fields, function (AbstractField $field) use ($implements) {
+                return $field instanceof $implements;
+            });
+        }
+
         return $this->fields;
     }
 

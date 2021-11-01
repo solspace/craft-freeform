@@ -4,11 +4,11 @@ namespace Solspace\Freeform\Bundles\Form\SubmissionLimiter;
 
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class SubmissionLimiter implements BundleInterface
+class SubmissionLimiter extends FeatureBundle
 {
     const BAG_KEY = 'submissionLimit';
 

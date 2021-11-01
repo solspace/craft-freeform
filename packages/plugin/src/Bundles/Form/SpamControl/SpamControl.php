@@ -8,7 +8,7 @@ use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\FormsService;
@@ -16,7 +16,7 @@ use Solspace\Freeform\Services\SettingsService;
 use Solspace\Freeform\Services\SubmissionsService;
 use yii\base\Event;
 
-class SpamControl implements BundleInterface
+class SpamControl extends FeatureBundle
 {
     public function __construct()
     {

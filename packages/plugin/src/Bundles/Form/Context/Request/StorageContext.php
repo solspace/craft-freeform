@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
+use Solspace\Freeform\Bundles\Form\SaveForm\LoadSavedForm;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Fields\CheckboxField;
@@ -13,19 +15,20 @@ class StorageContext
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'loadStoredValues']);
+        Event::on(LoadSavedForm::class, Form::EVENT_FORM_LOADED, [$this, 'loadStoredValues']);
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'storeCurrentValues'], null, false);
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'handleReset']);
     }
 
-    public function loadStoredValues(HandleRequestEvent $event)
+    public function loadStoredValues(FormEventInterface $event)
     {
         $form = $event->getForm();
-        if (!$form->isFormPosted()) {
-            return;
-        }
 
         $bag = $form->getPropertyBag();
         $storedValues = $bag->get(Form::PROPERTY_STORED_VALUES, []);
+        if (empty($storedValues)) {
+            return;
+        }
 
         foreach ($form->getLayout()->getFields() as $field) {
             if (!\array_key_exists($field->getHandle(), $storedValues)) {
@@ -46,7 +49,7 @@ class StorageContext
     public function storeCurrentValues(HandleRequestEvent $event)
     {
         $form = $event->getForm();
-        if (!$form->isFormPosted()) {
+        if (!$form->isFormPosted() || !$form->isPagePosted()) {
             return;
         }
 

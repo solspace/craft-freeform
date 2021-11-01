@@ -5,11 +5,11 @@ namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class AnchorTag implements BundleInterface
+class AnchorTag extends FeatureBundle
 {
     public function __construct()
     {

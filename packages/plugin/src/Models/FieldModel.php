@@ -309,6 +309,10 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['twig'] = $this->getMetaProperty('twig', false);
         }
 
+        if (FieldInterface::TYPE_SAVE === $this->type) {
+            $returnArray['url'] = $this->getMetaProperty('url');
+        }
+
         if (\in_array(
             $this->type,
             [FieldInterface::TYPE_HIDDEN, FieldInterface::TYPE_HTML, FieldInterface::TYPE_SUBMIT],

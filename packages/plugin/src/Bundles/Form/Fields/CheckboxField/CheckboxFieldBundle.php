@@ -4,11 +4,11 @@ namespace Solspace\Freeform\Bundles\Form\Fields\CheckboxField;
 
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Fields\CheckboxField;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use yii\base\Event;
 
-class CheckboxFieldBundle implements BundleInterface
+class CheckboxFieldBundle extends FeatureBundle
 {
     public function __construct()
     {

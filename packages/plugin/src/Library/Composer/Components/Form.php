@@ -62,6 +62,7 @@ use yii\web\Request;
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
 {
     const HASH_KEY = 'hash';
+    const ACTION_KEY = 'freeform-action';
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
     const EVENT_FORM_LOADED = 'form-loaded';
@@ -87,6 +88,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
     const EVENT_PERSIST_STATE = 'persist-state';
     const EVENT_HYDRATE_FORM = 'hydrate-form';
     const EVENT_GENERATE_RETURN_URL = 'generate-return-url';
+    const EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD = 'prepareAjaxResponsePayload';
 
     const PROPERTY_STORED_VALUES = 'storedValues';
     const PROPERTY_PAGE_INDEX = 'pageIndex';
@@ -109,8 +111,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
 
     const LIMIT_COOKIE = 'cookie';
     const LIMIT_IP_COOKIE = 'ip_cookie';
-
-    const EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD = 'prepareAjaxResponsePayload';
 
     /** @var PropertyBag */
     private $propertyBag;
@@ -777,7 +777,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
      */
     public function render(array $renderProperties = null): Markup
     {
-        $this->registerContext($renderProperties);
+        $this->setProperties($renderProperties);
         $formTemplate = $this->getPropertyBag()->get('formattingTemplate', $this->formTemplate);
 
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);

@@ -5,11 +5,11 @@ namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Bundles\BundleInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class ElementEditBundle implements BundleInterface
+class ElementEditBundle extends FeatureBundle
 {
     public function __construct()
     {

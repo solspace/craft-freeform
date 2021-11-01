@@ -109,6 +109,7 @@ class SubmitField extends AbstractField implements SingleValueInterface, InputOn
 
             $output .= '<button '
                 .$this->getInputAttributesString()
+                .$this->getAttributeString('data-freeform-action', 'back')
                 .$this->getAttributeString('type', 'submit')
                 .$this->getAttributeString('name', self::PREVIOUS_PAGE_INPUT_NAME)
                 .$attributes->getInputAttributesAsString()
@@ -119,7 +120,7 @@ class SubmitField extends AbstractField implements SingleValueInterface, InputOn
 
         $output .= '<button '
             .$this->getInputAttributesString()
-            .$this->getAttributeString('data-submit-button', true)
+            .$this->getAttributeString('data-freeform-action', 'submit')
             .$this->getAttributeString('type', 'submit')
             .$this->getAttributeString('name', self::SUBMIT_INPUT_NAME)
             .$attributes->getInputAttributesAsString()

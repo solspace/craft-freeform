@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.12.0-beta.8 - 2021-11-01
+
+### Added
+- Added "Save & Continue Later" feature, which allows users to save their form progress and return later to complete the form.
+- Added a developer event for registering the form context for cached forms.
+
+### Changed
+- Updated translation files to contain some missing field validation strings.
+- Adjusted the Drag & Drop File Upload field to disable the submit button while the files are uploading.
+- Adjusted all references of "Mailing List" integrations to "Email Marketing".
+
 ## 3.12.0-beta.7 - 2021-09-27
 
 ### Added

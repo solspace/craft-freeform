@@ -2,12 +2,12 @@
 
 {% import "_includes/forms" as forms %}
 
-{% set title = "Form Behaviour"|t("freeform") %}
+{% set title = "Form Behavior"|t("freeform") %}
 
 {% block content %}
 
     <input type="hidden" name="action" value="freeform/settings/save-settings">
-    {{ redirectInput('freeform/settings/form-behaviour') }}
+    {{ redirectInput('freeform/settings/form-behavior') }}
     {{ csrfInput() }}
 
     <h2 class="first">{{ title }}</h2>
@@ -171,7 +171,7 @@
 
         {{ forms.textField({
             label: "Maximum Number of Saved Forms Per Session"|t('freeform'),
-            instructions: "The maximum number of saved forms per session (per user, though it's possible a user may have multiple sessions when returning to the site over a span of several days). Default is 10, which should be a comfortable and reasonable number."|t('freeform'),
+            instructions: "The maximum number of saved forms per session (per user, though it's possible a user may have multiple sessions when returning to the site over a span of several days). Default is 10, which should be a comfortable and reasonable number. Once the maximum has been reached, Freeform will begin overwriting existing older entries to create new ones."|t('freeform'),
             name: "settings[saveFormSessionLimit]",
             value: settings.saveFormSessionLimit,
             errors: settings.errors("saveFormSessionLimit"),

@@ -22,13 +22,6 @@ class SaveForm extends FeatureBundle
 {
     const SAVE_ACTION = 'save';
 
-    const BAG_KEY = 'savedSession';
-    const BAG_REDIRECT = 'savedFormRedirect';
-
-    const PROPERTY_KEY = 'key';
-    const PROPERTY_TOKEN = 'token';
-    const PROPERTY_URL = 'url';
-
     const EVENT_SAVE_FORM = 'save-form';
 
     const CLEANUP_CACHE_KEY = 'save-and-continue-cleanup';
@@ -58,36 +51,48 @@ class SaveForm extends FeatureBundle
             return;
         }
 
-        $token = CryptoHelper::getUniqueToken();
-        $key = CryptoHelper::getUniqueToken(25);
+        $isLoaded = SaveFormsHelper::isLoaded($form);
+        list($key, $token) = SaveFormsHelper::getTokens($form);
+
+        $record = null;
+        if ($isLoaded && $token && $key) {
+            $record = SavedFormRecord::findOne(['token' => $token]);
+        }
+
+        if (!$record) {
+            $token = CryptoHelper::getUniqueToken();
+            $key = CryptoHelper::getUniqueToken(25);
+        }
 
         $form
             ->getPropertyBag()
-            ->remove(self::BAG_KEY)
-            ->remove(LoadSavedForm::BAG_KEY_LOADED)
+            ->remove(SaveFormsHelper::BAG_KEY_SAVED_SESSION)
+            ->remove(SaveFormsHelper::BAG_KEY_LOADED)
         ;
 
         Event::trigger(self::class, self::EVENT_SAVE_FORM, new SaveFormEvent($form));
 
         $bag = new SessionBag($form->getId(), $form->getPropertyBag()->toArray(), $form->getAttributeBag()->toArray());
-        $serialized = json_encode($bag);
-
         $encryptionKey = $this->getEncryptionKey($key);
 
+        $serialized = json_encode($bag);
         $payload = base64_encode(\Craft::$app->security->encryptByKey($serialized, $encryptionKey));
 
         $sessionId = \Craft::$app->getSession()->getId();
 
-        $record = new SavedFormRecord();
+        if (!$record) {
+            $record = new SavedFormRecord();
+            $record->formId = $form->getId();
+            $record->token = $token;
+        }
+
         $record->sessionId = $sessionId;
-        $record->formId = $form->getId();
-        $record->token = $token;
         $record->payload = $payload;
         $record->save();
 
         $this->cleanupForSession($sessionId);
 
-        $returnUrl = $form->getPropertyBag()->get(self::BAG_REDIRECT, '');
+        $returnUrl = $form->getPropertyBag()->get(SaveFormsHelper::BAG_REDIRECT, '');
         if (empty($returnUrl)) {
             /** @var SaveField[] $saveButtons */
             $saveButtons = $form->getCurrentPage()->getFields(SaveField::class);
@@ -99,7 +104,8 @@ class SaveForm extends FeatureBundle
             }
 
             if (empty($returnUrl)) {
-                $returnUrl = UrlHelper::url('', ['session-token' => '{token}', 'key' => '{key}']);
+                $currentUrl = \Craft::$app->request->getUrl();
+                $returnUrl = UrlHelper::url($currentUrl, ['session-token' => '{token}', 'key' => '{key}']);
             }
         }
 
@@ -114,9 +120,9 @@ class SaveForm extends FeatureBundle
         if ($event->getRequest()->getIsAjax()) {
             $form->addAction(
                 new SaveFormAction([
-                    self::PROPERTY_TOKEN => $token,
-                    self::PROPERTY_KEY => $key,
-                    self::PROPERTY_URL => $returnUrl,
+                    SaveFormsHelper::PROPERTY_TOKEN => $token,
+                    SaveFormsHelper::PROPERTY_KEY => $key,
+                    SaveFormsHelper::PROPERTY_URL => $returnUrl,
                 ])
             );
         } else {
@@ -167,6 +173,10 @@ class SaveForm extends FeatureBundle
             return;
         }
 
+        if (!\Craft::$app->db->tableExists(SavedFormRecord::TABLE)) {
+            return;
+        }
+
         $ttl = (int) Freeform::getInstance()->settings->getSettingsModel()->saveFormTtl;
         if ($ttl <= 0) {
             $ttl = Settings::SAVE_FORM_TTL;
@@ -175,7 +185,7 @@ class SaveForm extends FeatureBundle
         $expirationTime = new Carbon("now -{$ttl} day");
 
         \Craft::$app->db->createCommand()
-            ->delete(SavedFormRecord::TABLE, ['<', 'dateCreated', $expirationTime])
+            ->delete(SavedFormRecord::TABLE, ['<', 'dateUpdated', $expirationTime])
             ->execute()
         ;
     }

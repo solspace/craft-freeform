@@ -26,6 +26,7 @@ import select from '@ff/builder/assets/icons/fieldtype-select.svg';
 import signature from '@ff/builder/assets/icons/fieldtype-signature.svg';
 import spam from '@ff/builder/assets/icons/fieldtype-spam.svg';
 import submit from '@ff/builder/assets/icons/fieldtype-submit.svg';
+import save from '@ff/builder/assets/icons/fieldtype-save-form.svg';
 import table from '@ff/builder/assets/icons/fieldtype-table.svg';
 import text from '@ff/builder/assets/icons/fieldtype-text.svg';
 import textarea from '@ff/builder/assets/icons/fieldtype-textarea.svg';
@@ -60,6 +61,7 @@ const svgs = {
   signature,
   spam,
   submit,
+  save,
   website,
   invisible,
   table,

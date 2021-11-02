@@ -254,6 +254,7 @@ class SettingsService extends BaseService
 
         $nav = [
             'general' => ['title' => Freeform::t('General Settings')],
+            'form-behaviour' => ['title' => Freeform::t('Form Behaviour')],
             'form-builder' => ['title' => Freeform::t('Form Builder Settings')],
             'formatting-templates' => ['title' => Freeform::t('Formatting Templates')],
             'email-templates' => ['title' => Freeform::t('Email Templates')],

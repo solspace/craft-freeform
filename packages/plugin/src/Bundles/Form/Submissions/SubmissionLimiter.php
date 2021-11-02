@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\SubmissionLimiter;
+namespace Solspace\Freeform\Bundles\Form\Submissions;
 
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Freeform;

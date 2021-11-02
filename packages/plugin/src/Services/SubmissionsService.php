@@ -19,6 +19,7 @@ use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
@@ -31,6 +32,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueI
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Records\FieldRecord;
+use yii\base\Event;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
 {
@@ -222,30 +224,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $fieldsByHandle = $form->getLayout()->getFieldsByHandle();
 
-        $statusId = $form->getDefaultStatus();
-        $customStatus = $form->getOverrideStatus();
-        if ($customStatus) {
-            $customStatus = \Craft::$app->security->decryptByKey(base64_decode($customStatus));
-            if ($customStatus) {
-                $statusId = $customStatus;
-            }
-        }
-
-        if (!is_numeric($statusId)) {
-            $status = Freeform::getInstance()->statuses->getStatusByHandle($statusId);
-            if ($status) {
-                $statusId = $status->id;
-            }
-        }
-
         if (!$submission->id) {
             $submission->ip = $form->isIpCollectingEnabled() ? \Craft::$app->request->getUserIP() : null;
             $submission->formId = $form->getId();
-            $submission->statusId = $statusId;
             $submission->isSpam = $form->isMarkedAsSpam();
             $submission->dateCreated = $dateCreated;
-        } elseif ($customStatus) {
-            $submission->statusId = $statusId;
+            $submission->statusId = $form->getDefaultStatus();
         }
 
         $submission->title = \Craft::$app->view->renderString(
@@ -261,6 +245,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $submission->dateUpdated = $dateCreated;
         $submission->setFormFieldValues($savableFields, $isNew);
+
+        Event::trigger(
+            Form::class,
+            Form::EVENT_CREATE_SUBMISSION,
+            new CreateSubmissionFromFormEvent($form, $submission)
+        );
 
         return $submission;
     }

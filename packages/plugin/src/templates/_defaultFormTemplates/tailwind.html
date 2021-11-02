@@ -85,7 +85,7 @@
             {% endif %}
 
             {# Set a custom column class for the submit button #}
-            {% if field.type == "submit" %}
+            {% if field.type == "submit" or field.type == "save" %}
                 {% set columnClass = columnClass ~ " text-" ~ field.position %}
             {% endif %}
 
@@ -260,7 +260,7 @@
                         {{ field.renderErrors({ errorClass: errorClass }) }}
                     </div>
 
-                {% elseif field.type == "submit" %}
+                {% elseif field.type == "submit" or field.type == "save" %}
 
                     {{ field.render({ class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2" }) }}
 

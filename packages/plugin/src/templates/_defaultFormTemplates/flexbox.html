@@ -52,12 +52,12 @@
 <div class="freeform-row {{ form.customAttributes.rowClass }}">
     {% for field in row %}
     {% set columnClass = "freeform-column " ~ form.customAttributes.columnClass %}
-    {% if field.type == "submit" %}
+    {% if field.type == "submit" or field.type == "save" %}
         {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
     {% endif %}
     <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
         {{ field.render({
-            class: field.type not in ["submit", "signature"] ? "freeform-input" : "",
+            class: field.type not in ["submit", "save", "signature"] ? "freeform-input" : "",
             labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
             errorClass: "freeform-errors",
             instructionsClass: "freeform-instructions",

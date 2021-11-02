@@ -60,7 +60,7 @@
             {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
             {% set columnClass = columnClass ~ " medium-" ~ width %}
 
-            {% if field.type == "submit" %}
+            {% if field.type == "submit" or field.type == "save" %}
                 {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
             {% endif %}
 
@@ -205,7 +205,7 @@
                         tableCheckboxInputClass: ""
                     }) }}
 
-                {% elseif field.type == "submit" %}
+                {% elseif field.type == "submit" or field.type == "save" %}
 
                     {{ field.render({ class: "button" }) }}
 

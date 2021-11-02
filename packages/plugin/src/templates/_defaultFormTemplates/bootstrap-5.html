@@ -75,7 +75,7 @@
             {% set errorClass = "invalid-feedback" %}
             {% set instructionClass = "form-text text-muted" %}
 
-            {% if field.type == "submit" %}
+            {% if field.type == "submit" or field.type == "save" %}
                 {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
             {% endif %}
 
@@ -180,7 +180,7 @@
                         {{ field.renderErrors({ errorClass: errorClass }) }}
                     </div>
 
-                {% elseif field.type == "submit" %}
+                {% elseif field.type == "submit" or field.type == "save" %}
 
                     {{ field.render({ class: "btn btn-primary" }) }}
 

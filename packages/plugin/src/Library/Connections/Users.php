@@ -28,7 +28,7 @@ class Users extends AbstractConnection
      */
     public function isConnectable(): bool
     {
-        return !empty($this->group);
+        return true;
     }
 
     protected function buildElement(array $transformers, ElementInterface $element = null): Element
@@ -120,12 +120,13 @@ class Users extends AbstractConnection
                 \Craft::$app->getUsers()->sendActivationEmail($element);
             } catch (\Throwable $e) {
                 \Craft::$app->getErrorHandler()->logException($e);
-                \Craft::$app->getSession()->setError(
-                    \Craft::t(
-                        'app',
-                        'User saved, but couldn’t send verification email. Check your email settings.'
+                \Craft::$app->getSession()
+                    ->setError(
+                        \Craft::t(
+                            'app',
+                            'User saved, but couldn’t send verification email. Check your email settings.'
+                        )
                     )
-                )
                 ;
             }
         }

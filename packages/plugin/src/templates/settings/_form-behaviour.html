@@ -142,9 +142,11 @@
 
         <hr>
 
+        <h3>{{ "Save & Continue Later"|t('freeform') }}</h3>
+
         {{ forms.selectField({
-            label: "Number of days to keep saved form data"|t('freeform'),
-            instructions: "Number of days to keep saved form data"|t('freeform'),
+            label: "Number of Days to Keep Saved Form Data"|t('freeform'),
+            instructions: "The number of days to store saved form progress in the database before clearing."|t('freeform'),
             name: "settings[saveFormTtl]",
             value: settings.saveFormTtl,
             errors: settings.errors("saveFormTtl"),
@@ -168,8 +170,8 @@
         }) }}
 
         {{ forms.textField({
-            label: "Number of saved forms per session"|t('freeform'),
-            instructions: "Number of saved forms per session"|t('freeform'),
+            label: "Maximum Number of Saved Forms Per Session"|t('freeform'),
+            instructions: "The maximum number of saved forms per session (per user, though it's possible a user may have multiple sessions when returning to the site over a span of several days). Default is 10, which should be a comfortable and reasonable number."|t('freeform'),
             name: "settings[saveFormSessionLimit]",
             value: settings.saveFormSessionLimit,
             errors: settings.errors("saveFormSessionLimit"),

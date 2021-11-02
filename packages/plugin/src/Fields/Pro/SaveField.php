@@ -53,7 +53,7 @@ class SaveField extends AbstractField implements SingleValueInterface, InputOnly
     {
         $attributes = $this->getCustomAttributes();
         $submitClass = $attributes->getInputClassOnly();
-        $formSubmitClass = $this->getForm()->getPropertyBag()->get('saveClass', '');
+        $formSubmitClass = $this->getForm()->getPropertyBag()->get('submitClass', '');
 
         $submitClass = trim($submitClass.' '.$formSubmitClass);
 

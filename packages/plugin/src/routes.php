@@ -94,6 +94,7 @@ return [
     // Settings
     'freeform/settings' => 'freeform/settings/index',
     'freeform/settings/general' => 'freeform/settings/provide-setting',
+    'freeform/settings/form-behaviour' => 'freeform/settings/provide-setting',
     'freeform/settings/form-builder' => 'freeform/settings/provide-setting',
     'freeform/settings/email-templates' => 'freeform/settings/provide-setting',
     'freeform/settings/notices-and-alerts' => 'freeform/settings/provide-setting',

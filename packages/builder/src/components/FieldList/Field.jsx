@@ -67,6 +67,8 @@ export default class Field extends Component {
 
     const icon = getIcon(type);
 
+    console.log('>>>>', type, icon);
+
     return connectDragSource(
       <li className={classList.join(' ')} disabled={isUsed} onClick={!isUsed ? onClick : null}>
         {icon}

@@ -12,8 +12,6 @@ use yii\base\Event;
 
 class LoadSavedForm extends FeatureBundle
 {
-    const BAG_KEY_LOADED = 'savedSessionLoaded';
-
     const EVENT_FORM_LOADED = 'form-loaded';
 
     public function __construct()
@@ -31,11 +29,11 @@ class LoadSavedForm extends FeatureBundle
     {
         $form = $event->getForm();
 
-        if ($this->isLoaded($form)) {
+        if (SaveFormsHelper::isLoaded($form)) {
             return;
         }
 
-        list($key, $token) = $this->getTokens($form);
+        list($key, $token) = SaveFormsHelper::getTokens($form);
         if (!$key || !$token) {
             return;
         }
@@ -54,7 +52,7 @@ class LoadSavedForm extends FeatureBundle
         $properties = $json['properties'] ?? [];
         $attributes = $json['attributes'] ?? [];
 
-        $properties[self::BAG_KEY_LOADED] = true;
+        $properties[SaveFormsHelper::BAG_KEY_LOADED] = true;
 
         $form->getAttributeBag()->merge($attributes);
         $form->getPropertyBag()->merge($properties);
@@ -66,7 +64,7 @@ class LoadSavedForm extends FeatureBundle
     {
         $form = $event->getForm();
 
-        list($key, $token) = $this->getTokens($form);
+        list($key, $token) = SaveFormsHelper::getTokens($form);
         if (!$key || !$token) {
             return;
         }
@@ -77,21 +75,6 @@ class LoadSavedForm extends FeatureBundle
         }
 
         $record->delete();
-        $form->getPropertyBag()->remove(SaveForm::BAG_KEY);
-    }
-
-    private function isLoaded(Form $form): bool
-    {
-        return $form->getPropertyBag()->get(self::BAG_KEY_LOADED, false);
-    }
-
-    private function getTokens(Form $form): array
-    {
-        $savedSession = $form->getPropertyBag()->get(SaveForm::BAG_KEY);
-
-        $key = $savedSession[SaveForm::PROPERTY_KEY] ?? null;
-        $token = $savedSession[SaveForm::PROPERTY_TOKEN] ?? null;
-
-        return [$key, $token];
+        $form->getPropertyBag()->remove(SaveFormsHelper::BAG_KEY_SAVED_SESSION);
     }
 }

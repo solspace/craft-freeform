@@ -51,9 +51,9 @@ class SubmitController extends BaseController
         $form = $formModel->getForm();
         $isAjaxRequest = $request->getIsAjax();
 
-        $form->handleRequest($request);
+        $requestHandled = $form->handleRequest($request);
         $submission = $this->getSubmissionsService()->createSubmissionFromForm($form);
-        if ($form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
+        if ($requestHandled && $form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
             $this->handleSubmission($form, $submission);
 
             if (!$form->hasErrors()) {

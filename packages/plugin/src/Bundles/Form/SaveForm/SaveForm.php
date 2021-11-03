@@ -128,6 +128,8 @@ class SaveForm extends FeatureBundle
         } else {
             \Craft::$app->response->redirect($returnUrl)->send();
         }
+
+        $event->isValid = false;
     }
 
     public static function getEncryptionKey(string $key): string

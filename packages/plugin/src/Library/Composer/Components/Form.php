@@ -701,18 +701,18 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         return $this->getPropertyBag();
     }
 
-    public function handleRequest(Request $request)
+    public function handleRequest(Request $request): bool
     {
         $method = strtoupper($this->getPropertyBag()->get('method', 'post'));
         if ($method !== $request->getMethod()) {
-            return;
+            return false;
         }
 
         $event = new HandleRequestEvent($this, $request);
         Event::trigger(self::class, self::EVENT_BEFORE_HANDLE_REQUEST, $event);
 
         if (!$event->isValid) {
-            return;
+            return false;
         }
 
         if ($this->isPagePosted()) {
@@ -722,6 +722,8 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         $event = new HandleRequestEvent($this, $request);
         Event::trigger(self::class, self::EVENT_AFTER_HANDLE_REQUEST, $event);
         Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
+
+        return $event->isValid;
     }
 
     public function isReachedPostingLimit(): bool

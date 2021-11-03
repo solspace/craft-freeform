@@ -78,6 +78,7 @@ class SaveForm extends FeatureBundle
         $serialized = json_encode($bag);
         $payload = base64_encode(\Craft::$app->security->encryptByKey($serialized, $encryptionKey));
 
+        \Craft::$app->session->open();
         $sessionId = \Craft::$app->getSession()->getId();
 
         if (!$record) {

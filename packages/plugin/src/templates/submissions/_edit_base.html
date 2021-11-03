@@ -100,7 +100,7 @@
 
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row if field.type not in ["submit", "confirmation", "password"] -%}
+                        {%- for field in row if field.type not in ["submit", "confirmation", "password", "save"] -%}
                             <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
                                 {% set fieldHandle = field.handle %}
 

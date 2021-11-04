@@ -18,7 +18,6 @@ class RecaptchaHandler {
 
   recaptchaElement;
   isTokenSet = false;
-  isBackButtonPressed = false;
 
   scriptAdded = false;
 
@@ -130,7 +129,7 @@ class RecaptchaHandler {
           this.recaptchaElement.querySelector('*[name="g-recaptcha-response"]').value = token;
 
           this.isTokenSet = true;
-          this.freeform.triggerSubmit(this.isBackButtonPressed);
+          this.freeform.triggerResubmit();
         },
       });
     });
@@ -143,9 +142,6 @@ class RecaptchaHandler {
       }
 
       event.preventDefault();
-
-      const { isBackButtonPressed } = event;
-      this.isBackButtonPressed = isBackButtonPressed;
 
       grecaptcha.ready(() => grecaptcha.execute());
     });
@@ -180,14 +176,13 @@ class RecaptchaHandler {
       }
 
       event.preventDefault();
-      const { isBackButtonPressed } = event;
 
       grecaptcha.ready(() => {
         grecaptcha.execute(siteKey, { action }).then((token) => {
           this.recaptchaElement.value = token;
           this.isTokenSet = true;
 
-          this.freeform.triggerSubmit(isBackButtonPressed);
+          this.freeform.triggerResubmit();
         });
       });
     });

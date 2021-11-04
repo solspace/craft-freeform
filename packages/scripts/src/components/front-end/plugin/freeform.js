@@ -68,6 +68,8 @@ export default class Freeform {
     SaveFormHandler,
   ];
 
+  _lastButtonPressed;
+
   _beforeSubmitCallbackStack = [];
   _successfulAjaxSubmitCallbackStack = [];
   _failedAjaxSubmitCallbackStack = [];
@@ -231,18 +233,19 @@ export default class Freeform {
     for (let i = 0; i < submitButtons.length; i++) {
       const submit = submitButtons[i];
 
-      if (submit.name !== this.options.prevButtonName) {
-        if (showSpinner) {
-          submit.classList.add('ff-loading');
-        }
-
-        if (showLoadingText) {
-          submit.innerText = submit.dataset.loadingText;
-        }
-      }
-
       if (disableSubmit || force) {
         submit.disabled = true;
+      }
+    }
+
+    const lastButton = this._lastButtonPressed;
+    if (lastButton) {
+      if (showSpinner) {
+        lastButton.classList.add('ff-loading');
+      }
+
+      if (showLoadingText) {
+        lastButton.innerText = lastButton.dataset.loadingText;
       }
     }
   };
@@ -268,9 +271,20 @@ export default class Freeform {
     }
   };
 
-  triggerSubmit = (clickBack = false) => {
+  triggerResubmit = () => {
     this.unlockSubmit();
-    const submitButtons = clickBack ? this._getBackButtons() : this._getSubmitButtons();
+
+    if (this._lastButtonPressed) {
+      this._lastButtonPressed.click();
+    } else {
+      this.triggerSubmit();
+    }
+  };
+
+  triggerSubmit = () => {
+    this.unlockSubmit();
+
+    const submitButtons = this._getSubmitButtons();
     if (submitButtons.length) {
       submitButtons[0].click();
     }
@@ -296,7 +310,10 @@ export default class Freeform {
 
     if (actionInput) {
       actionButtons.forEach((button) =>
-        button.addEventListener('click', () => (actionInput.value = button.getAttribute('data-freeform-action')))
+        button.addEventListener('click', () => {
+          this._lastButtonPressed = button;
+          actionInput.value = button.getAttribute('data-freeform-action');
+        })
       );
 
       // Reset the action-input after each submit
@@ -719,7 +736,7 @@ export default class Freeform {
    * @private
    */
   _getSubmitButtons = () => {
-    return this.form.querySelectorAll(`*[type=submit]`);
+    return this.form.querySelectorAll(`*[type=submit][data-freeform-action]`);
   };
 
   /**
@@ -727,9 +744,7 @@ export default class Freeform {
    * @private
    */
   _getBackButtons = () => {
-    const { prevButtonName } = this.options;
-
-    return this.form.querySelectorAll(`*[type=submit][name="${prevButtonName}"]`);
+    return this.form.querySelectorAll(`*[type=submit][data-freeform-action="back"]`);
   };
 
   _createNewEvent = (eventName, bubbles = true, cancelable = true) => {

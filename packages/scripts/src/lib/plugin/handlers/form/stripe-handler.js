@@ -112,7 +112,7 @@ class StripeHandler {
         cardField.value = result.paymentMethod.id;
         this.stripeSubmitReady = true;
 
-        this.freeform.triggerSubmit();
+        this.freeform.triggerResubmit();
       });
     } else {
       this.stripe.createToken(this.cardNumber).then((result) => {
@@ -123,7 +123,7 @@ class StripeHandler {
         cardField.value = result.token.id;
         this.stripeSubmitReady = true;
 
-        this.freeform.triggerSubmit();
+        this.freeform.triggerResubmit();
       });
     }
   };
@@ -150,7 +150,7 @@ class StripeHandler {
               return this._showError(result.error.message);
             }
 
-            this.freeform.triggerSubmit();
+            this.freeform.triggerResubmit();
           });
         }
 
@@ -166,7 +166,7 @@ class StripeHandler {
               return this._showError(result.error.message);
             }
 
-            this.freeform.triggerSubmit();
+            this.freeform.triggerResubmit();
           });
         }
       });

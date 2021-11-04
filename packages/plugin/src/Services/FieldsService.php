@@ -261,11 +261,11 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                         $this->createFieldInSubmissionsTable($record);
                     } catch (Exception $exception) {
                         // If row size too large - we remove the field and throw an error
-                        if (42000 === $exception->getCode()) {
+                        if (42000 === (int) $exception->getCode()) {
                             $transaction->rollBack();
                             $record->delete();
                             $model->addError(
-                                'title',
+                                'label',
                                 Freeform::t('Total field limit reached.')
                             );
 

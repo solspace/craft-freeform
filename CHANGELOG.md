@@ -1,5 +1,24 @@
 # Solspace Freeform Changelog
 
+## 3.12.0-beta.9 - 2021-11-05
+
+### Added
+- Added a `freeform/fields/create` console command to allow creation of new fields in CLI.
+
+### Changed
+- Updated "Save & Continue Later" feature to allow for resaving of existing sessions.
+- Updated sample formatting templates to account for "Save & Continue Later" buttons.
+- Updated the `submitClass` parameter to control styling of "Save & Continue Later" buttons in addition to regular Submit buttons.
+- Moved form behavior-related settings out of General Settings and into a new Form Behavior settings page.
+
+### Fixed
+- Fixed a bug where Freeform would not display an error if the database table reached its limit.
+- Fixed a bug where the User Element Connections feature would not work without specifying a user group.
+- Fixed a bug where saving form progress on the last page would generate a real submission.
+- Fixed a bug where the new "Save & Continue Later" button was appearing in the CP submission edit page.
+- Fixed a bug where the "Save & Continue Later" feature could sometimes not generate a session ID.
+- Fixed a bug where the "Save & Continue Later" feature would not work correctly with reCAPTCHA v2 Invisible and v3.
+
 ## 3.12.0-beta.8 - 2021-11-01
 
 ### Added

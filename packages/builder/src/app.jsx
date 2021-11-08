@@ -35,11 +35,6 @@ const specialFields = [
     visible: true,
   },
   {
-    type: FieldTypes.SAVE,
-    label: translate('Save & Continue Later'),
-    position: 'left',
-  },
-  {
     type: FieldTypes.HTML,
     label: 'HTML',
     value: '<div>Html content</div>',
@@ -48,6 +43,11 @@ const specialFields = [
 
 if (isPro) {
   specialFields.push(
+    {
+      type: FieldTypes.SAVE,
+      label: translate('Save & Continue Later'),
+      position: 'left',
+    },
     {
       type: FieldTypes.RICH_TEXT,
       label: 'Rich Text',

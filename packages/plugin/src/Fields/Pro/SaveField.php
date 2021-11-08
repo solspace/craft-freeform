@@ -26,6 +26,12 @@ class SaveField extends AbstractField implements SingleValueInterface, InputOnly
     /** @var string */
     protected $url;
 
+    /** @var int|string */
+    protected $notificationId;
+
+    /** @var string */
+    protected $emailFieldHash;
+
     public function getPosition(): string
     {
         return $this->position;
@@ -42,6 +48,16 @@ class SaveField extends AbstractField implements SingleValueInterface, InputOnly
     public function getUrl()
     {
         return $this->url;
+    }
+
+    public function getNotificationId()
+    {
+        return $this->notificationId;
+    }
+
+    public function getEmailFieldHash()
+    {
+        return $this->emailFieldHash;
     }
 
     public function getType(): string

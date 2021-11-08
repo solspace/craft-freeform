@@ -106,7 +106,8 @@ $minRowHeight: 60px;
           z-index: 2;
         }
 
-        &, & * {
+        &,
+        & * {
           cursor: pointer;
         }
 
@@ -119,7 +120,10 @@ $minRowHeight: 60px;
           background: $color-droppable;
         }
 
-        input, textarea, select, button {
+        input,
+        textarea,
+        select,
+        button {
           pointer-events: none;
         }
 
@@ -166,7 +170,7 @@ $minRowHeight: 60px;
 
             font-family: 'Craft';
             speak: none;
-            font-feature-settings: "liga", "dlig";
+            font-feature-settings: 'liga', 'dlig';
             text-rendering: optimizeLegibility;
             font-weight: normal;
             font-variant: normal;
@@ -204,7 +208,8 @@ $minRowHeight: 60px;
           margin-bottom: 8px;
           color: $color-column-label;
 
-          > input[type=checkbox], > input[type=radio] {
+          > input[type='checkbox'],
+          > input[type='radio'] {
             margin-right: 8px;
           }
 
@@ -260,7 +265,7 @@ $minRowHeight: 60px;
             position: relative;
             height: 19px;
 
-            input[type=file] {
+            input[type='file'] {
               position: absolute;
               left: 0;
               top: 0;
@@ -271,8 +276,10 @@ $minRowHeight: 60px;
           }
         }
 
-        .composer-ft-select-wrapper, .composer-ft-dynamic-recipients-wrapper {
-          .select, .select select {
+        .composer-ft-select-wrapper,
+        .composer-ft-dynamic-recipients-wrapper {
+          .select,
+          .select select {
             width: 100%;
           }
         }
@@ -284,7 +291,6 @@ $minRowHeight: 60px;
         }
 
         .composer-ft-rating-wrapper {
-
           .rating {
             display: flex;
             justify-content: flex-start;
@@ -336,12 +342,14 @@ $minRowHeight: 60px;
   padding: 0 7px;
   margin: 0 0 0 5px;
 
-  color: #BBBDBE;
+  color: #bbbdbe;
 
   border-radius: 4px;
 
   font-size: 12px;
   font-weight: normal;
+
+  align-self: center;
 
   &.composer-label-badge-warning,
   &.composer-label-badge-visibility,
@@ -361,7 +369,7 @@ $minRowHeight: 60px;
     top: 1px;
 
     &:before {
-      content: "alert";
+      content: 'alert';
     }
   }
 
@@ -370,7 +378,7 @@ $minRowHeight: 60px;
 
     &:before {
       font-family: solspace-freeform-craft;
-      content: "\e801";
+      content: '\e801';
     }
   }
 
@@ -379,7 +387,7 @@ $minRowHeight: 60px;
 
     &:before {
       font-family: solspace-freeform-craft;
-      content: "\e806";
+      content: '\e806';
     }
   }
 
@@ -388,10 +396,10 @@ $minRowHeight: 60px;
 
     &:before {
       font-family: solspace-freeform-craft;
-      content: "\f121";
+      content: '\f121';
     }
   }
 }
 
-@import "./builder/one-line";
-@import "./builder/fields/opinion-scale";
+@import './builder/one-line';
+@import './builder/fields/opinion-scale';

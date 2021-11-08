@@ -246,7 +246,10 @@
 .builder .composer-row .composer-column-container .composer-column.can-receive {
   background: #EBF4F9;
 }
-.builder .composer-row .composer-column-container .composer-column input, .builder .composer-row .composer-column-container .composer-column textarea, .builder .composer-row .composer-column-container .composer-column select, .builder .composer-row .composer-column-container .composer-column button {
+.builder .composer-row .composer-column-container .composer-column input,
+.builder .composer-row .composer-column-container .composer-column textarea,
+.builder .composer-row .composer-column-container .composer-column select,
+.builder .composer-row .composer-column-container .composer-column button {
   pointer-events: none;
 }
 .builder .composer-row .composer-column-container .composer-column label.composer-field-required > span.required:after {
@@ -318,7 +321,8 @@
   margin-bottom: 8px;
   color: #55606e;
 }
-.builder .composer-row .composer-column-container .composer-column label > input[type=checkbox], .builder .composer-row .composer-column-container .composer-column label > input[type=radio] {
+.builder .composer-row .composer-column-container .composer-column label > input[type=checkbox],
+.builder .composer-row .composer-column-container .composer-column label > input[type=radio] {
   margin-right: 8px;
 }
 .builder .composer-row .composer-column-container .composer-column label.badge-only .composer-label-badge {
@@ -366,7 +370,10 @@
   right: 0;
   width: 100%;
 }
-.builder .composer-row .composer-column-container .composer-column .composer-ft-select-wrapper .select, .builder .composer-row .composer-column-container .composer-column .composer-ft-select-wrapper .select select, .builder .composer-row .composer-column-container .composer-column .composer-ft-dynamic-recipients-wrapper .select, .builder .composer-row .composer-column-container .composer-column .composer-ft-dynamic-recipients-wrapper .select select {
+.builder .composer-row .composer-column-container .composer-column .composer-ft-select-wrapper .select,
+.builder .composer-row .composer-column-container .composer-column .composer-ft-select-wrapper .select select,
+.builder .composer-row .composer-column-container .composer-column .composer-ft-dynamic-recipients-wrapper .select,
+.builder .composer-row .composer-column-container .composer-column .composer-ft-dynamic-recipients-wrapper .select select {
   width: 100%;
 }
 .builder .composer-row .composer-column-container .composer-column .composer-ft-table-wrapper .table {
@@ -409,10 +416,11 @@
   display: inline-block;
   padding: 0 7px;
   margin: 0 0 0 5px;
-  color: #BBBDBE;
+  color: #bbbdbe;
   border-radius: 4px;
   font-size: 12px;
   font-weight: normal;
+  align-self: center;
 }
 .composer-label-badge.composer-label-badge-warning:before, .composer-label-badge.composer-label-badge-visibility:before, .composer-label-badge.composer-label-badge-loudspeaker:before, .composer-label-badge.composer-label-badge-template:before {
   position: relative;
@@ -2548,10 +2556,12 @@
   content: "remove";
 }
 
-.composer-html-content ul, .composer-html-content ol {
+.composer-html-content ul,
+.composer-html-content ol {
   padding-left: 30px !important;
 }
-.composer-html-content ul li, .composer-html-content ol li {
+.composer-html-content ul li,
+.composer-html-content ol li {
   padding-left: 5px;
 }
 
@@ -2655,7 +2665,8 @@
 .builder-interface .builder-blocks > div.righty .property-editor > div hr {
   margin-top: 20px !important;
 }
-.builder-interface .builder-blocks > div.righty .property-editor > h3, .builder-interface .builder-blocks > div.righty .property-editor p {
+.builder-interface .builder-blocks > div.righty .property-editor > h3,
+.builder-interface .builder-blocks > div.righty .property-editor p {
   padding-left: 15px;
 }
 .builder-interface .builder-blocks h3 {
@@ -2870,7 +2881,7 @@
 }
 .property-editor .composer-form-settings a.active {
   background: #f3f7fd;
-  color: #2A313B;
+  color: #2a313b;
   border-bottom: 1px solid transparent;
 }
 .property-editor .composer-form-settings a.form-settings:before {
@@ -2943,15 +2954,21 @@
   margin-right: 3px;
 }
 
-.composer-add-new-field-wrapper, .composer-add-new-notification-wrapper, .composer-add-new-template-wrapper {
+.composer-add-new-field-wrapper,
+.composer-add-new-notification-wrapper,
+.composer-add-new-template-wrapper {
   margin-top: 10px;
 }
-.composer-add-new-field-wrapper.active, .composer-add-new-notification-wrapper.active, .composer-add-new-template-wrapper.active {
+.composer-add-new-field-wrapper.active,
+.composer-add-new-notification-wrapper.active,
+.composer-add-new-template-wrapper.active {
   padding: 10px;
   background: #FFFFFF;
   border: 1px dashed #DDDDDD;
 }
-.composer-add-new-field-wrapper > button, .composer-add-new-notification-wrapper > button, .composer-add-new-template-wrapper > button {
+.composer-add-new-field-wrapper > button,
+.composer-add-new-notification-wrapper > button,
+.composer-add-new-template-wrapper > button {
   margin: 0 auto;
   font-size: 13px;
 }
@@ -3027,7 +3044,9 @@
   line-height: 1.4;
   color: #8f98a3;
 }
-.composer-property-item .composer-property-input input:not([type=checkbox]), .composer-property-item .composer-property-input input:not([type=radio]), .composer-property-item .composer-property-input textarea:not([type=checkbox]), .composer-property-item .composer-property-input textarea:not([type=radio]) {
+.composer-property-item .composer-property-input input:not([type=checkbox]), .composer-property-item .composer-property-input input:not([type=radio]),
+.composer-property-item .composer-property-input textarea:not([type=checkbox]),
+.composer-property-item .composer-property-input textarea:not([type=radio]) {
   width: 100%;
   min-height: 30px;
   padding: 5px 7px;
@@ -3044,21 +3063,29 @@
   color: #29323d;
   font-family: HelveticaNeue, sans-serif;
 }
-.composer-property-item .composer-property-input input:not([type=checkbox]):focus, .composer-property-item .composer-property-input input:not([type=radio]):focus, .composer-property-item .composer-property-input textarea:not([type=checkbox]):focus, .composer-property-item .composer-property-input textarea:not([type=radio]):focus {
+.composer-property-item .composer-property-input input:not([type=checkbox]):focus, .composer-property-item .composer-property-input input:not([type=radio]):focus,
+.composer-property-item .composer-property-input textarea:not([type=checkbox]):focus,
+.composer-property-item .composer-property-input textarea:not([type=radio]):focus {
   outline: none;
 }
-.composer-property-item .composer-property-input input:not([type=checkbox])[readonly], .composer-property-item .composer-property-input input:not([type=radio])[readonly], .composer-property-item .composer-property-input textarea:not([type=checkbox])[readonly], .composer-property-item .composer-property-input textarea:not([type=radio])[readonly] {
+.composer-property-item .composer-property-input input:not([type=checkbox])[readonly], .composer-property-item .composer-property-input input:not([type=radio])[readonly],
+.composer-property-item .composer-property-input textarea:not([type=checkbox])[readonly],
+.composer-property-item .composer-property-input textarea:not([type=radio])[readonly] {
   background: #ECECEC;
   border: 1px solid #c2d1de;
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
   color: #555555;
 }
-.composer-property-item .composer-property-input input:not([type=checkbox]).code, .composer-property-item .composer-property-input input:not([type=radio]).code, .composer-property-item .composer-property-input textarea:not([type=checkbox]).code, .composer-property-item .composer-property-input textarea:not([type=radio]).code {
+.composer-property-item .composer-property-input input:not([type=checkbox]).code, .composer-property-item .composer-property-input input:not([type=radio]).code,
+.composer-property-item .composer-property-input textarea:not([type=checkbox]).code,
+.composer-property-item .composer-property-input textarea:not([type=radio]).code {
   font-family: Menlo, monospace;
   font-size: 0.9em !important;
   color: #ABA7A7;
 }
-.composer-property-item .composer-property-input input[type=radio], .composer-property-item .composer-property-input input[type=checkbox], .composer-property-item .composer-property-input textarea[type=radio], .composer-property-item .composer-property-input textarea[type=checkbox] {
+.composer-property-item .composer-property-input input[type=radio], .composer-property-item .composer-property-input input[type=checkbox],
+.composer-property-item .composer-property-input textarea[type=radio],
+.composer-property-item .composer-property-input textarea[type=checkbox] {
   width: auto;
   margin-right: 3px;
   min-height: 0;

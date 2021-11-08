@@ -287,7 +287,7 @@ class MailerService extends BaseService implements MailHandlerInterface
             }
         }
 
-        return $processedRecipients;
+        return array_filter($processedRecipients);
     }
 
     /**

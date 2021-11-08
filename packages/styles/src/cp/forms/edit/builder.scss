@@ -1,15 +1,15 @@
-@import "../../../../node_modules/craftcms-sass/mixins";
-@import "../../../shared/variables";
-@import "../../../shared/bootstrap/mixins/clearfix";
-@import "./option-table";
-@import "./colorpicker";
-@import "./builder-items";
-@import "./property-editor";
-@import "./walkthrough";
-@import "./rules";
-@import "./connections";
-@import "../../../shared/extendable-classes";
-@import "./builder/quill";
+@import '../../../../node_modules/craftcms-sass/mixins';
+@import '../../../shared/variables';
+@import '../../../shared/bootstrap/mixins/clearfix';
+@import './option-table';
+@import './colorpicker';
+@import './builder-items';
+@import './property-editor';
+@import './walkthrough';
+@import './rules';
+@import './connections';
+@import '../../../shared/extendable-classes';
+@import './builder/quill';
 @import '../../../../node_modules/react-tippy/dist/tippy';
 
 $sidebarMinWidth: 18%;
@@ -50,15 +50,15 @@ $sidebarMinWidth: 18%;
     }
 
     &.composer-action-integrations:after {
-      content: "\77";
+      content: '\77';
     }
 
     &.composer-action-settings:after {
-      content: "settings";
+      content: 'settings';
     }
 
     &.composer-action-move:after {
-      content: "\e617";
+      content: '\e617';
     }
 
     &.composer-action-remove {
@@ -67,7 +67,7 @@ $sidebarMinWidth: 18%;
       }
 
       &:after {
-        content: "remove";
+        content: 'remove';
       }
     }
   }
@@ -117,7 +117,7 @@ $sidebarMinWidth: 18%;
     }
 
     &:after {
-      content: "remove";
+      content: 'remove';
     }
   }
 }
@@ -126,7 +126,8 @@ $sidebarMinWidth: 18%;
   @extend %reset-lists;
   @extend %reset-headings;
 
-  ul, ol {
+  ul,
+  ol {
     padding-left: 30px !important;
 
     li {
@@ -243,7 +244,8 @@ $sidebarMinWidth: 18%;
             }
           }
 
-          > h3, p {
+          > h3,
+          p {
             padding-left: 15px;
           }
         }
@@ -323,7 +325,7 @@ $sidebarMinWidth: 18%;
 
             &.has-hover {
               background: #d3d6d9;
-              transition: background-color .2s ease-out;
+              transition: background-color 0.2s ease-out;
             }
 
             &:hover {
@@ -367,7 +369,7 @@ $sidebarMinWidth: 18%;
             }
 
             &:after {
-              content: "plus";
+              content: 'plus';
               position: relative;
               top: 1px;
 
@@ -383,7 +385,7 @@ $sidebarMinWidth: 18%;
 %h3 {
   padding: 0;
 
-  font-size: 1.10rem !important;
+  font-size: 1.1rem !important;
   font-weight: 700 !important;
   color: $color-headings;
 
@@ -405,7 +407,6 @@ $sidebarMinWidth: 18%;
 }
 
 %h6 {
-
   @extend %craftHeading;
 }
 
@@ -508,7 +509,7 @@ $sidebarMinWidth: 18%;
     > * {
       flex: 1 0;
 
-      &:first-child > a{
+      &:first-child > a {
         border-left: none !important;
       }
     }
@@ -524,48 +525,48 @@ $sidebarMinWidth: 18%;
       text-decoration: none;
 
       color: $color-input-text;
-      background: rgba(205, 216, 228, 1.00);
+      background: rgba(205, 216, 228, 1);
       border-left: 1px solid #e0e5eb;
       border-bottom: 1px solid #e0e5eb;
 
       &:before {
-        font-family: "solspace-freeform-craft", sans-serif;
+        font-family: 'solspace-freeform-craft', sans-serif;
       }
 
       &.active {
         background: $color-cp-bg-gray;
-        color: #2A313B;
+        color: #2a313b;
         border-bottom: 1px solid transparent;
       }
 
       &.form-settings:before {
         font-family: Craft, sans-serif;
-        content: "settings";
+        content: 'settings';
         line-height: 22px;
       }
 
       &.validation-settings:before {
-        content: "\e815";
+        content: '\e815';
       }
 
       &.notification-settings:before {
-        content: "\e800";
+        content: '\e800';
       }
 
       &.connection-settings:before {
-        content: "\e813";
+        content: '\e813';
       }
 
       &.rules:before {
-        content: "\e818";
+        content: '\e818';
       }
 
       &.crm-settings:before {
-        content: "\f0ee";
+        content: '\f0ee';
       }
 
       &.payment-settings:before {
-        content: "\f155";
+        content: '\f155';
       }
     }
   }
@@ -602,7 +603,7 @@ $sidebarMinWidth: 18%;
   *[readonly] {
     background: $color-input-readonly;
     border: 1px solid $color-input-readonly-border;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
     color: $color-tab-text;
   }
 
@@ -617,14 +618,14 @@ $sidebarMinWidth: 18%;
   justify-content: space-around;
   margin-bottom: $spacing-short;
 
-  input[type=text] {
+  input[type='text'] {
     display: block;
     flex: 1 1 45%;
     width: 45% !important;
     margin-right: $spacing-short !important;
   }
 
-  input[type=checkbox] {
+  input[type='checkbox'] {
     flex: 0 0 10%;
     margin: 9px auto 0 !important;
   }
@@ -639,7 +640,9 @@ $sidebarMinWidth: 18%;
   }
 }
 
-.composer-add-new-field-wrapper, .composer-add-new-notification-wrapper, .composer-add-new-template-wrapper {
+.composer-add-new-field-wrapper,
+.composer-add-new-notification-wrapper,
+.composer-add-new-template-wrapper {
   margin-top: $spacing;
 
   &.active {
@@ -749,9 +752,10 @@ $sidebarMinWidth: 18%;
   }
 
   .composer-property-input {
-    input, textarea {
-      &:not([type=checkbox]),
-      &:not([type=radio]) {
+    input,
+    textarea {
+      &:not([type='checkbox']),
+      &:not([type='radio']) {
         width: 100%;
         min-height: 30px;
 
@@ -786,7 +790,8 @@ $sidebarMinWidth: 18%;
         }
       }
 
-      &[type=radio], &[type=checkbox] {
+      &[type='radio'],
+      &[type='checkbox'] {
         width: auto;
         margin-right: $spacing-short;
         min-height: 0;
@@ -812,7 +817,7 @@ $sidebarMinWidth: 18%;
     }
   }
 
-  label > input[type=radio] {
+  label > input[type='radio'] {
     margin-right: 5px;
   }
 }
@@ -825,7 +830,7 @@ $sidebarMinWidth: 18%;
     color: $color-error;
 
     &:before {
-      content: "·";
+      content: '·';
       padding-right: 5px;
     }
   }
@@ -845,7 +850,7 @@ $sidebarMinWidth: 18%;
   &:before {
     font-family: 'Craft';
     speak: none;
-    font-feature-settings: "liga", "dlig";
+    font-feature-settings: 'liga', 'dlig';
     text-rendering: optimizeLegibility;
     font-weight: normal;
     font-variant: normal;
@@ -874,7 +879,7 @@ $sidebarMinWidth: 18%;
   position: relative;
 }
 
-[id="react-joyride:0"] {
+[id='react-joyride:0'] {
   > div > span {
     visibility: visible !important;
   }

@@ -10,10 +10,12 @@ use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Bundles\Form\SaveForm\Actions\SaveFormAction;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Fields\Pro\SaveField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\SavedFormRecord;
 use yii\base\Event;
@@ -39,6 +41,11 @@ class SaveForm extends FeatureBundle
         return 900;
     }
 
+    public static function getEncryptionKey(string $key): string
+    {
+        return $key.\Craft::$app->getConfig()->getGeneral()->securityKey;
+    }
+
     public function handleSave(HandleRequestEvent $event)
     {
         $isSavingForm = self::SAVE_ACTION === $event->getRequest()->post(Form::ACTION_KEY);
@@ -62,6 +69,10 @@ class SaveForm extends FeatureBundle
         if (!$record) {
             $token = CryptoHelper::getUniqueToken();
             $key = CryptoHelper::getUniqueToken(25);
+        }
+
+        if (!$this->checkEmailField($form)) {
+            return;
         }
 
         $form
@@ -92,7 +103,83 @@ class SaveForm extends FeatureBundle
         $record->save();
 
         $this->cleanupForSession($sessionId);
+        $this->sendNotification($form, $token, $key);
+        $this->redirectRequest($event, $form, $token, $key);
 
+        $event->isValid = false;
+    }
+
+    /**
+     * Checks and validates the email field of the currently posted page
+     * If an email field is set up and is required, it has to be filled out or the form won't save
+     * If it's not set, or isn't set to be required, the check passes.
+     */
+    private function checkEmailField(Form $form): bool
+    {
+        /** @var SaveField[] $saveButtons */
+        $saveButtons = $form->getCurrentPage()->getFields(SaveField::class);
+        foreach ($saveButtons as $button) {
+            /** @var EmailField $emailField */
+            $emailField = $form->get($button->getEmailFieldHash());
+            if (!$emailField) {
+                continue;
+            }
+
+            $isRequired = $emailField->isRequired();
+            $recipients = array_filter($emailField->getRecipients());
+
+            if ($isRequired && empty($recipients)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function sendNotification(Form $form, string $token, string $key)
+    {
+        $notificationService = Freeform::getInstance()->notifications;
+        $mailer = Freeform::getInstance()->mailer;
+
+        /** @var SaveField[] $saveButtons */
+        $saveButtons = $form->getCurrentPage()->getFields(SaveField::class);
+        foreach ($saveButtons as $button) {
+            /** @var EmailField $emailField */
+            $emailField = $form->get($button->getEmailFieldHash());
+            $notification = $notificationService->getNotificationById($button->getNotificationId());
+            if (!$emailField || !$notification) {
+                continue;
+            }
+
+            $recipients = $mailer->processRecipients($emailField->getRecipients());
+            if (empty($recipients)) {
+                continue;
+            }
+
+            try {
+                $message = $mailer->compileMessage($notification, [
+                    'dateCreated' => new Carbon(),
+                    'form' => $form,
+                    'token' => $token,
+                    'key' => $key,
+                ]);
+
+                $message->setTo($recipients);
+
+                \Craft::$app->mailer->send($message);
+            } catch (\Exception $exception) {
+                FreeformLogger::getInstance(FreeformLogger::EMAIL_NOTIFICATION)
+                    ->warning(
+                        $exception->getMessage(),
+                        ['form' => $form->getHandle(), 'context' => 'saving form', 'recipients' => $recipients]
+                    )
+                ;
+            }
+        }
+    }
+
+    private function redirectRequest(HandleRequestEvent $event, Form $form, string $token, string $key)
+    {
         $returnUrl = $form->getPropertyBag()->get(SaveFormsHelper::BAG_REDIRECT, '');
         if (empty($returnUrl)) {
             /** @var SaveField[] $saveButtons */
@@ -129,13 +216,6 @@ class SaveForm extends FeatureBundle
         } else {
             \Craft::$app->response->redirect($returnUrl)->send();
         }
-
-        $event->isValid = false;
-    }
-
-    public static function getEncryptionKey(string $key): string
-    {
-        return $key.\Craft::$app->getConfig()->getGeneral()->securityKey;
     }
 
     private function cleanupForSession($sessionId)

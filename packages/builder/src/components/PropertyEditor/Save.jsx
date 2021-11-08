@@ -85,7 +85,7 @@ export default class Save extends BasePropertyEditor {
 
         <SelectProperty
           label="Target Email Field"
-          instructions="The email field used to push to the mailing list."
+          instructions="Select the Email field that will contain the user's email address in order to send the email notification. Good practice would be to have the email field on the first page of the form."
           name="emailFieldHash"
           onChangeHandler={this.update}
           value={emailFieldHash}
@@ -97,7 +97,7 @@ export default class Save extends BasePropertyEditor {
           <>
             <SelectProperty
               label="Email Template"
-              instructions="The notification template used to send an email to the email value entered into this field (optional). Leave empty to just store the email address without sending anything."
+              instructions="The email notification template used to send to the user if they click the Save button."
               name="notificationId"
               value={notificationId}
               couldBeNumeric={true}

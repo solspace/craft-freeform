@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Psr\Log\LoggerInterface;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
@@ -99,6 +100,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
     const PAGE_INDEX_KEY = 'page_index';
     const RETURN_URI_KEY = 'formReturnUrl';
     const STATUS_KEY = 'formStatus';
+    /** @deprecated will be removed in FF 4.x. Use EditSubmissionContext::TOKEN_KEY */
     const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
     const ELEMENT_ID_KEY = 'formElementId';
     const DEFAULT_PAGE_INDEX = 0;
@@ -373,14 +375,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         return $this->getPropertyBag()->get(self::HASH_KEY, '');
     }
 
-    /**
-     * @return null|int|string
-     */
-    public function getOverrideStatus()
-    {
-        return \Craft::$app->request->post(self::STATUS_KEY);
-    }
-
     public function getSubmissionTitleFormat(): string
     {
         return $this->submissionTitleFormat;
@@ -452,7 +446,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
      */
     public function getDefaultStatus()
     {
-        return $this->getOverrideStatus() ?? $this->defaultStatus;
+        return $this->defaultStatus;
     }
 
     /**
@@ -1044,11 +1038,13 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
     /**
      * Returns the assigned submission token.
      *
+     * @deprecated will be removed in FF 4.x. Use EditSubmissionContext::getToken($form) instead.
+     *
      * @return null|string
      */
     public function getAssociatedSubmissionToken()
     {
-        return \Craft::$app->request->post(self::SUBMISSION_TOKEN_KEY);
+        return EditSubmissionContext::getToken($this);
     }
 
     /**

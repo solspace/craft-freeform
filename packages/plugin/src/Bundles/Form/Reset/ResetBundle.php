@@ -15,20 +15,7 @@ class ResetBundle extends FeatureBundle
 {
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'checkSubmissionToken']);
         Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'resetFieldValues']);
-    }
-
-    public function checkSubmissionToken(ResetEvent $event)
-    {
-        if (!$event->isValid) {
-            return;
-        }
-
-        $form = $event->getForm();
-        if ($form->getAssociatedSubmissionToken()) {
-            $event->isValid = false;
-        }
     }
 
     public function resetFieldValues(ResetEvent $event)

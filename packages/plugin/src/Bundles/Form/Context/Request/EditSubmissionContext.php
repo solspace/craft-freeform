@@ -4,40 +4,44 @@ namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class EditElementContext
+class EditSubmissionContext
 {
-    const SUBMISSION_TOKEN_KEY = 'submissionToken';
+    const TOKEN_KEY = 'submissionToken';
 
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleRequest']);
-        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'handleRender']);
+        Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'applySubmissionToForm']);
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'applySubmissionToForm']);
+        Event::on(Form::class, Form::EVENT_BEFORE_RESET, [$this, 'skipResetOnEdit']);
     }
 
-    public function handleRequest(HandleRequestEvent $event)
+    public static function getToken(Form $form)
+    {
+        return $form->getPropertyBag()->get(self::TOKEN_KEY);
+    }
+
+    public function skipResetOnEdit(ResetEvent $event)
+    {
+        if (!$event->isValid) {
+            return;
+        }
+
+        $token = self::getToken($event->getForm());
+        if ($token) {
+            $event->isValid = false;
+        }
+    }
+
+    public function applySubmissionToForm(FormEventInterface $event)
     {
         $form = $event->getForm();
-        $token = $form->getAssociatedSubmissionToken();
-
-        $this->applySubmissionToForm($form, $token);
-    }
-
-    public function handleRender(FormEventInterface $event)
-    {
-        $form = $event->getForm();
-        $token = $form->getPropertyBag()->get(self::SUBMISSION_TOKEN_KEY);
-
-        $this->applySubmissionToForm($form, $token);
-    }
-
-    private function applySubmissionToForm(Form $form, string $token = null)
-    {
+        $token = self::getToken($event->getForm());
         if (!$token) {
             return;
         }

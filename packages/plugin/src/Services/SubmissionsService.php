@@ -17,6 +17,7 @@ use craft\db\Query;
 use craft\db\Table;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
@@ -184,9 +185,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     {
         $isNew = true;
         $submission = null;
+        $editToken = EditSubmissionContext::getToken($form);
+
         if (!$form->isMarkedAsSpam()) {
-            if ($form->getAssociatedSubmissionToken() && Freeform::getInstance()->isPro()) {
-                $submission = $this->getSubmissionByToken($form->getAssociatedSubmissionToken());
+            if ($editToken && Freeform::getInstance()->isPro()) {
+                $submission = $this->getSubmissionByToken($editToken);
                 $isNew = false;
             }
 

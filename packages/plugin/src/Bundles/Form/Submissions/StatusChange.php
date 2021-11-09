@@ -17,6 +17,11 @@ class StatusChange extends FeatureBundle
         Event::on(Form::class, Form::EVENT_CREATE_SUBMISSION, [$this, 'modifyStatus']);
     }
 
+    public static function getStatus(Form $form)
+    {
+        return $form->getPropertyBag()->get(self::BAG_KEY_STATUS);
+    }
+
     public function modifyStatus(CreateSubmissionFromFormEvent $event)
     {
         $bag = $event->getForm()->getPropertyBag();

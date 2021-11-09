@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 
-use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -11,14 +10,10 @@ use yii\base\Event;
 
 class ElementEditBundle extends FeatureBundle
 {
+    const ELEMENT_KEY = 'elementId';
+
     public function __construct()
     {
-        Event::on(
-            Form::class,
-            Form::EVENT_RENDER_AFTER_OPEN_TAG,
-            [$this, 'addElementToFormTag']
-        );
-
         Event::on(
             Form::class,
             Form::EVENT_SET_PROPERTIES,
@@ -26,15 +21,15 @@ class ElementEditBundle extends FeatureBundle
         );
     }
 
-    public static function getDecryptedElementId(string $encryptedElementId)
+    public static function getElementId(Form $form)
     {
-        return \Craft::$app->security->decryptByKey(base64_decode($encryptedElementId));
+        return $form->getPropertyBag()->get(self::ELEMENT_KEY);
     }
 
     public function populateFormWithElementValues(SetPropertiesEvent $event)
     {
         $form = $event->getForm();
-        $elementId = $form->getPropertyBag()->get('elementId');
+        $elementId = self::getElementId($form);
 
         if (null === $elementId || !Freeform::getInstance()->isPro()) {
             return;
@@ -66,21 +61,5 @@ class ElementEditBundle extends FeatureBundle
                 $field->setValue($element->{$elementField});
             }
         }
-    }
-
-    public function addElementToFormTag(RenderTagEvent $event)
-    {
-        $form = $event->getForm();
-        $element = $form->getPropertyBag()->get('elementId');
-        if (!$element) {
-            return;
-        }
-
-        $event->addChunk(
-            '<input type="hidden" '
-            .'name="'.Form::ELEMENT_ID_KEY.'"'
-            .'value="'.base64_encode(\Craft::$app->security->encryptByKey($element)).'" '
-            .'/>'
-        );
     }
 }

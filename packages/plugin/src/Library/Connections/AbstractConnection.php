@@ -211,8 +211,8 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
     private function extractElement(Form $form)
     {
         $element = null;
-        if ($form->getEditableElementId()) {
-            $elementId = ElementEditBundle::getDecryptedElementId($form->getEditableElementId());
+        $elementId = ElementEditBundle::getElementId($form);
+        if ($elementId) {
             $element = \Craft::$app->elements->getElementById($elementId);
         }
 

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Controllers;
 
 use craft\db\Query;
 use craft\elements\Asset;
+use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
@@ -101,10 +102,11 @@ class FileUploadController extends BaseController
         }
 
         $uploadedFileExists = false;
-        if ($form->getAssociatedSubmissionToken()) {
+        $editToken = EditSubmissionContext::getToken($form);
+        if ($editToken) {
             $submission = Freeform::getInstance()
                 ->submissions
-                ->getSubmissionByToken($form->getAssociatedSubmissionToken())
+                ->getSubmissionByToken($editToken)
             ;
 
             if ($submission) {

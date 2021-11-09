@@ -17,6 +17,7 @@ use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -576,7 +577,12 @@ class FormsService extends BaseService implements FormHandlerInterface
     {
         $form = $event->getForm();
 
-        if ($this->isReachedPostingLimit($form) && !$form->getAssociatedSubmissionToken()) {
+        $token = EditSubmissionContext::getToken($form);
+        if ($token) {
+            return;
+        }
+
+        if ($this->isReachedPostingLimit($form)) {
             $form->addError(Freeform::t("Sorry, you've already submitted this form."));
         }
     }

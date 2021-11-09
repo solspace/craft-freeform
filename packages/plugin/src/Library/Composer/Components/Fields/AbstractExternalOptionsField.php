@@ -25,6 +25,8 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
     /** @var array */
     protected $configuration;
 
+    private $cachedOptions;
+
     /**
      * {@inheritDoc}
      */
@@ -54,49 +56,49 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
      */
     public function getOptions(): array
     {
-        if ($this instanceof MultipleValueInterface) {
-            $values = $this->values;
-        } else {
-            $values = $this->value;
-        }
+        if (null === $this->cachedOptions) {
+            if ($this instanceof MultipleValueInterface) {
+                $values = $this->values;
+            } else {
+                $values = $this->value;
+            }
 
-        if ($this instanceof DynamicRecipientField) {
-            $actualValues = [];
-            if (\is_array($this->values)) {
-                foreach ($this->values as $value) {
-                    $actualValues[] = $this->getActualValue($value);
+            if ($this instanceof DynamicRecipientField) {
+                $actualValues = [];
+                if (\is_array($this->values)) {
+                    foreach ($this->values as $value) {
+                        $actualValues[] = $this->getActualValue($value);
+                    }
                 }
+
+                $values = $actualValues;
             }
 
-            $values = $actualValues;
-        }
+            if (self::SOURCE_CUSTOM === $this->getOptionSource()) {
+                if (!\is_array($values)) {
+                    $values = [$values];
+                }
 
-        if (self::SOURCE_CUSTOM === $this->getOptionSource()) {
-            if (!\is_array($values)) {
-                $values = [$values];
-            }
+                $options = [];
+                foreach ($this->options as $option) {
+                    $options[] = new Option(
+                        $option->getLabel(),
+                        $option->getValue(),
+                        \in_array($option->getValue(), $values, false)
+                    );
+                }
 
-            $options = [];
-            foreach ($this->options as $option) {
-                $options[] = new Option(
-                    $option->getLabel(),
-                    $option->getValue(),
-                    \in_array($option->getValue(), $values, false)
+                $this->cachedOptions = $options;
+            } else {
+                $this->cachedOptions = $this->getForm()->getFieldHandler()->getOptionsFromSource(
+                    $this->getOptionSource(),
+                    $this->getOptionTarget(),
+                    $this->getOptionConfiguration(),
+                    $values
                 );
             }
-
-            return $options;
         }
 
-        return $this
-            ->getForm()
-            ->getFieldHandler()
-            ->getOptionsFromSource(
-                $this->getOptionSource(),
-                $this->getOptionTarget(),
-                $this->getOptionConfiguration(),
-                $values
-            )
-        ;
+        return $this->cachedOptions;
     }
 }

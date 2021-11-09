@@ -22,7 +22,7 @@ use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\FileHelper;
 use craft\web\UploadedFile;
-use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
+use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
@@ -204,7 +204,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
 
         if ($uploadedSuccessfully) {
             $assetId = $asset->id;
-            $formToken = SessionContext::getFormSessionToken($form);
+            $formToken = FormSecret::get($form);
 
             $this->markAssetUnfinalized($assetId, $field, $formToken);
         } elseif ($asset) {

@@ -2,10 +2,11 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
-class FormLoadedEvent extends Event
+class FormLoadedEvent extends Event implements FormEventInterface
 {
     /** @var Form */
     private $form;

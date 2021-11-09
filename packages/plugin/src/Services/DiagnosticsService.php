@@ -378,8 +378,8 @@ class DiagnosticsService extends BaseService
                     }
                 ),
                 new DiagnosticItem(
-                    'Freeform Session Context: [color]{{ value|capitalize }}[/color]',
-                    $this->getSettingsService()->getSettingsModel()->sessionContext,
+                    'Freeform Session Context: [color]{{ value }}[/color]',
+                    $this->getSettingsService()->getSettingsModel()->getSessionContextHumanReadable(),
                     [],
                     function () {
                         return DiagnosticItem::COLOR_BASE;

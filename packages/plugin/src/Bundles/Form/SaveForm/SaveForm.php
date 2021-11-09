@@ -233,7 +233,7 @@ class SaveForm extends FeatureBundle
             ->select(['id'])
             ->from(SavedFormRecord::TABLE)
             ->where(['sessionId' => $sessionId])
-            ->orderBy(['dateCreated' => \SORT_DESC])
+            ->orderBy(['dateUpdated' => \SORT_DESC])
             ->column()
         ;
 
@@ -265,7 +265,7 @@ class SaveForm extends FeatureBundle
             $ttl = Settings::SAVE_FORM_TTL;
         }
 
-        $expirationTime = new Carbon("now -{$ttl} day");
+        $expirationTime = new Carbon("now -{$ttl} day", 'UTC');
 
         \Craft::$app->db->createCommand()
             ->delete(SavedFormRecord::TABLE, ['<', 'dateUpdated', $expirationTime])

@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Controllers;
 use craft\db\Query;
 use craft\elements\Asset;
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
+use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -54,7 +55,7 @@ class FileUploadController extends BaseController
         $form = $this->getVerifiedForm();
         $field = $form->get($handle);
 
-        $token = SessionContext::getFormSessionToken($form);
+        $token = FormSecret::get($form);
 
         if (!$field instanceof FileDragAndDropField) {
             return $this->createErrorResponse(['Invalid file upload field used']);
@@ -90,7 +91,7 @@ class FileUploadController extends BaseController
         $this->requirePostRequest();
 
         $form = $this->getVerifiedForm();
-        $token = SessionContext::getFormSessionToken($form);
+        $token = FormSecret::get($form);
         $handle = \Craft::$app->request->post('handle');
         $uid = \Craft::$app->request->post('id');
 

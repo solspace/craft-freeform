@@ -587,6 +587,21 @@ class Settings extends Model
         return \Craft::parseEnv($this->sessionContextSecret);
     }
 
+    public function getSessionContextHumanReadable(): string
+    {
+        switch ($this->sessionContext) {
+            case self::CONTEXT_TYPE_SESSION:
+                return 'PHP Session';
+
+            case self::CONTEXT_TYPE_DATABASE:
+                return 'Database Table';
+
+            case self::CONTEXT_TYPE_PAYLOAD:
+            default:
+                return 'Encrypted Payload';
+        }
+    }
+
     /**
      * Takes a comma or newline (or both) separated string
      * and returns a cleaned up, unique value array.

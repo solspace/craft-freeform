@@ -98,6 +98,12 @@
 - Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
 - FIxed a bug where the "loading" indicators for the submit button were not working in Safari.
 
+## 3.11.13 - 2021-11-09
+
+### Fixed
+- Fixed a bug where Dynamic Recipients could run into performance issues when the options are populated by many Elements.
+- Fixed a bug where User accounts would not be created if the User Element Connection settings don't have any user groups checked.
+
 ## 3.11.12 - 2021-10-29
 
 ### Added

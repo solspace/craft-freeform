@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.12.0-beta.10 - 2021-11-09
+
+### Changed
+- Updated "Save & Continue Later" feature to allow for email notifications to occur.
+- Updated "Save & Continue Later" feature to account for unfinalized uploaded files correctly.
+- Refactored edit submissions and edit element logic.
+
 ## 3.12.0-beta.9 - 2021-11-05
 
 ### Added

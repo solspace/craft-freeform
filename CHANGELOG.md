@@ -105,6 +105,11 @@
 - Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
 - FIxed a bug where the "loading" indicators for the submit button were not working in Safari.
 
+## 3.11.13.1 - 2021-11-10
+
+### Fixed
+- Fixed a bug where multi-option field types would not display their selected options in edit mode.
+
 ## 3.11.13 - 2021-11-09
 
 ### Fixed

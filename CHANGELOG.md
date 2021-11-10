@@ -1,109 +1,46 @@
 # Solspace Freeform Changelog
 
-## 3.12.0-beta.10 - 2021-11-09
-
-### Changed
-- Updated "Save & Continue Later" feature to allow for email notifications to occur.
-- Updated "Save & Continue Later" feature to account for unfinalized uploaded files correctly.
-- Refactored edit submissions and edit element logic.
-
-## 3.12.0-beta.9 - 2021-11-05
+## 3.12.0 - 2021-11-10
 
 ### Added
-- Added a `freeform/fields/create` console command to allow creation of new fields in CLI.
-
-### Changed
-- Updated "Save & Continue Later" feature to allow for resaving of existing sessions.
-- Updated sample formatting templates to account for "Save & Continue Later" buttons.
-- Updated the `submitClass` parameter to control styling of "Save & Continue Later" buttons in addition to regular Submit buttons.
-- Moved form behavior-related settings out of General Settings and into a new Form Behavior settings page.
-
-### Fixed
-- Fixed a bug where Freeform would not display an error if the database table reached its limit.
-- Fixed a bug where the User Element Connections feature would not work without specifying a user group.
-- Fixed a bug where saving form progress on the last page would generate a real submission.
-- Fixed a bug where the new "Save & Continue Later" button was appearing in the CP submission edit page.
-- Fixed a bug where the "Save & Continue Later" feature could sometimes not generate a session ID.
-- Fixed a bug where the "Save & Continue Later" feature would not work correctly with reCAPTCHA v2 Invisible and v3.
-
-## 3.12.0-beta.8 - 2021-11-01
-
-### Added
+- Added a Drag & Drop File Upload field type (Pro).
 - Added "Save & Continue Later" feature, which allows users to save their form progress and return later to complete the form.
-- Added a developer event for registering the form context for cached forms.
-
-### Changed
-- Updated translation files to contain some missing field validation strings.
-- Adjusted the Drag & Drop File Upload field to disable the submit button while the files are uploading.
-- Adjusted all references of "Mailing List" integrations to "Email Marketing".
-
-## 3.12.0-beta.7 - 2021-09-27
-
-### Added
+- Added self-diagnostics page to help troubleshoot issues and identify potential issues.
+- Added a Bootstrap 5 example formatting template.
 - Added 'Extras' section to demo template to show additional common uses with forms.
-- Added support for 'epub' mime type in file validation.
-
-### Changed
-- Updated to the Honeypot field to include `autocomplete="off"`.
-
-### Fixed
-- Fixed several 3.12-related bugs that involved form submitting/processing.
-
-## 3.12.0-beta.6 - 2021-09-13
-
-### Added
 - Added the ability to limit how many submissions a form can have.
 - Added a setting to automatically scroll to the top of the Form on AJAX submits. This is especially beneficial when you have longer forms and success/error messages at the top of the form become out of sight.
 - Added ability to disable the Freeform Honeypot per form at template level.
 - Added ability to set payload forwarding to form render params.
-
-### Changed
-- Updated the CP Field Manager page to sort fields alphabetically.
-- Updated demo templates to include more complex form examples (more on the way).
-- Adjusted the Session Context setting to default storage to PHP sessions for existing installs.
-
-### Fixed
-- Fixed a bug where the Stripe integration could sometimes incorrectly log errors in the Freeform error log.
-
-## 3.12.0-beta.5 - 2021-09-08
-
-### Added
-- Added a Bootstrap 5 example formatting template.
-
-### Fixed
-- Fixed a bug where the display of the page tabs inside the CP Submission detail pages were not compatible with Craft 3.7+.
-- Fixed a bug where the 3.11.0 permissions migration can trigger an error on the Craft Solo edition.
-- Fixed a bug where the Constant Contact integration would routinely trigger an authentication error in Freeform log.
-
-## 3.12.0-beta.4 - 2021-09-02
-
-### Added
 - Added support for blocking phrases in spam keyword blocking feature (e.g. "generate new leads").
-
-### Changed
-- Updated newly created Text, Hidden, Invisible, Phone, Regex, and Website field types from `VARCHAR` to `TEXT` in database. Changed all other newly created field types to be `VARCHAR(255)` instead of `VARCHAR(100)`. This is not a retroactive change - it will affect the creation of new fields only.
-- Updated the SharpSpring CRM integration to work with the latest API changes.
-
-### Fixed
-- Fixed a bug where spam reasons in the submission view page would show up as many times as there are pages when a multi-page form triggered spam blocking protection.
-- Fixed a bug where attempting to sort on Spam Reasons in the Spam folder would trigger errors. Sorting by Spam Reasons is disabled for now.
-- Fixed a bug where submitting an AJAX form a second time (whole new second submission) would always fail the spam test when the "Minimum Submit Time" setting was enabled.
-
-## 3.12.0-beta.3 - 2021-08-26
-
-### Added
-- Added a Drag & Drop File Upload field type (Pro).
-- Added self-diagnostics page to help troubleshoot issues and identify potential issues.
+- Added a `freeform/fields/create` console command to allow creation of new fields in CLI.
+- Added a developer event for registering the form context for cached forms.
 
 ### Changed
 - Overhauled form processing to allow for alternative session storage options including the new Encrypted Payload default as well as a database table approach.
+- Updated sample formatting templates to account for "Save & Continue Later" buttons.
 - Updated the custom formatting templates and email notification templates lists to be ordered alphabetically in the form builder.
 - Updated field option values to automatically appear as camelCase instead of an exact clone of what is typed as field option label.
+- Updated newly created Text, Hidden, Invisible, Phone, Regex, and Website field types from `VARCHAR` to `TEXT` in database. Changed all other newly created field types to be `VARCHAR(255)` instead of `VARCHAR(100)`. This is not a retroactive change - it will affect the creation of new fields only.
+- Updated the CP Field Manager page to sort fields alphabetically.
+- Updated to the Honeypot field to include `autocomplete="off"`.
+- Updated the `submitClass` parameter to control styling of "Save & Continue Later" buttons in addition to regular Submit buttons.
+- Updated translation files to contain some missing field validation strings.
+- Adjusted all references of "Mailing List" integrations to "Email Marketing".
+- Moved form behavior-related settings out of General Settings and into a new Form Behavior settings page.
+- Refactored edit submissions and edit element logic.
 
 ### Fixed
 - Fixed a bug where the auto-scroll anchor inserted in Freeform forms could sometimes impact form styling. Added a `display:none;` inline CSS to the `div`.
 - Fixed a bug where the 'overrideValues' parameter does not apply to fields on pages after first page when AJAX is enabled.
 - FIxed a bug where the "loading" indicators for the submit button were not working in Safari.
+- Fixed a bug where spam reasons in the submission view page would show up as many times as there are pages when a multi-page form triggered spam blocking protection.
+- Fixed a bug where attempting to sort on Spam Reasons in the Spam folder would trigger errors. Sorting by Spam Reasons is disabled for now.
+- Fixed a bug where submitting an AJAX form a second time (whole new second submission) would always fail the spam test when the "Minimum Submit Time" setting was enabled.
+- Fixed a bug where Freeform would not display an error if the database table reached its limit.
+- Fixed a bug where the display of the page tabs inside the CP Submission detail pages were not compatible with Craft 3.7+.
+- Fixed a bug where the 3.11.0 permissions migration can trigger an error on the Craft Solo edition.
+- Fixed a bug where the Constant Contact integration would routinely trigger an authentication error in Freeform log.
 
 ## 3.11.13.1 - 2021-11-10
 

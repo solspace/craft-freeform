@@ -2,7 +2,8 @@
 
 namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 
-use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
+use craft\elements\db\ElementQuery;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -16,7 +17,7 @@ class ElementEditBundle extends FeatureBundle
     {
         Event::on(
             Form::class,
-            Form::EVENT_SET_PROPERTIES,
+            Form::EVENT_REGISTER_CONTEXT,
             [$this, 'populateFormWithElementValues']
         );
     }
@@ -26,7 +27,7 @@ class ElementEditBundle extends FeatureBundle
         return $form->getPropertyBag()->get(self::ELEMENT_KEY);
     }
 
-    public function populateFormWithElementValues(SetPropertiesEvent $event)
+    public function populateFormWithElementValues(FormEventInterface $event)
     {
         $form = $event->getForm();
         $elementId = self::getElementId($form);
@@ -58,7 +59,12 @@ class ElementEditBundle extends FeatureBundle
 
             $hasPostValue = isset($_POST[$ffField]);
             if (!$hasPostValue && isset($element->{$elementField})) {
-                $field->setValue($element->{$elementField});
+                $value = $element->{$elementField};
+                if ($value instanceof ElementQuery) {
+                    $value = $value->ids();
+                }
+
+                $field->setValue($value);
             }
         }
     }

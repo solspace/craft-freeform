@@ -327,10 +327,6 @@ class MailerService extends BaseService implements MailHandlerInterface
                 continue;
             }
 
-            if ($submission) {
-                $field->setValue($submission->{$field->getHandle()}->getValue());
-            }
-
             if ($rules && $rules->isHidden($field, $form)) {
                 continue;
             }

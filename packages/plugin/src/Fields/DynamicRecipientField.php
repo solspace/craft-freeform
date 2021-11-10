@@ -85,8 +85,10 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
             return implode(', ', $this->getActualValue($this->getValue()) ?? []);
         }
 
+        $objectValue = $this->getValue();
+
         $areIndexValues = true;
-        foreach ($this->getValue() as $value) {
+        foreach ($objectValue as $value) {
             if (!is_numeric($value)) {
                 $areIndexValues = false;
             }
@@ -95,7 +97,7 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
         $returnValues = [];
         foreach ($this->getOptions() as $index => $option) {
             $lookup = $areIndexValues ? $index : $option->getValue();
-            if (\in_array($lookup, $this->getValue(), false)) {
+            if (\in_array($lookup, $objectValue, false)) {
                 $returnValues[] = $option->getLabel();
             }
         }

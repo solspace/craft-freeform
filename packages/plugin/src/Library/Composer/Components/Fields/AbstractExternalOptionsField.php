@@ -25,8 +25,6 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
     /** @var array */
     protected $configuration;
 
-    private $cachedOptions;
-
     /**
      * {@inheritDoc}
      */
@@ -56,49 +54,54 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
      */
     public function getOptions(): array
     {
-        if (null === $this->cachedOptions) {
-            if ($this instanceof MultipleValueInterface) {
-                $values = $this->values;
-            } else {
-                $values = $this->value;
-            }
-
-            if ($this instanceof DynamicRecipientField) {
-                $actualValues = [];
-                if (\is_array($this->values)) {
-                    foreach ($this->values as $value) {
-                        $actualValues[] = $this->getActualValue($value);
-                    }
-                }
-
-                $values = $actualValues;
-            }
-
-            if (self::SOURCE_CUSTOM === $this->getOptionSource()) {
-                if (!\is_array($values)) {
-                    $values = [$values];
-                }
-
-                $options = [];
-                foreach ($this->options as $option) {
-                    $options[] = new Option(
-                        $option->getLabel(),
-                        $option->getValue(),
-                        \in_array($option->getValue(), $values, false)
-                    );
-                }
-
-                $this->cachedOptions = $options;
-            } else {
-                $this->cachedOptions = $this->getForm()->getFieldHandler()->getOptionsFromSource(
-                    $this->getOptionSource(),
-                    $this->getOptionTarget(),
-                    $this->getOptionConfiguration(),
-                    $values
-                );
-            }
+        if ($this instanceof MultipleValueInterface) {
+            $values = $this->values;
+        } else {
+            $values = $this->value;
         }
 
-        return $this->cachedOptions;
+        if ($this instanceof DynamicRecipientField) {
+            $actualValues = [];
+            if (\is_array($this->values)) {
+                foreach ($this->values as $value) {
+                    $actualValues[] = $this->getActualValue($value);
+                }
+            }
+
+            $values = $actualValues;
+        }
+
+        if (self::SOURCE_CUSTOM === $this->getOptionSource()) {
+            if (!\is_array($values)) {
+                $values = [$values];
+            }
+
+            $options = [];
+            foreach ($this->options as $option) {
+                $options[] = new Option(
+                    $option->getLabel(),
+                    $option->getValue(),
+                    \in_array($option->getValue(), $values, false)
+                );
+            }
+
+            return $options;
+        }
+
+        return $this
+            ->getForm()
+            ->getFieldHandler()
+            ->getOptionsFromSource(
+                $this->getOptionSource(),
+                $this->getOptionTarget(),
+                $this->getOptionConfiguration(),
+                $values
+            )
+        ;
+    }
+
+    public function setOptions(array $options)
+    {
+        $this->cachedOptions = $options;
     }
 }

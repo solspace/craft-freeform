@@ -81,6 +81,9 @@ class FieldsService extends BaseService implements FieldHandlerInterface
     /** @var array */
     private static $fieldHandleCache;
 
+    /** @var array */
+    private static $optionsCache = [];
+
     /**
      * @param bool $indexById
      *
@@ -361,107 +364,113 @@ class FieldsService extends BaseService implements FieldHandlerInterface
      */
     public function getOptionsFromSource(string $source, $target, array $configuration = [], $selectedValues = []): array
     {
-        $config = new ExternalOptionsConfiguration($configuration);
-        $labelField = $config->getLabelField() ?? 'title';
-        $valueField = $config->getValueField() ?? 'id';
-        $siteId = $config->getSiteId() ?? \Craft::$app->sites->currentSite->id;
-        $options = [];
+        $hash = sha1(json_encode([$source, $target, $configuration, $selectedValues]));
 
-        if (!\is_array($selectedValues)) {
-            $selectedValues = [$selectedValues];
-        }
+        if (!isset(self::$optionsCache[$hash])) {
+            $config = new ExternalOptionsConfiguration($configuration);
+            $labelField = $config->getLabelField() ?? 'title';
+            $valueField = $config->getValueField() ?? 'id';
+            $siteId = $config->getSiteId() ?? \Craft::$app->sites->currentSite->id;
+            $options = [];
 
-        switch ($source) {
-            case ExternalOptionsInterface::SOURCE_ENTRIES:
-                $query = Entry::find()->sectionId($target)->siteId($siteId);
+            if (!\is_array($selectedValues)) {
+                $selectedValues = [$selectedValues];
+            }
 
-                break;
-
-            case ExternalOptionsInterface::SOURCE_CATEGORIES:
-                $query = Category::find()->groupId($target)->siteId($siteId);
-
-                break;
-
-            case ExternalOptionsInterface::SOURCE_TAGS:
-                $query = Tag::find()->groupId($target)->siteId($siteId);
-
-                break;
-
-            case ExternalOptionsInterface::SOURCE_USERS:
-                $query = User::find()->groupId($target)->siteId($siteId);
-
-                break;
-
-            case ExternalOptionsInterface::SOURCE_ASSETS:
-                $query = Asset::find()->volumeId($target)->siteId($siteId);
-
-                break;
-
-            case ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS:
-                if (!class_exists('craft\commerce\elements\Product')) {
-                    return [];
-                }
-
-                $query = Product::find()->typeId($target)->siteId($siteId);
-
-                break;
-
-            case ExternalOptionsInterface::SOURCE_PREDEFINED:
-                return PredefinedOptionsFactory::create($target, $config, $selectedValues);
-        }
-
-        $orderBy = $config->getOrderBy() ?? 'id';
-        $sort = 'desc' === strtolower($config->getSort()) ? \SORT_DESC : \SORT_ASC;
-        $query->orderBy([$orderBy => $sort]);
-
-        $items = $query->all();
-
-        foreach ($items as $item) {
             switch ($source) {
-                case ExternalOptionsInterface::SOURCE_ASSETS:
-                    $defaultLabel = $item->getFilename();
+                case ExternalOptionsInterface::SOURCE_ENTRIES:
+                    $query = Entry::find()->sectionId($target)->siteId($siteId);
+
+                    break;
+
+                case ExternalOptionsInterface::SOURCE_CATEGORIES:
+                    $query = Category::find()->groupId($target)->siteId($siteId);
+
+                    break;
+
+                case ExternalOptionsInterface::SOURCE_TAGS:
+                    $query = Tag::find()->groupId($target)->siteId($siteId);
 
                     break;
 
                 case ExternalOptionsInterface::SOURCE_USERS:
-                    $defaultLabel = $item->username;
+                    $query = User::find()->groupId($target)->siteId($siteId);
 
                     break;
 
-                default:
-                    $defaultLabel = $item->title;
+                case ExternalOptionsInterface::SOURCE_ASSETS:
+                    $query = Asset::find()->volumeId($target)->siteId($siteId);
 
                     break;
+
+                case ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS:
+                    if (!class_exists('craft\commerce\elements\Product')) {
+                        return [];
+                    }
+
+                    $query = Product::find()->typeId($target)->siteId($siteId);
+
+                    break;
+
+                case ExternalOptionsInterface::SOURCE_PREDEFINED:
+                    return PredefinedOptionsFactory::create($target, $config, $selectedValues);
             }
 
-            if (ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS === $source) {
-                try {
-                    $label = $item->getDefaultVariant()->getFieldValue($labelField);
-                } catch (\yii\base\Exception $exception) {
-                    $label = $item->{$labelField} ?? $defaultLabel;
+            $orderBy = $config->getOrderBy() ?? 'id';
+            $sort = 'desc' === strtolower($config->getSort()) ? \SORT_DESC : \SORT_ASC;
+            $query->orderBy([$orderBy => $sort]);
+
+            $items = $query->all();
+
+            foreach ($items as $item) {
+                switch ($source) {
+                    case ExternalOptionsInterface::SOURCE_ASSETS:
+                        $defaultLabel = $item->getFilename();
+
+                        break;
+
+                    case ExternalOptionsInterface::SOURCE_USERS:
+                        $defaultLabel = $item->username;
+
+                        break;
+
+                    default:
+                        $defaultLabel = $item->title;
+
+                        break;
                 }
 
-                try {
-                    $value = $item->getDefaultVariant()->getFieldValue($valueField);
-                } catch (\yii\base\Exception $exception) {
+                if (ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS === $source) {
+                    try {
+                        $label = $item->getDefaultVariant()->getFieldValue($labelField);
+                    } catch (\yii\base\Exception $exception) {
+                        $label = $item->{$labelField} ?? $defaultLabel;
+                    }
+
+                    try {
+                        $value = $item->getDefaultVariant()->getFieldValue($valueField);
+                    } catch (\yii\base\Exception $exception) {
+                        $value = $item->{$valueField} ?? $item->id;
+                    }
+                } else {
+                    $label = $item->{$labelField} ?? $defaultLabel;
                     $value = $item->{$valueField} ?? $item->id;
                 }
-            } else {
-                $label = $item->{$labelField} ?? $defaultLabel;
-                $value = $item->{$valueField} ?? $item->id;
+
+                $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
             }
 
-            $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
+            if ($config->getEmptyOption()) {
+                array_unshift(
+                    $options,
+                    new Option($config->getEmptyOption(), '', \in_array('', $selectedValues, true))
+                );
+            }
+
+            self::$optionsCache[$hash] = $options;
         }
 
-        if ($config->getEmptyOption()) {
-            array_unshift(
-                $options,
-                new Option($config->getEmptyOption(), '', \in_array('', $selectedValues, true))
-            );
-        }
-
-        return $options;
+        return self::$optionsCache[$hash];
     }
 
     private function createFieldInSubmissionsTable(FieldRecord $record)

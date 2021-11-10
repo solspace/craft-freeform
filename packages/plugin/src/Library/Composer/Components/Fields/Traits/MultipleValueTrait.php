@@ -48,7 +48,6 @@ trait MultipleValueTrait
             $values = [];
         } elseif (!$this instanceof MultiDimensionalValueInterface) {
             $values = array_map('strval', $values);
-            // $values = array_map([LitEmoji::class, 'shortcodeToUnicode'], $values);
         }
 
         if ($this instanceof DynamicRecipientField && $values) {

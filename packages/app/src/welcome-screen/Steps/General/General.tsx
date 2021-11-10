@@ -45,7 +45,7 @@ const General: React.FC = () => {
   ];
 
   const jsInsertTypeOptions: Options<JSInsertType> = [
-    { value: JSInsertType.Static, label: 'As Static URLs (recommended)' },
+    { value: JSInsertType.Pointers, label: 'As Static URLs (recommended)' },
     { value: JSInsertType.Files, label: 'As Files' },
     { value: JSInsertType.Inline, label: 'Inline' },
   ];

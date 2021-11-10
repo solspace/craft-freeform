@@ -18,7 +18,7 @@ export enum JSInsertLocation {
   Manual = 'manual',
 }
 export enum JSInsertType {
-  Static = 'static',
+  Pointers = 'pointers',
   Files = 'files',
   Inline = 'inline',
 }

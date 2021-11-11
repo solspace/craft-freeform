@@ -18,7 +18,9 @@
 				"defaultFormattingTemplate": "{{ settings.formattingTemplate }}",
 				"disableSubmit": {{ settings.formSubmitDisable ? 'true' : 'false' }},
 				"autoScroll": {{ settings.autoScrollToErrors ? 'true' : 'false' }},
-				"jsInsertLocation": "{{ settings.scriptInsertLocation }}"
+				"jsInsertLocation": "footer",
+				"jsInsertType": "pointers",
+				"sessionType": "payload"
 			},
 			"spam": {
 				"honeypot": {{ settings.freeformHoneypot ? 'true' : 'false' }},

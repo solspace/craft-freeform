@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { JSInsertType } from '@ff-welcome-screen/shared/interfaces/settings';
 
 type DefaultView = 'dashboard' | 'forms' | 'submissions';
 type DefaultFormattingTemplate = 'flexbox';
@@ -14,6 +15,7 @@ export interface FreeformContextInterface {
   disableSubmit: boolean;
   autoScroll: boolean;
   jsInsertLocation: JSInsertLocation;
+  jsInsertType: JSInsertType;
 
   honeypot: boolean;
   enhancedHoneypot: boolean;

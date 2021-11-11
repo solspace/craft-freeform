@@ -6,6 +6,7 @@ use craft\elements\db\ElementQuery;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -62,6 +63,10 @@ class ElementEditBundle extends FeatureBundle
                 $value = $element->{$elementField};
                 if ($value instanceof ElementQuery) {
                     $value = $value->ids();
+                }
+
+                if ($field instanceof SingleValueInterface && \is_array($value)) {
+                    $value = reset($value);
                 }
 
                 $field->setValue($value);

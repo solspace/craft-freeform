@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.12.1 - 2021-11-11
+
+### Fixed
+- Fixed a bug where element editing was not correctly mapping Lightswitch and Checkbox fields as well as Relation fields that mapped to single option field types.
+- Fixed a bug where some of the Welcome install wizard's new 3.12 settings weren't saving correctly.
+
 ## 3.12.0 - 2021-11-10
 
 ### Added

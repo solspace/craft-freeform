@@ -3,9 +3,12 @@
 namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 
 use craft\elements\db\ElementQuery;
+use craft\fields\data\MultiOptionsFieldData;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -61,12 +64,40 @@ class ElementEditBundle extends FeatureBundle
             $hasPostValue = isset($_POST[$ffField]);
             if (!$hasPostValue && isset($element->{$elementField})) {
                 $value = $element->{$elementField};
+                if ($value instanceof MultiOptionsFieldData) {
+                    $options = $value->getOptions();
+
+                    if ($field instanceof SingleValueInterface) {
+                        $firstOption = reset($options);
+                        if ($firstOption) {
+                            $value = $firstOption->selected ? $firstOption->value : '';
+                        } else {
+                            $value = '';
+                        }
+                    }
+
+                    if ($field instanceof MultipleValueInterface) {
+                        $values = [];
+                        foreach ($options as $option) {
+                            if ($option->selected) {
+                                $values[] = $option->value;
+                            }
+                        }
+
+                        $value = $values;
+                    }
+                }
+
                 if ($value instanceof ElementQuery) {
                     $value = $value->ids();
                 }
 
                 if ($field instanceof SingleValueInterface && \is_array($value)) {
                     $value = reset($value);
+                }
+
+                if ($field instanceof CheckboxField) {
+                    $field->setIsChecked((bool) $value);
                 }
 
                 $field->setValue($value);

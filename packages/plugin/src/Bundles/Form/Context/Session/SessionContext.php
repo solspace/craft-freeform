@@ -228,6 +228,11 @@ class SessionContext
 
     private static function getPostedHashParts(): array
     {
+        $request = \Craft::$app->getRequest();
+        if ($request->isConsoleRequest) {
+            return [null, null, null];
+        }
+
         $hash = \Craft::$app->getRequest()->post(self::KEY_HASH);
 
         try {

@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.12.2 - 2021-11-15
+
+### Fixed
+- Fixed a bug where Dynamic Notifications (template parameter) were not working.
+- Fixed an error caused by querying submissions in a console request.
+- Fixed a bug where queue jobs could fail on an undefined request method.
+- Fixed a bug where incomplete craft plugin info could cause the Freeform Diagnostics page to not display.
+
 ## 3.12.1 - 2021-11-11
 
 ### Fixed

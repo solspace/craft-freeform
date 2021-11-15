@@ -123,9 +123,7 @@ class IntegrationsService extends BaseService
     public function sendOutEmailNotifications(Form $form, Submission $submission)
     {
         $mailer = Freeform::getInstance()->mailer;
-
         $fields = $form->getLayout()->getFields();
-        $suppressors = $form->getSuppressors();
 
         $event = new SendNotificationsEvent($form, $submission, $mailer, $fields);
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);

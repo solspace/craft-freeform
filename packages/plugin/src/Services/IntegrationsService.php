@@ -14,11 +14,12 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
@@ -30,6 +31,7 @@ use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewa
 use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
+use yii\base\Event;
 
 class IntegrationsService extends BaseService
 {
@@ -117,60 +119,16 @@ class IntegrationsService extends BaseService
 
     /**
      * Send out any email notifications.
-     *
-     * @param Submission $submission
      */
-    public function sendOutEmailNotifications(Submission $submission = null)
+    public function sendOutEmailNotifications(Form $form, Submission $submission)
     {
         $mailer = Freeform::getInstance()->mailer;
 
-        $form = $submission->getForm();
-
         $fields = $form->getLayout()->getFields();
-        $adminNotifications = $form->getAdminNotificationProperties();
         $suppressors = $form->getSuppressors();
 
-        if (!$suppressors->isAdminNotifications() && $adminNotifications->getNotificationId()) {
-            $mailer->sendEmail(
-                $form,
-                $adminNotifications->getRecipientArray($submission),
-                $adminNotifications->getNotificationId(),
-                $fields,
-                $submission
-            );
-        }
-
-        $recipientFields = $form->getLayout()->getRecipientFields();
-        foreach ($recipientFields as $field) {
-            if ($field instanceof DynamicRecipientField && $suppressors->isDynamicRecipients()) {
-                continue;
-            }
-
-            if (!$field instanceof DynamicRecipientField && $suppressors->isSubmitterNotifications()) {
-                continue;
-            }
-
-            $mailer->sendEmail(
-                $form,
-                $submission->{$field->getHandle()}->getRecipients(),
-                $field->getNotificationId(),
-                $fields,
-                $submission
-            );
-        }
-
-        if (!$suppressors->isDynamicRecipients()) {
-            $dynamicRecipients = $form->getDynamicNotificationData();
-            if ($dynamicRecipients && $dynamicRecipients->getRecipients()) {
-                $mailer->sendEmail(
-                    $form,
-                    $dynamicRecipients->getRecipients(),
-                    $dynamicRecipients->getTemplate(),
-                    $fields,
-                    $submission
-                );
-            }
-        }
+        $event = new SendNotificationsEvent($form, $submission, $mailer, $fields);
+        Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
     }
 
     /**

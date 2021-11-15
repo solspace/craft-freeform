@@ -277,7 +277,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         if ($integrationsService->processPayments($submission)) {
             $connectionsService->connect($form);
-            $integrationsService->sendOutEmailNotifications($submission);
+            $integrationsService->sendOutEmailNotifications($form, $submission);
 
             if ($form->hasOptInPermission()) {
                 $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);

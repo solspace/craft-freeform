@@ -27,9 +27,12 @@ class ResendNotificationsAction extends ElementAction
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
         $integrations = Freeform::getInstance()->integrations;
+
+        /** @var Submission $submission */
         foreach ($query->all() as $submission) {
-            // @var Submission $submission
-            $integrations->sendOutEmailNotifications($submission);
+            $form = $submission->getForm();
+
+            $integrations->sendOutEmailNotifications($form, $submission);
         }
 
         $this->setMessage('Notifications sent successfully');

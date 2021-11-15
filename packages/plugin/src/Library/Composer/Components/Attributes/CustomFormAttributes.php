@@ -289,20 +289,6 @@ class CustomFormAttributes extends AbstractAttributes
     }
 
     /**
-     * @return null|DynamicNotificationAttributes
-     */
-    public function getDynamicNotification()
-    {
-        if (null !== $this->dynamicNotification) {
-            if (!$this->dynamicNotification instanceof DynamicNotificationAttributes) {
-                $this->dynamicNotification = new DynamicNotificationAttributes($this->dynamicNotification);
-            }
-        }
-
-        return $this->dynamicNotification;
-    }
-
-    /**
      * @return null|string
      */
     public function getFieldIdPrefix()

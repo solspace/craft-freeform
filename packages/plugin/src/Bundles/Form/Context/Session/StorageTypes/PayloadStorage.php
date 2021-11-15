@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes;
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
@@ -21,6 +22,7 @@ class PayloadStorage implements FormContextStorageInterface
         $this->secret = $secret;
 
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
+        Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachJson']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'requirePayload']);
     }
 
@@ -49,6 +51,16 @@ class PayloadStorage implements FormContextStorageInterface
         $name = self::INPUT_PREFIX;
 
         $event->addChunk('<input type="hidden" name="'.$name.'" value="'.$payload.'" />');
+    }
+
+    public function attachJson(OutputAsJsonEvent $event)
+    {
+        $form = $event->getForm();
+        $payload = $this->getEncryptedBag($form);
+
+        $name = self::INPUT_PREFIX;
+
+        $event->add($name, $payload);
     }
 
     public function getBag(string $key, Form $form)

@@ -380,11 +380,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         return $this->submissionTitleFormat;
     }
 
-    public function getEditableElementId()
-    {
-        return \Craft::$app->request->post(self::ELEMENT_ID_KEY);
-    }
-
     public function getDescription(): string
     {
         return $this->description;

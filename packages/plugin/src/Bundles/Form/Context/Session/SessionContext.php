@@ -19,6 +19,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Page;
 use Solspace\Freeform\Library\Helpers\HashHelper;
+use Solspace\Freeform\Library\Helpers\RequestHelper;
 use Solspace\Freeform\Models\Settings;
 use yii\base\Event;
 
@@ -233,7 +234,7 @@ class SessionContext
             return [null, null, null];
         }
 
-        $hash = \Craft::$app->getRequest()->post(self::KEY_HASH);
+        $hash = RequestHelper::post(self::KEY_HASH);
 
         try {
             list($formHash, $pageHash, $sessionToken) = explode('-', $hash);

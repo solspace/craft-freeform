@@ -48,6 +48,10 @@ class SaveForm extends FeatureBundle
 
     public function handleSave(HandleRequestEvent $event)
     {
+        if ($event->getRequest()->isConsoleRequest) {
+            return;
+        }
+
         $isSavingForm = self::SAVE_ACTION === $event->getRequest()->post(Form::ACTION_KEY);
         if (!$isSavingForm) {
             return;

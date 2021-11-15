@@ -20,6 +20,10 @@ class PostContext
         $form = $event->getForm();
         $request = $event->getRequest();
 
+        if ($request->isConsoleRequest) {
+            return;
+        }
+
         if ($request->getHeaders()->get('Freeform-Preflight')) {
             return;
         }

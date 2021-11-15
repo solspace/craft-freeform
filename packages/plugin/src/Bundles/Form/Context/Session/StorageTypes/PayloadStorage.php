@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Helpers\RequestHelper;
 use yii\base\Event;
 
 class PayloadStorage implements FormContextStorageInterface
@@ -26,6 +27,10 @@ class PayloadStorage implements FormContextStorageInterface
     public function requirePayload(HandleRequestEvent $event)
     {
         $form = $event->getForm();
+
+        if ($event->getRequest()->isConsoleRequest) {
+            return;
+        }
 
         $payload = $event->getRequest()->post(self::INPUT_PREFIX);
         $bag = $this->getDecryptedBag($form, $payload);
@@ -48,7 +53,7 @@ class PayloadStorage implements FormContextStorageInterface
 
     public function getBag(string $key, Form $form)
     {
-        $payload = \Craft::$app->request->post(self::INPUT_PREFIX);
+        $payload = RequestHelper::post(self::INPUT_PREFIX);
 
         return $this->getDecryptedBag($form, $payload);
     }

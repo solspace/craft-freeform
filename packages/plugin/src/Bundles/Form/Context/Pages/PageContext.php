@@ -10,6 +10,7 @@ use Solspace\Freeform\Fields\SubmitField;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Helpers\RequestHelper;
 use yii\base\Event;
 
 class PageContext
@@ -40,7 +41,7 @@ class PageContext
             return;
         }
 
-        $shouldWalkBack = null !== \Craft::$app->request->post(SubmitField::PREVIOUS_PAGE_INPUT_NAME);
+        $shouldWalkBack = null !== RequestHelper::post(SubmitField::PREVIOUS_PAGE_INPUT_NAME);
         if ($shouldWalkBack) {
             $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
             $index = array_pop($pageHistory) ?? 0;

@@ -469,11 +469,12 @@ class SummaryService extends Component
             }
 
             $dbInfo = $pluginInfo[$handle];
+            $installDate = $dbInfo['installDate'] ?? null;
 
             $plugin = new PluginInfo();
-            $plugin->edition = $info['edition'];
+            $plugin->edition = $info['edition'] ?? 'lite';
             $plugin->version = $dbInfo['version'] ?? '';
-            $plugin->installDate = $dbInfo['installDate'] ? new Carbon($dbInfo['installDate'], 'UTC') : null;
+            $plugin->installDate = $installDate ? new Carbon($installDate, 'UTC') : null;
             $plugin->license = $dbInfo['licenseKeyStatus'] ?? null;
 
             $plugins[$handle] = $plugin;

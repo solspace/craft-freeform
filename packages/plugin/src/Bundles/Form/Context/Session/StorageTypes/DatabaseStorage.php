@@ -19,7 +19,7 @@ class DatabaseStorage implements FormContextStorageInterface
 
     public function __construct(int $timeToLiveInMinutes, int $activeRecordsPerSession)
     {
-        $this->referenceDate = new Carbon('-'.$timeToLiveInMinutes.' minutes');
+        $this->referenceDate = new Carbon('-'.$timeToLiveInMinutes.' minutes', 'UTC');
         $this->activeRecordsPerSession = $activeRecordsPerSession;
     }
 

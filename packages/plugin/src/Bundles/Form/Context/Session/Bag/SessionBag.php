@@ -23,7 +23,7 @@ class SessionBag implements \JsonSerializable
         $this->formId = $formId;
         $this->properties = $properties;
         $this->attributes = $attributes;
-        $this->lastUpdate = $lastUpdate ?? new Carbon();
+        $this->lastUpdate = $lastUpdate ?? new Carbon('now', 'UTC');
     }
 
     public function getFormId(): int

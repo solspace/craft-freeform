@@ -157,7 +157,7 @@ class SessionContext
 
         $sessionBag->setProperties($form->getPropertyBag()->toArray());
         $sessionBag->setAttributes($form->getAttributeBag()->toArray());
-        $sessionBag->setLastUpdate(new Carbon());
+        $sessionBag->setLastUpdate(new Carbon('now', 'UTC'));
 
         $this->storage->persist();
     }

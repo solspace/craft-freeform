@@ -19,7 +19,7 @@ class SessionStorage implements FormContextStorageInterface
 
     public function __construct(int $timeToLiveInMinutes, int $maxInstanceCount)
     {
-        $this->referenceDate = new Carbon('-'.$timeToLiveInMinutes.' minutes');
+        $this->referenceDate = new Carbon('-'.$timeToLiveInMinutes.' minutes', 'UTC');
         $this->maxInstanceCount = $maxInstanceCount;
         $this->loadContext();
     }
@@ -53,7 +53,7 @@ class SessionStorage implements FormContextStorageInterface
         $context = [];
         foreach ($storedContext as $key => $value) {
             try {
-                $lastUpdate = new Carbon($value['utime']);
+                $lastUpdate = Carbon::createFromTimestampUTC($value['utime']);
                 $formId = $value['formId'] ?? null;
                 $properties = $value['properties'] ?? [];
                 $attributes = $value['attributes'] ?? [];

@@ -94,7 +94,7 @@ class PayloadStorage implements FormContextStorageInterface
             return null;
         }
 
-        $lastUpdate = new Carbon($json['utime'], 'UTC');
+        $lastUpdate = Carbon::createFromTimestampUTC($json['utime']);
         $properties = $json['properties'];
         $attributes = $json['attributes'];
 
@@ -106,7 +106,7 @@ class PayloadStorage implements FormContextStorageInterface
         $key = $this->getKey($form);
 
         $payload = json_encode([
-            'utime' => (new Carbon())->timestamp,
+            'utime' => (new Carbon('now', 'UTC'))->timestamp,
             'properties' => $form->getPropertyBag(),
             'attributes' => $form->getAttributeBag(),
         ]);

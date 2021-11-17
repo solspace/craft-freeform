@@ -35,6 +35,11 @@ use yii\web\Response;
 
 class ApiController extends BaseController
 {
+    public function actionForm(): Response
+    {
+        return \Craft::$app->runAction('freeform/submit');
+    }
+
     /**
      * GET fields.
      *

@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.12.4 - 2021-11-17
+
+> {warning} Freeform 3.12+ introduces additional Form Session Context options for processing forms. For sites that have already upgraded to 3.12.0 - 3.12.3, we recommend switching the Freeform Session Context setting to "Encrypted Payload" instead of "PHP Sessions" and carefully reviewing your forms. If you prefer to continue using PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
+
+### Changed
+- Updated default Form Session Context to "Encrypted Payload" instead of PHP Sessions. If you previously updated to Freeform 3.12 and/or prefer to continue to use PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
+
 ## 3.12.3 - 2021-11-17
 
 ### Fixed
@@ -23,6 +30,8 @@
 - Fixed a bug where some of the Welcome install wizard's new 3.12 settings weren't saving correctly.
 
 ## 3.12.0 - 2021-11-10
+
+> {warning} Freeform 3.12+ introduces additional Form Session Context options for processing forms. The default Form Session Context will be switched to "Encrypted Payload" instead of "PHP Sessions" upon upgrade. If you prefer to continue to use PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.
 
 ### Added
 - Added a Drag & Drop File Upload field type (Pro).

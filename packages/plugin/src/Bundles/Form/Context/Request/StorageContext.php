@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -14,6 +15,7 @@ class StorageContext
 {
     public function __construct()
     {
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'loadStoredValues']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'loadStoredValues']);
         Event::on(LoadSavedForm::class, Form::EVENT_FORM_LOADED, [$this, 'loadStoredValues']);
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'storeCurrentValues'], null, false);
@@ -31,6 +33,10 @@ class StorageContext
         }
 
         foreach ($form->getLayout()->getFields() as $field) {
+            if ($field instanceof PersistentValueInterface) {
+                continue;
+            }
+
             if (!\array_key_exists($field->getHandle(), $storedValues)) {
                 continue;
             }

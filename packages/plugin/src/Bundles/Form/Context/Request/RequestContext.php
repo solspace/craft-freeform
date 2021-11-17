@@ -6,6 +6,7 @@ class RequestContext
 {
     public function __construct()
     {
+        new OverrideContext();
         new EditSubmissionContext();
         new GetContext();
         new StorageContext();

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -19,6 +20,10 @@ class GetContext
         $form = $event->getForm();
         foreach ($form->getLayout()->getFields() as $field) {
             if (isset($_GET[$field->getHandle()])) {
+                if ($field instanceof PersistentValueInterface) {
+                    continue;
+                }
+
                 $value = $_GET[$field->getHandle()];
 
                 if ($field instanceof CheckboxField) {

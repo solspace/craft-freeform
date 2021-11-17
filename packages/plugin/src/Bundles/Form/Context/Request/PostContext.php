@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Request;
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -33,6 +34,10 @@ class PostContext
         }
 
         foreach ($form->getCurrentPage()->getFields() as $field) {
+            if ($field instanceof PersistentValueInterface) {
+                continue;
+            }
+
             $postedValue = $request->post($field->getHandle());
 
             $event = new TransformValueEvent($field, $postedValue);

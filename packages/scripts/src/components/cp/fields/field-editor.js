@@ -105,6 +105,8 @@ $(function () {
     },
   });
 
+  const keyRange = [9, 16, 17, 18, 19, 20, 27, 32, 33, 34, 35, 36, 37, 38, 39, 40, 91];
+
   $table
     .on(
       {
@@ -117,7 +119,9 @@ $(function () {
     .on(
       {
         keyup: function (event) {
-          if (event.which === 9 || event.keyCode === 9) {
+          const keyCode = event.which ? event.which : event.keyCode;
+
+          if (keyRange.includes(keyCode)) {
             return false;
           }
 

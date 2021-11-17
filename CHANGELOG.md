@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.12.3 - 2021-11-17
+
+### Fixed
+- Added backwards compatibility with `freeform/api/form` controller action.
+- Fixed a bug where Invisible fields were no longer collecting data.
+- Fixed a bug where the Encrypted Payload session context was not being included with `form.json` function.
+- Fixed a bug where any keystroke would reset field option values when creating fields in the Field Manager area of the control panel.
+
 ## 3.12.2 - 2021-11-15
 
 ### Fixed

@@ -736,7 +736,13 @@ export default class Freeform {
    * @private
    */
   _getSubmitButtons = () => {
-    return this.form.querySelectorAll(`*[type=submit][data-freeform-action]`);
+    const buttons = this.form.querySelectorAll(`*[type=submit][data-freeform-action]`);
+    if (buttons.length) {
+      return buttons;
+    }
+
+    // Fallback to any submit buttons if none have the `data-freeform-action` attribute
+    return this.form.querySelectorAll(`*[type=submit]`);
   };
 
   /**

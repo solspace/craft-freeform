@@ -58,7 +58,11 @@ class FreeformFeedService extends Component
      */
     public function getUnreadFeedMessages(): array
     {
-        return FeedMessageRecord::findAll(['seen' => false]);
+        return FeedMessageRecord::find()
+            ->where(['seen' => false])
+            ->orderBy(['issueDate' => \SORT_DESC])
+            ->all()
+        ;
     }
 
     public function getUnreadCount()

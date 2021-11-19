@@ -1,10 +1,10 @@
 # Solspace Freeform Changelog
 
-## 3.12.5 - Unreleased
+## 3.12.5 - 2021-11-19
 
 ### Fixed
 - Added backwards compatibility for forms without submit buttons with `data-freeform-action`.
-- Added a more resilient check on posted form hash parts ([#201](https://github.com/solspace/craft3-freeform/issues/201#issuecomment-973878911)).
+- Added a more resilient check on posted form hash parts for Sentry ([#201](https://github.com/solspace/craft3-freeform/issues/201#issuecomment-973878911)).
 - Fixed a bug where the `lang="en"` attribute was being added to Number fields.
 - Fixed a bug where submit buttons were not being aligned correctly in the new sample Bootstrap 5 formatting template.
 

@@ -236,13 +236,14 @@ class SessionContext
 
         $hash = RequestHelper::post(self::KEY_HASH);
 
-        try {
-            list($formHash, $pageHash, $sessionToken) = explode('-', $hash);
-        } catch (\Exception $exception) {
-            return [null, null, null];
+        $parts = explode('-', $hash);
+        if (3 === \count($parts)) {
+            list($formHash, $pageHash, $sessionToken) = $parts;
+
+            return [$formHash, $pageHash, $sessionToken];
         }
 
-        return [$formHash, $pageHash, $sessionToken];
+        return [null, null, null];
     }
 
     /**

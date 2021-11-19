@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.12.5 - Unreleased
+
+### Fixed
+- Added backwards compatibility for forms without submit buttons with `data-freeform-action`.
+- Added a more resilient check on posted form hash parts ([#201](https://github.com/solspace/craft3-freeform/issues/201#issuecomment-973878911)).
+- Fixed a bug where the `lang="en"` attribute was being added to Number fields.
+- Fixed a bug where submit buttons were not being aligned correctly in the new sample Bootstrap 5 formatting template.
+
 ## 3.12.4 - 2021-11-17
 
 > {warning} Freeform 3.12+ introduces additional Form Session Context options for processing forms. For sites that have already upgraded to 3.12.0 - 3.12.3, we recommend switching the Freeform Session Context setting to "Encrypted Payload" instead of "PHP Sessions" and carefully reviewing your forms. If you prefer to continue using PHP Sessions and are caching your forms, you will need to add `{% do form.registerContext %}` below your form when loading the form in a cached template.

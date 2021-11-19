@@ -141,7 +141,6 @@ class NumberField extends TextField
             .$this->getAttributeString('name', $this->getHandle())
             .$this->getAttributeString('type', 'number')
             .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString('lang', 'en')
             .$this->getNumericAttributeString('maxlength', $this->getMaxLength())
             .$this->getNumericAttributeString('min', $this->getMinValue())
             .$this->getNumericAttributeString('max', $this->getMaxValue())

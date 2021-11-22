@@ -91,6 +91,8 @@ class StripeService extends Component
             try {
                 $paymentIntent = PaymentIntent::create($paymentIntentProperties);
             } catch (\Stripe\Exception\CardException $e) {
+                $form->addError(Freeform::t($e->getMessage()));
+
                 $paymentField->setValue('declined: '.$e->getMessage().' code: '.$e->getStripeCode().'. decline_code: '.$e->getDeclineCode());
 
                 return;
@@ -149,6 +151,8 @@ class StripeService extends Component
         try {
             $subscription = $this->getSubscription($token, $plan, $dynamicValues);
         } catch (\Stripe\Exception\CardException $e) {
+            $form->addError(Freeform::t($e->getMessage()));
+
             $paymentField->setValue('declined: '.$e->getMessage());
 
             return;

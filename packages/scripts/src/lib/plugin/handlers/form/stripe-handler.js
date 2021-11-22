@@ -135,7 +135,7 @@ class StripeHandler {
 
     const { response } = event;
 
-    if (response.actions) {
+    if (response?.actions.length) {
       const cardField = document.getElementById(this.paymentFieldId);
       response.actions.forEach((action) => {
         if (action.name === 'stripe.single_payment.payment_intent_action') {
@@ -170,6 +170,8 @@ class StripeHandler {
           });
         }
       });
+    } else {
+      this.stripeSubmitReady = false;
     }
   };
 

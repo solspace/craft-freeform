@@ -4,7 +4,7 @@
 
 ### Fixed
 - Fixed a bug where hidden Mailing List fields were not working properly.
-- Fixed a bug where Payment forms were showing a success message to the user even when if the card was declined.
+- Fixed a bug where Payment forms were showing a success message to the user even if the card was declined.
 
 ## 3.12.5 - 2021-11-19
 

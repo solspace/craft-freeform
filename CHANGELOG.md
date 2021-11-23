@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.12.6 - 2021-11-23
+
+### Fixed
+- Fixed a bug where hidden Mailing List fields were not working properly.
+- Fixed a bug where Payment forms were showing a success message to the user even when if the card was declined.
+
 ## 3.12.5 - 2021-11-19
 
 ### Fixed

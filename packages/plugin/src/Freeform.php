@@ -797,8 +797,6 @@ class Freeform extends Plugin
                                 ],
                             ],
                         ],
-                        self::PERMISSION_SETTINGS_ACCESS => ['label' => self::t('Access Settings')],
-                        self::PERMISSION_RESOURCES => ['label' => self::t('Access Resources')],
                         self::PERMISSION_EXPORT_PROFILES_ACCESS => [
                             'label' => self::t('Access Export Profiles'),
                             'nested' => [
@@ -809,6 +807,8 @@ class Freeform extends Plugin
                                 ],
                             ],
                         ],
+                        self::PERMISSION_SETTINGS_ACCESS => ['label' => self::t('Access Settings')],
+                        self::PERMISSION_RESOURCES => ['label' => self::t('Access Resources')],
                     ];
 
                     if (!isset($event->permissions[self::PERMISSION_NAMESPACE])) {

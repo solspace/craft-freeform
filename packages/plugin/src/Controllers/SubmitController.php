@@ -56,17 +56,16 @@ class SubmitController extends BaseController
         if ($requestHandled && $form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
             $this->handleSubmission($form, $submission);
 
-            if (!$form->hasErrors()) {
-                $returnUrl = $this->getReturnUrl($form, $submission);
+            $returnUrl = $this->getReturnUrl($form, $submission);
 
-                $form->reset();
+            $form->reset();
+            $form->persistState();
 
-                if ($isAjaxRequest) {
-                    return $this->toAjaxResponse($form, $submission, $returnUrl);
-                }
-
-                return $this->redirect($returnUrl);
+            if ($isAjaxRequest) {
+                return $this->toAjaxResponse($form, $submission, $returnUrl);
             }
+
+            return $this->redirect($returnUrl);
         }
 
         if ($isAjaxRequest) {

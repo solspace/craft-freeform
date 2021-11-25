@@ -80,6 +80,16 @@ class PayloadStorage implements FormContextStorageInterface
         // isn't required
     }
 
+    public function removeBag(string $key)
+    {
+        // isn't required
+    }
+
+    public function cleanup()
+    {
+        // isn't required
+    }
+
     private function getDecryptedBag(Form $form, string $payload = null)
     {
         if (null === $payload) {

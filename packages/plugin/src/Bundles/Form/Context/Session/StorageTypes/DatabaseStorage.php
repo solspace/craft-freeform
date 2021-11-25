@@ -101,11 +101,22 @@ class DatabaseStorage implements FormContextStorageInterface
                 ;
             }
         }
-
-        $this->removeStaleEntries();
     }
 
-    private function removeStaleEntries()
+    public function removeBag(string $key)
+    {
+        if (isset($this->context[$key])) {
+            \Craft::$app->db
+                ->createCommand()
+                ->delete(SessionContextRecord::TABLE, ['contextKey' => $key])
+                ->execute()
+            ;
+
+            unset($this->context[$key]);
+        }
+    }
+
+    public function cleanup()
     {
         $table = SessionContextRecord::TABLE;
 

@@ -4,9 +4,10 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
-class SubmitEvent extends CancelableArrayableEvent
+class SubmitEvent extends CancelableArrayableEvent implements FormEventInterface
 {
     /** @var Form */
     private $form;

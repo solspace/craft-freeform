@@ -63,6 +63,7 @@ use yii\web\Request;
 
 class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
 {
+    const ID_KEY = 'id';
     const HASH_KEY = 'hash';
     const ACTION_KEY = 'freeform-action';
     const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
@@ -712,7 +713,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
 
         $event = new HandleRequestEvent($this, $request);
         Event::trigger(self::class, self::EVENT_AFTER_HANDLE_REQUEST, $event);
-        Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
 
         return $event->isValid;
     }
@@ -760,11 +760,16 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         return $fields;
     }
 
+    public function persistState()
+    {
+        Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
+    }
+
     public function registerContext(array $renderProperties = null)
     {
-        Event::trigger(self::class, self::EVENT_REGISTER_CONTEXT, new RegisterContextEvent($this));
-
         $this->setProperties($renderProperties);
+
+        Event::trigger(self::class, self::EVENT_REGISTER_CONTEXT, new RegisterContextEvent($this));
     }
 
     /**
@@ -997,7 +1002,6 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         }
 
         Event::trigger(self::class, self::EVENT_AFTER_RESET, $event);
-        Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
 
     /**

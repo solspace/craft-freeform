@@ -41,8 +41,38 @@ class SessionStorage implements FormContextStorageInterface
 
     public function persist()
     {
-        $this->cleanUpSession();
         \Craft::$app->getSession()->set(self::KEY, json_encode($this->context));
+    }
+
+    public function removeBag(string $key)
+    {
+        if (isset($this->context[$key])) {
+            unset($this->context[$key]);
+        }
+    }
+
+    public function cleanup()
+    {
+        uasort($this->context, static function (SessionBag $a, SessionBag $b) {
+            return $b->getLastUpdate()->timestamp <=> $a->getLastUpdate()->timestamp;
+        });
+
+        $context = [];
+        foreach ($this->context as $key => $bag) {
+            if ($bag->getLastUpdate()->lt($this->referenceDate)) {
+                continue;
+            }
+
+            $context[$key] = $bag;
+        }
+
+        $instanceCount = \count($context);
+        if ($instanceCount > $this->maxInstanceCount) {
+            array_splice($context, $this->maxInstanceCount);
+        }
+
+        $this->context = $context;
+        $this->persist();
     }
 
     private function loadContext()
@@ -62,29 +92,6 @@ class SessionStorage implements FormContextStorageInterface
             }
 
             $context[$key] = new SessionBag($formId, $properties, $attributes, $lastUpdate);
-        }
-
-        $this->context = $context;
-    }
-
-    private function cleanUpSession()
-    {
-        uasort($this->context, static function (SessionBag $a, SessionBag $b) {
-            return $b->getLastUpdate()->timestamp <=> $a->getLastUpdate()->timestamp;
-        });
-
-        $context = [];
-        foreach ($this->context as $key => $bag) {
-            if ($bag->getLastUpdate()->lt($this->referenceDate)) {
-                continue;
-            }
-
-            $context[$key] = $bag;
-        }
-
-        $instanceCount = \count($context);
-        if ($instanceCount > $this->maxInstanceCount) {
-            array_splice($context, $this->maxInstanceCount);
         }
 
         $this->context = $context;

@@ -12,7 +12,6 @@ use Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes\SessionStorage;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Freeform;
@@ -26,8 +25,6 @@ use yii\base\Event;
 class SessionContext
 {
     const KEY_HASH = 'formHash';
-
-    private static $requestTokenCache = [];
 
     /** @var FormContextStorageInterface */
     private $storage;
@@ -62,10 +59,12 @@ class SessionContext
         }
 
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'registerFormHash']);
+        Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormHash']);
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormContext']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
-        Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'cleanupOnSave']);
+        Event::on(Form::class, Form::EVENT_AFTER_SUBMIT, [$this, 'cleanupAfterSubmit']);
+        Event::on(SaveForm::class, SaveForm::EVENT_SAVE_FORM, [$this, 'cleanupOnSaveForm']);
 
         Event::on(
             Form::class,
@@ -78,27 +77,38 @@ class SessionContext
     {
         $form = $event->getForm();
 
-        $formHash = self::getFormHash($form);
-        $pageHash = self::getPageHash($form);
-        $sessionToken = self::getFormSessionToken($form);
-
-        $hash = "{$formHash}-{$pageHash}-{$sessionToken}";
-
         $event->addChunk(
             sprintf(
                 '<input type="hidden" name="%s" value="%s" />',
                 self::KEY_HASH,
-                $hash
+                $form->getPropertyBag()->get(Form::HASH_KEY)
             )
         );
     }
 
-    public function cleanupOnSave(SaveFormEvent $event)
+    public function cleanupAfterSubmit(FormEventInterface $event)
+    {
+        $form = $event->getForm();
+
+        $request = \Craft::$app->getRequest();
+        if ($request->isAjax || $request->isConsoleRequest) {
+            return;
+        }
+
+        $key = self::getBagKey($form);
+        if (null === $key) {
+            return;
+        }
+
+        $this->storage->removeBag($key);
+    }
+
+    public function cleanupOnSaveForm(SaveFormEvent $event)
     {
         $event->getForm()->getPropertyBag()->remove(Form::HASH_KEY);
     }
 
-    public function registerFormHash(FormLoadedEvent $event)
+    public function registerFormHash(FormEventInterface $event)
     {
         $form = $event->getForm();
         $bag = $form->getPropertyBag();
@@ -115,7 +125,11 @@ class SessionContext
     public function registerFormContext(FormEventInterface $event)
     {
         $form = $event->getForm();
-        list($key) = self::getTokens($form);
+
+        $key = self::getBagKey($form);
+        if (null === $key) {
+            return;
+        }
 
         $bag = $this->storage->getBag($key, $form);
         if (null !== $bag) {
@@ -128,6 +142,7 @@ class SessionContext
 
         $this->storage->registerBag($key, $bag, $form);
         $this->storage->persist();
+        $this->storage->cleanup();
     }
 
     public function retrieveContext(HandleRequestEvent $event)
@@ -151,13 +166,11 @@ class SessionContext
         $form = $event->getForm();
 
         $sessionBag = $this->getBag($form);
-        if (null === $sessionBag) {
-            return;
+        if (null !== $sessionBag) {
+            $sessionBag->setProperties($form->getPropertyBag()->toArray());
+            $sessionBag->setAttributes($form->getAttributeBag()->toArray());
+            $sessionBag->setLastUpdate(new Carbon('now', 'UTC'));
         }
-
-        $sessionBag->setProperties($form->getPropertyBag()->toArray());
-        $sessionBag->setAttributes($form->getAttributeBag()->toArray());
-        $sessionBag->setLastUpdate(new Carbon('now', 'UTC'));
 
         $this->storage->persist();
     }
@@ -201,7 +214,7 @@ class SessionContext
         return $postedPageIndex === $page->getIndex();
     }
 
-    public static function getFormSessionToken(Form $form)
+    public static function getFormSessionToken(Form $form): string
     {
         $formHash = self::getFormHash($form);
 
@@ -210,21 +223,21 @@ class SessionContext
             return $postedSessionHash;
         }
 
-        if (!\array_key_exists($formHash, self::$requestTokenCache)) {
-            self::$requestTokenCache[$formHash] = CryptoHelper::getUniqueToken();
-        }
-
-        return self::$requestTokenCache[$formHash];
+        return CryptoHelper::getUniqueToken();
     }
 
-    public static function getTokens(Form $form): array
+    private static function getBagKey(Form $form)
     {
-        $formHash = self::getFormHash($form);
-        $sessionToken = self::getFormSessionToken($form);
+        $hash = $form->getPropertyBag()->get(Form::HASH_KEY);
 
-        $key = $formHash.'-'.$sessionToken;
+        $parts = explode('-', $hash);
+        if (3 !== \count($parts)) {
+            return null;
+        }
 
-        return [$key, $formHash, $sessionToken];
+        list($formHash, $_, $sessionToken) = $parts;
+
+        return $formHash.'-'.$sessionToken;
     }
 
     private static function getPostedHashParts(): array
@@ -251,7 +264,10 @@ class SessionContext
      */
     private function getBag(Form $form)
     {
-        list($key) = self::getTokens($form);
+        $key = self::getBagKey($form);
+        if (null === $key) {
+            return null;
+        }
 
         return $this->storage->getBag($key, $form);
     }

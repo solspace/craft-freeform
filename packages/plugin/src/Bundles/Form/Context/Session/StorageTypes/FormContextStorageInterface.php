@@ -15,4 +15,8 @@ interface FormContextStorageInterface
     public function registerBag(string $key, SessionBag $bag, Form $form);
 
     public function persist();
+
+    public function cleanup();
+
+    public function removeBag(string $key);
 }

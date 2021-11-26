@@ -7,6 +7,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\web\View;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 
 class ResendNotificationsAction extends ElementAction
 {
@@ -31,6 +32,21 @@ class ResendNotificationsAction extends ElementAction
         /** @var Submission $submission */
         foreach ($query->all() as $submission) {
             $form = $submission->getForm();
+
+            $fields = $form->getLayout()->getFields();
+            foreach ($fields as $field) {
+                if ($field instanceof NoStorageInterface) {
+                    continue;
+                }
+
+                $submissionField = $submission->{$field->getHandle()};
+                if (!$submissionField) {
+                    continue;
+                }
+
+                $value = $submissionField->getValue();
+                $field->setValue($value);
+            }
 
             $integrations->sendOutEmailNotifications($form, $submission);
         }

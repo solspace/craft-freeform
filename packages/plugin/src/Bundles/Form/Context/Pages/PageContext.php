@@ -65,6 +65,12 @@ class PageContext
         }
 
         $pageJumpIndex = Freeform::getInstance()->forms->onBeforePageJump($form);
+        if (-999 === $pageJumpIndex) {
+            $form->setFinished(true);
+
+            return;
+        }
+
         if (null !== $pageJumpIndex) {
             $pageHistory[] = $pageIndex;
             $pageIndex = $pageJumpIndex;

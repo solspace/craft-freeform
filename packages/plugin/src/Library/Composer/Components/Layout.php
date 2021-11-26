@@ -185,7 +185,7 @@ class Layout implements \JsonSerializable, \Iterator
         if (!isset($this->pages[$index])) {
             throw new FreeformException(
                 Freeform::t(
-                    "The provided page index '{pageIndex}' does not",
+                    "The provided page index '{pageIndex}' does not exist",
                     ['pageIndex' => $index]
                 )
             );

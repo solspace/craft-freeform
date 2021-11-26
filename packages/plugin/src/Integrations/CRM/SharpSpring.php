@@ -87,8 +87,6 @@ class SharpSpring extends AbstractCRMIntegration
 
                 $data = json_decode((string) $response->getBody(), true);
 
-                $this->getLogger()->info((string) $response->getBody());
-
                 $this->getHandler()->onAfterResponse($this, $response);
 
                 return isset($data['result']['error']) && (0 === \count($data['result']['error']));

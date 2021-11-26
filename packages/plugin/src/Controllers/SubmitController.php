@@ -68,6 +68,8 @@ class SubmitController extends BaseController
             return $this->redirect($returnUrl);
         }
 
+        $form->persistState();
+
         if ($isAjaxRequest) {
             return $this->toAjaxResponse($form, $submission);
         }

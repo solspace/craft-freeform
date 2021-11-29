@@ -40,7 +40,7 @@ class FileUploadController extends BaseController
                 'name' => $asset->getFilename(),
                 'extension' => $asset->getExtension(),
                 'size' => $asset->getFormattedSize(1),
-                'url' => $asset->getUrl(),
+                'url' => $asset->getUrl(['width' => 150, 'height' => 150]),
             ];
         }
 

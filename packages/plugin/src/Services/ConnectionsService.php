@@ -2,12 +2,15 @@
 
 namespace Solspace\Freeform\Services;
 
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
 use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
+use Solspace\Freeform\Library\Connections\Transformers\DirectValueTransformer;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ConnectionsService extends BaseService
 {
@@ -18,6 +21,7 @@ class ConnectionsService extends BaseService
         }
 
         $form = $event->getForm();
+        $submission = new Submission();
 
         $list = $form->getConnectionProperties()->getList();
         foreach ($list as $connection) {
@@ -25,7 +29,7 @@ class ConnectionsService extends BaseService
                 continue;
             }
 
-            $keyValuePairs = $this->getTransformers($form, $connection);
+            $keyValuePairs = $this->getTransformers($form, $submission, $connection);
 
             $result = $connection->validate($form, $keyValuePairs);
             if (!$result->isSuccessful()) {
@@ -43,7 +47,7 @@ class ConnectionsService extends BaseService
         }
     }
 
-    public function connect(Form $form)
+    public function connect(Form $form, Submission $submission)
     {
         if (!Freeform::getInstance()->isPro() || $form->getSuppressors()->isConnections()) {
             return;
@@ -55,7 +59,7 @@ class ConnectionsService extends BaseService
                 continue;
             }
 
-            $result = $connection->connect($form, $this->getTransformers($form, $connection));
+            $result = $connection->connect($form, $this->getTransformers($form, $submission, $connection));
             if (!$result->isSuccessful()) {
                 Freeform::getInstance()->logger
                     ->getLogger(FreeformLogger::ELEMENT_CONNECTION)
@@ -65,17 +69,29 @@ class ConnectionsService extends BaseService
         }
     }
 
-    private function getTransformers(Form $form, ConnectionInterface $connection): array
+    private function getTransformers(Form $form, Submission $submission, ConnectionInterface $connection): array
     {
         $transformers = [];
 
-        foreach ($connection->getMapping() as $craftFieldHandle => $freeformFieldHandle) {
-            $field = $form->get($freeformFieldHandle);
-            if (!$field) {
-                continue;
-            }
+        $propertyAccessor = PropertyAccess::createPropertyAccessor();
 
-            $transformers[] = AbstractFieldTransformer::create($field, $craftFieldHandle);
+        foreach ($connection->getMapping() as $craftFieldHandle => $freeformFieldHandle) {
+            if (preg_match('/^(form|submission):([a-z]+)$/i', $freeformFieldHandle, $matches)) {
+                $type = $matches[1];
+                $key = $matches[2];
+
+                $object = 'submission' === $type ? $submission : $form;
+                $value = $propertyAccessor->getValue($object, $key);
+
+                $transformers[] = new DirectValueTransformer($value, $craftFieldHandle);
+            } else {
+                $field = $form->get($freeformFieldHandle);
+                if (!$field) {
+                    continue;
+                }
+
+                $transformers[] = AbstractFieldTransformer::create($field, $craftFieldHandle);
+            }
         }
 
         return $transformers;

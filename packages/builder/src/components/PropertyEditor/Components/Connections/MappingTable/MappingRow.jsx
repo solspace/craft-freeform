@@ -30,6 +30,16 @@ export default class MappingRow extends Component {
               <option key="--" value="">
                 --
               </option>
+              <optgroup label="Form">
+                <option value="form:id">ID</option>
+                <option value="form:handle">Handle</option>
+                <option value="form:name">Name</option>
+              </optgroup>
+              <optgroup label="Submission">
+                <option value="submission:id">ID</option>
+                <option value="submission:token">Token</option>
+                <option value="submission:title">Title</option>
+              </optgroup>
               {formFields.map((item, i) => (
                 <option key={item.handle} value={item.handle}>
                   {item.label}

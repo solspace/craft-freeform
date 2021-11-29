@@ -61,6 +61,7 @@ class SessionContext
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'registerFormHash']);
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormHash']);
         Event::on(Form::class, Form::EVENT_REGISTER_CONTEXT, [$this, 'registerFormContext']);
+        Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'cleanupStorage']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'retrieveContext']);
         Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'storeContext']);
         Event::on(Form::class, Form::EVENT_AFTER_SUBMIT, [$this, 'cleanupAfterSubmit']);
@@ -106,6 +107,11 @@ class SessionContext
     public function cleanupOnSaveForm(SaveFormEvent $event)
     {
         $event->getForm()->getPropertyBag()->remove(Form::HASH_KEY);
+    }
+
+    public function cleanupStorage()
+    {
+        $this->storage->cleanup();
     }
 
     public function registerFormHash(FormEventInterface $event)

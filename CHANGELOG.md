@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.12.7 - 2021-11-29
+
+### Added
+- Added the ability to map the Freeform submission ID, submission token, submission title, form ID, form handle and form name to other element fields via the Element Connections feature.
+
+### Fixed
+- Fixed a bug where File Upload Drag & Drop image previews would not use reduced thumbnail files when editing submissions or going back/forth in multipage forms.
+- Fixed a bug where the Resend Email Notifications feature was not working correctly.
+- Improved the way form sessions are used.
+- Fixed a bug where sessions would not timeout (if set to expire early) for PHP Sessions and Database Table contexts.
+- Removed info log entry for the SharpSpring CRM integration.
+
 ## 3.12.6 - 2021-11-23
 
 ### Fixed

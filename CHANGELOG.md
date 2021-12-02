@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.12.8 - 2021-12-02
+
+### Changed
+- Updated Freeform CSS to not load in templates where forms don't contain the Drag & Drop File Upload or Opinion Scale field types.
+- Updated all Freeform CSS to be minified.
+
+### Fixed
+- Fixed a bug where multi-page forms with single checkbox field types would always assume checkboxes were checked.
+- FIxed a bug where instructions for single checkbox fields were not being displayed in the Bootstrap demo template as well as the Bootstrap 4, Bootstrap 5 and Tailwind sample formatting templates.
+
 ## 3.12.7 - 2021-11-29
 
 ### Added

@@ -28,6 +28,7 @@ use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
+use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -528,7 +529,11 @@ class FormsService extends BaseService implements FormHandlerInterface
             $pluginJsLoaded = true;
         }
 
-        if (null === $pluginCssLoaded && $form->getLayout()->hasFields(OpinionScaleField::class)) {
+        $layout = $form->getLayout();
+        $isLoadCss = $layout->hasFields(OpinionScaleField::class)
+            || $layout->hasFields(FileDragAndDropField::class);
+
+        if (null === $pluginCssLoaded && $isLoadCss) {
             $cssPath = $this->getSettingsService()->getPluginCssPath();
 
             switch ($insertType) {

@@ -177,6 +177,7 @@
                     <div class="form-check">
                         {{ field.renderInput({ class: class ~ " form-check-input" ~ (field.hasErrors ? " is-invalid") }) }}
                         {{ field.renderLabel({ labelClass: "form-check-label" ~ (field.hasErrors ? " is-invalid") ~ (field.required ? " required") }) }}
+                        {{ field.renderInstructions({ instructionsClass: instructionClass }) }}
                         {{ field.renderErrors({ errorClass: errorClass }) }}
                     </div>
 

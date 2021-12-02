@@ -257,6 +257,7 @@
                     <div class="form-check">
                         {{ field.renderInput({ class: fieldClass ~ (field.hasErrors ? " border-red-500") }) }}
                         {{ field.renderLabel({ labelClass: (field.hasErrors ? " border-red-500") }) }}
+                        {{ field.renderInstructions({ instructionsClass: instructionClass }) }}
                         {{ field.renderErrors({ errorClass: errorClass }) }}
                     </div>
 

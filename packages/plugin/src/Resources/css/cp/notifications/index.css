@@ -1,15 +1,1 @@
-@charset "UTF-8";
-.action-buttons {
-  display: flex;
-}
-.action-buttons > * {
-  padding: 0 0 0 5px;
-}
-.action-buttons .icon.clone:before {
-  font-family: "solspace-freeform-craft", sans-serif;
-  content: "";
-  color: rgba(0, 0, 0, 0.2);
-}
-.action-buttons .icon.clone:hover:before {
-  color: #0a0d0f;
-}
+﻿.action-buttons{display:flex}.action-buttons>*{padding:0 0 0 5px}.action-buttons .icon.clone:before{font-family:"solspace-freeform-craft",sans-serif;content:"";color:rgba(0,0,0,.2)}.action-buttons .icon.clone:hover:before{color:#0a0d0f}

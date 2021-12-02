@@ -28,6 +28,7 @@ use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
+use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
@@ -490,49 +491,68 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function addFormPluginScripts(FormRenderEvent $event)
     {
-        static $pluginLoaded;
+        static $pluginJsLoaded;
+        static $pluginCssLoaded;
 
+        $form = $event->getForm();
         $insertType = $this->getSettingsService()->scriptInsertType();
 
         if ($event->isNoScriptRenderEnabled() && !$event->isManualScriptLoading()) {
             return;
         }
 
-        if (null === $pluginLoaded) {
+        if (null === $pluginJsLoaded) {
             $jsPath = $this->getSettingsService()->getPluginJsPath();
-            $cssPath = $this->getSettingsService()->getPluginCssPath();
 
             switch ($insertType) {
                 case Settings::SCRIPT_INSERT_TYPE_INLINE:
                     $js = file_get_contents($jsPath);
-                    $css = file_get_contents($cssPath);
-
                     $event->appendJsToOutput($js);
-                    $event->appendCssToOutput($css);
 
                     break;
 
                 case Settings::SCRIPT_INSERT_TYPE_FILES:
                     $jsUrl = \Craft::$app->assetManager->getPublishedUrl($jsPath, true);
-                    $cssUrl = \Craft::$app->assetManager->getPublishedUrl($cssPath, true);
-
                     $event->appendExternalJsToOutput($jsUrl);
-                    $event->appendExternalCssToOutput($cssUrl);
 
                     break;
 
                 case Settings::SCRIPT_INSERT_TYPE_POINTERS:
                 default:
                     $jsHash = sha1_file($jsPath);
-                    $cssHash = sha1_file($cssPath);
-
                     $event->appendExternalJsToOutput(UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]));
+
+                    break;
+            }
+
+            $pluginJsLoaded = true;
+        }
+
+        if (null === $pluginCssLoaded && $form->getLayout()->hasFields(OpinionScaleField::class)) {
+            $cssPath = $this->getSettingsService()->getPluginCssPath();
+
+            switch ($insertType) {
+                case Settings::SCRIPT_INSERT_TYPE_INLINE:
+                    $css = file_get_contents($cssPath);
+                    $event->appendCssToOutput($css);
+
+                    break;
+
+                case Settings::SCRIPT_INSERT_TYPE_FILES:
+                    $cssUrl = \Craft::$app->assetManager->getPublishedUrl($cssPath, true);
+                    $event->appendExternalCssToOutput($cssUrl);
+
+                    break;
+
+                case Settings::SCRIPT_INSERT_TYPE_POINTERS:
+                default:
+                    $cssHash = sha1_file($cssPath);
                     $event->appendExternalCssToOutput(UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]));
 
                     break;
             }
 
-            $pluginLoaded = true;
+            $pluginCssLoaded = true;
         }
     }
 

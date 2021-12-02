@@ -13,14 +13,19 @@ class CheckboxFieldBundle extends FeatureBundle
     public function __construct()
     {
         Event::on(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, [$this, 'handleTransform']);
+        Event::on(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_STORAGE, [$this, 'handleTransform']);
     }
 
     public function handleTransform(TransformValueEvent $event)
     {
-        if (!$event instanceof CheckboxField) {
+        $field = $event->getField();
+        if (!$field instanceof CheckboxField) {
             return;
         }
 
-        $event->setValue((bool) $event->getValue());
+        $value = (bool) $event->getValue();
+
+        $field->setIsCheckedByPost($value);
+        $event->setValue($value);
     }
 }

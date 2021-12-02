@@ -3,10 +3,11 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Bundles\Form\SaveForm\LoadSavedForm;
+use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
-use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -42,13 +43,11 @@ class StorageContext
             }
 
             $value = $storedValues[$field->getHandle()];
-            if ($field instanceof CheckboxField) {
-                $field->setIsCheckedByPost((bool) $value);
 
-                continue;
-            }
+            $event = new TransformValueEvent($field, $value);
+            Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_STORAGE, $event);
 
-            $field->setValue($value);
+            $field->setValue($event->getValue());
         }
     }
 

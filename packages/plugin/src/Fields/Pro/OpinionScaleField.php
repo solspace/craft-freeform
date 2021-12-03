@@ -33,9 +33,15 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface
                 continue;
             }
 
+            $value = $scale['value'];
+            $label = $scale['label'] ?? $value;
+            if (empty($label)) {
+                $label = $value;
+            }
+
             $scales[$index] = [
-                'value' => $scale['value'],
-                'label' => $scale['label'] ?? $scale['value'],
+                'value' => $value,
+                'label' => $label,
             ];
         }
 

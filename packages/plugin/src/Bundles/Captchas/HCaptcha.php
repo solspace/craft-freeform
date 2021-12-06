@@ -34,6 +34,11 @@ class HCaptcha extends FeatureBundle
         }
     }
 
+    public static function isProOnly(): bool
+    {
+        return true;
+    }
+
     public function validateCheckbox(ValidateEvent $event)
     {
         $field = $event->getField();

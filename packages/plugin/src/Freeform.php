@@ -1105,6 +1105,10 @@ class Freeform extends Plugin
                     && !$reflectionClass->isAbstract()
                     && !$reflectionClass->isInterface()
                 ) {
+                    if ($class::isProOnly() && !$this->isPro()) {
+                        continue;
+                    }
+
                     $priority = $class::getPriority();
                     $loadableClasses[$priority][] = $reflectionClass;
                 }

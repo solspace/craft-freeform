@@ -34,8 +34,14 @@
                 label: "reCAPTCHA v3" ~ (isLite ? " (Pro Only)"),
                 disabled: isLite,
             },
-            h_checkbox: "hCaptcha - Checkbox",
-            h_invisible: "hCaptcha - Invisible",
+            h_checkbox: {
+                label: "hCaptcha - Checkbox" ~ (isLite ? " (Pro Only)"),
+                disabled: isLite,
+            },
+            h_invisible: {
+                label: "hCaptcha - Invisible" ~ (isLite ? " (Pro Only)"),
+                disabled: isLite,
+            },
         } %}
 
         {{ forms.selectField({

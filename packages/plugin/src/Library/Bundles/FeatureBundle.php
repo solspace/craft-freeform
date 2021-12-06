@@ -8,4 +8,9 @@ abstract class FeatureBundle implements BundleInterface
     {
         return 1000;
     }
+
+    public static function isProOnly(): bool
+    {
+        return false;
+    }
 }

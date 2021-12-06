@@ -47,11 +47,15 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
         switch ($type) {
             case Settings::RECAPTCHA_TYPE_V3:
             case Settings::RECAPTCHA_TYPE_V2_INVISIBLE:
+            case Settings::RECAPTCHA_TYPE_H_INVISIBLE:
                 return '';
 
             case Settings::RECAPTCHA_TYPE_V2_CHECKBOX:
+            case Settings::RECAPTCHA_TYPE_H_CHECKBOX:
             default:
-                $output = '<div class="g-recaptcha" '
+                $class = Settings::RECAPTCHA_TYPE_H_CHECKBOX === $type ? 'h-captcha' : 'g-recaptcha';
+
+                return '<div class="'.$class.'" '
                     .'data-sitekey="'.($key ?: 'invalid').'" '
                     .'data-theme="'.$theme.'" '
                     .'data-size="'.$size.'" '
@@ -60,8 +64,6 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
                     .'name="'.$this->getHandle().'" '
                     .$this->getInputAttributesString()
                     .'/>';
-
-                return $output;
         }
     }
 }

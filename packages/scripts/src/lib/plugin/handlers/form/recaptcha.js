@@ -2,11 +2,14 @@ import { EVENT_AJAX_AFTER_SUBMIT, EVENT_ON_SUBMIT } from '../../constants/event-
 
 /* eslint-disable no-undef */
 class RecaptchaHandler {
-  _URL = 'https://www.google.com/recaptcha/api.js';
+  _G_URL = 'https://www.google.com/recaptcha/api.js';
+  _H_URL = 'https://js.hcaptcha.com/1/api.js';
 
   _V2_CHECKBOX = 'v2_checkbox';
   _V2_INVISIBLE = 'v2_invisible';
   _V3 = 'v3';
+  _H_CHECKBOX = 'h_checkbox';
+  _H_INVISIBLE = 'h_invisible';
 
   freeform;
   form;
@@ -16,7 +19,8 @@ class RecaptchaHandler {
   action;
   lazyLoad = false;
 
-  recaptchaElement;
+  captchaId;
+  captchaElement;
   isTokenSet = false;
 
   scriptAdded = false;
@@ -40,13 +44,18 @@ class RecaptchaHandler {
       this.form.removeEventListener('input', loadScripts);
 
       if (!this.scriptAdded) {
-        let url = this._URL;
+        let url = this._G_URL;
+        if (this.isHCaptcha(recaptcha)) {
+          url = this._H_URL;
+        }
+
         switch (this.version) {
           case this._V3:
             url += `?render=${this.siteKey}`;
             break;
 
           case this._V2_CHECKBOX:
+          case this._H_CHECKBOX:
             url += '?render=explicit';
             break;
         }
@@ -55,12 +64,12 @@ class RecaptchaHandler {
         script.src = url;
         script.async = true;
         script.defer = true;
-        script.addEventListener('load', this.renderRecaptcha);
+        script.addEventListener('load', this.renderCaptcha);
         document.body.appendChild(script);
 
         this.scriptAdded = true;
       } else {
-        this.renderRecaptcha();
+        this.renderCaptcha();
       }
     };
 
@@ -70,6 +79,8 @@ class RecaptchaHandler {
       loadScripts();
     }
   }
+
+  isHCaptcha = (type) => [this._H_CHECKBOX, this._H_INVISIBLE].includes(type);
 
   reload = () => {
     switch (this.version) {
@@ -84,14 +95,22 @@ class RecaptchaHandler {
       case this._V3:
         this.reloadV3();
         break;
+
+      case this._H_CHECKBOX:
+        this.reloadHCheckbox();
+        break;
+
+      case this._H_INVISIBLE:
+        this.reloadHInvisible();
+        break;
     }
   };
 
   reloadV2Checkbox = () => {
-    this.recaptchaElement = this.form.querySelector('.g-recaptcha');
-    if (this.recaptchaElement) {
+    this.captchaElement = this.form.querySelector('.g-recaptcha');
+    if (this.captchaElement) {
       grecaptcha.ready(() => {
-        grecaptcha.render(this.recaptchaElement, {
+        grecaptcha.render(this.captchaElement, {
           sitekey: this.siteKey,
         });
       });
@@ -100,12 +119,31 @@ class RecaptchaHandler {
 
   renderV2Checkbox() {
     this.form.addEventListener(EVENT_AJAX_AFTER_SUBMIT, () => {
-      if (this.recaptchaElement) {
+      if (this.captchaElement) {
         grecaptcha.ready(() => grecaptcha.reset());
       }
     });
 
     this.reloadV2Checkbox();
+  }
+
+  reloadHCheckbox() {
+    this.captchaElement = this.form.querySelector('.h-captcha');
+    if (this.captchaElement) {
+      this.captchaId = hcaptcha.render(this.captchaElement, {
+        sitekey: this.siteKey,
+      });
+    }
+  }
+
+  renderHCheckbox() {
+    this.form.addEventListener(EVENT_AJAX_AFTER_SUBMIT, () => {
+      if (this.captchaElement) {
+        hcaptcha.reset(this.captchaId);
+      }
+    });
+
+    this.reloadHCheckbox();
   }
 
   reloadV2Invisible = () => {
@@ -117,7 +155,7 @@ class RecaptchaHandler {
     if (!recaptchaElement) {
       recaptchaElement = document.createElement('div');
       recaptchaElement.id = id;
-      this.recaptchaElement = recaptchaElement;
+      this.captchaElement = recaptchaElement;
       this.form.appendChild(recaptchaElement);
     }
 
@@ -126,7 +164,7 @@ class RecaptchaHandler {
         sitekey: this.siteKey,
         size: 'invisible',
         callback: (token) => {
-          this.recaptchaElement.querySelector('*[name="g-recaptcha-response"]').value = token;
+          this.captchaElement.querySelector('*[name="g-recaptcha-response"]').value = token;
 
           this.isTokenSet = true;
           this.freeform.triggerResubmit();
@@ -154,13 +192,57 @@ class RecaptchaHandler {
     this.reloadV2Invisible();
   }
 
+  reloadHInvisible = () => {
+    this.isTokenSet = false;
+
+    const id = `${this.freeform.id}-recaptcha-v2-invisible`;
+
+    let hCaptchaElement = document.getElementById(id);
+    if (!hCaptchaElement) {
+      hCaptchaElement = document.createElement('div');
+      hCaptchaElement.id = id;
+      this.captchaElement = hCaptchaElement;
+      this.form.appendChild(hCaptchaElement);
+    }
+
+    this.captchaId = hcaptcha.render(hCaptchaElement, {
+      sitekey: this.siteKey,
+      size: 'invisible',
+      callback: (token) => {
+        this.captchaElement.querySelector('*[name="h-captcha-response"]').value = token;
+
+        this.isTokenSet = true;
+        this.freeform.triggerResubmit();
+      },
+    });
+  };
+
+  renderHInvisible() {
+    this.form.addEventListener(EVENT_ON_SUBMIT, (event) => {
+      if (this.isTokenSet) {
+        return;
+      }
+
+      event.preventDefault();
+
+      hcaptcha.execute(this.captchaId);
+    });
+
+    this.form.addEventListener(EVENT_AJAX_AFTER_SUBMIT, () => {
+      this.isTokenSet = false;
+      hcaptcha.reset(this.captchaId);
+    });
+
+    this.reloadHInvisible();
+  }
+
   reloadV3() {
     const recaptchaInput = document.createElement('input');
     recaptchaInput.type = 'hidden';
     recaptchaInput.name = 'g-recaptcha-response';
 
     this.isTokenSet = false;
-    this.recaptchaElement = recaptchaInput;
+    this.captchaElement = recaptchaInput;
 
     this.form.appendChild(recaptchaInput);
   }
@@ -179,7 +261,7 @@ class RecaptchaHandler {
 
       grecaptcha.ready(() => {
         grecaptcha.execute(siteKey, { action }).then((token) => {
-          this.recaptchaElement.value = token;
+          this.captchaElement.value = token;
           this.isTokenSet = true;
 
           this.freeform.triggerResubmit();
@@ -192,9 +274,9 @@ class RecaptchaHandler {
     });
   }
 
-  renderRecaptcha = () => {
+  renderCaptcha = () => {
     const interval = setInterval(() => {
-      if (window.grecaptcha) {
+      if (window.grecaptcha || window.hcaptcha) {
         clearInterval(interval);
 
         switch (this.version) {
@@ -208,6 +290,14 @@ class RecaptchaHandler {
 
           case this._V3:
             this.renderV3();
+            break;
+
+          case this._H_CHECKBOX:
+            this.renderHCheckbox();
+            break;
+
+          case this._H_INVISIBLE:
+            this.renderHInvisible();
             break;
         }
       }

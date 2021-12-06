@@ -38,6 +38,8 @@ class Settings extends Model
     const RECAPTCHA_TYPE_V2_CHECKBOX = 'v2_checkbox';
     const RECAPTCHA_TYPE_V2_INVISIBLE = 'v2_invisible';
     const RECAPTCHA_TYPE_V3 = 'v3';
+    const RECAPTCHA_TYPE_H_CHECKBOX = 'h_checkbox';
+    const RECAPTCHA_TYPE_H_INVISIBLE = 'h_invisible';
 
     const RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR = 'display_error';
     const RECAPTCHA_BEHAVIOUR_SPAM = 'spam';

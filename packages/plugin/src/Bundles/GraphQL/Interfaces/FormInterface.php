@@ -152,7 +152,7 @@ class FormInterface extends AbstractInterface
             'recaptchaEnabled' => [
                 'name' => 'recaptchaEnabled',
                 'type' => Type::boolean(),
-                'description' => 'Should reCAPTCHA be enabled for this form',
+                'description' => 'Should Captchas be enabled for this form',
             ],
             'honeypot' => [
                 'name' => 'honeypot',

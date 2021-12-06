@@ -41,7 +41,7 @@ class RecaptchaService extends Component
                 $message = $this->getSettings()->recaptchaErrorMessage;
                 $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
             } else {
-                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA - '.$this->lastError);
+                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'reCAPTCHA - '.$this->lastError);
             }
         }
     }
@@ -58,7 +58,7 @@ class RecaptchaService extends Component
                 $message = $this->getSettings()->recaptchaErrorMessage;
                 $event->getForm()->addError(Freeform::t($message ?: 'Your submission could not be processed.'));
             } else {
-                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA - '.$this->lastError);
+                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'reCAPTCHA - '.$this->lastError);
             }
         }
     }

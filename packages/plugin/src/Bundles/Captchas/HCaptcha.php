@@ -55,7 +55,7 @@ class HCaptcha extends FeatureBundle
                 $message = $this->getSettings()->recaptchaErrorMessage;
                 $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
             } else {
-                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'ReCAPTCHA - '.$this->lastError);
+                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'hCaptcha - '.$this->lastError);
             }
         }
     }

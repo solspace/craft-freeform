@@ -325,7 +325,7 @@ class DiagnosticsService extends BaseService
                     }
                 ),
                 new DiagnosticItem(
-                    'reCAPTCHA: [color]{{ value.enabled ? value.type : "Disabled" }}[/color]',
+                    'Captcha Service: [color]{{ value.enabled ? value.type : "Disabled" }}[/color]',
                     [
                         'enabled' => $this->getSummary()->statistics->spam->recaptcha,
                         'type' => $this->getRecaptchaType(),
@@ -607,13 +607,19 @@ class DiagnosticsService extends BaseService
     {
         switch ($this->getSummary()->statistics->spam->recaptchaType) {
             case Settings::RECAPTCHA_TYPE_V2_CHECKBOX:
-                return 'V2 Checkbox';
+                return 'reCAPTCHA V2 Checkbox';
 
             case Settings::RECAPTCHA_TYPE_V2_INVISIBLE:
-                return 'V2 Invisible';
+                return 'reCAPTCHA V2 Invisible';
 
             case Settings::RECAPTCHA_TYPE_V3:
-                return 'V3';
+                return 'reCAPTCHA V3';
+
+            case Settings::RECAPTCHA_TYPE_H_CHECKBOX:
+                return 'hCaptcha Checkbox';
+
+            case Settings::RECAPTCHA_TYPE_H_INVISIBLE:
+                return 'hCaptcha Invisible';
         }
 
         return null;

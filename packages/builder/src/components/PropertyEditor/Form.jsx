@@ -212,9 +212,9 @@ export default class Form extends BasePropertyEditor {
 
         {isInvisibleRecaptchaSetUp && !hasPaymentField && (
           <CheckboxProperty
-            label="Enable reCAPTCHA"
+            label="Enable Captchas"
             bold={true}
-            instructions="Disabling this option removes the reCAPTCHA check for this specific form."
+            instructions="Disabling this option removes the Captcha check for this specific form."
             name="recaptchaEnabled"
             checked={recaptchaEnabled}
             onChangeHandler={this.update}

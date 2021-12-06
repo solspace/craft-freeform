@@ -571,7 +571,7 @@ class Settings extends Model
 
     public function isRecaptchaInvisible(string $type): bool
     {
-        return \in_array($type, [self::RECAPTCHA_TYPE_V2_INVISIBLE, self::RECAPTCHA_TYPE_V3], true);
+        return \in_array($type, [self::RECAPTCHA_TYPE_V2_INVISIBLE, self::RECAPTCHA_TYPE_V3, self::RECAPTCHA_TYPE_H_INVISIBLE], true);
     }
 
     public function getSessionContextTimeToLiveMinutes(): int

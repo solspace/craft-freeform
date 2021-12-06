@@ -69,7 +69,7 @@ if (isPro) {
 }
 
 if (isRecaptchaEnabled && !isInvisibleRecaptchaSetUp) {
-  specialFields.push({ type: FieldTypes.RECAPTCHA, label: 'reCAPTCHA', singleton: true });
+  specialFields.push({ type: FieldTypes.RECAPTCHA, label: 'Captcha', singleton: true });
 }
 
 if (isPaymentEnabled) {

@@ -579,8 +579,8 @@ return [
 
     'Enable AJAX' => 'Aktiviere AJAX',
     'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.' => 'Verwende das automatische AJAX Submit-Feature von Freeform.',
-    'Enable reCAPTCHA' => 'Aktivieren Sie reCAPTCHA',
-    'Disabling this option removes the reCAPTCHA check for this specific form.' => 'Durch Deaktivieren dieser Option wird die reCAPTCHA-Prüfung für dieses bestimmte Formular entfernt.',
+    'Enable Captchas' => 'Aktivieren Sie Captchas',
+    'Disabling this option removes the Captcha check for this specific form.' => 'Durch Deaktivieren dieser Option wird die Captcha-Prüfung für dieses bestimmte Formular entfernt.',
 
     'Input attributes' => 'Input-Attribute',
     'Label attributes' => 'Label-Attribute',

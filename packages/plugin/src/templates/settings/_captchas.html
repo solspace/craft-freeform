@@ -2,20 +2,20 @@
 
 {% import "_includes/forms" as forms %}
 
-{% set title = "reCAPTCHA"|t("freeform") %}
+{% set title = "Captchas"|t("freeform") %}
 
 {% block content %}
 
     <input type="hidden" name="action" value="freeform/settings/save-settings">
-    {{ redirectInput('freeform/settings/recaptcha') }}
+    {{ redirectInput('freeform/settings/captchas') }}
     {{ csrfInput() }}
 
-    <h2 class="first">{{ "reCAPTCHA Settings"|t('freeform') }}</h2>
+    <h2 class="first">{{ "Captcha Settings"|t('freeform') }}</h2>
 
     {{ forms.lightswitchField({
         first: true,
-        label: "Enable reCAPTCHA?"|t('freeform'),
-        instructions: "Enable this to allow use of reCAPTCHA on your forms."|t('freeform'),
+        label: "Use Captchas on Forms?"|t('freeform'),
+        instructions: "Enable this to allow the use of reCAPTCHA or hCaptcha on your forms."|t('freeform'),
         name: "settings[recaptchaEnabled]",
         on: settings.recaptchaEnabled,
         toggle: 'recaptcha-fields',
@@ -25,7 +25,7 @@
     <div id="recaptcha-fields" class="field {{ not settings.recaptchaEnabled ? 'hidden' }}">
         {% set isLite = not craft.freeform.pro %}
         {% set opts = {
-            v2_checkbox: "reCATPCHA v2 - Checkbox",
+            v2_checkbox: "reCAPTCHA v2 - Checkbox",
             v2_invisible: {
                 label: "reCAPTCHA v2 - Invisible" ~ (isLite ? " (Pro Only)"),
                 disabled: isLite,
@@ -39,9 +39,9 @@
         } %}
 
         {{ forms.selectField({
-            label: "reCAPTCHA type"|t('freeform'),
-            instructions: "Choose which type of reCAPTCHA you want to use."|t('freeform'),
-            warning: "Please be sure the selection here matches the reCAPTCHA type on the Google reCAPTCHA site admin console.",
+            label: "Captcha Type"|t('freeform'),
+            instructions: "Choose which Captcha service and type you want to use."|t('freeform'),
+            warning: "If using reCAPTCHA, please be sure the selection here matches the type on the Google reCAPTCHA site admin console and this site has been added to the approved Domains list.",
             id: "recaptcha-type",
             name: "settings[recaptchaType]",
             value: settings.recaptchaType,
@@ -50,7 +50,7 @@
         }) }}
 
         {{ forms.autosuggestField({
-            label: "reCAPTCHA Site Key"|t('freeform'),
+            label: "Captcha Site Key"|t('freeform'),
             name: "settings[recaptchaKey]",
             required: true,
             value: settings.recaptchaKey,
@@ -59,7 +59,7 @@
         }) }}
 
         {{ forms.autosuggestField({
-            label: "reCAPTCHA Secret Key"|t('freeform'),
+            label: "Captcha Secret Key"|t('freeform'),
             name: "settings[recaptchaSecret]",
             required: true,
             value: settings.recaptchaSecret,
@@ -72,8 +72,8 @@
         <h3>{{ "Behavior & Configuration"|t('freeform') }}</h3>
 
         {{ forms.lightswitchField({
-            label: "Only load reCAPTCHA scripts once the user interacts with the form?"|t('freeform'),
-            instructions: "If you'd like to have reCAPTCHA and its associated scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting."|t('freeform'),
+            label: "Only load Captcha scripts once the user interacts with the form?"|t('freeform'),
+            instructions: "If you'd like to have the associated Captcha scripts load only once a user begins filling out the form, enable this setting. If you'd like your forms to be ready to go at page load, disable this setting."|t('freeform'),
             name: "settings[recaptchaLazyLoad]",
             on: settings.recaptchaLazyLoad,
             errors: settings.errors("recaptchaLazyLoad"),
@@ -121,8 +121,8 @@
 
         <div id="min-score" class="{{ settings.recaptchaType != "v3" ? "hidden" }}">
             {{ forms.selectField({
-                label: "reCAPTCHA Minimum Score (reCAPTCHA v3 only)"|t("freeform"),
-                instructions: "Enter the minimum score needed to pass the reCAPTCHA v3 test. 0.0 score means that it's almost certain a bot, 1.0 score means it's a user."|t("freeform"),
+                label: "Minimum Score"|t("freeform"),
+                instructions: "Enter the minimum score needed to pass the test. The higher the score, the more agressive the protection will be. Setting this to '0.0' would allow almost all spam through, while '1.0' could potentially block legitimate users. We recommend a value of '0.5' to '0.7'."|t("freeform"),
                 name: "settings[recaptchaMinScore]",
                 value: settings.recaptchaMinScore,
                 errors: settings.errors("recaptchaMinScore"),

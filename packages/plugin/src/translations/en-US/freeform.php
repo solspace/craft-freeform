@@ -603,8 +603,8 @@ return [
 
     'Enable AJAX' => 'Enable AJAX',
     'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.' => 'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.',
-    'Enable reCAPTCHA' => 'Enable reCAPTCHA',
-    'Disabling this option removes the reCAPTCHA check for this specific form.' => 'Disabling this option removes the reCAPTCHA check for this specific form.',
+    'Enable Captchas' => 'Enable Captchas',
+    'Disabling this option removes the Captcha check for this specific form.' => 'Disabling this option removes the Captcha check for this specific form.',
 
     'Input attributes' => 'Input attributes',
     'Label attributes' => 'Label attributes',
@@ -744,8 +744,8 @@ return [
     'Marked as spam because' => 'Marked as spam because',
     'generic' => 'Unknown',
     'honeypot' => 'Honeypot',
-    'js_test' => 'JS Test',
-    'recaptcha' => 'reCAPTCHA',
+    'js_test' => 'Honeypot JS Test',
+    'recaptcha' => 'Captcha Failure',
     'blocked_keywords' => 'Blocked Keywords',
     'blocked_email_address' => 'Blocked Email Address',
     'blocked_ip' => 'Blocked IP',

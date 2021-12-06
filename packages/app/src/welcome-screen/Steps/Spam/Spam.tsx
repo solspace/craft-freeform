@@ -80,9 +80,9 @@ const Spam: React.FC = () => {
         />
 
         <InfoField>
-          To enable reCAPTCHA, please visit the{' '}
+          To enable a Captcha service, please visit the{' '}
           <Italics>
-            Freeform {'->'} Settings {'->'} reCAPTCHA
+            Freeform {'->'} Settings {'->'} Captchas
           </Italics>{' '}
           page later to set up.
         </InfoField>

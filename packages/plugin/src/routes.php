@@ -103,7 +103,7 @@ return [
     'freeform/settings/add-demo-template' => 'freeform/settings/add-demo-template',
     'freeform/settings/add-email-template' => 'freeform/settings/add-email-template',
     'freeform/settings/demo-templates' => 'freeform/codepack/list-contents',
-    'freeform/settings/recaptcha' => 'freeform/settings/provide-setting',
+    'freeform/settings/captchas' => 'freeform/settings/provide-setting',
     // Resources
     'freeform/resources' => 'freeform/resources/index',
     'freeform/resources/community' => 'freeform/resources/community',

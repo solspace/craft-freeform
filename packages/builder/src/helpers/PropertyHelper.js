@@ -94,6 +94,7 @@ const validProperties = [
   'accent',
   'theme',
   'url',
+  'isHCaptcha',
 ];
 
 export default class PropertyHelper {

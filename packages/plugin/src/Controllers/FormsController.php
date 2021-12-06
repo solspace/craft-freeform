@@ -34,6 +34,7 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
@@ -424,6 +425,8 @@ class FormsController extends BaseController
         $isCommerceEnabled = $commerce && ($commerce['enabled'] ?? false);
         $isCalendarEnabled = $calendar && ($calendar['enabled'] ?? false);
 
+        $isHCaptcha = \in_array($settings->recaptchaType, [Settings::RECAPTCHA_TYPE_H_INVISIBLE, Settings::RECAPTCHA_TYPE_H_CHECKBOX], true);
+
         $templateVariables = [
             'form' => $model,
             'title' => $title,
@@ -449,6 +452,7 @@ class FormsController extends BaseController
             'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
             'isRulesEnabled' => $isPro,
             'isRecaptchaEnabled' => $settings->recaptchaEnabled,
+            'isHCaptcha' => $isHCaptcha,
             'isInvisibleRecaptchaSetUp' => $settings->isInvisibleRecaptchaSetUp(),
             'isPaymentEnabled' => $isPro,
             'isCommerceEnabled' => $isCommerceEnabled,

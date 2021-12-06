@@ -69,7 +69,12 @@ if (isPro) {
 }
 
 if (isRecaptchaEnabled && !isInvisibleRecaptchaSetUp) {
-  specialFields.push({ type: FieldTypes.RECAPTCHA, label: 'Captcha', singleton: true });
+  specialFields.push({
+    type: FieldTypes.RECAPTCHA,
+    label: isHCaptcha ? 'hCaptcha' : 'reCAPTCHA',
+    singleton: true,
+    isHCaptcha,
+  });
 }
 
 if (isPaymentEnabled) {
@@ -123,7 +128,7 @@ let store = createStore(
       fields: fieldList,
       types: fieldTypeList,
     },
-    specialFields: specialFields,
+    specialFields,
     mailingLists: {
       isFetching: false,
       didInvalidate: false,

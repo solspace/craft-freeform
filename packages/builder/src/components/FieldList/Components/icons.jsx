@@ -20,6 +20,7 @@ import phone from '@ff/builder/assets/icons/fieldtype-phone.svg';
 import radio_group from '@ff/builder/assets/icons/fieldtype-radios.svg';
 import rating from '@ff/builder/assets/icons/fieldtype-rating.svg';
 import recaptcha from '@ff/builder/assets/icons/fieldtype-recaptcha.svg';
+import hcaptcha from '@ff/builder/assets/icons/fieldtype-hcaptcha.svg';
 import regex from '@ff/builder/assets/icons/fieldtype-regex.svg';
 import rich_text from '@ff/builder/assets/icons/fieldtype-richtext.svg';
 import select from '@ff/builder/assets/icons/fieldtype-select.svg';
@@ -55,6 +56,7 @@ const svgs = {
   radio_group,
   rating,
   recaptcha,
+  hcaptcha,
   regex,
   rich_text,
   select,

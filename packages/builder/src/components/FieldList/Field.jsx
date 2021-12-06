@@ -65,7 +65,10 @@ export default class Field extends Component {
       classList.push('is-dragging');
     }
 
-    const icon = getIcon(type);
+    let icon = getIcon(type);
+    if (type === 'recaptcha' && this.props.isHCaptcha) {
+      icon = getIcon('hcaptcha');
+    }
 
     return connectDragSource(
       <li className={classList.join(' ')} disabled={isUsed} onClick={!isUsed ? onClick : null}>

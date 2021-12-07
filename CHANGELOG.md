@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.12.9.1 - 2021-12-07
+
+### Fixed
+- Fixed a bug where new installs could potentially error on the `league/flysystem` dependency version.
+
 ## 3.12.9 - 2021-12-07
 
 ### Added

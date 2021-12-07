@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Integrations\CRM;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -195,6 +196,20 @@ class Pardot extends AbstractCRMIntegration
         } catch (RequestException $e) {
             return false;
         }
+    }
+
+    /**
+     * @return array|bool|string
+     */
+    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field)
+    {
+        $value = parent::convertCustomFieldValue($fieldObject, $field);
+
+        if (FieldObject::TYPE_ARRAY === $fieldObject->getType()) {
+            $value = \is_array($value) ? implode(';', $value) : $value;
+        }
+
+        return $value;
     }
 
     /**
@@ -421,6 +436,7 @@ class Pardot extends AbstractCRMIntegration
             switch ($field->type) {
                 case 'Text':
                 case 'Textarea':
+                case 'TextArea':
                 case 'Dropdown':
                 case 'Radio Button':
                 case 'Hidden':

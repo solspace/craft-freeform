@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.12.9 - 2021-12-07
+
+### Added
+- Added support for hCaptcha, which works similar to reCAPTCHA but easily complies with GDPR and other global data laws.
+
+### Fixed
+- Fixed a bug where the Pardot integration was not correctly passing off array values.
+- Fixed a bug where it was not possible to submit forms directly to the Submit controller.
+- Fixed a bug where Opinion Scale fields were not defaulting to using values as labels if labels are empty.
+
 ## 3.12.8 - 2021-12-02
 
 ### Changed

@@ -665,7 +665,10 @@ export default class Freeform {
 
         if (!actions.length) {
           if (success) {
-            form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
+            if (response.html !== null) {
+              form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
+            }
+
             this._resetHandlers();
             this._setUp();
 

@@ -776,8 +776,10 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
      * Render a predefined template.
      *
      * @param array $renderProperties
+     *
+     * @return null|Markup
      */
-    public function render(array $renderProperties = null): Markup
+    public function render(array $renderProperties = null)
     {
         $this->setProperties($renderProperties);
         $formTemplate = $this->getPropertyBag()->get('formattingTemplate', $this->formTemplate);

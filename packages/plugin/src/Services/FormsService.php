@@ -389,14 +389,12 @@ class FormsService extends BaseService implements FormHandlerInterface
      * @throws InvalidCallException
      * @throws FreeformException
      */
-    public function renderFormTemplate(Form $form, $templateName): \Twig_Markup
+    public function renderFormTemplate(Form $form, $templateName)
     {
         $settings = $this->getSettingsService();
 
         if (empty($templateName)) {
-            throw new FreeformException(
-                Freeform::t("Can't use render() if no form template specified")
-            );
+            return null;
         }
 
         $customTemplates = $settings->getCustomFormTemplates();

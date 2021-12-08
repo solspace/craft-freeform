@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Library\Database;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Twig\Markup;
 
 interface FormHandlerInterface
 {
@@ -42,8 +43,10 @@ interface FormHandlerInterface
 
     /**
      * @param string $templateName
+     *
+     * @return null|Markup
      */
-    public function renderFormTemplate(Form $form, $templateName): \Twig_Markup;
+    public function renderFormTemplate(Form $form, $templateName);
 
     /**
      * Increments the spam block counter by 1.

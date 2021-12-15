@@ -22,6 +22,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
+use yii\filters\Cors;
 use yii\web\Response;
 
 class SubmitController extends BaseController
@@ -73,6 +74,35 @@ class SubmitController extends BaseController
         if ($isAjaxRequest) {
             return $this->toAjaxResponse($form, $submission);
         }
+    }
+
+    public function behaviors()
+    {
+        $corsHeaders = [
+            'Access-Control-Request-Method' => ['POST', 'OPTIONS'],
+            'Access-Control-Request-Headers' => [
+                'Authorization',
+                'Cache-Control',
+                'Content-Type',
+                'X-Craft-Token',
+                'X-Requested-With',
+            ],
+            'Access-Control-Allow-Credentials' => true,
+            'Access-Control-Max-Age' => 86400,
+        ];
+
+        $generalConfig = \Craft::$app->getConfig()->getGeneral();
+        $origins = $generalConfig->allowedGraphqlOrigins;
+        if (!empty($origins)) {
+            $corsHeaders['Access-Control-Allow-Origin'] = $origins;
+        }
+
+        return [
+            'corsFilter' => [
+                'class' => Cors::class,
+                'cors' => $corsHeaders,
+            ],
+        ];
     }
 
     private function handleSubmission(Form $form, Submission $submission)

@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\MailingListField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -40,8 +41,12 @@ class IntegrationsQueueService extends BaseService
     public function enqueueMailingListIntegrations(Submission $submission, array $fields)
     {
         foreach ($fields as $field) {
-            $fieldValue = $field->getValue();
-            if ($fieldValue && $field->getEmailFieldHash() && $field->getResourceId()) {
+            if (!$field instanceof MailingListField) {
+                continue;
+            }
+
+            $isSelected = $field->isHidden() || (bool) $field->getValue();
+            if ($isSelected && $field->getEmailFieldHash() && $field->getResourceId()) {
                 $task = new IntegrationsQueueModel();
                 $task->integrationType = IntegrationsQueueRecord::INTEGRATION_TYPE_MAILING_LIST;
                 $task->status = IntegrationsQueueRecord::STATUS_HALTED;

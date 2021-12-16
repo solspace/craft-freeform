@@ -43,6 +43,8 @@ class Submission extends Element
     const TABLE = '{{%freeform_submissions}}';
     const FIELD_COLUMN_PREFIX = 'field_';
 
+    const EVENT_PROCESS_SUBMISSION = 'process-submission';
+
     const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
     /** @var int */

@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Webhooks\Integrations;
 
 use GuzzleHttp\Client;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
@@ -11,7 +11,7 @@ use Solspace\Freeform\Library\Webhooks\AbstractWebhook;
 
 class Generic extends AbstractWebhook
 {
-    public function triggerWebhook(SubmitEvent $event): bool
+    public function triggerWebhook(ProcessSubmissionEvent $event): bool
     {
         $form = $event->getForm();
         $submission = $event->getSubmission();

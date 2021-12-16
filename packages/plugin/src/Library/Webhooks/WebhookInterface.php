@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Webhooks;
 
-use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 
 interface WebhookInterface
 {
@@ -18,5 +18,5 @@ interface WebhookInterface
      */
     public function getSetting(string $name, $defaultValue = null);
 
-    public function triggerWebhook(SubmitEvent $event): bool;
+    public function triggerWebhook(ProcessSubmissionEvent $event): bool;
 }

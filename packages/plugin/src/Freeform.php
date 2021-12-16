@@ -934,12 +934,6 @@ class Freeform extends Plugin
                 FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
                 [$this->stripe, 'addAttributesToFormTag']
             );
-
-            Event::on(
-                Form::class,
-                Form::EVENT_AFTER_SUBMIT,
-                [$this->webhooks, 'triggerWebhooks']
-            );
         }
     }
 

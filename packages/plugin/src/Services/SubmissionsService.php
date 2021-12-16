@@ -22,6 +22,7 @@ use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
+use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
@@ -284,6 +285,9 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 $integrationsService->pushToCRM($submission);
             }
         }
+
+        $event = new ProcessSubmissionEvent($form, $submission);
+        Event::trigger(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, $event);
 
         $formsService->setPostedCookie($form);
         $formsService->onAfterSubmit($form, $submission);

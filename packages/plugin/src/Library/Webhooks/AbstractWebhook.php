@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Webhooks;
 
-use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 
 abstract class AbstractWebhook implements WebhookInterface
 {
@@ -44,5 +44,5 @@ abstract class AbstractWebhook implements WebhookInterface
         return $this->settings[$name] ?? $defaultValue;
     }
 
-    abstract public function triggerWebhook(SubmitEvent $event): bool;
+    abstract public function triggerWebhook(ProcessSubmissionEvent $event): bool;
 }

@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 3.12.10 - 2021-12-XX
+
+### Added
+- Added the GraphQL `allowedGraphqlOrigins` config setting for CORS support in Freeform.
+
+### Changed
+- Updated form re-render (via AJAX) to be bypassed if no formatting template is specified in the form builder.
+
+### Fixed
+- Fixed a bug where spammy submissions with hidden mailing list fields were not sending off to Email Marketing integrations when approved.
+- Fixed a bug where Webhooks were still firing when a submission was flagged as spam.
+- Fixed a bug where File Upload Drag & Drop fields were not showing as options in Conditional Rules tab.
+- Fixed a bug where deleting an uploaded file could clear the submission data.
+- Fixed a bug where blocked email and keyword error messages were not being displayed underneath applicable fields when the corresponding settings are enabled.
+
 ## 3.12.9.1 - 2021-12-07
 
 ### Fixed

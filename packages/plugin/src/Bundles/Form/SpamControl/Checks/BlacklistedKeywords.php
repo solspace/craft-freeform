@@ -37,20 +37,20 @@ class BlacklistedKeywords extends AbstractCheck implements BundleInterface
                 if (\in_array($field->getType(), self::SPAM_KEYWORD_TYPES, true)) {
                     foreach ($keywords as $keyword) {
                         if (ComparisonHelper::stringContainsWildcardKeyword($keyword, $field->getValueAsString())) {
+                            if ($showErrorBelowFields) {
+                                $field->addError(
+                                    Freeform::t(
+                                        $keywordsMessage,
+                                        [
+                                            'value' => $field->getValueAsString(),
+                                            'keyword' => $keyword,
+                                        ]
+                                    )
+                                );
+                            }
+
                             if ($this->isDisplayErrors()) {
                                 $form->addError(Freeform::t('Form contains a restricted keyword'));
-
-                                if ($showErrorBelowFields) {
-                                    $field->addError(
-                                        Freeform::t(
-                                            $keywordsMessage,
-                                            [
-                                                'value' => $field->getValueAsString(),
-                                                'keyword' => $keyword,
-                                            ]
-                                        )
-                                    );
-                                }
                             } else {
                                 $form->markAsSpam(
                                     SpamReason::TYPE_BLOCKED_KEYWORDS,

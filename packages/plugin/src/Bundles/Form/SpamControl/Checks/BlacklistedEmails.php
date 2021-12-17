@@ -12,7 +12,7 @@ class BlacklistedEmails extends AbstractCheck
 {
     public function handleCheck(ValidationEvent $event)
     {
-        $showErrorBelowFields = $this->getSettings()->showErrorsForBlockedEmails;
+        $showErrorBelowFields = (bool) $this->getSettings()->showErrorsForBlockedEmails;
         $emails = $this->getSettings()->getBlockedEmails();
         $emailsMessage = $this->getSettings()->blockedEmailsError;
 
@@ -27,12 +27,12 @@ class BlacklistedEmails extends AbstractCheck
                     foreach ($field->getValue() as $value) {
                         foreach ($emails as $email) {
                             if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
+                                if ($showErrorBelowFields) {
+                                    $field->addError(Freeform::t($emailsMessage, ['email' => $value]));
+                                }
+
                                 if ($this->isDisplayErrors()) {
                                     $form->addError(Freeform::t('Form contains a blocked email'));
-
-                                    if ($showErrorBelowFields) {
-                                        $field->addError(Freeform::t($emailsMessage, ['email' => $value]));
-                                    }
                                 } else {
                                     $event->getForm()->markAsSpam(
                                         SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,

@@ -119,7 +119,7 @@ class FileUploadController extends BaseController
                         if ($uploadedFileExists && $uploadedAssets) {
                             $index = array_search($asset->id, $uploadedAssets, false);
                             unset($uploadedAssets[$index]);
-                            $submission->setFormFieldValues([$handle => array_values($uploadedAssets)]);
+                            $submission->setFormFieldValues([$handle => array_values($uploadedAssets)], false);
                             \Craft::$app->elements->saveElement($submission);
                         }
                     }

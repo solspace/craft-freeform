@@ -23,7 +23,7 @@ class BlacklistedKeywords extends AbstractCheck implements BundleInterface
 
     public function handleCheck(ValidationEvent $event)
     {
-        $showErrorBelowFields = $this->getSettingsService()->isSpamBehaviourDisplayErrors();
+        $showErrorBelowFields = (bool) $this->getSettings()->showErrorsForBlockedKeywords;
         $keywords = $this->getSettings()->getBlockedKeywords();
         $keywordsMessage = $this->getSettings()->blockedKeywordsError;
 

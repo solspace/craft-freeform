@@ -1,12 +1,12 @@
 # Solspace Freeform Changelog
 
-## 3.12.10 - 2021-12-XX
+## 3.12.10 - 2021-12-20
 
 ### Added
 - Added the GraphQL `allowedGraphqlOrigins` config setting for CORS support in Freeform.
 
 ### Changed
-- Updated form re-render (via AJAX) to be bypassed if no formatting template is specified in the form builder.
+- Updated form re-rendering (via AJAX) to be bypassed if no formatting template is specified in the form builder.
 
 ### Fixed
 - Fixed a bug where spammy submissions with hidden mailing list fields were not sending off to Email Marketing integrations when approved.

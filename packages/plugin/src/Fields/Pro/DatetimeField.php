@@ -56,6 +56,9 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     /** @var string */
     protected $maxDate;
 
+    /** @var string */
+    protected $locale;
+
     public static function getFieldTypeName(): string
     {
         return 'Date & Time';
@@ -148,6 +151,14 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     public function getMaxDate()
     {
         return $this->maxDate;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getLocale()
+    {
+        return $this->locale;
     }
 
     /**
@@ -390,7 +401,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
 
         $hasTime = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_TIME], true);
         $hasDate = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_DATE], true);
-        $locale = \Craft::$app->locale->id;
+        $locale = $this->locale ?: \Craft::$app->locale->id;
 
         $this->addInputAttribute('class', $attributes->getClass().' '.$this->getInputClassString());
 

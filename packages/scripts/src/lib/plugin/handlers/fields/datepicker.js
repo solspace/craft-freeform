@@ -51,7 +51,6 @@ class DatePicker {
         minuteIncrement: 1,
         hourIncrement: 1,
         static: picker.getAttribute('data-datepicker-static') !== null,
-        locale,
       };
 
       const optionsEvent = this.freeform._dispatchEvent('flatpickr-before-init', { detail: options, options });

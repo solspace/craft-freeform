@@ -138,6 +138,9 @@ class FieldProperties extends AbstractProperties
     protected $maxDate;
 
     /** @var string */
+    protected $locale;
+
+    /** @var string */
     protected $initialValue;
 
     /** @var int */
@@ -627,6 +630,14 @@ class FieldProperties extends AbstractProperties
     /**
      * @return null|string
      */
+    public function getLocale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @return null|string
+     */
     public function getInitialValue()
     {
         return $this->initialValue;
@@ -1037,6 +1048,7 @@ class FieldProperties extends AbstractProperties
             'useDatepicker' => self::TYPE_BOOLEAN,
             'minDate' => self::TYPE_STRING,
             'maxDate' => self::TYPE_STRING,
+            'locale' => self::TYPE_STRING,
             'initialValue' => self::TYPE_STRING,
             'minValue' => self::TYPE_INTEGER,
             'maxValue' => self::TYPE_INTEGER,

@@ -234,6 +234,7 @@ class FieldModel extends Model implements \JsonSerializable
             $returnArray['useDatepicker'] = $this->getMetaProperty('useDatepicker', true);
             $returnArray['minDate'] = $this->getMetaProperty('minDate', '');
             $returnArray['maxDate'] = $this->getMetaProperty('maxDate', '');
+            $returnArray['locale'] = $this->getMetaProperty('locale', '');
         }
 
         if (FieldInterface::TYPE_NUMBER === $this->type) {

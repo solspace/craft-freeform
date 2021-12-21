@@ -33,6 +33,7 @@ export default class Datetime extends BasePropertyEditor {
       useDatepicker: PropTypes.bool,
       minDate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
       maxDate: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      locale: PropTypes.string,
     }).isRequired,
   };
 
@@ -44,6 +45,7 @@ export default class Datetime extends BasePropertyEditor {
     const { dateOrder, date4DigitYear, dateLeadingZero, dateSeparator } = properties;
     const { clock24h, clockSeparator, clockAMPMSeparate } = properties;
     const { minDate, maxDate } = properties;
+    const { locale } = properties;
 
     const showDate = dateTimeType === FieldTypes.DATE_TIME_TYPE_BOTH || dateTimeType === FieldTypes.DATE_TIME_TYPE_DATE;
     const showTime = dateTimeType === FieldTypes.DATE_TIME_TYPE_BOTH || dateTimeType === FieldTypes.DATE_TIME_TYPE_TIME;
@@ -94,6 +96,15 @@ export default class Datetime extends BasePropertyEditor {
         <hr />
 
         <h4>{translate('Configuration')}</h4>
+
+        <TextProperty
+          label="Locale (Optional)"
+          instructions="Enter your desired custom locale (e.g. `fr`, `ru`, etc.) to force the datepicker to use that locale. Otherwise leave blank to use the default site's locale set by Craft."
+          name="locale"
+          placeholder="Using site's default locale"
+          value={locale ? locale : ''}
+          onChangeHandler={this.update}
+        />
 
         <SelectProperty
           label="Type"

@@ -179,6 +179,10 @@ class StripeHandler {
     this.freeform._renderFormErrors([message]);
     this.freeform.unlockSubmit();
 
+    if (this.freeform.options.autoScroll) {
+      this.freeform._scrollToForm();
+    }
+
     return false;
   };
 

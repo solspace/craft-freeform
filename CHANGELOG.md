@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.12.11 - 2021-12-23
+
+### Added
+- Added a setting for Date & Time fields in the form builder that lets you set/force a locale for the field.
+
+### Changed
+- Updated Stripe validation errors to also respect the "Automatically Scroll to top of the Form on AJAX submit?" setting.
+
+### Fixed
+- Fixed a bug where the custom form properties feature wasn't working correctly.
+
 ## 3.12.10 - 2021-12-20
 
 ### Added

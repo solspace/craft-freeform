@@ -317,6 +317,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         return $this->getLayout()->hasFieldType($type);
     }
 
+    public function getProperties(): PropertyBag
+    {
+        return $this->getPropertyBag();
+    }
+
     public function getPropertyBag(): PropertyBag
     {
         return $this->propertyBag;

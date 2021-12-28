@@ -52,6 +52,7 @@ use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
+use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
@@ -61,7 +62,7 @@ use yii\base\Arrayable;
 use yii\base\Event;
 use yii\web\Request;
 
-class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
+abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
 {
     const ID_KEY = 'id';
     const HASH_KEY = 'hash';
@@ -135,6 +136,9 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
 
     /** @var string */
     private $handle;
+
+    /** @var array */
+    private $metadata;
 
     /** @var string */
     private $color;
@@ -248,6 +252,7 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
         TranslatorInterface $translator,
         LoggerInterface $logger
     ) {
+        $this->metadata = $formModel->metadata ?? [];
         $this->propertyBag = new PropertyBag($this);
         $this->attributeBag = new AttributeBag($this);
 
@@ -310,6 +315,11 @@ class Form implements \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Co
                 }
             }
         }
+    }
+
+    public function getMetadata(): array
+    {
+        return $this->metadata;
     }
 
     public function hasFieldType(string $type): bool

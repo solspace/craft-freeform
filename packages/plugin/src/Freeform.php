@@ -48,6 +48,7 @@ use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
 use Solspace\Freeform\Controllers\Pro\QuickExportController;
 use Solspace\Freeform\Controllers\Pro\WebhooksController;
 use Solspace\Freeform\Controllers\ResourcesController;
+use Solspace\Freeform\Controllers\REST\FormTypesController;
 use Solspace\Freeform\Controllers\REST\SettingsController as RESTSettingsController;
 use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
@@ -87,6 +88,7 @@ use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\FormTypesService;
 use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
@@ -165,6 +167,7 @@ use yii\web\ForbiddenHttpException;
  * @property FreeformFeedService         $feed
  * @property LockService                 $lock
  * @property DiagnosticsService          $diagnostics
+ * @property FormTypesService            $formTypes
  */
 class Freeform extends Plugin
 {
@@ -490,6 +493,7 @@ class Freeform extends Plugin
                 'migrate-notifications' => MigrateNotificationsController::class,
                 'file-upload' => FileUploadController::class,
                 'diagnostics' => DiagnosticsController::class,
+                'form-types' => FormTypesController::class,
             ];
         }
     }
@@ -535,6 +539,7 @@ class Freeform extends Plugin
                 'feed' => FreeformFeedService::class,
                 'lock' => LockService::class,
                 'diagnostics' => DiagnosticsService::class,
+                'formTypes' => FormTypesService::class,
             ]
         );
     }

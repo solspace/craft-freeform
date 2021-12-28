@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Layout;
@@ -51,6 +52,12 @@ class FormModel extends Model
 
     /** @var string */
     public $uid;
+
+    /** @var string */
+    public $type;
+
+    /** @var array */
+    public $metadata;
 
     /** @var string */
     public $name;
@@ -113,6 +120,8 @@ class FormModel extends Model
     {
         $form = new self();
         $form->spamBlockCount = 0;
+        $form->type = Regular::class;
+        $form->metadata = [];
 
         return $form;
     }
@@ -122,6 +131,7 @@ class FormModel extends Model
         $form = $composer->getForm();
         $this->name = $form->getName();
         $this->handle = $form->getHandle();
+        $this->type = \get_class($form);
         $this->submissionTitleFormat = $form->getSubmissionTitleFormat();
         $this->description = $form->getDescription();
         $this->defaultStatus = $form->getDefaultStatus();

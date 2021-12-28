@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Controllers\REST;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
 use yii\web\Response;
 
 class FormTypesController extends BaseController
@@ -20,6 +21,19 @@ class FormTypesController extends BaseController
     {
         $types = Freeform::getInstance()->formTypes->getTypes();
 
-        return $this->asJson($types);
+        $results = [];
+
+        /**
+         * @var FormTypeInterface $class
+         */
+        foreach ($types as $class => $type) {
+            $results[] = [
+                'class' => $class,
+                'name' => $type,
+                'properties' => $class::getPropertyManifest(),
+            ];
+        }
+
+        return $this->asJson($results);
     }
 }

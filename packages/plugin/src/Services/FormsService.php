@@ -231,6 +231,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             $record = FormRecord::create();
         }
 
+        $record->type = $model->type;
+        $record->metadata = json_encode($model->metadata);
         $record->name = $model->name;
         $record->handle = $model->handle;
         $record->spamBlockCount = $model->spamBlockCount;
@@ -763,6 +765,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             ->select(
                 [
                     'forms.id',
+                    'forms.type',
+                    'forms.metadata',
                     'forms.uid',
                     'forms.name',
                     'forms.handle',
@@ -783,6 +787,10 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     private function createForm(array $data): FormModel
     {
+        if (!\is_array($data['metadata'])) {
+            $data['metadata'] = json_decode($data['metadata'] ?: '{}', true);
+        }
+
         return new FormModel($data);
     }
 

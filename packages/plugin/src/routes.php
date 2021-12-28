@@ -15,6 +15,7 @@ return [
     'freeform/api/finish-tutorial' => 'freeform/api/finish-tutorial',
     'freeform/api/get-submission-data' => 'freeform/api/get-submission-data',
     'freeform/api/options-from-source' => 'freeform/api/options-from-source',
+    'freeform/api/form-types' => 'freeform/form-types',
     // Forms
     'freeform' => 'freeform/settings/default-view',
     'freeform/forms' => 'freeform/forms/index',

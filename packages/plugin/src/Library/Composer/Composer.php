@@ -18,6 +18,7 @@ use Solspace\Freeform\Library\Composer\Components\Context;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
+use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 use Solspace\Freeform\Models\FormModel;
 
@@ -163,7 +164,10 @@ class Composer
             $this->properties->set(Properties::PAYMENT_HASH, $defaults[Properties::PAYMENT_HASH]);
         }
 
-        $this->form = new Form(
+        /** @var FormTypeInterface $type */
+        $type = $this->formModel->type;
+
+        $this->form = new $type(
             $this->formModel,
             $this->properties,
             $composer[self::KEY_LAYOUT],
@@ -180,8 +184,11 @@ class Composer
     {
         $this->properties = new Properties($this->getDefaultProperties(), $this->translator);
 
+        /** @var FormTypeInterface $type */
+        $type = $this->formModel->type;
+
         $this->context = new Context([]);
-        $this->form = new Form(
+        $this->form = new $type(
             $this->formModel,
             $this->properties,
             [[]],

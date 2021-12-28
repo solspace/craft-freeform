@@ -19,6 +19,8 @@ use Solspace\Freeform\Freeform;
  * Class Freeform_FormRecord.
  *
  * @property int    $id
+ * @property string $type
+ * @property string $metadata
  * @property string $name
  * @property string $handle
  * @property int    $spamBlockCount

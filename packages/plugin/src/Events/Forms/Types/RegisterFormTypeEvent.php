@@ -22,7 +22,11 @@ class RegisterFormTypeEvent extends Event
             throw new InvalidFormTypeException('Supplied Form type does not implement the FormTypeInterface');
         }
 
-        $this->types[$className] = $className::getTypeName();
+        $this->types[$className] = [
+            'class' => $className,
+            'name' => $className::getTypeName(),
+            'properties' => $className::getPropertyManifest(),
+        ];
     }
 
     /**
@@ -30,6 +34,6 @@ class RegisterFormTypeEvent extends Event
      */
     public function getTypes(): array
     {
-        return $this->types;
+        return array_values($this->types);
     }
 }

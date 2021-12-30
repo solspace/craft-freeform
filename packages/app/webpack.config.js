@@ -9,6 +9,7 @@ module.exports = {
 
   entry: {
     'welcome-screen': path.resolve(__dirname, 'src/welcome-screen/index.tsx'),
+    'form-modal': path.resolve(__dirname, 'src/form-modal/index.tsx'),
   },
   output: {
     filename: '[name].js',
@@ -46,6 +47,7 @@ module.exports = {
     alias: {
       '@ff-app': path.resolve(__dirname, 'src/'),
       '@ff-welcome-screen': path.resolve(__dirname, 'src/welcome-screen/'),
+      '@ff-form-modal': path.resolve(__dirname, 'src/form-modal/'),
     },
   },
 

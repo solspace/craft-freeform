@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Controllers;
 use Carbon\Carbon;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\BannerBundle;
+use Solspace\Freeform\Resources\Bundles\CreateFormModalBundle;
 use Solspace\Freeform\Resources\Bundles\DashboardBundle;
 use Solspace\Freeform\Resources\Bundles\LogBundle;
 use yii\web\Response;
@@ -46,6 +47,8 @@ class DashboardController extends BaseController
         \Craft::$app->view->registerAssetBundle(DashboardBundle::class);
         \Craft::$app->view->registerAssetBundle(LogBundle::class);
         \Craft::$app->view->registerAssetBundle(BannerBundle::class);
+        \Craft::$app->view->registerAssetBundle(CreateFormModalBundle::class);
+
         $this->getLoggerService()->registerJsTranslations($this->view);
 
         $exportTypes = [

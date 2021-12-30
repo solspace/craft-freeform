@@ -298,6 +298,10 @@ class FormsService extends BaseService implements FormHandlerInterface
             }
         }
 
+        if ($isNew) {
+            $this->addFormManagePermissionToUser($model->id);
+        }
+
         return false;
     }
 
@@ -797,5 +801,18 @@ class FormsService extends BaseService implements FormHandlerInterface
     private function getPostingLimitCookieName(Form $form): string
     {
         return 'form_posted_'.$form->getId();
+    }
+
+    private function addFormManagePermissionToUser($formId)
+    {
+        if (\Craft::Pro !== \Craft::$app->getEdition()) {
+            return;
+        }
+
+        $userId = \Craft::$app->getUser()->id;
+        $permissions = \Craft::$app->getUserPermissions()->getPermissionsByUserId($userId);
+        $permissions[] = PermissionHelper::prepareNestedPermission(Freeform::PERMISSION_FORMS_MANAGE, $formId);
+
+        \Craft::$app->getUserPermissions()->saveUserPermissions($userId, $permissions);
     }
 }

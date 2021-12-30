@@ -2,7 +2,13 @@
     title: "Forms"|t("freeform"),
     count: formCount,
     links: [
-        { link: url("freeform/forms/new"), label: "New"|t("freeform"), class: "submit", permission: "freeform-formsManage" },
+        {
+            link: 'javascript:;',
+            label: "New"|t("freeform"),
+            class: "submit",
+            data: ["create-form-wizard"],
+            permission: "freeform-formsManage",
+        },
     ]
 } %}
 

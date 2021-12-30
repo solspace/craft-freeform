@@ -4,7 +4,7 @@
 {% block actionButton %}
 
     {% if currentUser.can("freeform-formsCreate") %}
-        <a class="btn submit add icon" href="{{ url('freeform/forms/new/') }}">
+        <a class="btn submit add icon" href="javascript:;" data-create-form-wizard>
             {{ "New Form"|t('freeform') }}
         </a>
     {% endif %}

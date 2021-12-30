@@ -38,6 +38,7 @@ use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Resources\Bundles\ComposerBuilderBundle;
+use Solspace\Freeform\Resources\Bundles\CreateFormModalBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FormsService;
 use yii\db\Query;
@@ -56,6 +57,7 @@ class FormsController extends BaseController
         $totalSubmissionsByForm = $this->getSubmissionsService()->getSubmissionCountByForm();
 
         $this->view->registerAssetBundle(FormIndexBundle::class);
+        $this->view->registerAssetBundle(CreateFormModalBundle::class);
 
         $this->renderTemplate(
             'freeform/forms',
@@ -133,8 +135,6 @@ class FormsController extends BaseController
         $this->updateGroupPermissions(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $id, $model->id);
         $this->updateGroupPermissions(Freeform::PERMISSION_FORMS_MANAGE, $id, $model->id);
 
-        $this->addFormManagePermissionToUser($model->id);
-
         return $this->asJson([
             'errors' => $errors,
             'success' => 0 === \count($errors),
@@ -197,10 +197,6 @@ class FormsController extends BaseController
         $form->setLayout($composer);
 
         if ($this->getFormService()->save($form)) {
-            if ($isNew) {
-                $this->addFormManagePermissionToUser($form->id);
-            }
-
             return $this->asJson(
                 [
                     'success' => true,
@@ -744,18 +740,5 @@ class FormsController extends BaseController
     private function requireFormCreatePermission()
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
-    }
-
-    private function addFormManagePermissionToUser($formId)
-    {
-        if (\Craft::Pro !== \Craft::$app->getEdition()) {
-            return;
-        }
-
-        $userId = \Craft::$app->getUser()->id;
-        $permissions = \Craft::$app->getUserPermissions()->getPermissionsByUserId($userId);
-        $permissions[] = PermissionHelper::prepareNestedPermission(Freeform::PERMISSION_FORMS_MANAGE, $formId);
-
-        \Craft::$app->getUserPermissions()->saveUserPermissions($userId, $permissions);
     }
 }

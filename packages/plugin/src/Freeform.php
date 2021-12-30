@@ -48,7 +48,7 @@ use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
 use Solspace\Freeform\Controllers\Pro\QuickExportController;
 use Solspace\Freeform\Controllers\Pro\WebhooksController;
 use Solspace\Freeform\Controllers\ResourcesController;
-use Solspace\Freeform\Controllers\REST\FormTypesController;
+use Solspace\Freeform\Controllers\REST\FormsRESTController;
 use Solspace\Freeform\Controllers\REST\SettingsController as RESTSettingsController;
 use Solspace\Freeform\Controllers\SettingsController;
 use Solspace\Freeform\Controllers\SpamSubmissionsController;
@@ -493,7 +493,7 @@ class Freeform extends Plugin
                 'migrate-notifications' => MigrateNotificationsController::class,
                 'file-upload' => FileUploadController::class,
                 'diagnostics' => DiagnosticsController::class,
-                'form-types' => FormTypesController::class,
+                'forms-rest' => FormsRESTController::class,
             ];
         }
     }

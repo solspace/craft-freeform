@@ -7,7 +7,8 @@
     "resolveJsonModule": true,
     "paths": {
       "@ff-app/*": ["app/src/*"],
-      "@ff-welcome-screen/*": ["app/src/welcome-screen/*"]
+      "@ff-welcome-screen/*": ["app/src/welcome-screen/*"],
+      "@ff-form-modal/*": ["app/src/form-modal/*"]
     }
   },
   "exclude": ["node_modules"]

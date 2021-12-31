@@ -12,7 +12,7 @@ const App: React.FC = () => {
   const portalContainer = usePortal();
   const setScrollingDisabled = useScrollDisable();
 
-  const [types, statuses, templates] = useFormOptions();
+  const [types, statuses, templates, ajaxByDefault] = useFormOptions();
 
   const closeModal = (): void => {
     setScrollingDisabled(false);
@@ -27,7 +27,7 @@ const App: React.FC = () => {
   useWizardTrigger(loadModal);
 
   return (
-    <FormOptionsContext.Provider value={{ types, statuses, templates }}>
+    <FormOptionsContext.Provider value={{ types, statuses, templates, ajaxByDefault }}>
       {modalOpen ? createPortal(<Modal closeHandler={closeModal} />, portalContainer) : null}
     </FormOptionsContext.Provider>
   );

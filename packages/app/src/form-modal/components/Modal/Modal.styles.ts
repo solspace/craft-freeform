@@ -67,10 +67,22 @@ export const Grid = styled.div<GridProps>`
   }
 `;
 
+export const Header = styled.div`
+  background: #e4edf6;
+
+  border-radius: 5px 5px 0 0;
+  padding: 24px;
+  box-shadow: inset 0 -1px 0 rgb(51 64 77 / 10%);
+
+  color: #3f4d5a;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 1.2;
+`;
+
 export const Content = styled.div`
   flex: 1 1;
   padding: 24px;
-  border-radius: 5px 5px 0 0;
 `;
 
 export const Footer = styled.div`

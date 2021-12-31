@@ -70,10 +70,13 @@ class FormsRESTController extends BaseController
             $templates['native'] = [];
         }
 
+        $templates['default'] = $freeform->forms->getDefaultFormattingTemplate();
+
         return $this->asJson([
             'types' => $types,
             'statuses' => $statuses,
             'templates' => $templates,
+            'ajax' => $freeform->settings->isAjaxEnabledByDefault(),
         ]);
     }
 
@@ -99,7 +102,7 @@ class FormsRESTController extends BaseController
                         'submissionTitleFormat' => $post['submissionTitle'],
                         'description' => '',
                         'formTemplate' => $post['formTemplate'],
-                        'returnUrl' => '',
+                        'returnUrl' => $post['returnUrl'],
                         'storeData' => (int) $post['storeData'],
                         'ajaxEnabled' => $post['ajax'],
                         'defaultStatus' => $post['status'],

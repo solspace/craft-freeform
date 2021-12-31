@@ -16,19 +16,19 @@ export const useFormTemplatesOptions = (): [string, SelectOption[]] => {
   const { templates } = useContext(FormOptionsContext);
 
   if (templates === null) {
-    return ['bootstrap-4.html', [{ label: 'Loading...' }]];
+    return ['', [{ label: 'Loading...' }]];
   }
 
-  if (!templates.native) {
+  if (!templates.native.length) {
     return extractTemplates(templates.custom);
   }
 
-  if (!templates.custom) {
+  if (!templates.custom.length) {
     return extractTemplates(templates.native);
   }
 
   return [
-    'bootstrap-4.html',
+    templates.default,
     [
       {
         label: 'Solspace Templates',

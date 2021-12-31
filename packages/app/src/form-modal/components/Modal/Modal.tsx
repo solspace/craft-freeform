@@ -4,7 +4,7 @@ import Text from '@ff-app/shared/Forms/Text/Text';
 import React, { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import { Button, Content, Footer, Grid, Overlay, Wrapper } from './Modal.styles';
+import { Button, Content, Footer, Grid, Header, Overlay, Wrapper } from './Modal.styles';
 import translate from '@ff-app/utils/translations';
 import ColorPicker from '@ff-app/shared/Forms/ColorPicker/ColorPicker';
 import { useFormTypeOptions } from '@ff-app/form-modal/hooks/use-form-type-options';
@@ -32,6 +32,7 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
       {(): React.ReactNode => (
         <Overlay>
           <Wrapper onClick={(event): void => event.stopPropagation()}>
+            <Header>{translate('Create a New Form')}</Header>
             <Content>
               <Grid columns={2}>
                 <Text name="name" label="Name" required value={form.name} onChange={update} errors={errors.name} />
@@ -109,7 +110,7 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
             </Content>
             <Footer>
               <Button className={`submit btn ${isSaving ? 'disabled' : ''}`} onClick={saveHandler} disabled={isSaving}>
-                {translate('Save')}
+                {translate('Continue')}
               </Button>
               <Button
                 className={`btn ${isSaving ? 'disabled' : ''}`}

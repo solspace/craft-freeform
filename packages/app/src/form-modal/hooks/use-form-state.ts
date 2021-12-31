@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from '@ff-app/config/axios';
 import camelCase from 'lodash.camelcase';
 import { generateUrl } from '@ff-app/utils/urls';
 import { ChangeHandler } from '@ff-app/shared/Forms/types';
+import { FormOptionsContext } from '../context/form-types-context';
 
 export enum SuccessBehavior {
   ReturnURL = 'returnUrl',
@@ -42,6 +43,7 @@ type FormState = {
 };
 
 export const useFormState = (defaultStatusId: number, defaultTemplate: string): FormState => {
+  const { ajaxByDefault } = useContext(FormOptionsContext);
   const [isSaving, setIsSaving] = useState(false);
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -53,11 +55,15 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
     color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
     formTemplate: defaultTemplate,
     status: defaultStatusId,
-    ajax: true,
+    ajax: ajaxByDefault,
     storeData: true,
     successBehavior: SuccessBehavior.ReturnURL,
     returnUrl: '',
   });
+
+  useEffect(() => {
+    setForm({ ...form, status: defaultStatusId, formTemplate: defaultTemplate, ajax: ajaxByDefault });
+  }, [defaultStatusId, defaultTemplate, ajaxByDefault]);
 
   const update: ChangeHandler = (name, value): void => {
     const payload = { ...form, [name]: value };

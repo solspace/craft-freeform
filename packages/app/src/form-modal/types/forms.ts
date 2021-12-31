@@ -5,6 +5,7 @@ export type FormStatus = {
 };
 
 export type FormTemplateCollection = {
+  default: string;
   native: FormTemplate[];
   custom: FormTemplate[];
 };
@@ -24,4 +25,5 @@ export type FormOptionsResponse = {
   types: FormType[];
   statuses: FormStatus[];
   templates: FormTemplateCollection;
+  ajax: boolean;
 };

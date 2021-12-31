@@ -18,12 +18,20 @@ interface Props extends FieldProps {
   value?: string | number;
 }
 
-const renderOption = ({ label, value, children }: SelectOption): React.ReactNode => {
+const renderOption = ({ label, value, children }: SelectOption, index: number): React.ReactNode => {
   if (children) {
-    return <optgroup label={translate(label)}>{children.map(renderOption)}</optgroup>;
+    return (
+      <optgroup key={`${index}-${label}`} label={translate(label)}>
+        {children.map(renderOption)}
+      </optgroup>
+    );
   }
 
-  return <option value={value ?? ''}>{translate(label)}</option>;
+  return (
+    <option key={`${index}-${value}`} value={value ?? ''}>
+      {translate(label)}
+    </option>
+  );
 };
 
 const Select: React.FC<Props> = (props) => {

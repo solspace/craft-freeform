@@ -63,6 +63,8 @@ class FileHelper
         'application/gpg-keys' => 'gpg',
         'application/x-gtar' => 'gtar',
         'application/x-gzip' => 'gzip',
+        'image/heic' => 'heic',
+        'image/heif' => 'heif',
         'application/mac-binhex40' => 'hqx',
         'application/mac-binhex' => 'hqx',
         'application/x-binhex40' => 'hqx',

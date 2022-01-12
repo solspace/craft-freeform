@@ -464,7 +464,7 @@ class SummaryService extends Component
 
         $plugins = [];
         foreach (\Craft::$app->projectConfig->get('plugins') as $handle => $info) {
-            if (!$info['enabled']) {
+            if (!isset($info['enabled']) || !$info['enabled']) {
                 continue;
             }
 

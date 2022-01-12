@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         'list_syntax' => ['syntax' => 'long'],
         'single_trait_insert_per_statement' => true,
         'ternary_to_null_coalescing' => true,
+        'visibility_required' => ['elements' => ['property', 'method']],
     ])
     ->setRiskyAllowed(true)
     ->setFinder($finder);

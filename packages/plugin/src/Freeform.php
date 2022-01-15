@@ -317,6 +317,7 @@ class Freeform extends Plugin
         $navItem = parent::getCpNavItem();
 
         $subNavigation = include __DIR__.'/subnav.php';
+
         $event = new RegisterCpSubnavItemsEvent($subNavigation);
         $this->trigger(self::EVENT_REGISTER_SUBNAV_ITEMS, $event);
 

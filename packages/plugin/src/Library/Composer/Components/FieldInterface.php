@@ -73,6 +73,8 @@ interface FieldInterface
      */
     public function getValueAsString(): string;
 
+    public function getId(): int;
+
     /**
      * @return null|string
      */

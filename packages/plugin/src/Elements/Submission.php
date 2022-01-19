@@ -83,6 +83,9 @@ class Submission extends Element
     /** @var array AbstractField[] */
     private $fieldsByIdentifier = [];
 
+    /** @var bool */
+    private static $deletableTokens = [];
+
     /**
      * Submission constructor.
      */
@@ -511,11 +514,20 @@ class Submission extends Element
         parent::afterSave($isNew);
     }
 
+    public function enableDeletingByToken()
+    {
+        self::$deletableTokens[] = $this->token;
+    }
+
     /**
      * {@inheritDoc}
      */
     public function beforeDelete(): bool
     {
+        if (\in_array($this->token, self::$deletableTokens, true)) {
+            return true;
+        }
+
         $canModifyAll = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
         if ($canModifyAll) {
             return true;

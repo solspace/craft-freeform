@@ -298,7 +298,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      *
      * @throws \Exception
      */
-    public function delete(array $submissions): bool
+    public function delete(array $submissions, bool $bypassPermissionCheck = false): bool
     {
         $allowedFormIds = $this->getAllowedWriteFormIds();
         if (!$submissions) {
@@ -306,18 +306,22 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         $transaction = \Craft::$app->getDb()->beginTransaction();
+        $deleted = 0;
 
         try {
             foreach ($submissions as $submission) {
-                if (!\in_array($submission->formId, $allowedFormIds, false)) {
+                if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
                     continue;
                 }
+
+                $submission->enableDeletingByToken();
 
                 $deleteEvent = new DeleteEvent($submission);
                 $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
 
                 if ($deleteEvent->isValid) {
                     \Craft::$app->elements->deleteElementById($submission->id);
+                    ++$deleted;
 
                     $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
                 }
@@ -334,7 +338,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             throw $e;
         }
 
-        return true;
+        return $deleted > 0;
     }
 
     /**

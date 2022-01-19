@@ -1,5 +1,5 @@
 {% include "freeform/dashboard/_assets/header" with {
-    title: "Forms"|t("freeform"),
+    title: fragmentTitle|default("Forms")|t("freeform"),
     count: formCount,
     links: [
         {

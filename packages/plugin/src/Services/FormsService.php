@@ -180,10 +180,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsById[$id];
     }
 
-    /**
-     * @return null|FormModel
-     */
-    public function getFormByHandle(string $handle)
+    public function getFormByHandle(string $handle): ?FormModel
     {
         if (null === self::$formsByHandle || !isset(self::$formsByHandle[$handle])) {
             $result = $this->getFormQuery()->where(['handle' => $handle])->one();

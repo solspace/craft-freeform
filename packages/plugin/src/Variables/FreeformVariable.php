@@ -97,11 +97,8 @@ class FreeformVariable
         }
 
         $submission = Submission::findOne(['token' => $token]);
-
         if ($submission) {
-            Freeform::getInstance()->submissions->delete([$submission]);
-
-            return true;
+            return Freeform::getInstance()->submissions->delete([$submission], true);
         }
 
         return false;

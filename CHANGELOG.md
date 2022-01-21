@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.12.12 - 2022-01-21
+
+### Added
+- Added support for HEIC and HEIF image file types in Freeform's mime validation layer.
+
+### Fixed
+- Fixed a bug where fields with default values specified in the form builder would not show the default value/option on multi-page forms after the first page.
+- Fixed a bug where self-deletion feature (`deleteSubmissionByToken`) was only working for admins.
+- Fixed a bug where the Diagnostics page would error if there are plugins/modules that don't have the `enabled` property present.
+
 ## 3.12.11 - 2021-12-23
 
 ### Added

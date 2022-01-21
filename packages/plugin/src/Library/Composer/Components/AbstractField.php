@@ -68,8 +68,12 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
     /** @var array */
     protected $instructionAttributes;
+
     /** @var Form */
     private $form;
+
+    /** @var mimxed */
+    private $defaultValue;
 
     /** @var array */
     private $inputClasses;
@@ -112,6 +116,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
             try {
                 $field->{$fieldName} = $accessor->getValue($properties, $fieldName);
+                if ('value' === $fieldName) {
+                    $field->defaultValue = $accessor->getValue($properties, $fieldName);
+                }
             } catch (NoSuchPropertyException $e) {
                 // Pass along
             }
@@ -389,6 +396,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         }
 
         return $rules->isHidden($this, $this->getForm());
+    }
+
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
     }
 
     public function getPageIndex(): int

@@ -34,11 +34,14 @@ class PostContext
         }
 
         foreach ($form->getCurrentPage()->getFields() as $field) {
-            if ($field instanceof PersistentValueInterface) {
+            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
                 continue;
             }
 
             $postedValue = $request->post($field->getHandle());
+            if (null === $postedValue) {
+                continue;
+            }
 
             $event = new TransformValueEvent($field, $postedValue);
             Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);

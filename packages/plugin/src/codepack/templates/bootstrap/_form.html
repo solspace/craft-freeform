@@ -85,7 +85,7 @@
 
             {% set labelClass = (field.required ? " required" : "") %}
             {% set errorClass = "invalid-feedback" %}
-            {% set instructionClass = "form-text text-muted" %}
+            {% set instructionClass = "form-text text-muted mb-2 mt-n1" %}
 
             {% if field.type == "submit" or field.type == "save" %}
                 {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
@@ -99,6 +99,8 @@
                         instructionsClass: instructionClass,
                         errorClass: errorClass,
                     }) }}
+
+                    {{ field.renderInstructions() }}
 
                     {{ field.oneLine ? "<div>"|raw }}
 
@@ -120,7 +122,6 @@
 
                     {{ field.oneLine ? "</div>"|raw }}
 
-                    {{ field.renderInstructions() }}
                     {{ field.renderErrors({ errorClass: errorClass }) }}
 
                 {% elseif field.type == "radio_group" %}
@@ -130,6 +131,8 @@
                         instructionsClass: instructionClass,
                         errorClass: errorClass,
                     }) }}
+
+                    {{ field.renderInstructions() }}
 
                     {{ field.oneLine ? "<div>"|raw }}
 
@@ -150,7 +153,6 @@
 
                     {{ field.oneLine ? "</div>"|raw }}
 
-                    {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
 
                 {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
@@ -160,6 +162,8 @@
                         instructionsClass: instructionClass,
                         errorClass: errorClass,
                     }) }}
+
+                    {{ field.renderInstructions() }}
 
                     {{ field.oneLine ? "<div>"|raw }}
 
@@ -181,7 +185,6 @@
 
                     {{ field.oneLine ? "</div>"|raw }}
 
-                    {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
 
                 {% elseif field.type in ["checkbox", "mailing_list"] %}
@@ -203,7 +206,6 @@
                         class: class,
                         labelClass: labelClass,
                         instructionsClass: instructionClass,
-                        instructionsBelowField: true,
                         errorClass: errorClass,
                         addButtonLabel: "Add +",
                         addButtonClass: "btn btn-sm btn-primary",
@@ -224,6 +226,8 @@
                         errorClass: "help-block",
                     }) }}
 
+                    {{ field.renderInstructions }}
+
                     {% for layoutRow in field.layoutRows %}
                         <div class="row {{ form.customAttributes.rowClass }}">
                             {% for layoutField in layoutRow %}
@@ -234,7 +238,6 @@
                                     {{ layoutField.render({
                                         class: isCheckbox ? "checkbox" : "form-control",
                                         instructionsClass: "help-block",
-                                        instructionsBelowField: true,
                                         labelClass: (layoutField.required ? " required" : ""),
                                         errorClass: "help-block",
                                     }) }}
@@ -245,12 +248,10 @@
 
                     {{ field.renderInput({
                         instructionsClass: "help-block",
-                        instructionsBelowField: true,
                         labelClass: (field.required ? " required" : ""),
                         errorClass: "help-block",
                     }) }}
 
-                    {{ field.renderInstructions }}
                     {{ field.renderErrors }}
 
                 {% else %}
@@ -259,7 +260,6 @@
                         class: class,
                         labelClass: labelClass,
                         instructionsClass: instructionClass,
-                        instructionsBelowField: true,
                         errorClass: errorClass,
                     }) }}
 

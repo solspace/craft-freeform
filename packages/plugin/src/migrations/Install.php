@@ -135,6 +135,7 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_submissions'))
                 ->addField('id', $this->primaryKey())
                 ->addField('incrementalId', $this->integer()->notNull())
+                ->addField('userId', $this->integer())
                 ->addField('statusId', $this->integer())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('token', $this->string(100)->notNull())
@@ -143,6 +144,7 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['incrementalId'], true)
                 ->addIndex(['token'], true)
                 ->addForeignKey('id', 'elements', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('statusId', 'freeform_statuses', 'id', ForeignKey::CASCADE),
 

@@ -51,6 +51,9 @@ class Submission extends Element
     public $formId;
 
     /** @var int */
+    public $userId;
+
+    /** @var int */
     public $statusId;
 
     /** @var int */
@@ -472,6 +475,7 @@ class Submission extends Element
     public function afterSave(bool $isNew)
     {
         $insertData = [
+            'userId' => $this->userId,
             'formId' => $this->formId,
             'statusId' => $this->statusId,
             'incrementalId' => $this->incrementalId ?? $this->getNewIncrementalId(),

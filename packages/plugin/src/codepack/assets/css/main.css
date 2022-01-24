@@ -138,6 +138,10 @@ button[type=submit].ff-loading:before {
   animation: ff-loading .5s linear infinite
 }
 
+.mt-n1 {
+  margin-top: -0.5rem !important;
+}
+
 @keyframes ff-loading {
   0% {
     transform: rotate(0)

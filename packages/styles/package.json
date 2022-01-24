@@ -10,7 +10,7 @@
   "author": "Solspace Inc.",
   "license": "MIT",
   "devDependencies": {
-    "sass": "^1.34.1",
+    "sass": "^1.49.0",
     "y18n": ">=4.0.1"
   },
   "dependencies": {

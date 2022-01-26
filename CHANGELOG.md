@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.12.12.1 - 2022-01-26
+
+### Fixed
+- Fixed a bug where the default rendering of Rating fields would right-align the stars instead of left-align.
+
 ## 3.12.12 - 2022-01-21
 
 ### Added

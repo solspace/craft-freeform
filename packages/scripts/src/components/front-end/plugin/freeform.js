@@ -18,6 +18,7 @@ import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { addClass, getClassArray, removeClass } from '@lib/plugin/helpers/elements';
+import { SUCCESS_BEHAVIOUR_NO_EFFECT, SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL } from '@lib/plugin/constants/form';
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = 'form_previous_page_button';
@@ -661,10 +662,14 @@ export default class Freeform {
 
       if (request.status === 200) {
         const response = JSON.parse(request.response);
-        const { success, finished, actions = [], errors, formErrors, honeypot } = response;
+        const { success, finished, actions = [], errors, formErrors, honeypot, returnUrl } = response;
 
         if (!actions.length) {
           if (success) {
+            if (finished && response.onSuccess === SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL && returnUrl) {
+              window.location.href = returnUrl;
+            }
+
             if (response.html !== null) {
               form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
             }
@@ -680,7 +685,9 @@ export default class Freeform {
                 this._dispatchEvent(EventTypes.EVENT_ON_RESET);
               }
 
-              this._renderSuccessBanner();
+              if (response.onSuccess === SUCCESS_BEHAVIOUR_NO_EFFECT) {
+                this._renderSuccessBanner();
+              }
             }
 
             this._dispatchEvent(EventTypes.EVENT_AJAX_SUCCESS, { request, response });

@@ -12,10 +12,17 @@ import SelectProperty from './PropertyItems/SelectProperty';
 import TextareaProperty from './PropertyItems/TextareaProperty';
 import TextProperty from './PropertyItems/TextProperty';
 import { attributeColumns } from './PropertyItems/AttributeEditorProperty';
+import {
+  SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE,
+  SUCCESS_BEHAVIOUR_NO_EFFECT,
+  SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL,
+} from '../../constants/Form';
 
 @connect((state) => ({
   solspaceTemplates: state.templates.solspaceTemplates,
   templates: state.templates.list,
+  successTemplates: state.successTemplates,
+  metadata: state.metadata,
   composerProperties: state.composer.properties,
   currentFormHandle: state.composer.properties.form.handle,
   formId: state.formId,
@@ -27,6 +34,7 @@ export default class Form extends BasePropertyEditor {
     formStatuses: PropTypes.array.isRequired,
     solspaceTemplates: PropTypes.array.isRequired,
     templates: PropTypes.array.isRequired,
+    successTemplates: PropTypes.array.isRequired,
     composerProperties: PropTypes.object.isRequired,
     currentFormHandle: PropTypes.string,
   };
@@ -86,9 +94,11 @@ export default class Form extends BasePropertyEditor {
       recaptchaEnabled = true,
     } = properties;
 
+    const { successBehaviour, successTemplate } = this.props.metadata;
+
     const { gtmEnabled = false, gtmId = '', gtmEventName = '' } = properties;
 
-    const { formStatuses, solspaceTemplates, templates, composerProperties } = this.props;
+    const { formStatuses, solspaceTemplates, templates, successTemplates, composerProperties } = this.props;
     const { canManageSettings, isPro, isInvisibleRecaptchaSetUp } = this.context;
 
     let hasPaymentField = false;
@@ -110,6 +120,14 @@ export default class Form extends BasePropertyEditor {
     const templateList = [];
     templates.map((item) => {
       templateList.push({
+        key: item.fileName,
+        value: item.name,
+      });
+    });
+
+    const successTemplateList = [];
+    successTemplates.map((item) => {
+      successTemplateList.push({
         key: item.fileName,
         value: item.name,
       });
@@ -139,6 +157,11 @@ export default class Form extends BasePropertyEditor {
       });
     });
 
+    const isShowSuccessTemplate = [SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE].includes(successBehaviour);
+    const isShowReturnUrl =
+      !successBehaviour ||
+      [SUCCESS_BEHAVIOUR_NO_EFFECT, SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL].includes(successBehaviour);
+
     return (
       <div>
         <TextProperty
@@ -159,20 +182,48 @@ export default class Form extends BasePropertyEditor {
           onChangeHandler={this.updateHandle}
         />
 
+        <SelectProperty
+          label="Success Behaviour"
+          instructions="Use this to change the way the form behaves."
+          name="successBehaviour"
+          required
+          value={successBehaviour}
+          onChangeHandler={this.updateMetadata}
+          options={[
+            { key: SUCCESS_BEHAVIOUR_NO_EFFECT, value: 'Reload Form with Success Message' },
+            { key: SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, value: 'Load Success Template' },
+            { key: SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, value: 'Use Return URL' },
+          ]}
+        />
+
+        {isShowReturnUrl && (
+          <TextProperty
+            label="Return URL"
+            instructions="The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set."
+            name="returnUrl"
+            value={returnUrl}
+            onChangeHandler={this.update}
+          />
+        )}
+
+        {isShowSuccessTemplate && (
+          <SelectProperty
+            label="Success Template"
+            instructions="Select the desired success template to be used."
+            name="successTemplate"
+            emptyOption="--"
+            options={successTemplateList}
+            value={successTemplate}
+            onChangeHandler={this.updateMetadata}
+          />
+        )}
+
         <TextProperty
           label="Submission Title"
           instructions="What the auto-generated submission titles should look like."
           name="submissionTitleFormat"
           required={true}
           value={submissionTitleFormat}
-          onChangeHandler={this.update}
-        />
-
-        <TextProperty
-          label="Return URL"
-          instructions="The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set."
-          name="returnUrl"
-          value={returnUrl}
           onChangeHandler={this.update}
         />
 
@@ -235,7 +286,7 @@ export default class Form extends BasePropertyEditor {
           bold={true}
           instructions="Should the submission data for this form be stored in the database?"
           name="storeData"
-          checked={storeData}
+          checked={!!storeData}
           onChangeHandler={this.update}
         />
 

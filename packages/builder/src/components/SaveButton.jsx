@@ -12,6 +12,7 @@ const progressTitle = 'Saving...';
 @connect(
   (state) => ({
     formId: state.formId,
+    metadata: state.metadata,
     composer: state.composer,
     context: state.context,
     currentFormHandle: state.composer.properties.form.handle,
@@ -29,6 +30,9 @@ export default class SaveButton extends Component {
     updateFormHandle: PropTypes.func.isRequired,
     formId: PropTypes.number,
     currentFormHandle: PropTypes.string,
+    composer: PropTypes.object,
+    context: PropTypes.object,
+    metadata: PropTypes.object,
   };
 
   static contextTypes = {
@@ -71,13 +75,14 @@ export default class SaveButton extends Component {
   }
 
   save(event) {
-    const { saveUrl, formUrl, formId, composer, context } = this.props;
+    const { saveUrl, formUrl, formId, composer, context, metadata } = this.props;
     const { currentFormHandle, updateFormId, updateFormHandle } = this.props;
     const { csrf, notificator } = this.context;
 
     let savableState = {
       [csrf.name]: csrf.token,
       formId,
+      metadata,
       composerState: JSON.stringify({
         composer,
         context,

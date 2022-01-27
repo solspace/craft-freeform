@@ -454,6 +454,30 @@ class DiagnosticsService extends BaseService
                 }
             ),
             new DiagnosticItem(
+                'Success Templates Directory Path: [color]{{ value ? value : "Not set" }}[/color]',
+                $this->getSettingsService()->getSettingsModel()->successTemplateDirectory,
+                [
+                    new NoticeValidator(
+                        function ($value) {
+                            if ($value) {
+                                if ('/' !== substr($value, 0, 1)) {
+                                    $value = \Craft::getAlias('@templates').\DIRECTORY_SEPARATOR.$value;
+                                }
+
+                                return file_exists($value) && is_dir($value);
+                            }
+
+                            return true;
+                        },
+                        '',
+                        'Success Templates Directory Path: Not set correctly'
+                    ),
+                ],
+                function ($value) {
+                    return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
+                }
+            ),
+            new DiagnosticItem(
                 'Email Notification Templates: [color]{{ value == "both" ? "Database and Files" : value == "db" ? "Database" : "Files" }}[/color]',
                 $this->getEmailNotificationTypes(),
                 [

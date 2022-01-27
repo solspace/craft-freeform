@@ -113,6 +113,7 @@ class SummaryService extends Component
         $settings->formattingTemplatesPath = (bool) $settingsService->getSettingsModel()->formTemplateDirectory;
         $settings->sendAlertsOnFailedNotifications = (bool) $settingsService->getFailedNotificationRecipients();
         $settings->notificationTemplatesPath = (bool) $settingsService->getSettingsModel()->emailTemplateDirectory;
+        $settings->successTemplatesPath = (bool) $settingsService->getSettingsModel()->successTemplateDirectory;
         $settings->modifiedStatuses = $this->isModifiedStatuses();
         $settings->demoTemplatesInstalled = $this->isDemoTemplatesInstalled();
 

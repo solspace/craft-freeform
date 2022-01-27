@@ -48,6 +48,8 @@ interface FormHandlerInterface
      */
     public function renderFormTemplate(Form $form, $templateName);
 
+    public function renderSuccessTemplate(Form $form);
+
     /**
      * Increments the spam block counter by 1.
      *

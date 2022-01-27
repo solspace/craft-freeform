@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import { Component } from 'react';
 import { getHandleValue } from '../../helpers/Utilities';
 
 export default class BasePropertyEditor extends Component {
@@ -8,6 +8,7 @@ export default class BasePropertyEditor extends Component {
       label: PropTypes.string.isRequired,
     }).isRequired,
     updateField: PropTypes.func.isRequired,
+    updateMetadata: PropTypes.func.isRequired,
   };
 
   /**
@@ -21,6 +22,7 @@ export default class BasePropertyEditor extends Component {
     this.updateHandle = this.updateHandle.bind(this);
     this.updateKeyValue = this.updateKeyValue.bind(this);
     this.updateChildField = this.updateChildField.bind(this);
+    this.updateMetadata = this.updateMetadata.bind(this);
     this.preprocessTarget = this.preprocessTarget.bind(this);
     this.compileProps = this.compileProps.bind(this);
   }
@@ -34,6 +36,12 @@ export default class BasePropertyEditor extends Component {
     const { updateField } = this.context;
     const { name, value } = this.preprocessTarget(event.target);
     updateField({ [name]: value });
+  }
+
+  updateMetadata(event) {
+    const { name, value } = this.preprocessTarget(event.target);
+
+    this.context.updateMetadata(name, value);
   }
 
   /**

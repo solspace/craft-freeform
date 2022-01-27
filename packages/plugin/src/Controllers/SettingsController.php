@@ -204,6 +204,51 @@ class SettingsController extends BaseController
     }
 
     /**
+     * Attempt cloning a demo email template into the user's specified template directory.
+     */
+    public function actionAddSuccessTemplate(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
+        $this->requirePostRequest();
+
+        $errors = [];
+        $settings = $this->getSettingsModel();
+        $extension = '.twig';
+
+        $templateDirectory = $settings->getAbsoluteSuccessTemplateDirectory();
+        $templateName = \Craft::$app->request->post('templateName');
+
+        if (!$templateDirectory) {
+            $errors[] = Freeform::t('No success template directory specified in settings');
+        } else {
+            if ($templateName) {
+                $templateName = StringHelper::toSnakeCase($templateName);
+
+                $templatePath = $templateDirectory.'/'.$templateName.$extension;
+                if (file_exists($templatePath)) {
+                    $errors[] = Freeform::t("Template '{name}' already exists", ['name' => $templateName.$extension]);
+                } else {
+                    try {
+                        FileHelper::writeToFile($templatePath, $settings->getSuccessTemplateContent());
+                    } catch (FreeformException $exception) {
+                        $errors[] = $exception->getMessage();
+                    }
+                }
+            } else {
+                $errors[] = Freeform::t('No template name specified');
+            }
+        }
+
+        return $this->asJson(
+            [
+                'templateName' => $templateName,
+                'errors' => $errors,
+            ]
+        );
+    }
+
+    /**
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
      *

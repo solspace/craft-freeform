@@ -144,6 +144,19 @@ class SettingsService extends BaseService
         return $templates;
     }
 
+    /**
+     * @return FormTemplate[]
+     */
+    public function getSuccessTemplates(): array
+    {
+        $templates = [];
+        foreach ($this->getSettingsModel()->listTemplatesInSuccessTemplateDirectory() as $path => $name) {
+            $templates[] = new FormTemplate($path);
+        }
+
+        return $templates;
+    }
+
     public function isDbEmailTemplateStorage(): bool
     {
         $settings = $this->getSettingsModel();
@@ -258,6 +271,7 @@ class SettingsService extends BaseService
             'form-builder' => ['title' => Freeform::t('Form Builder')],
             'formatting-templates' => ['title' => Freeform::t('Formatting Templates')],
             'email-templates' => ['title' => Freeform::t('Email Templates')],
+            'success-templates' => ['title' => Freeform::t('Success Templates')],
             'statuses' => ['title' => Freeform::t('Statuses')],
             'demo-templates' => ['title' => Freeform::t('Demo Templates')],
             'hdspam' => ['heading' => Freeform::t('Spam')],

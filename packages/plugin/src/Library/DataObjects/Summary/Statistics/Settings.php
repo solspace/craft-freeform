@@ -56,6 +56,9 @@ class Settings
     public $notificationTemplatesPath = false;
 
     /** @var bool */
+    public $successTemplatesPath = false;
+
+    /** @var bool */
     public $modifiedStatuses = false;
 
     /** @var bool */

@@ -442,6 +442,42 @@ class FormsService extends BaseService implements FormHandlerInterface
         return Template::raw($output);
     }
 
+    public function renderSuccessTemplate(Form $form)
+    {
+        $settings = $this->getSettingsService();
+        $templateName = $form->getSuccessTemplate();
+        if (empty($templateName)) {
+            return null;
+        }
+
+        $templates = $settings->getSuccessTemplates();
+
+        $templatePath = null;
+        foreach ($templates as $template) {
+            if ($template->getFileName() === $templateName) {
+                $templatePath = $template->getFilePath();
+
+                break;
+            }
+        }
+
+        if (null === $templatePath || !file_exists($templatePath)) {
+            throw new FreeformException(
+                Freeform::t(
+                    "Success template '{name}' not found",
+                    ['name' => $templateName]
+                )
+            );
+        }
+
+        $output = \Craft::$app->view->renderString(
+            file_get_contents($templatePath),
+            ['form' => $form]
+        );
+
+        return Template::raw($output);
+    }
+
     public function isSpamBehaviourSimulateSuccess(): bool
     {
         return $this->getSettingsService()->isSpamBehaviourSimulatesSuccess();

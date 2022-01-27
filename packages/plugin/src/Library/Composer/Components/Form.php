@@ -101,6 +101,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     const PROPERTY_PAGE_HISTORY = 'pageHistory';
     const PROPERTY_SPAM_REASONS = 'spamReasons';
 
+    const SUCCESS_BEHAVIOUR_NO_EFFECT = 'no-effect';
+    const SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL = 'redirect-return-url';
+    const SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
+
     const PAGE_INDEX_KEY = 'page_index';
     const RETURN_URI_KEY = 'formReturnUrl';
     const STATUS_KEY = 'formStatus';
@@ -317,9 +321,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         }
     }
 
-    public function getMetadata(): array
+    public function getMetadata(string $key, $defaultValue = null)
     {
-        return $this->metadata;
+        return $this->metadata[$key] ?? $defaultValue;
     }
 
     public function hasFieldType(string $type): bool
@@ -460,6 +464,16 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public function getDefaultStatus()
     {
         return $this->defaultStatus;
+    }
+
+    public function getSuccessBehaviour(): string
+    {
+        return $this->getMetadata('successBehaviour', self::SUCCESS_BEHAVIOUR_NO_EFFECT);
+    }
+
+    public function getSuccessTemplate(): ?string
+    {
+        return $this->getMetadata('successTemplate');
     }
 
     /**
@@ -798,6 +812,13 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     {
         $this->setProperties($renderProperties);
         $formTemplate = $this->getPropertyBag()->get('formattingTemplate', $this->formTemplate);
+
+        if (
+            ($this->isSubmittedSuccessfully() || $this->isFinished())
+            && self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $this->getSuccessBehaviour()
+        ) {
+            return $this->getFormHandler()->renderSuccessTemplate($this);
+        }
 
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }

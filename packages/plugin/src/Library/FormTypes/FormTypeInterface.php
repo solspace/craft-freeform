@@ -8,5 +8,10 @@ interface FormTypeInterface
 
     public static function getPropertyManifest(): array;
 
-    public function getMetadata(): array;
+    /**
+     * @param mixed $defaultValue
+     *
+     * @return mixed
+     */
+    public function getMetadata(string $key, $defaultValue = null);
 }

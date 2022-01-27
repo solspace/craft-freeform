@@ -21,7 +21,7 @@ import { fitInCraft } from './helpers/Resizer';
 
 const enhancer = compose(
   applyMiddleware(thunkMiddleware),
-  window.devToolsExtension ? window.devToolsExtension() : (f) => f
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 
 const specialFields = [
@@ -170,6 +170,8 @@ let store = createStore(
     formStatuses: formStatuses,
     assetSources: assetSources,
     fileKinds: fileKinds,
+    successTemplates: successTemplatesList,
+    metadata: metadata,
     ...composerState,
   },
   enhancer

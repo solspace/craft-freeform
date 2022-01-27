@@ -81,6 +81,9 @@ class Settings extends Model
     public $emailTemplateDirectory;
 
     /** @var string */
+    public $successTemplateDirectory;
+
+    /** @var string */
     public $emailTemplateStorage;
 
     /** @var string */
@@ -310,6 +313,7 @@ class Settings extends Model
         $this->pluginName = null;
         $this->formTemplateDirectory = null;
         $this->emailTemplateDirectory = null;
+        $this->successTemplateDirectory = null;
         $this->emailTemplateStorage = self::EMAIL_TEMPLATE_STORAGE_DB;
         $this->defaultView = Freeform::VIEW_DASHBOARD;
         $this->fieldDisplayOrder = Freeform::FIELD_DISPLAY_ORDER_NAME;
@@ -453,6 +457,17 @@ class Settings extends Model
         return null;
     }
 
+    public function getAbsoluteSuccessTemplateDirectory()
+    {
+        if ($this->successTemplateDirectory) {
+            $absolutePath = $this->getAbsolutePath($this->successTemplateDirectory);
+
+            return file_exists($absolutePath) ? $absolutePath : null;
+        }
+
+        return null;
+    }
+
     /**
      * Gets the demo template content.
      *
@@ -498,6 +513,20 @@ class Settings extends Model
         return file_get_contents($path);
     }
 
+    public function getSuccessTemplateContent(): string
+    {
+        $path = __DIR__.'/../templates/_successTemplates/default.twig';
+        if (!file_exists($path)) {
+            throw new FreeformException(
+                Freeform::t(
+                    'Could not get success template content. Please contact Solspace.'
+                )
+            );
+        }
+
+        return file_get_contents($path);
+    }
+
     /**
      * @return array|bool
      */
@@ -512,6 +541,14 @@ class Settings extends Model
     public function listTemplatesInEmailTemplateDirectory()
     {
         return $this->getTemplatesInDirectory($this->getAbsoluteEmailTemplateDirectory());
+    }
+
+    /**
+     * @return array|bool
+     */
+    public function listTemplatesInSuccessTemplateDirectory()
+    {
+        return $this->getTemplatesInDirectory($this->getAbsoluteSuccessTemplateDirectory());
     }
 
     public function getBlockedKeywords(): array

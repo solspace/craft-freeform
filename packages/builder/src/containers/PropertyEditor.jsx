@@ -48,6 +48,7 @@ import Textarea from '../components/PropertyEditor/Textarea';
 import Website from '../components/PropertyEditor/Website';
 import RichText from '../components/PropertyEditor/RichText';
 import * as FieldTypes from '../constants/FieldTypes';
+import { modify as modifyMetadata } from '../reducers/Metadata';
 
 const propertyTypes = {
   validation: Validation,
@@ -110,6 +111,7 @@ const paymentPropertyTypes = {
   }),
   (dispatch) => ({
     updateProperties: (hash, keyValueObject) => dispatch(updateProperty(hash, keyValueObject)),
+    updateFormMetadata: (key, value) => dispatch(modifyMetadata({ key, value })),
     resetProperties: (hash, defaultProperties) => dispatch(resetProperties(hash, defaultProperties)),
     editForm: () => dispatch(switchHash(FieldTypes.FORM)),
     editValidation: () => dispatch(switchHash(FieldTypes.VALIDATION)),
@@ -125,6 +127,7 @@ export default class PropertyEditor extends Component {
     properties: PropTypes.object.isRequired,
     hash: PropTypes.string.isRequired,
     updateProperties: PropTypes.func.isRequired,
+    updateFormMetadata: PropTypes.func.isRequired,
     editForm: PropTypes.func.isRequired,
     editAdminNotifications: PropTypes.func.isRequired,
     editIntegrations: PropTypes.func.isRequired,
@@ -146,18 +149,21 @@ export default class PropertyEditor extends Component {
     hash: PropTypes.string.isRequired,
     properties: PropTypes.object,
     updateField: PropTypes.func.isRequired,
+    updateMetadata: PropTypes.func.isRequired,
   };
 
   constructor(props, context) {
     super(props, context);
 
     this.updateField = this.updateField.bind(this);
+    this.updateMetadata = this.updateMetadata.bind(this);
   }
 
   getChildContext = () => ({
     hash: this.props.hash,
     properties: this.props.properties[this.props.hash],
     updateField: this.updateField,
+    updateMetadata: this.updateMetadata,
   });
 
   render() {
@@ -278,6 +284,12 @@ export default class PropertyEditor extends Component {
     const { hash, updateProperties } = this.props;
 
     updateProperties(hash, keyValueObject);
+  };
+
+  updateMetadata = (key, value) => {
+    const { updateFormMetadata } = this.props;
+
+    updateFormMetadata(key, value);
   };
 
   resetField = () => {

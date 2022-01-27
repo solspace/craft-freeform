@@ -155,6 +155,7 @@ class FormsController extends BaseController
 
         $formId = $post['formId'];
         $form = $this->getNewOrExistingForm($formId);
+        $form->metadata = $post['metadata'] ?? new \stdClass();
         $composerState = json_decode($post['composerState'], true);
 
         $isNew = !$form->id;
@@ -442,6 +443,7 @@ class FormsController extends BaseController
             'assetSources' => $this->getEncodedJson($this->getFilesService()->getAssetSources()),
             'showTutorial' => $settings->showTutorial,
             'defaultTemplates' => $settings->defaultTemplates,
+            'successTemplates' => $this->getEncodedJson($this->getSettingsService()->getSuccessTemplates()),
             'canManageFields' => PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_MANAGE),
             'canManageNotifications' => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE),
             'canManageSettings' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
@@ -461,6 +463,7 @@ class FormsController extends BaseController
             'sites' => $this->getEncodedJson($sites),
             'renderFormHtmlInCpViews' => $settings->renderFormHtmlInCpViews,
             'reservedKeywords' => $this->getEncodedJson(FieldRecord::RESERVED_FIELD_KEYWORDS),
+            'metadata' => $this->getEncodedJson($model->metadata),
         ];
 
         return $this->renderTemplate('freeform/forms/edit', $templateVariables);

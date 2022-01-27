@@ -6,6 +6,7 @@ import { duplicateHandles } from './DuplicateHandles';
 import { assetSources, fields, fileKinds, formStatuses, specialFields } from './Fields';
 
 import { templates } from './FormTemplates';
+import { successTemplates } from './SuccessTemplates';
 import { generatedOptionLists } from './GeneratedOptionLists';
 import { integrations } from './Integrations';
 import { paymentGateways } from './PaymentGateways';
@@ -13,6 +14,7 @@ import { mailingLists } from './MailingLists';
 import { notifications } from './Notifications';
 import { placeholders } from './Placeholders';
 import { sourceTargets } from './SourceTargets';
+import metadata from './Metadata';
 import { sites } from './Sites';
 
 export default combineReducers({
@@ -37,4 +39,6 @@ export default combineReducers({
   fileKinds,
   customFields,
   sites,
+  metadata,
+  successTemplates,
 });

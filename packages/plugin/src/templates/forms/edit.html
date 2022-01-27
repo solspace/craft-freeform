@@ -64,6 +64,7 @@
       var assetSources              = {{ assetSources|raw }};
       var solspaceFormTemplates     = {{ solspaceFormTemplates|raw }};
       var formTemplateList          = {{ formTemplates|raw }};
+      var successTemplatesList      = {{ successTemplates|raw }};
       var fileKinds                 = {{ fileKinds|raw }};
       var showTutorial              = {{ showTutorial ? "true" : "false" }};
       var defaultTemplates          = {{ defaultTemplates ? "true" : "false" }};
@@ -87,6 +88,7 @@
       var currentSiteId             = {{ currentSiteId }};
       var renderFormHtmlInCpViews   = {{ renderFormHtmlInCpViews ? "true" : "false" }};
       var reservedKeywords          = {{ reservedKeywords|raw }};
+      var metadata                  = {{ metadata|raw }};
     </script>
     <div id="freeform-builder"></div>
 {% endblock %}

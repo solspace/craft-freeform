@@ -6,6 +6,14 @@ import { connect } from 'react-redux';
 import { TextareaProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
 import TextProperty from './PropertyItems/TextProperty';
+import {
+  LIMIT_AUTH_UNLIMITED,
+  LIMIT_COOKIE,
+  LIMIT_IP_COOKIE,
+  LIMIT_AUTH_COOKIE,
+  LIMIT_AUTH_IP_COOKIE,
+  LIMIT_AUTH,
+} from '../../constants/Form';
 
 @connect((state) => ({
   properties: state.composer.properties,
@@ -94,8 +102,12 @@ export default class Validation extends BasePropertyEditor {
             emptyOption="Do not limit"
             onChangeHandler={this.update}
             options={[
-              { key: 'cookie', value: 'Once per Cookie only' },
-              { key: 'ip_cookie', value: 'Once per IP/Cookie combo' },
+              { key: LIMIT_AUTH_UNLIMITED, value: 'Logged in Users only (no limit)' },
+              { key: LIMIT_COOKIE, value: 'Once per Cookie only' },
+              { key: LIMIT_IP_COOKIE, value: 'Once per IP/Cookie combo' },
+              { key: LIMIT_AUTH, value: 'Once per logged in Users only' },
+              { key: LIMIT_AUTH_COOKIE, value: 'Once per logged in User or Guest Cookie only' },
+              { key: LIMIT_AUTH_IP_COOKIE, value: 'Once per logged in User or Guest IP/Cookie combo' },
             ]}
           />
         )}

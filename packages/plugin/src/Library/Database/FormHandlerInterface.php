@@ -71,8 +71,6 @@ interface FormHandlerInterface
 
     public function isFormSubmitDisable(): bool;
 
-    public function isReachedPostingLimit(Form $form): bool;
-
     public function getDefaultFormattingTemplate(): string;
 
     /**

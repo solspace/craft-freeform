@@ -913,12 +913,6 @@ class Freeform extends Plugin
         if ($this->isPro()) {
             Event::on(
                 FormsService::class,
-                FormsService::EVENT_FORM_VALIDATE,
-                [$this->forms, 'checkReachedPostingLimit']
-            );
-
-            Event::on(
-                FormsService::class,
                 FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
                 [$this->rules, 'addAttributesToFormTag']
             );

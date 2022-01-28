@@ -290,7 +290,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $event = new ProcessSubmissionEvent($form, $submission);
         Event::trigger(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, $event);
 
-        $formsService->setPostedCookie($form);
         $formsService->onAfterSubmit($form, $submission);
     }
 

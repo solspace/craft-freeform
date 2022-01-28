@@ -746,11 +746,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $event->isValid;
     }
 
-    public function isReachedPostingLimit(): bool
-    {
-        return $this->getFormHandler()->isReachedPostingLimit($this);
-    }
-
     public function isSpamFolderEnabled(): bool
     {
         return $this->getFormHandler()->isSpamFolderEnabled() && $this->storeData;

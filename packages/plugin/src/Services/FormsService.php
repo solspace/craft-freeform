@@ -15,9 +15,7 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
-use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -53,9 +51,6 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     /** @var array */
     private static $spamCountIncrementedForms = [];
-
-    /** @var array */
-    private static $postingLimitCache = [];
 
     /**
      * @param bool $orderByName
@@ -635,90 +630,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return array_shift($templateList) ?? 'flexbox.html';
     }
 
-    public function checkReachedPostingLimit(FormValidateEvent $event)
-    {
-        $form = $event->getForm();
-
-        $token = EditSubmissionContext::getToken($form);
-        if ($token) {
-            return;
-        }
-
-        if ($this->isReachedPostingLimit($form)) {
-            $form->addError(Freeform::t("Sorry, you've already submitted this form."));
-        }
-    }
-
-    public function isReachedPostingLimit(Form $form): bool
-    {
-        if (!isset(self::$postingLimitCache[$form->getId()])) {
-            $limitFormSubmissions = $form->getLimitFormSubmissions();
-            if (!$limitFormSubmissions) {
-                self::$postingLimitCache[$form->getId()] = false;
-
-                return false;
-            }
-
-            if ($form->isLimitByIpCookie() && $this->isSubmittedByIp($form)) {
-                self::$postingLimitCache[$form->getId()] = true;
-
-                return true;
-            }
-
-            $name = $this->getPostingLimitCookieName($form);
-            $postedTime = $_COOKIE[$name] ?? '';
-
-            self::$postingLimitCache[$form->getId()] = (bool) $postedTime;
-        }
-
-        return self::$postingLimitCache[$form->getId()];
-    }
-
-    public function setPostedCookie(Form $form)
-    {
-        if (\Craft::$app->request->isConsoleRequest) {
-            return;
-        }
-
-        $name = $this->getPostingLimitCookieName($form);
-        $value = time();
-        setcookie(
-            $name,
-            $value,
-            (int) strtotime('+1 year'),
-            '/',
-            \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
-            true,
-            true
-        );
-        $_COOKIE[$name] = $value;
-    }
-
-    public function isSubmittedByIp(Form $form): bool
-    {
-        $submissions = Submission::TABLE;
-        $query = (new Query())
-            ->select(["{$submissions}.[[id]]"])
-            ->from($submissions)
-            ->where([
-                'isSpam' => false,
-                'formId' => $form->getId(),
-                'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
-            ])
-            ->limit(1)
-        ;
-
-        if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
-            $elements = Element::tableName();
-            $query->innerJoin(
-                $elements,
-                "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
-            );
-        }
-
-        return (bool) $query->scalar();
-    }
-
     public function getFormattingTemplateCss(string $templateName): string
     {
         $fileName = pathinfo($templateName, \PATHINFO_FILENAME);
@@ -829,11 +740,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return new FormModel($data);
-    }
-
-    private function getPostingLimitCookieName(Form $form): string
-    {
-        return 'form_posted_'.$form->getId();
     }
 
     private function addFormManagePermissionToUser($formId)

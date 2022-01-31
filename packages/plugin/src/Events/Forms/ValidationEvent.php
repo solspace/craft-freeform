@@ -3,9 +3,10 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
-class ValidationEvent extends CancelableArrayableEvent
+class ValidationEvent extends CancelableArrayableEvent implements FormEventInterface
 {
     /** @var Form */
     private $form;

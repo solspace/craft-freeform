@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { TextareaProperty } from './PropertyItems';
 import CheckboxProperty from './PropertyItems/CheckboxProperty';
 import TextProperty from './PropertyItems/TextProperty';
+import DatePickerProperty from './PropertyItems/DatePickerProperty';
 import {
   LIMIT_AUTH_UNLIMITED,
   LIMIT_COOKIE,
@@ -17,6 +18,7 @@ import {
 
 @connect((state) => ({
   properties: state.composer.properties,
+  metadata: state.metadata,
 }))
 export default class Validation extends BasePropertyEditor {
   static title = 'Validation';
@@ -36,6 +38,7 @@ export default class Validation extends BasePropertyEditor {
 
   render() {
     const { properties } = this.context;
+    const { formCloseDate } = this.props.metadata;
     const {
       successMessage,
       errorMessage,
@@ -111,6 +114,14 @@ export default class Validation extends BasePropertyEditor {
             ]}
           />
         )}
+
+        <DatePickerProperty
+          name="formCloseDate"
+          value={formCloseDate}
+          label="Stop Submissions After"
+          instructions="Set a date after which the form will no longer accept submissions."
+          onChangeHandler={this.updateMetadataDirectly}
+        />
       </div>
     );
   }

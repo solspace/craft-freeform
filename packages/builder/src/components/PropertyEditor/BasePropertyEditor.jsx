@@ -23,6 +23,7 @@ export default class BasePropertyEditor extends Component {
     this.updateKeyValue = this.updateKeyValue.bind(this);
     this.updateChildField = this.updateChildField.bind(this);
     this.updateMetadata = this.updateMetadata.bind(this);
+    this.updateMetadataDirectly = this.updateMetadataDirectly.bind(this);
     this.preprocessTarget = this.preprocessTarget.bind(this);
     this.compileProps = this.compileProps.bind(this);
   }
@@ -41,6 +42,10 @@ export default class BasePropertyEditor extends Component {
   updateMetadata(event) {
     const { name, value } = this.preprocessTarget(event.target);
 
+    this.context.updateMetadata(name, value);
+  }
+
+  updateMetadataDirectly(name, value) {
     this.context.updateMetadata(name, value);
   }
 

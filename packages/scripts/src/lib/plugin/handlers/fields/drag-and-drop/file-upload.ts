@@ -2,7 +2,7 @@ import type Freeform from '@components/front-end/plugin/freeform';
 import { EVENT_DND_ON_CHANGE, EVENT_DND_ON_UPLOAD_PROGRESS } from '@lib/plugin/constants/event-types';
 import { dispatchCustomEvent } from '@lib/plugin/helpers/event-handling';
 import axios from 'axios';
-import * as prettyBytes from 'pretty-bytes';
+import * as filesize from 'filesize';
 
 import { addFieldErrors } from './error-handling';
 import { createInput, createPreviewContainer } from './preview';
@@ -81,7 +81,7 @@ export const handleFileUpload = (
 
   const matches = file.name.match(/.(\w+)$/i);
   const name = file.name;
-  const size = prettyBytes(file.size, { maximumFractionDigits: 1 });
+  const size = filesize(file.size, { round: 1 });
   const extension = matches !== null ? matches[1].toLowerCase() : 'n/a';
 
   const previewContainer = createPreviewContainer({ name, extension, size }, freeform);

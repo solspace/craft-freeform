@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Models\Pro;
 
+use Carbon\Carbon;
 use craft\base\Model;
 use craft\db\Query;
 use craft\db\Table;
@@ -107,7 +108,7 @@ class ExportProfileModel extends Model
     public function getDateRangeEnd()
     {
         if (self::RANGE_CUSTOM === $this->dateRange) {
-            return (new \DateTime($this->rangeEnd))->setTime(23, 59, 59);
+            return (new Carbon($this->rangeEnd))->setTime(23, 59, 59);
         }
 
         return null;
@@ -123,19 +124,19 @@ class ExportProfileModel extends Model
         }
 
         if (is_numeric($this->dateRange)) {
-            return (new \DateTime("-{$this->dateRange} days"))->setTime(0, 0, 0);
+            return (new Carbon("-{$this->dateRange} days"))->setTime(0, 0, 0);
         }
 
         switch ($this->dateRange) {
             case self::RANGE_CUSTOM:
-                return (new \DateTime($this->rangeStart))->setTime(0, 0, 0);
+                return (new Carbon($this->rangeStart))->setTime(0, 0, 0);
 
             case self::RANGE_YESTERDAY:
-                return (new \DateTime('-1 day'))->setTime(0, 0, 0);
+                return (new Carbon('-1 day'))->setTime(0, 0, 0);
 
             case self::RANGE_TODAY:
             default:
-                return (new \DateTime('now'))->setTime(0, 0, 0);
+                return (new Carbon('now'))->setTime(0, 0, 0);
         }
     }
 
@@ -332,12 +333,14 @@ class ExportProfileModel extends Model
 
         $dateRangeStart = $this->getDateRangeStart();
         if ($dateRangeStart) {
+            $dateRangeStart->setTimezone('UTC');
             $conditions[] = 's.[[dateCreated]] >= :dateRangeStart';
             $parameters['dateRangeStart'] = $dateRangeStart->format('Y-m-d H:i:s');
         }
 
         $dateRangeEnd = $this->getDateRangeEnd();
         if ($dateRangeEnd) {
+            $dateRangeEnd->setTimezone('UTC');
             $conditions[] = 's.[[dateCreated]] <= :dateRangeEnd';
             $parameters['dateRangeEnd'] = $dateRangeEnd->format('Y-m-d H:i:s');
         }

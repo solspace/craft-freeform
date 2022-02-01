@@ -288,8 +288,7 @@ class QuickExportController extends BaseController
 
         $data = $query->all();
 
-        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
-        $exporter = $this->getExportProfileService()->createExporter($exportType, $form, $data, $removeNewlines);
+        $exporter = $this->getExportProfileService()->createExporter($exportType, $form, $data);
 
         $this->getExportProfileService()->export($exporter, $form);
     }

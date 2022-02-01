@@ -337,8 +337,7 @@ class FormsController extends BaseController
 
         $data = $query->all();
 
-        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
-        $exporter = $this->getExportProfileService()->createExporter($type, $form, $data, $removeNewlines);
+        $exporter = $this->getExportProfileService()->createExporter($type, $form, $data);
 
         $this->getExportProfileService()->export($exporter, $form);
     }

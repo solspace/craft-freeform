@@ -8,6 +8,7 @@ use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\Objects\Column;
@@ -24,10 +25,14 @@ abstract class AbstractExport implements ExportInterface
     /** @var bool */
     private $removeNewLines;
 
-    public function __construct(Form $form, array $submissionData, bool $removeNewLines = false)
+    /** @var bool */
+    private $exportLabels;
+
+    public function __construct(Form $form, array $submissionData, bool $removeNewLines = false, bool $exportLabels = false)
     {
         $this->form = $form;
         $this->removeNewLines = $removeNewLines;
+        $this->exportLabels = $exportLabels;
         $this->rows = $this->parseSubmissionDataIntoRows($submissionData);
     }
 
@@ -108,6 +113,18 @@ abstract class AbstractExport implements ExportInterface
 
                         if ($field instanceof TextareaField && $this->isRemoveNewLines()) {
                             $value = trim(preg_replace('/\s+/', ' ', $value));
+                        }
+
+                        if ($this->exportLabels && $field instanceof OptionsInterface) {
+                            $options = $field->getOptionsAsKeyValuePairs();
+
+                            if (\is_array($value)) {
+                                foreach ($value as $index => $val) {
+                                    $value[$index] = $options[$val] ?? $val;
+                                }
+                            } else {
+                                $value = $options[$value] ?? $value;
+                            }
                         }
                     } catch (FreeformException $e) {
                         continue;

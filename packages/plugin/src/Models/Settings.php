@@ -96,6 +96,9 @@ class Settings extends Model
     public $removeNewlines;
 
     /** @var bool */
+    public $exportLabels;
+
+    /** @var bool */
     public $defaultTemplates;
 
     /** @deprecated use $scriptInsertLocation instead */
@@ -316,6 +319,7 @@ class Settings extends Model
         $this->showTutorial = true;
         $this->defaultTemplates = true;
         $this->removeNewlines = false;
+        $this->exportLabels = false;
         $this->footerScripts = false;
         $this->scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
         $this->scriptInsertType = self::SCRIPT_INSERT_TYPE_POINTERS;

@@ -98,6 +98,14 @@
         errors: settings.errors("removeNewlines"),
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Use Option Labels when Exporting"|t('freeform'),
+        instructions: "Enable this to have fields with options use the submission's option labels instead of values when exporting."|t('freeform'),
+        name: "settings[exportLabels]",
+        on: settings.exportLabels,
+        errors: settings.errors("exportLabels"),
+    }) }}
+
     {% if craft.freeform.pro %}
 
         {{ forms.lightswitchField({

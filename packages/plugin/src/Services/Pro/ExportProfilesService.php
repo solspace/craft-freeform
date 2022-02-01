@@ -224,8 +224,11 @@ class ExportProfilesService extends Component
         }
     }
 
-    public function createExporter(string $type, Form $form, array $data, bool $removeNewlines = false): ExportInterface
+    public function createExporter(string $type, Form $form, array $data): ExportInterface
     {
+        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
+        $exportLabels = Freeform::getInstance()->settings->getSettingsModel()->exportLabels;
+
         $exporters = $this->getExporters();
         if (!isset($exporters[$type])) {
             throw new FreeformException("Cannot export type `{$type}`");
@@ -233,7 +236,7 @@ class ExportProfilesService extends Component
 
         $class = $exporters[$type];
 
-        return new $class($form, $data, $removeNewlines);
+        return new $class($form, $data, $removeNewlines, $exportLabels);
     }
 
     public function export(ExportInterface $exporter, Form $form)

@@ -14,12 +14,14 @@ import { mailingLists } from './MailingLists';
 import { notifications } from './Notifications';
 import { placeholders } from './Placeholders';
 import { sourceTargets } from './SourceTargets';
+import { formTypes } from './FormTypes';
 import metadata from './Metadata';
 import { sites } from './Sites';
 
 export default combineReducers({
   csrfToken: (state = {}) => state,
   formId,
+  formTypes,
   fields,
   specialFields,
   mailingLists,

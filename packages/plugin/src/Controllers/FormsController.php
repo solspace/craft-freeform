@@ -24,6 +24,7 @@ use craft\records\Volume;
 use Solspace\Calendar\Calendar;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
@@ -153,10 +154,12 @@ class FormsController extends BaseController
             throw new FreeformException('No composer data present');
         }
 
+        $composerState = json_decode($post['composerState'], true);
+
         $formId = $post['formId'];
         $form = $this->getNewOrExistingForm($formId);
         $form->metadata = $post['metadata'] ?? new \stdClass();
-        $composerState = json_decode($post['composerState'], true);
+        $form->type = $composerState['composer']['properties']['form']['formType'] ?? Regular::class;
 
         $isNew = !$form->id;
         if ($isNew) {
@@ -427,6 +430,7 @@ class FormsController extends BaseController
             'form' => $model,
             'title' => $title,
             'continueEditingUrl' => 'freeform/forms/{id}',
+            'formTypes' => $this->getEncodedJson($this->getFormsTypesService()->getTypes()),
             'fileKinds' => $this->getEncodedJson(Assets::getFileKinds()),
             'fieldTypeList' => $this->getEncodedJson($this->getFieldsService()->getFieldTypes()),
             'notificationList' => $this->getEncodedJson($notifications),

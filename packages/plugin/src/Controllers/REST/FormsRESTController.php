@@ -97,6 +97,7 @@ class FormsRESTController extends BaseController
                     'form' => [
                         'type' => 'form',
                         'name' => $post['name'],
+                        'formType' => $post['type'] ?? Regular::class,
                         'handle' => $post['handle'],
                         'color' => $post['color'],
                         'submissionTitleFormat' => $post['submissionTitle'],

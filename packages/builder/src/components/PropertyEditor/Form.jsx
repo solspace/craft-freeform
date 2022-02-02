@@ -19,6 +19,7 @@ import {
 } from '../../constants/Form';
 
 @connect((state) => ({
+  formTypes: state.formTypes,
   solspaceTemplates: state.templates.solspaceTemplates,
   templates: state.templates.list,
   successTemplates: state.successTemplates,
@@ -31,6 +32,7 @@ export default class Form extends BasePropertyEditor {
   static title = 'Form Settings';
 
   static propTypes = {
+    formTypes: PropTypes.array,
     formStatuses: PropTypes.array.isRequired,
     solspaceTemplates: PropTypes.array.isRequired,
     templates: PropTypes.array.isRequired,
@@ -53,6 +55,7 @@ export default class Form extends BasePropertyEditor {
       extraPostUrl: PropTypes.string,
       extraPostTriggerPhrase: PropTypes.string,
       formTemplate: PropTypes.string,
+      formType: PropTypes.string,
       optInDataStorageTargetHash: PropTypes.string,
       ajaxEnabled: PropTypes.bool,
       recaptchaEnabled: PropTypes.bool,
@@ -85,6 +88,7 @@ export default class Form extends BasePropertyEditor {
       extraPostTriggerPhrase,
       description,
       formTemplate,
+      formType,
       color,
       optInDataStorageTargetHash,
       tagAttributes = [],
@@ -98,7 +102,7 @@ export default class Form extends BasePropertyEditor {
 
     const { gtmEnabled = false, gtmId = '', gtmEventName = '' } = properties;
 
-    const { formStatuses, solspaceTemplates, templates, successTemplates, composerProperties } = this.props;
+    const { formTypes, formStatuses, solspaceTemplates, templates, successTemplates, composerProperties } = this.props;
     const { canManageSettings, isPro, isInvisibleRecaptchaSetUp } = this.context;
 
     let hasPaymentField = false;
@@ -180,6 +184,16 @@ export default class Form extends BasePropertyEditor {
           required={true}
           value={handle}
           onChangeHandler={this.updateHandle}
+        />
+
+        <SelectProperty
+          label="Form Type"
+          instructions="Use this to change the form type."
+          name="formType"
+          required
+          value={formType}
+          onChangeHandler={this.update}
+          options={formTypes.map(({ class: key, name: value }) => ({ key, value }))}
         />
 
         <SelectProperty

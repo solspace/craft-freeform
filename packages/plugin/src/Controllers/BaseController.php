@@ -9,6 +9,7 @@ use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\FormTypesService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\IntegrationsService;
 use Solspace\Freeform\Services\LoggerService;
@@ -31,6 +32,11 @@ class BaseController extends Controller
     protected function getFormsService(): FormsService
     {
         return Freeform::getInstance()->forms;
+    }
+
+    protected function getFormsTypesService(): FormTypesService
+    {
+        return Freeform::getInstance()->formTypes;
     }
 
     protected function getFieldsService(): FieldsService

@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Library\Composer;
 
 use Psr\Log\LoggerInterface;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Context;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -209,6 +210,7 @@ class Composer
             Properties::FORM_HASH => [
                 'type' => Properties::FORM_HASH,
                 'name' => '',
+                'formType' => Regular::class,
                 'handle' => '',
                 'color' => '#'.substr(md5(random_int(111, 999).time()), 0, 6),
                 'submissionTitleFormat' => '{{ dateCreated|date("Y-m-d H:i:s") }}',

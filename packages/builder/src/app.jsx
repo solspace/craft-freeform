@@ -167,6 +167,7 @@ let store = createStore(
       didInvalidate: false,
       cache: generatedOptions,
     },
+    formTypes: formTypes,
     formStatuses: formStatuses,
     assetSources: assetSources,
     fileKinds: fileKinds,

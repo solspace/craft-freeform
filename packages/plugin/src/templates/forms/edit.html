@@ -53,6 +53,7 @@
 {% block content %}
     <script>
       var formId                    = {{ form.id ? form.id : "null" }};
+      var formTypes                 = {{ formTypes|raw }};
       var fieldList                 = {{ fieldList|raw }};
       var fieldTypeList             = {{ fieldTypeList|raw }};
       var notificationList          = {{ notificationList|raw }};

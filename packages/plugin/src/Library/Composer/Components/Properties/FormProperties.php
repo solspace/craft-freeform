@@ -21,6 +21,9 @@ class FormProperties extends AbstractProperties
     protected $handle;
 
     /** @var string */
+    protected $formType;
+
+    /** @var string */
     protected $color;
 
     /** @var string */
@@ -79,6 +82,11 @@ class FormProperties extends AbstractProperties
     public function getHandle(): string
     {
         return $this->handle;
+    }
+
+    public function getFormType(): string
+    {
+        return $this->formType;
     }
 
     public function getColor(): string
@@ -186,6 +194,7 @@ class FormProperties extends AbstractProperties
         return [
             'name' => self::TYPE_STRING,
             'handle' => self::TYPE_STRING,
+            'formType' => self::TYPE_STRING,
             'color' => self::TYPE_STRING,
             'submissionTitleFormat' => self::TYPE_STRING,
             'description' => self::TYPE_STRING,

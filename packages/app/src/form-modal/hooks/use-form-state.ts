@@ -89,8 +89,8 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
       })
       .catch((error) => {
         setErrors(error.response.data.errors as FormErrors);
-      })
-      .finally((): void => setIsSaving(false));
+        setIsSaving(false);
+      });
   };
 
   return { form, errors, update, saveHandler, isSaving };

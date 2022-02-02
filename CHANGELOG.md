@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.12.13 - 2022-02-01
+
+### Added
+- Added a setting to allow global control of whether exporting submissions uses the field option labels or option values.
+
+### Fixed
+- Fixed a bug where Export Profiles were not correctly factoring in timezones when using date ranges on exports.
+- Fixed a bug where Drag & Drop File Upload fields were not working correctly with IE11.
+
 ## 3.12.12.1 - 2022-01-26
 
 ### Fixed

@@ -32,10 +32,26 @@ class RegisterSettingsNavigationEvent extends ArrayableEvent
         return $this->navigation;
     }
 
+    public function addHeader(string $handle, string $title, string $afterHandle = null): self
+    {
+        $item = ['heading' => $handle];
+
+        $this->insertItem($handle, $item, $afterHandle);
+
+        return $this;
+    }
+
     public function addNavigationItem(string $handle, string $title, string $afterHandle = null): self
     {
         $item = ['title' => $title];
 
+        $this->insertItem($handle, $item, $afterHandle);
+
+        return $this;
+    }
+
+    private function insertItem(string $handle, array $item, string $afterHandle = null)
+    {
         if (null !== $afterHandle && isset($this->navigation[$afterHandle])) {
             $modifiedArray = [];
             foreach ($this->navigation as $key => $value) {
@@ -49,7 +65,5 @@ class RegisterSettingsNavigationEvent extends ArrayableEvent
         } else {
             $this->navigation[$handle] = $item;
         }
-
-        return $this;
     }
 }

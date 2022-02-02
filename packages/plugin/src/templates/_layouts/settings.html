@@ -5,7 +5,9 @@
 
 {% set navItems = craft.freeform.settingsNavigation %}
 
-{% set selectedItem = craft.app.request.getSegment(3)|default %}
+{% set extraSegment = craft.app.request.getSegment(4)|default %}
+{% set appendix = extraSegment ? '/'~extraSegment : '' %}
+{% set selectedItem = (craft.app.request.getSegment(3)~appendix)|default %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url("freeform") },

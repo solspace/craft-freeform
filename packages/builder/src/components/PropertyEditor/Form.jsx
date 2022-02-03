@@ -186,15 +186,17 @@ export default class Form extends BasePropertyEditor {
           onChangeHandler={this.updateHandle}
         />
 
-        <SelectProperty
-          label="Form Type"
-          instructions="Use this to change the form type."
-          name="formType"
-          required
-          value={formType}
-          onChangeHandler={this.update}
-          options={formTypes.map(({ class: key, name: value }) => ({ key, value }))}
-        />
+        {formTypes.length > 1 && (
+          <SelectProperty
+            label="Form Type"
+            instructions="Use this to change the form type."
+            name="formType"
+            required
+            value={formType}
+            onChangeHandler={this.update}
+            options={formTypes.map(({ class: key, name: value }) => ({ key, value }))}
+          />
+        )}
 
         <SelectProperty
           label="Success Behaviour"

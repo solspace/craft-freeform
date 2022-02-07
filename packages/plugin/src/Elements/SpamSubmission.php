@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Elements;
 
 use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Elements\Actions\AllowSpamAction;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
@@ -71,6 +72,13 @@ class SpamSubmission extends Submission
         }
 
         return [
+            \Craft::$app->elements->createAction(
+                [
+                    'type' => AllowSpamAction::class,
+                    'confirmationMessage' => Freeform::t('Are you sure you want allow the selected spam submissions?'),
+                    'successMessage' => Freeform::t('Submissions no longer marked as spam.'),
+                ]
+            ),
             \Craft::$app->elements->createAction(
                 [
                     'type' => DeleteSubmissionAction::class,

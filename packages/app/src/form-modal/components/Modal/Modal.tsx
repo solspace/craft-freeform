@@ -1,16 +1,18 @@
-import Checkbox from '@ff-app/shared/Forms/Checkbox/Checkbox';
-import Select from '@ff-app/shared/Forms/Select/Select';
-import Text from '@ff-app/shared/Forms/Text/Text';
 import React, { useEffect, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import { Button, Content, Footer, Grid, Header, Overlay, Wrapper } from './Modal.styles';
-import translate from '@ff-app/utils/translations';
-import ColorPicker from '@ff-app/shared/Forms/ColorPicker/ColorPicker';
-import { useFormTypeOptions } from '@ff-app/form-modal/hooks/use-form-type-options';
-import { SuccessBehavior, useFormState } from '@ff-app/form-modal/hooks/use-form-state';
+import { SuccessBehaviour, useFormState } from '@ff-app/form-modal/hooks/use-form-state';
 import { useFormStatusOptions } from '@ff-app/form-modal/hooks/use-form-status-options';
 import { useFormTemplatesOptions } from '@ff-app/form-modal/hooks/use-form-templates-options';
+import { useFormTypeOptions } from '@ff-app/form-modal/hooks/use-form-type-options';
+import { useSuccessTempplatesOptions } from '@ff-app/form-modal/hooks/use-success-templates-options';
+import Checkbox from '@ff-app/shared/Forms/Checkbox/Checkbox';
+import ColorPicker from '@ff-app/shared/Forms/ColorPicker/ColorPicker';
+import Select from '@ff-app/shared/Forms/Select/Select';
+import Text from '@ff-app/shared/Forms/Text/Text';
+import translate from '@ff-app/utils/translations';
+
+import { Button, Content, Footer, Grid, Header, Overlay, Wrapper } from './Modal.styles';
 
 type Props = {
   closeHandler?: () => void;
@@ -20,6 +22,7 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
   const typeOptions = useFormTypeOptions();
   const [defaultStatusId, statusOptions] = useFormStatusOptions();
   const [defaultTemplate, templateOptions] = useFormTemplatesOptions();
+  const successTemplateOptions = useSuccessTempplatesOptions();
   const [isShown, setIsShown] = useState(false);
   const { form, errors, update, saveHandler, isSaving } = useFormState(defaultStatusId, defaultTemplate);
 
@@ -94,18 +97,30 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
 
               <Grid columns={2}>
                 <Select
-                  name="successBehavior"
+                  name="successBehaviour"
                   label="Success Behavior"
-                  value={form.successBehavior}
+                  value={form.successBehaviour}
                   onChange={update}
                   options={[
-                    { label: 'Return URL', value: SuccessBehavior.ReturnURL },
-                    { label: 'Template', value: SuccessBehavior.Template },
-                    { label: 'Nothing', value: SuccessBehavior.Nothing },
+                    { label: 'No Effect', value: SuccessBehaviour.Nothing },
+                    { label: 'Load Success Template', value: SuccessBehaviour.Template },
+                    { label: 'Use Return URL', value: SuccessBehaviour.ReturnURL },
                   ]}
                 />
 
-                <Text name="returnUrl" label="Return URL" value={form.returnUrl} onChange={update} />
+                {form.successBehaviour !== SuccessBehaviour.Template && (
+                  <Text name="returnUrl" label="Return URL" value={form.returnUrl} onChange={update} />
+                )}
+
+                {form.successBehaviour === SuccessBehaviour.Template && (
+                  <Select
+                    name="successTemplate"
+                    label="Success Template"
+                    value={form.successTemplate}
+                    onChange={update}
+                    options={successTemplateOptions}
+                  />
+                )}
               </Grid>
             </Content>
             <Footer>

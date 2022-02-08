@@ -1,12 +1,14 @@
-import { SelectOption } from '@ff-app/shared/Forms/Select/Select';
 import { useContext } from 'react';
+
+import { SelectOption } from '@ff-app/shared/Forms/Select/Select';
+
 import { FormOptionsContext } from '../context/form-types-context';
 import { FormTemplate } from '../types/forms';
 
-const mapper = ({ name, id }: FormTemplate): SelectOption => ({ label: name, value: id });
+export const templateOptionMapper = ({ name, id }: FormTemplate): SelectOption => ({ label: name, value: id });
 
 const extractTemplates = (templates: FormTemplate[]): [string, SelectOption[]] => {
-  const nativeTemplates = templates.map(mapper);
+  const nativeTemplates = templates.map(templateOptionMapper);
   const defaultTemplate = templates.length && templates[0].id;
 
   return [defaultTemplate, nativeTemplates];
@@ -32,11 +34,11 @@ export const useFormTemplatesOptions = (): [string, SelectOption[]] => {
     [
       {
         label: 'Solspace Templates',
-        children: templates.native.map(mapper),
+        children: templates.native.map(templateOptionMapper),
       },
       {
         label: 'Custom Templates',
-        children: templates.custom.map(mapper),
+        children: templates.custom.map(templateOptionMapper),
       },
     ],
   ];

@@ -466,7 +466,7 @@ class FormsController extends BaseController
             'sites' => $this->getEncodedJson($sites),
             'renderFormHtmlInCpViews' => $settings->renderFormHtmlInCpViews,
             'reservedKeywords' => $this->getEncodedJson(FieldRecord::RESERVED_FIELD_KEYWORDS),
-            'metadata' => $this->getEncodedJson($model->metadata),
+            'metadata' => $this->getEncodedJson((object) $model->metadata),
         ];
 
         return $this->renderTemplate('freeform/forms/edit', $templateVariables);

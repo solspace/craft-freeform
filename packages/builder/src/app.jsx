@@ -21,7 +21,7 @@ import { fitInCraft } from './helpers/Resizer';
 
 const enhancer = compose(
   applyMiddleware(thunkMiddleware),
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+  window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : (f) => f
 );
 
 const specialFields = [

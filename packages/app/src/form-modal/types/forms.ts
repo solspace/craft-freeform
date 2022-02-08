@@ -8,6 +8,7 @@ export type FormTemplateCollection = {
   default: string;
   native: FormTemplate[];
   custom: FormTemplate[];
+  success: FormTemplate[];
 };
 
 export type FormTemplate = {

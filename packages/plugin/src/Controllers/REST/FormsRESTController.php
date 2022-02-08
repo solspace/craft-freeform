@@ -50,6 +50,7 @@ class FormsRESTController extends BaseController
 
         $nativeTemplates = $this->getSettingsService()->getSolspaceFormTemplates();
         $customTemplates = $this->getSettingsService()->getCustomFormTemplates();
+        $successTemplates = $this->getSettingsService()->getSuccessTemplates();
 
         $templates = ['native' => [], 'custom' => []];
         foreach ($nativeTemplates as $template) {
@@ -61,6 +62,13 @@ class FormsRESTController extends BaseController
 
         foreach ($customTemplates as $template) {
             $templates['custom'][] = [
+                'id' => $template->getFileName(),
+                'name' => $template->getName(),
+            ];
+        }
+
+        foreach ($successTemplates as $template) {
+            $templates['success'][] = [
                 'id' => $template->getFileName(),
                 'name' => $template->getName(),
             ];
@@ -104,7 +112,7 @@ class FormsRESTController extends BaseController
                         'description' => '',
                         'formTemplate' => $post['formTemplate'],
                         'returnUrl' => $post['returnUrl'],
-                        'storeData' => (int) $post['storeData'],
+                        'storeData' => (bool) $post['storeData'],
                         'ajaxEnabled' => $post['ajax'],
                         'defaultStatus' => $post['status'],
                     ],
@@ -147,6 +155,13 @@ class FormsRESTController extends BaseController
 
         $formModel = FormModel::create();
         $formModel->type = $post['type'] ?? Regular::class;
+
+        $metadata = array_filter([
+            'successBehaviour' => $post['successBehaviour'] ?? null,
+            'successTemplate' => $post['successTemplate'] ?? '',
+        ]);
+
+        $formModel->metadata = $metadata;
 
         try {
             $composer = new Composer(

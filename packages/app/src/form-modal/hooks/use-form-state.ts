@@ -1,14 +1,16 @@
-import { useContext, useEffect, useState } from 'react';
-import axios from '@ff-app/config/axios';
 import camelCase from 'lodash.camelcase';
-import { generateUrl } from '@ff-app/utils/urls';
+import { useContext, useEffect, useState } from 'react';
+
+import axios from '@ff-app/config/axios';
 import { ChangeHandler } from '@ff-app/shared/Forms/types';
+import { generateUrl } from '@ff-app/utils/urls';
+
 import { FormOptionsContext } from '../context/form-types-context';
 
-export enum SuccessBehavior {
-  ReturnURL = 'returnUrl',
-  Template = 'template',
-  Nothing = 'nothing',
+export enum SuccessBehaviour {
+  ReturnURL = 'redirect-return-url',
+  Template = 'load-success-template',
+  Nothing = 'no-effect',
 }
 
 type FormData = {
@@ -21,7 +23,8 @@ type FormData = {
   status?: number;
   ajax: boolean;
   storeData: boolean;
-  successBehavior: SuccessBehavior;
+  successBehaviour: SuccessBehaviour;
+  successTemplate?: string;
   returnUrl?: string;
 };
 
@@ -57,7 +60,8 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
     status: defaultStatusId,
     ajax: ajaxByDefault,
     storeData: true,
-    successBehavior: SuccessBehavior.ReturnURL,
+    successBehaviour: SuccessBehaviour.Nothing,
+    successTemplate: '',
     returnUrl: '',
   });
 

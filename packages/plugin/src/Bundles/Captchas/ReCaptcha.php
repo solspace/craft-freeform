@@ -1,20 +1,59 @@
 <?php
 
-namespace Solspace\Freeform\Services\Pro;
+namespace Solspace\Freeform\Bundles\Captchas;
 
-use craft\base\Component;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
-use Solspace\Freeform\Events\Forms\FormValidateEvent;
+use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Services\FieldsService;
+use yii\base\Event;
 
-class RecaptchaService extends Component
+class ReCaptcha extends FeatureBundle
 {
     private $lastError;
+
+    public function __construct()
+    {
+        $isCpRequest = \Craft::$app->request->getIsCpRequest();
+        if ($isCpRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
+        Event::on(
+            Form::class,
+            Form::EVENT_ATTACH_TAG_ATTRIBUTES,
+            [$this, 'addAttributesToFormTag']
+        );
+
+        Event::on(
+            FieldsService::class,
+            FieldsService::EVENT_AFTER_VALIDATE,
+            [$this, 'validateRecaptchaV2Checkbox']
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_BEFORE_VALIDATE,
+            [$this, 'validateRecaptchaV2Invisible']
+        );
+
+        Event::on(
+            Form::class,
+            Form::EVENT_BEFORE_VALIDATE,
+            [$this, 'validateRecaptchaV3']
+        );
+    }
 
     public function validateRecaptchaV2Checkbox(ValidateEvent $event)
     {
@@ -29,7 +68,7 @@ class RecaptchaService extends Component
         }
     }
 
-    public function validateRecaptchaV2Invisible(FormValidateEvent $event)
+    public function validateRecaptchaV2Invisible(ValidationEvent $event)
     {
         $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
         if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
@@ -46,7 +85,7 @@ class RecaptchaService extends Component
         }
     }
 
-    public function validateRecaptchaV3(FormValidateEvent $event)
+    public function validateRecaptchaV3(ValidationEvent $event)
     {
         $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
         if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {

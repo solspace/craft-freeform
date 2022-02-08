@@ -308,6 +308,9 @@ class Settings extends Model
     /** @var int */
     public $saveFormSessionLimit;
 
+    /** @var bool */
+    public $bypassSpamCheckOnLoggedInUsers;
+
     /**
      * Settings constructor.
      */
@@ -395,6 +398,8 @@ class Settings extends Model
 
         $this->saveFormTtl = self::SAVE_FORM_TTL;
         $this->saveFormSessionLimit = self::SAVE_FORM_SESSION_LIMIT;
+
+        $this->bypassSpamCheckOnLoggedInUsers = false;
 
         parent::__construct($config);
     }

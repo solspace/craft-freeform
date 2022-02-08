@@ -23,6 +23,10 @@ class HCaptcha extends FeatureBundle
             return;
         }
 
+        if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $type = $settings->recaptchaType;
 
         if (Settings::RECAPTCHA_TYPE_H_CHECKBOX === $type) {

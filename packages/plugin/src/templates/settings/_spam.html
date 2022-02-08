@@ -70,6 +70,14 @@
             }
         }) }}
 
+        {{ forms.lightswitchField({
+            label: "Bypass All Spam Checks for Logged in Users"|t('freeform'),
+            instructions: "When enabled, Freeform will not run any spam protection measures for logged in users."|t('freeform'),
+            name: "settings[bypassSpamCheckOnLoggedInUsers]",
+            on: settings.bypassSpamCheckOnLoggedInUsers,
+            errors: settings.errors("bypassSpamCheckOnLoggedInUsers"),
+        }) }}
+
         <hr>
 
         <h3>{{ "Spam Folder"|t('freeform') }}</h3>

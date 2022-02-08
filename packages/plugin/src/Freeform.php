@@ -108,7 +108,6 @@ use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\Pro\Payments\StripeService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionPlansService;
 use Solspace\Freeform\Services\Pro\Payments\SubscriptionsService;
-use Solspace\Freeform\Services\Pro\RecaptchaService;
 use Solspace\Freeform\Services\Pro\RulesService;
 use Solspace\Freeform\Services\Pro\WebhooksService;
 use Solspace\Freeform\Services\Pro\WidgetsService;
@@ -152,7 +151,6 @@ use yii\web\ForbiddenHttpException;
  * @property ChartsService               $charts
  * @property WidgetsService              $widgets
  * @property ExportProfilesService       $exportProfiles
- * @property RecaptchaService            $recaptcha
  * @property RulesService                $rules
  * @property PaymentNotificationsService $paymentNotifications
  * @property PaymentsService             $payments
@@ -524,7 +522,6 @@ class Freeform extends Plugin
                 'connections' => ConnectionsService::class,
                 'widgets' => WidgetsService::class,
                 'exportProfiles' => ExportProfilesService::class,
-                'recaptcha' => RecaptchaService::class,
                 'rules' => RulesService::class,
                 'paymentNotifications' => PaymentNotificationsService::class,
                 'payments' => PaymentsService::class,
@@ -867,32 +864,6 @@ class Freeform extends Plugin
                 }
             }
         );
-
-        if (!\Craft::$app->request->getIsCpRequest()) {
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
-                [$this->recaptcha, 'addAttributesToFormTag']
-            );
-
-            Event::on(
-                FieldsService::class,
-                FieldsService::EVENT_AFTER_VALIDATE,
-                [$this->recaptcha, 'validateRecaptchaV2Checkbox']
-            );
-
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_FORM_VALIDATE,
-                [$this->recaptcha, 'validateRecaptchaV2Invisible']
-            );
-
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_FORM_VALIDATE,
-                [$this->recaptcha, 'validateRecaptchaV3']
-            );
-        }
 
         Event::on(
             SettingsService::class,

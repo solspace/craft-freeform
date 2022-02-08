@@ -34,7 +34,7 @@ class RegisterSettingsNavigationEvent extends ArrayableEvent
 
     public function addHeader(string $handle, string $title, string $afterHandle = null): self
     {
-        $item = ['heading' => $handle];
+        $item = ['heading' => $title];
 
         $this->insertItem($handle, $item, $afterHandle);
 

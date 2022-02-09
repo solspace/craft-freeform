@@ -189,7 +189,7 @@ export default class Form extends BasePropertyEditor {
         {formTypes.length > 1 && (
           <SelectProperty
             label="Form Type"
-            instructions="Use this to change the form type."
+            instructions="Select the type of form this is. When additional form types are installed, you can choose a different form type that enables special behaviors."
             name="formType"
             required
             value={formType}
@@ -199,8 +199,8 @@ export default class Form extends BasePropertyEditor {
         )}
 
         <SelectProperty
-          label="Success Behaviour"
-          instructions="Use this to change the way the form behaves."
+          label="Success Behavior"
+          instructions="Set how you’d like the success return of this form to be handled. May also be overrided at template-level."
           name="successBehaviour"
           required
           value={successBehaviour}

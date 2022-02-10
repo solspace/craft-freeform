@@ -7,6 +7,7 @@ use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
 use LitEmoji\LitEmoji;
@@ -299,6 +300,16 @@ class Submission extends Element
         }
 
         return $this->spamReasons;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->getUser();
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->userId ? \Craft::$app->users->getUserById($this->userId) : null;
     }
 
     public function getStatus(): string
@@ -620,6 +631,7 @@ class Submission extends Element
         if (null === $attributes) {
             $titles = [
                 'title' => ['label' => Freeform::t('Title')],
+                'userId' => ['label' => Freeform::t('Author')],
                 'status' => ['label' => Freeform::t('Status')],
                 'form' => ['label' => Freeform::t('Form')],
                 'dateCreated' => ['label' => Freeform::t('Date Created')],
@@ -628,6 +640,11 @@ class Submission extends Element
                 'ip' => ['label' => Freeform::t('IP Address')],
                 'spamReasons' => ['label' => Freeform::t('Spam Reasons')],
             ];
+
+            // Hide Author from Craft Personal/Client
+            if (\Craft::$app->getEdition() < \Craft::Pro) {
+                unset($attributes['userId']);
+            }
 
             foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
                 if ($field->label) {
@@ -708,6 +725,12 @@ class Submission extends Element
     {
         if ('status' === $attribute) {
             return $this->getStatusModel()->name;
+        }
+
+        if ('userId' === $attribute) {
+            $user = $this->getAuthor();
+
+            return $user ? \Craft::$app->view->renderTemplate('_elements/element', ['element' => $user]) : '';
         }
 
         if ('spamReasons' === $attribute) {

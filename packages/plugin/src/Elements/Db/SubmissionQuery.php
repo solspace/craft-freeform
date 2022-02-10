@@ -18,6 +18,9 @@ class SubmissionQuery extends ElementQuery
     /** @var int */
     public $formId;
 
+    /** @var int */
+    public $userId;
+
     /** @var string */
     public $form;
 
@@ -50,6 +53,13 @@ class SubmissionQuery extends ElementQuery
     public function formId($value): self
     {
         $this->formId = $value;
+
+        return $this;
+    }
+
+    public function userId($value): self
+    {
+        $this->userId = $value;
 
         return $this;
     }
@@ -182,6 +192,7 @@ class SubmissionQuery extends ElementQuery
 
         $select = [
             $table.'.[[formId]]',
+            $table.'.[[userId]]',
             $table.'.[[statusId]]',
             $table.'.[[incrementalId]]',
             $table.'.[[token]]',
@@ -236,6 +247,10 @@ class SubmissionQuery extends ElementQuery
 
         if ($this->statusId) {
             $this->subQuery->andWhere(Db::parseParam($table.'.[[statusId]]', $this->statusId));
+        }
+
+        if ($this->userId) {
+            $this->subQuery->andWhere(Db::parseParam($table.'.[[userId]]', $this->userId));
         }
 
         if ($this->incrementalId) {

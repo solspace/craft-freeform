@@ -233,7 +233,13 @@ class SubmissionsController extends BaseController
         $this->removeStaleAssets($model, $post);
         $post = $this->uploadAndAddFiles($model->getForm(), $post);
 
+        $userId = \Craft::$app->request->post('author', $model->userId);
+        if (\is_array($userId)) {
+            $userId = reset($userId);
+        }
+
         $model->title = \Craft::$app->request->post('title', $model->title);
+        $model->userId = $userId;
         $model->statusId = $post['statusId'];
         $model->setFormFieldValues($post);
 

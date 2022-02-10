@@ -498,6 +498,19 @@
             errors: submission.getErrors('title')|merge(submission.getErrors('uri')),
         }) }}
 
+        {% if (submission.author) %}
+            {{ forms.elementSelectField({
+                status: submission.getAttributeStatus('userId'),
+                label: "Author"|t('app'),
+                id: 'author',
+                name: 'author',
+                elementType: 'craft\\elements\\User',
+                selectionLabel: "Choose"|t('app'),
+                limit: 1,
+                elements: (submission.author ? [submission.author])
+            }) }}
+        {% endif %}
+
         {% set statusField %}
             <div>
                 {% set selectedStatus = statuses[submission.statusId] ? statuses[submission.statusId] : statuses|first %}

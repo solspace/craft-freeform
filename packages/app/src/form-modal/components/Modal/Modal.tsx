@@ -28,6 +28,18 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
 
   useEffect(() => {
     setIsShown(true);
+
+    const handler = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        setIsShown(false);
+      }
+    };
+
+    document.addEventListener('keyup', handler);
+
+    return (): void => {
+      document.removeEventListener('keyup', handler);
+    };
   }, []);
 
   return (

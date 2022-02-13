@@ -11,7 +11,23 @@
         <div class="alert alert-warning">
             <h5 class="alert-heading">Please note...</h5>
             <p class="mb-0">
-                You currently have a the user submit limit setting enabled (<i>{% if form.limitFormSubmissions == "ip_cookie" %}IP/Cookie combo{% else %}Cookie only{% endif %}</i>) for this form.
+                You currently have a user submit limit setting enabled (<i>
+                    {%- if form.limitFormSubmissions == "auth_unlimited" -%}
+                        Logged in Users only (no limit)
+                    {%- elseif form.limitFormSubmissions == "cookie" -%}
+                        Once per Cookie
+                    {%- elseif form.limitFormSubmissions == "ip_cookie" -%}
+                        Once per IP/Cookie combo
+                    {%- elseif form.limitFormSubmissions == "auth" -%}
+                        Once per logged in Users
+                    {%- elseif form.limitFormSubmissions == "auth_cookie" -%}
+                        Once per logged in User or Guest Cookie
+                    {%- elseif form.limitFormSubmissions == "auth_ip_cookie" -%}
+                        Once per logged in User or Guest IP/Cookie combo
+                    {%- else -%}
+                        '{{ form.limitFormSubmissions }}'
+                    {%- endif -%}
+                </i>) for this form.
             </p>
         </div>
     {% endif %}

@@ -25,7 +25,13 @@
                 We've detected you're using the <b>Foundation</b> sample formatting template and have automatically loaded the Foundation library inside this demo.
                 The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
             </p>
-        {% elseif ( form.formTemplate == "bootstrap.html" ) or ( form.formTemplate == "bootstrap-4.html" ) %}
+        {% elseif form.formTemplate == "tailwind.html" %}
+            <hr>
+            <p class="mb-0">
+                We've detected you're using the <b>Tailwind</b> sample formatting template and have automatically loaded the Tailwind library inside this demo.
+                The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
+            </p>
+        {% elseif ( form.formTemplate == "bootstrap.html" ) or ( form.formTemplate == "bootstrap-4.html" ) or ( form.formTemplate == "bootstrap-5.html" ) %}
             <hr>
             <p class="mb-0">
                 We've detected you're using the <b>Bootstrap</b> sample formatting template and have automatically loaded the Bootstrap library inside this demo.
@@ -38,7 +44,23 @@
             <div class="alert alert-warning">
                 <h5 class="alert-heading">Please note...</h5>
                 <p class="mb-0">
-                    You currently have a the user submit limit setting enabled (<i>{% if form.limitFormSubmissions == "ip_cookie" %}IP/Cookie combo{% else %}Cookie only{% endif %}</i>) for this form.
+                    You currently have a user submit limit setting enabled (<i>
+                        {%- if form.limitFormSubmissions == "auth_unlimited" -%}
+                            Logged in Users only (no limit)
+                        {%- elseif form.limitFormSubmissions == "cookie" -%}
+                            Once per Cookie
+                        {%- elseif form.limitFormSubmissions == "ip_cookie" -%}
+                            Once per IP/Cookie combo
+                        {%- elseif form.limitFormSubmissions == "auth" -%}
+                            Once per logged in Users
+                        {%- elseif form.limitFormSubmissions == "auth_cookie" -%}
+                            Once per logged in User or Guest Cookie
+                        {%- elseif form.limitFormSubmissions == "auth_ip_cookie" -%}
+                            Once per logged in User or Guest IP/Cookie combo
+                        {%- else -%}
+                            '{{ form.limitFormSubmissions }}'
+                        {%- endif -%}
+                    </i>) for this form.
                 </p>
             </div>
         {% endif %}

@@ -32,10 +32,8 @@ class SubmitController extends BaseController
 
     /**
      * @throws FreeformException
-     *
-     * @return null|Response
      */
-    public function actionIndex()
+    public function actionIndex(): ?Response
     {
         $this->requirePostRequest();
 
@@ -64,6 +62,12 @@ class SubmitController extends BaseController
 
             if ($isAjaxRequest) {
                 return $this->toAjaxResponse($form, $submission, $returnUrl);
+            }
+
+            if (Form::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $form->getSuccessBehaviour()) {
+                if ($form->getSuccessTemplate()) {
+                    return $this->redirect('');
+                }
             }
 
             return $this->redirect($returnUrl);

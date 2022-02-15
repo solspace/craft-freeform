@@ -52,7 +52,7 @@ class FormsRESTController extends BaseController
         $customTemplates = $this->getSettingsService()->getCustomFormTemplates();
         $successTemplates = $this->getSettingsService()->getSuccessTemplates();
 
-        $templates = ['native' => [], 'custom' => []];
+        $templates = ['native' => [], 'custom' => [], 'success' => []];
         foreach ($nativeTemplates as $template) {
             $templates['native'][] = [
                 'id' => $template->getFileName(),

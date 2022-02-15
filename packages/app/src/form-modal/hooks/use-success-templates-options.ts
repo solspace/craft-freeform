@@ -5,7 +5,7 @@ import { SelectOption } from '@ff-app/shared/Forms/Select/Select';
 import { FormOptionsContext } from '../context/form-types-context';
 import { templateOptionMapper } from './use-form-templates-options';
 
-export const useSuccessTempplatesOptions = (): SelectOption[] => {
+export const useSuccessTemplatesOptions = (): SelectOption[] => {
   const { templates } = useContext(FormOptionsContext);
 
   if (templates === null) {

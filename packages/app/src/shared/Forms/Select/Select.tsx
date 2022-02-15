@@ -1,11 +1,12 @@
-import { createId } from '@ff-app/utils/html-attributes';
-import translate from '@ff-app/utils/translations';
 import React from 'react';
 
-import type { FieldProps } from '../FieldBase/FieldBase';
+import { createId } from '@ff-app/utils/html-attributes';
+import translate from '@ff-app/utils/translations';
+
 import FieldBase from '../FieldBase/FieldBase';
 import { ChangeHandler } from '../types';
 
+import type { FieldProps } from '../FieldBase/FieldBase';
 export type SelectOption = {
   label: string;
   value?: string | number;

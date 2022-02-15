@@ -5,7 +5,7 @@ import { SuccessBehaviour, useFormState } from '@ff-app/form-modal/hooks/use-for
 import { useFormStatusOptions } from '@ff-app/form-modal/hooks/use-form-status-options';
 import { useFormTemplatesOptions } from '@ff-app/form-modal/hooks/use-form-templates-options';
 import { useFormTypeOptions } from '@ff-app/form-modal/hooks/use-form-type-options';
-import { useSuccessTempplatesOptions } from '@ff-app/form-modal/hooks/use-success-templates-options';
+import { useSuccessTemplatesOptions } from '@ff-app/form-modal/hooks/use-success-templates-options';
 import Checkbox from '@ff-app/shared/Forms/Checkbox/Checkbox';
 import ColorPicker from '@ff-app/shared/Forms/ColorPicker/ColorPicker';
 import Select from '@ff-app/shared/Forms/Select/Select';
@@ -22,7 +22,7 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
   const typeOptions = useFormTypeOptions();
   const [defaultStatusId, statusOptions] = useFormStatusOptions();
   const [defaultTemplate, templateOptions] = useFormTemplatesOptions();
-  const successTemplateOptions = useSuccessTempplatesOptions();
+  const successTemplateOptions = useSuccessTemplatesOptions();
   const [isShown, setIsShown] = useState(false);
   const { form, errors, update, saveHandler, isSaving } = useFormState(defaultStatusId, defaultTemplate);
 
@@ -62,15 +62,17 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
               </Grid>
 
               <Grid columns={2}>
-                <Select
-                  name="type"
-                  label="Type"
-                  required
-                  options={typeOptions}
-                  value={form.type}
-                  errors={errors.type}
-                  onChange={update}
-                />
+                {typeOptions.length > 1 && (
+                  <Select
+                    name="type"
+                    label="Type"
+                    required
+                    options={typeOptions}
+                    value={form.type}
+                    errors={errors.type}
+                    onChange={update}
+                  />
+                )}
                 <ColorPicker name="color" label="Color" value={form.color} onChange={update} />
               </Grid>
 

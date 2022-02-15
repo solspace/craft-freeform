@@ -100,7 +100,7 @@ class Table {
 
     this.freeform._dispatchEvent(EVENT_TABLE_ON_REMOVE_ROW, { table, row });
 
-    row.remove();
+    row.ffRemove();
 
     this.freeform._dispatchEvent(EVENT_TABLE_AFTER_REMOVE_ROW, { table });
   };

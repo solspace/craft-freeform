@@ -407,7 +407,7 @@ export default class Freeform {
     const { successClassBanner, errorClassBanner, errorClassList, errorClassField } = options;
 
     // Remove any existing errors that are being shown
-    form.querySelectorAll(`.${getClassArray(errorClassList).join('.')}`).remove();
+    form.querySelectorAll(`.${getClassArray(errorClassList).join('.')}`).ffRemove();
     const fieldsWithErrors = form.querySelectorAll(`.${getClassArray(errorClassField).join('.')}`);
     for (let fieldIndex = 0; fieldIndex < fieldsWithErrors.length; fieldIndex++) {
       const field = fieldsWithErrors[fieldIndex];
@@ -415,8 +415,8 @@ export default class Freeform {
     }
 
     // Remove success messages
-    form.querySelectorAll(`.${getClassArray(successClassBanner).join('.')}`).remove();
-    document.querySelectorAll(`.${getClassArray(errorClassBanner).join('.')}`).remove();
+    form.querySelectorAll(`.${getClassArray(successClassBanner).join('.')}`).ffRemove();
+    document.querySelectorAll(`.${getClassArray(errorClassBanner).join('.')}`).ffRemove();
   };
 
   _removeMessageFrom = (field) => {
@@ -437,7 +437,7 @@ export default class Freeform {
 
     const errorList = errorContainerNode.querySelector(`.${errorClassList}`);
     if (errorList) {
-      errorList.remove();
+      errorList.ffRemove();
     }
 
     const fields = errorContainerNode.querySelectorAll('input, select, textarea');
@@ -796,11 +796,11 @@ if (window.NodeList && !NodeList.prototype.forEach) {
 }
 
 // Add remove prototypes
-Element.prototype.remove = function () {
+Element.prototype.ffRemove = function () {
   this.parentElement.removeChild(this);
 };
 
-NodeList.prototype.remove = HTMLCollection.prototype.remove = function () {
+NodeList.prototype.ffRemove = HTMLCollection.prototype.ffRemove = function () {
   for (var i = this.length - 1; i >= 0; i--) {
     if (this[i] && this[i].parentElement) {
       this[i].parentElement.removeChild(this[i]);

@@ -9,10 +9,12 @@ class FormTypesService extends BaseService
 {
     const EVENT_REGISTER_FORM_TYPES = 'register-form-types';
 
-    public function getTypes(): array
+    public function getTypes(bool $includeDefault = true): array
     {
         $event = new RegisterFormTypeEvent();
-        $event->addType(Regular::class);
+        if ($includeDefault) {
+            $event->addType(Regular::class);
+        }
 
         $this->trigger(self::EVENT_REGISTER_FORM_TYPES, $event);
 

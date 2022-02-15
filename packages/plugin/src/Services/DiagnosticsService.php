@@ -197,6 +197,11 @@ class DiagnosticsService extends BaseService
             $integrationList[] = $webhook->name;
         }
 
+        $formTypes = [];
+        foreach ($freeform->formTypes->getTypes(false) as $formType) {
+            $formTypes[] = $formType['name'];
+        }
+
         return [
             new DiagnosticItem(
                 '<b>{{ value }}</b> Forms',
@@ -227,6 +232,10 @@ class DiagnosticsService extends BaseService
             new DiagnosticItem(
                 '<b>{{ value|length }}</b> API integrations{{ value|length ? ": " }}{{ value|join(", ") }}',
                 $integrationList
+            ),
+            new DiagnosticItem(
+                '<b>{{ value|length }}</b> Additional form types{{ value|length ? ": " }}{{ value|join(", ") }}',
+                $formTypes
             ),
         ];
     }

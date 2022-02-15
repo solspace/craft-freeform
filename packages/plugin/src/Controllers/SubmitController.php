@@ -66,7 +66,7 @@ class SubmitController extends BaseController
 
             if (Form::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $form->getSuccessBehaviour()) {
                 if ($form->getSuccessTemplate()) {
-                    return $this->redirect('');
+                    return $this->redirect($request->getUrl());
                 }
             }
 

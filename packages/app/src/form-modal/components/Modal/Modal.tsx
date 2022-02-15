@@ -61,8 +61,8 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
                 />
               </Grid>
 
-              <Grid columns={2}>
-                {typeOptions.length > 1 && (
+              {typeOptions.length > 1 && (
+                <Grid columns={2}>
                   <Select
                     name="type"
                     label="Type"
@@ -72,18 +72,9 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
                     errors={errors.type}
                     onChange={update}
                   />
-                )}
-                <ColorPicker name="color" label="Color" value={form.color} onChange={update} />
-              </Grid>
-
-              <Text
-                name="submissionTitle"
-                label="Submission Title"
-                required
-                value={form.submissionTitle}
-                errors={errors.submissionTitle}
-                onChange={update}
-              />
+                  <ColorPicker name="color" label="Color" value={form.color} onChange={update} />
+                </Grid>
+              )}
 
               <Grid columns={2}>
                 <Select

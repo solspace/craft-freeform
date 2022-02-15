@@ -101,7 +101,10 @@ class FormLimiting extends FeatureBundle
 
     private function limitByUserId(Form $form)
     {
-        $this->limitLoggedInOnly($form);
+        $userId = \Craft::$app->user->getId();
+        if (!$userId) {
+            return;
+        }
 
         $submissions = Submission::TABLE;
         $query = (new Query())
@@ -110,7 +113,7 @@ class FormLimiting extends FeatureBundle
             ->where([
                 'isSpam' => false,
                 'formId' => $form->getId(),
-                'userId' => \Craft::$app->user->getId(),
+                'userId' => $userId,
             ])
             ->limit(1)
         ;
@@ -124,7 +127,6 @@ class FormLimiting extends FeatureBundle
         }
 
         $isPosted = (bool) $query->scalar();
-
         if ($isPosted) {
             $this->addMessage($form);
         }

@@ -75,11 +75,9 @@ EOT;
         /** @var Submission[] $submissions */
         $submissions = $query->all();
 
-        $form = null;
         if ($submissions) {
             $formId = $submissions[0]['formId'];
             $form = Freeform::getInstance()->forms->getFormById($formId);
-
             if (!$form) {
                 throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $formId]));
             }

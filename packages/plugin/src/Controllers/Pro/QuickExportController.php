@@ -112,6 +112,13 @@ class QuickExportController extends BaseController
                 ];
             }
 
+            if (!isset($fieldSetting['userId'])) {
+                $fieldSetting['userId'] = [
+                    'label' => 'Author',
+                    'checked' => true,
+                ];
+            }
+
             foreach ($form->getLayout()->getFields() as $field) {
                 if (
                     $field instanceof NoStorageInterface

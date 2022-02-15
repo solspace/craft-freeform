@@ -194,7 +194,11 @@ class ExportProfileModel extends Model
             ];
         }
 
-        if ($form->getPaymentProperties()) {
+        if (!isset($fieldSettings['userId'])) {
+            $fieldSettings['userId'] = [
+                'label' => 'Author',
+                'checked' => true,
+            ];
         }
 
         foreach ($form->getLayout()->getFields() as $field) {

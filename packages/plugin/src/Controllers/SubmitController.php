@@ -78,6 +78,8 @@ class SubmitController extends BaseController
         if ($isAjaxRequest) {
             return $this->toAjaxResponse($form, $submission);
         }
+
+        return null;
     }
 
     public function behaviors()

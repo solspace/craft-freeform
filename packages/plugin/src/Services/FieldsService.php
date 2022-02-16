@@ -25,31 +25,6 @@ use Solspace\Freeform\Events\Fields\DeleteEvent;
 use Solspace\Freeform\Events\Fields\FetchFieldTypes;
 use Solspace\Freeform\Events\Fields\SaveEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
-use Solspace\Freeform\Fields\CheckboxField;
-use Solspace\Freeform\Fields\CheckboxGroupField;
-use Solspace\Freeform\Fields\DynamicRecipientField;
-use Solspace\Freeform\Fields\EmailField;
-use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\HiddenField;
-use Solspace\Freeform\Fields\MultipleSelectField;
-use Solspace\Freeform\Fields\NumberField;
-use Solspace\Freeform\Fields\Pro\ConfirmationField;
-use Solspace\Freeform\Fields\Pro\DatetimeField;
-use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
-use Solspace\Freeform\Fields\Pro\InvisibleField;
-use Solspace\Freeform\Fields\Pro\OpinionScaleField;
-use Solspace\Freeform\Fields\Pro\PasswordField;
-use Solspace\Freeform\Fields\Pro\PhoneField;
-use Solspace\Freeform\Fields\Pro\RatingField;
-use Solspace\Freeform\Fields\Pro\RegexField;
-use Solspace\Freeform\Fields\Pro\SignatureField;
-use Solspace\Freeform\Fields\Pro\TableField;
-use Solspace\Freeform\Fields\Pro\WebsiteField;
-use Solspace\Freeform\Fields\RadioGroupField;
-use Solspace\Freeform\Fields\RecaptchaField;
-use Solspace\Freeform\Fields\SelectField;
-use Solspace\Freeform\Fields\TextareaField;
-use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
@@ -162,35 +137,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
 
     public function getFieldTypes(): array
     {
-        $fieldTypes = [
-            TextField::class,
-            TextareaField::class,
-            EmailField::class,
-            HiddenField::class,
-            SelectField::class,
-            MultipleSelectField::class,
-            CheckboxField::class,
-            CheckboxGroupField::class,
-            RadioGroupField::class,
-            FileUploadField::class,
-            FileDragAndDropField::class,
-            NumberField::class,
-            DynamicRecipientField::class,
-            ConfirmationField::class,
-            DatetimeField::class,
-            PasswordField::class,
-            PhoneField::class,
-            RatingField::class,
-            RecaptchaField::class,
-            RegexField::class,
-            WebsiteField::class,
-            OpinionScaleField::class,
-            SignatureField::class,
-            TableField::class,
-            InvisibleField::class,
-        ];
-
-        $fetchTypesEvent = new FetchFieldTypes($fieldTypes);
+        $fetchTypesEvent = new FetchFieldTypes();
         $this->trigger(self::EVENT_FETCH_TYPES, $fetchTypesEvent);
 
         return $fetchTypesEvent->getTypes();

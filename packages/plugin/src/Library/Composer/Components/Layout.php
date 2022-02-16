@@ -22,7 +22,7 @@ use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
@@ -569,7 +569,7 @@ class Layout implements \JsonSerializable, \Iterator
      */
     private function buildLayout()
     {
-        $isPro = Freeform::getInstance()->isPro();
+        $availableFieldTypes = array_keys(Freeform::getInstance()->fields->getFieldTypes());
 
         // TODO: remove these, use the `getField()` method by specifying type
         $pageObjects = [];
@@ -634,8 +634,10 @@ class Layout implements \JsonSerializable, \Iterator
                         continue;
                     }
 
-                    if (!$isPro && $field instanceof ExtraFieldInterface) {
-                        continue;
+                    if (!\in_array($field->getType(), $availableFieldTypes, true)) {
+                        if (!$field instanceof DefaultFieldInterface) {
+                            continue;
+                        }
                     }
 
                     if ($field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())) {

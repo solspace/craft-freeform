@@ -3,10 +3,7 @@
 namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Events\ArrayableEvent;
-use Solspace\Freeform\Fields\Pro\OpinionScaleField;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 
 class FetchFieldTypes extends ArrayableEvent
@@ -40,22 +37,10 @@ class FetchFieldTypes extends ArrayableEvent
     {
         $reflectionClass = new \ReflectionClass($class);
 
-        $isPro = Freeform::getInstance()->isPro();
-        $surveys = \Craft::$app->plugins->getPlugin('freeform-surveys-polls');
-        $isSurveys = $surveys && $surveys->isInstalled;
-
         if (
             $reflectionClass->isSubclassOf(AbstractField::class)
             && !$reflectionClass->implementsInterface(NoStorageInterface::class)
         ) {
-            $isSurveysAndOpinionScale = $isSurveys && OpinionScaleField::class === $class;
-
-            if (!$isPro && $reflectionClass->implementsInterface(ExtraFieldInterface::class)) {
-                if (!$isSurveysAndOpinionScale) {
-                    return $this;
-                }
-            }
-
             /** @var AbstractField $class */
             $type = $class::getFieldType();
             $name = $class::getFieldTypeName();

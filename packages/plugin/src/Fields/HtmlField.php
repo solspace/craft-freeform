@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Fields;
 
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
@@ -21,7 +22,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleStaticValu
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Models\Settings;
 
-class HtmlField extends AbstractField implements SingleValueInterface, InputOnlyInterface, NoStorageInterface
+class HtmlField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;
 

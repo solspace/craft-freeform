@@ -23,6 +23,10 @@ abstract class AbstractCheck extends FeatureBundle
         $this->settingsService = Freeform::getInstance()->settings;
         $this->settings = $this->settingsService->getSettingsModel();
 
+        if ($this->settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleCheck']);
     }
 

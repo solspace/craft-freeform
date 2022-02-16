@@ -60,7 +60,7 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
     status: defaultStatusId,
     ajax: ajaxByDefault,
     storeData: true,
-    successBehaviour: SuccessBehaviour.Nothing,
+    successBehaviour: SuccessBehaviour.ReturnURL,
     successTemplate: '',
     returnUrl: '',
   });

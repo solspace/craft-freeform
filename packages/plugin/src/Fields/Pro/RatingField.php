@@ -3,13 +3,15 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\NumericConstraint;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
-class RatingField extends AbstractField implements SingleValueInterface, ExtraFieldInterface
+class RatingField extends AbstractField implements SingleValueInterface, ExtraFieldInterface, OptionsInterface
 {
     use SingleValueTrait;
     const MIN_VALUE = 3;
@@ -33,6 +35,26 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
     public function getType(): string
     {
         return self::TYPE_RATING;
+    }
+
+    public function getOptions(): array
+    {
+        $options = [];
+        for ($i = 1; $i <= $this->getMaxValue(); ++$i) {
+            $options[] = new Option($i, $i, $i === (int) $this->getValue());
+        }
+
+        return $options;
+    }
+
+    public function getOptionsAsKeyValuePairs(): array
+    {
+        $options = [];
+        foreach ($this->getOptions() as $option) {
+            $options[$option->getValue()] = $option->getLabel();
+        }
+
+        return $options;
     }
 
     public function getMaxValue(): int

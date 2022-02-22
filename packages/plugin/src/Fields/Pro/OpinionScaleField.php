@@ -3,10 +3,12 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
-class OpinionScaleField extends AbstractField implements ExtraFieldInterface
+class OpinionScaleField extends AbstractField implements ExtraFieldInterface, OptionsInterface
 {
     use SingleValueTrait;
 
@@ -46,6 +48,26 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface
         }
 
         return $scales;
+    }
+
+    public function getOptions(): array
+    {
+        $options = [];
+        foreach ($this->getScales() as $scale) {
+            $options[] = new Option($scale['label'], $scale['value'], $this->getValue() === $scale['value']);
+        }
+
+        return $options;
+    }
+
+    public function getOptionsAsKeyValuePairs(): array
+    {
+        $options = [];
+        foreach ($this->getOptions() as $option) {
+            $options[$option->getValue()] = $option->getLabel();
+        }
+
+        return $options;
     }
 
     public function getLegends(): array

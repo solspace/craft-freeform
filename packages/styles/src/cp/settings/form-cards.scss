@@ -36,12 +36,15 @@ ul#form-cards {
       .card-info {
         flex: 0 1;
 
-        a.form-name {
+        .form-name {
           display: block;
           word-wrap: break-word;
           font-size: 25px;
           line-height: 1.1em;
           font-weight: normal;
+        }
+
+        a.form-name {
           color: #0B69A3;
 
           &:hover {
@@ -139,7 +142,6 @@ ul#form-cards {
         font-size: 1em;
         font-weight: normal;
         text-align: center;
-        color: #0B69A3;
 
         div {
           display: block;
@@ -148,6 +150,10 @@ ul#form-cards {
           font-weight: bold;
           line-height: 0.8em;
         }
+      }
+
+      a.submissions {
+        color: #0B69A3;
 
         &:hover {
           text-decoration: underline;
@@ -186,17 +192,19 @@ ul#form-cards {
         }
 
         &.standalone {
-          color: #0B69A3;
-
-          &:hover {
-            text-decoration: underline;
-          }
-
           > div, > a {
             > span {
               padding-right: 0;
             }
           }
+        }
+      }
+
+      a.spam.standalone {
+        color: #0B69A3;
+
+        &:hover {
+          text-decoration: underline;
         }
       }
 

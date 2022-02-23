@@ -16,12 +16,31 @@
 
     <ul id="form-cards" class="cards">
         {% for form in forms %}
+            {% set canViewSurveyResults = currentUser.can('freeform-surveys-access') %}
+            {% set canManageForm = currentUser.can('freeform-formsManage') or currentUser.can('freeform-formsManage:'~form.id) %}
+            {% set canManageSubmissions =
+                currentUser.can('freeform-submissionsAccess')
+                and (
+                    currentUser.can('freeform-submissionsManage')
+                    or currentUser.can('freeform-submissionsManage:'~form.id)
+                    or currentUser.can('freeform-submissionsRead')
+                    or currentUser.can('freeform-submissionsRead:'~form.id)
+                )
+            %}
+
             <li data-id="{{ form.id }}" style="border-top-color: {{ form.color }}">
                 <div class="card-body">
                     <div class="card-info">
-                        <a class="form-name" href="{{ cpUrl("freeform/forms/" ~ form.id) }}">
-                            {{ form.name }}
-                        </a>
+                        {% if canManageForm %}
+                            <a class="form-name" href="{{ cpUrl("freeform/forms/" ~ form.id) }}">
+                                {{ form.name }}
+                            </a>
+                        {% else %}
+                            <span class="form-name">
+                                {{ form.name }}
+                            </span>
+                        {% endif %}
+
                         <div class="form-handle" title="{{ "Handle for this Form"|t("freeform") }}">
                             {{ form.handle|truncater(30) }}
                         </div>
@@ -31,33 +50,42 @@
                         </p>
                     </div>
 
-                    <ul class="card-actions">
-                        <li>
-                            <a class="delete-form"
-                               data-icon="remove"
-                               data-id="{{ form.id }}"
-                               data-message="{{ "Are you sure you want to delete this form?"|t("freeform") }}"
-                               title="{{ "Delete this Form"|t("freeform") }}"></a>
-                        </li>
-                        <li>
-                            <a class="duplicate-form icon-docs"
-                               data-id="{{ form.id }}"
-                               data-message="{{ "Are you sure you want to duplicate this form?"|t("freeform") }}"
-                               title="{{ "Duplicate this Form"|t("freeform") }}"></a>
-                        </li>
-                        <li>
-                            <a class="icon-menu drag-handle"
-                               title="{{ "Rearrange this Form"|t("freeform") }}"></a>
-                        </li>
-                    </ul>
+                    {% if canManageForm %}
+                        <ul class="card-actions">
+                            <li>
+                                <a class="delete-form"
+                                   data-icon="remove"
+                                   data-id="{{ form.id }}"
+                                   data-message="{{ "Are you sure you want to delete this form?"|t("freeform") }}"
+                                   title="{{ "Delete this Form"|t("freeform") }}"></a>
+                            </li>
+                            <li>
+                                <a class="duplicate-form icon-docs"
+                                   data-id="{{ form.id }}"
+                                   data-message="{{ "Are you sure you want to duplicate this form?"|t("freeform") }}"
+                                   title="{{ "Duplicate this Form"|t("freeform") }}"></a>
+                            </li>
+                            <li>
+                                <a class="icon-menu drag-handle"
+                                   title="{{ "Rearrange this Form"|t("freeform") }}"></a>
+                            </li>
+                        </ul>
+                    {% endif %}
                 </div>
 
                 <div class="card-footer">
                     {% if form.storeData %}
-                        <a class="submissions" href="{{ url('freeform/submissions/' ~ form.handle) }}">
-                            <div>{{ submissionsByForm[form.id] ?? 0 }}</div>
-                            {{ "Submissions"|t("freeform") }}
-                        </a>
+                        {% if canManageSubmissions %}
+                            <a class="submissions" href="{{ url('freeform/submissions/' ~ form.handle) }}">
+                                <div>{{ submissionsByForm[form.id] ?? 0 }}</div>
+                                {{ "Submissions"|t("freeform") }}
+                            </a>
+                        {% else %}
+                            <span class="submissions">
+                                <div>{{ submissionsByForm[form.id] ?? 0 }}</div>
+                                {{ "Submissions"|t("freeform") }}
+                            </span>
+                        {% endif %}
                     {% else %}
                         <div class="submissions-not-stored">
                             {{ "Submissions not stored"|t("freeform") }}
@@ -65,14 +93,25 @@
                     {% endif %}
 
                     {% if isSpamFolderEnabled %}
-                        <a href="{{ cpUrl('freeform/spam/'~form.handle) }}" class="spam standalone">
-                            <div>
-                                <span>
-                                    <span class="counter">{{ spamByForm[form.id] ?? 0 }}</span>
-                                </span>
-                            </div>
-                            {{ "Spam"|t("freeform") }}
-                        </a>
+                        {% if canManageSubmissions %}
+                            <a href="{{ cpUrl('freeform/spam/'~form.handle) }}" class="spam standalone">
+                                <div>
+                                    <span>
+                                        <span class="counter">{{ spamByForm[form.id] ?? 0 }}</span>
+                                    </span>
+                                </div>
+                                {{ "Spam"|t("freeform") }}
+                            </a>
+                        {% else %}
+                            <span class="spam standalone">
+                                <div>
+                                    <span>
+                                        <span class="counter">{{ spamByForm[form.id] ?? 0 }}</span>
+                                    </span>
+                                </div>
+                                {{ "Spam"|t("freeform") }}
+                            </span>
+                        {% endif %}
                     {% else %}
                         <div class="spam" title="{{ "Submissions blocked by Honeypot Spam Protection"|t("freeform") }}">
                             <div>

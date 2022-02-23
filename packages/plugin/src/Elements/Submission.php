@@ -699,8 +699,11 @@ class Submission extends Element
                 ]
             ),
             \Craft::$app->elements->createAction(['type' => SetSubmissionStatusAction::class]),
-            \Craft::$app->elements->createAction(['type' => ExportCSVAction::class]),
         ];
+
+        if (PermissionHelper::checkPermission(Freeform::PERMISSION_ACCESS_QUICK_EXPORT)) {
+            $actions[] = \Craft::$app->elements->createAction(['type' => ExportCSVAction::class]);
+        }
 
         if (Freeform::getInstance()->isPro()) {
             $actions[] = \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]);

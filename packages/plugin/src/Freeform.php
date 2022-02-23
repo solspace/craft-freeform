@@ -212,6 +212,7 @@ class Freeform extends Plugin
     const PERMISSION_ERROR_LOG_ACCESS = 'freeform-errorLogAccess';
     const PERMISSION_ERROR_LOG_MANAGE = 'freeform-errorLogManage';
     const PERMISSION_RESOURCES = 'freeform-resources';
+    const PERMISSION_ACCESS_QUICK_EXPORT = 'freeform-access-quick-export';
     const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
     const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
 
@@ -800,6 +801,7 @@ class Freeform extends Plugin
                                 ],
                             ],
                         ],
+                        self::PERMISSION_ACCESS_QUICK_EXPORT => ['label' => self::t('Access Quick Exporting')],
                         self::PERMISSION_EXPORT_PROFILES_ACCESS => [
                             'label' => self::t('Access Export Profiles'),
                             'nested' => [

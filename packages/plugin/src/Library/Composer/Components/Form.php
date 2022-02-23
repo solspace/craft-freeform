@@ -102,6 +102,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     const PROPERTY_SPAM_REASONS = 'spamReasons';
 
     const SUCCESS_BEHAVIOUR_NO_EFFECT = 'no-effect';
+    const SUCCESS_BEHAVIOUR_RELOAD = 'reload';
     const SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL = 'redirect-return-url';
     const SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
 

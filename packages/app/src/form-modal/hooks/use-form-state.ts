@@ -11,6 +11,7 @@ export enum SuccessBehaviour {
   ReturnURL = 'redirect-return-url',
   Template = 'load-success-template',
   Nothing = 'no-effect',
+  Reload = 'reload',
 }
 
 type FormData = {

@@ -208,7 +208,7 @@ export default class Form extends BasePropertyEditor {
           onChangeHandler={this.updateMetadata}
           options={[
             { key: SUCCESS_BEHAVIOUR_NO_EFFECT, value: 'No Effect' },
-            { key: SUCCESS_BEHAVIOUR_RELOAD, value: 'Redirect Form with Success Message' },
+            { key: SUCCESS_BEHAVIOUR_RELOAD, value: 'Reload Form with Success Message' },
             { key: SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, value: 'Load Success Template' },
             { key: SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, value: 'Use Return URL' },
           ]}

@@ -27,12 +27,12 @@
   {
     "urlParts": ["bootstrap\\/",["slug","[^\\\\\\/]+"]],
     "urlPattern": "bootstrap/{slug}",
-    "template": "/bootstrap/view"
+    "template": "/bootstrap/form"
   },
   {
     "urlParts": ["bootstrap\\/",["slug","[^\\\\\\/]+"], "\\/success"],
     "urlPattern": "bootstrap/{slug}/success",
-    "template": "/bootstrap/view"
+    "template": "/bootstrap/form"
   },
   {
     "urlParts": ["custom\\/",["slug","[^\\\\\\/]+"]],

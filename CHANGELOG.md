@@ -1,5 +1,22 @@
 # Solspace Freeform Changelog
 
+## 3.13.0 - 2022-02-XX
+
+### Added
+- Added "New Form" wizard that shows the key settings to ease users into creating new forms.
+- Added "Success Behavior" feature inside form builder, now capable of allowing you to explicitly specify whether the form should reload the form and display a success message, load a success template, or redirect to a URL. To preserve legacy and avoid breaking existing installs, the default for all existing forms will be "No effect", meaning it continues to behave like Freeform 3.12 and older. We would encourage you to eventually review each form and update to the explicit behavior you actually want for each form (and keep in mind that these can also be overwritten at template level still).
+- Added "Success Templates" feature, which allows you to create a message or content of your choosing to take place of the form contents upon successful submit of the form.
+- Added the ability to stop new form submissions from happening after a specified date.
+- Added the ability to allow only logged in users to submit forms.
+- Added the ability to limit forms being submitted more than once by logged in users in the "Limit Form Submission Rate" setting.
+- Added user/author data to Freeform submission views and front end templating.
+- Added storing of user IDs for any submission made while the user is logged in. Authors can also be assigned to or removed from submissions inside the control panel.
+- Added a setting to allow logged in users to bypass all spam protection measures.
+- Added bulk spam approval from the Spam Folder index page.
+- Added support for additional form types (available as separate add-on plugins).
+- Added user/group permission for showing/hiding Quick Export and the "Export as CSV" option in the CP Submissions index page.
+- Added field `options` alias for Rating and Opinion Scale field types.
+
 ## 3.12.13 - 2022-02-01
 
 ### Added

@@ -94,13 +94,24 @@ class SubmissionsController extends BaseController
             $formId = $submissions[0]['formId'];
             $form = $this->getFormsService()->getFormById($formId);
 
-            if (!PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE)) {
-                PermissionHelper::requirePermission(
-                    PermissionHelper::prepareNestedPermission(
-                        Freeform::PERMISSION_SUBMISSIONS_MANAGE,
-                        $formId
-                    )
-                );
+            $canManage = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_MANAGE);
+            $canManageSpecific = PermissionHelper::checkPermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_MANAGE,
+                    $formId
+                )
+            );
+
+            $canRead = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_READ);
+            $canReadSpecific = PermissionHelper::checkPermission(
+                PermissionHelper::prepareNestedPermission(
+                    Freeform::PERMISSION_SUBMISSIONS_READ,
+                    $formId
+                )
+            );
+
+            if (!$canRead && !$canReadSpecific && !$canManage && !$canManageSpecific) {
+                throw new ForbiddenHttpException('User is not permitted to perform this action');
             }
 
             if (!$form) {

@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.13.0 - 2022-02-XX
+## 3.13.0 - 2022-02-25
 
 ### Added
 - Added "New Form" wizard that shows the key settings to ease users into creating new forms.

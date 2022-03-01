@@ -13,11 +13,12 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Fields\TextField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
 
-class PasswordField extends TextField implements NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
+class PasswordField extends TextField implements DefaultFieldInterface, NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
 {
     /**
      * Return the field TYPE.

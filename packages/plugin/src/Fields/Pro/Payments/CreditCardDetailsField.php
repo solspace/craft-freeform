@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Pro\Payments;
 
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
@@ -10,7 +11,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 
-class CreditCardDetailsField extends AbstractField implements SingleValueInterface, PaymentInterface, ExtraFieldInterface
+class CreditCardDetailsField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, PaymentInterface, ExtraFieldInterface
 {
     use SingleValueTrait;
 

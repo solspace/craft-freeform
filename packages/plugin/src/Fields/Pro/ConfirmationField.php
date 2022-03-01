@@ -4,12 +4,13 @@ namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Fields\TextField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
-class ConfirmationField extends TextField implements NoStorageInterface, RememberPostedValueInterface, ExtraFieldInterface
+class ConfirmationField extends TextField implements DefaultFieldInterface, NoStorageInterface, RememberPostedValueInterface, ExtraFieldInterface
 {
     /** @var int */
     protected $targetFieldHash;

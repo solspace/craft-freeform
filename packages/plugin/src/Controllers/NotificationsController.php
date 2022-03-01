@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Controllers;
 
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Settings;
@@ -226,6 +227,59 @@ class NotificationsController extends BaseController
         $this->getNotificationService()->deleteById($id);
 
         return $this->asJson(['success' => true]);
+    }
+
+    public function actionSendNotificationDialogue(): Response
+    {
+        $templates = ['' => '---'];
+        foreach ($this->getNotificationService()->getAllNotifications(true) as $id => $notification) {
+            $templates[$id] = $notification->name;
+        }
+
+        return $this->renderTemplate(
+            'freeform/_components/modals/send_additional_notification',
+            ['templates' => $templates]
+        );
+    }
+
+    public function actionSendNotification(): Response
+    {
+        $template = $this->request->post('template');
+        if (!$template) {
+            $this->response->statusCode = 400;
+
+            return $this->asJson('Please select a template');
+        }
+
+        $emails = $this->request->post('emails');
+        $emails = StringHelper::extractSeparatedValues($emails);
+        if (empty($emails)) {
+            $this->response->statusCode = 400;
+
+            return $this->asJson('No emails specified');
+        }
+
+        $submissionIds = $this->request->post('submissionIds', []);
+        if (empty($submissionIds)) {
+            return $this->asJson(true);
+        }
+
+        foreach ($submissionIds as $submissionId) {
+            $submission = $this->getSubmissionsService()->getSubmissionById($submissionId);
+            if (!$submission) {
+                continue;
+            }
+
+            $this->getMailerService()->sendEmail(
+                $submission->getForm(),
+                $emails,
+                $template,
+                $submission->getForm()->getLayout()->getFields(),
+                $submission
+            );
+        }
+
+        return $this->asJson(true);
     }
 
     /**

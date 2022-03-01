@@ -1,0 +1,44 @@
+{% import "_includes/forms" as formFields %}
+
+<style>
+    #send-additional-notification-modal .body{
+        overflow-y: auto;
+        height: 260px;
+        width: 350px;
+    }
+</style>
+
+<form id="send-additional-notification-modal">
+    {{ csrfInput() }}
+
+    <div class="header">
+        <h1>{{ "Send Additional Notification"|t }}</h1>
+    </div>
+    <div class="body">
+
+        {{ formFields.selectField({
+            label: "Notification Template"|t,
+            name: "template",
+            options: templates,
+            value: "",
+            required: true,
+        }) }}
+
+        {{ formFields.textareaField({
+            label: "Email Address(es)"|t,
+            name: "emails",
+            value: "",
+            rows: 5,
+            required: true,
+        }) }}
+
+    </div>
+    <div class="footer">
+        <div class="buttons right last">
+            <input type="button" class="btn cancel" value="{{ "Cancel"|t }}"/>
+            <input type="submit" class="btn submit" value="{{ "Export"|t }}"/>
+
+            <div class="spinner" style="display: none;"></div>
+        </div>
+    </div>
+</form>

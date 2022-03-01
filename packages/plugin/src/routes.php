@@ -48,6 +48,8 @@ return [
     'freeform/notifications/save' => 'freeform/notifications/save',
     'freeform/notifications/delete' => 'freeform/notifications/delete',
     'freeform/notifications/duplicate' => 'freeform/notifications/duplicate',
+    'freeform/notifications/send-notification-dialogue' => 'freeform/notifications/send-notification-dialogue',
+    'freeform/notifications/send-notification' => 'freeform/notifications/send-notification',
     'freeform/notifications/<id:\d+>' => 'freeform/notifications/edit',
     'freeform/notifications/<id:[^\/]+>' => 'freeform/notifications/edit',
     // Submissions

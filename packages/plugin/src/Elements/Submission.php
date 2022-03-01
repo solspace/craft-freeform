@@ -18,6 +18,7 @@ use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
 use Solspace\Freeform\Elements\Actions\Pro\ResendNotificationsAction;
+use Solspace\Freeform\Elements\Actions\SendNotificationAction;
 use Solspace\Freeform\Elements\Actions\SetSubmissionStatusAction;
 use Solspace\Freeform\Elements\Db\SubmissionQuery;
 use Solspace\Freeform\Fields\CheckboxField;
@@ -708,6 +709,8 @@ class Submission extends Element
         if (Freeform::getInstance()->isPro()) {
             $actions[] = \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]);
         }
+
+        $actions[] = \Craft::$app->elements->createAction(['type' => SendNotificationAction::class]);
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $actions[] = \Craft::$app->elements->createAction([

@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.13.1 - 2022-03-01
+
+### Fixed
+- Fixed a bug where some special field types were not displaying in forms.
+- Fixed a bug where the demo templates submission edit link was not working correctly.
+
 ## 3.13.0 - 2022-02-25
 
 ### Added

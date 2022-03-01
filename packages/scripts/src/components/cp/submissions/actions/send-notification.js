@@ -30,6 +30,7 @@ window.freeform_notify = (ids) => {
           template: form.template.value,
           emails: form.emails.value,
           submissionIds: ids,
+          [Craft.csrfTokenName]: Craft.csrfTokenValue,
         };
 
         $.ajax({

@@ -270,11 +270,24 @@ class NotificationsController extends BaseController
                 continue;
             }
 
+            $form = $submission->getForm();
+            $fields = $form->getLayout()->getFields();
+            foreach ($fields as $field) {
+                $handle = $field->getHandle();
+                if (!$handle) {
+                    continue;
+                }
+
+                if (isset($submission[$handle])) {
+                    $field->setValue($submission[$handle]->getValue());
+                }
+            }
+
             $this->getMailerService()->sendEmail(
-                $submission->getForm(),
+                $form,
                 $emails,
                 $template,
-                $submission->getForm()->getLayout()->getFields(),
+                $fields,
                 $submission
             );
         }

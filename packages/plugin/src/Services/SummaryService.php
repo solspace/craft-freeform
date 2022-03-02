@@ -185,6 +185,7 @@ class SummaryService extends Component
         $forms->conditionalRules->pages = $composer->conditionalRulesPages;
         $forms->elementConnections->entries = $composer->elementConnectionsEntries;
         $forms->elementConnections->users = $composer->elementConnectionsUsers;
+        $forms->types = $composer->types;
 
         $summary->statistics->forms = $forms;
 
@@ -284,9 +285,13 @@ class SummaryService extends Component
         $elementConnectionsEntries = false;
         $elementConnectionsUsers = false;
         $gtmEnabled = false;
+        $types = [];
 
         foreach ($forms as $formModel) {
             $form = $formModel->getForm();
+            if (!\in_array($formModel->type, $types, true)) {
+                $types[] = $formModel->type;
+            }
 
             if (\count($form->getPages()) > 1) {
                 $multiPage = true;
@@ -407,6 +412,7 @@ class SummaryService extends Component
             'elementConnectionsEntries' => $elementConnectionsEntries,
             'elementConnectionsUsers' => $elementConnectionsUsers,
             'gtmEnabled' => $gtmEnabled,
+            'types' => $types,
         ];
     }
 

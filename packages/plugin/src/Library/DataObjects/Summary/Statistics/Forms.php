@@ -43,6 +43,9 @@ class Forms
     /** @var ElementConnections */
     public $elementConnections;
 
+    /** @var string[] */
+    public $types = [];
+
     public function __construct()
     {
         $this->conditionalRules = new ConditionalRules();

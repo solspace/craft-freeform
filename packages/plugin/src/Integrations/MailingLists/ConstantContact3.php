@@ -358,7 +358,7 @@ class ConstantContact3 extends MailingListOAuthConnector
      */
     protected function getAuthorizeUrl(): string
     {
-        return 'https://api.cc.email/v3/idfed';
+        return 'https://authz.constantcontact.com/oauth2/default/v1/authorize';
     }
 
     /**
@@ -366,7 +366,7 @@ class ConstantContact3 extends MailingListOAuthConnector
      */
     protected function getAccessTokenUrl(): string
     {
-        return 'https://idfed.constantcontact.com/as/token.oauth2';
+        return 'https://authz.constantcontact.com/oauth2/default/v1/token';
     }
 
     /**

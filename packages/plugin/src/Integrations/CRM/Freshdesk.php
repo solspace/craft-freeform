@@ -160,7 +160,7 @@ class Freshdesk extends AbstractCRMIntegration
                     $multipartValues[] = [
                         'name' => $key,
                         'contents' => $value,
-                        'headers' => ['Content-Type', 'text'],
+                        'headers' => ['Content-Type' => 'text'],
                     ];
                 }
                 $values = $multipartValues;

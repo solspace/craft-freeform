@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.13.3 - 2022-03-03
+
+### Changed
+- Updated the "New Form" wizard to auto-focus the Form Name field.
+
+### Fixed
+- Fixed a bug where the reCAPTCHA v2 Checkbox field was not displaying in forms.
+
 ## 3.13.2 - 2022-03-02
 
 ### Added

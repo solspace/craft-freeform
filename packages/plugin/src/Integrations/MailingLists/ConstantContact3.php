@@ -83,21 +83,29 @@ class ConstantContact3 extends MailingListOAuthConnector
      */
     public function checkConnection(bool $refreshTokenIfExpired = true): bool
     {
-        $client = $this->generateAuthorizedClient($refreshTokenIfExpired);
-        $endpoint = $this->getEndpoint('/contact_lists');
+        // Having no Access Token is very likely because this is
+        // an attempted connection right after a first save. The response
+        // will definitely be an error so skip the connection in this
+        // first-time connect situation.
+        if ($this->getAccessToken()) {
+            $client = $this->generateAuthorizedClient($refreshTokenIfExpired);
+            $endpoint = $this->getEndpoint('/contact_lists');
 
-        try {
-            $response = $client->get($endpoint);
-            $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+            try {
+                $response = $client->get($endpoint);
+                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
 
-            return isset($json->lists);
-        } catch (RequestException $exception) {
-            throw new IntegrationException(
-                $exception->getMessage(),
-                $exception->getCode(),
-                $exception->getPrevious()
-            );
+                return isset($json->lists);
+            } catch (RequestException $exception) {
+                throw new IntegrationException(
+                    $exception->getMessage(),
+                    $exception->getCode(),
+                    $exception->getPrevious()
+                );
+            }
         }
+
+        return false;
     }
 
     /**

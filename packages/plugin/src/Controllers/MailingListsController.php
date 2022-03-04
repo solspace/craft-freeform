@@ -226,9 +226,11 @@ class MailingListsController extends BaseController
         $integration = $this->getMailingListsService()->getIntegrationObjectById($id);
 
         try {
-            $integration->checkConnection();
+            if ($integration->checkConnection()) {
+                return $this->asJson(['success' => true]);
+            }
 
-            return $this->asJson(['success' => true]);
+            return $this->asJson(['success' => false]);
         } catch (IntegrationException $exception) {
             return $this->asJson(['success' => false, 'errors' => $exception->getMessage()]);
         }

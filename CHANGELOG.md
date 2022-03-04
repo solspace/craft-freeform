@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.4 - 2022-03-04
+
+### Changed
+- Updated the Constant Contact email marketing integration to work with the latest API changes. This is an important update for anyone using Constant Contact with their forms.
+
 ## 3.13.3 - 2022-03-03
 
 ### Changed

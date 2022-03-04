@@ -40,10 +40,11 @@ window.freeform_notify = (ids) => {
           success: () => {
             content.remove();
             $('.modal-shade').remove();
+
+            Craft.cp.displayNotice(Craft.t('freeform', 'Sent successfully'));
           },
           error: (error) => {
-            console.log(error);
-            alert(error.responseText);
+            Craft.cp.displayError(error.responseText);
           },
         });
 

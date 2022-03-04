@@ -17,7 +17,7 @@ export const replace = (string: string, params: Params = {}): string => {
 
 export const translate = (string: string, params: Params = {}): string => {
   if (typeof Craft !== 'undefined') {
-    return Craft.t('integrator', string, params);
+    return Craft.t('freeform', string, params);
   }
 
   return replace(string, params);

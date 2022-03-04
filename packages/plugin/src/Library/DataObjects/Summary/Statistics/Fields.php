@@ -83,5 +83,8 @@ class Fields
     public $password = false;
 
     /** @var bool */
+    public $saveAndContinue = false;
+
+    /** @var bool */
     public $usingSource = false;
 }

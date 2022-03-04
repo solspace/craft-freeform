@@ -167,6 +167,7 @@ class SummaryService extends Component
         $fields->richText = $this->usesField('rich_text', $fieldTypes);
         $fields->confirm = $this->usesField('confirmation', $fieldTypes);
         $fields->password = $this->usesField('password', $fieldTypes);
+        $fields->saveAndContinue = $this->usesField('save', $fieldTypes);
         $fields->usingSource = $composer->usingSource;
 
         $summary->statistics->fields = $fields;

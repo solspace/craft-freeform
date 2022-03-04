@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 3.13.3 - 2022-03-03
+
+### Changed
+- Updated the "New Form" wizard to auto-focus the Form Name field.
+
+### Fixed
+- Fixed a bug where the reCAPTCHA v2 Checkbox field was not displaying in forms.
+
+## 3.13.2 - 2022-03-02
+
+### Added
+- Added "Send Additional Notification" feature, allowing you to send email notifications of submissions to other email addresses at any point.
+
 ## 3.13.1 - 2022-03-01
 
 ### Fixed

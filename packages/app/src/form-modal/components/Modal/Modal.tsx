@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
 import { SuccessBehaviour, useFormState } from '@ff-app/form-modal/hooks/use-form-state';
@@ -26,6 +26,12 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
   const [isShown, setIsShown] = useState(false);
   const { form, errors, update, saveHandler, isSaving } = useFormState(defaultStatusId, defaultTemplate);
 
+  const formNameRef = useRef<HTMLInputElement>();
+
+  useEffect(() => {
+    formNameRef.current.focus();
+  }, []);
+
   useEffect(() => {
     setIsShown(true);
 
@@ -50,7 +56,15 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
             <Header>{translate('Create a New Form')}</Header>
             <Content>
               <Grid columns={2}>
-                <Text name="name" label="Name" required value={form.name} onChange={update} errors={errors.name} />
+                <Text
+                  ref={formNameRef}
+                  name="name"
+                  label="Name"
+                  required
+                  value={form.name}
+                  onChange={update}
+                  errors={errors.name}
+                />
                 <Text
                   name="handle"
                   label="Handle"

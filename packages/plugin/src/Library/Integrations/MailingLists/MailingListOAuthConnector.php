@@ -57,22 +57,6 @@ abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
     }
 
     /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-        $data = [
-            'response_type' => 'code',
-            'client_id' => $this->getClientId(),
-            'redirect_uri' => $this->getReturnUri(),
-        ];
-
-        header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($data));
-
-        exit();
-    }
-
-    /**
      * @throws IntegrationException
      */
     public function fetchAccessToken(): string

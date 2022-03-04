@@ -33,6 +33,10 @@ class ConstantContact extends MailingListOAuthConnector
         return 'Constant Contact (legacy)';
     }
 
+    public function initiateAuthentication()
+    {
+    }
+
     /**
      * Check if it's possible to connect to the API.
      *

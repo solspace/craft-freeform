@@ -83,29 +83,21 @@ class ConstantContact3 extends MailingListOAuthConnector
      */
     public function checkConnection(bool $refreshTokenIfExpired = true): bool
     {
-        // Having no Access Token is very likely because this is
-        // an attempted connection right after a first save. The response
-        // will definitely be an error so skip the connection in this
-        // first-time connect situation.
-        if ($this->getAccessToken()) {
-            $client = $this->generateAuthorizedClient($refreshTokenIfExpired);
-            $endpoint = $this->getEndpoint('/contact_lists');
+        $client = $this->generateAuthorizedClient($refreshTokenIfExpired);
+        $endpoint = $this->getEndpoint('/contact_lists');
 
-            try {
-                $response = $client->get($endpoint);
-                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+        try {
+            $response = $client->get($endpoint);
+            $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
 
-                return isset($json->lists);
-            } catch (RequestException $exception) {
-                throw new IntegrationException(
-                    $exception->getMessage(),
-                    $exception->getCode(),
-                    $exception->getPrevious()
-                );
-            }
+            return isset($json->lists);
+        } catch (RequestException $exception) {
+            throw new IntegrationException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception->getPrevious()
+            );
         }
-
-        return false;
     }
 
     /**
@@ -186,7 +178,8 @@ class ConstantContact3 extends MailingListOAuthConnector
             'response_type' => 'code',
             'client_id' => $apiKey,
             'redirect_uri' => $this->getReturnUri(),
-            'scope' => 'contact_data',
+            'scope' => 'contact_data offline_access',
+            'state' => session_id(),
         ];
 
         header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($payload));

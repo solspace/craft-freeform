@@ -38,11 +38,11 @@ use yii\base\Event;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
 {
-    const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
-    const EVENT_AFTER_SUBMIT = 'afterSubmit';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE = 'afterDelete';
-    const EVENT_POST_PROCESS = 'postProcess';
+    public const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
+    public const EVENT_AFTER_SUBMIT = 'afterSubmit';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_POST_PROCESS = 'postProcess';
 
     /** @var Submission[] */
     private static $submissionCache = [];

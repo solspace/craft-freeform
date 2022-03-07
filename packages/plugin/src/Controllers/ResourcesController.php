@@ -9,7 +9,7 @@ use yii\web\Response;
 
 class ResourcesController extends BaseController
 {
-    protected $allowAnonymous = ['plugin-js', 'plugin-css'];
+    protected array|bool|int $allowAnonymous = ['plugin-js', 'plugin-css'];
 
     public function actionIndex(): Response
     {

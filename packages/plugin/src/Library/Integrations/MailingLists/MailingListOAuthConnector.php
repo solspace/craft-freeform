@@ -19,9 +19,9 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
 {
-    const SETTING_CLIENT_ID = 'client_id';
-    const SETTING_CLIENT_SECRET = 'client_secret';
-    const SETTING_RETURN_URI = 'return_uri';
+    public const SETTING_CLIENT_ID = 'client_id';
+    public const SETTING_CLIENT_SECRET = 'client_secret';
+    public const SETTING_RETURN_URI = 'return_uri';
 
     /**
      * Returns a list of additional settings for this integration

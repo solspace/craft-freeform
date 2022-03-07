@@ -108,19 +108,19 @@ class ExportXmlTest extends TestCase
         ]);
 
         $expected = <<<'EXPECTED'
-<?xml version="1.0"?>
-<root>
-  <submission>
-    <id label="ID">1</id>
-    <dateCreated label="Date Created">2019-01-01 08:00:00</dateCreated>
-  </submission>
-  <submission>
-    <id label="ID">2</id>
-    <dateCreated label="Date Created">2019-01-01 09:20:00</dateCreated>
-  </submission>
-</root>
+            <?xml version="1.0"?>
+            <root>
+              <submission>
+                <id label="ID">1</id>
+                <dateCreated label="Date Created">2019-01-01 08:00:00</dateCreated>
+              </submission>
+              <submission>
+                <id label="ID">2</id>
+                <dateCreated label="Date Created">2019-01-01 09:20:00</dateCreated>
+              </submission>
+            </root>
 
-EXPECTED;
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }
@@ -156,96 +156,96 @@ EXPECTED;
         ]);
 
         $expected = <<<'EXPECTED'
-<?xml version="1.0"?>
-<root>
-  <submission>
-    <id label="ID">1</id>
-    <table1 label="">
-      <row>
-        <column label="T1C1">one</column>
-        <column label="T1C2">two</column>
-        <column label="T1C3">three</column>
-      </row>
-      <row>
-        <column label="T1C1">four</column>
-        <column label="T1C2">five</column>
-        <column label="T1C3"/>
-      </row>
-      <row>
-        <column label="T1C1"/>
-        <column label="T1C2">six</column>
-        <column label="T1C3"/>
-      </row>
-    </table1>
-    <firstName label="First Name">Some Name</firstName>
-    <table2 label="">
-      <row>
-        <column label="T2C1">r1c1</column>
-        <column label="T2C2">r1c2</column>
-        <column label="T2C3">r1c3</column>
-        <column label="T2C4">r1c4</column>
-        <column label="T2C5">r1c5</column>
-      </row>
-      <row>
-        <column label="T2C1">r2c1</column>
-        <column label="T2C2">r2c2</column>
-        <column label="T2C3">r2c3</column>
-        <column label="T2C4">r2c4</column>
-        <column label="T2C5">r2c5</column>
-      </row>
-    </table2>
-  </submission>
-  <submission>
-    <id label="ID">2</id>
-    <table1 label="">
-      <row>
-        <column label="T1C1">some</column>
-        <column label="T1C2">value</column>
-        <column label="T1C3"/>
-      </row>
-    </table1>
-    <firstName label="First Name">Other Name</firstName>
-    <table2 label="">
-      <row>
-        <column label="T2C1">r1c1</column>
-        <column label="T2C2">r1c2</column>
-        <column label="T2C3">r1c3</column>
-        <column label="T2C4">r1c4</column>
-        <column label="T2C5">r1c5</column>
-      </row>
-      <row>
-        <column label="T2C1">r2c1</column>
-        <column label="T2C2">r2c2</column>
-        <column label="T2C3">r2c3</column>
-        <column label="T2C4">r2c4</column>
-        <column label="T2C5">r2c5</column>
-      </row>
-      <row>
-        <column label="T2C1">r3c1</column>
-        <column label="T2C2">r3c2</column>
-        <column label="T2C3">r3c3</column>
-        <column label="T2C4">r3c4</column>
-        <column label="T2C5">r3c5</column>
-      </row>
-      <row>
-        <column label="T2C1">r4c1</column>
-        <column label="T2C2">r4c2</column>
-        <column label="T2C3">r4c3</column>
-        <column label="T2C4">r4c4</column>
-        <column label="T2C5">r4c5</column>
-      </row>
-      <row>
-        <column label="T2C1">r5c1</column>
-        <column label="T2C2">r5c2</column>
-        <column label="T2C3">r5c3</column>
-        <column label="T2C4">r5c4</column>
-        <column label="T2C5">r5c5</column>
-      </row>
-    </table2>
-  </submission>
-</root>
+            <?xml version="1.0"?>
+            <root>
+              <submission>
+                <id label="ID">1</id>
+                <table1 label="">
+                  <row>
+                    <column label="T1C1">one</column>
+                    <column label="T1C2">two</column>
+                    <column label="T1C3">three</column>
+                  </row>
+                  <row>
+                    <column label="T1C1">four</column>
+                    <column label="T1C2">five</column>
+                    <column label="T1C3"/>
+                  </row>
+                  <row>
+                    <column label="T1C1"/>
+                    <column label="T1C2">six</column>
+                    <column label="T1C3"/>
+                  </row>
+                </table1>
+                <firstName label="First Name">Some Name</firstName>
+                <table2 label="">
+                  <row>
+                    <column label="T2C1">r1c1</column>
+                    <column label="T2C2">r1c2</column>
+                    <column label="T2C3">r1c3</column>
+                    <column label="T2C4">r1c4</column>
+                    <column label="T2C5">r1c5</column>
+                  </row>
+                  <row>
+                    <column label="T2C1">r2c1</column>
+                    <column label="T2C2">r2c2</column>
+                    <column label="T2C3">r2c3</column>
+                    <column label="T2C4">r2c4</column>
+                    <column label="T2C5">r2c5</column>
+                  </row>
+                </table2>
+              </submission>
+              <submission>
+                <id label="ID">2</id>
+                <table1 label="">
+                  <row>
+                    <column label="T1C1">some</column>
+                    <column label="T1C2">value</column>
+                    <column label="T1C3"/>
+                  </row>
+                </table1>
+                <firstName label="First Name">Other Name</firstName>
+                <table2 label="">
+                  <row>
+                    <column label="T2C1">r1c1</column>
+                    <column label="T2C2">r1c2</column>
+                    <column label="T2C3">r1c3</column>
+                    <column label="T2C4">r1c4</column>
+                    <column label="T2C5">r1c5</column>
+                  </row>
+                  <row>
+                    <column label="T2C1">r2c1</column>
+                    <column label="T2C2">r2c2</column>
+                    <column label="T2C3">r2c3</column>
+                    <column label="T2C4">r2c4</column>
+                    <column label="T2C5">r2c5</column>
+                  </row>
+                  <row>
+                    <column label="T2C1">r3c1</column>
+                    <column label="T2C2">r3c2</column>
+                    <column label="T2C3">r3c3</column>
+                    <column label="T2C4">r3c4</column>
+                    <column label="T2C5">r3c5</column>
+                  </row>
+                  <row>
+                    <column label="T2C1">r4c1</column>
+                    <column label="T2C2">r4c2</column>
+                    <column label="T2C3">r4c3</column>
+                    <column label="T2C4">r4c4</column>
+                    <column label="T2C5">r4c5</column>
+                  </row>
+                  <row>
+                    <column label="T2C1">r5c1</column>
+                    <column label="T2C2">r5c2</column>
+                    <column label="T2C3">r5c3</column>
+                    <column label="T2C4">r5c4</column>
+                    <column label="T2C5">r5c5</column>
+                  </row>
+                </table2>
+              </submission>
+            </root>
 
-EXPECTED;
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }

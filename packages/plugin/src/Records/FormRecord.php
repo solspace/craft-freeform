@@ -42,8 +42,8 @@ use Solspace\Freeform\Freeform;
  */
 class FormRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_forms}}';
-    const TABLE_STD = 'freeform_forms';
+    public const TABLE = '{{%freeform_forms}}';
+    public const TABLE_STD = 'freeform_forms';
 
     public static function tableName(): string
     {

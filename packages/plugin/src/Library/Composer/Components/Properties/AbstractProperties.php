@@ -17,13 +17,13 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractProperties
 {
-    const TYPE_STRING = 'string';
-    const TYPE_BOOLEAN = 'boolean';
-    const TYPE_INTEGER = 'integer';
-    const TYPE_ARRAY = 'array';
-    const TYPE_OBJECT = 'object';
-    const TYPE_FLOAT = 'float';
-    const TYPE_DOUBLE = 'double';
+    public const TYPE_STRING = 'string';
+    public const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_INTEGER = 'integer';
+    public const TYPE_ARRAY = 'array';
+    public const TYPE_OBJECT = 'object';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_DOUBLE = 'double';
 
     /** @var string */
     protected $type;

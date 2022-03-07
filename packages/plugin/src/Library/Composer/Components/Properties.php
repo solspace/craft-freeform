@@ -27,14 +27,14 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 class Properties implements \JsonSerializable
 {
-    const PAGE_PREFIX = 'page';
-    const FORM_HASH = 'form';
-    const VALIDATION_HASH = 'validation';
-    const INTEGRATION_HASH = 'integration';
-    const CONNECTIONS_HASH = 'connections';
-    const RULES_HASH = 'rules';
-    const ADMIN_NOTIFICATIONS_HASH = 'admin_notifications';
-    const PAYMENT_HASH = 'payment';
+    public const PAGE_PREFIX = 'page';
+    public const FORM_HASH = 'form';
+    public const VALIDATION_HASH = 'validation';
+    public const INTEGRATION_HASH = 'integration';
+    public const CONNECTIONS_HASH = 'connections';
+    public const RULES_HASH = 'rules';
+    public const ADMIN_NOTIFICATIONS_HASH = 'admin_notifications';
+    public const PAYMENT_HASH = 'payment';
 
     /** @var array */
     private $propertyList;

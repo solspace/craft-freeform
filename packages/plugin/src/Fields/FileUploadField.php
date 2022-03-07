@@ -28,10 +28,10 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     use FileUploadTrait;
     use MultipleValueTrait;
 
-    const DEFAULT_MAX_FILESIZE_KB = 2048;
-    const DEFAULT_FILE_COUNT = 1;
+    public const DEFAULT_MAX_FILESIZE_KB = 2048;
+    public const DEFAULT_FILE_COUNT = 1;
 
-    const FILE_KEYS = [
+    public const FILE_KEYS = [
         'name',
         'tmp_name',
         'error',

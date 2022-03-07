@@ -15,14 +15,14 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
 {
     use SingleValueTrait;
 
-    const LAYOUT_2_ROWS = 'two_rows';
-    const LAYOUT_3_ROWS = 'three_rows';
+    public const LAYOUT_2_ROWS = 'two_rows';
+    public const LAYOUT_3_ROWS = 'three_rows';
 
-    const FIELD_CARD_NUMBER = 'card_number';
-    const FIELD_CARD_EXPIRY = 'card_expiry';
-    const FIELD_CARD_CVC = 'card_cvc';
+    public const FIELD_CARD_NUMBER = 'card_number';
+    public const FIELD_CARD_EXPIRY = 'card_expiry';
+    public const FIELD_CARD_CVC = 'card_cvc';
 
-    const LAYOUTS = [
+    public const LAYOUTS = [
         self::LAYOUT_2_ROWS => [
             [self::FIELD_CARD_NUMBER],
             [self::FIELD_CARD_EXPIRY, self::FIELD_CARD_CVC],

@@ -25,7 +25,7 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractMailingListIntegration extends AbstractIntegration implements MailingListIntegrationInterface, IntegrationInterface, \JsonSerializable
 {
-    const TYPE = 'mailing_list';
+    public const TYPE = 'mailing_list';
 
     /** @var MailingListHandlerInterface */
     private $mailingListHandler;

@@ -20,15 +20,14 @@ use Solspace\Freeform\Library\Codepack\Exceptions\FileObject\FileObjectException
 use Solspace\Freeform\Library\Codepack\Exceptions\Manifest\ManifestNotPresentException;
 use Solspace\Freeform\Resources\Bundles\CodepackBundle;
 use yii\base\InvalidParamException;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class CodepackController extends BaseController
 {
-    const FLASH_VAR_KEY = 'codepack_prefix';
+    public const FLASH_VAR_KEY = 'codepack_prefix';
 
-    public function init()
+    public function init(): void
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -71,14 +70,6 @@ class CodepackController extends BaseController
         );
     }
 
-    /**
-     * Perform the install feats.
-     *
-     * @throws CodepackException
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
-     * @throws InvalidParamException
-     */
     public function actionInstall(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -108,13 +99,7 @@ class CodepackController extends BaseController
         return $this->redirectToPostedUrl();
     }
 
-    /**
-     * @throws InvalidParamException
-     * @throws CodepackException
-     *
-     * @return CodePack|Response
-     */
-    private function getCodepack()
+    private function getCodepack(): CodePack|Response
     {
         try {
             $codePack = new CodePack(__DIR__.'/../codepack');

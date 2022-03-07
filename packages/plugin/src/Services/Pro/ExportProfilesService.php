@@ -22,11 +22,11 @@ use yii\web\HttpException;
 
 class ExportProfilesService extends Component
 {
-    const EVENT_BEFORE_SAVE = 'beforeSave';
-    const EVENT_AFTER_SAVE = 'afterSave';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE = 'afterDelete';
-    const EVENT_REGISTER_EXPORTER = 'registerExporter';
+    public const EVENT_BEFORE_SAVE = 'beforeSave';
+    public const EVENT_AFTER_SAVE = 'afterSave';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_REGISTER_EXPORTER = 'registerExporter';
 
     /** @var ExportProfileModel[] */
     private static $profileCache;

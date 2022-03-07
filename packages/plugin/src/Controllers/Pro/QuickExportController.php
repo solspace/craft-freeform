@@ -13,18 +13,13 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
-use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\Pro\ExportSettingRecord;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class QuickExportController extends BaseController
 {
-    /**
-     * @throws ComposerException
-     */
     public function actionExportDialogue(): Response
     {
         $formId = \Craft::$app->request->getParam('formId');
@@ -185,11 +180,6 @@ class QuickExportController extends BaseController
         );
     }
 
-    /**
-     * @throws ComposerException
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     */
     public function actionIndex()
     {
         $this->requirePostRequest();

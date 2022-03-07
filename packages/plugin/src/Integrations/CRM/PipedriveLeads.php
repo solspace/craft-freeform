@@ -17,8 +17,8 @@ use Solspace\Freeform\Integrations\CRM\Pipedrive\AbstractPipedriveIntegration;
 
 class PipedriveLeads extends AbstractPipedriveIntegration
 {
-    const TITLE = 'Pipedrive Leads';
-    const LOG_CATEGORY = 'Pipedrive Leads';
+    public const TITLE = 'Pipedrive Leads';
+    public const LOG_CATEGORY = 'Pipedrive Leads';
 
     /**
      * Push objects to the CRM.

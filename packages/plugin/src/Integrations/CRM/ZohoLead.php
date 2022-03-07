@@ -18,8 +18,8 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 class ZohoLead extends AbstractZohoIntegration
 {
-    const TITLE = 'Zoho Lead';
-    const LOG_CATEGORY = 'Zoho';
+    public const TITLE = 'Zoho Lead';
+    public const LOG_CATEGORY = 'Zoho';
 
     public function getModule(): string
     {

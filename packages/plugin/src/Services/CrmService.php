@@ -302,7 +302,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
             }
         }
 
-        list($isValid, $objectValues) = $this->onBeforePush($integration, $objectValues);
+        [$isValid, $objectValues] = $this->onBeforePush($integration, $objectValues);
         if (!$isValid) {
             return false;
         }
@@ -374,7 +374,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
             );
         }
 
-        list($_, $object, $property) = $matches;
+        [$_, $object, $property] = $matches;
 
         switch ($object) {
             case 'payments':

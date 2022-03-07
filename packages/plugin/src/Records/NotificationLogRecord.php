@@ -23,10 +23,10 @@ use craft\db\ActiveRecord;
  */
 class NotificationLogRecord extends ActiveRecord
 {
-    const TYPE_DIGEST_DEV = 'digest';
-    const TYPE_DIGEST_CLIENT = 'digest-client';
+    public const TYPE_DIGEST_DEV = 'digest';
+    public const TYPE_DIGEST_CLIENT = 'digest-client';
 
-    const TABLE = '{{%freeform_notification_log}}';
+    public const TABLE = '{{%freeform_notification_log}}';
 
     public static function tableName(): string
     {

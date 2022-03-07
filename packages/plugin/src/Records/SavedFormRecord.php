@@ -13,7 +13,7 @@ use craft\db\ActiveRecord;
  */
 class SavedFormRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_saved_forms}}';
+    public const TABLE = '{{%freeform_saved_forms}}';
 
     public static function tableName(): string
     {

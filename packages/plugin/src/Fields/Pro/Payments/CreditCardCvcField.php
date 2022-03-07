@@ -7,7 +7,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldIn
 
 class CreditCardCvcField extends TextField implements ExtraFieldInterface
 {
-    const FIELD_NAME = 'CreditCardCvc';
+    public const FIELD_NAME = 'CreditCardCvc';
 
     public function getType(): string
     {

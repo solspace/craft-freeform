@@ -11,7 +11,7 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
 
 class BlacklistedKeywords extends AbstractCheck implements BundleInterface
 {
-    const SPAM_KEYWORD_TYPES = [
+    public const SPAM_KEYWORD_TYPES = [
         FieldInterface::TYPE_NUMBER,
         FieldInterface::TYPE_PHONE,
         FieldInterface::TYPE_REGEX,

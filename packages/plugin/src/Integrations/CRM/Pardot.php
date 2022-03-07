@@ -13,12 +13,12 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class Pardot extends AbstractCRMIntegration
 {
-    const TITLE = 'Pardot (legacy)';
-    const LOG_CATEGORY = 'Pardot';
+    public const TITLE = 'Pardot (legacy)';
+    public const LOG_CATEGORY = 'Pardot';
 
-    const SETTING_EMAIL = 'email';
-    const SETTING_PASSWORD = 'password';
-    const SETTING_USER_KEY = 'user_key';
+    public const SETTING_EMAIL = 'email';
+    public const SETTING_PASSWORD = 'password';
+    public const SETTING_USER_KEY = 'user_key';
 
     /**
      * Returns a list of additional settings for this integration

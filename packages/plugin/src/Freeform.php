@@ -169,57 +169,56 @@ use yii\web\ForbiddenHttpException;
  */
 class Freeform extends Plugin
 {
-    const TRANSLATION_CATEGORY = 'freeform';
+    public const TRANSLATION_CATEGORY = 'freeform';
 
-    const VIEW_DASHBOARD = 'dashboard';
-    const VIEW_FORMS = 'forms';
-    const VIEW_SUBMISSIONS = 'submissions';
-    const VIEW_FIELDS = 'fields';
-    const VIEW_NOTIFICATIONS = 'notifications';
-    const VIEW_SETTINGS = 'settings';
-    const VIEW_RESOURCES = 'resources';
-    const VIEW_EXPORT_PROFILES = 'export-profiles';
+    public const VIEW_DASHBOARD = 'dashboard';
+    public const VIEW_FORMS = 'forms';
+    public const VIEW_SUBMISSIONS = 'submissions';
+    public const VIEW_FIELDS = 'fields';
+    public const VIEW_NOTIFICATIONS = 'notifications';
+    public const VIEW_SETTINGS = 'settings';
+    public const VIEW_RESOURCES = 'resources';
+    public const VIEW_EXPORT_PROFILES = 'export-profiles';
 
-    const FIELD_DISPLAY_ORDER_TYPE = 'type';
-    const FIELD_DISPLAY_ORDER_NAME = 'name';
+    public const FIELD_DISPLAY_ORDER_TYPE = 'type';
+    public const FIELD_DISPLAY_ORDER_NAME = 'name';
 
-    const EDITION_LITE = 'lite';
-    const EDITION_PRO = 'pro';
+    public const EDITION_LITE = 'lite';
+    public const EDITION_PRO = 'pro';
 
-    const PERMISSIONS_HELP_LINK = 'https://docs.solspace.com/craft/freeform/v3/setup/demo-templates.html';
-    const PERMISSION_NAMESPACE = 'Freeform';
+    public const PERMISSIONS_HELP_LINK = 'https://docs.solspace.com/craft/freeform/v3/setup/demo-templates.html';
+    public const PERMISSION_NAMESPACE = 'Freeform';
 
-    const VERSION_CACHE_KEY = 'freeform_version';
-    const VERSION_CACHE_TIMESTAMP_KEY = 'freeform_version_timestamp';
-    const VERSION_CACHE_TTL = 86400; // 24-hours
+    public const VERSION_CACHE_KEY = 'freeform_version';
+    public const VERSION_CACHE_TIMESTAMP_KEY = 'freeform_version_timestamp';
+    public const VERSION_CACHE_TTL = 86400; // 24-hours
 
-    const PERMISSION_FORMS_ACCESS = 'freeform-formsAccess';
-    const PERMISSION_FORMS_CREATE = 'freeform-formsCreate';
-    const PERMISSION_FORMS_DELETE = 'freeform-formsDelete';
-    const PERMISSION_FORMS_MANAGE = 'freeform-formsManage';
-    const PERMISSION_FORMS_MANAGE_INDIVIDUAL = 'freeform-formsManageIndividual';
-    const PERMISSION_FIELDS_ACCESS = 'freeform-fieldsAccess';
-    const PERMISSION_FIELDS_MANAGE = 'freeform-fieldsManage';
-    const PERMISSION_SETTINGS_ACCESS = 'freeform-settingsAccess';
-    const PERMISSION_SUBMISSIONS_ACCESS = 'freeform-submissionsAccess';
-    const PERMISSION_SUBMISSIONS_READ = 'freeform-submissionsRead';
-    const PERMISSION_SUBMISSIONS_READ_INDIVIDUAL = 'freeform-submissionsReadIndividual';
-    const PERMISSION_SUBMISSIONS_MANAGE = 'freeform-submissionsManage';
-    const PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL = 'freeform-submissionsManageIndividual';
-    const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
-    const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
-    const PERMISSION_DASHBOARD_ACCESS = 'freeform-dashboardAccess';
-    const PERMISSION_ERROR_LOG_ACCESS = 'freeform-errorLogAccess';
-    const PERMISSION_ERROR_LOG_MANAGE = 'freeform-errorLogManage';
-    const PERMISSION_RESOURCES = 'freeform-resources';
-    const PERMISSION_ACCESS_QUICK_EXPORT = 'freeform-access-quick-export';
-    const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
-    const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
+    public const PERMISSION_FORMS_ACCESS = 'freeform-formsAccess';
+    public const PERMISSION_FORMS_CREATE = 'freeform-formsCreate';
+    public const PERMISSION_FORMS_DELETE = 'freeform-formsDelete';
+    public const PERMISSION_FORMS_MANAGE = 'freeform-formsManage';
+    public const PERMISSION_FORMS_MANAGE_INDIVIDUAL = 'freeform-formsManageIndividual';
+    public const PERMISSION_FIELDS_ACCESS = 'freeform-fieldsAccess';
+    public const PERMISSION_FIELDS_MANAGE = 'freeform-fieldsManage';
+    public const PERMISSION_SETTINGS_ACCESS = 'freeform-settingsAccess';
+    public const PERMISSION_SUBMISSIONS_ACCESS = 'freeform-submissionsAccess';
+    public const PERMISSION_SUBMISSIONS_READ = 'freeform-submissionsRead';
+    public const PERMISSION_SUBMISSIONS_READ_INDIVIDUAL = 'freeform-submissionsReadIndividual';
+    public const PERMISSION_SUBMISSIONS_MANAGE = 'freeform-submissionsManage';
+    public const PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL = 'freeform-submissionsManageIndividual';
+    public const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
+    public const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
+    public const PERMISSION_DASHBOARD_ACCESS = 'freeform-dashboardAccess';
+    public const PERMISSION_ERROR_LOG_ACCESS = 'freeform-errorLogAccess';
+    public const PERMISSION_ERROR_LOG_MANAGE = 'freeform-errorLogManage';
+    public const PERMISSION_RESOURCES = 'freeform-resources';
+    public const PERMISSION_ACCESS_QUICK_EXPORT = 'freeform-access-quick-export';
+    public const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
+    public const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
 
-    const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
+    public const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
-    /** @var bool */
-    public $hasCpSettings = true;
+    public bool $hasCpSettings = true;
 
     /**
      * @return Freeform|Plugin
@@ -308,10 +307,7 @@ class Freeform extends Plugin
         }
     }
 
-    /**
-     * @return null|array
-     */
-    public function getCpNavItem()
+    public function getCpNavItem(): ?array
     {
         $navItem = parent::getCpNavItem();
 
@@ -332,7 +328,7 @@ class Freeform extends Plugin
     /**
      * On install - insert default statuses.
      */
-    public function afterInstall()
+    public function afterInstall(): void
     {
         $fieldService = self::getInstance()->fields;
 

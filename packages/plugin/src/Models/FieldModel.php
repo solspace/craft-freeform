@@ -24,10 +24,10 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
 
 class FieldModel extends Model implements \JsonSerializable
 {
-    const SMALL_DATA_STORAGE_LENGTH = 100;
+    public const SMALL_DATA_STORAGE_LENGTH = 100;
 
-    const PROPERTY_TYPE_BOOL = 'bool';
-    const PROPERTY_TYPE_INT = 'int';
+    public const PROPERTY_TYPE_BOOL = 'bool';
+    public const PROPERTY_TYPE_INT = 'int';
 
     /** @var int */
     public $id;

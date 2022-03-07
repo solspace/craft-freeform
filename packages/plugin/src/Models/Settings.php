@@ -22,54 +22,54 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Settings extends Model
 {
-    const EMAIL_TEMPLATE_STORAGE_DB = 'db';
-    const EMAIL_TEMPLATE_STORAGE_FILE = 'template';
+    public const EMAIL_TEMPLATE_STORAGE_DB = 'db';
+    public const EMAIL_TEMPLATE_STORAGE_FILE = 'template';
 
-    const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
-    const PROTECTION_DISPLAY_ERRORS = 'display_errors';
-    const PROTECTION_RELOAD_FORM = 'reload_form';
+    public const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
+    public const PROTECTION_DISPLAY_ERRORS = 'display_errors';
+    public const PROTECTION_RELOAD_FORM = 'reload_form';
 
-    const DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE = 'Invalid Email Address';
-    const DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE = 'Invalid Entry Data';
+    public const DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE = 'Invalid Email Address';
+    public const DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE = 'Invalid Entry Data';
 
-    const THROTTLING_TIME_FRAME_MINUTES = 'm';
-    const THROTTLING_TIME_FRAME_SECONDS = 's';
+    public const THROTTLING_TIME_FRAME_MINUTES = 'm';
+    public const THROTTLING_TIME_FRAME_SECONDS = 's';
 
-    const RECAPTCHA_TYPE_V2_CHECKBOX = 'v2_checkbox';
-    const RECAPTCHA_TYPE_V2_INVISIBLE = 'v2_invisible';
-    const RECAPTCHA_TYPE_V3 = 'v3';
-    const RECAPTCHA_TYPE_H_CHECKBOX = 'h_checkbox';
-    const RECAPTCHA_TYPE_H_INVISIBLE = 'h_invisible';
+    public const RECAPTCHA_TYPE_V2_CHECKBOX = 'v2_checkbox';
+    public const RECAPTCHA_TYPE_V2_INVISIBLE = 'v2_invisible';
+    public const RECAPTCHA_TYPE_V3 = 'v3';
+    public const RECAPTCHA_TYPE_H_CHECKBOX = 'h_checkbox';
+    public const RECAPTCHA_TYPE_H_INVISIBLE = 'h_invisible';
 
-    const RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR = 'display_error';
-    const RECAPTCHA_BEHAVIOUR_SPAM = 'spam';
+    public const RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR = 'display_error';
+    public const RECAPTCHA_BEHAVIOUR_SPAM = 'spam';
 
-    const RECAPTCHA_THEME = 'light';
-    const RECAPTCHA_SIZE = 'normal';
-    const RECAPTCHA_ERROR_MESSAGE = 'Please verify that you are not a robot.';
+    public const RECAPTCHA_THEME = 'light';
+    public const RECAPTCHA_SIZE = 'normal';
+    public const RECAPTCHA_ERROR_MESSAGE = 'Please verify that you are not a robot.';
 
-    const SCRIPT_INSERT_LOCATION_FOOTER = 'footer';
-    const SCRIPT_INSERT_LOCATION_FORM = 'form';
-    const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
+    public const SCRIPT_INSERT_LOCATION_FOOTER = 'footer';
+    public const SCRIPT_INSERT_LOCATION_FORM = 'form';
+    public const SCRIPT_INSERT_LOCATION_MANUAL = 'manual';
 
-    const SCRIPT_INSERT_TYPE_FILES = 'files';
-    const SCRIPT_INSERT_TYPE_POINTERS = 'pointers';
-    const SCRIPT_INSERT_TYPE_INLINE = 'inline';
+    public const SCRIPT_INSERT_TYPE_FILES = 'files';
+    public const SCRIPT_INSERT_TYPE_POINTERS = 'pointers';
+    public const SCRIPT_INSERT_TYPE_INLINE = 'inline';
 
-    const CONTEXT_TYPE_PAYLOAD = 'payload';
-    const CONTEXT_TYPE_SESSION = 'session';
-    const CONTEXT_TYPE_DATABASE = 'database';
+    public const CONTEXT_TYPE_PAYLOAD = 'payload';
+    public const CONTEXT_TYPE_SESSION = 'session';
+    public const CONTEXT_TYPE_DATABASE = 'database';
 
-    const DEFAULT_AJAX = true;
-    const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
+    public const DEFAULT_AJAX = true;
+    public const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
 
-    const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
-    const DEFAULT_SESSION_ENTRY_TTL = 10800; // 3 hours
+    public const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
+    public const DEFAULT_SESSION_ENTRY_TTL = 10800; // 3 hours
 
-    const DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES = 180;
+    public const DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES = 180;
 
-    const SAVE_FORM_TTL = 30;
-    const SAVE_FORM_SESSION_LIMIT = 10;
+    public const SAVE_FORM_TTL = 30;
+    public const SAVE_FORM_SESSION_LIMIT = 10;
 
     /** @var string */
     public $pluginName;

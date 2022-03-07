@@ -10,7 +10,7 @@ use yii\base\Event;
 
 class StatusChange extends FeatureBundle
 {
-    const BAG_KEY_STATUS = 'status';
+    public const BAG_KEY_STATUS = 'status';
 
     public function __construct()
     {

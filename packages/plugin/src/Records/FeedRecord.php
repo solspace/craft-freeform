@@ -13,7 +13,7 @@ use craft\db\ActiveRecord;
  */
 class FeedRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_feeds}}';
+    public const TABLE = '{{%freeform_feeds}}';
 
     public static function tableName(): string
     {

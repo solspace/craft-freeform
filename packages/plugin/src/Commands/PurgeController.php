@@ -56,7 +56,7 @@ class PurgeController extends Controller
         $string = $this->ansiFormat('days old...', Console::FG_BLUE);
         $this->stdout("Purging submissions which are at least {$ageYellow} {$string}\n\n", Console::FG_BLUE);
 
-        list($submissions, $assets) = Freeform::getInstance()->submissions->purgeSubmissions($age);
+        [$submissions, $assets] = Freeform::getInstance()->submissions->purgeSubmissions($age);
         $this->echoSubmissionCount($submissions);
         $this->echoAssetCount($assets);
 
@@ -78,7 +78,7 @@ class PurgeController extends Controller
         $string = $this->ansiFormat('days old...', Console::FG_BLUE);
         $this->stdout("Purging spam submissions which are at least {$ageYellow} {$string}\n\n", Console::FG_BLUE);
 
-        list($submissions, $assets) = Freeform::getInstance()->spamSubmissions->purgeSubmissions($age);
+        [$submissions, $assets] = Freeform::getInstance()->spamSubmissions->purgeSubmissions($age);
         $this->echoSubmissionCount($submissions);
         $this->echoAssetCount($assets);
 

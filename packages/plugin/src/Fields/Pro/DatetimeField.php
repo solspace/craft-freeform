@@ -16,9 +16,9 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\MinDate
 class DatetimeField extends TextField implements InitialValueInterface, DatetimeInterface, ExtraFieldInterface
 {
     use InitialValueTrait;
-    const DATETIME_TYPE_BOTH = 'both';
-    const DATETIME_TYPE_DATE = 'date';
-    const DATETIME_TYPE_TIME = 'time';
+    public const DATETIME_TYPE_BOTH = 'both';
+    public const DATETIME_TYPE_DATE = 'date';
+    public const DATETIME_TYPE_TIME = 'time';
 
     /** @var string */
     protected $dateTimeType;

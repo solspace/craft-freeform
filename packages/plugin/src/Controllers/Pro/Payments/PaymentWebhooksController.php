@@ -14,7 +14,7 @@ class PaymentWebhooksController extends BaseController
 {
     public $enableCsrfValidation = false;
 
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
     public function actionStripe()
     {

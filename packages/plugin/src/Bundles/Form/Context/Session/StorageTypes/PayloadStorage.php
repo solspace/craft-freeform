@@ -13,7 +13,7 @@ use yii\base\Event;
 
 class PayloadStorage implements FormContextStorageInterface
 {
-    const INPUT_PREFIX = 'freeform_payload';
+    public const INPUT_PREFIX = 'freeform_payload';
 
     private $secret;
 

@@ -23,11 +23,11 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class CampaignMonitor extends AbstractMailingListIntegration
 {
-    const TITLE = 'Campaign Monitor';
-    const LOG_CATEGORY = 'Campaign Monitor';
+    public const TITLE = 'Campaign Monitor';
+    public const LOG_CATEGORY = 'Campaign Monitor';
 
-    const SETTING_API_KEY = 'api_key';
-    const SETTING_CLIENT_ID = 'client_id';
+    public const SETTING_API_KEY = 'api_key';
+    public const SETTING_CLIENT_ID = 'client_id';
 
     /**
      * Returns a list of additional settings for this integration

@@ -15,7 +15,7 @@ use yii\base\Event;
 
 class ElementEditBundle extends FeatureBundle
 {
-    const ELEMENT_KEY = 'elementId';
+    public const ELEMENT_KEY = 'elementId';
 
     public function __construct()
     {

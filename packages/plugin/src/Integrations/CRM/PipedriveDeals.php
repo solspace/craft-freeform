@@ -18,8 +18,8 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class PipedriveDeals extends AbstractPipedriveIntegration
 {
-    const TITLE = 'Pipedrive Deals';
-    const LOG_CATEGORY = 'Pipedrive Deals';
+    public const TITLE = 'Pipedrive Deals';
+    public const LOG_CATEGORY = 'Pipedrive Deals';
 
     /**
      * Returns a list of additional settings for this integration

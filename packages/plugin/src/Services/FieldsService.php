@@ -40,13 +40,13 @@ use yii\db\Exception;
 
 class FieldsService extends BaseService implements FieldHandlerInterface
 {
-    const EVENT_BEFORE_SAVE = 'beforeSave';
-    const EVENT_AFTER_SAVE = 'afterSave';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE = 'afterDelete';
-    const EVENT_FETCH_TYPES = 'fetchTypes';
-    const EVENT_BEFORE_VALIDATE = 'beforeValidate';
-    const EVENT_AFTER_VALIDATE = 'afterValidate';
+    public const EVENT_BEFORE_SAVE = 'beforeSave';
+    public const EVENT_AFTER_SAVE = 'afterSave';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_FETCH_TYPES = 'fetchTypes';
+    public const EVENT_BEFORE_VALIDATE = 'beforeValidate';
+    public const EVENT_AFTER_VALIDATE = 'afterValidate';
 
     /** @var FieldModel[] */
     private static $fieldCache;

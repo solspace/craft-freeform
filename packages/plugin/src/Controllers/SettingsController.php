@@ -27,10 +27,7 @@ use yii\web\Response;
 
 class SettingsController extends BaseController
 {
-    /**
-     * Make sure this controller requires a logged in member.
-     */
-    public function init()
+    public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
@@ -39,7 +36,7 @@ class SettingsController extends BaseController
         parent::init();
     }
 
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         if ($this->getSettingsService()->isAllowAdminEdit()) {
             return $this->actionProvideSetting();
@@ -48,9 +45,6 @@ class SettingsController extends BaseController
         return $this->redirect(UrlHelper::cpUrl('freeform/settings/statuses'));
     }
 
-    /**
-     * Redirects to the default selected view.
-     */
     public function actionDefaultView(): Response
     {
         if ($this->getSettingsService()->isOldFreeformInstalled()) {
@@ -113,9 +107,6 @@ class SettingsController extends BaseController
         return $this->redirect(UrlHelper::cpUrl("freeform/{$defaultView}"));
     }
 
-    /**
-     * Attempt cloning a demo template into the user's specified template directory.
-     */
     public function actionAddDemoTemplate(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -158,9 +149,6 @@ class SettingsController extends BaseController
         );
     }
 
-    /**
-     * Attempt cloning a demo email template into the user's specified template directory.
-     */
     public function actionAddEmailTemplate(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -195,17 +183,12 @@ class SettingsController extends BaseController
             }
         }
 
-        return $this->asJson(
-            [
-                'templateName' => $templateName,
-                'errors' => $errors,
-            ]
-        );
+        return $this->asJson([
+            'templateName' => $templateName,
+            'errors' => $errors,
+        ]);
     }
 
-    /**
-     * Attempt cloning a demo email template into the user's specified template directory.
-     */
     public function actionAddSuccessTemplate(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -248,12 +231,6 @@ class SettingsController extends BaseController
         );
     }
 
-    /**
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
-     *
-     * @return null|Response
-     */
     public function actionSaveSettings()
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);

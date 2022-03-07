@@ -16,17 +16,18 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Services\SubmissionsService;
+use yii\web\Response;
 
 class SpamSubmissionsController extends SubmissionsController
 {
-    const SPAM_TEMPLATE_BASE_PATH = 'freeform/spam';
+    public const SPAM_TEMPLATE_BASE_PATH = 'freeform/spam';
 
     public function getSubmissionsService(): SubmissionsService
     {
         return $this->getSpamSubmissionsService();
     }
 
-    public function actionDelete()
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
 
@@ -40,13 +41,6 @@ class SpamSubmissionsController extends SubmissionsController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @throws FreeformException
-     * @throws \yii\web\BadRequestHttpException
-     * @throws \yii\web\ForbiddenHttpException
-     *
-     * @return \yii\web\Response
-     */
     public function actionAllow()
     {
         $post = \Craft::$app->request->post();
@@ -99,9 +93,6 @@ class SpamSubmissionsController extends SubmissionsController
         );
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function getTemplateBasePath(): string
     {
         return self::SPAM_TEMPLATE_BASE_PATH;

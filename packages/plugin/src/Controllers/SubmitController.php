@@ -27,12 +27,8 @@ use yii\web\Response;
 
 class SubmitController extends BaseController
 {
-    /** @var bool */
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
-    /**
-     * @throws FreeformException
-     */
     public function actionIndex(): ?Response
     {
         $this->requirePostRequest();
@@ -82,7 +78,7 @@ class SubmitController extends BaseController
         return null;
     }
 
-    public function behaviors()
+    public function behaviors(): array
     {
         $corsHeaders = [
             'Access-Control-Request-Method' => ['POST', 'OPTIONS'],
@@ -111,7 +107,7 @@ class SubmitController extends BaseController
         ];
     }
 
-    private function handleSubmission(Form $form, Submission $submission)
+    private function handleSubmission(Form $form, Submission $submission): void
     {
         $formHandler = Freeform::getInstance()->forms;
 
@@ -119,7 +115,7 @@ class SubmitController extends BaseController
         Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
 
         if (!$event->isValid || !empty($form->getActions()) || !$formHandler->onBeforeSubmit($form)) {
-            return false;
+            return;
         }
 
         $storeSubmissionEvent = new StoreSubmissionEvent($form, $submission);

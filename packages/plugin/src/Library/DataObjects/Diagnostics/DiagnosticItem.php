@@ -12,9 +12,9 @@ use Twig\Markup;
 
 class DiagnosticItem
 {
-    const COLOR_BASE = 'base';
-    const COLOR_PASS = 'pass';
-    const COLOR_ERROR = 'error';
+    public const COLOR_BASE = 'base';
+    public const COLOR_PASS = 'pass';
+    public const COLOR_ERROR = 'error';
 
     /** @var string */
     private $label;

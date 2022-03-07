@@ -3,17 +3,18 @@
 namespace Solspace\Freeform\Controllers;
 
 use Solspace\Freeform\Freeform;
+use yii\web\Response;
 
 class FeedsController extends BaseController
 {
-    public function actionShowSummary()
+    public function actionShowSummary(): Response
     {
         $this->requireAdmin(false);
 
         return $this->asJson(Freeform::getInstance()->summary->getSummary()->statistics);
     }
 
-    public function actionDismissMessage()
+    public function actionDismissMessage(): Response
     {
         $this->requirePostRequest();
 
@@ -26,7 +27,7 @@ class FeedsController extends BaseController
         return $this->asJson(['success' => false]);
     }
 
-    public function actionDismissType()
+    public function actionDismissType(): Response
     {
         $this->requirePostRequest();
 

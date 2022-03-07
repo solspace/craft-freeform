@@ -11,7 +11,7 @@ use yii\web\Response;
 
 class SettingsController extends BaseController
 {
-    public function init()
+    public function init(): void
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -71,7 +71,7 @@ class SettingsController extends BaseController
         return $this->returnSuccess();
     }
 
-    private function saveSettings(array $settings)
+    private function saveSettings(array $settings): bool
     {
         $plugin = Freeform::getInstance();
         $plugin->setSettings($settings);

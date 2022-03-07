@@ -19,7 +19,7 @@ class KeyValueMapType extends AbstractObjectType
         return KeyValueMapInterface::getType();
     }
 
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo)
+    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): mixed
     {
         if ('value' === $resolveInfo->fieldName) {
             return $source['value'] ?? null;

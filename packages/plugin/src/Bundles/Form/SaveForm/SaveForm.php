@@ -22,12 +22,12 @@ use yii\base\Event;
 
 class SaveForm extends FeatureBundle
 {
-    const SAVE_ACTION = 'save';
+    public const SAVE_ACTION = 'save';
 
-    const EVENT_SAVE_FORM = 'save-form';
+    public const EVENT_SAVE_FORM = 'save-form';
 
-    const CLEANUP_CACHE_KEY = 'save-and-continue-cleanup';
-    const CLEANUP_CACHE_TTL = 60 * 60; // 1 hour
+    public const CLEANUP_CACHE_KEY = 'save-and-continue-cleanup';
+    public const CLEANUP_CACHE_TTL = 60 * 60; // 1 hour
 
     public function __construct()
     {
@@ -63,7 +63,7 @@ class SaveForm extends FeatureBundle
         }
 
         $isLoaded = SaveFormsHelper::isLoaded($form);
-        list($key, $token) = SaveFormsHelper::getTokens($form);
+        [$key, $token] = SaveFormsHelper::getTokens($form);
 
         $record = null;
         if ($isLoaded && $token && $key) {

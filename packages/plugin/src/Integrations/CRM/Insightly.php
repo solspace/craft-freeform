@@ -11,10 +11,10 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class Insightly extends AbstractCRMIntegration
 {
-    const SETTING_API_KEY = 'api_key';
+    public const SETTING_API_KEY = 'api_key';
 
-    const TITLE = 'Insightly';
-    const LOG_CATEGORY = 'Insightly';
+    public const TITLE = 'Insightly';
+    public const LOG_CATEGORY = 'Insightly';
 
     /**
      * Returns a list of additional settings for this integration

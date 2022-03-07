@@ -24,7 +24,7 @@ use yii\db\ActiveQuery;
  */
 class CrmFieldRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_crm_fields}}';
+    public const TABLE = '{{%freeform_crm_fields}}';
 
     public static function tableName(): string
     {

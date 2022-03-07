@@ -4,29 +4,29 @@ namespace Solspace\Freeform\Library\Composer\Components\Fields\Interfaces;
 
 interface ExternalOptionsInterface extends OptionsInterface
 {
-    const SOURCE_CUSTOM = 'custom';
-    const SOURCE_ENTRIES = 'entries';
-    const SOURCE_CATEGORIES = 'categories';
-    const SOURCE_TAGS = 'tags';
-    const SOURCE_USERS = 'users';
-    const SOURCE_ASSETS = 'assets';
-    const SOURCE_COMMERCE_PRODUCTS = 'commerce_products';
-    const SOURCE_CALENDAR = 'calendar';
-    const SOURCE_PREDEFINED = 'predefined';
+    public const SOURCE_CUSTOM = 'custom';
+    public const SOURCE_ENTRIES = 'entries';
+    public const SOURCE_CATEGORIES = 'categories';
+    public const SOURCE_TAGS = 'tags';
+    public const SOURCE_USERS = 'users';
+    public const SOURCE_ASSETS = 'assets';
+    public const SOURCE_COMMERCE_PRODUCTS = 'commerce_products';
+    public const SOURCE_CALENDAR = 'calendar';
+    public const SOURCE_PREDEFINED = 'predefined';
 
-    const PREDEFINED_DAYS = 'days';
-    const PREDEFINED_DAYS_OF_WEEK = 'days_of_week';
-    const PREDEFINED_MONTHS = 'months';
-    const PREDEFINED_NUMBERS = 'numbers';
-    const PREDEFINED_YEARS = 'years';
-    const PREDEFINED_PROVINCES = 'provinces';
-    const PREDEFINED_PROVINCES_FR = 'provinces_fr';
-    const PREDEFINED_PROVINCES_BIL = 'provinces_bil';
-    const PREDEFINED_STATES = 'states';
-    const PREDEFINED_STATES_TERRITORIES = 'states_territories';
-    const PREDEFINED_COUNTRIES = 'countries';
-    const PREDEFINED_LANGUAGES = 'languages';
-    const PREDEFINED_CURRENCIES = 'currencies';
+    public const PREDEFINED_DAYS = 'days';
+    public const PREDEFINED_DAYS_OF_WEEK = 'days_of_week';
+    public const PREDEFINED_MONTHS = 'months';
+    public const PREDEFINED_NUMBERS = 'numbers';
+    public const PREDEFINED_YEARS = 'years';
+    public const PREDEFINED_PROVINCES = 'provinces';
+    public const PREDEFINED_PROVINCES_FR = 'provinces_fr';
+    public const PREDEFINED_PROVINCES_BIL = 'provinces_bil';
+    public const PREDEFINED_STATES = 'states';
+    public const PREDEFINED_STATES_TERRITORIES = 'states_territories';
+    public const PREDEFINED_COUNTRIES = 'countries';
+    public const PREDEFINED_LANGUAGES = 'languages';
+    public const PREDEFINED_CURRENCIES = 'currencies';
 
     /**
      * Returns the option source.

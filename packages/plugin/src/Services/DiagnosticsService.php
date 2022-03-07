@@ -249,7 +249,7 @@ class DiagnosticsService extends BaseService
             ->scalar()
         ;
 
-        list($emailTransport, $emailIssues) = $this->getEmailSettings();
+        [$emailTransport, $emailIssues] = $this->getEmailSettings();
 
         return [
             new DiagnosticItem(

@@ -108,17 +108,17 @@ class ExportJsonTest extends TestCase
         ]);
 
         $expected = <<<'EXPECTED'
-[
-    {
-        "id": 1,
-        "dateCreated": "2019-01-01 08:00:00"
-    },
-    {
-        "id": 2,
-        "dateCreated": "2019-01-01 09:20:00"
-    }
-]
-EXPECTED;
+            [
+                {
+                    "id": 1,
+                    "dateCreated": "2019-01-01 08:00:00"
+                },
+                {
+                    "id": 2,
+                    "dateCreated": "2019-01-01 09:20:00"
+                }
+            ]
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }
@@ -154,94 +154,94 @@ EXPECTED;
         ]);
 
         $expected = <<<'EXPECTED'
-[
-    {
-        "id": 1,
-        "table1": [
             [
-                "one",
-                "two",
-                "three"
-            ],
-            [
-                "four",
-                "five",
-                ""
-            ],
-            [
-                "",
-                "six",
-                ""
+                {
+                    "id": 1,
+                    "table1": [
+                        [
+                            "one",
+                            "two",
+                            "three"
+                        ],
+                        [
+                            "four",
+                            "five",
+                            ""
+                        ],
+                        [
+                            "",
+                            "six",
+                            ""
+                        ]
+                    ],
+                    "firstName": "Some Name",
+                    "table2": [
+                        [
+                            "r1c1",
+                            "r1c2",
+                            "r1c3",
+                            "r1c4",
+                            "r1c5"
+                        ],
+                        [
+                            "r2c1",
+                            "r2c2",
+                            "r2c3",
+                            "r2c4",
+                            "r2c5"
+                        ]
+                    ]
+                },
+                {
+                    "id": 2,
+                    "table1": [
+                        [
+                            "some",
+                            "value",
+                            ""
+                        ]
+                    ],
+                    "firstName": "Other Name",
+                    "table2": [
+                        [
+                            "r1c1",
+                            "r1c2",
+                            "r1c3",
+                            "r1c4",
+                            "r1c5"
+                        ],
+                        [
+                            "r2c1",
+                            "r2c2",
+                            "r2c3",
+                            "r2c4",
+                            "r2c5"
+                        ],
+                        [
+                            "r3c1",
+                            "r3c2",
+                            "r3c3",
+                            "r3c4",
+                            "r3c5"
+                        ],
+                        [
+                            "r4c1",
+                            "r4c2",
+                            "r4c3",
+                            "r4c4",
+                            "r4c5"
+                        ],
+                        [
+                            "r5c1",
+                            "r5c2",
+                            "r5c3",
+                            "r5c4",
+                            "r5c5"
+                        ]
+                    ]
+                }
             ]
-        ],
-        "firstName": "Some Name",
-        "table2": [
-            [
-                "r1c1",
-                "r1c2",
-                "r1c3",
-                "r1c4",
-                "r1c5"
-            ],
-            [
-                "r2c1",
-                "r2c2",
-                "r2c3",
-                "r2c4",
-                "r2c5"
-            ]
-        ]
-    },
-    {
-        "id": 2,
-        "table1": [
-            [
-                "some",
-                "value",
-                ""
-            ]
-        ],
-        "firstName": "Other Name",
-        "table2": [
-            [
-                "r1c1",
-                "r1c2",
-                "r1c3",
-                "r1c4",
-                "r1c5"
-            ],
-            [
-                "r2c1",
-                "r2c2",
-                "r2c3",
-                "r2c4",
-                "r2c5"
-            ],
-            [
-                "r3c1",
-                "r3c2",
-                "r3c3",
-                "r3c4",
-                "r3c5"
-            ],
-            [
-                "r4c1",
-                "r4c2",
-                "r4c3",
-                "r4c4",
-                "r4c5"
-            ],
-            [
-                "r5c1",
-                "r5c2",
-                "r5c3",
-                "r5c4",
-                "r5c5"
-            ]
-        ]
-    }
-]
-EXPECTED;
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }

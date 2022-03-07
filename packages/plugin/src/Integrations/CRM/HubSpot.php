@@ -23,13 +23,13 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class HubSpot extends AbstractCRMIntegration
 {
-    const SETTING_API_KEY = 'api_key';
-    const SETTING_IP_FIELD = 'ip_field';
-    const SETTING_APPEND_COMPANY_DATA = 'append_company_data';
-    const SETTING_APPEND_CONTACT_DATA = 'append_contact_data';
+    public const SETTING_API_KEY = 'api_key';
+    public const SETTING_IP_FIELD = 'ip_field';
+    public const SETTING_APPEND_COMPANY_DATA = 'append_company_data';
+    public const SETTING_APPEND_CONTACT_DATA = 'append_contact_data';
 
-    const TITLE = 'HubSpot';
-    const LOG_CATEGORY = 'HubSpot';
+    public const TITLE = 'HubSpot';
+    public const LOG_CATEGORY = 'HubSpot';
 
     /**
      * Returns a list of additional settings for this integration
@@ -92,7 +92,7 @@ class HubSpot extends AbstractCRMIntegration
         foreach ($keyValueList as $key => $value) {
             preg_match('/^(\w+)___(.+)$/', $key, $matches);
 
-            list($all, $target, $propName) = $matches;
+            [$all, $target, $propName] = $matches;
 
             $value = $this->formatValue($value, $formFields[$key]);
 

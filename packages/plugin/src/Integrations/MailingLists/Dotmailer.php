@@ -24,13 +24,13 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class Dotmailer extends AbstractMailingListIntegration
 {
-    const SETTING_USER_EMAIL = 'user_email';
-    const SETTING_USER_PASS = 'user_pass';
-    const SETTING_DOUBLE_OPT_IN = 'double_opt_in';
-    const SETTING_ENDPOINT = 'endpoint';
+    public const SETTING_USER_EMAIL = 'user_email';
+    public const SETTING_USER_PASS = 'user_pass';
+    public const SETTING_DOUBLE_OPT_IN = 'double_opt_in';
+    public const SETTING_ENDPOINT = 'endpoint';
 
-    const TITLE = 'Dotmailer';
-    const LOG_CATEGORY = 'Dotmailer';
+    public const TITLE = 'Dotmailer';
+    public const LOG_CATEGORY = 'Dotmailer';
 
     /**
      * Returns a list of additional settings for this integration

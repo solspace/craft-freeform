@@ -15,7 +15,7 @@ use yii\web\Response;
 
 class FormsRESTController extends BaseController
 {
-    public function init()
+    public function init(): void
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
 

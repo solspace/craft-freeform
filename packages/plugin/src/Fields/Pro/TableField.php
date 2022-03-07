@@ -12,9 +12,9 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
 {
     use MultipleValueTrait;
 
-    const COLUMN_TYPE_STRING = 'string';
-    const COLUMN_TYPE_SELECT = 'select';
-    const COLUMN_TYPE_CHECKBOX = 'checkbox';
+    public const COLUMN_TYPE_STRING = 'string';
+    public const COLUMN_TYPE_SELECT = 'select';
+    public const COLUMN_TYPE_CHECKBOX = 'checkbox';
 
     /** @var array */
     protected $tableLayout;

@@ -14,32 +14,32 @@ namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
 class PaymentProperties extends IntegrationProperties
 {
-    const PAYMENT_TYPE_SINGLE = 'single';
-    const PAYMENT_TYPE_PREDEFINED_SUBSCRIPTION = 'predefined_subscription';
-    const PAYMENT_TYPE_DYNAMIC_SUBSCRIPTION = 'dynamic_subscription';
+    public const PAYMENT_TYPE_SINGLE = 'single';
+    public const PAYMENT_TYPE_PREDEFINED_SUBSCRIPTION = 'predefined_subscription';
+    public const PAYMENT_TYPE_DYNAMIC_SUBSCRIPTION = 'dynamic_subscription';
 
-    const PLAN_INTERVAL_DAILY = 'daily';
-    const PLAN_INTERVAL_WEEKLY = 'weekly';
-    const PLAN_INTERVAL_BIWEEKLY = 'biweekly';
-    const PLAN_INTERVAL_MONTHLY = 'monthly';
-    const PLAN_INTERVAL_ANNUALLY = 'annually';
+    public const PLAN_INTERVAL_DAILY = 'daily';
+    public const PLAN_INTERVAL_WEEKLY = 'weekly';
+    public const PLAN_INTERVAL_BIWEEKLY = 'biweekly';
+    public const PLAN_INTERVAL_MONTHLY = 'monthly';
+    public const PLAN_INTERVAL_ANNUALLY = 'annually';
 
-    const NOTIFICATION_TYPE_CHARGE_SUCCEEDED = 'charge_success';
-    const NOTIFICATION_TYPE_CHARGE_FAILED = 'charge_failed';
-    const NOTIFICATION_TYPE_SUBSCRIPTION_CREATED = 'subscription_created';
-    const NOTIFICATION_TYPE_SUBSCRIPTION_ENDED = 'subscription_ended';
-    const NOTIFICATION_TYPE_SUBSCRIPTION_PAYMENT_SUCCEEDED = 'subscription_payment_succeeded';
-    const NOTIFICATION_TYPE_SUBSCRIPTION_PAYMENT_FAILED = 'subscription_payment_failed';
+    public const NOTIFICATION_TYPE_CHARGE_SUCCEEDED = 'charge_success';
+    public const NOTIFICATION_TYPE_CHARGE_FAILED = 'charge_failed';
+    public const NOTIFICATION_TYPE_SUBSCRIPTION_CREATED = 'subscription_created';
+    public const NOTIFICATION_TYPE_SUBSCRIPTION_ENDED = 'subscription_ended';
+    public const NOTIFICATION_TYPE_SUBSCRIPTION_PAYMENT_SUCCEEDED = 'subscription_payment_succeeded';
+    public const NOTIFICATION_TYPE_SUBSCRIPTION_PAYMENT_FAILED = 'subscription_payment_failed';
 
-    const FIELD_PAYMENT_TYPE = 'paymentType';
-    const FIELD_AMOUNT = 'amount';
-    const FIELD_CURRENCY = 'currency';
-    const FIELD_PLAN = 'plan';
-    const FIELD_INTERVAL = 'interval';
-    const FIELD_DESCRIPTION = 'description';
-    const FIELD_PAYMENT_NOTIFICATIONS = 'paymentNotifications';
-    const FIELD_PAYMENT_FIELD_MAPPING = 'paymentFieldMapping';
-    const FIELD_CUSTOMER_FIELD_MAPPING = 'customerFieldMapping';
+    public const FIELD_PAYMENT_TYPE = 'paymentType';
+    public const FIELD_AMOUNT = 'amount';
+    public const FIELD_CURRENCY = 'currency';
+    public const FIELD_PLAN = 'plan';
+    public const FIELD_INTERVAL = 'interval';
+    public const FIELD_DESCRIPTION = 'description';
+    public const FIELD_PAYMENT_NOTIFICATIONS = 'paymentNotifications';
+    public const FIELD_PAYMENT_FIELD_MAPPING = 'paymentFieldMapping';
+    public const FIELD_CUSTOMER_FIELD_MAPPING = 'customerFieldMapping';
 
     /** @var string */
     protected $paymentType;

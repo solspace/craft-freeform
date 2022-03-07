@@ -26,7 +26,7 @@ use craft\db\ActiveRecord;
  */
 class SessionContextRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_session_context}}';
+    public const TABLE = '{{%freeform_session_context}}';
 
     public static function tableName(): string
     {

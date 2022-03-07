@@ -11,7 +11,7 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class LoggerService extends BaseService
 {
-    const DEFAULT_CATEGORY = 'freeform';
+    public const DEFAULT_CATEGORY = 'freeform';
 
     public function getLogger(string $category): LoggerInterface
     {

@@ -25,8 +25,8 @@ use Solspace\Freeform\Library\DataObjects\SpamReason;
  */
 class SpamReasonRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_spam_reason}}';
-    const TABLE_STD = 'freeform_spam_reason';
+    public const TABLE = '{{%freeform_spam_reason}}';
+    public const TABLE_STD = 'freeform_spam_reason';
 
     public static function tableName(): string
     {

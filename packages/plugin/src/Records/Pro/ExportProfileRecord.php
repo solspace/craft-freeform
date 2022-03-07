@@ -22,7 +22,7 @@ use yii\db\ActiveQuery;
  */
 class ExportProfileRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_export_profiles}}';
+    public const TABLE = '{{%freeform_export_profiles}}';
 
     public static function tableName(): string
     {

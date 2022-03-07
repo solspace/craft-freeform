@@ -22,5 +22,5 @@ class PayloadForwardingService extends BaseService
     /**
      * @deprecated use PayloadForwarding::EVENT_PAYLOAD_FORWARDING instead
      */
-    const BEFORE_PAYLOAD_FORWARD = 'beforePayloadForward';
+    public const BEFORE_PAYLOAD_FORWARD = 'beforePayloadForward';
 }

@@ -6,13 +6,13 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 
 class SaveFormsHelper
 {
-    const BAG_KEY_LOADED = 'savedSessionLoaded';
-    const BAG_KEY_SAVED_SESSION = 'savedSession';
-    const BAG_REDIRECT = 'savedFormRedirect';
+    public const BAG_KEY_LOADED = 'savedSessionLoaded';
+    public const BAG_KEY_SAVED_SESSION = 'savedSession';
+    public const BAG_REDIRECT = 'savedFormRedirect';
 
-    const PROPERTY_KEY = 'key';
-    const PROPERTY_TOKEN = 'token';
-    const PROPERTY_URL = 'url';
+    public const PROPERTY_KEY = 'key';
+    public const PROPERTY_TOKEN = 'token';
+    public const PROPERTY_URL = 'url';
 
     public static function isLoaded(Form $form): bool
     {

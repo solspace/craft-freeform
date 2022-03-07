@@ -26,7 +26,7 @@ use yii\db\ActiveQuery;
  */
 class UnfinalizedFileRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_unfinalized_files}}';
+    public const TABLE = '{{%freeform_unfinalized_files}}';
 
     public static function tableName(): string
     {

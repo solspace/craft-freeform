@@ -14,11 +14,11 @@ namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
 class ValidationProperties extends AbstractProperties
 {
-    const VALIDATION_TYPE_SUBMIT = 'submit';
-    const VALIDATION_TYPE_LIVE = 'live';
+    public const VALIDATION_TYPE_SUBMIT = 'submit';
+    public const VALIDATION_TYPE_LIVE = 'live';
 
-    const DEFAULT_SUCCESS_MESSAGE = 'Form has been submitted successfully!';
-    const DEFAULT_ERROR_MESSAGE = 'Sorry, there was an error submitting the form. Please try again.';
+    public const DEFAULT_SUCCESS_MESSAGE = 'Form has been submitted successfully!';
+    public const DEFAULT_ERROR_MESSAGE = 'Sorry, there was an error submitting the form. Please try again.';
 
     /** @var string */
     protected $validationType;

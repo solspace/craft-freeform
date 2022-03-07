@@ -16,7 +16,7 @@ use Solspace\Freeform\Freeform;
 
 class CraftPluginConfiguration implements ConfigurationInterface
 {
-    const CONTEXT = 'freeform';
+    public const CONTEXT = 'freeform';
 
     /**
      * @param string $key

@@ -18,18 +18,18 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 class ZohoDeal extends AbstractZohoIntegration
 {
-    const TITLE = 'Zoho Deal';
-    const LOG_CATEGORY = 'Zoho';
+    public const TITLE = 'Zoho Deal';
+    public const LOG_CATEGORY = 'Zoho';
 
-    const MODULE_DEALS = 'Deals';
-    const MODULE_ACCOUNTS = 'Accounts';
-    const MODULE_CONTACTS = 'Contacts';
+    public const MODULE_DEALS = 'Deals';
+    public const MODULE_ACCOUNTS = 'Accounts';
+    public const MODULE_CONTACTS = 'Contacts';
 
-    const CATEGORY_DEAL = 'deal';
-    const CATEGORY_ACCOUNT = 'account';
-    const CATEGORY_CONTACT = 'contact';
+    public const CATEGORY_DEAL = 'deal';
+    public const CATEGORY_ACCOUNT = 'account';
+    public const CATEGORY_CONTACT = 'contact';
 
-    const DEFAULT_CONTACT_ROLE = '4201883000000006871';
+    public const DEFAULT_CONTACT_ROLE = '4201883000000006871';
 
     public function getModule(): string
     {
@@ -53,7 +53,7 @@ class ZohoDeal extends AbstractZohoIntegration
                 continue;
             }
 
-            list($_, $category, $handle) = $matches;
+            [$_, $category, $handle] = $matches;
 
             switch ($category) {
                 case self::CATEGORY_DEAL:

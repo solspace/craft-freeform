@@ -12,12 +12,12 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
 {
     use SingleValueTrait;
 
-    const DEFAULT_WIDTH = 400;
-    const DEFAULT_HEIGHT = 100;
-    const DEFAULT_BORDER_COLOR = '#999999';
-    const DEFAULT_BACKGROUND_COLOR = 'rgba(0,0,0,0)';
-    const DEFAULT_PEN_COLOR = '#000000';
-    const DEFAULT_PEN_DOT_SIZE = 2.5;
+    public const DEFAULT_WIDTH = 400;
+    public const DEFAULT_HEIGHT = 100;
+    public const DEFAULT_BORDER_COLOR = '#999999';
+    public const DEFAULT_BACKGROUND_COLOR = 'rgba(0,0,0,0)';
+    public const DEFAULT_PEN_COLOR = '#000000';
+    public const DEFAULT_PEN_DOT_SIZE = 2.5;
 
     /** @var int */
     protected $width;

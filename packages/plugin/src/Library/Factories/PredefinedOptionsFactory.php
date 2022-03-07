@@ -9,10 +9,10 @@ use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
 
 class PredefinedOptionsFactory
 {
-    const TYPE_INT = 'int';
-    const TYPE_INT_LEADING_ZERO = 'int_w_zero';
-    const TYPE_FULL = 'full';
-    const TYPE_ABBREVIATED = 'abbreviated';
+    public const TYPE_INT = 'int';
+    public const TYPE_INT_LEADING_ZERO = 'int_w_zero';
+    public const TYPE_FULL = 'full';
+    public const TYPE_ABBREVIATED = 'abbreviated';
 
     /** @var ExternalOptionsConfiguration */
     private $configuration;

@@ -24,8 +24,8 @@ use craft\db\ActiveRecord;
  */
 class StatusRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_statuses}}';
-    const TABLE_STD = 'freeform_statuses';
+    public const TABLE = '{{%freeform_statuses}}';
+    public const TABLE_STD = 'freeform_statuses';
 
     public static function getAllowedColors(): array
     {

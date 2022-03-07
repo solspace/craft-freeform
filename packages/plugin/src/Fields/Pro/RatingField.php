@@ -14,8 +14,8 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
 class RatingField extends AbstractField implements SingleValueInterface, ExtraFieldInterface, OptionsInterface
 {
     use SingleValueTrait;
-    const MIN_VALUE = 3;
-    const MAX_VALUE = 10;
+    public const MIN_VALUE = 3;
+    public const MAX_VALUE = 10;
 
     /** @var int */
     protected $maxValue;

@@ -38,13 +38,13 @@ use Twig\Error\SyntaxError as TwigSyntaxError;
 
 class MailerService extends BaseService implements MailHandlerInterface
 {
-    const EVENT_BEFORE_SEND = 'beforeSend';
-    const EVENT_AFTER_SEND = 'afterSend';
-    const EVENT_BEFORE_RENDER = 'beforeRender';
+    public const EVENT_BEFORE_SEND = 'beforeSend';
+    public const EVENT_AFTER_SEND = 'afterSend';
+    public const EVENT_BEFORE_RENDER = 'beforeRender';
 
-    const ERROR_CODE_LINES_PROXIMITY = 5;
+    public const ERROR_CODE_LINES_PROXIMITY = 5;
 
-    const LOG_CATEGORY = 'freeform_notifications';
+    public const LOG_CATEGORY = 'freeform_notifications';
 
     /**
      * Send out an email to recipients using the given mail template.

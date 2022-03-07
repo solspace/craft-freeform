@@ -38,7 +38,7 @@ use Stripe\Subscription;
 
 class StripeService extends Component
 {
-    const FIELD_GROUP_TYPES = [FieldInterface::TYPE_CHECKBOX_GROUP, FieldInterface::TYPE_RADIO_GROUP];
+    public const FIELD_GROUP_TYPES = [FieldInterface::TYPE_CHECKBOX_GROUP, FieldInterface::TYPE_RADIO_GROUP];
 
     public function preProcessPayment(ValidationEvent $event)
     {

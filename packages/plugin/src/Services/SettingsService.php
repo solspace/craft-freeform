@@ -24,10 +24,10 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class SettingsService extends BaseService
 {
-    const CACHE_KEY_PURGE = 'freeform-purge-cache-key';
-    const CACHE_TTL_SECONDS = 60 * 60; // 1 hour
+    public const CACHE_KEY_PURGE = 'freeform-purge-cache-key';
+    public const CACHE_TTL_SECONDS = 60 * 60; // 1 hour
 
-    const EVENT_REGISTER_SETTINGS_NAVIGATION = 'registerSettingsNavigation';
+    public const EVENT_REGISTER_SETTINGS_NAVIGATION = 'registerSettingsNavigation';
 
     /** @var Settings */
     private static $settingsModel;

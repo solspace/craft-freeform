@@ -24,17 +24,10 @@ use Solspace\Freeform\Resources\Bundles\FieldEditorBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
-use yii\base\InvalidParamException;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class FieldsController extends Controller
 {
-    /**
-     * @throws ForbiddenHttpException
-     * @throws InvalidParamException
-     */
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_ACCESS);
@@ -56,10 +49,6 @@ class FieldsController extends Controller
         );
     }
 
-    /**
-     * @throws \yii\base\InvalidParamException
-     * @throws \yii\web\ForbiddenHttpException
-     */
     public function actionCreate(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
@@ -69,11 +58,6 @@ class FieldsController extends Controller
         return $this->renderEditForm($model, 'Create new field');
     }
 
-    /**
-     * @throws ForbiddenHttpException
-     * @throws InvalidParamException
-     * @throws \HttpException
-     */
     public function actionEdit(int $id): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
@@ -87,11 +71,6 @@ class FieldsController extends Controller
         return $this->renderEditForm($model, $model->label);
     }
 
-    /**
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     * @throws FreeformException
-     */
     public function actionDuplicate(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
@@ -110,7 +89,7 @@ class FieldsController extends Controller
         $oldHandle = $model->handle;
 
         if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-            list($string, $mainPart, $iterator) = $matches;
+            [$string, $mainPart, $iterator] = $matches;
 
             $newHandle = $mainPart.((int) $iterator + 1);
         } else {
@@ -132,13 +111,7 @@ class FieldsController extends Controller
         return $this->redirect('freeform/fields');
     }
 
-    /**
-     * @throws ForbiddenHttpException
-     * @throws FreeformException
-     * @throws BadRequestHttpException
-     * @throws \Exception
-     */
-    public function actionSave()
+    public function actionSave(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
 
@@ -202,13 +175,6 @@ class FieldsController extends Controller
         return $this->renderEditForm($field, $field->label);
     }
 
-    /**
-     * Deletes a field.
-     *
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     * @throws \Exception
-     */
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -216,16 +182,11 @@ class FieldsController extends Controller
 
         $fieldId = \Craft::$app->request->post('id');
 
-        return $this->asJson(
-            [
-                'success' => $this->getFieldsService()->deleteById((int) $fieldId),
-            ]
-        );
+        return $this->asJson([
+            'success' => $this->getFieldsService()->deleteById((int) $fieldId),
+        ]);
     }
 
-    /**
-     * @throws InvalidParamException
-     */
     private function renderEditForm(FieldModel $model, string $title): Response
     {
         $this->view->registerAssetBundle(FieldEditorBundle::class);
@@ -261,12 +222,7 @@ class FieldsController extends Controller
         return Freeform::getInstance()->files;
     }
 
-    /**
-     * @param int $fieldId
-     *
-     * @throws FreeformException
-     */
-    private function getNewOrExistingField($fieldId): FieldModel
+    private function getNewOrExistingField(int $fieldId): FieldModel
     {
         if ($fieldId) {
             $field = $this->getFieldsService()->getFieldById($fieldId);

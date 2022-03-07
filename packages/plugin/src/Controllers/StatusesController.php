@@ -42,9 +42,6 @@ class StatusesController extends BaseController
         return $this->renderEditForm($model, 'Create new status');
     }
 
-    /**
-     * @throws \HttpException
-     */
     public function actionEdit(int $id): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -58,9 +55,6 @@ class StatusesController extends BaseController
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * @return Response
-     */
     public function actionSave()
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -95,9 +89,6 @@ class StatusesController extends BaseController
         \Craft::$app->urlManager->setRouteParams(['status' => $status, 'errors' => $status->getErrors()]);
     }
 
-    /**
-     * @throws HttpException
-     */
     public function actionReorder(): Response
     {
         $this->requirePostRequest();
@@ -131,10 +122,7 @@ class StatusesController extends BaseController
         }
     }
 
-    /**
-     * Deletes a field.
-     */
-    public function actionDelete()
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         if (!\Craft::$app->request->isAjax) {
@@ -161,12 +149,7 @@ class StatusesController extends BaseController
         return $this->renderTemplate('freeform/statuses/edit', $variables);
     }
 
-    /**
-     * @param int $statusId
-     *
-     * @throws \Exception
-     */
-    private function getNewOrExistingStatus($statusId): StatusModel
+    private function getNewOrExistingStatus(int $statusId): StatusModel
     {
         $statusService = $this->getStatusesService();
 

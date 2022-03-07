@@ -12,7 +12,7 @@ use yii\base\Event;
 
 class FormInitTime extends FeatureBundle
 {
-    const KEY = 'init-time';
+    public const KEY = 'init-time';
 
     public function __construct()
     {

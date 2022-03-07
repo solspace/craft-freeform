@@ -163,7 +163,7 @@ class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
 
         $widgets = $this->getWidgetsService();
 
-        list($rangeStart, $rangeEnd) = $widgets->getRange($this->dateRange);
+        [$rangeStart, $rangeEnd] = $widgets->getRange($this->dateRange);
 
         $formId = $this->formId;
         $fieldId = $this->fieldId;

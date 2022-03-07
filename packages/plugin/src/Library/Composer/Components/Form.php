@@ -64,65 +64,65 @@ use yii\web\Request;
 
 abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
 {
-    const ID_KEY = 'id';
-    const HASH_KEY = 'hash';
-    const ACTION_KEY = 'freeform-action';
-    const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
+    public const ID_KEY = 'id';
+    public const HASH_KEY = 'hash';
+    public const ACTION_KEY = 'freeform-action';
+    public const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
-    const EVENT_FORM_LOADED = 'form-loaded';
-    const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
-    const EVENT_REGISTER_CONTEXT = 'register-context';
-    const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
-    const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
-    const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
-    const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
-    const EVENT_OUTPUT_AS_JSON = 'output-as-json';
-    const EVENT_SET_PROPERTIES = 'set-properties';
+    public const EVENT_FORM_LOADED = 'form-loaded';
+    public const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
+    public const EVENT_REGISTER_CONTEXT = 'register-context';
+    public const EVENT_RENDER_BEFORE_OPEN_TAG = 'render-before-opening-tag';
+    public const EVENT_RENDER_AFTER_OPEN_TAG = 'render-after-opening-tag';
+    public const EVENT_RENDER_BEFORE_CLOSING_TAG = 'render-before-closing-tag';
+    public const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
+    public const EVENT_OUTPUT_AS_JSON = 'output-as-json';
+    public const EVENT_SET_PROPERTIES = 'set-properties';
     /** @deprecated use EVENT_SET_PROPERTIES instead. */
-    const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
-    const EVENT_SUBMIT = 'submit';
-    const EVENT_AFTER_SUBMIT = 'after-submit';
-    const EVENT_BEFORE_VALIDATE = 'before-validate';
-    const EVENT_AFTER_VALIDATE = 'after-validate';
-    const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-attributes';
-    const EVENT_BEFORE_HANDLE_REQUEST = 'before-handle-request';
-    const EVENT_AFTER_HANDLE_REQUEST = 'after-handle-request';
-    const EVENT_BEFORE_RESET = 'before-reset-form';
-    const EVENT_AFTER_RESET = 'after-reset-form';
-    const EVENT_PERSIST_STATE = 'persist-state';
-    const EVENT_HYDRATE_FORM = 'hydrate-form';
-    const EVENT_GENERATE_RETURN_URL = 'generate-return-url';
-    const EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD = 'prepare-ajax-response-payload';
-    const EVENT_CREATE_SUBMISSION = 'create-submission';
-    const EVENT_SEND_NOTIFICATIONS = 'send-notifications';
+    public const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
+    public const EVENT_SUBMIT = 'submit';
+    public const EVENT_AFTER_SUBMIT = 'after-submit';
+    public const EVENT_BEFORE_VALIDATE = 'before-validate';
+    public const EVENT_AFTER_VALIDATE = 'after-validate';
+    public const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-attributes';
+    public const EVENT_BEFORE_HANDLE_REQUEST = 'before-handle-request';
+    public const EVENT_AFTER_HANDLE_REQUEST = 'after-handle-request';
+    public const EVENT_BEFORE_RESET = 'before-reset-form';
+    public const EVENT_AFTER_RESET = 'after-reset-form';
+    public const EVENT_PERSIST_STATE = 'persist-state';
+    public const EVENT_HYDRATE_FORM = 'hydrate-form';
+    public const EVENT_GENERATE_RETURN_URL = 'generate-return-url';
+    public const EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD = 'prepare-ajax-response-payload';
+    public const EVENT_CREATE_SUBMISSION = 'create-submission';
+    public const EVENT_SEND_NOTIFICATIONS = 'send-notifications';
 
-    const PROPERTY_STORED_VALUES = 'storedValues';
-    const PROPERTY_PAGE_INDEX = 'pageIndex';
-    const PROPERTY_PAGE_HISTORY = 'pageHistory';
-    const PROPERTY_SPAM_REASONS = 'spamReasons';
+    public const PROPERTY_STORED_VALUES = 'storedValues';
+    public const PROPERTY_PAGE_INDEX = 'pageIndex';
+    public const PROPERTY_PAGE_HISTORY = 'pageHistory';
+    public const PROPERTY_SPAM_REASONS = 'spamReasons';
 
-    const SUCCESS_BEHAVIOUR_NO_EFFECT = 'no-effect';
-    const SUCCESS_BEHAVIOUR_RELOAD = 'reload';
-    const SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL = 'redirect-return-url';
-    const SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
+    public const SUCCESS_BEHAVIOUR_NO_EFFECT = 'no-effect';
+    public const SUCCESS_BEHAVIOUR_RELOAD = 'reload';
+    public const SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL = 'redirect-return-url';
+    public const SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
 
-    const PAGE_INDEX_KEY = 'page_index';
-    const RETURN_URI_KEY = 'formReturnUrl';
-    const STATUS_KEY = 'formStatus';
+    public const PAGE_INDEX_KEY = 'page_index';
+    public const RETURN_URI_KEY = 'formReturnUrl';
+    public const STATUS_KEY = 'formStatus';
     /** @deprecated will be removed in FF 4.x. Use EditSubmissionContext::TOKEN_KEY */
-    const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
-    const ELEMENT_ID_KEY = 'formElementId';
-    const DEFAULT_PAGE_INDEX = 0;
+    public const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
+    public const ELEMENT_ID_KEY = 'formElementId';
+    public const DEFAULT_PAGE_INDEX = 0;
 
-    const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
-    const DATA_SUBMISSION_TOKEN = 'submissionToken';
-    const DATA_SUPPRESS = 'suppress';
-    const DATA_RELATIONS = 'relations';
-    const DATA_PERSISTENT_VALUES = 'persistentValues';
-    const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
+    public const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
+    public const DATA_SUBMISSION_TOKEN = 'submissionToken';
+    public const DATA_SUPPRESS = 'suppress';
+    public const DATA_RELATIONS = 'relations';
+    public const DATA_PERSISTENT_VALUES = 'persistentValues';
+    public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    const LIMIT_COOKIE = 'cookie';
-    const LIMIT_IP_COOKIE = 'ip_cookie';
+    public const LIMIT_COOKIE = 'cookie';
+    public const LIMIT_IP_COOKIE = 'ip_cookie';
 
     /** @var PropertyBag */
     private $propertyBag;

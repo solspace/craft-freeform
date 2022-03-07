@@ -20,9 +20,9 @@ use yii\db\Expression;
 
 class ExportProfileModel extends Model
 {
-    const RANGE_TODAY = 'today';
-    const RANGE_YESTERDAY = 'yesterday';
-    const RANGE_CUSTOM = 'custom';
+    public const RANGE_TODAY = 'today';
+    public const RANGE_YESTERDAY = 'yesterday';
+    public const RANGE_CUSTOM = 'custom';
 
     /** @var int */
     public $id;

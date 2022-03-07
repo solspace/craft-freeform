@@ -35,25 +35,25 @@ use yii\base\Event;
 
 class Stripe extends AbstractPaymentGatewayIntegration
 {
-    const SETTING_PUBLIC_KEY_LIVE = 'public_key_live';
-    const SETTING_SECRET_KEY_LIVE = 'secret_key_live';
-    const SETTING_PUBLIC_KEY_TEST = 'public_key_test';
-    const SETTING_SECRET_KEY_TEST = 'secret_key_test';
-    const SETTING_LIVE_MODE = 'live_mode';
-    const SETTING_WEBHOOK_KEY = 'webhook_key';
-    const SETTING_SUPPRESS_ON_FAIL = 'suppress_on_fail';
-    const SETTING_SEND_ON_SUCCESS = 'send_on_success';
+    public const SETTING_PUBLIC_KEY_LIVE = 'public_key_live';
+    public const SETTING_SECRET_KEY_LIVE = 'secret_key_live';
+    public const SETTING_PUBLIC_KEY_TEST = 'public_key_test';
+    public const SETTING_SECRET_KEY_TEST = 'secret_key_test';
+    public const SETTING_LIVE_MODE = 'live_mode';
+    public const SETTING_WEBHOOK_KEY = 'webhook_key';
+    public const SETTING_SUPPRESS_ON_FAIL = 'suppress_on_fail';
+    public const SETTING_SEND_ON_SUCCESS = 'send_on_success';
 
-    const TITLE = 'Stripe';
-    const LOG_CATEGORY = 'Stripe';
+    public const TITLE = 'Stripe';
+    public const LOG_CATEGORY = 'Stripe';
 
-    const PRODUCT_TYPE_SERVICE = 'service';
-    const PRODUCT_TYPE_GOOD = 'good';
+    public const PRODUCT_TYPE_SERVICE = 'service';
+    public const PRODUCT_TYPE_GOOD = 'good';
 
-    const EVENT_UPDATE_PAYMENT_INTENT_DATA = 'updatePaymentIntentData';
-    const EVENT_UPDATE_SUBSCRIPTION_DATA = 'updateSubscriptionData';
+    public const EVENT_UPDATE_PAYMENT_INTENT_DATA = 'updatePaymentIntentData';
+    public const EVENT_UPDATE_SUBSCRIPTION_DATA = 'updateSubscriptionData';
 
-    const ZERO_DECIMAL_CURRENCIES = [
+    public const ZERO_DECIMAL_CURRENCIES = [
         'BIF',
         'CLP',
         'DJF',
@@ -71,7 +71,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         'XPF',
     ];
 
-    const PLAN_INTERVAL_CONVERSION = [
+    public const PLAN_INTERVAL_CONVERSION = [
         PaymentProperties::PLAN_INTERVAL_DAILY => ['interval' => 'day', 'count' => 1],
         PaymentProperties::PLAN_INTERVAL_WEEKLY => ['interval' => 'week', 'count' => 1],
         PaymentProperties::PLAN_INTERVAL_BIWEEKLY => ['interval' => 'week', 'count' => 2],

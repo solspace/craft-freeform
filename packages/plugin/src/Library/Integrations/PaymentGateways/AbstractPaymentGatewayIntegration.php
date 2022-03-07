@@ -23,7 +23,7 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration implements PaymentGatewayIntegrationInterface, IntegrationInterface, \JsonSerializable
 {
-    const TYPE = 'payment_gateway';
+    public const TYPE = 'payment_gateway';
 
     /**
      * Payment Gateway service.

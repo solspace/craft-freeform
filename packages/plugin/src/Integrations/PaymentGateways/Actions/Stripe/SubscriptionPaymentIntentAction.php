@@ -8,7 +8,7 @@ use Stripe\Subscription;
 
 class SubscriptionPaymentIntentAction extends AbstractFormAction
 {
-    const NAME = 'stripe.subscription.payment_intent_action';
+    public const NAME = 'stripe.subscription.payment_intent_action';
 
     /**
      * SubscriptionPaymentIntentAction constructor.

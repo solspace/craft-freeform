@@ -12,7 +12,7 @@ use yii\base\Event;
 
 class EditSubmissionContext
 {
-    const TOKEN_KEY = 'submissionToken';
+    public const TOKEN_KEY = 'submissionToken';
 
     public function __construct()
     {

@@ -14,11 +14,11 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
 {
-    const TITLE = 'Pardot (v5)';
-    const LOG_CATEGORY = 'Pardot';
+    public const TITLE = 'Pardot (v5)';
+    public const LOG_CATEGORY = 'Pardot';
 
-    const SETTING_BUSINESS_UNIT_ID = 'business_unit_id';
-    const SETTING_REFRESH_TOKEN = 'refresh_token';
+    public const SETTING_BUSINESS_UNIT_ID = 'business_unit_id';
+    public const SETTING_REFRESH_TOKEN = 'refresh_token';
 
     /**
      * Returns a list of additional settings for this integration

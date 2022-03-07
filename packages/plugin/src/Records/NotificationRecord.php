@@ -40,7 +40,7 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
  */
 class NotificationRecord extends ActiveRecord implements NotificationInterface, \JsonSerializable
 {
-    const TABLE = '{{%freeform_notifications}}';
+    public const TABLE = '{{%freeform_notifications}}';
     /** @var string */
     public $filepath;
 
@@ -57,20 +57,20 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
         $record->subject = 'New submission on your {{ form.name }} form';
         $record->autoText = true;
         $record->bodyHtml = <<<'EOT'
-<p>Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}</p>
-<ul>
-{% for field in allFields %}
-    <li>{{ field.label }}: {{ field.valueAsString }}</li>
-{% endfor %}
-</ul>
-EOT;
+            <p>Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}</p>
+            <ul>
+            {% for field in allFields %}
+                <li>{{ field.label }}: {{ field.valueAsString }}</li>
+            {% endfor %}
+            </ul>
+            EOT;
         $record->bodyText = <<<'EOT'
-Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}
+            Submitted on: {{ dateCreated|date('l, F j, Y \\a\\t g:ia') }}
 
-{% for field in allFields %}
- - {{ field.label }}: {{ field.valueAsString }}
-{% endfor %}
-EOT;
+            {% for field in allFields %}
+             - {{ field.label }}: {{ field.valueAsString }}
+            {% endfor %}
+            EOT;
 
         return $record;
     }

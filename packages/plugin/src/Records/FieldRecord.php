@@ -31,9 +31,9 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
  */
 class FieldRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_fields}}';
+    public const TABLE = '{{%freeform_fields}}';
 
-    const RESERVED_FIELD_KEYWORDS = [
+    public const RESERVED_FIELD_KEYWORDS = [
         'id',
         'title',
         'incrementalId',

@@ -15,9 +15,9 @@ use yii\base\Component;
 
 class FreeformFeedService extends Component
 {
-    const FREEFORM_API_FEED_URL = 'https://api.solspace.com/craft/freeform/updates';
-    const CACHE_KEY_FEED = 'freeform-feed-cache-key';
-    const CACHE_TTL_FEED = 60 * 60 * 5; // every 5 hours
+    public const FREEFORM_API_FEED_URL = 'https://api.solspace.com/craft/freeform/updates';
+    public const CACHE_KEY_FEED = 'freeform-feed-cache-key';
+    public const CACHE_TTL_FEED = 60 * 60 * 5; // every 5 hours
 
     public function markFeedCategoryAsRead(string $type)
     {

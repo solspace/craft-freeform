@@ -23,10 +23,10 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class SharpSpring extends AbstractCRMIntegration
 {
-    const SETTING_SECRET_KEY = 'secret_key';
-    const SETTING_ACCOUNT_ID = 'account_id';
-    const TITLE = 'SharpSpring';
-    const LOG_CATEGORY = 'SharpSpring';
+    public const SETTING_SECRET_KEY = 'secret_key';
+    public const SETTING_ACCOUNT_ID = 'account_id';
+    public const TITLE = 'SharpSpring';
+    public const LOG_CATEGORY = 'SharpSpring';
 
     /**
      * Returns a list of additional settings for this integration
@@ -68,7 +68,7 @@ class SharpSpring extends AbstractCRMIntegration
         foreach ($keyValueList as $key => $value) {
             preg_match('/^(\w+)___(.+)$/', $key, $matches);
 
-            list($all, $target, $propName) = $matches;
+            [$all, $target, $propName] = $matches;
 
             switch ($target) {
                 case 'contact':

@@ -8,7 +8,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 
 class SessionStorage implements FormContextStorageInterface
 {
-    const KEY = 'freeform_session';
+    public const KEY = 'freeform_session';
 
     /** @var SessionBag[] */
     private $context;

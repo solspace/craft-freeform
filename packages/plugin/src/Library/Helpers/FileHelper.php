@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Library\Helpers;
 
 class FileHelper
 {
-    const MIME_TYPE_TO_EXTENSION_MAP = [
+    public const MIME_TYPE_TO_EXTENSION_MAP = [
         'video/3gpp2' => '3g2',
         'video/3gp' => '3gp',
         'video/3gpp' => '3gp',

@@ -6,10 +6,11 @@ use craft\gql\base\ObjectType;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 abstract class AbstractObjectType extends ObjectType
 {
-    private static $propertyAccess;
+    private static PropertyAccessor $propertyAccess;
 
     public function __construct(array $config)
     {
@@ -27,12 +28,12 @@ abstract class AbstractObjectType extends ObjectType
 
     abstract public static function getTypeDefinition(): Type;
 
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo)
+    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): mixed
     {
         return self::getPropertyAccess()->getValue($source, $resolveInfo->fieldName);
     }
 
-    private static function getPropertyAccess()
+    private static function getPropertyAccess(): PropertyAccessor
     {
         if (null === self::$propertyAccess) {
             self::$propertyAccess = PropertyAccess::createPropertyAccessor();

@@ -9,6 +9,7 @@ use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\web\BadRequestHttpException;
@@ -17,9 +18,9 @@ use yii\web\Response;
 class FileUploadController extends BaseController
 {
     public $enableCsrfValidation = false;
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
-    public function actionGet()
+    public function actionGet(): Response
     {
         $this->requirePostRequest();
 
@@ -47,7 +48,7 @@ class FileUploadController extends BaseController
         return $this->asJson($payload);
     }
 
-    public function actionPost()
+    public function actionPost(): Response
     {
         $this->requirePostRequest();
         $request = \Craft::$app->request;
@@ -87,7 +88,7 @@ class FileUploadController extends BaseController
         return $this->asJson(['id' => $asset->uid]);
     }
 
-    public function actionDelete()
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
 
@@ -154,7 +155,7 @@ class FileUploadController extends BaseController
         return $this->createErrorResponse(['File doesn\'t exist.']);
     }
 
-    private function getVerifiedForm()
+    private function getVerifiedForm(): Form
     {
         $request = \Craft::$app->request;
 
@@ -178,12 +179,10 @@ class FileUploadController extends BaseController
 
     private function createErrorResponse($messages = [], $statusCode = 400): Response
     {
-        $response = $this->asJson(
-            [
-                'type' => 'field-error',
-                'messages' => $messages,
-            ]
-        );
+        $response = $this->asJson([
+            'type' => 'field-error',
+            'messages' => $messages,
+        ]);
 
         $response->setStatusCode($statusCode);
 

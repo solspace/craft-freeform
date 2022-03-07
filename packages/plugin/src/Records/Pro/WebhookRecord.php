@@ -13,8 +13,8 @@ use craft\db\ActiveRecord;
  */
 class WebhookRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_webhooks}}';
-    const RELATION_TABLE = '{{%freeform_webhooks_form_relations}}';
+    public const TABLE = '{{%freeform_webhooks}}';
+    public const RELATION_TABLE = '{{%freeform_webhooks_form_relations}}';
 
     public static function tableName(): string
     {

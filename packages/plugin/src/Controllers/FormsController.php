@@ -49,7 +49,7 @@ use yii\web\Response;
 
 class FormsController extends BaseController
 {
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
@@ -60,7 +60,7 @@ class FormsController extends BaseController
         $this->view->registerAssetBundle(FormIndexBundle::class);
         $this->view->registerAssetBundle(CreateFormModalBundle::class);
 
-        $this->renderTemplate(
+        return $this->renderTemplate(
             'freeform/forms',
             [
                 'forms' => $forms,
@@ -114,7 +114,7 @@ class FormsController extends BaseController
         $oldHandle = $model->handle;
 
         if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-            list($string, $mainPart, $iterator) = $matches;
+            [$string, $mainPart, $iterator] = $matches;
 
             $newHandle = $mainPart.((int) $iterator + 1);
         } else {
@@ -172,7 +172,7 @@ class FormsController extends BaseController
             $oldHandle = $composerState['composer']['properties']['form']['handle'];
 
             if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-                list($string, $mainPart, $iterator) = $matches;
+                [$string, $mainPart, $iterator] = $matches;
 
                 $newHandle = $mainPart.((int) $iterator + 1);
             } else {
@@ -504,10 +504,7 @@ class FormsController extends BaseController
         return $fieldList;
     }
 
-    /**
-     * @return array|\stdClass
-     */
-    private function getGeneratedOptionsList(Form $form)
+    private function getGeneratedOptionsList(Form $form): array|object
     {
         $options = [];
         foreach ($form->getLayout()->getFields() as $field) {

@@ -16,7 +16,7 @@ use Solspace\Freeform\Freeform;
 
 class Honeypot implements \JsonSerializable
 {
-    const NAME_PREFIX = 'freeform_form_handle';
+    public const NAME_PREFIX = 'freeform_form_handle';
 
     /** @var string */
     private $name;

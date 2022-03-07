@@ -8,7 +8,7 @@ use yii\base\Event;
 
 abstract class AbstractFormRenderObject implements FormRenderObjectInterface
 {
-    const EVENT_REGISTER_OPTIONS = 'registerOptions';
+    public const EVENT_REGISTER_OPTIONS = 'registerOptions';
 
     /** @var array */
     protected $options;

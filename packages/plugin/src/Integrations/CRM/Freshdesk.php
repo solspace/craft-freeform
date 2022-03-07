@@ -12,15 +12,15 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class Freshdesk extends AbstractCRMIntegration
 {
-    const SETTING_API_KEY = 'api_key';
-    const SETTING_DOMAIN = 'domain';
-    const SETTING_PRIORITY = 'priority';
-    const SETTING_STATUS = 'status';
-    const SETTING_SOURCE = 'source';
-    const SETTING_TYPE = 'type';
+    public const SETTING_API_KEY = 'api_key';
+    public const SETTING_DOMAIN = 'domain';
+    public const SETTING_PRIORITY = 'priority';
+    public const SETTING_STATUS = 'status';
+    public const SETTING_SOURCE = 'source';
+    public const SETTING_TYPE = 'type';
 
-    const TITLE = 'Freshdesk';
-    const LOG_CATEGORY = 'Freshdesk';
+    public const TITLE = 'Freshdesk';
+    public const LOG_CATEGORY = 'Freshdesk';
 
     /**
      * Returns a list of additional settings for this integration

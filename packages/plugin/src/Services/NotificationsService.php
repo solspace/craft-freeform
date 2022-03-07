@@ -23,10 +23,10 @@ use Solspace\Freeform\Records\NotificationRecord;
 
 class NotificationsService extends BaseService
 {
-    const EVENT_BEFORE_SAVE = 'beforeSave';
-    const EVENT_AFTER_SAVE = 'afterSave';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_BEFORE_SAVE = 'beforeSave';
+    public const EVENT_AFTER_SAVE = 'afterSave';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
 
     /** @var NotificationRecord[] */
     private static $notificationCache;

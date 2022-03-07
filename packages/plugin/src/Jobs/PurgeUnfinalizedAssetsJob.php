@@ -7,14 +7,14 @@ use Solspace\Freeform\Freeform;
 
 class PurgeUnfinalizedAssetsJob extends BaseJob
 {
-    public $age;
+    public int $age;
 
-    public function execute($queue)
+    public function execute($queue): void
     {
         Freeform::getInstance()->files->cleanUpUnfinalizedAssets($this->age);
     }
 
-    protected function defaultDescription()
+    protected function defaultDescription(): ?string
     {
         return 'Purge Unfinalized Assets';
     }

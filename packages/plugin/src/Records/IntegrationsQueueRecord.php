@@ -26,17 +26,17 @@ use craft\db\ActiveRecord;
  */
 class IntegrationsQueueRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_integrations_queue}}';
+    public const TABLE = '{{%freeform_integrations_queue}}';
 
-    const STATUS_ENQUEUED = 'enqueued';
-    const STATUS_PROCESSING = 'processing';
-    const STATUS_DONE = 'done';
-    const STATUS_FAILED = 'failed';
-    const STATUS_HALTED = 'halted';
+    public const STATUS_ENQUEUED = 'enqueued';
+    public const STATUS_PROCESSING = 'processing';
+    public const STATUS_DONE = 'done';
+    public const STATUS_FAILED = 'failed';
+    public const STATUS_HALTED = 'halted';
 
-    const INTEGRATION_TYPE_MAILING_LIST = 'mailing_list';
-    const INTEGRATION_TYPE_CRM = 'crm';
-    const INTEGRATION_TYPE_NOTIFICATION = 'notification';
+    public const INTEGRATION_TYPE_MAILING_LIST = 'mailing_list';
+    public const INTEGRATION_TYPE_CRM = 'crm';
+    public const INTEGRATION_TYPE_NOTIFICATION = 'notification';
 
     public static function tableName(): string
     {

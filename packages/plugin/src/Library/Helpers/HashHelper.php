@@ -16,8 +16,8 @@ use Hashids\Hashids;
 
 class HashHelper
 {
-    const SALT = 'composer';
-    const MIN_LENGTH = 9;
+    public const SALT = 'composer';
+    public const MIN_LENGTH = 9;
 
     /** @var Hashids */
     private static $hashids = [];

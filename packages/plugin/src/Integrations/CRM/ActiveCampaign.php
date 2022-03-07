@@ -22,17 +22,17 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class ActiveCampaign extends AbstractCRMIntegration
 {
-    const SETTING_API_TOKEN = 'api_token';
-    const SETTING_API_URL = 'api_url';
-    const SETTING_PIPELINE = 'pipeline';
-    const SETTING_PIPELINE_ID = 'pipeline_id';
-    const SETTING_STAGE = 'stage';
-    const SETTING_STAGE_ID = 'stage_id';
-    const SETTING_OWNER = 'owner';
-    const SETTING_OWNER_ID = 'owner_id';
+    public const SETTING_API_TOKEN = 'api_token';
+    public const SETTING_API_URL = 'api_url';
+    public const SETTING_PIPELINE = 'pipeline';
+    public const SETTING_PIPELINE_ID = 'pipeline_id';
+    public const SETTING_STAGE = 'stage';
+    public const SETTING_STAGE_ID = 'stage_id';
+    public const SETTING_OWNER = 'owner';
+    public const SETTING_OWNER_ID = 'owner_id';
 
-    const TITLE = 'Active Campaign';
-    const LOG_CATEGORY = 'Active Campaign';
+    public const TITLE = 'Active Campaign';
+    public const LOG_CATEGORY = 'Active Campaign';
 
     /**
      * Returns a list of additional settings for this integration
@@ -114,7 +114,7 @@ class ActiveCampaign extends AbstractCRMIntegration
         foreach ($keyValueList as $key => $value) {
             preg_match('/^(\w+)___(.+)$/', $key, $matches);
 
-            list($all, $target, $propName) = $matches;
+            [$all, $target, $propName] = $matches;
 
             if (is_numeric($propName)) {
                 switch ($target) {

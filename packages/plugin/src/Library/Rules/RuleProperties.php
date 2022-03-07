@@ -14,8 +14,8 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 class RuleProperties extends AbstractProperties
 {
-    const DEFAULT_SHOW = false;
-    const DEFAULT_MATCH_ALL = false;
+    public const DEFAULT_SHOW = false;
+    public const DEFAULT_MATCH_ALL = false;
 
     /** @var array */
     protected $list;

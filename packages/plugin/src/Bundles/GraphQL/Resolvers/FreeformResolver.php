@@ -8,7 +8,7 @@ use Solspace\Freeform\Freeform;
 
 class FreeformResolver extends Resolver
 {
-    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo)
+    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): mixed
     {
         return (object) [
             'version' => Freeform::getInstance()->getVersion(),

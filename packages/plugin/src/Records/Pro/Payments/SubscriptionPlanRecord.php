@@ -24,7 +24,7 @@ use yii\db\ActiveQuery;
  */
 class SubscriptionPlanRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_payments_subscription_plans}}';
+    public const TABLE = '{{%freeform_payments_subscription_plans}}';
 
     public static function tableName(): string
     {

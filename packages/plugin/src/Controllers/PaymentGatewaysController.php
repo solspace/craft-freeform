@@ -4,23 +4,17 @@ namespace Solspace\Freeform\Controllers;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\MailingListsBundle;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
 class PaymentGatewaysController extends BaseController
 {
-    /**
-     * Make sure this controller requires a logged in member.
-     */
-    public function init()
+    public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
@@ -29,9 +23,6 @@ class PaymentGatewaysController extends BaseController
         parent::init();
     }
 
-    /**
-     * Presents a list of all payment gateway integrations.
-     */
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -59,13 +50,6 @@ class PaymentGatewaysController extends BaseController
         return $this->renderEditForm($model, 'Create new payment gateway');
     }
 
-    /**
-     * Deletes a Payment Gateway integration.
-     *
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     * @throws \Exception
-     */
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -77,9 +61,6 @@ class PaymentGatewaysController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @throws HttpException
-     */
     public function actionEdit(int $id = null, IntegrationModel $model = null): Response
     {
         if (null === $model) {
@@ -99,10 +80,7 @@ class PaymentGatewaysController extends BaseController
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * Saves an integration.
-     */
-    public function actionSave()
+    public function actionSave(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -183,11 +161,6 @@ class PaymentGatewaysController extends BaseController
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * Checks integration connection.
-     *
-     * @throws IntegrationException
-     */
     public function actionCheckIntegrationConnection(): Response
     {
         $id = \Craft::$app->request->post('id');
@@ -233,10 +206,7 @@ class PaymentGatewaysController extends BaseController
         return $this->renderTemplate('freeform/settings/_payment_gateway_edit', $variables);
     }
 
-    /**
-     * @param string $handle
-     */
-    private function getNewOrExistingPaymentGatewayIntegrationModel($handle): IntegrationModel
+    private function getNewOrExistingPaymentGatewayIntegrationModel(string $handle): IntegrationModel
     {
         $paymentGateway = $this->getPaymentGatewaysService()->getIntegrationByHandle($handle);
 

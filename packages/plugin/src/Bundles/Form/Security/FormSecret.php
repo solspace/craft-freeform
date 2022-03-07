@@ -10,7 +10,7 @@ use yii\base\Event;
 
 class FormSecret extends FeatureBundle
 {
-    const KEY = 'secret';
+    public const KEY = 'secret';
 
     public function __construct()
     {

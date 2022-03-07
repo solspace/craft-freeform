@@ -23,9 +23,9 @@ use craft\db\ActiveRecord;
  */
 class SubmissionNoteRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_submission_notes}}';
+    public const TABLE = '{{%freeform_submission_notes}}';
 
-    const NOTE_FIELD_NAME = 'freeform-submission-note';
+    public const NOTE_FIELD_NAME = 'freeform-submission-note';
 
     public static function tableName(): string
     {

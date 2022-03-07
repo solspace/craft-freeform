@@ -13,10 +13,10 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 abstract class AbstractZohoIntegration extends CRMOAuthConnector implements RefreshTokenInterface
 {
-    const SETTING_REFRESH_TOKEN = 'refresh_token';
-    const SETTING_DOMAIN = 'domain';
-    const SETTING_API_DOMAIN = 'api_domain';
-    const SETTING_ACCOUNTS_SERVER = 'accounts_server';
+    public const SETTING_REFRESH_TOKEN = 'refresh_token';
+    public const SETTING_DOMAIN = 'domain';
+    public const SETTING_API_DOMAIN = 'api_domain';
+    public const SETTING_ACCOUNTS_SERVER = 'accounts_server';
 
     /**
      * Returns a list of additional settings for this integration

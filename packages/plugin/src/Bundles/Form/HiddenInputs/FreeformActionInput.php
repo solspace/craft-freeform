@@ -9,7 +9,7 @@ use yii\base\Event;
 
 class FreeformActionInput extends FeatureBundle
 {
-    const NAME = 'freeform-action';
+    public const NAME = 'freeform-action';
 
     public function __construct()
     {

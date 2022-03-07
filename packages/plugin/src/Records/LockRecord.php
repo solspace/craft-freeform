@@ -10,7 +10,7 @@ use craft\db\ActiveRecord;
  */
 class LockRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_lock}}';
+    public const TABLE = '{{%freeform_lock}}';
 
     public static function tableName(): string
     {

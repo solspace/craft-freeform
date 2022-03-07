@@ -14,15 +14,15 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
 {
-    const SETTING_DOMAIN = 'domain';
-    const SETTING_API_TOKEN = 'api_token';
-    const SETTING_USER_ID = 'user_id';
-    const SETTING_STAGE_ID = 'stage_id';
-    const SETTING_DETECT_DUPLICATES = 'detect_duplicates';
+    public const SETTING_DOMAIN = 'domain';
+    public const SETTING_API_TOKEN = 'api_token';
+    public const SETTING_USER_ID = 'user_id';
+    public const SETTING_STAGE_ID = 'stage_id';
+    public const SETTING_DETECT_DUPLICATES = 'detect_duplicates';
 
-    const PREFIX_ORGANIZATION = 'org';
-    const PREFIX_PERSON = 'prsn';
-    const PREFIX_DEALS = 'deals';
+    public const PREFIX_ORGANIZATION = 'org';
+    public const PREFIX_PERSON = 'prsn';
+    public const PREFIX_DEALS = 'deals';
 
     /**
      * Returns a list of additional settings for this integration

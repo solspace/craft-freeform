@@ -10,7 +10,7 @@ class SubscriptionsController extends BaseController
 {
     public $enableCsrfValidation = false;
 
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
     public function actionCancel(int $id, string $validationKey): string
     {

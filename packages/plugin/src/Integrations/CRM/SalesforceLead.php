@@ -25,24 +25,24 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class SalesforceLead extends AbstractSalesforceIntegration
 {
-    const TITLE = 'Salesforce Lead';
-    const LOG_CATEGORY = 'Salesforce';
+    public const TITLE = 'Salesforce Lead';
+    public const LOG_CATEGORY = 'Salesforce';
 
-    const SETTING_SITE_CLIENT_ID = 'client_id';
-    const SETTING_SITE_CLIENT_SECRET = 'client_secret';
-    const SETTING_SITE_USER_LOGIN = 'username';
-    const SETTING_SITE_USER_PASSWORD = 'password';
-    const SETTING_CLIENT_ID = 'salesforce_client_id';
-    const SETTING_CLIENT_SECRET = 'salesforce_client_secret';
-    const SETTING_USER_LOGIN = 'salesforce_username';
-    const SETTING_USER_PASSWORD = 'salesforce_password';
-    const SETTING_LEAD_OWNER = 'salesforce_lead_owner';
-    const SETTING_SANDBOX = 'salesforce_sandbox';
-    const SETTING_CUSTOM_URL = 'salesforce_custom_url';
-    const SETTING_TASKS_FOR_DUPLICATES = 'tasks_for_duplicates';
-    const SETTING_TASKS_SUBJECT = 'tasks_subject';
-    const SETTING_TASKS_DUE_DATE = 'tasks_due_date';
-    const SETTING_INSTANCE = 'instance';
+    public const SETTING_SITE_CLIENT_ID = 'client_id';
+    public const SETTING_SITE_CLIENT_SECRET = 'client_secret';
+    public const SETTING_SITE_USER_LOGIN = 'username';
+    public const SETTING_SITE_USER_PASSWORD = 'password';
+    public const SETTING_CLIENT_ID = 'salesforce_client_id';
+    public const SETTING_CLIENT_SECRET = 'salesforce_client_secret';
+    public const SETTING_USER_LOGIN = 'salesforce_username';
+    public const SETTING_USER_PASSWORD = 'salesforce_password';
+    public const SETTING_LEAD_OWNER = 'salesforce_lead_owner';
+    public const SETTING_SANDBOX = 'salesforce_sandbox';
+    public const SETTING_CUSTOM_URL = 'salesforce_custom_url';
+    public const SETTING_TASKS_FOR_DUPLICATES = 'tasks_for_duplicates';
+    public const SETTING_TASKS_SUBJECT = 'tasks_subject';
+    public const SETTING_TASKS_DUE_DATE = 'tasks_due_date';
+    public const SETTING_INSTANCE = 'instance';
 
     /**
      * Returns a list of additional settings for this integration

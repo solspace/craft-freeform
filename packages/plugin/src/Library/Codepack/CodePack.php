@@ -22,7 +22,7 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class CodePack
 {
-    const MANIFEST_NAME = 'manifest.json';
+    public const MANIFEST_NAME = 'manifest.json';
 
     /** @var string */
     private $location;

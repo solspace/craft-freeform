@@ -23,9 +23,9 @@ use Solspace\Freeform\Records\IntegrationRecord;
 
 class ConstantContact3 extends MailingListOAuthConnector
 {
-    const TITLE = 'Constant Contact';
-    const LOG_CATEGORY = 'Constant Contact';
-    const SETTING_REFRESH_TOKEN = 'refresh_token';
+    public const TITLE = 'Constant Contact';
+    public const LOG_CATEGORY = 'Constant Contact';
+    public const SETTING_REFRESH_TOKEN = 'refresh_token';
 
     /**
      * Returns the MailingList service provider short name

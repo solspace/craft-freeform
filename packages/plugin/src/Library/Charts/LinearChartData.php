@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Library\Charts;
 
 class LinearChartData implements \JsonSerializable
 {
-    const TYPE_BAR = 'bar';
-    const TYPE_LINE = 'line';
+    public const TYPE_BAR = 'bar';
+    public const TYPE_LINE = 'line';
 
     /** @var string */
     private $chartType;

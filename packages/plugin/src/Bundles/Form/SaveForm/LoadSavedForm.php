@@ -12,7 +12,7 @@ use yii\base\Event;
 
 class LoadSavedForm extends FeatureBundle
 {
-    const EVENT_FORM_LOADED = 'form-loaded';
+    public const EVENT_FORM_LOADED = 'form-loaded';
 
     public function __construct()
     {
@@ -33,7 +33,7 @@ class LoadSavedForm extends FeatureBundle
             return;
         }
 
-        list($key, $token) = SaveFormsHelper::getTokens($form);
+        [$key, $token] = SaveFormsHelper::getTokens($form);
         if (!$key || !$token) {
             return;
         }
@@ -64,7 +64,7 @@ class LoadSavedForm extends FeatureBundle
     {
         $form = $event->getForm();
 
-        list($key, $token) = SaveFormsHelper::getTokens($form);
+        [$key, $token] = SaveFormsHelper::getTokens($form);
         if (!$key || !$token) {
             return;
         }

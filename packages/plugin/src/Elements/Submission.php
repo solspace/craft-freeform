@@ -41,13 +41,13 @@ use Solspace\Freeform\Services\NotesService;
 
 class Submission extends Element
 {
-    const TABLE_STD = 'freeform_submissions';
-    const TABLE = '{{%freeform_submissions}}';
-    const FIELD_COLUMN_PREFIX = 'field_';
+    public const TABLE_STD = 'freeform_submissions';
+    public const TABLE = '{{%freeform_submissions}}';
+    public const FIELD_COLUMN_PREFIX = 'field_';
 
-    const EVENT_PROCESS_SUBMISSION = 'process-submission';
+    public const EVENT_PROCESS_SUBMISSION = 'process-submission';
 
-    const OPT_IN_DATA_TOKEN_LENGTH = 100;
+    public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
     /** @var int */
     public $formId;
@@ -210,18 +210,12 @@ class Submission extends Element
         return (new SubmissionQuery(self::class))->isSpam(false);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function displayName(): string
     {
         return Freeform::t('Submission');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'submission';
     }
@@ -449,10 +443,7 @@ class Submission extends Element
         return self::$permissionCache[$this->formId];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/submissions/'.$this->id) : false;
     }
@@ -484,7 +475,7 @@ class Submission extends Element
         return $html;
     }
 
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         $insertData = [
             'userId' => $this->userId,

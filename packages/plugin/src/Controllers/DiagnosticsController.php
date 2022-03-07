@@ -14,10 +14,11 @@ namespace Solspace\Freeform\Controllers;
 
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
+use yii\web\Response;
 
 class DiagnosticsController extends BaseController
 {
-    public function actionIndex()
+    public function actionIndex(): Response
     {
         \Craft::$app->view->registerAssetBundle(DiagnosticsBundle::class);
 
@@ -28,7 +29,7 @@ class DiagnosticsController extends BaseController
         $checks = $diagnostics->getFreeformChecks();
 
         $combined = array_merge($server, $stats, $checks);
-        list($warnings, $suggestions) = $this->compileBanners($combined);
+        [$warnings, $suggestions] = $this->compileBanners($combined);
 
         return $this->renderTemplate(
             'freeform/settings/_diagnostics',
@@ -47,7 +48,7 @@ class DiagnosticsController extends BaseController
         $warnings = $suggestions = [];
         foreach ($items as $item) {
             if (\is_array($item)) {
-                list($subWarnings, $subSuggestions) = $this->compileBanners($item);
+                [$subWarnings, $subSuggestions] = $this->compileBanners($item);
                 $warnings = array_merge($warnings, $subWarnings);
                 $suggestions = array_merge($suggestions, $subSuggestions);
 

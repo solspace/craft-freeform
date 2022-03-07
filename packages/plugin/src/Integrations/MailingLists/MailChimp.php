@@ -24,13 +24,13 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class MailChimp extends AbstractMailingListIntegration
 {
-    const SETTING_API_KEY = 'api_key';
-    const SETTING_DOUBLE_OPT_IN = 'double_opt_in';
-    const SETTING_DATA_CENTER = 'data_center';
-    const SETTING_INTEREST_GROUPS = 'interest_groups';
+    public const SETTING_API_KEY = 'api_key';
+    public const SETTING_DOUBLE_OPT_IN = 'double_opt_in';
+    public const SETTING_DATA_CENTER = 'data_center';
+    public const SETTING_INTEREST_GROUPS = 'interest_groups';
 
-    const TITLE = 'MailChimp';
-    const LOG_CATEGORY = 'MailChimp';
+    public const TITLE = 'MailChimp';
+    public const LOG_CATEGORY = 'MailChimp';
 
     /** @var array */
     private $existingTags;

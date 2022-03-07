@@ -13,11 +13,11 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class ActiveCampaign extends AbstractMailingListIntegration
 {
-    const SETTING_API_URL = 'api_url';
-    const SETTING_API_KEY = 'api_key';
+    public const SETTING_API_URL = 'api_url';
+    public const SETTING_API_KEY = 'api_key';
 
-    const TITLE = 'ActiveCampaign';
-    const LOG_CATEGORY = 'ActiveCampaign';
+    public const TITLE = 'ActiveCampaign';
+    public const LOG_CATEGORY = 'ActiveCampaign';
 
     /**
      * Returns a list of additional settings for this integration

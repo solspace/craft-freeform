@@ -19,24 +19,24 @@ class SendNotificationAction extends ElementAction
         $type = Json::encode(static::class);
 
         $js = <<<EOT
-(function()
-{
-	var trigger = new Craft.ElementActionTrigger({
-		handle: 'Freeform_SendAdditionalNotification',
-		batch: true,
-		type: {$type},
-		activate: function(\$selectedItems)
-		{
-		    var ids = [];
-		    \$selectedItems.each(function() {
-		        ids.push($(this).data("id"));
-		    });
+            (function()
+            {
+            	var trigger = new Craft.ElementActionTrigger({
+            		handle: 'Freeform_SendAdditionalNotification',
+            		batch: true,
+            		type: {$type},
+            		activate: function(\$selectedItems)
+            		{
+            		    var ids = [];
+            		    \$selectedItems.each(function() {
+            		        ids.push($(this).data("id"));
+            		    });
 
-            window.freeform_notify(ids);
-		}
-	});
-})();
-EOT;
+                        window.freeform_notify(ids);
+            		}
+            	});
+            })();
+            EOT;
 
         \Craft::$app->view->registerJs($js);
     }

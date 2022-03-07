@@ -8,7 +8,7 @@ use yii\web\Response;
 
 class NotificationsController extends BaseController
 {
-    private $migrator;
+    private NotificationsMigrator $migrator;
 
     public function __construct($id, $module, $config = [], NotificationsMigrator $migrator)
     {

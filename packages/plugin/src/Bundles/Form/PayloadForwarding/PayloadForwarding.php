@@ -17,12 +17,12 @@ use yii\base\Event;
 
 class PayloadForwarding extends FeatureBundle
 {
-    const BAG_KEY = 'postForwarding';
+    public const BAG_KEY = 'postForwarding';
 
-    const KEY_URL = 'url';
-    const KEY_TRIGGER_PHRASE = 'triggerPhrase';
+    public const KEY_URL = 'url';
+    public const KEY_TRIGGER_PHRASE = 'triggerPhrase';
 
-    const EVENT_POST_FORWARDING = 'postForwarding';
+    public const EVENT_POST_FORWARDING = 'postForwarding';
 
     public function __construct()
     {

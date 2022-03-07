@@ -7,17 +7,18 @@ use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Form;
 
 class FormResolver extends Resolver
 {
-    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo)
+    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): mixed
     {
         $arguments = self::getArguments($arguments);
 
         return Freeform::getInstance()->forms->getResolvedForms($arguments);
     }
 
-    public static function resolveOne($source, array $arguments, $context, ResolveInfo $resolveInfo)
+    public static function resolveOne($source, array $arguments, $context, ResolveInfo $resolveInfo): ?Form
     {
         $arguments = self::getArguments($arguments);
         $arguments['limit'] = 1;
@@ -32,7 +33,7 @@ class FormResolver extends Resolver
         return $form ?: null;
     }
 
-    private static function getArguments(array $arguments)
+    private static function getArguments(array $arguments): array
     {
         $formUids = GqlPermissions::allowedFormUids();
         if ($formUids) {

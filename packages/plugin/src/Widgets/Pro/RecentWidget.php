@@ -20,7 +20,7 @@ use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
 class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 {
-    const DEFAULT_LIMIT = 5;
+    public const DEFAULT_LIMIT = 5;
 
     /** @var string */
     public $title;

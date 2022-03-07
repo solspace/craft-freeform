@@ -17,7 +17,7 @@ use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 
 class EmailTemplate
 {
-    const METADATA_PATTERN = '/{#\\s*__KEY__:\\s*(.*)#}/';
+    public const METADATA_PATTERN = '/{#\\s*__KEY__:\\s*(.*)#}/';
 
     /** @var string */
     private $name;
@@ -250,7 +250,7 @@ class EmailTemplate
         $pattern = str_replace('__KEY__', $key, self::METADATA_PATTERN);
 
         if (preg_match($pattern, $this->templateData, $matches)) {
-            list($_, $value) = $matches;
+            [$_, $value] = $matches;
             $value = trim($value);
         } elseif ($required) {
             throw new EmailTemplateException(sprintf("Email template does not contain '%s'", $key));

@@ -9,7 +9,7 @@ use yii\base\Event;
 
 class DynamicRecipients extends FeatureBundle
 {
-    const BAG_KEY = 'dynamicNotification';
+    public const BAG_KEY = 'dynamicNotification';
 
     public function __construct()
     {

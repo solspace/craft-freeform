@@ -17,34 +17,29 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Submissions\UpdateEvent;
+use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
-use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionIndexBundle;
-use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
 class SubmissionsController extends BaseController
 {
-    const EVENT_BEFORE_UPDATE = 'beforeUpdate';
-    const EVENT_AFTER_UPDATE = 'afterUpdate';
+    public const EVENT_BEFORE_UPDATE = 'beforeUpdate';
+    public const EVENT_AFTER_UPDATE = 'afterUpdate';
 
-    const TEMPLATE_BASE_PATH = 'freeform/submissions';
-    const EVENT_REGISTER_INDEX_ASSETS = 'registerIndexAssets';
-    const EVENT_REGISTER_EDIT_ASSETS = 'registerEditAssets';
+    public const TEMPLATE_BASE_PATH = 'freeform/submissions';
+    public const EVENT_REGISTER_INDEX_ASSETS = 'registerIndexAssets';
+    public const EVENT_REGISTER_EDIT_ASSETS = 'registerEditAssets';
 
-    /**
-     * @throws ForbiddenHttpException
-     * @throws \yii\base\InvalidConfigException
-     */
     public function actionIndex(string $formHandle = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
@@ -73,14 +68,6 @@ class SubmissionsController extends BaseController
         );
     }
 
-    /**
-     * Exports submission data as CSV.
-     *
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     * @throws FreeformException
-     * @throws ComposerException
-     */
     public function actionExport()
     {
         $this->requirePostRequest();
@@ -157,9 +144,6 @@ class SubmissionsController extends BaseController
         $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
     }
 
-    /**
-     * @throws HttpException
-     */
     public function actionEdit(int $id): Response
     {
         $submission = $this->getSubmissionsService()->getSubmissionById($id);
@@ -203,7 +187,7 @@ class SubmissionsController extends BaseController
             'layout' => $layout,
             'title' => $title,
             'statuses' => $statuses,
-            'note' => $noteRecord ? $noteRecord->note : null,
+            'note' => $noteRecord?->note,
             'continueEditingUrl' => 'freeform/submissions/{id}',
         ];
 
@@ -218,11 +202,6 @@ class SubmissionsController extends BaseController
         );
     }
 
-    /**
-     * @throws \yii\web\ForbiddenHttpException
-     * @throws \Exception
-     * @throws BadRequestHttpException
-     */
     public function actionSave()
     {
         $post = \Craft::$app->request->post();
@@ -289,15 +268,12 @@ class SubmissionsController extends BaseController
         );
     }
 
-    /**
-     * Returns base path for view templates, so it could be overridden.
-     */
     protected function getTemplateBasePath(): string
     {
         return self::TEMPLATE_BASE_PATH;
     }
 
-    private function getSubmissionPaymentDetails($submission)
+    private function getSubmissionPaymentDetails($submission): ?array
     {
         $form = $submission->getForm();
         $paymentFields = $form->getLayout()->getPaymentFields();
@@ -319,7 +295,8 @@ class SubmissionsController extends BaseController
 
     private function removeStaleAssets(Submission $submission, array $post = [])
     {
-        foreach ($submission->getForm()->getLayout()->getFileUploadFields() as $field) {
+        $fields = $submission->getForm()->getLayout()->getFields(FileUploadField::class);
+        foreach ($fields as $field) {
             $handle = $field->getHandle();
             $oldIds = $submission->{$handle}->getValue() ?? [];
             if (!\is_array($oldIds)) {
@@ -344,7 +321,7 @@ class SubmissionsController extends BaseController
 
     private function uploadAndAddFiles(Form $form, array $post = []): array
     {
-        $uploadFields = $form->getLayout()->getFileUploadFields();
+        $uploadFields = $form->getLayout()->getFields(FileUploadField::class);
 
         foreach ($uploadFields as $field) {
             $response = Freeform::getInstance()->files->uploadFile($field, $form);

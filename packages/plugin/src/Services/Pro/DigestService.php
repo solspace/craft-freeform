@@ -13,19 +13,19 @@ use yii\base\Component;
 
 class DigestService extends Component
 {
-    const FREQUENCY_DAILY = -1;
-    const FREQUENCY_WEEKLY_SUNDAYS = 0;
-    const FREQUENCY_WEEKLY_MONDAYS = 1;
-    const FREQUENCY_WEEKLY_TUESDAYS = 2;
-    const FREQUENCY_WEEKLY_WEDNESDAYS = 3;
-    const FREQUENCY_WEEKLY_THURSDAYS = 4;
-    const FREQUENCY_WEEKLY_FRIDAYS = 5;
-    const FREQUENCY_WEEKLY_SATURDAYS = 6;
+    public const FREQUENCY_DAILY = -1;
+    public const FREQUENCY_WEEKLY_SUNDAYS = 0;
+    public const FREQUENCY_WEEKLY_MONDAYS = 1;
+    public const FREQUENCY_WEEKLY_TUESDAYS = 2;
+    public const FREQUENCY_WEEKLY_WEDNESDAYS = 3;
+    public const FREQUENCY_WEEKLY_THURSDAYS = 4;
+    public const FREQUENCY_WEEKLY_FRIDAYS = 5;
+    public const FREQUENCY_WEEKLY_SATURDAYS = 6;
 
-    const CACHE_KEY_DIGEST = 'freeform-digest-cache-key';
-    const CACHE_TTL_DIGEST = 60 * 60 * 3; // every 3h
+    public const CACHE_KEY_DIGEST = 'freeform-digest-cache-key';
+    public const CACHE_TTL_DIGEST = 60 * 60 * 3; // every 3h
 
-    const TEMPLATE_PATH = __DIR__.'/../../templates/_emailTemplates/digest.twig';
+    public const TEMPLATE_PATH = __DIR__.'/../../templates/_emailTemplates/digest.twig';
 
     public function triggerDigest()
     {

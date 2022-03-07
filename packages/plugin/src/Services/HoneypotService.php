@@ -14,13 +14,13 @@ use Solspace\Freeform\Library\Session\Honeypot;
 
 class HoneypotService extends BaseService
 {
-    const FORM_HONEYPOT_KEY = 'freeformHoneypotHashList';
-    const HONEYPOT_DISABLE_KEY = 'disableHoneypot';
+    public const FORM_HONEYPOT_KEY = 'freeformHoneypotHashList';
+    public const HONEYPOT_DISABLE_KEY = 'disableHoneypot';
 
-    const EVENT_RENDER_HONEYPOT = 'renderHoneypot';
+    public const EVENT_RENDER_HONEYPOT = 'renderHoneypot';
 
-    const MAX_HONEYPOT_TTL = 10800; // 3 Hours
-    const MAX_HONEYPOT_COUNT = 100;   // Limit the number of maximum honeypot values per session
+    public const MAX_HONEYPOT_TTL = 10800; // 3 Hours
+    public const MAX_HONEYPOT_COUNT = 100;   // Limit the number of maximum honeypot values per session
 
     /** @var array */
     private static $validHoneypots = [];

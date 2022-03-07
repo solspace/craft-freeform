@@ -7,7 +7,7 @@ use Solspace\Freeform\Form\Types\Regular;
 
 class FormTypesService extends BaseService
 {
-    const EVENT_REGISTER_FORM_TYPES = 'register-form-types';
+    public const EVENT_REGISTER_FORM_TYPES = 'register-form-types';
 
     public function getTypes(bool $includeDefault = true): array
     {

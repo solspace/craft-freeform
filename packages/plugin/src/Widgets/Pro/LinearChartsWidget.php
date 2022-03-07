@@ -168,7 +168,7 @@ class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
      */
     private function getChartData(): LinearChartData
     {
-        list($rangeStart, $rangeEnd) = $this->getWidgetsService()->getRange($this->dateRange);
+        [$rangeStart, $rangeEnd] = $this->getWidgetsService()->getRange($this->dateRange);
 
         $formIds = $this->formIds;
         if ('*' === $formIds) {

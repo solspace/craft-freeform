@@ -25,11 +25,11 @@ use Solspace\Freeform\Models\FormModel;
 
 class Composer
 {
-    const KEY_COMPOSER = 'composer';
-    const KEY_PROPERTIES = 'properties';
-    const KEY_LAYOUT = 'layout';
-    const KEY_CONTEXT = 'context';
-    const KEY_PAYMENT = 'payment';
+    public const KEY_COMPOSER = 'composer';
+    public const KEY_PROPERTIES = 'properties';
+    public const KEY_LAYOUT = 'layout';
+    public const KEY_CONTEXT = 'context';
+    public const KEY_PAYMENT = 'payment';
 
     /** @var Form */
     private $form;

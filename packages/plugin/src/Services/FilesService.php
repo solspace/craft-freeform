@@ -36,11 +36,11 @@ use yii\base\ErrorException;
 
 class FilesService extends BaseService implements FileUploadHandlerInterface
 {
-    const CLEANUP_CACHE_KEY = 'freeform_file_cleanup_cache_key';
-    const CACHE_TTL = 3600; // 1 hour
+    public const CLEANUP_CACHE_KEY = 'freeform_file_cleanup_cache_key';
+    public const CACHE_TTL = 3600; // 1 hour
 
-    const EVENT_BEFORE_UPLOAD = 'beforeUpload';
-    const EVENT_AFTER_UPLOAD = 'afterUpload';
+    public const EVENT_BEFORE_UPLOAD = 'beforeUpload';
+    public const EVENT_AFTER_UPLOAD = 'afterUpload';
 
     /** @var array */
     private static $fileUploadFieldIds;

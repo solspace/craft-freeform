@@ -25,10 +25,10 @@ use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
 class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
 {
-    const TITLE = 'Infusionsoft';
-    const LOG_CATEGORY = 'Infusionsoft';
+    public const TITLE = 'Infusionsoft';
+    public const LOG_CATEGORY = 'Infusionsoft';
 
-    const SETTING_REFRESH_TOKEN = 'refresh_token';
+    public const SETTING_REFRESH_TOKEN = 'refresh_token';
 
     protected static $_REFRESHED_TOKENS = [];
 

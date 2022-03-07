@@ -14,8 +14,8 @@ namespace Solspace\Freeform\Library\Payments;
 
 interface PaymentInterface
 {
-    const TYPE_SINGLE = 'single';
-    const TYPE_SUBSCRIPTION = 'subscription';
+    public const TYPE_SINGLE = 'single';
+    public const TYPE_SUBSCRIPTION = 'subscription';
 
     /**
      * Returns type of payment.

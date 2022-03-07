@@ -19,27 +19,27 @@ use Twig\Markup;
 interface FormHandlerInterface
 {
     /** @deprecated */
-    const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
+    public const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
     /** @deprecated */
-    const EVENT_AFTER_SUBMIT = 'afterSubmit';
-    const EVENT_PAGE_JUMP = 'pageJump';
-    const EVENT_BEFORE_SAVE = 'beforeSave';
-    const EVENT_AFTER_SAVE = 'afterSave';
-    const EVENT_BEFORE_DELETE = 'beforeDelete';
-    const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_AFTER_SUBMIT = 'afterSubmit';
+    public const EVENT_PAGE_JUMP = 'pageJump';
+    public const EVENT_BEFORE_SAVE = 'beforeSave';
+    public const EVENT_AFTER_SAVE = 'afterSave';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
 
     /** @deprecated */
-    const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
+    public const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
     /** @deprecated */
-    const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
+    public const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
     /** @deprecated  */
-    const EVENT_FORM_VALIDATE = 'validateForm';
+    public const EVENT_FORM_VALIDATE = 'validateForm';
     /** @deprecated  */
-    const EVENT_AFTER_FORM_VALIDATE = 'afterValidateForm';
+    public const EVENT_AFTER_FORM_VALIDATE = 'afterValidateForm';
     /** @deprecated */
-    const EVENT_ATTACH_FORM_ATTRIBUTES = 'attachFormAttributes';
+    public const EVENT_ATTACH_FORM_ATTRIBUTES = 'attachFormAttributes';
     /** @deprecated */
-    const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
+    public const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
 
     /**
      * @param string $templateName

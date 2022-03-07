@@ -23,7 +23,7 @@ use craft\db\ActiveRecord;
  */
 class ExportSettingRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_export_settings}}';
+    public const TABLE = '{{%freeform_export_settings}}';
 
     public static function tableName(): string
     {

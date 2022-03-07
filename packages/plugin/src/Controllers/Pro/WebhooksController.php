@@ -10,16 +10,12 @@ use Solspace\Freeform\Resources\Bundles\CrmBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\WebhooksBundle;
 use Solspace\Freeform\Services\Pro\WebhooksService;
 use Solspace\Freeform\Webhooks\Integrations\Generic;
-use yii\web\ForbiddenHttpException as ForbiddenHttpExceptionAlias;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class WebhooksController extends BaseController
 {
-    /**
-     * Make sure this controller requires a logged in member.
-     */
-    public function init()
+    public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
@@ -28,9 +24,6 @@ class WebhooksController extends BaseController
         parent::init();
     }
 
-    /**
-     * @throws ForbiddenHttpExceptionAlias
-     */
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -47,18 +40,11 @@ class WebhooksController extends BaseController
         );
     }
 
-    /**
-     * @throws \ReflectionException
-     */
     public function actionCreate(): Response
     {
         return $this->renderEditForm(new WebhookModel(), Freeform::t('Create a new Webhook'));
     }
 
-    /**
-     * @throws ForbiddenHttpExceptionAlias
-     * @throws NotFoundHttpException
-     */
     public function actionEdit(int $id = null): Response
     {
         $webhook = $this->getWebhooksService()->getById($id);
@@ -69,10 +55,7 @@ class WebhooksController extends BaseController
         return $this->renderEditForm($webhook, $webhook->getName());
     }
 
-    /**
-     * @return Response
-     */
-    public function actionSave()
+    public function actionSave(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -121,12 +104,6 @@ class WebhooksController extends BaseController
         return $this->renderEditForm($model, $model->name ?: 'New Zapier Webhook');
     }
 
-    /**
-     * @throws ForbiddenHttpExceptionAlias
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     * @throws \yii\web\BadRequestHttpException
-     */
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -138,10 +115,6 @@ class WebhooksController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @throws ForbiddenHttpExceptionAlias
-     * @throws \yii\base\InvalidConfigException
-     */
     private function renderEditForm(WebhookModel $webhook, string $title): Response
     {
         Freeform::getInstance()->requirePro();

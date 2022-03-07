@@ -122,7 +122,7 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
      */
     private function getChartData(): RadialChartData
     {
-        list($rangeStart, $rangeEnd) = $this->getWidgetsService()->getRange($this->dateRange);
+        [$rangeStart, $rangeEnd] = $this->getWidgetsService()->getRange($this->dateRange);
 
         $forms = $this->getFormService()->getAllForms();
 

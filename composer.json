@@ -1,7 +1,7 @@
 {
   "name": "solspace/craft-freeform",
   "description": "The most reliable, intuitive and powerful form builder for Craft.",
-  "version": "3.13.4",
+  "version": "4.0.0",
   "type": "craft-plugin",
   "authors": [
     {
@@ -10,8 +10,8 @@
     }
   ],
   "require": {
+    "craftcms/cms": "^4.0.0-alpha.1",
     "composer/composer": "^1.0|^2.0.13",
-    "craftcms/cms": "^3.4.0",
     "symfony/property-access": "^2.8|^3.0|^4.0|^5.0",
     "symfony/finder": "^2.8|^3.0|^4.0|^5.0",
     "symfony/filesystem": "^2.8|^3.0|^4.0|^5.0",

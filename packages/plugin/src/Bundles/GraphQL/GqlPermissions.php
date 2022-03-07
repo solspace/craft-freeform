@@ -6,7 +6,7 @@ use craft\helpers\Gql;
 
 class GqlPermissions extends Gql
 {
-    const CATEGORY_FORMS = 'freeformForms';
+    public const CATEGORY_FORMS = 'freeformForms';
 
     public static function canQueryForms(): bool
     {

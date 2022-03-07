@@ -23,7 +23,7 @@ class TextField extends AbstractField implements SingleValueInterface, Placehold
 {
     use PlaceholderTrait;
     use SingleValueTrait;
-    const MAXIMUM_FIELD_LENGTH = 100;
+    public const MAXIMUM_FIELD_LENGTH = 100;
 
     /** @var int */
     protected $maxLength;

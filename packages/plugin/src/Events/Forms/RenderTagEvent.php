@@ -9,8 +9,8 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 
 class RenderTagEvent extends ArrayableEvent implements FormEventInterface
 {
-    const POSITION_BEGINNING = 'beginning';
-    const POSITION_END = 'end';
+    public const POSITION_BEGINNING = 'beginning';
+    public const POSITION_END = 'end';
 
     /** @var Form */
     private $form;

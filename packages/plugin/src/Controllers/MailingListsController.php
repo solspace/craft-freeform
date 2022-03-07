@@ -29,7 +29,7 @@ class MailingListsController extends BaseController
     /**
      * Make sure this controller requires a logged in member.
      */
-    public function init()
+    public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
@@ -67,12 +67,7 @@ class MailingListsController extends BaseController
         return $this->renderEditForm($model, 'Create new mailing list');
     }
 
-    /**
-     * @param null|int $id
-     *
-     * @throws \HttpException
-     */
-    public function actionEdit($id = null, IntegrationModel $model = null): Response
+    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -93,10 +88,6 @@ class MailingListsController extends BaseController
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * @throws \HttpException
-     * @throws \yii\web\ForbiddenHttpException
-     */
     public function actionHandleOAuthRedirect(string $handle = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -120,10 +111,7 @@ class MailingListsController extends BaseController
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * Saves an integration.
-     */
-    public function actionSave()
+    public function actionSave(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -216,10 +204,7 @@ class MailingListsController extends BaseController
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * Checks integration connection.
-     */
-    public function actionCheckIntegrationConnection()
+    public function actionCheckIntegrationConnection(): Response
     {
         $id = \Craft::$app->request->post('id');
 
@@ -236,11 +221,6 @@ class MailingListsController extends BaseController
         }
     }
 
-    /**
-     * Checks integration connection.
-     *
-     * @throws IntegrationException
-     */
     public function actionForceAuthorization(string $handle)
     {
         $model = $this->getMailingListsService()->getIntegrationByHandle($handle);
@@ -256,10 +236,7 @@ class MailingListsController extends BaseController
         $integration->initiateAuthentication();
     }
 
-    /**
-     * Deletes a mailing integration.
-     */
-    public function actionDelete()
+    public function actionDelete(): Response
     {
         $this->requirePostRequest();
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -271,10 +248,7 @@ class MailingListsController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @param string $handle
-     */
-    private function getNewOrExistingMailingListIntegrationModel($handle): IntegrationModel
+    private function getNewOrExistingMailingListIntegrationModel(string $handle): IntegrationModel
     {
         $mailingListIntegration = $this->getMailingListsService()->getIntegrationByHandle($handle);
 
@@ -285,12 +259,7 @@ class MailingListsController extends BaseController
         return $mailingListIntegration;
     }
 
-    /**
-     * Handle OAuth2 authorization.
-     *
-     * @return null|Response
-     */
-    private function handleAuthorization(IntegrationModel $model)
+    private function handleAuthorization(IntegrationModel $model): ?Response
     {
         $integration = $model->getIntegrationObject();
         $code = \Craft::$app->request->getParam('code');

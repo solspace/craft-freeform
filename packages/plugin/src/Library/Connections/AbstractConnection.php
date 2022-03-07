@@ -21,10 +21,10 @@ use yii\base\Event;
 
 abstract class AbstractConnection extends BaseConfiguration implements ConnectionInterface
 {
-    const EVENT_BEFORE_VALIDATE = 'beforeValidate';
-    const EVENT_AFTER_VALIDATE = 'afterValidate';
-    const EVENT_BEFORE_CONNECT = 'beforeConnect';
-    const EVENT_AFTER_CONNECT = 'afterConnect';
+    public const EVENT_BEFORE_VALIDATE = 'beforeValidate';
+    public const EVENT_AFTER_VALIDATE = 'afterValidate';
+    public const EVENT_BEFORE_CONNECT = 'beforeConnect';
+    public const EVENT_AFTER_CONNECT = 'afterConnect';
 
     /** @var Form */
     protected $form;

@@ -14,15 +14,15 @@ namespace Solspace\Freeform\Library\Integrations\DataObjects;
 
 class FieldObject implements \JsonSerializable
 {
-    const TYPE_STRING = 'string';
-    const TYPE_ARRAY = 'array';
-    const TYPE_NUMERIC = 'numeric';
-    const TYPE_FLOAT = 'float';
-    const TYPE_DATE = 'date';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_TIMESTAMP = 'timestamp';
-    const TYPE_MICROTIME = 'microtime';
-    const TYPE_BOOLEAN = 'boolean';
+    public const TYPE_STRING = 'string';
+    public const TYPE_ARRAY = 'array';
+    public const TYPE_NUMERIC = 'numeric';
+    public const TYPE_FLOAT = 'float';
+    public const TYPE_DATE = 'date';
+    public const TYPE_DATETIME = 'datetime';
+    public const TYPE_TIMESTAMP = 'timestamp';
+    public const TYPE_MICROTIME = 'microtime';
+    public const TYPE_BOOLEAN = 'boolean';
 
     /** @var string */
     private $handle;

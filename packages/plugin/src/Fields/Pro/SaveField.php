@@ -14,9 +14,9 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
 {
     use SingleStaticValueTrait;
 
-    const POSITION_LEFT = 'left';
-    const POSITION_CENTER = 'center';
-    const POSITION_RIGHT = 'right';
+    public const POSITION_LEFT = 'left';
+    public const POSITION_CENTER = 'center';
+    public const POSITION_RIGHT = 'right';
 
     /** @var string */
     protected $label;

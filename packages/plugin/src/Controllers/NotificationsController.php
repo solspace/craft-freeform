@@ -21,17 +21,11 @@ use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationEditorBundle;
 use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
 use Solspace\Freeform\Services\NotificationsService;
-use yii\base\InvalidParamException;
-use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
 class NotificationsController extends BaseController
 {
-    /**
-     * @throws ForbiddenHttpException
-     * @throws InvalidParamException
-     */
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
@@ -82,14 +76,7 @@ class NotificationsController extends BaseController
         return $this->renderEditForm($record, $title);
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @throws ForbiddenHttpException
-     * @throws InvalidParamException
-     * @throws HttpException
-     */
-    public function actionEdit($id): Response
+    public function actionEdit(mixed $id): Response
     {
         $record = $this->getNotificationService()->getNotificationById($id);
 
@@ -103,12 +90,6 @@ class NotificationsController extends BaseController
         return $this->renderEditForm($record, $record->name);
     }
 
-    /**
-     * @throws ForbiddenHttpException
-     * @throws FreeformException
-     * @throws \Exception
-     * @throws \yii\web\BadRequestHttpException
-     */
     public function actionSave()
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
@@ -211,13 +192,6 @@ class NotificationsController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * Deletes a notification.
-     *
-     * @throws \yii\web\BadRequestHttpException
-     * @throws ForbiddenHttpException
-     * @throws \Exception
-     */
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -295,10 +269,6 @@ class NotificationsController extends BaseController
         return $this->asJson(true);
     }
 
-    /**
-     * @throws InvalidParamException
-     * @throws ForbiddenHttpException
-     */
     private function renderEditForm(NotificationRecord $record, string $title): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
@@ -319,12 +289,7 @@ class NotificationsController extends BaseController
         return Freeform::getInstance()->notifications;
     }
 
-    /**
-     * @param mixed $id
-     *
-     * @throws FreeformException
-     */
-    private function getNewOrExistingNotification($id): NotificationRecord
+    private function getNewOrExistingNotification(mixed $id): NotificationRecord
     {
         if ($id) {
             $notification = $this->getNotificationService()->getNotificationById($id);

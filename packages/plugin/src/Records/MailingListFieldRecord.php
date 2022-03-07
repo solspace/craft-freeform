@@ -24,7 +24,7 @@ use yii\db\ActiveQuery;
  */
 class MailingListFieldRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_mailing_list_fields}}';
+    public const TABLE = '{{%freeform_mailing_list_fields}}';
 
     public static function tableName(): string
     {

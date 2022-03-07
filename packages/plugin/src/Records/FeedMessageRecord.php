@@ -16,7 +16,7 @@ use Twig\Markup;
  */
 class FeedMessageRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_feed_messages}}';
+    public const TABLE = '{{%freeform_feed_messages}}';
 
     public static function tableName(): string
     {

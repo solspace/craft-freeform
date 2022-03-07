@@ -10,7 +10,7 @@ use Solspace\Commons\Migrations\ForeignKey;
  */
 class m200203_180318_AddSpamReasonTable extends Migration
 {
-    const TARGET_TABLE = '{{%freeform_spam_reason}}';
+    public const TARGET_TABLE = '{{%freeform_spam_reason}}';
 
     /**
      * {@inheritdoc}

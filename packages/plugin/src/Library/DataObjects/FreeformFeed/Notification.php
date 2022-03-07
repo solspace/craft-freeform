@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Library\DataObjects\FreeformFeed;
 
 class Notification
 {
-    const TYPE_NOTICE = 'notice';
-    const TYPE_WARNING = 'warning';
-    const TYPE_CRITICAL = 'critical';
+    public const TYPE_NOTICE = 'notice';
+    public const TYPE_WARNING = 'warning';
+    public const TYPE_CRITICAL = 'critical';
 
     /** @var string */
     private $type;

@@ -33,9 +33,6 @@ class ExportProfilesController extends BaseController
         );
     }
 
-    /**
-     * @throws HttpException
-     */
     public function actionCreate(string $formHandle): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_MANAGE);
@@ -54,9 +51,6 @@ class ExportProfilesController extends BaseController
         return $this->renderEditForm($profile, Freeform::t('Create a new Export Profile'));
     }
 
-    /**
-     * @throws HttpException
-     */
     public function actionEdit(int $id): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_MANAGE);
@@ -74,9 +68,6 @@ class ExportProfilesController extends BaseController
         return $this->renderEditForm($profile, $profile->name);
     }
 
-    /**
-     * @throws HttpException
-     */
     public function actionSave(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_MANAGE);
@@ -120,9 +111,6 @@ class ExportProfilesController extends BaseController
         return $this->renderEditForm($profile, $profile->name);
     }
 
-    /**
-     * Deletes a notification.
-     */
     public function actionDelete()
     {
         $this->requirePostRequest();
@@ -135,9 +123,6 @@ class ExportProfilesController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @throws HttpException
-     */
     public function actionExport()
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS);
@@ -186,9 +171,6 @@ class ExportProfilesController extends BaseController
         );
     }
 
-    /**
-     * @param int $id
-     */
     private function getNewOrExistingProfile($id, Form $form): ExportProfileModel
     {
         $profile = $this->getExportProfileService()->getProfileById((int) $id);

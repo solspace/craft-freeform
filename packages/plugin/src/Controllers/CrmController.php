@@ -25,18 +25,12 @@ use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\CrmBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Services\CrmService;
-use yii\base\InvalidParamException;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\HttpException;
 use yii\web\Response;
 
 class CrmController extends Controller
 {
-    /**
-     * Make sure this controller requires a logged in member.
-     */
-    public function init()
+    public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
             $this->requireLogin();
@@ -45,12 +39,6 @@ class CrmController extends Controller
         parent::init();
     }
 
-    /**
-     * Presents a list of all CRM integrations.
-     *
-     * @throws ForbiddenHttpException
-     * @throws InvalidParamException
-     */
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -68,13 +56,6 @@ class CrmController extends Controller
         );
     }
 
-    /**
-     * @throws \yii\base\InvalidParamException
-     * @throws \ReflectionException
-     * @throws ForbiddenHttpException
-     * @throws IntegrationException
-     * @throws \Exception
-     */
     public function actionCreate(): Response
     {
         $model = IntegrationModel::create(IntegrationRecord::TYPE_CRM);
@@ -83,12 +64,7 @@ class CrmController extends Controller
         return $this->renderEditForm($model, $title);
     }
 
-    /**
-     * @param null|int $id
-     *
-     * @throws HttpException
-     */
-    public function actionEdit($id = null, IntegrationModel $model = null): Response
+    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
     {
         if (null === $model) {
             if (is_numeric($id)) {
@@ -107,16 +83,7 @@ class CrmController extends Controller
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * Saves an integration.
-     *
-     * @throws ForbiddenHttpException
-     * @throws BadRequestHttpException
-     * @throws \ReflectionException
-     * @throws IntegrationException
-     * @throws \Exception
-     */
-    public function actionSave()
+    public function actionSave(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -197,11 +164,6 @@ class CrmController extends Controller
         return $this->renderEditForm($model, $model->name);
     }
 
-    /**
-     * Checks integration connection.
-     *
-     * @throws IntegrationException
-     */
     public function actionCheckIntegrationConnection(): Response
     {
         $id = \Craft::$app->request->post('id');
@@ -222,12 +184,6 @@ class CrmController extends Controller
         }
     }
 
-    /**
-     * Checks integration connection.
-     *
-     * @throws IntegrationException
-     * @throws \Exception
-     */
     public function actionForceAuthorization(string $handle)
     {
         $model = $this->getCRMService()->getIntegrationByHandle($handle);
@@ -251,13 +207,6 @@ class CrmController extends Controller
         $this->redirect(UrlHelper::cpUrl('freeform/settings/crm/'.$model->id));
     }
 
-    /**
-     * Deletes a CRM integration.
-     *
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     * @throws \Exception
-     */
     public function actionDelete(): Response
     {
         $this->requirePostRequest();
@@ -269,13 +218,6 @@ class CrmController extends Controller
         return $this->asJson(['success' => true]);
     }
 
-    /**
-     * @throws \ReflectionException
-     * @throws InvalidParamException
-     * @throws IntegrationException
-     * @throws \Exception
-     * @throws ForbiddenHttpException
-     */
     private function renderEditForm(IntegrationModel $model, string $title): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
@@ -320,18 +262,13 @@ class CrmController extends Controller
         return $model;
     }
 
-    /**
-     * Handle OAuth2 authorization.
-     *
-     * @return null|Response
-     */
-    private function handleAuthorization(IntegrationModel $model)
+    private function handleAuthorization(IntegrationModel $model): void
     {
         $integration = $model->getIntegrationObject();
         $code = \Craft::$app->request->getParam('code');
 
         if (!$integration instanceof CRMOAuthConnector || empty($code)) {
-            return null;
+            return;
         }
 
         $accessToken = $integration->fetchAccessToken();
@@ -344,11 +281,13 @@ class CrmController extends Controller
             \Craft::$app->session->setNotice(Freeform::t('CRM Integration saved'));
             \Craft::$app->session->setFlash('CRM Integration saved');
 
-            return $this->redirect(UrlHelper::cpUrl('freeform/settings/crm/'.$model->id));
+            $this->redirect(UrlHelper::cpUrl('freeform/settings/crm/'.$model->id));
+
+            return;
         }
 
         \Craft::$app->session->setError(Freeform::t('CRM Integration not saved'));
 
-        return $this->redirect(UrlHelper::cpUrl('freeform/settings/crm/'.$model->id));
+        $this->redirect(UrlHelper::cpUrl('freeform/settings/crm/'.$model->id));
     }
 }

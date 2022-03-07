@@ -18,28 +18,28 @@ use Solspace\Commons\Loggers\LoggerFactory;
 
 class FreeformLogger
 {
-    const LEVEL_DEBUG = Logger::DEBUG;
-    const LEVEL_INFO = Logger::INFO;
-    const LEVEL_NOTICE = Logger::NOTICE;
-    const LEVEL_WARNING = Logger::WARNING;
-    const LEVEL_ERROR = Logger::ERROR;
-    const LEVEL_CRITICAL = Logger::CRITICAL;
-    const LEVEL_ALERT = Logger::ALERT;
-    const LEVEL_EMERGENCY = Logger::EMERGENCY;
+    public const LEVEL_DEBUG = Logger::DEBUG;
+    public const LEVEL_INFO = Logger::INFO;
+    public const LEVEL_NOTICE = Logger::NOTICE;
+    public const LEVEL_WARNING = Logger::WARNING;
+    public const LEVEL_ERROR = Logger::ERROR;
+    public const LEVEL_CRITICAL = Logger::CRITICAL;
+    public const LEVEL_ALERT = Logger::ALERT;
+    public const LEVEL_EMERGENCY = Logger::EMERGENCY;
 
-    const FREEFORM = 'Freeform';
-    const FORM = 'Form';
-    const EMAIL_NOTIFICATION = 'Email Notification';
-    const CRM_INTEGRATION = 'CRM Integration';
-    const MAILING_LIST_INTEGRATION = 'Email Marketing Integration';
-    const STRIPE = 'Stripe';
-    const DASHBOARD = 'Dashboard';
-    const MAILER = 'Mailer service';
-    const PAYMENT_GATEWAY = 'Payment Gateway';
-    const CONDITIONAL_RULE = 'Conditional Rule';
-    const ELEMENT_CONNECTION = 'Element Connection';
-    const PAYLOAD_FORWARDING = 'POST Forwarding';
-    const FEATURE_BUNDLES = 'bundles';
+    public const FREEFORM = 'Freeform';
+    public const FORM = 'Form';
+    public const EMAIL_NOTIFICATION = 'Email Notification';
+    public const CRM_INTEGRATION = 'CRM Integration';
+    public const MAILING_LIST_INTEGRATION = 'Email Marketing Integration';
+    public const STRIPE = 'Stripe';
+    public const DASHBOARD = 'Dashboard';
+    public const MAILER = 'Mailer service';
+    public const PAYMENT_GATEWAY = 'Payment Gateway';
+    public const CONDITIONAL_RULE = 'Conditional Rule';
+    public const ELEMENT_CONNECTION = 'Element Connection';
+    public const PAYLOAD_FORWARDING = 'POST Forwarding';
+    public const FEATURE_BUNDLES = 'bundles';
 
     private static $categoryColorMap = [
         self::FREEFORM => '#333333',

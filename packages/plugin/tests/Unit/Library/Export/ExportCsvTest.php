@@ -106,10 +106,10 @@ class ExportCsvTest extends TestCase
         ]);
 
         $expected = <<<'EXPECTED'
-"ID","Date Created"
-"1","2019-01-01 08:00:00"
-"2","2019-01-01 09:20:00"
-EXPECTED;
+            "ID","Date Created"
+            "1","2019-01-01 08:00:00"
+            "2","2019-01-01 09:20:00"
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }
@@ -145,16 +145,16 @@ EXPECTED;
         ]);
 
         $expected = <<<'EXPECTED'
-"ID","T1C1","T1C2","T1C3","First Name","T2C1","T2C2","T2C3","T2C4","T2C5"
-"1","one","two","three","Some Name","r1c1","r1c2","r1c3","r1c4","r1c5"
-,"four","five",,,"r2c1","r2c2","r2c3","r2c4","r2c5"
-,,"six",,,,,,,
-"2","some","value",,"Other Name","r1c1","r1c2","r1c3","r1c4","r1c5"
-,,,,,"r2c1","r2c2","r2c3","r2c4","r2c5"
-,,,,,"r3c1","r3c2","r3c3","r3c4","r3c5"
-,,,,,"r4c1","r4c2","r4c3","r4c4","r4c5"
-,,,,,"r5c1","r5c2","r5c3","r5c4","r5c5"
-EXPECTED;
+            "ID","T1C1","T1C2","T1C3","First Name","T2C1","T2C2","T2C3","T2C4","T2C5"
+            "1","one","two","three","Some Name","r1c1","r1c2","r1c3","r1c4","r1c5"
+            ,"four","five",,,"r2c1","r2c2","r2c3","r2c4","r2c5"
+            ,,"six",,,,,,,
+            "2","some","value",,"Other Name","r1c1","r1c2","r1c3","r1c4","r1c5"
+            ,,,,,"r2c1","r2c2","r2c3","r2c4","r2c5"
+            ,,,,,"r3c1","r3c2","r3c3","r3c4","r3c5"
+            ,,,,,"r4c1","r4c2","r4c3","r4c4","r4c5"
+            ,,,,,"r5c1","r5c2","r5c3","r5c4","r5c5"
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }
@@ -193,10 +193,10 @@ EXPECTED;
         );
 
         $expected = <<<'EXPECTED'
-"ID","Textarea"
-"1","some text containing newlines"
-"2","other text containing newlines"
-EXPECTED;
+            "ID","Textarea"
+            "1","some text containing newlines"
+            "2","other text containing newlines"
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }
@@ -231,16 +231,16 @@ EXPECTED;
         ]);
 
         $expected = <<<'EXPECTED'
-"ID","Textarea"
-"1","some text
-containing
-newlines"
-"2","other text
-containing
+            "ID","Textarea"
+            "1","some text
+            containing
+            newlines"
+            "2","other text
+            containing
 
 
-newlines"
-EXPECTED;
+            newlines"
+            EXPECTED;
 
         $this->assertSame($expected, $exporter->export());
     }

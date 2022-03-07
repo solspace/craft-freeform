@@ -24,7 +24,7 @@ use yii\base\Event;
 
 class SessionContext
 {
-    const KEY_HASH = 'formHash';
+    public const KEY_HASH = 'formHash';
 
     /** @var FormContextStorageInterface */
     private $storage;
@@ -200,7 +200,7 @@ class SessionContext
 
     public static function getPostedFormId()
     {
-        list($formHash) = self::getPostedHashParts();
+        [$formHash] = self::getPostedHashParts();
         if (null === $formHash) {
             return null;
         }
@@ -214,7 +214,7 @@ class SessionContext
             return false;
         }
 
-        list($_, $postedPageToken) = self::getPostedHashParts();
+        [$_, $postedPageToken] = self::getPostedHashParts();
         $postedPageIndex = HashHelper::decode($postedPageToken, $form->getId());
 
         return $postedPageIndex === $page->getIndex();
@@ -224,7 +224,7 @@ class SessionContext
     {
         $formHash = self::getFormHash($form);
 
-        list($postedFormHash, $_, $postedSessionHash) = self::getPostedHashParts();
+        [$postedFormHash, $_, $postedSessionHash] = self::getPostedHashParts();
         if ($postedFormHash === $formHash) {
             return $postedSessionHash;
         }
@@ -241,7 +241,7 @@ class SessionContext
             return null;
         }
 
-        list($formHash, $_, $sessionToken) = $parts;
+        [$formHash, $_, $sessionToken] = $parts;
 
         return $formHash.'-'.$sessionToken;
     }
@@ -257,7 +257,7 @@ class SessionContext
 
         $parts = explode('-', $hash);
         if (3 === \count($parts)) {
-            list($formHash, $pageHash, $sessionToken) = $parts;
+            [$formHash, $pageHash, $sessionToken] = $parts;
 
             return [$formHash, $pageHash, $sessionToken];
         }

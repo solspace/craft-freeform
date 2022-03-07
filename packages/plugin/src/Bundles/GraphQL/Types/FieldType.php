@@ -25,7 +25,7 @@ class FieldType extends AbstractObjectType
         return self::getType($context);
     }
 
-    public static function getType(FreeformFieldInterface $field)
+    public static function getType(FreeformFieldInterface $field): string
     {
         return self::getTypeFromString($field->getType());
     }
@@ -35,7 +35,7 @@ class FieldType extends AbstractObjectType
         return 'FreeformField_'.StringHelper::toPascalCase($typeName);
     }
 
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo)
+    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): mixed
     {
         if ('values' === $resolveInfo->fieldName) {
             $resolveInfo->fieldName = 'value';

@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Library\Rules;
 
 class FieldCriteria implements \JsonSerializable
 {
-    const OPERAND_EQUALS = '=';
-    const OPERAND_NOT_EQUALS = '!=';
+    public const OPERAND_EQUALS = '=';
+    public const OPERAND_NOT_EQUALS = '!=';
 
     /** @var string */
     private $hash;

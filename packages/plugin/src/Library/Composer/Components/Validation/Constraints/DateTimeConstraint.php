@@ -6,7 +6,7 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Errors\ConstraintVi
 
 class DateTimeConstraint implements ConstraintInterface
 {
-    const PATTERN_MATCH_FORMAT = '/^((?:[Yy])|(?:[mn])|(?:[dj]))(.*?)((?:[Yy])|(?:[mn])|(?:[dj]))(.*?)((?:[Yy])|(?:[mn])|(?:[dj]))$/';
+    public const PATTERN_MATCH_FORMAT = '/^((?:[Yy])|(?:[mn])|(?:[dj]))(.*?)((?:[Yy])|(?:[mn])|(?:[dj]))(.*?)((?:[Yy])|(?:[mn])|(?:[dj]))$/';
 
     /** @var string */
     private $message;

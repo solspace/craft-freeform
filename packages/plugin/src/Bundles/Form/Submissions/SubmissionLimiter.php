@@ -10,7 +10,7 @@ use yii\base\Event;
 
 class SubmissionLimiter extends FeatureBundle
 {
-    const BAG_KEY = 'submissionLimit';
+    public const BAG_KEY = 'submissionLimit';
 
     public function __construct()
     {

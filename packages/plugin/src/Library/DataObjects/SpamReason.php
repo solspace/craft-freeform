@@ -4,15 +4,15 @@ namespace Solspace\Freeform\Library\DataObjects;
 
 class SpamReason
 {
-    const TYPE_GENERIC = 'generic';
-    const TYPE_HONEYPOT = 'honeypot';
-    const TYPE_JS_TEST = 'js_test';
-    const TYPE_RECAPTCHA = 'recaptcha';
-    const TYPE_BLOCKED_KEYWORDS = 'blocked_keywords';
-    const TYPE_BLOCKED_EMAIL_ADDRESS = 'blocked_email_address';
-    const TYPE_BLOCKED_IP = 'blocked_ip';
-    const TYPE_MINIMUM_SUBMIT_TIME = 'minimum_submit_time';
-    const TYPE_MAXIMUM_SUBMIT_TIME = 'maximum_submit_time';
+    public const TYPE_GENERIC = 'generic';
+    public const TYPE_HONEYPOT = 'honeypot';
+    public const TYPE_JS_TEST = 'js_test';
+    public const TYPE_RECAPTCHA = 'recaptcha';
+    public const TYPE_BLOCKED_KEYWORDS = 'blocked_keywords';
+    public const TYPE_BLOCKED_EMAIL_ADDRESS = 'blocked_email_address';
+    public const TYPE_BLOCKED_IP = 'blocked_ip';
+    public const TYPE_MINIMUM_SUBMIT_TIME = 'minimum_submit_time';
+    public const TYPE_MAXIMUM_SUBMIT_TIME = 'maximum_submit_time';
 
     /** @var string */
     private $type;

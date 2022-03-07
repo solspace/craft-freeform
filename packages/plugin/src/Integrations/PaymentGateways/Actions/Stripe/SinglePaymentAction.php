@@ -7,7 +7,7 @@ use Stripe\PaymentIntent;
 
 class SinglePaymentAction extends AbstractFormAction
 {
-    const NAME = 'stripe.single_payment.payment_intent_action';
+    public const NAME = 'stripe.single_payment.payment_intent_action';
 
     public function __construct(PaymentIntent $intent)
     {

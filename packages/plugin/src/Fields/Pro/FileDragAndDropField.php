@@ -8,9 +8,9 @@ use Solspace\Freeform\Library\Helpers\FileHelper;
 
 class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface
 {
-    const DEFAULT_ACCENT = '#3a85ee';
-    const DEFAULT_THEME = 'light';
-    const DEFAULT_PLACEHOLDER = 'Drag and drop files here or click to upload';
+    public const DEFAULT_ACCENT = '#3a85ee';
+    public const DEFAULT_THEME = 'light';
+    public const DEFAULT_PLACEHOLDER = 'Drag and drop files here or click to upload';
 
     /** @var string */
     protected $accent;

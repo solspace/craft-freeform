@@ -28,8 +28,8 @@ use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
 
 class Campaign extends AbstractMailingListIntegration
 {
-    const TITLE = 'Craft Campaign';
-    const LOG_CATEGORY = 'CraftCampaign';
+    public const TITLE = 'Craft Campaign';
+    public const LOG_CATEGORY = 'CraftCampaign';
 
     /** @var array */
     private static $fieldCache;

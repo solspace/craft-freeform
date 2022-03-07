@@ -7,8 +7,8 @@ use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 
 abstract class BaseRule
 {
-    const TYPE_MATCH_ALL = 'all';
-    const TYPE_MATCH_ANY = 'any';
+    public const TYPE_MATCH_ALL = 'all';
+    public const TYPE_MATCH_ANY = 'any';
 
     /** @var bool */
     private $matchAll;

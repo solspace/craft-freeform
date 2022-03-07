@@ -16,17 +16,17 @@ use yii\base\Event;
 
 class SubmissionHookHandler
 {
-    const COLUMN_STATUS = 'paymentStatus';
-    const COLUMN_TYPE = 'paymentType';
-    const COLUMN_CARD = 'paymentCard';
+    public const COLUMN_STATUS = 'paymentStatus';
+    public const COLUMN_TYPE = 'paymentType';
+    public const COLUMN_CARD = 'paymentCard';
 
-    const ATTRIBUTES = [
+    public const ATTRIBUTES = [
         self::COLUMN_TYPE => 'Payment Type',
         self::COLUMN_STATUS => 'Payment Status',
         self::COLUMN_CARD => 'Payment Card',
     ];
 
-    const TEMPLATE_FOLDER = 'freeform/_components/fields';
+    public const TEMPLATE_FOLDER = 'freeform/_components/fields';
 
     /**
      * Register hooks on Submission element handled by this class.

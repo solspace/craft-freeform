@@ -29,8 +29,6 @@ use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewa
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\NotificationRecord;
 use yii\base\Exception;
-use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
 use yii\web\Response;
 
 class ApiController extends BaseController
@@ -40,11 +38,6 @@ class ApiController extends BaseController
         return \Craft::$app->runAction('freeform/submit');
     }
 
-    /**
-     * GET fields.
-     *
-     * @throws ForbiddenHttpException
-     */
     public function actionFields(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -52,11 +45,6 @@ class ApiController extends BaseController
         return $this->asJson($this->getFieldsService()->getAllFields(false));
     }
 
-    /**
-     * GET notifications.
-     *
-     * @throws ForbiddenHttpException
-     */
     public function actionNotifications(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -64,11 +52,6 @@ class ApiController extends BaseController
         return $this->asJson($this->getNotificationsService()->getAllNotifications(false));
     }
 
-    /**
-     * GET mailing lists.
-     *
-     * @throws ForbiddenHttpException
-     */
     public function actionMailingLists(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -81,11 +64,6 @@ class ApiController extends BaseController
         return $this->asJson($mailingLists);
     }
 
-    /**
-     * GET integrations.
-     *
-     * @throws ForbiddenHttpException
-     */
     public function actionCrmIntegrations(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -97,18 +75,13 @@ class ApiController extends BaseController
             try {
                 $integration->getFields();
             } catch (\Exception $e) {
-                return $this->asErrorJson($e->getMessage());
+                return $this->asFailure($e->getMessage());
             }
         }
 
         return $this->asJson($crmIntegrations);
     }
 
-    /**
-     * GET payment gateways.
-     *
-     * @throws ForbiddenHttpException
-     */
     public function actionPaymentGateways(): Response
     {
         //TODO: add separate function to query single gateway?
@@ -122,11 +95,6 @@ class ApiController extends BaseController
         return $this->asJson($paymentGateways);
     }
 
-    /**
-     * POST payment plans.
-     *
-     * @throws ForbiddenHttpException
-     */
     public function actionPaymentPlans(): Response
     {
         $this->requirePostRequest();
@@ -176,11 +144,6 @@ class ApiController extends BaseController
         return $this->asJson(['success' => false, 'errors' => $errors]);
     }
 
-    /**
-     * GET fields.
-     *
-     * @throws ForbiddenHttpException
-     */
     public function actionFormTemplates(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -188,12 +151,6 @@ class ApiController extends BaseController
         return $this->asJson($this->getSettingsService()->getCustomFormTemplates());
     }
 
-    /**
-     * POST a field, and save it to the database.
-     *
-     * @throws \Exception
-     * @throws BadRequestHttpException
-     */
     public function actionQuickCreateField(): Response
     {
         $this->requirePostRequest();
@@ -245,13 +202,6 @@ class ApiController extends BaseController
         return $this->asJson(['success' => false, 'errors' => $errors]);
     }
 
-    /**
-     * POST a field, and save it to the database.
-     *
-     * @throws \yii\base\InvalidParamException
-     * @throws \yii\base\ErrorException
-     * @throws BadRequestHttpException
-     */
     public function actionQuickCreateNotification(): Response
     {
         $this->requirePostRequest();
@@ -311,12 +261,6 @@ class ApiController extends BaseController
         return $this->asJson(['success' => false, 'errors' => $errors]);
     }
 
-    /**
-     * Returns the data needed to display a Submissions chart.
-     *
-     * @throws Exception
-     * @throws ForbiddenHttpException
-     */
     public function actionGetSubmissionData(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
@@ -324,7 +268,7 @@ class ApiController extends BaseController
         // Required for Dashboard widget, unnecessary for Entries Index view
         $source = \Craft::$app->request->post('source');
         $formId = null;
-        if ($source && 0 === strpos($source, 'form:')) {
+        if ($source && str_starts_with($source, 'form:')) {
             $formId = (int) substr($source, 5);
         } elseif ('*' === $source) {
             $isAdmin = PermissionHelper::isAdmin();
@@ -407,18 +351,11 @@ class ApiController extends BaseController
         );
     }
 
-    /**
-     * Mark the tutorial as finished.
-     */
     public function actionFinishTutorial(): Response
     {
         return $this->asJson(['success' => $this->getSettingsService()->finishTutorial()]);
     }
 
-    /**
-     * @throws BadRequestHttpException
-     * @throws ForbiddenHttpException
-     */
     public function actionOptionsFromSource(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
@@ -438,9 +375,6 @@ class ApiController extends BaseController
         return $this->asJson(['data' => $options]);
     }
 
-    /**
-     * @throws Exception
-     */
     private function getRunChartDataFromQuery(
         Query $query,
         \DateTime $startDate,
@@ -458,8 +392,6 @@ class ApiController extends BaseController
             ],
             $options
         );
-
-        $isMysql = \Craft::$app->getDb()->getIsMysql();
 
         if ($options['intervalUnit'] && \in_array($options['intervalUnit'], ['year', 'month', 'day', 'hour'], true)) {
             $intervalUnit = $options['intervalUnit'];
@@ -492,8 +424,6 @@ class ApiController extends BaseController
             default:
                 throw new Exception('Invalid interval unit: '.$intervalUnit);
         }
-
-        $sqlGroup[] = '[[date]]';
 
         // Assemble the data
         $rows = [];

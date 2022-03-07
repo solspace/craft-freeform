@@ -11,7 +11,7 @@ use yii\db\Query;
  */
 class m180214_094247_AddUniqueTokenToSubmissionsAndForms extends Migration
 {
-    const TOKEN_LENGTH = 100;
+    public const TOKEN_LENGTH = 100;
 
     /**
      * {@inheritdoc}

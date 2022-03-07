@@ -33,13 +33,13 @@ use yii\db\ActiveQuery;
  */
 class PaymentRecord extends ActiveRecord
 {
-    const TABLE = '{{%freeform_payments_payments}}';
+    public const TABLE = '{{%freeform_payments_payments}}';
 
-    const STATUS_SUCCESS = 'success';
-    const STATUS_PAID = 'paid';
-    const STATUS_FAILED = 'failed';
-    const STATUS_ACTIVE = 'active';
-    const STATUS_INACTIVE = 'inactive';
+    public const STATUS_SUCCESS = 'success';
+    public const STATUS_PAID = 'paid';
+    public const STATUS_FAILED = 'failed';
+    public const STATUS_ACTIVE = 'active';
+    public const STATUS_INACTIVE = 'inactive';
 
     public static function tableName(): string
     {

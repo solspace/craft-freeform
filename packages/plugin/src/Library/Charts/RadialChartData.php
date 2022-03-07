@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Library\Charts;
 
 class RadialChartData implements \JsonSerializable
 {
-    const TYPE_PIE = 'pie';
-    const TYPE_DOUGHNUT = 'doughnut';
-    const TYPE_POLAR_AREA = 'polarArea';
+    public const TYPE_PIE = 'pie';
+    public const TYPE_DOUGHNUT = 'doughnut';
+    public const TYPE_POLAR_AREA = 'polarArea';
 
     /** @var string */
     private $chartType;

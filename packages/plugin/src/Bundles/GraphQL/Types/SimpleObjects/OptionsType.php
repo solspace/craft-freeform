@@ -25,7 +25,7 @@ class OptionsType extends AbstractObjectType
      * @param mixed  $arguments
      * @param mixed  $context
      */
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo)
+    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): mixed
     {
         if ('value' === $resolveInfo->fieldName) {
             return $source->getValue() ?? null;

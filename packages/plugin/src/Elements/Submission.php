@@ -708,9 +708,8 @@ class Submission extends Element
 
         if (Freeform::getInstance()->isPro()) {
             $actions[] = \Craft::$app->elements->createAction(['type' => ResendNotificationsAction::class]);
+            $actions[] = \Craft::$app->elements->createAction(['type' => SendNotificationAction::class]);
         }
-
-        $actions[] = \Craft::$app->elements->createAction(['type' => SendNotificationAction::class]);
 
         if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
             $actions[] = \Craft::$app->elements->createAction([

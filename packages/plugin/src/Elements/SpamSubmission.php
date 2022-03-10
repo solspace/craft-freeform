@@ -12,33 +12,21 @@ use Solspace\Freeform\Freeform;
 
 class SpamSubmission extends Submission
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function find(): ElementQueryInterface
     {
         return (new SubmissionQuery(self::class))->isSpam(true);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function displayName(): string
     {
         return Freeform::t('Submission');
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public static function refHandle()
+    public static function refHandle(): ?string
     {
         return 'spam';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function hasStatuses(): bool
     {
         return false;
@@ -52,17 +40,11 @@ class SpamSubmission extends Submission
         return $attributes;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/spam/'.$this->id) : false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected static function defineActions(string $source = null): array
     {
         if ('*' === $source) {

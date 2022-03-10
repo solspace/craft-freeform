@@ -229,9 +229,7 @@ class SubmissionQuery extends ElementQuery
 
             if (is_numeric($this->formId)) {
                 $form = Freeform::getInstance()->forms->getFormById($this->formId);
-                if ($form) {
-                    $selectedForm = $form->getForm();
-                }
+                $selectedForm = $form?->getForm();
             }
         }
 

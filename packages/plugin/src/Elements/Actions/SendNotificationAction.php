@@ -14,7 +14,7 @@ class SendNotificationAction extends ElementAction
         return Freeform::t('Send Additional Notification');
     }
 
-    public function getTriggerHtml()
+    public function getTriggerHtml(): null|string
     {
         $type = Json::encode(static::class);
 
@@ -39,6 +39,8 @@ class SendNotificationAction extends ElementAction
             EOT;
 
         \Craft::$app->view->registerJs($js);
+
+        return null;
     }
 
     public function performAction(ElementQueryInterface $query): bool

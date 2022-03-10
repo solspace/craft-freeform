@@ -6,6 +6,7 @@ use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Gql as GqlHelper;
 use craft\services\Gql as GqlService;
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FormArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormResolver;
@@ -16,35 +17,21 @@ use yii\db\Schema;
 
 class FormFieldType extends Field
 {
-    /**
-     * {@inheritDoc}
-     */
     public static function displayName(): string
     {
         return Freeform::t('Freeform Form');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function defaultSelectionLabel(): string
     {
         return Freeform::t('Add a form');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getContentColumnType(): string
     {
         return Schema::TYPE_INTEGER;
     }
 
-    /**
-     * {@inheritDoc IFieldType::getInputHtml()}.
-     *
-     * @param mixed $value
-     */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
         $freeform = Freeform::getInstance();
@@ -84,10 +71,7 @@ class FormFieldType extends Field
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function serializeValue($value, ElementInterface $element = null)
+    public function serializeValue(mixed $value, ElementInterface $element = null): mixed
     {
         if ($value instanceof Form) {
             return $value->getId();
@@ -96,10 +80,7 @@ class FormFieldType extends Field
         return parent::serializeValue($value, $element);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function normalizeValue($value, ElementInterface $element = null)
+    public function normalizeValue(mixed $value, ElementInterface $element = null): mixed
     {
         if ($value instanceof Form) {
             return $value;
@@ -114,7 +95,7 @@ class FormFieldType extends Field
         return null;
     }
 
-    public function getContentGqlType()
+    public function getContentGqlType(): Type|array
     {
         $gqlType = [
             'name' => $this->handle,
@@ -130,9 +111,6 @@ class FormFieldType extends Field
         return $gqlType;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     protected function optionsSettingLabel(): string
     {
         return Freeform::t('Freeform Options');

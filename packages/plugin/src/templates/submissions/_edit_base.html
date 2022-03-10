@@ -74,11 +74,10 @@
     {{ redirectInput(redirectUrl is defined ? redirectUrl : 'freeform/submissions') }}
     {{ csrfInput() }}
 
-
     <div id="fields">
         {% for page in layout.pages %}
             <div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
-                {% for field in layout.hiddenFields if field.pageIndex == page.index and field.type not in ["mailing_list"] %}
+                {% for field in layout.hiddenFields|filter(field => field.pageIndex == page.index and field.type not in ["mailing_list"]) %}
                     {% set fieldHandle = field.handle %}
 
                     <div class="fields-row">
@@ -100,7 +99,7 @@
 
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row if field.type not in ["submit", "confirmation", "password", "save"] -%}
+                        {%- for field in row|filter(field => field.type not in ["submit", "confirmation", "password", "save"]) -%}
                             <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
                                 {% set fieldHandle = field.handle %}
 
@@ -261,7 +260,7 @@
                                                 {% set assets = submission.getAssets('field_' ~ field.id) %}
 
                                                 {% if assets %}
-                                                    {% for asset in assets if asset is not null %}
+                                                    {% for asset in assets|filter(asset => asset is not null) %}
                                                         {% set thumbSizes = [30, 60, 100, 200] %}
                                                         {% set srcset = "" %}
                                                         {%- for size in thumbSizes -%}{% set srcset = srcset ~ ", " ~ asset.thumbUrl(size) ~ " " ~ size ~ "w" %}{%- endfor -%}

@@ -10,19 +10,11 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 class FixPaymentsAction extends ElementAction
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getTriggerLabel(): string
     {
         return Freeform::t('Fix Missing Payments');
     }
 
-    /**
-     * Performs the action on any elements that match the given criteria.
-     *
-     * @throws FreeformException
-     */
     public function performAction(ElementQueryInterface $query): bool
     {
         /** @var Submission[] $submissions */

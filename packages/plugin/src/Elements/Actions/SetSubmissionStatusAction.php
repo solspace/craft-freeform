@@ -9,22 +9,13 @@ use Solspace\Freeform\Freeform;
 
 class SetSubmissionStatusAction extends ElementAction
 {
-    /**
-     * @var int
-     */
-    public $statusId;
+    public ?int $statusId = null;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTriggerLabel(): string
     {
         return Freeform::t('Set Status');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules(): array
     {
         $statusIds = Freeform::getInstance()->statuses->getAllStatusIds();
@@ -40,10 +31,7 @@ class SetSubmissionStatusAction extends ElementAction
         return $rules;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTriggerHtml()
+    public function getTriggerHtml(): string
     {
         return \Craft::$app->getView()->renderTemplate(
             'freeform/_components/fieldTypes/setStatusTrigger',
@@ -53,9 +41,6 @@ class SetSubmissionStatusAction extends ElementAction
         );
     }
 
-    /**
-     * Performs the action on any elements that match the given criteria.
-     */
     public function performAction(ElementQueryInterface $query): bool
     {
         $elementsService = \Craft::$app->getElements();

@@ -45,15 +45,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     public const EVENT_POST_PROCESS = 'postProcess';
 
     /** @var Submission[] */
-    private static $submissionCache = [];
-    private static $submissionTokenCache = [];
+    private static array $submissionCache = [];
+    private static array $submissionTokenCache = [];
 
-    /**
-     * @param int $id
-     *
-     * @return null|Submission
-     */
-    public function getSubmissionById($id)
+    public function getSubmissionById(int $id): ?Submission
     {
         if (!isset(self::$submissionCache[$id])) {
             self::$submissionCache[$id] = Submission::find()->id($id)->one();
@@ -62,10 +57,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return self::$submissionCache[$id];
     }
 
-    /**
-     * @return null|Submission
-     */
-    public function getSubmissionByToken(string $token)
+    public function getSubmissionByToken(string $token): ?Submission
     {
         if (!isset(self::$submissionTokenCache[$token])) {
             self::$submissionTokenCache[$token] = Submission::find()->where(['token' => $token])->one();
@@ -74,12 +66,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return self::$submissionTokenCache[$token];
     }
 
-    /**
-     * @param int|string|Submission $identificator
-     *
-     * @return null|Submission
-     */
-    public function getSubmission($identificator)
+    public function getSubmission(int|string|Submission $identificator): ?Submission
     {
         if ($identificator instanceof Submission) {
             return $identificator;
@@ -293,11 +280,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $formsService->onAfterSubmit($form, $submission);
     }
 
-    /**
-     * @param Submission[] $submissions
-     *
-     * @throws \Exception
-     */
     public function delete(array $submissions, bool $bypassPermissionCheck = false): bool
     {
         $allowedFormIds = $this->getAllowedWriteFormIds();

@@ -41,6 +41,7 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
 class NotificationRecord extends ActiveRecord implements NotificationInterface, \JsonSerializable
 {
     public const TABLE = '{{%freeform_notifications}}';
+
     /** @var string */
     public $filepath;
 
@@ -52,8 +53,8 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
     public static function create(): self
     {
         $record = new self();
-        $record->fromEmail = \Craft::$app->systemSettings->getSetting('email', 'fromEmail');
-        $record->fromName = \Craft::$app->systemSettings->getSetting('email', 'fromName');
+        $record->fromEmail = \Craft::$app->projectConfig->get('email.fromEmail');
+        $record->fromName = \Craft::$app->projectConfig->get('email.fromName');
         $record->subject = 'New submission on your {{ form.name }} form';
         $record->autoText = true;
         $record->bodyHtml = <<<'EOT'
@@ -111,7 +112,7 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
 
     public function rules(): array
     {
-        $rules = [
+        return [
             [['name', 'handle', 'subject', 'fromName', 'fromEmail'], 'required'],
             [
                 'bodyHtml',
@@ -130,8 +131,6 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
                 'message' => 'Either HTML or Text body must be present',
             ],
         ];
-
-        return $rules;
     }
 
     public function getHandle(): string
@@ -154,34 +153,22 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
         return $this->fromEmail;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getCc()
     {
         return $this->cc;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getBcc()
     {
         return $this->bcc;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getReplyToName()
+    public function getReplyToName(): ?string
     {
         return $this->replyToName;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getReplyToEmail()
+    public function getReplyToEmail(): ?string
     {
         return $this->replyToEmail;
     }
@@ -215,21 +202,15 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
         return (bool) $this->autoText;
     }
 
-    /**
-     * @return null|array
-     */
-    public function getPresetAssets()
+    public function getPresetAssets(): ?array
     {
         if ($this->presetAssets) {
-            return \GuzzleHttp\json_decode($this->presetAssets, true);
+            return json_decode($this->presetAssets, true);
         }
 
         return null;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function jsonSerialize(): array
     {
         return [

@@ -11,17 +11,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 
 class ResendNotificationsAction extends ElementAction
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getTriggerLabel(): string
     {
         return Freeform::t('Resend Notifications');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function performAction(ElementQueryInterface $query): bool
     {
         $templateMode = \Craft::$app->view->getTemplateMode();

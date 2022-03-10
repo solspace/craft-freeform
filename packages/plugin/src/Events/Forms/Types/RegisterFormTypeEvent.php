@@ -8,7 +8,7 @@ use yii\base\Event;
 
 class RegisterFormTypeEvent extends Event
 {
-    private $types;
+    private array $types = [];
 
     /**
      * @param class-string<FormTypeInterface> $className

@@ -22,14 +22,11 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 {
     public const DEFAULT_LIMIT = 5;
 
-    /** @var string */
-    public $title;
+    public ?string $title;
 
-    /** @var array */
-    public $formIds;
+    public array|string|null $formIds;
 
-    /** @var int */
-    public $limit;
+    public ?int $limit;
 
     public static function displayName(): string
     {
@@ -41,10 +38,7 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
         return __DIR__.'/../../icon-mask.svg';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -61,10 +55,7 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['formIds'], 'required'],

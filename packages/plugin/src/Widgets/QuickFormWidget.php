@@ -17,14 +17,11 @@ use Solspace\Freeform\Freeform;
 
 class QuickFormWidget extends Widget
 {
-    /** @var string */
-    public $title;
+    public ?string $title = null;
 
-    /** @var int */
-    public $formId;
+    public ?int $formId = null;
 
-    /** @var string */
-    public $successMessage;
+    public ?string $successMessage = null;
 
     public static function displayName(): string
     {
@@ -36,10 +33,7 @@ class QuickFormWidget extends Widget
         return __DIR__.'/../icon-mask.svg';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 

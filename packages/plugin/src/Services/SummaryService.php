@@ -22,6 +22,7 @@ use Solspace\Freeform\Library\DataObjects\Summary\Statistics\SubStats\PluginInfo
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\System;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Totals;
 use Solspace\Freeform\Library\DataObjects\Summary\Statistics\Widgets;
+use Solspace\Freeform\Library\Helpers\ArrayHelper;
 use Solspace\Freeform\Widgets\Pro\FieldValuesWidget;
 use Solspace\Freeform\Widgets\Pro\LinearChartsWidget;
 use Solspace\Freeform\Widgets\Pro\RadialChartsWidget;
@@ -37,6 +38,8 @@ class SummaryService extends Component
         $freeform = Freeform::getInstance();
         $craft = \Craft::$app;
 
+        $craftFields = \Craft::$app->fields->getAllFields();
+
         $summary = new InstallSummary();
 
         $system = new System();
@@ -44,8 +47,8 @@ class SummaryService extends Component
         $system->phpVersion = \PHP_VERSION;
         $system->craftVersion = $craft->version;
         $system->craftEdition = strtolower($craft->getEditionName());
-        $system->formFieldType = \Craft::$app->fields->getFieldsByElementType(FormFieldType::class) > 0;
-        $system->submissionsFieldType = \Craft::$app->fields->getFieldsByElementType(SubmissionFieldType::class) > 0;
+        $system->formFieldType = ArrayHelper::some($craftFields, fn ($item) => FormFieldType::class === \get_class($item));
+        $system->submissionsFieldType = ArrayHelper::some($craftFields, fn ($item) => SubmissionFieldType::class === \get_class($item));
         $system->userGroups = $craft->userGroups->getAllGroups() > 1;
         $system->multiSite = $craft->sites->getAllSiteIds() > 1;
         $system->languages = $this->hasLanguages();

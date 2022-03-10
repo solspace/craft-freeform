@@ -25,26 +25,19 @@ use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
 class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
 {
-    /** @var string */
-    public $title;
+    public ?string $title;
 
-    /** @var int */
-    public $formId;
+    public array|string|null $formId;
 
-    /** @var string */
-    public $fieldId;
+    public ?string $fieldId;
 
-    /** @var string */
-    public $dateRange;
+    public ?string $dateRange;
 
-    /** @var int */
-    public $chartHeight;
+    public ?int $chartHeight;
 
-    /** @var string */
-    public $chartType;
+    public ?string $chartType;
 
-    /** @var bool */
-    public $showEmpty;
+    public ?bool $showEmpty;
 
     public static function displayName(): string
     {
@@ -56,10 +49,7 @@ class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
         return __DIR__.'/../../icon-mask.svg';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -84,10 +74,7 @@ class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             [['formId', 'fieldId'], 'required'],

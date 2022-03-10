@@ -67,7 +67,7 @@
                     </thead>
                     <tbody>
                     {# Database based templates #}
-                    {% for notification in notifications if not notification.fileBasedTemplate %}
+                    {% for notification in notifications|filter(notification => not notification.fileBasedTemplate) %}
                         <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
                             <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                                 {% if currentUser.can("freeform-notificationsManage") %}
@@ -118,7 +118,7 @@
             </thead>
             <tbody>
             {# File based templates #}
-            {% for filename, notification in notifications if notification.fileBasedTemplate %}
+            {% for filename, notification in notifications|filter(notification => notification.fileBasedTemplate) %}
                 <tr data-id="{{ notification.filepath }}" data-name="{{ notification.name|t('freeform') }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         {% if currentUser.can("freeform-notificationsManage") %}

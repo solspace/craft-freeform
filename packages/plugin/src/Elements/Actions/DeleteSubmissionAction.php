@@ -8,39 +8,25 @@ use Solspace\Freeform\Freeform;
 
 class DeleteSubmissionAction extends ElementAction
 {
-    /** @var string */
-    public $confirmationMessage;
+    public string $confirmationMessage;
 
-    /** @var string */
-    public $successMessage;
+    public string $successMessage;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getTriggerLabel(): string
     {
         return Freeform::t('Delete…');
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function isDestructive(): bool
     {
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfirmationMessage()
+    public function getConfirmationMessage(): string
     {
         return $this->confirmationMessage;
     }
 
-    /**
-     * Performs the action on any elements that match the given criteria.
-     */
     public function performAction(ElementQueryInterface $query): bool
     {
         Freeform::getInstance()->submissions->delete($query->all());

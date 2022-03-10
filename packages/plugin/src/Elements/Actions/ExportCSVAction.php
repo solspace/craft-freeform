@@ -12,18 +12,12 @@ use Solspace\Freeform\Library\Export\ExportCsv;
 
 class ExportCSVAction extends ElementAction
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getTriggerLabel(): string
     {
         return Freeform::t('Export to CSV');
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function getTriggerHtml()
+    public function getTriggerHtml(): null|string
     {
         $type = Json::encode(static::class);
 
@@ -63,13 +57,10 @@ class ExportCSVAction extends ElementAction
         );
 
         \Craft::$app->view->registerJs($js);
+
+        return null;
     }
 
-    /**
-     * Performs the action on any elements that match the given criteria.
-     *
-     * @throws FreeformException
-     */
     public function performAction(ElementQueryInterface $query): bool
     {
         /** @var Submission[] $submissions */
@@ -117,5 +108,7 @@ class ExportCSVAction extends ElementAction
         $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i'));
 
         Freeform::getInstance()->exportProfiles->outputFile($exporter->export(), $fileName, $exporter->getMimeType());
+
+        return true;
     }
 }

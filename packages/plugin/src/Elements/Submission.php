@@ -6,7 +6,6 @@ use craft\base\Element;
 use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
-use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\Html;
 use craft\helpers\UrlHelper;
@@ -33,7 +32,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
-use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
@@ -85,7 +83,7 @@ class Submission extends Element
     /** @var array */
     private $storedFieldValues;
 
-    /** @var array AbstractField[] */
+    /** @var AbstractField[] */
     private $fieldsByIdentifier = [];
 
     /** @var bool */
@@ -96,10 +94,12 @@ class Submission extends Element
      */
     public function __construct(array $config = [])
     {
+        $this->formId = $config['formId'] ?? null;
+        $this->getFieldMetadata();
+
         parent::__construct($config);
 
         if ($this->formId) {
-            $this->getFieldMetadata();
             if (\is_array($this->storedFieldValues)) {
                 foreach ($this->storedFieldValues as $key => $value) {
                     if (!empty($value) && $this->getFieldByIdentifier($key) instanceof MultipleValueInterface) {
@@ -110,15 +110,6 @@ class Submission extends Element
         }
     }
 
-    /**
-     * Getter.
-     *
-     * @param string $name
-     *
-     * @throws \Exception
-     *
-     * @return mixed
-     */
     public function __get($name)
     {
         try {
@@ -143,13 +134,12 @@ class Submission extends Element
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function __set($name, $value)
+    public function __set($name, $value): void
     {
         if (!self::isSubmissionField($name)) {
-            return parent::__set($name, $value);
+            parent::__set($name, $value);
+
+            return;
         }
 
         try {
@@ -183,11 +173,6 @@ class Submission extends Element
         return parent::__call($name, $attributes);
     }
 
-    /**
-     * @param string $name
-     *
-     * @throws ComposerException
-     */
     public function __isset($name): bool
     {
         $fields = $this->getFieldMetadata();
@@ -202,10 +187,7 @@ class Submission extends Element
         return parent::__isset($name);
     }
 
-    /**
-     * @return ElementQueryInterface|SubmissionQuery
-     */
-    public static function find(): ElementQueryInterface
+    public static function find(): SubmissionQuery
     {
         return (new SubmissionQuery(self::class))->isSpam(false);
     }
@@ -230,9 +212,6 @@ class Submission extends Element
         return true;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public static function hasStatuses(): bool
     {
         return true;
@@ -258,14 +237,9 @@ class Submission extends Element
         return $submission;
     }
 
-    /**
-     * @param $name
-     *
-     * @return false|int
-     */
-    public static function isSubmissionField($name)
+    public static function isSubmissionField(string $name): bool
     {
-        return preg_match('/^'.self::FIELD_COLUMN_PREFIX.'\d+$/', $name);
+        return (bool) preg_match('/^'.self::FIELD_COLUMN_PREFIX.'\d+$/', $name);
     }
 
     public static function getFieldColumnName(int $fieldId): string
@@ -327,7 +301,7 @@ class Submission extends Element
      *
      * @return null|Asset[]
      */
-    public function getAssets(string $fieldColumnHandle)
+    public function getAssets(string $fieldColumnHandle): ?array
     {
         $columnPrefix = self::FIELD_COLUMN_PREFIX;
 
@@ -356,11 +330,31 @@ class Submission extends Element
         return $this->storedFieldValues;
     }
 
-    /**
-     * @throws ComposerException
-     *
-     * @return $this
-     */
+    public function getFieldMetadata(): array
+    {
+        $formId = $this->formId;
+        if (!$formId) {
+            return [];
+        }
+
+        if (!isset(self::$fieldIdMap[$formId])) {
+            $ids = $handles = [];
+            foreach ($this->getForm()->getLayout()->getFields() as $field) {
+                if ($field instanceof NoStorageInterface || !$field->getHandle()) {
+                    continue;
+                }
+
+                $ids[$field->getId()] = $field;
+                $handles[$field->getHandle()] = $field;
+            }
+
+            self::$fieldIdMap[$formId] = $ids;
+            self::$fieldHandleMap[$formId] = $handles;
+        }
+
+        return self::$fieldHandleMap[$formId];
+    }
+
     public function setFormFieldValues(array $values, bool $override = true): self
     {
         foreach ($this->getForm()->getLayout()->getFields() as $field) {
@@ -385,46 +379,17 @@ class Submission extends Element
         return $this;
     }
 
-    /**
-     * @throws ComposerException
-     *
-     * @return AbstractField[]
-     */
-    public function getFieldMetadata(): array
+    public function getForm(): ?Form
     {
-        $formId = $this->formId;
-
-        if (!isset(self::$fieldIdMap[$formId])) {
-            $ids = $handles = [];
-            foreach ($this->getForm()->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || !$field->getHandle()) {
-                    continue;
-                }
-
-                $ids[$field->getId()] = $field;
-                $handles[$field->getHandle()] = $field;
-            }
-
-            self::$fieldIdMap[$formId] = $ids;
-            self::$fieldHandleMap[$formId] = $handles;
+        if (!$this->formId) {
+            return null;
         }
 
-        return self::$fieldHandleMap[$formId];
-    }
-
-    /**
-     * @throws ComposerException
-     */
-    public function getForm(): Form
-    {
         $formService = Freeform::getInstance()->forms;
 
         return $formService->getFormById((int) $this->formId)->getForm();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getIsEditable(): bool
     {
         if (!isset(self::$permissionCache[$this->formId])) {
@@ -526,9 +491,6 @@ class Submission extends Element
         self::$deletableTokens[] = $this->token;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function beforeDelete(): bool
     {
         if (\in_array($this->token, self::$deletableTokens, true)) {
@@ -548,10 +510,7 @@ class Submission extends Element
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    public function toArray(array $fields = [], array $expand = [], $recursive = true): array
     {
         $fields = parent::toArray($fields, $expand, $recursive);
 
@@ -563,14 +522,11 @@ class Submission extends Element
         return $fields;
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->getFieldMetadata());
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected static function defineSources(string $context = null): array
     {
         static $sources;
@@ -613,9 +569,6 @@ class Submission extends Element
         return $sources;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected static function defineTableAttributes(): array
     {
         static $attributes;
@@ -650,9 +603,6 @@ class Submission extends Element
         return $attributes;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected static function defineDefaultTableAttributes(string $source): array
     {
         return [
@@ -664,9 +614,6 @@ class Submission extends Element
         ];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected static function defineActions(string $source = null): array
     {
         if ('*' === $source) {
@@ -714,9 +661,6 @@ class Submission extends Element
         return $actions;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function tableAttributeHtml(string $attribute): string
     {
         if ('status' === $attribute) {
@@ -835,16 +779,9 @@ class Submission extends Element
         return Freeform::getInstance()->notes;
     }
 
-    /**
-     * Generate and set the unique token.
-     *
-     * @return $this
-     */
-    private function generateToken()
+    private function generateToken(): void
     {
         $this->token = CryptoHelper::getUniqueToken(self::OPT_IN_DATA_TOKEN_LENGTH);
-
-        return $this;
     }
 
     private function getNewIncrementalId(): int
@@ -863,15 +800,8 @@ class Submission extends Element
         return Freeform::getInstance()->fields->getAllFieldHandles();
     }
 
-    /**
-     * @param mixed $identifier
-     *
-     * @throws FieldException
-     */
-    private function getFieldByIdentifier($identifier): AbstractField
+    private function getFieldByIdentifier(string|int $identifier): AbstractField
     {
-        $this->getFieldMetadata();
-
         $exception = new FieldException(
             Freeform::t(
                 'Field "{identifier}" not found',

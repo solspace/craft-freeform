@@ -5,15 +5,19 @@
     </div>
 
     <div class="actions">
-        {% for link in links if link is not null and (link.forPro is not defined or (link.forPro is defined and craft.freeform.isPro)) %}
-            {% if link.permission is not defined or (link.permission is defined and currentUser.can(link.permission)) %}
-                <a href="{{ link.link ?: "" }}" class="btn small {{ link.class|default }}" id="{{ link.id|default }}"
-                {%- for data in link.data|default([]) %}
-                   data-{{ data }}
-                {% endfor -%}
-                >
-                    {{ link.label }}
-                </a>
+        {% for link in links %}
+            {% if link is not null and (link.forPro is not defined or (link.forPro is defined and craft.freeform.isPro)) %}
+
+                {% if link.permission is not defined or (link.permission is defined and currentUser.can(link.permission)) %}
+                    <a href="{{ link.link ?: "" }}" class="btn small {{ link.class|default }}" id="{{ link.id|default }}"
+                    {%- for data in link.data|default([]) %}
+                       data-{{ data }}
+                    {% endfor -%}
+                    >
+                        {{ link.label }}
+                    </a>
+                {% endif %}
+
             {% endif %}
         {% endfor %}
     </div>

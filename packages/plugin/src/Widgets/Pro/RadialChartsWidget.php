@@ -21,20 +21,15 @@ use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
 class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 {
-    /** @var string */
-    public $title;
+    public ?string $title;
 
-    /** @var array */
-    public $formIds;
+    public array|string|null $formIds;
 
-    /** @var string */
-    public $dateRange;
+    public ?string $dateRange;
 
-    /** @var int */
-    public $chartHeight;
+    public ?int $chartHeight;
 
-    /** @var string */
-    public $chartType;
+    public ?string $chartType;
 
     public static function displayName(): string
     {
@@ -46,10 +41,7 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
         return __DIR__.'/../../icon-mask.svg';
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function init()
+    public function init(): void
     {
         parent::init();
 
@@ -117,9 +109,6 @@ class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
         );
     }
 
-    /**
-     * @throws \Solspace\Freeform\Library\Exceptions\FreeformException
-     */
     private function getChartData(): RadialChartData
     {
         [$rangeStart, $rangeEnd] = $this->getWidgetsService()->getRange($this->dateRange);

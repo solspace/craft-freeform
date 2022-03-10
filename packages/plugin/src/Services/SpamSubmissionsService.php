@@ -17,16 +17,12 @@ use craft\records\Element;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 class SpamSubmissionsService extends SubmissionsService implements SpamSubmissionHandlerInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getSubmissionById($id)
+    public function getSubmissionById($id): ?Submission
     {
         return SpamSubmission::find()->id($id)->one();
     }
@@ -34,10 +30,8 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     /**
      * Takes spam submission, converts it to non-spam submission and runs all necessary processes
      * for non-spam submission.
-     *
-     * @return bool
      */
-    public function allowSpamSubmission(SpamSubmission $submission)
+    public function allowSpamSubmission(SpamSubmission $submission): bool
     {
         $submission->isSpam = false;
         \Craft::$app->getElements()->saveElement($submission);
@@ -64,9 +58,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     }
 
     /**
-     * Processes spam submission so it could be processed normally in case of allowing.
-     *
-     * @param AbstractField[] $mailingListOptedInFields
+     * Processes spam submission, so it could be processed normally in case of allowing.
      */
     public function postProcessSubmission(Submission $submission, array $mailingListOptedInFields)
     {

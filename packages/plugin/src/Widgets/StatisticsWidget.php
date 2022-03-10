@@ -20,14 +20,11 @@ use Solspace\Freeform\Resources\Bundles\StatisticsWidgetBundle;
 
 class StatisticsWidget extends Widget
 {
-    /** @var array */
-    public $statusIds;
+    public array|string|null $statusIds = null;
 
-    /** @var array */
-    public $formIds;
+    public array|string|null $formIds = null;
 
-    /** @var bool */
-    public $showGlobalStatistics;
+    public ?bool $showGlobalStatistics = null;
 
     public static function isSelectable(): bool
     {
@@ -45,7 +42,7 @@ class StatisticsWidget extends Widget
         return __DIR__.'/../icon-mask.svg';
     }
 
-    public function init()
+    public function init(): void
     {
         parent::init();
 

@@ -43,13 +43,6 @@
 
 {% endblock %}
 
-{% block header %}
-    {{ block('pageTitle') }}
-    {{ block('contextMenu') }}
-    <div class="flex-grow"></div>
-    {{ block('actionButton') }}
-{% endblock %}
-
 {% block content %}
     <script>
       var formId                    = {{ form.id ? form.id : "null" }};

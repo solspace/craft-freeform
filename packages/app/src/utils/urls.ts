@@ -1,4 +1,4 @@
-export const baseUrl = window.location.href.replace(/.*(\/[^/]+\/freeform).*/i, '$1');
+export const baseUrl = window.location.href.replace(/(.*\/freeform).*/i, '$1');
 export const generateUrl = (url?: string): string => {
   url = (url ?? '')
     .replace(/\/+/g, '/')

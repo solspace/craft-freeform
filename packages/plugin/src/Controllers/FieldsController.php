@@ -238,10 +238,12 @@ class FieldsController extends Controller
             ];
         }
 
+        $fieldTypes = $this->getFieldsService()->getEditableFieldTypes();
+
         $variables = [
             'field' => $model,
             'title' => $title,
-            'fieldTypes' => $this->getFieldsService()->getFieldTypes(),
+            'fieldTypes' => $fieldTypes,
             'fileKinds' => Assets::getFileKinds(),
             'fileKindOptions' => $fileKindOptions,
             'assetSources' => $this->getFilesService()->getAssetSourceList(),

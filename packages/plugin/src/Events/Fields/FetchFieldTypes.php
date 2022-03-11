@@ -4,11 +4,13 @@ namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 
 class FetchFieldTypes extends ArrayableEvent
 {
-    /** @var array */
-    private $types;
+    private array $types;
+
+    private array $editableTypes;
 
     /**
      * MailingListTypesEvent constructor.
@@ -16,6 +18,7 @@ class FetchFieldTypes extends ArrayableEvent
     public function __construct(array $types = [])
     {
         $this->types = [];
+        $this->editableTypes = [];
 
         foreach ($types as $type) {
             $this->addType($type);
@@ -29,19 +32,23 @@ class FetchFieldTypes extends ArrayableEvent
      */
     public function fields(): array
     {
-        return ['types'];
+        return ['types', 'editableTypes'];
     }
 
     public function addType(string $class): self
     {
         $reflectionClass = new \ReflectionClass($class);
 
-        if ($reflectionClass->isSubclassOf(AbstractField::class)) {
-            /** @var AbstractField $class */
-            $type = $class::getFieldType();
-            $name = $class::getFieldTypeName();
+        /** @var AbstractField $class */
+        $type = $class::getFieldType();
+        $name = $class::getFieldTypeName();
 
+        if ($reflectionClass->isSubclassOf(AbstractField::class)) {
             $this->types[$type] = $name;
+        }
+
+        if (!$reflectionClass->implementsInterface(NoStorageInterface::class)) {
+            $this->editableTypes[$type] = $name;
         }
 
         return $this;
@@ -50,5 +57,10 @@ class FetchFieldTypes extends ArrayableEvent
     public function getTypes(): array
     {
         return $this->types;
+    }
+
+    public function getEditableTypes(): array
+    {
+        return $this->editableTypes;
     }
 }

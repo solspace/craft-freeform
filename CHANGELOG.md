@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.5.1 - 2022-03-11
+
+### Fixed
+- Fixed a bug where an error could display on sites using older versions of PHP.
+
 ## 3.13.5 - 2022-03-11
 
 ### Fixed

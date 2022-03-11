@@ -8,9 +8,9 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 
 class FetchFieldTypes extends ArrayableEvent
 {
-    private array $types;
+    private $types;
 
-    private array $editableTypes;
+    private $editableTypes;
 
     /**
      * MailingListTypesEvent constructor.

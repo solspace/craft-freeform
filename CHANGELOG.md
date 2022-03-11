@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.13.5 - 2022-03-11
+
+### Fixed
+- Fixed a bug where the reCAPTCHA v2 Checkbox field was not displaying in forms in Freeform Lite edition.
+- Fixed a bug where hCaptcha would error if the "Send to Spam Folder" setting was enabled.
+- Fixed a bug where creating or editing fields inside the Field Manager area could trigger an error in Freeform Pro edition.
+- Fixed a bug where the "New Form" wizard modal could sometimes not correctly continue to form when using an irregular admin URL.
+
 ## 3.13.4 - 2022-03-04
 
 ### Changed

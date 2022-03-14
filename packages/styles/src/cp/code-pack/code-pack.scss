@@ -1,4 +1,4 @@
-@import "../../shared/mixins";
+@import '../../shared/mixins';
 
 #components-wrapper {
   @include clearfix;
@@ -44,7 +44,7 @@ ul.directory-structure {
 
     &:before {
       font-weight: normal;
-      content: "categories";
+      content: 'folder';
     }
   }
 
@@ -52,7 +52,7 @@ ul.directory-structure {
     font-weight: normal;
 
     &:before {
-      content: "templates";
+      content: 'templates';
     }
   }
 
@@ -80,7 +80,7 @@ ul.directory-structure {
       .template {
         float: right;
 
-        color: #CCC;
+        color: #ccc;
         font-size: 12px;
       }
     }

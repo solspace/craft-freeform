@@ -1,5 +1,6 @@
-import { easings } from '@ff-welcome-screen/shared/styles/animations';
 import styled from 'styled-components';
+
+import { easings } from '@ff-welcome-screen/shared/styles/animations';
 
 export const Wrapper = styled.div`
   position: relative;
@@ -31,5 +32,5 @@ export const ActiveDot = styled(Dot)`
   background: #909caf;
 
   transition: all 200ms ${easings.out.quart};
-  left: ${({ position }: ActiveProps): number => position * 28}px;
+  left: ${({ position }: ActiveProps): number => position * 26}px;
 `;

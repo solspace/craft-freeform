@@ -1,5 +1,6 @@
-import { easings } from '@ff-app/welcome-screen/shared/styles/animations';
 import styled from 'styled-components';
+
+import { easings } from '@ff-app/welcome-screen/shared/styles/animations';
 
 export const Wrapper = styled.div``;
 
@@ -14,6 +15,7 @@ interface TickInterface {
   ticked?: boolean;
 }
 export const Tick = styled.div<TickInterface>`
+  height: 26px;
   padding: 5px;
   margin-bottom: 0 !important;
 

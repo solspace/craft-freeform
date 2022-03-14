@@ -125,18 +125,15 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function getAllFormNames(bool $indexById = true): array
     {
-        $forms = $this->getAllForms();
+        $query = $this->getFormQuery();
+        $query->select(['forms.id', 'forms.name']);
+        $forms = $query->pairs();
 
-        $list = [];
-        foreach ($forms as $form) {
-            if ($indexById) {
-                $list[$form->id] = $form->name;
-            } else {
-                $list[] = $form->name;
-            }
+        if ($indexById) {
+            return $forms;
         }
 
-        return $list;
+        return array_values($forms);
     }
 
     public function getAllowedFormIds(): array

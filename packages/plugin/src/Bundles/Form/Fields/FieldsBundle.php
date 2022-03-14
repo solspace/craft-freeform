@@ -61,6 +61,7 @@ class FieldsBundle extends FeatureBundle
             FileDragAndDropField::class,
             NumberField::class,
             DynamicRecipientField::class,
+            RecaptchaField::class,
         ];
 
         foreach ($fieldTypes as $type) {
@@ -77,7 +78,6 @@ class FieldsBundle extends FeatureBundle
             PasswordField::class,
             PhoneField::class,
             RatingField::class,
-            RecaptchaField::class,
             RegexField::class,
             WebsiteField::class,
             OpinionScaleField::class,

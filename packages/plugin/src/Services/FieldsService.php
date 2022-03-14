@@ -143,6 +143,14 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         return $fetchTypesEvent->getTypes();
     }
 
+    public function getEditableFieldTypes(): array
+    {
+        $fetchTypesEvent = new FetchFieldTypes();
+        $this->trigger(self::EVENT_FETCH_TYPES, $fetchTypesEvent);
+
+        return $fetchTypesEvent->getEditableTypes();
+    }
+
     /**
      * @param int $id
      *

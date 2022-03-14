@@ -17,6 +17,7 @@ use craft\records\Element;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
@@ -48,6 +49,18 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
         $fields = [];
         foreach ($tasks as $task) {
             $fields[] = $layout->getFieldByHash($task->fieldHash);
+        }
+
+        foreach ($submission->getForm()->getLayout()->getFields() as $field) {
+            $handle = $field->getHandle();
+            if (!$handle || $field instanceof NoStorageInterface) {
+                continue;
+            }
+
+            try {
+                $field->setValue($submission->{$field->getHandle()}->getValue());
+            } catch (\Exception $exception) {
+            }
         }
 
         Freeform::getInstance()->submissions->postProcessSubmission($submission, $fields);

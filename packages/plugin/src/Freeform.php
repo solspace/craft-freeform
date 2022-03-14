@@ -718,26 +718,26 @@ class Freeform extends Plugin
                 UserPermissions::class,
                 UserPermissions::EVENT_REGISTER_PERMISSIONS,
                 function (RegisterUserPermissionsEvent $event) {
-                    $forms = $this->forms->getAllForms();
+                    $forms = $this->forms->getAllFormNames();
 
                     $readPermissions = $managePermissions = $formPermissions = [];
-                    foreach ($forms as $form) {
+                    foreach ($forms as $id => $name) {
                         $readKey = PermissionHelper::prepareNestedPermission(
                             self::PERMISSION_SUBMISSIONS_READ,
-                            $form->id
+                            $id
                         );
                         $manageKey = PermissionHelper::prepareNestedPermission(
                             self::PERMISSION_SUBMISSIONS_MANAGE,
-                            $form->id
+                            $id
                         );
                         $formPermissionName = PermissionHelper::prepareNestedPermission(
                             self::PERMISSION_FORMS_MANAGE,
-                            $form->id
+                            $id
                         );
 
-                        $readPermissions[$readKey] = ['label' => $form->name];
-                        $managePermissions[$manageKey] = ['label' => $form->name];
-                        $formPermissions[$formPermissionName] = ['label' => $form->name];
+                        $readPermissions[$readKey] = ['label' => $name];
+                        $managePermissions[$manageKey] = ['label' => $name];
+                        $formPermissions[$formPermissionName] = ['label' => $name];
                     }
 
                     $permissions = [

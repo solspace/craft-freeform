@@ -21,17 +21,17 @@ use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
 class LinearChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 {
-    public ?string $title;
+    public ?string $title = null;
 
-    public array|string|null $formIds;
+    public array|string|null $formIds = null;
 
-    public ?bool $aggregate;
+    public ?bool $aggregate = null;
 
-    public ?string $dateRange;
+    public ?string $dateRange = null;
 
-    public ?int $chartHeight;
+    public ?int $chartHeight = null;
 
-    public ?string $chartType;
+    public ?string $chartType = null;
 
     public static function displayName(): string
     {

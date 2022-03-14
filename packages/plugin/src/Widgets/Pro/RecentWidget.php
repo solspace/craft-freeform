@@ -22,11 +22,11 @@ class RecentWidget extends AbstractWidget implements ExtraWidgetInterface
 {
     public const DEFAULT_LIMIT = 5;
 
-    public ?string $title;
+    public ?string $title = null;
 
-    public array|string|null $formIds;
+    public array|string|null $formIds = null;
 
-    public ?int $limit;
+    public ?int $limit = null;
 
     public static function displayName(): string
     {

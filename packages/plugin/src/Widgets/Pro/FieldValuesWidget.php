@@ -25,19 +25,19 @@ use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
 class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
 {
-    public ?string $title;
+    public ?string $title = null;
 
-    public array|string|null $formId;
+    public array|string|null $formId = null;
 
-    public ?string $fieldId;
+    public ?string $fieldId = null;
 
-    public ?string $dateRange;
+    public ?string $dateRange = null;
 
-    public ?int $chartHeight;
+    public ?int $chartHeight = null;
 
-    public ?string $chartType;
+    public ?string $chartType = null;
 
-    public ?bool $showEmpty;
+    public ?bool $showEmpty = null;
 
     public static function displayName(): string
     {

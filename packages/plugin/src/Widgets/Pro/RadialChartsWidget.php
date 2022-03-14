@@ -21,15 +21,15 @@ use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 
 class RadialChartsWidget extends AbstractWidget implements ExtraWidgetInterface
 {
-    public ?string $title;
+    public ?string $title = null;
 
-    public array|string|null $formIds;
+    public array|string|null $formIds = null;
 
-    public ?string $dateRange;
+    public ?string $dateRange = null;
 
-    public ?int $chartHeight;
+    public ?int $chartHeight = null;
 
-    public ?string $chartType;
+    public ?string $chartType = null;
 
     public static function displayName(): string
     {

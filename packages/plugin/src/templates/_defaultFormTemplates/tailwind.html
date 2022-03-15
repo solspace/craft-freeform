@@ -47,7 +47,7 @@
 {% if form.hasErrors %}
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
         <strong class="font-bold">
-            {{ form.errorMessage | t }}
+            {{ form.errorMessage | t('freeform') }}
         </strong>
         {% if form.errors|length %}
             <ul class="mb-0 ">
@@ -143,7 +143,7 @@
                             />
 
                             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                                {{ option.label|t|raw }}
+                                {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
                     {% endfor %}
@@ -169,7 +169,7 @@
                                     {{ option.checked ? "checked" : "" }}
                             />
                             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                                {{ option.label|t|raw }}
+                                {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
                     {% endfor %}
@@ -198,7 +198,7 @@
                             />
 
                             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                                {{ option.label|t|raw }}
+                                {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
                     {% endfor %}
@@ -219,7 +219,7 @@
                     <div class="relative">
                         <select name="{{ field.handle }}" id="{{ field.idAttribute }}" class="{{ fieldClass }}">
                         {% for index, option in field.options %}
-                            <option value="{{ loop.index0 }}"{{ option.checked ? "selected" : "" }}>{{ option.label|t|raw }}</option>
+                            <option value="{{ loop.index0 }}"{{ option.checked ? "selected" : "" }}>{{ option.label|t('freeform')|raw }}</option>
                         {% endfor %}
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -241,7 +241,7 @@
                     <div class="relative">
                         <select name="{{ field.handle }}" id="{{ field.idAttribute }}" class="{{ fieldClass }}">
                         {% for option in field.options %}
-                            <option value="{{ option.value }}"{{ option.checked ? "selected" : "" }}>{{ option.label|t|raw }}</option>
+                            <option value="{{ option.value }}"{{ option.checked ? "selected" : "" }}>{{ option.label|t('freeform')|raw }}</option>
                         {% endfor %}
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">

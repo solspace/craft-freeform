@@ -30,7 +30,7 @@
 
 {% if form.hasErrors %}
     <div class="freeform-form-has-errors">
-        {{ form.errorMessage | t }}
+        {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul>

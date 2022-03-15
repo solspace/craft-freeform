@@ -42,7 +42,7 @@
 
 {% if form.hasErrors %}
     <div class="alert alert-danger">
-        {{ form.errorMessage | t }}
+        {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul>
@@ -90,7 +90,7 @@
                                            value="{{ option.value }}"
                                             {{ option.checked ? "checked" : "" }}
                                     />
-                                    {{ option.label|t|raw }}
+                                    {{ option.label|t('freeform')|raw }}
                                 </label>
                             {% endfor %}
                         </div>
@@ -103,7 +103,7 @@
                                            value="{{ option.value }}"
                                             {{ option.checked ? "checked" : "" }}
                                     />
-                                    {{ option.label|t|raw }}
+                                    {{ option.label|t('freeform')|raw }}
                                 </label>
                             </div>
                         {% endfor %}
@@ -129,7 +129,7 @@
                                            value="{{ option.value }}"
                                             {{ option.checked ? "checked" : "" }}
                                     />
-                                    {{ option.label|t|raw }}
+                                    {{ option.label|t('freeform')|raw }}
                                 </label>
                             {% endfor %}
                         </div>
@@ -142,7 +142,7 @@
                                            value="{{ option.value }}"
                                             {{ option.checked ? "checked" : "" }}
                                     />
-                                    {{ option.label|t|raw }}
+                                    {{ option.label|t('freeform')|raw }}
                                 </label>
                             </div>
                         {% endfor %}
@@ -168,7 +168,7 @@
                                            value="{{ loop.index0 }}"
                                             {{ option.checked ? "checked" : "" }}
                                     />
-                                    {{ option.label|t|raw }}
+                                    {{ option.label|t('freeform')|raw }}
                                 </label>
                             {% endfor %}
                         </div>
@@ -181,7 +181,7 @@
                                            value="{{ loop.index0 }}"
                                             {{ option.checked ? "checked" : "" }}
                                     />
-                                    {{ option.label|t|raw }}
+                                    {{ option.label|t('freeform')|raw }}
                                 </label>
                             </div>
                         {% endfor %}
@@ -193,7 +193,7 @@
                 {% elseif field.type == "signature" %}
 
                     {{ field.render({ class: "btn btn-light" }) }}
-                
+
                 {% elseif field.type == "table" %}
 
                     {{ field.render({

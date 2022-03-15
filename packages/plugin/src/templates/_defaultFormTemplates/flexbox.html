@@ -30,13 +30,13 @@
 
 {% if not form.ajaxEnabled and form.submittedSuccessfully %}
     <div class="freeform-alert freeform-alert-success">
-        {{ form.successMessage | t }}
+        {{ form.successMessage | t('freeform') }}
     </div>
 {% endif %}
 
 {% if form.hasErrors %}
     <div class="freeform-form-has-errors">
-        {{ form.errorMessage | t }}
+        {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul>

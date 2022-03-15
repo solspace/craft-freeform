@@ -35,7 +35,7 @@
 
 {% if form.hasErrors %}
     <div class="alert alert-danger">
-        {{ form.errorMessage | t }}
+        {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul class="mb-0">
@@ -99,7 +99,7 @@
                             />
 
                             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                                {{ option.label|t|raw }}
+                                {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
                     {% endfor %}
@@ -129,7 +129,7 @@
                                     {{ option.checked ? "checked" : "" }}
                             />
                             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                                {{ option.label|t|raw }}
+                                {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
                     {% endfor %}
@@ -160,7 +160,7 @@
                             />
 
                             <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                                {{ option.label|t|raw }}
+                                {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
                     {% endfor %}

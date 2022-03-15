@@ -36,7 +36,7 @@
 
 {% if form.hasErrors %}
     <div class="callout alert">
-        {{ form.errorMessage | t }}
+        {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul>
@@ -82,7 +82,7 @@
                                id="{{ field.idAttribute }}-{{ index }}"
                                 {{ option.checked ? "checked" : "" }}
                         />
-                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t|raw }}</label>
+                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t('freeform')|raw }}</label>
 
                         {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}
@@ -106,7 +106,7 @@
                                id="{{ field.idAttribute }}-{{ index }}"
                                 {{ option.checked ? "checked" : "" }}
                         />
-                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t|raw }}</label>
+                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t('freeform')|raw }}</label>
 
                         {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}
@@ -130,7 +130,7 @@
                                id="{{ field.idAttribute }}-{{ index }}"
                                 {{ option.checked ? "checked" : "" }}
                         />
-                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t|raw }}</label>
+                        <label for="{{ field.idAttribute }}-{{ index }}">{{ option.label|t('freeform')|raw }}</label>
 
                         {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}

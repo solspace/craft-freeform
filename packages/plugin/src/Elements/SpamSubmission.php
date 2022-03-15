@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Elements;
 
-use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Elements\Actions\AllowSpamAction;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
@@ -12,7 +11,7 @@ use Solspace\Freeform\Freeform;
 
 class SpamSubmission extends Submission
 {
-    public static function find(): ElementQueryInterface
+    public static function find(): SubmissionQuery
     {
         return (new SubmissionQuery(self::class))->isSpam(true);
     }

@@ -90,7 +90,7 @@
         <div class="settingsWrapper">
             {% for className, settingList in settings %}
                 <div id="settings-{{ className|replace("\\", "") }}" style="display: none;">
-                    {% for setting in settingList if setting.type not in ["internal", "config"] %}
+                    {% for setting in settingList|filter(setting => setting.type not in ["internal", "config"]) %}
                         {% set value = "" %}
                         {% if integration.settings is not null and integration.settings[setting.handle] is defined %}
                             {% set value = integration.settings[setting.handle] %}

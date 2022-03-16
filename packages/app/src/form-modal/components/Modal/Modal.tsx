@@ -121,7 +121,6 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
                   value={form.successBehaviour}
                   onChange={update}
                   options={[
-                    { label: 'No Effect', value: SuccessBehaviour.Nothing },
                     { label: 'Reload Form with Success Message', value: SuccessBehaviour.Reload },
                     { label: 'Load Success Template', value: SuccessBehaviour.Template },
                     { label: 'Use Return URL', value: SuccessBehaviour.ReturnURL },

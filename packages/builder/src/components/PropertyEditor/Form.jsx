@@ -14,7 +14,6 @@ import TextProperty from './PropertyItems/TextProperty';
 import { attributeColumns } from './PropertyItems/AttributeEditorProperty';
 import {
   SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE,
-  SUCCESS_BEHAVIOUR_NO_EFFECT,
   SUCCESS_BEHAVIOUR_RELOAD,
   SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL,
 } from '../../constants/Form';
@@ -163,9 +162,7 @@ export default class Form extends BasePropertyEditor {
     });
 
     const isShowSuccessTemplate = [SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE].includes(successBehaviour);
-    const isShowReturnUrl =
-      !successBehaviour ||
-      [SUCCESS_BEHAVIOUR_NO_EFFECT, SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL].includes(successBehaviour);
+    const isShowReturnUrl = !successBehaviour || successBehaviour === SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL;
 
     return (
       <div>
@@ -207,7 +204,6 @@ export default class Form extends BasePropertyEditor {
           value={successBehaviour}
           onChangeHandler={this.updateMetadata}
           options={[
-            { key: SUCCESS_BEHAVIOUR_NO_EFFECT, value: 'No Effect' },
             { key: SUCCESS_BEHAVIOUR_RELOAD, value: 'Reload Form with Success Message' },
             { key: SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, value: 'Load Success Template' },
             { key: SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, value: 'Use Return URL' },

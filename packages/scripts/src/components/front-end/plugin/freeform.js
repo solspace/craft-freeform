@@ -18,11 +18,7 @@ import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { addClass, getClassArray, removeClass } from '@lib/plugin/helpers/elements';
-import {
-  SUCCESS_BEHAVIOUR_NO_EFFECT,
-  SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL,
-  SUCCESS_BEHAVIOUR_RELOAD,
-} from '@lib/plugin/constants/form';
+import { SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, SUCCESS_BEHAVIOUR_RELOAD } from '@lib/plugin/constants/form';
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = 'form_previous_page_button';
@@ -689,7 +685,7 @@ export default class Freeform {
                 this._dispatchEvent(EventTypes.EVENT_ON_RESET);
               }
 
-              if ([SUCCESS_BEHAVIOUR_NO_EFFECT, SUCCESS_BEHAVIOUR_RELOAD].includes(response.onSuccess)) {
+              if (response.onSuccess === SUCCESS_BEHAVIOUR_RELOAD) {
                 this._renderSuccessBanner();
               }
             }

@@ -10,7 +10,6 @@ import { FormOptionsContext } from '../context/form-types-context';
 export enum SuccessBehaviour {
   ReturnURL = 'redirect-return-url',
   Template = 'load-success-template',
-  Nothing = 'no-effect',
   Reload = 'reload',
 }
 
@@ -61,7 +60,7 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
     status: defaultStatusId,
     ajax: ajaxByDefault,
     storeData: true,
-    successBehaviour: SuccessBehaviour.ReturnURL,
+    successBehaviour: SuccessBehaviour.Reload,
     successTemplate: '',
     returnUrl: '',
   });

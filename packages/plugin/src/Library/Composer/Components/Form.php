@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft.
  *
@@ -101,7 +102,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const PROPERTY_PAGE_HISTORY = 'pageHistory';
     public const PROPERTY_SPAM_REASONS = 'spamReasons';
 
-    public const SUCCESS_BEHAVIOUR_NO_EFFECT = 'no-effect';
     public const SUCCESS_BEHAVIOUR_RELOAD = 'reload';
     public const SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL = 'redirect-return-url';
     public const SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
@@ -469,7 +469,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     public function getSuccessBehaviour(): string
     {
-        return $this->getMetadata('successBehaviour', self::SUCCESS_BEHAVIOUR_NO_EFFECT);
+        return $this->getMetadata('successBehaviour', self::SUCCESS_BEHAVIOUR_RELOAD);
     }
 
     public function getSuccessTemplate(): ?string

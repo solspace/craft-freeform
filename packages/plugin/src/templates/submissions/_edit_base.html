@@ -549,16 +549,51 @@
 
     </div>
 
+    <div class="field">
+        <div class="heading">
+            <label for="freeform-submission-note">{{ 'Notes about your changes'|t('freeform') }}</label>
+        </div>
+        <div class="input">
+            <textarea
+              class="text nicetext notes fullwidth freeform-submission-note"
+              id="freeform-submission-note"
+              name="freeform-submission-note"
+              spellcheck="false"
+              style="min-height: 100px;"
+            >{% if note %}{{ note }}{% endif %}</textarea>
+        </div>
+    </div>
+
+    {% if submission.isSpam and submission.spamReasons %}
+
+        <fieldset>
+            <legend>
+                {{ 'Marked as spam because'|t('freeform') }}
+            </legend>
+
+            <div class="meta">
+                {% for reason in submission.spamReasons %}
+                    <div class="data">
+                        <div class="value" style="width: 100%">
+                            {{ reason.message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+    {% endif %}
+
 
     {% if submission.id %}
 
         <div class="meta read-only">
             <div class="data">
-                <h5 class="heading">{{ "Date Created"|t('freeform') }}</h5>
+                <h5 class="heading">{{ "Created at"|t('freeform') }}</h5>
                 <div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
             </div>
             <div class="data">
-                <h5 class="heading">{{ "Date Updated"|t('freeform') }}</h5>
+                <h5 class="heading">{{ "Updated at"|t('freeform') }}</h5>
                 <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
             </div>
         </div>
@@ -567,20 +602,6 @@
 
     {% endif %}
 
-    {% if submission.isSpam and submission.spamReasons %}
-
-        <div class="meta read-only">
-            <h5>{{ 'Marked as spam because'|t('freeform') }}:</h5>
-            {% for reason in submission.spamReasons %}
-                <div class="data">
-                    <div class="value" style="width: 100%">
-                        {{ reason.message }}
-                    </div>
-                </div>
-            {% endfor %}
-        </div>
-
-    {% endif %}
 
     {# TODO: move to payments module #}
     {% if payments is defined %}
@@ -659,12 +680,5 @@
         <hr>
 
     {% endif %}
-
-    <textarea class="text freeform-submission-note"
-              id="freeform-submission-note"
-              name="freeform-submission-note"
-              placeholder="{{ 'Notes about your changes'|t('freeform') }}"
-              spellcheck="false"
-              style="width: 100%; margin: 0; min-height: 100px;">{% if note %}{{ note }}{% endif %}</textarea>
 
 {% endblock %}

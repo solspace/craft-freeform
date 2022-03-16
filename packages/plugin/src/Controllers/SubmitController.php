@@ -96,7 +96,7 @@ class SubmitController extends BaseController
         $generalConfig = \Craft::$app->getConfig()->getGeneral();
         $origins = $generalConfig->allowedGraphqlOrigins;
         if (!empty($origins)) {
-            $corsHeaders['Access-Control-Allow-Origin'] = $origins;
+            $corsHeaders['Origin'] = $origins;
         }
 
         return [

@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 3.13.6 - 2022-03-16
+
+### Fixed
+- Fixed a bug where some older migrations could error when upgrading to Freeform 3.13+.
+- Fixed a bug where mass allowing spam submissions would not populate field values in email notifications correctly.
+- Fixed a bug where the CORS Origin header was not working correctly when `allowedGraphqlOrigins` enabled.
+
 ## 3.13.5.1 - 2022-03-11
 
 ### Fixed

@@ -18,6 +18,7 @@ use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\SiteEvent;
+use craft\helpers\App;
 use craft\services\Dashboard;
 use craft\services\Fields;
 use craft\services\Sites;
@@ -950,7 +951,7 @@ class Freeform extends Plugin
 
     private function initBetaAssets()
     {
-        $disableFeedback = \Craft::parseEnv('$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET');
+        $disableFeedback = App::parseEnv('$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET');
         if ($disableFeedback && '$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET' !== $disableFeedback) {
             return;
         }
@@ -961,15 +962,15 @@ class Freeform extends Plugin
         }
 
         $request = \Craft::$app->request;
+        $view = \Craft::$app->view;
+
         if (!$request->isConsoleRequest) {
             if ($request->isCpRequest && preg_match('/^freeform\//', $request->getPathInfo())) {
-                \Craft::$app->view->registerAssetBundle(BetaBundle::class, View::POS_END);
+                $view->registerAssetBundle(BetaBundle::class, View::POS_END);
 
-                \Craft::$app->view->hook(
-                    'cp.layouts.base',
-                    function (array &$context) {
-                        return \Craft::$app->view->renderTemplate('freeform/_beta/feedback-widget');
-                    }
+                $view->registerHtml(
+                    $view->renderTemplate('freeform/_beta/feedback-widget'),
+                    View::POS_END
                 );
             }
         }

@@ -527,6 +527,14 @@ class Submission extends Element
         return new \ArrayIterator($this->getFieldMetadata());
     }
 
+    public static function sortOptions(): array
+    {
+        return array_merge(
+            ['title' => Freeform::t('Submission')],
+            parent::sortOptions()
+        );
+    }
+
     protected static function defineSources(string $context = null): array
     {
         static $sources;
@@ -575,7 +583,6 @@ class Submission extends Element
 
         if (null === $attributes) {
             $titles = [
-                'title' => ['label' => Freeform::t('Title')],
                 'userId' => ['label' => Freeform::t('Author')],
                 'status' => ['label' => Freeform::t('Status')],
                 'form' => ['label' => Freeform::t('Form')],

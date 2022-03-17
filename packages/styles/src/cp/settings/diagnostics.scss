@@ -11,11 +11,14 @@
     color: #5a6875;
   }
 
-  &-pass, &-base {
+  &-pass,
+  &-base {
     font-style: italic;
   }
 
-  &-error, &-pass, &-base {
+  &-error,
+  &-pass,
+  &-base {
     font-weight: bold;
   }
 }
@@ -30,8 +33,10 @@
   overflow: hidden;
 
   h2 {
+    position: relative;
+
     margin: 0;
-    padding: 10px 10px;
+    padding: 10px 10px 10px 35px;
     color: #ffffff;
   }
 
@@ -43,7 +48,6 @@
       &:not(:last-child) {
         padding-bottom: 15px;
       }
-
 
       h4 {
         margin: 0;
@@ -63,10 +67,12 @@
     display: grid;
     grid-template-columns: 60px auto;
     gap: 20px;
+    align-items: center;
 
     padding: 10px 20px;
 
     background: #60aa55;
+    border: transparent;
     color: #ffffff;
 
     .heading {
@@ -91,15 +97,17 @@
 
       &:before {
         color: #60aa55;
-        font-size: 50px;
+        font-size: 40px;
       }
     }
   }
 
-  &-warning, &-suggestions {
+  &-warning,
+  &-suggestions {
     svg {
-      position: relative;
-      top: 2px;
+      position: absolute;
+      top: 12px;
+      left: 10px;
 
       width: 16px;
       height: 16px;

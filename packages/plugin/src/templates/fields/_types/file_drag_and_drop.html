@@ -71,15 +71,18 @@
 {% endif %}
 
 {% set fileKindsInput %}
-    <div id="restrict-allowed-types">
-        {{ forms.checkboxGroup({
-            label: "Allowed File Types"|t('freeform'),
-            instructions: "Select the file types to be allowed by default. Leaving all unchecked will allow all file types."|t('freeform'),
-            options: fileKindOptions,
-            name: 'types[file_drag_and_drop][fileKinds]',
-            values: selectedFileKinds,
-        }) }}
-    </div>
+    <fieldset id="restrict-allowed-types">
+        <input type="hidden" name="types[file_drag_and_drop][fileKinds]" value="" />
+        {% for key, option in fileKindOptions %}
+            {{ forms.checkboxField({
+                label: option.label,
+                id: 'allowedKinds-'~key,
+                name: 'types[file_drag_and_drop][fileKinds][]',
+                value: option.value,
+                checked: (option.value in selectedFileKinds)
+            }) }}
+        {% endfor %}
+    </fieldset>
 {% endset %}
 
 {{ forms.field({

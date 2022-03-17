@@ -41,7 +41,7 @@
 {% endif %}
 
 {% set fileKindsInput %}
-    <div id="restrict-allowed-types">
+    <fieldset id="restrict-allowed-types">
         <input type="hidden" name="types[file][fileKinds]" value="" />
         {% for key, option in fileKinds %}
             {{ forms.checkboxField({
@@ -52,7 +52,7 @@
                 checked: (key in selectedFileKinds)
             }) }}
         {% endfor %}
-    </div>
+    </fieldset>
 {% endset %}
 
 {{ forms.field({

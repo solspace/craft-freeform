@@ -884,3 +884,7 @@ $sidebarMinWidth: 18%;
     visibility: visible !important;
   }
 }
+
+#html-editor:not(.ace_focus) .ace_active-line {
+  background: #f4f7fc !important;
+}

@@ -114,13 +114,13 @@ ul.section-structure {
 
 %bordered-padding {
   padding: 8px;
-  border: 1px solid rgba(115, 127, 140, 0.15);
+  border: 1px solid #e0e5ea;
   border-radius: 2px;
 }
 
 %gradient-bg {
   @extend %bordered-padding;
-  background-image: linear-gradient(#f7f7f8, #f4f5f6);
+  background: #f4f7fc;
 }
 
 #add-demo-template {

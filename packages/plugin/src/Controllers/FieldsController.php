@@ -224,7 +224,7 @@ class FieldsController extends Controller
         return Freeform::getInstance()->files;
     }
 
-    private function getNewOrExistingField(int $fieldId): FieldModel
+    private function getNewOrExistingField(?int $fieldId): FieldModel
     {
         if ($fieldId) {
             $field = $this->getFieldsService()->getFieldById($fieldId);

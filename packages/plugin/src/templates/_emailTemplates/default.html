@@ -1,8 +1,8 @@
 {# subject: New submission on your {{ form.name }} form #}
-{# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
-{# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
-{# replyToName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
-{# replyToEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
+{# fromEmail: {{ craft.app.projectConfig.get('email.fromEmail') }} #} #}
+{# fromName: {{ craft.app.projectConfig.get('email.fromName') }} #} #}
+{# replyToName: {{ craft.app.projectConfig.get('email.fromName') }} #} #}
+{# replyToEmail: {{ craft.app.projectConfig.get('email.fromEmail') }} #} #}
 {# cc: #}
 {# bcc: #}
 {# includeAttachments: true #}

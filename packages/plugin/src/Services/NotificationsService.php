@@ -12,11 +12,8 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\db\Query;
 use craft\helpers\FileHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Events\Notifications\DeleteEvent;
-use Solspace\Freeform\Events\Notifications\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Freeform\Records\NotificationRecord;
@@ -44,15 +41,8 @@ class NotificationsService extends BaseService
         $cacheIsNull = null === self::$notificationCache;
 
         if ($cacheIsNull || !self::$allNotificationsLoaded) {
-            /** @var NotificationRecord[] $records */
-            $records = NotificationRecord::find()->all();
-
             if ($cacheIsNull) {
                 self::$notificationCache = [];
-            }
-
-            foreach ($records as $record) {
-                self::$notificationCache[$record->id] = $record;
             }
 
             $settings = Freeform::getInstance()->settings->getSettingsModel();
@@ -84,15 +74,6 @@ class NotificationsService extends BaseService
         return self::$notificationCache;
     }
 
-    public function getDatabaseNotificationCount(): int
-    {
-        return (int) (new Query())
-            ->select('id')
-            ->from(NotificationRecord::TABLE)
-            ->count()
-        ;
-    }
-
     /**
      * @param int $id
      *
@@ -101,157 +82,32 @@ class NotificationsService extends BaseService
     public function getNotificationById($id)
     {
         if (null === self::$notificationCache || !isset(self::$notificationCache[$id])) {
-            if (is_numeric($id)) {
-                $record = NotificationRecord::find()->where(['id' => $id])->one();
-            } else {
-                $record = NotificationRecord::find()->where(['handle' => $id])->one();
-            }
+            $settings = Freeform::getInstance()->settings->getSettingsModel();
+            foreach ($settings->listTemplatesInEmailTemplateDirectory() as $filePath => $name) {
+                if ($id === $name) {
+                    try {
+                        $record = NotificationRecord::createFromTemplate($filePath);
 
-            self::$notificationCache[$id] = $record;
-
-            if (!$record) {
-                $settings = Freeform::getInstance()->settings->getSettingsModel();
-                foreach ($settings->listTemplatesInEmailTemplateDirectory() as $filePath => $name) {
-                    if ($id === $name) {
-                        try {
-                            $record = NotificationRecord::createFromTemplate($filePath);
-
-                            self::$notificationCache[$id] = $record;
-                        } catch (EmailTemplateException $exception) {
-                            \Craft::$app->session->setError(
-                                Freeform::t(
-                                    '{template}: {message}',
-                                    [
-                                        'template' => $name,
-                                        'message' => $exception->getMessage(),
-                                    ]
-                                )
-                            );
-                        }
+                        self::$notificationCache[$id] = $record;
+                    } catch (EmailTemplateException $exception) {
+                        \Craft::$app->session->setError(
+                            Freeform::t(
+                                '{template}: {message}',
+                                [
+                                    'template' => $name,
+                                    'message' => $exception->getMessage(),
+                                ]
+                            )
+                        );
                     }
                 }
             }
         }
 
-        return self::$notificationCache[$id];
+        return self::$notificationCache[$id] ?? null;
     }
 
-    /**
-     * @throws \Exception
-     */
     public function save(NotificationRecord $record): bool
-    {
-        if ($record->isFileBasedTemplate()) {
-            return $this->saveNotificationAsFile($record);
-        }
-
-        $isNew = !$record->id;
-
-        // Replace all &nbsp; occurrences with a blank space, since it might mess up
-        // Twig parsing. These non-breakable spaces are caused by the HTML editor
-        $record->bodyHtml = str_replace('&nbsp;', ' ', $record->bodyHtml);
-
-        $this->trigger(self::EVENT_BEFORE_SAVE, new SaveEvent($record, $isNew));
-
-        $record->validate();
-
-        if (!$record->hasErrors()) {
-            $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
-
-            try {
-                $record->save(false);
-
-                self::$notificationCache[$record->id] = $record;
-
-                if (null !== $transaction) {
-                    $transaction->commit();
-                }
-
-                $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($record, $isNew));
-
-                return true;
-            } catch (\Exception $e) {
-                if (null !== $transaction) {
-                    $transaction->rollBack();
-                }
-
-                throw $e;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param int $notificationId
-     *
-     * @throws \Exception
-     */
-    public function deleteById($notificationId): bool
-    {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
-
-        $record = $this->getNotificationById($notificationId);
-
-        if (!$record) {
-            return false;
-        }
-
-        if ($record->isFileBasedTemplate()) {
-            $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
-            unlink($emailDirectory.'/'.$record->filepath);
-
-            return true;
-        }
-
-        $beforeDeleteEvent = new DeleteEvent($record);
-        $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
-
-        if (!$beforeDeleteEvent->isValid) {
-            return false;
-        }
-
-        $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
-
-        try {
-            $affectedRows = \Craft::$app->getDb()
-                ->createCommand()
-                ->delete(NotificationRecord::TABLE, ['id' => $record->id])
-                ->execute()
-            ;
-
-            if (null !== $transaction) {
-                $transaction->commit();
-            }
-
-            $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($record));
-
-            return (bool) $affectedRows;
-        } catch (\Exception $exception) {
-            if (null !== $transaction) {
-                $transaction->rollback();
-            }
-
-            throw $exception;
-        }
-    }
-
-    public function createNewFileNotification(string $name): NotificationRecord
-    {
-        $settings = $this->getSettingsService()->getSettingsModel();
-        $extension = '.twig';
-
-        $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
-        $templateName = $name;
-
-        $templatePath = $templateDirectory.'/'.$templateName.$extension;
-
-        FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
-
-        return $this->getNotificationById($templateName.$extension);
-    }
-
-    public function saveNotificationAsFile(NotificationRecord $record)
     {
         $emailDirectory = Freeform::getInstance()->settings->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
 
@@ -300,5 +156,40 @@ class NotificationsService extends BaseService
         fclose($resource);
 
         return true;
+    }
+
+    /**
+     * @param int $notificationId
+     *
+     * @throws \Exception
+     */
+    public function deleteById($notificationId): bool
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
+
+        $record = $this->getNotificationById($notificationId);
+        if (!$record) {
+            return false;
+        }
+
+        $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
+        unlink($emailDirectory.'/'.$record->filepath);
+
+        return true;
+    }
+
+    public function createNewFileNotification(string $name): NotificationRecord
+    {
+        $settings = $this->getSettingsService()->getSettingsModel();
+        $extension = '.twig';
+
+        $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
+        $templateName = $name;
+
+        $templatePath = $templateDirectory.'/'.$templateName.$extension;
+
+        FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
+
+        return $this->getNotificationById($templateName.$extension);
     }
 }

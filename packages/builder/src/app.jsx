@@ -203,7 +203,6 @@ ReactDOM.render(
       canManageFields={canManageFields}
       canManageNotifications={canManageNotifications}
       canManageSettings={canManageSettings}
-      isDbEmailTemplateStorage={isDbEmailTemplateStorage}
       isRulesEnabled={isRulesEnabled}
       renderHtml={renderFormHtmlInCpViews}
       reservedKeywords={reservedKeywords}

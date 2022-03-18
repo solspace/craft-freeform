@@ -133,7 +133,7 @@ export default class DynamicRecipients extends BasePropertyEditor {
           couldBeNumeric={true}
           onChangeHandler={this.update}
           emptyOption="Select a template..."
-          optionGroups={PropertyHelper.getNotificationList(notifications)}
+          options={PropertyHelper.getNotificationList(notifications)}
         >
           {canManageNotifications && <AddNewNotification />}
         </SelectProperty>

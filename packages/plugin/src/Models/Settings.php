@@ -22,9 +22,6 @@ use Symfony\Component\Finder\SplFileInfo;
 
 class Settings extends Model
 {
-    public const EMAIL_TEMPLATE_STORAGE_DB = 'db';
-    public const EMAIL_TEMPLATE_STORAGE_FILE = 'template';
-
     public const PROTECTION_SIMULATE_SUCCESS = 'simulate_success';
     public const PROTECTION_DISPLAY_ERRORS = 'display_errors';
     public const PROTECTION_RELOAD_FORM = 'reload_form';
@@ -82,9 +79,6 @@ class Settings extends Model
 
     /** @var string */
     public $successTemplateDirectory;
-
-    /** @var string */
-    public $emailTemplateStorage;
 
     /** @var string */
     public $defaultView;
@@ -320,7 +314,6 @@ class Settings extends Model
         $this->formTemplateDirectory = null;
         $this->emailTemplateDirectory = null;
         $this->successTemplateDirectory = null;
-        $this->emailTemplateStorage = self::EMAIL_TEMPLATE_STORAGE_DB;
         $this->defaultView = Freeform::VIEW_DASHBOARD;
         $this->fieldDisplayOrder = Freeform::FIELD_DISPLAY_ORDER_NAME;
         $this->showTutorial = true;

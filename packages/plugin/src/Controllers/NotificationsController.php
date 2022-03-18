@@ -16,7 +16,6 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationEditorBundle;
 use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
@@ -31,35 +30,16 @@ class NotificationsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
 
         $this->view->registerAssetBundle(NotificationIndexBundle::class);
+
         $notifications = $this->getNotificationService()->getAllNotifications();
-
-        $dbNotificationCount = $this->getNotificationService()->getDatabaseNotificationCount();
-
-        $settingsModel = $this->getSettingsService()->getSettingsModel();
-
-        $filesEnabled = !empty($settingsModel->emailTemplateDirectory);
-        $filesByDefault = Settings::EMAIL_TEMPLATE_STORAGE_FILE === $settingsModel->emailTemplateStorage;
 
         return $this->renderTemplate(
             'freeform/notifications',
             [
-                'filesEnabled' => $filesEnabled,
-                'filesByDefault' => $filesEnabled && $filesByDefault,
                 'notifications' => $notifications,
-                'dbNotificationCount' => $dbNotificationCount,
-                'fileNotificationCount' => \count($notifications) - $dbNotificationCount,
-                'useDbNotifications' => $dbNotificationCount > 0 || !$filesByDefault,
                 'settings' => Freeform::getInstance()->settings->getSettingsModel(),
             ]
         );
-    }
-
-    public function actionCreate(): Response
-    {
-        $record = NotificationRecord::create();
-        $title = Freeform::t('Create a new email notification template');
-
-        return $this->renderEditForm($record, $title);
     }
 
     public function actionCreateFile(): Response
@@ -76,7 +56,7 @@ class NotificationsController extends BaseController
         return $this->renderEditForm($record, $title);
     }
 
-    public function actionEdit(mixed $id): Response
+    public function actionEdit(string $id): Response
     {
         $record = $this->getNotificationService()->getNotificationById($id);
 
@@ -155,39 +135,10 @@ class NotificationsController extends BaseController
             return $this->asJson(['success' => false, 'errors' => ['Notification doesn\'t exist']]);
         }
 
-        if ($notification->isFileBasedTemplate()) {
-            $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
-            $original = $emailDirectory.'/'.$notification->filepath;
-            $new = $emailDirectory.'/'.$notification->handle.'-copy.twig';
-            copy($original, $new);
-
-            return $this->asJson(['success' => true]);
-        }
-
-        $record = new NotificationRecord();
-
-        $record->setAttributes($notification->getAttributes(), false);
-        $record->id = null;
-        $record->dateCreated = null;
-        $record->dateUpdated = null;
-        $record->uid = null;
-
-        while (true) {
-            $handle = $record->handle;
-            if (preg_match('/-(\d+)$/', $handle, $matches)) {
-                $number = (int) $matches[1];
-                $handle = preg_replace('/-\d+$/', '-'.($number + 1), $handle);
-            } else {
-                $handle .= '-1';
-            }
-            $record->handle = $handle;
-
-            if (!NotificationRecord::findOne(['handle' => $handle])) {
-                break;
-            }
-        }
-
-        $record->save();
+        $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
+        $original = $emailDirectory.'/'.$notification->filepath;
+        $new = $emailDirectory.'/'.$notification->handle.'-copy.twig';
+        copy($original, $new);
 
         return $this->asJson(['success' => true]);
     }

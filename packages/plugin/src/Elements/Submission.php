@@ -229,9 +229,9 @@ class Submission extends Element
         return $list;
     }
 
-    public static function create(): self
+    public static function create(Form $form): self
     {
-        $submission = new static();
+        $submission = new static(['formId' => $form->getId()]);
         $submission->generateToken();
 
         return $submission;

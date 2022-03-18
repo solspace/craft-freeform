@@ -40,7 +40,6 @@ use Solspace\Freeform\Controllers\FileUploadController;
 use Solspace\Freeform\Controllers\FormsController;
 use Solspace\Freeform\Controllers\LogsController;
 use Solspace\Freeform\Controllers\MailingListsController;
-use Solspace\Freeform\Controllers\Migrations\NotificationsController as MigrateNotificationsController;
 use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
 use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
@@ -487,7 +486,6 @@ class Freeform extends Plugin
                 'feeds' => FeedsController::class,
                 'welcome-screen' => WelcomeScreenController::class,
                 'rest-settings' => RESTSettingsController::class,
-                'migrate-notifications' => MigrateNotificationsController::class,
                 'file-upload' => FileUploadController::class,
                 'diagnostics' => DiagnosticsController::class,
                 'forms-rest' => FormsRESTController::class,

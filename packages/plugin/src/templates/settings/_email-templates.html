@@ -24,18 +24,6 @@
     }) }}
 
     {% if settings.absoluteEmailTemplateDirectory %}
-        {{ forms.selectField({
-            label: "Default Email Notification Creation Method"|t('freeform'),
-            instructions: "Which storage method to use when creating new email notifications with 'Add New Notification' option in Form Builder."|t('freeform'),
-            name: "settings[emailTemplateStorage]",
-            options: {
-                "db": "Database Entry",
-                "template": "Template File",
-            },
-            value: settings.emailTemplateStorage,
-            errors: settings.getErrors("emailTemplateStorage"),
-        }) }}
-
         {% set templateFiles = craft.freeform.settings.listTemplatesInEmailTemplateDirectory() %}
 
         <div id="components-wrapper">
@@ -59,39 +47,6 @@
             </div>
         </div>
 
-        {% if craft.freeform.notifications.databaseNotificationCount > 0 %}
-            <div class="field" id="notifications-migrator">
-                <div class="heading">
-                    <label>
-                        {{ 'Migrate from Database Email Templates to File Email Templates'|t('freeform') }}
-                    </label>
-                </div>
-                <div class="instructions">
-                    <p>
-                        {{ 'This is a utility that allows you to migrate your existing database email templates over to file-based email templates (you can continue to edit these from the CP). The utility will also update all existing forms to use the new file version of the email template. If you wish to have Freeform clean up and remove the old database email templates after, check the checkbox as well.'|t('freeform') }}
-                    </p>
-                </div>
-                <div class="input">
-                    <div style="margin-bottom: 10px;">
-                        <input
-                            type="checkbox"
-                            class="checkbox"
-                            name="removeFiles"
-                            value="1"
-                            id="remove-files"
-                            checked
-                        />
-                        <label for="remove-files">
-                            {{ "Remove database files after migration?" }}
-                        </label>
-                    </div>
-
-                    <button class="btn" id="migrate">
-                        {{ "Migrate"|t('freeform') }}
-                    </button>
-                </div>
-            </div>
-        {% endif %}
     {% endif %}
 
 {% endblock %}

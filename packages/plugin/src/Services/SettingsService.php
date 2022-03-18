@@ -157,13 +157,6 @@ class SettingsService extends BaseService
         return $templates;
     }
 
-    public function isDbEmailTemplateStorage(): bool
-    {
-        $settings = $this->getSettingsModel();
-
-        return !$settings->emailTemplateDirectory || Settings::EMAIL_TEMPLATE_STORAGE_DB === $settings->emailTemplateStorage;
-    }
-
     public function isFooterScripts(): bool
     {
         return Settings::SCRIPT_INSERT_LOCATION_FOOTER === $this->getSettingsModel()->scriptInsertLocation;

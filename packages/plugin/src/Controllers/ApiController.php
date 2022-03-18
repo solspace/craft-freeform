@@ -27,7 +27,6 @@ use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Models\FieldModel;
-use Solspace\Freeform\Records\NotificationRecord;
 use yii\base\Exception;
 use yii\web\Response;
 
@@ -206,35 +205,13 @@ class ApiController extends BaseController
     {
         $this->requirePostRequest();
 
-        $isDbStorage = $this->getSettingsService()->isDbEmailTemplateStorage();
-
         $request = \Craft::$app->request;
         $errors = [];
 
         $name = $request->post('name');
-        $handle = $request->post('handle');
 
         if (!$name) {
             $errors[] = Freeform::t('Name is required');
-        }
-
-        if (!$handle && $isDbStorage) {
-            $errors[] = Freeform::t('Handle is required');
-        }
-
-        if ($isDbStorage) {
-            $notification = NotificationRecord::create();
-            $notification->name = $name;
-            $notification->handle = $handle;
-
-            if (empty($errors) && $this->getNotificationsService()->save($notification)) {
-                return $this->asJson(['success' => true, 'id' => $notification->id]);
-            }
-
-            $errors = $notification->getErrors();
-            $errors = array_values($errors);
-
-            return $this->asJson(['success' => false, 'errors' => $errors]);
         }
 
         $settings = $this->getSettingsService()->getSettingsModel();

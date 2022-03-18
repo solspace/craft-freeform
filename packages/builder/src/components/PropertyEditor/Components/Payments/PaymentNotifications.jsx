@@ -38,7 +38,7 @@ export default class PaymentNotifications extends Component {
             couldBeNumeric={false}
             onChangeHandler={onChange}
             emptyOption="Select a template..."
-            optionGroups={PropertyHelper.getNotificationList(notifications)}
+            options={PropertyHelper.getNotificationList(notifications)}
           >
             {canManageNotifications && index + 1 == notificationTypeOptions.length && <AddNewNotification />}
           </SelectProperty>

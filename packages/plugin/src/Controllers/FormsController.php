@@ -450,7 +450,6 @@ class FormsController extends BaseController
             'canManageFields' => PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_MANAGE),
             'canManageNotifications' => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE),
             'canManageSettings' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
-            'isDbEmailTemplateStorage' => $this->getSettingsService()->isDbEmailTemplateStorage(),
             'isRulesEnabled' => $isPro,
             'isRecaptchaEnabled' => $settings->recaptchaEnabled,
             'isHCaptcha' => $isHCaptcha,

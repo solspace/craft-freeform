@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Controllers;
 
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
@@ -27,6 +28,8 @@ use yii\web\Response;
 
 class SubmitController extends BaseController
 {
+    public const EVENT_CONFIGURE_CORS = 'configure-cors';
+
     /** @var bool */
     protected $allowAnonymous = true;
 
@@ -84,6 +87,12 @@ class SubmitController extends BaseController
 
     public function behaviors()
     {
+        $generalConfig = \Craft::$app->getConfig()->getGeneral();
+        $origins = $generalConfig->allowedGraphqlOrigins;
+        if ('*' === $origins) {
+            $origins = ['*'];
+        }
+
         $corsHeaders = [
             'Access-Control-Request-Method' => ['POST', 'OPTIONS'],
             'Access-Control-Request-Headers' => [
@@ -92,22 +101,20 @@ class SubmitController extends BaseController
                 'Content-Type',
                 'X-Craft-Token',
                 'X-Requested-With',
+                'HTTP_X_REQUESTED_WITH',
             ],
-            'Access-Control-Allow-Credentials' => true,
+            'Access-Control-Allow-Credentials' => !\in_array('*', $origins, true),
             'Access-Control-Max-Age' => 86400,
+            'Origin' => $origins,
         ];
 
-        $generalConfig = \Craft::$app->getConfig()->getGeneral();
-        $origins = $generalConfig->allowedGraphqlOrigins;
-        if (!empty($origins)) {
-            $corsHeaders['Access-Control-Allow-Origin'] = $origins;
-            $corsHeaders['Origin'] = $origins;
-        }
+        $event = new ConfigureCORSEvent($corsHeaders);
+        $this->trigger(self::EVENT_CONFIGURE_CORS, $event);
 
         return [
             'corsFilter' => [
                 'class' => Cors::class,
-                'cors' => $corsHeaders,
+                'cors' => $event->getHeaders(),
             ],
         ];
     }

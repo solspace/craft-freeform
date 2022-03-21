@@ -26,7 +26,7 @@
 			</div>
 			<div>{{ "Your email address (optional)" | t('freeform') }}</div>
 			<div>
-				<input type="text" class="text fullwidth" name="email" value="{{ craft.app.user.identity.email }}"/>
+				<input type="text" class="text fullwidth" name="email" value="{{ currentUser ? currentUser.email }}"/>
 			</div>
 			<div>
 				<button class="btn submit" type="submit">{{ "Send" | t('freeform') }}</button>

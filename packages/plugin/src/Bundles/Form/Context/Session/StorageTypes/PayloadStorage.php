@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
+use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
@@ -14,6 +15,9 @@ use yii\base\Event;
 class PayloadStorage implements FormContextStorageInterface
 {
     public const INPUT_PREFIX = 'freeform_payload';
+    public const PROPERTY_KEY = 'payload';
+
+    private static $payloadCache = [];
 
     private $secret;
 
@@ -21,9 +25,19 @@ class PayloadStorage implements FormContextStorageInterface
     {
         $this->secret = $secret;
 
+        Event::on(Form::class, Form::EVENT_GET_CUSTOM_PROPERTY, [$this, 'attachProperty']);
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachJson']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'requirePayload']);
+    }
+
+    public function attachProperty(GetCustomPropertyEvent $event)
+    {
+        if (self::PROPERTY_KEY !== $event->getKey()) {
+            return;
+        }
+
+        $event->setValue($this->getEncryptedBag($event->getForm()));
     }
 
     public function requirePayload(HandleRequestEvent $event)
@@ -113,15 +127,19 @@ class PayloadStorage implements FormContextStorageInterface
 
     private function getEncryptedBag(Form $form): string
     {
-        $key = $this->getKey($form);
+        if (!isset(self::$payloadCache[$form->getHash()])) {
+            $key = $this->getKey($form);
 
-        $payload = json_encode([
-            'utime' => (new Carbon('now', 'UTC'))->timestamp,
-            'properties' => $form->getPropertyBag(),
-            'attributes' => $form->getAttributeBag(),
-        ]);
+            $payload = json_encode([
+                'utime' => (new Carbon('now', 'UTC'))->timestamp,
+                'properties' => $form->getPropertyBag(),
+                'attributes' => $form->getAttributeBag(),
+            ]);
 
-        return base64_encode(\Craft::$app->security->encryptByKey($payload, $key));
+            self::$payloadCache[$form->getHash()] = base64_encode(\Craft::$app->security->encryptByKey($payload, $key));
+        }
+
+        return self::$payloadCache[$form->getHash()];
     }
 
     private function getKey(Form $form)

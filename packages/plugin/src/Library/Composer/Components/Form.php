@@ -20,6 +20,7 @@ use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
+use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\HydrateEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
@@ -96,6 +97,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD = 'prepare-ajax-response-payload';
     public const EVENT_CREATE_SUBMISSION = 'create-submission';
     public const EVENT_SEND_NOTIFICATIONS = 'send-notifications';
+    public const EVENT_GET_CUSTOM_PROPERTY = 'get-custom-property';
 
     public const PROPERTY_STORED_VALUES = 'storedValues';
     public const PROPERTY_PAGE_INDEX = 'pageIndex';
@@ -300,6 +302,24 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public function __toString(): string
     {
         return $this->getName();
+    }
+
+    public function __get(string $name)
+    {
+        $event = new GetCustomPropertyEvent($this, $name);
+        Event::trigger(self::class, self::EVENT_GET_CUSTOM_PROPERTY, $event);
+
+        if ($event->getIsSet()) {
+            return $event->getValue();
+        }
+    }
+
+    public function __isset(string $name): bool
+    {
+        $event = new GetCustomPropertyEvent($this, $name);
+        Event::trigger(self::class, self::EVENT_GET_CUSTOM_PROPERTY, $event);
+
+        return $event->getIsSet();
     }
 
     /**

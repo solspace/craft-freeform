@@ -103,7 +103,7 @@ class SubmitController extends BaseController
                 'X-Requested-With',
                 'HTTP_X_REQUESTED_WITH',
             ],
-            'Access-Control-Allow-Credentials' => !\in_array('*', $origins, true),
+            'Access-Control-Allow-Credentials' => !\is_array($origins) || !\in_array('*', $origins, true),
             'Access-Control-Max-Age' => 86400,
             'Origin' => $origins,
         ];

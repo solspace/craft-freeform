@@ -1,6 +1,6 @@
 {# subject: {{ craft.freeform.name }} {{ daily ? 'Daily' : 'Weekly' }} Digest for {{ rangeStart|date("long") }}{% if not daily %} - {{ rangeEnd|date("long") }}{% endif %} ({{ craft.app.systemName }}) #}
-{# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
-{# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
+{# fromEmail: {{ craft.app.projectConfig.get('email.fromEmail') }} #}
+{# fromName: {{ craft.app.projectConfig.get('email.fromName') }} #}
 {# includeAttachments: false #}
 
 {% extends 'freeform/_emailTemplates/layout/solspace' %}

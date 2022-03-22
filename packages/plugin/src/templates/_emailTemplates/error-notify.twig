@@ -1,7 +1,7 @@
 {# subject: {{ craft.freeform.name }} Alert: Failed to send email notification! #}
-{# fromEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
-{# fromName: {{ craft.app.systemSettings.getSettings('email').fromName }} #}
-{# replyToEmail: {{ craft.app.systemSettings.getSettings('email').fromEmail }} #}
+{# fromEmail: {{ craft.app.projectConfig.get('email.fromEmail') }} #}
+{# fromName: {{ craft.app.projectConfig.get('email.fromName') }} #}
+{# replyToEmail: {{ craft.app.projectConfig.get('email.fromEmail') }} #}
 {# includeAttachments: false #}
 
 {% extends 'freeform/_emailTemplates/layout/solspace' %}

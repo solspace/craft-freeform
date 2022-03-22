@@ -9,7 +9,7 @@
     submitClass: "btn btn-primary",
     returnUrl: "{{ siteUrl }}demo/bootstrap/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
     submissionToken: submissionToken|default(null),
-    formattingTemplate: 'bootstrap-4.html',
+    formattingTemplate: 'bootstrap-4.twig',
 }) %}
 
 {% block content %}
@@ -33,7 +33,7 @@
                 <p class="mb-0">
                     If you wish to experience a demo that uses your chosen formatting template and fully respects your chosen success behavior, please try the <a href="{{ siteUrl }}demo/custom">Custom Formatting Template</a> demo page. This demo page forces a few things:
                     <ul class="mt-2">
-                        <li>The <code>formattingTemplate</code> parameter is applied to force the sample <code>bootstrap-4.html</code> formatting template included with Freeform. We have automatically loaded the Bootstrap 4 library inside this demo as well.</li>
+                        <li>The <code>formattingTemplate</code> parameter is applied to force the sample <code>bootstrap-4.twig</code> formatting template included with Freeform. We have automatically loaded the Bootstrap 4 library inside this demo as well.</li>
                         <li>If the <b>Success Behavior</b> is set to <i>Use Return URL</i>, <i>Reload Form with Success Message</i> (with AJAX) or <i>No Effect</i>, this demo page contains a <code>returnUrl</code> parameter that will force redirect to the following URL upon successful submit of the form: <code>{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/SUBMISSION_ID/success</code></li>
                     </ul>
                 </p>

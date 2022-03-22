@@ -58,7 +58,7 @@ class Settings extends Model
     public const CONTEXT_TYPE_DATABASE = 'database';
 
     public const DEFAULT_AJAX = true;
-    public const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.html';
+    public const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.twig';
 
     public const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
     public const DEFAULT_SESSION_ENTRY_TTL = 10800; // 3 hours
@@ -470,16 +470,9 @@ class Settings extends Model
         return null;
     }
 
-    /**
-     * Gets the demo template content.
-     *
-     * @param string $name
-     *
-     * @throws FreeformException
-     */
-    public function getDemoTemplateContent($name = 'flexbox'): string
+    public function getDemoTemplateContent(string $name = 'flexbox'): string
     {
-        $path = __DIR__."/../templates/_defaultFormTemplates/{$name}.html";
+        $path = __DIR__."/../templates/_defaultFormTemplates/{$name}.twig";
         if (!file_exists($path)) {
             throw new FreeformException(
                 Freeform::t('Could not get demo template content. Please contact Solspace.')

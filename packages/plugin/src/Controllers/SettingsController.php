@@ -115,7 +115,7 @@ class SettingsController extends BaseController
 
         $errors = [];
         $settings = $this->getSettingsModel();
-        $extension = '.html';
+        $extension = '.twig';
 
         $templateDirectory = $settings->getAbsoluteFormTemplateDirectory();
         $templateName = \Craft::$app->request->post('templateName', null);

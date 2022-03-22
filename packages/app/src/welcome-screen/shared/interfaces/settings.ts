@@ -4,13 +4,13 @@ export enum DefaultView {
   Submissions = 'submissions',
 }
 export enum FormattingTemplate {
-  Bootstrap = 'bootstrap.html',
-  Bootstrap4 = 'bootstrap-4.html',
-  Bootstrap5 = 'bootstrap-5.html',
-  Flexbox = 'flexbox.html',
-  Foundation = 'foundation.html',
-  Grid = 'grid.html',
-  Tailwind = 'tailwind.html',
+  Bootstrap = 'bootstrap-3.twig',
+  Bootstrap4 = 'bootstrap-4.twig',
+  Bootstrap5 = 'bootstrap-5.twig',
+  Flexbox = 'flexbox.twig',
+  Foundation = 'foundation-6.twig',
+  Grid = 'grid.twig',
+  Tailwind = 'tailwind-1.twig',
 }
 export enum JSInsertLocation {
   Footer = 'footer',

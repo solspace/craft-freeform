@@ -120,8 +120,16 @@ class SettingsService extends BaseService
         $templateDirectoryPath = $this->getSolspaceFormTemplateDirectory();
 
         $fs = new Finder();
+
         /** @var SplFileInfo[] $fileIterator */
-        $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html');
+        $fileIterator = $fs
+            ->files()
+            ->in($templateDirectoryPath)
+            ->sortByName()
+            ->name('*.html')
+            ->name('*.twig')
+        ;
+
         $templates = [];
 
         foreach ($fileIterator as $file) {

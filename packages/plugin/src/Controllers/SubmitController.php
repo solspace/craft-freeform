@@ -30,8 +30,7 @@ class SubmitController extends BaseController
 {
     public const EVENT_CONFIGURE_CORS = 'configure-cors';
 
-    /** @var bool */
-    protected $allowAnonymous = true;
+    protected array|bool|int $allowAnonymous = true;
 
     public function actionIndex(): ?Response
     {

@@ -32,7 +32,7 @@ class m220323_113852_MigrateEmailValuesToString extends Migration
 
                 foreach ($row as $column => $value) {
                     if (!str_starts_with($value, '[')) {
-                        continue 2;
+                        continue;
                     }
 
                     $values = json_decode($value);

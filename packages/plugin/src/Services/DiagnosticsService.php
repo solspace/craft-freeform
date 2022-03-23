@@ -13,7 +13,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\DiagnosticItem;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\NoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\SuggestionValidator;
-use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningNoticeValidator;
 use Solspace\Freeform\Library\DataObjects\Diagnostics\Validators\WarningValidator;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
 use Solspace\Freeform\Models\Settings;
@@ -35,17 +34,10 @@ class DiagnosticsService extends BaseService
                 [
                     new WarningValidator(
                         function ($value) {
-                            return version_compare($value['version'], '3.4.0', '>');
+                            return version_compare($value['version'], '4.0.0', '>');
                         },
                         'Craft compatibility issue',
-                        'You have an incompatible version of Craft installed. The current minimum Craft version Freeform supports is 3.4.0 and greater.'
-                    ),
-                    new SuggestionValidator(
-                        function ($value) {
-                            return version_compare($value['version'], '3.8.0', '<');
-                        },
-                        'Potential Craft Compatibility issue',
-                        "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please check Freeform for updates to confirm you're using a version that has been tested for compatibility with this version of Craft.",
+                        'You have an incompatible version of Craft installed. The current minimum Craft version Freeform supports is 4.0.0 and greater.'
                     ),
                 ]
             ),
@@ -55,17 +47,10 @@ class DiagnosticsService extends BaseService
                 [
                     new WarningValidator(
                         function ($value) {
-                            return version_compare($value, '7.0', '>=');
+                            return version_compare($value, '8.0.2', '>=');
                         },
                         'PHP Compatibility issue',
-                        'You have an incompatible version of PHP installed for this site environment. The current minimum PHP version Freeform supports is 7.0.x and greater.'
-                    ),
-                    new SuggestionValidator(
-                        function ($value) {
-                            return version_compare($value, '8.1', '<');
-                        },
-                        'Potential PHP Compatibility issue',
-                        "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please check Freeform for updates to confirm you're using a version that has been tested for compatibility with this version of PHP."
+                        'You have an incompatible version of PHP installed for this site environment. The current minimum PHP version Freeform supports is 8.0.2 and greater.'
                     ),
                 ]
             ),
@@ -487,29 +472,6 @@ class DiagnosticsService extends BaseService
                 }
             ),
             new DiagnosticItem(
-                'Email Notification Templates: [color]{{ value == "both" ? "Database and Files" : value == "db" ? "Database" : "Files" }}[/color]',
-                $this->getEmailNotificationTypes(),
-                [
-                    new WarningValidator(
-                        function ($value) {
-                            return 'files' === $value;
-                        },
-                        'Update your Email Notification templates',
-                        'It appears you’re still using the database option for storing Email Notification templates. These will continue to work, but this approach has been deprecated as of Freeform 3.11. You should consider using the migration utility in the Email Notifications Settings area to convert these to file-based notification templates. Once doing so, you can continue to edit them inside the Freeform control panel, but they will be stored as files instead.'
-                    ),
-                    new WarningNoticeValidator(
-                        function ($value) {
-                            return 'files' === $value;
-                        },
-                        '',
-                        'The Database storage method has been deprecated but will continue to work. You should consider switching to File-based soon.'
-                    ),
-                ],
-                function () {
-                    return DiagnosticItem::COLOR_BASE;
-                }
-            ),
-            new DiagnosticItem(
                 'Developer Digest Email: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                 \count($this->getSettingsService()->getDigestRecipients()) > 0,
                 [
@@ -672,19 +634,6 @@ class DiagnosticsService extends BaseService
         }
 
         return '';
-    }
-
-    private function getEmailNotificationTypes(): string
-    {
-        $general = $this->getSummary()->statistics->general;
-        $hasFiles = $general->fileNotifications;
-        $hasDb = $general->databaseNotifications;
-
-        if ($hasFiles && $hasDb) {
-            return 'both';
-        }
-
-        return $hasDb ? 'db' : 'files';
     }
 
     private function getSummary(): InstallSummary

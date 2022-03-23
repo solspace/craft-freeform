@@ -192,4 +192,9 @@ class NotificationsService extends BaseService
 
         return $this->getNotificationById($templateName.$extension);
     }
+
+    public function getDatabaseNotificationCount(): int
+    {
+        return NotificationRecord::find()->count();
+    }
 }

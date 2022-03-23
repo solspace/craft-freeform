@@ -47,6 +47,39 @@
             </div>
         </div>
 
+        {% if craft.freeform.notifications.databaseNotificationCount > 0 %}
+            <div class="field" id="notifications-migrator">
+                <div class="heading">
+                    <label>
+                        {{ 'Migrate from Database Email Templates to File Email Templates'|t('freeform') }}
+                    </label>
+                </div>
+                <div class="instructions">
+                    <p>
+                        {{ "In order to use your old database email notification templates, you'll need to convert them to file-based templates. Use the utility below to do that (you can continue to edit these from the CP). The utility will also update all existing forms to use the new file version of the email template."|t('freeform') }}
+                    </p>
+                </div>
+                <div class="input">
+                    <div style="margin-bottom: 10px;">
+                        <input
+                            type="checkbox"
+                            class="checkbox"
+                            name="removeFiles"
+                            value="1"
+                            id="remove-files"
+                            checked
+                        />
+                        <label for="remove-files">
+                            {{ "Remove database templates after migration?" }}
+                        </label>
+                    </div>
+
+                    <button class="btn" id="migrate">
+                        {{ "Migrate"|t('freeform') }}
+                    </button>
+                </div>
+            </div>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

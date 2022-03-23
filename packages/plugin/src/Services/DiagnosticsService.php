@@ -34,10 +34,17 @@ class DiagnosticsService extends BaseService
                 [
                     new WarningValidator(
                         function ($value) {
-                            return version_compare($value['version'], '4.0.0', '>');
+                            return version_compare($value['version'], '4.0.0-beta.1', '>=');
                         },
                         'Craft compatibility issue',
-                        'You have an incompatible version of Craft installed. The current minimum Craft version Freeform supports is 4.0.0 and greater.'
+                        'You have an incompatible version of Craft installed. This version of Freeform currently supports Craft 4.0.0 and greater.'
+                    ),
+                    new SuggestionValidator(
+                        function ($value) {
+                            return version_compare($value['version'], '4.1.0', '<');
+                        },
+                        'Potential Craft Compatibility issue',
+                        "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please confirm you're using a version of Freeform tested for compatibility with this version of Craft.",
                     ),
                 ]
             ),
@@ -50,7 +57,14 @@ class DiagnosticsService extends BaseService
                             return version_compare($value, '8.0.2', '>=');
                         },
                         'PHP Compatibility issue',
-                        'You have an incompatible version of PHP installed for this site environment. The current minimum PHP version Freeform supports is 8.0.2 and greater.'
+                        'You have an incompatible version of PHP installed for this site environment. This version of Freeform currently supports PHP 8.0.2 and greater.'
+                    ),
+                    new SuggestionValidator(
+                        function ($value) {
+                            return version_compare($value, '8.2', '<');
+                        },
+                        'Potential PHP Compatibility issue',
+                        "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please confirm you're using a version of Freeform tested for compatibility with this version of PHP."
                     ),
                 ]
             ),

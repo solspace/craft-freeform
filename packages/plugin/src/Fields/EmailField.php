@@ -84,6 +84,11 @@ class EmailField extends AbstractField implements RecipientInterface, SingleValu
 
         $validator = new EmailValidator();
         $email = $this->getValue();
+
+        if (empty($email)) {
+            return $errors;
+        }
+
         $hasDot = preg_match('/@.+\..+$/', $email);
 
         if (!$hasDot || !$validator->isValid($email, new NoRFCWarningsValidation())) {

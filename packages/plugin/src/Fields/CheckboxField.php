@@ -16,21 +16,15 @@ use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\StaticValueTrait;
 use Twig\Markup;
 
-class CheckboxField extends AbstractField implements SingleValueInterface, InputOnlyInterface, StaticValueInterface
+class CheckboxField extends AbstractField implements SingleValueInterface, InputOnlyInterface
 {
     use SingleValueTrait;
-    use StaticValueTrait;
 
     /** @var bool */
     protected $checked;
-
-    /** @var bool */
-    protected $checkedByPost;
 
     /**
      * Return the field TYPE.
@@ -42,31 +36,7 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
 
     public function isChecked(): bool
     {
-        if (null !== $this->checkedByPost) {
-            return $this->checkedByPost;
-        }
-
-        return $this->checked;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setIsChecked(bool $isChecked)
-    {
-        $this->checked = $isChecked;
-
-        return $this;
-    }
-
-    /**
-     * @return $this
-     */
-    public function setIsCheckedByPost(bool $isChecked)
-    {
-        $this->checkedByPost = $isChecked;
-
-        return $this;
+        return (bool) $this->checked;
     }
 
     /**
@@ -99,8 +69,8 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             .$this->getAttributeString('name', $this->getHandle())
             .$this->getAttributeString('type', $this->getType())
             .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString('value', 1)
-            .$this->getParameterString('checked', $this->isChecked())
+            .$this->getAttributeString('value', $this->getDefaultValue())
+            .$this->getParameterString('checked', (bool) $this->getValue())
             .$this->getRequiredAttribute()
             .$attributes->getInputAttributesAsString()
             .'/>';
@@ -111,17 +81,6 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
         $this->setCustomAttributes($customAttributes);
 
         return $this->renderRaw($this->getSingleInputHtml());
-    }
-
-    public function getValueAsString(bool $optionsAsValues = true): string
-    {
-        if ($optionsAsValues) {
-            $value = 1 === (int) $this->getValue() ? $this->getStaticValue() : $this->getValue();
-
-            return (string) $value;
-        }
-
-        return (string) $this->getValue();
     }
 
     /**

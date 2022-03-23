@@ -23,9 +23,6 @@ class CheckboxFieldBundle extends FeatureBundle
             return;
         }
 
-        $value = (bool) $event->getValue();
-
-        $field->setIsCheckedByPost($value);
-        $event->setValue($value);
+        $event->setValue($event->getValue() ? $field->getDefaultValue() : '');
     }
 }

@@ -46,6 +46,10 @@ class PostContext
             $event = new TransformValueEvent($field, $postedValue);
             Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);
 
+            if (!$event->isValid) {
+                return;
+            }
+
             $field->setValue($event->getValue());
         }
     }

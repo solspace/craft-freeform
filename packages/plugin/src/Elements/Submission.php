@@ -120,10 +120,6 @@ class Submission extends Element
             $clone = clone $field;
             $clone->setValue($value);
 
-            if ($clone instanceof CheckboxField) {
-                $clone->setIsChecked((bool) $value);
-            }
-
             return $clone;
         } catch (FieldException $exception) {
             if (self::isSubmissionField($name)) {

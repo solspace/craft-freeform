@@ -2,13 +2,13 @@
 
 namespace Solspace\Freeform\Events\Fields;
 
+use craft\events\CancelableEvent;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use yii\base\Event;
 
 /**
  * @template T of AbstractField
  */
-class TransformValueEvent extends Event
+class TransformValueEvent extends CancelableEvent
 {
     /** @var AbstractField */
     private $field;

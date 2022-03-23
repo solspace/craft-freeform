@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -94,10 +93,6 @@ class ElementEditBundle extends FeatureBundle
 
                 if ($field instanceof SingleValueInterface && \is_array($value)) {
                     $value = reset($value);
-                }
-
-                if ($field instanceof CheckboxField) {
-                    $field->setIsChecked((bool) $value);
                 }
 
                 $field->setValue($value);

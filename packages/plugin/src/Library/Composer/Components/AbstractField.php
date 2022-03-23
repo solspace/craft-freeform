@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
@@ -117,6 +118,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             try {
                 $field->{$fieldName} = $accessor->getValue($properties, $fieldName);
                 if ('value' === $fieldName) {
+                    if ($field instanceof CheckboxField && !$field->isChecked()) {
+                        $field->setValue('');
+                    }
                     $field->defaultValue = $accessor->getValue($properties, $fieldName);
                 }
             } catch (NoSuchPropertyException $e) {

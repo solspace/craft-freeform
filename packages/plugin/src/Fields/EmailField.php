@@ -16,18 +16,18 @@ use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\RecipientTrait;
+use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
-class EmailField extends AbstractField implements RecipientInterface, MultipleValueInterface, PlaceholderInterface
+class EmailField extends AbstractField implements RecipientInterface, SingleValueInterface, PlaceholderInterface
 {
-    use MultipleValueTrait;
     use PlaceholderTrait;
     use RecipientTrait;
+    use SingleValueTrait;
 
     /**
      * Return the field TYPE.
@@ -45,31 +45,21 @@ class EmailField extends AbstractField implements RecipientInterface, MultipleVa
         $attributes = $this->getCustomAttributes();
         $this->addInputAttribute('class', $attributes->getClass());
 
-        $values = $this->getValue();
-        if (empty($values)) {
-            $values = [''];
-        }
-
-        $output = '';
-        foreach ($values as $value) {
-            $output .= '<input '
-                .$this->getInputAttributesString()
-                .$this->getAttributeString('name', $this->getHandle())
-                .$this->getAttributeString('type', $this->getType())
-                .$this->getAttributeString('id', $this->getIdAttribute())
-                .$this->getAttributeString(
-                    'placeholder',
-                    $this->getForm()->getTranslator()->translate(
-                        $attributes->getPlaceholder() ?: $this->getPlaceholder()
-                    )
+        return '<input '
+            .$this->getInputAttributesString()
+            .$this->getAttributeString('name', $this->getHandle())
+            .$this->getAttributeString('type', $this->getType())
+            .$this->getAttributeString('id', $this->getIdAttribute())
+            .$this->getAttributeString(
+                'placeholder',
+                $this->getForm()->getTranslator()->translate(
+                    $attributes->getPlaceholder() ?: $this->getPlaceholder()
                 )
-                .$this->getAttributeString('value', $value, true)
-                .$this->getRequiredAttribute()
-                .$attributes->getInputAttributesAsString()
-                .'/>';
-        }
-
-        return $output;
+            )
+            .$this->getAttributeString('value', $this->getValue())
+            .$this->getRequiredAttribute()
+            .$attributes->getInputAttributesAsString()
+            .'/>';
     }
 
     /**
@@ -80,7 +70,9 @@ class EmailField extends AbstractField implements RecipientInterface, MultipleVa
      */
     public function getRecipients(): array
     {
-        return $this->getValue();
+        $recipients = [$this->getValue()];
+
+        return array_filter($recipients);
     }
 
     /**
@@ -91,16 +83,11 @@ class EmailField extends AbstractField implements RecipientInterface, MultipleVa
         $errors = parent::validate();
 
         $validator = new EmailValidator();
-        foreach ($this->getValue() as $email) {
-            if (empty($email)) {
-                continue;
-            }
+        $email = $this->getValue();
+        $hasDot = preg_match('/@.+\..+$/', $email);
 
-            $hasDot = preg_match('/@.+\..+$/', $email);
-
-            if (!$hasDot || !$validator->isValid($email, new NoRFCWarningsValidation())) {
-                $errors[] = $this->translate('{email} is not a valid email address', ['email' => $email]);
-            }
+        if (!$hasDot || !$validator->isValid($email, new NoRFCWarningsValidation())) {
+            $errors[] = $this->translate('{email} is not a valid email address', ['email' => $email]);
         }
 
         return $errors;

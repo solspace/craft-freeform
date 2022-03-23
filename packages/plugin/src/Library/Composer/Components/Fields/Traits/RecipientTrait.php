@@ -14,11 +14,11 @@ namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
 trait RecipientTrait
 {
-    /** @var int */
+    /** @var int|string */
     protected $notificationId;
 
     /**
-     * @return null|int
+     * @return null|int|string
      */
     public function getNotificationId()
     {

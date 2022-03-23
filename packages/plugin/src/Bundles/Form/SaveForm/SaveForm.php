@@ -130,7 +130,7 @@ class SaveForm extends FeatureBundle
             }
 
             $isRequired = $emailField->isRequired();
-            $recipients = array_filter($emailField->getRecipients());
+            $recipients = $emailField->getRecipients();
 
             if ($isRequired && empty($recipients)) {
                 return false;

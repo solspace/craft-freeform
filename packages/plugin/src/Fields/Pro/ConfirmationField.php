@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
-use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -37,15 +36,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
 
         try {
             $field = $this->getForm()->getLayout()->getFieldByHash($this->getTargetFieldHash());
-
             $value = $field->getValue();
-            if ($field instanceof EmailField) {
-                if (\count($value) >= 1) {
-                    $value = reset($value);
-                } else {
-                    $value = '';
-                }
-            }
 
             if ($value !== $this->getValue()) {
                 $errors[] = $this->translate(

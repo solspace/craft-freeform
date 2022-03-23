@@ -8,7 +8,6 @@ use GuzzleHttp\RequestOptions;
 use Solspace\Freeform\Events\Forms\HydrateEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
-use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
@@ -67,13 +66,7 @@ class PayloadForwarding extends FeatureBundle
                 continue;
             }
 
-            if ($field instanceof EmailField) {
-                $value = $field->getValueAsString();
-            } else {
-                $value = $field->getValue();
-            }
-
-            $payload[$field->getHandle()] = $value;
+            $payload[$field->getHandle()] = $field->getValue();
         }
 
         $csrfTokenName = \Craft::$app->config->general->csrfTokenName;

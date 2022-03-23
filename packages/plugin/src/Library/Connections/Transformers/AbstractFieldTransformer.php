@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Library\Connections\Transformers;
 
-use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -26,10 +25,6 @@ abstract class AbstractFieldTransformer implements TransformerInterface
 
     public static function create(AbstractField $field, string $craftFieldHandle): self
     {
-        if ($field instanceof EmailField) {
-            return new EmailTransformer($field, $craftFieldHandle);
-        }
-
         if ($field instanceof MultipleValueInterface) {
             return new ArrayTransformer($field, $craftFieldHandle);
         }

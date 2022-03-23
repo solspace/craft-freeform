@@ -116,7 +116,7 @@
                                         first: loop.index0 == 0,
                                     } %}
 
-                                    {% if field.type in ["text", "datetime", "number", "phone", "regex", "website"] %}
+                                    {% if field.type in ["text", "email", "datetime", "number", "phone", "regex", "website"] %}
                                         {{ forms.textField(options|merge({
                                             placeholder: field.placeholder,
                                         })) }}
@@ -137,30 +137,6 @@
                                             errors: submission.errors(fieldHandle),
                                             required: field.required,
                                         }, checkboxInput) }}
-                                    {% elseif field.type == "email" %}
-                                        {% set emailValue = value %}
-
-                                        {% set emailInputs %}
-                                            {% for value in emailValue %}
-                                                {{ forms.text(options|merge({
-                                                    name: fieldHandle ~ "[]",
-                                                    value: value,
-                                                    placeholder: field.placeholder,
-                                                })) }}
-                                            {% else %}
-                                                {{ forms.text(options|merge({
-                                                    name: fieldHandle ~ "[]",
-                                                    value: "",
-                                                    placeholder: field.placeholder,
-                                                })) }}
-                                            {% endfor %}
-                                        {% endset %}
-
-                                        {{ forms.field({
-                                            label:    field.label,
-                                            errors:   submission.getErrors(fieldHandle),
-                                            required: field.required,
-                                        }, emailInputs) }}
 
                                     {% elseif field.type == "textarea" %}
                                         {{ forms.textareaField(options|merge({

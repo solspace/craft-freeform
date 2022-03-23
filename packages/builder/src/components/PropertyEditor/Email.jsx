@@ -40,7 +40,7 @@ export default class Email extends BasePropertyEditor {
 
   render() {
     const {
-      properties: { label, handle, placeholder, required, notificationId, instructions },
+      properties: { label, handle, value, placeholder, required, notificationId, instructions },
     } = this.context;
 
     const { canManageNotifications } = this.context;
@@ -95,6 +95,14 @@ export default class Email extends BasePropertyEditor {
           instructions="Field specific user instructions."
           name="instructions"
           value={instructions}
+          onChangeHandler={this.update}
+        />
+
+        <TextProperty
+          label="Default Value"
+          instructions="If present, this will be the value pre-populated when the form is rendered."
+          name="value"
+          value={value}
           onChangeHandler={this.update}
         />
 

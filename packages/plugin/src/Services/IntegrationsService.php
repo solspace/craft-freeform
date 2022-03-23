@@ -88,7 +88,7 @@ class IntegrationsService extends BaseService
                     $mailingListFieldsByHandle[$mailingListField->getHandle()] = $mailingListField;
                 }
 
-                $emailList = $submission->{$emailField->getHandle()}->getValue();
+                $emailList = $submission->{$emailField->getHandle()}->getRecipients();
                 if ($emailList) {
                     $mappedValues = [];
                     if ($field->getMapping()) {

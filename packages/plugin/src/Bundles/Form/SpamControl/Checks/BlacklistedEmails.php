@@ -21,33 +21,31 @@ class BlacklistedEmails extends AbstractCheck
         }
 
         $form = $event->getForm();
-        foreach ($form->getLayout()->getPages() as $page) {
-            foreach ($page->getFields() as $field) {
-                if ($field instanceof EmailField) {
-                    foreach ($field->getValue() as $value) {
-                        foreach ($emails as $email) {
-                            if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
-                                if ($showErrorBelowFields) {
-                                    $field->addError(Freeform::t($emailsMessage, ['email' => $value]));
-                                }
+        $emailFields = $form->getLayout()->getFields(EmailField::class);
 
-                                if ($this->isDisplayErrors()) {
-                                    $form->addError(Freeform::t('Form contains a blocked email'));
-                                } else {
-                                    $event->getForm()->markAsSpam(
-                                        SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
-                                        sprintf(
-                                            'Email field "%s" contains a blocked email address "%s"',
-                                            $field->getHandle(),
-                                            $email
-                                        )
-                                    );
-                                }
+        foreach ($emailFields as $field) {
+            $value = $field->getValue();
 
-                                break;
-                            }
-                        }
+            foreach ($emails as $email) {
+                if (ComparisonHelper::stringContainsWildcardKeyword($email, $value)) {
+                    if ($showErrorBelowFields) {
+                        $field->addError(Freeform::t($emailsMessage, ['email' => $value]));
                     }
+
+                    if ($this->isDisplayErrors()) {
+                        $form->addError(Freeform::t('Form contains a blocked email'));
+                    } else {
+                        $event->getForm()->markAsSpam(
+                            SpamReason::TYPE_BLOCKED_EMAIL_ADDRESS,
+                            sprintf(
+                                'Email field "%s" contains a blocked email address "%s"',
+                                $field->getHandle(),
+                                $email
+                            )
+                        );
+                    }
+
+                    break;
                 }
             }
         }

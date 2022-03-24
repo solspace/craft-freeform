@@ -172,10 +172,7 @@ export default class NotificationProperties extends Component {
       .then((response) => response.json())
       .then((json) => {
         if (json.success) {
-          let id = json.id;
-          if (/^[0-9]+$/.test(id)) {
-            id = parseInt(id);
-          }
+          const { id } = json;
 
           fetchNotifications(hash, id);
           toggleForm();

@@ -141,7 +141,7 @@ export default class PropertyHelper {
       const notification = notifications[key];
 
       notificationList.push({
-        key,
+        key: notification.handle,
         value: notification.name,
       });
     }

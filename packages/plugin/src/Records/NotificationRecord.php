@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -216,7 +217,7 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
         return [
             'id' => is_numeric($this->id) ? (int) $this->id : $this->id,
             'name' => $this->name,
-            'handle' => $this->handle,
+            'handle' => $this->filepath,
             'description' => $this->description,
         ];
     }

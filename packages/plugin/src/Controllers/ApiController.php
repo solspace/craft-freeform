@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -218,7 +219,7 @@ class ApiController extends BaseController
 
         $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
         $templateName = StringHelper::toSnakeCase($name);
-        $extension = '.html';
+        $extension = '.twig';
 
         $templatePath = $templateDirectory.'/'.$templateName.$extension;
         if (file_exists($templatePath)) {

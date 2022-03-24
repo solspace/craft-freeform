@@ -84,6 +84,9 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsById;
     }
 
+    /**
+     * @return Form[]
+     */
     public function getResolvedForms(array $arguments): array
     {
         $limit = $arguments['limit'] ?? null;

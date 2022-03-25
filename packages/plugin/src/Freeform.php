@@ -968,10 +968,10 @@ class Freeform extends Plugin
             if ($request->isCpRequest && preg_match('/^freeform\//', $request->getPathInfo())) {
                 $view->registerAssetBundle(BetaBundle::class, View::POS_END);
 
-                // $view->registerHtml(
-                //     $view->renderTemplate('freeform/_beta/feedback-widget'),
-                //     View::POS_END
-                // );
+                $view->registerHtml(
+                    $view->renderTemplate('freeform/_beta/feedback-widget'),
+                    View::POS_END
+                );
             }
         }
     }

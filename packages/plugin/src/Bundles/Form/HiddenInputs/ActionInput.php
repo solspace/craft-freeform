@@ -18,14 +18,7 @@ class ActionInput extends FeatureBundle
 
     public function attachInput(RenderTagEvent $event)
     {
-        $form = $event->getForm();
-        $bag = $form->getPropertyBag();
-
-        if (!$bag->get('action')) {
-            $event->addChunk(
-                '<input type="hidden" name="action" value="freeform/submit" />'
-            );
-        }
+        $event->addChunk('<input type="hidden" name="action" value="freeform/submit" />');
     }
 
     public function attachToJson(OutputAsJsonEvent $event)

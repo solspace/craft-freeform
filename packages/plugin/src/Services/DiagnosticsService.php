@@ -38,14 +38,14 @@ class DiagnosticsService extends BaseService
                             return version_compare($value['version'], '3.4.0', '>');
                         },
                         'Craft compatibility issue',
-                        'You have an incompatible version of Craft installed. The current minimum Craft version Freeform supports is 3.4.0 and greater.'
+                        'You have an incompatible version of Craft installed. This version of Freeform currently supports Craft 3.4.0 and greater.'
                     ),
                     new SuggestionValidator(
                         function ($value) {
                             return version_compare($value['version'], '3.8.0', '<');
                         },
                         'Potential Craft Compatibility issue',
-                        "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please check Freeform for updates to confirm you're using a version that has been tested for compatibility with this version of Craft."
+                        "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please confirm you're using a version of Freeform tested for compatibility with this version of Craft."
                     ),
                 ]
             ),
@@ -58,14 +58,14 @@ class DiagnosticsService extends BaseService
                             return version_compare($value, '7.0', '>=');
                         },
                         'PHP Compatibility issue',
-                        'You have an incompatible version of PHP installed for this site environment. The current minimum PHP version Freeform supports is 7.0.x and greater.'
+                        'You have an incompatible version of PHP installed for this site environment. This version of Freeform currently supports PHP 7.0.x and greater.'
                     ),
                     new SuggestionValidator(
                         function ($value) {
-                            return version_compare($value, '8.1', '<');
+                            return version_compare($value, '8.2', '<');
                         },
                         'Potential PHP Compatibility issue',
-                        "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please check Freeform for updates to confirm you're using a version that has been tested for compatibility with this version of PHP."
+                        "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please confirm you're using a version of Freeform tested for compatibility with this version of PHP."
                     ),
                 ]
             ),

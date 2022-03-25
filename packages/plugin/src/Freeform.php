@@ -101,6 +101,7 @@ use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotesService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
+use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
 use Solspace\Freeform\Services\Pro\PayloadForwardingService;
@@ -166,6 +167,7 @@ use yii\web\ForbiddenHttpException;
  * @property FreeformFeedService         $feed
  * @property LockService                 $lock
  * @property DiagnosticsService          $diagnostics
+ * @property PreflightService            $preflight
  * @property FormTypesService            $formTypes
  */
 class Freeform extends Plugin
@@ -535,6 +537,7 @@ class Freeform extends Plugin
                 'feed' => FreeformFeedService::class,
                 'lock' => LockService::class,
                 'diagnostics' => DiagnosticsService::class,
+                'preflight' => PreflightService::class,
                 'formTypes' => FormTypesService::class,
             ]
         );

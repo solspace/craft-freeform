@@ -70,6 +70,7 @@ return [
 
     // Diagnostics
     'freeform/settings/diagnostics' => 'freeform/diagnostics/index',
+    'freeform/settings/craft-preflight' => 'freeform/diagnostics/craft-preflight',
     // Email Marketing
     'freeform/settings/mailing-lists' => 'freeform/mailing-lists/index',
     'freeform/settings/mailing-lists/new' => 'freeform/mailing-lists/create',

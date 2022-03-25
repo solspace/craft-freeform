@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Controllers;
 
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;
+use yii\web\Response;
 
 class DiagnosticsController extends BaseController
 {
@@ -36,6 +37,23 @@ class DiagnosticsController extends BaseController
                 'server' => $server,
                 'stats' => $stats,
                 'checks' => $checks,
+                'warnings' => $warnings,
+                'suggestions' => $suggestions,
+            ]
+        );
+    }
+
+    public function actionCraftPreflight(): Response
+    {
+        \Craft::$app->view->registerAssetBundle(DiagnosticsBundle::class);
+
+        $preflight = Freeform::getInstance()->preflight;
+
+        list($warnings, $suggestions) = $this->compileBanners($preflight->getItems());
+
+        return $this->renderTemplate(
+            'freeform/settings/_craft-preflight',
+            [
                 'warnings' => $warnings,
                 'suggestions' => $suggestions,
             ]

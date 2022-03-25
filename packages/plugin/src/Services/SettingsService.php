@@ -285,6 +285,7 @@ class SettingsService extends BaseService
             'notices-and-alerts' => ['title' => Freeform::t('Notices & Alerts')],
             'error-log' => ['title' => Freeform::t('Error Log <span class="badge">{count}</span>', ['count' => $errorCount])],
             'diagnostics' => ['title' => Freeform::t('Diagnostics')],
+            'craft-preflight' => ['title' => Freeform::t('Craft 4 Preflight')],
         ];
 
         if (!$this->isAllowAdminEdit()) {

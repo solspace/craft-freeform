@@ -196,6 +196,20 @@ class NotificationsController extends BaseController
             }
 
             $form = $submission->getForm();
+
+            $notification = Freeform::getInstance()
+                ->notifications
+                ->requireNotification(
+                    $form,
+                    $template,
+                    'Send notification from CP Submissions Index page'
+                )
+            ;
+
+            if (!$notification) {
+                continue;
+            }
+
             $fields = $form->getLayout()->getFields();
             foreach ($fields as $field) {
                 $handle = $field->getHandle();
@@ -211,7 +225,7 @@ class NotificationsController extends BaseController
             $this->getMailerService()->sendEmail(
                 $form,
                 $emails,
-                $template,
+                $notification,
                 $fields,
                 $submission
             );

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
 
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -32,12 +33,21 @@ class EmailRecipientNotifications extends FeatureBundle
                 continue;
             }
 
+            $notification = Freeform::getInstance()
+                ->notifications
+                ->requireNotification(
+                    $form,
+                    $field->getNotificationId(),
+                    'Email Field: '.$field->getLabel()
+                )
+            ;
+
             $event
                 ->getMailer()
                 ->sendEmail(
                     $form,
                     $submission->{$field->getHandle()}->getRecipients(),
-                    $field->getNotificationId(),
+                    $notification,
                     $fields,
                     $submission
                 )

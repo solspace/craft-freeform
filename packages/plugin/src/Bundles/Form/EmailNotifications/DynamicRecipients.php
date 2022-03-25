@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
 
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -33,7 +34,16 @@ class DynamicRecipients extends FeatureBundle
             $recipients = [$recipients];
         }
 
-        if (empty($recipients) || !$template) {
+        $notification = Freeform::getInstance()
+            ->notifications
+            ->requireNotification(
+                $form,
+                $template,
+                'Dynamic Notification from template params'
+            )
+        ;
+
+        if (empty($recipients) || !$notification) {
             return;
         }
 
@@ -45,7 +55,7 @@ class DynamicRecipients extends FeatureBundle
             ->sendEmail(
                 $form,
                 $recipients,
-                $template,
+                $notification,
                 $fields,
                 $submission
             )

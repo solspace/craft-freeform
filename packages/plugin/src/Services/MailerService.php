@@ -27,7 +27,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadIn
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
@@ -48,41 +47,22 @@ class MailerService extends BaseService implements MailHandlerInterface
 
     /**
      * Send out an email to recipients using the given mail template.
-     *
-     * @param array|string     $recipients
-     * @param mixed            $notificationId
-     * @param FieldInterface[] $fields
-     * @param Submission       $submission
-     *
-     * @throws FreeformException
-     *
-     * @return int - number of successfully sent emails
      */
     public function sendEmail(
         Form $form,
-        $recipients,
-        $notificationId,
-        array $fields,
-        Submission $submission = null
+        array|string $recipients,
+        NotificationRecord $notification = null,
+        array $fields = [],
+        ?Submission $submission = null
     ): int {
         $logger = FreeformLogger::getInstance(FreeformLogger::MAILER);
         $sentMailCount = 0;
-        $notification = $this->getNotificationById($notificationId);
+
+        if (null === $notification) {
+            return $sentMailCount;
+        }
 
         $recipients = $this->processRecipients($recipients);
-
-        if (!$notification) {
-            $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION);
-            $logger->warning(
-                Freeform::t(
-                    'Email notification template with ID {id} not found',
-                    ['id' => $notificationId]
-                ),
-                ['form' => $form->getName()]
-            );
-
-            return 0;
-        }
 
         $fieldValues = $this->getFieldValues($fields, $form, $submission);
         $renderEvent = new RenderEmailEvent($form, $notification, $fieldValues, $submission);

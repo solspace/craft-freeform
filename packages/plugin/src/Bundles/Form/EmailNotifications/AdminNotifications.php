@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
 
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
@@ -24,9 +25,14 @@ class AdminNotifications extends FeatureBundle
         }
 
         $adminNotifications = $form->getAdminNotificationProperties();
-        if (!$adminNotifications->getNotificationId()) {
-            return;
-        }
+        $notification = Freeform::getInstance()
+            ->notifications
+            ->requireNotification(
+                $form,
+                $adminNotifications->getNotificationId(),
+                'Admin notification'
+            )
+        ;
 
         $submission = $event->getSubmission();
         $fields = $event->getFields();
@@ -36,7 +42,7 @@ class AdminNotifications extends FeatureBundle
             ->sendEmail(
                 $form,
                 $adminNotifications->getRecipientArray($submission),
-                $adminNotifications->getNotificationId(),
+                $notification,
                 $fields,
                 $submission
             )

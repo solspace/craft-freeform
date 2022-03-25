@@ -70,11 +70,20 @@ class PaymentNotificationsService extends Component
             $notifications[PaymentProperties::NOTIFICATION_TYPE_CHARGE_SUCCEEDED] = $notifications[PaymentProperties::NOTIFICATION_TYPE_SUBSCRIPTION_PAYMENT_SUCCEEDED];
         }
 
+        $notification = Freeform::getInstance()
+            ->notifications
+            ->requireNotification(
+                $form,
+                $notifications[$notificationType] ?? null,
+                'Payment Notification: '.$notificationType
+            )
+        ;
+
         $fields = $form->getLayout()->getFields();
         Freeform::getInstance()->mailer->sendEmail(
             $form,
             $email,
-            $notifications[$notificationType] ?? null,
+            $notification,
             $fields,
             $submission
         );

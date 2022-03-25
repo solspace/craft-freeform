@@ -15,7 +15,9 @@ namespace Solspace\Freeform\Services;
 use craft\helpers\FileHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Records\NotificationRecord;
 
 class NotificationsService extends BaseService
@@ -105,6 +107,26 @@ class NotificationsService extends BaseService
         }
 
         return self::$notificationCache[$id] ?? null;
+    }
+
+    public function requireNotification(Form $form, ?string $id, ?string $context): ?NotificationRecord
+    {
+        $notification = $this->getNotificationById($id);
+        if (!$notification) {
+            $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION);
+            $logger->warning(
+                Freeform::t(
+                    'Email notification template with ID {id} not found',
+                    ['id' => $id]
+                ),
+                [
+                    'form' => $form->getName(),
+                    'context' => $context,
+                ]
+            );
+        }
+
+        return $notification;
     }
 
     public function save(NotificationRecord $record): bool

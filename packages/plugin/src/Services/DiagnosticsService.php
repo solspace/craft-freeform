@@ -45,7 +45,7 @@ class DiagnosticsService extends BaseService
                             return version_compare($value['version'], '3.8.0', '<');
                         },
                         'Potential Craft Compatibility issue',
-                        "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please check Freeform for updates to confirm you're using a version that has been tested for compatibility with this version of Craft.",
+                        "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please check Freeform for updates to confirm you're using a version that has been tested for compatibility with this version of Craft."
                     ),
                 ]
             ),

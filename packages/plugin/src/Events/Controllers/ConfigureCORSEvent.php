@@ -15,12 +15,12 @@ class ConfigureCORSEvent extends ArrayableEvent
         parent::__construct([]);
     }
 
-    public function fields()
+    public function fields(): array
     {
         return ['headers'];
     }
 
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return $this->headers;
     }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1407a9883230c5fa6134dc7b7a1f2d34",
+    "content-hash": "39b7e938b9026def051c9c44c4ded604",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -4029,16 +4029,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v7.117.0",
+            "version": "v7.118.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "c9d40524c63f3c5042d704f88a60f49a349b1221"
+                "reference": "4ab7c6b496892073d8b8e2ef945485e68a97d7f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/c9d40524c63f3c5042d704f88a60f49a349b1221",
-                "reference": "c9d40524c63f3c5042d704f88a60f49a349b1221",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/4ab7c6b496892073d8b8e2ef945485e68a97d7f6",
+                "reference": "4ab7c6b496892073d8b8e2ef945485e68a97d7f6",
                 "shasum": ""
             },
             "require": {
@@ -4083,9 +4083,9 @@
             ],
             "support": {
                 "issues": "https://github.com/stripe/stripe-php/issues",
-                "source": "https://github.com/stripe/stripe-php/tree/v7.117.0"
+                "source": "https://github.com/stripe/stripe-php/tree/v7.118.0"
             },
-            "time": "2022-03-18T18:16:15+00:00"
+            "time": "2022-03-23T19:01:34+00:00"
         },
         {
             "name": "symfony/console",
@@ -6432,16 +6432,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v3.3.8",
+            "version": "v3.3.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "972d8604a92b7054828b539f2febb0211dd5945c"
+                "reference": "6ff9b0e440fa66f97f207e181c41340ddfa5683d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/972d8604a92b7054828b539f2febb0211dd5945c",
-                "reference": "972d8604a92b7054828b539f2febb0211dd5945c",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/6ff9b0e440fa66f97f207e181c41340ddfa5683d",
+                "reference": "6ff9b0e440fa66f97f207e181c41340ddfa5683d",
                 "shasum": ""
             },
             "require": {
@@ -6492,7 +6492,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twigphp/Twig/issues",
-                "source": "https://github.com/twigphp/Twig/tree/v3.3.8"
+                "source": "https://github.com/twigphp/Twig/tree/v3.3.9"
             },
             "funding": [
                 {
@@ -6504,7 +6504,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-02-04T06:59:48+00:00"
+            "time": "2022-03-25T09:37:52+00:00"
         },
         {
             "name": "voku/anti-xss",
@@ -8585,20 +8585,20 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "1.4.10",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "898c479c39caa727bedf4311dd294a8f4e250e72"
+                "reference": "2be8dd6dfa09ab1a21c49956ff591979cd5ab29e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/898c479c39caa727bedf4311dd294a8f4e250e72",
-                "reference": "898c479c39caa727bedf4311dd294a8f4e250e72",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/2be8dd6dfa09ab1a21c49956ff591979cd5ab29e",
+                "reference": "2be8dd6dfa09ab1a21c49956ff591979cd5ab29e",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1|^8.0"
+                "php": "^7.2|^8.0"
             },
             "conflict": {
                 "phpstan/phpstan-shim": "*"
@@ -8620,7 +8620,7 @@
             "description": "PHPStan - PHP Static Analysis Tool",
             "support": {
                 "issues": "https://github.com/phpstan/phpstan/issues",
-                "source": "https://github.com/phpstan/phpstan/tree/1.4.10"
+                "source": "https://github.com/phpstan/phpstan/tree/1.5.0"
             },
             "funding": [
                 {
@@ -8640,7 +8640,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2022-03-14T10:25:45+00:00"
+            "time": "2022-03-24T18:18:00+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -9118,17 +9118,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/rectorphp/rector.git",
-                "reference": "9728a6636609eecf086f9814a42bc125fd8e9d62"
+                "reference": "39f74c2f08b401ea755cb340268ee9acfdabd6cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rectorphp/rector/zipball/9728a6636609eecf086f9814a42bc125fd8e9d62",
-                "reference": "9728a6636609eecf086f9814a42bc125fd8e9d62",
+                "url": "https://api.github.com/repos/rectorphp/rector/zipball/39f74c2f08b401ea755cb340268ee9acfdabd6cf",
+                "reference": "39f74c2f08b401ea755cb340268ee9acfdabd6cf",
                 "shasum": ""
             },
             "require": {
-                "php": "^7.1|^8.0",
-                "phpstan/phpstan": "^1.4.8"
+                "php": "^7.2|^8.0",
+                "phpstan/phpstan": "^1.5"
             },
             "conflict": {
                 "phpstan/phpdoc-parser": "<1.2",
@@ -9171,7 +9171,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2022-03-23T09:36:21+00:00"
+            "time": "2022-03-24T23:45:46+00:00"
         },
         {
             "name": "sebastian/cli-parser",

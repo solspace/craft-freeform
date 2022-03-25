@@ -482,82 +482,32 @@ class Layout implements \JsonSerializable, \Iterator
         return $this->paymentFields;
     }
 
-    /**
-     * Specify data which should be serialized to JSON.
-     *
-     * @see  http://php.net/manual/en/jsonserializable.jsonserialize.php
-     *
-     * @return mixed data which can be serialized by <b>json_encode</b>,
-     *               which is a value of any type other than a resource
-     *
-     * @since 5.4.0
-     */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->layoutData;
     }
 
-    /**
-     * Return the current element.
-     *
-     * @see  http://php.net/manual/en/iterator.current.php
-     *
-     * @return mixed can return any type
-     *
-     * @since 5.0.0
-     */
-    public function current()
+    public function current(): false|Page
     {
         return current($this->pages);
     }
 
-    /**
-     * Move forward to next element.
-     *
-     * @see  http://php.net/manual/en/iterator.next.php
-     * @since 5.0.0
-     */
-    public function next()
+    public function next(): void
     {
         next($this->pages);
     }
 
-    /**
-     * Return the key of the current element.
-     *
-     * @see  http://php.net/manual/en/iterator.key.php
-     *
-     * @return mixed scalar on success, or null on failure
-     *
-     * @since 5.0.0
-     */
-    public function key()
+    public function key(): ?int
     {
         return key($this->pages);
     }
 
-    /**
-     * Checks if current position is valid.
-     *
-     * @see  http://php.net/manual/en/iterator.valid.php
-     *
-     * @return bool The return value will be casted to boolean and then evaluated.
-     *              Returns true on success or false on failure.
-     *
-     * @since 5.0.0
-     */
-    public function valid()
+    public function valid(): bool
     {
         return null !== $this->key() && false !== $this->key();
     }
 
-    /**
-     * Rewind the Iterator to the first element.
-     *
-     * @see  http://php.net/manual/en/iterator.rewind.php
-     * @since 5.0.0
-     */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->pages);
     }

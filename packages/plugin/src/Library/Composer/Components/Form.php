@@ -1175,100 +1175,52 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         ];
     }
 
-    /**
-     * Return the current element.
-     *
-     * @return mixed can return any type
-     */
-    public function current()
+    public function current(): false|Row
     {
         return current($this->currentPageRows);
     }
 
-    /**
-     * Move forward to next element.
-     */
-    public function next()
+    public function next(): void
     {
         next($this->currentPageRows);
     }
 
-    /**
-     * Return the key of the current element.
-     *
-     * @return mixed scalar on success, or null on failure
-     */
-    public function key()
+    public function key(): ?int
     {
         return key($this->currentPageRows);
     }
 
-    /**
-     * Checks if current position is valid.
-     *
-     * @return bool the return value will be casted to boolean and then evaluated
-     */
     public function valid(): bool
     {
         return null !== $this->key() && false !== $this->key();
     }
 
-    /**
-     * Rewind the Iterator to the first element.
-     */
-    public function rewind()
+    public function rewind(): void
     {
         reset($this->currentPageRows);
     }
 
-    /**
-     * Whether a offset exists.
-     *
-     * @param mixed $offset
-     */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->currentPageRows[$offset]);
     }
 
-    /**
-     * Offset to retrieve.
-     *
-     * @param mixed $offset
-     *
-     * @return mixed
-     */
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): ?Row
     {
         return $this->offsetExists($offset) ? $this->currentPageRows[$offset] : null;
     }
 
-    /**
-     * Offset to set.
-     *
-     * @param mixed $offset
-     * @param mixed $value
-     *
-     * @throws FreeformException
-     */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         throw new FreeformException('Form ArrayAccess does not allow for setting values');
     }
 
-    /**
-     * Offset to unset.
-     *
-     * @param mixed $offset
-     *
-     * @throws FreeformException
-     */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         throw new FreeformException('Form ArrayAccess does not allow unsetting values');
     }
 
-    public function count()
+    public function count(): int
     {
         return \count($this->currentPageRows);
     }

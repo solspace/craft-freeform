@@ -4,8 +4,7 @@ namespace Solspace\Freeform\Library\Export\Objects;
 
 class ColumnIterator implements \Iterator
 {
-    /** @var int */
-    private $position = 0;
+    private int $position = 0;
 
     /** @var Row */
     private $columnCollection;
@@ -23,7 +22,7 @@ class ColumnIterator implements \Iterator
         return $this->columnCollection->getColumn($this->position);
     }
 
-    public function next()
+    public function next(): void
     {
         ++$this->position;
     }
@@ -38,7 +37,7 @@ class ColumnIterator implements \Iterator
         return null !== $this->columnCollection->getColumn($this->position);
     }
 
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }

@@ -816,14 +816,10 @@ class Freeform extends Plugin
                         self::PERMISSION_RESOURCES => ['label' => self::t('Access Resources')],
                     ];
 
-                    if (!isset($event->permissions[self::PERMISSION_NAMESPACE])) {
-                        $event->permissions[self::PERMISSION_NAMESPACE] = [];
-                    }
-
-                    $event->permissions[self::PERMISSION_NAMESPACE] = array_merge(
-                        $event->permissions[self::PERMISSION_NAMESPACE],
-                        $permissions
-                    );
+                    $event->permissions[] = [
+                        'heading' => $this->name,
+                        'permissions' => $permissions,
+                    ];
                 }
             );
         }

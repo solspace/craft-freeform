@@ -76,7 +76,7 @@ class PreflightService extends BaseService
                     new SuggestionValidator(
                         function () { return false; },
                         'Email field types will no longer be capable of storing multiple email addresses',
-                        "Email field types are currently stored as an array to handle multiple email addresses (e.g. 'tell-a-friend' forms, etc). Freeform 4 will remove this behavior and store this data normally. If you're collecting multiple email addresses in a single Email field, this will no longer work in Freeform 4."
+                        "Email field types are currently stored as an array to handle multiple email addresses (e.g. 'tell-a-friend' forms, etc). Freeform 4 will remove this behavior and store this data normally. If you're collecting multiple email addresses for the same Email field, this will no longer work in Freeform 4."
                     ),
                 ]
             ),

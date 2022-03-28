@@ -142,6 +142,10 @@ class SubscriptionPlansService
 
     protected function createModel($data): SubscriptionPlanModel
     {
+        if ($data instanceof SubscriptionPlanRecord) {
+            $data = $data->toArray();
+        }
+
         return new SubscriptionPlanModel($data);
     }
 }

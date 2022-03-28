@@ -25,11 +25,16 @@ class AdminNotifications extends FeatureBundle
         }
 
         $adminNotifications = $form->getAdminNotificationProperties();
+        $notificationId = $adminNotifications->getNotificationId();
+        if (!$notificationId) {
+            return;
+        }
+
         $notification = Freeform::getInstance()
             ->notifications
             ->requireNotification(
                 $form,
-                $adminNotifications->getNotificationId(),
+                $notificationId,
                 'Admin notification'
             )
         ;

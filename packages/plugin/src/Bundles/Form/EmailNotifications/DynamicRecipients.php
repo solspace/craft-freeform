@@ -34,6 +34,10 @@ class DynamicRecipients extends FeatureBundle
             $recipients = [$recipients];
         }
 
+        if (empty($recipients) || !$template) {
+            return;
+        }
+
         $notification = Freeform::getInstance()
             ->notifications
             ->requireNotification(
@@ -43,7 +47,7 @@ class DynamicRecipients extends FeatureBundle
             )
         ;
 
-        if (empty($recipients) || !$notification) {
+        if (!$notification) {
             return;
         }
 

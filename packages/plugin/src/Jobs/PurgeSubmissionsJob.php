@@ -9,12 +9,12 @@ class PurgeSubmissionsJob extends BaseJob
 {
     public $age;
 
-    public function execute($queue)
+    public function execute($queue): void
     {
         Freeform::getInstance()->submissions->purgeSubmissions($this->age);
     }
 
-    protected function defaultDescription()
+    protected function defaultDescription(): ?string
     {
         return 'Purge Submissions';
     }

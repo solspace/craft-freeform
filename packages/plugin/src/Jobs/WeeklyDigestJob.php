@@ -11,7 +11,7 @@ class WeeklyDigestJob extends BaseJob
     public $rangeStart;
     public $rangeEnd;
 
-    public function execute($queue)
+    public function execute($queue): void
     {
         $rangeStart = new Carbon($this->rangeStart);
         $rangeEnd = new Carbon($this->rangeEnd);
@@ -20,7 +20,7 @@ class WeeklyDigestJob extends BaseJob
         $this->setProgress($queue, 1);
     }
 
-    protected function defaultDescription()
+    protected function defaultDescription(): ?string
     {
         return 'Send Freeform Weekly Digest';
     }

@@ -67,5 +67,11 @@
         "composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)"
       ]
     }
+  },
+  "config": {
+    "allow-plugins": {
+      "yiisoft/yii2-composer": true,
+      "craftcms/plugin-installer": true
+    }
   }
 }

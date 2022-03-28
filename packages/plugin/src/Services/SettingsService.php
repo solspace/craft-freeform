@@ -289,6 +289,10 @@ class SettingsService extends BaseService
             'craft-preflight' => ['title' => Freeform::t('Craft 4 Preflight')],
         ];
 
+        if (version_compare(Freeform::getInstance()->getVersion(), '4.0.0-alpha', '>=')) {
+            unset($nav['craft-preflight']);
+        }
+
         if (!$this->isAllowAdminEdit()) {
             unset($nav['hdspam']);
             foreach ($nav as $key => $value) {

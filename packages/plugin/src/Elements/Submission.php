@@ -260,6 +260,7 @@ class Submission extends Element
     {
         $submission = new static();
         $submission->generateToken();
+        $submission->userId = \Craft::$app->user->getId() ?: null;
 
         return $submission;
     }

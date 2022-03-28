@@ -183,7 +183,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
             if (null === $submission) {
                 $submission = Submission::create($form);
-                $submission->userId = \Craft::$app->user->getId() ?: null;
             }
         } else {
             $submission = SpamSubmission::create($form);

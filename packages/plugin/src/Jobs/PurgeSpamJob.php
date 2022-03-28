@@ -9,13 +9,13 @@ class PurgeSpamJob extends BaseJob
 {
     public $age;
 
-    public function execute($queue)
+    public function execute($queue): void
     {
         Freeform::getInstance()->spamSubmissions->purgeSubmissions($this->age);
         $this->setProgress($queue, 1);
     }
 
-    protected function defaultDescription()
+    protected function defaultDescription(): ?string
     {
         return 'Purge Spam';
     }

@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.13.7 - 2022-03-28
+
+### Added
+- Added a preflight page to check for potential issues with upgrading to Freeform 4 (Craft 4) in the future.
+
+### Fixed
+- Fixed a bug where the Diagnostics page could trigger some PHP version-related errors.
+- Fixed a bug where CORS handling might still not work under certain circumstances. Also added events for possible customization.
+- Fixed a bug where some permission-related migrations could cause issues with Project Config.
+
 ## 3.13.6 - 2022-03-16
 
 ### Fixed

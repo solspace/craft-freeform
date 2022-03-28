@@ -1,7 +1,5 @@
 {% extends "_layouts/elementindex" %}
 
-{% hook 'freeform-beta-widget' %}
-
 {% set extraPageHeaderHtml %}
 
     {% if currentUser.can("freeform-formsManage") %}
@@ -13,3 +11,8 @@
     {% endif %}
 
 {% endset %}
+
+{% block body %}
+    {{ parent() }}
+    {% hook 'freeform-beta-widget' %}
+{% endblock %}

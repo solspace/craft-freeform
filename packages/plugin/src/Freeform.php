@@ -960,7 +960,6 @@ class Freeform extends Plugin
             return;
         }
 
-        $request = \Craft::$app->request;
         $view = \Craft::$app->view;
 
         \Craft::$app->view->hook(

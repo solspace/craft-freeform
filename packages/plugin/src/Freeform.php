@@ -963,16 +963,14 @@ class Freeform extends Plugin
         $request = \Craft::$app->request;
         $view = \Craft::$app->view;
 
-        if (!$request->isConsoleRequest) {
-            if ($request->isCpRequest && preg_match('/^freeform\//', $request->getPathInfo())) {
+        \Craft::$app->view->hook(
+            'freeform-beta-widget',
+            function (array $context) use ($view) {
                 $view->registerAssetBundle(BetaBundle::class, View::POS_END);
 
-                $view->registerHtml(
-                    $view->renderTemplate('freeform/_beta/feedback-widget'),
-                    View::POS_END
-                );
+                return $view->renderTemplate('freeform/_beta/feedback-widget');
             }
-        }
+        );
     }
 
     private function initPaymentAssets()

@@ -1,5 +1,7 @@
 {% extends "_layouts/elementindex" %}
 
+{% hook 'freeform-beta-widget' %}
+
 {% set extraPageHeaderHtml %}
 
     {% if currentUser.can("freeform-formsManage") %}

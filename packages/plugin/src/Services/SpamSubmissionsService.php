@@ -35,13 +35,15 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     public function allowSpamSubmission(SpamSubmission $submission): bool
     {
         $submission->isSpam = false;
-        \Craft::$app->getElements()->saveElement($submission);
+        \Craft::$app->elements->saveElement($submission);
 
         //HACK: this is dirty, but I wasn't able to find better way to
         //      quickly convert SpamSubmission to Submission
         $element = Element::findOne($submission->id);
         $element->type = Submission::class;
         $element->save(false);
+
+        \Craft::$app->cache->flush();
 
         $layout = $submission->getForm()->getLayout();
         $integrationsQueue = Freeform::getInstance()->integrationsQueue;

@@ -28,13 +28,14 @@ class SubscriptionsService
      */
     public function getBySubmissionId(int $submissionId)
     {
+        /** @var SubscriptionRecord $data */
         $data = $this->getQuery()->where(['submissionId' => $submissionId])->one();
 
         if (!$data) {
             return null;
         }
 
-        return new SubscriptionModel($data);
+        return new SubscriptionModel($data->toArray());
     }
 
     /**
@@ -44,13 +45,14 @@ class SubscriptionsService
      */
     public function getById(int $id)
     {
+        /** @var SubscriptionRecord $data */
         $data = $this->getQuery()->where(['id' => $id])->one();
 
         if (!$data) {
             return null;
         }
 
-        return new SubscriptionModel($data);
+        return new SubscriptionModel($data->toArray());
     }
 
     /**

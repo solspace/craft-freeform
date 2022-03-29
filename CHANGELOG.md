@@ -1,5 +1,27 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.1 - 2022-03-29
+
+> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).
+
+### Added
+- Added compatibility with Craft 4.x.
+- Added more information to email notification error logging. It now includes the email notification approach and the Email field name (if applicable) to track down where the issue is coming from.
+- Added `EVENT_GET_CUSTOM_PROPERTY` developer event, which lets you inject your own properties on forms to expand their application.
+- Added `EVENT_CONFIGURE_CORS` developer event, which lets you modify the CORS headers that will be sent with the request.
+
+### Changed
+- Changed all existing forms with the **Success Behavior** setting set to _No Effect_ to now be _Reload Form with Success Message_. This will behave somewhat similarly to old behavior, but will no longer automatically redirect to a different URL upon success. Please review all forms and set the desired behavior for each in the **Success Behavior** setting. If you wish to continue to override the behavior at template level, you can do that as well.
+- Changed all sample formatting templates to include a library version number on them and also end with the `.twig` extension (e.g. `foundation.html` is now `foundation-6.twig`). Freeform 4 will automatically migrate all existing forms using sample formatting templates to use the new file names. You shouldn't need to change anything. Where this might become an issue is if you are using the `formattingTemplate: 'template-name.html'` parameter at template level and relying on an older version of the sample template name.
+- Changed all sample formatting templates use `|t('freeform')` only (instead of a mix of `|t` and `|t('freeform')`). If you're using static translations on sample formatting templates, you'll need to move `site.php` translations over to `freeform.php`.
+- Changed the rendering of single checkboxes to now use the value set inside the form builder. No action should be necessary here. If you have a custom module in place to override this behavior, you can likely undo that now.
+- Changed Email fields to no longer store data as an array. The migration will comb through your database and convert all values of Email field types (e.g. `["test@x.x"]` will become `test@x.x`). If you were relying on this feature to collect more than one email address, only the first email address will be kept (e.g. `["a@x.x","b@x.x"]` will become `a@x.x`). No action is necessary here, but if you relied on this functionality, it is a breaking change with no alternative option currently (aside from adding multiple **Email** fields to your forms, one for each email address). If you have a custom module that is working around this in any way, you should be able to disable it now.
+- Updated newly created email notification templates' "From" email address and name to default to the newer way (via Project Config), e.g. `craft.app.projectConfig.get('email.fromEmail')`). If you are using the older approach in existing email notification templates, be sure to update them. 
+
+### Removed
+- Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
+- Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
 ## 3.13.7 - 2022-03-28
 
 ### Added

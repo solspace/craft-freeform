@@ -102,11 +102,13 @@ class Users extends AbstractConnection
                 $this->group = [$this->group];
             }
 
-            foreach ($this->group as $groupId) {
-                $group = \Craft::$app->userGroups->getGroupById($this->castToInt($groupId));
+            if ($this->group) {
+                foreach ($this->group as $groupId) {
+                    $group = \Craft::$app->userGroups->getGroupById($this->castToInt($groupId));
 
-                if ($group) {
-                    $validGroupIds[] = $group->id;
+                    if ($group) {
+                        $validGroupIds[] = $group->id;
+                    }
                 }
             }
 
@@ -131,8 +133,12 @@ class Users extends AbstractConnection
             }
         }
 
-        if ($this->active && \Craft::$app->getConfig()->getGeneral()->autoLoginAfterAccountActivation) {
-            \Craft::$app->getUser()->login($element);
+        if ($this->active) {
+            \Craft::$app->users->activateUser($element);
+
+            if (\Craft::$app->getConfig()->getGeneral()->autoLoginAfterAccountActivation) {
+                \Craft::$app->getUser()->login($element);
+            }
         }
 
         $this->applyRelations($element, $keyValuePairs);

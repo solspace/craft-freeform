@@ -321,6 +321,21 @@ class Layout implements \JsonSerializable, \Iterator
         return $this->fields;
     }
 
+    /**
+     * @template T
+     *
+     * @param null|class-string<T> $implements
+     *
+     * @return AbstractField[]|T[]
+     */
+    public function getStorableFields(string $implements = null): array
+    {
+        return array_filter(
+            $this->getFields($implements),
+            fn ($field) => !$field instanceof NoStorageInterface && $field->getHandle()
+        );
+    }
+
     public function getValueFields(): array
     {
         return $this->valueFields;

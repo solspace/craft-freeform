@@ -28,7 +28,6 @@ use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -60,7 +59,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     public function getSubmissionByToken(string $token): ?Submission
     {
         if (!isset(self::$submissionTokenCache[$token])) {
-            self::$submissionTokenCache[$token] = Submission::find()->where(['token' => $token])->one();
+            self::$submissionTokenCache[$token] = Submission::find()->token($token)->one();
         }
 
         return self::$submissionTokenCache[$token];
@@ -188,10 +187,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $submission = SpamSubmission::create($form);
         }
 
-        $fields = $form->getLayout()->getFields();
+        $fields = $form->getLayout()->getStorableFields();
         $savableFields = [];
         foreach ($fields as $field) {
-            if ($field instanceof NoStorageInterface || !$form->hasFieldBeenSubmitted($field)) {
+            if (!$form->hasFieldBeenSubmitted($field)) {
                 continue;
             }
 
@@ -235,6 +234,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         );
 
         $submission->dateUpdated = $dateCreated;
+        //$submission->setFieldValues($savableFields);
         $submission->setFormFieldValues($savableFields, $isNew);
 
         Event::trigger(

@@ -27,12 +27,9 @@ use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
-use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
@@ -68,116 +65,32 @@ class Submission extends Element
     /** @var string */
     public $ip;
 
-    /** @var AbstractField[] */
-    private static $fieldIdMap = [];
-
-    /** @var AbstractField */
-    private static $fieldHandleMap = [];
-
     /** @var array */
     private static $permissionCache = [];
 
     /** @var SpamReason[] */
     private $spamReasons;
 
-    /** @var array */
-    private $storedFieldValues;
-
-    /** @var AbstractField[] */
-    private $fieldsByIdentifier = [];
-
     /** @var bool */
     private static $deletableTokens = [];
 
-    /**
-     * Submission constructor.
-     */
-    public function __construct(array $config = [])
+    public function __get($name): mixed
     {
-        $this->formId = $config['formId'] ?? null;
-        $this->getFieldMetadata();
-
-        parent::__construct($config);
-
-        if ($this->formId) {
-            if (\is_array($this->storedFieldValues)) {
-                foreach ($this->storedFieldValues as $key => $value) {
-                    if (!empty($value) && $this->getFieldByIdentifier($key) instanceof MultipleValueInterface) {
-                        $this->storedFieldValues[$key] = json_decode($value, true);
-                    }
-                }
-            }
-        }
-    }
-
-    public function __get($name)
-    {
-        try {
-            $field = $this->getFieldByIdentifier($name);
-            $column = self::getFieldColumnName($field->getId());
-
-            $value = $this->storedFieldValues[$column] ?? null;
+        $field = $this->getForm()->get($name);
+        if ($field) {
             $clone = clone $field;
-            $clone->setValue($value);
+            $clone->setValue(parent::__get($name));
 
             return $clone;
-        } catch (FieldException $exception) {
-            if (self::isSubmissionField($name)) {
-                return null;
-            }
-
-            return parent::__get($name);
-        }
-    }
-
-    public function __set($name, $value): void
-    {
-        if (!self::isSubmissionField($name)) {
-            parent::__set($name, $value);
-
-            return;
         }
 
-        try {
-            $field = $this->getFieldByIdentifier($name);
-            $column = self::getFieldColumnName($field->getId());
-
-            $this->storedFieldValues[$column] = $value;
-        } catch (FieldException $exception) {
-        }
-    }
-
-    /**
-     * @param string $name
-     * @param array  $attributes
-     *
-     * @return null|bool|Submission
-     */
-    public function __call($name, $attributes = [])
-    {
-        try {
-            if ($this->getFieldByIdentifier($name)) {
-                return $this->__get($name);
-            }
-        } catch (FieldException $e) {
-        }
-
-        if (\in_array($name, $this->getAllFieldHandles(), true)) {
-            return $this->__get($name);
-        }
-
-        return parent::__call($name, $attributes);
+        return parent::__get($name);
     }
 
     public function __isset($name): bool
     {
-        $fields = $this->getFieldMetadata();
-        if (isset($fields[$name])) {
+        if ($this->getForm()->get($name)) {
             return true;
-        }
-
-        if (\in_array($name, $this->getAllFieldHandles(), true)) {
-            return false;
         }
 
         return parent::__isset($name);
@@ -234,9 +147,9 @@ class Submission extends Element
         return $submission;
     }
 
-    public static function isSubmissionField(string $name): bool
+    public static function getContentTableName(string $formHandle): string
     {
-        return (bool) preg_match('/^'.self::FIELD_COLUMN_PREFIX.'\d+$/', $name);
+        return "{{%freeform_submissions_{$formHandle}}}";
     }
 
     public static function getFieldColumnName(int $fieldId): string
@@ -298,67 +211,32 @@ class Submission extends Element
      *
      * @return null|Asset[]
      */
-    public function getAssets(string $fieldColumnHandle): ?array
+    public function getAssets(string $fieldHandle): ?array
     {
-        $columnPrefix = self::FIELD_COLUMN_PREFIX;
-
-        if (0 === strpos($fieldColumnHandle, $columnPrefix)) {
-            $value = $this->storedFieldValues[$fieldColumnHandle] ?? null;
-
-            if (!\is_array($value)) {
-                $value = [$value];
-            }
-
-            $assets = [];
-            foreach ($value as $assetId) {
-                if ((int) $assetId > 0) {
-                    $assets[] = \Craft::$app->assets->getAssetById((int) $assetId);
-                }
-            }
-
-            return $assets;
+        $field = $this->{$fieldHandle};
+        if ($field) {
+            return null;
         }
 
-        return null;
-    }
+        $value = $field->getValue();
 
-    public function getFieldAttributes(): array
-    {
-        return $this->storedFieldValues;
-    }
-
-    public function getFieldMetadata(): array
-    {
-        $formId = $this->formId;
-        if (!$formId) {
-            return [];
+        if (!\is_array($value)) {
+            $value = [$value];
         }
 
-        if (!isset(self::$fieldIdMap[$formId])) {
-            $ids = $handles = [];
-            foreach ($this->getForm()->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || !$field->getHandle()) {
-                    continue;
-                }
-
-                $ids[$field->getId()] = $field;
-                $handles[$field->getHandle()] = $field;
+        $assets = [];
+        foreach ($value as $assetId) {
+            if ((int) $assetId > 0) {
+                $assets[] = \Craft::$app->assets->getAssetById((int) $assetId);
             }
-
-            self::$fieldIdMap[$formId] = $ids;
-            self::$fieldHandleMap[$formId] = $handles;
         }
 
-        return self::$fieldHandleMap[$formId];
+        return $assets;
     }
 
     public function setFormFieldValues(array $values, bool $override = true): self
     {
-        foreach ($this->getForm()->getLayout()->getFields() as $field) {
-            if (!$field->canStoreValues()) {
-                continue;
-            }
-
+        foreach ($this->getForm()->getLayout()->getStorableFields() as $field) {
             $value = null;
             if (isset($values[$field->getHandle()])) {
                 $value = $values[$field->getHandle()];
@@ -368,9 +246,7 @@ class Submission extends Element
                 continue;
             }
 
-            $field->setValue($value);
-
-            $this->storedFieldValues[self::getFieldColumnName($field->getId())] = $field->getValue();
+            $this->setFieldValue($field->getHandle(), $value);
         }
 
         return $this;
@@ -449,30 +325,43 @@ class Submission extends Element
             'isSpam' => $this->isSpam,
         ];
 
-        if ($this->storedFieldValues) {
-            foreach ($this->storedFieldValues as $key => $value) {
-                if (\is_array($value)) {
-                    $value = json_encode($value);
-                }
-
-                if (\PHP_VERSION_ID >= 50400) {
-                    $value = LitEmoji::unicodeToShortcode($value);
-                }
-
-                $insertData[$key] = $value;
+        $contentData = [];
+        foreach ($this as $field) {
+            $handle = $field->getHandle();
+            $value = $this->{$handle}->getValue();
+            if (\is_array($value)) {
+                $value = json_encode($value);
             }
+
+            if (\PHP_VERSION_ID >= 50400) {
+                $value = LitEmoji::unicodeToShortcode($value);
+            }
+
+            $contentData[$field->getHandle()] = $value;
         }
 
+        $contentTable = self::getContentTableName($this->getForm()->getHandle());
         if ($isNew) {
             $insertData['id'] = $this->id;
+            $contentData['id'] = $this->id;
 
             \Craft::$app->db->createCommand()
                 ->insert(self::TABLE, $insertData)
                 ->execute()
             ;
+
+            \Craft::$app->db->createCommand()
+                ->insert($contentTable, $contentData)
+                ->execute()
+            ;
         } else {
             \Craft::$app->db->createCommand()
                 ->update(self::TABLE, $insertData, ['id' => $this->id])
+                ->execute()
+            ;
+
+            \Craft::$app->db->createCommand()
+                ->update($contentTable, $contentData, ['id' => $this->id])
                 ->execute()
             ;
 
@@ -511,9 +400,9 @@ class Submission extends Element
     {
         $fields = parent::toArray($fields, $expand, $recursive);
 
-        foreach ($this->getFieldMetadata() as $field) {
+        foreach ($this as $field) {
             $handle = $field->getHandle();
-            $fields[$handle] = $this->{$handle}->getValue();
+            $fields[$handle] = $this->{$handle};
         }
 
         return $fields;
@@ -521,7 +410,7 @@ class Submission extends Element
 
     public function getIterator(): \ArrayIterator
     {
-        return new \ArrayIterator($this->getFieldMetadata());
+        return new \ArrayIterator($this->getForm()->getLayout()->getStorableFields());
     }
 
     public static function sortOptions(): array
@@ -597,7 +486,7 @@ class Submission extends Element
 
             foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
                 if ($field->label) {
-                    $titles[self::getFieldColumnName($field->id)] = ['label' => $field->label];
+                    $titles[$field->handle] = ['label' => $field->label];
                 }
             }
 
@@ -797,47 +686,5 @@ class Submission extends Element
         ;
 
         return ++$maxIncrementalId;
-    }
-
-    private function getAllFieldHandles(): array
-    {
-        return Freeform::getInstance()->fields->getAllFieldHandles();
-    }
-
-    private function getFieldByIdentifier(string|int $identifier): AbstractField
-    {
-        $exception = new FieldException(
-            Freeform::t(
-                'Field "{identifier}" not found',
-                [
-                    'identifier' => $identifier,
-                ]
-            )
-        );
-
-        if (!isset($this->fieldsByIdentifier[$identifier])) {
-            $id = null;
-            if (!is_numeric($identifier)) {
-                if (preg_match('/^'.self::FIELD_COLUMN_PREFIX.'(\d+)$/', $identifier, $matches)) {
-                    $id = (int) $matches[1];
-                } else {
-                    if (!isset(self::$fieldHandleMap[$this->formId][$identifier])) {
-                        throw $exception;
-                    }
-
-                    $this->fieldsByIdentifier[$identifier] = self::$fieldHandleMap[$this->formId][$identifier];
-
-                    return $this->fieldsByIdentifier[$identifier];
-                }
-            }
-
-            if (!isset(self::$fieldIdMap[$this->formId][$id])) {
-                throw $exception;
-            }
-
-            $this->fieldsByIdentifier[$identifier] = self::$fieldIdMap[$this->formId][$id];
-        }
-
-        return $this->fieldsByIdentifier[$identifier];
     }
 }

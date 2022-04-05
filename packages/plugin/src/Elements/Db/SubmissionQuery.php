@@ -11,7 +11,6 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Records\StatusRecord;
-use yii\db\Expression;
 
 class SubmissionQuery extends ElementQuery
 {
@@ -137,57 +136,52 @@ class SubmissionQuery extends ElementQuery
 
     protected function beforePrepare(): bool
     {
+        static $forms;
         static $formHandleToIdMap;
-        $selectedForm = null;
+        static $formIdToHandleMap;
 
         if (null === $formHandleToIdMap) {
-            $result = (new Query())
+            $formIdToHandleMap = (new Query())
                 ->select(['id', 'handle'])
                 ->from(FormRecord::TABLE)
-                ->all()
+                ->pairs()
             ;
-
-            $formHandleToIdMap = array_column($result, 'id', 'handle');
-            $formHandleToIdMap = array_map('intval', $formHandleToIdMap);
+            $formHandleToIdMap = array_flip($formIdToHandleMap);
+            $forms = Freeform::getInstance()->forms->getAllForms();
         }
 
         $table = Submission::TABLE_STD;
         $formTable = FormRecord::TABLE_STD;
         $statusTable = StatusRecord::TABLE_STD;
         $spamReasonTable = SpamReasonRecord::TABLE_STD;
+
         $this->joinElementTable($table);
 
-        $hasFormJoin = false;
-        $hasStatusJoin = false;
-        $hasSubStatusJoin = false;
-        $hasSpamReasonJoin = false;
-        if (\is_array($this->join)) {
-            foreach ($this->join as $joinData) {
-                if (isset($joinData[1]) && $joinData[1] === FormRecord::TABLE.' '.$formTable) {
-                    $hasFormJoin = true;
-                }
-                if (isset($joinData[1]) && $joinData[1] === StatusRecord::TABLE.' '.$statusTable) {
-                    $hasStatusJoin = true;
-                }
-                if (isset($joinData[1]) && $joinData[1] === 'sub_'.StatusRecord::TABLE.' '.$statusTable) {
-                    $hasSubStatusJoin = true;
-                }
-                if (isset($joinData[1]) && $joinData[1] === SpamReasonRecord::TABLE.' '.$spamReasonTable) {
-                    $hasSpamReasonJoin = true;
-                }
+        $this->query->innerJoin(FormRecord::TABLE.' '.$formTable, "{$formTable}.[[id]] = {$table}.[[formId]]");
+        $this->query->innerJoin(StatusRecord::TABLE.' '.$statusTable, "{$statusTable}.[[id]] = {$table}.[[statusId]]");
+        $this->subQuery->innerJoin(StatusRecord::TABLE.' sub_'.$statusTable, "sub_{$statusTable}.[[id]] = {$table}.[[statusId]]");
+
+        if ($this->form instanceof Form) {
+            $this->form = $this->form->getHandle();
+        }
+
+        if ($this->form && $formHandleToIdMap[$this->form]) {
+            $this->formId = $formHandleToIdMap[$this->form];
+        }
+
+        if (!$this->formId && ($this->id || $this->token)) {
+            if ($this->token) {
+                $param = Db::parseParam('token', $this->token);
+            } else {
+                $param = Db::parseParam('id', $this->id);
             }
-        }
 
-        if (!$hasFormJoin) {
-            $this->innerJoin(FormRecord::TABLE.' '.$formTable, "{$formTable}.[[id]] = {$table}.[[formId]]");
-        }
-
-        if (!$hasStatusJoin) {
-            $this->innerJoin(StatusRecord::TABLE.' '.$statusTable, "{$statusTable}.[[id]] = {$table}.[[statusId]]");
-        }
-
-        if (!$hasSubStatusJoin) {
-            $this->subQuery->innerJoin(StatusRecord::TABLE.' sub_'.$statusTable, "sub_{$statusTable}.[[id]] = {$table}.[[statusId]]");
+            $this->formId = (int) (new Query())
+                ->select(['formId'])
+                ->from(Submission::TABLE)
+                ->where($param)
+                ->scalar()
+            ;
         }
 
         $select = [
@@ -200,38 +194,24 @@ class SubmissionQuery extends ElementQuery
             $table.'.[[ip]]',
         ];
 
-        $schema = \Craft::$app->db->getTableSchema(Submission::TABLE, true);
-        $existingColumns = $schema->getColumnNames();
+        if ($this->formId && is_numeric($this->formId)) {
+            $handle = $formIdToHandleMap[$this->formId] ?? null;
+            $form = $forms[$this->formId] ?? null;
+            if ($handle && $form) {
+                $this->query->innerJoin("{{%freeform_submissions_{$handle}}} fc", "`fc`.[[id]] = {$table}.[[id]]");
 
-        foreach (Freeform::getInstance()->fields->getAllFieldIds() as $id) {
-            $columnName = Submission::getFieldColumnName($id);
-
-            if (!\in_array($columnName, $existingColumns, true)) {
-                continue;
+                foreach ($form->getLayout()->getStorableFields() as $field) {
+                    $fieldHandle = $field->getHandle();
+                    $select[] = "`fc`.[[{$fieldHandle}]]";
+                }
             }
-
-            $select[] = $table.'.[['.$columnName.']]';
-        }
-
-        $this->query->select($select);
-
-        $formHandle = $this->form;
-        if ($formHandle instanceof Form) {
-            $formHandle = $formHandle->getHandle();
-        }
-
-        if ($formHandle && $formHandleToIdMap[$formHandle]) {
-            $this->formId = $formHandleToIdMap[$formHandle];
         }
 
         if (null !== $this->formId) {
             $this->subQuery->andWhere(Db::parseParam($table.'.[[formId]]', $this->formId));
-
-            if (is_numeric($this->formId)) {
-                $form = Freeform::getInstance()->forms->getFormById($this->formId);
-                $selectedForm = $form?->getForm();
-            }
         }
+
+        $this->query->select($select);
 
         $request = \Craft::$app->request;
 
@@ -263,8 +243,8 @@ class SubmissionQuery extends ElementQuery
             $this->subQuery->andWhere(Db::parseParam($table.'.[[isSpam]]', $this->isSpam));
         }
 
-        if (!empty($this->spamReason) && !$hasSpamReasonJoin) {
-            $this->innerJoin(
+        if (!empty($this->spamReason)) {
+            $this->query->innerJoin(
                 SpamReasonRecord::TABLE." {$spamReasonTable}",
                 "{$spamReasonTable}.[[submissionId]] = {$table}.[[id]] AND {$spamReasonTable}.[[reasonType]] = :spamReason",
                 ['spamReason' => $this->spamReason]
@@ -300,109 +280,6 @@ class SubmissionQuery extends ElementQuery
             }
         }
 
-        if (!empty($this->orderBy) && \is_array($this->orderBy)) {
-            $orderExceptions = ['title', 'score'];
-
-            $prefixedOrderList = [];
-            foreach ($this->orderBy as $key => $sortDirection) {
-                if (preg_match('/\\(\\)$/', $key)) {
-                    $prefixedOrderList[$key] = $sortDirection;
-
-                    continue;
-                }
-
-                if (\in_array($key, $orderExceptions, true) || preg_match('/^[a-z0-9_]+\./i', $key)) {
-                    $prefixedOrderList[$key] = $sortDirection;
-
-                    continue;
-                }
-
-                if ('spamReasons' === $key) {
-                    continue;
-                }
-
-                if ($selectedForm) {
-                    $field = $selectedForm->get($key);
-                    if ($field) {
-                        $key = Submission::getFieldColumnName($field->getId());
-                    }
-                }
-
-                $prefixedOrderList[$table.'.[['.$key.']]'] = $sortDirection;
-            }
-
-            $this->orderBy = $prefixedOrderList;
-        }
-
-        $this->prepareFieldSearch();
-        $this->prepareSearch();
-
         return parent::beforePrepare();
-    }
-
-    /**
-     * Parses the fieldSearch variable and attaches the WHERE conditions to the query.
-     */
-    private function prepareFieldSearch()
-    {
-        if (!$this->fieldSearch) {
-            return;
-        }
-
-        $fieldHandleToIdMap = array_flip(Freeform::getInstance()->fields->getAllFieldHandles());
-
-        $table = Submission::TABLE_STD;
-
-        foreach ($this->fieldSearch as $handle => $term) {
-            if (!isset($fieldHandleToIdMap[$handle])) {
-                continue;
-            }
-
-            $columnName = Submission::getFieldColumnName($fieldHandleToIdMap[$handle]);
-
-            $this->subQuery->andWhere(Db::parseParam($table.'.[['.$columnName.']]', $term));
-        }
-    }
-
-    /**
-     * Parses the fieldSearch variable and attaches the WHERE conditions to the query.
-     */
-    private function prepareSearch()
-    {
-        if (!$this->search) {
-            return;
-        }
-
-        $search = trim($this->search, '%');
-        $this->search = null;
-
-        $fieldIds = Freeform::getInstance()->fields->getAllFieldIds();
-        $table = Submission::TABLE_STD;
-
-        $schema = \Craft::$app->db->getTableSchema(Submission::TABLE, true);
-        $existingColumns = $schema->getColumnNames();
-
-        $queryChunks = ['[[content.title]] LIKE :searchBoth'];
-        foreach ($fieldIds as $id) {
-            $columnName = Submission::getFieldColumnName($id);
-
-            if (!\in_array($columnName, $existingColumns, true)) {
-                continue;
-            }
-
-            $queryChunks[] = "{$table}.[[{$columnName}]] LIKE :search";
-        }
-
-        if ($queryChunks) {
-            $this->subQuery->andWhere(
-                new Expression(
-                    implode(' OR ', $queryChunks),
-                    [
-                        'search' => $search.'%',
-                        'searchBoth' => '%'.$search.'%',
-                    ]
-                )
-            );
-        }
     }
 }

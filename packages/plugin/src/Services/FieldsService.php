@@ -20,7 +20,6 @@ use craft\elements\Entry;
 use craft\elements\Tag;
 use craft\elements\User;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Fields\DeleteEvent;
 use Solspace\Freeform\Events\Fields\FetchFieldTypes;
 use Solspace\Freeform\Events\Fields\SaveEvent;
@@ -36,7 +35,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Factories\PredefinedOptionsFactory;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
-use yii\db\Exception;
 
 class FieldsService extends BaseService implements FieldHandlerInterface
 {
@@ -214,22 +212,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
 
                 if ($isNew) {
                     $model->id = $record->id;
-
-                    try {
-                        $this->createFieldInSubmissionsTable($record);
-                    } catch (Exception $exception) {
-                        // If row size too large - we remove the field and throw an error
-                        if (42000 === (int) $exception->getCode()) {
-                            $transaction->rollBack();
-                            $record->delete();
-                            $model->addError(
-                                'label',
-                                Freeform::t('Total field limit reached.')
-                            );
-
-                            return false;
-                        }
-                    }
                 }
 
                 self::$fieldCache[$model->id] = $model;
@@ -287,7 +269,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                 ->execute()
             ;
 
-            $this->deleteFieldFromSubmissionsTable($model);
             $this->deleteFieldFromForms($model);
 
             if (null !== $transaction) {
@@ -428,32 +409,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         }
 
         return self::$optionsCache[$hash];
-    }
-
-    private function createFieldInSubmissionsTable(FieldRecord $record)
-    {
-        $tableName = Submission::TABLE;
-        $fieldColumnName = Submission::getFieldColumnName($record->id);
-
-        \Craft::$app
-            ->getDb()
-            ->createCommand()
-            ->addColumn($tableName, $fieldColumnName, $record->getColumnType())
-            ->execute()
-        ;
-    }
-
-    private function deleteFieldFromSubmissionsTable(FieldModel $model)
-    {
-        $tableName = Submission::TABLE;
-        $fieldColumnName = Submission::getFieldColumnName($model->id);
-
-        \Craft::$app
-            ->getDb()
-            ->createCommand()
-            ->dropColumn($tableName, $fieldColumnName)
-            ->execute()
-        ;
     }
 
     /**

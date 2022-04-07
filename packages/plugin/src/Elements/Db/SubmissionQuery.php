@@ -198,10 +198,11 @@ class SubmissionQuery extends ElementQuery
             $handle = $formIdToHandleMap[$this->formId] ?? null;
             $form = $forms[$this->formId] ?? null;
             if ($handle && $form) {
-                $this->query->innerJoin("{{%freeform_submissions_{$handle}}} fc", "`fc`.[[id]] = {$table}.[[id]]");
+                $contentTable = Submission::getContentTableName($handle);
+                $this->query->innerJoin("{$contentTable} fc", "`fc`.[[id]] = {$table}.[[id]]");
 
                 foreach ($form->getLayout()->getStorableFields() as $field) {
-                    $fieldHandle = $field->getHandle();
+                    $fieldHandle = Submission::getFieldColumnName($field);
                     $select[] = "`fc`.[[{$fieldHandle}]]";
                 }
             }

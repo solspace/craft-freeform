@@ -4,6 +4,7 @@ namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
 use craft\db\Query;
+use craft\helpers\StringHelper;
 
 class m220330_111857_SplitSubmissionsTable extends Migration
 {
@@ -65,7 +66,11 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                     continue;
                 }
 
-                $fieldMap["field_{$id}"] = $handle;
+                $handle = StringHelper::toKebabCase($handle, '_');
+                $handle = StringHelper::truncate($handle, 50, '');
+                $handle = trim($handle, '-_');
+
+                $fieldMap["field_{$id}"] = $handle.'_'.$id;
             }
 
             $tableName = $this->createFormTable($formHandle, $fieldMap);
@@ -90,6 +95,8 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         foreach ($fieldMap as $handle) {
             $tableColumns[$handle] = $this->text();
         }
+
+        $formHandle = trim(StringHelper::truncate($formHandle, 40, ''), '-_');
 
         $tableName = "{{%freeform_submissions_{$formHandle}}}";
 

@@ -88,6 +88,7 @@ use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
+use Solspace\Freeform\Services\FormContentService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FormTypesService;
 use Solspace\Freeform\Services\FreeformFeedService;
@@ -169,6 +170,7 @@ use yii\web\ForbiddenHttpException;
  * @property DiagnosticsService          $diagnostics
  * @property PreflightService            $preflight
  * @property FormTypesService            $formTypes
+ * @property FormContentService          $formContent
  */
 class Freeform extends Plugin
 {
@@ -539,6 +541,7 @@ class Freeform extends Plugin
                 'diagnostics' => DiagnosticsService::class,
                 'preflight' => PreflightService::class,
                 'formTypes' => FormTypesService::class,
+                'formContent' => FormContentService::class,
             ]
         );
     }

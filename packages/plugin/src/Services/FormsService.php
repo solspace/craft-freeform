@@ -223,6 +223,9 @@ class FormsService extends BaseService implements FormHandlerInterface
             $record = FormRecord::create();
         }
 
+        $oldLayout = $record->layoutJson;
+        $newLayout = $model->layoutJson;
+
         $record->type = $model->type;
         $record->metadata = json_encode($model->metadata);
         $record->name = $model->name;
@@ -279,6 +282,15 @@ class FormsService extends BaseService implements FormHandlerInterface
                 }
 
                 $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
+
+                $this
+                    ->getFormContentService()
+                    ->performDatabaseColumnAlterations(
+                        $model->getForm(),
+                        $oldLayout,
+                        $newLayout
+                    )
+                ;
 
                 return true;
             } catch (\Exception $e) {

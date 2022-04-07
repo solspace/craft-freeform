@@ -234,7 +234,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         );
 
         $submission->dateUpdated = $dateCreated;
-        //$submission->setFieldValues($savableFields);
         $submission->setFormFieldValues($savableFields, $isNew);
 
         Event::trigger(

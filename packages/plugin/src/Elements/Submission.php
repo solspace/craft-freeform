@@ -8,6 +8,7 @@ use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\User;
 use craft\helpers\Html;
+use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
 use LitEmoji\LitEmoji;
 use Solspace\Commons\Helpers\CryptoHelper;
@@ -149,12 +150,23 @@ class Submission extends Element
 
     public static function getContentTableName(string $formHandle): string
     {
+        $formHandle = trim(CraftStringHelper::truncate($formHandle, 40, ''), '-_');
+
         return "{{%freeform_submissions_{$formHandle}}}";
     }
 
-    public static function getFieldColumnName(int $fieldId): string
+    public static function generateFieldColumnName(int $id, string $handle): string
     {
-        return self::FIELD_COLUMN_PREFIX.$fieldId;
+        $handle = CraftStringHelper::toKebabCase($handle, '_');
+        $handle = CraftStringHelper::truncate($handle, 50, '');
+        $handle = trim($handle, '-_');
+
+        return $handle.'_'.$id;
+    }
+
+    public static function getFieldColumnName(AbstractField $field): string
+    {
+        return self::generateFieldColumnName($field->getId(), $field->getHandle());
     }
 
     /**
@@ -246,7 +258,9 @@ class Submission extends Element
                 continue;
             }
 
-            $this->setFieldValue($field->getHandle(), $value);
+            $handle = self::getFieldColumnName($field);
+
+            $this->setFieldValue($handle, $value);
         }
 
         return $this;

@@ -63,10 +63,7 @@ interface FieldInterface
      */
     public function getType(): string;
 
-    /**
-     * @return mixed
-     */
-    public function getValue();
+    public function getValue(): mixed;
 
     /**
      * Gets whatever value is set and returns its string representation.
@@ -75,24 +72,13 @@ interface FieldInterface
 
     public function getId(): int;
 
-    /**
-     * @return null|string
-     */
-    public function getHandle();
+    public function getHandle(): ?string;
 
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function setValue($value);
+    public function getHash(): string;
 
-    /**
-     * Returns an array of error messages.
-     *
-     * @return null|array
-     */
-    public function getErrors();
+    public function setValue(mixed $value): self;
+
+    public function getErrors(): ?array;
 
     public function hasErrors(): bool;
 
@@ -118,9 +104,6 @@ interface FieldInterface
      */
     public function renderErrors(): Markup;
 
-    /**
-     * Validates the Field value.
-     */
     public function isValid(): bool;
 
     public function canRender(): bool;

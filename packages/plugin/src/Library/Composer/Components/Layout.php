@@ -12,25 +12,13 @@
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
-use Solspace\Freeform\Fields\CheckboxGroupField;
-use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Fields\MailingListField;
-use Solspace\Freeform\Fields\Pro\OpinionScaleField;
-use Solspace\Freeform\Fields\Pro\SignatureField;
-use Solspace\Freeform\Fields\Pro\TableField;
-use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\FieldCollection;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MailingListInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PhoneMaskInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecaptchaInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Factories\ComposerFieldFactory;
@@ -38,78 +26,22 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 class Layout implements \JsonSerializable, \Iterator
 {
-    /** @var Form */
-    private $form;
+    private Form $form;
 
     /** @var Page[] */
-    private $pages;
+    private array $pages = [];
 
-    /** @var Row[] */
-    private $rows;
-
-    /** @var AbstractField[]|CheckboxGroupField[]|TextField[] */
-    private $fields;
-
-    /** @var AbstractField[]|CheckboxGroupField[]|TextField[] */
-    private $valueFields;
-
-    /** @var AbstractField[] */
-    private $fieldsById;
-
-    /** @var AbstractField[] */
-    private $fieldsByHandle;
-
-    /** @var AbstractField[] */
-    private $fieldsByHash;
-
-    /** @var AbstractField[]|RecipientInterface[] */
-    private $recipientFields;
-
-    /** @var AbstractField[]|NoRenderInterface[] */
-    private $hiddenFields;
-
-    /** @var AbstractField[]|FileUploadInterface[] */
-    private $fileUploadFields;
-
-    /** @var AbstractField[]|MailingListInterface[] */
-    private $mailingListFields;
-
-    /** @var AbstractField[]|PaymentInterface[] */
-    private $paymentFields;
-
-    /** @var DatetimeInterface[] */
-    private $datepickerFields;
-
-    /** @var PhoneMaskInterface[] */
-    private $phoneFields;
-
-    /** @var RecaptchaInterface[] */
-    private $recaptchaFields;
-
-    /** @var OpinionScaleField[] */
-    private $opinionScaleFields;
-
-    /** @var SignatureField[] */
-    private $signatureFields;
-
-    /** @var TableField[] */
-    private $tableFields;
+    private FieldCollection $fieldCollection;
 
     /** @var string[] */
-    private $fieldTypes;
+    private array $fieldTypes = [];
 
-    /** @var Properties */
-    private $properties;
+    private Properties $properties;
 
-    /** @var array */
-    private $layoutData;
+    private array $layoutData;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private TranslatorInterface $translator;
 
-    /**
-     * Layout constructor.
-     */
     public function __construct(
         Form $form,
         array $layoutData,
@@ -117,59 +49,23 @@ class Layout implements \JsonSerializable, \Iterator
         TranslatorInterface $translator
     ) {
         $this->form = $form;
+        $this->fieldCollection = new FieldCollection();
+
         $this->properties = $properties;
         $this->layoutData = $layoutData;
         $this->translator = $translator;
-        $this->fieldTypes = [];
+
         $this->buildLayout();
     }
 
-    /**
-     * @deprecated use `hasFields(DatetimeField::class)` instead
-     */
-    public function hasDatepickerEnabledFields(): bool
+    public function cloneFieldCollection(): FieldCollection
     {
-        return (bool) \count($this->datepickerFields);
-    }
+        $collection = new FieldCollection();
+        foreach ($this->getStorableFields() as $field) {
+            $collection->add(clone $field);
+        }
 
-    /**
-     * @deprecated use `hasFields(PhoneField::class)` instead
-     */
-    public function hasPhonePatternFields(): bool
-    {
-        return (bool) \count($this->phoneFields);
-    }
-
-    /**
-     * @deprecated use `hasFields(RecaptchaField::class)` instead
-     */
-    public function hasRecaptchaFields(): bool
-    {
-        return (bool) \count($this->recaptchaFields);
-    }
-
-    /**
-     * @deprecated use `hasFields(OpinionScaleField::class)` instead
-     */
-    public function hasOpinionScaleFields(): bool
-    {
-        return (bool) \count($this->opinionScaleFields);
-    }
-
-    /**
-     * @deprecated use `hasFields(SignatureField::class)` instead
-     */
-    public function hasSignatureFields(): bool
-    {
-        return (bool) \count($this->signatureFields);
-    }
-
-    /**
-     * @deprecated use `hasFields(TableField::class)` instead
-     */
-    public function hasTableFields(): bool
-    {
-        return (bool) \count($this->tableFields);
+        return $collection;
     }
 
     /**
@@ -195,96 +91,6 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * @deprecated use `getFields(HiddenField::class)` instead
-     *
-     * @return HiddenField[]
-     */
-    public function getHiddenFields(): array
-    {
-        return $this->hiddenFields;
-    }
-
-    /**
-     * @deprecated use `getFields(TableField::class)` instead
-     *
-     * @return FileUploadField[]
-     */
-    public function getFileUploadFields(): array
-    {
-        return $this->fileUploadFields;
-    }
-
-    /**
-     * @deprecated use `getFields(MailingListField::class)` instead
-     *
-     * @return MailingListInterface[]
-     */
-    public function getMailingListFields(): array
-    {
-        return $this->mailingListFields;
-    }
-
-    /**
-     * @deprecated use `getFields(DatetimeField::class)` instead
-     *
-     * @return DatetimeInterface[]
-     */
-    public function getDatepickerFields(): array
-    {
-        return $this->datepickerFields;
-    }
-
-    /**
-     * @deprecated use `getFields(PhoneField::class)` instead
-     *
-     * @return PhoneMaskInterface[]
-     */
-    public function getPhoneFields(): array
-    {
-        return $this->phoneFields;
-    }
-
-    /**
-     * @deprecated use `getFields(RecaptchaField::class)` instead
-     *
-     * @return RecaptchaInterface[]
-     */
-    public function getRecaptchaFields(): array
-    {
-        return $this->recaptchaFields;
-    }
-
-    /**
-     * @deprecated use `getFields(OpinionScaleField::class)` instead
-     *
-     * @return OpinionScaleField[]
-     */
-    public function getOpinionScaleFields(): array
-    {
-        return $this->opinionScaleFields;
-    }
-
-    /**
-     * @deprecated use `getFields(SignatureField::class)` instead
-     *
-     * @return SignatureField[]
-     */
-    public function getSignatureFields(): array
-    {
-        return $this->signatureFields;
-    }
-
-    /**
-     * @deprecated use `getFields(TableField::class)` instead
-     *
-     * @return TableField[]
-     */
-    public function getTableFields(): array
-    {
-        return $this->tableFields;
-    }
-
-    /**
      * @param class-string $implements
      */
     public function hasFields(string $implements): bool
@@ -303,31 +109,11 @@ class Layout implements \JsonSerializable, \Iterator
         return $errorCount;
     }
 
-    /**
-     * @template T
-     *
-     * @param null|class-string<T> $implements
-     *
-     * @return AbstractField[]|T[]
-     */
     public function getFields(string $implements = null): array
     {
-        if (null !== $implements) {
-            return array_filter($this->fields, function (AbstractField $field) use ($implements) {
-                return $field instanceof $implements;
-            });
-        }
-
-        return $this->fields;
+        return $this->fieldCollection->getList($implements);
     }
 
-    /**
-     * @template T
-     *
-     * @param null|class-string<T> $implements
-     *
-     * @return AbstractField[]|T[]
-     */
     public function getStorableFields(string $implements = null): array
     {
         return array_filter(
@@ -336,9 +122,12 @@ class Layout implements \JsonSerializable, \Iterator
         );
     }
 
-    public function getValueFields(): array
+    public function getHiddenFields(): array
     {
-        return $this->valueFields;
+        return array_filter(
+            $this->getFields(),
+            fn ($field) => $field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())
+        );
     }
 
     public function hasFieldType(string $type): bool
@@ -346,49 +135,37 @@ class Layout implements \JsonSerializable, \Iterator
         return \in_array(strtolower($type), $this->fieldTypes, true);
     }
 
-    /**
-     * @return AbstractField[]
-     */
     public function getFieldsByHandle(): array
     {
-        if (null === $this->fieldsByHandle) {
-            $fields = [];
-            foreach ($this->getFields() as $field) {
-                if (!$field->getHandle()) {
-                    continue;
-                }
-
-                $fields[$field->getHandle()] = $field;
-            }
-
-            $this->fieldsByHandle = $fields;
-        }
-
-        return $this->fieldsByHandle;
+        return $this->fieldCollection->getIndexedByHandle();
     }
 
-    /**
-     * @param int $id
-     *
-     * @throws FreeformException
-     */
-    public function getFieldById($id): AbstractField
+    public function getFieldById(int $id): FieldInterface
     {
-        if (null === $this->fieldsById) {
-            $fields = [];
-            foreach ($this->getFields() as $field) {
-                $fields[$field->getId()] = $field;
-            }
+        return $this->fieldCollection->get($id);
+    }
 
-            $this->fieldsById = $fields;
-        }
+    public function getFieldByHandle(string $handle): FieldInterface
+    {
+        return $this->fieldCollection->get($handle);
+    }
 
-        if (isset($this->fieldsById[$id])) {
-            return $this->fieldsById[$id];
+    public function getFieldByHash(string $hash): FieldInterface
+    {
+        return $this->fieldCollection->get($hash);
+    }
+
+    public function getSpecialField(string $name): AbstractField
+    {
+        $name = strtolower($name);
+        if ('recaptcha' === $name && $this->hasFields(RecaptchaInterface::class)) {
+            $fields = $this->getFields(RecaptchaInterface::class);
+
+            return reset($fields);
         }
 
         throw new FreeformException(
-            $this->translate('Field with ID {id} not found', ['id' => $id])
+            $this->translate("Special Field with name '{name}' not found", ['name' => $name])
         );
     }
 
@@ -424,79 +201,6 @@ class Layout implements \JsonSerializable, \Iterator
         }
     }
 
-    /**
-     * @param int $handle
-     *
-     * @throws FreeformException
-     */
-    public function getFieldByHandle($handle): AbstractField
-    {
-        $fieldsByHandle = $this->getFieldsByHandle();
-
-        if (isset($fieldsByHandle[$handle])) {
-            return $fieldsByHandle[$handle];
-        }
-
-        throw new FreeformException(
-            $this->translate("Field with handle '{handle}' not found", ['handle' => $handle])
-        );
-    }
-
-    /**
-     * @param string $hash
-     *
-     * @throws FreeformException
-     */
-    public function getFieldByHash($hash): AbstractField
-    {
-        if (null === $this->fieldsByHash) {
-            $fields = [];
-            foreach ($this->getFields() as $field) {
-                $fields[$field->getHash()] = $field;
-            }
-
-            $this->fieldsByHash = $fields;
-        }
-
-        if (isset($this->fieldsByHash[$hash])) {
-            return $this->fieldsByHash[$hash];
-        }
-
-        throw new FreeformException(
-            $this->translate("Field with hash '{hash}' not found", ['hash' => $hash])
-        );
-    }
-
-    public function getSpecialField(string $name): AbstractField
-    {
-        $name = strtolower($name);
-        if ('recaptcha' === $name && $this->hasRecaptchaFields()) {
-            $fields = $this->getRecaptchaFields();
-
-            return reset($fields);
-        }
-
-        throw new FreeformException(
-            $this->translate("Special Field with name '{name}' not found", ['name' => $name])
-        );
-    }
-
-    /**
-     * @return AbstractField[]|RecipientInterface[]
-     */
-    public function getRecipientFields(): array
-    {
-        return $this->recipientFields;
-    }
-
-    /**
-     * @return AbstractField[]|PaymentInterface[]
-     */
-    public function getPaymentFields(): array
-    {
-        return $this->paymentFields;
-    }
-
     public function jsonSerialize(): array
     {
         return $this->layoutData;
@@ -528,7 +232,7 @@ class Layout implements \JsonSerializable, \Iterator
     }
 
     /**
-     * Builds all page, row and field objects and inflates them.
+     * Builds all page, row and field objects and hydrates them.
      *
      * @throws ComposerException
      */
@@ -536,22 +240,8 @@ class Layout implements \JsonSerializable, \Iterator
     {
         $availableFieldTypes = array_keys(Freeform::getInstance()->fields->getFieldTypes());
 
-        // TODO: remove these, use the `getField()` method by specifying type
         $pageObjects = [];
-        $allRows = [];
         $allFields = [];
-        $valueFields = [];
-        $hiddenFields = [];
-        $recipientFields = [];
-        $fileUploadFields = [];
-        $mailingListFields = [];
-        $paymentFields = [];
-        $datepickerFields = [];
-        $phoneFields = [];
-        $recaptchaFields = [];
-        $opinionScaleFields = [];
-        $signatureFields = [];
-        $tableFields = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
             if (!\is_array($rows)) {
@@ -605,58 +295,14 @@ class Layout implements \JsonSerializable, \Iterator
                         }
                     }
 
+                    $this->fieldCollection->add($field);
+
                     if ($field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())) {
-                        $hiddenFields[] = $field;
-                    } else {
-                        $fields[] = $field;
+                        continue;
                     }
 
-                    if (!$field instanceof NoStorageInterface) {
-                        $valueFields[] = $field;
-                    }
-
-                    if ($field instanceof FileUploadInterface) {
-                        $fileUploadFields[] = $field;
-                    }
-
-                    if ($field instanceof MailingListInterface) {
-                        $mailingListFields[] = $field;
-                    }
-
-                    if ($field instanceof RecipientInterface && $field->shouldReceiveEmail()) {
-                        $recipientFields[] = $field;
-                    }
-
-                    if ($field instanceof PaymentInterface) {
-                        $paymentFields[] = $field;
-                    }
-
-                    if ($field instanceof DatetimeInterface && $field->isUseDatepicker()) {
-                        $datepickerFields[] = $field;
-                    }
-
-                    if ($field instanceof PhoneMaskInterface && $field->isUseJsMask()) {
-                        $phoneFields[] = $field;
-                    }
-
-                    if ($field instanceof RecaptchaInterface) {
-                        $recaptchaFields[] = $field;
-                    }
-
-                    if ($field instanceof OpinionScaleField) {
-                        $opinionScaleFields[] = $field;
-                    }
-
-                    if ($field instanceof SignatureField) {
-                        $signatureFields[] = $field;
-                    }
-
-                    if ($field instanceof TableField && $field->isUseScript()) {
-                        $tableFields[] = $field;
-                    }
-
+                    $fields[] = $field;
                     $pageFields[] = $field;
-                    $allFields[] = $field;
 
                     $this->fieldTypes[] = $field->getType();
                 }
@@ -669,7 +315,6 @@ class Layout implements \JsonSerializable, \Iterator
                 $row = new Row($rowId, $fields);
 
                 $rowObjects[] = $row;
-                $allRows[] = $row;
             }
 
             $pageProperties = $this->properties->getPageProperties($pageIndex);
@@ -682,26 +327,9 @@ class Layout implements \JsonSerializable, \Iterator
         $this->fieldTypes = array_filter($this->fieldTypes);
 
         $this->pages = $pageObjects;
-        $this->rows = $allRows;
-        $this->fields = $allFields;
-        $this->valueFields = $valueFields;
-        $this->hiddenFields = $hiddenFields;
-        $this->recipientFields = $recipientFields;
-        $this->fileUploadFields = $fileUploadFields;
-        $this->mailingListFields = $mailingListFields;
-        $this->paymentFields = $paymentFields;
-        $this->datepickerFields = $datepickerFields;
-        $this->phoneFields = $phoneFields;
-        $this->recaptchaFields = $recaptchaFields;
-        $this->opinionScaleFields = $opinionScaleFields;
-        $this->signatureFields = $signatureFields;
-        $this->tableFields = $tableFields;
     }
 
-    /**
-     * @param string $string
-     */
-    private function translate($string, array $variables = []): string
+    private function translate(string $string, array $variables = []): string
     {
         return $this->translator->translate($string, $variables);
     }

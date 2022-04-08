@@ -34,7 +34,7 @@ class NumberField extends TextField
     /**
      * @return null|mixed|string
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         $value = parent::getValue();
         $value = str_replace(',', '.', $value);

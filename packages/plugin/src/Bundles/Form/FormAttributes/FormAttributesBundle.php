@@ -7,6 +7,7 @@ use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bags\BagInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -80,7 +81,7 @@ class FormAttributesBundle extends FeatureBundle
         $event->attachAttribute('data-disable-submit', $formService->isFormSubmitDisable());
         $event->attachAttribute('data-show-spinner', $form->isShowSpinner());
 
-        if (\count($form->getLayout()->getFileUploadFields())) {
+        if ($form->getLayout()->hasFields(FileUploadInterface::class)) {
             $event->attachAttribute('enctype', 'multipart/form-data');
         }
 

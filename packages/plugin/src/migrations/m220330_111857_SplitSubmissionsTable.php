@@ -31,6 +31,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         'signature',
         'table',
         'invisible',
+        'cc_details',
     ];
 
     public function safeUp(): bool
@@ -62,7 +63,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                 }
 
                 $handle = $layoutField->handle ?? null;
-                if (!$handle || !\in_array($handle, $fields, true)) {
+                if (!$handle || !\array_key_exists($id, $fields)) {
                     continue;
                 }
 

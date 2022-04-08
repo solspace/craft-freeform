@@ -56,7 +56,7 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, SingleVa
             if ($settings->twigInHtml) {
                 $variables = [
                     'form' => $this->getForm(),
-                    'fields' => $this->getForm()->getLayout()->getValueFields(),
+                    'fields' => $this->getForm()->getLayout()->getStorableFields(),
                     'allFields' => $this->getForm()->getLayout()->getFields(),
                 ];
 

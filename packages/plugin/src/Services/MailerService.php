@@ -317,7 +317,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         //TODO: offload this call to payments plugin with an event
-        if ($submission && $form->getLayout()->getPaymentFields()) {
+        if ($submission && $form->getLayout()->hasFields(PaymentInterface::class)) {
             $payments = Freeform::getInstance()->payments->getPaymentDetails(
                 $submission->getId(),
                 $submission->getForm()

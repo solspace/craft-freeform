@@ -26,7 +26,7 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
     /**
      * {@inheritDoc}
      */
-    public function getHandle()
+    public function getHandle(): ?string
     {
         return 'grecaptcha_'.$this->getHash();
     }

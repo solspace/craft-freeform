@@ -358,13 +358,10 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
     public function getId(): int
     {
-        return (int) $this->id;
+        return $this->id;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getHandle()
+    public function getHandle(): ?string
     {
         return $this->handle;
     }

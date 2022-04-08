@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers;
 
 use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Services\FormsService;
 use yii\base\Event;
@@ -39,10 +40,8 @@ class FormHookHandler
      */
     public static function validate(SaveEvent $event)
     {
-        $formsService = $event->sender;
-
         $formModel = $event->getModel();
-        $paymentFields = $formModel->getLayout()->getPaymentFields();
+        $paymentFields = $formModel->getLayout()->getFields(PaymentInterface::class);
         if (!$paymentFields) {
             return;
         }

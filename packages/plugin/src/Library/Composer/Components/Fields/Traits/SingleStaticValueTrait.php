@@ -12,6 +12,8 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+
 trait SingleStaticValueTrait
 {
     /** @var string */
@@ -20,7 +22,7 @@ trait SingleStaticValueTrait
     /**
      * @return string
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
@@ -32,7 +34,7 @@ trait SingleStaticValueTrait
      *
      * @return $this
      */
-    public function setValue($value)
+    public function setValue(mixed $value): FieldInterface
     {
         return $this;
     }

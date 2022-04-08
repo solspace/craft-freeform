@@ -28,9 +28,11 @@ use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\FieldCollection;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
+use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
@@ -66,31 +68,61 @@ class Submission extends Element
     /** @var string */
     public $ip;
 
+    /** @var SpamReason[] */
+    private ?array $spamReasons = null;
+
+    private ?FieldCollection $fieldCollection = null;
+
     /** @var array */
     private static $permissionCache = [];
-
-    /** @var SpamReason[] */
-    private $spamReasons;
 
     /** @var bool */
     private static $deletableTokens = [];
 
+    public function __construct($config = [])
+    {
+        $this->formId = $config['formId'] ?? null;
+        if ($this->formId) {
+            $this->fieldCollection = $this->getForm()->getLayout()->cloneFieldCollection();
+            foreach ($this->fieldCollection as $field) {
+                $column = self::getFieldColumnName($field);
+                $field->setValue($config[$column] ?? null);
+            }
+        }
+
+        parent::__construct($config);
+    }
+
     public function __get($name): mixed
     {
-        $field = $this->getForm()->get($name);
-        if ($field) {
-            $clone = clone $field;
-            $clone->setValue(parent::__get($name));
-
-            return $clone;
+        try {
+            return $this->getFieldCollection()->get($name);
+        } catch (FreeformException) {
         }
 
         return parent::__get($name);
     }
 
+    public function __set($name, $value)
+    {
+        if (preg_match('/([a-z\d\-_]+)_(\d+)/i', $name, $matches)) {
+            $id = (int) $matches[2];
+
+            try {
+                $field = $this->getFieldCollection()->get($id);
+                $field->setValue($value);
+
+                return;
+            } catch (FreeformException) {
+            }
+        }
+
+        parent::__set($name, $value);
+    }
+
     public function __isset($name): bool
     {
-        if ($this->getForm()->get($name)) {
+        if ($this->getFieldCollection()->get($name)) {
             return true;
         }
 
@@ -248,7 +280,7 @@ class Submission extends Element
 
     public function setFormFieldValues(array $values, bool $override = true): self
     {
-        foreach ($this->getForm()->getLayout()->getStorableFields() as $field) {
+        foreach ($this as $field) {
             $value = null;
             if (isset($values[$field->getHandle()])) {
                 $value = $values[$field->getHandle()];
@@ -258,9 +290,7 @@ class Submission extends Element
                 continue;
             }
 
-            $handle = self::getFieldColumnName($field);
-
-            $this->setFieldValue($handle, $value);
+            $field->setValue($value);
         }
 
         return $this;
@@ -341,8 +371,8 @@ class Submission extends Element
 
         $contentData = [];
         foreach ($this as $field) {
-            $handle = $field->getHandle();
-            $value = $this->{$handle}->getValue();
+            $value = $field->getValue();
+
             if (\is_array($value)) {
                 $value = json_encode($value);
             }
@@ -351,7 +381,7 @@ class Submission extends Element
                 $value = LitEmoji::unicodeToShortcode($value);
             }
 
-            $contentData[$field->getHandle()] = $value;
+            $contentData[self::getFieldColumnName($field)] = $value;
         }
 
         $contentTable = self::getContentTableName($this->getForm()->getHandle());
@@ -424,7 +454,7 @@ class Submission extends Element
 
     public function getIterator(): \ArrayIterator
     {
-        return new \ArrayIterator($this->getForm()->getLayout()->getStorableFields());
+        return $this->getFieldCollection()->getIterator();
     }
 
     public static function sortOptions(): array
@@ -496,12 +526,6 @@ class Submission extends Element
             // Hide Author from Craft Personal/Client
             if (\Craft::$app->getEdition() < \Craft::Pro) {
                 unset($attributes['userId']);
-            }
-
-            foreach (Freeform::getInstance()->fields->getAllFields() as $field) {
-                if ($field->label) {
-                    $titles[$field->handle] = ['label' => $field->label];
-                }
             }
 
             $attributes = $titles;
@@ -689,6 +713,11 @@ class Submission extends Element
     private function generateToken(): void
     {
         $this->token = CryptoHelper::getUniqueToken(self::OPT_IN_DATA_TOKEN_LENGTH);
+    }
+
+    private function getFieldCollection(): FieldCollection
+    {
+        return $this->fieldCollection;
     }
 
     private function getNewIncrementalId(): int

@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
 use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -27,7 +28,7 @@ trait MultipleValueTrait
     /**
      * @return array
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         $values = $this->values;
 
@@ -64,12 +65,7 @@ trait MultipleValueTrait
         return $values;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function setValue($value)
+    public function setValue(mixed $value): FieldInterface
     {
         if ($this instanceof MultipleValueInterface && !\is_array($value)) {
             if (null === $value) {

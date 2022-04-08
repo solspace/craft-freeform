@@ -19,10 +19,12 @@ use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Submissions\UpdateEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
+use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
@@ -273,13 +275,13 @@ class SubmissionsController extends BaseController
         return self::TEMPLATE_BASE_PATH;
     }
 
-    private function getSubmissionPaymentDetails($submission): ?array
+    private function getSubmissionPaymentDetails(Submission $submission): ?PaymentModel
     {
         $form = $submission->getForm();
-        $paymentFields = $form->getLayout()->getPaymentFields();
+        $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
 
         if (\count($paymentFields) > 0) {
-            $paymentField = $paymentFields[0];
+            $paymentField = reset($paymentFields);
             $paymentProperties = $form->getPaymentProperties();
             $integrationId = $paymentProperties->getIntegrationId();
             $integrationModel = $this->getPaymentGatewaysService()->getIntegrationById($integrationId);

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -140,11 +141,9 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
     }
 
     /**
-     * @param mixed $value
-     *
      * @return $this|AbstractField
      */
-    public function setValue($value)
+    public function setValue(mixed $value): FieldInterface
     {
         $layout = $this->getTableLayout();
 

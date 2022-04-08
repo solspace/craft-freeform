@@ -6,6 +6,7 @@ use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
@@ -23,8 +24,12 @@ class EmailRecipientNotifications extends FeatureBundle
         $submission = $event->getSubmission();
         $suppressors = $form->getSuppressors();
 
-        $recipientFields = $form->getLayout()->getRecipientFields();
+        $recipientFields = $form->getLayout()->getFields(RecipientInterface::class);
         foreach ($recipientFields as $field) {
+            if (!$field->shouldReceiveEmail()) {
+                continue;
+            }
+
             if ($field instanceof DynamicRecipientField && $suppressors->isDynamicRecipients()) {
                 continue;
             }

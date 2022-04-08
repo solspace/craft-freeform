@@ -190,7 +190,7 @@ class SubmissionHookHandler
             return;
         }
         $form = Freeform::getInstance()->forms->getFormByHandle($source['data']['handle']);
-        $paymentFields = $form->getLayout()->getPaymentFields();
+        $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
         if (\count($paymentFields) > 0) {
             $event->actions[] = FixPaymentsAction::class;
         }

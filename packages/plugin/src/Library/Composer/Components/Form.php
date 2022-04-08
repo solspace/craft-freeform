@@ -40,6 +40,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
@@ -544,7 +545,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
             return false;
         }
 
-        if (\count($this->getLayout()->getPaymentFields())) {
+        if (\count($this->getLayout()->getFields(PaymentInterface::class))) {
             return false;
         }
 
@@ -844,7 +845,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->registerContext($renderProperties);
         $bag = $this->getPropertyBag();
 
-        $isMultipart = \count($this->getLayout()->getFileUploadFields());
+        $isMultipart = $this->getLayout()->hasFields(FileUploadInterface::class);
 
         $object = [
             'hash' => $this->getHash(),

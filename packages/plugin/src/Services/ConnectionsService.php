@@ -21,7 +21,7 @@ class ConnectionsService extends BaseService
         }
 
         $form = $event->getForm();
-        $submission = new Submission();
+        $submission = Submission::create($form);
 
         $list = $form->getConnectionProperties()->getList();
         foreach ($list as $connection) {

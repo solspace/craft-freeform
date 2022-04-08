@@ -6,6 +6,7 @@ use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 class FixPaymentsAction extends ElementAction
@@ -27,7 +28,7 @@ class FixPaymentsAction extends ElementAction
                 throw new FreeformException(Freeform::t('Form with ID {id} not found', ['id' => $form->getId()]));
             }
 
-            $paymentFields = $form->getLayout()->getPaymentFields();
+            $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
             if (!$paymentFields) {
                 throw new FreeformException(Freeform::t('Form does not contain payment fields'));
             }

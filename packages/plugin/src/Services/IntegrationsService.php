@@ -19,6 +19,7 @@ use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
@@ -157,7 +158,7 @@ class IntegrationsService extends BaseService
         }
 
         $form = $submission->getForm();
-        $paymentFields = $form->getLayout()->getPaymentFields();
+        $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
         if (!$paymentFields || 0 === \count($paymentFields) || $form->getSuppressors()->isPayments()) {
             return true; //no payment fields, so no processing needed
         }

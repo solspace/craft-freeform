@@ -209,7 +209,7 @@ class StripeService extends Component
 
     public function getStripeVariables(Form $form): \stdClass
     {
-        $paymentFields = $form->getLayout()->getPaymentFields();
+        $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
         $integrationId = $form->getPaymentProperties()->getIntegrationId();
 
         /** @var IntegrationModel $integration */
@@ -297,9 +297,7 @@ class StripeService extends Component
 
     private function hasPaymentFieldDisplayed(Form $form): bool
     {
-        $paymentFields = $form->getLayout()->getPaymentFields();
-
-        return \count($paymentFields) > 0;
+        return $form->getLayout()->hasFields(PaymentInterface::class);
     }
 
     private function isFieldOnPage(AbstractField $field, Page $page): bool
@@ -471,7 +469,7 @@ class StripeService extends Component
      */
     private function getPaymentField(Form $form): PaymentInterface
     {
-        $paymentFields = $form->getLayout()->getPaymentFields();
+        $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
         $paymentField = reset($paymentFields);
 
         if (!$paymentField) {

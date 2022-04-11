@@ -29,6 +29,7 @@ use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\FieldCollection;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
@@ -84,13 +85,22 @@ class Submission extends Element
         $this->formId = $config['formId'] ?? null;
         if ($this->formId) {
             $this->fieldCollection = $this->getForm()->getLayout()->cloneFieldCollection();
-            foreach ($this->fieldCollection as $field) {
-                $column = self::getFieldColumnName($field);
-                $field->setValue($config[$column] ?? null);
-            }
         }
 
         parent::__construct($config);
+
+        if ($this->formId) {
+            foreach ($this->fieldCollection as $field) {
+                $column = self::getFieldColumnName($field);
+                $value = $config[$column] ?? null;
+
+                if ($field instanceof MultipleValueInterface ?? \is_string($value)) {
+                    $value = json_decode($value, true);
+                }
+
+                $field->setValue($value);
+            }
+        }
     }
 
     public function __get($name): mixed
@@ -258,10 +268,6 @@ class Submission extends Element
     public function getAssets(string $fieldHandle): ?array
     {
         $field = $this->{$fieldHandle};
-        if ($field) {
-            return null;
-        }
-
         $value = $field->getValue();
 
         if (!\is_array($value)) {

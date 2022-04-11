@@ -233,7 +233,7 @@
                                                 <label>{{ field.label }}</label>
                                             </div>
                                             <div class="file-preview">
-                                                {% set assets = submission.getAssets('field_' ~ field.id) %}
+                                                {% set assets = submission.getAssets(field.handle) %}
 
                                                 {% if assets %}
                                                     {% for asset in assets|filter(asset => asset is not null) %}

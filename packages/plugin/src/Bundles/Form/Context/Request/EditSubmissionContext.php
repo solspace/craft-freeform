@@ -53,7 +53,7 @@ class EditSubmissionContext
         $form->disableAjaxReset();
         foreach ($form->getLayout()->getStorableFields() as $field) {
             if (isset($submission->{$field->getHandle()})) {
-                $value = $submission->{$field->getHandle()};
+                $value = $submission->{$field->getHandle()}->getValue();
 
                 $field->setValue($value);
             }

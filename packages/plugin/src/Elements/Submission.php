@@ -88,19 +88,6 @@ class Submission extends Element
         }
 
         parent::__construct($config);
-
-        if ($this->formId) {
-            foreach ($this->fieldCollection as $field) {
-                $column = self::getFieldColumnName($field);
-                $value = $config[$column] ?? null;
-
-                if ($field instanceof MultipleValueInterface ?? \is_string($value)) {
-                    $value = json_decode($value, true);
-                }
-
-                $field->setValue($value);
-            }
-        }
     }
 
     public function __get($name): mixed
@@ -120,6 +107,11 @@ class Submission extends Element
 
             try {
                 $field = $this->getFieldCollection()->get($id);
+
+                if ($field instanceof MultipleValueInterface ?? \is_string($value)) {
+                    $value = json_decode($value, true);
+                }
+
                 $field->setValue($value);
 
                 return;

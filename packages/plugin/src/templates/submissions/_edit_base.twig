@@ -104,7 +104,7 @@
                                 {% set fieldHandle = field.handle %}
 
                                 {% if field.canStoreValues %}
-                                    {% set value = submission[fieldHandle] %}
+                                    {% set value = submission[fieldHandle].value %}
 
                                     {% set options = {
                                         label: field.label,

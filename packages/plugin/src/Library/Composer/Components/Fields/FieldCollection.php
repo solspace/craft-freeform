@@ -18,9 +18,11 @@ class FieldCollection implements \IteratorAggregate
     public function getList(string $implements = null): array
     {
         if (null !== $implements) {
-            return array_filter($this->fields, function (FieldInterface $field) use ($implements) {
-                return $field instanceof $implements;
-            });
+            return array_values(
+                array_filter($this->fields, function (FieldInterface $field) use ($implements) {
+                    return $field instanceof $implements;
+                })
+            );
         }
 
         return $this->fields;

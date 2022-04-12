@@ -21,6 +21,7 @@ use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Composer\Components\Page;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
@@ -191,6 +192,15 @@ class SubmissionsController extends BaseController
             'statuses' => $statuses,
             'note' => $noteRecord?->note,
             'continueEditingUrl' => 'freeform/submissions/{id}',
+            'tabs' => array_map(
+                fn (Page $page) => [
+                    'tabId' => $page->getIndex(),
+                    'selected' => 0 === $page->getIndex(),
+                    'url' => '#tab-'.$page->getIndex(),
+                    'label' => $page->getLabel(),
+                ],
+                $layout->getPages()
+            ),
         ];
 
         $paymentDetails = $this->getSubmissionPaymentDetails($submission);

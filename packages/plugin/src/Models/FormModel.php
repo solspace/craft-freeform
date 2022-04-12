@@ -147,9 +147,9 @@ class FormModel extends Model
         $this->gtmEventName = $form->getGtmEventName();
     }
 
-    public function getComposer(): Composer
+    public function getComposer(bool $refresh = false): Composer
     {
-        if (null === $this->composer) {
+        if (null === $this->composer || $refresh) {
             return $this->composer = new Composer(
                 $this,
                 json_decode($this->layoutJson, true),
@@ -181,9 +181,9 @@ class FormModel extends Model
         return $this->getComposer()->getForm()->getLayout();
     }
 
-    public function getForm(): Form
+    public function getForm(bool $refresh = false): Form
     {
-        return $this->getComposer()->getForm();
+        return $this->getComposer($refresh)->getForm();
     }
 
     public function getLayoutAsJson(): string

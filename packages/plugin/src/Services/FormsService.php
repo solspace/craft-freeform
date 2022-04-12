@@ -28,6 +28,7 @@ use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
+use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
@@ -283,14 +284,13 @@ class FormsService extends BaseService implements FormHandlerInterface
 
                 $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
 
-                $this
-                    ->getFormContentService()
-                    ->performDatabaseColumnAlterations(
-                        $model->getForm(),
-                        $oldLayout,
-                        $newLayout
-                    )
-                ;
+                $contentManager = new ContentManager(
+                    $model->getForm(true),
+                    $oldLayout,
+                    $newLayout
+                );
+
+                $contentManager->performDatabaseColumnAlterations();
 
                 return true;
             } catch (\Exception $e) {

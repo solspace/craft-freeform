@@ -34,6 +34,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValue
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
@@ -182,15 +183,25 @@ class Submission extends Element
         return $submission;
     }
 
-    public static function getContentTableName(string $formHandle): string
+    public static function getContentTableName(Form $form): string
     {
-        $formHandle = trim(CraftStringHelper::truncate($formHandle, 40, ''), '-_');
+        return self::generateContentTableName($form->getId(), $form->getHandle());
+    }
 
-        return "{{%freeform_submissions_{$formHandle}}}";
+    public static function generateContentTableName(int $id, string $handle): string
+    {
+        $handle = CraftStringHelper::truncate($handle, 38, '');
+        $handle = trim($handle, '-_');
+
+        return "{{%freeform_submissions_{$handle}_{$id}}}";
     }
 
     public static function generateFieldColumnName(int $id, string $handle): string
     {
+        if (empty($handle)) {
+            $handle = HashHelper::sha1($id, 10);
+        }
+
         $handle = CraftStringHelper::toKebabCase($handle, '_');
         $handle = CraftStringHelper::truncate($handle, 50, '');
         $handle = trim($handle, '-_');
@@ -382,7 +393,7 @@ class Submission extends Element
             $contentData[self::getFieldColumnName($field)] = $value;
         }
 
-        $contentTable = self::getContentTableName($this->getForm()->getHandle());
+        $contentTable = self::getContentTableName($this->getForm());
         if ($isNew) {
             $insertData['id'] = $this->id;
             $contentData['id'] = $this->id;

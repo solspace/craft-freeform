@@ -12,11 +12,6 @@ class BaseService extends Component
         return Freeform::getInstance()->forms;
     }
 
-    protected function getFormContentService(): FormContentService
-    {
-        return Freeform::getInstance()->formContent;
-    }
-
     protected function getSettingsService(): SettingsService
     {
         return Freeform::getInstance()->settings;

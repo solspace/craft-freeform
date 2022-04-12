@@ -74,7 +74,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                 $fieldMap["field_{$id}"] = $handle.'_'.$id;
             }
 
-            $tableName = $this->createFormTable($formHandle, $fieldMap);
+            $tableName = $this->createFormTable($formId, $formHandle, $fieldMap);
             $this->swapData($formId, $tableName, $fieldMap);
         }
 
@@ -90,16 +90,16 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         return false;
     }
 
-    private function createFormTable(string $formHandle, array $fieldMap): string
+    private function createFormTable(int $id, string $formHandle, array $fieldMap): string
     {
         $tableColumns = ['id' => $this->integer()->notNull()];
         foreach ($fieldMap as $handle) {
             $tableColumns[$handle] = $this->text();
         }
 
-        $formHandle = trim(StringHelper::truncate($formHandle, 40, ''), '-_');
+        $formHandle = trim(StringHelper::truncate($formHandle, 38, ''), '-_');
 
-        $tableName = "{{%freeform_submissions_{$formHandle}}}";
+        $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
 
         $this->createTable($tableName, $tableColumns);
         $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', 'CASCADE');

@@ -250,15 +250,13 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      *
      * @param AbstractField[] $mailingListOptedInFields
      */
-    public function postProcessSubmission(Submission $submission, array $mailingListOptedInFields)
+    public function postProcessSubmission(Form $form, Submission $submission, array $mailingListOptedInFields)
     {
         $freeform = Freeform::getInstance();
 
         $integrationsService = $freeform->integrations;
         $connectionsService = $freeform->connections;
         $formsService = $freeform->forms;
-
-        $form = $submission->getForm();
 
         $this->markFormAsSubmitted($form);
 

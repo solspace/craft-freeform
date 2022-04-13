@@ -149,13 +149,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_FORMS_MANAGE);
     }
 
-    /**
-     * @param int   $id
-     * @param mixed $refresh
-     *
-     * @return null|FormModel
-     */
-    public function getFormById($id, $refresh = false)
+    public function getFormById(int $id, bool $refresh = false): ?FormModel
     {
         if (!$refresh && (null === self::$formsById || !isset(self::$formsById[$id]))) {
             $result = $this->getFormQuery()->where(['id' => $id])->one();

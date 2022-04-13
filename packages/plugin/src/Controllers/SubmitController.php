@@ -140,10 +140,10 @@ class SubmitController extends BaseController
         $mailingListOptInFields = $form->getMailingListOptedInFields();
         if ($form->isMarkedAsSpam()) {
             if ($submission->getId()) {
-                $this->getSpamSubmissionsService()->postProcessSubmission($submission, $mailingListOptInFields);
+                $this->getSpamSubmissionsService()->postProcessSubmission($form, $submission, $mailingListOptInFields);
             }
         } else {
-            $this->getSubmissionsService()->postProcessSubmission($submission, $mailingListOptInFields);
+            $this->getSubmissionsService()->postProcessSubmission($form, $submission, $mailingListOptInFields);
         }
 
         Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);

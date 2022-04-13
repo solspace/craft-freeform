@@ -18,6 +18,7 @@ use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
@@ -45,7 +46,9 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
 
         \Craft::$app->cache->flush();
 
-        $layout = $submission->getForm()->getLayout();
+        $form = $submission->getForm();
+
+        $layout = $form->getLayout();
         $integrationsQueue = Freeform::getInstance()->integrationsQueue;
         $tasks = $integrationsQueue->getTasksBySubmissionId($submission->id);
         $fields = [];
@@ -65,7 +68,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
             }
         }
 
-        Freeform::getInstance()->submissions->postProcessSubmission($submission, $fields);
+        Freeform::getInstance()->submissions->postProcessSubmission($form, $submission, $fields);
 
         $integrationsQueue->deleteTasksBySubmissionId($submission->id);
 
@@ -75,7 +78,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     /**
      * Processes spam submission, so it could be processed normally in case of allowing.
      */
-    public function postProcessSubmission(Submission $submission, array $mailingListOptedInFields)
+    public function postProcessSubmission(Form $form, Submission $submission, array $mailingListOptedInFields)
     {
         if (!$submission instanceof SpamSubmission || !$submission->id) {
             throw new FreeformException('Invalid $submission, can process only stored SpamSubmission instances.');

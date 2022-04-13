@@ -85,7 +85,7 @@ class ConnectionsService extends BaseService
 
                 $transformers[] = new DirectValueTransformer($value, $craftFieldHandle);
             } else {
-                $field = $form->get($freeformFieldHandle);
+                $field = $submission->{$freeformFieldHandle};
                 if (!$field) {
                     continue;
                 }

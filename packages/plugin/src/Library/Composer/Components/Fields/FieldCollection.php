@@ -56,6 +56,17 @@ class FieldCollection implements \IteratorAggregate
         throw new FreeformException("Field with handle '{$identificator}' not found");
     }
 
+    public function has(int|string $identificator): bool
+    {
+        try {
+            $field = $this->get($identificator);
+
+            return (bool) $field;
+        } catch (FreeformException) {
+            return false;
+        }
+    }
+
     public function add(FieldInterface $field): self
     {
         $this->fields[] = $field;

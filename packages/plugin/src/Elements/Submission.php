@@ -125,7 +125,7 @@ class Submission extends Element
 
     public function __isset($name): bool
     {
-        if ($this->getFieldCollection()->get($name)) {
+        if ($this->getFieldCollection()->has($name)) {
             return true;
         }
 

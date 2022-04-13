@@ -11,6 +11,7 @@ use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
 use Solspace\Freeform\Library\Connections\Transformers\DirectValueTransformer;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Symfony\Component\PropertyAccess\PropertyAccess;
+use yii\base\UnknownPropertyException;
 
 class ConnectionsService extends BaseService
 {
@@ -85,7 +86,14 @@ class ConnectionsService extends BaseService
 
                 $transformers[] = new DirectValueTransformer($value, $craftFieldHandle);
             } else {
-                $field = $submission->{$freeformFieldHandle};
+                $field = null;
+
+                try {
+                    $field = $submission->{$freeformFieldHandle};
+                } catch (UnknownPropertyException) {
+                    $field = $form->get($freeformFieldHandle);
+                }
+
                 if (!$field) {
                     continue;
                 }

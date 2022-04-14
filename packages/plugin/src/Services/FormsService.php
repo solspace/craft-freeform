@@ -373,6 +373,12 @@ class FormsService extends BaseService implements FormHandlerInterface
                 $transaction->commit();
             }
 
+            \Craft::$app->db
+                ->createCommand()
+                ->dropTableIfExists(Submission::generateContentTableName($formId, $record->handle))
+                ->execute()
+            ;
+
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($record));
 
             return (bool) $affectedRows;

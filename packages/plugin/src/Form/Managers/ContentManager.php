@@ -62,6 +62,11 @@ class ContentManager
         ;
 
         $db->createCommand()
+            ->addPrimaryKey('PK', $tableName, ['id'])
+            ->execute()
+        ;
+
+        $db->createCommand()
             ->addForeignKey(
                 $db->getForeignKeyName(),
                 $tableName,
@@ -70,11 +75,6 @@ class ContentManager
                 'id',
                 'CASCADE'
             )
-            ->execute()
-        ;
-
-        $db->createCommand()
-            ->addPrimaryKey('PK', $tableName, ['id'])
             ->execute()
         ;
 

@@ -93,9 +93,18 @@ class Submission extends Element
 
     public function __get($name): mixed
     {
+        $gettingByFieldMarker = false;
+        if (preg_match('/^field:(\d+)$/', $name, $matches)) {
+            $gettingByFieldMarker = true;
+            $name = (int) $matches[1];
+        }
+
         try {
             return $this->getFieldCollection()->get($name);
         } catch (FreeformException) {
+            if ($gettingByFieldMarker) {
+                return null;
+            }
         }
 
         return parent::__get($name);
@@ -103,8 +112,13 @@ class Submission extends Element
 
     public function __set($name, $value)
     {
-        if (preg_match('/([a-z\d\-_]+)_(\d+)/i', $name, $matches)) {
-            $id = (int) $matches[2];
+        if (preg_match('/^form_(\d+)__([a-z\d\-_]+)_(\d+)$/i', $name, $matches)) {
+            $formId = (int) $matches[1];
+            $id = (int) $matches[3];
+
+            if ($formId !== (int) $this->formId) {
+                return;
+            }
 
             try {
                 $field = $this->getFieldCollection()->get($id);
@@ -534,7 +548,12 @@ class Submission extends Element
 
             // Hide Author from Craft Personal/Client
             if (\Craft::$app->getEdition() < \Craft::Pro) {
-                unset($attributes['userId']);
+                unset($titles['userId']);
+            }
+
+            $fields = Freeform::getInstance()->fields->getAllFields();
+            foreach ($fields as $field) {
+                $titles['field:'.$field->id] = ['label' => $field->label];
             }
 
             $attributes = $titles;

@@ -141,13 +141,12 @@ class SubmissionQuery extends ElementQuery
         static $formIdToHandleMap;
 
         if (null === $formHandleToIdMap) {
-            $formIdToHandleMap = (new Query())
-                ->select(['id', 'handle'])
-                ->from(FormRecord::TABLE)
-                ->pairs()
-            ;
-            $formHandleToIdMap = array_flip($formIdToHandleMap);
-            $forms = Freeform::getInstance()->forms->getAllForms();
+            $forms = Freeform::getInstance()->forms->getResolvedForms();
+            foreach ($forms as $form) {
+                $formHandleToIdMap[$form->getHandle()] = $form->getId();
+                $formIdToHandleMap[$form->getId()] = $form->getHandle();
+                $forms[$form->getId()] = $form;
+            }
         }
 
         $table = Submission::TABLE_STD;
@@ -194,17 +193,25 @@ class SubmissionQuery extends ElementQuery
             $table.'.[[ip]]',
         ];
 
-        if ($this->formId && is_numeric($this->formId)) {
-            $handle = $formIdToHandleMap[$this->formId] ?? null;
-            $form = $forms[$this->formId] ?? null;
-            if ($handle && $form) {
-                $contentTable = Submission::getContentTableName($form->getForm());
-                $this->query->innerJoin("{$contentTable} fc", "`fc`.[[id]] = {$table}.[[id]]");
+        $joinFormIds = [];
+        if ($this->formId) {
+            if (\is_array($this->formId)) {
+                $joinFormIds = $this->formId;
+            } else {
+                $joinFormIds[] = $this->formId;
+            }
+        } else {
+            $joinFormIds = array_values($formHandleToIdMap);
+        }
 
-                foreach ($form->getLayout()->getStorableFields() as $field) {
-                    $fieldHandle = Submission::getFieldColumnName($field);
-                    $select[] = "`fc`.[[{$fieldHandle}]]";
-                }
+        foreach ($joinFormIds as $formId) {
+            $form = $forms[$formId];
+            $contentTable = Submission::getContentTableName($form);
+
+            $this->query->leftJoin("{$contentTable} fc{$formId}", "`fc{$formId}`.[[id]] = {$table}.[[id]]");
+            foreach ($form->getLayout()->getStorableFields() as $field) {
+                $fieldHandle = Submission::getFieldColumnName($field);
+                $select[] = "`fc{$formId}`.[[{$fieldHandle}]] as form_{$formId}__{$fieldHandle}";
             }
         }
 

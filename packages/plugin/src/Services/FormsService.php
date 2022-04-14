@@ -88,7 +88,7 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @return Form[]
      */
-    public function getResolvedForms(array $arguments): array
+    public function getResolvedForms(array $arguments = []): array
     {
         $limit = $arguments['limit'] ?? null;
         $sort = strtolower($arguments['sort'] ?? 'asc');

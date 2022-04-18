@@ -2,12 +2,15 @@
 
 namespace Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers;
 
+use craft\events\DefineSourceTableAttributesEvent;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterElementTableAttributesEvent;
 use craft\events\SetElementTableAttributeHtmlEvent;
 use craft\helpers\ElementHelper;
+use craft\services\ElementSources;
 use Solspace\Freeform\Elements\Actions\Pro\Payments\FixPaymentsAction;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface as FieldPaymentInterface;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
@@ -34,8 +37,8 @@ class SubmissionHookHandler
     public static function registerHooks()
     {
         Event::on(
-            Submission::class,
-            Submission::EVENT_REGISTER_TABLE_ATTRIBUTES,
+            ElementSources::class,
+            ElementSources::EVENT_DEFINE_SOURCE_TABLE_ATTRIBUTES,
             [self::class, 'injectTableColumns']
         );
 
@@ -89,10 +92,23 @@ class SubmissionHookHandler
      *
      * @param SetElementTableAttributeHtmlEvent $event
      */
-    public static function injectTableColumns(RegisterElementTableAttributesEvent $event)
+    public static function injectTableColumns(DefineSourceTableAttributesEvent $event)
     {
-        foreach (self::ATTRIBUTES as $attribute => $label) {
-            $event->tableAttributes[$attribute] = ['label' => Freeform::t($label)];
+        if (Submission::class === $event->elementType) {
+            if (preg_match('/^form:(\d+)$/', $event->source, $matches)) {
+                $formId = (int) $matches[1];
+                $form = Freeform::getInstance()->forms->getFormById($formId);
+
+                if (!$form) {
+                    return;
+                }
+
+                if ($form->getForm()->getLayout()->hasFields(CreditCardDetailsField::class)) {
+                    foreach (self::ATTRIBUTES as $attribute => $label) {
+                        $event->attributes[$attribute] = ['label' => Freeform::t($label)];
+                    }
+                }
+            }
         }
     }
 

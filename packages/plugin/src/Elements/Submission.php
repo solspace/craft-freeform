@@ -551,11 +551,6 @@ class Submission extends Element
                 unset($titles['userId']);
             }
 
-            $fields = Freeform::getInstance()->fields->getAllFields();
-            foreach ($fields as $field) {
-                $titles['field:'.$field->id] = ['label' => $field->label];
-            }
-
             $attributes = $titles;
         }
 

@@ -17,13 +17,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderI
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
-use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;
 
 class TextField extends AbstractField implements SingleValueInterface, PlaceholderInterface
 {
     use PlaceholderTrait;
     use SingleValueTrait;
-    public const MAXIMUM_FIELD_LENGTH = 100;
 
     /** @var int */
     protected $maxLength;
@@ -45,21 +43,6 @@ class TextField extends AbstractField implements SingleValueInterface, Placehold
     public function getMaxLength()
     {
         return $this->maxLength;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new LengthConstraint(
-            null,
-            $this->getMaxLength() ?: static::MAXIMUM_FIELD_LENGTH,
-            $this->translate('The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.')
-        );
-
-        return $constraints;
     }
 
     /**

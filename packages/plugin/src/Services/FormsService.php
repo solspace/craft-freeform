@@ -362,6 +362,17 @@ class FormsService extends BaseService implements FormHandlerInterface
         $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
 
         try {
+            $submissionQuery = Submission::find()
+                ->formId($formId)
+                ->skipContent(true)
+            ;
+
+            foreach ($submissionQuery->batch() as $submissions) {
+                foreach ($submissions as $submission) {
+                    \Craft::$app->elements->deleteElement($submission, true);
+                }
+            }
+
             $affectedRows = \Craft::$app
                 ->getDb()
                 ->createCommand()
@@ -373,7 +384,8 @@ class FormsService extends BaseService implements FormHandlerInterface
                 $transaction->commit();
             }
 
-            \Craft::$app->db
+            \Craft::$app
+                ->getDb()
                 ->createCommand()
                 ->dropTableIfExists(Submission::generateContentTableName($formId, $record->handle))
                 ->execute()

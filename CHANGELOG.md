@@ -190,7 +190,7 @@
 
 ### Fixed
 - Added backwards compatibility for forms without submit buttons with `data-freeform-action`.
-- Added a more resilient check on posted form hash parts for Sentry ([#201](https://github.com/solspace/craft3-freeform/issues/201#issuecomment-973878911)).
+- Added a more resilient check on posted form hash parts for Sentry ([#201](https://github.com/solspace/craft-freeform/issues/201#issuecomment-973878911)).
 - Fixed a bug where the `lang="en"` attribute was being added to Number fields.
 - Fixed a bug where submit buttons were not being aligned correctly in the new sample Bootstrap 5 formatting template.
 
@@ -546,7 +546,7 @@
 - Added a post-install welcome / settings wizard to streamline and guide setting up new installs of Freeform.
 - Added the 'step' property setting to Number fields in form builder.
 - Added a built-in feedback widget to show only during beta releases for ease of reporting beta issues.
-- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
+- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft-freeform/pull/72))
 
 ### Changed
 - Updated AJAX to work with multipage forms.
@@ -580,7 +580,7 @@
 ## 3.9.10 - 2020-12-16
 
 ### Added
-- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft3-freeform/pull/72))
+- Added support for the Multi-select Picklist field type in the Zoho API integrations. ([#72](https://github.com/solspace/craft-freeform/pull/72))
 
 ### Fixed
 - Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.

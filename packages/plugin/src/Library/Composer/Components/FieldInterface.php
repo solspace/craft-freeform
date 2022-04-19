@@ -70,7 +70,7 @@ interface FieldInterface
      */
     public function getValueAsString(): string;
 
-    public function getId(): int;
+    public function getId(): ?int;
 
     public function getHandle(): ?string;
 

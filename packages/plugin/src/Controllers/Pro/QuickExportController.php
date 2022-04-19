@@ -235,47 +235,36 @@ class QuickExportController extends BaseController
                 continue;
             }
 
-            $fieldName = is_numeric($fieldId) ? Submission::getFieldColumnName($fieldId) : $fieldId;
+            $fieldHandle = null;
+            if (is_numeric($fieldId)) {
+                $field = $form->get($fieldId);
+                $fieldName = Submission::getFieldColumnName($field);
+                $fieldHandle = $field->getHandle();
 
-            switch ($fieldName) {
-                case 'title':
-                    $fieldName = 'c.'.$fieldName;
+                $searchableFields[] = "sc.{$fieldName} as {$fieldHandle}";
+            } else {
+                $fieldName = $fieldId;
 
-                    break;
+                $fieldName = match ($fieldName) {
+                    'title' => 'c.'.$fieldName,
+                    'cc_status' => 'p.status as cc_status',
+                    'cc_amount' => 'p.amount as cc_amount',
+                    'cc_currency' => 'p.currency as cc_currency',
+                    'cc_card' => 'p.last4 as cc_card',
+                    default => "s.{$fieldName}",
+                };
 
-                case 'cc_status':
-                    $fieldName = 'p.status as cc_status';
-
-                    break;
-
-                case 'cc_amount':
-                    $fieldName = 'p.amount as cc_amount';
-
-                    break;
-
-                case 'cc_currency':
-                    $fieldName = 'p.currency as cc_currency';
-
-                    break;
-
-                case 'cc_card':
-                    $fieldName = 'p.last4 as cc_card';
-
-                    break;
-
-                default:
-                    $fieldName = 's.'.$fieldName;
-
-                    break;
+                $searchableFields[] = $fieldName;
             }
-
-            $searchableFields[] = $fieldName;
         }
+
+        $contentTable = Submission::getContentTableName($form);
 
         $query = (new Query())
             ->select($searchableFields)
             ->from(Submission::TABLE.' s')
             ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
+            ->innerJoin("{$contentTable} sc", 'sc.[[id]] = s.[[id]]')
             ->where(['s.[[formId]]' => $form->getId()])
             ->andWhere(['s.[[isSpam]]' => $isSpam])
         ;

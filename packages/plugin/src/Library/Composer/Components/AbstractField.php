@@ -356,7 +356,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->hash;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }

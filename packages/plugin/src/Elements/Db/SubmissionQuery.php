@@ -41,6 +41,8 @@ class SubmissionQuery extends ElementQuery
     /** @var string */
     public $spamReason;
 
+    public bool $skipContent = false;
+
     /** @var string */
     private $freeformStatus;
 
@@ -114,6 +116,13 @@ class SubmissionQuery extends ElementQuery
         return $this;
     }
 
+    public function skipContent(bool $value): self
+    {
+        $this->skipContent = true;
+
+        return $this;
+    }
+
     /**
      * @param $fieldSearch
      */
@@ -168,7 +177,7 @@ class SubmissionQuery extends ElementQuery
             $this->formId = $formHandleToIdMap[$this->form];
         }
 
-        if (!$this->formId && ($this->id || $this->token)) {
+        if (!$this->skipContent && !$this->formId && ($this->id || $this->token)) {
             if ($this->token) {
                 $param = Db::parseParam('token', $this->token);
             } else {
@@ -193,25 +202,27 @@ class SubmissionQuery extends ElementQuery
             $table.'.[[ip]]',
         ];
 
-        $joinFormIds = [];
-        if ($this->formId) {
-            if (\is_array($this->formId)) {
-                $joinFormIds = $this->formId;
+        if (!$this->skipContent) {
+            $joinFormIds = [];
+            if ($this->formId) {
+                if (\is_array($this->formId)) {
+                    $joinFormIds = $this->formId;
+                } else {
+                    $joinFormIds[] = $this->formId;
+                }
             } else {
-                $joinFormIds[] = $this->formId;
+                $joinFormIds = array_values($formHandleToIdMap);
             }
-        } else {
-            $joinFormIds = array_values($formHandleToIdMap);
-        }
 
-        foreach ($joinFormIds as $formId) {
-            $form = $forms[$formId];
-            $contentTable = Submission::getContentTableName($form);
+            foreach ($joinFormIds as $formId) {
+                $form = $forms[$formId];
+                $contentTable = Submission::getContentTableName($form);
 
-            $this->query->leftJoin("{$contentTable} fc{$formId}", "`fc{$formId}`.[[id]] = {$table}.[[id]]");
-            foreach ($form->getLayout()->getStorableFields() as $field) {
-                $fieldHandle = Submission::getFieldColumnName($field);
-                $select[] = "`fc{$formId}`.[[{$fieldHandle}]] as form_{$formId}__{$fieldHandle}";
+                $this->query->leftJoin("{$contentTable} fc{$formId}", "`fc{$formId}`.[[id]] = {$table}.[[id]]");
+                foreach ($form->getLayout()->getStorableFields() as $field) {
+                    $fieldHandle = Submission::getFieldColumnName($field);
+                    $select[] = "`fc{$formId}`.[[{$fieldHandle}]] as form_{$formId}__{$fieldHandle}";
+                }
             }
         }
 

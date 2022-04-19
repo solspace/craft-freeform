@@ -27,12 +27,11 @@ use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
-use Solspace\Freeform\Records\FieldRecord;
 use yii\base\Event;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
@@ -415,58 +414,37 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $date = new \DateTime("-{$age} days");
         $date->setTimezone(new \DateTimeZone('UTC'));
 
-        $assetFieldIds = (new Query())
-            ->select(['id'])
-            ->from(FieldRecord::TABLE)
-            ->where(['type' => FieldInterface::TYPE_FILE])
+        $deletedSubmissions = 0;
+        $ids = $this->findSubmissions()
+            ->select([Submission::TABLE.'.[[id]]'])
+            ->andWhere(['<', Submission::TABLE.'.[[dateCreated]]', $date->format('Y-m-d H:i:s')])
             ->column()
         ;
 
-        $columns = ['id'];
-        foreach ($assetFieldIds as $assetFieldId) {
-            $columns[] = Submission::getFieldColumnName($assetFieldId);
-        }
-
-        $results = $this->findSubmissions()
-            ->select($columns)
-            ->andWhere(['<', 'dateCreated', $date->format('Y-m-d H:i:s')])
-            ->all()
+        $query = Submission::find()
+            ->id($ids)
+            ->skipContent(true)
         ;
 
-        $ids = [];
         $assetIds = [];
-        foreach ($results as $result) {
-            $ids[] = $result['id'];
-            unset($result['id']);
-
-            foreach ($result as $values) {
-                if (!\is_string($values)) {
-                    continue;
+        foreach ($query->batch() as $results) {
+            /** @var Submission $submission */
+            foreach ($results as $submission) {
+                $uploadFields = $submission->getForm()->getLayout()->getFields(FileUploadInterface::class);
+                foreach ($uploadFields as $uploadField) {
+                    $value = $submission->{$uploadField->getHandle()}->getValue();
+                    if ($value) {
+                        $assetIds = [...$assetIds, ...$value];
+                    }
                 }
 
-                try {
-                    $values = \GuzzleHttp\json_decode($values);
-                    foreach ($values as $value) {
-                        $assetIds[] = $value;
-                    }
-                } catch (\InvalidArgumentException $e) {
+                if (\Craft::$app->elements->deleteElement($submission)) {
+                    ++$deletedSubmissions;
                 }
             }
         }
 
-        $deletedSubmissions = 0;
-
-        try {
-            $deletedSubmissions = \Craft::$app->db
-                ->createCommand()
-                ->delete(
-                    Element::tableName(),
-                    ['id' => $ids]
-                )
-                ->execute()
-            ;
-        } catch (\Exception $e) {
-        }
+        $assetIds = array_unique($assetIds);
 
         $deletedAssets = 0;
         foreach ($assetIds as $assetId) {
@@ -486,9 +464,16 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
     protected function findSubmissions(): Query
     {
+        $submissionTable = Submission::TABLE;
+        $elementTable = Table::ELEMENTS;
+
         return (new Query())
-            ->from(Submission::TABLE)
-            ->where(['isSpam' => false])
+            ->from($submissionTable)
+            ->innerJoin($elementTable, "{$elementTable}.[[id]] = {$submissionTable}.[[id]]")
+            ->where([
+                'isSpam' => false,
+                "{$elementTable}.[[dateDeleted]]" => null,
+            ])
         ;
     }
 

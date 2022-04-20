@@ -235,7 +235,6 @@ class QuickExportController extends BaseController
                 continue;
             }
 
-            $fieldHandle = null;
             if (is_numeric($fieldId)) {
                 $field = $form->get($fieldId);
                 $fieldName = Submission::getFieldColumnName($field);

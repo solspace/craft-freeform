@@ -276,7 +276,7 @@ class ExportProfileModel extends Model
 
         $fieldData = $this->getFieldSettings();
 
-        $searchableFields = $labels = [];
+        $searchableFields = [];
         foreach ($fieldData as $fieldId => $data) {
             $isChecked = $data['checked'];
 
@@ -284,52 +284,27 @@ class ExportProfileModel extends Model
                 continue;
             }
 
-            $fieldName = is_numeric($fieldId) ? Submission::getFieldColumnName($fieldId) : $fieldId;
+            if (is_numeric($fieldId)) {
+                $field = $form->get($fieldId);
+                $fieldName = Submission::getFieldColumnName($field);
+                $fieldHandle = $field->getHandle();
 
-            switch ($fieldName) {
-                case 'title':
-                    $fieldName = 'c.[['.$fieldName.']]';
+                $searchableFields[] = "sc.{$fieldName} as {$fieldHandle}";
+            } else {
+                $fieldName = $fieldId;
+                $fieldName = match ($fieldName) {
+                    'title' => 'c.[['.$fieldName.']]',
+                    'status' => 'stat.[[name]] AS status',
+                    'cc_type' => new Expression("'".$hasPaymentSingles ? 'single' : 'subscription'."' as cc_type"),
+                    'cc_status' => 'p.[[status]] as cc_status',
+                    'cc_amount' => 'p.[[amount]] as cc_amount',
+                    'cc_currency' => 'p.[[currency]] as cc_currency',
+                    'cc_card' => 'p.[[last4]] as cc_card',
+                    default => 's.[['.$fieldName.']]',
+                };
 
-                    break;
-
-                case 'status':
-                    $fieldName = 'stat.[[name]] AS status';
-
-                    break;
-
-                case 'cc_type':
-                    $paymentType = $hasPaymentSingles ? 'single' : 'subscription';
-                    $fieldName = new Expression("'{$paymentType}' as cc_type");
-
-                    break;
-
-                case 'cc_status':
-                    $fieldName = 'p.[[status]] as cc_status';
-
-                    break;
-
-                case 'cc_amount':
-                    $fieldName = 'p.[[amount]] as cc_amount';
-
-                    break;
-
-                case 'cc_currency':
-                    $fieldName = 'p.[[currency]] as cc_currency';
-
-                    break;
-
-                case 'cc_card':
-                    $fieldName = 'p.[[last4]] as cc_card';
-
-                    break;
-
-                default:
-                    $fieldName = 's.[['.$fieldName.']]';
-
-                    break;
+                $searchableFields[] = $fieldName;
             }
-
-            $searchableFields[] = $fieldName;
         }
 
         $conditions = ['s.[[formId]] = :formId', 's.[[isSpam]] = false'];
@@ -352,12 +327,14 @@ class ExportProfileModel extends Model
         if ($this->filters) {
             foreach ($this->filters as $filter) {
                 $id = $filter['field'];
+
                 $type = $filter['type'];
                 $value = $filter['value'];
 
                 $fieldId = $id;
                 if (is_numeric($id)) {
-                    $fieldId = 's.[['.Submission::getFieldColumnName($id).']]';
+                    $field = $form->get($id);
+                    $fieldId = 'sc.[['.Submission::getFieldColumnName($field).']]';
                 }
 
                 if ('id' === $fieldId) {
@@ -417,6 +394,7 @@ class ExportProfileModel extends Model
             ->from(Submission::TABLE.' s')
             ->innerJoin(StatusRecord::TABLE.' stat', 'stat.[[id]] = s.[[statusId]]')
             ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
+            ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
             ->where(implode(' AND ', $conditions), $parameters)
         ;
 

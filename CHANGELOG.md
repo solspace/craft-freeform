@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.2 - 2022-04-20
+
+> {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).
+
+### Changed
+- Changed the way form submission data is stored. A new table for each form is now created and updated rather than storing all forms' submission data in a single shared database table. This solves several issues, including running out of fields and paves the way for more exciting future improvements to the form builder. Fields are still global and available to every form. No action should be necessary by the admin, as Freeform includes a migration script that automatically converts the data to be split into multiple database tables. This process may take a little longer if you have a very large site.
+- All Freeform fields are now stored as the `TEXT` MySQL type instead of a combination of `TEXT`, `VARCHAR(100)` and `VARCHAR(255)`. This is a changed that is applied to all existing fields as well, since they are recreated in the migration. No action should be necessary here. In the rare case where your site has some kind of customization that relies on a MySQL type other than `TEXT`, you may have to adjust the database manually.
+
 ## 4.0.0-beta.1 - 2022-03-29
 
 > {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).

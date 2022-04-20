@@ -27,6 +27,7 @@ use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
@@ -334,9 +335,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 Submission::TABLE,
                 ['statusId' => $newStatusId],
                 'statusId = :oldStatusId',
-                [
-                    'oldStatusId' => $oldStatusId,
-                ]
+                ['oldStatusId' => $oldStatusId]
             )
         ;
     }
@@ -347,12 +346,36 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
      */
     public function getAsArray(array $submissionIds): array
     {
-        return (new Query())
-            ->select('*')
+        $formIds = (new Query())
+            ->select(['formId'])
+            ->distinct('formId')
             ->from(Submission::TABLE)
             ->where(['in', 'id', $submissionIds])
-            ->all()
+            ->column()
         ;
+
+        $query = (new Query())
+            ->select('s.*')
+            ->from(Submission::TABLE.' s')
+            ->where(['in', 's.id', $submissionIds])
+        ;
+
+        $forms = Freeform::getInstance()->forms->getResolvedForms(['id' => $formIds]);
+        foreach ($forms as $form) {
+            $alias = 'fc'.$form->getId();
+            $fields = array_map(
+                fn (FieldInterface $field) => $alias.'.[['.Submission::getFieldColumnName($field).']] as '.$field->getHandle(),
+                $form->getLayout()->getStorableFields()
+            );
+
+            $query->addSelect($fields);
+            $query->innerJoin(
+                Submission::getContentTableName($form).' '.$alias,
+                "{$alias}.[[id]] = s.[[id]]"
+            );
+        }
+
+        return $query->all();
     }
 
     /**

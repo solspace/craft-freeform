@@ -29,7 +29,7 @@ class ContentManager
         $this->oldFields = $this->extractFieldsFromProperties($this->oldProperties);
         $this->newFields = $this->extractFieldsFromProperties($this->newProperties);
 
-        $this->refreshTableSchema();
+        $this->getTableSchema();
     }
 
     public function performDatabaseColumnAlterations(): void
@@ -78,7 +78,7 @@ class ContentManager
             ->execute()
         ;
 
-        $this->refreshTableSchema();
+        $this->table = new TableInfo($tableName, ['id']);
     }
 
     private function renameContentTable(): void
@@ -99,7 +99,7 @@ class ContentManager
             ->execute()
         ;
 
-        $this->refreshTableSchema();
+        $this->table->updateTableName($newTableName);
     }
 
     private function renameFieldColumns(): void
@@ -131,6 +131,8 @@ class ContentManager
                 )
                 ->execute()
             ;
+
+            $this->table->renameFieldColumn($id, $newColumn);
         }
     }
 
@@ -157,6 +159,8 @@ class ContentManager
                 ->dropColumn($table->getTableName(), $fieldColumn)
                 ->execute()
             ;
+
+            $this->table->removeColumn($id);
         }
     }
 
@@ -174,14 +178,14 @@ class ContentManager
                 continue;
             }
 
+            $columnName = Submission::generateFieldColumnName($id, $newField['handle'] ?? null);
+
             \Craft::$app->db->createCommand()
-                ->addColumn(
-                    $table->getTableName(),
-                    Submission::generateFieldColumnName($id, $newField['handle'] ?? null),
-                    'text'
-                )
+                ->addColumn($table->getTableName(), $columnName, 'text')
                 ->execute()
             ;
+
+            $this->table->addColumn($columnName);
         }
     }
 
@@ -206,18 +210,20 @@ class ContentManager
         return $fields;
     }
 
-    private function refreshTableSchema(): void
+    private function getTableSchema(): void
     {
         $this->table = null;
 
         $formId = $this->form->getId();
 
         $schema = \Craft::$app->db->getSchema();
-        foreach ($schema->getTableSchemas('', true) as $table) {
-            if (preg_match("/^freeform_submissions_.*_{$formId}$/", $table->name)) {
+        $tableNames = $schema->getTableNames();
+
+        foreach ($tableNames as $name) {
+            if (preg_match("/^freeform_submissions_.*_{$formId}$/", $name)) {
                 $this->table = new TableInfo(
-                    '{{%'.$table->name.'}}',
-                    $table->columnNames
+                    '{{%'.$name.'}}',
+                    $schema->getTableSchema($name)->columnNames
                 );
 
                 return;

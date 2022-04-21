@@ -1,10 +1,10 @@
 blank_issues_enabled: false
 contact_links:
   - name: Feature Requests
-    url: https://github.com/solspace/craft3-freeform/discussions
+    url: https://github.com/solspace/craft-freeform/discussions
     about: Share an idea you have for Freeform.
   - name: Ask a Question
-    url: https://github.com/solspace/craft3-freeform/discussions
+    url: https://github.com/solspace/craft-freeform/discussions
     about: Ask a question about Freeform (e.g. whether or not ____ can be done, etc).
   - name: Private Support Ticket
     url: https://docs.solspace.com/craft/freeform/v3/support.html

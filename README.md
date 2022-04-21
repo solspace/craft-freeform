@@ -12,8 +12,8 @@ Freeform is the most reliable, intuitive and powerful form building plugin for C
 
 - [Buy Freeform at the Plugin Store](https://plugins.craftcms.com/freeform)
 - [Freeform Documentation](https://docs.solspace.com/craft/freeform/v3/)
-- [Report an Issue](https://github.com/solspace/craft3-freeform/issues)
-- [Feature Requests](https://github.com/solspace/craft3-freeform/discussions)
-- [Ask a Question](https://github.com/solspace/craft3-freeform/discussions)
+- [Report an Issue](https://github.com/solspace/craft-freeform/issues)
+- [Feature Requests](https://github.com/solspace/craft-freeform/discussions)
+- [Ask a Question](https://github.com/solspace/craft-freeform/discussions)
 - [Private Support Ticket](https://docs.solspace.com/craft/freeform/v3/support.html)
 - [Craft Stack Exchange](https://craftcms.stackexchange.com/questions/tagged/solspace)

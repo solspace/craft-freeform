@@ -724,7 +724,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         StripeApi\Stripe::setApiVersion('2019-08-14');
 
         StripeApi\Stripe::setAppInfo(
-            'solspace/craft3-freeform',
+            'solspace/craft-freeform',
             Freeform::getInstance()->getVersion(),
             'https://docs.solspace.com/craft/freeform'
         );

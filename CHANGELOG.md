@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.13.8 - Unreleased
+
+### Changed
+- Updated `symfony/property-access`, `symfony/finder` and `symfony/filesystem` dependency version requirements to resolve some conflicts.
+
+### Fixed
+- Fixed a bug where spammy submissions were not storing the author user ID (if available).
+- Fixed a bug where there was missing support for File Upload Drag & Drops fields mapping to Element Connections and Integrations.
+
 ## 3.13.7 - 2022-03-28
 
 ### Added

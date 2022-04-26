@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.3 - 2022-04-26
+
+### Changed
+- Updated `league/flysystem`, `symfony/property-access`, `symfony/finder` and `symfony/filesystem` dependency version requirements to resolve some conflicts.
+
 ## 4.0.0-beta.2 - 2022-04-20
 
 > {warning} This is a larger and more complex update than usual, and there's a higher chance of a failed update attempt happening. Please ensure you have a recent database backup, and we recommend you test the update on a local/staging environment before updating your production server. Please follow the [Upgrading from Freeform 3.x guide](https://docs.solspace.com/craft/freeform/v4/setup/updating-freeform-3.html).

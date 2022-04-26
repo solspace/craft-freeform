@@ -25,7 +25,7 @@ class ExportProfilesController extends BaseController
         $this->view->registerAssetBundle(SettingsBundle::class);
 
         return $this->renderTemplate(
-            'freeform/export_profiles',
+            'freeform/export/profiles',
             [
                 'exportProfiles' => $exportProfiles,
                 'exporters' => $exportProfileService->getExporterTypes(),
@@ -168,18 +168,18 @@ class ExportProfilesController extends BaseController
         $title .= " ({$model->getFormModel()->name})";
 
         return $this->renderTemplate(
-            'freeform/export_profiles/edit',
+            'freeform/export/profiles/edit',
             [
                 'profile' => $model,
                 'title' => $title,
                 'formOptionList' => $this->getFormsService()->getAllFormNames(),
                 'statusOptionList' => $this->getStatusesService()->getAllStatusNames(),
-                'continueEditingUrl' => 'freeform/export-profiles/{id}',
+                'continueEditingUrl' => 'freeform/export/profiles/{id}',
                 'crumbs' => [
                     ['label' => 'Freeform', 'url' => UrlHelper::cpUrl('freeform')],
                     [
                         'label' => Freeform::t('Export Profiles'),
-                        'url' => UrlHelper::cpUrl('freeform/export-profiles'),
+                        'url' => UrlHelper::cpUrl('freeform/export/profiles'),
                     ],
                 ],
             ]

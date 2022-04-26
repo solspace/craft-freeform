@@ -17,6 +17,7 @@ use Solspace\Freeform\Services\MailerService;
 use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
+use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
@@ -117,6 +118,11 @@ class BaseController extends Controller
     protected function getExportProfileService(): ExportProfilesService
     {
         return Freeform::getInstance()->exportProfiles;
+    }
+
+    protected function getExportNotificationsService(): ExportNotificationsService
+    {
+        return Freeform::getInstance()->exportNotifications;
     }
 
     protected function getPaymentsStripeService(): StripeService

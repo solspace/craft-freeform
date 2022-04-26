@@ -1,0 +1,106 @@
+{% extends "freeform/export/_layout" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% set title = "Export Notifications"|t %}
+
+{% block actionButton %}
+
+    {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+
+        <div class="buttons">
+            <a class="btn submit add icon" href="{{ url('freeform/export/notifications/new') }}">
+                {{ "New Export Notification"|t('freeform') }}
+            </a>
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% set frequencyMap = {
+    "-1": 'Daily'|t('freeform'),
+    "7": 'Weekly on Sundays'|t('freeform'),
+    "1": 'Weekly on Mondays'|t('freeform'),
+    "2": 'Weekly on Tuesdays'|t('freeform'),
+    "3": 'Weekly on Wednesdays'|t('freeform'),
+    "4": 'Weekly on Thursdays'|t('freeform'),
+    "5": 'Weekly on Fridays'|t('freeform'),
+    "6": 'Weekly on Saturdays'|t('freeform'),
+} %}
+
+{% set content %}
+    <div>
+
+        {% if exportNotifications|length %}
+            <table id="export-notifications" class="data fullwidth collapsible">
+                <thead>
+                <th scope="col">{{ "Name"|t('freeform') }}</th>
+                <th scope="col">{{ "Profile"|t('freeform') }}</th>
+                <th scope="col">{{ "Type"|t('freeform') }}</th>
+                <th scope="col">{{ "Frequency"|t('freeform') }}</th>
+                <th scope="col">{{ "Recipients"|t('freeform') }}</th>
+                <th></th>
+                </thead>
+                <tbody>
+                {% for notification in exportNotifications %}
+                    <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
+                        <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
+                            {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+                                <a href="{{ url('freeform/export/notifications/' ~ notification.id) }}">
+                                    {{ notification.name }}
+                                </a>
+                            {% else %}
+                                {{ notification.name }}
+                            {% endif %}
+                        </th>
+                        <td>
+                            {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+                                <a href="{{ url('freeform/export/profiles/' ~ notification.profile.id) }}">
+                                    {{ notification.profile.name }}
+                                </a>
+                            {% else %}
+                                {{ notification.profile.name }}
+                            {% endif %}
+                        </td>
+                        <td class="code">
+                            {{ notification.fileType }}
+                        </td>
+                        <td>{{ frequencyMap[notification.frequency] }}</td>
+                        <td>{{ notification.recipientArray|join(', ') }}</td>
+                        <td class="thin">
+                            {% if currentUser.can("freeform-pro-exportProfilesManage") %}
+                                <a class="delete icon" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    </div>
+{% endset %}
+
+{% css %}
+    #content { padding: 0; }
+{% endcss %}
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#export-notifications',
+    noObjectsSelector: '#noexport-notifications',
+    newObjectBtnSelector: '#newprofilecontainer',
+    deleteAction: Craft.getCpUrl('freeform/export/notifications/delete'),
+    confirmDeleteMessage: '{{ "Are you sure you want to delete this notification?"|t('freeform') }}'
+    });
+
+    $('.file-download-list > a').on({
+    click: function() {
+    var parent = $(this).parents(".btngroup:first");
+    var type = $(this).data('type');
+
+    parent.next().find("input[name=type]").val(type);
+    parent.next("form").submit();
+    }
+    });
+{% endjs %}

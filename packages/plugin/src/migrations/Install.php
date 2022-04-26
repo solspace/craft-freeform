@@ -172,6 +172,18 @@ class Install extends StreamlinedInstallMigration
                 ->addField('statuses', $this->text()->notNull())
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
+            (new Table('freeform_export_notifications'))
+                ->addField('id', $this->primaryKey())
+                ->addField('profileId', $this->integer()->notNull())
+                ->addField('name', $this->string(255)->notNull()->unique())
+                ->addField('fileType', $this->string(30)->notNull())
+                ->addField('fileName', $this->string(255))
+                ->addField('frequency', $this->string(20)->notNull())
+                ->addField('recipients', $this->text()->notNull())
+                ->addField('subject', $this->string(255))
+                ->addField('message', $this->text())
+                ->addForeignKey('profileId', 'freeform_export_profiles', 'id', ForeignKey::CASCADE),
+
             (new Table('freeform_export_settings'))
                 ->addField('id', $this->primaryKey())
                 ->addField('userId', $this->integer()->notNull())

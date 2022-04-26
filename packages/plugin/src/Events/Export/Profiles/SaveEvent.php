@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Events\ExportProfiles;
+namespace Solspace\Freeform\Events\Export\Profiles;
 
 use craft\events\CancelableEvent;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;

@@ -34,7 +34,7 @@ class ExportProfileRecord extends ActiveRecord
      */
     public function getForm(): ActiveQuery
     {
-        return $this->hasOne(FormRecord::class, ['formId' => 'id']);
+        return $this->hasOne(FormRecord::class, ['id' => 'formId']);
     }
 
     /**

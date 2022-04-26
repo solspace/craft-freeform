@@ -1,8 +1,7 @@
-{% extends "freeform/_layouts/main" %}
+{% extends "freeform/export/_layout" %}
 {% import "_includes/forms" as forms %}
 
-{% set selectedSubnavItem = "exportProfiles" %}
-{% set saveShortcutRedirect = 'freeform/export-profiles/{id}' %}
+{% set saveShortcutRedirect = 'freeform/export/profiles/{id}' %}
 
 {% set fullPageForm = true %}
 
@@ -30,7 +29,7 @@
 
         <input type="hidden" name="action" value="freeform/export-profiles/save">
         <input type="hidden" name="formId" value="{{ profile.formId }}">
-        {{ redirectInput('freeform/export-profiles') }}
+        {{ redirectInput('freeform/export/profiles') }}
         {% if profile.id %}<input type="hidden" name="profileId" value="{{ profile.id }}">{% endif %}
         {{ csrfInput() }}
 

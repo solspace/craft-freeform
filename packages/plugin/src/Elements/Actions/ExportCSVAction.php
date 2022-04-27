@@ -85,12 +85,8 @@ class ExportCSVAction extends ElementAction
                     }
                 }
 
-                foreach ($form->getForm()->getLayout()->getFields() as $field) {
-                    if (!$field->getId()) {
-                        continue;
-                    }
-
-                    $columnName = Submission::getFieldColumnName($field->getId());
+                foreach ($form->getForm()->getLayout()->getStorableFields() as $field) {
+                    $columnName = Submission::getFieldColumnName($field);
                     if ($field->getId() && isset($fieldData[$columnName])) {
                         $reordered[$columnName] = $fieldData[$columnName];
                     }

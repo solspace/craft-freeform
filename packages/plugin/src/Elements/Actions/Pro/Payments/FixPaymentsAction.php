@@ -47,7 +47,7 @@ class FixPaymentsAction extends ElementAction
 
         foreach ($submissions as $submission) {
             $token = $submission->{$paymentFieldHandle}->getValue();
-            //will recover payment data in case it is missing from DB
+            // will recover payment data in case it is missing from DB
             $integration->getPaymentDetails($submission->id, $token);
         }
 

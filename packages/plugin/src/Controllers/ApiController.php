@@ -84,7 +84,7 @@ class ApiController extends BaseController
 
     public function actionPaymentGateways(): Response
     {
-        //TODO: add separate function to query single gateway?
+        // TODO: add separate function to query single gateway?
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         $paymentGateways = $this->getPaymentGatewaysService()->getAllIntegrationObjects();

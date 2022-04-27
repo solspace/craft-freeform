@@ -24,7 +24,7 @@ use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\Pro\Payments\SubscriptionPlanRecord;
 
-//TODO: move to payments module?
+// TODO: move to payments module?
 
 class PaymentGatewaysService extends AbstractIntegrationService implements PaymentGatewayHandlerInterface
 {

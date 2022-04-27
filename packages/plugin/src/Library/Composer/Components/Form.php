@@ -81,6 +81,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
     public const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     public const EVENT_SET_PROPERTIES = 'set-properties';
+
     /** @deprecated use EVENT_SET_PROPERTIES instead. */
     public const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
     public const EVENT_SUBMIT = 'submit';
@@ -112,6 +113,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const PAGE_INDEX_KEY = 'page_index';
     public const RETURN_URI_KEY = 'formReturnUrl';
     public const STATUS_KEY = 'formStatus';
+
     /** @deprecated will be removed in FF 4.x. Use EditSubmissionContext::TOKEN_KEY */
     public const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
     public const ELEMENT_ID_KEY = 'formElementId';

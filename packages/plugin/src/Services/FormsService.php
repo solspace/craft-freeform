@@ -257,8 +257,8 @@ class FormsService extends BaseService implements FormHandlerInterface
         if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
             $transaction = null;
             if (!\Craft::$app->getDb()->getTransaction()) {
-                //we start new transaction only in case there is none, otherwise we are not ones responsible for commit
-                //TODO: do save for other similar services
+                // we start new transaction only in case there is none, otherwise we are not ones responsible for commit
+                // TODO: do save for other similar services
                 $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
             }
 

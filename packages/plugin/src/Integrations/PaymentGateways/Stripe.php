@@ -262,7 +262,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         if ($product) {
             $product = $productId;
         } else {
-            //TODO: allow for customization
+            // TODO: allow for customization
             $product = [
                 'name' => 'Freeform'.($plan->getFormName() ? ': '.$plan->getFormName() : ' Plans'),
                 'id' => $productId,
@@ -377,8 +377,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
             $subscription->plan->amount = self::fromStripeAmount($plan->amount, $plan->currency);
             $subscription->plan->interval = self::fromStripeInterval($plan->interval, $plan->interval_count);
 
-            //TODO: log if this fails
-            //we need to save it immediately or we risk hitting webhooks without available record in DB
+            // TODO: log if this fails
+            // we need to save it immediately or we risk hitting webhooks without available record in DB
             $model = $this->saveSubscription($subscription, $submissionId, $plan->id);
 
             try {
@@ -433,7 +433,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
                 $model->last4 = $last4;
                 $model = $handler->save($model);
             } catch (\Exception $e) {
-                //TODO: log error
+                // TODO: log error
             }
 
             return $model;
@@ -558,10 +558,10 @@ class Stripe extends AbstractPaymentGatewayIntegration
             return false;
         }
 
-        //TODO: in theory we never should get here
-        //TODO: but if we get here we could tie up submission and these charges/subscriptions
+        // TODO: in theory we never should get here
+        // TODO: but if we get here we could tie up submission and these charges/subscriptions
 
-        //TODO: from linking subscriptions with wrong submissions
+        // TODO: from linking subscriptions with wrong submissions
 
         $this->prepareApi();
 
@@ -604,7 +604,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
             return $this->processError($e);
         }
         $charge = $charge->toArray();
-        //TODO: constants?
+        // TODO: constants?
         $charge['type'] = 'charge';
         $charge['amount'] = self::fromStripeAmount($charge['amount'], $charge['currency']);
 
@@ -850,8 +850,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $error = $this->getLastError();
         $errorDetails = $this->getLastErrorDetails();
         if ($error) {
-            //TODO: we can request charge and get details, but we can end up with failure loop
-            //TODO: validate that we have these?
+            // TODO: we can request charge and get details, but we can end up with failure loop
+            // TODO: validate that we have these?
 
             if ($error->getPrevious() instanceof ApiErrorException) {
                 $error = $error->getPrevious();
@@ -911,8 +911,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
         $error = $this->getLastError();
         if ($error) {
-            //TODO: we can request charge and get details, but we can end up with failure loop
-            //TODO: validate that we have these?
+            // TODO: we can request charge and get details, but we can end up with failure loop
+            // TODO: validate that we have these?
 
             if ($error->getPrevious() instanceof ApiErrorException) {
                 $error = $error->getPrevious();
@@ -962,7 +962,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
                 return false;
 
             case 'Stripe\Exception\InvalidRequestException':
-                //Resource not found
+                // Resource not found
                 if (404 == $exception->getHttpStatus()) {
                     return null;
                 }

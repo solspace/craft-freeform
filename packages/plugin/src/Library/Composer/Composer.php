@@ -159,7 +159,7 @@ class Composer
             throw new ComposerException($this->translator->translate('No form settings specified'));
         }
 
-        //XXX: maybe not very clean approach, but existing forms will fail to display payments tab otherwise
+        // XXX: maybe not very clean approach, but existing forms will fail to display payments tab otherwise
         if (!isset($properties[Properties::PAYMENT_HASH])) {
             $defaults = $this->getDefaultProperties();
             $this->properties->set(Properties::PAYMENT_HASH, $defaults[Properties::PAYMENT_HASH]);

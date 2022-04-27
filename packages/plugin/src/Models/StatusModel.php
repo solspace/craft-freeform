@@ -44,6 +44,7 @@ class StatusModel extends Model implements \JsonSerializable
 
     /** @var int */
     public $sortOrder;
+
     /** @var string[] */
     private static $hexMap = [
         'green' => '#27AE60',

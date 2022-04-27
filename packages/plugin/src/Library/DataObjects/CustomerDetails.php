@@ -74,7 +74,7 @@ class CustomerDetails
             $state = $addressProps['state'] ?? null;
             $country = $addressProps['country'] ?? null;
 
-            //validating if we have any address data at all
+            // validating if we have any address data at all
             if ($line1 || $line2) {
                 $address = new AddressDetails($line1, $line2, $city, $postalCode, $state, $country);
             }

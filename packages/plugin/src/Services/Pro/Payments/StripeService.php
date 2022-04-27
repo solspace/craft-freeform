@@ -261,7 +261,7 @@ class StripeService extends Component
         }
 
         $elementAmount = $elementCurrency = $dynamicAmount = $dynamicCurrency = null;
-        //process 3 cases, fixed value, value on same page, value on different page
+        // process 3 cases, fixed value, value on same page, value on different page
         $pageFields = $form->getCurrentPage()->getFields();
         foreach ($pageFields as $pageField) {
             if (\in_array($pageField->getType(), self::FIELD_GROUP_TYPES, true)) {

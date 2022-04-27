@@ -690,6 +690,7 @@ class Settings extends Model
         }
 
         $fs = new Finder();
+
         /** @var SplFileInfo[] $fileIterator */
         $fileIterator = $fs
             ->in($templateDirectoryPath)

@@ -160,13 +160,13 @@ class IntegrationsService extends BaseService
         $form = $submission->getForm();
         $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
         if (!$paymentFields || 0 === \count($paymentFields) || $form->getSuppressors()->isPayments()) {
-            return true; //no payment fields, so no processing needed
+            return true; // no payment fields, so no processing needed
         }
 
-        //atm we support only single payment field
+        // atm we support only single payment field
 
         if (!$submission->getId()) {
-            //TODO: add to string constants? translate?
+            // TODO: add to string constants? translate?
             $submission->addError($submission->getFieldColumnName($paymentFields[0]->getId()), 'Can\'t process payments for unsaved submission!');
             $paymentFields[0]->addError('Can\'t process payments for unsaved submission!');
 
@@ -179,6 +179,7 @@ class IntegrationsService extends BaseService
         foreach ($paymentFields as $field) {
             /** @var PaymentGatewayIntegrationInterface $integration */
             $integration = $paymentGatewayHandler->getIntegrationObjectById($properties->getIntegrationId());
+
             /** @var CreditCardDetailsField $field */
             $field = $submission->{$field->getHandle()};
 

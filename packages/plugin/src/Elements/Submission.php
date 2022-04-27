@@ -28,6 +28,7 @@ use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\FieldCollection;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
@@ -223,7 +224,7 @@ class Submission extends Element
         return $handle.'_'.$id;
     }
 
-    public static function getFieldColumnName(AbstractField $field): string
+    public static function getFieldColumnName(FieldInterface $field): string
     {
         return self::generateFieldColumnName($field->getId(), $field->getHandle());
     }

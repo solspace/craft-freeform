@@ -20,6 +20,7 @@ interface FormHandlerInterface
 {
     /** @deprecated */
     public const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
+
     /** @deprecated */
     public const EVENT_AFTER_SUBMIT = 'afterSubmit';
     public const EVENT_PAGE_JUMP = 'pageJump';
@@ -30,14 +31,19 @@ interface FormHandlerInterface
 
     /** @deprecated */
     public const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
+
     /** @deprecated */
     public const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
+
     /** @deprecated  */
     public const EVENT_FORM_VALIDATE = 'validateForm';
+
     /** @deprecated  */
     public const EVENT_AFTER_FORM_VALIDATE = 'afterValidateForm';
+
     /** @deprecated */
     public const EVENT_ATTACH_FORM_ATTRIBUTES = 'attachFormAttributes';
+
     /** @deprecated */
     public const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
 

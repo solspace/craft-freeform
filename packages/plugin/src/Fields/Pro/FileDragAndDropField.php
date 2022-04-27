@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use craft\helpers\UrlHelper;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Helpers\FileHelper;
@@ -77,6 +78,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= 'data-message-files="'.$messageFiles.'" ';
         $output .= 'data-message-size="'.$messageSize.'" ';
         $output .= 'data-accent="'.$this->getAccent().'" ';
+        $output .= 'data-base-url="'.UrlHelper::siteUrl('/freeform').'" ';
         $output .= $this->getInputAttributesString();
         $output .= '>';
         $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';

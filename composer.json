@@ -22,7 +22,7 @@
     "nesbot/carbon": "^1.22.1|^2.19",
     "stripe/stripe-php": "^7.27.3",
     "phpoffice/phpspreadsheet": "^1.6.0",
-    "league/flysystem": "^2.0|^3.0",
+    "craftcms/flysystem": "^1.0.0-beta.2",
     "ext-json": "*"
   },
   "require-dev": {

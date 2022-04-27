@@ -36,6 +36,7 @@
                 <thead>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
                 <th scope="col">{{ "Profile"|t('freeform') }}</th>
+                <th scope="col">{{ "Form"|t('freeform') }}</th>
                 <th scope="col">{{ "Type"|t('freeform') }}</th>
                 <th scope="col">{{ "Frequency"|t('freeform') }}</th>
                 <th scope="col">{{ "Recipients"|t('freeform') }}</th>
@@ -62,8 +63,19 @@
                                 {{ notification.profile.name }}
                             {% endif %}
                         </td>
+                        <td>
+                            {% set form = notification.profile.formModel %}
+                            {% set canManage = currentUser.can("freeform-formsManage") or currentUser.can("freeform-formsManage:"~form.id) %}
+                            {% if canManage %}
+                                <a href="{{ url('freeform/forms/' ~ form.id) }}">
+                                    {{ form.name }}
+                                </a>
+                            {% else %}
+                                {{ form.name }}
+                            {% endif %}
+                        </td>
                         <td class="code">
-                            {{ notification.fileType }}
+                            {{ craft.freeformServices.exportProfiles.exporterTypes[notification.fileType] }}
                         </td>
                         <td>{{ frequencyMap[notification.frequency] }}</td>
                         <td>{{ notification.recipientArray|join(', ') }}</td>
@@ -76,6 +88,11 @@
                 {% endfor %}
                 </tbody>
             </table>
+
+        {% else %}
+            <div class="zilch">
+                {{ "No Results"|t("freeform") }}
+            </div>
         {% endif %}
 
     </div>

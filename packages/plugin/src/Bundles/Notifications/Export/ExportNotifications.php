@@ -58,6 +58,7 @@ class ExportNotifications extends FeatureBundle
             $template->subject = $mailer->renderString($notification->subject, $variables);
 
             $message = $mailer->renderString($notification->message, $variables);
+            $template->bodyHtml = '';
             $template->bodyText = $message;
 
             $message = $mailer->compileMessage($template, $variables);

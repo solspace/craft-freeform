@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.4 - 2022-04-28
+
+### Fixed
+- Fixed a bug where Drag & Drop File Upload fields would not respect all site URL setups.
+
+### Removed
+- Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
+- Removed the `league/flysystem` dependency as it is not needed.
+
 ## 4.0.0-beta.3 - 2022-04-26
 
 ### Changed

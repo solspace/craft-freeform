@@ -1,4 +1,4 @@
-# Solspace Freeform plugin for Craft CMS 3.x
+# Solspace Freeform plugin for Craft CMS 4.x
 
 Freeform is the most reliable, intuitive and powerful form builder for Craft. Effortlessly build beautiful forms in minutes!
 
@@ -11,9 +11,9 @@ Freeform is the most reliable, intuitive and powerful form building plugin for C
 ## Helpful Links
 
 - [Buy Freeform at the Plugin Store](https://plugins.craftcms.com/freeform)
-- [Freeform Documentation](https://docs.solspace.com/craft/freeform/v3/)
+- [Freeform Documentation](https://docs.solspace.com/craft/freeform/v4/)
 - [Report an Issue](https://github.com/solspace/craft-freeform/issues)
 - [Feature Requests](https://github.com/solspace/craft-freeform/discussions)
 - [Ask a Question](https://github.com/solspace/craft-freeform/discussions)
-- [Private Support Ticket](https://docs.solspace.com/craft/freeform/v3/support.html)
+- [Private Support Ticket](https://docs.solspace.com/craft/freeform/v4/support.html)
 - [Craft Stack Exchange](https://craftcms.stackexchange.com/questions/tagged/solspace)

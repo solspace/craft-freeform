@@ -115,9 +115,15 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             }
 
             try {
-                $field->{$fieldName} = $accessor->getValue($properties, $fieldName);
+                $value = $accessor->getValue($properties, $fieldName);
+                $field->{$fieldName} = $value;
                 if ('value' === $fieldName) {
-                    $field->defaultValue = $accessor->getValue($properties, $fieldName);
+                    if ($field instanceof CheckboxField && !$field->isChecked()) {
+                        $field->setValue('');
+                    }
+                    $field->defaultValue = $value;
+                } elseif ('values' === $fieldName) {
+                    $field->defaultValue = $value;
                 }
             } catch (NoSuchPropertyException $e) {
                 // Pass along

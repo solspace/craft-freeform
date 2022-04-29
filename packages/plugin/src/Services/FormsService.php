@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -254,8 +256,8 @@ class FormsService extends BaseService implements FormHandlerInterface
         if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
             $transaction = null;
             if (!\Craft::$app->getDb()->getTransaction()) {
-                //we start new transaction only in case there is none, otherwise we are not ones responsible for commit
-                //TODO: do save for other similar services
+                // we start new transaction only in case there is none, otherwise we are not ones responsible for commit
+                // TODO: do save for other similar services
                 $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
             }
 

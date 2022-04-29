@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -157,13 +159,13 @@ class IntegrationsService extends BaseService
         $form = $submission->getForm();
         $paymentFields = $form->getLayout()->getPaymentFields();
         if (!$paymentFields || 0 === \count($paymentFields) || $form->getSuppressors()->isPayments()) {
-            return true; //no payment fields, so no processing needed
+            return true; // no payment fields, so no processing needed
         }
 
-        //atm we support only single payment field
+        // atm we support only single payment field
 
         if (!$submission->getId()) {
-            //TODO: add to string constants? translate?
+            // TODO: add to string constants? translate?
             $submission->addError($submission->getFieldColumnName($paymentFields[0]->getId()), 'Can\'t process payments for unsaved submission!');
             $paymentFields[0]->addError('Can\'t process payments for unsaved submission!');
 
@@ -176,6 +178,7 @@ class IntegrationsService extends BaseService
         foreach ($paymentFields as $field) {
             /** @var PaymentGatewayIntegrationInterface $integration */
             $integration = $paymentGatewayHandler->getIntegrationObjectById($properties->getIntegrationId());
+
             /** @var CreditCardDetailsField $field */
             $field = $submission->{$field->getHandle()};
 

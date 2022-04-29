@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Controllers\Pro\Payments;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 
-//TODO: create abstract controller
+// TODO: create abstract controller
 class SubscriptionsController extends BaseController
 {
     public $enableCsrfValidation = false;
@@ -14,8 +14,8 @@ class SubscriptionsController extends BaseController
 
     public function actionCancel(int $id, string $validationKey): string
     {
-        //TODO: encrypt id
-        //TODO: expose json?
+        // TODO: encrypt id
+        // TODO: expose json?
         $subscription = $this->getPaymentsSubscriptionsService()->getById($id);
         if (!$subscription) {
             return $this->renderResponse(Freeform::t('Subscription not found'));

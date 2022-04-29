@@ -102,7 +102,7 @@ class DiagnosticsService extends BaseService
             ),
             new DiagnosticItem(
                 'Memory Limit: [color]{{ value }}[/color]',
-                ini_get('memory_limit'),
+                \ini_get('memory_limit'),
                 [
                     new WarningValidator(
                         function ($value) {

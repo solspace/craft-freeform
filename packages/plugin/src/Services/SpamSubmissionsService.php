@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -41,7 +43,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
         $submission->isSpam = false;
         \Craft::$app->getElements()->saveElement($submission);
 
-        //HACK: this is dirty, but I wasn't able to find better way to
+        // HACK: this is dirty, but I wasn't able to find better way to
         //      quickly convert SpamSubmission to Submission
         $element = Element::findOne($submission->id);
         $element->type = Submission::class;

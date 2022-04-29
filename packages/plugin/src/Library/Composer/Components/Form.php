@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -77,6 +79,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
     const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     const EVENT_SET_PROPERTIES = 'set-properties';
+
     /** @deprecated use EVENT_SET_PROPERTIES instead. */
     const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
     const EVENT_SUBMIT = 'submit';
@@ -109,6 +112,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     const PAGE_INDEX_KEY = 'page_index';
     const RETURN_URI_KEY = 'formReturnUrl';
     const STATUS_KEY = 'formStatus';
+
     /** @deprecated will be removed in FF 4.x. Use EditSubmissionContext::TOKEN_KEY */
     const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
     const ELEMENT_ID_KEY = 'formElementId';

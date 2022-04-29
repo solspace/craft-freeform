@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -18,6 +20,7 @@ interface FormHandlerInterface
 {
     /** @deprecated */
     const EVENT_BEFORE_SUBMIT = 'beforeSubmit';
+
     /** @deprecated */
     const EVENT_AFTER_SUBMIT = 'afterSubmit';
     const EVENT_PAGE_JUMP = 'pageJump';
@@ -28,14 +31,19 @@ interface FormHandlerInterface
 
     /** @deprecated */
     const EVENT_RENDER_OPENING_TAG = 'renderOpeningTag';
+
     /** @deprecated */
     const EVENT_RENDER_CLOSING_TAG = 'renderClosingTag';
+
     /** @deprecated  */
     const EVENT_FORM_VALIDATE = 'validateForm';
+
     /** @deprecated  */
     const EVENT_AFTER_FORM_VALIDATE = 'afterValidateForm';
+
     /** @deprecated */
     const EVENT_ATTACH_FORM_ATTRIBUTES = 'attachFormAttributes';
+
     /** @deprecated */
     const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
 

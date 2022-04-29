@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -334,7 +336,7 @@ class MailerService extends BaseService implements MailHandlerInterface
             $postedValues[$field->getHandle()] = $field;
         }
 
-        //TODO: offload this call to payments plugin with an event
+        // TODO: offload this call to payments plugin with an event
         if ($submission && $form->getLayout()->getPaymentFields()) {
             $payments = Freeform::getInstance()->payments->getPaymentDetails(
                 $submission->getId(),

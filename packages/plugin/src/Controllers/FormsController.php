@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -209,7 +211,7 @@ class FormsController extends BaseController
         }
 
         $errors = array_values($form->getErrors());
-        //flattening error map
+        // flattening error map
         if ($errors) {
             $errors = array_merge(...$errors);
         }
@@ -710,6 +712,7 @@ class FormsController extends BaseController
     private function getCraftFields(): array
     {
         $fields = [];
+
         /** @var Field $field */
         foreach (\Craft::$app->fields->getAllFields() as $field) {
             $fields[] = [

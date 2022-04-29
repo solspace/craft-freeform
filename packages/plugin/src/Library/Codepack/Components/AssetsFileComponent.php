@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -57,7 +59,7 @@ class AssetsFileComponent extends AbstractFileComponent
 
         if (\in_array($extension, self::$modifiableCssFiles, true)) {
             $content = $this->updateImagesURL($content, $prefix);
-            //$content = $this->updateRelativePaths($content, $prefix);
+            // $content = $this->updateRelativePaths($content, $prefix);
             $content = $this->replaceCustomPrefixCalls($content, $prefix);
         }
 

@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -22,7 +24,7 @@ use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\Pro\Payments\SubscriptionPlanRecord;
 
-//TODO: move to payments module?
+// TODO: move to payments module?
 
 class PaymentGatewaysService extends AbstractIntegrationService implements PaymentGatewayHandlerInterface
 {

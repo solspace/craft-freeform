@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -72,7 +74,7 @@ class CustomerDetails
             $state = $addressProps['state'] ?? null;
             $country = $addressProps['country'] ?? null;
 
-            //validating if we have any address data at all
+            // validating if we have any address data at all
             if ($line1 || $line2) {
                 $address = new AddressDetails($line1, $line2, $city, $postalCode, $state, $country);
             }

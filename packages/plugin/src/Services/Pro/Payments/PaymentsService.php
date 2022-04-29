@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -36,7 +38,7 @@ class PaymentsService implements PaymentHandlerInterface
             return null;
         }
 
-        //for multiple subscription payments we get only first one
+        // for multiple subscription payments we get only first one
         $data = $data[0]->toArray();
 
         if (!$data) {

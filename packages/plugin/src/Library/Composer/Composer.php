@@ -1,10 +1,12 @@
 <?php
 /**
- * Freeform for Craft CMS
+ * Freeform for Craft CMS.
  *
  * @author        Solspace, Inc.
  * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
  * @see           https://docs.solspace.com/craft/freeform
+ *
  * @license       https://docs.solspace.com/license-agreement
  */
 
@@ -157,7 +159,7 @@ class Composer
             throw new ComposerException($this->translator->translate('No form settings specified'));
         }
 
-        //XXX: maybe not very clean approach, but existing forms will fail to display payments tab otherwise
+        // XXX: maybe not very clean approach, but existing forms will fail to display payments tab otherwise
         if (!isset($properties[Properties::PAYMENT_HASH])) {
             $defaults = $this->getDefaultProperties();
             $this->properties->set(Properties::PAYMENT_HASH, $defaults[Properties::PAYMENT_HASH]);

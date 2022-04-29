@@ -26,7 +26,7 @@ class SubscriptionPlanModel extends Model
     /** @var string */
     public $status;
 
-    //TODO: should be some trait for this
+    // TODO: should be some trait for this
     public $dateCreated;
     public $dateUpdated;
     public $uid;

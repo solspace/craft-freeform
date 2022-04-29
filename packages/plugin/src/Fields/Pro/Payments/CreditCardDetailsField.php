@@ -66,7 +66,7 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
         $translator = $form->getTranslator();
         $currentPage = $form->getCurrentPage();
 
-        //TODO: make all field names in form of snake case string constants
+        // TODO: make all field names in form of snake case string constants
         $properties = new FieldProperties($children[CreditCardNumberField::FIELD_NAME], $translator);
         $numberField = CreditCardNumberField::createFromProperties($form, $properties, $currentPage);
         $numberField->setAttributes(['id' => $id.'_card_number']);

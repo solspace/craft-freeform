@@ -120,6 +120,7 @@ class SettingsService extends BaseService
         $templateDirectoryPath = $this->getSolspaceFormTemplateDirectory();
 
         $fs = new Finder();
+
         /** @var SplFileInfo[] $fileIterator */
         $fileIterator = $fs->files()->in($templateDirectoryPath)->name('*.html');
         $templates = [];

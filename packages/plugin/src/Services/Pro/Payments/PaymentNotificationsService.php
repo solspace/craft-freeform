@@ -36,7 +36,7 @@ class PaymentNotificationsService extends Component
 
     public function sendSubscriptionEnded(int $submissionId)
     {
-        //TODO: move status update somewhere nice
+        // TODO: move status update somewhere nice
         Freeform::getInstance()->subscriptions->updateSubscriptionStatus($submissionId, PaymentRecord::STATUS_INACTIVE);
         $this->send($submissionId, PaymentProperties::NOTIFICATION_TYPE_SUBSCRIPTION_ENDED);
     }
@@ -53,12 +53,12 @@ class PaymentNotificationsService extends Component
 
     protected function send(int $submissionId, string $notificationType)
     {
-        //TODO: add error handling and logging
+        // TODO: add error handling and logging
         $submission = Freeform::getInstance()->submissions->getSubmissionById($submissionId);
         $form = $submission->getForm();
         $paymentProps = $form->getPaymentProperties();
         $customerMap = $paymentProps->getCustomerFieldMapping();
-        //TODO: hardcoded  string  is  bad, also stripe prefix, me dont like it
+        // TODO: hardcoded  string  is  bad, also stripe prefix, me dont like it
         $emailFieldHandle = $customerMap['email'] ?? null;
         if (!$emailFieldHandle) {
             return;

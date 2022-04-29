@@ -68,9 +68,9 @@ class FormHookHandler
                 $formModel->addError($attribute, Freeform::t('Payment amount is not configured!'));
             }
         } else {
-            //if there are no plans to select from and form is not saved
-            //user will end up without ability to create plan
-            //so we skip this validation if form is not yet saved
+            // if there are no plans to select from and form is not saved
+            // user will end up without ability to create plan
+            // so we skip this validation if form is not yet saved
             if ($formModel->id
                 && !$paymentProperties->getPlan()
                 && !isset($paymentFieldMapping[PaymentProperties::FIELD_PLAN])

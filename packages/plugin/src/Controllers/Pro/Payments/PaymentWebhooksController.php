@@ -9,7 +9,7 @@ use Stripe\Event;
 use Stripe\Subscription;
 use yii\web\HttpException;
 
-//TODO: create abstract controller
+// TODO: create abstract controller
 class PaymentWebhooksController extends BaseController
 {
     public $enableCsrfValidation = false;
@@ -47,8 +47,8 @@ class PaymentWebhooksController extends BaseController
             throw new HttpException(400, Freeform::t('Invalid signature'));
         }
 
-        //TODO: implement all notification service call as events?
-        //TODO: update payment/subscription status accordingly
+        // TODO: implement all notification service call as events?
+        // TODO: update payment/subscription status accordingly
         switch ($event->type) {
             case Event::CHARGE_SUCCEEDED:
                 $submissionId = $this->getSubmissionIdFromStripeEvent($event, $integration);

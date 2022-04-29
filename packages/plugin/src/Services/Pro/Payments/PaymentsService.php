@@ -38,7 +38,7 @@ class PaymentsService implements PaymentHandlerInterface
             return null;
         }
 
-        //for multiple subscription payments we get only first one
+        // for multiple subscription payments we get only first one
         $data = $data[0]->toArray();
 
         if (!$data) {

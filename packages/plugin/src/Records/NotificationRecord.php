@@ -41,6 +41,7 @@ use Solspace\Freeform\Library\Mailing\NotificationInterface;
 class NotificationRecord extends ActiveRecord implements NotificationInterface, \JsonSerializable
 {
     const TABLE = '{{%freeform_notifications}}';
+
     /** @var string */
     public $filepath;
 

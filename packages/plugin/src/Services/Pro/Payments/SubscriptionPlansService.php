@@ -32,7 +32,7 @@ class SubscriptionPlansService
 
         if (!$data) {
             $data = [];
-            //TODO: query integration on miss?
+            // TODO: query integration on miss?
         }
 
         return array_map([$this, 'createModel'], $data);

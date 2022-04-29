@@ -59,7 +59,7 @@ class AssetsFileComponent extends AbstractFileComponent
 
         if (\in_array($extension, self::$modifiableCssFiles, true)) {
             $content = $this->updateImagesURL($content, $prefix);
-            //$content = $this->updateRelativePaths($content, $prefix);
+            // $content = $this->updateRelativePaths($content, $prefix);
             $content = $this->replaceCustomPrefixCalls($content, $prefix);
         }
 

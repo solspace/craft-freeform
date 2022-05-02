@@ -19,8 +19,10 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
     formData.delete('action');
     formData.append('handle', handle);
 
+    const baseUrl = container.getAttribute('data-base-url');
+
     axios
-      .post<FileMetadata[]>('/freeform/files', formData, {
+      .post<FileMetadata[]>(`${baseUrl}/files`, formData, {
         headers: {
           'Freeform-Preflight': true,
         },
@@ -43,7 +45,7 @@ export const loadExistingUploads = (container: HTMLElement, freeform: Freeform):
           removeButton.addEventListener('click', () => {
             if (confirm('Are you sure?')) {
               axios
-                .post('/freeform/files/delete', deleteFormData)
+                .post(`${baseUrl}/files/delete`, deleteFormData)
                 .then(() => {
                   previewZone.removeChild(previewContainer);
                   dispatchChange(container);
@@ -106,8 +108,10 @@ export const handleFileUpload = (
   formData.append('handle', handle);
   formData.append(handle, file);
 
+  const baseUrl = container.getAttribute('data-base-url');
+
   return axios
-    .post<FileMetadata>('/freeform/files/upload', formData, {
+    .post<FileMetadata>(`${baseUrl}/files/upload`, formData, {
       headers: { 'content-type': 'multipart/form-data' },
       cancelToken: token,
       onUploadProgress: (progress: ProgressEvent) => {
@@ -134,7 +138,7 @@ export const handleFileUpload = (
       removeButton.addEventListener('click', () => {
         if (confirm('Are you sure?')) {
           axios
-            .post('/freeform/files/delete', deleteFormData)
+            .post(`${baseUrl}/files/delete`, deleteFormData)
             .then(() => {
               previewZone.removeChild(previewContainer);
               dispatchChange(container);

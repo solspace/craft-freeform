@@ -537,6 +537,19 @@ class DiagnosticsService extends BaseService
                     return $value > 0 ? DiagnosticItem::COLOR_ERROR : DiagnosticItem::COLOR_BASE;
                 }
             ),
+            new DiagnosticItem(
+                null,
+                Freeform::getInstance()->forms->isPossibleLoadingStaticScripts(),
+                [
+                    new WarningValidator(
+                        function ($value) {
+                            return $value;
+                        },
+                        'Freeform Script Insert Check Failed',
+                        'It appears that your server has rewrite rules checking if URLs are actual files, which can cause issues with Freeform\'s script loading in the front end and forms not working correctly. Please change the "Freeform Script Insert Type" setting to "As Files" instead.',
+                    ),
+                ],
+            ),
         ];
     }
 

@@ -21,6 +21,7 @@ const isPro = settingDefaults.settings.freeform.pro;
 
 const General: React.FC = () => {
   const [state, setState] = useRecoilState(GeneralState);
+  const canInsertPointers = settingDefaults.general.canInsertPointers;
 
   const defaultViewOptions: Options<DefaultView> = [
     { value: DefaultView.Dashboard, label: 'Dashboard' },
@@ -45,8 +46,11 @@ const General: React.FC = () => {
   ];
 
   const jsInsertTypeOptions: Options<JSInsertType> = [
-    { value: JSInsertType.Pointers, label: 'As Static URLs (recommended)' },
-    { value: JSInsertType.Files, label: 'As Files' },
+    {
+      value: JSInsertType.Pointers,
+      label: `As Static URLs${canInsertPointers ? ' (recommended)' : ' (not supported on your system)'}`,
+    },
+    { value: JSInsertType.Files, label: `As Files${!canInsertPointers ? ' (recommended)' : ''}` },
     { value: JSInsertType.Inline, label: 'Inline' },
   ];
 

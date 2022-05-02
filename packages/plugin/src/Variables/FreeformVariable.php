@@ -196,6 +196,11 @@ class FreeformVariable
         return implode('.', $points);
     }
 
+    public function isPossibleLoadingStaticScripts(): bool
+    {
+        return $this->getFormService()->isPossibleLoadingStaticScripts();
+    }
+
     public function notifications(): NotificationsService
     {
         return Freeform::getInstance()->notifications;

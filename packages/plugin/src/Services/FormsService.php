@@ -15,6 +15,8 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\BadResponseException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
@@ -729,6 +731,23 @@ class FormsService extends BaseService implements FormHandlerInterface
         $this->trigger(self::EVENT_AFTER_GENERATE_RETURN_URL, $event);
 
         return $event->getReturnUrl();
+    }
+
+    public function isPossibleLoadingStaticScripts(): bool
+    {
+        // TODO: remove me
+        return false;
+        $client = new Client(['verify' => false]);
+
+        try {
+            $response = $client->get(UrlHelper::siteUrl('freeform/plugin.js'));
+            $body = (string) $response->getBody();
+
+            return preg_match('/freeform\.js/', $body);
+        } catch (BadResponseException) {
+        }
+
+        return false;
     }
 
     private function getFormQuery(): Query

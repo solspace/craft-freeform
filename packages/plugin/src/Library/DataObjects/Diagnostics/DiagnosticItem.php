@@ -16,35 +16,22 @@ class DiagnosticItem
     public const COLOR_PASS = 'pass';
     public const COLOR_ERROR = 'error';
 
-    /** @var string */
-    private $label;
+    private ?string $label;
 
-    /** @var mixed */
-    private $value;
+    private mixed $value;
 
-    /** @var AbstractValidator[] */
-    private $validators = [];
+    private array $validators = [];
 
     /** @var null|callable */
     private $colorOverride;
 
-    /** @var NotificationItem[] */
-    private $warnings = [];
+    private array $warnings = [];
 
-    /** @var NotificationItem[] */
-    private $suggestions = [];
+    private array $suggestions = [];
 
-    /** @var NotificationItem[] */
-    private $notices = [];
+    private array $notices = [];
 
-    /**
-     * DiagnosticItem constructor.
-     *
-     * @param mixed               $value
-     * @param AbstractValidator[] $validators
-     * @param callable            $colorOverride
-     */
-    public function __construct(string $markup, $value, array $validators = [], callable $colorOverride = null)
+    public function __construct(?string $markup, mixed $value, array $validators = [], callable $colorOverride = null)
     {
         $this->label = $markup;
         $this->value = $value;
@@ -57,8 +44,12 @@ class DiagnosticItem
         $this->validate();
     }
 
-    public function getMarkup(): Markup
+    public function getMarkup(): ?Markup
     {
+        if (!$this->label) {
+            return null;
+        }
+
         $colorOpen = '<span class="diagnostic-color-'.$this->getColor().'" />';
 
         $string = $this->label;

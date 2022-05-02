@@ -37,6 +37,7 @@ export interface GeneralInterface {
   autoScroll: boolean;
   jsInsertLocation: JSInsertLocation;
   jsInsertType: JSInsertType;
+  canInsertPointers: boolean;
   sessionType: SessionType;
 }
 

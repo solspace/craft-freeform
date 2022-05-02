@@ -424,6 +424,8 @@ class FormsController extends BaseController
         $isCommerceEnabled = $commerce && ($commerce['enabled'] ?? false);
         $isCalendarEnabled = $calendar && ($calendar['enabled'] ?? false);
 
+        $showTutorial = $settings->showTutorial && \Craft::$app->getConfig()->getGeneral()->allowAdminChanges;
+
         $isHCaptcha = \in_array($settings->recaptchaType, [Settings::RECAPTCHA_TYPE_H_INVISIBLE, Settings::RECAPTCHA_TYPE_H_CHECKBOX], true);
 
         $templateVariables = [
@@ -444,7 +446,7 @@ class FormsController extends BaseController
             ),
             'formTemplates' => $this->getEncodedJson($this->getSettingsService()->getCustomFormTemplates()),
             'assetSources' => $this->getEncodedJson($this->getFilesService()->getAssetSources()),
-            'showTutorial' => $settings->showTutorial,
+            'showTutorial' => $showTutorial,
             'defaultTemplates' => $settings->defaultTemplates,
             'successTemplates' => $this->getEncodedJson($this->getSettingsService()->getSuccessTemplates()),
             'canManageFields' => PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_MANAGE),

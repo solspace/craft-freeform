@@ -1,13 +1,17 @@
 # Solspace Freeform Changelog
 
-## 3.13.8 - Unreleased
+## 3.13.8 - 2022-04-02
 
 ### Changed
 - Updated `symfony/property-access`, `symfony/finder` and `symfony/filesystem` dependency version requirements to resolve some conflicts.
 
 ### Fixed
+- Fixed a bug where Drag & Drop File Upload fields would not respect all site URL setups.
 - Fixed a bug where spammy submissions were not storing the author user ID (if available).
-- Fixed a bug where there was missing support for File Upload Drag & Drops fields mapping to Element Connections and Integrations.
+- Fixed a bug where exporting submissions would sometimes not work if adding a Table field to a form layout after some submissions already exist.
+- Fixed a bug where there was missing support for File Upload Drag & Drop fields mapping to Element Connections and Integrations.
+- Fixed a bug where POST Forwarding would still send through spammy submissions.
+- Fixed a bug where the form builder tutorial would show and error if the `allowAdminChanges` setting was disabled.
 
 ## 3.13.7 - 2022-03-28
 

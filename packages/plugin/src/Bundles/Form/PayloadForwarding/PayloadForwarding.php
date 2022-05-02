@@ -46,7 +46,7 @@ class PayloadForwarding extends FeatureBundle
         $form = $event->getForm();
         $submission = $event->getSubmission();
 
-        if ($form->getSuppressors()->isPayload()) {
+        if ($form->getSuppressors()->isPayload() || $form->isMarkedAsSpam()) {
             return;
         }
 

@@ -40,6 +40,7 @@ class ExportXml extends AbstractExport
 
                     if ($field instanceof TableField) {
                         $layout = $field->getTableLayout();
+                        $value = \is_array($value) ? $value : [];
                         foreach ($value as $tableRow) {
                             $rowNode = $node->addChild('row');
 

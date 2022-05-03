@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 4.0.0-beta.5 - Unreleased
+## 4.0.0-beta.5 - 2022-05-03
 
 ### Added
 - Added a check in the diagnostics, install welcome screen, and settings pages to alert users if the "Freeform Script Insert Type" setting will not work as Static URLs (and needs to be switched to Files).

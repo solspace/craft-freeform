@@ -287,8 +287,6 @@ class FormsService extends BaseService implements FormHandlerInterface
                 );
 
                 $contentManager->performDatabaseColumnAlterations();
-
-                return true;
             } catch (\Exception $e) {
                 if (null !== $transaction) {
                     $transaction->rollBack();
@@ -302,7 +300,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             $this->addFormManagePermissionToUser($model->id);
         }
 
-        return false;
+        return true;
     }
 
     /**

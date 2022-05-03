@@ -744,7 +744,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             }
         }
 
-        if (!empty($value) && !$this->isHidden()) {
+        if ('' !== $value && !$this->isHidden()) {
             static $validator;
 
             if (null === $validator) {

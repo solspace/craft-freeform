@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.5 - Unreleased
+
+### Added
+- Added a check in the diagnostics, install welcome screen, and settings pages to alert users if the "Freeform Script Insert Type" setting will not work as Static URLs (and needs to be switched to Files).
+
+### Fixed
+- Fixed a bug where POST Forwarding would still send through spammy submissions.
+- Fixed a bug where Checkbox Groups and Multi-Select field types would not show default options in rendered form.
+- Fixed a bug where the form builder tutorial would show an error if the `allowAdminChanges` setting was disabled.
+
 ## 4.0.0-beta.4 - 2022-04-28
 
 ### Fixed
@@ -43,6 +53,20 @@
 ### Removed
 - Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
+## 3.13.8 - 2022-04-02
+
+### Changed
+- Updated `symfony/property-access`, `symfony/finder` and `symfony/filesystem` dependency version requirements to resolve some conflicts.
+
+### Fixed
+- Fixed a bug where Drag & Drop File Upload fields would not respect all site URL setups.
+- Fixed a bug where spammy submissions were not storing the author user ID (if available).
+- Fixed a bug where exporting submissions would sometimes not work if adding a Table field to a form layout after some submissions already exist.
+- Fixed a bug where there was missing support for File Upload Drag & Drop fields mapping to Element Connections and Integrations.
+- Fixed a bug where POST Forwarding would still send through spammy submissions.
+- Fixed a bug where Checkbox Groups and Multi-Select field types would not show default options in rendered form.
+- Fixed a bug where the form builder tutorial would show an error if the `allowAdminChanges` setting was disabled.
 
 ## 3.13.7 - 2022-03-28
 

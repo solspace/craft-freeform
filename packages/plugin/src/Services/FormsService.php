@@ -735,8 +735,6 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function isPossibleLoadingStaticScripts(): bool
     {
-        // TODO: remove me
-        return false;
         $client = new Client(['verify' => false]);
 
         try {

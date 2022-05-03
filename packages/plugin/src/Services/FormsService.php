@@ -276,8 +276,6 @@ class FormsService extends BaseService implements FormHandlerInterface
                 }
 
                 $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
-
-                return true;
             } catch (\Exception $e) {
                 if (null !== $transaction) {
                     $transaction->rollBack();
@@ -291,7 +289,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             $this->addFormManagePermissionToUser($model->id);
         }
 
-        return false;
+        return true;
     }
 
     /**

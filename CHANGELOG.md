@@ -11,6 +11,7 @@
 - Fixed a bug where exporting submissions would sometimes not work if adding a Table field to a form layout after some submissions already exist.
 - Fixed a bug where there was missing support for File Upload Drag & Drop fields mapping to Element Connections and Integrations.
 - Fixed a bug where POST Forwarding would still send through spammy submissions.
+- Fixed a bug where Checkbox Groups and Multi-Select field types would not show default options in rendered form.
 - Fixed a bug where the form builder tutorial would show an error if the `allowAdminChanges` setting was disabled.
 
 ## 3.13.7 - 2022-03-28

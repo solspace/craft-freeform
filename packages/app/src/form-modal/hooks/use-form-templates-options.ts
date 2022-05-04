@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { SelectOption } from '@ff-app/shared/Forms/Select/Select';
 
@@ -7,39 +7,40 @@ import { FormTemplate } from '../types/forms';
 
 export const templateOptionMapper = ({ name, id }: FormTemplate): SelectOption => ({ label: name, value: id });
 
-const extractTemplates = (templates: FormTemplate[]): [string, SelectOption[]] => {
+const extractTemplates = (templates: FormTemplate[]): SelectOption[] => {
   const nativeTemplates = templates.map(templateOptionMapper);
-  const defaultTemplate = templates.length && templates[0].id;
 
-  return [defaultTemplate, nativeTemplates];
+  return nativeTemplates;
 };
 
 export const useFormTemplatesOptions = (): [string, SelectOption[]] => {
   const { templates } = useContext(FormOptionsContext);
 
-  if (templates === null) {
-    return ['', [{ label: 'Loading...' }]];
-  }
+  const [templateList, setTemplateList] = useState<SelectOption[]>([]);
+  const [defaultTemplate, setDefaultTemplate] = useState<string>('');
 
-  if (!templates.native.length) {
-    return extractTemplates(templates.custom);
-  }
+  useEffect((): void => {
+    setDefaultTemplate(templates?.default || '');
 
-  if (!templates.custom.length) {
-    return extractTemplates(templates.native);
-  }
+    if (templates === null) {
+      setTemplateList([{ label: 'Loading...' }]);
+    } else if (!templates.native.length) {
+      setTemplateList(extractTemplates(templates.custom));
+    } else if (!templates.custom.length) {
+      setTemplateList(extractTemplates(templates.native));
+    } else {
+      setTemplateList([
+        {
+          label: 'Solspace Templates',
+          children: extractTemplates(templates.native),
+        },
+        {
+          label: 'Custom Templates',
+          children: extractTemplates(templates.custom),
+        },
+      ]);
+    }
+  }, [templates]);
 
-  return [
-    templates.default,
-    [
-      {
-        label: 'Solspace Templates',
-        children: templates.native.map(templateOptionMapper),
-      },
-      {
-        label: 'Custom Templates',
-        children: templates.custom.map(templateOptionMapper),
-      },
-    ],
-  ];
+  return [defaultTemplate, templateList];
 };

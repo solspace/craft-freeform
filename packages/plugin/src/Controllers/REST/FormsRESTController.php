@@ -17,7 +17,7 @@ class FormsRESTController extends BaseController
 {
     public function init()
     {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
 
         parent::init();
     }
@@ -90,6 +90,8 @@ class FormsRESTController extends BaseController
 
     public function actionIndex(): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_CREATE);
+
         $this->requirePostRequest();
 
         $post = $this->request->post();

@@ -285,7 +285,7 @@ class Layout implements \JsonSerializable, \Iterator
                             $fieldProperties,
                             $pageIndex
                         );
-                    } catch (\Exception $exception) {
+                    } catch (\Exception) {
                         continue;
                     }
 
@@ -297,12 +297,13 @@ class Layout implements \JsonSerializable, \Iterator
 
                     $this->fieldCollection->add($field);
 
+                    $pageFields[] = $field;
+
                     if ($field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())) {
                         continue;
                     }
 
                     $fields[] = $field;
-                    $pageFields[] = $field;
 
                     $this->fieldTypes[] = $field->getType();
                 }

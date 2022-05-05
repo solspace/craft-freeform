@@ -3,6 +3,7 @@
 ## 4.0.0-beta.6 - 2022-05-05
 
 ### Fixed
+- Fixed a bug where Hidden and Invisible fields were not collecting submission data.
 - Fixed a bug where users with permissions to Create New Forms would encounter issues in the New Form wizard modal.
 - Fixed a bug where users without Create New Forms permission would see the New Form button in the CP Forms page.
 - Fixed a bug where Number fields with a minimum value above `0` would still allow `0` as a valid value.

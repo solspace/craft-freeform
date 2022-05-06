@@ -1,23 +1,14 @@
 <?php
 
-namespace Solspace\Freeform\Events\ExportProfiles;
+namespace Solspace\Freeform\Events\Export\Profiles;
 
 use craft\events\CancelableEvent;
 use Solspace\Freeform\Models\Pro\ExportProfileModel;
 
 class SaveEvent extends CancelableEvent
 {
-    /** @var ExportProfileModel */
-    private $model;
-
-    /** @var bool */
-    private $new;
-
-    public function __construct(ExportProfileModel $model, bool $new = false)
+    public function __construct(private ExportProfileModel $model, private bool $new = false)
     {
-        $this->new = $new;
-        $this->model = $model;
-
         parent::__construct();
     }
 

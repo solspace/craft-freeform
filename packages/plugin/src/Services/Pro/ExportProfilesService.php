@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Services\Pro;
 
 use craft\db\Query;
-use Solspace\Freeform\Events\ExportProfiles\DeleteEvent;
-use Solspace\Freeform\Events\ExportProfiles\RegisterExporterEvent;
-use Solspace\Freeform\Events\ExportProfiles\SaveEvent;
+use Solspace\Freeform\Events\Export\Profiles\DeleteEvent;
+use Solspace\Freeform\Events\Export\Profiles\RegisterExporterEvent;
+use Solspace\Freeform\Events\Export\Profiles\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -83,6 +83,16 @@ class ExportProfilesService extends Component
         }
 
         return self::$profileCache;
+    }
+
+    public function getAllNamesById(): array
+    {
+        return $this
+            ->getQuery()
+            ->select('name')
+            ->indexBy('id')
+            ->column()
+        ;
     }
 
     /**

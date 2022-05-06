@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Events\ExportProfiles;
+namespace Solspace\Freeform\Events\Export\Profiles;
 
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportInterface;

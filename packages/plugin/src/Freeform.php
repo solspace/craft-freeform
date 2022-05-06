@@ -43,6 +43,7 @@ use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\Migrations\NotificationsController as MigrateNotificationsController;
 use Solspace\Freeform\Controllers\NotificationsController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
+use Solspace\Freeform\Controllers\Pro\ExportNotificationsController;
 use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
 use Solspace\Freeform\Controllers\Pro\Payments\PaymentWebhooksController;
 use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
@@ -86,6 +87,7 @@ use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\DiagnosticsService;
+use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\FormsService;
@@ -103,6 +105,7 @@ use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
+use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
 use Solspace\Freeform\Services\Pro\PayloadForwardingService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
@@ -121,7 +124,7 @@ use Solspace\Freeform\Services\SubmissionsService;
 use Solspace\Freeform\Services\SummaryService;
 use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
-use Solspace\Freeform\Variables\FreeformPaymentsVariable;
+use Solspace\Freeform\Variables\FreeformServicesVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 use Symfony\Component\Finder\Finder;
@@ -152,7 +155,9 @@ use yii\web\ForbiddenHttpException;
  * @property ConnectionsService          $connections
  * @property ChartsService               $charts
  * @property WidgetsService              $widgets
+ * @property ExportService               $export
  * @property ExportProfilesService       $exportProfiles
+ * @property ExportNotificationsService  $exportNotifications
  * @property RulesService                $rules
  * @property PaymentNotificationsService $paymentNotifications
  * @property PaymentsService             $payments
@@ -218,6 +223,8 @@ class Freeform extends Plugin
     public const PERMISSION_ACCESS_QUICK_EXPORT = 'freeform-access-quick-export';
     public const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
     public const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
+    public const PERMISSION_EXPORT_NOTIFICATIONS_ACCESS = 'freeform-pro-exportNotificationsAccess';
+    public const PERMISSION_EXPORT_NOTIFICATIONS_MANAGE = 'freeform-pro-exportNotificationsManage';
 
     public const EVENT_REGISTER_SUBNAV_ITEMS = 'registerSubnavItems';
 
@@ -482,6 +489,7 @@ class Freeform extends Plugin
                 'resources' => ResourcesController::class,
                 'quick-export' => QuickExportController::class,
                 'export-profiles' => ExportProfilesController::class,
+                'export-notifications' => ExportNotificationsController::class,
                 'subscriptions' => SubscriptionsController::class,
                 'payment-webhooks' => PaymentWebhooksController::class,
                 'webhooks' => WebhooksController::class,
@@ -521,7 +529,9 @@ class Freeform extends Plugin
                 'paymentGateways' => PaymentGatewaysService::class,
                 'connections' => ConnectionsService::class,
                 'widgets' => WidgetsService::class,
+                'export' => ExportService::class,
                 'exportProfiles' => ExportProfilesService::class,
+                'exportNotifications' => ExportNotificationsService::class,
                 'rules' => RulesService::class,
                 'paymentNotifications' => PaymentNotificationsService::class,
                 'payments' => PaymentsService::class,
@@ -662,8 +672,8 @@ class Freeform extends Plugin
             CraftVariable::EVENT_INIT,
             function (Event $event) {
                 $event->sender->set('freeform', FreeformVariable::class);
+                $event->sender->set('freeformServices', FreeformServicesVariable::class);
                 $event->sender->set('freeformBanners', FreeformBannersVariable::class);
-                $event->sender->set('freeformPayments', FreeformPaymentsVariable::class);
             }
         );
 
@@ -808,6 +818,16 @@ class Freeform extends Plugin
                                 self::PERMISSION_EXPORT_PROFILES_MANAGE => [
                                     'label' => self::t(
                                         'Manage Export Profiles'
+                                    ),
+                                ],
+                            ],
+                        ],
+                        self::PERMISSION_EXPORT_NOTIFICATIONS_ACCESS => [
+                            'label' => self::t('Access Export Notifications'),
+                            'nested' => [
+                                self::PERMISSION_EXPORT_NOTIFICATIONS_MANAGE => [
+                                    'label' => self::t(
+                                        'Manage Export Notifications'
                                     ),
                                 ],
                             ],

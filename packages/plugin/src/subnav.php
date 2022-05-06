@@ -35,7 +35,7 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS)
 }
 
 if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS)) {
-    $navItems['exportProfiles'] = ['label' => Freeform::t('Export'), 'url' => 'freeform/export-profiles'];
+    $navItems['export'] = ['label' => Freeform::t('Export'), 'url' => 'freeform/export/profiles'];
 }
 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS)) {

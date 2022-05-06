@@ -30,9 +30,11 @@ class Row implements \IteratorAggregate
         if ($column->getField() && $column->getField() instanceof MultiDimensionalValueInterface) {
             $this->multiDimensionalFields = true;
 
-            $rowCount = \count($column->getValue());
-            if ($rowCount > 1) {
-                $this->artificialRowCount = max($this->artificialRowCount, $rowCount - 1);
+            if (is_countable($column->getValue())) {
+                $rowCount = \count($column->getValue());
+                if ($rowCount > 1) {
+                    $this->artificialRowCount = max($this->artificialRowCount, $rowCount - 1);
+                }
             }
         }
 

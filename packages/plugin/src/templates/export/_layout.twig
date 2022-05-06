@@ -1,0 +1,27 @@
+{% extends "freeform/_layouts/main" %}
+
+{% set selectedSubnavItem = 'export' %}
+{% set selectedItem = craft.app.request.getSegment(3)|default %}
+
+{% set crumbs = [
+    { label: craft.freeform.name, url: url("freeform") },
+    { label: "Export"|t("freeform"), url: url("freeform/export/profiles") },
+] %}
+
+{% block sidebar %}
+    <nav>
+        <ul>
+            {% for id, item in craft.freeformServices.export.navigation %}
+                {% if item.heading is defined %}
+                    <li class="heading"><span>{{ item.heading }}</span></li>
+                {% else %}
+                    <li>
+                        <a href="{{ url('freeform/export/'~id) }}"{% if id == selectedItem %} class="sel"{% endif %}>
+                            {{ item.title | raw }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endblock %}

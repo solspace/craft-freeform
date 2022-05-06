@@ -64,7 +64,7 @@
                 {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
             {% endif %}
 
-            <div class="{{ columnClass }} cell"{{ field.rulesHtmlData }}>
+            <div class="{{ columnClass }} ff-fieldtype-{{ field.type }} cell"{{ field.rulesHtmlData }}>
 
                 {% if field.type == "checkbox_group" %}
 

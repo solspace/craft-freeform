@@ -328,6 +328,19 @@ class Freeform extends Plugin
         return $navItem;
     }
 
+    public function beforeUninstall(): void
+    {
+        $forms = $this->forms->getResolvedForms();
+        foreach ($forms as $form) {
+            \Craft::$app
+                ->db
+                ->createCommand()
+                ->dropTableIfExists(Submission::getContentTableName($form))
+                ->execute()
+            ;
+        }
+    }
+
     /**
      * On install - insert default statuses.
      */

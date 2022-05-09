@@ -342,12 +342,14 @@ class ExportProfileModel extends Model
 
         $dateRangeStart = $this->getDateRangeStart();
         if ($dateRangeStart) {
+            $dateRangeStart->setTimezone('UTC');
             $conditions[] = 's.[[dateCreated]] >= :dateRangeStart';
             $parameters['dateRangeStart'] = $dateRangeStart->format('Y-m-d H:i:s');
         }
 
         $dateRangeEnd = $this->getDateRangeEnd();
         if ($dateRangeEnd) {
+            $dateRangeEnd->setTimezone('UTC');
             $conditions[] = 's.[[dateCreated]] <= :dateRangeEnd';
             $parameters['dateRangeEnd'] = $dateRangeEnd->format('Y-m-d H:i:s');
         }

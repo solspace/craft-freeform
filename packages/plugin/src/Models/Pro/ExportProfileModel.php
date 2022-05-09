@@ -107,11 +107,16 @@ class ExportProfileModel extends Model
      */
     public function getDateRangeEnd()
     {
-        if (self::RANGE_CUSTOM === $this->dateRange) {
-            return (new Carbon($this->rangeEnd))->setTime(23, 59, 59);
-        }
+        switch ($this->dateRange) {
+            case self::RANGE_CUSTOM:
+                return (new Carbon($this->rangeEnd))->setTime(23, 59, 59);
 
-        return null;
+            case self::RANGE_YESTERDAY:
+                return (new Carbon('-1 day'))->setTime(23, 59, 59);
+
+            default:
+                return null;
+        }
     }
 
     /**
@@ -337,14 +342,12 @@ class ExportProfileModel extends Model
 
         $dateRangeStart = $this->getDateRangeStart();
         if ($dateRangeStart) {
-            $dateRangeStart->setTimezone('UTC');
             $conditions[] = 's.[[dateCreated]] >= :dateRangeStart';
             $parameters['dateRangeStart'] = $dateRangeStart->format('Y-m-d H:i:s');
         }
 
         $dateRangeEnd = $this->getDateRangeEnd();
         if ($dateRangeEnd) {
-            $dateRangeEnd->setTimezone('UTC');
             $conditions[] = 's.[[dateCreated]] <= :dateRangeEnd';
             $parameters['dateRangeEnd'] = $dateRangeEnd->format('Y-m-d H:i:s');
         }

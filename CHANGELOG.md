@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.7 - 2022-05-10
+
+### Changed
+- Updated the sample formatting templates to include `ff-fieldtype-FIELDTYPE` classes to field-surrounding divs.
+
+### Fixed
+- Fixed a bug where sites with database table prefixes could not save forms in the form builder.
+- Fixed a bug where an error could sometimes occur on the Form Behavior settings page.
+- Fixed a bug where the New Form wizard would not show an error if a duplicate form handle was entered.
+- Fixed a bug where Freeform could error when uninstalling.
+
 ## 4.0.0-beta.6 - 2022-05-05
 
 ### Fixed

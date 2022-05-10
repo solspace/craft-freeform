@@ -106,7 +106,7 @@ class PayloadForwarding extends FeatureBundle
         $options = $payloadEvent->getOptions();
         $payload = $payloadEvent->getPayload();
 
-        if (!isset($options[RequestOptions::FORM_PARAMS], $options[RequestOptions::JSON], $options[RequestOptions::BODY])) {
+        if (!array_intersect(array_keys($options), [RequestOptions::FORM_PARAMS, RequestOptions::JSON, RequestOptions::BODY])) {
             $options[RequestOptions::FORM_PARAMS] = $payload;
         }
 

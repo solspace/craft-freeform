@@ -15,8 +15,8 @@
 {% set selectedSubnavItem = "forms" %}
 
 {% set content %}
-    <div id="noforms"{% if forms %} class="hidden"{% endif %}>
-        <p>{{ "No forms found"|t('freeform') }}</p>
+    <div id="noforms" class="zilch {% if forms %}hidden{% endif %}">
+        {{ "No forms found"|t('freeform') }}
     </div>
 
     {% if forms|length %}

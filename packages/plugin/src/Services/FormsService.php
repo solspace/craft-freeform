@@ -296,6 +296,10 @@ class FormsService extends BaseService implements FormHandlerInterface
             }
         }
 
+        if ($model->hasErrors()) {
+            return false;
+        }
+
         if ($isNew) {
             $this->addFormManagePermissionToUser($model->id);
         }

@@ -16,7 +16,7 @@ use craft\db\Query;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
@@ -744,7 +744,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             $body = (string) $response->getBody();
 
             return preg_match('/freeform\.js/', $body);
-        } catch (BadResponseException) {
+        } catch (GuzzleException) {
         }
 
         return false;

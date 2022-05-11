@@ -103,7 +103,7 @@ class ExportProfileModel extends Model
     }
 
     /**
-     * @return null|\DateTime
+     * @return null|Carbon|\DateTime
      */
     public function getDateRangeEnd()
     {
@@ -120,7 +120,7 @@ class ExportProfileModel extends Model
     }
 
     /**
-     * @return null|\DateTime
+     * @return null|Carbon|\DateTime
      */
     public function getDateRangeStart()
     {
@@ -340,9 +340,12 @@ class ExportProfileModel extends Model
         $conditions = ['s.[[formId]] = :formId', 's.[[isSpam]] = false'];
         $parameters = ['formId' => $this->formId];
 
+        $timezoneOffset = \Craft::$app->projectConfig->get('plugins.freeform.export.timezoneOffset') ?? 0;
+
         $dateRangeStart = $this->getDateRangeStart();
         if ($dateRangeStart) {
             $dateRangeStart->setTimezone('UTC');
+            $dateRangeStart->addHours($timezoneOffset);
             $conditions[] = 's.[[dateCreated]] >= :dateRangeStart';
             $parameters['dateRangeStart'] = $dateRangeStart->format('Y-m-d H:i:s');
         }
@@ -350,6 +353,7 @@ class ExportProfileModel extends Model
         $dateRangeEnd = $this->getDateRangeEnd();
         if ($dateRangeEnd) {
             $dateRangeEnd->setTimezone('UTC');
+            $dateRangeEnd->addHours($timezoneOffset);
             $conditions[] = 's.[[dateCreated]] <= :dateRangeEnd';
             $parameters['dateRangeEnd'] = $dateRangeEnd->format('Y-m-d H:i:s');
         }

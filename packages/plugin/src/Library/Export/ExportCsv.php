@@ -74,7 +74,7 @@ class ExportCsv extends AbstractExport
                 $field = $column->getField();
 
                 if ($field && $field instanceof TableField) {
-                    $values = array_merge($values, $this->extractTableRow(0, $value, $field));
+                    $values = array_merge($values, $this->extractTableRow(0, $value ?? [], $field));
                 } else {
                     if ('' !== $value && null !== $value) {
                         if (\is_array($value) || \is_object($value)) {
@@ -101,7 +101,7 @@ class ExportCsv extends AbstractExport
                         $field = $column->getField();
                         $value = $column->getValue();
                         if ($field instanceof TableField) {
-                            $values = array_merge($values, $this->extractTableRow($i, $value, $field));
+                            $values = array_merge($values, $this->extractTableRow($i, $value ?? [], $field));
                         } else {
                             $values[] = null;
                         }

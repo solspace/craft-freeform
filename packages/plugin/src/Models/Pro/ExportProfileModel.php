@@ -94,7 +94,30 @@ class ExportProfileModel extends Model
         $command = $this->buildCommand();
 
         try {
-            return $command->all();
+            $results = $command->all();
+
+            $timezoneOffset = \Craft::$app->projectConfig->get('plugins.freeform.export.timezoneOffset') ?? 0;
+            if (!$timezoneOffset) {
+                return $results;
+            }
+
+            foreach ($results as $index => $row) {
+                if (isset($row['dateCreated'])) {
+                    $date = new Carbon($row['dateCreated'], 'UTC');
+                    $date->addHours($timezoneOffset);
+
+                    $results[$index]['dateCreated'] = $date->toDateTimeString();
+                }
+
+                if (isset($row['dateUpdated'])) {
+                    $date = new Carbon($row['dateUpdated'], 'UTC');
+                    $date->addHours($timezoneOffset);
+
+                    $results[$index]['dateUpdated'] = $date->toDateTimeString();
+                }
+            }
+
+            return $results;
         } catch (\Exception $e) {
             \Craft::$app->session->setError($e->getMessage());
 
@@ -374,7 +397,7 @@ class ExportProfileModel extends Model
                 }
 
                 if ('dateCreated' === $fieldId) {
-                    $fieldId = 's.[[dateCreated]]';
+                    $fieldId = 's.[[dateCreated]])';
                 }
 
                 if ('status' === $fieldId) {

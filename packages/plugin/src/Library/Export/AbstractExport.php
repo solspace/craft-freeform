@@ -38,12 +38,12 @@ abstract class AbstractExport implements ExportInterface
         bool $exportLabels = false,
         string $timezone = null
     ) {
+        $this->timezone = $timezone ?? date_default_timezone_get();
+
         $this->form = $form;
         $this->removeNewLines = $removeNewLines;
         $this->exportLabels = $exportLabels;
         $this->rows = $this->parseSubmissionDataIntoRows($submissionData);
-
-        $this->timezone = $timezone ?? date_default_timezone_get();
     }
 
     public function getForm(): Form

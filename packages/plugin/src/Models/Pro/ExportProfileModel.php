@@ -94,30 +94,7 @@ class ExportProfileModel extends Model
         $command = $this->buildCommand();
 
         try {
-            $results = $command->all();
-
-            $timezone = $this->getTimezoneOverride();
-            if (null === $timezone) {
-                return $results;
-            }
-
-            foreach ($results as $index => $row) {
-                if (isset($row['dateCreated'])) {
-                    $date = new Carbon($row['dateCreated'], 'UTC');
-                    $date->setTimezone($timezone);
-
-                    $results[$index]['dateCreated'] = $date->toDateTimeString();
-                }
-
-                if (isset($row['dateUpdated'])) {
-                    $date = new Carbon($row['dateUpdated'], 'UTC');
-                    $date->setTimezone($timezone);
-
-                    $results[$index]['dateUpdated'] = $date->toDateTimeString();
-                }
-            }
-
-            return $results;
+            return $command->all();
         } catch (\Exception $e) {
             \Craft::$app->session->setError($e->getMessage());
 
@@ -485,26 +462,5 @@ class ExportProfileModel extends Model
         }
 
         return $timezone ?: null;
-    }
-
-    private function getDateTimeString(Carbon $date): string
-    {
-        static $timezoneOffset, $timezone;
-        if (null === $timezoneOffset) {
-            $timezoneOffset = \Craft::$app->projectConfig->get('plugins.freeform.export.timezoneOffset') ?? 0;
-            $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? null;
-        }
-
-        if ($timezone) {
-            $date = new Carbon($date->toDateTimeString(), $timezone);
-        }
-
-        if (0 !== $timezoneOffset) {
-            $date->addHours($timezoneOffset);
-        }
-
-        $date->setTimezone('UTC');
-
-        return $date->toDateTimeString();
     }
 }

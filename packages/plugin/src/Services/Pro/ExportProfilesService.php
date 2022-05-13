@@ -245,8 +245,9 @@ class ExportProfilesService extends Component
         }
 
         $class = $exporters[$type];
+        $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone');
 
-        return new $class($form, $data, $removeNewlines, $exportLabels);
+        return new $class($form, $data, $removeNewlines, $exportLabels, $timezone);
     }
 
     public function export(ExportInterface $exporter, Form $form)

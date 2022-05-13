@@ -28,12 +28,22 @@ abstract class AbstractExport implements ExportInterface
     /** @var bool */
     private $exportLabels;
 
-    public function __construct(Form $form, array $submissionData, bool $removeNewLines = false, bool $exportLabels = false)
-    {
+    /** @var string */
+    private $timezone;
+
+    public function __construct(
+        Form $form,
+        array $submissionData,
+        bool $removeNewLines = false,
+        bool $exportLabels = false,
+        string $timezone = null
+    ) {
         $this->form = $form;
         $this->removeNewLines = $removeNewLines;
         $this->exportLabels = $exportLabels;
         $this->rows = $this->parseSubmissionDataIntoRows($submissionData);
+
+        $this->timezone = $timezone ?? date_default_timezone_get();
     }
 
     public function getForm(): Form
@@ -70,7 +80,7 @@ abstract class AbstractExport implements ExportInterface
                 $field = null;
                 if ('dateCreated' === $fieldId) {
                     $date = new Carbon($value, 'UTC');
-                    $date->setTimezone(date_default_timezone_get());
+                    $date->setTimezone($this->timezone);
 
                     $value = $date->toDateTimeString();
                 }

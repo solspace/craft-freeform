@@ -218,10 +218,10 @@ class SubmissionQuery extends ElementQuery
                 $form = $forms[$formId];
                 $contentTable = Submission::getContentTableName($form);
 
-                $this->query->leftJoin("{$contentTable} fc{$formId}", "`fc{$formId}`.[[id]] = {$table}.[[id]]");
+                $this->query->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
                 foreach ($form->getLayout()->getStorableFields() as $field) {
                     $fieldHandle = Submission::getFieldColumnName($field);
-                    $select[] = "`fc{$formId}`.[[{$fieldHandle}]] as form_{$formId}__{$fieldHandle}";
+                    $select[] = "[[fc{$formId}]].[[{$fieldHandle}]] as [[form_{$formId}__{$fieldHandle}]]";
                 }
             }
         }

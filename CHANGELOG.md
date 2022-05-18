@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## Unreleased
+
+### Fixed
+- Fixed a SQL error that would occur on PostgreSQL when viewing form submissions.
+
 ## 4.0.0-beta.7 - 2022-05-10
 
 ### Changed

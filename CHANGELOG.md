@@ -1,9 +1,11 @@
 # Solspace Freeform Changelog
 
-## Unreleased
+## 4.0.0-beta.8 - 2022-05-18
 
 ### Fixed
 - Fixed a SQL error that would occur on PostgreSQL when viewing form submissions.
+- Fixed a bug where sites with database table prefixes could experience an error when saving a form with a very long handle.
+- Fixed a bug with conditional Post Forwarding options check.
 
 ## 4.0.0-beta.7 - 2022-05-10
 

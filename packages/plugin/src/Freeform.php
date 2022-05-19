@@ -28,38 +28,7 @@ use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use craft\web\View;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Controllers\ApiController;
-use Solspace\Freeform\Controllers\BannersController;
-use Solspace\Freeform\Controllers\CodepackController;
-use Solspace\Freeform\Controllers\CrmController;
-use Solspace\Freeform\Controllers\DashboardController;
-use Solspace\Freeform\Controllers\DiagnosticsController;
-use Solspace\Freeform\Controllers\FeedsController;
-use Solspace\Freeform\Controllers\FieldsController;
-use Solspace\Freeform\Controllers\FileUploadController;
-use Solspace\Freeform\Controllers\FormsController;
-use Solspace\Freeform\Controllers\LogsController;
-use Solspace\Freeform\Controllers\MailingListsController;
-use Solspace\Freeform\Controllers\Migrations\NotificationsController as MigrateNotificationsController;
-use Solspace\Freeform\Controllers\notifications\DatabaseController;
-use Solspace\Freeform\Controllers\notifications\FilesController;
-use Solspace\Freeform\Controllers\notifications\SenderController;
-use Solspace\Freeform\Controllers\PaymentGatewaysController;
-use Solspace\Freeform\Controllers\Pro\ExportNotificationsController;
-use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
-use Solspace\Freeform\Controllers\Pro\Payments\PaymentWebhooksController;
-use Solspace\Freeform\Controllers\Pro\Payments\SubscriptionsController;
-use Solspace\Freeform\Controllers\Pro\QuickExportController;
-use Solspace\Freeform\Controllers\Pro\WebhooksController;
-use Solspace\Freeform\Controllers\ResourcesController;
-use Solspace\Freeform\Controllers\REST\FormsRESTController;
-use Solspace\Freeform\Controllers\REST\SettingsController as RESTSettingsController;
-use Solspace\Freeform\Controllers\SettingsController;
-use Solspace\Freeform\Controllers\SpamSubmissionsController;
-use Solspace\Freeform\Controllers\StatusesController;
-use Solspace\Freeform\Controllers\SubmissionsController;
-use Solspace\Freeform\Controllers\SubmitController;
-use Solspace\Freeform\Controllers\WelcomeScreenController;
+use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
@@ -485,40 +454,7 @@ class Freeform extends Plugin
         if (\Craft::$app->request->isConsoleRequest) {
             $this->controllerNamespace = 'Solspace\\Freeform\\Commands';
         } else {
-            $this->controllerMap = [
-                'dashboard' => DashboardController::class,
-                'api' => ApiController::class,
-                'submit' => SubmitController::class,
-                'codepack' => CodepackController::class,
-                'crm' => CrmController::class,
-                'mailing-lists' => MailingListsController::class,
-                'payment-gateways' => PaymentGatewaysController::class,
-                'fields' => FieldsController::class,
-                'forms' => FormsController::class,
-                'logs' => LogsController::class,
-                'notifications-files' => FilesController::class,
-                'notifications-database' => DatabaseController::class,
-                'notifications-sender' => SenderController::class,
-                'submissions' => SubmissionsController::class,
-                'spam-submissions' => SpamSubmissionsController::class,
-                'statuses' => StatusesController::class,
-                'settings' => SettingsController::class,
-                'resources' => ResourcesController::class,
-                'quick-export' => QuickExportController::class,
-                'export-profiles' => ExportProfilesController::class,
-                'export-notifications' => ExportNotificationsController::class,
-                'subscriptions' => SubscriptionsController::class,
-                'payment-webhooks' => PaymentWebhooksController::class,
-                'webhooks' => WebhooksController::class,
-                'banners' => BannersController::class,
-                'feeds' => FeedsController::class,
-                'welcome-screen' => WelcomeScreenController::class,
-                'rest-settings' => RESTSettingsController::class,
-                'migrate-notifications' => MigrateNotificationsController::class,
-                'file-upload' => FileUploadController::class,
-                'diagnostics' => DiagnosticsController::class,
-                'forms-rest' => FormsRESTController::class,
-            ];
+            $this->controllerNamespace = 'Solspace\\Freeform\\controllers';
         }
     }
 

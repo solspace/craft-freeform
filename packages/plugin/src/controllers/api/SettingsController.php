@@ -1,10 +1,10 @@
 <?php
 
-namespace Solspace\Freeform\Controllers\REST;
+namespace Solspace\Freeform\controllers\api;
 
 use craft\web\Request;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Controllers\BaseController;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\Settings;
 use yii\web\Response;

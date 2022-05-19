@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Controllers;
+namespace Solspace\Freeform\controllers;
 
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Resources\Bundles\DiagnosticsBundle;

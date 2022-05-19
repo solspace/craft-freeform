@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Controllers;
+namespace Solspace\Freeform\controllers;
 
 use craft\helpers\UrlHelper;
 use Solspace\Freeform\Freeform;

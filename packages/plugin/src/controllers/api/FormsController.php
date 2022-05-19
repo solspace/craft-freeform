@@ -1,9 +1,9 @@
 <?php
 
-namespace Solspace\Freeform\Controllers\REST;
+namespace Solspace\Freeform\controllers\api;
 
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Controllers\BaseController;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Composer;
@@ -13,7 +13,7 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
 use Solspace\Freeform\Models\FormModel;
 use yii\web\Response;
 
-class FormsRESTController extends BaseController
+class FormsController extends BaseController
 {
     public function init(): void
     {

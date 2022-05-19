@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Controllers\Pro;
+namespace Solspace\Freeform\controllers\pro;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;

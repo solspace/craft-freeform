@@ -1,0 +1,14 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "../plugin/src/Resources/js/client/",
+    "jsx": "react",
+    "lib": ["ESNext", "DOM"],
+    "resolveJsonModule": true,
+    "typeRoots": ["client/src/config/types", "client/node_modules/@types"],
+    "paths": {
+      "@ff-client/*": ["client/src/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

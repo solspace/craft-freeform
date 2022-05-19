@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Controllers;
+namespace Solspace\Freeform\controllers;
 
 use craft\web\Controller;
 use Solspace\Freeform\Freeform;

@@ -4,9 +4,11 @@ const initialState = {};
 
 export const selectAllMetadata = (state) => state;
 
-export const selectMetadata = (key, defaultValue = null) => (state) => {
-  return state[key] === undefined ? defaultValue : state[key];
-};
+export const selectMetadata =
+  (key, defaultValue = null) =>
+  (state) => {
+    return state[key] === undefined ? defaultValue : state[key];
+  };
 
 export const metadataSlice = createSlice({
   name: 'metadata',

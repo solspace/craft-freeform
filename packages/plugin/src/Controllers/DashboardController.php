@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Controllers;
+namespace Solspace\Freeform\controllers;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Freeform;

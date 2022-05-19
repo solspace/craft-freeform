@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Controllers\Migrations;
+namespace Solspace\Freeform\controllers\migrations;
 
 use Solspace\Freeform\Bundles\Migrations\Notifications\NotificationsMigrator;
 use Solspace\Freeform\Controllers\BaseController;

@@ -1,0 +1,11 @@
+{% extends "freeform/_layouts/main" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% set title = "Client"|t('freeform') %}
+{% set selectedSubnavItem = "dashboard" %}
+
+{% set content %}
+
+    <div id="freeform-client"></div>
+
+{% endset %}

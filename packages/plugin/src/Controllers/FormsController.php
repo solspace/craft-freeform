@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Controllers;
+namespace Solspace\Freeform\controllers;
 
 use craft\base\Field;
 use craft\commerce\Plugin as Commerce;

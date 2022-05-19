@@ -1,6 +1,12 @@
 <?php
 
 return [
+    // Client API
+    'freeform/client' => 'freeform/client/view',
+    'freeform/client/api/forms' => 'freeform/client/api/forms',
+    'freeform/client/api/forms/<id:\d+>' => 'freeform/client/api/forms',
+    'freeform/client/<id:.*>' => 'freeform/client/view',
+
     // Api
     'freeform/api/fields' => 'freeform/api/fields',
     'freeform/api/notifications' => 'freeform/api/notifications',
@@ -15,8 +21,8 @@ return [
     'freeform/api/finish-tutorial' => 'freeform/api/finish-tutorial',
     'freeform/api/get-submission-data' => 'freeform/api/get-submission-data',
     'freeform/api/options-from-source' => 'freeform/api/options-from-source',
-    'freeform/api/forms/options' => 'freeform/forms-rest/options',
-    'freeform/api/forms' => 'freeform/forms-rest',
+    'freeform/api/forms/options' => 'freeform/api/forms/options',
+    'freeform/api/forms' => 'freeform/api/forms',
     // Forms
     'freeform' => 'freeform/settings/default-view',
     'freeform/forms' => 'freeform/forms/index',
@@ -124,7 +130,7 @@ return [
     'freeform/resources/explore' => 'freeform/resources/explore',
     'freeform/resources/support' => 'freeform/resources/support',
     // Dashboard
-    'freeform/dashboard' => 'freeform/dashboard/index',
+    'freeform/dashboard' => 'freeform/dashboard',
     // Export
     'freeform/export/export-dialogue' => 'freeform/quick-export/export-dialogue',
     'freeform/export' => 'freeform/quick-export/index',
@@ -147,9 +153,9 @@ return [
     // Setup
     'freeform/welcome' => 'freeform/welcome-screen',
     // REST
-    'freeform/api/settings/general' => 'freeform/rest-settings/general',
-    'freeform/api/settings/spam' => 'freeform/rest-settings/spam',
-    'freeform/api/settings/reliability' => 'freeform/rest-settings/reliability',
+    'freeform/api/settings/general' => 'freeform/api/settings/general',
+    'freeform/api/settings/spam' => 'freeform/api/settings/spam',
+    'freeform/api/settings/reliability' => 'freeform/api/settings/reliability',
     // Migrations
     'freeform/migrate/notifications/db-to-file' => 'freeform/migrate-notifications/db-to-file',
 ];

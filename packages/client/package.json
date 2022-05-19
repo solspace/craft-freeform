@@ -1,0 +1,68 @@
+{
+  "name": "@ff/client",
+  "version": "1.0.0",
+  "description": "Freeform Client",
+  "scripts": {
+    "dev": "npm run clean && npm run watch",
+    "build": "npm run clean && NODE_ENV=production npm run compile",
+    "watch": "webpack --watch",
+    "clean": "rm -rf ../plugin/src/Resources/js/client",
+    "compile": "webpack",
+    "lint": "eslint -c .eslintrc.json .",
+    "test": "jest --maxWorkers=4",
+    "test:coverage": "jest --maxWorkers=4 --collect-coverage",
+    "test:watch": "jest --watch --maxWorkers=4"
+  },
+  "keywords": [
+    "Freeform",
+    "Craft CMS",
+    "App"
+  ],
+  "author": "Solspace Inc.",
+  "license": "MIT",
+  "dependencies": {
+    "@types/react-color": "^3.0.6",
+    "@types/react-query": "^1.2.9",
+    "axios": "^0.27.2",
+    "browserslist": "^4.20.3",
+    "lodash.camelcase": "^4.3.0",
+    "lodash.kebabcase": "^4.1.1",
+    "path-parse": "^1.0.7",
+    "react": "^18.1.0",
+    "react-color": "^2.19.3",
+    "react-dom": "^18.1.0",
+    "react-query": "^3.39.0",
+    "react-router-dom": "^6.3.0",
+    "react-transition-group": "^4.4.2",
+    "styled-components": "^5.3.5",
+    "url-parse": "^1.5.10"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^6.2.1",
+    "@types/lodash.camelcase": "^4.3.7",
+    "@types/lodash.kebabcase": "^4.1.7",
+    "@types/react": "^18.0.9",
+    "@types/react-dom": "^18.0.4",
+    "@types/react-transition-group": "^4.4.4",
+    "@types/styled-components": "^5.1.25",
+    "@types/url-parse": "^1.4.8",
+    "@types/webpack": "^5.28.0",
+    "@typescript-eslint/eslint-plugin": "^5.24.0",
+    "@typescript-eslint/parser": "^5.24.0",
+    "autoprefixer": "^10.4.7",
+    "css-loader": "^6.7.1",
+    "identity-obj-proxy": "^3.0.0",
+    "style-loader": "^3.3.1",
+    "terser-webpack-plugin": "^5.3.1",
+    "ts-loader": "^9.3.0",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
+  },
+  "browserslist": [
+    "defaults",
+    "not IE 11",
+    "not IE_Mob 11",
+    "last 2 versions"
+  ]
+}

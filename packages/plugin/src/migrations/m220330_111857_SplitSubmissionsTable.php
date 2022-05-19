@@ -97,7 +97,13 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             $tableColumns[$handle] = $this->text();
         }
 
-        $formHandle = trim(StringHelper::truncate($formHandle, 38, ''), '-_');
+        $prefix = \Craft::$app->db->tablePrefix;
+        $prefixLength = \strlen($prefix);
+
+        $maxHandleSize = 36 - $prefixLength;
+
+        $formHandle = trim(StringHelper::truncate($formHandle, $maxHandleSize, ''), '-_');
+        $formHandle = trim($formHandle, '-_');
 
         $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
 

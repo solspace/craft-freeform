@@ -1,6 +1,6 @@
 # Solspace Freeform Changelog
 
-## 3.13.9 - Unreleased
+## 3.13.10 - 2022-05-24
 
 ### Added
 - Added Export Email Notifications feature. Allows you to send exports as email notifications automatically.

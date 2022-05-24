@@ -80,6 +80,16 @@
 - Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 
+## 3.13.10 - 2022-05-24
+
+### Added
+- Added Export Email Notifications feature. Allows you to send exports as email notifications automatically.
+
+### Fixed
+- Fixed a bug where the Drag & Drop File Upload field type was requiring a file to be selected even when hidden by the Conditional Rules feature.
+- Fixed a bug where the predefined "Yesterday" option for Export Profiles returned yesterday 0:00 until now instead of yesterday 0:00 to 23:59.
+- Fixed a bug with conditional Post Forwarding options check.
+
 ## 3.13.9 - 2022-04-04
 
 ### Fixed

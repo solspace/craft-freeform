@@ -1,5 +1,23 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.8 - 2022-05-18
+
+### Fixed
+- Fixed a SQL error that would occur on PostgreSQL when viewing form submissions.
+- Fixed a bug where sites with database table prefixes could experience an error when saving a form with a very long handle.
+- Fixed a bug with conditional Post Forwarding options check.
+
+## 4.0.0-beta.7 - 2022-05-10
+
+### Changed
+- Updated the sample formatting templates to include `ff-fieldtype-FIELDTYPE` classes to field-surrounding divs.
+
+### Fixed
+- Fixed a bug where sites with database table prefixes could not save forms in the form builder.
+- Fixed a bug where an error could sometimes occur on the Form Behavior settings page.
+- Fixed a bug where the New Form wizard would not show an error if a duplicate form handle was entered.
+- Fixed a bug where Freeform could error when uninstalling.
+
 ## 4.0.0-beta.6 - 2022-05-05
 
 ### Fixed
@@ -61,6 +79,24 @@
 ### Removed
 - Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
+## 3.13.10 - 2022-05-24
+
+### Added
+- Added Export Email Notifications feature. Allows you to send exports as email notifications automatically.
+
+### Fixed
+- Fixed a bug where the Drag & Drop File Upload field type was requiring a file to be selected even when hidden by the Conditional Rules feature.
+- Fixed a bug where the predefined "Yesterday" option for Export Profiles returned yesterday 0:00 until now instead of yesterday 0:00 to 23:59.
+- Fixed a bug with conditional Post Forwarding options check.
+
+## 3.13.9 - 2022-04-04
+
+### Fixed
+- Fixed a bug where users with permissions to Create New Forms would encounter issues in the New Form wizard modal.
+- Fixed a bug where users without Create New Forms permission would see the New Form button in the CP Forms page.
+- Fixed a bug where the Formatting Template setting in the New Form wizard modal would not default correctly if custom formatting templates did not exist.
+- Fixed a bug where Number fields with a minimum value above `0` would still allow `0` as a valid value.
 
 ## 3.13.9 - 2022-04-04
 

@@ -205,7 +205,13 @@ class Submission extends Element
 
     public static function generateContentTableName(int $id, string $handle): string
     {
-        $handle = CraftStringHelper::truncate($handle, 38, '');
+        $prefix = \Craft::$app->db->tablePrefix;
+        $prefixLength = \strlen($prefix);
+
+        $maxHandleSize = 36 - $prefixLength;
+
+        $handle = CraftStringHelper::toSnakeCase($handle);
+        $handle = CraftStringHelper::truncate($handle, $maxHandleSize, '');
         $handle = trim($handle, '-_');
 
         return "{{%freeform_submissions_{$handle}_{$id}}}";

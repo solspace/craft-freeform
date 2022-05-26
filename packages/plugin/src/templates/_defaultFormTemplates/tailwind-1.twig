@@ -122,7 +122,7 @@
 
             {# Create a column except when creating Freeform Payments columns #}
             {% if field.type != 'cc_details' %}
-            <div class="main-column-class {{ columnClass }}"{{ field.rulesHtmlData }} style="overflow: hidden;">
+            <div class="main-column-class {{ columnClass }} ff-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }} style="overflow: hidden;">
             {% endif %}
                 {% if field.type == "checkbox_group" %}
 

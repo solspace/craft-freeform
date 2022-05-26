@@ -218,11 +218,12 @@ class ContentManager
 
         $schema = \Craft::$app->db->getSchema();
         $tableNames = $schema->getTableNames();
+        $prefix = \Craft::$app->db->tablePrefix;
 
         foreach ($tableNames as $name) {
-            if (preg_match("/^freeform_submissions_.*_{$formId}$/", $name)) {
+            if (preg_match("/{$prefix}(freeform_submissions_.*_{$formId})$/", $name, $matches)) {
                 $this->table = new TableInfo(
-                    '{{%'.$name.'}}',
+                    '{{%'.$matches[1].'}}',
                     $schema->getTableSchema($name)->columnNames
                 );
 

@@ -51,6 +51,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         foreach ($forms as $form) {
             $formId = (int) $form['id'];
             $formHandle = $form['handle'];
+            $formHandle = StringHelper::toSnakeCase($formHandle);
 
             $fieldMap = [];
             $layout = json_decode($form['layoutJson']);
@@ -67,7 +68,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                     continue;
                 }
 
-                $handle = StringHelper::toKebabCase($handle, '_');
+                $handle = StringHelper::toSnakeCase($handle);
                 $handle = StringHelper::truncate($handle, 50, '');
                 $handle = trim($handle, '-_');
 
@@ -97,7 +98,13 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             $tableColumns[$handle] = $this->text();
         }
 
-        $formHandle = trim(StringHelper::truncate($formHandle, 38, ''), '-_');
+        $prefix = \Craft::$app->db->tablePrefix;
+        $prefixLength = \strlen($prefix);
+
+        $maxHandleSize = 36 - $prefixLength;
+
+        $formHandle = trim(StringHelper::truncate($formHandle, $maxHandleSize, ''), '-_');
+        $formHandle = trim($formHandle, '-_');
 
         $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
 

@@ -16,3 +16,5 @@ yarnstart.sh
 .phpunit.result.cache
 .php_cs.cache
 .php-cs-fixer.cache
+
+http-client.private.env.json

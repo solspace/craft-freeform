@@ -332,7 +332,11 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                     break;
 
                 case ExternalOptionsInterface::SOURCE_USERS:
-                    $query = User::find()->groupId($target)->siteId($siteId);
+                    $query = User::find()
+                        ->status(User::STATUS_ACTIVE)
+                        ->groupId($target)
+                        ->siteId($siteId)
+                    ;
 
                     break;
 

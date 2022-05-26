@@ -210,6 +210,7 @@ class Submission extends Element
 
         $maxHandleSize = 36 - $prefixLength;
 
+        $handle = CraftStringHelper::toSnakeCase($handle);
         $handle = CraftStringHelper::truncate($handle, $maxHandleSize, '');
         $handle = trim($handle, '-_');
 

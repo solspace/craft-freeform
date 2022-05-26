@@ -1,0 +1,125 @@
+{% extends "freeform/export/_layout" %}
+{% import "_includes/forms" as forms %}
+
+{% set saveShortcutRedirect = 'freeform/export/notifications/{id}' %}
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t('freeform') }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+
+    <input type="hidden" name="action" value="freeform/export-notifications/save">
+    {{ redirectInput('freeform/export/notifications') }}
+    {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
+    {{ csrfInput() }}
+
+    {{ forms.textField({
+        first: true,
+        label: "Name"|t('freeform'),
+        instructions: "What this export notification will be called in the control panel."|t('freeform'),
+        id: 'name',
+        name: 'name',
+        value: notification.name,
+        errors: notification.getErrors('name'),
+        autofocus: true,
+        required: true
+    }) }}
+
+    {{ forms.selectField({
+        label: "Export Profile"|t('freeform'),
+        instructions: "Choose the Export Profile to use for this notification."|t('freeform'),
+        name: "profileId",
+        value: notification.profileId,
+        errors: notification.getErrors("profileId"),
+        required: true,
+        options: craft.freeformServices.exportProfiles.allNamesById,
+    })}}
+
+    {{ forms.selectField({
+        label: "File Type"|t('freeform'),
+        instructions: "Choose the export file type to use for this notification."|t('freeform'),
+        name: "fileType",
+        value: notification.fileType,
+        errors: notification.getErrors("fileType"),
+        required: true,
+        options: craft.freeformServices.exportProfiles.exporterTypes,
+    })}}
+
+    {{ forms.selectField({
+        label: "Frequency"|t('freeform'),
+        instructions: "Specify how often and which days (if applicable) you'd like to receive the email notifications. The chosen date will attempt to send a notification in the morning."|t('freeform'),
+        name: "frequency",
+        value: notification.frequency,
+        errors: notification.getErrors("freequency"),
+        required: true,
+        options: {
+            "-1": 'Daily'|t('freeform'),
+            "7": 'Weekly on Sundays'|t('freeform'),
+            "1": 'Weekly on Mondays'|t('freeform'),
+            "2": 'Weekly on Tuesdays'|t('freeform'),
+            "3": 'Weekly on Wednesdays'|t('freeform'),
+            "4": 'Weekly on Thursdays'|t('freeform'),
+            "5": 'Weekly on Fridays'|t('freeform'),
+            "6": 'Weekly on Saturdays'|t('freeform'),
+        },
+    })}}
+
+    {{ forms.textareaField({
+        label: "Emails to Notify"|t('freeform'),
+        instructions: "Enter the email address(es) that should be notified. If more than one, enter each one on a new line."|t('freeform'),
+        name: "recipients",
+        value: notification.recipientArray|join("\n"),
+        errors: notification.getErrors("recipients"),
+        required: true,
+        rows: 4,
+    })}}
+
+    <hr>
+
+    {{ forms.textField({
+        label: "File Name"|t('freeform'),
+        instructions: "The file name to be generated for the export. You can use the `form`, `profile` and `date` objects as a Twig template here to name your file. (e.g. `\"{{ form.handle }}-{{ date.toDateString }}\"` which would generate a filename of \"`some-form-handle-2022-01-01.csv`\"). The extension will be added automatically."|t('freeform'),
+        name: 'fileName',
+        placeholder: '{{ form.handle }}-{{ date.toDateString }}',
+        value: notification.fileName ?? '{{ form.handle }}-{{ date.toDateString }}',
+        errors: notification.getErrors('fileName'),
+    }) }}
+
+    <hr>
+
+    {{ forms.textField({
+        label: "Email Subject"|t('freeform'),
+        instructions: "The subject line for the email notification."|t('freeform'),
+        name: 'subject',
+        value: notification.subject,
+        errors: notification.getErrors('subject'),
+    }) }}
+
+    {{ forms.textareaField({
+        label: "Email Message"|t('freeform'),
+        instructions: "The text content of the email notification."|t('freeform'),
+        name: "message",
+        value: notification.message,
+        errors: notification.getErrors("message"),
+        rows: 4,
+    })}}
+
+{% endblock %}

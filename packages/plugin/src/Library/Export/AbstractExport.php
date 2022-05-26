@@ -16,23 +16,19 @@ use Solspace\Freeform\Library\Export\Objects\Row;
 
 abstract class AbstractExport implements ExportInterface
 {
-    /** @var Form */
-    private $form;
-
     /** @var Row[] */
-    private $rows;
+    private array $rows;
 
-    /** @var bool */
-    private $removeNewLines;
+    private string $timezone;
 
-    /** @var bool */
-    private $exportLabels;
-
-    public function __construct(Form $form, array $submissionData, bool $removeNewLines = false, bool $exportLabels = false)
-    {
-        $this->form = $form;
-        $this->removeNewLines = $removeNewLines;
-        $this->exportLabels = $exportLabels;
+    public function __construct(
+        private Form $form,
+        array $submissionData,
+        private bool $removeNewLines = false,
+        private bool $exportLabels = false,
+        string $timezone = null
+    ) {
+        $this->timezone = $timezone ?? date_default_timezone_get();
         $this->rows = $this->parseSubmissionDataIntoRows($submissionData);
     }
 
@@ -70,7 +66,7 @@ abstract class AbstractExport implements ExportInterface
                 $field = null;
                 if ('dateCreated' === $fieldId) {
                     $date = new Carbon($value, 'UTC');
-                    $date->setTimezone(date_default_timezone_get());
+                    $date->setTimezone($this->timezone);
 
                     $value = $date->toDateTimeString();
                 }
@@ -130,52 +126,17 @@ abstract class AbstractExport implements ExportInterface
                         continue;
                     }
                 } else {
-                    switch ($fieldId) {
-                        case 'id':
-                            $label = 'ID';
-
-                            break;
-
-                        case 'dateCreated':
-                            $label = 'Date Created';
-
-                            break;
-
-                        case 'ip':
-                            $label = 'IP';
-
-                            break;
-
-                        case 'cc_type':
-                            $label = 'Payment Type';
-
-                            break;
-
-                        case 'cc_amount':
-                            $label = 'Payment Amount';
-
-                            break;
-
-                        case 'cc_currency':
-                            $label = 'Payment Currency';
-
-                            break;
-
-                        case 'cc_card':
-                            $label = 'Payment Card';
-
-                            break;
-
-                        case 'cc_status':
-                            $label = 'Payment Status';
-
-                            break;
-
-                        default:
-                            $label = ucfirst($label);
-
-                            break;
-                    }
+                    $label = match ($fieldId) {
+                        'id' => 'ID',
+                        'dateCreated' => 'Date Created',
+                        'ip' => 'IP',
+                        'cc_type' => 'Payment Type',
+                        'cc_amount' => 'Payment Amount',
+                        'cc_currency' => 'Payment Currency',
+                        'cc_card' => 'Payment Card',
+                        'cc_status' => 'Payment Status',
+                        default => ucfirst($label),
+                    };
                 }
 
                 $rowObject->addColumn(

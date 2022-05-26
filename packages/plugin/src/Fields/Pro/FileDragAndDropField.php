@@ -104,7 +104,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
         $file = $_FILES[$handle] ?? null;
         if (!$file) {
-            if ($this->isRequired() && empty($this->getValue())) {
+            if ($this->isRequired() && !$this->isHidden() && empty($this->getValue())) {
                 return [$this->translate('This field is required')];
             }
 

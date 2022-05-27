@@ -16,7 +16,6 @@ use craft\helpers\Assets;
 use craft\web\Controller;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FieldModel;
@@ -44,7 +43,7 @@ class FieldsController extends Controller
             'freeform/fields',
             [
                 'fields' => $fields,
-                'fieldTypes' => AbstractField::getFieldTypes(),
+                'fieldTypes' => $this->getFieldsService()->getFieldTypes(),
             ]
         );
     }

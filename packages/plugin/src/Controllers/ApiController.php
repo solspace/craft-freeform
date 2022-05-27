@@ -21,7 +21,6 @@ use craft\helpers\Db;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
@@ -168,7 +167,7 @@ class ApiController extends BaseController
             $errors[] = Freeform::t('Handle is required');
         }
 
-        $allowedFieldTypes = array_keys(AbstractField::getFieldTypes());
+        $allowedFieldTypes = array_keys($this->getFieldsService()->getFieldTypes());
         if (!$type || !\in_array($type, $allowedFieldTypes, true)) {
             $errors[] = Freeform::t(
                 'Type {type} is not allowed. Allowed types are ({allowedTypes})',

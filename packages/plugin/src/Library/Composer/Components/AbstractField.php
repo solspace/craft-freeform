@@ -138,33 +138,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $field;
     }
 
-    public static function getFieldTypes(): array
+    public static function getSvgIcon(): ?string
     {
-        return [
-            self::TYPE_TEXT => 'Text',
-            self::TYPE_TEXTAREA => 'Textarea',
-            self::TYPE_EMAIL => 'Email',
-            self::TYPE_HIDDEN => 'Hidden',
-            self::TYPE_SELECT => 'Select',
-            self::TYPE_MULTIPLE_SELECT => 'Multi select',
-            self::TYPE_CHECKBOX => 'Checkbox',
-            self::TYPE_CHECKBOX_GROUP => 'Checkbox group',
-            self::TYPE_RADIO_GROUP => 'Radio group',
-            self::TYPE_FILE => 'File Upload',
-            self::TYPE_FILE_DRAG_AND_DROP => 'File Drag & Drop',
-            self::TYPE_DYNAMIC_RECIPIENTS => 'Dynamic Recipients',
-            self::TYPE_DATETIME => 'Date & Time',
-            self::TYPE_NUMBER => 'Number',
-            self::TYPE_PHONE => 'Phone',
-            self::TYPE_WEBSITE => 'Website',
-            self::TYPE_RATING => 'Rating',
-            self::TYPE_REGEX => 'Regex',
-            self::TYPE_CONFIRMATION => 'Confirmation',
-            self::TYPE_OPINION_SCALE => 'Opinion Scale',
-            self::TYPE_SIGNATURE => 'Signature',
-            self::TYPE_TABLE => 'Table',
-            self::TYPE_INVISIBLE => 'Invisible',
-        ];
+        return file_get_contents(__DIR__.'/../../../Fields/Icons/no-icon.svg');
     }
 
     public static function getFieldTypeName(): string

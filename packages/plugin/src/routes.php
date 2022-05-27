@@ -3,8 +3,9 @@
 return [
     // Client API
     'freeform/client' => 'freeform/client/view',
+    'freeform/client/api/fields/types' => 'freeform/client/api/field-types',
     'freeform/client/api/forms' => 'freeform/client/api/forms',
-    'freeform/client/api/forms/<id:\d+>' => 'freeform/client/api/forms',
+    'freeform/client/api/forms/<id:[a-zA-Z0-9\-_]+>' => 'freeform/client/api/forms',
     'freeform/client/<id:.*>' => 'freeform/client/view',
 
     // Api
@@ -22,7 +23,7 @@ return [
     'freeform/api/get-submission-data' => 'freeform/api/get-submission-data',
     'freeform/api/options-from-source' => 'freeform/api/options-from-source',
     'freeform/api/forms/options' => 'freeform/api/forms/options',
-    'freeform/api/forms' => 'freeform/api/forms',
+    'freeform/api/forms' => 'freeform/api/forms/index',
     // Forms
     'freeform' => 'freeform/settings/default-view',
     'freeform/forms' => 'freeform/forms/index',

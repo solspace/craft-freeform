@@ -37,6 +37,47 @@ class Install extends StreamlinedInstallMigration
                 ->addField('gtmId', $this->string()->null())
                 ->addField('gtmEventName', $this->string()->null()),
 
+            (new Table('freeform_forms_layouts'))
+                ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer()->notNull())
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_forms_pages'))
+                ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('layoutId', $this->integer()->notNull())
+                ->addField('label', $this->string(255)->notNull())
+                ->addField('handle', $this->string(200)->notNull())
+                ->addField('order', $this->integer()->notNull())
+                ->addIndex(['formId', 'order'])
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('layoutId', 'freeform_forms_layout', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_forms_rows'))
+                ->addField('id', $this->primaryKey())
+                ->addField('layoutId', $this->integer()->notNull())
+                ->addField('order', $this->integer())
+                ->addIndex(['layoutId', 'order'])
+                ->addForeignKey('layoutId', 'freeform_forms_layouts', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_forms_cells'))
+                ->addField('id', $this->primaryKey())
+                ->addField('rowId', $this->integer()->notNull())
+                ->addField('order', $this->integer())
+                ->addField('type', $this->string(255)->notNull())
+                ->addField('metadata', $this->mediumText())
+                ->addIndex(['rowId', 'order'])
+                ->addForeignKey('rowId', 'freeform_forms_rows', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_forms_fields'))
+                ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('cellId', $this->integer()->notNull())
+                ->addField('type', $this->string(255)->notNull())
+                ->addField('metadata', $this->mediumText())
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('cellId', 'freeform_forms_cells', 'id', ForeignKey::CASCADE),
+
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())
                 ->addField('type', $this->string(50)->notNull())

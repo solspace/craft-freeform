@@ -3,24 +3,24 @@ import React from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
-type Form = {
-  id: number;
-  name: string;
-};
+import { Builder } from '@ff-client/app/components/builder/builder';
+import { Form } from '@ff-client/types/forms';
 
 type RouteParams = {
-  id: string;
+  handle: string;
 };
 
 export const Get: React.FC = () => {
-  const { id } = useParams<RouteParams>();
+  const { handle } = useParams<RouteParams>();
 
-  const { data, isFetching, isError, error } = useQuery(['forms', id], () =>
-    axios.get<Form>(`/client/api/forms/${id}`).then((res) => res.data)
+  const { data, isFetching, isError, error } = useQuery(
+    ['forms', handle],
+    () => axios.get<Form>(`/client/api/forms/${handle}`).then((res) => res.data),
+    { staleTime: Infinity }
   );
 
   if (isFetching) {
-    return <div>fetching a single form...</div>;
+    return <div>Fetching {handle}...</div>;
   }
 
   if (isError) {
@@ -30,6 +30,7 @@ export const Get: React.FC = () => {
   return (
     <div>
       Single Form {data.id} {data.name}
+      <Builder />
     </div>
   );
 };

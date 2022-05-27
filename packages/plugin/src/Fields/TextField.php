@@ -29,6 +29,11 @@ class TextField extends AbstractField implements SingleValueInterface, Placehold
     /** @var string */
     protected $customInputType;
 
+    public static function getSvgIcon(): ?string
+    {
+        return file_get_contents(__DIR__.'/Icons/text.svg');
+    }
+
     /**
      * Return the field TYPE.
      */

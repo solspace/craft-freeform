@@ -214,9 +214,6 @@ class Freeform extends Plugin
         return self::getInstance()->lock->isLocked($key, $seconds);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public static function editions(): array
     {
         return [
@@ -225,9 +222,6 @@ class Freeform extends Plugin
         ];
     }
 
-    /**
-     * @param string $language
-     */
     public static function t(string $message, array $params = [], string $language = null): string
     {
         return \Craft::t(self::TRANSLATION_CATEGORY, $message, $params, $language);
@@ -243,9 +237,6 @@ class Freeform extends Plugin
         return self::EDITION_LITE === $this->edition;
     }
 
-    /**
-     * @throws ForbiddenHttpException
-     */
     public function requirePro()
     {
         if (!$this->isPro()) {
@@ -253,10 +244,6 @@ class Freeform extends Plugin
         }
     }
 
-    /**
-     * Includes CSS and JS files
-     * Registers custom class auto-loader.
-     */
     public function init()
     {
         parent::init();

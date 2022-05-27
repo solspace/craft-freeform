@@ -7,7 +7,6 @@ const App: React.FC = () => {
       App
       <nav>
         <Link to="/forms">Forms</Link>
-        <Link to="/forms/2">One Form</Link>
         <Link to="/settings">Settings</Link>
       </nav>
       <Outlet />

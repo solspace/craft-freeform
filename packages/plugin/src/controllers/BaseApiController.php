@@ -7,7 +7,7 @@ use yii\web\Response;
 
 abstract class BaseApiController extends BaseController
 {
-    public function actionIndex(?int $id): Response
+    public function actionIndex($id = null): Response
     {
         $request = $this->request;
         $response = match ($request->method) {
@@ -25,17 +25,17 @@ abstract class BaseApiController extends BaseController
         throw new NotFoundHttpException('GET request not supported');
     }
 
-    protected function getOne(int $id): array
+    protected function getOne(int|string $id): array|object|null
     {
         throw new NotFoundHttpException('GET request not supported');
     }
 
-    protected function post(?int $id): array
+    protected function post(int|string $id = null): array|object
     {
         throw new NotFoundHttpException('POST request not supported');
     }
 
-    protected function delete(int $id): array
+    protected function delete(int $id): bool
     {
         throw new NotFoundHttpException('DELETE request not supported');
     }

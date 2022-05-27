@@ -3,14 +3,15 @@
 namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Events\ArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\DataObjects\FieldType;
 
 class FetchFieldTypes extends ArrayableEvent
 {
     private $types;
 
     private $editableTypes;
+
+    private array $typeInfo = [];
 
     /**
      * MailingListTypesEvent constructor.
@@ -37,21 +38,24 @@ class FetchFieldTypes extends ArrayableEvent
 
     public function addType(string $class): self
     {
-        $reflectionClass = new \ReflectionClass($class);
-
-        /** @var AbstractField $class */
-        $type = $class::getFieldType();
-        $name = $class::getFieldTypeName();
-
-        if ($reflectionClass->isSubclassOf(AbstractField::class)) {
-            $this->types[$type] = $name;
+        $typeInfo = new FieldType($class);
+        if (!$typeInfo) {
+            return $this;
         }
 
-        if (!$reflectionClass->implementsInterface(NoStorageInterface::class)) {
-            $this->editableTypes[$type] = $name;
+        $this->typeInfo[$class] = $typeInfo;
+        $this->types[] = $typeInfo->getType();
+
+        if ($typeInfo->isStorable()) {
+            $this->editableTypes[$typeInfo->getType()] = $typeInfo->getName();
         }
 
         return $this;
+    }
+
+    public function getTypeInfo(): array
+    {
+        return array_values($this->typeInfo);
     }
 
     public function getTypes(): array

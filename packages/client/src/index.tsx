@@ -2,7 +2,7 @@ import './config';
 
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -10,18 +10,10 @@ import App from './App';
 import { Form, Forms } from './app/pages/forms';
 import { Settings } from './app/pages/settings/settings';
 import { generateUrl } from './utils/urls';
+import { queryClient } from './config/query-client';
 
 const container = document.getElementById('freeform-client');
 const root = ReactDOM.createRoot(container);
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: false,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 
 root.render(
   <StrictMode>
@@ -31,7 +23,7 @@ root.render(
         <Routes>
           <Route path="/" element={<App />}>
             <Route path="forms">
-              <Route path=":id" element={<Form />} />
+              <Route path=":handle/*" element={<Form />} />
               <Route index element={<Forms />} />
             </Route>
             <Route path="settings" element={<Settings />} />

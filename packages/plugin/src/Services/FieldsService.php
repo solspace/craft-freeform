@@ -133,6 +133,14 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         ;
     }
 
+    public function getFieldTypesInfo(): array
+    {
+        $fetchTypesEvent = new FetchFieldTypes();
+        $this->trigger(self::EVENT_FETCH_TYPES, $fetchTypesEvent);
+
+        return $fetchTypesEvent->getTypeInfo();
+    }
+
     public function getFieldTypes(): array
     {
         $fetchTypesEvent = new FetchFieldTypes();

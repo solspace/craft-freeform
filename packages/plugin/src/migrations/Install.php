@@ -72,7 +72,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('handle', $this->string(255)->notNull()->unique())
                 ->addField('type', $this->string(50)->notNull())
                 ->addField('class', $this->string(255))
-                ->addField('accessToken', $this->string(255))
+                ->addField('accessToken', $this->text())
                 ->addField('settings', $this->text())
                 ->addField('forceUpdate', $this->boolean()->defaultValue(false))
                 ->addField('lastUpdate', $this->dateTime())

@@ -1,5 +1,6 @@
 {
   "packages": [
+    "packages/client",
     "packages/builder",
     "packages/scripts",
     "packages/styles",

@@ -10,7 +10,7 @@ import { useFetchFieldTypes } from './base-fields.queries';
 import { FieldName, Icon, List, ListItem } from './base-fields.styles';
 
 export const BaseFields: React.FC = () => {
-  const { data, isFetching, isError, error } = useFetchFieldTypes();
+  const { data, isFetching, isError, error, refetch } = useFetchFieldTypes();
 
   if (isFetching) {
     return (
@@ -29,7 +29,12 @@ export const BaseFields: React.FC = () => {
   return (
     <List>
       {data.map((fieldType) => (
-        <ListItem key={fieldType.class}>
+        <ListItem
+          key={fieldType.class}
+          onClick={(): void => {
+            refetch();
+          }}
+        >
           <Icon dangerouslySetInnerHTML={{ __html: fieldType.icon }} />
           <FieldName>{fieldType.name}</FieldName>
         </ListItem>

@@ -1,12 +1,15 @@
+import { animated } from 'react-spring';
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
-  flex-basis: 400px;
-
-  padding: var(--m);
+export const Wrapper = styled(animated.div)`
+  padding: 0;
+  overflow: hidden;
 `;
 
-export const Container = styled.div`
+export const Container = styled(animated.div)`
+  position: relative;
+
+  margin: var(--m);
   padding: var(--m);
 
   background: #f3f7fc;

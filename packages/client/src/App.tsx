@@ -4,7 +4,6 @@ import { Link, Outlet } from 'react-router-dom';
 const App: React.FC = () => {
   return (
     <div id="freeform-client-app">
-      App
       <nav>
         <Link to="/forms">Forms</Link>
         <Link to="/settings">Settings</Link>

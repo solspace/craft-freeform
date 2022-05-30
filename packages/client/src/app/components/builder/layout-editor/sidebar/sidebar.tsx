@@ -8,11 +8,12 @@ type Props = {
   visible: boolean;
 };
 
+const show = { opacity: 0, width: 0, x: -400 };
+const hide = { opacity: 1, width: 400, x: 0 };
+
 export const Sidebar: React.FC<Props> = ({ visible }) => {
   const style = useSpring({
-    from: { opacity: 0, width: 0, x: -400 },
-    to: { opacity: 1, width: 400, x: 0 },
-    reverse: !visible,
+    to: visible ? hide : show,
   });
 
   return (

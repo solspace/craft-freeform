@@ -9,8 +9,8 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import App from './App';
 import { Form, Forms } from './app/pages/forms';
 import { Settings } from './app/pages/settings/settings';
-import { generateUrl } from './utils/urls';
 import { queryClient } from './config/query-client';
+import { generateUrl } from './utils/urls';
 
 const container = document.getElementById('freeform-client');
 const root = ReactDOM.createRoot(container);

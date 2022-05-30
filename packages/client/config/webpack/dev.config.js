@@ -19,7 +19,7 @@ module.exports = merge(baseConfig, {
     host: '127.0.0.1',
     allowedHosts: ['craft.test'],
     hot: true,
-    https: true,
+    server: 'https',
     client: {
       webSocketURL: 'https://127.0.0.1:8080/ws',
     },
@@ -55,5 +55,5 @@ module.exports = merge(baseConfig, {
     ],
   },
 
-  devtool: 'eval-cheap-source-map',
+  devtool: 'eval-source-map',
 });

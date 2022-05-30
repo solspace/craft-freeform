@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 
+import InputIcon from '../assets/input.svg';
+import SettingsIcon from '../assets/settings.svg';
 import { FieldLayout } from './field-layout/field-layout';
 import { Grid } from './layout-editor.styles';
 import { SideButtons } from './side-buttons/side-buttons';
@@ -11,8 +13,12 @@ export const LayoutEditor: React.FC = () => {
   return (
     <Grid>
       <SideButtons>
-        <SideButtons.Button onClick={(): void => setVisible(!visible)}>Btn</SideButtons.Button>
-        <SideButtons.Button />
+        <SideButtons.Button onClick={(): void => setVisible(!visible)}>
+          <InputIcon />
+        </SideButtons.Button>
+        <SideButtons.Button>
+          <SettingsIcon />
+        </SideButtons.Button>
         <SideButtons.Button />
       </SideButtons>
       <Sidebar visible={visible} />

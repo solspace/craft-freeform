@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Freeform Client",
   "scripts": {
-    "dev": "npm run clean && npm run watch",
+    "dev": "npm run clean && NODE_ENV=development npm run watch",
     "build": "npm run clean && NODE_ENV=production npm run compile",
-    "watch": "webpack --watch",
+    "watch": "webpack serve --config ./config/webpack/dev.config.js",
     "clean": "rm -rf ../plugin/src/Resources/js/client",
-    "compile": "webpack",
+    "compile": "webpack --config ./config/webpack/prod.config.js",
     "lint": "eslint -c .eslintrc.json .",
     "test": "jest --maxWorkers=4",
     "test:coverage": "jest --maxWorkers=4 --collect-coverage",
@@ -39,6 +39,7 @@
     "url-parse": "^1.5.10"
   },
   "devDependencies": {
+    "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
     "@svgr/webpack": "^6.2.1",
     "@types/lodash.camelcase": "^4.3.7",
     "@types/lodash.kebabcase": "^4.1.7",
@@ -53,12 +54,16 @@
     "autoprefixer": "^10.4.7",
     "css-loader": "^6.7.1",
     "identity-obj-proxy": "^3.0.0",
+    "react-refresh": "^0.13.0",
+    "react-refresh-typescript": "^2.0.5",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.1",
     "ts-loader": "^9.3.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.72.1",
-    "webpack-cli": "^4.9.2"
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.9.0",
+    "webpack-merge": "^5.8.0"
   },
   "browserslist": [
     "defaults",

@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.9 - 2022-05-31
+
+### Added
+- Added Export Email Notifications feature. Allows you to send exports as email notifications automatically.
+
+### Fixed
+- Fixed a bug where the OAuth flow for email marketing integrations was not working correctly.
+- Fixed a bug where renaming a form handle (uppercase to lowercase, etc) could result in issues with generating the corresponding submissions database table name.
+- Fixed a bug where the Drag & Drop File Upload field type was requiring a file to be selected even when hidden by the Conditional Rules feature.
+- Fixed a bug where the predefined "Yesterday" option for Export Profiles returned yesterday 0:00 until now instead of yesterday 0:00 to 23:59.
+- Fixed a bug with conditional Post Forwarding options check.
+
 ## 4.0.0-beta.8 - 2022-05-18
 
 ### Fixed

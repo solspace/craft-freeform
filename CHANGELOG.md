@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.13.11 - 2022-06-01
+
+### Added
+- Added setting to have CSV and Excel exports use field handles for headings instead of field labels.
+- Added `data-skip-html-reload` form attribute option to bypass HTML reload for AJAX forms (when not using render method)
+
 ## 3.13.10 - 2022-05-24
 
 ### Added

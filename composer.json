@@ -69,6 +69,7 @@
     }
   },
   "config": {
+    "platform-check": false,
     "allow-plugins": {
       "yiisoft/yii2-composer": true,
       "craftcms/plugin-installer": true

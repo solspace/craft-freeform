@@ -111,11 +111,7 @@ class SubmissionsController extends BaseController
             throw new FreeformException(Freeform::t('No submissions found'));
         }
 
-        $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone');
-
-        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
-        $exporter = new ExportCsv($form->getForm(), $submissions, $removeNewlines, false, $timezone);
-
+        $exporter = new ExportCsv($form->getForm(), $submissions, $this->getExportProfileService()->getExportSettings());
         $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i', time()));
 
         $this->getExportProfileService()->outputFile($exporter->export(), $fileName, $exporter->getMimeType());

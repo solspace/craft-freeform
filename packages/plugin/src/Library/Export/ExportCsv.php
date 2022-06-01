@@ -23,9 +23,6 @@ class ExportCsv extends AbstractExport
         return 'csv';
     }
 
-    /**
-     * @return string
-     */
     public function export()
     {
         if (empty($this->getRows())) {
@@ -61,7 +58,7 @@ class ExportCsv extends AbstractExport
                             $labels[] = $layout['label'] ?? '-';
                         }
                     } else {
-                        $labels[] = $column->getLabel();
+                        $labels[] = $this->isHandlesAsNames() ? $column->getHandle() : $column->getLabel();
                     }
                 }
 

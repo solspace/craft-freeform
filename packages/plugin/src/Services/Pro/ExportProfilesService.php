@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\Export\Profiles\RegisterExporterEvent;
 use Solspace\Freeform\Events\Export\Profiles\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
 use Solspace\Freeform\Library\Export\ExportExcel;
@@ -234,20 +235,28 @@ class ExportProfilesService extends Component
         }
     }
 
+    public function getExportSettings(): ExportSettings
+    {
+        $settings = Freeform::getInstance()->settings;
+
+        return new ExportSettings(
+            $settings->isRemoveNewlines(),
+            $settings->getSettingsModel()->exportLabels,
+            \Craft::$app->projectConfig->get('plugins.freeform.export.timezone') ?? date_default_timezone_get(),
+            $settings->getSettingsModel()->exportHandlesAsNames
+        );
+    }
+
     public function createExporter(string $type, Form $form, array $data): ExportInterface
     {
-        $removeNewlines = Freeform::getInstance()->settings->isRemoveNewlines();
-        $exportLabels = Freeform::getInstance()->settings->getSettingsModel()->exportLabels;
-
         $exporters = $this->getExporters();
         if (!isset($exporters[$type])) {
             throw new FreeformException("Cannot export type `{$type}`");
         }
 
         $class = $exporters[$type];
-        $timezone = \Craft::$app->projectConfig->get('plugins.freeform.export.timezone');
 
-        return new $class($form, $data, $removeNewlines, $exportLabels, $timezone);
+        return new $class($form, $data, $this->getExportSettings());
     }
 
     public function export(ExportInterface $exporter, Form $form)

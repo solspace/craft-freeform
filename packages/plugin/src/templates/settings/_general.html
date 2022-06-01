@@ -106,6 +106,14 @@
         errors: settings.errors("exportLabels"),
     }) }}
 
+    {{ forms.lightswitchField({
+        label: "Use Field Handles for Headings when Exporting"|t('freeform'),
+        instructions: "Enable this to use field handles as headings instead of field labels when exporting submissions."|t('freeform'),
+        name: "settings[exportHandlesAsNames]",
+        on: settings.exportHandlesAsNames,
+        errors: settings.errors("exportHandlesAsNames"),
+    }) }}
+
     {% if craft.freeform.pro %}
 
         {{ forms.lightswitchField({

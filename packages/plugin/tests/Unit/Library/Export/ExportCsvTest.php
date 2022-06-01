@@ -9,6 +9,7 @@ use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Layout;
+use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Export\ExportCsv;
 
 /**
@@ -183,13 +184,16 @@ class ExportCsvTest extends TestCase
             ->willReturn($layoutMock)
         ;
 
+        $settings = new ExportSettings();
+        $settings->setRemoveNewlines(true);
+
         $exporter = new ExportCsv(
             $formMock,
             [
                 ['id' => 1, 'field_1' => "some text\ncontaining\nnewlines"],
                 ['id' => 2, 'field_1' => "other text\ncontaining\n\n\nnewlines"],
             ],
-            true
+            $settings
         );
 
         $expected = <<<'EXPECTED'
@@ -240,6 +244,51 @@ class ExportCsvTest extends TestCase
 
 
             newlines"
+            EXPECTED;
+
+        $this->assertSame($expected, $exporter->export());
+    }
+
+    public function testExportHandlesAsNames()
+    {
+        $textareaFieldMock = $this->createMock(TextareaField::class);
+        $textareaFieldMock
+            ->method('getLabel')
+            ->willReturn('Textarea')
+        ;
+        $textareaFieldMock
+            ->method('getHandle')
+            ->willReturn('texty')
+        ;
+
+        $layoutMock = $this->createMock(Layout::class);
+        $layoutMock
+            ->method('getFieldById')
+            ->willReturn($textareaFieldMock)
+        ;
+
+        $formMock = $this->createMock(Form::class);
+        $formMock
+            ->method('getLayout')
+            ->willReturn($layoutMock)
+        ;
+
+        $settings = new ExportSettings();
+        $settings->setHandlesAsNames(true);
+
+        $exporter = new ExportCsv(
+            $formMock,
+            [
+                ['id' => 1, 'field_1' => 'some text'],
+                ['id' => 2, 'field_1' => 'other text'],
+            ],
+            $settings
+        );
+
+        $expected = <<<'EXPECTED'
+            "id","texty"
+            "1","some text"
+            "2","other text"
             EXPECTED;
 
         $this->assertSame($expected, $exporter->export());

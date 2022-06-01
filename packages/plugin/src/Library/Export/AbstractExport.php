@@ -10,6 +10,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValu
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\Objects\Column;
 use Solspace\Freeform\Library\Export\Objects\Row;
@@ -19,16 +20,26 @@ abstract class AbstractExport implements ExportInterface
     /** @var Row[] */
     private array $rows;
 
-    private string $timezone;
+    private ?string $timezone;
+    private bool $removeNewLines;
+    private bool $exportLabels;
+    private bool $handlesAsNames;
 
     public function __construct(
         private Form $form,
         array $submissionData,
-        private bool $removeNewLines = false,
-        private bool $exportLabels = false,
-        string $timezone = null
+        ExportSettings $settings = null
     ) {
-        $this->timezone = $timezone ?? date_default_timezone_get();
+        if (null === $settings) {
+            $settings = new ExportSettings();
+        }
+
+        $this->timezone = $settings->getTimezone();
+
+        $this->removeNewLines = $settings->isRemoveNewlines();
+        $this->exportLabels = $settings->isExportLabels();
+        $this->handlesAsNames = $settings->isHandlesAsNames();
+
         $this->rows = $this->parseSubmissionDataIntoRows($submissionData);
     }
 
@@ -48,6 +59,11 @@ abstract class AbstractExport implements ExportInterface
     public function isRemoveNewLines(): bool
     {
         return $this->removeNewLines;
+    }
+
+    public function isHandlesAsNames(): bool
+    {
+        return $this->handlesAsNames;
     }
 
     /**

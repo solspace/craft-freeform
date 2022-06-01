@@ -681,8 +681,10 @@ export default class Freeform {
               form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
             }
 
-            this._resetHandlers();
-            this._setUp();
+            if (!this.options.skipHtmlReload) {
+              this._resetHandlers();
+              this._setUp();
+            }
 
             if (finished) {
               if (!this.options.disableReset) {

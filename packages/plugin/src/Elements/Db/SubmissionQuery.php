@@ -211,7 +211,7 @@ class SubmissionQuery extends ElementQuery
                     $joinFormIds[] = $this->formId;
                 }
             } else {
-                $joinFormIds = array_values($formHandleToIdMap);
+                $joinFormIds = array_values($formHandleToIdMap ?? []);
             }
 
             foreach ($joinFormIds as $formId) {

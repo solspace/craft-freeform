@@ -39,6 +39,8 @@ export default class Freeform {
     loadingText: null,
     prevButtonName: 'form_previous_page_button',
 
+    skipHtmlReload: false,
+
     successBannerMessage: 'Form has been submitted successfully!',
     errorBannerMessage: 'Sorry, there was an error submitting the form. Please try again.',
 
@@ -110,6 +112,7 @@ export default class Freeform {
       loadingText: form.getAttribute('data-loading-text'),
       successBannerMessage: form.getAttribute('data-success-message'),
       errorBannerMessage: form.getAttribute('data-error-message'),
+      skipHtmlReload: form.getAttribute('data-skip-html-reload') !== null,
     };
 
     this.options = {
@@ -670,7 +673,7 @@ export default class Freeform {
               window.location.href = returnUrl;
             }
 
-            if (response.html !== null) {
+            if (response.html !== null && !this.options.skipHtmlReload) {
               form.innerHTML = response.html.replace(/<form[^>]*>/, '').replace('</form>', '');
             }
 

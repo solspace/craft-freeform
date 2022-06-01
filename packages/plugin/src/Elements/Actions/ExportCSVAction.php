@@ -113,7 +113,11 @@ EOT;
             throw new FreeformException(Freeform::t('No submissions found'));
         }
 
-        $exporter = new ExportCsv($form->getForm(), $submissions, Freeform::getInstance()->settings->isRemoveNewlines());
+        $exporter = new ExportCsv(
+            $form->getForm(),
+            $submissions,
+            Freeform::getInstance()->exportProfiles->getExportSettings()
+        );
         $fileName = sprintf('%s submissions %s.csv', $form->name, date('Y-m-d H:i'));
 
         Freeform::getInstance()->exportProfiles->outputFile($exporter->export(), $fileName, $exporter->getMimeType());

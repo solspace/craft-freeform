@@ -102,6 +102,9 @@ class Settings extends Model
     public $exportLabels;
 
     /** @var bool */
+    public $exportHandlesAsNames;
+
+    /** @var bool */
     public $defaultTemplates;
 
     /** @deprecated use $scriptInsertLocation instead */
@@ -327,6 +330,7 @@ class Settings extends Model
         $this->defaultTemplates = true;
         $this->removeNewlines = false;
         $this->exportLabels = false;
+        $this->exportHandlesAsNames = false;
         $this->footerScripts = false;
         $this->scriptInsertLocation = self::SCRIPT_INSERT_LOCATION_FOOTER;
         $this->scriptInsertType = self::SCRIPT_INSERT_TYPE_POINTERS;

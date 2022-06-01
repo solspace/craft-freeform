@@ -3,13 +3,11 @@
 namespace Solspace\Freeform\Library\Export;
 
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\DataObjects\ExportSettings;
 
 interface ExportInterface
 {
-    /**
-     * ExportInterface constructor.
-     */
-    public function __construct(Form $form, array $submissionData);
+    public function __construct(Form $form, array $submissionData, ExportSettings $settings);
 
     public static function getLabel(): string;
 

@@ -61,7 +61,7 @@ class ExportCsv extends AbstractExport
                             $labels[] = $layout['label'] ?? '-';
                         }
                     } else {
-                        $labels[] = $column->getLabel();
+                        $labels[] = $this->isHandlesAsNames() ? $column->getHandle() : $column->getLabel();
                     }
                 }
 

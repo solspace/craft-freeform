@@ -6,13 +6,15 @@
 {% block actionButton %}
 
     {% if currentUser.can("freeform-notificationsManage") %}
-        <div class="buttons">
-            <div class="btngroup submit">
-                <a class="btn submit add icon" href="{{ url('freeform/notifications/new-file') }}">
-                    {{ "New File Template"|t('freeform') }}
-                </a>
+        {% if settings.absoluteEmailTemplateDirectory %}
+            <div class="buttons">
+                <div class="btngroup submit">
+                    <a class="btn submit add icon" href="{{ url('freeform/notifications/new-file') }}">
+                        {{ "New Template"|t('freeform') }}
+                    </a>
+                </div>
             </div>
-        </div>
+        {% endif %}
     {% endif %}
 
 {% endblock %}

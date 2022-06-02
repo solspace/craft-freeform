@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.10 - 2022-06-02
+
+### Added
+- Added setting to have CSV exports use field handles for headings instead of field labels.
+- Added `data-skip-html-reload` form attribute option to bypass HTML reload for AJAX forms (when not using render method).
+
+### Fixed
+- Fixed a bug where the Submissions and Spam CP indexes would error if no forms exist.
+- Fixed a bug wherre the "New Template" button was still visible in the Email Notifications page when the email notification template directory path was not set. Another fix is coming for the form builder.
+
 ## 4.0.0-beta.9 - 2022-05-31
 
 ### Added

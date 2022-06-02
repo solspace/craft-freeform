@@ -8,7 +8,7 @@
 
 ### Fixed
 - Fixed a bug where the Submissions and Spam CP indexes would error if no forms exist.
-- Fixed a bug wherre the "New Template" button was still visible in the Email Notifications page when the email notification template directory path was not set. Another fix is coming for the form builder.
+- Fixed a bug where the "New Template" button was still visible in the Email Notifications page when the email notification template directory path was not set. Another fix is coming for the form builder.
 
 ## 4.0.0-beta.9 - 2022-05-31
 

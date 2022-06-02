@@ -126,14 +126,6 @@
 - Fixed a bug where the Formatting Template setting in the New Form wizard modal would not default correctly if custom formatting templates did not exist.
 - Fixed a bug where Number fields with a minimum value above `0` would still allow `0` as a valid value.
 
-## 3.13.9 - 2022-04-04
-
-### Fixed
-- Fixed a bug where users with permissions to Create New Forms would encounter issues in the New Form wizard modal.
-- Fixed a bug where users without Create New Forms permission would see the New Form button in the CP Forms page.
-- Fixed a bug where the Formatting Template setting in the New Form wizard modal would not default correctly if custom formatting templates did not exist.
-- Fixed a bug where Number fields with a minimum value above `0` would still allow `0` as a valid value.
-
 ## 3.13.8 - 2022-04-02
 
 ### Changed

@@ -61,10 +61,12 @@ class ContentManager
             ->execute()
         ;
 
-        $db->createCommand()
-            ->addPrimaryKey('PK', $tableName, ['id'])
-            ->execute()
-        ;
+        if (!$db->getIsPgsql()) {
+            $db->createCommand()
+                ->addPrimaryKey('PK', $tableName, ['id'])
+                ->execute()
+            ;
+        }
 
         $db->createCommand()
             ->addForeignKey(

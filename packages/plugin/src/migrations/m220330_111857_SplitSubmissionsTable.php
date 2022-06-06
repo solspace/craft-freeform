@@ -109,7 +109,11 @@ class m220330_111857_SplitSubmissionsTable extends Migration
         $tableName = "{{%freeform_submissions_{$formHandle}_{$id}}}";
 
         $this->createTable($tableName, $tableColumns);
-        $this->addPrimaryKey('PK', $tableName, ['id']);
+
+        if (!$this->db->getIsPgsql()) {
+            $this->addPrimaryKey('PK', $tableName, ['id']);
+        }
+
         $this->addForeignKey(null, $tableName, 'id', '{{%freeform_submissions}}', 'id', 'CASCADE');
 
         return $tableName;

@@ -7,7 +7,6 @@ use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Composer\Components\Layout;
 use Solspace\Freeform\Library\Export\ExportXml;
 
 /**
@@ -73,9 +72,9 @@ class ExportXmlTest extends TestCase
             ->willReturn('firstName')
     ;
 
-        $layoutMock = $this->createMock(Layout::class);
-        $layoutMock
-            ->method('getFieldById')
+        $this->formMock = $this->createMock(Form::class);
+        $this->formMock
+            ->method('get')
             ->willReturnOnConsecutiveCalls(
                 $this->tableField1Mock,
                 $this->textFieldMock,
@@ -84,13 +83,7 @@ class ExportXmlTest extends TestCase
                 $this->textFieldMock,
                 $this->tableField2Mock
             )
-    ;
-
-        $this->formMock = $this->createMock(Form::class);
-        $this->formMock
-            ->method('getLayout')
-            ->willReturn($layoutMock)
-    ;
+        ;
     }
 
     public function testEmptyExport()
@@ -151,8 +144,8 @@ class ExportXmlTest extends TestCase
         ]);
 
         $exporter = new ExportXml($this->formMock, [
-            ['id' => 1, 'field_1' => $table1row1, 'field_2' => 'Some Name', 'field_3' => $table2row1],
-            ['id' => 2, 'field_1' => $table1row2, 'field_2' => 'Other Name', 'field_3' => $table2row2],
+            ['id' => 1, 'table1' => $table1row1, 'firstName' => 'Some Name', 'table2' => $table2row1],
+            ['id' => 2, 'table1' => $table1row2, 'firstName' => 'Other Name', 'table2' => $table2row2],
         ]);
 
         $expected = <<<'EXPECTED'

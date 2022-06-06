@@ -8,7 +8,6 @@ use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Fields\TextareaField;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Composer\Components\Layout;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Export\ExportCsv;
 
@@ -42,6 +41,10 @@ class ExportCsvTest extends TestCase
             ])
         ;
         $this->tableField1Mock
+            ->method('getLabel')
+            ->willReturn('Table One')
+        ;
+        $this->tableField1Mock
             ->method('getHandle')
             ->willReturn('table1')
         ;
@@ -58,6 +61,10 @@ class ExportCsvTest extends TestCase
             ])
         ;
         $this->tableField2Mock
+            ->method('getLabel')
+            ->willReturn('Table Two')
+        ;
+        $this->tableField2Mock
             ->method('getHandle')
             ->willReturn('table2')
         ;
@@ -72,24 +79,7 @@ class ExportCsvTest extends TestCase
             ->willReturn('firstName')
         ;
 
-        $layoutMock = $this->createMock(Layout::class);
-        $layoutMock
-            ->method('getFieldById')
-            ->willReturnOnConsecutiveCalls(
-                $this->tableField1Mock,
-                $this->textFieldMock,
-                $this->tableField2Mock,
-                $this->tableField1Mock,
-                $this->textFieldMock,
-                $this->tableField2Mock
-            )
-        ;
-
         $this->formMock = $this->createMock(Form::class);
-        $this->formMock
-            ->method('getLayout')
-            ->willReturn($layoutMock)
-        ;
     }
 
     public function testEmptyExport()
@@ -140,10 +130,25 @@ class ExportCsvTest extends TestCase
             ['r5c1', 'r5c2', 'r5c3', 'r5c4', 'r5c5'],
         ]);
 
-        $exporter = new ExportCsv($this->formMock, [
-            ['id' => 1, 'field_1' => $table1row1, 'field_2' => 'Some Name', 'field_3' => $table2row1],
-            ['id' => 2, 'field_1' => $table1row2, 'field_2' => 'Other Name', 'field_3' => $table2row2],
-        ]);
+        $this->formMock
+            ->method('get')
+            ->willReturnOnConsecutiveCalls(
+                $this->tableField1Mock,
+                $this->textFieldMock,
+                $this->tableField2Mock,
+                $this->tableField1Mock,
+                $this->textFieldMock,
+                $this->tableField2Mock
+            )
+        ;
+
+        $exporter = new ExportCsv(
+            $this->formMock,
+            [
+                ['id' => 1, 'table1' => $table1row1, 'firstName' => 'Some Name', 'table2' => $table2row1],
+                ['id' => 2, 'table1' => $table1row2, 'firstName' => 'Other Name', 'table2' => $table2row2],
+            ]
+        );
 
         $expected = <<<'EXPECTED'
             "ID","T1C1","T1C2","T1C3","First Name","T2C1","T2C2","T2C3","T2C4","T2C5"
@@ -172,16 +177,10 @@ class ExportCsvTest extends TestCase
             ->willReturn('textarea')
         ;
 
-        $layoutMock = $this->createMock(Layout::class);
-        $layoutMock
-            ->method('getFieldById')
-            ->willReturn($textareaFieldMock)
-        ;
-
         $formMock = $this->createMock(Form::class);
         $formMock
-            ->method('getLayout')
-            ->willReturn($layoutMock)
+            ->method('get')
+            ->willReturn($textareaFieldMock)
         ;
 
         $settings = new ExportSettings();
@@ -190,8 +189,8 @@ class ExportCsvTest extends TestCase
         $exporter = new ExportCsv(
             $formMock,
             [
-                ['id' => 1, 'field_1' => "some text\ncontaining\nnewlines"],
-                ['id' => 2, 'field_1' => "other text\ncontaining\n\n\nnewlines"],
+                ['id' => 1, 'textarea' => "some text\ncontaining\nnewlines"],
+                ['id' => 2, 'textarea' => "other text\ncontaining\n\n\nnewlines"],
             ],
             $settings
         );
@@ -217,21 +216,15 @@ class ExportCsvTest extends TestCase
             ->willReturn('textarea')
         ;
 
-        $layoutMock = $this->createMock(Layout::class);
-        $layoutMock
-            ->method('getFieldById')
+        $formMock = $this->createMock(Form::class);
+        $formMock
+            ->method('get')
             ->willReturn($textareaFieldMock)
         ;
 
-        $formMock = $this->createMock(Form::class);
-        $formMock
-            ->method('getLayout')
-            ->willReturn($layoutMock)
-        ;
-
         $exporter = new ExportCsv($formMock, [
-            ['id' => 1, 'field_1' => "some text\ncontaining\nnewlines"],
-            ['id' => 2, 'field_1' => "other text\ncontaining\n\n\nnewlines"],
+            ['id' => 1, 'textarea' => "some text\ncontaining\nnewlines"],
+            ['id' => 2, 'textarea' => "other text\ncontaining\n\n\nnewlines"],
         ]);
 
         $expected = <<<'EXPECTED'
@@ -261,28 +254,19 @@ class ExportCsvTest extends TestCase
             ->willReturn('texty')
         ;
 
-        $layoutMock = $this->createMock(Layout::class);
-        $layoutMock
-            ->method('getFieldById')
-            ->willReturn($textareaFieldMock)
-        ;
-
         $formMock = $this->createMock(Form::class);
         $formMock
-            ->method('getLayout')
-            ->willReturn($layoutMock)
+            ->method('get')
+            ->willReturn($textareaFieldMock)
         ;
-
-        $settings = new ExportSettings();
-        $settings->setHandlesAsNames(true);
 
         $exporter = new ExportCsv(
             $formMock,
             [
-                ['id' => 1, 'field_1' => 'some text'],
-                ['id' => 2, 'field_1' => 'other text'],
+                ['id' => 1, 'texty' => 'some text'],
+                ['id' => 2, 'texty' => 'other text'],
             ],
-            $settings
+            (new ExportSettings())->setHandlesAsNames(true)
         );
 
         $expected = <<<'EXPECTED'

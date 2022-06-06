@@ -11,7 +11,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValue
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\Objects\Column;
 use Solspace\Freeform\Library\Export\Objects\Row;
 
@@ -71,6 +70,17 @@ abstract class AbstractExport implements ExportInterface
      */
     private function parseSubmissionDataIntoRows(array $submissionData): array
     {
+        $reservedFields = [
+            'id',
+            'dateCreated',
+            'ip',
+            'cc_type',
+            'cc_amount',
+            'cc_currency',
+            'cc_card',
+            'cc_status',
+        ];
+
         $form = $this->getForm();
 
         $rows = [];
@@ -89,57 +99,54 @@ abstract class AbstractExport implements ExportInterface
 
                 $label = $fieldId;
                 $handle = $fieldId;
-                if (preg_match('/^'.Submission::FIELD_COLUMN_PREFIX.'(\d+)$/', $fieldId, $matches)) {
-                    try {
-                        $field = $form->getLayout()->getFieldById($matches[1]);
-                        $label = $field->getLabel();
-                        $handle = $field->getHandle();
 
-                        if ($field instanceof MultipleValueInterface) {
-                            if (preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
-                                $value = (array) \GuzzleHttp\json_decode($value, true);
-                            }
+                $field = !\in_array($fieldId, $reservedFields, true) ? $form->get($fieldId) : null;
+                if (null !== $field) {
+                    $label = $field->getLabel();
+                    $handle = $field->getHandle();
+
+                    if ($field instanceof MultipleValueInterface) {
+                        if (preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
+                            $value = (array) \GuzzleHttp\json_decode($value, true);
                         }
+                    }
 
-                        if ($field instanceof ObscureValueInterface) {
-                            $value = $field->getActualValue($value);
-                        }
+                    if ($field instanceof ObscureValueInterface) {
+                        $value = $field->getActualValue($value);
+                    }
 
-                        if ($field instanceof FileUploadField && \is_array($value)) {
-                            $urls = [];
+                    if ($field instanceof FileUploadField && \is_array($value)) {
+                        $urls = [];
 
-                            foreach ($value as $assetId) {
-                                $asset = \Craft::$app->assets->getAssetById((int) $assetId);
-                                if ($asset) {
-                                    $assetValue = $asset->filename;
-                                    if ($asset->getUrl()) {
-                                        $assetValue = $asset->getUrl();
-                                    }
-
-                                    $urls[] = $assetValue;
+                        foreach ($value as $assetId) {
+                            $asset = \Craft::$app->assets->getAssetById((int) $assetId);
+                            if ($asset) {
+                                $assetValue = $asset->filename;
+                                if ($asset->getUrl()) {
+                                    $assetValue = $asset->getUrl();
                                 }
-                            }
 
-                            $value = $urls;
-                        }
-
-                        if ($field instanceof TextareaField && $this->isRemoveNewLines()) {
-                            $value = trim(preg_replace('/\s+/', ' ', $value));
-                        }
-
-                        if ($this->exportLabels && $field instanceof OptionsInterface) {
-                            $options = $field->getOptionsAsKeyValuePairs();
-
-                            if (\is_array($value)) {
-                                foreach ($value as $index => $val) {
-                                    $value[$index] = $options[$val] ?? $val;
-                                }
-                            } else {
-                                $value = $options[$value] ?? $value;
+                                $urls[] = $assetValue;
                             }
                         }
-                    } catch (FreeformException $e) {
-                        continue;
+
+                        $value = $urls;
+                    }
+
+                    if ($field instanceof TextareaField && $this->isRemoveNewLines()) {
+                        $value = trim(preg_replace('/\s+/', ' ', $value));
+                    }
+
+                    if ($this->exportLabels && $field instanceof OptionsInterface) {
+                        $options = $field->getOptionsAsKeyValuePairs();
+
+                        if (\is_array($value)) {
+                            foreach ($value as $index => $val) {
+                                $value[$index] = $options[$val] ?? $val;
+                            }
+                        } else {
+                            $value = $options[$value] ?? $value;
+                        }
                     }
                 } else {
                     $label = match ($fieldId) {

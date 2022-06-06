@@ -449,6 +449,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             ->skipContent(true)
         ;
 
+        $count = $query->count();
+        if (!$ids || !$count) {
+            return [0, 0];
+        }
+
         $assetIds = [];
         foreach ($query->batch() as $results) {
             /** @var Submission $submission */

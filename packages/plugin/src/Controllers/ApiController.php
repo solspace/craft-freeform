@@ -218,6 +218,12 @@ class ApiController extends BaseController
         $settings = $this->getSettingsService()->getSettingsModel();
 
         $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
+        if (null === $templateDirectory) {
+            return $this->asJson(['success' => false, 'errors' => [
+                Freeform::t('Email Template directory not set'),
+            ]]);
+        }
+
         $templateName = StringHelper::toSnakeCase($name);
         $extension = '.twig';
 

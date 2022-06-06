@@ -1,16 +1,12 @@
-import axios, { AxiosError } from 'axios';
 import React from 'react';
-import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
-import { Form } from '@ff-client/types/forms';
+import { useQueryForms } from '@ff-client/queries/forms';
+
+import { Card, Subtitle, Title, Wrapper } from './get-all.styles';
 
 export const GetAll: React.FC = () => {
-  const { data, isFetching, isError, error } = useQuery<Form[], AxiosError>(
-    'forms',
-    () => axios.get<Form[]>('/client/api/forms').then((res) => res.data),
-    { staleTime: 1000 * 60 * 5 }
-  );
+  const { data, isFetching, isError, error } = useQueryForms();
 
   if (isFetching) {
     return <div>fetching forms...</div>;
@@ -22,14 +18,24 @@ export const GetAll: React.FC = () => {
 
   return (
     <div>
-      Form list
-      <ul>
+      <h1>Forms</h1>
+      <Wrapper>
+        <Card>
+          <Title>
+            <Link to="new">Create new Form</Link>
+          </Title>
+          <Subtitle>click me</Subtitle>
+        </Card>
+
         {data.map((form) => (
-          <li key={form.id}>
-            <Link to={form.handle}>{form.name}</Link>
-          </li>
+          <Card key={form.id}>
+            <Title>
+              <Link to={`${form.id}`}>{form.name}</Link>
+            </Title>
+            <Subtitle>{form.handle}</Subtitle>
+          </Card>
         ))}
-      </ul>
+      </Wrapper>
     </div>
   );
 };

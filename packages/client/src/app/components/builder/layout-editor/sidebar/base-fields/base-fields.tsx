@@ -4,9 +4,9 @@ import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 
 import { ErrorBlock } from '@ff-client/app/components/notification-blocks/error/error-block';
+import { useFetchFieldTypes } from '@ff-client/queries/field-types';
 import { range } from '@ff-client/utils/arrays';
 
-import { useFetchFieldTypes } from './base-fields.queries';
 import { FieldName, Icon, List, ListItem } from './base-fields.styles';
 
 export const BaseFields: React.FC = () => {

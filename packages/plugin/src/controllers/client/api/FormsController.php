@@ -14,7 +14,7 @@ class FormsController extends BaseApiController
 
     protected function getOne($id): array|object|null
     {
-        $forms = $this->getFormsService()->getResolvedForms(['handle' => $id]);
+        $forms = $this->getFormsService()->getResolvedForms(['id' => $id]);
         $form = reset($forms);
 
         if (!$form) {

@@ -276,7 +276,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $formsService->onAfterSubmit($form, $submission);
     }
 
-    public function delete(array $submissions, bool $bypassPermissionCheck = false): bool
+    public function delete(array $submissions, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
     {
         $allowedFormIds = $this->getAllowedWriteFormIds();
         if (!$submissions) {
@@ -298,8 +298,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
 
                 if ($deleteEvent->isValid) {
-                    \Craft::$app->elements->deleteElementById($submission->id);
-                    ++$deleted;
+                    $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
+
+                    if ($isSuccessful) {
+                        ++$deleted;
+                    }
 
                     $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
                 }

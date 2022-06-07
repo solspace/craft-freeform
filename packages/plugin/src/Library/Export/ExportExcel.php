@@ -30,7 +30,15 @@ class ExportExcel extends ExportCsv
     {
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->fromArray($this->getValuesAsArray());
+
+        $values = $this->getValuesAsArray();
+        foreach ($values as $row => $cells) {
+            foreach ($cells as $cell => $value) {
+                $values[$row][$cell] = 0 === strpos($value, '=') ? "'".$value : $value;
+            }
+        }
+
+        $sheet->fromArray($values);
 
         ob_start();
 

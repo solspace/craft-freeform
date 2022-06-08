@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.13.12 - 2022-06-08
+
+### Added
+- Added support for date fields in the Campaign Monitor integration.
+
+### Changed
+- Updated the "Use Return URL" success behavior to skip reloading the form (briefly) when using AJAX.
+
+### Fixed
+- Fixed a bug where exporting to Excel could fail if a field's value began with `=`.
+
 ## 3.13.11 - 2022-06-01
 
 ### Added

@@ -296,6 +296,11 @@ class CampaignMonitor extends AbstractMailingListIntegration
 
                         break;
 
+                    case 'Date':
+                        $type = FieldObject::TYPE_DATE;
+
+                        break;
+
                     default:
                         $type = null;
 

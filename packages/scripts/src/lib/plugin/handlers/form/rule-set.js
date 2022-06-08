@@ -66,27 +66,29 @@ class RuleSetHandler {
           value,
         });
 
-        for (let elementIndex = 0; elementIndex < elements.length; elementIndex++) {
-          const element = elements[elementIndex];
+        if (elements && elements.length) {
+          for (let elementIndex = 0; elementIndex < elements.length; elementIndex++) {
+            const element = elements[elementIndex];
 
-          let eventType;
-          switch (this.getInputType(element)) {
-            case 'checkbox':
-            case 'radio':
-              eventType = 'click';
-              break;
+            let eventType;
+            switch (this.getInputType(element)) {
+              case 'checkbox':
+              case 'radio':
+                eventType = 'click';
+                break;
 
-            case 'select':
-            case 'date':
-              eventType = 'change';
-              break;
+              case 'select':
+              case 'date':
+                eventType = 'change';
+                break;
 
-            default:
-              eventType = 'keyup';
-              break;
+              default:
+                eventType = 'keyup';
+                break;
+            }
+
+            element.addEventListener(eventType, () => container.dispatchEvent(this.createRuleApplicationEvent()));
           }
-
-          element.addEventListener(eventType, () => container.dispatchEvent(this.createRuleApplicationEvent()));
         }
       });
 

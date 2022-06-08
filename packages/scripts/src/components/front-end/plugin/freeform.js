@@ -675,6 +675,7 @@ export default class Freeform {
           if (success) {
             if (finished && response.onSuccess === SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL && returnUrl) {
               window.location.href = returnUrl;
+              return;
             }
 
             if (response.html !== null && !this.options.skipHtmlReload) {

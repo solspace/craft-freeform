@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.11 - 2022-06-07
+
+### Added
+- Added support for permanently deleting soft-deleted submissions.
+
+### Changed
+- Updated the "Use Return URL" success behavior to skip reloading the form (briefly) when using AJAX.
+
+### Fixed
+- Fixed a bug where the form builder would not show an error message when creating a new notification template if the email notification template directory path was not set.
+- Fixed a bug where the submission and spam purge feature would fail when there were 0 submissions to clear.
+- Fixed a bug where export file headings would remove spaces in between field names ("My Field Label" would become "MyFieldLabel").
+- Fixed a bug where the migration would error when using PostgreSQL.
+
 ## 4.0.0-beta.10 - 2022-06-02
 
 ### Added

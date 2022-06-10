@@ -35,6 +35,8 @@ use yii\web\Response;
 
 class ApiController extends BaseController
 {
+    protected $allowAnonymous = ['form'];
+
     public function actionForm(): Response
     {
         return \Craft::$app->runAction('freeform/submit');

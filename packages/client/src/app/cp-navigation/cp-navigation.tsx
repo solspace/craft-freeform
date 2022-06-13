@@ -4,7 +4,11 @@ import { NavLink } from 'react-router-dom';
 
 import translate from '@ff-client/utils/translations';
 
-const classNameHandler = ({ isActive }: { isActive: boolean }): string | undefined => (isActive ? 'sel' : undefined);
+const classNameHandler = ({
+  isActive,
+}: {
+  isActive: boolean;
+}): string | undefined => (isActive ? 'sel' : undefined);
 
 export const CpNavigation: React.FC = () => {
   useEffect(() => {

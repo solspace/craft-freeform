@@ -26,10 +26,14 @@ module.exports = merge(baseConfig, {
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'X-Requested-With, content-type, Authorization',
+      'Access-Control-Allow-Headers':
+        'X-Requested-With, content-type, Authorization',
     },
     static: {
-      directory: path.resolve(__dirname, '../../../plugin/src/Resources/js/client'),
+      directory: path.resolve(
+        __dirname,
+        '../../../plugin/src/Resources/js/client'
+      ),
     },
   },
 

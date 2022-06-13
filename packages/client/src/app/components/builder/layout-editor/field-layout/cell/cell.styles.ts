@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
-import { BoxShadow } from '@ff-client/styles/variables';
+export const Wrapper = styled.div`
+  border: 3px dashed green;
 
-export const Wrapper = styled(BoxShadow)`
+  flex: 1 0;
+  overflow: hidden;
+
   padding: var(--m);
 `;

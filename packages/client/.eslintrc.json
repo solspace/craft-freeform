@@ -27,6 +27,7 @@
     "plugin:prettier/recommended"
   ],
   "rules": {
+    "prettier/prettier": ["error", { "singleQuote": true, "printWidth": 80 }],
     "react/prop-types": [0],
     "react/no-unescaped-entities": ["error", { "forbid": [">", "}"] }],
     "@typescript-eslint/explicit-function-return-type": ["error"],

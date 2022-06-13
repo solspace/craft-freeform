@@ -1,10 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Layout } from '../../types/layout';
+import { Layout, Page } from '../../types/layout';
+import { RootState } from '../store';
 
 type LayoutState = Layout[];
 
-const initialState: LayoutState = [];
+const initialState: LayoutState = [
+  { uid: 'layout-uid-1' },
+  { uid: 'layout-uid-2' },
+];
 
 export const layoutsSlice = createSlice({
   name: 'layouts',
@@ -20,5 +24,15 @@ export const layoutsSlice = createSlice({
 });
 
 export const { add, remove } = layoutsSlice.actions;
+
+export const selectLayout =
+  (uid: string) =>
+  (state: RootState): Layout | undefined =>
+    state.layouts.find((layout) => layout.uid === uid);
+
+export const selectPageLayout =
+  (page: Page) =>
+  (state: RootState): Layout | undefined =>
+    state.layouts.find((layout) => layout.uid === page.layoutUid);
 
 export default layoutsSlice.reducer;

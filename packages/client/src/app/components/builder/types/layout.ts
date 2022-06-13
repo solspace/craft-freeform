@@ -16,10 +16,28 @@ export type Row = {
   order: number;
 };
 
-export type Cell = {
+export type Cell = LayoutCell | FieldCell;
+
+type BaseCell = {
   uid: string;
   rowUid: string;
   order: number;
-  type: string;
-  metadata: Record<string, any>;
+  type: CellType;
 };
+
+type LayoutCell = BaseCell & {
+  type: CellType.Layout;
+  metadata: {
+    layoutUid: string;
+  };
+};
+
+type FieldCell = BaseCell & {
+  type: CellType.Field;
+  metadata: Record<string, string | number | boolean>;
+};
+
+export enum CellType {
+  Field = 'field',
+  Layout = 'layout',
+}

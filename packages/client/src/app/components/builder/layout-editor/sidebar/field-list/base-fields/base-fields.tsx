@@ -7,10 +7,11 @@ import { ErrorBlock } from '@ff-client/app/components/notification-blocks/error/
 import { useFetchFieldTypes } from '@ff-client/queries/field-types';
 import { range } from '@ff-client/utils/arrays';
 
-import { FieldName, Icon, List, ListItem } from './base-fields.styles';
+import { List } from './base-fields.styles';
+import { Field } from './field/field';
 
 export const BaseFields: React.FC = () => {
-  const { data, isFetching, isError, error, refetch } = useFetchFieldTypes();
+  const { data, isFetching, isError, error } = useFetchFieldTypes();
 
   if (isFetching) {
     return (
@@ -29,15 +30,7 @@ export const BaseFields: React.FC = () => {
   return (
     <List>
       {data.map((fieldType) => (
-        <ListItem
-          key={fieldType.class}
-          onClick={(): void => {
-            refetch();
-          }}
-        >
-          <Icon dangerouslySetInnerHTML={{ __html: fieldType.icon }} />
-          <FieldName>{fieldType.name}</FieldName>
-        </ListItem>
+        <Field key={fieldType.class} fieldType={fieldType} />
       ))}
     </List>
   );

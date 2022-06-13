@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSpring } from 'react-spring';
 
-import { BaseFields } from './base-fields/base-fields';
+import { BaseFields } from './field-list/base-fields/base-fields';
 import { Container, Wrapper } from './sidebar.styles';
 
 type Props = {

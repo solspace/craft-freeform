@@ -136,7 +136,10 @@ class PayloadStorage implements FormContextStorageInterface
                 'attributes' => $form->getAttributeBag(),
             ]);
 
-            self::$payloadCache[$form->getHash()] = base64_encode(\Craft::$app->security->encryptByKey($payload, $key));
+            $encryptedPayload = base64_encode(\Craft::$app->security->encryptByKey($payload, $key));
+            $encryptedPayload = htmlspecialchars($encryptedPayload);
+
+            self::$payloadCache[$form->getHash()] = $encryptedPayload;
         }
 
         return self::$payloadCache[$form->getHash()];

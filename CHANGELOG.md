@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 3.13.13 - 2022-06-15
+
+### Fixed
+- Fixed a bug where passing through anonymous calls to the `freeform/api/form` endpoint alias was not working.
+- Fixed a bug where the Save & Continue Later field was not available in GraphQL schema.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
+
 ## 3.13.12 - 2022-06-08
 
 ### Added

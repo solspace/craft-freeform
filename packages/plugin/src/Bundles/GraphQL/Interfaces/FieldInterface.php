@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
-use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\KeyValueMapInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
@@ -32,7 +31,7 @@ class FieldInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return TypeManager::prepareFieldDefinitions([
+        return \Craft::$app->gql->prepareFieldDefinitions([
             'id' => [
                 'name' => 'id',
                 'type' => Type::int(),

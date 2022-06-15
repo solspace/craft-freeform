@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
-use craft\gql\TypeManager;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FormArguments;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormResolver;
@@ -33,7 +32,7 @@ class FreeformInterface extends AbstractInterface
 
     public static function getFieldDefinitions(): array
     {
-        return TypeManager::prepareFieldDefinitions([
+        return \Craft::$app->gql->prepareFieldDefinitions([
             'version' => [
                 'name' => 'version',
                 'type' => Type::string(),

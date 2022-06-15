@@ -10,7 +10,7 @@ use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 abstract class AbstractObjectType extends ObjectType
 {
-    private static PropertyAccessor $propertyAccess;
+    private static ?PropertyAccessor $propertyAccess = null;
 
     public function __construct(array $config)
     {

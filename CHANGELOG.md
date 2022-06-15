@@ -12,7 +12,7 @@
 - Fixed a bug where the Save & Continue Later field was not available in GraphQL schema.
 
 ### Security
-- Addressed some potential XSS vulnurabilities.
+- Addressed some potential XSS vulnerabilities.
 
 ## 4.0.0-beta.11 - 2022-06-07
 

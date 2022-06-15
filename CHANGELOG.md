@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.12 - 2022-06-15
+
+### Added
+- Added support for date fields in the Campaign Monitor integration.
+
+### Changed
+- Upgraded the GrapQL interface calls to use the new Craft GraphQL API.
+
+### Fixed
+- Fixed a bug where the Save & Continue Later field was not available in GraphQL schema.
+
+### Security
+- Addressed some potential XSS vulnurabilities.
+
 ## 4.0.0-beta.11 - 2022-06-07
 
 ### Added
@@ -115,6 +129,17 @@
 ### Removed
 - Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
+## 3.13.12 - 2022-06-08
+
+### Added
+- Added support for date fields in the Campaign Monitor integration.
+
+### Changed
+- Updated the "Use Return URL" success behavior to skip reloading the form (briefly) when using AJAX.
+
+### Fixed
+- Fixed a bug where exporting to Excel could fail if a field's value began with `=`.
 
 ## 3.13.11 - 2022-06-01
 

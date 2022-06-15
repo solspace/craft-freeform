@@ -43,6 +43,7 @@ class FieldGenerator extends AbstractGenerator
 
         $fieldTypes = Freeform::getInstance()->fields->getFieldTypes();
         $fieldTypes[FreeformFieldInterface::TYPE_SUBMIT] = FreeformFieldInterface::TYPE_SUBMIT;
+        $fieldTypes[FreeformFieldInterface::TYPE_SAVE] = FreeformFieldInterface::TYPE_SAVE;
         $fieldTypes[FreeformFieldInterface::TYPE_HTML] = FreeformFieldInterface::TYPE_HTML;
         $fieldTypes[FreeformFieldInterface::TYPE_MAILING_LIST] = FreeformFieldInterface::TYPE_MAILING_LIST;
         $fieldTypes[FreeformFieldInterface::TYPE_RICH_TEXT] = FreeformFieldInterface::TYPE_RICH_TEXT;
@@ -136,6 +137,32 @@ class FieldGenerator extends AbstractGenerator
                 'name' => 'position',
                 'type' => Type::string(),
                 'description' => 'Position of the buttons',
+            ];
+        }
+
+        if (FreeformFieldInterface::TYPE_SAVE === $typeName) {
+            $fieldDefinitions['position'] = [
+                'name' => 'position',
+                'type' => Type::string(),
+                'description' => 'Position of the buttons',
+            ];
+
+            $fieldDefinitions['url'] = [
+                'name' => 'url',
+                'type' => Type::string(),
+                'description' => 'Return Url',
+            ];
+
+            $fieldDefinitions['emailFieldHash'] = [
+                'name' => 'emailFieldHash',
+                'type' => Type::string(),
+                'description' => 'Target Email field',
+            ];
+
+            $fieldDefinitions['notificationId'] = [
+                'name' => 'notificationId',
+                'type' => Type::int(),
+                'description' => 'Notification ID',
             ];
         }
 

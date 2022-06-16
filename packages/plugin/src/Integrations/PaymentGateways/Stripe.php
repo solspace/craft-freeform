@@ -485,13 +485,24 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->prepareApi();
 
         try {
-            $response = StripeAPI\Plan::all();
+            $response = StripeAPI\Plan::all(['expand' => ['data.product']]);
 
             foreach ($response->autoPagingIterator() as $data) {
+                $name = $data['nickname'];
+                if (!$name) {
+                    $name = sprintf(
+                        '%s - %d%s/%s',
+                        $data->product->name,
+                        $data->amount / 100,
+                        $data->currency,
+                        $data->interval
+                    );
+                }
+
                 $plans[] = new SubscriptionPlanModel([
                     'integrationId' => $this->getId(),
                     'resourceId' => $data['id'],
-                    'name' => $data['nickname'],
+                    'name' => $name,
                 ]);
             }
         } catch (\Exception $e) {

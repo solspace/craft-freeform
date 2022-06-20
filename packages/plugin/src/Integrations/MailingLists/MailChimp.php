@@ -116,6 +116,7 @@ class MailChimp extends AbstractMailingListIntegration
             ];
 
             $marketingPermissions = $tags = [];
+			$interests = [];
             foreach ($mappedValues as $key => $value) {
                 if (preg_match('/gdpr___(.*)/', $key, $matches)) {
                     $marketingPermissions[] = [
@@ -133,6 +134,20 @@ class MailChimp extends AbstractMailingListIntegration
 
                     unset($mappedValues[$key]);
                 }
+
+				if (preg_match('/interests___interests/', $key)) {
+					$interestId = $this->findInterestIdFromName(trim($value), $listId);
+
+					unset($mappedValues[$key]);
+
+					if($interestId)
+					{
+						// "The key of this object's properties is the ID of the interest in question."
+						$interests = [
+							$interestId => true
+						];
+					}
+				}
             }
 
             if (!empty($mappedValues)) {
@@ -142,6 +157,10 @@ class MailChimp extends AbstractMailingListIntegration
             if (!empty($marketingPermissions)) {
                 $memberData['marketing_permissions'] = $marketingPermissions;
             }
+
+			if (!empty($interests)) {
+				$memberData['interests'] = $interests;
+			}
 
             try {
                 $response = $this->put("lists/{$listId}/members/{$emailHash}", ['json' => $memberData]);
@@ -259,6 +278,81 @@ class MailChimp extends AbstractMailingListIntegration
 
         return $lists;
     }
+
+	protected function fetchInterestGroups($listId)
+	{
+		try {
+			$response = $this->get("/lists/{$listId}/interest-categories?fields=interest-categories.id,interest-categories.name", ['query' => ['count' => 999]]);
+		} catch (RequestException $e) {
+			$this->logErrorAndThrow($e);
+		}
+
+		$json = \GuzzleHttp\json_decode((string) $response->getBody());
+
+		$interestGroups = [];
+		if(isset($json->interest_groups)) {
+			foreach($json->interest_groups as $interest_group) {
+				if (isset($interest_group->id, $interest_group->name)) {
+					$interestGroups[] = [
+						'id' => $interest_group->id,
+						'name' => $interest_group->name
+					];
+				}
+			}
+		}
+
+		return $interestGroups;
+	}
+
+	protected function fetchInterests($listId, $interestGroup)
+	{
+		try {
+			$response = $this->get("/lists/{$listId}/interest-categories/{$interestGroup}/interests?fields=interests.id,interests.name", ['query' => ['count' => 999]]);
+		} catch (RequestException $e) {
+			$this->logErrorAndThrow($e);
+		}
+
+		$json = \GuzzleHttp\json_decode((string) $response->getBody());
+
+		$interests = [];
+		if(isset($json->interests)) {
+			foreach($json->interests as $interest) {
+				if (isset($interest->id, $interest->name)) {
+					$interests[] = [
+						'id' => $interest->id,
+						'name' => $interest->name
+					];
+				}
+			}
+		}
+
+		return $interests;
+	}
+
+	protected function findInterestIdFromName($name, $listId)
+	{
+		$interestGroups = $this->fetchInterestGroups($listId);
+
+		$interests = [];
+
+		if(count($interestGroups) > 0)
+		{
+			foreach($interestGroups as $interestGroup)
+			{
+				$interests = array_merge($interests, $this->fetchInterests($listId, $interestGroup['id']));
+			}
+		}
+
+		foreach($interests as $interest)
+		{
+			if(isset($interest['name']) && $interest['name'] === $name)
+			{
+				return $interest['id'];
+			}
+		}
+
+		return null;
+	}
 
     /**
      * Fetch all custom fields for each list.
@@ -378,6 +472,12 @@ class MailChimp extends AbstractMailingListIntegration
             'Tags (Tags)',
             FieldObject::TYPE_STRING
         );
+
+		$fieldList[] = new FieldObject(
+			'interests___interests',
+			'Interests (Interests)',
+			FieldObject::TYPE_STRING
+		);
 
         return $fieldList;
     }

@@ -290,12 +290,12 @@ class MailChimp extends AbstractMailingListIntegration
 		$json = \GuzzleHttp\json_decode((string) $response->getBody());
 
 		$interestGroups = [];
-		if(isset($json->interest_groups)) {
-			foreach($json->interest_groups as $interest_group) {
-				if (isset($interest_group->id, $interest_group->name)) {
+		if(isset($json->categories)) {
+			foreach($json->categories as $interest_group) {
+				if (isset($interest_group->id, $interest_group->title)) {
 					$interestGroups[] = [
 						'id' => $interest_group->id,
-						'name' => $interest_group->name
+						'name' => $interest_group->title
 					];
 				}
 			}

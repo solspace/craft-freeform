@@ -475,7 +475,7 @@ class MailChimp extends AbstractMailingListIntegration
 
 		$fieldList[] = new FieldObject(
 			'interests___interests',
-			'Interests (Interests)',
+			'Group or Interest (Group or Interest)',
 			FieldObject::TYPE_STRING
 		);
 

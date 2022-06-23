@@ -15,8 +15,8 @@
     {{ forms.textField({
         class: "code",
         label: "Directory Path"|t('freeform'),
-        instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps the Form Builder locate these files when setting up notifications."|t('freeform'),
-        placeholder: "e.g. freeform_emails/",
+        instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
+        placeholder: "e.g. _freeform_emails/",
         id: "emailTemplateDirectory",
         name: "settings[emailTemplateDirectory]",
         value: settings.emailTemplateDirectory,

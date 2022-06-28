@@ -32,6 +32,10 @@ class EmailRecipientNotifications extends FeatureBundle
                 continue;
             }
 
+            if ($field->isHidden()) {
+                continue;
+            }
+
             $event
                 ->getMailer()
                 ->sendEmail(

@@ -38,6 +38,10 @@ class EmailRecipientNotifications extends FeatureBundle
                 continue;
             }
 
+            if ($field->isHidden()) {
+                continue;
+            }
+
             $notification = Freeform::getInstance()
                 ->notifications
                 ->requireNotification(

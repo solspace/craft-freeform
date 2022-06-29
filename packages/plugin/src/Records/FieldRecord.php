@@ -45,6 +45,7 @@ class FieldRecord extends ActiveRecord
         'dateCreated',
         'dateUpdated',
         'uid',
+        'author',
         'level',
     ];
 

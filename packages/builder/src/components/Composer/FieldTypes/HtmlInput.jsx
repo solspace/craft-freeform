@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { slugify, underscored } from 'underscore.string';
-import { reservedKeywords } from '../../../constants/Fields';
 import { MAILING_LIST, TEXT, LITE_FIELDS } from '../../../constants/FieldTypes';
 import Badge from './Components/Badge';
 import Instructions from './Components/Instructions';

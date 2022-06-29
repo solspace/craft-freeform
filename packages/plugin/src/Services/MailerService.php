@@ -102,7 +102,10 @@ class MailerService extends BaseService implements MailHandlerInterface
                         foreach ($assetIds as $assetId) {
                             $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                             if ($asset) {
-                                $email->attach($asset->getCopyOfFile());
+                                $email->attach(
+                                    $asset->getCopyOfFile(),
+                                    ['fileName' => $asset->filename]
+                                );
                             }
                         }
                     }

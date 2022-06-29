@@ -44,6 +44,7 @@ class FieldRecord extends ActiveRecord
         'isSpam',
         'dateCreated',
         'dateUpdated',
+        'author',
         'uid',
         'level',
     ];

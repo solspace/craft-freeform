@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.13 - 2022-06-30
+
+### Changed
+- Updated Dashboard, Forms listing and Survey & Polls dashboard to hide forms for users that do not have any form or submission access permissions to them.
+
+### Fixed
+- Fixed a bug where Dynamic Recipient fields would still send email notifications while hidden via Conditional Rules.
+- Fixed a bug where uploaded file attachments in email notifications showed a full file path instead of just the filename.
+- Fixed a bug where Stripe subscription plan names could possibly show up blank if no price plan description was provided. If so, Freeform will now autogenerate plan names.
+- Fixed a bug where the form builder didn't warn that `author` is a reserved handle name.
+
 ## 4.0.0-beta.12 - 2022-06-15
 
 ### Added

@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.13.14 - 2022-06-30
+
+### Changed
+- Updated Dashboard and Forms listing to hide forms for users that do not have any form or submission access permissions to them.
+
+### Fixed
+- Fixed a bug where Dynamic Recipient fields would still send email notifications while hidden via Conditional Rules.
+- Fixed a bug where `craft.freeformPayments.payments` was no longer working. It is deprecated though, so use `craft.freeform.payments` instead.
+- Fixed a bug where Stripe subscription plan names could possibly show up blank if no price plan description was provided. If so, Freeform will now autogenerate plan names.
+- Fixed a bug where the form builder didn't warn that `author` is a reserved handle name.
+
 ## 3.13.13 - 2022-06-15
 
 ### Fixed

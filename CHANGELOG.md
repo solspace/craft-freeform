@@ -141,6 +141,26 @@
 - Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 
+## 3.13.14 - 2022-06-30
+
+### Changed
+- Updated Dashboard and Forms listing to hide forms for users that do not have any form or submission access permissions to them.
+
+### Fixed
+- Fixed a bug where Dynamic Recipient fields would still send email notifications while hidden via Conditional Rules.
+- Fixed a bug where `craft.freeformPayments.payments` was no longer working. It is deprecated though, so use `craft.freeform.payments` instead.
+- Fixed a bug where Stripe subscription plan names could possibly show up blank if no price plan description was provided. If so, Freeform will now autogenerate plan names.
+- Fixed a bug where the form builder didn't warn that `author` is a reserved handle name.
+
+## 3.13.13 - 2022-06-15
+
+### Fixed
+- Fixed a bug where passing through anonymous calls to the `freeform/api/form` endpoint alias was not working.
+- Fixed a bug where the Save & Continue Later field was not available in GraphQL schema.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
+
 ## 3.13.12 - 2022-06-08
 
 ### Added

@@ -78,7 +78,7 @@
                         </td>
                         <td class="spam-count" data-form-id="{{ form.id }}">
                             <span>
-                                {% if isSpamFolderEnabled and canmanageSubmissions %}
+                                {% if isSpamFolderEnabled and canManageSubmissions %}
                                     <a href="{{ url('freeform/spam/' ~ form.handle) }}">
                                         {{ form.getBlockedSpamCount() }}
                                     </a>

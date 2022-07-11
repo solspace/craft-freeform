@@ -115,7 +115,7 @@ class MailChimp extends AbstractMailingListIntegration
                 'status_if_new' => $isDoubleOptIn ? 'pending' : 'subscribed',
             ];
 
-            $marketingPermissions = $tags = [];
+            $marketingPermissions = $tags = $interests = [];
             foreach ($mappedValues as $key => $value) {
                 if (preg_match('/gdpr___(.*)/', $key, $matches)) {
                     $marketingPermissions[] = [
@@ -133,6 +133,15 @@ class MailChimp extends AbstractMailingListIntegration
 
                     unset($mappedValues[$key]);
                 }
+
+                if (preg_match('/interests___interests/', $key)) {
+                    $interestId = $this->findInterestIdFromName(trim($value), $listId);
+                    if ($interestId) {
+                        $interests[$interestId] = true;
+                    }
+
+                    unset($mappedValues[$key]);
+                }
             }
 
             if (!empty($mappedValues)) {
@@ -141,6 +150,11 @@ class MailChimp extends AbstractMailingListIntegration
 
             if (!empty($marketingPermissions)) {
                 $memberData['marketing_permissions'] = $marketingPermissions;
+            }
+
+            $interests = array_filter($interests);
+            if (!empty($interests)) {
+                $memberData['interests'] = $interests;
             }
 
             try {
@@ -260,6 +274,89 @@ class MailChimp extends AbstractMailingListIntegration
         return $lists;
     }
 
+    protected function fetchInterestGroups($listId): array
+    {
+        static $fetchedInterestGroups;
+
+        if (null === $fetchedInterestGroups) {
+            try {
+                $response = $this->get(
+                    "/lists/{$listId}/interest-categories?fields=interest-categories.id,interest-categories.name",
+                    ['query' => ['count' => 999]]
+                );
+            } catch (RequestException $e) {
+                $this->logErrorAndThrow($e);
+            }
+
+            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+
+            $interestGroups = [];
+            if (isset($json->categories)) {
+                foreach ($json->categories as $interestGroup) {
+                    if (isset($interestGroup->id, $interestGroup->title)) {
+                        $interestGroups[] = [
+                            'id' => $interestGroup->id,
+                            'name' => $interestGroup->title,
+                        ];
+                    }
+                }
+            }
+
+            $fetchedInterestGroups = $interestGroups;
+        }
+
+        return $fetchedInterestGroups;
+    }
+
+    protected function fetchInterests($listId, $interestGroup): array
+    {
+        try {
+            $response = $this->get(
+                "/lists/{$listId}/interest-categories/{$interestGroup}/interests?fields=interests.id,interests.name",
+                ['query' => ['count' => 999]]
+            );
+        } catch (RequestException $e) {
+            $this->logErrorAndThrow($e);
+        }
+
+        $json = \GuzzleHttp\json_decode((string) $response->getBody());
+
+        $interests = [];
+        if (isset($json->interests)) {
+            foreach ($json->interests as $interest) {
+                if (isset($interest->id, $interest->name)) {
+                    $interests[] = [
+                        'id' => $interest->id,
+                        'name' => $interest->name,
+                    ];
+                }
+            }
+        }
+
+        return $interests;
+    }
+
+    protected function findInterestIdFromName($name, $listId)
+    {
+        $interestGroups = $this->fetchInterestGroups($listId);
+
+        $interests = [];
+
+        if (\count($interestGroups) > 0) {
+            foreach ($interestGroups as $interestGroup) {
+                $interests = array_merge($interests, $this->fetchInterests($listId, $interestGroup['id']));
+            }
+        }
+
+        foreach ($interests as $interest) {
+            if (isset($interest['name']) && $interest['name'] === $name) {
+                return $interest['id'];
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Fetch all custom fields for each list.
      *
@@ -281,7 +378,6 @@ class MailChimp extends AbstractMailingListIntegration
 
         $fieldList = [];
         if (isset($json->merge_fields)) {
-            $fieldList = [];
             foreach ($json->merge_fields as $field) {
                 switch ($field->type) {
                     case 'text':
@@ -376,6 +472,12 @@ class MailChimp extends AbstractMailingListIntegration
         $fieldList[] = new FieldObject(
             'tags___tags',
             'Tags (Tags)',
+            FieldObject::TYPE_STRING
+        );
+
+        $fieldList[] = new FieldObject(
+            'interests___interests',
+            'Group or Interest (Group or Interest)',
             FieldObject::TYPE_STRING
         );
 

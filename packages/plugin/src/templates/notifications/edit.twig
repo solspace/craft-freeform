@@ -2,7 +2,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set selectedSubnavItem = "notifications" %}
-{% set saveShortcutRedirect = 'freeform/notifications/{id}' %}
+{% set saveShortcutRedirect = 'freeform/notifications/'~type~'/{id}' %}
 
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
@@ -20,13 +20,13 @@
             <div class="menu">
                 <ul>
                     <li>
-                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                        <a class="formsubmit" data-redirect="{{ ('freeform/notifications/'~type~'/{id}')|hash }}">
                             {{ "Save and continue editing"|t('freeform') }}
                             <span class="shortcut">⌘S</span>
                         </a>
                     </li>
                     <li>
-                        <a class="formsubmit" data-redirect="{{ url('freeform/notifications/new')|hash }}">
+                        <a class="formsubmit" data-redirect="{{ url('freeform/notifications/'~type~'/new')|hash }}">
                             {{ "Save and add another"|t('freeform') }}
                         </a>
                     </li>
@@ -38,8 +38,8 @@
 
 {% block content %}
 
-    <input type="hidden" name="action" value="freeform/notifications/save">
-    {{ redirectInput('freeform/notifications') }}
+    <input type="hidden" name="action" value="freeform/notifications/{{ type }}/save">
+    {{ redirectInput('freeform/notifications/'~type) }}
     {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
     {% if notification.filepath %}<input type="hidden" name="notificationId" value="{{ notification.filepath }}">{% endif %}
     {{ csrfInput() }}

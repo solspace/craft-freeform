@@ -402,7 +402,7 @@ class FormsController extends BaseController
         $this->view->registerAssetBundle(ComposerBuilderBundle::class);
         $this->view->registerTranslations(Freeform::TRANSLATION_CATEGORY, $translationCategories);
 
-        $notifications = $this->getNotificationsService()->getAllNotifications(true);
+        $notifications = $this->getNotificationsService()->getAllNotifications();
         $mailingListIntegrations = $this->getMailingListsService()->getAllIntegrationObjects();
         $crmIntegrations = $this->getCrmService()->getAllIntegrationObjects();
         $paymentGateways = $this->getPaymentGatewaysService()->getAllIntegrationObjects();
@@ -452,6 +452,7 @@ class FormsController extends BaseController
             'canManageFields' => PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_MANAGE),
             'canManageNotifications' => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE),
             'canManageSettings' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
+            'isDbEmailTemplateStorage' => Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE === $this->getSettingsService()->getSettingsModel()->getEmailTemplateDefault(),
             'isRulesEnabled' => $isPro,
             'isRecaptchaEnabled' => $settings->recaptchaEnabled,
             'isHCaptcha' => $isHCaptcha,

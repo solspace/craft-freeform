@@ -49,7 +49,7 @@ export default class AdminNotifications extends BasePropertyEditor {
           couldBeNumeric={true}
           onChangeHandler={this.update}
           emptyOption="Select a template..."
-          options={PropertyHelper.getNotificationList(notifications)}
+          optionGroups={PropertyHelper.getNotificationList(notifications)}
         >
           {canManageNotifications && <AddNewNotification />}
         </SelectProperty>

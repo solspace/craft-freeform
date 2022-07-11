@@ -29,6 +29,10 @@ class Settings extends Model
     public const DEFAULT_BLOCKED_EMAILS_ERROR_MESSAGE = 'Invalid Email Address';
     public const DEFAULT_BLOCKED_KEYWORDS_ERROR_MESSAGE = 'Invalid Entry Data';
 
+    public const EMAIL_TEMPLATE_STORAGE_TYPE_FILES = 'files';
+    public const EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE = 'database';
+    public const EMAIL_TEMPLATE_STORAGE_TYPE_BOTH = 'files_database';
+
     public const THROTTLING_TIME_FRAME_MINUTES = 'm';
     public const THROTTLING_TIME_FRAME_SECONDS = 's';
 
@@ -76,6 +80,12 @@ class Settings extends Model
 
     /** @var string */
     public $emailTemplateDirectory;
+
+    /** @var string */
+    public $emailTemplateStorageType;
+
+    /** @var string */
+    public $emailTemplateDefault;
 
     /** @var string */
     public $successTemplateDirectory;
@@ -315,7 +325,6 @@ class Settings extends Model
     {
         $this->pluginName = null;
         $this->formTemplateDirectory = null;
-        $this->emailTemplateDirectory = null;
         $this->successTemplateDirectory = null;
         $this->defaultView = Freeform::VIEW_DASHBOARD;
         $this->fieldDisplayOrder = Freeform::FIELD_DISPLAY_ORDER_NAME;
@@ -363,6 +372,10 @@ class Settings extends Model
         $this->displayFeed = true;
         $this->feedInfo = [];
         $this->badgeType = 'all';
+
+        $this->emailTemplateDirectory = null;
+        $this->emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
+        $this->emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
 
         $this->recaptchaEnabled = false;
         $this->recaptchaKey = null;
@@ -461,6 +474,15 @@ class Settings extends Model
         }
 
         return null;
+    }
+
+    public function getEmailTemplateDefault(): string
+    {
+        return match ($this->emailTemplateStorageType) {
+            self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE => self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE,
+            self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES => self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES,
+            default => $this->emailTemplateDefault,
+        };
     }
 
     public function getAbsoluteSuccessTemplateDirectory()

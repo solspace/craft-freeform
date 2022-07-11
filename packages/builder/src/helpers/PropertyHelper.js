@@ -1,3 +1,5 @@
+import { translate } from '@ff/builder/app';
+
 const validProperties = [
   'hash',
   'id',
@@ -131,22 +133,56 @@ export default class PropertyHelper {
    * @returns {Array}
    */
   static getNotificationList(notifications) {
+    const dbNotificationList = [];
+    const templateNotificationList = [];
     const notificationList = [];
 
-    for (let key in notifications) {
-      if (!notifications.hasOwnProperty(key)) {
-        continue;
+    // If notifications is an array - it contains only DB notifications
+    if (notifications.constructor === Array) {
+      notifications.map((notification) => {
+        dbNotificationList.push({
+          key: notification.id,
+          value: notification.name,
+        });
+      });
+
+      // If it is an object - it might have mixed values
+    } else if (typeof notifications === 'object') {
+      for (let key in notifications) {
+        if (!notifications.hasOwnProperty(key)) {
+          continue;
+        }
+        let notification = notifications[key];
+
+        const data = {
+          key,
+          value: notification.name,
+        };
+
+        if (/^[0-9]+$/.test(notification.id)) {
+          dbNotificationList.push(data);
+        } else {
+          templateNotificationList.push(data);
+        }
       }
+    }
 
-      const notification = notifications[key];
+    dbNotificationList.sort((a, b) => a.value.localeCompare(b.value));
+    templateNotificationList.sort((a, b) => a.value.localeCompare(b.value));
 
+    if (dbNotificationList.length) {
       notificationList.push({
-        key: notification.handle,
-        value: notification.name,
+        label: translate('DB Notifications'),
+        options: dbNotificationList,
       });
     }
 
-    notificationList.sort((a, b) => a.value.localeCompare(b.value));
+    if (templateNotificationList.length) {
+      notificationList.push({
+        label: translate('Template Notifications'),
+        options: templateNotificationList,
+      });
+    }
 
     return notificationList;
   }

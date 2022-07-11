@@ -1,0 +1,92 @@
+{% extends "freeform/notifications/_layout" %}
+
+{% block actionButton %}
+
+    {% if currentUser.can("freeform-notificationsManage") %}
+        <div class="buttons">
+            <div class="btngroup submit">
+                <a class="btn submit add icon" href="{{ url('freeform/notifications/files/new') }}">
+                    {{ "New Template"|t('freeform') }}
+                </a>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+{% set content %}
+
+    {% if notifications|length %}
+
+        <div class="vue-admin-tablepane tablepane">
+            <table data-file-templates class="data fullwidth collapsible">
+                <thead>
+                <th scope="col">{{ "Name"|t('freeform') }}</th>
+                <th scope="col">{{ "Description"|t('freeform') }}</th>
+                <td class="col">{{ "File Name"|t('freeform') }}</td>
+                <td class="thin"></td>
+                </thead>
+                <tbody>
+                {# File based templates #}
+                {% for filename, notification in notifications %}
+                    <tr data-id="{{ notification.filepath }}" data-name="{{ notification.name|t('freeform') }}">
+                        <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
+                            {% if currentUser.can("freeform-notificationsManage") %}
+                                <a href="{{ url('freeform/notifications/files/' ~ notification.filepath) }}">
+                                    {{ notification.name }}
+                                </a>
+                            {% else %}
+                                {{ notification.name }}
+                            {% endif %}
+                        </th>
+                        <td style="width: 50%;">
+                            {{ notification.description|truncater(80) }}
+                        </td>
+                        <td data-title="{{ "File Name"|t('freeform') }}">
+                            <code>{{ filename }}</code>
+                        </td>
+                        <td class="thin">
+                            <div class='action-buttons'>
+                                {% if currentUser.can("freeform-notificationsManage") %}
+                                    <a class="clone icon" data-type="{{ type }}" data-id="{{ notification.filepath }}"
+                                       title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
+                                    <a class="delete icon" data-type="{{ type }}" data-id="{{ notification.filepath }}" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    {% else %}
+
+        <div class="zilch">
+            <p>{{ "No Email Notification templates exist yet."|t('freeform') }}</p>
+
+            {% if not settings.absoluteEmailTemplateDirectory %}
+                <p>
+                    {{ 'In order to add new notification templates, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.'|t('freeform', { link: cpUrl('freeform/settings/email-templates')})|raw }}
+                </p>
+            {% endif %}
+        </div>
+
+    {% endif %}
+
+{% endset %}
+
+
+{% js %}
+    var confirmDeleteMessage = '{{ "Are you sure you want to delete this notification?"|t('freeform') }}';
+
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#emailnotifications',
+    noObjectsSelector: '#nonotifications',
+    newObjectBtnSelector: '#newnotificationcontainer',
+    deleteAction: 'freeform/notifications/files/delete',
+    confirmDeleteMessage: confirmDeleteMessage,
+    });
+
+{% endjs %}

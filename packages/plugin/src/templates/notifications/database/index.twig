@@ -1,7 +1,4 @@
-{% extends "freeform/_layouts/main" %}
-{% hook "freeform.prepareCpTemplate" %}
-
-{% set selectedSubnavItem = "notifications" %}
+{% extends "freeform/notifications/_layout" %}
 
 {% block actionButton %}
 
@@ -9,7 +6,7 @@
         {% if settings.absoluteEmailTemplateDirectory %}
             <div class="buttons">
                 <div class="btngroup submit">
-                    <a class="btn submit add icon" href="{{ url('freeform/notifications/new-file') }}">
+                    <a class="btn submit add icon" href="{{ url('freeform/notifications/database/new') }}">
                         {{ "New Template"|t('freeform') }}
                     </a>
                 </div>
@@ -19,7 +16,6 @@
 
 {% endblock %}
 
-{% set title = "Email Notifications"|t('freeform') %}
 
 {% set content %}
 
@@ -29,35 +25,35 @@
             <table data-file-templates class="data fullwidth collapsible">
                 <thead>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
+                <th scope="col">{{ "Handle"|t('freeform') }}</th>
                 <th scope="col">{{ "Description"|t('freeform') }}</th>
-                <td class="col">{{ "File Name"|t('freeform') }}</td>
                 <td class="thin"></td>
                 </thead>
                 <tbody>
                 {# File based templates #}
-                {% for filename, notification in notifications %}
-                    <tr data-id="{{ notification.filepath }}" data-name="{{ notification.name|t('freeform') }}">
+                {% for id, notification in notifications %}
+                    <tr data-id="{{ notification.id }}" data-name="{{ notification.name|t('freeform') }}">
                         <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                             {% if currentUser.can("freeform-notificationsManage") %}
-                                <a href="{{ url('freeform/notifications/' ~ notification.filepath) }}">
+                                <a href="{{ url('freeform/notifications/database/' ~ notification.id) }}">
                                     {{ notification.name }}
                                 </a>
                             {% else %}
                                 {{ notification.name }}
                             {% endif %}
                         </th>
+                        <td data-title="{{ 'Handle'|t('freeform') }}">
+                            <code>{{ notification.handle|truncater(40) }}</code>
+                        </td>
                         <td style="width: 50%;">
                             {{ notification.description|truncater(80) }}
-                        </td>
-                        <td data-title="{{ "File Name"|t('freeform') }}">
-                            <code>{{ filename }}</code>
                         </td>
                         <td class="thin">
                             <div class='action-buttons'>
                                 {% if currentUser.can("freeform-notificationsManage") %}
-                                    <a class="clone icon" data-id="{{ notification.filepath }}"
+                                    <a class="clone icon" data-type="{{ type }}" data-id="{{ notification.id }}"
                                        title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
-                                    <a class="delete icon" data-id="{{ notification.filepath }}" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
+                                    <a class="delete icon" data-type="{{ type }}" data-id="{{ notification.id }}" title="{{ 'Delete'|t('freeform') }}" role="button"></a>
                                 {% endif %}
                             </div>
                         </td>
@@ -71,12 +67,6 @@
 
         <div class="zilch">
             <p>{{ "No Email Notification templates exist yet."|t('freeform') }}</p>
-
-            {% if not settings.absoluteEmailTemplateDirectory %}
-                <p>
-                    {{ 'In order to add new notification templates, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.'|t('freeform', { link: cpUrl('freeform/settings/email-templates')})|raw }}
-                </p>
-            {% endif %}
         </div>
 
     {% endif %}
@@ -91,7 +81,7 @@
     tableSelector: '#emailnotifications',
     noObjectsSelector: '#nonotifications',
     newObjectBtnSelector: '#newnotificationcontainer',
-    deleteAction: 'freeform/notifications/delete',
+    deleteAction: 'freeform/notifications/database/delete',
     confirmDeleteMessage: confirmDeleteMessage,
     });
 

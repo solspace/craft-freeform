@@ -16,6 +16,7 @@ import { getHandleValue } from '../../../helpers/Utilities';
 export default class NotificationProperties extends Component {
   static initialState = {
     name: '',
+    handle: '',
     errors: [],
   };
 
@@ -31,6 +32,7 @@ export default class NotificationProperties extends Component {
     }).isRequired,
     notificator: PropTypes.func.isRequired,
     createNotificationUrl: PropTypes.string.isRequired,
+    isDbEmailTemplateStorage: PropTypes.bool.isRequired,
     hash: PropTypes.string.isRequired,
   };
 
@@ -52,8 +54,9 @@ export default class NotificationProperties extends Component {
   }
 
   render() {
-    const { name, errors } = this.state;
+    const { name, handle, errors } = this.state;
     const { toggleForm } = this.props;
+    const { isDbEmailTemplateStorage } = this.context;
 
     return (
       <div className="composer-new-field-form">
@@ -73,6 +76,25 @@ export default class NotificationProperties extends Component {
             />
           </div>
         </div>
+
+        {isDbEmailTemplateStorage && (
+          <div className="field">
+            <div className="heading">
+              <label>{translate('Handle')}</label>
+            </div>
+            <div className="input">
+              <input
+                type="text"
+                name="handle"
+                ref="handle"
+                className="text fullwidth code"
+                value={handle}
+                onChange={this.updateHandle}
+                onKeyUp={this.updateState}
+              />
+            </div>
+          </div>
+        )}
 
         {errors.length > 0 && (
           <div className="errors">
@@ -140,17 +162,21 @@ export default class NotificationProperties extends Component {
    * @returns {boolean}
    */
   addNotification() {
-    const { name } = this.refs;
+    const { name, handle } = this.refs;
     const { toggleForm, fetchNotifications } = this.props;
-    const { csrf, notificator, createNotificationUrl, hash } = this.context;
+    const { csrf, notificator, createNotificationUrl, hash, isDbEmailTemplateStorage } = this.context;
 
     const nameValue = ReactDOM.findDOMNode(name).value;
-    const handleValue = null;
+    const handleValue = isDbEmailTemplateStorage ? ReactDOM.findDOMNode(handle) : null;
 
     const errors = [];
 
     if (!nameValue) {
       errors.push(translate('Name must not be empty'));
+    }
+
+    if (!handleValue && isDbEmailTemplateStorage) {
+      errors.push(translate('Handle must not be empty'));
     }
 
     if (errors.length) {

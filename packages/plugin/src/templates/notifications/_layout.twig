@@ -1,0 +1,27 @@
+{% extends "freeform/_layouts/main" %}
+{% hook "freeform.prepareCpTemplate" %}
+
+{% set selectedSubnavItem = "notifications" %}
+
+{% set title = "Email Notifications"|t('freeform') %}
+
+{% block sidebar %}
+
+    {% if settings.emailTemplateStorageType == 'files_database' %}
+
+        <nav>
+            <ul>
+                <li>
+                    <a href="{{ url('freeform/notifications/files') }}" class="{{ isFiles ? 'sel' }}">
+                        {{ "File Templates"|t('freeform') }}
+                    </a>
+                    <a href="{{ url('freeform/notifications/database') }}" class="{{ not isFiles ? 'sel' }}">
+                        {{ "Database Templates"|t('freeform') }}
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+    {% endif %}
+
+{% endblock %}

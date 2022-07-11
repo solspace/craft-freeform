@@ -73,6 +73,26 @@ $(() => {
 
   scriptInsertLocation.trigger('change');
 
+  const filesDirectory = $('#files-directory');
+  const templateDefault = $('#template-default');
+  $('#storage-type').on({
+    change: (event) => {
+      const { value } = event.target;
+
+      if (['files', 'files_database'].includes(value)) {
+        filesDirectory.removeClass('hidden');
+      } else {
+        filesDirectory.addClass('hidden');
+      }
+
+      if (value === 'files_database') {
+        templateDefault.removeClass('hidden');
+      } else {
+        templateDefault.addClass('hidden');
+      }
+    },
+  });
+
   const notificationsMigrator = $('#notifications-migrator');
   if (notificationsMigrator) {
     const button = $('#migrate', notificationsMigrator);

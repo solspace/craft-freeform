@@ -41,7 +41,9 @@ use Solspace\Freeform\Controllers\FormsController;
 use Solspace\Freeform\Controllers\LogsController;
 use Solspace\Freeform\Controllers\MailingListsController;
 use Solspace\Freeform\Controllers\Migrations\NotificationsController as MigrateNotificationsController;
-use Solspace\Freeform\Controllers\NotificationsController;
+use Solspace\Freeform\controllers\notifications\DatabaseController;
+use Solspace\Freeform\controllers\notifications\FilesController;
+use Solspace\Freeform\controllers\notifications\SenderController;
 use Solspace\Freeform\Controllers\PaymentGatewaysController;
 use Solspace\Freeform\Controllers\Pro\ExportNotificationsController;
 use Solspace\Freeform\Controllers\Pro\ExportProfilesController;
@@ -494,7 +496,9 @@ class Freeform extends Plugin
                 'fields' => FieldsController::class,
                 'forms' => FormsController::class,
                 'logs' => LogsController::class,
-                'notifications' => NotificationsController::class,
+                'notifications-files' => FilesController::class,
+                'notifications-database' => DatabaseController::class,
+                'notifications-sender' => SenderController::class,
                 'submissions' => SubmissionsController::class,
                 'spam-submissions' => SpamSubmissionsController::class,
                 'statuses' => StatusesController::class,

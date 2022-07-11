@@ -6,6 +6,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Services\Notifications\NotificationFilesService;
 use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
 
@@ -45,7 +46,7 @@ class NotificationsMigrator
             $file->setAttributes($attributes, false);
 
             touch($templateDir.'/'.$file->filepath);
-            $this->notifications->save($file);
+            \Craft::$container->get(NotificationFilesService::class)->save($file);
 
             $idToFilenameMap[(int) $notification->id] = $file->filepath;
 

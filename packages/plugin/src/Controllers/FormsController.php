@@ -317,13 +317,17 @@ class FormsController extends BaseController
                 continue;
             }
 
-            $selectFields[] = '[[s.'.Submission::getFieldColumnName($field->getId()).']]';
+            $fieldName = Submission::getFieldColumnName($field);
+            $fieldHandle = $field->getHandle();
+
+            $selectFields[] = "[[sc.{$fieldName}]] as {$fieldHandle}";
         }
 
         $query = (new Query())
             ->select($selectFields)
             ->from(Submission::TABLE.' s')
             ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
+            ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
             ->where(['s.[[formId]]' => $id])
         ;
 

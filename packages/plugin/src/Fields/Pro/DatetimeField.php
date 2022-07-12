@@ -214,6 +214,10 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
             }
         }
 
+        if ($value instanceof \DateTime) {
+            return $value->format($this->getFormat());
+        }
+
         return $value;
     }
 

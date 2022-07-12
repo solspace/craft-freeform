@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.14 - 2022-07-12
+
+### Changed
+- Reversed database notifications being removed. You can now continue to create and use email notification templates stored as files, in the database, or a combination of both.
+
+### Fixed
+- Fixed a bug where exporting submissions from the dashboard would result in an error.
+- Fixed a bug where some special field types were showing in the field type dropdown for creating new fields in the form builder.
+- Fixed a bug where Date fields could sometimes error when editing a Craft Entry via Freeform's element connections feature.
+
 ## 4.0.0-beta.13 - 2022-06-30
 
 ### Changed
@@ -138,7 +148,7 @@
 - Updated newly created email notification templates' "From" email address and name to default to the newer way (via Project Config), e.g. `craft.app.projectConfig.get('email.fromEmail')`). If you are using the older approach in existing email notification templates, be sure to update them. 
 
 ### Removed
-- Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
+- **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 
 ## 3.13.14 - 2022-06-30

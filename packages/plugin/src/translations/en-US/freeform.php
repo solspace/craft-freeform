@@ -638,8 +638,8 @@ return [
     'Reset to default values' => 'Reset to default values',
     'Please select an element' => 'Please select an element',
 
-    'DB Notifications' => 'DB Notifications',
-    'Template Notifications' => 'Template Notifications',
+    'Database Templates' => 'Database Templates',
+    'File Templates' => 'File Templates',
 
     // Conditional logic
     'Select a page to add rules to' => 'Select a page to add rules to',

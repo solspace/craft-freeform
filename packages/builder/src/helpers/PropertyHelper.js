@@ -137,7 +137,7 @@ export default class PropertyHelper {
     const templateNotificationList = [];
     const notificationList = [];
 
-    // If notifications is an array - it contains only DB notifications
+    // If notifications is an array - it contains only database notifications
     if (notifications.constructor === Array) {
       notifications.map((notification) => {
         dbNotificationList.push({
@@ -172,14 +172,14 @@ export default class PropertyHelper {
 
     if (dbNotificationList.length) {
       notificationList.push({
-        label: translate('DB Notifications'),
+        label: translate('Database Templates'),
         options: dbNotificationList,
       });
     }
 
     if (templateNotificationList.length) {
       notificationList.push({
-        label: translate('Template Notifications'),
+        label: translate('File Templates'),
         options: templateNotificationList,
       });
     }

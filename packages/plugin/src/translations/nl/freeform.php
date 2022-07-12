@@ -624,8 +624,8 @@ return [
     'Reset to default values' => 'Resetten naar standaardwaardes',
     'Please select an element' => 'Selecteer een element',
 
-    'DB Notifications' => 'DB notificaties',
-    'Template Notifications' => 'Template notificaties',
+    'Database Templates' => 'DB notificaties',
+    'File Templates' => 'Template notificaties',
 
     // Voorwaardelijke logica
     'Select a page to add rules to' => 'Selecteer een pagina om regels aan toe te voegen',

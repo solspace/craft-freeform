@@ -609,8 +609,8 @@ return [
     'Reset to default values' => 'Zurücksetzen auf Standardwerte',
     'Please select an element' => 'Bitte wähle ein Element',
 
-    'DB Notifications' => 'DB Benachrichtigungen',
-    'Template Notifications' => 'Template-Benachrichtigungen',
+    'Database Templates' => 'DB Benachrichtigungen',
+    'File Templates' => 'Template-Benachrichtigungen',
 
     // Conditional logic
     'Select a page to add rules to' => 'Wähle eine Seite, der du Regeln hinzufügen möchtest',

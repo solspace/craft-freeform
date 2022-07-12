@@ -406,7 +406,7 @@ class FormsController extends BaseController
         $this->view->registerAssetBundle(ComposerBuilderBundle::class);
         $this->view->registerTranslations(Freeform::TRANSLATION_CATEGORY, $translationCategories);
 
-        $notifications = $this->getNotificationsService()->getAllNotifications();
+        $notifications = $this->getNotificationsService()->getAllNotifications(false);
         $mailingListIntegrations = $this->getMailingListsService()->getAllIntegrationObjects();
         $crmIntegrations = $this->getCrmService()->getAllIntegrationObjects();
         $paymentGateways = $this->getPaymentGatewaysService()->getAllIntegrationObjects();

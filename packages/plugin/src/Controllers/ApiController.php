@@ -18,14 +18,12 @@ use craft\db\Table;
 use craft\helpers\ChartHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
-use craft\helpers\FileHelper;
-use craft\helpers\StringHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Models\FieldModel;
 use yii\base\Exception;
@@ -215,31 +213,16 @@ class ApiController extends BaseController
             $errors[] = Freeform::t('Name is required');
         }
 
-        $settings = $this->getSettingsService()->getSettingsModel();
-
-        $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
-        if (null === $templateDirectory) {
-            return $this->asJson(['success' => false, 'errors' => [
-                Freeform::t('Email Template directory not set'),
-            ]]);
+        try {
+            $notification = $this->getNotificationsService()->create($name);
+        } catch (NotificationException $exception) {
+            $errors[] = $exception->getMessage();
         }
 
-        $templateName = StringHelper::toSnakeCase($name);
-        $extension = '.twig';
+        if (empty($errors) && $notification) {
+            $id = $notification->isFileBasedTemplate() ? $notification->filepath : $notification->id;
 
-        $templatePath = $templateDirectory.'/'.$templateName.$extension;
-        if (file_exists($templatePath)) {
-            $errors[] = Freeform::t("Template '{name}' already exists", ['name' => $templateName.$extension]);
-        } else {
-            try {
-                FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
-            } catch (FreeformException $exception) {
-                $errors[] = $exception->getMessage();
-            }
-        }
-
-        if (empty($errors)) {
-            return $this->asJson(['success' => true, 'id' => $templateName.$extension]);
+            return $this->asJson(['success' => true, 'id' => $id]);
         }
 
         return $this->asJson(['success' => false, 'errors' => $errors]);

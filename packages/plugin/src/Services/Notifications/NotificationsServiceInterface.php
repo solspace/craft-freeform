@@ -21,4 +21,6 @@ interface NotificationsServiceInterface
     public function save(NotificationRecord $record): bool;
 
     public function delete(mixed $id): bool;
+
+    public function create(string $name): NotificationRecord;
 }

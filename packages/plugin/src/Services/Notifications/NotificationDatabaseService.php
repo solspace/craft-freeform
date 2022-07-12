@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Services\Notifications;
 
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Events\Notifications\SaveEvent;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Services\BaseService;
@@ -60,6 +61,17 @@ class NotificationDatabaseService extends BaseService implements NotificationsSe
         }
 
         return false;
+    }
+
+    public function create(string $name): NotificationRecord
+    {
+        $record = NotificationRecord::create();
+        $record->name = $name;
+        $record->handle = StringHelper::toCamelCase($name);
+
+        $this->save($record);
+
+        return $record;
     }
 
     public function delete(mixed $id): bool

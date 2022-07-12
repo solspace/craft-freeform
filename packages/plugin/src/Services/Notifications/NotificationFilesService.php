@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Services\Notifications;
 
 use craft\helpers\FileHelper;
+use craft\helpers\StringHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
+use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Services\BaseService;
 
@@ -67,14 +69,29 @@ class NotificationFilesService extends BaseService implements NotificationsServi
     public function create(string $name): NotificationRecord
     {
         $settings = $this->getSettingsService()->getSettingsModel();
+
+        $templateName = StringHelper::toSnakeCase($name);
         $extension = '.twig';
 
         $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
-        $templateName = $name;
+        if (null === $templateDirectory) {
+            throw new NotificationException(
+                Freeform::t('Email Template directory not set')
+            );
+        }
 
         $templatePath = $templateDirectory.'/'.$templateName.$extension;
+        if (file_exists($templatePath)) {
+            throw new NotificationException(
+                Freeform::t("Template '{name}' already exists", ['name' => $templateName.$extension])
+            );
+        }
 
-        FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
+        try {
+            FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
+        } catch (\Exception) {
+            throw new NotificationException('Could not get email template content. Please contact Solspace.');
+        }
 
         return $this->getById($templateName.$extension);
     }

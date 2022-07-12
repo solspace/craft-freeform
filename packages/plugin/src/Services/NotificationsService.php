@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Services;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
+use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;
 use Solspace\Freeform\Services\Notifications\NotificationFilesService;
@@ -42,8 +43,8 @@ class NotificationsService extends BaseService
 
             self::$allNotificationsLoaded = true;
             self::$notificationCache =
-                \Craft::$container->get(NotificationDatabaseService::class)->getAll($indexById) +
-                \Craft::$container->get(NotificationFilesService::class)->getAll($indexById);
+                $this->getDatabaseService()->getAll($indexById) +
+                $this->getFilesService()->getAll($indexById);
         }
 
         if (!$indexById) {
@@ -56,9 +57,9 @@ class NotificationsService extends BaseService
     public function getNotificationById(mixed $id): ?NotificationRecord
     {
         if (null === self::$notificationCache || !isset(self::$notificationCache[$id])) {
-            $record = \Craft::$container->get(NotificationDatabaseService::class)->getById($id);
+            $record = $this->getDatabaseService()->getById($id);
             if (!$record) {
-                $record = \Craft::$container->get(NotificationFilesService::class)->getById($id);
+                $record = $this->getFilesService()->getById($id);
             }
 
             self::$notificationCache[$id] = $record;
@@ -87,8 +88,28 @@ class NotificationsService extends BaseService
         return $notification;
     }
 
+    public function create(string $name): NotificationRecord
+    {
+        $defaultStorage = $this->getSettingsService()->getSettingsModel()->emailTemplateDefault;
+
+        return match ($defaultStorage) {
+            Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE => $this->getDatabaseService()->create($name),
+            default => $this->getFilesService()->create($name),
+        };
+    }
+
     public function databaseNotificationCount(): int
     {
-        return \count(\Craft::$container->get(NotificationDatabaseService::class)->getAll());
+        return \count($this->getDatabaseService()->getAll());
+    }
+
+    private function getDatabaseService(): NotificationDatabaseService
+    {
+        return \Craft::$container->get(NotificationDatabaseService::class);
+    }
+
+    private function getFilesService(): NotificationFilesService
+    {
+        return \Craft::$container->get(NotificationFilesService::class);
     }
 }

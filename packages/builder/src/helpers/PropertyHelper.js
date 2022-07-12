@@ -137,35 +137,19 @@ export default class PropertyHelper {
     const templateNotificationList = [];
     const notificationList = [];
 
-    // If notifications is an array - it contains only database notifications
-    if (notifications.constructor === Array) {
-      notifications.map((notification) => {
+    notifications.forEach((notification) => {
+      if (notification.id) {
         dbNotificationList.push({
           key: notification.id,
           value: notification.name,
         });
-      });
-
-      // If it is an object - it might have mixed values
-    } else if (typeof notifications === 'object') {
-      for (let key in notifications) {
-        if (!notifications.hasOwnProperty(key)) {
-          continue;
-        }
-        let notification = notifications[key];
-
-        const data = {
-          key,
+      } else if (notification.handle) {
+        templateNotificationList.push({
+          key: notification.handle,
           value: notification.name,
-        };
-
-        if (/^[0-9]+$/.test(notification.id)) {
-          dbNotificationList.push(data);
-        } else {
-          templateNotificationList.push(data);
-        }
+        });
       }
-    }
+    });
 
     dbNotificationList.sort((a, b) => a.value.localeCompare(b.value));
     templateNotificationList.sort((a, b) => a.value.localeCompare(b.value));

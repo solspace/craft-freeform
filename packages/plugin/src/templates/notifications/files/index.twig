@@ -3,13 +3,15 @@
 {% block actionButton %}
 
     {% if currentUser.can("freeform-notificationsManage") %}
-        <div class="buttons">
-            <div class="btngroup submit">
-                <a class="btn submit add icon" href="{{ url('freeform/notifications/files/new') }}">
-                    {{ "New Template"|t('freeform') }}
-                </a>
+        {% if settings.absoluteEmailTemplateDirectory %}
+            <div class="buttons">
+                <div class="btngroup submit">
+                    <a class="btn submit add icon" href="{{ url('freeform/notifications/files/new') }}">
+                        {{ "New Template"|t('freeform') }}
+                    </a>
+                </div>
             </div>
-        </div>
+        {% endif %}
     {% endif %}
 
 {% endblock %}
@@ -64,11 +66,11 @@
     {% else %}
 
         <div class="zilch">
-            <p>{{ "No Email Notification templates exist yet."|t('freeform') }}</p>
+            <p>{{ "No email notification template files exist yet."|t('freeform') }}</p>
 
             {% if not settings.absoluteEmailTemplateDirectory %}
                 <p>
-                    {{ 'In order to add new notification templates, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.'|t('freeform', { link: cpUrl('freeform/settings/email-templates')})|raw }}
+                    {{ 'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.'|t('freeform', { link: cpUrl('freeform/settings/email-templates')})|raw }}
                 </p>
             {% endif %}
         </div>

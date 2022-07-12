@@ -317,13 +317,17 @@ class FormsController extends BaseController
                 continue;
             }
 
-            $selectFields[] = '[[s.'.Submission::getFieldColumnName($field->getId()).']]';
+            $fieldName = Submission::getFieldColumnName($field);
+            $fieldHandle = $field->getHandle();
+
+            $selectFields[] = "[[sc.{$fieldName}]] as {$fieldHandle}";
         }
 
         $query = (new Query())
             ->select($selectFields)
             ->from(Submission::TABLE.' s')
             ->innerJoin('{{%content}} c', 'c.[[elementId]] = s.[[id]]')
+            ->innerJoin(Submission::getContentTableName($form).' sc', 'sc.[[id]] = s.[[id]]')
             ->where(['s.[[formId]]' => $id])
         ;
 
@@ -434,7 +438,7 @@ class FormsController extends BaseController
             'continueEditingUrl' => 'freeform/forms/{id}',
             'formTypes' => $this->getEncodedJson($this->getFormsTypesService()->getTypes()),
             'fileKinds' => $this->getEncodedJson(Assets::getFileKinds()),
-            'fieldTypeList' => $this->getEncodedJson($this->getFieldsService()->getFieldTypes()),
+            'fieldTypeList' => $this->getEncodedJson($this->getFieldsService()->getEditableFieldTypes()),
             'notificationList' => $this->getEncodedJson($notifications),
             'mailingList' => $this->getEncodedJson($mailingListIntegrations),
             'crmIntegrations' => $this->getEncodedJson($crmIntegrations),

@@ -79,10 +79,15 @@
         {% endif %}
 
         {% if craft.freeform.notifications.databaseNotificationCount > 0 and settings.emailTemplateStorageType in ['files', 'files_database'] %}
+
+            <hr>
+
+            <h3>{{ "Migration Utility"|t('freeform') }}</h3>
+
             <div class="field" id="notifications-migrator">
                 <div class="heading">
                     <label>
-                        {{ 'Migrate from Database Email Templates to File Email Templates'|t('freeform') }}
+                        {{ 'Convert Database email templates to File email templates'|t('freeform') }}
                     </label>
                 </div>
                 <div class="instructions">

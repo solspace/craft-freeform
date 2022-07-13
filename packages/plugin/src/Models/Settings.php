@@ -479,9 +479,9 @@ class Settings extends Model
     public function getEmailStorageTypeName(): string
     {
         return match ($this->emailTemplateStorageType) {
-            self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES => 'Files',
+            self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES => 'File',
             self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE => 'Database',
-            self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH => 'Files & Database',
+            self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH => 'File & Database',
             default => 'Not set',
         };
     }

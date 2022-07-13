@@ -831,21 +831,23 @@ forms.forEach((form) => {
   new Freeform(form);
 });
 
+const recursiveFreeformAttachment = (node) => {
+  if (node.nodeName === 'FORM' || node.dataset?.freeform !== undefined) {
+    new Freeform(node);
+  }
+
+  node?.childNodes.forEach(recursiveFreeformAttachment);
+};
+
 // Add an observer which listens for new forms
 const observer = new MutationObserver((mutations) => {
   mutations.forEach((mutation) => {
-    if (!mutation.type === 'childList') {
+    if (mutation.type !== 'childList') {
       return;
     }
 
     mutation.addedNodes.forEach((node) => {
-      if (node.nodeName !== 'FORM') {
-        return;
-      }
-
-      if (node.dataset.freeform !== undefined) {
-        new Freeform(node);
-      }
+      recursiveFreeformAttachment(node);
     });
   });
 });

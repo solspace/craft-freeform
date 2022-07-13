@@ -160,12 +160,17 @@
         padding-left: 10px;
 
         > li {
+          display: flex;
+          gap: 5px;
+
           color: #009adb;
           font-style: italic;
 
           svg {
             position: relative;
-            top: 1px;
+            top: 3px;
+
+            flex-basis: 14px;
 
             width: 14px;
             height: 14px;

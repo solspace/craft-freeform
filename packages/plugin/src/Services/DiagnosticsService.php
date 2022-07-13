@@ -33,16 +33,12 @@ class DiagnosticsService extends BaseService
                 ],
                 [
                     new WarningValidator(
-                        function ($value) {
-                            return version_compare($value['version'], '4.0.0-beta.1', '>=');
-                        },
+                        fn ($value) => version_compare($value['version'], '4.0.0-beta.1', '>='),
                         'Craft compatibility issue',
                         'You have an incompatible version of Craft installed. This version of Freeform currently supports Craft 4.0.0 and greater.'
                     ),
                     new SuggestionValidator(
-                        function ($value) {
-                            return version_compare($value['version'], '4.1.0', '<');
-                        },
+                        fn ($value) => version_compare($value['version'], '4.1.0', '<'),
                         'Potential Craft Compatibility issue',
                         "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please confirm you're using a version of Freeform tested for compatibility with this version of Craft."
                     ),
@@ -53,16 +49,12 @@ class DiagnosticsService extends BaseService
                 $system->phpVersion,
                 [
                     new WarningValidator(
-                        function ($value) {
-                            return version_compare($value, '8.0.2', '>=');
-                        },
+                        fn ($value) => version_compare($value, '8.0.2', '>='),
                         'PHP Compatibility issue',
                         'You have an incompatible version of PHP installed for this site environment. This version of Freeform currently supports PHP 8.0.2 and greater.'
                     ),
                     new SuggestionValidator(
-                        function ($value) {
-                            return version_compare($value, '8.2', '<');
-                        },
+                        fn ($value) => version_compare($value, '8.2', '<'),
                         'Potential PHP Compatibility issue',
                         "The current version of Freeform installed may not be fully compatible with the version of PHP installed for this site environment. Please confirm you're using a version of Freeform tested for compatibility with this version of PHP."
                     ),
@@ -264,16 +256,12 @@ class DiagnosticsService extends BaseService
                 ['transport' => $emailTransport, 'issues' => $emailIssues],
                 [
                     new SuggestionValidator(
-                        function ($value) {
-                            return 'misaligned_from' !== $value['issues'];
-                        },
+                        fn ($value) => 'misaligned_from' !== $value['issues'],
                         'Potential Email Configuration issue',
                         "When using SMTP for the Craft Email settings, the 'From Email' in email notification templates should always contain a matching email address, otherwise the notifications may not send. If you wish to have a different email address for this, consider using 'Reply to Email' instead."
                     ),
                     new NoticeValidator(
-                        function ($value) {
-                            return 'misaligned_from' !== $value['issues'];
-                        },
+                        fn ($value) => 'misaligned_from' !== $value['issues'],
                         'Potential Email Configuration issue',
                         "We've detected that you're using SMTP and have email notification template(s) that contain an email address for the 'From Email' that does not match the email address configured in the Craft Email settings."
                     ),
@@ -289,48 +277,36 @@ class DiagnosticsService extends BaseService
                     $this->getSummary()->statistics->spam->javascriptEnhancement,
                     [
                         new NoticeValidator(
-                            function ($value) {
-                                return !$value;
-                            },
+                            fn ($value) => !$value,
                             '',
                             'This being enabled could potentially be problematic with caching, etc. If doing so, please be sure to manually refresh this token.'
                         ),
                     ],
-                    function ($value) {
-                        return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                    }
+                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Spam Folder: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                     $this->getSummary()->statistics->spam->spamFolder,
                     [
                         new SuggestionValidator(
-                            function ($value) {
-                                return $value;
-                            },
+                            fn ($value) => $value,
                             'Enable built-in Spam Folder',
                             'Freeform includes a built-in Spam Folder. It is beneficial for most sites to have this enabled to catch false positives due to spam configuration issues or rare cases. Freeform will let through spammy submissions but flag them as spam instead of blocking them outright. The benefit is that you can see false positives and learn why they were flagged as spam. You can also recover these and trigger proper email notifications, etc. <a href="{{ extra.url }}">Enable Spam Folder ></a>',
                             ['url' => UrlHelper::cpUrl('freeform/settings/spam')]
                         ),
                         new NoticeValidator(
-                            function ($value) {
-                                return $value;
-                            },
+                            fn ($value) => $value,
                             '',
                             'It is beneficial for most sites to have this enabled to catch false positives and/or look for patterns with spam.'
                         ),
                     ],
-                    function ($value) {
-                        return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                    }
+                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Spam Blocking: [color]{{ value|join(", ") }}[/color]',
                     $this->getSpamBlockers(),
                     [],
-                    function () {
-                        return DiagnosticItem::COLOR_BASE;
-                    }
+                    fn () => DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Captcha Service: [color]{{ value.enabled ? value.type : "Disabled" }}[/color]',
@@ -339,9 +315,7 @@ class DiagnosticsService extends BaseService
                         'type' => $this->getRecaptchaType(),
                     ],
                     [],
-                    function () {
-                        return DiagnosticItem::COLOR_BASE;
-                    }
+                    fn () => DiagnosticItem::COLOR_BASE
                 ),
             ],
             'General Settings' => [
@@ -349,57 +323,43 @@ class DiagnosticsService extends BaseService
                     'Disable Submit Button on Form Submit: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                     $this->getSummary()->statistics->settings->disableSubmit,
                     [],
-                    function ($value) {
-                        return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                    }
+                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Automatically Scroll to Form on Errors and Multipage forms: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                     $this->getSummary()->statistics->settings->autoScroll,
                     [],
-                    function ($value) {
-                        return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                    }
+                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Freeform Script Insertion Location: [color]{{ value|capitalize }}[/color]',
                     $this->getSummary()->statistics->settings->jsInsertLocation,
                     [
                         new NoticeValidator(
-                            function ($value) {
-                                return Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $value;
-                            },
+                            fn ($value) => Settings::SCRIPT_INSERT_LOCATION_MANUAL !== $value,
                             '',
                             "Please be sure to manually load Freeform's JS and CSS with the 'freeform.loadFreeformPlugin()' function in your template(s)."
                         ),
                     ],
-                    function () {
-                        return DiagnosticItem::COLOR_BASE;
-                    }
+                    fn () => DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Freeform Script Insert Type: [color]{{ value }}[/color]',
                     $this->getJsInsertType(),
                     [],
-                    function () {
-                        return DiagnosticItem::COLOR_BASE;
-                    }
+                    fn () => DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Freeform Session Context: [color]{{ value }}[/color]',
                     $this->getSettingsService()->getSettingsModel()->getSessionContextHumanReadable(),
                     [],
-                    function () {
-                        return DiagnosticItem::COLOR_BASE;
-                    }
+                    fn () => DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Enable Search Index Updating on New Submissions: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                     $this->getSettingsService()->getSettingsModel()->updateSearchIndexes,
                     [],
-                    function ($value) {
-                        return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                    }
+                    fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
                 ),
                 new DiagnosticItem(
                     'Automatically Purge Submission Data: [color]{{ value.enabled ? "Enabled, "~value.interval~" days" : "Disabled"  }}[/color]',
@@ -408,9 +368,7 @@ class DiagnosticsService extends BaseService
                         'interval' => $this->getSummary()->statistics->settings->purgeInterval,
                     ],
                     [],
-                    function () {
-                        return DiagnosticItem::COLOR_BASE;
-                    }
+                    fn () => DiagnosticItem::COLOR_BASE
                 ),
             ],
             new DiagnosticItem(
@@ -433,9 +391,13 @@ class DiagnosticsService extends BaseService
                         'Formatting Templates Directory Path: Not set correctly'
                     ),
                 ],
-                function ($value) {
-                    return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                }
+                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
+            ),
+            new DiagnosticItem(
+                'Email Template Storage Type: [color]{{ value }}[/color]',
+                $this->getSettingsService()->getSettingsModel()->getEmailStorageTypeName(),
+                [],
+                fn () => DiagnosticItem::COLOR_BASE
             ),
             new DiagnosticItem(
                 'Email Templates Directory Path: [color]{{ value ? value : "Not set" }}[/color]',
@@ -457,9 +419,7 @@ class DiagnosticsService extends BaseService
                         'Email Notification Templates Directory Path: Not set correctly'
                     ),
                 ],
-                function ($value) {
-                    return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                }
+                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
             ),
             new DiagnosticItem(
                 'Success Templates Directory Path: [color]{{ value ? value : "Not set" }}[/color]',
@@ -481,41 +441,31 @@ class DiagnosticsService extends BaseService
                         'Success Templates Directory Path: Not set correctly'
                     ),
                 ],
-                function ($value) {
-                    return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                }
+                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
             ),
             new DiagnosticItem(
                 'Developer Digest Email: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                 \count($this->getSettingsService()->getDigestRecipients()) > 0,
                 [
                     new SuggestionValidator(
-                        function ($value) {
-                            return $value;
-                        },
+                        fn ($value) => $value,
                         'Enable the Developer Digest feature',
                         "The Developer Digest sends weekly or daily emails on the day specified to any email address(es) you specify. This will include a snapshot of the previous period's performance and any logged errors and upgrade notices. This is very beneficial for keeping your finger on the pulse of this website."
                     ),
                 ],
-                function ($value) {
-                    return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                }
+                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
             ),
             new DiagnosticItem(
                 'Update Warnings & Notices: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                 (bool) $this->getSettingsService()->getSettingsModel()->displayFeed,
                 [
                     new SuggestionValidator(
-                        function ($value) {
-                            return $value;
-                        },
+                        fn ($value) => $value,
                         'Enable the Update Warnings & Notices feature',
                         'Freeform will detect if any important updates, notices or warnings are available for this site specifically, and display them on the dashboard. Examples of this might be expiring API integrations and fixes for bugs that likely affect your current site. We respect your privacy, and this information cannot and never will make it to Solspace.com servers. The checks only happen locally here on your site after automatically downloading a generic JSON file from Solspace.com.'
                     ),
                 ],
-                function ($value) {
-                    return $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE;
-                }
+                fn ($value) => $value ? DiagnosticItem::COLOR_PASS : DiagnosticItem::COLOR_BASE
             ),
             new DiagnosticItem(
                 'Errors logged: [color]{{ value ? value~" errors found" : "None found" }}[/color]',
@@ -533,18 +483,14 @@ class DiagnosticsService extends BaseService
                         ]
                     ),
                 ],
-                function ($value) {
-                    return $value > 0 ? DiagnosticItem::COLOR_ERROR : DiagnosticItem::COLOR_BASE;
-                }
+                fn ($value) => $value > 0 ? DiagnosticItem::COLOR_ERROR : DiagnosticItem::COLOR_BASE
             ),
             new DiagnosticItem(
                 null,
                 Freeform::getInstance()->forms->isPossibleLoadingStaticScripts(),
                 [
                     new WarningValidator(
-                        function ($value) {
-                            return $value;
-                        },
+                        fn ($value) => $value,
                         'Freeform Script Insert Check Failed',
                         'It appears that your server has rewrite rules checking if URLs are actual files, which can cause issues with Freeform\'s script loading in the front end and forms not working correctly. Please change the "Freeform Script Insert Type" setting to "As Files" instead.',
                     ),
@@ -625,42 +571,26 @@ class DiagnosticsService extends BaseService
         return $blockers;
     }
 
-    private function getRecaptchaType()
+    private function getRecaptchaType(): ?string
     {
-        switch ($this->getSummary()->statistics->spam->recaptchaType) {
-            case Settings::RECAPTCHA_TYPE_V2_CHECKBOX:
-                return 'reCAPTCHA V2 Checkbox';
-
-            case Settings::RECAPTCHA_TYPE_V2_INVISIBLE:
-                return 'reCAPTCHA V2 Invisible';
-
-            case Settings::RECAPTCHA_TYPE_V3:
-                return 'reCAPTCHA V3';
-
-            case Settings::RECAPTCHA_TYPE_H_CHECKBOX:
-                return 'hCaptcha Checkbox';
-
-            case Settings::RECAPTCHA_TYPE_H_INVISIBLE:
-                return 'hCaptcha Invisible';
-        }
-
-        return null;
+        return match ($this->getSummary()->statistics->spam->recaptchaType) {
+            Settings::RECAPTCHA_TYPE_V2_CHECKBOX => 'reCAPTCHA V2 Checkbox',
+            Settings::RECAPTCHA_TYPE_V2_INVISIBLE => 'reCAPTCHA V2 Invisible',
+            Settings::RECAPTCHA_TYPE_V3 => 'reCAPTCHA V3',
+            Settings::RECAPTCHA_TYPE_H_CHECKBOX => 'hCaptcha Checkbox',
+            Settings::RECAPTCHA_TYPE_H_INVISIBLE => 'hCaptcha Invisible',
+            default => null,
+        };
     }
 
     private function getJsInsertType(): string
     {
-        switch ($this->getSummary()->statistics->settings->jsInsertType) {
-            case Settings::SCRIPT_INSERT_TYPE_POINTERS:
-                return 'As Static URLs';
-
-            case Settings::SCRIPT_INSERT_TYPE_FILES:
-                return 'As Files';
-
-            case Settings::SCRIPT_INSERT_TYPE_INLINE:
-                return 'Inline Scripts';
-        }
-
-        return '';
+        return match ($this->getSummary()->statistics->settings->jsInsertType) {
+            Settings::SCRIPT_INSERT_TYPE_POINTERS => 'As Static URLs',
+            Settings::SCRIPT_INSERT_TYPE_FILES => 'As Files',
+            Settings::SCRIPT_INSERT_TYPE_INLINE => 'Inline Scripts',
+            default => '',
+        };
     }
 
     private function getSummary(): InstallSummary

@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.15 - 2022-07-13
+
+### Fixed
+- Fixed a bug where Freeform could error on the `export_notifications` table check when uninstalling the plugin. 
+- Fixed a bug where ordering results on the submission index page would sometimes error.
+- Fixed a byg where Freeform's mutation observer was not attaching to nested forms.
+
 ## 4.0.0-beta.14 - 2022-07-12
 
 ### Changed

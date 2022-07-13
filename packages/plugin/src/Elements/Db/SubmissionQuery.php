@@ -295,7 +295,7 @@ class SubmissionQuery extends ElementQuery
                 $sortOrder = $this->orderBy[$column];
 
                 unset($this->orderBy[$column]);
-                $this->orderBy([$columnUpdate => $sortOrder]);
+                $this->subQuery->orderBy([$columnUpdate => $sortOrder]);
             }
         }
 

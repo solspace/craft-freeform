@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.15.1 - 2022-07-14
+
+### Fixed
+- Fixed a bug where an incorrect namespace was used for notification controllers.
+
 ## 4.0.0-beta.15 - 2022-07-13
 
 ### Fixed

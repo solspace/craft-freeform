@@ -20,4 +20,6 @@ export const Placeholder = styled(animated.div)`
   overflow: hidden;
   font-size: 0;
   line-height: 0;
+
+  border: 3px dashed red;
 `;

@@ -14,6 +14,7 @@ const initialState: RowState = [
   { uid: 'row-uid-1', layoutUid: 'layout-uid-1', order: 1 },
   { uid: 'row-uid-2', layoutUid: 'layout-uid-1', order: 2 },
   { uid: 'row-uid-3', layoutUid: 'layout-uid-2', order: 1 },
+  { uid: 'row-uid-4', layoutUid: 'layout-uid-2', order: 2 },
 ];
 
 export const rowsSlice = createSlice({

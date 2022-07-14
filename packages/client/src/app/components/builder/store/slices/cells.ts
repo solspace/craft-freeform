@@ -75,6 +75,13 @@ const initialState: CellState = [
     type: CellType.Field,
     metadata: {},
   },
+  {
+    uid: 'cell-uid-10',
+    rowUid: 'row-uid-4',
+    order: 1,
+    type: CellType.Field,
+    metadata: {},
+  },
 ];
 
 export const cellsSlice = createSlice({

@@ -7,5 +7,4 @@ export const Wrapper = styled(BoxShadow)`
 
   display: flex;
   flex-direction: column;
-  gap: var(--m);
 `;

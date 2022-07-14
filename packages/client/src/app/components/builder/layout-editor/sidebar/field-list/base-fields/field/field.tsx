@@ -2,7 +2,8 @@ import React from 'react';
 import { useDrag } from 'react-dnd';
 import { v4 } from 'uuid';
 
-import { add } from '@ff-client/app/components/builder/store/slices/cells';
+import { add as addCell } from '@ff-client/app/components/builder/store/slices/cells';
+import { add as addRow } from '@ff-client/app/components/builder/store/slices/rows';
 import { useAppDispatch } from '@ff-client/app/components/builder/store/store';
 import { CellType } from '@ff-client/app/components/builder/types/layout';
 import { FieldType } from '@ff-client/types/fields';
@@ -17,10 +18,19 @@ export const Field: React.FC<Props> = ({ fieldType }) => {
   const dispatch = useAppDispatch();
 
   const onClick = (): void => {
+    const rowUid = v4();
+
     dispatch(
-      add({
+      addRow({
+        layoutUid: 'layout-uid-1',
+        order: 2,
+        uid: rowUid,
+      })
+    );
+    dispatch(
+      addCell({
         uid: v4(),
-        rowUid: 'row-uid-1',
+        rowUid: rowUid,
         type: CellType.Field,
         metadata: {},
         order: 0,
@@ -28,7 +38,7 @@ export const Field: React.FC<Props> = ({ fieldType }) => {
     );
   };
 
-  const [, drag] = useDrag(() => ({
+  const [_, drag] = useDrag(() => ({
     type: 'BaseField',
     item: fieldType,
   }));

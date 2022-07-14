@@ -636,7 +636,7 @@ return [
     'Rules for {page}' => 'Regels voor {page}',
     'Go to {page} when' => 'Ga naar {page} wanneer',
     'of its criteria match' => 'van de criteria overeenkomt',
-    'any' => 'elk',
+    'any' => 'een',
     'all' => 'alle',
     'Add...' => 'Voeg toe...',
     'Add criteria...' => 'Criteria toevoegen...',

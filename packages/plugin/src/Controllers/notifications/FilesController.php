@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\controllers\notifications;
+namespace Solspace\Freeform\Controllers\notifications;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;

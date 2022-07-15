@@ -48,10 +48,17 @@ class m220330_111857_SplitSubmissionsTable extends Migration
             ->pairs()
         ;
 
+        $prefix = \Craft::$app->db->tablePrefix;
+        $prefixLength = \strlen($prefix);
+
+        $maxHandleSize = 36 - $prefixLength;
+
         foreach ($forms as $form) {
             $formId = (int) $form['id'];
             $formHandle = $form['handle'];
             $formHandle = StringHelper::toSnakeCase($formHandle);
+            $formHandle = StringHelper::truncate($formHandle, $maxHandleSize, '');
+            $formHandle = trim($formHandle, '-_');
 
             $fieldMap = [];
             $layout = json_decode($form['layoutJson']);
@@ -68,7 +75,7 @@ class m220330_111857_SplitSubmissionsTable extends Migration
                     continue;
                 }
 
-                $handle = StringHelper::toSnakeCase($handle);
+                $handle = StringHelper::toKebabCase($handle, '_');
                 $handle = StringHelper::truncate($handle, 50, '');
                 $handle = trim($handle, '-_');
 

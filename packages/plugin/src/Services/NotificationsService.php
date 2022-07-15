@@ -90,7 +90,7 @@ class NotificationsService extends BaseService
 
     public function create(string $name): NotificationRecord
     {
-        $defaultStorage = $this->getSettingsService()->getSettingsModel()->emailTemplateDefault;
+        $defaultStorage = $this->getSettingsService()->getSettingsModel()->getEmailTemplateDefault();
 
         return match ($defaultStorage) {
             Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE => $this->getDatabaseService()->create($name),

@@ -46,18 +46,21 @@ class RuleSetHandler {
         let elements;
         let isMultiple = false;
 
+        let targetElement;
         if (this.form.elements[target]) {
-          const tagName = this.form.elements[target].tagName;
-
-          if (tagName) {
-            elements = [this.form.elements[target]];
-          } else {
-            elements = this.form.elements[target];
-          }
-        } else if (this.form.elements[target + '[]']) {
-          elements = this.form.elements[target + '[]'];
+          targetElement = this.form.elements[target];
+        } else if (this.form.elements[`${target}[]`]) {
+          targetElement = this.form.elements[`${target}[]`];
           isMultiple = true;
         }
+
+        if (!targetElement) {
+          return;
+        }
+
+        const tagName = targetElement.tagName;
+
+        elements = tagName ? [targetElement] : targetElement;
 
         targets.push({
           isMultiple,
@@ -178,7 +181,7 @@ class RuleSetHandler {
   getInputType = (element) => {
     const tagName = element.tagName.toLowerCase();
 
-    if (['select', 'textarea'].indexOf(tagName) !== -1) {
+    if (['select', 'textarea', 'option'].indexOf(tagName) !== -1) {
       return tagName;
     }
 

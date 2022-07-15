@@ -15,7 +15,7 @@ abstract class AbstractNotificationsController extends BaseController
 {
     abstract public function actionIndex(): Response;
 
-    public function actionSave(): Response|null
+    public function actionSave(): ?Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);
 

@@ -38,7 +38,7 @@
 
 {% block content %}
 
-    <input type="hidden" name="action" value="freeform/notifications/{{ type }}/save">
+    <input type="hidden" name="action" value="freeform/notifications-{{ type }}/save">
     {{ redirectInput('freeform/notifications/'~type) }}
     {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
     {% if notification.filepath %}<input type="hidden" name="notificationId" value="{{ notification.filepath }}">{% endif %}

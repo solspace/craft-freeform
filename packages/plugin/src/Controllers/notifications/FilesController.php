@@ -35,7 +35,7 @@ class FilesController extends AbstractNotificationsController
 
     public function actionCreate(): Response
     {
-        $date = (new \DateTime())->format('Y-m-d');
+        $date = (new \DateTime())->format('Ymd-His');
         $name = "new-template-{$date}";
 
         $record = $this->getService()->create($name);

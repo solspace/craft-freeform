@@ -37,12 +37,12 @@ class ExportXmlTest extends TestCase
                 ['label' => 'T1C2'],
                 ['label' => 'T1C3'],
             ])
-    ;
+        ;
 
         $this->tableField1Mock
             ->method('getHandle')
             ->willReturn('table1')
-    ;
+        ;
 
         $this->tableField2Mock = $this->createMock(TableField::class);
         $this->tableField2Mock
@@ -54,23 +54,23 @@ class ExportXmlTest extends TestCase
                 ['label' => 'T2C4'],
                 ['label' => 'T2C5'],
             ])
-    ;
+        ;
 
         $this->tableField2Mock
             ->method('getHandle')
             ->willReturn('table2')
-    ;
+        ;
 
         $this->textFieldMock = $this->createMock(TextField::class);
         $this->textFieldMock
             ->method('getLabel')
             ->willReturn('First Name')
-    ;
+        ;
 
         $this->textFieldMock
             ->method('getHandle')
             ->willReturn('firstName')
-    ;
+        ;
 
         $this->formMock = $this->createMock(Form::class);
         $this->formMock

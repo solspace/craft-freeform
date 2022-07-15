@@ -127,7 +127,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                     ]
                 )
                 ->execute()
-        ;
+            ;
         }
 
         foreach ($plans as $plan) {
@@ -170,7 +170,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                 ['id' => $id]
             )
             ->execute()
-                ;
+        ;
 
         return true;
     }

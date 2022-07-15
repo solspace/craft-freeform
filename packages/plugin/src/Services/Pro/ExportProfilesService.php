@@ -284,7 +284,7 @@ class ExportProfilesService extends Component
 
         echo $content;
 
-        exit();
+        exit;
     }
 
     private function getQuery(): Query

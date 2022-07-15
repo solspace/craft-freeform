@@ -109,7 +109,7 @@ class PaymentWebhooksController extends BaseController
                 break;
 
             default:
-        }
+            }
 
         return '';
     }

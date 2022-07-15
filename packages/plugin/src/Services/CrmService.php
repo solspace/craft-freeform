@@ -157,7 +157,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                     ]
                 )
                 ->execute()
-        ;
+            ;
         }
 
         foreach ($fields as $field) {
@@ -204,7 +204,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
                 ['id' => $id]
             )
             ->execute()
-                ;
+        ;
 
         return true;
     }

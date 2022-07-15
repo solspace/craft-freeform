@@ -106,7 +106,7 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
 
         try {
             $response = $this->getAuthorizedClient()->get($this->getEndpoint('/users/me'));
-            $domain = (json_decode($response->getBody(), false))->data->company_domain;
+            $domain = json_decode($response->getBody(), false)->data->company_domain;
         } catch (RequestException $e) {
             $domain = null;
         }

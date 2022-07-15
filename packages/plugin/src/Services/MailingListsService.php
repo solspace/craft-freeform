@@ -72,7 +72,7 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                     ]
                 )
                 ->execute()
-        ;
+            ;
         }
 
         foreach ($mailingLists as $mailingList) {
@@ -343,7 +343,7 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
                         ]
                     )
                     ->execute()
-            ;
+                ;
             }
 
             foreach ($fields as $field) {

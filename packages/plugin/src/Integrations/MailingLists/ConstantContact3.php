@@ -192,7 +192,7 @@ class ConstantContact3 extends MailingListOAuthConnector
 
         header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($payload));
 
-        exit();
+        exit;
     }
 
     /**

@@ -30,7 +30,9 @@ use Stripe\Exception\ApiErrorException;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Subscription;
+
 use function strtolower;
+
 use yii\base\Event;
 
 class Stripe extends AbstractPaymentGatewayIntegration
@@ -978,8 +980,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
                     return null;
                 }
 
-            // intentional fall through
-            // no break
+                // intentional fall through
+                // no break
             case 'Stripe\Exception\AuthenticationException':
             case 'Stripe\Exception\RateLimitException':
             case 'Stripe\Exception\ApiConnectionException':

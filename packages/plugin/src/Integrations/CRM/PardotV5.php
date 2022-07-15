@@ -76,7 +76,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
 
         header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($payload));
 
-        exit();
+        exit;
     }
 
     public function refreshToken(): bool

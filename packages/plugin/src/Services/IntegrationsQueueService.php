@@ -160,7 +160,7 @@ class IntegrationsQueueService extends BaseService
                 ->createCommand()
                 ->delete(IntegrationsQueueRecord::TABLE, ['submissionId' => $submissionId])
                 ->execute()
-    ;
+            ;
         } catch (\yii\db\Exception $e) {
             return false;
         }

@@ -113,7 +113,7 @@ class StatusesController extends BaseController
                         ['id' => $id]
                     )
                     ->execute()
-            ;
+                ;
             }
 
             return $this->asJson(['success' => true]);

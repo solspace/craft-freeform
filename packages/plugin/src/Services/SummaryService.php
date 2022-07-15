@@ -329,8 +329,9 @@ class SummaryService extends Component
                 $formTagAttributes = true;
             }
 
-            if ($form->getAdminNotificationProperties()->getRecipients() && $form->getAdminNotificationProperties(
-                )->getNotificationId()) {
+            $recipients = $form->getAdminNotificationProperties()->getRecipients();
+            $notificationId = $form->getAdminNotificationProperties()->getNotificationId();
+            if ($recipients && $notificationId) {
                 $adminNotifications = true;
             }
 

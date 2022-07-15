@@ -135,7 +135,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
                 'id = :id',
                 ['id' => $integration->getId()]
             )
-    ;
+        ;
     }
 
     /**

@@ -51,13 +51,7 @@ class DashboardController extends BaseController
 
         $this->getLoggerService()->registerJsTranslations($this->view);
 
-        $exportTypes = [
-            'excel' => 'Excel',
-            'csv' => 'CSV',
-            'json' => 'JSON',
-            'xml' => 'XML',
-            'text' => 'Text',
-        ];
+        $exportTypes = $this->getExportProfileService()->getExporterTypes();
 
         $updates = $whatsNew = [];
         $updatesLevel = 'info';

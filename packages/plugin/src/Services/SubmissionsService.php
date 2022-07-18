@@ -372,7 +372,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             );
 
             $query->addSelect($fields);
-            $query->innerJoin(
+            $query->leftJoin(
                 Submission::getContentTableName($form).' '.$alias,
                 "{$alias}.[[id]] = s.[[id]]"
             );

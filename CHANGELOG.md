@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.16 - 2022-07-19
+
+### Fixed
+- Fixed a bug where exporting submissions from multiple forms (via "Export to CSV") was not working correctly.
+- Fixed a bug where the `Excel` export type was still available in the dashboard. It will be readded later when there is support for it.
+- Fixed a bug where creating new database-based email notification templates would not work.
+- Fixed a bug where quick-creating email templates in the form builder would break when the default was set to database.
+- Fixed a bug where conditional rules would break when applied to multiple select fields.
+- Fixed a bug where the submission table splitting migration script would not correctly account for field handles with a number in them. If you've been affected (migration from v3.x to v4.x between beta 9 and beta 15.1), you may need to manually adjust any column names in submission tables that contain a number, e.g. `home_phone2_99` (where `2` is part of the field handle and `99` is the unique field ID) to `home_phone_2_99` (extra underscore).
+- Adjusted the NL translation word for `any` in the conditional rules feature.
+
 ## 4.0.0-beta.15.1 - 2022-07-14
 
 ### Fixed

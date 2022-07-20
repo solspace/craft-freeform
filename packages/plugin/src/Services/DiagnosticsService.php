@@ -487,29 +487,6 @@ class DiagnosticsService extends BaseService
                 }
             ),
             new DiagnosticItem(
-                'Email Notification Templates: [color]{{ value == "both" ? "Database and Files" : value == "db" ? "Database" : "Files" }}[/color]',
-                $this->getEmailNotificationTypes(),
-                [
-                    new WarningValidator(
-                        function ($value) {
-                            return 'files' === $value;
-                        },
-                        'Update your Email Notification templates',
-                        'It appears you’re still using the database option for storing Email Notification templates. These will continue to work, but this approach has been deprecated as of Freeform 3.11. You should consider using the migration utility in the Email Notifications Settings area to convert these to file-based notification templates. Once doing so, you can continue to edit them inside the Freeform control panel, but they will be stored as files instead.'
-                    ),
-                    new WarningNoticeValidator(
-                        function ($value) {
-                            return 'files' === $value;
-                        },
-                        '',
-                        'The Database storage method has been deprecated but will continue to work. You should consider switching to File-based soon.'
-                    ),
-                ],
-                function () {
-                    return DiagnosticItem::COLOR_BASE;
-                }
-            ),
-            new DiagnosticItem(
                 'Developer Digest Email: [color]{{ value ? "Enabled" : "Disabled" }}[/color]',
                 \count($this->getSettingsService()->getDigestRecipients()) > 0,
                 [

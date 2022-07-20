@@ -49,17 +49,6 @@ class PreflightService extends BaseService
                 ]
             ),
             new DiagnosticItem(
-                'Email Templates',
-                $this->getSettingsService()->getSettingsModel()->emailTemplateStorage,
-                [
-                    new WarningValidator(
-                        function ($value) { return 'template' === $value; },
-                        'Switch Email Notification Templates from Database to Files',
-                        "Freeform's File-based email notification templates offer control panel access to edit them just like Database-based email notification templates. For this reason, Freeform 4 will no longer contain the Database template option. You will need to use the included utility (inside the 'Email Templates' settings page) to convert all existing database-style email notification templates over to file-based ones before upgrading to Freeform 4."
-                    ),
-                ]
-            ),
-            new DiagnosticItem(
                 'Notices',
                 true,
                 [

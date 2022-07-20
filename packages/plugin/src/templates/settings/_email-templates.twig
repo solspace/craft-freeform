@@ -29,7 +29,7 @@
     <div id="template-default" class="field {{ settings.emailTemplateStorageType != "files_database" ? "hidden" }}">
         {{ forms.selectField({
             label: "Default Email Template Creation Method"|t('freeform'),
-            instructions: "Select which storage method to use when creating new email notifictaions with 'Add New Template' option in the form builder."|t('freeform'),
+            instructions: "Select which storage method to use when creating new email notifications with 'Add New Template' option in the form builder."|t('freeform'),
             name: "settings[emailTemplateDefault]",
             value: settings.emailTemplateDefault,
             errors: settings.errors("emailTemplateDefault"),

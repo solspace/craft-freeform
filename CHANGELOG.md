@@ -174,6 +174,18 @@
 - **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 
+## 3.13.15 - 2022-07-19
+
+### Added
+- Added the ability to map Mailchimp Interests to a form field. Limited to finding and passing a single Interest based on first match within Interest names part of a List.
+
+### Fixed
+- Fixed a bug where conditional rules would break when applied to multiple select fields.
+- Fixed a bug where some special field types were showing in the field type dropdown for creating new fields in the form builder.
+- Fixed a bug where Date fields could sometimes error when editing a Craft Entry via Freeform's element connections feature.
+- Fixed a bug where Freeform's mutation observer was not attaching to nested forms.
+- Adjusted the NL translation word for `any` in the conditional rules feature.
+
 ## 3.13.14 - 2022-06-30
 
 ### Changed

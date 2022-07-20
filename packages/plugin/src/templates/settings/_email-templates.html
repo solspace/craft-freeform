@@ -14,9 +14,9 @@
 
     {{ forms.textField({
         class: "code",
-        label: "Directory Path"|t('freeform'),
-        instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. This allows you to use Twig template files for your email formatting, and helps the Form Builder locate these files when setting up notifications."|t('freeform'),
-        placeholder: "e.g. freeform_emails/",
+        label: "File Directory Path"|t('freeform'),
+        instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications. To add a starter example template, click the 'Add a sample template' button, and then edit the template after."|t('freeform'),
+        placeholder: "e.g. _freeform_emails/",
         id: "emailTemplateDirectory",
         name: "settings[emailTemplateDirectory]",
         value: settings.emailTemplateDirectory,
@@ -25,8 +25,8 @@
 
     {% if settings.absoluteEmailTemplateDirectory %}
         {{ forms.selectField({
-            label: "Default Email Notification Creation Method"|t('freeform'),
-            instructions: "Which storage method to use when creating new email notifications with 'Add New Notification' option in Form Builder."|t('freeform'),
+            label: "Default Email Template Creation Method"|t('freeform'),
+            instructions: "Select which storage method to use when creating new email notifications with 'Add New Template' option in the form builder."|t('freeform'),
             name: "settings[emailTemplateStorage]",
             options: {
                 "db": "Database Entry",
@@ -60,10 +60,15 @@
         </div>
 
         {% if craft.freeform.notifications.databaseNotificationCount > 0 %}
+
+            <hr>
+
+            <h3>{{ "Migration Utility"|t('freeform') }}</h3>
+
             <div class="field" id="notifications-migrator">
                 <div class="heading">
                     <label>
-                        {{ 'Migrate from Database Email Templates to File Email Templates'|t('freeform') }}
+                        {{ 'Convert Database email templates to File email templates'|t('freeform') }}
                     </label>
                 </div>
                 <div class="instructions">

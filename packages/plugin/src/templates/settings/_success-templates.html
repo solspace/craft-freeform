@@ -14,9 +14,9 @@
 
     {{ forms.textField({
         class: "code",
-        label: "Directory Path"|t('freeform'),
+        label: "File Directory Path"|t('freeform'),
         instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is."|t('freeform'),
-        placeholder: "e.g. freeform_success/",
+        placeholder: "e.g. _freeform_success/",
         id: "successTemplateDirectory",
         name: "settings[successTemplateDirectory]",
         value: settings.successTemplateDirectory,

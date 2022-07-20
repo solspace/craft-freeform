@@ -14,9 +14,9 @@
 
     {{ forms.textField({
         class: "code",
-        label: "Directory Path"|t('freeform'),
-        instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. This allows you to use Twig templates for your form formatting, and helps the Form Builder locate these files to assign one of them to a form."|t('freeform'),
-        placeholder: "e.g. freeform_formatting/",
+        label: "File Directory Path"|t('freeform'),
+        instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
+        placeholder: "e.g. _freeform_formatting/",
         id: "formTemplateDirectory",
         name: "settings[formTemplateDirectory]",
         value: settings.formTemplateDirectory,

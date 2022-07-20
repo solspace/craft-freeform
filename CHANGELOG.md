@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.13.15 - 2022-07-19
+
+### Added
+- Added the ability to map Mailchimp Interests to a form field. Limited to finding and passing a single Interest based on first match within Interest names part of a List.
+
+### Fixed
+- Fixed a bug where conditional rules would break when applied to multiple select fields.
+- Fixed a bug where some special field types were showing in the field type dropdown for creating new fields in the form builder.
+- Fixed a bug where Date fields could sometimes error when editing a Craft Entry via Freeform's element connections feature.
+- Fixed a bug where Freeform's mutation observer was not attaching to nested forms.
+- Adjusted the NL translation word for `any` in the conditional rules feature.
+
 ## 3.13.14 - 2022-06-30
 
 ### Changed

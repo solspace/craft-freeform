@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 3.13.16 - 2022-07-25
+
+### Changed
+- Switched over CP scripts to use local copies of external scripts.
+- Adjusted language and warnings around email notification template storage types on settings, preflight and diagnostics pages.
+
+### Fixed
+- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
+
 ## 3.13.15 - 2022-07-19
 
 ### Added

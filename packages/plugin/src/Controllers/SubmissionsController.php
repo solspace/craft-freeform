@@ -25,7 +25,7 @@ use Solspace\Freeform\Library\Composer\Components\Page;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
-use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
+use Solspace\Freeform\Models\Pro\Payments\AbstractPaymentModel;
 use Solspace\Freeform\Records\SubmissionNoteRecord;
 use Solspace\Freeform\Resources\Bundles\ExportButtonBundle;
 use Solspace\Freeform\Resources\Bundles\SubmissionEditBundle;
@@ -255,7 +255,7 @@ class SubmissionsController extends BaseController
         return self::TEMPLATE_BASE_PATH;
     }
 
-    private function getSubmissionPaymentDetails(Submission $submission): ?PaymentModel
+    private function getSubmissionPaymentDetails(Submission $submission): ?AbstractPaymentModel
     {
         $form = $submission->getForm();
         $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);

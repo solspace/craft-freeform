@@ -73,12 +73,16 @@ class StripeService extends Component
                 }
             }
 
+            $customerData = CustomerDetails::fromArray($dynamicValues)->toStripeConstructArray();
+            $customer = Customer::create($customerData);
+
             $paymentIntentProperties = [
                 'payment_method' => $token,
                 'amount' => $amount,
                 'currency' => $currency,
                 'confirmation_method' => 'manual',
                 'confirm' => true,
+                'customer' => $customer->id,
             ];
 
             $mapping = $properties->getCustomerFieldMapping();

@@ -48,7 +48,7 @@ class PayloadStorage implements FormContextStorageInterface
             return;
         }
 
-        $payload = $event->getRequest()->post(self::INPUT_PREFIX);
+        $payload = $this->getPostedPayload();
         $bag = $this->getDecryptedBag($form, $payload);
 
         if (!$bag) {
@@ -79,7 +79,7 @@ class PayloadStorage implements FormContextStorageInterface
 
     public function getBag(string $key, Form $form)
     {
-        $payload = RequestHelper::post(self::INPUT_PREFIX);
+        $payload = $this->getPostedPayload();
 
         return $this->getDecryptedBag($form, $payload);
     }
@@ -102,6 +102,13 @@ class PayloadStorage implements FormContextStorageInterface
     public function cleanup()
     {
         // isn't required
+    }
+
+    private function getPostedPayload()
+    {
+        $payload = RequestHelper::post(self::INPUT_PREFIX);
+
+        return $payload ? htmlspecialchars($payload) : null;
     }
 
     private function getDecryptedBag(Form $form, string $payload = null)
@@ -137,7 +144,6 @@ class PayloadStorage implements FormContextStorageInterface
             ]);
 
             $encryptedPayload = base64_encode(\Craft::$app->security->encryptByKey($payload, $key));
-            $encryptedPayload = htmlspecialchars($encryptedPayload);
 
             self::$payloadCache[$form->getHash()] = $encryptedPayload;
         }

@@ -221,6 +221,7 @@ class SubmissionQuery extends ElementQuery
                 $contentTable = Submission::getContentTableName($form);
 
                 $this->query->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
+                $this->subQuery->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
                 foreach ($form->getLayout()->getStorableFields() as $field) {
                     $fieldHandle = Submission::getFieldColumnName($field);
                     $select[] = "[[fc{$formId}]].[[{$fieldHandle}]] as [[form_{$formId}__{$fieldHandle}]]";
@@ -301,9 +302,47 @@ class SubmissionQuery extends ElementQuery
             }
         }
 
+        $this->prepareOrderBy($joinedForms);
         $this->prepareFieldSearch($joinedForms);
 
         return parent::beforePrepare();
+    }
+
+    private function prepareOrderBy(array $joinedForms): void
+    {
+        if (empty($this->orderBy) || !\is_array($this->orderBy)) {
+            return;
+        }
+
+        $orderExceptions = ['title', 'score'];
+
+        $prefixedOrderList = [];
+        foreach ($this->orderBy as $key => $sortDirection) {
+            if (preg_match('/\\(\\)$/', $key)) {
+                $prefixedOrderList[$key] = $sortDirection;
+
+                continue;
+            }
+
+            if (\in_array($key, $orderExceptions, true) || preg_match('/^[a-z0-9_]+\./i', $key)) {
+                $prefixedOrderList[$key] = $sortDirection;
+
+                continue;
+            }
+
+            if ('spamReasons' === $key) {
+                continue;
+            }
+
+            $column = $this->extractColumnName($joinedForms, $key);
+            if (!$column) {
+                continue;
+            }
+
+            $prefixedOrderList[$column] = $sortDirection;
+        }
+
+        $this->orderBy = $prefixedOrderList;
     }
 
     /**
@@ -318,24 +357,37 @@ class SubmissionQuery extends ElementQuery
         }
 
         foreach ($this->fieldSearch as $handle => $term) {
-            $field = null;
-            $currentForm = null;
-            foreach ($joinedForms as $form) {
-                $currentForm = $form;
-                $field = $form->get($handle);
-                if (null !== $field) {
-                    break;
-                }
-            }
-
-            if (null === $field) {
+            $column = $this->extractColumnName($joinedForms, $handle);
+            if (!$column) {
                 continue;
             }
 
-            $tableName = 'fc'.$currentForm->getId();
-            $columnName = Submission::getFieldColumnName($field);
-
-            $this->query->andWhere(Db::parseParam("[[{$tableName}]].[[{$columnName}]]", $term));
+            $this->query->andWhere(Db::parseParam($column, $term));
         }
+    }
+
+    /**
+     * @param Form[] $joinedForms
+     */
+    private function extractColumnName(array $joinedForms, ?string $handle): ?string
+    {
+        $field = null;
+        $currentForm = null;
+        foreach ($joinedForms as $form) {
+            $currentForm = $form;
+            $field = $form->get($handle);
+            if (null !== $field) {
+                break;
+            }
+        }
+
+        if (null === $field) {
+            return null;
+        }
+
+        $tableName = 'fc'.$currentForm->getId();
+        $columnName = Submission::getFieldColumnName($field);
+
+        return "[[{$tableName}]].[[{$columnName}]]";
     }
 }

@@ -202,6 +202,7 @@ class SubmissionQuery extends ElementQuery
             $table.'.[[ip]]',
         ];
 
+        $joinedForms = [];
         if (!$this->skipContent) {
             $joinFormIds = [];
             if ($this->formId) {
@@ -216,6 +217,7 @@ class SubmissionQuery extends ElementQuery
 
             foreach ($joinFormIds as $formId) {
                 $form = $forms[$formId];
+                $joinedForms[] = $form;
                 $contentTable = Submission::getContentTableName($form);
 
                 $this->query->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
@@ -299,6 +301,41 @@ class SubmissionQuery extends ElementQuery
             }
         }
 
+        $this->prepareFieldSearch($joinedForms);
+
         return parent::beforePrepare();
+    }
+
+    /**
+     * Parses the fieldSearch variable and attaches the WHERE conditions to the query.
+     *
+     * @param Form[] $joinedForms
+     */
+    private function prepareFieldSearch(array $joinedForms): void
+    {
+        if (!$this->fieldSearch) {
+            return;
+        }
+
+        foreach ($this->fieldSearch as $handle => $term) {
+            $field = null;
+            $currentForm = null;
+            foreach ($joinedForms as $form) {
+                $currentForm = $form;
+                $field = $form->get($handle);
+                if (null !== $field) {
+                    break;
+                }
+            }
+
+            if (null === $field) {
+                continue;
+            }
+
+            $tableName = 'fc'.$currentForm->getId();
+            $columnName = Submission::getFieldColumnName($field);
+
+            $this->query->andWhere(Db::parseParam("[[{$tableName}]].[[{$columnName}]]", $term));
+        }
     }
 }

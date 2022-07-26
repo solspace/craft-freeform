@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.17 - 2022-07-25
+
+### Added
+- Added the ability to map Mailchimp Interests to a form field. Limited to finding and passing a single Interest based on first match within Interest names part of a List.
+
+### Changed
+- Switched over CP scripts to use local copies of external scripts.
+
+### Fixed
+- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
+- Fixed a bug where the CP submissions detail page would error if it contained Payment subscription data.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
+
 ## 4.0.0-beta.16 - 2022-07-19
 
 ### Fixed
@@ -173,6 +188,18 @@
 ### Removed
 - **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
+## 3.13.16 - 2022-07-25
+
+### Changed
+- Switched over CP scripts to use local copies of external scripts.
+- Adjusted language and warnings around email notification template storage types on settings, preflight and diagnostics pages.
+
+### Fixed
+- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
 
 ## 3.13.15 - 2022-07-19
 

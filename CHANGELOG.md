@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.0.0-beta.18 - 2022-07-26
+
+### Fixed
+- Fixed a bug where the `fieldSearch` parameter in `freeform.submissions` was not having any effect.
+- Fixed a bug where the `orderBy` parameter in `freeform.submissions` was not working correctly.
+- Fixed a bug where the amCharts library was not using a local copy for its scripts in the CP.
+- Fixed a bug where there was a warning about failing to load a source map in the CP.
+
 ## 4.0.0-beta.17 - 2022-07-25
 
 ### Added

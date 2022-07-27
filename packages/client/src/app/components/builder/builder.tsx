@@ -5,9 +5,10 @@ import { Provider } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
 
 import { Wrapper } from './builder.styles';
-import { LayoutEditor } from './layout-editor/layout-editor';
+import { LayoutEditor } from './views/layout-editor/layout-editor';
 import { store } from './store/store';
 import { Tabs } from './tabs/tabs';
+import { Integrations } from './views/integrations/integrations';
 
 export const Builder: React.FC = () => {
   return (
@@ -18,7 +19,7 @@ export const Builder: React.FC = () => {
           <Routes>
             <Route index element={<LayoutEditor />} />
             <Route path="notifications" element={<div>Notifications</div>} />
-            <Route path="integrations" element={<div>Integrations</div>} />
+            <Route path="integrations" element={<Integrations />} />
             <Route path="rules" element={<div>Rules</div>} />
           </Routes>
         </Wrapper>

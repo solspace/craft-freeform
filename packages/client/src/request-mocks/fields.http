@@ -1,4 +1,4 @@
-### GET Fields list
+### GET Field types list
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/fields
+GET {{host}}/admin/freeform/client/api/fields/types
 Authorization: Bearer {{auth-token}}

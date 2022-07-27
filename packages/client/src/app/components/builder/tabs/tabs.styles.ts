@@ -1,3 +1,4 @@
+import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Wrapper = styled.nav`
@@ -5,13 +6,13 @@ export const Wrapper = styled.nav`
   gap: 10px;
 
   min-height: 50px;
-  padding: var(--s) var(--padding) 0;
+  padding: ${spacings.sm} ${spacings.xl} 0;
 
   box-sizing: border-box;
   overflow-x: hidden;
 
-  background: var(--gray-050);
-  border-radius: var(--large-border-radius) var(--large-border-radius) 0 0;
+  background: ${colors.gray050};
+  border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
   box-shadow: inset 0 -1px 0 0 rgb(154 165 177 / 25%);
 
   a {
@@ -24,7 +25,7 @@ export const Wrapper = styled.nav`
     white-space: nowrap;
 
     color: var(--light-text-color);
-    border-radius: var(--medium-border-radius) var(--medium-border-radius) 0 0;
+    border-radius: ${borderRadius.md} ${borderRadius.md} 0 0;
 
     &:hover {
       text-decoration: none;
@@ -32,11 +33,11 @@ export const Wrapper = styled.nav`
     }
 
     &.active {
-      background: #fff;
+      background: ${colors.white};
 
-      box-shadow: 0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%) !important;
+      box-shadow: 0 0 0 1px ${colors.gray200}, 0 2px 12px rgb(205 216 228 / 50%) !important;
 
-      color: var(--text-color);
+      color: ${colors.gray700};
     }
   }
 `;

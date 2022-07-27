@@ -1,4 +1,4 @@
 ### GET Form list
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/forms/newFormette
+GET {{host}}/admin/freeform/client/api/forms
 Authorization: Bearer {{auth-token}}

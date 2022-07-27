@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Controllers\notifications;
+namespace Solspace\Freeform\controllers\notifications;
 
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Controllers\BaseController;

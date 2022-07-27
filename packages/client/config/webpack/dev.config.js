@@ -17,7 +17,7 @@ module.exports = merge(baseConfig, {
 
   devServer: {
     host: '127.0.0.1',
-    allowedHosts: ['craft.test'],
+    allowedHosts: 'all',
     hot: true,
     server: 'https',
     client: {

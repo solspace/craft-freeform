@@ -1,16 +1,16 @@
 <?php
 
-namespace Solspace\Freeform\Controllers\notifications;
+namespace Solspace\Freeform\controllers\notifications;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
-use Solspace\Freeform\Services\Notifications\NotificationFilesService;
+use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;
 use yii\web\HttpException;
 use yii\web\Response;
 
-class FilesController extends AbstractNotificationsController
+class DatabaseController extends AbstractNotificationsController
 {
     public function actionIndex(): Response
     {
@@ -18,16 +18,14 @@ class FilesController extends AbstractNotificationsController
 
         $this->view->registerAssetBundle(NotificationIndexBundle::class);
 
-        $notificationFilesService = \Craft::$container->get(NotificationFilesService::class);
-
-        $notifications = $notificationFilesService->getAll(true);
+        $notifications = $this->getService()->getAll();
 
         return $this->renderTemplate(
-            'freeform/notifications/files',
+            'freeform/notifications/database',
             [
                 'notifications' => $notifications,
                 'settings' => Freeform::getInstance()->settings->getSettingsModel(),
-                'isFiles' => true,
+                'isFiles' => false,
                 'type' => $this->getType(),
             ]
         );
@@ -35,13 +33,7 @@ class FilesController extends AbstractNotificationsController
 
     public function actionCreate(): Response
     {
-        $date = (new \DateTime())->format('Ymd-His');
-        $name = "new-template-{$date}";
-
-        $record = $this->getService()->create($name);
-        $record->name = "New Template on {$date}";
-        $record->handle = $name;
-
+        $record = NotificationRecord::create();
         $title = Freeform::t('Create a new email notification template');
 
         return $this->renderEditForm($record, $title);
@@ -72,10 +64,30 @@ class FilesController extends AbstractNotificationsController
             return $this->asJson(['success' => false, 'errors' => ['Notification doesn\'t exist']]);
         }
 
-        $emailDirectory = $this->getSettingsService()->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
-        $original = $emailDirectory.'/'.$notification->filepath;
-        $new = $emailDirectory.'/'.$notification->handle.'-copy.twig';
-        copy($original, $new);
+        $record = NotificationRecord::create();
+
+        $record->setAttributes($notification->getAttributes(), false);
+        $record->id = null;
+        $record->dateCreated = null;
+        $record->dateUpdated = null;
+        $record->uid = null;
+
+        while (true) {
+            $handle = $record->handle;
+            if (preg_match('/-(\d+)$/', $handle, $matches)) {
+                $number = (int) $matches[1];
+                $handle = preg_replace('/-\d+$/', '-'.($number + 1), $handle);
+            } else {
+                $handle .= '-1';
+            }
+            $record->handle = $handle;
+
+            if (!NotificationRecord::findOne(['handle' => $handle])) {
+                break;
+            }
+        }
+
+        $record->save();
 
         return $this->asJson(['success' => true]);
     }
@@ -92,11 +104,11 @@ class FilesController extends AbstractNotificationsController
 
     protected function getType(): string
     {
-        return 'files';
+        return 'database';
     }
 
-    protected function getService(): NotificationFilesService
+    protected function getService(): NotificationDatabaseService
     {
-        return \Craft::$container->get(NotificationFilesService::class);
+        return \Craft::$container->get(NotificationDatabaseService::class);
     }
 }

@@ -1,16 +1,15 @@
 <?php
 
-namespace Solspace\Freeform\controllers\pro\payments;
+namespace Solspace\Freeform\controllers\payments;
 
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Stripe\Event;
-use Stripe\Subscription;
 use yii\web\HttpException;
 
 // TODO: create abstract controller
-class PaymentWebhooksController extends BaseController
+class WebhooksController extends BaseController
 {
     public $enableCsrfValidation = false;
 

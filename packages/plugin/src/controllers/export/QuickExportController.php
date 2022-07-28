@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\controllers\pro;
+namespace Solspace\Freeform\controllers\export;
 
 use craft\db\Query;
 use craft\db\Table;

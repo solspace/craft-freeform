@@ -1,8 +1,9 @@
 <?php
 
-namespace Solspace\Freeform\controllers;
+namespace Solspace\Freeform\controllers\payments;
 
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Models\IntegrationModel;
@@ -12,7 +13,7 @@ use Solspace\Freeform\Resources\Bundles\MailingListsBundle;
 use yii\web\HttpException;
 use yii\web\Response;
 
-class PaymentGatewaysController extends BaseController
+class GatewaysController extends BaseController
 {
     public function init(): void
     {

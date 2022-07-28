@@ -35,7 +35,7 @@
 {% block content %}
 
 <div id="integration-type" data-type="payment-gateways">
-    <input type="hidden" name="action" value="freeform/payment-gateways/save">
+    <input type="hidden" name="action" value="freeform/payments/gateways/save">
     {{ redirectInput('freeform/settings/payment-gateways') }}
     {% if integration.handle %}
       <input type="hidden" name="id" value="{{ integration.id }}">

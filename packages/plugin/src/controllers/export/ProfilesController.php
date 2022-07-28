@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\controllers\pro;
+namespace Solspace\Freeform\controllers\export;
 
 use craft\helpers\UrlHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
@@ -13,7 +13,7 @@ use Solspace\Freeform\Resources\Bundles\SettingsBundle;
 use yii\web\HttpException;
 use yii\web\Response;
 
-class ExportProfilesController extends BaseController
+class ProfilesController extends BaseController
 {
     public function actionIndex(): Response
     {

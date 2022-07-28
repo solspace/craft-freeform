@@ -15,7 +15,6 @@ namespace Solspace\Freeform;
 use Composer\Autoload\ClassMapGenerator;
 use craft\base\Plugin;
 use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
@@ -25,7 +24,6 @@ use craft\services\Sites;
 use craft\services\UserPermissions;
 use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
-use craft\web\UrlManager;
 use craft\web\View;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\controllers\SubmissionsController;
@@ -252,7 +250,6 @@ class Freeform extends Plugin
         // TODO: refactor these into separate bundles
         $this->initControllerMap();
         $this->initServices();
-        $this->initRoutes();
         $this->initIntegrations();
         $this->initTwigVariables();
         $this->initWidgets();
@@ -548,9 +545,12 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Integrations\PaymentGateways';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
-                    __DIR__.'/Integrations/PaymentGateways/'
-                )
+                $files = $finder
+                    ->name('*.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->depth(0)
+                    ->in(__DIR__.'/Integrations/PaymentGateways/')
                 ;
 
                 foreach ($files as $file) {
@@ -570,9 +570,12 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Webhooks\Integrations';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
-                    __DIR__.'/Webhooks/Integrations/'
-                )
+                $files = $finder
+                    ->name('*.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->depth(0)
+                    ->in(__DIR__.'/Webhooks/Integrations/')
                 ;
 
                 foreach ($files as $file) {
@@ -580,27 +583,6 @@ class Freeform extends Plugin
                     $className = $namespace.'\\'.$className;
                     $event->addType($className);
                 }
-            }
-        );
-    }
-
-    private function initRoutes()
-    {
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $routes = include __DIR__.'/routes.php';
-                $event->rules = array_merge($event->rules, $routes);
-            }
-        );
-
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $routes = include __DIR__.'/site-routes.php';
-                $event->rules = array_merge($event->rules, $routes);
             }
         );
     }
@@ -1034,7 +1016,7 @@ class Freeform extends Plugin
                     }
 
                     $priority = $class::getPriority();
-                    $loadableClasses[$priority][] = $reflectionClass;
+                    $loadableClasses[$priority][] = $class;
                 }
             }
 
@@ -1042,7 +1024,13 @@ class Freeform extends Plugin
 
             foreach ($loadableClasses as $classes) {
                 foreach ($classes as $class) {
-                    $class->newInstance();
+                    \Craft::$container->set($class);
+                }
+            }
+
+            foreach ($loadableClasses as $classes) {
+                foreach ($classes as $class) {
+                    \Craft::$container->get($class);
                 }
             }
 

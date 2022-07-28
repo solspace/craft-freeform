@@ -1,9 +1,8 @@
 <?php
 
-namespace Solspace\Freeform\controllers\pro;
+namespace Solspace\Freeform\controllers;
 
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\Pro\WebhookModel;
 use Solspace\Freeform\Resources\Bundles\CrmBundle;

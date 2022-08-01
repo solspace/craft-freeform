@@ -1,10 +1,10 @@
 <?php
 
-namespace Solspace\Freeform\controllers\client\api;
+namespace Solspace\Freeform\controllers\client\api\fields;
 
 use Solspace\Freeform\controllers\BaseApiController;
 
-class FieldTypesController extends BaseApiController
+class TypesController extends BaseApiController
 {
     protected function get(): array
     {

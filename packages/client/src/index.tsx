@@ -1,4 +1,4 @@
-import './config';
+import '../config';
 
 import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
@@ -11,7 +11,7 @@ import { CpNavigation } from './app/cp-navigation/cp-navigation';
 import { Dashboard } from './app/pages/dashboard/dashboard';
 import { Form, Forms, NewForm } from './app/pages/forms';
 import { Settings } from './app/pages/settings/settings';
-import { queryClient } from './config/query-client';
+import { queryClient } from '../config/react-query';
 import { generateUrl } from './utils/urls';
 
 const container = document.getElementById('freeform-client');

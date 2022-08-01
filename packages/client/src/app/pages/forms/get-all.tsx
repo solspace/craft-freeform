@@ -8,7 +8,7 @@ import { Card, Subtitle, Title, Wrapper } from './get-all.styles';
 export const GetAll: React.FC = () => {
   const { data, isFetching, isError, error } = useQueryForms();
 
-  if (isFetching) {
+  if (!data && isFetching) {
     return <div>fetching forms...</div>;
   }
 
@@ -18,7 +18,10 @@ export const GetAll: React.FC = () => {
 
   return (
     <div>
-      <h1>Forms</h1>
+      <h1>
+        Forms
+        {isFetching && <span>is fetching</span>}
+      </h1>
       <Wrapper>
         <Card>
           <Title>

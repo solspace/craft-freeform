@@ -23,6 +23,9 @@ class DashboardBundle extends AbstractFreeformAssetBundle
     public function getScripts(): array
     {
         return [
+            'js/external/amcharts@4/core.js',
+            'js/external/amcharts@4/charts.js',
+            'js/external/amcharts@4/themes/animated.js',
             'js/external/draggable@1.0.0/lib/sortable.js',
             'js/external/popperjs@2/dist/umd/popper.min.js',
             'js/external/tippy.js@6/dist/tippy-bundle.umd.js',

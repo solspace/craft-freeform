@@ -30,6 +30,10 @@ class ExportNotifications extends FeatureBundle
             return;
         }
 
+        if (!\Craft::$app->db->tableExists(ExportNotificationRecord::TABLE)) {
+            return;
+        }
+
         $freeform = Freeform::getInstance();
         $mailer = $freeform->mailer;
         $exportService = $freeform->exportProfiles;

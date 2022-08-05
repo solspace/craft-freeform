@@ -18,13 +18,9 @@
     }
 </style>
 
-<!-- Resources -->
-<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
+{% js %}
 
 <!-- Chart code -->
-<script>
   am4core.ready(function() {
 
     // Themes begin
@@ -123,7 +119,8 @@
     chart.scrollbarX.endGrip.icon.disabled = true;
 
   }); // end am4core.ready()
-</script>
+
+{% endjs %}
 
 <!-- HTML -->
 <div id="submission-chart-{{ ID }}"></div>

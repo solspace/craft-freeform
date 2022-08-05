@@ -703,7 +703,7 @@ class Settings extends Model
      */
     private function getTemplatesInDirectory(string $templateDirectoryPath = null): array
     {
-        if ('/' === $templateDirectoryPath || !file_exists($templateDirectoryPath)) {
+        if ('/' === $templateDirectoryPath || !file_exists($templateDirectoryPath) || !is_dir($templateDirectoryPath)) {
             return [];
         }
 

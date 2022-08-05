@@ -207,6 +207,19 @@
 - **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 
+## 3.13.17 - 2022-08-05
+
+### Fixed
+- Fixed a bug where the amCharts library was not using a local copy for its scripts in the CP.
+- Fixed a bug where there was a warning about failing to load a source map in the CP.
+- Fixed a bug where incorrectly including a twig file in the Success Template Directory path would break settings and form builder.
+- Fixed a bug where some upgrades could encounter an error about the Export Notifications database table.
+- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
+- Fixed a bug where credit card numbers were not showing up in Stripe's payment methods for customer accounts.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
+
 ## 3.13.16 - 2022-07-25
 
 ### Changed

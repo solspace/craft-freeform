@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 3.13.17 - 2022-08-05
+
+### Fixed
+- Fixed a bug where the amCharts library was not using a local copy for its scripts in the CP.
+- Fixed a bug where there was a warning about failing to load a source map in the CP.
+- Fixed a bug where incorrectly including a twig file in the Success Template Directory path would break settings and form builder.
+- Fixed a bug where some upgrades could encounter an error about the Export Notifications database table.
+- Fixed a bug where the Stripe Payments integration could be causing a customer as well as guest account in Stripe for the same transaction.
+- Fixed a bug where credit card numbers were not showing up in Stripe's payment methods for customer accounts.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
+
 ## 3.13.16 - 2022-07-25
 
 ### Changed

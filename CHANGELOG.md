@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.0.0 - 2022-08-05
+
+### Fixed
+- Fixed a bug where incorrectly including a twig file in the Success Template Directory path would break settings and form builder.
+- Fixed a bug where some upgrades could encounter an error about the Export Notifications database table.
+- Fixed a bug where credit card numbers were not showing up in Stripe's payment methods for customer accounts.
+
+### Security
+- Addressed some potential XSS vulnerabilities.
+
 ## 4.0.0-beta.18 - 2022-07-26
 
 ### Fixed

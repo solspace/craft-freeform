@@ -22,7 +22,7 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
-class HubSpotV3 extends AbstractCRMIntegration
+class HubSpotV1 extends AbstractCRMIntegration
 {
     const SETTING_API_KEY = 'api_key';
     const SETTING_IP_FIELD = 'ip_field';

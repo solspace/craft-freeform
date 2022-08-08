@@ -28,7 +28,7 @@ class HubSpot extends AbstractCRMIntegration
     const SETTING_APPEND_COMPANY_DATA = 'append_company_data';
     const SETTING_APPEND_CONTACT_DATA = 'append_contact_data';
 
-    const TITLE = 'HubSpot';
+    const TITLE = 'HubSpot (Legacy)';
     const LOG_CATEGORY = 'HubSpot';
 
     /**

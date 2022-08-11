@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectCellsInRow } from '../../../../store/slices/cells';
+import { selectCellsInRow } from '../../../../../store/slices/cells';
 import { Row as RowType } from '../../../../types/layout';
 import { Cell } from '../cell/cell';
 import { useRowDrop } from './hooks/use-row-drop';

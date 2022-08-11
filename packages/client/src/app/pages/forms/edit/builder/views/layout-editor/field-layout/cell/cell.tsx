@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 
-import { setCell } from '../../../../store/slices/drag';
-import { useAppDispatch } from '../../../../store/store';
+import { setCell } from '../../../../../store/slices/drag';
+import { useAppDispatch } from '../../../../../store/store';
 import { Cell as CellPropType, CellType } from '../../../../types/layout';
 import { CellField } from './cell-types/cell-field/cell-field';
 import { CellLayout } from './cell-types/cell-layout/cell-layout';

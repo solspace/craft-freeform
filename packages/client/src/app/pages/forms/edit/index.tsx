@@ -1,8 +1,11 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import { useParams } from 'react-router-dom';
 
-import { Builder } from './builder/builder';
 import { useQuerySingleForm } from '@ff-client/queries/forms';
+
+import { Builder } from './builder/builder';
+import { store } from './store/store';
 
 type RouteParams = {
   id: string;
@@ -21,5 +24,9 @@ export const Edit: React.FC = () => {
     return <div>ERROR: {error.message as string}</div>;
   }
 
-  return <Builder />;
+  return (
+    <Provider store={store}>
+      <Builder />
+    </Provider>
+  );
 };

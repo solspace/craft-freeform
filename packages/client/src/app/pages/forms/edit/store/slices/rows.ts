@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Layout, Row } from '../../types/layout';
+import { Layout, Row } from '../../builder/types/layout';
 import { RootState } from '../store';
 
 type RowState = Row[];

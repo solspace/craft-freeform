@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectRowsInLayout } from '../../../../store/slices/rows';
+import { selectRowsInLayout } from '../../../../../store/slices/rows';
 import { Layout as LayoutType } from '../../../../types/layout';
 import { Row } from '../row/row';
 import { Wrapper } from './layout.styles';

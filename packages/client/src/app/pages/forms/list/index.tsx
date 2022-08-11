@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 import { useQueryForms } from '@ff-client/queries/forms';
 
-import { Card, Subtitle, Title, Wrapper } from './get-all.styles';
+import { Card, Subtitle, Title, Wrapper } from './index.styles';
 
-export const GetAll: React.FC = () => {
+export const List: React.FC = () => {
   const { data, isFetching, isError, error } = useQueryForms();
 
   if (!data && isFetching) {

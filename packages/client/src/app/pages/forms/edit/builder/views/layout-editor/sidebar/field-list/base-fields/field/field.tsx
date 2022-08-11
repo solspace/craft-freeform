@@ -2,10 +2,10 @@ import React from 'react';
 import { useDrag } from 'react-dnd';
 import { v4 } from 'uuid';
 
-import { add as addCell } from '@ff-client/app/components/builder/store/slices/cells';
-import { add as addRow } from '@ff-client/app/components/builder/store/slices/rows';
-import { useAppDispatch } from '@ff-client/app/components/builder/store/store';
-import { CellType } from '@ff-client/app/components/builder/types/layout';
+import { add as addCell } from '@ff-client/app/pages/forms/edit/builder/store/slices/cells';
+import { add as addRow } from '@ff-client/app/pages/forms/edit/builder/store/slices/rows';
+import { useAppDispatch } from '@ff-client/app/pages/forms/edit/builder/store/store';
+import { CellType } from '@ff-client/app/pages/forms/edit/builder/types/layout';
 import { FieldType } from '@ff-client/types/fields';
 
 import { Icon, Name, Wrapper } from './field.styles';

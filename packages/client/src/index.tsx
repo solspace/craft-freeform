@@ -7,9 +7,9 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import App from './App';
-import { CpNavigation } from './app/cp-navigation/cp-navigation';
+import { CpNavigation } from './app/components/cp-navigation/cp-navigation';
 import { Dashboard } from './app/pages/dashboard/dashboard';
-import { Form, Forms, NewForm } from './app/pages/forms';
+import { Form, Forms } from './app/pages/forms';
 import { Settings } from './app/pages/settings/settings';
 import { queryClient } from '../config/react-query';
 import { generateUrl } from './utils/urls';
@@ -27,7 +27,7 @@ root.render(
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
             <Route path="forms">
-              <Route path="new/*" element={<NewForm />} />
+              <Route path="new/*" element={<Form />} />
               <Route path=":id/*" element={<Form />} />
               <Route index element={<Forms />} />
             </Route>

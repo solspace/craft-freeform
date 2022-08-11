@@ -6,9 +6,9 @@ import { PickAnimated, SpringValues, useSpring } from 'react-spring';
 import {
   selectCurrentPosition,
   setPosition,
-} from '@ff-client/app/components/builder/store/slices/drag';
-import { useAppDispatch } from '@ff-client/app/components/builder/store/store';
-import { Row } from '@ff-client/app/components/builder/types/layout';
+} from '@ff-client/app/pages/forms/edit/builder/store/slices/drag';
+import { useAppDispatch } from '@ff-client/app/pages/forms/edit/builder/store/store';
+import { Row } from '@ff-client/app/pages/forms/edit/builder/types/layout';
 import { FieldType } from '@ff-client/types/fields';
 
 type RowDragHook = {

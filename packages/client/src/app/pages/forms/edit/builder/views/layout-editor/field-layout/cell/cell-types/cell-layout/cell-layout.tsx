@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectLayout } from '@ff-client/app/components/builder/store/slices/layouts';
+import { selectLayout } from '@ff-client/app/pages/forms/edit/builder/store/slices/layouts';
 
 import { Layout } from '../../../layout/layout';
 

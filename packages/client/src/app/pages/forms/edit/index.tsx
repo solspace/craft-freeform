@@ -1,14 +1,14 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 
-import { Builder } from '@ff-client/app/components/builder/builder';
+import { Builder } from './builder/builder';
 import { useQuerySingleForm } from '@ff-client/queries/forms';
 
 type RouteParams = {
   id: string;
 };
 
-export const Get: React.FC = () => {
+export const Edit: React.FC = () => {
   const { id } = useParams<RouteParams>();
 
   const { isFetching, isError, error } = useQuerySingleForm(parseInt(id));

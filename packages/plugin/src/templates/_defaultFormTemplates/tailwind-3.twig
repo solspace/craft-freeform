@@ -1,0 +1,356 @@
+{% css formCss %}
+
+<style>
+    .required::after {
+        content: "*";
+        color: #d00;
+        margin-left: 5px;
+    }
+</style>
+
+{{ form.renderTag({ class: "w-full" }) }}
+
+{# Set styling for Ajax responses #}
+<script>
+  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+  if (form) {
+    form.addEventListener("freeform-ready", function (event) {
+      var freeform = event.target.freeform;
+
+      freeform.setOption("errorClassBanner", ["bg-red-100", "border", "border-red-400", "text-red-700", "px-4", "py-3", "rounded", "relative", "mb-4"]);
+      freeform.setOption("errorClassList", ["errors", "text-red-500", "text-xs", "italic"]);
+      freeform.setOption("errorClassField", ["border-red-500"]);
+      freeform.setOption("successClassBanner", ["bg-green-100", "border", "border-green-500", "text-green-700", "px-4", "py-3", "rounded", "relative", "mb-4"]);
+    })
+
+    form.addEventListener("freeform-stripe-styling", function (event) {
+      event.detail.base = {
+        fontSize: "16px",
+        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+      }
+    })
+  }
+</script>
+
+{# Render tabs for pages #}
+{% if form.pages|length > 1 %}
+    <ul class="flex border-b mb-6">
+        {% for page in form.pages %}
+            <li class="mr-1">
+                <a class="{{ form.currentPage.index == page.index ? 'bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 font-semibold' : 'bg-white inline-block py-2 px-4 text-gray-400 font-semibold disabled' }}">{{ page.label }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{# Render errors #}
+{% if form.hasErrors %}
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+        <strong class="font-bold">
+            {{ form.errorMessage | t('freeform') }}
+        </strong>
+        {% if form.errors|length %}
+            <ul class="mb-0 ">
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endif %}
+
+{# Define standard field classes #}
+{% set standardFieldClasses = "appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %}
+{% set selectFieldClasses = "block appearance-none w-full  border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %}
+{% set checkboxFieldClasses = " text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %}
+{% set fileFieldClasses = "appearance-none block w-full text-gray-700 py-3 px-4 leading-tight" %}
+{% set tableFieldClasses = "appearance-none w-full text-gray-700 py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %}
+{% set signatureFieldClasses = "hover:bg-gray-400 text-black font-normal py-1 px-2 rounded mr-1" %}
+{% set standardLabelsClasses = "tracking-wide text-gray-700 text-xs font-bold mb-2" %}
+
+{# Render form rows #}
+{% for row in form %}
+    <div class="flex flex-wrap -mx-3 mb-6 {{ form.customAttributes.rowClass }}">
+        {% for field in row %}
+
+            {# Calculate column class based on columns count #}
+            {% set columnCount = row|length %}
+            {% set columnClass = "w-full px-3 mb-6 md:mb-0" %}
+            {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+
+            {% if columnCount > 1 %}
+                {% set columnClass = columnClass ~ " md:w-1/" ~ columnCount ~ " lg:w-1/" ~ columnCount ~ " xl:w-1/" ~ columnCount %}
+            {% else %}
+                {% set columnClass = columnClass ~ " md:w-full lg:w-full xl:w-full" %}
+            {% endif %}
+
+            {# Set a custom column class for the submit button #}
+            {% if field.type == "submit" or field.type == "save" %}
+                {% set columnClass = columnClass ~ " text-" ~ field.position %}
+            {% endif %}
+
+            {# Set field class based on field type #}
+            {% set fieldClass = standardFieldClasses %}
+
+            {% switch field.type %}
+                {% case "select" %}
+                    {% set fieldClass = selectFieldClasses %}
+                {% case "checkbox" %}
+                    {% set fieldClass = checkboxFieldClasses %}
+                {% case "mailing_list" %}
+                    {% set fieldClass = checkboxFieldClasses %}
+                {% case "file" %}
+                    {% set fieldClass = fileFieldClasses %}
+                {% case "table" %}
+                    {% set fieldClass = tableFieldClasses %}
+                {% case "signature" %}
+                    {% set fieldClass = signatureFieldClasses %}
+            {% endswitch %}
+
+            {% set fieldClass = fieldClass ~ (field.hasErrors ? " border-red-500") %}
+
+            {# Set label class #}
+            {% set labelClass = standardLabelsClasses ~ " block uppercase" %}
+            {% set labelClass = labelClass ~ (field.required ? " required" : "") %}
+
+            {# Set error class #}
+            {% set errorClass = "text-red-500 text-xs italic" %}
+
+            {# Set instructions class #}
+            {% set instructionClass = "text-gray-600 text-xs italic" %}
+
+
+            {# Create a column except when creating Freeform Payments columns #}
+            {% if field.type != 'cc_details' %}
+            <div class="main-column-class {{ columnClass }} ff-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }} style="overflow: hidden;">
+            {% endif %}
+                {% if field.type == "checkbox_group" %}
+
+                    {{ field.renderLabel({
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        errorClass: errorClass,
+                    }) }}
+
+                    {% for index, option in field.options %}
+                        <div>
+                            <input type="checkbox"
+                                   name="{{ field.handle }}[]"
+                                   value="{{ option.value }}"
+                                   id="{{ field.idAttribute }}-{{ index }}"
+                                   class="form-check-input{{ field.hasErrors ? " border-red-500" }}"
+                                    {{ option.checked ? "checked" : "" }}
+                            />
+
+                            <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
+                                {{ option.label|t('freeform')|raw }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors({ errorClass: errorClass }) }}
+
+                {% elseif field.type == "radio_group" %}
+
+                    {{ field.renderLabel({
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        errorClass: errorClass,
+                    }) }}
+
+                    {% for index, option in field.options %}
+                        <div>
+                            <input type="radio"
+                                   name="{{ field.handle }}"
+                                   value="{{ option.value }}"
+                                   id="{{ field.idAttribute }}-{{ index }}"
+                                   class="form-check-input{{ field.hasErrors ? " border-red-500" }}"
+                                    {{ option.checked ? "checked" : "" }}
+                            />
+                            <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
+                                {{ option.label|t('freeform')|raw }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors() }}
+
+                {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
+
+                    {{ field.renderLabel({
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        errorClass: errorClass,
+                    }) }}
+
+                    {{ field.oneLine ? "<div>"|raw }}
+
+                    {% for index, option in field.options %}
+                        <div class="form-check{{ field.oneLine ? " form-check-inline" }}">
+                            <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
+                                   name="{{ field.handle }}[]"
+                                   value="{{ loop.index0 }}"
+                                   class="form-check-input"
+                                   id="{{ field.idAttribute }}-{{ index }}"
+                                    {{ option.checked ? "checked" : "" }}
+                            />
+
+                            <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
+                                {{ option.label|t('freeform')|raw }}
+                            </label>
+                        </div>
+                    {% endfor %}
+
+                    {{ field.oneLine ? "</div>"|raw }}
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors() }}
+
+                {% elseif field.type == "dynamic_recipients" and (field.showAsSelect) %}
+
+                    {{ field.renderLabel({
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        errorClass: errorClass,
+                    }) }}
+
+                    <div class="relative">
+                        <select name="{{ field.handle }}" id="{{ field.idAttribute }}" class="{{ fieldClass }}">
+                        {% for index, option in field.options %}
+                            <option value="{{ loop.index0 }}"{{ option.checked ? "selected" : "" }}>{{ option.label|t('freeform')|raw }}</option>
+                        {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors() }}
+
+                {% elseif field.type == "select" %}
+
+                    {{ field.renderLabel({
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        errorClass: errorClass,
+                    }) }}
+
+                    <div class="relative">
+                        <select name="{{ field.handle }}" id="{{ field.idAttribute }}" class="{{ fieldClass }}">
+                        {% for option in field.options %}
+                            <option value="{{ option.value }}"{{ option.checked ? "selected" : "" }}>{{ option.label|t('freeform')|raw }}</option>
+                        {% endfor %}
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                        </div>
+                    </div>
+
+                    {{ field.renderInstructions() }}
+                    {{ field.renderErrors() }}
+
+                {% elseif field.type in ["checkbox", "mailing_list"] %}
+
+                    <div class="form-check">
+                        {{ field.renderInput({ class: fieldClass ~ (field.hasErrors ? " border-red-500") }) }}
+                        {{ field.renderLabel({ labelClass: (field.hasErrors ? " border-red-500") }) }}
+                        {{ field.renderInstructions({ instructionsClass: instructionClass }) }}
+                        {{ field.renderErrors({ errorClass: errorClass }) }}
+                    </div>
+
+                {% elseif field.type == "submit" or field.type == "save" %}
+
+                    {{ field.render({ class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2" }) }}
+
+                {% elseif field.type == "table" %}
+
+                    {{ field.render({
+                        class: fieldClass,
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        instructionsBelowField: true,
+                        errorClass: errorClass,
+                        addButtonLabel: "Add +",
+                        addButtonClass: "bg-green-500 hover:bg-green-700 text-white font-normal py-2 px-4 rounded m-4",
+                        removeButtonLabel: "x",
+                        removeButtonClass: "bg-red-500 hover:bg-red-700 text-white font-normal py-2 px-4 rounded ml-2",
+                        tableTextInputClass: standardFieldClasses ~ " my-2",
+                        tableSelectInputClass: selectFieldClasses,
+                        tableCheckboxInputClass: checkboxFieldClasses ~ " m-1",
+                        tableLabelsClass: standardLabelsClasses
+                    }) }}
+
+                {% elseif field.type == "cc_details" %}
+
+                    {# FOR FREEFORM PAYMENTS #}
+
+                    {{ field.renderLabel({
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        errorClass: errorClass,
+                    }) }}
+
+                    {% for layoutRow in field.layoutRows %}
+
+                        {% set columnCount = layoutRow|length %}
+
+                        {% set columnClass = "w-full px-3 mb-6 md:mb-0" %}
+                        {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+
+                        {% if columnCount > 1 %}
+                            {% set columnClass = columnClass ~ " md:w-1/" ~ columnCount ~ " lg:w-1/" ~ columnCount ~ " xl:w-1/" ~ columnCount %}
+                        {% else %}
+                            {% set columnClass = columnClass ~ " md:w-full lg:w-full xl:w-full" %}
+                        {% endif %}
+
+                        {% for layoutField in layoutRow %}
+
+                            {% set fieldClass = "appearance-none block w-full text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" ~ (field.hasErrors ? " border-red-500") %}
+
+                            <div class="payments-column-class {{ columnClass }}">
+                            {{ layoutField.render({
+                                class: (loop.parent.loop.last ? fieldClass: fieldClass ~ " mb-6"),
+                                instructionsClass: instructionClass,
+                                instructionsBelowField: true,
+                                labelClass: labelClass,
+                                errorClass: errorClass,
+                            }) }}
+                            </div>
+
+                        {% endfor %}
+                    {% endfor %}
+
+                    {{ field.renderInput({
+                        instructionsClass: instructionClass,
+                        instructionsBelowField: true,
+                        labelClass: labelClass,
+                        errorClass: errorClass,
+                    }) }}
+
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
+
+                {% else %}
+
+                    {{ field.render({
+                        class: fieldClass,
+                        labelClass: labelClass,
+                        instructionsClass: instructionClass,
+                        instructionsBelowField: true,
+                        errorClass: errorClass,
+                    }) }}
+
+                {% endif %}
+
+            {# Close a column except when creating Freeform Payments columns #}
+            {% if field.type != 'cc_details' %}
+            </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endfor %}
+
+{{ form.renderClosingTag }}

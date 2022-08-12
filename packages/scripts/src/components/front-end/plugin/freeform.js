@@ -99,6 +99,10 @@ export default class Freeform {
    * @param {Element} form
    */
   constructor(form) {
+    if (Freeform.instances.get(form)) {
+      return Freeform.instances.get(form);
+    }
+
     this.id = form.dataset.id;
     this.form = form;
 

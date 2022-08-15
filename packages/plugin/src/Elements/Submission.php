@@ -495,6 +495,17 @@ class Submission extends Element
         );
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getCurrentRevision()
+	{
+		return null;
+	}
+
+    /**
+     * {@inheritDoc}
+     */
     protected static function defineSources(string $context = null): array
     {
         static $sources;

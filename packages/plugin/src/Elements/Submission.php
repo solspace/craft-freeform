@@ -578,6 +578,14 @@ class Submission extends Element
         return new \ArrayIterator($this->getFieldMetadata());
     }
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public function getCurrentRevision()
+	{
+		return null;
+	}
+
     /**
      * {@inheritDoc}
      */

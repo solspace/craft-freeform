@@ -13,7 +13,7 @@ import { Field } from './field/field';
 export const BaseFields: React.FC = () => {
   const { data, isFetching, isError, error } = useFetchFieldTypes();
 
-  if (isFetching) {
+  if (!data && isFetching) {
     return (
       <List>
         {range(9).map((index) => (

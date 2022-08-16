@@ -36,7 +36,8 @@ const General: React.FC = () => {
     { value: FormattingTemplate.Flexbox, label: 'Flexbox' },
     { value: FormattingTemplate.Foundation, label: 'Foundation' },
     { value: FormattingTemplate.Grid, label: 'Grid' },
-    { value: FormattingTemplate.Tailwind, label: 'Tailwind' },
+    { value: FormattingTemplate.Tailwind1, label: 'Tailwind 1' },
+    { value: FormattingTemplate.Tailwind3, label: 'Tailwind 3' },
   ];
 
   const jsInsertLocationOptions: Options<JSInsertLocation> = [

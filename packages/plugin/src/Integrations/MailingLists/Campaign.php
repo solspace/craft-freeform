@@ -97,8 +97,8 @@ class Campaign extends AbstractMailingListIntegration
 
         foreach ($emails as $email) {
             // The `createAndSubscribeContact` method was added in Campaign v2.1.0.
-            if (method_exists(Campaign::$plugin->forms, 'createAndSubscribeContact')) {
-                Campaign::$plugin->forms->createAndSubscribeContact($email, $mappedValues, $mailingListElement, 'Freeform', $source);
+            if (method_exists(CampaignPlugin::$plugin->forms, 'createAndSubscribeContact')) {
+                CampaignPlugin::$plugin->forms->createAndSubscribeContact($email, $mappedValues, $mailingListElement, 'Freeform', $source);
             }
             // TODO: remove this in Freeform v5, assuming it requires Craft 5, in which case Campaign v3 will be required.
             else {

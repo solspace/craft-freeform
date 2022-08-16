@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Elements;
 
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
@@ -498,7 +499,7 @@ class Submission extends Element
 	/**
 	 * {@inheritDoc}
 	 */
-	public function getCurrentRevision()
+	public function getCurrentRevision():? ElementInterface
 	{
 		return null;
 	}

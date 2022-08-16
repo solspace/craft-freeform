@@ -184,7 +184,7 @@ class Campaign extends AbstractMailingListIntegration
             $list = [];
 
             /** @var Field $field */
-            foreach ($fieldLayout->getFields() as $field) {
+            foreach ($fieldLayout->getCustomFields() as $field) {
                 $fieldClass = \get_class($field);
 
                 if (!\in_array($fieldClass, $allowedFieldTypes, true)) {

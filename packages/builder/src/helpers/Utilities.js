@@ -1,5 +1,6 @@
 import Hashids from 'hashids';
 import camelCase from 'lodash.camelcase';
+import { transliterate } from 'transliteration';
 
 const minHashLength = 9;
 const hashids = new Hashids('composer', minHashLength);
@@ -47,10 +48,10 @@ export function deHashId(hash) {
  * @returns {*}
  */
 export function getHandleValue(value, autoCamelize = true) {
-  let handleValue = value;
+  let handleValue = transliterate(value);
 
   if (autoCamelize) {
-    handleValue = camelCase(value);
+    handleValue = camelCase(handleValue);
   }
 
   handleValue = handleValue.replace(/[^a-zA-Z0-9\-_]/g, '');

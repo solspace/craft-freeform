@@ -496,13 +496,13 @@ class Submission extends Element
         );
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getCurrentRevision():? ElementInterface
-	{
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrentRevision(): ?ElementInterface
+    {
+        return null;
+    }
 
     /**
      * {@inheritDoc}

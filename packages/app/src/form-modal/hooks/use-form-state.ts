@@ -6,6 +6,7 @@ import { ChangeHandler } from '@ff-app/shared/Forms/types';
 import { generateUrl } from '@ff-app/utils/urls';
 
 import { FormOptionsContext } from '../context/form-types-context';
+import { transliterate } from 'transliteration';
 
 export enum SuccessBehaviour {
   ReturnURL = 'redirect-return-url',
@@ -73,7 +74,8 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
   const update: ChangeHandler = (name, value): void => {
     const payload = { ...form, [name]: value };
     if (name === 'name') {
-      payload.handle = camelCase(value as string);
+      payload.handle = transliterate(value as string);
+      payload.handle = camelCase(payload.handle);
     }
 
     if (name === 'handle') {

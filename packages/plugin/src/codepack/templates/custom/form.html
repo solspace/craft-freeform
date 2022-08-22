@@ -22,19 +22,19 @@
         {% if form.formTemplate == "foundation-6.twig" %}
             <hr>
             <p class="mb-0">
-                We've detected you're using the <b>Foundation</b> sample formatting template and have automatically loaded the Foundation library inside this demo.
+                We've detected you're using the <b>Foundation 6</b> sample formatting template and have automatically loaded the Foundation 6 library inside this demo.
                 The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
             </p>
-        {% elseif form.formTemplate == "tailwind-1.twig" %}
+        {% elseif form.formTemplate == "tailwind-3.twig" %}
             <hr>
             <p class="mb-0">
-                We've detected you're using the <b>Tailwind</b> sample formatting template and have automatically loaded the Tailwind library inside this demo.
+                We've detected you're using the <b>Tailwind 3</b> sample formatting template and have automatically loaded the Tailwind 3 library inside this demo.
                 The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
             </p>
         {% elseif ( form.formTemplate == "bootstrap-3.twig" ) or ( form.formTemplate == "bootstrap-4.twig" ) or ( form.formTemplate == "bootstrap-5.twig" ) %}
             <hr>
             <p class="mb-0">
-                We've detected you're using the <b>Bootstrap</b> sample formatting template and have automatically loaded the Bootstrap library inside this demo.
+                We've detected you're using a <b>Bootstrap</b> sample formatting template and have automatically loaded the Bootstrap 5 library inside this demo.
             </p>
         {% endif %}
         </div>
@@ -102,8 +102,8 @@
                 }
             </style>
         {% endif %}
-        {% if form.formTemplate == "tailwind-1.twig" %}
-            <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+        {% if form.formTemplate == "tailwind-3.twig" %}
+            <script src="https://cdn.tailwindcss.com/3.1.8"></script>
         {% endif %}
     {% endif %}
 {% endblock %}

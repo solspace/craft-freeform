@@ -4,9 +4,9 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Route, Routes } from 'react-router-dom';
 
 import { Wrapper } from './builder.styles';
-import { LayoutEditor } from './views/layout-editor/layout-editor';
-import { Tabs } from './tabs/tabs';
-import { Integrations } from './views/integrations/integrations';
+import { LayoutEditor } from './tabs/layout-editor/layout-editor';
+import { Tabs } from './tabs';
+import { Integrations } from './tabs/integrations/integrations';
 
 export const Builder: React.FC = () => {
   return (

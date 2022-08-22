@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import { Wrapper } from './tabs.styles';
+import { Wrapper } from './index.styles';
 
 export const Tabs: React.FC = () => {
   return (

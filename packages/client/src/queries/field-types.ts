@@ -1,34 +1,14 @@
 import axios, { AxiosError } from 'axios';
-import { useCallback } from 'react';
 import { useQuery, UseQueryResult } from 'react-query';
-import { useSelector } from 'react-redux';
-
-import {
-  Search,
-  selectQuery,
-} from '@ff-client/app/pages/forms/edit/store/slices/search';
 
 import type { FieldType } from '@ff-client/types/fields';
-export const useFetchFieldTypes = (): UseQueryResult<
-  FieldType[],
-  AxiosError
-> => {
-  const searchQuery = useSelector(selectQuery(Search.Fields));
 
-  const select = useCallback(
-    (data: FieldType[]) => {
-      if (!searchQuery) {
-        return data;
-      }
+type FetchFieldTypesQuery = (options?: {
+  select?: (data: FieldType[]) => FieldType[];
+}) => UseQueryResult<FieldType[], AxiosError>;
 
-      return data.filter((item) =>
-        item.name.toLowerCase().includes(searchQuery)
-      );
-    },
-    [searchQuery]
-  );
-
-  return useQuery<FieldType[], AxiosError>(
+export const useFetchFieldTypes: FetchFieldTypesQuery = ({ select }) =>
+  useQuery<FieldType[], AxiosError>(
     'field-types',
     () =>
       axios
@@ -39,4 +19,3 @@ export const useFetchFieldTypes = (): UseQueryResult<
       select,
     }
   );
-};

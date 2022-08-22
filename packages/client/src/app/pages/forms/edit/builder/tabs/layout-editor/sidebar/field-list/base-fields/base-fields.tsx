@@ -9,9 +9,11 @@ import { range } from '@ff-client/utils/arrays';
 
 import { List } from './base-fields.styles';
 import { Field } from './field/field';
+import { useSelectSearchedFields } from '../hooks/use-select-searched-fields';
 
 export const BaseFields: React.FC = () => {
-  const { data, isFetching, isError, error } = useFetchFieldTypes();
+  const select = useSelectSearchedFields();
+  const { data, isFetching, isError, error } = useFetchFieldTypes({ select });
 
   if (!data && isFetching) {
     return (

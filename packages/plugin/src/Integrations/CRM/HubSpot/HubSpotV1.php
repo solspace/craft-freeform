@@ -44,8 +44,8 @@ class HubSpotV1 extends AbstractCRMIntegration
             new SettingBlueprint(
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_API_KEY,
-                'Private App Key',
-                'Enter your HubSpot Private App key here.',
+                'Private App Token',
+                'Enter your HubSpot Private App token here.',
                 true
             ),
             new SettingBlueprint(

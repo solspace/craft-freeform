@@ -1,5 +1,20 @@
 # Solspace Freeform Changelog
 
+## 4.0.1 - 2022-08-23
+
+### Added
+- Added a v3 version of the Tailwind example formatting template.
+- Added a new version of the HubSpot API integration to address new Private App token requirement. This is a required change for any existing HubSpot users.
+
+### Changed
+- Updated the Campaign third party plugin email marketing integration to use new `FormsService::createAndSubscribeContact` method.
+
+### Fixed
+- Fixed a bug where attempting to sort submissions in the CP submissions index page was not working.
+- Fixed a bug where non-latin characters were being allowed in field and form handles.
+- Fixed a bug where attempting to view a related Freeform submission element in the slideout in another element could error.
+- Fixed a bug where attempting to attach a _Predefined Asset_ to an email notification template would give an Internal server error.
+
 ## 4.0.0 - 2022-08-05
 
 ### Fixed

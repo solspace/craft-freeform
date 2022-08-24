@@ -19,6 +19,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\HandleHelper;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Resources\Bundles\FieldEditorBundle;
 use Solspace\Freeform\Resources\Bundles\FormIndexBundle;
@@ -125,6 +126,7 @@ class FieldsController extends Controller
         }
 
         $field->setAttributes($post);
+        $field->handle = HandleHelper::generateHandle($post['handle']);
         $field->required = (bool) ($post['required'] ?? false);
 
         $fieldHasOptions = \in_array(

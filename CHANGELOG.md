@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 3.13.18 - 2022-08-23
+
+### Added
+- Added a new version of the HubSpot API integration to address new Private App token requirement. This is a required change for any existing HubSpot users.
+
+### Fixed
+- Fixed a bug where non-latin characters were being allowed in field and form handles.
+- Fixed a bug where attempting to view a related Freeform submission element in the slideout in another element could error.
+- Fixed a bug where multiple instances of the same form are added when moving the form instance around the DOM.
+
 ## 3.13.17 - 2022-08-05
 
 ### Fixed

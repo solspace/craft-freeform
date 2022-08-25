@@ -126,9 +126,8 @@ class ActiveCampaign extends AbstractMailingListIntegration
         }
 
         if ($contactId && $tags) {
-            $existing_tags = $this->fetchTags($client);
             foreach ($tags as $tag) {
-                $tagId = $this->getTagId($tag, $existing_tags, $client);
+                $tagId = $this->getTagId($tag, $client);
                 if ($tagId) {
                     try {
                         $client->post(
@@ -312,14 +311,15 @@ class ActiveCampaign extends AbstractMailingListIntegration
     /**
      * @return null|int|string
      */
-    private function getTagId(string $name, array $existing_tags, Client $client)
+    private function getTagId(string $name, Client $client)
     {
         static $tags;
 
         if (null === $tags) {
+            $existingTags = $this->fetchTags($client);
             $tags = [];
 
-            foreach ($existing_tags as $item) {
+            foreach ($existingTags as $item) {
                 if ('contact' !== $item->tagType) {
                     continue;
                 }
@@ -353,15 +353,15 @@ class ActiveCampaign extends AbstractMailingListIntegration
             $response = $client->get($this->getEndpoint('/tags'));
             $data = json_decode($response->getBody());
             $tags = $data->tags;
-            $tags_total = $data->meta->total;
-            $tags_count = count($tags);
+            $tagsTotal = $data->meta->total;
+            $tagsTount = count($tags);
             $offset = 0;
 
-            while ($tags_count < $tags_total) {
+            while ($tagsCount < $tagsTotal) {
                 $response = $client->get($this->getEndpoint('/tags?offset=' . $offset));
                 $data = json_decode($response->getBody());
                 $count = count($data->tags);
-                $tags_count += $count;
+                $tagsCount += $count;
                 $tags = array_merge($tags, $data->tags);
                 $offset += $count;
             }
@@ -369,6 +369,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
         } catch (RequestException $exception) {
             return [];
         }
+
         return $tags;
     }
 }

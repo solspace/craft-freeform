@@ -354,8 +354,8 @@ class ActiveCampaign extends AbstractMailingListIntegration
             $data = json_decode($response->getBody());
             $tags = $data->tags;
             $tagsTotal = $data->meta->total;
-            $tagsTount = count($tags);
-            $offset = 0;
+            $tagsCount = count($tags);
+            $offset = $tagsCount;
 
             while ($tagsCount < $tagsTotal) {
                 $response = $client->get($this->getEndpoint('/tags?offset=' . $offset));

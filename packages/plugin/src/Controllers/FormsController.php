@@ -361,11 +361,14 @@ class FormsController extends BaseController
             ->column()
         ;
 
-        foreach ($groupIds as $groupId) {
+        $permission = UserPermission::find()->where(['name' => $newName])->one();
+        if (!$permission) {
             $permission = new UserPermission();
             $permission->name = $newName;
             $permission->save();
+        }
 
+        foreach ($groupIds as $groupId) {
             $groupPermission = new UserPermission_UserGroup();
             $groupPermission->groupId = $groupId;
             $groupPermission->permissionId = $permission->id;

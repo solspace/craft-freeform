@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 4.0.2 - 2022-08-24
+
+### Fixed
+- Fixed a bug where non-latin characters were being allowed in field handles in the field manager area.
+- Fixed a bug where predefined assets in email notifications showed a full file path instead of just the filename.
+- Fixed a bug where multiple instances of the same form are added when moving the form instance around the DOM.
+
 ## 4.0.1 - 2022-08-23
 
 ### Added
@@ -221,6 +228,16 @@
 ### Removed
 - **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
+## 3.13.18 - 2022-08-23
+
+### Added
+- Added a new version of the HubSpot API integration to address new Private App token requirement. This is a required change for any existing HubSpot users.
+
+### Fixed
+- Fixed a bug where non-latin characters were being allowed in field and form handles.
+- Fixed a bug where attempting to view a related Freeform submission element in the slideout in another element could error.
+- Fixed a bug where multiple instances of the same form are added when moving the form instance around the DOM.
 
 ## 3.13.17 - 2022-08-05
 

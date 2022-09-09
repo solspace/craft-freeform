@@ -105,9 +105,9 @@ class IpUtils
      * @param string $requestIp IPv6 address to check
      * @param string $ip        IPv6 address or subnet in CIDR notation
      *
-     * @throws \RuntimeException When IPV6 support is not enabled
-     *
      * @return bool Whether the IP is valid
+     *
+     * @throws \RuntimeException When IPV6 support is not enabled
      */
     public static function checkIp6($requestIp, $ip)
     {

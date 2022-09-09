@@ -7,6 +7,7 @@ use Solspace\Freeform\Library\DataObjects\Suppressors;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class SuppressorsTest extends TestCase

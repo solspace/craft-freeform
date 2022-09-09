@@ -33,9 +33,9 @@ interface MailingListHandlerInterface extends IntegrationHandlerInterface
     /**
      * @param int $id
      *
-     * @throws MailingListIntegrationNotFoundException
-     *
      * @return null|AbstractMailingListIntegration
+     *
+     * @throws MailingListIntegrationNotFoundException
      */
     public function getIntegrationObjectById($id);
 

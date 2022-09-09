@@ -335,9 +335,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     }
 
     /**
-     * @throws \Exception
-     *
      * @return bool|false|mixed|SubscriptionModel
+     *
+     * @throws \Exception
      */
     public function processSubscription(SubscriptionDetails $subscriptionDetails, PaymentProperties $paymentProperties)
     {
@@ -605,9 +605,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @throws \Exception
-     *
      * @return array|bool|\Stripe\StripeObject
+     *
+     * @throws \Exception
      */
     public function getChargeDetails($id)
     {
@@ -627,9 +627,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @throws \Exception
-     *
      * @return array|bool|\Stripe\StripeObject
+     *
+     * @throws \Exception
      */
     public function getSubscriptionDetails($id)
     {
@@ -652,9 +652,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @throws \Exception
-     *
      * @return bool|\Stripe\PaymentIntent
+     *
+     * @throws \Exception
      */
     public function getPaymentIntentDetails($id)
     {

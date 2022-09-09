@@ -698,9 +698,9 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     private function getInstanceUrl()
     {
@@ -708,9 +708,9 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     private function getDataUrl()
     {

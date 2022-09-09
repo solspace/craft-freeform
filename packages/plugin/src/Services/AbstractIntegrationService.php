@@ -239,9 +239,9 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     /**
      * @param int $id
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function delete($id)
     {

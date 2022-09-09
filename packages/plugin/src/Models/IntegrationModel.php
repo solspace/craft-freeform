@@ -137,10 +137,10 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
     }
 
     /**
+     * @return AbstractCRMIntegration|AbstractIntegration|AbstractMailingListIntegration|AbstractPaymentGatewayIntegration
+     *
      * @throws IntegrationException
      * @throws IntegrationNotFoundException
-     *
-     * @return AbstractCRMIntegration|AbstractIntegration|AbstractMailingListIntegration|AbstractPaymentGatewayIntegration
      */
     public function getIntegrationObject()
     {

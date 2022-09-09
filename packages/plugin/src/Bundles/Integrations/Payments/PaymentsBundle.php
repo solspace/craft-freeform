@@ -54,8 +54,6 @@ class PaymentsBundle extends FeatureBundle
      * Makes all payment related processing of the submission, like making payments, creating subscriptions etc.
      *
      * @param Submission $submission saved submission
-     *
-     * @return bool
      */
     private function processPayments(Submission $submission): bool
     {

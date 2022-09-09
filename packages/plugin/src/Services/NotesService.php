@@ -9,9 +9,9 @@ class NotesService extends BaseService
     /**
      * @param $submissionId
      *
-     * @throws \Exception
-     *
      * @return bool|void
+     *
+     * @throws \Exception
      */
     public function saveNote($submissionId)
     {

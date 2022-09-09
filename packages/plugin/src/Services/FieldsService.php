@@ -246,9 +246,9 @@ class FieldsService extends BaseService implements FieldHandlerInterface
     /**
      * @param int $fieldId
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function deleteById($fieldId)
     {

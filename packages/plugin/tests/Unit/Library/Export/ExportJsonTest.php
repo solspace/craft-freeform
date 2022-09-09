@@ -11,6 +11,7 @@ use Solspace\Freeform\Library\Export\ExportJson;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ExportJsonTest extends TestCase

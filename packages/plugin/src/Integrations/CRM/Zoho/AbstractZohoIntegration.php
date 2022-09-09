@@ -290,9 +290,9 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector implements Refr
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     protected function getRefreshToken()
     {

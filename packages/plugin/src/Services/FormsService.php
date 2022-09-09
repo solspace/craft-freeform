@@ -345,9 +345,9 @@ class FormsService extends BaseService implements FormHandlerInterface
     /**
      * @param int $formId
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function deleteById($formId)
     {

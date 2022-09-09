@@ -7,6 +7,7 @@ use Solspace\Freeform\Library\Helpers\ArrayHelper;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ArrayHelperTest extends TestCase

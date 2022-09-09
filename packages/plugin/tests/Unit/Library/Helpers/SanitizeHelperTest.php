@@ -7,6 +7,7 @@ use Solspace\Freeform\Library\Helpers\SanitizeHelper;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class SanitizeHelperTest extends TestCase

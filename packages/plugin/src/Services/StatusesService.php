@@ -221,9 +221,9 @@ class StatusesService extends BaseService implements StatusHandlerInterface
     /**
      * @param int $id
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function deleteById($id)
     {

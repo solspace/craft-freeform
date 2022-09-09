@@ -142,9 +142,9 @@ abstract class AbstractMailingListIntegration extends AbstractIntegration implem
      *
      * @param string $listId
      *
-     * @throws IntegrationException
-     *
      * @return FieldObject[]
+     *
+     * @throws IntegrationException
      */
     abstract protected function fetchFields($listId): array;
 }

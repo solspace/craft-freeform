@@ -6,8 +6,11 @@ use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use craft\web\View;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Form;
+use yii\base\Event;
 
 class ResendNotificationsAction extends ElementAction
 {
@@ -21,7 +24,7 @@ class ResendNotificationsAction extends ElementAction
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_SITE);
 
-        $integrations = Freeform::getInstance()->integrations;
+        $mailer = Freeform::getInstance()->mailer;
 
         /** @var Submission $submission */
         foreach ($query->all() as $submission) {
@@ -42,7 +45,8 @@ class ResendNotificationsAction extends ElementAction
                 $field->setValue($value);
             }
 
-            $integrations->sendOutEmailNotifications($form, $submission);
+            $event = new SendNotificationsEvent($form, $submission, $mailer, $fields);
+            Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
         }
 
         $this->setMessage('Notifications sent successfully');

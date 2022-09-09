@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Library\Database;
 
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
 interface SubmissionHandlerInterface
@@ -23,11 +22,6 @@ interface SubmissionHandlerInterface
      * Stores the submitted fields to database.
      */
     public function storeSubmission(Form $form, Submission $submission): bool;
-
-    /**
-     * Add a session flash variable that the form has been submitted.
-     */
-    public function markFormAsSubmitted(Form $form);
 
     /**
      * Check for a session flash variable for form submissions.
@@ -43,8 +37,6 @@ interface SubmissionHandlerInterface
 
     /**
      * Runs all integrations on submission.
-     *
-     * @param AbstractField[] $mailingListOptedInFields
      */
-    public function postProcessSubmission(Form $form, Submission $submission, array $mailingListOptedInFields);
+    public function postProcessSubmission(Form $form, Submission $submission);
 }

@@ -26,7 +26,6 @@ use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
@@ -245,35 +244,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $submission;
     }
 
-    /**
-     * Runs all integrations on submission.
-     *
-     * @param AbstractField[] $mailingListOptedInFields
-     */
-    public function postProcessSubmission(Form $form, Submission $submission, array $mailingListOptedInFields)
+    public function postProcessSubmission(Form $form, Submission $submission)
     {
-        $freeform = Freeform::getInstance();
-
-        $integrationsService = $freeform->integrations;
-        $connectionsService = $freeform->connections;
-        $formsService = $freeform->forms;
-
-        $this->markFormAsSubmitted($form);
-
-        if ($integrationsService->processPayments($submission)) {
-            $connectionsService->connect($form, $submission);
-            $integrationsService->sendOutEmailNotifications($form, $submission);
-
-            if ($form->hasOptInPermission()) {
-                $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);
-                $integrationsService->pushToCRM($submission);
-            }
-        }
-
         $event = new ProcessSubmissionEvent($form, $submission);
         Event::trigger(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, $event);
 
-        $formsService->onAfterSubmit($form, $submission);
+        $this->getFormsService()->onAfterSubmit($form, $submission);
     }
 
     public function delete(array $submissions, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
@@ -381,23 +357,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $query->all();
     }
 
-    /**
-     * Add a session flash variable that the form has been submitted.
-     */
-    public function markFormAsSubmitted(Form $form)
-    {
-        \Craft::$app->session->setFlash(
-            Form::SUBMISSION_FLASH_KEY.$form->getId(),
-            Freeform::t('Form submitted successfully')
-        );
-    }
-
-    /**
-     * Check for a session flash variable for form submissions.
-     */
     public function wasFormFlashSubmitted(Form $form): bool
     {
-        return (bool) \Craft::$app->session->getFlash(Form::SUBMISSION_FLASH_KEY.$form->getId(), false);
+        $submittedForm = \Craft::$app->session->getFlash(Form::SUBMISSION_FLASH_KEY);
+
+        return $form->getId() === (int) $submittedForm;
     }
 
     public function getAllowedWriteFormIds(): array

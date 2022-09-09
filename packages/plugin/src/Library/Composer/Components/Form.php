@@ -789,7 +789,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /**
      * Returns list of mailing list fields that user opted-in.
      *
-     * @return AbstractField[]
+     * @return MailingListField[]
      */
     public function getMailingListOptedInFields(): array
     {

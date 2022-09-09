@@ -20,7 +20,6 @@ use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
@@ -99,10 +98,10 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      *
      * @param string $class
      *
+     * @return SettingBlueprint[]
+     *
      * @throws IntegrationException
      * @throws \ReflectionException
-     *
-     * @return SettingBlueprint[]
      */
     public function getCRMSettingBlueprints($class): array
     {
@@ -239,8 +238,6 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
     /**
      * Push the mapped object values to the CRM.
-     *
-     * @throws ComposerException
      */
     public function pushObject(Submission $submission): bool
     {
@@ -356,9 +353,9 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
     }
 
     /**
-     * @throws FreeformException
-     *
      * @return null|mixed
+     *
+     * @throws FreeformException
      */
     private function getExtraFieldsValue(string $handle, Submission $submission, AbstractIntegration $integration)
     {

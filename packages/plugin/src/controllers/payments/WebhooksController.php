@@ -108,15 +108,15 @@ class WebhooksController extends BaseController
                 break;
 
             default:
-            }
+        }
 
         return '';
     }
 
     /**
-     * @throws HttpException
-     *
      * @return mixed
+     *
+     * @throws HttpException
      */
     private function getSubmissionIdFromStripeEvent(Event $event, Stripe $integration, bool $suppressError = false)
     {

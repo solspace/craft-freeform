@@ -137,14 +137,8 @@ class SubmitController extends BaseController
             $form->addErrors(array_keys($submission->getErrors()));
         }
 
-        $mailingListOptInFields = $form->getMailingListOptedInFields();
-        if ($form->isMarkedAsSpam()) {
-            if ($submission->getId()) {
-                $this->getSpamSubmissionsService()->postProcessSubmission($form, $submission, $mailingListOptInFields);
-            }
-        } else {
-            $this->getSubmissionsService()->postProcessSubmission($form, $submission, $mailingListOptInFields);
-        }
+        $this->markFormAsSubmitted($form);
+        $this->getSubmissionsService()->postProcessSubmission($form, $submission);
 
         Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
     }
@@ -214,5 +208,13 @@ class SubmitController extends BaseController
         Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);
 
         return $this->asJson($event->getPayload());
+    }
+
+    /**
+     * Add a session flash variable that the form has been submitted.
+     */
+    private function markFormAsSubmitted(Form $form)
+    {
+        \Craft::$app->session->setFlash(Form::SUBMISSION_FLASH_KEY, $form->getId());
     }
 }

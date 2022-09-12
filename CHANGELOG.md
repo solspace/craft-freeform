@@ -10,9 +10,6 @@
 - Fixed a bug where duplicating forms could cause an error when more than one user group has permission to manage it.
 - Fixed a bug where the Tailwind 3 sample formattingh template was not including custom input attributes when rendering Select fields.
 
-### Fixed
-- Fixed a race condition issue where loading values when editing an element would sometimes not work.
-
 ## 4.0.2 - 2022-08-24
 
 ### Fixed

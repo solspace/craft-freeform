@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.13.19 - 2022-09-12
+
+### Changed
+- Updated the Google Tag Manager event to include the AJAX response.
+
+### Fixed
+- Fixed a race condition issue where loading values when editing an element would sometimes not work.
+- Fixed a bug where non-latin characters were allowed in field handles in the field manager area.
+- Fixed a bug where fetching existing tags for the ActiveCampaign integration was not working correctly.
+- Fixed a bug where duplicating forms could cause an error when more than one user group has permission to manage it.
+
 ## 3.13.18 - 2022-08-23
 
 ### Added

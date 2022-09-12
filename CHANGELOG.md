@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 4.0.3 - 2022-09-12
+
+### Changed
+- Updated the Google Tag Manager event to include the AJAX response.
+
+### Fixed
+- Fixed a race condition issue where loading values when editing an element would sometimes not work.
+- Fixed a bug where duplicating forms could cause an error when more than one user group has permission to manage it.
+- Fixed a bug where the Tailwind 3 sample formattingh template was not including custom input attributes when rendering Select fields.
+
+### Fixed
+- Fixed a race condition issue where loading values when editing an element would sometimes not work.
+
 ## 4.0.2 - 2022-08-24
 
 ### Fixed
@@ -228,6 +241,17 @@
 ### Removed
 - **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
+## 3.13.19 - 2022-09-12
+
+### Changed
+- Updated the Google Tag Manager event to include the AJAX response.
+
+### Fixed
+- Fixed a race condition issue where loading values when editing an element would sometimes not work.
+- Fixed a bug where non-latin characters were allowed in field handles in the field manager area.
+- Fixed a bug where fetching existing tags for the ActiveCampaign integration was not working correctly.
+- Fixed a bug where duplicating forms could cause an error when more than one user group has permission to manage it.
 
 ## 3.13.18 - 2022-08-23
 

@@ -35,6 +35,7 @@ class FieldRecord extends ActiveRecord
 
     const RESERVED_FIELD_KEYWORDS = [
         'id',
+        'form',
         'title',
         'incrementalId',
         'statusId',

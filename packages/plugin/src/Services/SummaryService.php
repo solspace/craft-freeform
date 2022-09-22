@@ -476,7 +476,7 @@ class SummaryService extends Component
                 continue;
             }
 
-            $dbInfo = $pluginInfo[$handle];
+            $dbInfo = $pluginInfo[$handle] ?? null;
             $installDate = $dbInfo['installDate'] ?? null;
 
             $plugin = new PluginInfo();

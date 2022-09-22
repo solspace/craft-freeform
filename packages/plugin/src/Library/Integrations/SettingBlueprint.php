@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Library\Integrations;
 
-class SettingBlueprint
+class SettingBlueprint implements \JsonSerializable
 {
     public const TYPE_INTERNAL = 'internal';
     public const TYPE_CONFIG = 'config';
@@ -21,48 +21,15 @@ class SettingBlueprint
     public const TYPE_PASSWORD = 'password';
     public const TYPE_BOOL = 'bool';
 
-    /** @var string */
-    private $type;
-
-    /** @var string */
-    private $handle;
-
-    /** @var string */
-    private $label;
-
-    /** @var string */
-    private $instructions;
-
-    /** @var bool */
-    private $required;
-
-    /** @var mixed */
-    private $defaultValue;
-
-    /**
-     * SettingObject constructor.
-     *
-     * @param string $type
-     * @param string $handle
-     * @param string $label
-     * @param string $instructions
-     * @param bool   $required
-     * @param mixed  $defaultValue
-     */
     public function __construct(
-        $type,
-        $handle,
-        $label,
-        $instructions,
-        $required = false,
-        $defaultValue = null
+        private string $type,
+        private string $handle,
+        private string $label,
+        private string $instructions,
+        private bool $required = false,
+        private mixed $defaultValue = null,
+        private bool $instanceSetting = false
     ) {
-        $this->type = $type;
-        $this->handle = $handle;
-        $this->label = $label;
-        $this->instructions = $instructions;
-        $this->required = (bool) $required;
-        $this->defaultValue = $defaultValue;
     }
 
     public function getType(): string
@@ -90,11 +57,25 @@ class SettingBlueprint
         return $this->required;
     }
 
-    /**
-     * @return null|mixed
-     */
-    public function getDefaultValue()
+    public function getDefaultValue(): mixed
     {
         return $this->defaultValue;
+    }
+
+    public function isInstanceSetting(): bool
+    {
+        return $this->instanceSetting;
+    }
+
+    public function jsonSerialize()
+    {
+        return (object) [
+            'type' => $this->type,
+            'handle' => $this->handle,
+            'label' => $this->label,
+            'instructions' => $this->instructions,
+            'required' => $this->required,
+            'defaultValue' => $this->defaultValue,
+        ];
     }
 }

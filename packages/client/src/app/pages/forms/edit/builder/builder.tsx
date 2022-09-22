@@ -7,6 +7,8 @@ import { Wrapper } from './builder.styles';
 import { LayoutEditor } from './tabs/layout-editor/layout-editor';
 import { Tabs } from './tabs';
 import { Integrations } from './tabs/integrations/integrations';
+import { Editor as IntegrationsEditor } from './tabs/integrations/editor/editor';
+import { EmptyEditor as EmptyIntegrationsEditor } from './tabs/integrations/editor/empty-editor';
 
 export const Builder: React.FC = () => {
   return (
@@ -16,7 +18,10 @@ export const Builder: React.FC = () => {
         <Routes>
           <Route index element={<LayoutEditor />} />
           <Route path="notifications" element={<div>Notifications</div>} />
-          <Route path="integrations" element={<Integrations />} />
+          <Route path="integrations" element={<Integrations />}>
+            <Route index element={<EmptyIntegrationsEditor />} />
+            <Route path=":id/:handle" element={<IntegrationsEditor />} />
+          </Route>
           <Route path="rules" element={<div>Rules</div>} />
         </Routes>
       </Wrapper>

@@ -44,6 +44,11 @@ class SalesforceLead extends AbstractSalesforceIntegration
     public const SETTING_TASKS_DUE_DATE = 'tasks_due_date';
     public const SETTING_INSTANCE = 'instance';
 
+    public static function getIconPath(): ?string
+    {
+        return __DIR__.'/assets/salesforce.svg';
+    }
+
     /**
      * Returns a list of additional settings for this integration
      * Could be used for anything, like - AccessTokens.
@@ -86,7 +91,9 @@ class SalesforceLead extends AbstractSalesforceIntegration
                 self::SETTING_LEAD_OWNER,
                 'Assign Lead Owner?',
                 'Enabling this will make Salesforce assign a lead owner based on lead owner assignment rules.',
-                false
+                false,
+                null,
+                true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_BOOL,
@@ -107,21 +114,27 @@ class SalesforceLead extends AbstractSalesforceIntegration
                 self::SETTING_TASKS_FOR_DUPLICATES,
                 'Convert Leads to Contact Tasks for Returning Customers?',
                 'When a Salesforce Contact already exists with the same email address, create a new Task for the Contact instead of a new Lead.',
-                false
+                false,
+                null,
+                true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_TASKS_SUBJECT,
                 'Task Subject',
                 'Enter the text you\'d like to have set for new Task subjects.',
-                false
+                false,
+                null,
+                true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_TASKS_DUE_DATE,
                 'Task Due Date',
                 'Enter a relative textual date string for the Due Date of the newly created Task (e.g. \'2 days\').',
-                false
+                false,
+                null,
+                true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_CONFIG,

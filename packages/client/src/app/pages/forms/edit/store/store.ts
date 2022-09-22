@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
+import integrations from './slices/integrations';
 import cells from './slices/cells';
 import drag from './slices/drag';
 import layouts from './slices/layouts';
@@ -10,6 +11,7 @@ import search from './slices/search';
 
 export const store = configureStore({
   reducer: {
+    integrations,
     drag,
     layouts,
     pages,

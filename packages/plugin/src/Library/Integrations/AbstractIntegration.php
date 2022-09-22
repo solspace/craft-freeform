@@ -84,6 +84,11 @@ abstract class AbstractIntegration implements IntegrationInterface
         $this->handler = $handler;
     }
 
+    public static function getIconPath(): ?string
+    {
+        return null;
+    }
+
     /**
      * Returns a list of additional settings for this integration
      * Could be used for anything, like - AccessTokens.

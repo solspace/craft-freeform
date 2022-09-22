@@ -2,26 +2,23 @@
 
 namespace Solspace\Freeform\controllers\client\api;
 
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationDTOProvider;
 use Solspace\Freeform\controllers\BaseApiController;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
 
 class IntegrationsController extends BaseApiController
 {
-    public function actionGet(int $formId): Response
+    public function __construct($id, $module, $config = [], private IntegrationDTOProvider $integrationDTOProvider)
     {
-        return $this->asJson($this->getIntegrationsService()->getAllIntegrations());
+        parent::__construct($id, $module, $config);
     }
 
-    public function actionGetOne(int $formId, int $id): Response
+    protected function get(): array
     {
-        $forms = $this->getFormsService()->getResolvedForms(['id' => $id]);
-        $form = reset($forms);
+        return $this->integrationDTOProvider->getByCategory();
+    }
 
-        if (!$form) {
-            throw new NotFoundHttpException("Form with ID {$id} not found");
-        }
-
-        return $form;
+    protected function getOne(int|string $id): array|object|null
+    {
+        return $this->integrationDTOProvider->getById($id);
     }
 }

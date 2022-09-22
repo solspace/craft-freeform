@@ -8,16 +8,16 @@ import { Builder } from './builder/builder';
 import { store } from './store/store';
 
 type RouteParams = {
-  id: string;
+  formId: string;
 };
 
 export const Edit: React.FC = () => {
-  const { id } = useParams<RouteParams>();
+  const { formId } = useParams<RouteParams>();
 
-  const { isFetching, isError, error } = useQuerySingleForm(parseInt(id));
+  const { isFetching, isError, error } = useQuerySingleForm(Number(formId));
 
   if (isFetching) {
-    return <div>Fetching {id}...</div>;
+    return <div>Fetching {formId}...</div>;
   }
 
   if (isError) {

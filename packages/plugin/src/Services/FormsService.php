@@ -87,6 +87,16 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsById;
     }
 
+    public function getResolvedForm(int $id): ?Form
+    {
+        $result = $this->getFormQuery()->where(['id' => $id])->one();
+        if (!$result) {
+            return null;
+        }
+
+        return $this->createForm($result)->getForm();
+    }
+
     /**
      * @return Form[]
      */

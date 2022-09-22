@@ -35,6 +35,11 @@ class MailChimp extends AbstractMailingListIntegration
     /** @var array */
     private $existingTags;
 
+    public static function getIconPath(): ?string
+    {
+        return __DIR__.'/assets/mailchimp.svg';
+    }
+
     /**
      * Returns a list of additional settings for this integration
      * Could be used for anything, like - AccessTokens.
@@ -56,7 +61,9 @@ class MailChimp extends AbstractMailingListIntegration
                 self::SETTING_DOUBLE_OPT_IN,
                 'Use double opt-in?',
                 '',
-                false
+                false,
+                null,
+                true
             ),
             new SettingBlueprint(
                 SettingBlueprint::TYPE_INTERNAL,

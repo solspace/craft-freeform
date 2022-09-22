@@ -21,8 +21,6 @@ class IntegrationsService extends BaseService
 {
     /**
      * @return IntegrationModel[]
-     *
-     * @throws \Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException
      */
     public function getAllIntegrations(): array
     {
@@ -40,6 +38,16 @@ class IntegrationsService extends BaseService
         }
 
         return $models;
+    }
+
+    public function getById(int $id): ?IntegrationModel
+    {
+        $result = $this->getQuery()->where(['id' => $id])->one();
+        if (!$result) {
+            return null;
+        }
+
+        return $this->createIntegrationModel($result);
     }
 
     protected function getQuery(): Query

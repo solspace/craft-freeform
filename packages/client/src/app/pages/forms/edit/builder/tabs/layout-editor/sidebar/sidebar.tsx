@@ -5,7 +5,7 @@ import { BaseFields } from './field-list/base-fields/base-fields';
 import { Container, Wrapper } from './sidebar.styles';
 import { useFieldSearch } from './hooks/use-field-search';
 
-const expand = { width: 400 };
+const expand = { width: 300 };
 const collapse = { width: 25, overflow: 'hidden' };
 
 export const Sidebar: React.FC = () => {

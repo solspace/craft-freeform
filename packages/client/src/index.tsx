@@ -28,7 +28,7 @@ root.render(
             <Route index element={<Dashboard />} />
             <Route path="forms">
               <Route path="new/*" element={<Form />} />
-              <Route path=":id/*" element={<Form />} />
+              <Route path=":formId/*" element={<Form />} />
               <Route index element={<Forms />} />
             </Route>
             <Route path="settings" element={<Settings />} />

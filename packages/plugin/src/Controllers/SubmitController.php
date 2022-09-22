@@ -200,6 +200,12 @@ class SubmitController extends BaseController
 
         $success = !$form->hasErrors() && empty($fieldErrors) && !$form->getActions();
 
+        $postedValues = [];
+        foreach ($submission->getFieldMetadata() as $field) {
+            $value = $submission->{$field->getHandle()}->getValue();
+            $postedValues[$field->getHandle()] = $value;
+        }
+
         $payload = [
             'success' => $success,
             'multipage' => $form->isMultiPage(),
@@ -212,6 +218,7 @@ class SubmitController extends BaseController
             'onSuccess' => $form->getSuccessBehaviour(),
             'returnUrl' => $returnUrl,
             'html' => $form->render(),
+            'values' => $postedValues,
         ];
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);

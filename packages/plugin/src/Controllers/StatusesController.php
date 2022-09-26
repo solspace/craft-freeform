@@ -149,7 +149,7 @@ class StatusesController extends BaseController
         return $this->renderTemplate('freeform/statuses/edit', $variables);
     }
 
-    private function getNewOrExistingStatus(int $statusId): StatusModel
+    private function getNewOrExistingStatus(?int $statusId): StatusModel
     {
         $statusService = $this->getStatusesService();
 

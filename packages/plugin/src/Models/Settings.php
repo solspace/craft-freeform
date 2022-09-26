@@ -78,6 +78,9 @@ class Settings extends Model
     /** @var string */
     public $formTemplateDirectory;
 
+    /** @var bool */
+    public $allowFileTemplateEdit;
+
     /** @var string */
     public $emailTemplateDirectory;
 
@@ -373,6 +376,7 @@ class Settings extends Model
         $this->feedInfo = [];
         $this->badgeType = 'all';
 
+        $this->allowFileTemplateEdit = true;
         $this->emailTemplateDirectory = null;
         $this->emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
         $this->emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;

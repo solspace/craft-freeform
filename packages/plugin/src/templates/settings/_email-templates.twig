@@ -42,6 +42,13 @@
 
     <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
+        {{ forms.lightswitchField({
+            label: "Allow File-based Email Templates to be created inside the CP?"|t('freeform'),
+            name: "settings[allowFileTemplateEdit]",
+            on: settings.allowFileTemplateEdit,
+            errors: settings.errors("allowFileTemplateEdit"),
+        }) }}
+
         {{ forms.textField({
             class: "code",
             label: "File Directory Path"|t('freeform'),

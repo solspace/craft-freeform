@@ -6,7 +6,6 @@ use Solspace\Freeform\Events\Bags\BagModificationEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
-use Solspace\Freeform\Fields\SubmitField;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -15,6 +14,8 @@ use yii\base\Event;
 
 class PageContext
 {
+    public const KEY_ACTION_BACK = 'back';
+
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'onValidate']);
@@ -41,7 +42,7 @@ class PageContext
             return;
         }
 
-        $shouldWalkBack = null !== RequestHelper::post(SubmitField::PREVIOUS_PAGE_INPUT_NAME);
+        $shouldWalkBack = self::KEY_ACTION_BACK === RequestHelper::post(Form::ACTION_KEY);
         if ($shouldWalkBack) {
             $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
             $index = array_pop($pageHistory) ?? 0;

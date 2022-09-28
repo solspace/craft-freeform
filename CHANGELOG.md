@@ -1,5 +1,19 @@
 # Solspace Freeform Changelog
 
+## 4.0.4 - 2022-09-28
+
+### Added
+- Added a setting to disable the creating and editing of File-based email notification templates.
+
+### Changed
+- Updated the AJAX response payload to include posted values.
+
+### Fixed
+- Fixed a bug where attempting to create a new status would not work.
+- Fixed a bug where some field types would not correctly store updates with empty values in multi-page forms.
+- Fixed a bug where users without permissions to Freeform could add Freeform widgets to the Craft dashboard.
+- Fixed a bug where the `form` reserved keyword was being allowed for field handles.
+
 ## 4.0.3 - 2022-09-12
 
 ### Changed
@@ -238,6 +252,17 @@
 ### Removed
 - **UPDATE (July 12, 2022): this decision has been reversed. You can continue to use database-based email notifications in Freeform 4.** Removed ability to use Database-based email notification templates. Freeform will now only read file-based email notification templates. If you haven't yet converted your database templates to file templates using the included utility, you should do so before upgrading to Freeform 4.
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
+
+## 3.13.20 - 2022-09-28
+
+### Changed
+- Updated the AJAX response payload to include posted values.
+
+### Fixed
+- Fixed a bug where some field types would not correctly store updates with empty values in multi-page forms.
+- Fixed a bug where users without permissions to Freeform could add Freeform widgets to the Craft dashboard.
+- Fixed a bug where the Diagnostics page could fail on remnants of old plugins.
+- Fixed a bug where the `form` reserved keyword was being allowed for field handles.
 
 ## 3.13.19 - 2022-09-12
 

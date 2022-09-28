@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 3.13.20 - 2022-09-28
+
+### Changed
+- Updated the AJAX response payload to include posted values.
+
+### Fixed
+- Fixed a bug where some field types would not correctly store updates with empty values in multi-page forms.
+- Fixed a bug where users without permissions to Freeform could add Freeform widgets to the Craft dashboard.
+- Fixed a bug where the Diagnostics page could fail on remnants of old plugins.
+- Fixed a bug where the `form` reserved keyword was being allowed for field handles.
+
 ## 3.13.19 - 2022-09-12
 
 ### Changed

@@ -435,6 +435,8 @@ class FormsController extends BaseController
 
         $isHCaptcha = \in_array($settings->recaptchaType, [Settings::RECAPTCHA_TYPE_H_INVISIBLE, Settings::RECAPTCHA_TYPE_H_CHECKBOX], true);
 
+        $canManageNotifications = $settings->canManageEmailTemplates();
+
         $templateVariables = [
             'form' => $model,
             'title' => $title,
@@ -457,7 +459,7 @@ class FormsController extends BaseController
             'defaultTemplates' => $settings->defaultTemplates,
             'successTemplates' => $this->getEncodedJson($this->getSettingsService()->getSuccessTemplates()),
             'canManageFields' => PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_MANAGE),
-            'canManageNotifications' => PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE),
+            'canManageNotifications' => $canManageNotifications,
             'canManageSettings' => PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS),
             'isDbEmailTemplateStorage' => Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE === $this->getSettingsService()->getSettingsModel()->getEmailTemplateDefault(),
             'isRulesEnabled' => $isPro,

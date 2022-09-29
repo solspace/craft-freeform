@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -462,6 +463,15 @@ class Settings extends Model
         }
 
         return null;
+    }
+
+    public function canManageEmailTemplates(): bool
+    {
+        $canEditTemplates = self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE === $this->emailTemplateStorageType
+            || ($this->getAbsoluteEmailTemplateDirectory() && $this->allowFileTemplateEdit);
+
+        return PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE)
+            && $canEditTemplates;
     }
 
     /**

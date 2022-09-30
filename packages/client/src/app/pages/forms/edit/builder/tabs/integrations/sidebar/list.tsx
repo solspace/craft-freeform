@@ -1,10 +1,11 @@
+import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
 import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
 import { IntegrationCategory } from '@ff-client/types/integrations';
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Category } from './category/category';
 import { CategorySkeleton } from './category/category.skeleton';
-import { Wrapper } from './sidebar.styles';
+import { Wrapper } from './list.styles';
 
 const categoryLabels: Record<string, string> = {
   crm: 'CRM',
@@ -12,7 +13,7 @@ const categoryLabels: Record<string, string> = {
   payment: 'Payment',
 };
 
-export const Sidebar: React.FC = () => {
+export const List: React.FC = () => {
   const { formId, id } = useParams();
   const navigate = useNavigate();
 
@@ -29,9 +30,11 @@ export const Sidebar: React.FC = () => {
 
   if (!data && isFetching) {
     return (
-      <Wrapper>
-        <CategorySkeleton />
-      </Wrapper>
+      <Sidebar>
+        <Wrapper>
+          <CategorySkeleton />
+        </Wrapper>
+      </Sidebar>
     );
   }
 
@@ -50,10 +53,12 @@ export const Sidebar: React.FC = () => {
   });
 
   return (
-    <Wrapper>
-      {Object.values(categories).map((category) => (
-        <Category key={category.type} {...category} />
-      ))}
-    </Wrapper>
+    <Sidebar lean>
+      <Wrapper>
+        {Object.values(categories).map((category) => (
+          <Category key={category.type} {...category} />
+        ))}
+      </Wrapper>
+    </Sidebar>
   );
 };

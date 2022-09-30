@@ -678,6 +678,9 @@ export default class Freeform {
         if (!actions.length) {
           if (success) {
             if (finished && response.onSuccess === SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL && returnUrl) {
+              this._dispatchEvent(EventTypes.EVENT_AJAX_SUCCESS, { request, response });
+              this._onSuccessfulSubmit(event, form, response);
+
               window.location.href = returnUrl;
               return;
             }

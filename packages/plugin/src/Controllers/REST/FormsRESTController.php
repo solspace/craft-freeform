@@ -94,7 +94,7 @@ class FormsRESTController extends BaseController
 
         $this->requirePostRequest();
 
-        $post = $this->request->post();
+        $post = \Craft::$app->request->post();
 
         $state = [
             'composer' => [

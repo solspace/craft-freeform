@@ -1,15 +1,9 @@
 import translate from '@ff-client/utils/translations';
 import React from 'react';
+import { Filter } from './filter/filter';
 import { useFieldSearch } from './hooks/use-field-search';
-import {
-  SearchIcon,
-  SearchBlock,
-  Wrapper,
-  FilterIcon,
-  SearchBar,
-} from './search.style';
+import { SearchIcon, SearchBlock, Wrapper, SearchBar } from './search.style';
 import SearchIconSVG from './search.svg';
-import FilterIconSVG from './sliders.svg';
 
 export const Search: React.FC = () => {
   const [query, setQuery] = useFieldSearch();
@@ -20,12 +14,10 @@ export const Search: React.FC = () => {
         <SearchIcon>
           <SearchIconSVG />
         </SearchIcon>
-        <FilterIcon>
-          <FilterIconSVG />
-        </FilterIcon>
+        <Filter />
         <SearchBar
           type="text"
-          placeholder={translate('Search for fields...')}
+          placeholder={translate('Search fields...')}
           className="fullwidth text"
           value={query}
           onChange={(event): void => {

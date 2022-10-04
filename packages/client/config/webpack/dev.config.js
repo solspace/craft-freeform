@@ -5,6 +5,9 @@ const ReactRefreshTypeScript = require('react-refresh-typescript');
 const { merge } = require('webpack-merge');
 const baseConfig = require('./base.config.js');
 
+const createStyledComponentsTransformer =
+  require('typescript-plugin-styled-components').default;
+
 module.exports = merge(baseConfig, {
   mode: 'development',
 
@@ -49,7 +52,10 @@ module.exports = merge(baseConfig, {
             loader: 'ts-loader',
             options: {
               getCustomTransformers: () => ({
-                before: [ReactRefreshTypeScript()],
+                before: [
+                  ReactRefreshTypeScript(),
+                  createStyledComponentsTransformer(),
+                ],
               }),
               transpileOnly: true,
             },

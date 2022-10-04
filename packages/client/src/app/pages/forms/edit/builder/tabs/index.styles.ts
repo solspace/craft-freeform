@@ -1,19 +1,31 @@
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const Wrapper = styled.nav`
-  display: flex;
-  gap: 10px;
+export const TabWrapper = styled.nav`
+  position: relative;
 
-  min-height: 50px;
-  padding: ${spacings.sm} ${spacings.xl} 0;
+  display: grid;
+  grid-template-columns: 300px auto min-content;
+  align-items: center;
+
+  height: 50px;
+  flex: 0 0 50px;
 
   box-sizing: border-box;
   overflow-x: hidden;
 
   background: ${colors.gray050};
-  border-radius: ${borderRadius.lg} ${borderRadius.lg} 0 0;
   box-shadow: inset 0 -1px 0 0 rgb(154 165 177 / 25%);
+`;
+
+export const Heading = styled.h1`
+  margin: 0;
+  padding: 0 ${spacings.lg};
+`;
+
+export const TabsWrapper = styled.div`
+  display: flex;
+  align-self: flex-end;
 
   a {
     display: flex;
@@ -41,3 +53,9 @@ export const Wrapper = styled.nav`
     }
   }
 `;
+
+export const SaveButtonWrapper = styled.div`
+  padding: 0 ${spacings.lg};
+`;
+
+export const SaveButton = styled.button.attrs({ className: 'btn submit' })``;

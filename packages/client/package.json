@@ -66,6 +66,7 @@
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.1",
     "ts-loader": "^9.3.0",
+    "typescript-plugin-styled-components": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.72.1",
     "webpack-cli": "^4.9.2",

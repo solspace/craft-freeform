@@ -23,7 +23,7 @@ export const SearchBar = styled.input`
 
 const buttonSize = '18px';
 
-const IconStyle = css`
+export const IconStyle = css`
   position: absolute;
   top: 1px;
   bottom: 1px;
@@ -50,41 +50,4 @@ export const SearchIcon = styled.div`
   ${IconStyle}
 
   color: ${colors.gray100};
-`;
-
-export const FilterIcon = styled.button`
-  cursor: pointer;
-  right: 1px;
-
-  ${IconStyle}
-
-  color: ${colors.gray300};
-  transition: all 0.2s ease-out;
-
-  background: white;
-
-  &:before {
-    content: '';
-
-    position: absolute;
-    left: 0;
-    top: 6px;
-
-    display: block;
-
-    width: 1px;
-    height: 22px;
-
-    background: ${colors.gray200};
-    transition: all 0.2s ease-out;
-  }
-
-  &:hover {
-    background: ${colors.gray050};
-
-    &:before {
-      top: 0;
-      height: 32px;
-    }
-  }
 `;

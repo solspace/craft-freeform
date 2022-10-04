@@ -47,6 +47,8 @@ export const pagesSlice = createSlice({
 
 export const { swap, add, remove } = pagesSlice.actions;
 
+export const selectPages = (state: RootState): Page[] => state.pages;
+
 export const selectPage =
   (uid: string) =>
   (state: RootState): Page | undefined =>

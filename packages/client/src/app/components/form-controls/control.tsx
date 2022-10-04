@@ -16,7 +16,7 @@ export const Control: React.FC<ControlProps> = ({
   children,
 }) => {
   return (
-    <div className="field">
+    <div className="field" style={{ margin: 0 }}>
       {!!label && (
         <div className="heading">
           <label htmlFor={id}>{label}</label>

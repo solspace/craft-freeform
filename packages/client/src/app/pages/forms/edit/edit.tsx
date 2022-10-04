@@ -6,6 +6,7 @@ import { useQuerySingleForm } from '@ff-client/queries/forms';
 
 import { Builder } from './builder/builder';
 import { store } from './store/store';
+import { EditorGlobalStyles } from './edit.styles';
 
 type RouteParams = {
   formId: string;
@@ -26,6 +27,7 @@ export const Edit: React.FC = () => {
 
   return (
     <Provider store={store}>
+      <EditorGlobalStyles />
       <Builder />
     </Provider>
   );

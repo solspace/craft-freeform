@@ -1,30 +1,39 @@
 import translate from '@ff-client/utils/translations';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
-import { Wrapper } from './index.styles';
+import {
+  TabWrapper,
+  TabsWrapper,
+  SaveButton,
+  Heading,
+  SaveButtonWrapper,
+} from './index.styles';
 
 export const Tabs: React.FC = () => {
   return (
-    <Wrapper style={{ position: 'relative' }}>
-      <h1 style={{ width: 300, margin: 0, paddingTop: 7 }}>My form name</h1>
+    <TabWrapper>
+      <Heading>
+        <Link to=".." style={{ width: 20, height: 20 }}>
+          {'< '}
+        </Link>
+        My form name
+      </Heading>
 
-      <NavLink to="" end>
-        {translate('Layout')}
-      </NavLink>
-      <NavLink to="notifications">{translate('Notifications')}</NavLink>
-      <NavLink to="rules">{translate('Rules')}</NavLink>
-      <NavLink to="integrations">{translate('Integrations')}</NavLink>
+      <TabsWrapper>
+        <NavLink to="" end>
+          {translate('Layout')}
+        </NavLink>
+        <NavLink to="behavior">{translate('Behavior')}</NavLink>
+        <NavLink to="notifications">{translate('Notifications')}</NavLink>
+        <NavLink to="rules">{translate('Rules')}</NavLink>
+        <NavLink to="integrations">{translate('Integrations')}</NavLink>
+        <NavLink to="settings">{translate('Settings')}</NavLink>
+      </TabsWrapper>
 
-      <button
-        className="btn submit"
-        style={{
-          position: 'absolute',
-          right: 10,
-        }}
-      >
-        Save
-      </button>
-    </Wrapper>
+      <SaveButtonWrapper>
+        <SaveButton>Save</SaveButton>
+      </SaveButtonWrapper>
+    </TabWrapper>
   );
 };

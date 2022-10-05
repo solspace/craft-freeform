@@ -23,6 +23,7 @@ use craft\records\UserPermission_UserGroup;
 use craft\records\Volume;
 use Solspace\Calendar\Calendar;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
@@ -49,6 +50,11 @@ use yii\web\Response;
 
 class FormsController extends BaseController
 {
+    public function __construct($id, $module, $config = [], private FieldTypesProvider $fieldTypesProvider)
+    {
+        parent::__construct($id, $module, $config);
+    }
+
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
@@ -438,7 +444,7 @@ class FormsController extends BaseController
             'continueEditingUrl' => 'freeform/forms/{id}',
             'formTypes' => $this->getEncodedJson($this->getFormsTypesService()->getTypes()),
             'fileKinds' => $this->getEncodedJson(Assets::getFileKinds()),
-            'fieldTypeList' => $this->getEncodedJson($this->getFieldsService()->getEditableFieldTypes()),
+            'fieldTypeList' => $this->getEncodedJson($this->fieldTypesProvider->getTypeShorthands()),
             'notificationList' => $this->getEncodedJson($notifications),
             'mailingList' => $this->getEncodedJson($mailingListIntegrations),
             'crmIntegrations' => $this->getEncodedJson($crmIntegrations),

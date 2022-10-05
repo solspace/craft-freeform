@@ -12,40 +12,39 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\PlaceholderTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
+#[Type(
+    name: 'Text',
+    typeShorthand: 'text',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class TextField extends AbstractField implements SingleValueInterface, PlaceholderInterface
 {
     use PlaceholderTrait;
     use SingleValueTrait;
 
-    /** @var int */
-    protected $maxLength;
+    #[EditableProperty(
+        label: 'Maximum Length',
+        instructions: 'The maximum number of characters for this field.',
+        defaultValue: 0,
+    )]
+    protected ?int $maxLength = null;
 
-    /** @var string */
-    protected $customInputType;
+    protected string $customInputType;
 
-    public static function getSvgIcon(): ?string
-    {
-        return file_get_contents(__DIR__.'/Icons/text.svg');
-    }
-
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_TEXT;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getMaxLength()
+    public function getMaxLength(): ?int
     {
         return $this->maxLength;
     }

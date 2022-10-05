@@ -3,10 +3,16 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 
+#[Type(
+    name: 'File Drag & Drop',
+    typeShorthand: 'file-drag-and-drop',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface
 {
     public const DEFAULT_ACCENT = '#3a85ee';
@@ -35,11 +41,6 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public function getPlaceholder(): string
     {
         return $this->placeholder ?? self::DEFAULT_PLACEHOLDER;
-    }
-
-    public static function getFieldTypeName(): string
-    {
-        return 'File Drag & Drop';
     }
 
     public static function getFieldType(): string

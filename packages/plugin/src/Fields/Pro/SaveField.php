@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
@@ -10,6 +11,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleStaticValueTrait;
 
+#[Type(
+    name: 'Save',
+    typeShorthand: 'save',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class SaveField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;
@@ -18,8 +24,7 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
     public const POSITION_CENTER = 'center';
     public const POSITION_RIGHT = 'right';
 
-    /** @var string */
-    protected $label;
+    protected string $label;
 
     /** @var string */
     protected $position = self::POSITION_RIGHT;

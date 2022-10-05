@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -9,6 +10,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultiDimensi
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
 
+#[Type(
+    name: 'Table',
+    typeShorthand: 'table',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class TableField extends AbstractField implements MultipleValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface
 {
     use MultipleValueTrait;

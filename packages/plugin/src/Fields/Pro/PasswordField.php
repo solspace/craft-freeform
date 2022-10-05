@@ -12,12 +12,18 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPostedValueInterface;
 
+#[Type(
+    name: 'Password',
+    typeShorthand: 'password',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class PasswordField extends TextField implements DefaultFieldInterface, NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
 {
     /**

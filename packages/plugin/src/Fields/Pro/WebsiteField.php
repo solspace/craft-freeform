@@ -2,14 +2,19 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\WebsiteConstraint;
 
+#[Type(
+    name: 'Website',
+    typeShorthand: 'website',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class WebsiteField extends TextField implements ExtraFieldInterface
 {
-    /** @var string */
-    protected $customInputType = 'url';
+    protected string $customInputType = 'url';
 
     /**
      * Return the field TYPE.

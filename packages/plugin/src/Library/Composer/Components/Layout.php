@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
+use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Fields\MailingListField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\FieldCollection;
@@ -109,6 +110,9 @@ class Layout implements \JsonSerializable, \Iterator
         return $errorCount;
     }
 
+    /**
+     * @return FieldInterface[]
+     */
     public function getFields(string $implements = null): array
     {
         return $this->fieldCollection->getList($implements);
@@ -238,10 +242,9 @@ class Layout implements \JsonSerializable, \Iterator
      */
     private function buildLayout()
     {
-        $availableFieldTypes = array_keys(Freeform::getInstance()->fields->getFieldTypes());
+        $availableFieldTypes = \Craft::$container->get(FieldTypesProvider::class)->getTypeShorthands();
 
         $pageObjects = [];
-        $allFields = [];
 
         foreach ($this->layoutData as $pageIndex => $rows) {
             if (!\is_array($rows)) {

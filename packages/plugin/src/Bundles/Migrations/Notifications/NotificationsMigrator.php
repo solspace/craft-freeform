@@ -80,7 +80,7 @@ class NotificationsMigrator
                     continue;
                 }
 
-                if (\in_array($properties->type, ['email', 'dynamic_recipients'], true)) {
+                if (\in_array($properties->type, ['email'], true)) {
                     $notificationId = (int) ($properties->notificationId ?? null);
                     if (isset($idToFilenameMap[$notificationId])) {
                         $json->composer->properties->{$key}->notificationId = $idToFilenameMap[$notificationId];

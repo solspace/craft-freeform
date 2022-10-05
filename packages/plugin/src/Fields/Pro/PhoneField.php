@@ -2,11 +2,17 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PhoneMaskInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\PhoneConstraint;
 
+#[Type(
+    name: 'Phone',
+    typeShorthand: 'phone',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInterface
 {
     /** @var string */
@@ -15,8 +21,7 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
     /** @var bool */
     protected $useJsMask;
 
-    /** @var string */
-    protected $customInputType = 'tel';
+    protected string $customInputType = 'tel';
 
     /**
      * Return the field TYPE.

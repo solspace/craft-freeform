@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Library\Factories;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Stringy\Stringy;
 
@@ -27,11 +26,11 @@ class ComposerFieldFactory
 
     public static function createFromProperties(
         Form $form,
-        FieldProperties $properties,
+        array $properties,
         $pageIndex
     ): AbstractField {
         /** @var AbstractField $className */
-        $className = $properties->getType();
+        $className = $properties['type'];
         if (FieldInterface::TYPE_DYNAMIC_RECIPIENTS === $className) {
             $className = 'dynamic_recipient';
         }
@@ -66,6 +65,6 @@ class ComposerFieldFactory
             );
         }
 
-        return $className::createFromProperties($form, $properties, $pageIndex);
+        return new $className($form, $properties);
     }
 }

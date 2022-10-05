@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -11,6 +12,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\NumericConstraint;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
+#[Type(
+    name: 'Rating',
+    typeShorthand: 'rating',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class RatingField extends AbstractField implements SingleValueInterface, ExtraFieldInterface, OptionsInterface
 {
     use SingleValueTrait;

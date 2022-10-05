@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
@@ -23,6 +24,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueI
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MailingListTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
+#[Type(
+    name: 'Mailing List',
+    typeShorthand: 'mailing-list',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class MailingListField extends AbstractField implements DefaultFieldInterface, NoStorageInterface, SingleValueInterface, InputOnlyInterface, MailingListInterface, RememberPostedValueInterface
 {
     use MailingListTrait;

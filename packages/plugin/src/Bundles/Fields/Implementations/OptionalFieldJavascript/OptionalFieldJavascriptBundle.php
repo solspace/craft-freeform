@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\Fields\OptionalFieldJavascript;
+namespace Solspace\Freeform\Bundles\Fields\Implementations\OptionalFieldJavascript;
 
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Fields\Pro\DatetimeField;

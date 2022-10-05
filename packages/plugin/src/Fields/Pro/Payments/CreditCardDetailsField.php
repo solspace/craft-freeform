@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro\Payments;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -11,6 +12,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 
+#[Type(
+    name: 'Credit Card: Details',
+    typeShorthand: 'cc-details',
+    iconPath: __DIR__.'/../../Icons/text.svg',
+)]
 class CreditCardDetailsField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, PaymentInterface, ExtraFieldInterface
 {
     use SingleValueTrait;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\Fields\FileUpload;
+namespace Solspace\Freeform\Bundles\Fields\Implementations\FileUpload;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;

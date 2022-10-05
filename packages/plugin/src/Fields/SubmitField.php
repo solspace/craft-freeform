@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
@@ -19,6 +20,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleStaticValueTrait;
 
+#[Type(
+    name: 'Submit',
+    typeShorthand: 'submit',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class SubmitField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;

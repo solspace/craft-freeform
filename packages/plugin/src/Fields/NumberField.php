@@ -2,9 +2,15 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\NumericConstraint;
 
+#[Type(
+    name: 'Number',
+    typeShorthand: 'number',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class NumberField extends TextField
 {
     /** @var int */

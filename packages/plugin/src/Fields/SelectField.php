@@ -12,10 +12,16 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
+#[Type(
+    name: 'Select',
+    typeShorthand: 'select',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class SelectField extends AbstractExternalOptionsField implements SingleValueInterface
 {
     use SingleValueTrait;

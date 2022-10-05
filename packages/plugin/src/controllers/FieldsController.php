@@ -15,6 +15,7 @@ namespace Solspace\Freeform\controllers;
 use craft\helpers\Assets;
 use craft\web\Controller;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -27,6 +28,15 @@ use yii\web\Response;
 
 class FieldsController extends Controller
 {
+    public function __construct(
+        $id,
+        $module,
+        $config = [],
+        private FieldTypesProvider $fieldTypesProvider
+    ) {
+        parent::__construct($id, $module, $config);
+    }
+
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_ACCESS);
@@ -43,7 +53,7 @@ class FieldsController extends Controller
             'freeform/fields',
             [
                 'fields' => $fields,
-                'fieldTypes' => $this->getFieldsService()->getFieldTypes(),
+                'fieldTypes' => $this->fieldTypesProvider->getTypeShorthands(),
             ]
         );
     }
@@ -198,7 +208,7 @@ class FieldsController extends Controller
             ];
         }
 
-        $fieldTypes = $this->getFieldsService()->getEditableFieldTypes();
+        $fieldTypes = $this->fieldTypesProvider->getTypes();
 
         $variables = [
             'field' => $model,

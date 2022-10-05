@@ -12,6 +12,8 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
@@ -19,12 +21,22 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueI
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 use Twig\Markup;
 
+#[Type(
+    name: 'Checkbox',
+    typeShorthand: 'checkbox',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class CheckboxField extends AbstractField implements SingleValueInterface, InputOnlyInterface
 {
     use SingleValueTrait;
 
-    /** @var bool */
-    protected $checked;
+    #[EditableProperty(
+        label: 'Checked by default',
+        defaultValue: false,
+    )]
+    protected bool $checkedByDefault = false;
+
+    protected bool $checked = false;
 
     /**
      * Return the field TYPE.

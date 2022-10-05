@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Form\Fields\CheckboxField;
+namespace Solspace\Freeform\Bundles\Fields\Implementations\CheckboxField;
 
 use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Fields\CheckboxField;

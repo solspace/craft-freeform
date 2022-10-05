@@ -12,12 +12,18 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OneLineTrait;
 
+#[Type(
+    name: 'Checkbox Group',
+    typeShorthand: 'checkbox-group',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class CheckboxGroupField extends AbstractExternalOptionsField implements MultipleValueInterface, OneLineInterface
 {
     use MultipleValueTrait;

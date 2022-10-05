@@ -12,10 +12,16 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTrait;
 
+#[Type(
+    name: 'Multi-Select',
+    typeShorthand: 'multiple-select',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class MultipleSelectField extends AbstractExternalOptionsField implements MultipleValueInterface
 {
     use MultipleValueTrait;

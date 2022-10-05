@@ -21,7 +21,6 @@ use craft\elements\Tag;
 use craft\elements\User;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Events\Fields\DeleteEvent;
-use Solspace\Freeform\Events\Fields\FetchFieldTypes;
 use Solspace\Freeform\Events\Fields\SaveEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Freeform;
@@ -42,7 +41,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
     public const EVENT_AFTER_SAVE = 'afterSave';
     public const EVENT_BEFORE_DELETE = 'beforeDelete';
     public const EVENT_AFTER_DELETE = 'afterDelete';
-    public const EVENT_FETCH_TYPES = 'fetchTypes';
     public const EVENT_BEFORE_VALIDATE = 'beforeValidate';
     public const EVENT_AFTER_VALIDATE = 'afterValidate';
 
@@ -131,30 +129,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
             ->from(FieldRecord::TABLE)
             ->column()
         ;
-    }
-
-    public function getFieldTypesInfo(): array
-    {
-        $fetchTypesEvent = new FetchFieldTypes();
-        $this->trigger(self::EVENT_FETCH_TYPES, $fetchTypesEvent);
-
-        return $fetchTypesEvent->getTypeInfo();
-    }
-
-    public function getFieldTypes(): array
-    {
-        $fetchTypesEvent = new FetchFieldTypes();
-        $this->trigger(self::EVENT_FETCH_TYPES, $fetchTypesEvent);
-
-        return $fetchTypesEvent->getTypes();
-    }
-
-    public function getEditableFieldTypes(): array
-    {
-        $fetchTypesEvent = new FetchFieldTypes();
-        $this->trigger(self::EVENT_FETCH_TYPES, $fetchTypesEvent);
-
-        return $fetchTypesEvent->getEditableTypes();
     }
 
     /**

@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Fields;
 
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -22,6 +23,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTra
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 
+#[Type(
+    name: 'File Upload',
+    typeShorthand: 'file',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class FileUploadField extends AbstractField implements MultipleValueInterface, FileUploadInterface
 {
     use FileUploadTrait;

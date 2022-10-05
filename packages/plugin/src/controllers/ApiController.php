@@ -19,6 +19,7 @@ use craft\helpers\ChartHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Db;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
@@ -30,6 +31,11 @@ use yii\web\Response;
 
 class ApiController extends BaseController
 {
+    public function __construct($id, $module, $config = [], private FieldTypesProvider $fieldTypesProvider)
+    {
+        parent::__construct($id, $module, $config);
+    }
+
     public function actionForm(): Response
     {
         return \Craft::$app->runAction('freeform/submit');
@@ -167,7 +173,7 @@ class ApiController extends BaseController
             $errors[] = Freeform::t('Handle is required');
         }
 
-        $allowedFieldTypes = array_keys($this->getFieldsService()->getFieldTypes());
+        $allowedFieldTypes = array_keys($this->fieldTypesProvider->getTypeShorthands());
         if (!$type || !\in_array($type, $allowedFieldTypes, true)) {
             $errors[] = Freeform::t(
                 'Type {type} is not allowed. Allowed types are ({allowedTypes})',

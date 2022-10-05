@@ -9,7 +9,6 @@ export const RADIO_GROUP = 'radio_group';
 export const CHECKBOX = 'checkbox';
 export const CHECKBOX_GROUP = 'checkbox_group';
 export const EMAIL = 'email';
-export const DYNAMIC_RECIPIENTS = 'dynamic_recipients';
 export const FILE = 'file';
 export const FILE_DRAG_AND_DROP = 'file_drag_and_drop';
 

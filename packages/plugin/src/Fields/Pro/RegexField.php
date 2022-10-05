@@ -2,10 +2,16 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\RegexConstraint;
 
+#[Type(
+    name: 'Regex',
+    typeShorthand: 'regex',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class RegexField extends TextField implements ExtraFieldInterface
 {
     /** @var string */

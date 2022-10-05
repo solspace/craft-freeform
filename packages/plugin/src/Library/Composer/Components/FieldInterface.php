@@ -25,21 +25,21 @@ interface FieldInterface
     public const TYPE_TEXTAREA = 'textarea';
     public const TYPE_HIDDEN = 'hidden';
     public const TYPE_SELECT = 'select';
-    public const TYPE_MULTIPLE_SELECT = 'multiple_select';
+    public const TYPE_MULTIPLE_SELECT = 'multiple-select';
     public const TYPE_CHECKBOX = 'checkbox';
-    public const TYPE_CHECKBOX_GROUP = 'checkbox_group';
-    public const TYPE_RADIO_GROUP = 'radio_group';
+    public const TYPE_CHECKBOX_GROUP = 'checkbox-group';
+    public const TYPE_RADIO_GROUP = 'radio-group';
     public const TYPE_HTML = 'html';
     public const TYPE_SUBMIT = 'submit';
     public const TYPE_SAVE = 'save';
-    public const TYPE_DYNAMIC_RECIPIENTS = 'dynamic_recipients';
+    public const TYPE_DYNAMIC_RECIPIENTS = 'dynamic-recipients';
     public const TYPE_EMAIL = 'email';
-    public const TYPE_MAILING_LIST = 'mailing_list';
+    public const TYPE_MAILING_LIST = 'mailing-list';
     public const TYPE_FILE = 'file';
-    public const TYPE_FILE_DRAG_AND_DROP = 'file_drag_and_drop';
+    public const TYPE_FILE_DRAG_AND_DROP = 'file-drag-and-drop';
     public const TYPE_PASSWORD = 'password';
 
-    public const TYPE_RICH_TEXT = 'rich_text';
+    public const TYPE_RICH_TEXT = 'rich-text';
     public const TYPE_DATETIME = 'datetime';
     public const TYPE_NUMBER = 'number';
     public const TYPE_PHONE = 'phone';
@@ -48,15 +48,15 @@ interface FieldInterface
     public const TYPE_REGEX = 'regex';
     public const TYPE_CONFIRMATION = 'confirmation';
     public const TYPE_RECAPTCHA = 'recaptcha';
-    public const TYPE_OPINION_SCALE = 'opinion_scale';
+    public const TYPE_OPINION_SCALE = 'opinion-scale';
     public const TYPE_SIGNATURE = 'signature';
     public const TYPE_TABLE = 'table';
     public const TYPE_INVISIBLE = 'invisible';
 
-    public const TYPE_CREDIT_CARD_DETAILS = 'cc_details';
-    public const TYPE_CREDIT_CARD_NUMBER = 'cc_number';
-    public const TYPE_CREDIT_CARD_EXPIRY = 'cc_expiry';
-    public const TYPE_CREDIT_CARD_CVC = 'cc_cvc';
+    public const TYPE_CREDIT_CARD_DETAILS = 'cc-details';
+    public const TYPE_CREDIT_CARD_NUMBER = 'cc-number';
+    public const TYPE_CREDIT_CARD_EXPIRY = 'cc-expiry';
+    public const TYPE_CREDIT_CARD_CVC = 'cc-cvc';
 
     /**
      * Returns the INPUT type.
@@ -73,6 +73,12 @@ interface FieldInterface
     public function getId(): ?int;
 
     public function getHandle(): ?string;
+
+    public function getLabel(): ?string;
+
+    public function getInstructions(): ?string;
+
+    public function isRequired(): bool;
 
     public function getHash(): string;
 

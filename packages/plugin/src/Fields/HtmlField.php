@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
@@ -22,6 +23,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleStaticValu
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
 use Solspace\Freeform\Models\Settings;
 
+#[Type(
+    name: 'HTML',
+    typeShorthand: 'html',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class HtmlField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;

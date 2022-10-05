@@ -156,7 +156,6 @@ class SummaryService extends Component
         $fields->file = $this->usesField('file', $fieldTypes);
         $fields->fileDragAndDrop = $this->usesField('file_drag_and_drop', $fieldTypes);
         $fields->number = $this->usesField('number', $fieldTypes);
-        $fields->dynamicRecipients = $this->usesField('dynamic_recipients', $fieldTypes);
         $fields->dateTime = $this->usesField('datetime', $fieldTypes);
         $fields->phone = $this->usesField('phone', $fieldTypes);
         $fields->rating = $this->usesField('rating', $fieldTypes);

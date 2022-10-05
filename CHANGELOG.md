@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 4.0.5 - 2022-10-05
+
+### Added
+- Added a setting to prevent users from creating file-based email notification templates inside the control panel.
+- Added success events for AJAX forms with `redirect-to-url` behavior.
+
+### Fixed
+- Fixed a bug that would prevent some integrations with OAuth 2.0 from being able to authorize.
+- Fixed a bug where the Email Template dropdown select in the form builder would not show all templates if using a mix of database and file templates.
+- Fixed a bug where using the `back` button in multi-page forms could potentially cause issues when using default browser validation.
+
 ## 4.0.4 - 2022-09-28
 
 ### Added

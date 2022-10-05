@@ -64,7 +64,7 @@ class CrmController extends Controller
         return $this->renderEditForm($model, $title);
     }
 
-    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
+    public function actionEdit($id = null, IntegrationModel $model = null): Response
     {
         if (null === $model) {
             if (is_numeric($id)) {

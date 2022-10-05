@@ -67,7 +67,7 @@ class MailingListsController extends BaseController
         return $this->renderEditForm($model, 'Create new mailing list');
     }
 
-    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
+    public function actionEdit($id = null, IntegrationModel $model = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 

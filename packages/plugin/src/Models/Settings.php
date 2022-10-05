@@ -468,6 +468,7 @@ class Settings extends Model
     public function canManageEmailTemplates(): bool
     {
         $canEditTemplates = self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE === $this->emailTemplateStorageType
+            || (self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH === $this->emailTemplateStorageType && self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE === $this->emailTemplateDefault)
             || ($this->getAbsoluteEmailTemplateDirectory() && $this->allowFileTemplateEdit);
 
         return PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE)

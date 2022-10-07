@@ -19,8 +19,38 @@ export const TabWrapper = styled.nav`
 `;
 
 export const Heading = styled.h1`
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  gap: ${spacings.sm};
+
   margin: 0;
   padding: 0 ${spacings.lg};
+
+  a {
+    svg {
+      position: relative;
+
+      width: 18px;
+      height: 18px;
+      color: ${colors.gray200};
+
+      transition: all 0.2s ease-out;
+    }
+
+    &:hover svg {
+      color: ${colors.gray700};
+      transform: translateX(-5px);
+    }
+  }
+`;
+
+export const FormName = styled.span`
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: ${colors.gray700};
 `;
 
 export const TabsWrapper = styled.div`

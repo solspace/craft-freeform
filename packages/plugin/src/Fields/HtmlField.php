@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -32,24 +33,22 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, SingleVa
 {
     use SingleStaticValueTrait;
 
-    protected $twig;
+    #[EditableProperty(
+        label: 'Allow Twig',
+        instructions: 'Used to enable Twig in HTML blocks',
+    )]
+    protected bool $twig = false;
 
     public function isTwig(): bool
     {
-        return (bool) $this->twig;
+        return $this->twig;
     }
 
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_HTML;
     }
 
-    /**
-     * Outputs the HTML of input.
-     */
     public function getInputHtml(): string
     {
         if ($this->isTwig()) {

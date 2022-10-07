@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
-use Solspace\Freeform\Fields\MailingListField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\FieldCollection;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
@@ -130,7 +129,7 @@ class Layout implements \JsonSerializable, \Iterator
     {
         return array_filter(
             $this->getFields(),
-            fn ($field) => $field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())
+            fn ($field) => $field instanceof NoRenderInterface
         );
     }
 
@@ -302,7 +301,7 @@ class Layout implements \JsonSerializable, \Iterator
 
                     $pageFields[] = $field;
 
-                    if ($field instanceof NoRenderInterface || ($field instanceof MailingListField && $field->isHidden())) {
+                    if ($field instanceof NoRenderInterface) {
                         continue;
                     }
 

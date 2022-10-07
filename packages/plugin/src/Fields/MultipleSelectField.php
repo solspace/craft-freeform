@@ -26,17 +26,11 @@ class MultipleSelectField extends AbstractExternalOptionsField implements Multip
 {
     use MultipleValueTrait;
 
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_MULTIPLE_SELECT;
     }
 
-    /**
-     * Outputs the HTML of input.
-     */
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();

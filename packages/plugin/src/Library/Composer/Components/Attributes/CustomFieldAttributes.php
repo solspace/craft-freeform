@@ -172,10 +172,7 @@ class CustomFieldAttributes extends AbstractAttributes
         return $value;
     }
 
-    /**
-     * @return string
-     */
-    public function getPlaceholder()
+    public function getPlaceholder(): string
     {
         return $this->placeholder;
     }

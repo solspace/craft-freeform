@@ -20,19 +20,21 @@ export const Field: React.FC<Props> = ({ fieldType }) => {
   const onClick = (): void => {
     const rowUid = v4();
 
-    dispatch(
-      addRow({
-        layoutUid: 'layout-uid-1',
-        order: 2,
-        uid: rowUid,
-      })
-    );
+    const properties: Record<string> = {};
+
+    dispatch(addRow({ layoutUid: 'layout-uid-1', rowUid }));
     dispatch(
       addCell({
         uid: v4(),
         rowUid: rowUid,
         type: CellType.Field,
-        metadata: {},
+        metadata: {
+          uid: v4(),
+          handle: '',
+          label: '',
+          required: false,
+          properties: {},
+        },
         order: 0,
       })
     );

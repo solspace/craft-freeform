@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -15,17 +16,20 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\PhoneCo
 )]
 class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInterface
 {
-    /** @var string */
-    protected $pattern;
-
-    /** @var bool */
-    protected $useJsMask;
-
     protected string $customInputType = 'tel';
 
-    /**
-     * Return the field TYPE.
-     */
+    #[EditableProperty(
+        label: 'Pattern',
+        instructions: "Custom phone pattern (e.g. '(000) 000-0000' or '+0 0000 000000'), where '0' stands for a digit between 0-9. If left blank, any number and dash, dot, space, parentheses and optional + ath the beginning will be validated.",
+    )]
+    protected ?string $pattern = null;
+
+    #[EditableProperty(
+        label: 'Use JS validation',
+        instructions: 'Enable this to force JS to validate the input on this field based on the pattern.',
+    )]
+    protected bool $useJsMask = false;
+
     public function getType(): string
     {
         return self::TYPE_PHONE;
@@ -33,20 +37,14 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 
     public function isUseJsMask(): bool
     {
-        return (bool) $this->useJsMask;
+        return $this->useJsMask;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getPattern()
+    public function getPattern(): ?string
     {
         return !empty($this->pattern) ? $this->pattern : null;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();

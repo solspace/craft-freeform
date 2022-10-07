@@ -10,19 +10,28 @@ type SwapPayload = {
   targetUid: string;
 };
 
-const initialState: RowState = [
-  { uid: 'row-uid-1', layoutUid: 'layout-uid-1', order: 1 },
-  { uid: 'row-uid-2', layoutUid: 'layout-uid-1', order: 2 },
-  { uid: 'row-uid-3', layoutUid: 'layout-uid-2', order: 1 },
-  { uid: 'row-uid-4', layoutUid: 'layout-uid-2', order: 2 },
-];
+const initialState: RowState = [];
 
 export const rowsSlice = createSlice({
   name: 'rows',
   initialState,
   reducers: {
-    add: (state, action: PayloadAction<Row>) => {
-      state.push(action.payload);
+    add: (
+      state,
+      action: PayloadAction<{ layoutUid: string; rowUid: string }>
+    ) => {
+      const { layoutUid, rowUid } = action.payload;
+      const highestOrder = Math.max(
+        ...state
+          .filter((row) => row.layoutUid === layoutUid)
+          .map((row) => row.order)
+      );
+
+      state.push({
+        uid: rowUid,
+        order: highestOrder + 1,
+        layoutUid,
+      });
     },
     remove: (state, action: PayloadAction<string>) => {
       state = state.filter((row) => row.uid !== action.payload);

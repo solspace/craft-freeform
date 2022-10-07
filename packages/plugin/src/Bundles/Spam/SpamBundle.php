@@ -26,6 +26,7 @@ class SpamBundle extends FeatureBundle
 
     public function processSpamSubmission(ProcessSubmissionEvent $event)
     {
+        // TODO: refactor due to mailing list field changes
         $form = $event->getForm();
         $submission = $event->getSubmission();
 
@@ -33,7 +34,7 @@ class SpamBundle extends FeatureBundle
             return;
         }
 
-        $this->plugin()->integrationsQueue->enqueueIntegrations($submission, $form->getMailingListOptedInFields());
+        $this->plugin()->integrationsQueue->enqueueIntegrations($submission, []);
 
         // Prevent further processing of this submission
         $event->isValid = false;

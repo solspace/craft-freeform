@@ -186,10 +186,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return date($format ?? 'Y-m-d', strtotime($this->maxDate));
     }
 
-    /**
-     * @return null|string
-     */
-    public function getPlaceholder()
+    public function getPlaceholder(): string
     {
         if (!$this->isGeneratePlaceholder()) {
             return $this->placeholder;

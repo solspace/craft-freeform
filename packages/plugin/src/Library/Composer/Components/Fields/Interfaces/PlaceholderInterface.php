@@ -14,8 +14,5 @@ namespace Solspace\Freeform\Library\Composer\Components\Fields\Interfaces;
 
 interface PlaceholderInterface
 {
-    /**
-     * @return string
-     */
-    public function getPlaceholder();
+    public function getPlaceholder(): string;
 }

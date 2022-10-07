@@ -12,18 +12,19 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Freeform;
 
 trait PlaceholderTrait
 {
-    /** @var string */
-    protected $placeholder;
+    #[EditableProperty(
+        label: 'Placeholder',
+        instructions: 'The text that will be shown if the field doesn\'t have a value',
+    )]
+    protected string $placeholder = '';
 
-    /**
-     * @return string
-     */
-    public function getPlaceholder()
+    public function getPlaceholder(): string
     {
-        return Freeform::t($this->placeholder ?? '');
+        return Freeform::t($this->placeholder);
     }
 }

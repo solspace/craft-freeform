@@ -26,17 +26,11 @@ class SelectField extends AbstractExternalOptionsField implements SingleValueInt
 {
     use SingleValueTrait;
 
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_SELECT;
     }
 
-    /**
-     * Outputs the HTML of input.
-     */
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();

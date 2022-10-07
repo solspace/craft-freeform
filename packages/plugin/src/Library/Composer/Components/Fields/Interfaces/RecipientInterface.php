@@ -21,15 +21,4 @@ interface RecipientInterface
      * Or an array with keys as recipient names, like ["Jon Doe" => "email", ..]
      */
     public function getRecipients(): array;
-
-    /**
-     * @return null|int
-     */
-    public function getNotificationId();
-
-    /**
-     * Returns true/false based on if the field should or should not act
-     * as a recipient email field and receive emails.
-     */
-    public function shouldReceiveEmail(): bool;
 }

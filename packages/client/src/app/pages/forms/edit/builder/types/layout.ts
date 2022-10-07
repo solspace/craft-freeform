@@ -34,7 +34,13 @@ type LayoutCell = BaseCell & {
 
 type FieldCell = BaseCell & {
   type: CellType.Field;
-  metadata: Record<string, string | number | boolean>;
+  metadata: {
+    uid: string;
+    label: string;
+    handle: string;
+    required: boolean;
+    properties: Record<string, string | number | boolean | null>;
+  };
 };
 
 export enum CellType {

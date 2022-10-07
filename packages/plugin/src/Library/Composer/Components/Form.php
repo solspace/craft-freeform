@@ -33,7 +33,6 @@ use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\HiddenField;
-use Solspace\Freeform\Fields\MailingListField;
 use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
@@ -784,28 +783,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         }
 
         return false;
-    }
-
-    /**
-     * Returns list of mailing list fields that user opted-in.
-     *
-     * @return MailingListField[]
-     */
-    public function getMailingListOptedInFields(): array
-    {
-        $fields = [];
-
-        $mailingListFields = $this->getLayout()->getFields(MailingListField::class);
-
-        /** @var MailingListField $field */
-        foreach ($mailingListFields as $field) {
-            $isChecked = $field->isHidden() || (bool) $field->getValue();
-            if ($isChecked && $field->getEmailFieldHash() && $field->getResourceId()) {
-                $fields[] = $field;
-            }
-        }
-
-        return $fields;
     }
 
     public function persistState()

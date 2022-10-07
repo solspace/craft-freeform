@@ -21,7 +21,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderI
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\PlaceholderTrait;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\RecipientTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
 #[Type(
@@ -32,7 +31,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait
 class EmailField extends AbstractField implements RecipientInterface, SingleValueInterface, PlaceholderInterface
 {
     use PlaceholderTrait;
-    use RecipientTrait;
     use SingleValueTrait;
 
     /**

@@ -1,5 +1,10 @@
-import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
+
+import { spacings } from '@ff-client/styles/variables';
+
+export const FieldGroupWrapper = styled.div``;
+
+export const GroupTitle = styled.h2``;
 
 export const List = styled.div`
   display: grid;

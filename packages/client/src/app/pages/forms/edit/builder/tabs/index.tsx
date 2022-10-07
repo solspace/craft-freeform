@@ -1,6 +1,7 @@
 import translate from '@ff-client/utils/translations';
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 
 import {
   TabWrapper,
@@ -8,16 +9,17 @@ import {
   SaveButton,
   Heading,
   SaveButtonWrapper,
+  FormName,
 } from './index.styles';
 
 export const Tabs: React.FC = () => {
   return (
     <TabWrapper>
       <Heading>
-        <Link to=".." style={{ width: 20, height: 20 }}>
-          {'< '}
+        <Link to=".." title={translate('Back to form list')}>
+          <ChevronIcon />
         </Link>
-        My form name
+        <FormName>My form name</FormName>
       </Heading>
 
       <TabsWrapper>
@@ -32,7 +34,7 @@ export const Tabs: React.FC = () => {
       </TabsWrapper>
 
       <SaveButtonWrapper>
-        <SaveButton>Save</SaveButton>
+        <SaveButton>{translate('Save')}</SaveButton>
       </SaveButtonWrapper>
     </TabWrapper>
   );

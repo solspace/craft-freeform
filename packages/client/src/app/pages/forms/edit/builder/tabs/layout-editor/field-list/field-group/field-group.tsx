@@ -7,11 +7,15 @@ import { ErrorBlock } from '@ff-client/app/components/notification-blocks/error/
 import { useFetchFieldTypes } from '@ff-client/queries/field-types';
 import { range } from '@ff-client/utils/arrays';
 
-import { List } from './base-fields.styles';
-import { Field } from './field/field';
 import { useSelectSearchedFields } from '../hooks/use-select-searched-fields';
+import { FieldGroupWrapper, GroupTitle, List } from './field-group.styles';
+import { Field } from './field/field';
 
-export const BaseFields: React.FC = () => {
+type Props = {
+  title: string;
+};
+
+export const FieldGroup: React.FC<Props> = ({ title }) => {
   const select = useSelectSearchedFields();
   const { data, isFetching, isError, error } = useFetchFieldTypes({ select });
 
@@ -30,10 +34,13 @@ export const BaseFields: React.FC = () => {
   }
 
   return (
-    <List>
-      {data.map((fieldType) => (
-        <Field key={fieldType.class} fieldType={fieldType} />
-      ))}
-    </List>
+    <FieldGroupWrapper>
+      <GroupTitle>{title}</GroupTitle>
+      <List>
+        {data.map((fieldType) => (
+          <Field key={fieldType.class} fieldType={fieldType} />
+        ))}
+      </List>
+    </FieldGroupWrapper>
   );
 };

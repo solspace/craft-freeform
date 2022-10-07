@@ -22,9 +22,6 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInte
 )]
 class HiddenField extends TextField implements NoRenderInterface
 {
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_HIDDEN;

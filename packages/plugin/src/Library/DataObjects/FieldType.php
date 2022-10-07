@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Library\DataObjects;
 use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\DataObjects\FieldType\Property;
 use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
@@ -18,13 +20,15 @@ class FieldType implements \JsonSerializable
 
     private ?string $icon = null;
 
-    private bool $isStorable = false;
+    private array $implements = [];
 
     private ?PropertyCollection $properties = null;
 
+    private \ReflectionClass $reflection;
+
     public function __construct(private string $className)
     {
-        $reflection = new \ReflectionClass($className);
+        $this->reflection = $reflection = new \ReflectionClass($className);
         if (!$reflection->implementsInterface(FieldInterface::class)) {
             return null;
         }
@@ -39,11 +43,9 @@ class FieldType implements \JsonSerializable
 
         $this->typeShorthand = $type->typeShorthand;
         $this->name = $type->name;
-        $this->icon = $type->iconPath;
-        $this->isStorable = !$reflection->implementsInterface(NoStorageInterface::class);
-        $this->properties = new PropertyCollection();
-
-        $this->parseProperties($reflection);
+        $this->icon = file_get_contents($type->iconPath);
+        $this->implements = $this->getImplementations();
+        $this->properties = $this->getConfiguredProperties();
     }
 
     public function getName(): string
@@ -61,11 +63,6 @@ class FieldType implements \JsonSerializable
         return $this->icon;
     }
 
-    public function isStorable(): bool
-    {
-        return $this->isStorable;
-    }
-
     public function jsonSerialize(): array
     {
         return [
@@ -73,14 +70,40 @@ class FieldType implements \JsonSerializable
             'type' => $this->typeShorthand,
             'class' => $this->className,
             'icon' => $this->icon,
-            'storable' => $this->isStorable(),
+            'implements' => $this->implements,
             'properties' => $this->properties,
         ];
     }
 
-    private function parseProperties(\ReflectionClass $reflection)
+    private function getImplementations(): array
     {
-        $properties = $reflection->getProperties();
+        $reflection = $this->reflection;
+
+        $excludedInterfaces = [
+            FieldInterface::class,
+            \JsonSerializable::class,
+            \Stringable::class,
+            ExtraFieldInterface::class,
+            SingleValueInterface::class,
+            MultipleValueInterface::class,
+        ];
+
+        return array_values(
+            array_map(
+                fn ($interface) => preg_replace('/Interface$/', '', $interface->getShortName()),
+                array_filter(
+                    $reflection->getInterfaces(),
+                    fn ($interfaceReflection) => !\in_array($interfaceReflection->getName(), $excludedInterfaces, true)
+                )
+            )
+        );
+    }
+
+    private function getConfiguredProperties(): PropertyCollection
+    {
+        $collection = new PropertyCollection();
+
+        $properties = $this->reflection->getProperties();
         foreach ($properties as $property) {
             /** @var EditableProperty $attribute */
             $attr = $property->getAttributes(EditableProperty::class)[0] ?? null;
@@ -96,9 +119,11 @@ class FieldType implements \JsonSerializable
             $prop->label = $attribute->label;
             $prop->instructions = $attribute->instructions;
             $prop->placeholder = $attribute->placeholder;
-            $prop->defaultValue = $attribute->defaultValue;
+            $prop->defaultValue = $property->getDefaultValue() ?? $attribute->defaultValue;
 
-            $this->properties->add($prop);
+            $collection->add($prop);
         }
+
+        return $collection;
     }
 }

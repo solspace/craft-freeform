@@ -21,25 +21,16 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
 {
     use SingleValueTrait;
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return self::TYPE_RECAPTCHA;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getHandle(): ?string
     {
         return 'grecaptcha_'.$this->getHash();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getInputHtml(): string
     {
         /** @var Settings $settings */

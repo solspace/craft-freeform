@@ -26,17 +26,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RememberPost
 )]
 class PasswordField extends TextField implements DefaultFieldInterface, NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
 {
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_PASSWORD;
     }
 
-    /**
-     * Outputs the HTML of input.
-     */
     public function getInputHtml(): string
     {
         $output = parent::getInputHtml();

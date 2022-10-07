@@ -29,9 +29,6 @@ class RadioGroupField extends AbstractExternalOptionsField implements SingleValu
     use OneLineTrait;
     use SingleValueTrait;
 
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_RADIO_GROUP;

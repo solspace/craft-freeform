@@ -31,7 +31,7 @@
                 We've detected you're using the <b>Tailwind 3</b> sample formatting template and have automatically loaded the Tailwind 3 library inside this demo.
                 The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
             </p>
-        {% elseif ( form.formTemplate == "bootstrap-3.twig" ) or ( form.formTemplate == "bootstrap-4.twig" ) or ( form.formTemplate == "bootstrap-5.twig" ) %}
+        {% elseif form.formTemplate in ["bootstrap-4.twig", "bootstrap-5.twig", "bootstrap-5-floating-labels.twig"] %}
             <hr>
             <p class="mb-0">
                 We've detected you're using a <b>Bootstrap</b> sample formatting template and have automatically loaded the Bootstrap 5 library inside this demo.
@@ -104,6 +104,10 @@
         {% endif %}
         {% if form.formTemplate == "tailwind-3.twig" %}
             <script src="https://cdn.tailwindcss.com/3.1.8"></script>
+        {% endif %}
+        {% if form.formTemplate in ["bootstrap-5.twig", "bootstrap-5-floating-labels.twig"] %}
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" rel="stylesheet">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
         {% endif %}
     {% endif %}
 {% endblock %}

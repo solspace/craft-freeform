@@ -58,8 +58,8 @@ return [
     'freeform/notifications/database/duplicate' => 'freeform/notifications-database/duplicate',
     'freeform/notifications/database/<id:\d+>' => 'freeform/notifications-database/edit',
     // ------------
-    'freeform/notifications/send-notification-dialogue' => 'freeform/notifications/sender/dialogue',
-    'freeform/notifications/send-notification' => 'freeform/notifications/sender/send',
+    'freeform/notifications/send-notification-dialogue' => 'freeform/notifications-sender/dialogue',
+    'freeform/notifications/send-notification' => 'freeform/notifications-sender/send',
     // Submissions
     'freeform/submissions' => 'freeform/submissions/index',
     'freeform/submissions/export' => 'freeform/submissions/export',

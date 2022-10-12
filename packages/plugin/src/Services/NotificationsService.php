@@ -42,7 +42,7 @@ class NotificationsService extends BaseService
             }
 
             self::$allNotificationsLoaded = true;
-            self::$notificationCache = array_merge(
+            self::$notificationCache = array_replace(
                 $this->getDatabaseService()->getAll($indexById),
                 $this->getFilesService()->getAll($indexById)
             );

@@ -28,7 +28,6 @@ class SubmissionsGarbageCollector extends FeatureBundle
         $submissionTable = Submission::TABLE;
         $table = Table::ELEMENTS;
         $condition = $this->_hardDeleteCondition();
-        $condition[] = ['=', 'type', Submission::class];
 
         $this->_stdout("    > deleting trashed rows in the `{$submissionTable}` table ... ");
         Db::delete($table, $condition);
@@ -38,17 +37,17 @@ class SubmissionsGarbageCollector extends FeatureBundle
     private function _hardDeleteCondition(?string $tableAlias = null): array
     {
         $tableAlias = $tableAlias ? "{$tableAlias}." : '';
-        $condition = ['not', ["{$tableAlias}dateDeleted" => null]];
+        $condition = [
+            'and',
+            ['=', 'type', Submission::class],
+            ['not', ["{$tableAlias}dateDeleted" => null]],
+        ];
 
         if (!\Craft::$app->gc->deleteAllTrashed) {
             $expire = DateTimeHelper::currentUTCDateTime();
             $interval = DateTimeHelper::secondsToInterval($this->_generalConfig->softDeleteDuration);
             $pastTime = $expire->sub($interval);
-            $condition = [
-                'and',
-                $condition,
-                ['<', "{$tableAlias}dateDeleted", Db::prepareDateForDb($pastTime)],
-            ];
+            $condition[] = ['<', "{$tableAlias}dateDeleted", Db::prepareDateForDb($pastTime)];
         }
 
         return $condition;

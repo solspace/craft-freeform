@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.0.6 - 2022-10-12
+
+### Added
+- Added a "Floating Labels" version of the Bootstrap 5 example formatting template.
+
+### Fixed
+- Fixed a bug where garbage collection was not working on Freeform submissions.
+- Fixed a bug where the "Send Additional Notification" feature was not working correctly.
+- Fixed a bug where searching `freeform.submissions` across multiple forms was not working correctly.
+
 ## 4.0.5 - 2022-10-05
 
 ### Added

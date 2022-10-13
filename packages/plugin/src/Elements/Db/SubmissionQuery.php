@@ -215,6 +215,8 @@ class SubmissionQuery extends ElementQuery
                 $joinFormIds = array_values($formHandleToIdMap ?? []);
             }
 
+            $joinFormIds = \array_slice($joinFormIds, 0, 50);
+
             foreach ($joinFormIds as $formId) {
                 $form = $forms[$formId];
                 $joinedForms[] = $form;

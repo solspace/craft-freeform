@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Elements\Db;
 
 use craft\db\Query;
+use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use Solspace\Freeform\Elements\Submission;
@@ -215,7 +216,7 @@ class SubmissionQuery extends ElementQuery
                 $joinFormIds = array_values($formHandleToIdMap ?? []);
             }
 
-            $joinFormIds = \array_slice($joinFormIds, 0, 50);
+            $joinFormIds = $this->extractFormIdsWithContent($joinFormIds);
 
             foreach ($joinFormIds as $formId) {
                 $form = $forms[$formId];
@@ -313,6 +314,25 @@ class SubmissionQuery extends ElementQuery
         $this->prepareFieldSearch($joinedForms);
 
         return parent::beforePrepare();
+    }
+
+    private function extractFormIdsWithContent(array $formIds): array
+    {
+        $distinct = (new Query())
+            ->select('formId')
+            ->groupBy('formId')
+            ->distinct('formId')
+            ->from(Submission::TABLE.' s')
+            ->innerJoin(Table::ELEMENTS.' e', '[[e]].[[id]] = [[s]].[[id]]')
+            ->where([
+                's.[[isSpam]]' => (bool) $this->isSpam,
+                's.[[formId]]' => $formIds,
+                'e.[[dateDeleted]]' => null,
+            ])
+            ->column()
+        ;
+
+        return \array_slice($distinct, 0, 50);
     }
 
     private function prepareOrderBy(array $joinedForms): void

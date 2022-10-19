@@ -1,8 +1,8 @@
-import { IntegrationCategory } from '@ff-client/types/integrations';
 import React from 'react';
+import type { IntegrationCategory } from '@ff-client/types/integrations';
 
-import { ChildrenWrapper, Label, Wrapper } from './category.styles';
 import { Integration } from './integration/integration';
+import { ChildrenWrapper, Label, Wrapper } from './category.styles';
 
 export const Category: React.FC<IntegrationCategory> = ({
   label,

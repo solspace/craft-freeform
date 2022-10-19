@@ -1,6 +1,9 @@
-import { Action, AnyAction, configureStore } from '@reduxjs/toolkit';
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
-import thunk, { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import type { TypedUseSelectorHook } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import type { Action, AnyAction } from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import thunk from 'redux-thunk';
 
 import cells from './slices/cells';
 import context from './slices/context';

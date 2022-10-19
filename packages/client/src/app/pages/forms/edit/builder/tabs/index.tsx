@@ -1,7 +1,7 @@
-import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
-import translate from '@ff-client/utils/translations';
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
+import translate from '@ff-client/utils/translations';
 
 import {
   FormName,

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-
 import { Sidebar as SidebarWrapper } from '@ff-client/app/components/layout/sidebar/sidebar';
 
 import { selectFocus } from '../../../../store/slices/context';
+
 import { ErrorBoundary } from './boundaries/ErrorBoundary';
 import { FieldProperties } from './field/field-properties';
 

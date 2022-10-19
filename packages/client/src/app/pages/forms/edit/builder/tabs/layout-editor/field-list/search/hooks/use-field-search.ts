@@ -1,11 +1,12 @@
+import type { Dispatch, SetStateAction } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Search,
   selectQuery,
   updateQuery,
 } from '@ff-client/app/pages/forms/edit/store/slices/search';
 import { useDebounce } from '@ff-client/hooks/use-debounce';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 type FieldSearch = () => [string, Dispatch<SetStateAction<string>>];
 

@@ -1,11 +1,12 @@
-import { Field } from '@ff-client/app/pages/forms/edit/store/slices/fields';
+import type { ComponentType } from 'react';
+import React, { Suspense } from 'react';
+import type { Field } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
-import { FieldProperty, FieldPropertyType } from '@ff-client/types/fields';
-import React, { ComponentType, Suspense } from 'react';
+import type { FieldProperty, FieldPropertyType } from '@ff-client/types/fields';
 
 import { ErrorBoundary } from '../boundaries/ErrorBoundary';
 import * as ControlTypes from '../form-controls';
-import { ControlType } from '../form-controls/types';
+import type { ControlType } from '../form-controls/types';
 
 type Props = {
   field: Field;

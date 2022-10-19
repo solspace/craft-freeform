@@ -1,6 +1,8 @@
-import React, { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
+import React from 'react';
 
-import { Wrapper, WrapperProps } from './sidebar.styles';
+import type { WrapperProps } from './sidebar.styles';
+import { Wrapper } from './sidebar.styles';
 
 export const Sidebar: React.FC<PropsWithChildren<WrapperProps>> = ({
   children,

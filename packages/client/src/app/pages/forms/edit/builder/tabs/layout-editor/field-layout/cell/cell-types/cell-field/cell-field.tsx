@@ -1,3 +1,5 @@
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Text } from '@ff-client/app/components/form-controls/controls/text';
 import {
   FocusType,
@@ -6,8 +8,6 @@ import {
 import { selectField } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
 import { useFieldType } from '@ff-client/queries/field-types';
-import React from 'react';
-import { useSelector } from 'react-redux';
 
 import { CellFieldWrapper, Label } from './cell-field.styles';
 

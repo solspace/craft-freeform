@@ -1,9 +1,9 @@
+import React from 'react';
 import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import classes from '@ff-client/utils/classes';
-import React from 'react';
 
 import { Control } from './control';
-import { ControlType } from './types';
+import type { ControlType } from './types';
 
 const Textarea: React.FC<ControlType> = ({ field, property, dispatch }) => {
   const { handle } = property;

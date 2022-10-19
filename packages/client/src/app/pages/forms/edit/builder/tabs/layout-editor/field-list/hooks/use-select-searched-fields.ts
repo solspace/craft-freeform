@@ -1,10 +1,10 @@
+import { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Search,
   selectQuery,
 } from '@ff-client/app/pages/forms/edit/store/slices/search';
-import { FieldType } from '@ff-client/types/fields';
-import { useCallback } from 'react';
-import { useSelector } from 'react-redux';
+import type { FieldType } from '@ff-client/types/fields';
 
 type SelectSearchedFields = () => (data: FieldType[]) => FieldType[];
 

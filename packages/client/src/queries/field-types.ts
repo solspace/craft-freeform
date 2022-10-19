@@ -1,6 +1,8 @@
+import type { UseQueryResult } from 'react-query';
+import { useQuery } from 'react-query';
 import type { FieldType, PropertySection } from '@ff-client/types/fields';
-import axios, { AxiosError } from 'axios';
-import { useQuery, UseQueryResult } from 'react-query';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
 
 type FetchFieldTypesQuery = (options?: {
   select?: (data: FieldType[]) => FieldType[];

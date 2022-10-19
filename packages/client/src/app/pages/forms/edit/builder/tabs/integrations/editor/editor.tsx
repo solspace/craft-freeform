@@ -1,16 +1,17 @@
-import { Lightswitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
-import { Space } from '@ff-client/app/components/layout/blocks/space';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { Lightswitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
+import { Space } from '@ff-client/app/components/layout/blocks/space';
 
 import {
   selectIntegration,
   toggleIntegration,
 } from '../../../../store/slices/integrations';
+
+import { Setting } from './setting/setting';
 import { EditorWrapper, SettingsWrapper } from './editor.styles';
 import { EmptyEditor } from './empty-editor';
-import { Setting } from './setting/setting';
 
 type UrlParams = {
   id: string;

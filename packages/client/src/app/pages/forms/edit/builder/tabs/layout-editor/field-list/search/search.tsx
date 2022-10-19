@@ -1,5 +1,5 @@
-import translate from '@ff-client/utils/translations';
 import React from 'react';
+import translate from '@ff-client/utils/translations';
 
 import { Filter } from './filter/filter';
 import { useFieldSearch } from './hooks/use-field-search';

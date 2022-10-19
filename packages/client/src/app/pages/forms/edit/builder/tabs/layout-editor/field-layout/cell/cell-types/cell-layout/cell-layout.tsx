@@ -1,6 +1,6 @@
-import { selectLayout } from '@ff-client/app/pages/forms/edit/store/slices/layouts';
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { selectLayout } from '@ff-client/app/pages/forms/edit/store/slices/layouts';
 
 import { Layout } from '../../../layout/layout';
 

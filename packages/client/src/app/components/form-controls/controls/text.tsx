@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Control, ControlProps } from '../control';
+import type { ControlProps } from '../control';
+import { Control } from '../control';
 
 export const Text: React.FC<ControlProps<string>> = (props) => {
   const { id, value, onChange } = props;

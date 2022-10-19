@@ -1,12 +1,13 @@
-import {
+import type {
   FieldProperty,
   FieldType,
   GenericValue,
   PropertyValueCollection,
 } from '@ff-client/types/fields';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { RootState } from '../store';
+import type { RootState } from '../store';
 
 export type Field = Pick<FieldType, 'typeClass'> & {
   uid: string;

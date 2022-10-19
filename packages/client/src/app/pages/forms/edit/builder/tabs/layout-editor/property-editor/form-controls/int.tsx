@@ -1,8 +1,8 @@
-import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import React from 'react';
+import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 
 import { Control } from './control';
-import { ControlType } from './types';
+import type { ControlType } from './types';
 
 const Int: React.FC<ControlType> = ({ field, property, dispatch }) => {
   const { handle } = property;

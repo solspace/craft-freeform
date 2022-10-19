@@ -1,6 +1,6 @@
-import { ThemedSkeleton } from '@ff-client/app/components/skeletons/themed-skeleton';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
+import { ThemedSkeleton } from '@ff-client/app/components/skeletons/themed-skeleton';
 
 import { ChildrenWrapper, Label, Wrapper } from './category.styles';
 

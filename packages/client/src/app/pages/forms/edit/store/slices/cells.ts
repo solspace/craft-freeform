@@ -1,7 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { Cell, Row } from '../../builder/types/layout';
-import { RootState } from '../store';
+import type { Cell, Row } from '../../builder/types/layout';
+import type { RootState } from '../store';
 
 type CellState = Cell[];
 

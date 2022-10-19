@@ -1,8 +1,8 @@
-import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
-import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
-import { IntegrationCategory } from '@ff-client/types/integrations';
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
+import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
+import type { IntegrationCategory } from '@ff-client/types/integrations';
 
 import { Category } from './category/category';
 import { CategorySkeleton } from './category/category.skeleton';

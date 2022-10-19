@@ -19,7 +19,6 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
     protected string $customInputType = 'tel';
 
     #[EditableProperty(
-        label: 'Pattern',
         instructions: "Custom phone pattern (e.g. '(000) 000-0000' or '+0 0000 000000'), where '0' stands for a digit between 0-9. If left blank, any number and dash, dot, space, parentheses and optional + ath the beginning will be validated.",
     )]
     protected ?string $pattern = null;

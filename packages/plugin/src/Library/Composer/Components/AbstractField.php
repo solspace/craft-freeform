@@ -15,6 +15,8 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Section;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
@@ -22,36 +24,57 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\ConstraintInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Validator;
-use Stringy\Stringy;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Twig\Markup;
 
 abstract class AbstractField implements FieldInterface, \JsonSerializable
 {
+    #[Section('general', 'General', 0)]
+    #[EditableProperty(
+        instructions: 'Field label used to describe the field',
+        order: 1,
+        placeholder: 'My Field',
+    )]
+    protected string $label = '';
+
+    #[Section('general')]
+    #[EditableProperty(
+        instructions: 'How you\'ll refer to this field in templates',
+        order: 2,
+        placeholder: 'myField',
+        flags: ['code'],
+        middleware: [
+            ['handle', ['label']],
+        ]
+    )]
+    protected string $handle = '';
+
+    #[Section('general')]
+    #[EditableProperty(
+        type: 'textarea',
+        order: 3,
+        instructions: 'Field specific user instructions',
+    )]
+    protected string $instructions = '';
+
+    #[Section('general')]
+    #[EditableProperty('Require this field', order: 5)]
+    protected bool $required = false;
+
+    protected FieldAttributesCollection $attributes;
+
     protected ?int $id = null;
     protected string $hash = '';
-    protected string $handle = '';
-    protected string $label = '';
-    protected string $instructions = '';
-    protected bool $required = false;
     protected int $pageIndex = 0;
-
-    protected CustomFieldAttributes $customAttributes;
-
     protected array $errors = [];
-    protected array $inputAttributes = [];
-    protected array $labelAttributes = [];
-    protected array $errorAttributes = [];
-    protected array $instructionAttributes = [];
 
     private Form $form;
     private mixed $defaultValue = null;
-    private array $inputClasses = [];
 
     final public function __construct(Form $form, array $properties = [])
     {
         $this->form = $form;
-        $this->customAttributes = new CustomFieldAttributes($this, [], $this->getForm()->getPropertyBag());
+        $this->attributes = new FieldAttributesCollection();
         $this->updateGenericProperties($properties);
         $this->updateEditableProperties($properties);
     }
@@ -80,14 +103,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
                 // Pass along
             }
         }
-    }
-
-    public static function getFieldType(): string
-    {
-        $name = (new \ReflectionClass(static::class))->getShortName();
-        $name = str_replace('Field', '', $name);
-
-        return (string) Stringy::create($name)->underscored();
     }
 
     /**
@@ -181,7 +196,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             return $this->renderRaw('');
         }
 
-        $data = \GuzzleHttp\json_encode($rule, \JSON_HEX_APOS);
+        $data = json_encode($rule, \JSON_HEX_APOS);
 
         return $this->renderRaw(" data-ff-rule='{$data}'");
     }

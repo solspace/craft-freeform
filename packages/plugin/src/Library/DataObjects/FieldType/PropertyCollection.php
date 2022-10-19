@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Library\DataObjects\FieldType;
 
 class PropertyCollection implements \JsonSerializable
 {
+    /** @var Property[] */
     private array $properties = [];
 
     public function add(Property ...$properties): self
@@ -13,6 +14,18 @@ class PropertyCollection implements \JsonSerializable
         }
 
         return $this;
+    }
+
+    public function getNextOrder(): int
+    {
+        if (empty($this->properties)) {
+            return 1;
+        }
+
+        return max(
+            0,
+            ...array_map(fn ($prop) => $prop->order ?? 0, $this->properties)
+        ) + 1;
     }
 
     public function getProperties(): array

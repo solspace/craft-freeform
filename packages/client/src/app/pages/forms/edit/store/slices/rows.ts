@@ -16,19 +16,17 @@ export const rowsSlice = createSlice({
   name: 'rows',
   initialState,
   reducers: {
-    add: (
-      state,
-      action: PayloadAction<{ layoutUid: string; rowUid: string }>
-    ) => {
-      const { layoutUid, rowUid } = action.payload;
-      const highestOrder = Math.max(
-        ...state
-          .filter((row) => row.layoutUid === layoutUid)
-          .map((row) => row.order)
-      );
+    add: (state, action: PayloadAction<{ layoutUid: string; uid: string }>) => {
+      const { layoutUid, uid } = action.payload;
+      const highestOrder =
+        Math.max(
+          ...state
+            .filter((row) => row.layoutUid === layoutUid)
+            .map((row) => row.order)
+        ) ?? -1;
 
       state.push({
-        uid: rowUid,
+        uid,
         order: highestOrder + 1,
         layoutUid,
       });

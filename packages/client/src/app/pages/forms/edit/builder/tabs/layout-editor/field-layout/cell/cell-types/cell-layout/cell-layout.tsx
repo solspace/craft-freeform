@@ -6,11 +6,11 @@ import { selectLayout } from '@ff-client/app/pages/forms/edit/store/slices/layou
 import { Layout } from '../../../layout/layout';
 
 type Props = {
-  layoutUid: string;
+  uid: string;
 };
 
-export const CellLayout: React.FC<Props> = ({ layoutUid }) => {
-  const layout = useSelector(selectLayout(layoutUid));
+export const CellLayout: React.FC<Props> = ({ uid }) => {
+  const layout = useSelector(selectLayout(uid));
 
   if (!layout) {
     return null;

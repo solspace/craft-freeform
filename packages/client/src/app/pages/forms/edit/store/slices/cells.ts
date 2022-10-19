@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { Cell, CellType, Row } from '../../builder/types/layout';
+import { Cell, Row } from '../../builder/types/layout';
 import { RootState } from '../store';
 
 type CellState = Cell[];
@@ -17,8 +17,18 @@ export const cellsSlice = createSlice({
   name: 'cells',
   initialState,
   reducers: {
-    add: (state, action: PayloadAction<Cell>) => {
-      state.push(action.payload);
+    add: (state, action: PayloadAction<Omit<Cell, 'order'>>) => {
+      const highestOrder =
+        Math.max(
+          ...state
+            .filter((cell) => cell.rowUid === action.payload.rowUid)
+            .map((cell) => cell.order)
+        ) ?? -1;
+
+      state.push({
+        ...action.payload,
+        order: highestOrder + 1,
+      });
     },
     remove: (state, action: PayloadAction<string>) => {
       state = state.filter((cell) => cell.uid !== action.payload);

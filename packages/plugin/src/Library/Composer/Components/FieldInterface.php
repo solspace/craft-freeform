@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Library\Composer\Components;
 
-use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\ConstraintInterface;
 use Twig\Markup;
 
 interface FieldInterface
@@ -58,16 +57,12 @@ interface FieldInterface
     public const TYPE_CREDIT_CARD_EXPIRY = 'cc-expiry';
     public const TYPE_CREDIT_CARD_CVC = 'cc-cvc';
 
-    /**
-     * Returns the INPUT type.
-     */
     public function getType(): string;
 
     public function getValue(): mixed;
 
-    /**
-     * Gets whatever value is set and returns its string representation.
-     */
+    public function setValue(mixed $value): self;
+
     public function getValueAsString(): string;
 
     public function getId(): ?int;
@@ -82,32 +77,18 @@ interface FieldInterface
 
     public function getHash(): string;
 
-    public function setValue(mixed $value): self;
-
     public function getErrors(): ?array;
 
     public function hasErrors(): bool;
 
     public function addError(string $error): AbstractField;
 
-    /**
-     * Renders the <label> and <input> tags combined.
-     */
     public function render(): Markup;
 
-    /**
-     * Renders the <label> tag.
-     */
     public function renderLabel(): Markup;
 
-    /**
-     * Outputs the HTML of input.
-     */
     public function renderInput(): Markup;
 
-    /**
-     * Outputs the HTML of errors.
-     */
     public function renderErrors(): Markup;
 
     public function isValid(): bool;
@@ -116,8 +97,5 @@ interface FieldInterface
 
     public function canStoreValues(): bool;
 
-    /**
-     * @return ConstraintInterface[]
-     */
     public function getConstraints(): array;
 }

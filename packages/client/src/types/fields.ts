@@ -6,13 +6,19 @@ export enum FieldPropertyType {
   Color = 'color',
 }
 
+export type PropertyMiddleware = [string, GenericValue[]?];
+
 type BaseProperty<T> = {
   type: FieldPropertyType;
   handle: string;
   label?: string;
   instructions?: string;
   placeholder?: string;
-  defaultValue?: T | null;
+  section?: string;
+  value?: T | null;
+  order: number;
+  flags: string[];
+  middleware: PropertyMiddleware[];
 };
 
 type IntegerProperty = BaseProperty<number> & {
@@ -44,11 +50,17 @@ export type FieldProperty =
 
 export type FieldType = {
   name: string;
+  typeClass: string;
   type: string;
-  class: string;
   icon?: string;
   implements: string[];
   properties: FieldProperty[];
+};
+
+export type PropertySection = {
+  handle: string;
+  label: string;
+  order: number;
 };
 
 enum DraggableTypes {
@@ -58,4 +70,14 @@ enum DraggableTypes {
 
 export type DraggableField = {
   type: DraggableTypes;
+};
+
+export type GenericValue = string | number | boolean | null;
+
+export type PropertyValueCollection = {
+  label?: string;
+  handle?: string;
+  instructions?: string;
+  required?: boolean;
+  [key: string]: GenericValue | GenericValue[];
 };

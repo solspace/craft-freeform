@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Library\DataObjects;
 
 use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Section;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -11,12 +12,13 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueI
 use Solspace\Freeform\Library\DataObjects\FieldType\Property;
 use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
+use Stringy\Stringy;
 
 class FieldType implements \JsonSerializable
 {
     private string $name = '';
 
-    private string $typeShorthand = '';
+    private string $type = '';
 
     private ?string $icon = null;
 
@@ -26,9 +28,9 @@ class FieldType implements \JsonSerializable
 
     private \ReflectionClass $reflection;
 
-    public function __construct(private string $className)
+    public function __construct(private string $typeClass)
     {
-        $this->reflection = $reflection = new \ReflectionClass($className);
+        $this->reflection = $reflection = new \ReflectionClass($typeClass);
         if (!$reflection->implementsInterface(FieldInterface::class)) {
             return null;
         }
@@ -36,12 +38,12 @@ class FieldType implements \JsonSerializable
         /** @var Type $type */
         $typeAttribute = $reflection->getAttributes(Type::class)[0] ?? null;
         if (!$typeAttribute) {
-            throw new InvalidFieldTypeException("Field type definition invalid for '{$className}'");
+            throw new InvalidFieldTypeException("Field type definition invalid for '{$typeClass}'");
         }
 
         $type = $typeAttribute->newInstance();
 
-        $this->typeShorthand = $type->typeShorthand;
+        $this->type = $type->typeShorthand;
         $this->name = $type->name;
         $this->icon = file_get_contents($type->iconPath);
         $this->implements = $this->getImplementations();
@@ -53,9 +55,9 @@ class FieldType implements \JsonSerializable
         return $this->name;
     }
 
-    public function getTypeShorthand(): string
+    public function getType(): string
     {
-        return $this->typeShorthand;
+        return $this->type;
     }
 
     public function getIcon(): string
@@ -67,8 +69,8 @@ class FieldType implements \JsonSerializable
     {
         return [
             'name' => $this->name,
-            'type' => $this->typeShorthand,
-            'class' => $this->className,
+            'type' => $this->type,
+            'typeClass' => $this->typeClass,
             'icon' => $this->icon,
             'implements' => $this->implements,
             'properties' => $this->properties,
@@ -111,15 +113,29 @@ class FieldType implements \JsonSerializable
                 continue;
             }
 
+            $section = $property->getAttributes(Section::class)[0] ?? null;
+            $section = $section?->newInstance();
+
+            /** @var Section $section */
+            $fallbackLabel = Stringy::create($property->getName())
+                ->underscored()
+                ->replace('_', ' ')
+                ->toTitleCase()
+            ;
+
             $attribute = $attr->newInstance();
 
             $prop = new Property();
             $prop->type = $attribute->type ?? $property->getType()->getName();
             $prop->handle = $property->getName();
-            $prop->label = $attribute->label;
+            $prop->label = $attribute->label ?? $fallbackLabel;
             $prop->instructions = $attribute->instructions;
             $prop->placeholder = $attribute->placeholder;
-            $prop->defaultValue = $property->getDefaultValue() ?? $attribute->defaultValue;
+            $prop->section = $section?->handle;
+            $prop->value = $property->getDefaultValue() ?? $attribute->value;
+            $prop->order = $attribute->order ?? $collection->getNextOrder();
+            $prop->flags = $attribute->flags;
+            $prop->middleware = $attribute->middleware;
 
             $collection->add($prop);
         }

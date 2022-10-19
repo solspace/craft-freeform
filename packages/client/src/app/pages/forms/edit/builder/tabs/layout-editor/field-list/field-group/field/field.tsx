@@ -1,10 +1,7 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
-import { v4 } from 'uuid';
 
-import { CellType } from '@ff-client/app/pages/forms/edit/builder/types/layout';
-import { add as addCell } from '@ff-client/app/pages/forms/edit/store/slices/cells';
-import { add as addRow } from '@ff-client/app/pages/forms/edit/store/slices/rows';
+import { addNewField } from '@ff-client/app/pages/forms/edit/store/actions/fields';
 import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
 import { FieldType } from '@ff-client/types/fields';
 
@@ -18,29 +15,10 @@ export const Field: React.FC<Props> = ({ fieldType }) => {
   const dispatch = useAppDispatch();
 
   const onClick = (): void => {
-    const rowUid = v4();
-
-    const properties: Record<string> = {};
-
-    dispatch(addRow({ layoutUid: 'layout-uid-1', rowUid }));
-    dispatch(
-      addCell({
-        uid: v4(),
-        rowUid: rowUid,
-        type: CellType.Field,
-        metadata: {
-          uid: v4(),
-          handle: '',
-          label: '',
-          required: false,
-          properties: {},
-        },
-        order: 0,
-      })
-    );
+    dispatch(addNewField(fieldType));
   };
 
-  const [_, drag] = useDrag(() => ({
+  const [, drag] = useDrag(() => ({
     type: 'BaseField',
     item: fieldType,
   }));

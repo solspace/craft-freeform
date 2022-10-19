@@ -14,7 +14,6 @@ type Props = {
 };
 
 export const Cell: React.FC<Props> = ({ cell, order }) => {
-  let component = null;
   const dispatch = useAppDispatch();
 
   const [{ isDragging }, drag] = useDrag(
@@ -35,15 +34,20 @@ export const Cell: React.FC<Props> = ({ cell, order }) => {
     [cell.uid]
   );
 
-  if (cell.type === CellType.Layout) {
-    component = <CellLayout layoutUid={cell.metadata.layoutUid} />;
-  } else {
-    component = <CellField fieldUid={cell.uid} />;
+  let Component;
+  switch (cell.type) {
+    case CellType.Field:
+      Component = CellField;
+      break;
+
+    case CellType.Layout:
+      Component = CellLayout;
+      break;
   }
 
   return (
     <Wrapper ref={drag} style={{ order }}>
-      {component}
+      <Component uid={cell.targetUid} />
     </Wrapper>
   );
 };

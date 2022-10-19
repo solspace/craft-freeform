@@ -38,7 +38,7 @@ export const FieldGroup: React.FC<Props> = ({ title }) => {
       <GroupTitle>{title}</GroupTitle>
       <List>
         {data.map((fieldType) => (
-          <Field key={fieldType.class} fieldType={fieldType} />
+          <Field key={fieldType.typeClass} fieldType={fieldType} />
         ))}
       </List>
     </FieldGroupWrapper>

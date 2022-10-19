@@ -11,6 +11,7 @@ class PropertyGroup
         public string $handle,
         public ?string $label = null,
         public ?string $instructions = null,
+        public ?int $order = null,
     ) {
     }
 }

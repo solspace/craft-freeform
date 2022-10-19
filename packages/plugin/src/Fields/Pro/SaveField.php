@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -24,19 +25,23 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
     public const POSITION_CENTER = 'center';
     public const POSITION_RIGHT = 'right';
 
+    #[EditableProperty(
+        label: 'Save button Label',
+        instructions: 'The label of the Save & Continue Later button.',
+    )]
     protected string $label;
 
-    /** @var string */
-    protected $position = self::POSITION_RIGHT;
+    protected string $position = self::POSITION_RIGHT;
 
-    /** @var string */
-    protected $url;
+    #[EditableProperty(
+        label: 'Return URL',
+        instructions: 'The URL the user will be redirected to after saving. Can use {token} and {key}.',
+    )]
+    protected string $url = '';
 
-    /** @var int|string */
-    protected $notificationId;
+    protected ?string $notificationId = null;
 
-    /** @var string */
-    protected $emailFieldHash;
+    protected ?string $emailFieldHash = null;
 
     public function getPosition(): string
     {
@@ -48,20 +53,17 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
         return $this->translate($this->label);
     }
 
-    /**
-     * @return null|string
-     */
-    public function getUrl()
+    public function getUrl(): string
     {
         return $this->url;
     }
 
-    public function getNotificationId()
+    public function getNotificationId(): string
     {
         return $this->notificationId;
     }
 
-    public function getEmailFieldHash()
+    public function getEmailFieldHash(): string
     {
         return $this->emailFieldHash;
     }

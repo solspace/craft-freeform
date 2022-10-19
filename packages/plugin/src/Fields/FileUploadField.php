@@ -45,11 +45,8 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         'type',
     ];
 
-    #[EditableProperty(
-        label: 'File Kinds',
-        defaultValue: ['image', 'document'],
-    )]
-    protected array $fileKinds = [];
+    #[EditableProperty]
+    protected array $fileKinds = ['image', 'document'];
 
     #[EditableProperty(
         label: 'Maximum File Size',
@@ -58,7 +55,6 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     protected int $maxFileSizeKB = 2048;
 
     #[EditableProperty(
-        label: 'File Count',
         instructions: 'Specify the maximum uploadable file count.',
     )]
     protected int $fileCount = 1;
@@ -66,26 +62,14 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     /**
      * Cache for handles meant for preventing duplicate file uploads when calling ::validate() and ::uploadFile()
      * Stores the assetID once as value for handle key.
-     *
-     * @var array
      */
-    private static $filesUploaded = [];
+    private static array $filesUploaded = [];
 
     /**
      * Contains any errors for a given upload field.
-     *
-     * @var array
      */
-    private static $filesUploadedErrors = [];
+    private static array $filesUploadedErrors = [];
 
-    public static function getFieldType(): string
-    {
-        return self::TYPE_FILE;
-    }
-
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_FILE;

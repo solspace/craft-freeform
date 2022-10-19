@@ -18,7 +18,6 @@ use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 use Twig\Markup;
 
 #[Type(
@@ -28,19 +27,11 @@ use Twig\Markup;
 )]
 class CheckboxField extends AbstractField implements SingleValueInterface, InputOnlyInterface
 {
-    use SingleValueTrait;
-
-    #[EditableProperty(
-        label: 'Checked by default',
-        defaultValue: false,
-    )]
+    #[EditableProperty('Checked by default')]
     protected bool $checkedByDefault = false;
 
-    protected bool $checked = false;
+    protected bool $value = false;
 
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_CHECKBOX;
@@ -48,12 +39,21 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
 
     public function isChecked(): bool
     {
-        return (bool) $this->checked;
+        return $this->value;
     }
 
-    /**
-     * Outputs the HTML of input.
-     */
+    public function getValue(): string
+    {
+        return $this->value ? $this->getDefaultValue() : '';
+    }
+
+    public function setValue(mixed $value): FieldInterface
+    {
+        $this->value = (bool) $value;
+
+        return $this;
+    }
+
     public function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
@@ -88,16 +88,11 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             .'/>';
     }
 
-    public function renderSingleInput(array $customAttributes = null): Markup
+    public function renderSingleInput(): Markup
     {
-        $this->setCustomAttributes($customAttributes);
-
         return $this->renderRaw($this->getSingleInputHtml());
     }
 
-    /**
-     * Output something before an input HTML is output.
-     */
     protected function onBeforeInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();
@@ -108,9 +103,6 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
             .'>';
     }
 
-    /**
-     * Output something after an input HTML is output.
-     */
     protected function onAfterInputHtml(): string
     {
         $output = $this->getLabel();

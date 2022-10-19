@@ -26,11 +26,9 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthC
 class TextareaField extends TextField implements SingleValueInterface, PlaceholderInterface
 {
     #[EditableProperty(
-        label: 'Rows',
         instructions: 'The number of rows in height for this field.',
-        defaultValue: 2,
     )]
-    protected ?int $rows = null;
+    protected int $rows = 2;
 
     public function getType(): string
     {

@@ -53,14 +53,12 @@ class NumberField extends TextField
     protected ?int $maxValue = null;
 
     #[EditableProperty(
-        label: 'Decimal Count',
         instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for no decimals',
     )]
     protected ?int $decimalCount = 0;
 
     #[EditableProperty(
-        label: 'Step',
         instructions: 'The step',
     )]
     protected float $step = 1;

@@ -8,15 +8,17 @@ use Attribute;
 class EditableProperty
 {
     public function __construct(
-        public ?string $type = null,
         public ?string $label = null,
+        public ?string $type = null,
         public ?string $instructions = null,
         public ?string $category = null,
         public ?int $order = null,
-        public mixed $defaultValue = null,
+        public mixed $value = null,
         public ?string $placeholder = null,
         public ?array $options = null,
+        public ?array $flags = [],
         public ?array $visibilityFilters = null,
+        public ?array $middleware = [],
     ) {
     }
 }

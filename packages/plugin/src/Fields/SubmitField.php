@@ -61,14 +61,14 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, Single
     protected bool $disablePrev = false;
 
     #[EditableProperty(
-        type: 'select',
         label: 'Positioning',
+        type: 'select',
         instructions: 'Choose whether the submit button is positioned on the left, center or right side',
         options: [
             'left' => 'Left',
             'center' => 'Center',
             'right' => 'Right',
-        ]
+        ],
     )]
     protected string $position = self::POSITION_RIGHT;
 

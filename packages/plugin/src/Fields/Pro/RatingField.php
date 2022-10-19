@@ -25,8 +25,8 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
     public const MAX_VALUE = 10;
 
     #[EditableProperty(
-        type: 'select',
         label: 'Maximum Number of Stars',
+        type: 'select',
         instructions: '',
         options: [
             1 => 1,
@@ -44,20 +44,23 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
     protected int $maxValue = 5;
 
     #[EditableProperty(
-        type: 'color',
         label: 'Unselected Color',
+        type: 'color',
     )]
-    protected string $colorIdle;
+    protected string $colorIdle = '#DDDDDD';
 
-    /** @var string */
-    protected $colorHover;
+    #[EditableProperty(
+        label: 'Hover Color',
+        type: 'color',
+    )]
+    protected string $colorHover = '#FFD700';
 
-    /** @var string */
-    protected $colorSelected;
+    #[EditableProperty(
+        label: 'Selected Color',
+        type: 'color',
+    )]
+    protected string $colorSelected = '#FF7700';
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return self::TYPE_RATING;
@@ -85,17 +88,10 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
 
     public function getMaxValue(): int
     {
-        $maxValue = (int) $this->maxValue;
-
-        if ($maxValue < self::MIN_VALUE) {
-            $maxValue = self::MIN_VALUE + 1;
-        }
-
-        if ($maxValue > self::MAX_VALUE) {
-            $maxValue = self::MAX_VALUE;
-        }
-
-        return $maxValue;
+        return min(
+            max(self::MIN_VALUE, $this->maxValue),
+            self::MAX_VALUE
+        );
     }
 
     public function getColorIdle(): string

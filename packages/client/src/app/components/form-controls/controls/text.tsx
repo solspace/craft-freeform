@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Control, ControlProps } from '../control';
 
 export const Text: React.FC<ControlProps<string>> = (props) => {

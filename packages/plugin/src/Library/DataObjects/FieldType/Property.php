@@ -9,5 +9,10 @@ class Property
     public ?string $label;
     public ?string $instructions;
     public ?string $placeholder;
-    public mixed $defaultValue;
+    public ?string $section;
+    public int $order;
+    public mixed $value;
+
+    public ?array $flags;
+    public ?array $middleware;
 }

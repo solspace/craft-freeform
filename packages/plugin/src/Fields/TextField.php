@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
@@ -29,13 +28,6 @@ class TextField extends AbstractField implements SingleValueInterface, Placehold
 {
     use PlaceholderTrait;
     use SingleValueTrait;
-
-    #[EditableProperty(
-        label: 'Maximum Length',
-        instructions: 'The maximum number of characters for this field.',
-        defaultValue: 0,
-    )]
-    protected ?int $maxLength = null;
 
     protected string $customInputType;
 

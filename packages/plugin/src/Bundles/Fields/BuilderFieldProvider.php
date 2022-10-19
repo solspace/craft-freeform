@@ -45,7 +45,7 @@ class BuilderFieldProvider
                     'handle' => $property->getName(),
                     'label' => $attribute->label,
                     'instructions' => $attribute->instructions,
-                    'value' => $accessor->getValue($field, $property->getName()) ?? $attribute->defaultValue,
+                    'value' => $accessor->getValue($field, $property->getName()) ?? $attribute->value,
                 ];
             }
 

@@ -22,15 +22,15 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public const DEFAULT_PLACEHOLDER = 'Drag and drop files here or click to upload';
 
     #[EditableProperty(
-        type: 'color',
         label: 'Accent Color',
+        type: 'color',
         instructions: 'Select accent color',
     )]
     protected string $accent = self::DEFAULT_ACCENT;
 
     #[EditableProperty(
-        type: 'select',
         label: 'Accent Color',
+        type: 'select',
         instructions: 'Select accent color',
         options: [
             'light' => 'Light',
@@ -40,7 +40,6 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     protected string $theme = self::DEFAULT_THEME;
 
     #[EditableProperty(
-        label: 'Placeholder',
         instructions: 'Field placeholder.',
     )]
     protected string $placeholder = self::DEFAULT_PLACEHOLDER;
@@ -58,11 +57,6 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public function getPlaceholder(): string
     {
         return $this->placeholder;
-    }
-
-    public static function getFieldType(): string
-    {
-        return self::TYPE_FILE_DRAG_AND_DROP;
     }
 
     public function getType(): string

@@ -1,8 +1,7 @@
-import React, { ComponentType, Suspense } from 'react';
-
 import { Field } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
 import { FieldProperty, FieldPropertyType } from '@ff-client/types/fields';
+import React, { ComponentType, Suspense } from 'react';
 
 import { ErrorBoundary } from '../boundaries/ErrorBoundary';
 import * as ControlTypes from '../form-controls';

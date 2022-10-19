@@ -1,15 +1,15 @@
+import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 import translate from '@ff-client/utils/translations';
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 
 import {
-  TabWrapper,
-  TabsWrapper,
-  SaveButton,
-  Heading,
-  SaveButtonWrapper,
   FormName,
+  Heading,
+  SaveButton,
+  SaveButtonWrapper,
+  TabsWrapper,
+  TabWrapper,
 } from './index.styles';
 
 export const Tabs: React.FC = () => {

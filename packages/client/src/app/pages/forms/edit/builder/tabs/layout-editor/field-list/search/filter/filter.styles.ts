@@ -1,5 +1,6 @@
 import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
+
 import { IconStyle } from '../search.style';
 
 export const FilterIcon = styled.button`

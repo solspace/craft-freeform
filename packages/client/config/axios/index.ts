@@ -1,6 +1,5 @@
-import axios from 'axios';
-
 import { generateUrl } from '@ff-client/utils/urls';
+import axios from 'axios';
 
 declare const Craft: {
   csrfTokenName: string;

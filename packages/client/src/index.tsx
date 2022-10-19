@@ -6,12 +6,12 @@ import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
+import { queryClient } from '../config/react-query';
 import App from './App';
 import { CpNavigation } from './app/components/cp-navigation/cp-navigation';
 import { Dashboard } from './app/pages/dashboard/dashboard';
 import { Form, Forms } from './app/pages/forms';
 import { Settings } from './app/pages/settings/settings';
-import { queryClient } from '../config/react-query';
 import { generateUrl } from './utils/urls';
 
 const container = document.getElementById('freeform-client');

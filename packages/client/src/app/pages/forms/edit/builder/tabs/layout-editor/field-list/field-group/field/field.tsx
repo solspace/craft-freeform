@@ -1,9 +1,8 @@
-import React from 'react';
-import { useDrag } from 'react-dnd';
-
 import { addNewField } from '@ff-client/app/pages/forms/edit/store/actions/fields';
 import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
 import { FieldType } from '@ff-client/types/fields';
+import React from 'react';
+import { useDrag } from 'react-dnd';
 
 import { Icon, Name, Wrapper } from './field.styles';
 

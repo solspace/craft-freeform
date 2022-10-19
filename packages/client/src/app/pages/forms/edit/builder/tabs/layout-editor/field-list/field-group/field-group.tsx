@@ -1,15 +1,14 @@
 import 'react-loading-skeleton/dist/skeleton.css';
 
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-
 import { ErrorBlock } from '@ff-client/app/components/notification-blocks/error/error-block';
 import { useFetchFieldTypes } from '@ff-client/queries/field-types';
 import { range } from '@ff-client/utils/arrays';
+import React from 'react';
+import Skeleton from 'react-loading-skeleton';
 
 import { useSelectSearchedFields } from '../hooks/use-select-searched-fields';
-import { FieldGroupWrapper, GroupTitle, List } from './field-group.styles';
 import { Field } from './field/field';
+import { FieldGroupWrapper, GroupTitle, List } from './field-group.styles';
 
 type Props = {
   title: string;

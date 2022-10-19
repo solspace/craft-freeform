@@ -1,7 +1,6 @@
-import React from 'react';
-
 import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import classes from '@ff-client/utils/classes';
+import React from 'react';
 
 import { Control } from './control';
 import { ControlType } from './types';

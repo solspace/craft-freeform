@@ -1,7 +1,6 @@
-import React, { PropsWithChildren } from 'react';
-
 import { Field } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import { FieldProperty } from '@ff-client/types/fields';
+import React, { PropsWithChildren } from 'react';
 
 import { ControlWrapper, Label } from './control.styles';
 

@@ -18,7 +18,7 @@
     "browser": true,
     "es6": true
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "simple-import-sort"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -37,7 +37,9 @@
         "allowExpressions": true
       }
     ],
-    "no-console": "warn"
+    "no-console": "warn",
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
   },
   "overrides": [
     {

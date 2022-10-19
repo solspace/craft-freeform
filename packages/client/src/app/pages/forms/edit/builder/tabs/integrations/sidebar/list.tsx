@@ -3,6 +3,7 @@ import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
 import { IntegrationCategory } from '@ff-client/types/integrations';
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+
 import { Category } from './category/category';
 import { CategorySkeleton } from './category/category.skeleton';
 import { Wrapper } from './list.styles';

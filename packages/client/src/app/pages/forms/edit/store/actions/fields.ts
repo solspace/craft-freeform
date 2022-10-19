@@ -1,6 +1,5 @@
-import { v4 } from 'uuid';
-
 import { FieldType } from '@ff-client/types/fields';
+import { v4 } from 'uuid';
 
 import { CellType } from '../../builder/types/layout';
 import { add as addCell } from '../slices/cells';

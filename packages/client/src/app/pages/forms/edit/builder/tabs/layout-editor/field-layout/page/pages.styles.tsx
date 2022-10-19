@@ -1,6 +1,5 @@
-import styled from 'styled-components';
-
 import { spacings } from '@ff-client/styles/variables';
+import styled from 'styled-components';
 
 export const PageWrapper = styled.div`
   display: flex;

@@ -1,12 +1,11 @@
-import React from 'react';
-import Skeleton from 'react-loading-skeleton';
-import { useSelector } from 'react-redux';
-
 import { selectField } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import {
   useFetchFieldPropertySections,
   useFieldType,
 } from '@ff-client/queries/field-types';
+import React from 'react';
+import Skeleton from 'react-loading-skeleton';
+import { useSelector } from 'react-redux';
 
 import {
   Icon,

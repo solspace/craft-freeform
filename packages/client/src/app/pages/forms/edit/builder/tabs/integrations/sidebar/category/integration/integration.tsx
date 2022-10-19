@@ -1,10 +1,11 @@
+import { selectIntegration } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
 import { Integration as IntegrationType } from '@ff-client/types/integrations';
 import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { Icon, Name, Status, Wrapper } from './integration.styles';
-import CogIcon from './cog-icon.svg';
 import { useSelector } from 'react-redux';
-import { selectIntegration } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
+import { NavLink } from 'react-router-dom';
+
+import CogIcon from './cog-icon.svg';
+import { Icon, Name, Status, Wrapper } from './integration.styles';
 
 export const Integration: React.FC<IntegrationType> = ({
   id,

@@ -1,7 +1,6 @@
+import { Form } from '@ff-client/types/forms';
 import axios, { AxiosError } from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
-
-import { Form } from '@ff-client/types/forms';
 
 export const useQueryForms = (): UseQueryResult<Form[], AxiosError> => {
   return useQuery<Form[], AxiosError>('forms', () =>

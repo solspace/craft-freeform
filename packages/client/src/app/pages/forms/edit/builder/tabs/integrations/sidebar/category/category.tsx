@@ -1,5 +1,6 @@
 import { IntegrationCategory } from '@ff-client/types/integrations';
 import React from 'react';
+
 import { ChildrenWrapper, Label, Wrapper } from './category.styles';
 import { Integration } from './integration/integration';
 

@@ -1,7 +1,6 @@
-import React from 'react';
-
 import { CheckboxInput } from '@ff-client/app/components/form-controls/inputs/checkbox-input';
 import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
+import React from 'react';
 
 import { CheckboxWrapper } from './bool.styles';
 import { ControlWrapper } from './control.styles';

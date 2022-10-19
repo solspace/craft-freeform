@@ -1,7 +1,7 @@
+import { Sidebar as SidebarWrapper } from '@ff-client/app/components/layout/sidebar/sidebar';
 import React from 'react';
 
 import { FieldGroup } from './field-group/field-group';
-import { Sidebar as SidebarWrapper } from '@ff-client/app/components/layout/sidebar/sidebar';
 import { Search } from './search/search';
 
 export const FieldList: React.FC = () => {

@@ -41,11 +41,20 @@ class NotificationsService extends BaseService
                 self::$notificationCache = [];
             }
 
+            $databaseNotifications = $this->getDatabaseService()->getAll($indexById);
+            $fileNotifications = $this->getFilesService()->getAll($indexById);
+
+            $notifications = [];
+            foreach ($databaseNotifications as $notification) {
+                $notifications[$notification->id] = $notification;
+            }
+
+            foreach ($fileNotifications as $notification) {
+                $notifications[$notification->filepath] = $notification;
+            }
+
             self::$allNotificationsLoaded = true;
-            self::$notificationCache = array_replace(
-                $this->getDatabaseService()->getAll($indexById),
-                $this->getFilesService()->getAll($indexById)
-            );
+            self::$notificationCache = $notifications;
         }
 
         if (!$indexById) {

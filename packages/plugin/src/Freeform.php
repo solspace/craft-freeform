@@ -19,7 +19,6 @@ use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterUserPermissionsEvent;
 use craft\events\SiteEvent;
 use craft\helpers\App;
-use craft\services\Dashboard;
 use craft\services\Fields;
 use craft\services\Sites;
 use craft\services\UserPermissions;
@@ -124,9 +123,6 @@ use Solspace\Freeform\Twig\Filters\FreeformTwigFilters;
 use Solspace\Freeform\Variables\FreeformBannersVariable;
 use Solspace\Freeform\Variables\FreeformServicesVariable;
 use Solspace\Freeform\Variables\FreeformVariable;
-use Solspace\Freeform\Widgets\ExtraWidgetInterface;
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 use yii\base\Event;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
@@ -294,7 +290,6 @@ class Freeform extends Plugin
         $this->initServices();
         $this->initRoutes();
         $this->initTwigVariables();
-        $this->initWidgets();
         $this->initFieldTypes();
         $this->initPermissions();
         $this->initEventListeners();
@@ -599,46 +594,6 @@ class Freeform extends Plugin
         );
 
         \Craft::$app->view->registerTwigExtension(new FreeformTwigFilters());
-    }
-
-    private function initWidgets()
-    {
-        if (!PermissionHelper::checkPermission('accessPlugin-freeform')) {
-            return;
-        }
-
-        Event::on(
-            Dashboard::class,
-            Dashboard::EVENT_REGISTER_WIDGET_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $finder = new Finder();
-
-                $namespace = 'Solspace\Freeform\Widgets';
-
-                /** @var SplFileInfo[] $files */
-                $files = $finder
-                    ->name('*Widget.php')
-                    ->files()
-                    ->ignoreDotFiles(true)
-                    ->notName('Abstract*.php')
-                    ->in(__DIR__.'/Widgets/')
-                ;
-
-                foreach ($files as $file) {
-                    $isForPro = 'Pro' === $file->getRelativePath();
-
-                    $className = str_replace('.'.$file->getExtension(), '', $file->getBasename());
-                    $className = $namespace.($isForPro ? '\\Pro' : '').'\\'.$className;
-
-                    $reflectionClass = new \ReflectionClass($className);
-                    if (!$this->isPro() && $reflectionClass->implementsInterface(ExtraWidgetInterface::class)) {
-                        continue;
-                    }
-
-                    $event->types[] = $className;
-                }
-            }
-        );
     }
 
     private function initFieldTypes()

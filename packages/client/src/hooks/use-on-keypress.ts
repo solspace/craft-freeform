@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 type OnKeypress = (options: {
   callback: (event: KeyboardEvent) => void;
   meetsCondition?: boolean;
-  type: 'keyup' | 'keydown';
+  type?: 'keyup' | 'keydown';
 }) => void;
 
 export const useOnKeypress: OnKeypress = ({

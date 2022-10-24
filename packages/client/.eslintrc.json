@@ -16,9 +16,10 @@
   "env": {
     "node": true,
     "browser": true,
-    "es6": true
+    "es6": true,
+    "jest": true
   },
-  "plugins": ["@typescript-eslint", "simple-import-sort"],
+  "plugins": ["@typescript-eslint", "simple-import-sort", "unused-imports"],
   "extends": [
     "eslint:recommended",
     "plugin:react/recommended",
@@ -65,7 +66,18 @@
         ]
       }
     ],
-    "simple-import-sort/exports": "error"
+    "simple-import-sort/exports": "error",
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ]
   },
   "overrides": [
     {

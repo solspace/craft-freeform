@@ -40,5 +40,9 @@ export const useFetchFieldPropertySections = (): UseQueryResult<
 export const useFieldType = (typeClass?: string): FieldType | undefined => {
   const { data } = useFetchFieldTypes();
 
+  if (!data) {
+    return undefined;
+  }
+
   return data.find((item) => item.typeClass === typeClass);
 };

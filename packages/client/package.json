@@ -10,7 +10,7 @@
     "compile": "webpack --config ./config/webpack/prod.config.js",
     "lint": "eslint -c .eslintrc.json .",
     "lint:fix": "eslint --fix -c .eslintrc.json .",
-    "test": "jest --maxWorkers=4",
+    "test": "jest",
     "test:coverage": "jest --maxWorkers=4 --collect-coverage",
     "test:watch": "jest --watch --maxWorkers=4"
   },
@@ -26,9 +26,11 @@
     "axios": "^0.27.2",
     "browserslist": "^4.20.3",
     "concurrently": "^7.4.0",
+    "jest": "^29.2.1",
     "lodash.camelcase": "^4.3.0",
     "lodash.kebabcase": "^4.1.1",
     "path-parse": "^1.0.7",
+    "pubsub-js": "^1.9.4",
     "react": "^18.1.0",
     "react-color": "^2.19.3",
     "react-dnd": "^16.0.1",
@@ -49,8 +51,15 @@
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.7",
     "@redux-devtools/core": "^3.13.1",
     "@svgr/webpack": "^6.2.1",
+    "@testing-library/dom": "^8.19.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^14.4.3",
+    "@types/jest": "^29.2.0",
     "@types/lodash.camelcase": "^4.3.7",
     "@types/lodash.kebabcase": "^4.1.7",
+    "@types/node": "^18.11.3",
+    "@types/pubsub-js": "^1.8.3",
     "@types/react": "^18.0.9",
     "@types/react-color": "^3.0.6",
     "@types/react-dom": "^18.0.4",
@@ -63,12 +72,19 @@
     "autoprefixer": "^10.4.7",
     "css-loader": "^6.7.1",
     "eslint-plugin-simple-import-sort": "^8.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0",
     "identity-obj-proxy": "^3.0.0",
+    "jest-environment-jsdom": "^29.2.1",
+    "jsdom": "^20.0.1",
+    "jsdom-global": "^3.0.2",
+    "msw": "^0.47.4",
     "react-refresh": "^0.13.0",
     "react-refresh-typescript": "^2.0.5",
     "style-loader": "^3.3.1",
     "terser-webpack-plugin": "^5.3.1",
-    "ts-loader": "^9.3.0",
+    "ts-jest": "^29.0.3",
+    "ts-loader": "^9.4.1",
+    "ts-node": "^10.9.1",
     "typescript-plugin-styled-components": "^2.0.0",
     "url-loader": "^4.1.1",
     "webpack": "^5.72.1",
@@ -81,5 +97,28 @@
     "not IE 11",
     "not IE_Mob 11",
     "last 2 versions"
-  ]
+  ],
+  "jest": {
+    "testEnvironment": "jsdom",
+    "transform": {
+      ".(ts|tsx)$": "ts-jest"
+    },
+    "setupFiles": [
+      "./config/jest/setup.ts"
+    ],
+    "testMatch": [
+      "**/*.test.ts?(x)"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "moduleNameMapper": {
+      "\\.(css|less|sass|scss|styl)$": "identity-obj-proxy",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/jest/__mocks__/file-mock.ts",
+      "\\.(svg)$": "<rootDir>/config/jest/__mocks__/svg-mock.tsx",
+      "^@ff-client/(.*)": "<rootDir>/src/$1"
+    }
+  }
 }

@@ -5,7 +5,8 @@
     "jsx": "react",
     "lib": ["ESNext", "DOM"],
     "resolveJsonModule": true,
-    "typeRoots": ["client/config/@types", "client/node_modules/@types"],
+    "types": ["jest", "node"],
+    "typeRoots": ["config/@types", "node_modules/@types"],
     "paths": {
       "@ff-client/*": ["client/src/*"]
     }

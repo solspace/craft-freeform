@@ -72,12 +72,13 @@ export type DraggableField = {
   type: DraggableTypes;
 };
 
-export type GenericValue = string | number | boolean | null;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type GenericValue = any;
 
 export type PropertyValueCollection = {
   label?: string;
   handle?: string;
   instructions?: string;
   required?: boolean;
-  [key: string]: GenericValue | GenericValue[];
+  [key: string]: GenericValue;
 };

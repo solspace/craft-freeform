@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -47,53 +48,46 @@ use Solspace\Freeform\Library\Translations\CraftTranslator;
  */
 class FormModel extends Model
 {
-    /** @var int */
-    public $id;
+    public ?int $id = null;
 
-    /** @var string */
-    public $uid;
+    public ?string $uid = null;
 
-    /** @var string */
-    public $type;
+    public string $type = Regular::class;
 
-    /** @var array */
-    public $metadata;
+    public array $metadata = [];
 
-    /** @var string */
-    public $name;
+    public ?string $name = null;
 
-    /** @var string */
-    public $handle;
+    public ?string $handle = null;
 
-    /** @var int */
-    public $spamBlockCount;
+    public int $spamBlockCount = 0;
 
-    /** @var string */
-    public $submissionTitleFormat;
+    public string $submissionTitleFormat = '';
 
-    /** @var string */
-    public $description;
+    public string $description = '';
 
-    /** @var string */
-    public $layoutJson;
+    public string $layoutJson = '';
 
-    /** @var string */
-    public $returnUrl;
+    #[EditableProperty(
+        label: 'Return URL',
+        instructions: '',
+    )]
+    public ?string $returnUrl = '';
 
-    /** @var string */
-    public $extraPostUrl;
+    #[EditableProperty]
+    public ?string $extraPostUrl = null;
 
-    /** @var string */
-    public $extraPostTriggerPhrase;
+    #[EditableProperty]
+    public ?string $extraPostTriggerPhrase = null;
 
-    /** @var int */
-    public $defaultStatus;
+    #[EditableProperty]
+    public ?int $defaultStatus = null;
 
-    /** @var int */
-    public $formTemplateId;
+    #[EditableProperty]
+    public ?int $formTemplateId = null;
 
-    /** @var string */
-    public $optInDataStorageTargetHash;
+    #[EditableProperty]
+    public ?string $optInDataStorageTargetHash = null;
 
     /** @var string */
     public $limitFormSubmissions;

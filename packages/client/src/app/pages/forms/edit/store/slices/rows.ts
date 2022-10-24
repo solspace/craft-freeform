@@ -2,6 +2,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Layout, Row } from '../../builder/types/layout';
+import type { SaveSubscriber } from '../actions/form';
+import { TOPIC_SAVE } from '../actions/form';
 import type { RootState } from '../store';
 
 type RowState = Row[];
@@ -60,3 +62,11 @@ export const selectRowsInLayout =
       : [];
 
 export default rowsSlice.reducer;
+
+const persist: SaveSubscriber = (_, data) => {
+  const { state, persist } = data;
+
+  persist.rows = state.rows;
+};
+
+PubSub.subscribe(TOPIC_SAVE, persist);

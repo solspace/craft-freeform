@@ -1,5 +1,20 @@
-import { colors, spacings } from '@ff-client/styles/variables';
+import { colors, shadows, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
+
+export const PropertyEditorWrapper = styled.div`
+  position: relative;
+  padding: ${spacings.lg};
+`;
+
+export const CloseLink = styled.a`
+  position: absolute;
+  right: 10px;
+  top: 17px;
+
+  display: block;
+  width: 20px;
+  height: 20px;
+`;
 
 type SectinoBlockProps = {
   label?: string;
@@ -11,6 +26,7 @@ export const Title = styled.h3`
   align-items: center;
   gap: ${spacings.sm};
 
+  margin: 0;
   font-size: 16px;
 `;
 
@@ -52,7 +68,7 @@ export const SectionBlock = styled.section<SectinoBlockProps>`
 
     margin: 0 -18px;
 
-    box-shadow: inset 0 -1px 0 0 rgb(154 165 177 / 25%);
+    box-shadow: ${shadows.bottom};
   }
 
   &:after {

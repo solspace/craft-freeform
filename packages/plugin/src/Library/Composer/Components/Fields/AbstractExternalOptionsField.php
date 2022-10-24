@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
@@ -12,8 +13,14 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
 {
     use OptionsKeyValuePairTrait;
 
-    /** @var Option[] */
-    protected $options;
+    #[EditableProperty(
+        type: 'options',
+        instructions: 'Define your options',
+    )]
+    protected array $options = [];
+
+    // /** @var Option[] */
+    // protected $options;
 
     /** @var string */
     protected $source;

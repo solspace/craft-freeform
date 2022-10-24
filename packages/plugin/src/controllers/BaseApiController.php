@@ -13,6 +13,7 @@ abstract class BaseApiController extends BaseController
         $response = match ($request->method) {
             'GET' => null !== $id ? $this->getOne($id) : $this->get(),
             'POST' => $this->post($id),
+            'PUT' => $this->put($id),
             'DELETE' => $this->delete($id),
             default => throw new NotFoundHttpException('Method not supported'),
         };
@@ -33,6 +34,11 @@ abstract class BaseApiController extends BaseController
     protected function post(int|string $id = null): array|object
     {
         throw new NotFoundHttpException('POST request not supported');
+    }
+
+    protected function put(int|string $id = null): array|object
+    {
+        throw new NotFoundHttpException('PUT request not supported');
     }
 
     protected function delete(int $id): bool

@@ -12,6 +12,7 @@ export enum FocusType {
 }
 
 type Focus = {
+  active: boolean;
   type: FocusType;
   uid: string;
 };
@@ -24,6 +25,7 @@ type ContextState = {
 const initialState: ContextState = {
   page: null,
   focus: {
+    active: false,
     type: null,
     uid: null,
   },
@@ -36,11 +38,17 @@ const contextSlice = createSlice({
     setPage: (state, { payload }: PayloadAction<string | null>) => {
       state.page = payload;
     },
-    setFocusedItem: (state, { payload }: PayloadAction<Focus>) => {
-      state.focus = payload;
+    setFocusedItem: (
+      state,
+      { payload }: PayloadAction<Omit<Focus, 'active'>>
+    ) => {
+      state.focus = { active: true, ...payload };
+    },
+    focus: (state) => {
+      state.focus.active = true;
     },
     unfocus: (state) => {
-      state.focus = { type: null, uid: null };
+      state.focus.active = false;
     },
   },
 });

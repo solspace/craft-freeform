@@ -2,6 +2,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Cell, Row } from '../../builder/types/layout';
+import type { SaveSubscriber } from '../actions/form';
+import { TOPIC_SAVE } from '../actions/form';
 import type { RootState } from '../store';
 
 type CellState = Cell[];
@@ -51,3 +53,11 @@ export const selectCellsInRow =
       .sort((a, b) => a.order - b.order);
 
 export default cellsSlice.reducer;
+
+const persist: SaveSubscriber = (_, data) => {
+  const { state, persist } = data;
+
+  persist.cells = state.cells;
+};
+
+PubSub.subscribe(TOPIC_SAVE, persist);

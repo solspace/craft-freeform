@@ -2,6 +2,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Page } from '../../builder/types/layout';
+import type { SaveSubscriber } from '../actions/form';
+import { TOPIC_SAVE } from '../actions/form';
 import type { RootState } from '../store';
 
 type PagesState = Page[];
@@ -56,3 +58,11 @@ export const selectPage =
     state.pages.find((page) => page.uid === uid);
 
 export default pagesSlice.reducer;
+
+const persist: SaveSubscriber = (_, data) => {
+  const { state, persist } = data;
+
+  persist.pages = state.pages;
+};
+
+PubSub.subscribe(TOPIC_SAVE, persist);

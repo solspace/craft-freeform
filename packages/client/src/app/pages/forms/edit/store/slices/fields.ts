@@ -6,7 +6,10 @@ import type {
 } from '@ff-client/types/fields';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+import PubSub from 'pubsub-js';
 
+import type { SaveSubscriber } from '../actions/form';
+import { TOPIC_SAVE } from '../actions/form';
 import type { RootState } from '../store';
 
 export type Field = Pick<FieldType, 'typeClass'> & {
@@ -70,3 +73,11 @@ export const selectField =
     state.fields.find((field) => field.uid === uid);
 
 export default fieldsSlice.reducer;
+
+const persistFields: SaveSubscriber = (_, data) => {
+  const { state, persist } = data;
+
+  persist.fields = state.fields;
+};
+
+PubSub.subscribe(TOPIC_SAVE, persistFields);

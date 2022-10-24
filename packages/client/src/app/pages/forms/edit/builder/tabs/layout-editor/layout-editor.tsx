@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { SidebarSlider } from '@ff-client/app/components/layout/sidebar/sidebar-slider';
 
-import { selectFocus } from '../../../store/slices/context';
+import { selectFocus, unfocus } from '../../../store/slices/context';
+import { useAppDispatch } from '../../../store/store';
 
 import { FieldLayout } from './field-layout/field-layout';
 import { FieldList } from './field-list/field-list';
@@ -9,11 +11,30 @@ import { PropertyEditor } from './property-editor/property-editor';
 import { Grid } from './layout-editor.styles';
 
 export const LayoutEditor: React.FC = () => {
-  const { type } = useSelector(selectFocus);
+  const { active } = useSelector(selectFocus);
+  const dispatch = useAppDispatch();
+
+  const listener = (event: KeyboardEvent): void => {
+    if (event.key === '27') {
+      event.preventDefault();
+      dispatch(unfocus());
+    }
+  };
+
+  useEffect(() => {
+    if (active) {
+      document.addEventListener('keyup', listener);
+    } else {
+      document.removeEventListener('keyup', listener);
+    }
+  }, [active]);
 
   return (
     <Grid>
-      {type === null ? <FieldList /> : <PropertyEditor />}
+      <SidebarSlider swiped={active}>
+        <PropertyEditor />
+        <FieldList />
+      </SidebarSlider>
       <FieldLayout />
     </Grid>
   );

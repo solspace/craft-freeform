@@ -5,6 +5,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import thunk from 'redux-thunk';
 
+import { saveMiddleware } from './actions/form';
 import cells from './slices/cells';
 import context from './slices/context';
 import drag from './slices/drag';
@@ -16,7 +17,7 @@ import rows from './slices/rows';
 import search from './slices/search';
 
 export const store = configureStore({
-  middleware: [thunk],
+  middleware: [thunk, saveMiddleware],
   reducer: {
     context,
     integrations,

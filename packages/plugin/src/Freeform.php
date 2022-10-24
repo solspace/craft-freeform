@@ -591,14 +591,14 @@ class Freeform extends Plugin
 
     private function initWidgets()
     {
-        if (!PermissionHelper::checkPermission('accessPlugin-freeform')) {
-            return;
-        }
-
         Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
             function (RegisterComponentTypesEvent $event) {
+                if (!PermissionHelper::checkPermission('accessPlugin-freeform')) {
+                    return;
+                }
+                
                 $finder = new Finder();
 
                 $namespace = 'Solspace\Freeform\Widgets';

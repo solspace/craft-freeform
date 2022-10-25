@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 3.13.21 - 2022-10-25
+
+### Added
+- Added success events for AJAX forms with `redirect-to-url` behavior.
+
+### Fixed
+- Fixed an error caused by different Craft version API's.
+
 ## 3.13.20 - 2022-09-28
 
 ### Changed

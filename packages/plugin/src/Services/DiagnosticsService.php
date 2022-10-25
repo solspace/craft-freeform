@@ -33,12 +33,12 @@ class DiagnosticsService extends BaseService
                 ],
                 [
                     new WarningValidator(
-                        fn ($value) => version_compare($value['version'], '4.0.0-beta.1', '>='),
+                        fn ($value) => version_compare($value['version'], '4.0.0', '>='),
                         'Craft compatibility issue',
                         'You have an incompatible version of Craft installed. This version of Freeform currently supports Craft 4.0.0 and greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '4.2.0', '<'),
+                        fn ($value) => version_compare($value['version'], '4.4.0', '<'),
                         'Potential Craft Compatibility issue',
                         "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please confirm you're using a version of Freeform tested for compatibility with this version of Craft."
                     ),

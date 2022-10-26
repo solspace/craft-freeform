@@ -33,7 +33,7 @@ export const PropertyEditor: React.FC = () => {
         <CloseIcon />
       </CloseLink>
       <ErrorBoundary
-        message={`Could not load property editor for ${type} type`}
+        message={`Could not load property editor for "${type}" type`}
       >
         {component}
       </ErrorBoundary>

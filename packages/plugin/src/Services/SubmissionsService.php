@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
+use craft\elements\db\ElementQueryInterface;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
@@ -276,10 +277,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $formsService->onAfterSubmit($form, $submission);
     }
 
-    public function delete(array $submissions, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
+    public function delete(ElementQueryInterface $query, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
     {
         $allowedFormIds = $this->getAllowedWriteFormIds();
-        if (!$submissions) {
+        if (!$query->count()) {
             return false;
         }
 
@@ -287,34 +288,32 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $deleted = 0;
 
         try {
-            foreach ($submissions as $submission) {
-                if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
-                    continue;
-                }
-
-                $submission->enableDeletingByToken();
-
-                $deleteEvent = new DeleteEvent($submission);
-                $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
-
-                if ($deleteEvent->isValid) {
-                    $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
-
-                    if ($isSuccessful) {
-                        ++$deleted;
+            foreach ($query->batch() as $submissions) {
+                foreach ($submissions as $submission) {
+                    if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
+                        continue;
                     }
 
-                    $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
+                    $submission->enableDeletingByToken();
+
+                    $deleteEvent = new DeleteEvent($submission);
+                    $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
+
+                    if ($deleteEvent->isValid) {
+                        $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
+
+                        if ($isSuccessful) {
+                            ++$deleted;
+                        }
+
+                        $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
+                    }
                 }
             }
 
-            if (null !== $transaction) {
-                $transaction->commit();
-            }
+            $transaction?->commit();
         } catch (\Exception $e) {
-            if (null !== $transaction) {
-                $transaction->rollBack();
-            }
+            $transaction?->rollBack();
 
             throw $e;
         }

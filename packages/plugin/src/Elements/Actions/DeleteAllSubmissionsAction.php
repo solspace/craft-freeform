@@ -31,7 +31,7 @@ class DeleteAllSubmissionsAction extends ElementAction
     {
         $query->id(null);
 
-        Freeform::getInstance()->submissions->delete($query->all());
+        Freeform::getInstance()->submissions->delete($query);
 
         $this->setMessage($this->successMessage);
 

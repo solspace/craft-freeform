@@ -96,12 +96,9 @@ class FreeformVariable
             return false;
         }
 
-        $submission = Submission::findOne(['token' => $token]);
-        if ($submission) {
-            return Freeform::getInstance()->submissions->delete([$submission], true);
-        }
+        $query = Submission::find()->limit(1)->token($token);
 
-        return false;
+        return Freeform::getInstance()->submissions->delete($query, true);
     }
 
     public function getSettings(): Settings

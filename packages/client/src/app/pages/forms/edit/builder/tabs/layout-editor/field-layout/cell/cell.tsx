@@ -3,7 +3,9 @@ import { useDrag } from 'react-dnd';
 
 import { setCell } from '../../../../../store/slices/drag';
 import { useAppDispatch } from '../../../../../store/store';
-import { Cell as CellPropType, CellType } from '../../../../types/layout';
+import type { Cell as CellPropType } from '../../../../types/layout';
+import { CellType } from '../../../../types/layout';
+
 import { CellField } from './cell-types/cell-field/cell-field';
 import { CellLayout } from './cell-types/cell-layout/cell-layout';
 import { Wrapper } from './cell.styles';
@@ -14,7 +16,6 @@ type Props = {
 };
 
 export const Cell: React.FC<Props> = ({ cell, order }) => {
-  let component = null;
   const dispatch = useAppDispatch();
 
   const [{ isDragging }, drag] = useDrag(
@@ -35,15 +36,20 @@ export const Cell: React.FC<Props> = ({ cell, order }) => {
     [cell.uid]
   );
 
-  if (cell.type === CellType.Layout) {
-    component = <CellLayout layoutUid={cell.metadata.layoutUid} />;
-  } else {
-    component = <CellField fieldUid={cell.uid} />;
+  let Component;
+  switch (cell.type) {
+    case CellType.Field:
+      Component = CellField;
+      break;
+
+    case CellType.Layout:
+      Component = CellLayout;
+      break;
   }
 
   return (
     <Wrapper ref={drag} style={{ order }}>
-      {component}
+      <Component uid={cell.targetUid} />
     </Wrapper>
   );
 };

@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Field\FieldProp;
 use Solspace\Freeform\Integrations\CRM\Salesforce\AbstractSalesforceIntegration;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
@@ -23,6 +24,7 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
+#[FieldProp(__DIR__.'/assets/salesforce.svg')]
 class SalesforceLead extends AbstractSalesforceIntegration
 {
     public const TITLE = 'Salesforce Lead';

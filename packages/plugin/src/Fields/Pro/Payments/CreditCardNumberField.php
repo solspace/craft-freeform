@@ -2,9 +2,15 @@
 
 namespace Solspace\Freeform\Fields\Pro\Payments;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 
+#[Type(
+    name: 'Credit Card: Number',
+    typeShorthand: 'cc-number',
+    iconPath: __DIR__.'/../../Icons/text.svg',
+)]
 class CreditCardNumberField extends TextField implements ExtraFieldInterface
 {
     public const FIELD_NAME = 'CreditCardNumber';

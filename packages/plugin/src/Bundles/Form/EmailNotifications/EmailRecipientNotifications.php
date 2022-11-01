@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
 
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
-use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
@@ -30,11 +29,7 @@ class EmailRecipientNotifications extends FeatureBundle
                 continue;
             }
 
-            if ($field instanceof DynamicRecipientField && $suppressors->isDynamicRecipients()) {
-                continue;
-            }
-
-            if (!$field instanceof DynamicRecipientField && $suppressors->isSubmitterNotifications()) {
+            if ($suppressors->isSubmitterNotifications()) {
                 continue;
             }
 

@@ -1,7 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { Layout, Row } from '../../builder/types/layout';
-import { RootState } from '../store';
+import type { Layout, Row } from '../../builder/types/layout';
+import type { SaveSubscriber } from '../actions/form';
+import { TOPIC_SAVE } from '../actions/form';
+import type { RootState } from '../store';
 
 type RowState = Row[];
 
@@ -10,19 +13,26 @@ type SwapPayload = {
   targetUid: string;
 };
 
-const initialState: RowState = [
-  { uid: 'row-uid-1', layoutUid: 'layout-uid-1', order: 1 },
-  { uid: 'row-uid-2', layoutUid: 'layout-uid-1', order: 2 },
-  { uid: 'row-uid-3', layoutUid: 'layout-uid-2', order: 1 },
-  { uid: 'row-uid-4', layoutUid: 'layout-uid-2', order: 2 },
-];
+const initialState: RowState = [];
 
 export const rowsSlice = createSlice({
   name: 'rows',
   initialState,
   reducers: {
-    add: (state, action: PayloadAction<Row>) => {
-      state.push(action.payload);
+    add: (state, action: PayloadAction<{ layoutUid: string; uid: string }>) => {
+      const { layoutUid, uid } = action.payload;
+      const highestOrder =
+        Math.max(
+          ...state
+            .filter((row) => row.layoutUid === layoutUid)
+            .map((row) => row.order)
+        ) ?? -1;
+
+      state.push({
+        uid,
+        order: highestOrder + 1,
+        layoutUid,
+      });
     },
     remove: (state, action: PayloadAction<string>) => {
       state = state.filter((row) => row.uid !== action.payload);
@@ -52,3 +62,11 @@ export const selectRowsInLayout =
       : [];
 
 export default rowsSlice.reducer;
+
+const persist: SaveSubscriber = (_, data) => {
+  const { state, persist } = data;
+
+  persist.rows = state.rows;
+};
+
+PubSub.subscribe(TOPIC_SAVE, persist);

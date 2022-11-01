@@ -1,15 +1,16 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import type { MutableRefObject } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDrop } from 'react-dnd';
 import { useSelector } from 'react-redux';
-import { PickAnimated, SpringValues, useSpring } from 'react-spring';
-
+import type { PickAnimated, SpringValues } from 'react-spring';
+import { useSpring } from 'react-spring';
+import type { Row } from '@ff-client/app/pages/forms/edit/builder/types/layout';
 import {
   selectCurrentPosition,
   setPosition,
 } from '@ff-client/app/pages/forms/edit/store/slices/drag';
 import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
-import { Row } from '@ff-client/app/pages/forms/edit/builder/types/layout';
-import { FieldType } from '@ff-client/types/fields';
+import type { FieldType } from '@ff-client/types/fields';
 
 type RowDragHook = {
   dropRef: MutableRefObject<HTMLDivElement>;

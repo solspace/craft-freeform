@@ -12,6 +12,8 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
@@ -19,6 +21,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInt
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleStaticValueTrait;
 
+#[Type(
+    name: 'Submit',
+    typeShorthand: 'submit',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class SubmitField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;
@@ -30,17 +37,40 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, Single
     public const POSITION_RIGHT = 'right';
     public const POSITION_SPREAD = 'spread';
 
-    /** @var string */
-    protected $labelNext;
+    #[EditableProperty(
+        label: 'Submit button Label',
+        instructions: 'The label of the submit button',
+    )]
+    protected string $labelNext = 'Submit';
 
-    /** @var string */
-    protected $labelPrev;
+    #[EditableProperty(
+        label: 'Previous button Label',
+        instructions: 'The label of the previous button',
+        visibilityFilters: [
+            '{{state.pages}}.length > 1',
+        ]
+    )]
+    protected string $labelPrev = 'Back';
 
-    /** @var bool */
-    protected $disablePrev;
+    #[EditableProperty(
+        label: 'Disable the Previous button',
+        visibilityFilters: [
+            '{{state.pages}}.length > 1',
+        ]
+    )]
+    protected bool $disablePrev = false;
 
-    /** @var string */
-    protected $position = self::POSITION_RIGHT;
+    #[EditableProperty(
+        label: 'Positioning',
+        type: 'select',
+        instructions: 'Choose whether the submit button is positioned on the left, center or right side',
+        options: [
+            'left' => 'Left',
+            'center' => 'Center',
+            'right' => 'Right',
+        ],
+    )]
+    protected string $position = self::POSITION_RIGHT;
 
     /**
      * Returns either "left", "center", "right" or "spread"

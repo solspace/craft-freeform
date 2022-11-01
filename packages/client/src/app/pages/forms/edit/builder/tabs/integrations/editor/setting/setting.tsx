@@ -1,11 +1,12 @@
-import { ControlProps } from '@ff-client/app/components/form-controls/control';
-import { Lightswitch } from '@ff-client/app/components/form-controls/inputs/lightswitch';
-import { Text } from '@ff-client/app/components/form-controls/inputs/text';
-import { modifyIntegrationSetting } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
-import { useDebounce } from '@ff-client/hooks/use-debounce';
-import { IntegrationSetting, SettingType } from '@ff-client/types/integrations';
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import type { ControlProps } from '@ff-client/app/components/form-controls/control';
+import { Lightswitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
+import { Text } from '@ff-client/app/components/form-controls/controls/text';
+import { modifyIntegrationSetting } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
+import { useDebounce } from '@ff-client/hooks/use-debounce';
+import type { IntegrationSetting } from '@ff-client/types/integrations';
+import { SettingType } from '@ff-client/types/integrations';
 
 type RenderSettingProps = {
   id: number;

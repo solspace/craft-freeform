@@ -3,12 +3,12 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Route, Routes } from 'react-router-dom';
 
-import { BuilderContent, BuilderWrapper } from './builder.styles';
-import { LayoutEditor } from './tabs/layout-editor/layout-editor';
-import { Tabs } from './tabs';
-import { Integrations } from './tabs/integrations/integrations';
 import { Editor as IntegrationsEditor } from './tabs/integrations/editor/editor';
 import { EmptyEditor as EmptyIntegrationsEditor } from './tabs/integrations/editor/empty-editor';
+import { Integrations } from './tabs/integrations/integrations';
+import { LayoutEditor } from './tabs/layout-editor/layout-editor';
+import { BuilderContent, BuilderWrapper } from './builder.styles';
+import { Tabs } from './tabs';
 
 export const Builder: React.FC = () => {
   return (

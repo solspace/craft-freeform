@@ -1,11 +1,13 @@
+import type { UseQueryResult } from 'react-query';
+import { useQuery } from 'react-query';
+import { useDispatch } from 'react-redux';
 import { addIntegrations } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
-import {
+import type {
   Integration,
   IntegrationCategory,
 } from '@ff-client/types/integrations';
-import axios, { AxiosError } from 'axios';
-import { useQuery, UseQueryResult } from 'react-query';
-import { useDispatch } from 'react-redux';
+import type { AxiosError } from 'axios';
+import axios from 'axios';
 
 export const useQueryIntegrations = (): UseQueryResult<
   IntegrationCategory[],

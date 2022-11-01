@@ -18,6 +18,14 @@ export const borderRadius = {
   lg: 'var(--large-border-radius)', // 5px
 };
 
+export const shadows = {
+  box: '0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%)',
+  bottom: 'inset 0 -1px 0 0 rgb(154 165 177 / 25%)',
+  top: 'inset 0 1px 0 0 rgb(154 165 177 / 25%)',
+  left: 'inset 1px 0 0 0 rgb(154 165 177 / 25%)',
+  right: 'inset -1px 0 0 0 rgb(154 165 177 / 25%)',
+};
+
 export const colors = {
   error: 'var(--error-color)',
   warning: 'var(--warning-color)',

@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { NavLink } from 'react-router-dom';
-
 import translate from '@ff-client/utils/translations';
 
 const classNameHandler = ({

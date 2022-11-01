@@ -14,6 +14,8 @@ namespace Solspace\Freeform\Fields;
 
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
@@ -22,6 +24,11 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\MultipleValueTra
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 
+#[Type(
+    name: 'File Upload',
+    typeShorthand: 'file',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class FileUploadField extends AbstractField implements MultipleValueInterface, FileUploadInterface
 {
     use FileUploadTrait;
@@ -38,38 +45,31 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         'type',
     ];
 
-    /** @var array */
-    protected $fileKinds;
+    #[EditableProperty]
+    protected array $fileKinds = ['image', 'document'];
 
-    /** @var int */
-    protected $maxFileSizeKB;
+    #[EditableProperty(
+        label: 'Maximum File Size',
+        instructions: 'Specify the maximum file size, in KB.',
+    )]
+    protected int $maxFileSizeKB = 2048;
 
-    /** @var int */
-    protected $fileCount;
+    #[EditableProperty(
+        instructions: 'Specify the maximum uploadable file count.',
+    )]
+    protected int $fileCount = 1;
 
     /**
      * Cache for handles meant for preventing duplicate file uploads when calling ::validate() and ::uploadFile()
      * Stores the assetID once as value for handle key.
-     *
-     * @var array
      */
-    private static $filesUploaded = [];
+    private static array $filesUploaded = [];
 
     /**
      * Contains any errors for a given upload field.
-     *
-     * @var array
      */
-    private static $filesUploadedErrors = [];
+    private static array $filesUploadedErrors = [];
 
-    public static function getFieldType(): string
-    {
-        return self::TYPE_FILE;
-    }
-
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_FILE;

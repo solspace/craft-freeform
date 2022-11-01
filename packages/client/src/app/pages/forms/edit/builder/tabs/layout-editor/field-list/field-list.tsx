@@ -1,17 +1,17 @@
 import React from 'react';
+import { useFetchFieldPropertySections } from '@ff-client/queries/field-types';
 
-import { BaseFields } from './field-list/base-fields/base-fields';
-import { Sidebar as SidebarWrapper } from '@ff-client/app/components/layout/sidebar/sidebar';
+import { FieldGroup } from './field-group/field-group';
 import { Search } from './search/search';
+import { FieldListWrapper } from './field-list.styles';
 
 export const FieldList: React.FC = () => {
+  useFetchFieldPropertySections();
+
   return (
-    <SidebarWrapper>
+    <FieldListWrapper>
       <Search />
-      <h2>Favorites</h2>
-      <h2>New Fields</h2>
-      <BaseFields />
-      <h2>Something else?</h2>
-    </SidebarWrapper>
+      <FieldGroup title="Base Fields" />
+    </FieldListWrapper>
   );
 };

@@ -14,19 +14,23 @@ namespace Solspace\Freeform\Fields;
 
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\PlaceholderTrait;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\RecipientTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
+#[Type(
+    name: 'Email',
+    typeShorthand: 'email',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class EmailField extends AbstractField implements RecipientInterface, SingleValueInterface, PlaceholderInterface
 {
     use PlaceholderTrait;
-    use RecipientTrait;
     use SingleValueTrait;
 
     /**

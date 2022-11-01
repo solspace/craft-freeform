@@ -9,9 +9,9 @@
     "clean": "rm -rf ../plugin/src/Resources/js/app",
     "compile": "webpack",
     "lint": "eslint -c .eslintrc.json .",
-    "test": "jest --maxWorkers=4",
-    "test:coverage": "jest --maxWorkers=4 --collect-coverage",
-    "test:watch": "jest --watch --maxWorkers=4"
+    "test": "",
+    "test:coverage": "",
+    "test:watch": ""
   },
   "keywords": [
     "Freeform",

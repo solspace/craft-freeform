@@ -2,12 +2,18 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
+#[Type(
+    name: 'Opinion Scale',
+    typeShorthand: 'opinion-scale',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class OpinionScaleField extends AbstractField implements ExtraFieldInterface, OptionsInterface
 {
     use SingleValueTrait;

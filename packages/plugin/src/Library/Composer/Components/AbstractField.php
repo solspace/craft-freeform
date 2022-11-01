@@ -14,79 +14,69 @@ namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Fields\CheckboxField;
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Section;
+use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\ConstraintInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Validator;
-use Stringy\Stringy;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Twig\Markup;
 
 abstract class AbstractField implements FieldInterface, \JsonSerializable
 {
-    /** @var string */
-    protected $hash;
+    #[Section('general', 'General', 0)]
+    #[EditableProperty(
+        instructions: 'Field label used to describe the field',
+        order: 1,
+        placeholder: 'My Field',
+    )]
+    protected string $label = '';
 
-    /** @var int */
-    protected $id;
+    #[Section('general')]
+    #[EditableProperty(
+        instructions: 'How you\'ll refer to this field in templates',
+        order: 2,
+        placeholder: 'myField',
+        flags: ['code'],
+        middleware: [
+            ['handle', ['label']],
+        ]
+    )]
+    protected string $handle = '';
 
-    /** @var string */
-    protected $handle;
+    #[Section('general')]
+    #[EditableProperty(
+        type: 'textarea',
+        order: 3,
+        instructions: 'Field specific user instructions',
+    )]
+    protected string $instructions = '';
 
-    /** @var string */
-    protected $label;
+    #[Section('general')]
+    #[EditableProperty('Require this field', order: 5)]
+    protected bool $required = false;
 
-    /** @var string */
-    protected $instructions;
+    protected FieldAttributesCollection $attributes;
 
-    /** @var bool */
-    protected $required = false;
+    protected ?int $id = null;
+    protected string $hash = '';
+    protected int $pageIndex = 0;
+    protected array $errors = [];
 
-    /** @var CustomFieldAttributes */
-    protected $customAttributes;
+    private Form $form;
+    private mixed $defaultValue = null;
 
-    /** @var int */
-    protected $pageIndex;
-
-    /** @var array */
-    protected $errors;
-
-    /** @var array */
-    protected $inputAttributes;
-
-    /** @var array */
-    protected $labelAttributes;
-
-    /** @var array */
-    protected $errorAttributes;
-
-    /** @var array */
-    protected $instructionAttributes;
-
-    /** @var Form */
-    private $form;
-
-    /** @var mimxed */
-    private $defaultValue;
-
-    /** @var array */
-    private $inputClasses;
-
-    /**
-     * AbstractField constructor.
-     */
-    final public function __construct(Form $form)
+    final public function __construct(Form $form, array $properties = [])
     {
         $this->form = $form;
-        $this->customAttributes = new CustomFieldAttributes($this, [], $this->getForm()->getPropertyBag());
-        $this->inputClasses = [];
+        $this->attributes = new FieldAttributesCollection();
+        $this->updateGenericProperties($properties);
+        $this->updateEditableProperties($properties);
     }
 
     public function __toString(): string
@@ -94,66 +84,25 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->getValueAsString();
     }
 
-    /**
-     * @param int $pageIndex
-     */
-    final public static function createFromProperties(
-        Form $form,
-        FieldProperties $properties,
-        $pageIndex
-    ): self {
-        $calledClass = static::class;
-
-        $objectProperties = get_class_vars($calledClass);
-        $accessor = PropertyAccess::createPropertyAccessor();
-
-        $field = new static($form);
-        $field->pageIndex = $pageIndex;
-
-        foreach ($objectProperties as $fieldName => $type) {
-            if ('errors' === $fieldName) {
-                continue;
-            }
-
+    public function updateEditableProperties(array $properties = []): void
+    {
+        $reflection = new \ReflectionClass(static::class);
+        foreach ($reflection->getProperties() as $property) {
             try {
-                $value = $accessor->getValue($properties, $fieldName);
-                $field->{$fieldName} = $value;
-                if ('value' === $fieldName) {
-                    if ($field instanceof CheckboxField && !$field->isChecked()) {
-                        $field->setValue('');
-                    }
-                    $field->defaultValue = $value;
-                } elseif ('values' === $fieldName) {
-                    $field->defaultValue = $value;
+                $propertyName = $property->getName();
+                $attributes = $property->getAttributes(EditableProperty::class);
+
+                // Only parse editable attributes
+                if (!$attributes || !isset($properties[$propertyName])) {
+                    continue;
                 }
+
+                $value = $properties[$propertyName];
+                $this->{$propertyName} = $value;
             } catch (NoSuchPropertyException $e) {
                 // Pass along
             }
         }
-
-        if ($field instanceof StaticValueInterface) {
-            $field->staticValue = $field->getValue();
-        }
-
-        return $field;
-    }
-
-    public static function getSvgIcon(): ?string
-    {
-        return file_get_contents(__DIR__.'/../../../Fields/Icons/no-icon.svg');
-    }
-
-    public static function getFieldTypeName(): string
-    {
-        return (string) Stringy::create(static::getFieldType())->humanize();
-    }
-
-    public static function getFieldType(): string
-    {
-        $name = (new \ReflectionClass(static::class))->getShortName();
-        $name = str_replace('Field', '', $name);
-
-        return (string) Stringy::create($name)->underscored();
     }
 
     /**
@@ -247,7 +196,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             return $this->renderRaw('');
         }
 
-        $data = \GuzzleHttp\json_encode($rule, \JSON_HEX_APOS);
+        $data = json_encode($rule, \JSON_HEX_APOS);
 
         return $this->renderRaw(" data-ff-rule='{$data}'");
     }
@@ -282,10 +231,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     public function getErrors(): array
     {
-        if (null === $this->errors) {
-            $this->errors = [];
-        }
-
         return array_values($this->errors);
     }
 
@@ -357,7 +302,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
     public function isRequired(): bool
     {
-        return (bool) $this->required;
+        return $this->required;
     }
 
     public function isHidden(): bool
@@ -521,9 +466,13 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->assembleAttributeString($this->instructionAttributes ?? []);
     }
 
-    public function jsonSerialize(): string
+    public function jsonSerialize(): array
     {
-        return $this->hash;
+        return [
+            'id' => $this->id,
+            'uid' => $this->id,
+            'hash' => $this->hash,
+        ];
     }
 
     protected function getInputClassString(): string
@@ -744,8 +693,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
     /**
      * An alias method for translator.
-     *
-     * @param string $string
      */
     protected function translate(string $string = null, array $variables = []): string
     {
@@ -767,6 +714,27 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     {
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);
+        }
+    }
+
+    private function updateGenericProperties(array $properties = [])
+    {
+        $reflection = new \ReflectionClass(static::class);
+        foreach ($reflection->getProperties() as $property) {
+            try {
+                $propertyName = $property->getName();
+                $attributes = $property->getAttributes(EditableProperty::class);
+
+                // Only parse non-editable attributes
+                if ($attributes || !isset($properties[$propertyName])) {
+                    continue;
+                }
+
+                $value = $properties[$propertyName];
+                $this->{$propertyName} = $value;
+            } catch (NoSuchPropertyException $e) {
+                // Pass along
+            }
         }
     }
 

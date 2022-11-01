@@ -3,48 +3,60 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 
-class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface
+#[Type(
+    name: 'File Drag & Drop',
+    typeShorthand: 'file-drag-and-drop',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
+class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface, PlaceholderInterface
 {
     public const DEFAULT_ACCENT = '#3a85ee';
     public const DEFAULT_THEME = 'light';
     public const DEFAULT_PLACEHOLDER = 'Drag and drop files here or click to upload';
 
-    /** @var string */
-    protected $accent;
+    #[EditableProperty(
+        label: 'Accent Color',
+        type: 'color',
+        instructions: 'Select accent color',
+    )]
+    protected string $accent = self::DEFAULT_ACCENT;
 
-    /** @var string */
-    protected $theme;
+    #[EditableProperty(
+        label: 'Accent Color',
+        type: 'select',
+        instructions: 'Select accent color',
+        options: [
+            'light' => 'Light',
+            'dark' => 'Dark',
+        ],
+    )]
+    protected string $theme = self::DEFAULT_THEME;
 
-    /** @var string */
-    protected $placeholder;
+    #[EditableProperty(
+        instructions: 'Field placeholder.',
+    )]
+    protected string $placeholder = self::DEFAULT_PLACEHOLDER;
 
-    public function getAccent()
+    public function getAccent(): string
     {
         return $this->accent;
     }
 
-    public function getTheme()
+    public function getTheme(): string
     {
         return $this->theme;
     }
 
     public function getPlaceholder(): string
     {
-        return $this->placeholder ?? self::DEFAULT_PLACEHOLDER;
-    }
-
-    public static function getFieldTypeName(): string
-    {
-        return 'File Drag & Drop';
-    }
-
-    public static function getFieldType(): string
-    {
-        return self::TYPE_FILE_DRAG_AND_DROP;
+        return $this->placeholder;
     }
 
     public function getType(): string

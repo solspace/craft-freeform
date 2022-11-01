@@ -1,5 +1,6 @@
 import { colors } from '@ff-client/styles/variables';
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+import type { FlattenSimpleInterpolation } from 'styled-components';
+import styled, { css } from 'styled-components';
 
 export const Handle = styled.div`
   position: absolute;

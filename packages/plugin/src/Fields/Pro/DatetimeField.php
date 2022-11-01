@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Fields\Pro;
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -13,6 +14,11 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\DateTim
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\MaxDateConstraint;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\MinDateConstraint;
 
+#[Type(
+    name: 'Date & Time',
+    typeShorthand: 'datetime',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class DatetimeField extends TextField implements InitialValueInterface, DatetimeInterface, ExtraFieldInterface
 {
     use InitialValueTrait;
@@ -58,11 +64,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
 
     /** @var string */
     protected $locale;
-
-    public static function getFieldTypeName(): string
-    {
-        return 'Date & Time';
-    }
 
     public static function getSupportedLocale(string $locale): string
     {
@@ -185,10 +186,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return date($format ?? 'Y-m-d', strtotime($this->maxDate));
     }
 
-    /**
-     * @return null|string
-     */
-    public function getPlaceholder()
+    public function getPlaceholder(): string
     {
         if (!$this->isGeneratePlaceholder()) {
             return $this->placeholder;

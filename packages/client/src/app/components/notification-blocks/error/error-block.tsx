@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { Wrapper } from './error-block.styles';
 
 type Props = {

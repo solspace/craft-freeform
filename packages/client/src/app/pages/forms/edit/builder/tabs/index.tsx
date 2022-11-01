@@ -1,23 +1,53 @@
-import translate from '@ff-client/utils/translations';
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
+import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import translate from '@ff-client/utils/translations';
+
+import { save } from '../../store/actions/form';
+import { useAppDispatch } from '../../store/store';
 
 import {
-  TabWrapper,
-  TabsWrapper,
-  SaveButton,
+  FormName,
   Heading,
+  SaveButton,
   SaveButtonWrapper,
+  TabsWrapper,
+  TabWrapper,
 } from './index.styles';
 
 export const Tabs: React.FC = () => {
+  const dispatch = useAppDispatch();
+
+  const triggerSave = (): void => void dispatch(save());
+  const saveOnCmdS = (event: KeyboardEvent): boolean | void => {
+    if (event.key === 's') {
+      const isMac = window.navigator.platform.match(/Mac/);
+      if (isMac && !event.metaKey) {
+        return;
+      }
+
+      if (!isMac && !event.ctrlKey) {
+        return;
+      }
+
+      event.preventDefault();
+
+      triggerSave();
+
+      return false;
+    }
+  };
+
+  useOnKeypress({ callback: saveOnCmdS, type: 'keydown' });
+
   return (
     <TabWrapper>
       <Heading>
-        <Link to=".." style={{ width: 20, height: 20 }}>
-          {'< '}
+        <Link to=".." title={translate('Back to form list')}>
+          <ChevronIcon />
         </Link>
-        My form name
+        <FormName>My form name</FormName>
       </Heading>
 
       <TabsWrapper>
@@ -32,7 +62,7 @@ export const Tabs: React.FC = () => {
       </TabsWrapper>
 
       <SaveButtonWrapper>
-        <SaveButton>Save</SaveButton>
+        <SaveButton onClick={triggerSave}>{translate('Save')}</SaveButton>
       </SaveButtonWrapper>
     </TabWrapper>
   );

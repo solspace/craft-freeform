@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
 trait OptionsTrait
@@ -32,23 +31,9 @@ trait OptionsTrait
             $value = [$value];
         }
 
-        $areIndexes = false;
-        if ($this instanceof DynamicRecipientField && $value) {
-            $areIndexes = true;
-            foreach ($value as $val) {
-                if (!is_numeric($val)) {
-                    $areIndexes = false;
-                }
-            }
-        }
-
         $options = [];
         foreach ($this->options as $index => $option) {
-            if ($areIndexes) {
-                $isChecked = \in_array($index, $value, false);
-            } else {
-                $isChecked = \in_array($option->getValue(), $value, true);
-            }
+            $isChecked = \in_array($option->getValue(), $value, true);
 
             $options[] = new Option($option->getLabel(), $option->getValue(), $isChecked);
         }

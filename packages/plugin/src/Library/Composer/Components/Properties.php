@@ -130,7 +130,7 @@ class Properties implements \JsonSerializable
      *
      * @throws ComposerException
      */
-    public function getFieldProperties($hash): FieldProperties
+    public function getFieldProperties($hash): array
     {
         if (!isset($this->builtProperties[$hash])) {
             if (!isset($this->propertyList[$hash])) {
@@ -142,7 +142,8 @@ class Properties implements \JsonSerializable
             $properties = $this->propertyList[$hash];
             $properties['hash'] = $hash;
 
-            $this->builtProperties[$hash] = new FieldProperties($properties, $this->translator);
+            // $this->builtProperties[$hash] = new FieldProperties($properties, $this->translator);
+            $this->builtProperties[$hash] = $properties;
         }
 
         return $this->builtProperties[$hash];

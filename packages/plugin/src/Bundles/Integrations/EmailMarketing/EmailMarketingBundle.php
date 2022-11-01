@@ -26,6 +26,8 @@ class EmailMarketingBundle extends FeatureBundle
 
     public function handleMailingListUpdate(ProcessSubmissionEvent $event): void
     {
+        // TODO: refactor this whole thing
+        return;
         if (!$event->isValid) {
             return;
         }

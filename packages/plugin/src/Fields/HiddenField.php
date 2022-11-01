@@ -12,13 +12,16 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoRenderInterface;
 
+#[Type(
+    name: 'Hidden',
+    typeShorthand: 'hidden',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class HiddenField extends TextField implements NoRenderInterface
 {
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_HIDDEN;

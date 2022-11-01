@@ -1,7 +1,10 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-import { Layout, Page } from '../../builder/types/layout';
-import { RootState } from '../store';
+import type { Layout, Page } from '../../builder/types/layout';
+import type { SaveSubscriber } from '../actions/form';
+import { TOPIC_SAVE } from '../actions/form';
+import type { RootState } from '../store';
 
 type LayoutState = Layout[];
 
@@ -36,3 +39,11 @@ export const selectPageLayout =
     state.layouts.find((layout) => layout.uid === page.layoutUid);
 
 export default layoutsSlice.reducer;
+
+const persist: SaveSubscriber = (_, data) => {
+  const { state, persist } = data;
+
+  persist.layouts = state.layouts;
+};
+
+PubSub.subscribe(TOPIC_SAVE, persist);

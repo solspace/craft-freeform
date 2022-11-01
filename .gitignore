@@ -18,3 +18,5 @@ yarnstart.sh
 .php-cs-fixer.cache
 
 http-client.private.env.json
+
+packages/client/coverage/

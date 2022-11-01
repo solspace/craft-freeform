@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-
 import { useQueryForms } from '@ff-client/queries/forms';
 
 import { Card, Subtitle, Title, Wrapper } from './index.styles';

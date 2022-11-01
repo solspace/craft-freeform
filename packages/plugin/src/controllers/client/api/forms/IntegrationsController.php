@@ -24,7 +24,7 @@ class IntegrationsController extends BaseApiController
     {
         $form = $this->getFormsService()->getResolvedForm($formId);
         if (!$form) {
-            throw new NotFoundHttpException("Form with ID {$id} not found");
+            throw new NotFoundHttpException("Form with ID {$formId} not found");
         }
 
         $models = $this->formIntegrationsProvider->getForForm($form);
@@ -37,7 +37,7 @@ class IntegrationsController extends BaseApiController
     {
         $form = $this->getFormsService()->getResolvedForm($formId);
         if (!$form) {
-            throw new NotFoundHttpException("Form with ID {$id} not found");
+            throw new NotFoundHttpException("Form with ID {$formId} not found");
         }
 
         $dto = $this->integrationDTOProvider->getById($id);

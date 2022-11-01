@@ -1,7 +1,6 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import { useParams } from 'react-router-dom';
-
 import { useQuerySingleForm } from '@ff-client/queries/forms';
 
 import { Builder } from './builder/builder';

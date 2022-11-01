@@ -12,20 +12,23 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\OneLineTrait;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 
+#[Type(
+    name: 'Radio Group',
+    typeShorthand: 'radio-group',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class RadioGroupField extends AbstractExternalOptionsField implements SingleValueInterface, OneLineInterface
 {
     use OneLineTrait;
     use SingleValueTrait;
 
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_RADIO_GROUP;

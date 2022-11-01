@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -11,27 +13,54 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\NumericConstraint;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
+#[Type(
+    name: 'Rating',
+    typeShorthand: 'rating',
+    iconPath: __DIR__.'/../Icons/text.svg',
+)]
 class RatingField extends AbstractField implements SingleValueInterface, ExtraFieldInterface, OptionsInterface
 {
     use SingleValueTrait;
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;
 
-    /** @var int */
-    protected $maxValue;
+    #[EditableProperty(
+        label: 'Maximum Number of Stars',
+        type: 'select',
+        instructions: '',
+        options: [
+            1 => 1,
+            2 => 2,
+            3 => 3,
+            4 => 4,
+            5 => 5,
+            6 => 6,
+            7 => 7,
+            8 => 8,
+            9 => 9,
+            10 => 10,
+        ],
+    )]
+    protected int $maxValue = 5;
 
-    /** @var string */
-    protected $colorIdle;
+    #[EditableProperty(
+        label: 'Unselected Color',
+        type: 'color',
+    )]
+    protected string $colorIdle = '#DDDDDD';
 
-    /** @var string */
-    protected $colorHover;
+    #[EditableProperty(
+        label: 'Hover Color',
+        type: 'color',
+    )]
+    protected string $colorHover = '#FFD700';
 
-    /** @var string */
-    protected $colorSelected;
+    #[EditableProperty(
+        label: 'Selected Color',
+        type: 'color',
+    )]
+    protected string $colorSelected = '#FF7700';
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return self::TYPE_RATING;
@@ -59,17 +88,10 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
 
     public function getMaxValue(): int
     {
-        $maxValue = (int) $this->maxValue;
-
-        if ($maxValue < self::MIN_VALUE) {
-            $maxValue = self::MIN_VALUE + 1;
-        }
-
-        if ($maxValue > self::MAX_VALUE) {
-            $maxValue = self::MAX_VALUE;
-        }
-
-        return $maxValue;
+        return min(
+            max(self::MIN_VALUE, $this->maxValue),
+            self::MAX_VALUE
+        );
     }
 
     public function getColorIdle(): string

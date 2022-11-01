@@ -2,38 +2,67 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\PropertyGroup;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\NumericConstraint;
 
+#[Type(
+    name: 'Number',
+    typeShorthand: 'number',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class NumberField extends TextField
 {
-    /** @var int */
-    protected $minLength;
+    #[EditableProperty(
+        label: 'Allow negative numbers?'
+    )]
+    protected bool $allowNegative = false;
 
-    /** @var int */
-    protected $minValue;
+    #[EditableProperty(
+        placeholder: 'Min',
+    )]
+    #[PropertyGroup(
+        'length',
+        label: 'Min/Max Length',
+        instructions: 'The minimum and/or maximum character length this field is allowed to have (optional).',
+    )]
+    protected ?int $minLength = null;
 
-    /** @var int */
-    protected $maxValue;
+    #[EditableProperty(
+        label: 'Max',
+    )]
+    #[PropertyGroup('length')]
+    protected ?int $maxLength = null;
 
-    /** @var int */
-    protected $decimalCount;
+    #[EditableProperty(
+        placeholder: 'Max',
+    )]
+    #[PropertyGroup(
+        'value',
+        label: 'Min/Max Values',
+        instructions: 'The minimum and/or maximum numeric value this field is allowed to have (optional).',
+    )]
+    protected ?int $minValue = null;
 
-    /** @var string */
-    protected $decimalSeparator;
+    #[EditableProperty(
+        placeholder: 'Max'
+    )]
+    #[PropertyGroup('value')]
+    protected ?int $maxValue = null;
 
-    /** @var string */
-    protected $thousandsSeparator;
+    #[EditableProperty(
+        instructions: 'The number of decimal places allowed.',
+        placeholder: 'Leave blank for no decimals',
+    )]
+    protected ?int $decimalCount = 0;
 
-    /** @var bool */
-    protected $allowNegative;
+    #[EditableProperty(
+        instructions: 'The step',
+    )]
+    protected float $step = 1;
 
-    /** @var float */
-    protected $step;
-
-    /**
-     * @return null|mixed|string
-     */
     public function getValue(): mixed
     {
         $value = parent::getValue();
@@ -45,9 +74,6 @@ class NumberField extends TextField
         return $value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return self::TYPE_NUMBER;
@@ -73,28 +99,12 @@ class NumberField extends TextField
         return $this->decimalCount;
     }
 
-    /**
-     * @deprecated no longer used
-     */
-    public function getDecimalSeparator(): string
-    {
-        return $this->decimalSeparator;
-    }
-
-    /**
-     * @deprecated no longer used
-     */
-    public function getThousandsSeparator(): string
-    {
-        return $this->thousandsSeparator;
-    }
-
     public function isAllowNegative(): bool
     {
         return $this->allowNegative;
     }
 
-    public function getStep()
+    public function getStep(): float
     {
         return $this->step;
     }

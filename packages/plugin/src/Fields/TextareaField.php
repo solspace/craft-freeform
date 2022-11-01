@@ -12,48 +12,34 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\PlaceholderTrait;
-use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;
 
-class TextareaField extends AbstractField implements SingleValueInterface, PlaceholderInterface
+#[Type(
+    name: 'Textarea',
+    typeShorthand: 'textarea',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
+class TextareaField extends TextField implements SingleValueInterface, PlaceholderInterface
 {
-    use PlaceholderTrait;
-    use SingleValueTrait;
+    #[EditableProperty(
+        instructions: 'The number of rows in height for this field.',
+    )]
+    protected int $rows = 2;
 
-    /** @var int */
-    protected $rows;
-
-    /** @var int */
-    protected $maxLength;
-
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
         return self::TYPE_TEXTAREA;
     }
 
-    public function getRows(): int
+    public function getRows(): ?int
     {
         return $this->rows;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getMaxLength()
-    {
-        return $this->maxLength;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getConstraints(): array
     {
         $constraints = parent::getConstraints();

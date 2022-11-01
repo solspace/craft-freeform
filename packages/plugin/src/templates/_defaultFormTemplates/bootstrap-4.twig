@@ -139,37 +139,6 @@
                     {{ field.renderInstructions() }}
                     {{ field.renderErrors() }}
 
-                {% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
-
-                    {{ field.renderLabel({
-                        labelClass: labelClass,
-                        instructionsClass: instructionClass,
-                        errorClass: errorClass,
-                    }) }}
-
-                    {{ field.oneLine ? "<div>"|raw }}
-
-                    {% for index, option in field.options %}
-                        <div class="form-check{{ field.oneLine ? " form-check-inline" }}">
-                            <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
-                                   name="{{ field.handle }}[]"
-                                   value="{{ loop.index0 }}"
-                                   class="form-check-input"
-                                   id="{{ field.idAttribute }}-{{ index }}"
-                                    {{ option.checked ? "checked" : "" }}
-                            />
-
-                            <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-                                {{ option.label|t('freeform')|raw }}
-                            </label>
-                        </div>
-                    {% endfor %}
-
-                    {{ field.oneLine ? "</div>"|raw }}
-
-                    {{ field.renderInstructions() }}
-                    {{ field.renderErrors() }}
-
                 {% elseif field.type in ["checkbox", "mailing_list"] %}
 
                     <div class="form-check">

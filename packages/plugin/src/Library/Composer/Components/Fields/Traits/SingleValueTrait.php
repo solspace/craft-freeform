@@ -19,22 +19,13 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInter
 
 trait SingleValueTrait
 {
-    /** @var string */
-    protected $value;
+    protected string $value;
 
-    /**
-     * @return null|string
-     */
     public function getValue(): mixed
     {
-        return (string) $this->value;
+        return $this->value;
     }
 
-    /**
-     * @param string $value
-     *
-     * @return $this
-     */
     public function setValue(mixed $value): FieldInterface
     {
         $this->value = $value;

@@ -24,8 +24,8 @@ class SettingBlueprint implements \JsonSerializable
     public function __construct(
         private string $type,
         private string $handle,
-        private string $label,
-        private string $instructions,
+        private ?string $label,
+        private ?string $instructions,
         private bool $required = false,
         private mixed $defaultValue = null,
         private bool $instanceSetting = false

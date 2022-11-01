@@ -1,4 +1,9 @@
 import React, { useState } from 'react';
+import { useClickOutside } from '@ff-client/hooks/use-click-outside';
+import translate from '@ff-client/utils/translations';
+
+import FilterIconSVG from '../sliders.svg';
+
 import {
   DropDownWrapper,
   FilterIcon,
@@ -6,9 +11,6 @@ import {
   Item,
   ItemCheckbox,
 } from './filter.styles';
-import FilterIconSVG from '../sliders.svg';
-import { useClickOutside } from '@ff-client/hooks/use-click-outside';
-import translate from '@ff-client/utils/translations';
 
 const list = [
   'Favorites',

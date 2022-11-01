@@ -1,7 +1,8 @@
-import { ThemedSkeleton } from '@ff-client/app/components/skeletons/themed-skeleton';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { Wrapper, Label, ChildrenWrapper } from './category.styles';
+import { ThemedSkeleton } from '@ff-client/app/components/skeletons/themed-skeleton';
+
+import { ChildrenWrapper, Label, Wrapper } from './category.styles';
 
 export const CategorySkeleton: React.FC = () => {
   return (

@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields;
 
-use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
@@ -13,8 +13,14 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
 {
     use OptionsKeyValuePairTrait;
 
-    /** @var Option[] */
-    protected $options;
+    #[EditableProperty(
+        type: 'options',
+        instructions: 'Define your options',
+    )]
+    protected array $options = [];
+
+    // /** @var Option[] */
+    // protected $options;
 
     /** @var string */
     protected $source;
@@ -58,17 +64,6 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
             $values = $this->values;
         } else {
             $values = $this->value;
-        }
-
-        if ($this instanceof DynamicRecipientField) {
-            $actualValues = [];
-            if (\is_array($this->values)) {
-                foreach ($this->values as $value) {
-                    $actualValues[] = $this->getActualValue($value);
-                }
-            }
-
-            $values = $actualValues;
         }
 
         if (self::SOURCE_CUSTOM === $this->getOptionSource()) {

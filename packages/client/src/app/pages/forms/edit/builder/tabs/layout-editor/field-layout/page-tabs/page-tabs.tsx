@@ -1,8 +1,9 @@
-import { selectPages } from '@ff-client/app/pages/forms/edit/store/slices/pages';
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { PageTabsWrapper } from './page-tabs.styles';
+import { selectPages } from '@ff-client/app/pages/forms/edit/store/slices/pages';
+
 import { Tab } from './tab/tab';
+import { PageTabsWrapper } from './page-tabs.styles';
 
 export const PageTabs: React.FC = () => {
   const pages = useSelector(selectPages);

@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use Solspace\Freeform\Fields\DynamicRecipientField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultiDimensionalValueInterface;
@@ -40,26 +39,6 @@ trait MultipleValueTrait
             $values = [];
         } elseif (!$this instanceof MultiDimensionalValueInterface) {
             $values = array_map('strval', $values);
-        }
-
-        if ($this instanceof DynamicRecipientField && $values) {
-            $areIndexes = true;
-            foreach ($values as $value) {
-                if (!is_numeric($value)) {
-                    $areIndexes = false;
-                }
-            }
-
-            $checkedIndexes = [];
-            foreach ($this->getOptions() as $index => $option) {
-                if ($areIndexes && \in_array($index, $values, false)) {
-                    $checkedIndexes[] = $index;
-                } elseif (\in_array($option->getValue(), $values, true)) {
-                    $checkedIndexes[] = $index;
-                }
-            }
-
-            $values = $checkedIndexes;
         }
 
         return $values;

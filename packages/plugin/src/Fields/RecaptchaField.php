@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
@@ -11,29 +12,25 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueI
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Models\Settings;
 
+#[Type(
+    name: 'reCAPTCHA',
+    typeShorthand: 'recaptcha',
+    iconPath: __DIR__.'/Icons/text.svg',
+)]
 class RecaptchaField extends AbstractField implements NoStorageInterface, SingleValueInterface, InputOnlyInterface, RecaptchaInterface
 {
     use SingleValueTrait;
 
-    /**
-     * {@inheritDoc}
-     */
     public function getType(): string
     {
         return self::TYPE_RECAPTCHA;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getHandle(): ?string
     {
         return 'grecaptcha_'.$this->getHash();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getInputHtml(): string
     {
         /** @var Settings $settings */

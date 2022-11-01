@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Bundles\GraphQL\Types\Generators;
 use craft\gql\GqlEntityRegistry;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
+use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
@@ -12,7 +13,6 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Pro\TableField;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface as FreeformFieldInterface;
 
 class FieldGenerator extends AbstractGenerator
@@ -41,7 +41,7 @@ class FieldGenerator extends AbstractGenerator
     {
         $types = parent::generateTypes($context);
 
-        $fieldTypes = Freeform::getInstance()->fields->getFieldTypes();
+        $fieldTypes = \Craft::$container->get(FieldTypesProvider::class)->getTypeShorthands();
         $fieldTypes[FreeformFieldInterface::TYPE_SUBMIT] = FreeformFieldInterface::TYPE_SUBMIT;
         $fieldTypes[FreeformFieldInterface::TYPE_SAVE] = FreeformFieldInterface::TYPE_SAVE;
         $fieldTypes[FreeformFieldInterface::TYPE_HTML] = FreeformFieldInterface::TYPE_HTML;

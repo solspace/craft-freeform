@@ -2,24 +2,19 @@
 
 namespace Solspace\Freeform\Bundles\Migrations\Notifications;
 
-use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
-use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Notifications\NotificationFilesService;
-use Solspace\Freeform\Services\NotificationsService;
 use Solspace\Freeform\Services\SettingsService;
 
 class NotificationsMigrator
 {
-    private $settings;
-
-    private $notifications;
-
-    public function __construct(SettingsService $settings, NotificationsService $notifications)
-    {
-        $this->settings = $settings;
-        $this->notifications = $notifications;
+    public function __construct(
+        private FormsService $formsService,
+        private SettingsService $settings,
+        private NotificationFilesService $filesService,
+    ) {
     }
 
     public function migrate(bool $removeDbNotifications = false): bool
@@ -46,7 +41,7 @@ class NotificationsMigrator
             $file->setAttributes($attributes, false);
 
             touch($templateDir.'/'.$file->filepath);
-            \Craft::$container->get(NotificationFilesService::class)->save($file);
+            $this->filesService->save($file);
 
             $idToFilenameMap[(int) $notification->id] = $file->filepath;
 
@@ -58,14 +53,16 @@ class NotificationsMigrator
         $this->changeFormOccurrences($idToFilenameMap);
 
         if ($removeDbNotifications) {
-            Freeform::getInstance()->settings->saveSettings(['emailTemplateStorage' => 'template']);
+            $this->settings->saveSettings(['emailTemplateStorage' => 'template']);
         }
 
         return true;
     }
 
+    // TODO: update this to use the new tables instead of old layout JSON
     private function changeFormOccurrences(array $idToFilenameMap)
     {
+        return;
         foreach ($this->getAllForms() as $form) {
             $json = json_decode($form->getLayoutAsJson());
             $hasChanges = false;
@@ -91,18 +88,16 @@ class NotificationsMigrator
 
             if ($hasChanges) {
                 $form->layoutJson = json_encode($json);
-                Freeform::getInstance()->forms->save($form);
+                $this->formsService->save($form);
             }
         }
     }
 
     /**
-     * @return FormModel[]
-     *
-     * @throws ComposerException
+     * @return Form[]
      */
     private function getAllForms(): array
     {
-        return Freeform::getInstance()->forms->getAllForms();
+        return $this->formsService->getAllForms();
     }
 }

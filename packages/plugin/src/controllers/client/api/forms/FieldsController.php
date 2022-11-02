@@ -20,7 +20,7 @@ class FieldsController extends BaseApiController
 
     public function actionGet(int $formId): Response
     {
-        $form = $this->getFormsService()->getResolvedForm($formId);
+        $form = $this->getFormsService()->getFormById($formId);
         if (!$form) {
             throw new NotFoundHttpException("Form with ID {$formId} not found");
         }
@@ -30,7 +30,7 @@ class FieldsController extends BaseApiController
 
     public function actionGetOne(int $formId, int $id): Response
     {
-        $form = $this->getFormsService()->getResolvedForm($formId);
+        $form = $this->getFormsService()->getFormById($formId);
         if (!$form) {
             throw new NotFoundHttpException("Form with ID {$formId} not found");
         }

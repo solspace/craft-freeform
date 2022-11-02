@@ -12,12 +12,19 @@
 
 namespace Solspace\Freeform\Library\Factories;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Stringy\Stringy;
 
+/**
+ * TODO: fields types to be registered via \Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider::getReisteredTypes()
+ * TODO: created with a builder that builds and their properties by checking property attributes
+ *
+ * @deprecated to be removed
+ */
 class ComposerFieldFactory
 {
     private static $defaultFieldNamespace = 'Solspace\Freeform\Fields';
@@ -58,7 +65,7 @@ class ComposerFieldFactory
             $className = self::$paymentsFieldNamespace.'\\'.$className;
         } else {
             throw new ComposerException(
-                $form->getTranslator()->translate(
+                Freeform::t(
                     'Could not create a field of type {type}',
                     ['type' => $properties->getType()]
                 )

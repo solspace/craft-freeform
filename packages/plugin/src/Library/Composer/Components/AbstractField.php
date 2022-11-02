@@ -16,6 +16,7 @@ use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Attributes\Field\Section;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
@@ -696,7 +697,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      */
     protected function translate(string $string = null, array $variables = []): string
     {
-        return null === $string ? '' : $this->getForm()->getTranslator()->translate($string, $variables);
+        return null === $string ? '' : Freeform::t($string, $variables);
     }
 
     /**

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
@@ -76,9 +77,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
             $output = $this->injectAttribute(
                 $output,
                 'placeholder',
-                $this->getForm()->getTranslator()->translate(
-                    $attributes->getPlaceholder() ?: $this->getPlaceholder()
-                )
+                Freeform::t($attributes->getPlaceholder() ?: $this->getPlaceholder())
             );
 
             $output .= $this->getInputAttributesString();

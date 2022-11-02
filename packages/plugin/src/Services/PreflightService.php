@@ -85,7 +85,7 @@ class PreflightService extends BaseService
 
     private function getOutdatedBehaviourCount(): int
     {
-        $forms = $this->getFormsService()->getResolvedForms([]);
+        $forms = $this->getFormsService()->getAllForms();
         $outdatedBehaviourCount = 0;
         foreach ($forms as $form) {
             if ('no-effect' === $form->getSuccessBehaviour()) {

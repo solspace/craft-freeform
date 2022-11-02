@@ -11,11 +11,11 @@ export const useQueryForms = (): UseQueryResult<Form[], AxiosError> => {
 };
 
 export const useQuerySingleForm = (
-  id: number
+  id?: number
 ): UseQueryResult<Form, AxiosError> => {
   return useQuery<Form, AxiosError>(
     ['forms', id],
     () => axios.get<Form>(`/client/api/forms/${id}`).then((res) => res.data),
-    { staleTime: Infinity }
+    { staleTime: Infinity, enabled: !!id }
   );
 };

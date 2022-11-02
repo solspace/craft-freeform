@@ -12,9 +12,15 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Properties;
 
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
-use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
+/**
+ * TODO: Remove this class and all its sub classes
+ * TODO: entirely refactor the way properties are written and validated via PHP class property attributes.
+ *
+ * @deprecated to be removed
+ */
 abstract class AbstractProperties
 {
     public const TYPE_STRING = 'string';
@@ -28,28 +34,19 @@ abstract class AbstractProperties
     /** @var string */
     protected $type;
 
-    /** @var TranslatorInterface */
-    private $translator;
-
     /**
      * AbstractProperties constructor.
      *
      * @throws ComposerException
      */
-    public function __construct(array $properties, TranslatorInterface $translator)
+    public function __construct(array $properties)
     {
-        $this->translator = $translator;
         $this->validateAndSetProperties($properties);
     }
 
     public function getType(): string
     {
         return $this->type;
-    }
-
-    protected function getTranslator(): TranslatorInterface
-    {
-        return $this->translator;
     }
 
     /**
@@ -127,7 +124,7 @@ abstract class AbstractProperties
 
             if (!empty($value) && $valueType !== $expectedType) {
                 throw new ComposerException(
-                    $this->getTranslator()->translate(
+                    Freeform::t(
                         "Value for '{key}' should be '{valueType}' but is '{expectedType}'",
                         [
                             'key' => $key,

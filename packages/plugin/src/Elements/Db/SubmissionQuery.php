@@ -150,7 +150,7 @@ class SubmissionQuery extends ElementQuery
         static $formIdToHandleMap;
 
         if (null === $formHandleToIdMap) {
-            $forms = Freeform::getInstance()->forms->getResolvedForms();
+            $forms = Freeform::getInstance()->forms->getAllForms();
             foreach ($forms as $form) {
                 $formHandleToIdMap[$form->getHandle()] = $form->getId();
                 $formIdToHandleMap[$form->getId()] = $form->getHandle();

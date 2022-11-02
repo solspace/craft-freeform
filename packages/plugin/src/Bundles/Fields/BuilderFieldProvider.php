@@ -20,7 +20,7 @@ class BuilderFieldProvider
     public function getFields(): array
     {
         $accessor = new PropertyAccessor();
-        $form = $this->formsService->getResolvedForm(1);
+        $form = $this->formsService->getFormById(1);
 
         $results = [];
 

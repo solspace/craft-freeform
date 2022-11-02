@@ -69,19 +69,18 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
         $id = $this->getIdAttribute();
         $children = $this->getChildren();
         $form = $this->getForm();
-        $translator = $form->getTranslator();
         $currentPage = $form->getCurrentPage();
 
         // TODO: make all field names in form of snake case string constants
-        $properties = new FieldProperties($children[CreditCardNumberField::FIELD_NAME], $translator);
+        $properties = new FieldProperties($children[CreditCardNumberField::FIELD_NAME]);
         $numberField = CreditCardNumberField::createFromProperties($form, $properties, $currentPage);
         $numberField->setAttributes(['id' => $id.'_card_number']);
 
-        $properties = new FieldProperties($children[CreditCardExpiryField::FIELD_NAME], $translator);
+        $properties = new FieldProperties($children[CreditCardExpiryField::FIELD_NAME]);
         $expiryField = CreditCardExpiryField::createFromProperties($form, $properties, $currentPage);
         $expiryField->setAttributes(['id' => $id.'_card_expiry']);
 
-        $properties = new FieldProperties($children[CreditCardCvcField::FIELD_NAME], $translator);
+        $properties = new FieldProperties($children[CreditCardCvcField::FIELD_NAME]);
         $cvcField = CreditCardCvcField::createFromProperties($form, $properties, $currentPage);
         $cvcField->setAttributes(['id' => $id.'_card_cvc']);
 

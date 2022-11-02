@@ -47,12 +47,7 @@ interface FormHandlerInterface
     /** @deprecated */
     public const EVENT_AFTER_GENERATE_RETURN_URL = 'afterGenerateReturnUrl';
 
-    /**
-     * @param string $templateName
-     *
-     * @return null|Markup
-     */
-    public function renderFormTemplate(Form $form, $templateName);
+    public function renderFormTemplate(Form $form, string $templateName): ?Markup;
 
     public function renderSuccessTemplate(Form $form);
 

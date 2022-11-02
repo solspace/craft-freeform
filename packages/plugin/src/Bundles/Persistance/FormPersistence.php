@@ -37,6 +37,7 @@ class FormPersistence extends FeatureBundle
         if (!$formId) {
             $record = FormRecord::create();
             $record->uid = $payload->uid;
+            $record->type = $payload->type;
         } else {
             $record = FormRecord::findOne(['id' => $formId]);
             if (!$record) {
@@ -44,9 +45,8 @@ class FormPersistence extends FeatureBundle
             }
         }
 
-        $record->name = $payload->name;
-        $record->handle = $payload->handle;
-        $record->type = $payload->type;
+        $record->name = $payload->properties->name;
+        $record->handle = $payload->properties->handle;
 
         $metadata = [];
         $reflection = new \ReflectionClass($payload->type);
@@ -65,7 +65,7 @@ class FormPersistence extends FeatureBundle
         $record->save();
 
         if ($record->hasErrors()) {
-            $event->addToResponse('form', $record->getErrors());
+            $event->addErrorsToResponse('form', $record->getErrors());
         }
     }
 

@@ -1,6 +1,8 @@
 import { generateUrl } from '@ff-client/utils/urls';
 import axios from 'axios';
 
+import { APIError } from './APIError';
+
 declare const Craft: {
   csrfTokenName: string;
   csrfTokenValue: string;
@@ -37,4 +39,18 @@ axios.interceptors.request.use((config) => {
   }
 
   return config;
+});
+
+axios.interceptors.response.use(null, (error) => {
+  if (error.response.data.error) {
+    error.message = error.response.data.error;
+  }
+
+  if (error.response.data.errors) {
+    return Promise.reject(
+      new APIError(error.message, error.response.data.errors)
+    );
+  }
+
+  return Promise.reject(error);
 });

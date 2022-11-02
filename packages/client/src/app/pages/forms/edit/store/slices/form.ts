@@ -1,34 +1,35 @@
+import type { Form } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+import type { ErrorList } from 'client/config/axios/APIError';
 import PubSub from 'pubsub-js';
 import { v4 } from 'uuid';
 
-import type { SaveSubscriber } from '../middleware/state-persist';
+import type {
+  ErrorsSubscriber,
+  SaveSubscriber,
+} from '../middleware/state-persist';
+import { TOPIC_ERRORS } from '../middleware/state-persist';
 import { TOPIC_SAVE } from '../middleware/state-persist';
 
-type FormState = {
-  id?: number;
-  uid: string;
-  name: string;
-  handle: string;
-  type: string;
-  properties: {
-    [key: string]: GenericValue;
-  };
+type FormState = Form & {
+  errors?: ErrorList;
 };
 
 const initialState: FormState = {
   id: null,
   uid: v4(),
-  name: 'New Form',
-  handle: 'newForm',
   type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-  properties: [],
+  properties: {
+    name: 'New Form',
+    handle: 'newForm',
+  },
 };
 
 type UpdateProps = Partial<Omit<FormState, 'properties'>>;
 type ModifyProps = { key: string; value: GenericValue };
+type ErrorProps = { key: string; errors: string[] };
 
 export const formSlice = createSlice({
   name: 'form',
@@ -43,17 +44,49 @@ export const formSlice = createSlice({
     ) => {
       state.properties[key] = value;
     },
+    removeError: (state, { payload }: PayloadAction<string>) => {
+      delete state.errors[payload];
+    },
+    addError: (state, { payload }: PayloadAction<ErrorProps>) => {
+      state.errors[payload.key] = payload.errors;
+    },
+    setErrors: (state, { payload }: PayloadAction<ErrorList>) => {
+      state.errors = payload;
+    },
+    clearErrors: (state) => {
+      state.errors = undefined;
+    },
   },
 });
 
-export const { update, modifyProperty } = formSlice.actions;
+export const {
+  update,
+  modifyProperty,
+  addError,
+  removeError,
+  setErrors,
+  clearErrors,
+} = formSlice.actions;
 
 export default formSlice.reducer;
 
 const persistForm: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
-  persist.form = state.form;
+  const { id, uid, type, properties } = state.form;
+
+  persist.form = {
+    id,
+    uid,
+    type,
+    properties,
+  };
+};
+
+const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {
+  dispatch(clearErrors());
+  dispatch(setErrors(response.errors?.form));
 };
 
 PubSub.subscribe(TOPIC_SAVE, persistForm);
+PubSub.subscribe(TOPIC_ERRORS, handleErrors);

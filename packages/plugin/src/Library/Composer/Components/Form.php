@@ -56,7 +56,6 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
 use Solspace\Freeform\Library\Rules\RuleProperties;
-use Solspace\Freeform\Library\Translations\TranslatorInterface;
 use Twig\Markup;
 use yii\base\Arrayable;
 use yii\base\Event;
@@ -378,7 +377,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     {
         // TODO: implement page collections
         return $this;
-
         if (!$this->currentPage || $index !== $this->currentPage->getIndex()) {
             $page = $this->layout->getPage($index);
 

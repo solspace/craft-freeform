@@ -21,7 +21,7 @@ use Stringy\Stringy;
 
 /**
  * TODO: fields types to be registered via \Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider::getReisteredTypes()
- * TODO: created with a builder that builds and their properties by checking property attributes
+ * TODO: created with a builder that builds and their properties by checking property attributes.
  *
  * @deprecated to be removed
  */

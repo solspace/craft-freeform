@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Attributes\Field;
 
 use Attribute;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Section
 {
     public function __construct(

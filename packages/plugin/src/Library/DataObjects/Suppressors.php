@@ -30,8 +30,6 @@ class Suppressors
 
     /**
      * Suppressors constructor.
-     *
-     * @param $settings
      */
     public function __construct($settings)
     {

@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -85,10 +84,8 @@ class FormModel extends Model
     /** @var string */
     public $limitFormSubmissions;
 
-    /** @var string */
     public string $color = '';
 
-    /** @var bool */
     public bool $gtmEnabled = false;
 
     /** @var string */

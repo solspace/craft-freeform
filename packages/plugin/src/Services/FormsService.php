@@ -40,8 +40,6 @@ use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
 use Twig\Markup;
-use yii\base\InvalidCallException;
-use yii\base\ViewNotFoundException;
 
 class FormsService extends BaseService implements FormHandlerInterface
 {

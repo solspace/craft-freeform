@@ -1,4 +1,5 @@
 import type { GenericValue } from '@ff-client/types/properties';
+import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 import type { APIError } from 'client/config/axios/APIError';
 import PubSub from 'pubsub-js';
@@ -9,23 +10,29 @@ import type { AppDispatch, RootState } from '../store';
 
 export const TOPIC_SAVE = Symbol('form.save');
 export const TOPIC_ERRORS = Symbol('form.save.errors');
+export const TOPIC_CREATED = Symbol('form.save.crated');
+export const TOPIC_UPDATED = Symbol('form.save.updated');
 
-type SaveData = {
-  readonly dispatch: AppDispatch;
+type WithDispatch = { readonly dispatch: AppDispatch };
+
+type SaveData = WithDispatch & {
   readonly state: RootState;
   persist: Record<string, GenericValue>;
 };
 
-type ErrorData = {
-  readonly dispatch: AppDispatch;
-  response: APIError;
-};
+type ErrorData = WithDispatch & { response: APIError };
+type CreateData = WithDispatch & { response: AxiosResponse };
 
 export type SaveSubscriber = (message: string | symbol, data: SaveData) => void;
 export type ErrorsSubscriber = (
   message: string | symbol,
   data: ErrorData
 ) => void;
+export type CreatedSubscriber = (
+  message: string | symbol,
+  data: CreateData
+) => void;
+export type UpdatedSubscriber = CreatedSubscriber;
 
 PubSub.clearAllSubscriptions();
 
@@ -34,6 +41,19 @@ const publishErrors = (dispatch: AppDispatch, response: APIError): void => {
     dispatch,
     response,
   } as ErrorData);
+};
+
+const publishCreated = (
+  dispatch: AppDispatch,
+  response: AxiosResponse
+): void => {
+  PubSub.publish(TOPIC_CREATED, { dispatch, response } as CreateData);
+};
+const publishUpdated = (
+  dispatch: AppDispatch,
+  response: AxiosResponse
+): void => {
+  PubSub.publish(TOPIC_UPDATED, { dispatch, response } as CreateData);
 };
 
 export const statePersistMiddleware: Middleware =
@@ -56,11 +76,13 @@ export const statePersistMiddleware: Middleware =
     const formId = data.state.form.id;
     if (formId) {
       axios
-        .put<SaveData>(`/client/api/forms/${formId}`, data.persist)
+        .put(`/client/api/forms/${formId}`, data.persist)
+        .then((response) => publishUpdated(dispatch, response))
         .catch((error: APIError) => publishErrors(dispatch, error));
     } else {
       axios
-        .post<SaveData>('/client/api/forms', data.persist)
+        .post('/client/api/forms', data.persist)
+        .then((response) => publishCreated(dispatch, response))
         .catch((error: APIError) => publishErrors(dispatch, error));
     }
   };

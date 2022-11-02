@@ -66,6 +66,13 @@ class FormPersistence extends FeatureBundle
 
         if ($record->hasErrors()) {
             $event->addErrorsToResponse('form', $record->getErrors());
+
+            return;
+        }
+
+        if (!$formId) {
+            $form = $this->formsService->getFormById($record->id);
+            $event->addToResponse('form', $form);
         }
     }
 

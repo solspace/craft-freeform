@@ -1072,6 +1072,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     // INTERFACE IMPLEMENTATIONS
     // ==========================
 
+    // TODO: update this to read all the exposable properties
     public function jsonSerialize(): array
     {
         return [

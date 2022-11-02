@@ -7,11 +7,14 @@ import PubSub from 'pubsub-js';
 import { v4 } from 'uuid';
 
 import type {
+  CreatedSubscriber,
   ErrorsSubscriber,
   SaveSubscriber,
 } from '../middleware/state-persist';
+import { TOPIC_CREATED } from '../middleware/state-persist';
 import { TOPIC_ERRORS } from '../middleware/state-persist';
 import { TOPIC_SAVE } from '../middleware/state-persist';
+import type { RootState } from '../store';
 
 type FormState = Form & {
   errors?: ErrorList;
@@ -36,7 +39,7 @@ export const formSlice = createSlice({
   initialState,
   reducers: {
     update: (state, { payload }: PayloadAction<UpdateProps>) => {
-      state = { ...state, ...payload };
+      Object.assign(state, payload);
     },
     modifyProperty: (
       state,
@@ -68,6 +71,9 @@ export const {
   clearErrors,
 } = formSlice.actions;
 
+export const selectFormId = (state: RootState): number | undefined =>
+  state.form.id;
+
 export default formSlice.reducer;
 
 const persistForm: SaveSubscriber = (_, data) => {
@@ -88,5 +94,10 @@ const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {
   dispatch(setErrors(response.errors?.form));
 };
 
+const handleCreate: CreatedSubscriber = (_, { dispatch, response }) => {
+  dispatch(update({ id: response.data.form.id }));
+};
+
 PubSub.subscribe(TOPIC_SAVE, persistForm);
 PubSub.subscribe(TOPIC_ERRORS, handleErrors);
+PubSub.subscribe(TOPIC_CREATED, handleCreate);

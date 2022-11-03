@@ -4,12 +4,9 @@ import { useDrop } from 'react-dnd';
 import { useSelector } from 'react-redux';
 import type { PickAnimated, SpringValues } from 'react-spring';
 import { useSpring } from 'react-spring';
-import type { Row } from '@ff-client/app/pages/forms/edit/builder/types/layout';
-import {
-  selectCurrentPosition,
-  setPosition,
-} from '@ff-client/app/pages/forms/edit/store/slices/drag';
-import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
+import type { Row } from '@editor/builder/types/layout';
+import { useAppDispatch } from '@editor/store';
+import { selectCurrentPosition, setPosition } from '@editor/store/slices/drag';
 import type { FieldType } from '@ff-client/types/fields';
 
 type RowDragHook = {

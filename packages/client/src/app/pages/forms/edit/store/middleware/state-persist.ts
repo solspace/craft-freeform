@@ -1,12 +1,12 @@
+import type { AppDispatch, RootState } from '@editor/store';
+import type { APIError } from '@ff-client/types/api';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
-import type { APIError } from 'client/config/axios/APIError';
 import PubSub from 'pubsub-js';
 import type { Middleware } from 'redux';
 
 import { save } from '../actions/form';
-import type { AppDispatch, RootState } from '../store';
 
 export const TOPIC_SAVE = Symbol('form.save');
 export const TOPIC_ERRORS = Symbol('form.save.errors');
@@ -58,6 +58,10 @@ const publishUpdated = (
 
 export const statePersistMiddleware: Middleware =
   (store) => (next) => (action) => {
+    if (!action) {
+      return;
+    }
+
     next(action);
     if (action.type !== String(save)) {
       return;

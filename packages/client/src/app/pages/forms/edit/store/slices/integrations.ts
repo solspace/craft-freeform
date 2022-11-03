@@ -1,11 +1,10 @@
+import type { RootState } from '@editor/store';
 import type {
   Integration,
   IntegrationSetting,
 } from '@ff-client/types/integrations';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-
-import type { RootState } from '../store';
 
 type IntegrationState = {
   updated: number;

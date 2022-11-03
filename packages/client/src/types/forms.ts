@@ -1,13 +1,12 @@
+import type { GenericValue } from './properties';
+
 export type Form = {
-  id: number;
+  id?: number;
   uid: string;
-
-  name: string;
-  handle: string;
-  description: string;
-
-  color: string;
-  defaultStatus: number;
-  formTemplate: string;
-  storeData: boolean;
+  type: string;
+  properties: {
+    name: string;
+    handle: string;
+    [key: string]: GenericValue;
+  };
 };

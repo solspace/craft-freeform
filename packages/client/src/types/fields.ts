@@ -1,3 +1,5 @@
+import type { GenericValue } from './properties';
+
 export enum FieldPropertyType {
   Integer = 'int',
   String = 'string',
@@ -71,9 +73,6 @@ enum DraggableTypes {
 export type DraggableField = {
   type: DraggableTypes;
 };
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type GenericValue = any;
 
 export type PropertyValueCollection = {
   label?: string;

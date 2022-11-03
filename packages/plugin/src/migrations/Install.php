@@ -20,22 +20,8 @@ class Install extends StreamlinedInstallMigration
                 ->addField('name', $this->string(100)->notNull())
                 ->addField('handle', $this->string(100)->notNull()->unique())
                 ->addField('spamBlockCount', $this->integer()->unsigned()->notNull()->defaultValue(0))
-                ->addField('submissionTitleFormat', $this->string(255)->notNull())
-                ->addField('description', $this->text())
-                ->addField('layoutJson', $this->mediumText())
                 ->addField('metadata', $this->mediumText())
-                ->addField('returnUrl', $this->string(255))
-                ->addField('defaultStatus', $this->integer()->unsigned())
-                ->addField('formTemplateId', $this->integer()->unsigned())
-                ->addField('color', $this->string(10))
-                ->addField('optInDataStorageTargetHash', $this->string(20)->null())
-                ->addField('limitFormSubmissions', $this->string(20)->null())
-                ->addField('extraPostUrl', $this->string(255)->null())
-                ->addField('extraPostTriggerPhrase', $this->string(255)->null())
-                ->addField('order', $this->integer())
-                ->addField('gtmEnabled', $this->boolean()->defaultValue(false))
-                ->addField('gtmId', $this->string()->null())
-                ->addField('gtmEventName', $this->string()->null()),
+                ->addField('order', $this->integer()),
 
             (new Table('freeform_forms_layouts'))
                 ->addField('id', $this->primaryKey())

@@ -14,8 +14,8 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
-use Psr\Log\LoggerInterface;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -55,15 +55,13 @@ use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
-use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\RuleProperties;
-use Solspace\Freeform\Library\Translations\TranslatorInterface;
-use Solspace\Freeform\Models\FormModel;
 use Twig\Markup;
 use yii\base\Arrayable;
 use yii\base\Event;
 use yii\web\Request;
 
+// TODO: move this into the `Solspace\Freeform\Forms` namespace, as Composer will be removed
 abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
 {
     public const ID_KEY = 'id';
@@ -128,172 +126,111 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const LIMIT_COOKIE = 'cookie';
     public const LIMIT_IP_COOKIE = 'ip_cookie';
 
-    /** @var PropertyBag */
-    private $propertyBag;
+    #[EditableProperty]
+    protected string $color = '';
 
-    /** @var AttributeBag */
-    private $attributeBag;
+    #[EditableProperty]
+    protected string $submissionTitleFormat = '{{ dateCreated|date("Y-m-d H:i:s") }}';
 
-    /** @var int */
-    private $id;
+    #[EditableProperty]
+    protected string $description = '';
 
-    /** @var string */
-    private $uid;
+    #[EditableProperty(
+        label: 'Return URL',
+    )]
+    protected string $returnUrl = '/';
 
-    /** @var string */
-    private $name;
+    #[EditableProperty]
+    protected bool $storeData = true;
 
-    /** @var string */
-    private $handle;
+    #[EditableProperty]
+    protected bool $ipCollectingEnabled = true;
 
-    /** @var array */
-    private $metadata;
+    #[EditableProperty]
+    protected ?int $defaultStatus = null;
 
-    /** @var string */
-    private $color;
+    #[EditableProperty]
+    protected ?string $formTemplate = null;
 
-    /** @var string */
-    private $submissionTitleFormat;
+    #[EditableProperty]
+    protected ?string $optInDataStorageTargetHash = null;
 
-    /** @var string */
-    private $description;
+    #[EditableProperty]
+    protected bool $ajaxEnabled = true;
 
-    /** @var string */
-    private $returnUrl;
+    #[EditableProperty]
+    protected bool $showSpinner = true;
 
-    /** @var bool */
-    private $storeData;
+    #[EditableProperty]
+    protected bool $showLoadingText = true;
 
-    /** @var bool */
-    private $ipCollectingEnabled;
+    #[EditableProperty]
+    protected string $loadingText = '';
 
-    /** @var int */
-    private $defaultStatus;
+    // TODO: refactor captchas into their own integration types
+    #[EditableProperty]
+    protected bool $recaptchaEnabled = false;
 
-    /** @var string */
-    private $formTemplate;
+    // TODO: refactor this into a object instead of 3 different values
+    #[EditableProperty]
+    protected bool $gtmEnabled = false;
 
-    /** @var Layout */
-    private $layout;
+    #[EditableProperty]
+    protected ?string $gtmId = null;
 
-    /** @var Page */
-    private $currentPage;
+    #[EditableProperty]
+    protected ?string $gtmEventName = null;
 
-    /** @var Row[] */
-    private $currentPageRows;
+    private PropertyBag $propertyBag;
 
-    /** @var string */
-    private $optInDataStorageTargetHash;
+    private AttributeBag $attributeBag;
 
-    /** @var string */
-    private $limitFormSubmissions;
+    private ?int $id;
 
-    /** @var Properties */
-    private $properties;
+    private ?string $uid;
 
-    /** @var string[] */
-    private $errors;
+    private string $name;
 
+    private string $handle;
+
+    private Layout $layout;
+
+    private ?Page $currentPage = null;
+
+    private array $currentPageRows = [];
+
+    private ?string $limitFormSubmissions = null;
+
+    // TODO: create a collection to handle error messages
+    private array $errors = [];
+
+    // TODO: craete a collection to handle form actions
     /** @var FormActionInterface[] */
-    private $actions;
+    private array $actions = [];
 
-    /** @var bool */
-    private $ajaxEnabled;
+    private bool $finished = false;
 
-    /** @var bool */
-    private $showSpinner;
+    private bool $valid = false;
 
-    /** @var bool */
-    private $showLoadingText;
+    private bool $formSaved = false;
 
-    /** @var string */
-    private $loadingText;
+    private bool $suppressionEnabled = false;
 
-    /** @var bool */
-    private $recaptchaEnabled;
+    private bool $disableAjaxReset = false;
 
-    /** @var TranslatorInterface */
-    private $translator;
+    private bool $pagePosted = false;
 
-    /** @var FreeformLogger */
-    private $logger;
+    private bool $formPosted = false;
 
-    /** @var bool */
-    private $finished;
+    public function __construct(array $config = [])
+    {
+        $this->id = $config['id'] ?? null;
+        $this->uid = $config['uid'] ?? null;
+        $this->name = $config['name'] ?? '';
+        $this->handle = $config['handle'] ?? '';
 
-    /** @var bool */
-    private $valid;
-
-    /** @var bool */
-    private $formSaved;
-
-    /** @var bool */
-    private $suppressionEnabled;
-
-    /** @var bool */
-    private $gtmEnabled;
-
-    /** @var string */
-    private $gtmId;
-
-    /** @var string */
-    private $gtmEventName;
-
-    /** @var bool */
-    private $disableAjaxReset;
-
-    /** @var bool */
-    private $pagePosted;
-
-    /** @var bool */
-    private $formPosted;
-
-    /**
-     * Form constructor.
-     *
-     * @throws FreeformException
-     * @throws ComposerException
-     */
-    public function __construct(
-        FormModel $formModel,
-        Properties $properties,
-        array $layoutData,
-        TranslatorInterface $translator,
-        LoggerInterface $logger
-    ) {
-        $this->metadata = $formModel->metadata ?? [];
         $this->propertyBag = new PropertyBag($this);
         $this->attributeBag = new AttributeBag($this);
-
-        $this->finished = false;
-        $this->valid = false;
-        $this->pagePosted = false;
-        $this->formPosted = false;
-
-        $this->properties = $properties;
-        $this->translator = $translator;
-        $this->logger = $logger;
-        $this->storeData = true;
-        $this->ipCollectingEnabled = true;
-        $this->errors = [];
-        $this->suppressionEnabled = false;
-        $this->gtmEnabled = false;
-        $this->disableAjaxReset = false;
-
-        $this->layout = new Layout(
-            $this,
-            $layoutData,
-            $properties,
-            $translator
-        );
-
-        $this->buildFromData(
-            $properties->getFormProperties(),
-            $properties->getValidationProperties()
-        );
-
-        $this->id = $formModel->id;
-        $this->uid = $formModel->uid;
 
         $pageIndex = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
         $this->setCurrentPage($pageIndex);
@@ -324,10 +261,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $event->getIsSet();
     }
 
-    /**
-     * @return null|AbstractField
-     */
-    public function get(string $fieldHandle)
+    public function get(string $fieldHandle): ?FieldInterface
     {
         try {
             return $this->getLayout()->getFieldByHandle($fieldHandle);
@@ -432,11 +366,17 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     public function getCurrentPage(): Page
     {
+        // TODO: implement page collections, use that to get the current page
+        // e.g. $form->pages->current();
+        return new Page(0, 'Page', [], []);
+
         return $this->currentPage;
     }
 
     public function setCurrentPage(int $index): self
     {
+        // TODO: implement page collections
+        return $this;
         if (!$this->currentPage || $index !== $this->currentPage->getIndex()) {
             $page = $this->layout->getPage($index);
 
@@ -841,11 +781,11 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         ];
 
         if ($this->getSuccessMessage()) {
-            $object['successMessage'] = $this->getTranslator()->translate($this->getSuccessMessage(), [], 'app');
+            $object['successMessage'] = Freeform::t($this->getSuccessMessage(), [], 'app');
         }
 
         if ($this->getErrorMessage()) {
-            $object['errorMessage'] = $this->getTranslator()->translate($this->getErrorMessage(), [], 'app');
+            $object['errorMessage'] = Freeform::t($this->getErrorMessage(), [], 'app');
         }
 
         $event = new OutputAsJsonEvent($this, $object);
@@ -985,11 +925,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $event);
 
         return $this->setProperties($event->getAttributes());
-    }
-
-    public function getTranslator(): TranslatorInterface
-    {
-        return $this->translator;
     }
 
     /**
@@ -1137,6 +1072,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     // INTERFACE IMPLEMENTATIONS
     // ==========================
 
+    // TODO: update this to read all the exposable properties
     public function jsonSerialize(): array
     {
         return [

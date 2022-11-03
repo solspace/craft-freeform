@@ -31,6 +31,7 @@ use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Form\Managers\ContentManager;
+use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
@@ -38,29 +39,24 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
-use yii\base\InvalidCallException;
-use yii\base\ViewNotFoundException;
+use Twig\Markup;
 
 class FormsService extends BaseService implements FormHandlerInterface
 {
-    /** @var FormModel[] */
-    private static $formsById = [];
+    /** @var Form[] */
+    private static array $formsById = [];
 
-    /** @var FormModel[] */
-    private static $formsByHandle = [];
+    /** @var Form[] */
+    private static array $formsByHandle = [];
 
-    /** @var bool */
-    private static $allFormsLoaded;
+    private static bool $allFormsLoaded = false;
 
-    /** @var array */
-    private static $spamCountIncrementedForms = [];
+    private static array $spamCountIncrementedForms = [];
 
     /**
-     * @param bool $orderByName
-     *
-     * @return FormModel[]
+     * @return Form[]
      */
-    public function getAllForms($orderByName = false): array
+    public function getAllForms(bool $orderByName = false): array
     {
         if (null === self::$formsById || !self::$allFormsLoaded) {
             $query = $this->getFormQuery();
@@ -73,12 +69,9 @@ class FormsService extends BaseService implements FormHandlerInterface
             self::$formsById = [];
             foreach ($results as $result) {
                 $form = $this->createForm($result);
-                if (!$form) {
-                    continue;
-                }
 
-                self::$formsById[$form->id] = $form;
-                self::$formsByHandle[$form->handle] = $form;
+                self::$formsById[$form->getId()] = $form;
+                self::$formsByHandle[$form->getHandle()] = $form;
             }
 
             self::$allFormsLoaded = true;
@@ -87,19 +80,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return self::$formsById;
     }
 
-    public function getResolvedForm(int $id): ?Form
-    {
-        $result = $this->getFormQuery()->where(['id' => $id])->one();
-        if (!$result) {
-            return null;
-        }
-
-        return $this->createForm($result)->getForm();
-    }
-
-    /**
-     * @return Form[]
-     */
     public function getResolvedForms(array $arguments = []): array
     {
         $limit = $arguments['limit'] ?? null;
@@ -113,7 +93,8 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         unset($arguments['limit'], $arguments['orderBy'], $arguments['sort'], $arguments['offset']);
 
-        $query = $this->getFormQuery()
+        $query = $this
+            ->getFormQuery()
             ->where($arguments)
             ->orderBy($orderBy)
             ->limit($limit)
@@ -124,8 +105,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         $forms = [];
         foreach ($results as $result) {
-            $model = $this->createForm($result);
-            $forms[] = $model->getForm();
+            $forms[] = $this->createForm($result);
         }
 
         return $forms;
@@ -133,7 +113,8 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     public function getAllFormIds(): array
     {
-        return $this->getFormQuery()
+        return $this
+            ->getFormQuery()
             ->select('id')
             ->column()
         ;
@@ -161,54 +142,43 @@ class FormsService extends BaseService implements FormHandlerInterface
         return PermissionHelper::getNestedPermissionIds(Freeform::PERMISSION_FORMS_MANAGE);
     }
 
-    public function getFormById(int $id, bool $refresh = false): ?FormModel
+    public function getFormById(int $id, bool $refresh = false): ?Form
     {
         if (!$refresh && (null === self::$formsById || !isset(self::$formsById[$id]))) {
             $result = $this->getFormQuery()->where(['id' => $id])->one();
+            if (!$result) {
+                self::$formsById[$id] = null;
 
-            $form = null;
-            if ($result) {
-                $form = $this->createForm($result);
+                return null;
             }
 
-            if ($form) {
-                self::$formsByHandle[$form->handle] = $form;
-                self::$formsById[$id] = $form;
-            } else {
-                return $form;
-            }
+            $form = $this->createForm($result);
+            self::$formsByHandle[$form->getHandle()] = $form;
+            self::$formsById[$id] = $form;
         }
 
         return self::$formsById[$id];
     }
 
-    public function getFormByHandle(string $handle): ?FormModel
+    public function getFormByHandle(string $handle): ?Form
     {
         if (null === self::$formsByHandle || !isset(self::$formsByHandle[$handle])) {
             $result = $this->getFormQuery()->where(['handle' => $handle])->one();
+            if (!$result) {
+                self::$formsByHandle[$handle] = null;
 
-            $form = null;
-            if ($result) {
-                $form = $this->createForm($result);
-            }
-
-            if ($form) {
-                self::$formsById[$form->id] = $form;
-                self::$formsByHandle[$handle] = $form;
-            } else {
                 return null;
             }
+
+            $form = $this->createForm($result);
+            self::$formsById[$form->getId()] = $form;
+            self::$formsByHandle[$handle] = $form;
         }
 
         return self::$formsByHandle[$handle];
     }
 
-    /**
-     * @param $handleOrId
-     *
-     * @return null|FormModel
-     */
-    public function getFormByHandleOrId($handleOrId)
+    public function getFormByHandleOrId(string|int $handleOrId): ?Form
     {
         if (is_numeric($handleOrId)) {
             return $this->getFormById($handleOrId);
@@ -217,9 +187,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $this->getFormByHandle($handleOrId);
     }
 
-    /**
-     * @throws \Exception
-     */
     public function save(FormModel $model): bool
     {
         $isNew = !$model->id;
@@ -352,14 +319,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $spamBlockCount;
     }
 
-    /**
-     * @param int $formId
-     *
-     * @return bool
-     *
-     * @throws \Exception
-     */
-    public function deleteById($formId)
+    public function deleteById(int $formId): bool
     {
         $record = $this->getFormById($formId);
 
@@ -417,15 +377,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
     }
 
-    /**
-     * @param string $templateName
-     *
-     * @throws \InvalidArgumentException
-     * @throws ViewNotFoundException
-     * @throws InvalidCallException
-     * @throws FreeformException
-     */
-    public function renderFormTemplate(Form $form, $templateName)
+    public function renderFormTemplate(Form $form, string $templateName): ?Markup
     {
         $settings = $this->getSettingsService();
 
@@ -475,7 +427,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         return Template::raw($output);
     }
 
-    public function renderSuccessTemplate(Form $form)
+    public function renderSuccessTemplate(Form $form): ?Markup
     {
         $settings = $this->getSettingsService();
         $templateName = $form->getSuccessTemplate();
@@ -531,17 +483,8 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $this->getSettingsService()->isAjaxEnabledByDefault();
     }
 
-    /**
-     * @param $deletedStatusId
-     * @param $newStatusId
-     *
-     * @throws \Exception
-     */
-    public function swapDeletedStatusToDefault($deletedStatusId, $newStatusId)
+    public function swapDeletedStatusToDefault(int $deletedStatusId, int $newStatusId)
     {
-        $deletedStatusId = (int) $deletedStatusId;
-        $newStatusId = (int) $newStatusId;
-
         $pattern = "/\"defaultStatus\":{$deletedStatusId}(\\}|,)/";
 
         $forms = $this->getAllForms();
@@ -765,20 +708,13 @@ class FormsService extends BaseService implements FormHandlerInterface
         return (new Query())
             ->select(
                 [
+                    'forms.uid',
                     'forms.id',
                     'forms.type',
-                    'forms.metadata',
-                    'forms.uid',
                     'forms.name',
                     'forms.handle',
+                    'forms.metadata',
                     'forms.spamBlockCount',
-                    'forms.submissionTitleFormat',
-                    'forms.description',
-                    'forms.layoutJson',
-                    'forms.returnUrl',
-                    'forms.defaultStatus',
-                    'forms.formTemplateId',
-                    'forms.color',
                 ]
             )
             ->from(FormRecord::TABLE.' forms')
@@ -786,13 +722,13 @@ class FormsService extends BaseService implements FormHandlerInterface
         ;
     }
 
-    private function createForm(array $data): FormModel
+    private function createForm(array $data): Form
     {
         if (!\is_array($data['metadata'])) {
             $data['metadata'] = json_decode($data['metadata'] ?: '{}', true);
         }
 
-        return new FormModel($data);
+        return new Regular($data);
     }
 
     private function addFormManagePermissionToUser($formId)

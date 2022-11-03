@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\migrations;
 
-use Craft;
 use craft\db\Migration;
 use Solspace\Freeform\Models\Settings;
 
@@ -20,7 +19,7 @@ class m190603_160423_UpgradeFreeformHoneypotEnhancement extends Migration
             return true;
         }
 
-        $pluginService = Craft::$app->getPlugins();
+        $pluginService = \Craft::$app->getPlugins();
 
         $plugin = $pluginService->getPlugin('freeform');
 

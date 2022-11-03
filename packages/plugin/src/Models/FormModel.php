@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Form\Types\Regular;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -24,7 +23,9 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 
 /**
- * Class Freeform_FormModel.
+ * TODO: remove this and only use records to store forms. The actual Form object instance will be used elsewhere.
+ *
+ * @deprecated to be removed
  *
  * @property int    $id
  * @property string $uid
@@ -68,41 +69,30 @@ class FormModel extends Model
 
     public string $layoutJson = '';
 
-    #[EditableProperty(
-        label: 'Return URL',
-        instructions: '',
-    )]
     public ?string $returnUrl = '';
 
-    #[EditableProperty]
     public ?string $extraPostUrl = null;
 
-    #[EditableProperty]
     public ?string $extraPostTriggerPhrase = null;
 
-    #[EditableProperty]
     public ?int $defaultStatus = null;
 
-    #[EditableProperty]
     public ?int $formTemplateId = null;
 
-    #[EditableProperty]
     public ?string $optInDataStorageTargetHash = null;
 
     /** @var string */
     public $limitFormSubmissions;
 
-    /** @var string */
-    public $color;
+    public string $color = '';
 
-    /** @var bool */
-    public $gtmEnabled;
+    public bool $gtmEnabled = false;
 
     /** @var string */
-    public $gtmId;
+    public ?string $gtmId = null;
 
     /** @var string */
-    public $gtmEventName;
+    public ?string $gtmEventName = null;
 
     /** @var int[] */
     private static $spamBlockCountCache;

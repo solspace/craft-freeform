@@ -35,7 +35,9 @@ class FormsController extends BaseApiController
 
         $event = new PersistFormEvent($data);
         $this->trigger(self::EVENT_UPSERT_FORM, $event);
-        $this->trigger(self::EVENT_UPDATE_FORM, $event);
+        $this->trigger(self::EVENT_CREATE_FORM, $event);
+
+        $this->response->statusCode = $event->getStatus() ?? 201;
 
         return $event->getResponseData();
     }
@@ -46,7 +48,9 @@ class FormsController extends BaseApiController
 
         $event = new PersistFormEvent($data, $id);
         $this->trigger(self::EVENT_UPSERT_FORM, $event);
-        $this->trigger(self::EVENT_CREATE_FORM, $event);
+        $this->trigger(self::EVENT_UPDATE_FORM, $event);
+
+        $this->response->statusCode = $event->getStatus() ?? 204;
 
         return $event->getResponseData();
     }

@@ -14,7 +14,9 @@ type RouteParams = {
 export const Edit: React.FC = () => {
   const { formId } = useParams<RouteParams>();
 
-  const { isFetching, isError, error } = useQuerySingleForm(Number(formId));
+  const { isFetching, isError, error } = useQuerySingleForm(
+    formId && Number(formId)
+  );
 
   if (isFetching) {
     return <div>Fetching {formId}...</div>;

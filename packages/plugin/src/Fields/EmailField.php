@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Fields;
 use Egulias\EmailValidator\EmailValidator;
 use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
@@ -56,9 +57,7 @@ class EmailField extends AbstractField implements RecipientInterface, SingleValu
             .$this->getAttributeString('id', $this->getIdAttribute())
             .$this->getAttributeString(
                 'placeholder',
-                $this->getForm()->getTranslator()->translate(
-                    $attributes->getPlaceholder() ?: $this->getPlaceholder()
-                )
+                Freeform::t($attributes->getPlaceholder() ?: $this->getPlaceholder())
             )
             .$this->getAttributeString('value', $this->getValue())
             .$this->getRequiredAttribute()

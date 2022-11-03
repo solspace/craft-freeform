@@ -24,21 +24,6 @@ use Solspace\Freeform\Freeform;
  * @property string $name
  * @property string $handle
  * @property int    $spamBlockCount
- * @property string $submissionTitleFormat
- * @property string $description
- * @property string $layoutJson
- * @property string $returnUrl
- * @property string $extraPostUrl
- * @property string $extraPostTriggerPhrase
- * @property int    $defaultStatus
- * @property int    $formTemplateId
- * @property int    $optInDataStorageTargetHash
- * @property int    $limitFormSubmissions
- * @property string $color
- * @property int    $order
- * @property bool   $gtmEnabled
- * @property string $gtmId
- * @property string $gtmEventName
  */
 class FormRecord extends ActiveRecord
 {

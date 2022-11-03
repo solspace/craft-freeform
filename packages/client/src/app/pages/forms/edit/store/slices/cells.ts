@@ -2,8 +2,8 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { Cell, Row } from '../../builder/types/layout';
-import type { SaveSubscriber } from '../actions/form';
-import { TOPIC_SAVE } from '../actions/form';
+import type { SaveSubscriber } from '../middleware/state-persist';
+import { TOPIC_SAVE } from '../middleware/state-persist';
 import type { RootState } from '../store';
 
 type CellState = Cell[];

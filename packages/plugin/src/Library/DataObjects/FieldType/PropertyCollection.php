@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\DataObjects\FieldType;
 
-class PropertyCollection implements \JsonSerializable
+class PropertyCollection implements \IteratorAggregate, \JsonSerializable
 {
     /** @var Property[] */
     private array $properties = [];
@@ -31,6 +31,11 @@ class PropertyCollection implements \JsonSerializable
     public function getProperties(): array
     {
         return $this->properties;
+    }
+
+    public function getIterator(): \ArrayIterator
+    {
+        return new \ArrayIterator($this->properties);
     }
 
     public function jsonSerialize()

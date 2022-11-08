@@ -6,7 +6,6 @@ use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
 use yii\base\Event;
@@ -29,21 +28,32 @@ class FormPersistence extends FeatureBundle
         );
     }
 
+    public static function getPriority(): int
+    {
+        return 200;
+    }
+
     public function handleFormCreate(PersistFormEvent $event)
     {
         $payload = $event->getPayload()->form;
-        $formId = $event->getFormId();
 
-        if (!$formId) {
-            $record = FormRecord::create();
-            $record->uid = $payload->uid;
-            $record->type = $payload->type;
-        } else {
-            $record = FormRecord::findOne(['id' => $formId]);
-            if (!$record) {
-                throw new FreeformException('Form not found');
-            }
-        }
+        $record = FormRecord::create();
+        $record->uid = $payload->uid;
+        $record->type = $payload->type;
+
+        $this->update($event, $record);
+    }
+
+    public function handleFormUpdate(PersistFormEvent $event)
+    {
+        $record = FormRecord::findOne(['id' => $event->getFormId()]);
+
+        $this->update($event, $record);
+    }
+
+    private function update(PersistFormEvent $event, FormRecord $record)
+    {
+        $payload = $event->getPayload()->form;
 
         $record->name = $payload->properties->name;
         $record->handle = $payload->properties->handle;
@@ -70,13 +80,8 @@ class FormPersistence extends FeatureBundle
             return;
         }
 
-        if (!$formId) {
-            $form = $this->formsService->getFormById($record->id);
-            $event->addToResponse('form', $form);
-        }
-    }
-
-    public function handleFormUpdate(PersistFormEvent $event)
-    {
+        $form = $this->formsService->getFormById($record->id);
+        $event->setForm($form);
+        $event->addToResponse('form', $form);
     }
 }

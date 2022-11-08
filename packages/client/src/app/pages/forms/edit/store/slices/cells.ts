@@ -1,10 +1,9 @@
+import type { Cell, Row } from '@editor/builder/types/layout';
+import type { RootState } from '@editor/store';
+import type { SaveSubscriber } from '@editor/store/middleware/state-persist';
+import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-
-import type { Cell, Row } from '../../builder/types/layout';
-import type { SaveSubscriber } from '../middleware/state-persist';
-import { TOPIC_SAVE } from '../middleware/state-persist';
-import type { RootState } from '../store';
 
 type CellState = Cell[];
 

@@ -1,12 +1,11 @@
+import { CellType } from '@editor/builder/types/layout';
+import type { AppThunk } from '@editor/store';
+import { add as addCell } from '@editor/store/slices/cells';
+import { selectCurrentPage } from '@editor/store/slices/context';
+import { add as addField } from '@editor/store/slices/fields';
+import { add as addRow } from '@editor/store/slices/rows';
 import type { FieldType } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
-
-import { CellType } from '../../builder/types/layout';
-import { add as addCell } from '../slices/cells';
-import { selectCurrentPage } from '../slices/context';
-import { add as addField } from '../slices/fields';
-import { add as addRow } from '../slices/rows';
-import type { AppThunk } from '../store';
 
 export const addNewField =
   (fieldType: FieldType): AppThunk =>

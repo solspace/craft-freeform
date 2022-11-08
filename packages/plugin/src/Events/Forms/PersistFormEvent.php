@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
+use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class PersistFormEvent extends Event
@@ -10,11 +11,25 @@ class PersistFormEvent extends Event
 
     private ?int $status = null;
 
+    private ?Form $form = null;
+
     public function __construct(
         private \stdClass $payload,
         private ?int $formId = null
     ) {
         parent::__construct([]);
+    }
+
+    public function getForm(): ?Form
+    {
+        return $this->form;
+    }
+
+    public function setForm(?Form $form): self
+    {
+        $this->form = $form;
+
+        return $this;
     }
 
     public function getPayload(): \stdClass

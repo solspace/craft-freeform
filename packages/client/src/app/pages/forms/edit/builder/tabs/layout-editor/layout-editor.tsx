@@ -1,9 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { SidebarSlider } from '@ff-client/app/components/layout/sidebar/sidebar-slider';
-
-import { selectFocus, unfocus } from '../../../store/slices/context';
-import { useAppDispatch } from '../../../store/store';
+import { SidebarSlider } from '@components/layout/sidebar/sidebar-slider';
+import { useAppDispatch } from '@editor/store';
+import { selectFocus, unfocus } from '@editor/store/slices/context';
 
 import { FieldLayout } from './field-layout/field-layout';
 import { FieldList } from './field-list/field-list';

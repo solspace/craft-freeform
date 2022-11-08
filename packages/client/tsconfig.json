@@ -8,6 +8,8 @@
     "types": ["jest", "node"],
     "typeRoots": ["config/@types", "node_modules/@types"],
     "paths": {
+      "@editor/*": ["client/src/app/pages/forms/edit/*"],
+      "@components/*": ["client/src/app/components/*"],
       "@ff-client/*": ["client/src/*"]
     }
   },

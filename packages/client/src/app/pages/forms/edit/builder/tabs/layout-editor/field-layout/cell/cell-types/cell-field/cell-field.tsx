@@ -1,12 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useAppDispatch } from '@editor/store';
+import { FocusType, setFocusedItem } from '@editor/store/slices/context';
+import { selectField } from '@editor/store/slices/fields';
 import { Text } from '@ff-client/app/components/form-controls/controls/text';
-import {
-  FocusType,
-  setFocusedItem,
-} from '@ff-client/app/pages/forms/edit/store/slices/context';
-import { selectField } from '@ff-client/app/pages/forms/edit/store/slices/fields';
-import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
 import { useFieldType } from '@ff-client/queries/field-types';
 
 import { CellFieldWrapper, Label } from './cell-field.styles';

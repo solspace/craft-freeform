@@ -10,37 +10,32 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Records;
+namespace Solspace\Freeform\Records\Form;
 
 use craft\db\ActiveRecord;
 
 /**
  * @property int       $id
- * @property int       $integrationId
  * @property int       $formId
- * @property bool      $enabled
+ * @property string    $type
  * @property string    $metadata
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid
  */
-class FormIntegrationRecord extends ActiveRecord
+class FormFieldRecord extends ActiveRecord
 {
-    public const TABLE = '{{%freeform_forms_integrations}}';
+    public const TABLE = '{{%freeform_forms_fields}}';
 
     public static function tableName(): string
     {
         return self::TABLE;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function rules(): array
     {
         return [
-            [['formId', 'integrationId'], 'unique'],
-            [['formId', 'integrationId'], 'required'],
+            [['formId'], 'required'],
         ];
     }
 }

@@ -1,8 +1,7 @@
 import React from 'react';
+import type { Page } from '@editor/builder/types/layout';
+import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store';
 import { unfocus } from '@ff-client/app/pages/forms/edit/store/slices/context';
-import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
-
-import type { Page } from '../../../../../types/layout';
 
 import { TabWrapper } from './tab.styles';
 

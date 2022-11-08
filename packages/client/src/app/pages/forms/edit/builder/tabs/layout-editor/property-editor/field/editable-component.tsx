@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import React, { Suspense } from 'react';
-import type { Field } from '@ff-client/app/pages/forms/edit/store/slices/fields';
-import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
+import { useAppDispatch } from '@editor/store';
+import type { Field } from '@editor/store/slices/fields';
 import type { FieldProperty, FieldPropertyType } from '@ff-client/types/fields';
 
 import { ErrorBoundary } from '../boundaries/ErrorBoundary';

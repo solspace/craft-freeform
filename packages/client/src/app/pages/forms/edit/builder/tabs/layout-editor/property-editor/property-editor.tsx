@@ -1,10 +1,9 @@
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useAppDispatch } from '@editor/store';
+import { selectFocus, unfocus } from '@editor/store/slices/context';
 import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-
-import { selectFocus, unfocus } from '../../../../store/slices/context';
-import { useAppDispatch } from '../../../../store/store';
 
 import { ErrorBoundary } from './boundaries/ErrorBoundary';
 import { FieldProperties } from './field/field-properties';

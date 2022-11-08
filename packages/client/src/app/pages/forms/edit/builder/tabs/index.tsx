@@ -1,11 +1,10 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
+import { useAppDispatch } from '@editor/store';
+import { save } from '@editor/store/actions/form';
 import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import translate from '@ff-client/utils/translations';
-
-import { save } from '../../store/actions/form';
-import { useAppDispatch } from '../../store/store';
 
 import {
   FormName,

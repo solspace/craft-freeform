@@ -3,8 +3,13 @@
 namespace Solspace\Freeform\Bundles\Fields\Types;
 
 use Solspace\Freeform\Attributes\Field\Section;
+use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
+use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
+use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
 use yii\base\Event;
 
 class FieldTypesProvider
@@ -16,6 +21,12 @@ class FieldTypesProvider
 
     /** @var FieldPropertySection[] */
     private ?array $sections = null;
+
+    public function __construct(
+        private AttributeProvider $attributeProvider,
+        private ImplementationProvider $implementationProvider
+    ) {
+    }
 
     public function getRegisteredTypes(): array
     {
@@ -64,7 +75,7 @@ class FieldTypesProvider
 
             $this->fieldTypes = array_filter(
                 array_map(
-                    fn ($class) => new FieldType($class),
+                    fn ($class) => $this->createFieldType($class),
                     $types
                 )
             );
@@ -79,5 +90,32 @@ class FieldTypesProvider
             fn (FieldType $type) => $type->getType(),
             $this->getTypes()
         );
+    }
+
+    private function createFieldType(string $typeClass): ?FieldType
+    {
+        $reflection = new \ReflectionClass($typeClass);
+        if (!$reflection->implementsInterface(FieldInterface::class)) {
+            return null;
+        }
+
+        /** @var Type $type */
+        $typeAttribute = $reflection->getAttributes(Type::class)[0] ?? null;
+        if (!$typeAttribute) {
+            throw new InvalidFieldTypeException("Field type definition invalid for '{$typeClass}'");
+        }
+
+        /** @var Type $typeInstance */
+        $typeInstance = $typeAttribute->newInstance();
+
+        $type = new FieldType();
+        $type->typeClass = $typeClass;
+        $type->type = $typeInstance->typeShorthand;
+        $type->name = $typeInstance->name;
+        $type->icon = file_get_contents($typeInstance->iconPath);
+        $type->implements = $this->implementationProvider->getImplementations($typeClass);
+        $type->properties = $this->attributeProvider->getEditableProperties($typeClass);
+
+        return $type;
     }
 }

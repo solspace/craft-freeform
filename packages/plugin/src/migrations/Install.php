@@ -58,11 +58,18 @@ class Install extends StreamlinedInstallMigration
             (new Table('freeform_forms_fields'))
                 ->addField('id', $this->primaryKey())
                 ->addField('formId', $this->integer()->notNull())
-                ->addField('cellId', $this->integer()->notNull())
                 ->addField('type', $this->string(255)->notNull())
                 ->addField('metadata', $this->mediumText())
-                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('cellId', 'freeform_forms_cells', 'id', ForeignKey::CASCADE),
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_forms_integrations'))
+                ->addField('id', $this->primaryKey())
+                ->addField('integrationId', $this->integer()->notNull())
+                ->addField('formId', $this->integer()->notNull())
+                ->addField('enabled', $this->boolean()->notNull()->defaultValue(true))
+                ->addField('metadata', $this->mediumText())
+                ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())

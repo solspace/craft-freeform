@@ -2,14 +2,17 @@ import React from 'react';
 
 import type { ControlProps } from '../control';
 import { Control } from '../control';
-import { LightswitchInput } from '../inputs/lightswitch-input';
+import { LightSwitchInput } from '../inputs/lightswitch-input';
 
-export const Lightswitch: React.FC<ControlProps<boolean>> = (props) => {
-  const { value, onChange } = props;
+export const LightSwitch: React.FC<ControlProps<boolean>> = (
+  props: ControlProps<boolean>
+) => {
+  const { id, value, onChange } = props;
 
   return (
     <Control {...props}>
-      <LightswitchInput
+      <LightSwitchInput
+        id={id}
         enabled={value}
         onClick={() => onChange && onChange(!value)}
       />

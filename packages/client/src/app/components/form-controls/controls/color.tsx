@@ -4,18 +4,16 @@ import React from 'react';
 import type { ControlProps } from '../control';
 import { Control } from '../control';
 
-export const Text: React.FC<ControlProps<string>> = (
+export const Color: React.FC<ControlProps<string>> = (
   props: ControlProps<string>
 ) => {
-  const { id, value, placeholder, onChange } = props;
+  const { id, value, onChange } = props;
 
   return (
     <Control {...props}>
       <input
         id={id}
-        type="text"
-        placeholder={placeholder}
-        className="text fullwidth"
+        type="color"
         defaultValue={value as string}
         onChange={(event: ChangeEvent<HTMLInputElement>): void =>
           onChange && onChange(event.target.value)

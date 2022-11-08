@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import type { ControlProps } from '@ff-client/app/components/form-controls/control';
-import { Lightswitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
+import { LightSwitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
 import { Text } from '@ff-client/app/components/form-controls/controls/text';
 import { modifyIntegrationSetting } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
 import { useDebounce } from '@ff-client/hooks/use-debounce';
@@ -47,7 +47,7 @@ export const Setting: React.FC<RenderSettingProps> = ({ id, setting }) => {
 
   switch (setting.type) {
     case SettingType.Boolean:
-      return <Lightswitch {...(props as ControlProps<boolean>)} />;
+      return <LightSwitch {...(props as ControlProps<boolean>)} />;
 
     case SettingType.Text:
     default:

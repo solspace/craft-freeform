@@ -4,20 +4,18 @@ import React from 'react';
 import type { ControlProps } from '../control';
 import { Control } from '../control';
 
-export const Text: React.FC<ControlProps<string>> = (
-  props: ControlProps<string>
-) => {
-  const { id, value, placeholder, onChange } = props;
+export const Textarea: React.FC<ControlProps> = (props: ControlProps) => {
+  const { id, rows, value, placeholder, onChange } = props;
 
   return (
     <Control {...props}>
-      <input
+      <textarea
         id={id}
-        type="text"
+        rows={rows}
         placeholder={placeholder}
         className="text fullwidth"
         defaultValue={value as string}
-        onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+        onChange={(event: ChangeEvent<HTMLTextAreaElement>): void =>
           onChange && onChange(event.target.value)
         }
       />

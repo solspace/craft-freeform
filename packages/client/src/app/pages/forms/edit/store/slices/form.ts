@@ -1,4 +1,4 @@
-import type { Form } from '@ff-client/types/forms';
+import type { Form, FormProperties } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -27,12 +27,29 @@ const initialState: FormState = {
   properties: {
     name: 'New Form',
     handle: 'newForm',
+    defaultStatus: 3,
+    submissionTitleFormat: '{{ dateCreated|date("Y-m-d H:i:s") }}',
+    formattingTemplate: '',
+    description: '',
+    color: '#f7ed6c',
+    storeSubmittedData: false,
+    enableCaptchas: false,
+    optInDataStorageTargetHash: 0,
+    formTagAttributes: [],
   },
 };
 
-type UpdateProps = Partial<Omit<FormState, 'properties'>>;
-type ModifyProps = { key: string; value: GenericValue };
-type ErrorProps = { key: string; errors: string[] };
+export type UpdateProps = Partial<Omit<FormState, 'properties'>>;
+
+export type ModifyProps = {
+  key: string;
+  value: GenericValue;
+};
+
+export type ErrorProps = {
+  key: string;
+  errors: string[];
+};
 
 export const formSlice = createSlice({
   name: 'form',
@@ -41,11 +58,10 @@ export const formSlice = createSlice({
     update: (state, { payload }: PayloadAction<UpdateProps>) => {
       Object.assign(state, payload);
     },
-    modifyProperty: (
-      state,
-      { payload: { key, value } }: PayloadAction<ModifyProps>
-    ) => {
-      state.properties[key] = value;
+    modifyProperty: (state, { payload }: PayloadAction<ModifyProps>) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      state.properties[payload.key] = payload.value;
     },
     removeError: (state, { payload }: PayloadAction<string>) => {
       delete state.errors[payload];
@@ -71,8 +87,15 @@ export const {
   clearErrors,
 } = formSlice.actions;
 
+export const selectForm = (state: RootState): Form | undefined => state.form;
+
 export const selectFormId = (state: RootState): number | undefined =>
   state.form.id;
+
+export const selectFormType = (state: RootState): string => state.form.type;
+
+export const selectFormProperties = (state: RootState): FormProperties =>
+  state.form.properties;
 
 export default formSlice.reducer;
 

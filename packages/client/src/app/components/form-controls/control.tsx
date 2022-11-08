@@ -1,13 +1,24 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 
+import { Field, FieldHeading, FieldInstructions } from './control.styles';
+
+export type OptionProps = {
+  label: string;
+  value: string | number;
+};
+
 export type ControlProps<T = unknown> = {
   id?: string;
   label?: string;
+  rows?: number;
+  options?: OptionProps[];
   instructions?: string;
+  placeholder?: string;
   children?: ReactNode;
   value?: T;
-  onChange?: (value: T) => void;
+  className?: string;
+  onChange?: (value: string | number | boolean) => void;
 };
 
 export const Control: React.FC<ControlProps> = ({
@@ -15,18 +26,15 @@ export const Control: React.FC<ControlProps> = ({
   label,
   instructions,
   children,
-}) => {
-  return (
-    <div className="field" style={{ margin: 0 }}>
-      {!!label && (
-        <div className="heading">
-          <label htmlFor={id}>{label}</label>
-        </div>
-      )}
-
-      {!!instructions && <div className="instructions">{instructions}</div>}
-
-      <div className="input">{children}</div>
-    </div>
-  );
-};
+  className,
+}) => (
+  <Field className={className}>
+    {!!label && (
+      <FieldHeading>
+        <label htmlFor={id}>{label}</label>
+      </FieldHeading>
+    )}
+    {!!instructions && <FieldInstructions>{instructions}</FieldInstructions>}
+    <div className="input">{children}</div>
+  </Field>
+);

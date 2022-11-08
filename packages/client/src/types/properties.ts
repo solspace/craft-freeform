@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type GenericValue = any;
+
 export type FormTagAttributeProps = {
   index?: number;
   key: string;
@@ -13,16 +16,5 @@ export type FormTagAttributeInputProps = {
 export type PropertiesProps = {
   name: string;
   handle: string;
-  defaultStatus: number;
-  submissionTitleFormat: string;
-  formattingTemplate: string;
-  description: string;
-  color: string;
-  storeSubmittedData: false;
-  enableCaptchas: false;
-  optInDataStorageTargetHash: number;
-  formTagAttributes: FormTagAttributeProps[];
+  [key: string]: GenericValue;
 };
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type GenericValue = any;

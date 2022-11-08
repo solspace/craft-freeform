@@ -59,8 +59,6 @@ export const formSlice = createSlice({
       Object.assign(state, payload);
     },
     modifyProperty: (state, { payload }: PayloadAction<ModifyProps>) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       state.properties[payload.key] = payload.value;
     },
     removeError: (state, { payload }: PayloadAction<string>) => {

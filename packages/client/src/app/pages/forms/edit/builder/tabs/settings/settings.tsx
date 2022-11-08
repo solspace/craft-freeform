@@ -4,11 +4,9 @@ import { Sidebar } from '@ff-client/app/pages/forms/edit/builder/tabs/settings/s
 
 import { SettingsWrapper } from './settings.styles';
 
-export const Settings: React.FC = () => {
-  return (
-    <SettingsWrapper>
-      <Sidebar />
-      <FieldLayout />
-    </SettingsWrapper>
-  );
-};
+export const Settings: React.FC = () => (
+  <SettingsWrapper>
+    <Sidebar />
+    <FieldLayout />
+  </SettingsWrapper>
+);

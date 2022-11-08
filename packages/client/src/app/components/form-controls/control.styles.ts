@@ -19,13 +19,3 @@ export const FieldInstructions = styled.div`
   font-style: italic;
   padding: 0 0 10px 0;
 `;
-
-export const ColorInput = styled.input`
-  margin: 0;
-  padding: 0;
-  width: 40px;
-  height: 35px;
-  border: none;
-  -webkit-appearance: none;
-  background-color: transparent;
-`;

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Color,
-  Control,
   FormTagAttribute,
   LightSwitch,
   SelectBox,
@@ -12,16 +11,10 @@ import {
 import {
   modifyProperty,
   selectForm,
-  selectFormProperties,
-  selectFormType,
   update,
 } from '@ff-client/app/pages/forms/edit/store/slices/form';
 import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
-import type { FormTagAttributeProps } from '@ff-client/types/forms';
-import type {
-  ModifyPropertyFormTagAttributeHandlerProps,
-  ModifyPropertyHandlerProps,
-} from '@ff-client/types/properties';
+import type { FormTagAttributeProps } from '@ff-client/types/properties';
 
 import { FieldLayoutGrid, FieldLayoutWrapper } from './field-layout.styles';
 
@@ -29,76 +22,6 @@ export const FieldLayout: React.FC = () => {
   const dispatch = useAppDispatch();
 
   const form = useSelector(selectForm);
-  const type = useSelector(selectFormType);
-  const properties = useSelector(selectFormProperties);
-
-  const onModifyPropertyHandler = (
-    payload: ModifyPropertyHandlerProps
-  ): void => {
-    dispatch(modifyProperty(payload));
-  };
-
-  const deleteFormTagAttributeHandler = (payload: number): void => {
-    let formTagAttributes = JSON.parse(
-      JSON.stringify(properties.formTagAttributes)
-    );
-
-    // Filter out attribute based on its index
-    formTagAttributes = formTagAttributes.filter(
-      (formTagAttribute: FormTagAttributeProps, index: number) =>
-        index !== payload
-    );
-
-    dispatch(
-      modifyProperty({
-        key: 'formTagAttributes',
-        value: formTagAttributes,
-      })
-    );
-  };
-
-  const updateFormTagAttributeHandler = (
-    payload: ModifyPropertyFormTagAttributeHandlerProps
-  ): void => {
-    const formTagAttributes = JSON.parse(
-      JSON.stringify(properties.formTagAttributes)
-    );
-
-    // Find and update attribute property value
-    formTagAttributes.forEach(
-      (formTagAttribute: FormTagAttributeProps, index: number) => {
-        if (index === payload.index) {
-          if (payload.key === 'key') {
-            formTagAttribute['key'] = String(payload.value);
-          } else {
-            formTagAttribute['value'] = payload.value ?? '';
-          }
-        }
-      }
-    );
-
-    dispatch(
-      modifyProperty({
-        key: 'formTagAttributes',
-        value: formTagAttributes,
-      })
-    );
-  };
-
-  const addFormTagAttribute = (): void => {
-    dispatch(
-      modifyProperty({
-        key: 'formTagAttributes',
-        value: [
-          ...properties.formTagAttributes,
-          {
-            key: '',
-            value: '',
-          },
-        ],
-      })
-    );
-  };
 
   useEffect(() => {
     console.log('Settings >> FieldLayout >> form', form);
@@ -111,14 +34,16 @@ export const FieldLayout: React.FC = () => {
           <Text
             id="name"
             label="Form Name"
-            value={(properties.name as string) || ''}
+            value={(form.properties.name as string) || ''}
             placeholder=""
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
-              onModifyPropertyHandler({
-                key: 'name',
-                value: value,
-              })
+              dispatch(
+                modifyProperty({
+                  value,
+                  key: 'name',
+                })
+              )
             }
           />
         </div>
@@ -126,14 +51,16 @@ export const FieldLayout: React.FC = () => {
           <Text
             id="handle"
             label="Form Handle"
-            value={(properties.handle as string) || ''}
+            value={(form.properties.handle as string) || ''}
             placeholder=""
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
-              onModifyPropertyHandler({
-                key: 'handle',
-                value: value,
-              })
+              dispatch(
+                modifyProperty({
+                  value,
+                  key: 'handle',
+                })
+              )
             }
           />
         </div>
@@ -141,7 +68,7 @@ export const FieldLayout: React.FC = () => {
           <SelectBox
             id="type"
             label="Form Type"
-            value={(type as string) || ''}
+            value={(form.type as string) || ''}
             options={[
               {
                 label: 'Regular',
@@ -149,10 +76,10 @@ export const FieldLayout: React.FC = () => {
               },
             ]}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            onChange={(value: string) =>
+            onChange={(type: string) =>
               dispatch(
                 update({
-                  type: value,
+                  type,
                 })
               )
             }
@@ -162,7 +89,7 @@ export const FieldLayout: React.FC = () => {
           <SelectBox
             id="defaultStatus"
             label="Default State"
-            value={(properties.defaultStatus as number) || 3}
+            value={(form.properties.defaultStatus as number) || 3}
             options={[
               {
                 label: 'Pending',
@@ -179,10 +106,12 @@ export const FieldLayout: React.FC = () => {
             ]}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: number) =>
-              onModifyPropertyHandler({
-                key: 'defaultStatus',
-                value: Number(value),
-              })
+              dispatch(
+                modifyProperty({
+                  key: 'defaultStatus',
+                  value: Number(value),
+                })
+              )
             }
           />
         </div>
@@ -190,14 +119,16 @@ export const FieldLayout: React.FC = () => {
           <Text
             id="submissionTitleFormat"
             label="Submission Title"
-            value={(properties.submissionTitleFormat as string) || ''}
+            value={(form.properties.submissionTitleFormat as string) || ''}
             placeholder=""
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
-              onModifyPropertyHandler({
-                key: 'submissionTitleFormat',
-                value: value,
-              })
+              dispatch(
+                modifyProperty({
+                  value,
+                  key: 'submissionTitleFormat',
+                })
+              )
             }
           />
         </div>
@@ -206,14 +137,16 @@ export const FieldLayout: React.FC = () => {
           <Text
             id="formattingTemplate"
             label="Formatting Template"
-            value={(properties.formattingTemplate as string) || ''}
+            value={(form.properties.formattingTemplate as string) || ''}
             placeholder=""
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
-              onModifyPropertyHandler({
-                key: 'formattingTemplate',
-                value: value,
-              })
+              dispatch(
+                modifyProperty({
+                  value,
+                  key: 'formattingTemplate',
+                })
+              )
             }
           />
         </div>
@@ -223,14 +156,16 @@ export const FieldLayout: React.FC = () => {
             rows={4}
             id="description"
             label="Form Description / Notes"
-            value={(properties.description as string) || ''}
+            value={(form.properties.description as string) || ''}
             placeholder=""
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
-              onModifyPropertyHandler({
-                key: 'description',
-                value: value,
-              })
+              dispatch(
+                modifyProperty({
+                  value,
+                  key: 'description',
+                })
+              )
             }
           />
         </div>
@@ -238,13 +173,15 @@ export const FieldLayout: React.FC = () => {
           <Color
             id="color"
             label="Form Color"
-            value={(properties.color as string) || '#f7ed6c'}
+            value={(form.properties.color as string) || '#ff0000'}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
-              onModifyPropertyHandler({
-                key: 'color',
-                value: value,
-              })
+              dispatch(
+                modifyProperty({
+                  value,
+                  key: 'color',
+                })
+              )
             }
           />
         </div>
@@ -252,13 +189,15 @@ export const FieldLayout: React.FC = () => {
           <LightSwitch
             id="storeSubmittedData"
             label="Store Submitted Data"
-            value={(properties.storeSubmittedData as boolean) || false}
+            value={(form.properties.storeSubmittedData as boolean) || false}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: boolean) =>
-              onModifyPropertyHandler({
-                key: 'storeSubmittedData',
-                value: Boolean(value),
-              })
+              dispatch(
+                modifyProperty({
+                  key: 'storeSubmittedData',
+                  value: Boolean(value),
+                })
+              )
             }
           />
         </div>
@@ -266,13 +205,15 @@ export const FieldLayout: React.FC = () => {
           <LightSwitch
             id="enableCaptchas"
             label="Enable Captchas"
-            value={(properties.enableCaptchas as boolean) || false}
+            value={(form.properties.enableCaptchas as boolean) || false}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: boolean) =>
-              onModifyPropertyHandler({
-                key: 'enableCaptchas',
-                value: Boolean(value),
-              })
+              dispatch(
+                modifyProperty({
+                  key: 'enableCaptchas',
+                  value: Boolean(value),
+                })
+              )
             }
           />
         </div>
@@ -280,7 +221,7 @@ export const FieldLayout: React.FC = () => {
           <SelectBox
             id="optInDataStorageTargetHash"
             label="Opt-In Data Storage Checkbox"
-            value={(properties.optInDataStorageTargetHash as number) || 0}
+            value={(form.properties.optInDataStorageTargetHash as number) || 0}
             options={[
               {
                 label: 'Enabled',
@@ -293,43 +234,34 @@ export const FieldLayout: React.FC = () => {
             ]}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: number) =>
-              onModifyPropertyHandler({
-                key: 'optInDataStorageTargetHash',
-                value: Number(value),
-              })
+              dispatch(
+                modifyProperty({
+                  key: 'optInDataStorageTargetHash',
+                  value: Number(value),
+                })
+              )
             }
           />
         </div>
         <div />
         <div style={{ padding: '20px' }}>
-          <Control
+          <FormTagAttribute
             id="formTagAttributes"
             label="Form Tag Attributes"
-            instructions=""
-          >
-            {properties.formTagAttributes.map(
-              ({ key, value }: FormTagAttributeProps, index: number) => {
-                return (
-                  <FormTagAttribute
-                    key={index}
-                    index={index}
-                    attributeKey={key}
-                    attributeValue={value}
-                    onDeleteField={deleteFormTagAttributeHandler}
-                    onChangeField={updateFormTagAttributeHandler}
-                  />
-                );
-              }
-            )}
-            <button
-              type="button"
-              className="btn"
-              style={{ marginTop: '20px' }}
-              onClick={addFormTagAttribute}
-            >
-              Add&nbsp;+
-            </button>
-          </Control>
+            value={
+              (form.properties.formTagAttributes as FormTagAttributeProps[]) ||
+              []
+            }
+            instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+            onChange={(value: FormTagAttributeProps[]) =>
+              dispatch(
+                modifyProperty({
+                  value,
+                  key: 'formTagAttributes',
+                })
+              )
+            }
+          />
         </div>
       </FieldLayoutGrid>
     </FieldLayoutWrapper>

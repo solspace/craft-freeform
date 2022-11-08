@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import React from 'react';
+import type { FormTagAttributeProps } from '@ff-client/types/properties';
 
 import { Field, FieldHeading, FieldInstructions } from './control.styles';
 
@@ -17,8 +18,9 @@ export type ControlProps<T = unknown> = {
   placeholder?: string;
   children?: ReactNode;
   value?: T;
-  className?: string;
-  onChange?: (value: string | number | boolean) => void;
+  onChange?: (
+    value: string | number | boolean | FormTagAttributeProps[]
+  ) => void;
 };
 
 export const Control: React.FC<ControlProps> = ({
@@ -26,9 +28,8 @@ export const Control: React.FC<ControlProps> = ({
   label,
   instructions,
   children,
-  className,
 }) => (
-  <Field className={className}>
+  <Field className="field">
     {!!label && (
       <FieldHeading>
         <label htmlFor={id}>{label}</label>

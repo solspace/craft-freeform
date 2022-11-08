@@ -1,4 +1,4 @@
-import type { Form, FormProperties } from '@ff-client/types/forms';
+import type { FormProps } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -16,7 +16,7 @@ import { TOPIC_ERRORS } from '../middleware/state-persist';
 import { TOPIC_SAVE } from '../middleware/state-persist';
 import type { RootState } from '../store';
 
-type FormState = Form & {
+type FormState = FormProps & {
   errors?: ErrorList;
 };
 
@@ -87,15 +87,7 @@ export const {
   clearErrors,
 } = formSlice.actions;
 
-export const selectForm = (state: RootState): Form | undefined => state.form;
-
-export const selectFormId = (state: RootState): number | undefined =>
-  state.form.id;
-
-export const selectFormType = (state: RootState): string => state.form.type;
-
-export const selectFormProperties = (state: RootState): FormProperties =>
-  state.form.properties;
+export const selectForm = (state: RootState): FormProps | undefined => state.form;
 
 export default formSlice.reducer;
 

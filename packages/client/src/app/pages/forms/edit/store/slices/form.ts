@@ -37,9 +37,6 @@ export const formSlice = createSlice({
   name: 'form',
   initialState,
   reducers: {
-    save: () => {
-      // perform nothing
-    },
     update: (state, { payload }: PayloadAction<UpdateProps>) => {
       Object.assign(state, payload);
     },
@@ -65,7 +62,6 @@ export const formSlice = createSlice({
 });
 
 export const {
-  save,
   update,
   modifyProperty,
   addError,

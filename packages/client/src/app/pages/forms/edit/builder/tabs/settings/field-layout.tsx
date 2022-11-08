@@ -23,10 +23,6 @@ export const FieldLayout: React.FC = () => {
 
   const form = useSelector(selectForm);
 
-  useEffect(() => {
-    console.log('Settings >> FieldLayout >> form', form);
-  }, [form]);
-
   return (
     <FieldLayoutWrapper>
       <FieldLayoutGrid>

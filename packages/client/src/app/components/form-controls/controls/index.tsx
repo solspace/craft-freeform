@@ -1,18 +1,7 @@
-import { Control } from '../control';
-
-import { Color } from './color';
-import { FormTagAttribute } from './form-tag-attribute';
-import { LightSwitch } from './lightswitch';
-import { SelectBox } from './select';
-import { Text } from './text';
-import { Textarea } from './textarea';
-
-export {
-  Color,
-  Control,
-  FormTagAttribute,
-  LightSwitch,
-  SelectBox,
-  Text,
-  Textarea,
-};
+export { Control } from '../control';
+export { Color } from './color';
+export { FormTagAttribute } from './form-tag-attribute';
+export { LightSwitch } from './lightswitch';
+export { SelectBox } from './select';
+export { Text } from './text';
+export { Textarea } from './textarea';

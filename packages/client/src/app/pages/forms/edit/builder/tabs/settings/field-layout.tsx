@@ -127,16 +127,16 @@ export const FieldLayout: React.FC = () => {
         <div />
         <div style={{ padding: '20px' }}>
           <Text
-            id="formattingTemplate"
+            id="formTemplate"
             label="Formatting Template"
-            value={(form.properties.formattingTemplate as string) || ''}
+            value={(form.properties.formTemplate as string) || ''}
             placeholder=""
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
               dispatch(
                 modifyProperty({
                   value,
-                  key: 'formattingTemplate',
+                  key: 'formTemplate',
                 })
               )
             }
@@ -165,7 +165,7 @@ export const FieldLayout: React.FC = () => {
           <Color
             id="color"
             label="Form Color"
-            value={(form.properties.color as string) || '#ff0000'}
+            value={(form.properties.color as string) || ''}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: string) =>
               dispatch(
@@ -179,14 +179,14 @@ export const FieldLayout: React.FC = () => {
         </div>
         <div style={{ padding: '20px' }}>
           <LightSwitch
-            id="storeSubmittedData"
+            id="storeData"
             label="Store Submitted Data"
-            value={(form.properties.storeSubmittedData as boolean) || false}
+            value={(form.properties.storeData as boolean) || false}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: boolean) =>
               dispatch(
                 modifyProperty({
-                  key: 'storeSubmittedData',
+                  key: 'storeData',
                   value: Boolean(value),
                 })
               )
@@ -195,14 +195,14 @@ export const FieldLayout: React.FC = () => {
         </div>
         <div style={{ padding: '20px' }}>
           <LightSwitch
-            id="enableCaptchas"
+            id="recaptchaEnabled"
             label="Enable Captchas"
-            value={(form.properties.enableCaptchas as boolean) || false}
+            value={(form.properties.recaptchaEnabled as boolean) || false}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: boolean) =>
               dispatch(
                 modifyProperty({
-                  key: 'enableCaptchas',
+                  key: 'recaptchaEnabled',
                   value: Boolean(value),
                 })
               )
@@ -213,23 +213,23 @@ export const FieldLayout: React.FC = () => {
           <SelectBox
             id="optInDataStorageTargetHash"
             label="Opt-In Data Storage Checkbox"
-            value={(form.properties.optInDataStorageTargetHash as number) || 0}
+            value={(form.properties.optInDataStorageTargetHash as string) || ''}
             options={[
               {
                 label: 'Enabled',
-                value: 1,
+                value: 'enabled',
               },
               {
                 label: 'Disabled',
-                value: 0,
+                value: 'disabled',
               },
             ]}
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
-            onChange={(value: number) =>
+            onChange={(value: string) =>
               dispatch(
                 modifyProperty({
+                  value,
                   key: 'optInDataStorageTargetHash',
-                  value: Number(value),
                 })
               )
             }
@@ -238,18 +238,17 @@ export const FieldLayout: React.FC = () => {
         <div />
         <div style={{ padding: '20px' }}>
           <FormTagAttribute
-            id="formTagAttributes"
+            id="attributeBag"
             label="Form Tag Attributes"
             value={
-              (form.properties.formTagAttributes as FormTagAttributeProps[]) ||
-              []
+              (form.properties.attributeBag as FormTagAttributeProps[]) || []
             }
             instructions="Lorem ipsum dolor sit amet, consectetur adipiscing elit"
             onChange={(value: FormTagAttributeProps[]) =>
               dispatch(
                 modifyProperty({
                   value,
-                  key: 'formTagAttributes',
+                  key: 'attributeBag',
                 })
               )
             }

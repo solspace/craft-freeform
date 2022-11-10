@@ -181,9 +181,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     #[EditableProperty]
     protected ?string $gtmEventName = null;
 
-    private PropertyBag $propertyBag;
+    #[EditableProperty]
+    protected AttributeBag $attributeBag;
 
-    private AttributeBag $attributeBag;
+    private PropertyBag $propertyBag;
 
     private ?int $id;
 
@@ -229,8 +230,34 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->name = $config['name'] ?? '';
         $this->handle = $config['handle'] ?? '';
 
-        $this->propertyBag = new PropertyBag($this);
-        $this->attributeBag = new AttributeBag($this);
+        if ($config['metadata']) {
+            // TODO: I feel like these should be coming from propertyBag ?
+            $this->metadata = $config['metadata'] ?? null;
+
+            $this->color = $this->getMetadata('color', $this->color);
+            $this->submissionTitleFormat = $this->getMetadata('submissionTitleFormat', $this->submissionTitleFormat);
+            $this->description = $this->getMetadata('description', $this->description);
+            $this->returnUrl = $this->getMetadata('returnUrl', $this->returnUrl);
+            $this->storeData = $this->getMetadata('storeData', $this->storeData);
+            $this->ipCollectingEnabled = $this->getMetadata('ipCollectingEnabled', $this->ipCollectingEnabled);
+            $this->defaultStatus = $this->getMetadata('defaultStatus', $this->defaultStatus);
+            $this->formTemplate = $this->getMetadata('formTemplate', $this->formTemplate);
+            $this->optInDataStorageTargetHash = $this->getMetadata('optInDataStorageTargetHash', $this->optInDataStorageTargetHash);
+            $this->ajaxEnabled = $this->getMetadata('ajaxEnabled', $this->ajaxEnabled);
+            $this->showSpinner = $this->getMetadata('showSpinner', $this->showSpinner);
+            $this->showLoadingText = $this->getMetadata('showLoadingText', $this->showLoadingText);
+            $this->loadingText = $this->getMetadata('loadingText', $this->loadingText);
+            $this->recaptchaEnabled = $this->getMetadata('recaptchaEnabled', $this->recaptchaEnabled);
+            $this->gtmEnabled = $this->getMetadata('gtmEnabled', $this->gtmEnabled);
+            $this->gtmId = $this->getMetadata('gtmId', $this->gtmId);
+            $this->gtmEventName = $this->getMetadata('gtmEventName', $this->gtmEventName);
+
+            $this->propertyBag = new PropertyBag($this, $config['metadata']);
+            $this->attributeBag = new AttributeBag($this, $this->getMetadata('attributes'));
+        } else {
+            $this->propertyBag = new PropertyBag($this);
+            $this->attributeBag = new AttributeBag($this);
+        }
 
         $pageIndex = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
         $this->setCurrentPage($pageIndex);
@@ -421,10 +448,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return "{$hashedId}-form-{$hash}";
     }
 
-    /**
-     * @return null|int|string
-     */
-    public function getDefaultStatus()
+    public function getDefaultStatus(): ?int
     {
         return $this->defaultStatus;
     }
@@ -525,10 +549,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->layout->getPages();
     }
 
-    /**
-     * @return null|string
-     */
-    public function getFormTemplate()
+    public function getFormTemplate(): ?string
     {
         return $this->formTemplate;
     }
@@ -1078,16 +1099,21 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return [
             'id' => $this->getId(),
             'uid' => $this->getUid(),
-            'name' => $this->name,
-            'handle' => $this->handle,
-            'color' => $this->color,
-            'description' => $this->description,
-            'returnUrl' => $this->returnUrl,
-            'storeData' => (bool) $this->storeData,
-            'defaultStatus' => $this->defaultStatus,
-            'formTemplate' => $this->formTemplate,
-            'optInDataStorageTargetHash' => $this->optInDataStorageTargetHash,
-            'limitFormSubmissions' => $this->limitFormSubmissions,
+            'properties' => [
+                'name' => $this->getName(),
+                'handle' => $this->getHandle(),
+                'defaultStatus' => $this->getDefaultStatus(),
+                'submissionTitleFormat' => $this->getSubmissionTitleFormat(),
+                'formTemplate' => $this->getFormTemplate(),
+                'description' => $this->getDescription(),
+                'color' => $this->getColor(),
+                'storeData' => $this->isStoreData(),
+                'recaptchaEnabled' => $this->isRecaptchaEnabled(),
+                'optInDataStorageTargetHash' => $this->getOptInDataStorageTargetHash(),
+                'attributes' => $this->getAttributeBag()->merge(CustomFormAttributes::extractAttributes($this->getTagAttributes())),
+            ],
+            'limitFormSubmissions' => $this->getLimitFormSubmissions(),
+            'returnUrl' => $this->getReturnUrl(),
         ];
     }
 

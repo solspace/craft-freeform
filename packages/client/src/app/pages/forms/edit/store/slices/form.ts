@@ -26,15 +26,6 @@ const initialState: FormState = {
   properties: {
     name: 'New Form',
     handle: 'newForm',
-    defaultStatus: 3,
-    submissionTitleFormat: '{{ dateCreated|date("Y-m-d H:i:s") }}',
-    formattingTemplate: '',
-    description: '',
-    color: '#f7ed6c',
-    storeSubmittedData: false,
-    enableCaptchas: false,
-    optInDataStorageTargetHash: 0,
-    formTagAttributes: [],
   },
 };
 

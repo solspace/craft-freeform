@@ -1,20 +1,19 @@
-import type { FormProps } from '@ff-client/types/forms';
-import type { GenericValue } from '@ff-client/types/properties';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import { createSlice } from '@reduxjs/toolkit';
-import type { ErrorList } from 'client/config/axios/APIError';
-import PubSub from 'pubsub-js';
-import { v4 } from 'uuid';
-
+import type { RootState } from '@editor/store';
 import type {
   CreatedSubscriber,
   ErrorsSubscriber,
   SaveSubscriber,
-} from '../middleware/state-persist';
-import { TOPIC_CREATED } from '../middleware/state-persist';
-import { TOPIC_ERRORS } from '../middleware/state-persist';
-import { TOPIC_SAVE } from '../middleware/state-persist';
-import type { RootState } from '../store';
+} from '@editor/store/middleware/state-persist';
+import { TOPIC_CREATED } from '@editor/store/middleware/state-persist';
+import { TOPIC_ERRORS } from '@editor/store/middleware/state-persist';
+import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
+import type { ErrorList } from '@ff-client/types/api';
+import type { FormProps } from '@ff-client/types/forms';
+import type { GenericValue } from '@ff-client/types/properties';
+import type { PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+import PubSub from 'pubsub-js';
+import { v4 } from 'uuid';
 
 type FormState = FormProps & {
   errors?: ErrorList;

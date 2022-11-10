@@ -13,19 +13,16 @@ class IntegrationsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config = [],
+        $config,
         private FormIntegrationsProvider $formIntegrationsProvider,
         private IntegrationDTOProvider $integrationDTOProvider
     ) {
-        parent::__construct($id, $module, $config);
+        parent::__construct($id, $module, $config ?? []);
     }
 
     public function actionGet(int $formId): Response
     {
         $form = $this->getFormsService()->getFormById($formId);
-        if (!$form) {
-            throw new NotFoundHttpException("Form with ID {$formId} not found");
-        }
 
         $models = $this->formIntegrationsProvider->getForForm($form);
         $dtos = $this->integrationDTOProvider->convert($models);

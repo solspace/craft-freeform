@@ -1,7 +1,6 @@
+import { APIError } from '@ff-client/types/api';
 import { generateUrl } from '@ff-client/utils/urls';
 import axios from 'axios';
-
-import { APIError } from './APIError';
 
 declare const Craft: {
   csrfTokenName: string;

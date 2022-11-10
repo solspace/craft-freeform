@@ -1,8 +1,7 @@
+import type { Page } from '@editor/builder/types/layout';
+import type { RootState } from '@editor/store';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-
-import type { Page } from '../../builder/types/layout';
-import type { RootState } from '../store';
 
 export enum FocusType {
   Page = 'page',

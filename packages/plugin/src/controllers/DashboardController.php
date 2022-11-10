@@ -34,11 +34,6 @@ class DashboardController extends BaseController
             $chartData = $this->getChartsService()->getFakeStackedChartData();
         }
 
-        $formList = [];
-        foreach ($forms as $form) {
-            $formList[] = $form->getForm();
-        }
-
         $settingsService = $this->getSettingsService();
         $isSpamFolderEnabled = $settingsService->isSpamFolderEnabled();
 
@@ -79,7 +74,7 @@ class DashboardController extends BaseController
                 'totalSpam' => $totalSpam,
                 'submissionsByForm' => $totalSubmissionsByForm,
                 'spamByForm' => $totalSpamByForm,
-                'forms' => $formList,
+                'forms' => $forms,
                 'formCount' => \count($forms),
                 'integrations' => $integrations,
                 'logReader' => $logReader,

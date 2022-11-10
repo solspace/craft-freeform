@@ -1,4 +1,4 @@
-import React, { StrictMode } from 'react';
+import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -19,23 +19,21 @@ const container = document.getElementById('freeform-client');
 const root = ReactDOM.createRoot(container);
 
 root.render(
-  <StrictMode>
-    <BrowserRouter basename={generateUrl('/client', false)}>
-      <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools />
-        <CpNavigation />
-        <Routes>
-          <Route path="/" element={<App />}>
-            <Route index element={<Dashboard />} />
-            <Route path="forms">
-              <Route path="new/*" element={<Form />} />
-              <Route path=":formId/*" element={<Form />} />
-              <Route index element={<Forms />} />
-            </Route>
-            <Route path="settings" element={<Settings />} />
+  <BrowserRouter basename={generateUrl('/client', false)}>
+    <QueryClientProvider client={queryClient}>
+      <ReactQueryDevtools />
+      <CpNavigation />
+      <Routes>
+        <Route path="/" element={<App />}>
+          <Route index element={<Dashboard />} />
+          <Route path="forms">
+            <Route path="new/*" element={<Form />} />
+            <Route path=":formId/*" element={<Form />} />
+            <Route index element={<Forms />} />
           </Route>
-        </Routes>
-      </QueryClientProvider>
-    </BrowserRouter>
-  </StrictMode>
+          <Route path="settings" element={<Settings />} />
+        </Route>
+      </Routes>
+    </QueryClientProvider>
+  </BrowserRouter>
 );

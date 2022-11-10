@@ -22,9 +22,15 @@ class NotificationDatabaseService extends BaseService implements NotificationsSe
         return $records;
     }
 
-    public function getById(mixed $id): ?NotificationRecord
+    public function getById(mixed $idOrHandle): ?NotificationRecord
     {
-        return NotificationRecord::find()->where(['id' => $id])->one();
+        if (is_numeric($idOrHandle)) {
+            $conditions = ['id' => $idOrHandle];
+        } else {
+            $conditions = ['handle' => $idOrHandle];
+        }
+
+        return NotificationRecord::find()->where($conditions)->one();
     }
 
     public function save(NotificationRecord $record): bool

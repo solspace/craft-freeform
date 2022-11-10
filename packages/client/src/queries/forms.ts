@@ -1,7 +1,7 @@
 import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
+import { useAppDispatch } from '@editor/store';
 import { update } from '@editor/store/slices/form';
-import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store';
 import type { FormProps } from '@ff-client/types/forms';
 import type { AxiosError } from 'axios';
 import axios from 'axios';

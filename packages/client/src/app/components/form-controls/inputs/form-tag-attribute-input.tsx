@@ -1,11 +1,11 @@
 import type { ChangeEvent } from 'react';
 import React from 'react';
-import { Control } from '@ff-client/app/components/form-controls/control';
+import { Control } from '@components/form-controls/control';
 import {
   FormTagAttributeInputColumn,
   FormTagAttributeInputRow,
   FormTagAttributeInputWrapper,
-} from '@ff-client/app/components/form-controls/inputs/form-tag-attribute-input.styles';
+} from '@components/form-controls/inputs/form-tag-attribute-input.styles';
 import type {
   FormTagAttributeInputProps,
   FormTagAttributeProps,

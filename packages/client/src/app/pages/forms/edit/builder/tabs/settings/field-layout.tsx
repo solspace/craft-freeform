@@ -7,13 +7,9 @@ import {
   SelectBox,
   Text,
   Textarea,
-} from '@ff-client/app/components/form-controls/controls';
-import {
-  modifyProperty,
-  selectForm,
-  update,
-} from '@ff-client/app/pages/forms/edit/store/slices/form';
-import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store/store';
+} from '@components/form-controls/controls';
+import { useAppDispatch } from '@editor/store';
+import { modifyProperty, selectForm, update } from '@editor/store/slices/form';
 import type { FormTagAttributeProps } from '@ff-client/types/properties';
 
 import { FieldLayoutGrid, FieldLayoutWrapper } from './field-layout.styles';

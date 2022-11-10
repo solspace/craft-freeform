@@ -1,6 +1,6 @@
 import React from 'react';
-import { FieldLayout } from '@ff-client/app/pages/forms/edit/builder/tabs/settings/field-layout';
-import { Sidebar } from '@ff-client/app/pages/forms/edit/builder/tabs/settings/sidebar';
+import { FieldLayout } from '@editor/builder/tabs/settings/field-layout';
+import { Sidebar } from '@editor/builder/tabs/settings/sidebar';
 
 import { SettingsWrapper } from './settings.styles';
 

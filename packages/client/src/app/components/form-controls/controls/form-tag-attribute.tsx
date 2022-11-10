@@ -1,7 +1,7 @@
 import React from 'react';
-import type { ControlProps } from '@ff-client/app/components/form-controls/control';
-import { Control } from '@ff-client/app/components/form-controls/control';
-import { FormTagAttributeInput } from '@ff-client/app/components/form-controls/inputs/form-tag-attribute-input';
+import type { ControlProps } from '@components/form-controls/control';
+import { Control } from '@components/form-controls/control';
+import { FormTagAttributeInput } from '@components/form-controls/inputs/form-tag-attribute-input';
 import type { FormTagAttributeProps } from '@ff-client/types/properties';
 
 export const FormTagAttribute: React.FC<ControlProps<unknown>> = ({

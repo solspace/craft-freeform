@@ -23,6 +23,11 @@ class FieldPersistence extends FeatureBundle
         );
     }
 
+    public static function getPriority(): int
+    {
+        return 300;
+    }
+
     public function handleFieldSave(PersistFormEvent $event)
     {
         $form = $event->getForm();

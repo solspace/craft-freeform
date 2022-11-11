@@ -42,7 +42,14 @@ export default layoutsSlice.reducer;
 const persist: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
-  persist.layouts = state.layouts;
+  const { layouts, cells, rows, pages } = state;
+
+  persist.layout = {
+    pages,
+    layouts,
+    rows,
+    cells,
+  };
 };
 
 PubSub.subscribe(TOPIC_SAVE, persist);

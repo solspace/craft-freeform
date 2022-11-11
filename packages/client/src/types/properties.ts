@@ -12,9 +12,3 @@ export type FormTagAttributeInputProps = {
   value: FormTagAttributeProps[] | [];
   onChange: (value: FormTagAttributeProps[]) => void;
 };
-
-export type PropertiesProps = {
-  name: string;
-  handle: string;
-  [key: string]: GenericValue;
-};

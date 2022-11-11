@@ -9,6 +9,7 @@ export type OptionProps = {
   value: string | number;
 };
 
+//! TODO: Prevent the necessity from listing all possible props here in the base property type
 export type ControlProps<T = unknown> = {
   id?: string;
   label?: string;

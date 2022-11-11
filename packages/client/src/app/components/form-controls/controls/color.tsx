@@ -1,8 +1,17 @@
-import type { ChangeEvent } from 'react';
 import React from 'react';
+import styled from 'styled-components';
 
 import type { ControlProps } from '../control';
 import { Control } from '../control';
+
+const Input = styled.input`
+  height: 30px;
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  background-color: transparent;
+`;
 
 export const Color: React.FC<ControlProps<string>> = ({
   id,
@@ -12,20 +21,11 @@ export const Color: React.FC<ControlProps<string>> = ({
   instructions,
 }) => (
   <Control id={id} label={label} instructions={instructions}>
-    <input
+    <Input
       id={id}
       type="color"
-      style={{
-        border: 0,
-        margin: 0,
-        padding: 0,
-        height: '30px',
-        backgroundColor: 'transparent',
-      }}
       defaultValue={(value as string) || '#ff0000'}
-      onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-        onChange && onChange(event.target.value)
-      }
+      onChange={(event) => onChange && onChange(event.target.value)}
     />
   </Control>
 );

@@ -16,6 +16,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Bundles\Fields\AttributeProvider;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -127,17 +128,21 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const LIMIT_IP_COOKIE = 'ip_cookie';
 
     #[EditableProperty]
-    protected string $color = '';
+    protected string $name = '';
+
+    #[EditableProperty]
+    protected string $handle = '';
+
+    #[EditableProperty]
+    protected string $description = '';
 
     #[EditableProperty]
     protected string $submissionTitleFormat = '{{ dateCreated|date("Y-m-d H:i:s") }}';
 
     #[EditableProperty]
-    protected string $description = '';
+    protected string $color = '';
 
-    #[EditableProperty(
-        label: 'Return URL',
-    )]
+    #[EditableProperty('Return URL')]
     protected string $returnUrl = '/';
 
     #[EditableProperty]
@@ -175,23 +180,20 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     #[EditableProperty]
     protected bool $gtmEnabled = false;
 
+    // TODO: refactor GTM into its own bundle
     #[EditableProperty]
     protected ?string $gtmId = null;
 
     #[EditableProperty]
     protected ?string $gtmEventName = null;
 
-    private PropertyBag $propertyBag;
+    protected AttributeBag $attributeBag;
 
-    private AttributeBag $attributeBag;
+    private PropertyBag $propertyBag;
 
     private ?int $id;
 
     private ?string $uid;
-
-    private string $name;
-
-    private string $handle;
 
     private Layout $layout;
 
@@ -222,12 +224,26 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     private bool $formPosted = false;
 
-    public function __construct(array $config = [])
-    {
+    public function __construct(
+        array $config = [],
+        private AttributeProvider $attributeProvider
+    ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
         $this->name = $config['name'] ?? '';
         $this->handle = $config['handle'] ?? '';
+
+        $metadata = $config['metadata'] ?? [];
+        $editableProperties = $this->attributeProvider->getEditableProperties(self::class);
+        foreach ($editableProperties as $property) {
+            $handle = $property->handle;
+            $value = $property->value;
+            if (isset($metadata[$handle])) {
+                $value = $metadata[$handle];
+            }
+
+            $this->{$handle} = $value;
+        }
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributeBag = new AttributeBag($this);
@@ -421,10 +437,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return "{$hashedId}-form-{$hash}";
     }
 
-    /**
-     * @return null|int|string
-     */
-    public function getDefaultStatus()
+    public function getDefaultStatus(): ?int
     {
         return $this->defaultStatus;
     }
@@ -525,10 +538,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->layout->getPages();
     }
 
-    /**
-     * @return null|string
-     */
-    public function getFormTemplate()
+    public function getFormTemplate(): ?string
     {
         return $this->formTemplate;
     }
@@ -1068,26 +1078,19 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->properties->getRuleProperties();
     }
 
-    // ==========================
-    // INTERFACE IMPLEMENTATIONS
-    // ==========================
-
     // TODO: update this to read all the exposable properties
     public function jsonSerialize(): array
     {
+        $editableProperties = $this->attributeProvider->getEditableProperties(self::class);
+        $properties = [];
+        foreach ($editableProperties as $property) {
+            $properties[$property->handle] = $this->{$property->handle};
+        }
+
         return [
             'id' => $this->getId(),
             'uid' => $this->getUid(),
-            'name' => $this->name,
-            'handle' => $this->handle,
-            'color' => $this->color,
-            'description' => $this->description,
-            'returnUrl' => $this->returnUrl,
-            'storeData' => (bool) $this->storeData,
-            'defaultStatus' => $this->defaultStatus,
-            'formTemplate' => $this->formTemplate,
-            'optInDataStorageTargetHash' => $this->optInDataStorageTargetHash,
-            'limitFormSubmissions' => $this->limitFormSubmissions,
+            'properties' => $properties,
         ];
     }
 
@@ -1170,6 +1173,17 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         return $this->jsonSerialize();
+    }
+
+    // ==========================
+    // INTERFACE IMPLEMENTATIONS
+    // ==========================
+
+    private function getEditableProperties(): array
+    {
+        $attr = new AttributeProvider();
+
+        return $attr->getEditableProperties(self::class);
     }
 
     private function validate()

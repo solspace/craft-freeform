@@ -1,16 +1,14 @@
-import type { GenericValue } from './properties';
+import type { GenericValue } from '@ff-client/types/properties';
 
-export type Form = {
+export type FormProperties = {
+  name: string;
+  handle: string;
+  [key: string]: GenericValue;
+};
+
+export type FormType = {
   id?: number;
   uid: string;
   type: string;
-  // TODO: remove these two, when the form payload is refactored.
-  name: string;
-  handle: string;
-  // ------------------------------------------------------------
-  properties: {
-    name: string;
-    handle: string;
-    [key: string]: GenericValue;
-  };
+  properties: FormProperties;
 };

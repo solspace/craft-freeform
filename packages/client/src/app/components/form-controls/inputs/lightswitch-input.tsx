@@ -1,16 +1,15 @@
 import React from 'react';
 
-import { Handle, Wrapper } from './lightswitch.styles';
+import { Handle, Wrapper } from './lightswitch-input.styles';
 
 type Props = {
+  id?: string;
   enabled: boolean;
   onClick?: (value: boolean) => void;
 };
 
-export const LightswitchInput: React.FC<Props> = ({ enabled, onClick }) => {
-  return (
-    <Wrapper enabled={enabled} onClick={() => onClick && onClick(!enabled)}>
-      <Handle />
-    </Wrapper>
-  );
-};
+export const LightSwitchInput: React.FC<Props> = ({ enabled, onClick }) => (
+  <Wrapper enabled={enabled} onClick={() => onClick && onClick(!enabled)}>
+    <Handle />
+  </Wrapper>
+);

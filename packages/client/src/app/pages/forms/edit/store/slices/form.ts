@@ -8,14 +8,14 @@ import { TOPIC_CREATED } from '@editor/store/middleware/state-persist';
 import { TOPIC_ERRORS } from '@editor/store/middleware/state-persist';
 import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { ErrorList } from '@ff-client/types/api';
-import type { Form } from '@ff-client/types/forms';
+import type { FormType } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import PubSub from 'pubsub-js';
 import { v4 } from 'uuid';
 
-type FormState = Form & {
+type FormState = FormType & {
   errors?: ErrorList;
 };
 
@@ -29,9 +29,17 @@ const initialState: FormState = {
   },
 };
 
-type UpdateProps = Partial<Omit<FormState, 'properties'>>;
-type ModifyProps = { key: string; value: GenericValue };
-type ErrorProps = { key: string; errors: string[] };
+export type UpdateProps = Partial<Omit<FormState, 'properties'>>;
+
+export type ModifyProps = {
+  key: string;
+  value: GenericValue;
+};
+
+export type ErrorProps = {
+  key: string;
+  errors: string[];
+};
 
 export const formSlice = createSlice({
   name: 'form',
@@ -40,11 +48,8 @@ export const formSlice = createSlice({
     update: (state, { payload }: PayloadAction<UpdateProps>) => {
       Object.assign(state, payload);
     },
-    modifyProperty: (
-      state,
-      { payload: { key, value } }: PayloadAction<ModifyProps>
-    ) => {
-      state.properties[key] = value;
+    modifyProperty: (state, { payload }: PayloadAction<ModifyProps>) => {
+      state.properties[payload.key] = payload.value;
     },
     removeError: (state, { payload }: PayloadAction<string>) => {
       delete state.errors[payload];
@@ -70,8 +75,8 @@ export const {
   clearErrors,
 } = formSlice.actions;
 
-export const selectFormId = (state: RootState): number | undefined =>
-  state.form.id;
+export const selectForm = (state: RootState): FormType | undefined =>
+  state.form;
 
 export default formSlice.reducer;
 

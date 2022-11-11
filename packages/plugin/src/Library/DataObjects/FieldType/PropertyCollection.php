@@ -33,6 +33,9 @@ class PropertyCollection implements \IteratorAggregate, \JsonSerializable
         return $this->properties;
     }
 
+    /**
+     * @return \ArrayIterator|Property[]
+     */
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->properties);

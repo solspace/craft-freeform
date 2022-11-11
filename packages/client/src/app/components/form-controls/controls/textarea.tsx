@@ -4,8 +4,9 @@ import React from 'react';
 import type { ControlProps } from '../control';
 import { Control } from '../control';
 
-export const Text: React.FC<ControlProps<string>> = ({
+export const Textarea: React.FC<ControlProps<string>> = ({
   id,
+  rows,
   value,
   label,
   onChange,
@@ -13,13 +14,13 @@ export const Text: React.FC<ControlProps<string>> = ({
   instructions,
 }) => (
   <Control id={id} label={label} instructions={instructions}>
-    <input
+    <textarea
       id={id}
-      type="text"
+      rows={rows}
       placeholder={placeholder}
       className="text fullwidth"
       defaultValue={(value as string) || ''}
-      onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+      onChange={(event: ChangeEvent<HTMLTextAreaElement>): void =>
         onChange && onChange(event.target.value)
       }
     />

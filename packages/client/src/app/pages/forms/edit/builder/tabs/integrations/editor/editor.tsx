@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { Lightswitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
+import { LightSwitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
 import { Space } from '@ff-client/app/components/layout/blocks/space';
 
 import {
@@ -34,7 +34,7 @@ export const Editor: React.FC = () => {
       <h1 title={handle}>{name}</h1>
       {!!description && <p>{description}</p>}
 
-      <Lightswitch
+      <LightSwitch
         label="Enabled"
         onChange={() => dispatch(toggleIntegration(id))}
         value={enabled}

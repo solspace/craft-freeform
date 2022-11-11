@@ -6,3 +6,7 @@ export const TabWrapper = styled.div`
   padding: 4px 18px;
   border-radius: 4px 4px 0 0;
 `;
+
+export const NewTabWrapper = styled(TabWrapper)`
+  justify-self: flex-end;
+`;

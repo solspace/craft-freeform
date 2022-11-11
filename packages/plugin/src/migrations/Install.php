@@ -21,11 +21,13 @@ class Install extends StreamlinedInstallMigration
                 ->addField('handle', $this->string(100)->notNull()->unique())
                 ->addField('spamBlockCount', $this->integer()->unsigned()->notNull()->defaultValue(0))
                 ->addField('metadata', $this->mediumText())
-                ->addField('order', $this->integer()),
+                ->addField('order', $this->integer())
+                ->addIndex(['order']),
 
             (new Table('freeform_forms_layouts'))
                 ->addField('id', $this->primaryKey())
                 ->addField('formId', $this->integer()->notNull())
+                ->addIndex(['formId'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_forms_pages'))
@@ -34,26 +36,34 @@ class Install extends StreamlinedInstallMigration
                 ->addField('layoutId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('handle', $this->string(200)->notNull())
-                ->addField('order', $this->integer()->notNull())
+                ->addField('order', $this->integer())
                 ->addIndex(['formId', 'order'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('layoutId', 'freeform_forms_layout', 'id', ForeignKey::CASCADE),
+                ->addForeignKey('layoutId', 'freeform_forms_layouts', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_forms_rows'))
                 ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer()->notNull())
                 ->addField('layoutId', $this->integer()->notNull())
                 ->addField('order', $this->integer())
-                ->addIndex(['layoutId', 'order'])
+                ->addIndex(['formId', 'order'])
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('layoutId', 'freeform_forms_layouts', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_forms_cells'))
                 ->addField('id', $this->primaryKey())
+                ->addField('formId', $this->integer()->notNull())
                 ->addField('rowId', $this->integer()->notNull())
-                ->addField('order', $this->integer())
                 ->addField('type', $this->string(255)->notNull())
-                ->addField('metadata', $this->mediumText())
-                ->addIndex(['rowId', 'order'])
-                ->addForeignKey('rowId', 'freeform_forms_rows', 'id', ForeignKey::CASCADE),
+                ->addField('fieldId', $this->integer())
+                ->addField('layoutId', $this->integer())
+                ->addField('order', $this->integer())
+                ->addIndex(['formId', 'order'])
+                ->addIndex(['fieldId'])
+                ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('rowId', 'freeform_forms_rows', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('fieldId', 'freeform_forms_fields', 'id', ForeignKey::CASCADE)
+                ->addForeignKey('layoutId', 'freeform_forms_layouts', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_forms_fields'))
                 ->addField('id', $this->primaryKey())

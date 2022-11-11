@@ -85,7 +85,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const EVENT_AFTER_SUBMIT = 'after-submit';
     public const EVENT_BEFORE_VALIDATE = 'before-validate';
     public const EVENT_AFTER_VALIDATE = 'after-validate';
-    public const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-a9ttributes';
+    public const EVENT_ATTACH_TAG_ATTRIBUTES = 'attach-tag-attributes';
     public const EVENT_BEFORE_HANDLE_REQUEST = 'before-handle-request';
     public const EVENT_AFTER_HANDLE_REQUEST = 'after-handle-request';
     public const EVENT_BEFORE_RESET = 'before-reset-form';

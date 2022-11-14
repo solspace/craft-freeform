@@ -15,7 +15,7 @@ export const LightSwitch: React.FC<ControlProps<boolean>> = ({
     <LightSwitchInput
       id={id}
       enabled={value}
-      onClick={(): void => onChange && onChange(!value)}
+      onClick={() => onChange && onChange(!value)}
     />
   </Control>
 );

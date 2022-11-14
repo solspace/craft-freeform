@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const FieldLayoutWrapper = styled.div`
+export const Wrapper = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
@@ -13,7 +13,7 @@ export const FieldLayoutWrapper = styled.div`
   border-left: 1px solid rgb(205 216 228);
 `;
 
-export const FieldLayoutRow = styled.div`
+export const Row = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
@@ -24,7 +24,7 @@ export const FieldLayoutRow = styled.div`
   justify-content: center;
 `;
 
-export const FieldLayoutColumn = styled.div`
+export const Column = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
@@ -35,14 +35,14 @@ export const FieldLayoutColumn = styled.div`
   justify-content: flex-start;
 `;
 
-export const FieldLayoutHeading = styled.h2`
+export const Heading = styled.h2`
   margin: 0;
   padding: 20px;
   font-weight: 700;
   line-height: 1.2;
 `;
 
-export const FieldLayoutGrid = styled.div`
+export const Grid = styled.div`
   margin: 0;
   padding: 0;
   width: 100%;
@@ -51,7 +51,7 @@ export const FieldLayoutGrid = styled.div`
   grid-template-columns: 50% 50%;
 `;
 
-export const FieldLayoutGridItem = styled.div`
+export const GridItem = styled.div`
   margin: 0;
   width: 100%;
   height: 100%;

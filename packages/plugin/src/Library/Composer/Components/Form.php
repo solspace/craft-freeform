@@ -124,56 +124,93 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const DATA_PERSISTENT_VALUES = 'persistentValues';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
+    public const NO_LIMIT = 'no_limit';
+    public const NO_LIMIT_LOGGED_IN_USERS_ONLY = 'no_limit_logged_in_users_only';
+
     public const LIMIT_COOKIE = 'cookie';
     public const LIMIT_IP_COOKIE = 'ip_cookie';
+    public const LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY = 'once_per_logged_in_users_only';
+    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY = 'once_per_logged_in_user_or_guest_cookie_only';
+    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO = 'once_per_logged_in_user_or_guest_ip_cookie_combo';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $name = '';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        label: 'Return URL',
+        tab: 'settings'
+    )]
     protected string $handle = '';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $description = '';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $submissionTitleFormat = '{{ dateCreated|date("Y-m-d H:i:s") }}';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $color = '';
 
-    #[EditableProperty('Return URL')]
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
     protected string $returnUrl = '/';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected bool $storeData = true;
 
     #[EditableProperty]
     protected bool $ipCollectingEnabled = true;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected ?int $defaultStatus = null;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected ?string $formTemplate = null;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected ?string $optInDataStorageTargetHash = null;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
     protected bool $ajaxEnabled = true;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
     protected bool $showSpinner = true;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
     protected bool $showLoadingText = true;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
     protected string $loadingText = '';
 
     // TODO: refactor captchas into their own integration types
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected bool $recaptchaEnabled = false;
 
     // TODO: refactor this into a object instead of 3 different values
@@ -186,6 +223,31 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     #[EditableProperty]
     protected ?string $gtmEventName = null;
+
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
+    protected ?string $errorMessage = null;
+
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
+    protected ?string $limitFormSubmissions = null;
+
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
+    protected ?string $stopSubmissionsAfter = null;
+
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
+    protected ?string $successBehavior = null;
+
+    #[EditableProperty(
+        tab: 'behavior'
+    )]
+    protected ?string $successMessage = null;
 
     protected AttributeBag $attributeBag;
 
@@ -200,8 +262,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     private ?Page $currentPage = null;
 
     private array $currentPageRows = [];
-
-    private ?string $limitFormSubmissions = null;
 
     // TODO: create a collection to handle error messages
     private array $errors = [];
@@ -360,9 +420,39 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->limitFormSubmissions;
     }
 
+    public function isNoLimit(): bool
+    {
+        return self::NO_LIMIT === $this->limitFormSubmissions;
+    }
+
+    public function isNoLimitLoggedInUsersOnly(): bool
+    {
+        return self::NO_LIMIT_LOGGED_IN_USERS_ONLY === $this->limitFormSubmissions;
+    }
+
+    public function isLimitByCookie(): bool
+    {
+        return self::LIMIT_COOKIE === $this->limitFormSubmissions;
+    }
+
     public function isLimitByIpCookie(): bool
     {
         return self::LIMIT_IP_COOKIE === $this->limitFormSubmissions;
+    }
+
+    public function isLimitOncePerLoggedUsersOnly(): bool
+    {
+        return self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY === $this->limitFormSubmissions;
+    }
+
+    public function isLimitOncePerLoggedUsersOrGuestIpCookieOnly(): bool
+    {
+        return self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY === $this->limitFormSubmissions;
+    }
+
+    public function isLimitOncePerLoggedUsersOrGuestIpCookieCombo(): bool
+    {
+        return self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO === $this->limitFormSubmissions;
     }
 
     public function getHash(): string

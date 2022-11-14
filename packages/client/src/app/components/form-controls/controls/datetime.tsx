@@ -8,6 +8,8 @@ import { Control } from '../control';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
+const dateFormat = 'MM/dd/yyyy';
+
 export const DateTime: React.FC<ControlProps<string>> = ({
   id,
   value,
@@ -16,12 +18,10 @@ export const DateTime: React.FC<ControlProps<string>> = ({
   instructions,
 }) => {
   const date = new Date();
-  const dateFormat = 'MM/dd/yyyy';
 
-  const selected =
-    value === ''
-      ? parse(format(date, dateFormat), dateFormat, date)
-      : parse(value, dateFormat, date);
+  const parseValue: string = value || format(date, dateFormat);
+
+  const selected = parse(parseValue, dateFormat, date);
 
   return (
     <Control id={id} label={label} instructions={instructions}>

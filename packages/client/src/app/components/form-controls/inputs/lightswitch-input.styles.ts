@@ -2,7 +2,7 @@ import { colors } from '@ff-client/styles/variables';
 import type { FlattenSimpleInterpolation } from 'styled-components';
 import styled, { css } from 'styled-components';
 
-export const LightSwitchInputWrapper = styled.div`
+export const InputWrapper = styled.div`
   padding: 6px 0;
 `;
 

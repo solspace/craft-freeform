@@ -48,6 +48,7 @@ class AttributeProvider
             $prop->order = $attribute->order ?? $collection->getNextOrder();
             $prop->flags = $attribute->flags;
             $prop->middleware = $attribute->middleware;
+            $prop->tab = $attribute->tab;
 
             $collection->add($prop);
         }

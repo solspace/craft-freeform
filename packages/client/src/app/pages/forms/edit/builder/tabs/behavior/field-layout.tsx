@@ -11,12 +11,12 @@ import { useAppDispatch } from '@editor/store';
 import { modifyProperty, selectForm } from '@editor/store/slices/form';
 
 import {
-  FieldLayoutColumn,
-  FieldLayoutGrid,
-  FieldLayoutGridItem,
-  FieldLayoutHeading,
-  FieldLayoutRow,
-  FieldLayoutWrapper,
+  Column,
+  Grid,
+  GridItem,
+  Heading,
+  Row,
+  Wrapper,
 } from './field-layout.styles';
 
 export const FieldLayout: React.FC = () => {
@@ -25,19 +25,19 @@ export const FieldLayout: React.FC = () => {
   const form = useSelector(selectForm);
 
   return (
-    <FieldLayoutWrapper>
-      <FieldLayoutColumn>
-        <FieldLayoutRow>
-          <FieldLayoutColumn>
-            <FieldLayoutRow>
-              <FieldLayoutColumn>
-                <FieldLayoutHeading>Success &amp; Errors</FieldLayoutHeading>
-              </FieldLayoutColumn>
-            </FieldLayoutRow>
-            <FieldLayoutRow>
-              <FieldLayoutColumn>
-                <FieldLayoutGrid>
-                  <FieldLayoutGridItem>
+    <Wrapper>
+      <Column>
+        <Row>
+          <Column>
+            <Row>
+              <Column>
+                <Heading>Success &amp; Errors</Heading>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Grid>
+                  <GridItem>
                     <SelectBox
                       id="successBehavior"
                       label="Success Behavior"
@@ -69,8 +69,8 @@ export const FieldLayout: React.FC = () => {
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                  <GridItem>
                     {form.properties.successBehavior === 'use-return-url' && (
                       <Text
                         id="returnUrl"
@@ -113,8 +113,8 @@ export const FieldLayout: React.FC = () => {
                         }
                       />
                     )}
-                  </FieldLayoutGridItem>
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                  <GridItem>
                     <Textarea
                       rows={4}
                       id="successMessage"
@@ -131,8 +131,8 @@ export const FieldLayout: React.FC = () => {
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                  <GridItem>
                     <Textarea
                       rows={4}
                       id="errorMessage"
@@ -149,80 +149,77 @@ export const FieldLayout: React.FC = () => {
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                </FieldLayoutGrid>
-              </FieldLayoutColumn>
-            </FieldLayoutRow>
-            <FieldLayoutRow>
-              <FieldLayoutColumn>
-                <FieldLayoutHeading>Processing</FieldLayoutHeading>
-              </FieldLayoutColumn>
-            </FieldLayoutRow>
-            <FieldLayoutRow>
-              <FieldLayoutColumn>
-                <FieldLayoutGrid>
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                </Grid>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Heading>Processing</Heading>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Grid>
+                  <GridItem>
                     <LightSwitch
-                      id="useAjax"
+                      id="ajaxEnabled"
                       label="Use AJAX"
-                      value={(form.properties.useAjax as boolean) || false}
+                      value={(form.properties.ajaxEnabled as boolean) || false}
                       instructions="Use Freeform's built-in automatic AJAX submit feature."
                       onChange={(value: boolean) =>
                         dispatch(
                           modifyProperty({
-                            key: 'useAjax',
+                            key: 'ajaxEnabled',
                             value: Boolean(value),
                           })
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                  <FieldLayoutGridItem />
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                  <GridItem />
+                  <GridItem>
                     <LightSwitch
-                      id="showProcessingIndicatorOnSubmit"
+                      id="showSpinner"
                       label="Show Processing Indicator on Submit"
-                      value={
-                        (form.properties
-                          .showProcessingIndicatorOnSubmit as boolean) || false
-                      }
+                      value={(form.properties.showSpinner as boolean) || false}
                       instructions="Show a loading indicator on the submit button upon submission of the form."
                       onChange={(value: boolean) =>
                         dispatch(
                           modifyProperty({
+                            key: 'showSpinner',
                             value: Boolean(value),
-                            key: 'showProcessingIndicatorOnSubmit',
                           })
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                  <FieldLayoutGridItem />
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                  <GridItem />
+                  <GridItem>
                     <LightSwitch
-                      id="showProcessingText"
+                      id="showLoadingText"
                       label="Show Processing Text"
                       value={
-                        (form.properties.showProcessingText as boolean) || false
+                        (form.properties.showLoadingText as boolean) || false
                       }
                       instructions="Enabling this will change the submit button's label to the text of your choice."
                       onChange={(value: boolean) =>
                         dispatch(
                           modifyProperty({
                             value: Boolean(value),
-                            key: 'showProcessingText',
+                            key: 'showLoadingText',
                           })
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                  <FieldLayoutGridItem>
-                    {form.properties.showProcessingText && (
+                  </GridItem>
+                  <GridItem>
+                    {form.properties.showLoadingText && (
                       <Text
-                        id="processingText"
+                        id="loadingText"
                         label="Processing Text"
                         value={
-                          (form.properties.processingText as string) ||
+                          (form.properties.loadingText as string) ||
                           'Processing...'
                         }
                         placeholder=""
@@ -231,62 +228,62 @@ export const FieldLayout: React.FC = () => {
                           dispatch(
                             modifyProperty({
                               value,
-                              key: 'processingText',
+                              key: 'loadingText',
                             })
                           )
                         }
                       />
                     )}
-                  </FieldLayoutGridItem>
-                </FieldLayoutGrid>
-              </FieldLayoutColumn>
-            </FieldLayoutRow>
-            <FieldLayoutRow>
-              <FieldLayoutColumn>
-                <FieldLayoutHeading>Limits</FieldLayoutHeading>
-              </FieldLayoutColumn>
-            </FieldLayoutRow>
-            <FieldLayoutRow>
-              <FieldLayoutColumn>
-                <FieldLayoutGrid>
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                </Grid>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Heading>Limits</Heading>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Grid>
+                  <GridItem>
                     <SelectBox
-                      id="limitFormSubmissionRate"
+                      id="limitFormSubmissions"
                       label="Limit Form Submission Rate"
                       value={
-                        (form.properties.limitFormSubmissionRate as string) ||
-                        'do-not-limit'
+                        (form.properties.limitFormSubmissions as string) ||
+                        'no_limit'
                       }
                       options={[
                         {
                           label: 'Do not limit',
-                          value: 'do-not-limit',
+                          value: 'no_limit',
                         },
                         {
                           label: 'Logged in Users only (no limit)',
-                          value: 'logged-in-users-only-no-limit',
+                          value: 'no_limit_logged_in_users_only',
                         },
                         {
                           label: 'Once per Cookie only',
-                          value: 'once-per-cookie-only',
+                          value: 'cookie',
                         },
                         {
                           label: 'Once per IP/Cookie combo',
-                          value: 'once-per-ip-cookie-combo',
+                          value: 'ip_cookie',
                         },
                         {
                           label: 'Once per logged in Users only',
-                          value: 'once-per-logged-in-users-only',
+                          value: 'once_per_logged_in_users_only',
                         },
                         {
                           label: 'Once per logged in User or Guest Cookie only',
-                          value: 'once-per-logged-in-user-or-guest-cookie-only',
+                          value: 'once_per_logged_in_user_or_guest_cookie_only',
                         },
                         {
                           label:
                             'Once per logged in User or Guest IP/Cookie combo',
                           value:
-                            'once-per-logged-in-user-or-guest-ip-cookie-combo',
+                            'once_per_logged_in_user_or_guest_ip_cookie_combo',
                         },
                       ]}
                       instructions="Limit the number of times a user can submit the form."
@@ -294,13 +291,13 @@ export const FieldLayout: React.FC = () => {
                         dispatch(
                           modifyProperty({
                             value,
-                            key: 'limitFormSubmissionRate',
+                            key: 'limitFormSubmissions',
                           })
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                  <FieldLayoutGridItem>
+                  </GridItem>
+                  <GridItem>
                     <DateTime
                       id="stopSubmissionsAfter"
                       label="Stop Submissions After"
@@ -317,13 +314,13 @@ export const FieldLayout: React.FC = () => {
                         )
                       }
                     />
-                  </FieldLayoutGridItem>
-                </FieldLayoutGrid>
-              </FieldLayoutColumn>
-            </FieldLayoutRow>
-          </FieldLayoutColumn>
-        </FieldLayoutRow>
-      </FieldLayoutColumn>
-    </FieldLayoutWrapper>
+                  </GridItem>
+                </Grid>
+              </Column>
+            </Row>
+          </Column>
+        </Row>
+      </Column>
+    </Wrapper>
   );
 };

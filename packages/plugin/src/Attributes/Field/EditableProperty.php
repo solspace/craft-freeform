@@ -19,6 +19,7 @@ class EditableProperty
         public ?array $flags = [],
         public ?array $visibilityFilters = null,
         public ?array $middleware = [],
+        public ?string $tab = null,
     ) {
     }
 }

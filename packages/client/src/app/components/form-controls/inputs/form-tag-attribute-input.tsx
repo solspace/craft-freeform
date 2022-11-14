@@ -1,4 +1,3 @@
-import type { ChangeEvent } from 'react';
 import React from 'react';
 import { Control } from '@components/form-controls/control';
 import {
@@ -95,7 +94,7 @@ export const FormTagAttributeInput: React.FC<FormTagAttributeInputProps> = ({
                 placeholder={`data-example-${index + 1}`}
                 className="text fullwidth"
                 defaultValue={(key as string) || ''}
-                onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+                onChange={(event) =>
                   updateFormTagAttribute({
                     index,
                     key: 'key',
@@ -113,13 +112,13 @@ export const FormTagAttributeInput: React.FC<FormTagAttributeInputProps> = ({
                 placeholder={`test-${index + 1}`}
                 className="text fullwidth"
                 defaultValue={(value as string | number) || ''}
-                onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                onChange={(event) =>
                   updateFormTagAttribute({
                     index,
                     key: 'value',
                     value: event.target.value,
-                  });
-                }}
+                  })
+                }
               />
             </Control>
           </FormTagAttributeInputColumn>
@@ -128,7 +127,7 @@ export const FormTagAttributeInput: React.FC<FormTagAttributeInputProps> = ({
               <button
                 type="button"
                 className="btn submit"
-                onClick={(): void =>
+                onClick={() =>
                   deleteFormTagAttribute && deleteFormTagAttribute(index)
                 }
               >

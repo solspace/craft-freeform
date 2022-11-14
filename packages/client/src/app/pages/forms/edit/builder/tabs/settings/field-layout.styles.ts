@@ -5,7 +5,7 @@ export const FieldLayoutWrapper = styled.div`
   height: 100%;
   display: flex;
   position: relative;
-  flex-directions: row;
+  flex-direction: row;
   align-items: flex-start;
   background-color: #ffffff;
   justify-content: flex-start;
@@ -18,5 +18,5 @@ export const FieldLayoutGrid = styled.div`
   padding: 0;
   width: 100%;
   display: grid;
-  grid-template-columns: auto auto;
+  grid-template-columns: 50% 50%;
 `;

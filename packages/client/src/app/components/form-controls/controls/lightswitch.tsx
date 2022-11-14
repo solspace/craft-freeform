@@ -3,6 +3,7 @@ import React from 'react';
 import type { ControlProps } from '../control';
 import { Control } from '../control';
 import { LightSwitchInput } from '../inputs/lightswitch-input';
+import { LightSwitchInputWrapper } from '../inputs/lightswitch-input.styles';
 
 export const LightSwitch: React.FC<ControlProps<boolean>> = ({
   id,
@@ -12,10 +13,12 @@ export const LightSwitch: React.FC<ControlProps<boolean>> = ({
   instructions,
 }) => (
   <Control id={id} label={label} instructions={instructions}>
-    <LightSwitchInput
-      id={id}
-      enabled={value}
-      onClick={(): void => onChange && onChange(!value)}
-    />
+    <LightSwitchInputWrapper>
+      <LightSwitchInput
+        id={id}
+        enabled={value}
+        onClick={() => onChange && onChange(!value)}
+      />
+    </LightSwitchInputWrapper>
   </Control>
 );

@@ -1,4 +1,3 @@
-import type { ChangeEvent } from 'react';
 import React from 'react';
 
 import type { ControlProps } from '../control';
@@ -20,9 +19,7 @@ export const Textarea: React.FC<ControlProps<string>> = ({
       placeholder={placeholder}
       className="text fullwidth"
       defaultValue={(value as string) || ''}
-      onChange={(event: ChangeEvent<HTMLTextAreaElement>): void =>
-        onChange && onChange(event.target.value)
-      }
+      onChange={(event) => onChange && onChange(event.target.value)}
     />
   </Control>
 );

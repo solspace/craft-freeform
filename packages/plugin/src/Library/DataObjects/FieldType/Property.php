@@ -12,7 +12,8 @@ class Property
     public ?string $section;
     public int $order;
     public mixed $value;
-
+    public ?array $options;
     public ?array $flags;
     public ?array $middleware;
+    public ?string $tab;
 }

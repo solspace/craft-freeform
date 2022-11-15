@@ -39,9 +39,6 @@ export const useQueryEditableProperties = (): UseQueryResult<
     () =>
       axios
         .get<EditableProperty[]>(`/client/api/forms/editable-properties`)
-        .then((res) => res.data),
-    {
-      staleTime: Infinity,
-    }
+        .then((res) => res.data)
   );
 };

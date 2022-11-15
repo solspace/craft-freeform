@@ -139,7 +139,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     protected string $name = '';
 
     #[EditableProperty(
-        label: 'Return URL',
         tab: 'settings'
     )]
     protected string $handle = '';
@@ -158,11 +157,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         tab: 'settings'
     )]
     protected string $color = '';
-
-    #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected string $returnUrl = '/';
 
     #[EditableProperty(
         tab: 'settings'
@@ -187,26 +181,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     )]
     protected ?string $optInDataStorageTargetHash = null;
 
-    #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected bool $ajaxEnabled = true;
-
-    #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected bool $showSpinner = true;
-
-    #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected bool $showLoadingText = true;
-
-    #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected string $loadingText = '';
-
     // TODO: refactor captchas into their own integration types
     #[EditableProperty(
         tab: 'settings'
@@ -225,29 +199,125 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     protected ?string $gtmEventName = null;
 
     #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected ?string $errorMessage = null;
-
-    #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected ?string $limitFormSubmissions = null;
-
-    #[EditableProperty(
-        tab: 'behavior'
-    )]
-    protected ?string $stopSubmissionsAfter = null;
-
-    #[EditableProperty(
-        tab: 'behavior'
+        label: 'Success Behavior',
+        type: 'select',
+        instructions: "Set how you'd like the success return of this form to be handled. May also be overridden at the template level.",
+        order: 1,
+        placeholder: '',
+        options: [
+            'reload-form-with-success-message' => 'Reload Form with Success Message',
+            'use-return-url' => 'Use Return URL',
+            'load-success-template' => 'Load Success Template',
+        ],
+        tab: 'behavior',
     )]
     protected ?string $successBehavior = null;
 
     #[EditableProperty(
-        tab: 'behavior'
+        label: 'Success Template',
+        type: 'select',
+        instructions: '',
+        order: 2,
+        placeholder: '',
+        options: [
+            'my-success-template-name' => 'My Success Template Name',
+        ],
+        tab: 'behavior',
+    )]
+    protected ?string $successTemplate = null;
+
+    #[EditableProperty(
+        label: 'Return URL',
+        instructions: '',
+        order: 3,
+        placeholder: '',
+        tab: 'behavior',
+    )]
+    protected string $returnUrl = '/';
+
+    #[EditableProperty(
+        label: 'Success Message',
+        type: 'textarea',
+        instructions: 'The text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with form.successMessage.',
+        order: 4,
+        placeholder: 'Form has been submitted successfully!',
+        tab: 'behavior',
     )]
     protected ?string $successMessage = null;
+
+    #[EditableProperty(
+        label: 'Error Message',
+        instructions: 'The text to be shown at the top of the form if there are any errors upon submit (AJAX), or load in your template with form.errorMessage.',
+        order: 5,
+        placeholder: 'Sorry, there was an error submitting the form. Please try again.',
+        tab: 'behavior',
+    )]
+    protected ?string $errorMessage = null;
+
+    #[EditableProperty(
+        label: 'Use AJAX',
+        instructions: "Use Freeform's built-in automatic AJAX submit feature.",
+        order: 6,
+        placeholder: '',
+        tab: 'behavior',
+    )]
+    protected bool $ajaxEnabled = true;
+
+    #[EditableProperty(
+        label: 'Show Processing Indicator on Submit',
+        instructions: 'Show a loading indicator on the submit button upon submission of the form.',
+        order: 7,
+        placeholder: '',
+        tab: 'behavior',
+    )]
+    protected bool $showSpinner = true;
+
+    #[EditableProperty(
+        label: 'Show Processing Text',
+        instructions: "Enabling this will change the submit button's label to the text of your choice.",
+        order: 8,
+        placeholder: '',
+        tab: 'behavior',
+    )]
+    protected bool $showLoadingText = true;
+
+    #[EditableProperty(
+        label: 'Processing Text',
+        instructions: '',
+        order: 9,
+        placeholder: 'Processing...',
+        tab: 'behavior',
+    )]
+    protected string $loadingText = '';
+
+    #[EditableProperty(
+        label: 'Limit Form Submission Rate',
+        type: 'select',
+        instructions: '',
+        order: 9,
+        placeholder: '',
+        options: [
+            'no_limit' => 'Do not limit',
+            'no_limit_logged_in_users_only' => 'Logged in Users only (no limit)',
+            'cookie' => 'Once per Cookie only',
+            'ip_cookie' => 'Once per IP/Cookie combo',
+            'once_per_logged_in_users_only' => 'Once per logged in Users only',
+            'once_per_logged_in_user_or_guest_cookie_only' => 'Once per logged in User or Guest Cookie only',
+            'once_per_logged_in_user_or_guest_ip_cookie_combo' => 'Once per logged in User or Guest IP/Cookie combo',
+        ],
+        tab: 'behavior',
+    )]
+    protected ?string $limitFormSubmissions = null;
+
+    #[EditableProperty(
+        label: 'Stop Submissions After',
+        type: 'datetime',
+        instructions: 'Set a date after which the form will no longer accept submissions.',
+        order: 10,
+        placeholder: '',
+        tab: 'behavior'
+    )]
+    protected ?string $stopSubmissionsAfter = null;
 
     protected AttributeBag $attributeBag;
 

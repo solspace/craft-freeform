@@ -16,24 +16,27 @@ export type Form = {
 export enum EditablePropertyType {
   Integer = 'int',
   String = 'string',
+  StringMultiLine = 'textarea',
   Boolean = 'bool',
   Select = 'select',
   Color = 'color',
+  DateTime = 'datetime',
 }
 
 type BaseEditableProperty<T> = {
-  $label: string;
-  $type: EditablePropertyType;
-  $instructions: string;
-  $category: string;
-  $order: number;
-  $value: string;
-  $placeholder: string;
-  $options: GenericValue[];
-  $flags: GenericValue[];
-  $visibilityFilters: GenericValue[];
-  $middleware: GenericValue[];
-  $tab: string;
+  label: string;
+  handle: string;
+  type: EditablePropertyType;
+  instructions: string;
+  category?: string;
+  order: number;
+  value: string | number;
+  placeholder: string;
+  options?: GenericValue[];
+  flags: GenericValue[];
+  visibilityFilters?: GenericValue[];
+  middleware: GenericValue[];
+  tab: string;
 };
 
 type IntegerProperty = BaseEditableProperty<number> & {
@@ -42,6 +45,10 @@ type IntegerProperty = BaseEditableProperty<number> & {
 
 type StringProperty = BaseEditableProperty<string> & {
   type: EditablePropertyType.String;
+};
+
+type StringMultiLineProperty = BaseEditableProperty<string> & {
+  type: EditablePropertyType.StringMultiLine;
 };
 
 type BooleanProperty = BaseEditableProperty<boolean> & {
@@ -56,9 +63,15 @@ type ColorProperty = BaseEditableProperty<string> & {
   type: EditablePropertyType.Color;
 };
 
+type DateTimeProperty = BaseEditableProperty<string> & {
+  type: EditablePropertyType.DateTime;
+};
+
 export type EditableProperty =
   | IntegerProperty
   | StringProperty
+  | StringMultiLineProperty
   | BooleanProperty
   | SelectProperty
-  | ColorProperty;
+  | ColorProperty
+  | DateTimeProperty;

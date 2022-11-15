@@ -8,14 +8,14 @@ import { TOPIC_CREATED } from '@editor/store/middleware/state-persist';
 import { TOPIC_ERRORS } from '@editor/store/middleware/state-persist';
 import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { ErrorList } from '@ff-client/types/api';
-import type { FormType } from '@ff-client/types/forms';
+import type { Form } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import PubSub from 'pubsub-js';
 import { v4 } from 'uuid';
 
-type FormState = FormType & {
+type FormState = Form & {
   errors?: ErrorList;
 };
 
@@ -75,7 +75,7 @@ export const {
   clearErrors,
 } = formSlice.actions;
 
-export const selectForm = (state: RootState): FormType | undefined =>
+export const selectForm = (state: RootState): Form | undefined =>
   state.form;
 
 export default formSlice.reducer;

@@ -53,12 +53,9 @@ class ActiveCampaign extends AbstractMailingListIntegration
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/contact/sync');
 
-        $contactId = null;
-
         $tags = [];
         if (isset($mappedValues['tags'])) {
             $initialTags = $mappedValues['tags'];
-            $tags = [];
             foreach ($initialTags as $tag) {
                 $tags = array_merge($tags, explode(';', $tag));
             }
@@ -316,19 +313,15 @@ class ActiveCampaign extends AbstractMailingListIntegration
         static $tags;
 
         if (null === $tags) {
+            $existingTags = $this->fetchTags($client);
             $tags = [];
 
-            try {
-                $response = $client->get($this->getEndpoint('/tags'));
-                $data = json_decode($response->getBody());
-                foreach ($data->tags as $item) {
-                    if ('contact' !== $item->tagType) {
-                        continue;
-                    }
-
-                    $tags[$item->id] = $item->tag;
+            foreach ($existingTags as $item) {
+                if ('contact' !== $item->tagType) {
+                    continue;
                 }
-            } catch (RequestException $exception) {
+
+                $tags[$item->id] = $item->tag;
             }
         }
 
@@ -349,5 +342,30 @@ class ActiveCampaign extends AbstractMailingListIntegration
         } catch (RequestException $exception) {
             return null;
         }
+    }
+
+    private function fetchTags(Client $client): array
+    {
+        try {
+            $response = $client->get($this->getEndpoint('/tags'));
+            $data = json_decode($response->getBody());
+            $tags = $data->tags;
+            $tagsTotal = $data->meta->total;
+            $tagsCount = \count($tags);
+            $offset = $tagsCount;
+
+            while ($tagsCount < $tagsTotal) {
+                $response = $client->get($this->getEndpoint('/tags?offset='.$offset));
+                $data = json_decode($response->getBody());
+                $count = \count($data->tags);
+                $tagsCount += $count;
+                $tags = array_merge($tags, $data->tags);
+                $offset += $count;
+            }
+        } catch (RequestException $exception) {
+            return [];
+        }
+
+        return $tags;
     }
 }

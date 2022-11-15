@@ -6,6 +6,7 @@ return [
     'freeform/client/api/fields/types' => 'freeform/client/api/fields/types',
     'freeform/client/api/fields/types/sections' => 'freeform/client/api/fields/types/sections',
     'freeform/client/api/forms' => 'freeform/client/api/forms',
+    'freeform/client/api/forms/editable-properties' => 'freeform/client/api/forms/editable-properties',
     'freeform/client/api/forms/<id:\d+>' => 'freeform/client/api/forms',
     'freeform/client/api/forms/<formId:\d+>/fields' => 'freeform/client/api/forms/fields/get',
     'freeform/client/api/forms/<formId:\d+>/fields/<id:\d+>' => 'freeform/client/api/forms/fields/get-one',

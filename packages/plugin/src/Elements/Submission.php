@@ -356,6 +356,11 @@ class Submission extends Element
         return self::$permissionCache[$this->formId];
     }
 
+    public function canView(User $user): bool
+    {
+        return true;
+    }
+
     public function getCpEditUrl(): ?string
     {
         return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/submissions/'.$this->id) : false;

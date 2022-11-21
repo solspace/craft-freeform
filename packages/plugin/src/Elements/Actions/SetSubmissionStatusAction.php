@@ -2,12 +2,12 @@
 
 namespace Solspace\Freeform\Elements\Actions;
 
-use craft\base\ElementAction;
+use craft\elements\actions\SetStatus;
 use craft\elements\db\ElementQueryInterface;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 
-class SetSubmissionStatusAction extends ElementAction
+class SetSubmissionStatusAction extends SetStatus
 {
     public ?int $statusId = null;
 
@@ -16,11 +16,11 @@ class SetSubmissionStatusAction extends ElementAction
         return Freeform::t('Set Status');
     }
 
-    public function rules(): array
+    public function defineRules(): array
     {
         $statusIds = Freeform::getInstance()->statuses->getAllStatusIds();
 
-        $rules = parent::rules();
+        $rules = [];
         $rules[] = [['statusId'], 'required'];
         $rules[] = [
             ['statusId'],

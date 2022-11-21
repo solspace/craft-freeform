@@ -1,5 +1,17 @@
 # Solspace Freeform Changelog
 
+## 4.0.8 - 2022-11-21
+
+### Changed
+- Refactored the submission delete process to use batching.
+
+### Fixed
+- Fixed a bug where links to view/edit individual submissions in the CP disappeared in Craft 4.3.2+.
+- Fixed a bug where the Freeform Form element field type was not sorting form options alphabetically.
+- Fixed a bug where email notifications were sometimes not being fetched when fetched by handle.
+- Fixed a bug where two sets of "set status" actions would appear in CP submissions index.
+- Fixed a bug where fetching existing tags for the ActiveCampaign integration was not working correctly.
+
 ## 4.0.7 - 2022-10-25
 
 ### Added

@@ -1,17 +1,20 @@
-import type { ChangeEvent } from 'react';
 import React from 'react';
 import { Control } from '@components/form-controls/control';
 import {
-  FormTagAttributeInputColumn,
-  FormTagAttributeInputRow,
-  FormTagAttributeInputWrapper,
+  Column,
+  ColumnNarrow,
+  Row,
+  Wrapper,
 } from '@components/form-controls/inputs/form-tag-attribute-input.styles';
-import type {
-  FormTagAttributeInputProps,
-  FormTagAttributeProps,
-} from '@ff-client/types/properties';
+import type { Attribute } from '@ff-client/types/forms';
 
-export const FormTagAttributeInput: React.FC<FormTagAttributeInputProps> = ({
+export type AttributeInput = {
+  id: string;
+  value: Attribute[] | [];
+  onChange: (value: Attribute[]) => void;
+};
+
+export const FormTagAttributeInput: React.FC<AttributeInput> = ({
   id,
   value,
   onChange,
@@ -19,8 +22,8 @@ export const FormTagAttributeInput: React.FC<FormTagAttributeInputProps> = ({
   /**
    * Adds blank/empty key/value object
    */
-  const addFormTagAttribute = (): void => {
-    const formTagAttributes = [
+  const addAttribute = (): void => {
+    const attributes = [
       ...value,
       {
         key: '',
@@ -29,24 +32,23 @@ export const FormTagAttributeInput: React.FC<FormTagAttributeInputProps> = ({
     ];
 
     if (onChange) {
-      onChange(formTagAttributes);
+      onChange(attributes);
     }
   };
 
   /**
    * Filters out the form tag attribute based on its index
-   * @param formTagAttributeIndex
+   * @param attributeIndex
    */
-  const deleteFormTagAttribute = (formTagAttributeIndex: number): void => {
-    let formTagAttributes = JSON.parse(JSON.stringify(value));
+  const deleteAttribute = (attributeIndex: number): void => {
+    let attributes = JSON.parse(JSON.stringify(value));
 
-    formTagAttributes = formTagAttributes.filter(
-      (formTagAttribute: FormTagAttributeProps, index: number) =>
-        index !== formTagAttributeIndex
+    attributes = attributes.filter(
+      (attribute: Attribute, index: number) => index !== attributeIndex
     );
 
     if (onChange) {
-      onChange(formTagAttributes);
+      onChange(attributes);
     }
   };
 
@@ -54,95 +56,87 @@ export const FormTagAttributeInput: React.FC<FormTagAttributeInputProps> = ({
    * Find and update attribute property value
    * @param payload
    */
-  const updateFormTagAttribute = (payload: FormTagAttributeProps): void => {
-    const formTagAttributes = JSON.parse(JSON.stringify(value));
+  const updateAttribute = (payload: Attribute): void => {
+    const attributes = JSON.parse(JSON.stringify(value));
 
-    formTagAttributes.forEach(
-      (formTagAttribute: FormTagAttributeProps, index: number) => {
-        if (index === payload.index) {
-          if (payload.key === 'key') {
-            formTagAttribute['key'] = String(payload.value);
-          } else if (!isNaN(Number(payload.value))) {
-            // If the value is a numeric string convert to a proper number
-            formTagAttribute['value'] = Number(payload.value);
-          } else if (payload.value === 'true') {
-            // If the value is a boolean string "true", convert to a proper number
-            formTagAttribute['value'] = true;
-          } else if (payload.value === 'false') {
-            // If the value is a boolean string "false", convert to a proper number
-            formTagAttribute['value'] = false;
-          } else {
-            formTagAttribute['value'] = payload.value;
-          }
+    attributes.forEach((attribute: Attribute, index: number) => {
+      if (index === payload.index) {
+        if (payload.key === 'key') {
+          attribute['key'] = payload.value;
+        } else {
+          attribute['value'] = payload.value;
         }
       }
-    );
+    });
 
     if (onChange) {
-      onChange(formTagAttributes);
+      onChange(attributes);
     }
   };
 
   return (
-    <FormTagAttributeInputWrapper>
-      {value.map(({ key, value }: FormTagAttributeProps, index: number) => (
-        <FormTagAttributeInputRow key={index}>
-          <FormTagAttributeInputColumn>
-            <Control id={`${id}[${index}]['key']`} label="Key">
-              <input
-                id={`${id}[${index}]['key']`}
-                type="text"
-                placeholder={`data-example-${index + 1}`}
-                className="text fullwidth"
-                defaultValue={(key as string) || ''}
-                onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-                  updateFormTagAttribute({
-                    index,
-                    key: 'key',
-                    value: String(event.target.value),
-                  })
-                }
-              />
-            </Control>
-          </FormTagAttributeInputColumn>
-          <FormTagAttributeInputColumn>
-            <Control id={`${id}[${index}]['value']`} label="Value">
-              <input
-                id={`${id}[${index}]['value']`}
-                type="text"
-                placeholder={`test-${index + 1}`}
-                className="text fullwidth"
-                defaultValue={(value as string | number) || ''}
-                onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-                  updateFormTagAttribute({
-                    index,
-                    key: 'value',
-                    value: event.target.value,
-                  });
-                }}
-              />
-            </Control>
-          </FormTagAttributeInputColumn>
-          <FormTagAttributeInputColumn style={{ width: '150px' }}>
-            <Control label="&nbsp;">
-              <button
-                type="button"
-                className="btn submit"
-                onClick={(): void =>
-                  deleteFormTagAttribute && deleteFormTagAttribute(index)
-                }
-              >
-                Delete
-              </button>
-            </Control>
-          </FormTagAttributeInputColumn>
-        </FormTagAttributeInputRow>
-      ))}
-      <FormTagAttributeInputRow>
-        <button type="button" className="btn" onClick={addFormTagAttribute}>
+    <Wrapper>
+      {value.map(({ key, value }: Attribute, index: number) => {
+        const keyId = `${id}[${index}]['key']`;
+        const valueId = `${id}[${index}]['value']`;
+
+        return (
+          <Row key={index}>
+            <Column>
+              <Control id={keyId} label="Key">
+                <input
+                  id={keyId}
+                  type="text"
+                  placeholder={`data-example-${index + 1}`}
+                  className="text fullwidth"
+                  defaultValue={(key as string) || ''}
+                  onChange={(event) =>
+                    updateAttribute({
+                      index,
+                      key: 'key',
+                      value: event.target.value,
+                    })
+                  }
+                />
+              </Control>
+            </Column>
+            <Column>
+              <Control id={valueId} label="Value">
+                <input
+                  id={valueId}
+                  type="text"
+                  placeholder={`test-${index + 1}`}
+                  className="text fullwidth"
+                  defaultValue={(value as string) || ''}
+                  onChange={(event) =>
+                    updateAttribute({
+                      index,
+                      key: 'value',
+                      value: event.target.value,
+                    })
+                  }
+                />
+              </Control>
+            </Column>
+            <ColumnNarrow>
+              <Control label="&nbsp;">
+                <button
+                  type="button"
+                  className="btn submit"
+                  onClick={() => deleteAttribute(index)}
+                >
+                  Delete
+                </button>
+              </Control>
+            </ColumnNarrow>
+          </Row>
+        );
+      })}
+      <Row>
+        <button type="button" className="btn" onClick={addAttribute}>
           Add&nbsp;+
         </button>
-      </FormTagAttributeInputRow>
-    </FormTagAttributeInputWrapper>
+      </Row>
+    </Wrapper>
   );
 };

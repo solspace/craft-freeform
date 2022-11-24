@@ -1,14 +1,20 @@
 import type { GenericValue } from '@ff-client/types/properties';
 
-export type FormProperties = {
+export type Properties = {
   name: string;
   handle: string;
   [key: string]: GenericValue;
 };
 
-export type FormType = {
+export type Form = {
   id?: number;
   uid: string;
   type: string;
-  properties: FormProperties;
+  properties: Properties;
+};
+
+export type Attribute = {
+  index?: number;
+  key: string;
+  value?: string;
 };

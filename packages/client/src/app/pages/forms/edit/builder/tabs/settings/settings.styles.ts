@@ -5,7 +5,7 @@ export const SettingsWrapper = styled.div`
   height: 100%;
   display: flex;
   position: relative;
-  flex-directions: row;
+  flex-direction: row;
   align-items: flex-start;
   justify-content: flex-start;
 `;

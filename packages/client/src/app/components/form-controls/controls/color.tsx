@@ -1,16 +1,14 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useState } from 'react';
+import { SketchPicker } from 'react-color';
+import {
+  Overlay,
+  Popover,
+  SelectedColor,
+  Swatch,
+} from '@components/form-controls/inputs/color.styles';
 
 import type { ControlProps } from '../control';
 import { Control } from '../control';
-
-const Input = styled.input`
-  height: 30px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background-color: transparent;
-`;
 
 export const Color: React.FC<ControlProps<string>> = ({
   id,
@@ -18,14 +16,23 @@ export const Color: React.FC<ControlProps<string>> = ({
   label,
   onChange,
   instructions,
-}) => (
-  <Control id={id} label={label} instructions={instructions}>
-    {/* Swap out for react-color - https://casesandberg.github.io/react-color/#examples */}
-    <Input
-      id={id}
-      type="color"
-      defaultValue={(value as string) || '#ff0000'}
-      onChange={(event) => onChange && onChange(event.target.value)}
-    />
-  </Control>
-);
+}) => {
+  const [showColorPicker, setShowColorPicker] = useState(false);
+
+  return (
+    <Control id={id} label={label} instructions={instructions}>
+      <Swatch onClick={() => setShowColorPicker(!showColorPicker)}>
+        <SelectedColor style={{ backgroundColor: value }} />
+      </Swatch>
+      {showColorPicker && (
+        <Popover>
+          <Overlay onClick={() => setShowColorPicker(false)} />
+          <SketchPicker
+            color={value}
+            onChangeComplete={({ hex }) => onChange && onChange(hex)}
+          />
+        </Popover>
+      )}
+    </Control>
+  );
+};

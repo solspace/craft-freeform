@@ -1,7 +1,5 @@
 import type { Cell, Row } from '@editor/builder/types/layout';
 import type { RootState } from '@editor/store';
-import type { SaveSubscriber } from '@editor/store/middleware/state-persist';
-import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -20,12 +18,12 @@ export const cellsSlice = createSlice({
   initialState,
   reducers: {
     add: (state, action: PayloadAction<Omit<Cell, 'order'>>) => {
-      const highestOrder =
-        Math.max(
-          ...state
-            .filter((cell) => cell.rowUid === action.payload.rowUid)
-            .map((cell) => cell.order)
-        ) ?? -1;
+      const highestOrder = Math.max(
+        -1,
+        ...state
+          .filter((cell) => cell.rowUid === action.payload.rowUid)
+          .map((cell) => cell.order)
+      );
 
       state.push({
         ...action.payload,
@@ -52,11 +50,3 @@ export const selectCellsInRow =
       .sort((a, b) => a.order - b.order);
 
 export default cellsSlice.reducer;
-
-const persist: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
-
-  persist.cells = state.cells;
-};
-
-PubSub.subscribe(TOPIC_SAVE, persist);

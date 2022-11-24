@@ -1,7 +1,5 @@
 import type { Page } from '@editor/builder/types/layout';
 import type { RootState } from '@editor/store';
-import type { SaveSubscriber } from '@editor/store/middleware/state-persist';
-import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -27,10 +25,18 @@ export const pagesSlice = createSlice({
   initialState,
   reducers: {
     add: (state, action: PayloadAction<Page>) => {
-      state.push(action.payload);
+      const maxOrder = Math.max(...state.map((page) => page.order)) ?? -1;
+
+      state.push({
+        ...action.payload,
+        order: maxOrder + 1,
+      });
     },
     remove: (state, action: PayloadAction<string>) => {
-      state = state.filter((page) => page.uid !== action.payload);
+      let order = 0;
+      state = state
+        .filter((page) => page.uid !== action.payload)
+        .map((page) => ({ ...page, order: order++ }));
     },
     swap: (state, action: PayloadAction<SwapPayload>) => {
       const current = state.find(
@@ -57,11 +63,3 @@ export const selectPage =
     state.pages.find((page) => page.uid === uid);
 
 export default pagesSlice.reducer;
-
-const persist: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
-
-  persist.pages = state.pages;
-};
-
-PubSub.subscribe(TOPIC_SAVE, persist);

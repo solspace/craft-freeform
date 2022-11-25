@@ -23,28 +23,25 @@ use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
-use Solspace\Freeform\Events\Forms\HydrateEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\PersistStateEvent;
 use Solspace\Freeform\Events\Forms\RegisterContextEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
-use Solspace\Freeform\Events\Forms\UpdateAttributesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
+use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
+use Solspace\Freeform\Library\Collections\PageCollection;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
-use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
-use Solspace\Freeform\Library\Composer\Components\Properties\ValidationProperties;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
@@ -53,17 +50,15 @@ use Solspace\Freeform\Library\DataObjects\FormActionInterface;
 use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
 use Solspace\Freeform\Library\Rules\RuleProperties;
 use Twig\Markup;
-use yii\base\Arrayable;
 use yii\base\Event;
 use yii\web\Request;
 
 // TODO: move this into the `Solspace\Freeform\Forms` namespace, as Composer will be removed
-abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, \ArrayAccess, Arrayable, \Countable
+abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAggregate, \Countable
 {
     public const ID_KEY = 'id';
     public const HASH_KEY = 'hash';
@@ -362,10 +357,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     private ?string $uid;
 
-    private Layout $layout;
-
-    private ?Page $currentPage = null;
-
     private array $currentPageRows = [];
 
     // TODO: create a collection to handle error messages
@@ -390,7 +381,8 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     private bool $formPosted = false;
 
     public function __construct(
-        array $config = [],
+        array $config,
+        private Layout $layout,
         private AttributeProvider $attributeProvider
     ) {
         $this->id = $config['id'] ?? null;
@@ -414,7 +406,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->attributeBag = new AttributeBag($this);
 
         $pageIndex = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
-        $this->setCurrentPage($pageIndex);
+        $this->getPages()->setCurrent($pageIndex);
 
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new FormLoadedEvent($this));
     }
@@ -444,19 +436,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     public function get(string $fieldHandle): ?FieldInterface
     {
-        try {
-            return $this->getLayout()->getFieldByHandle($fieldHandle);
-        } catch (FreeformException $e) {
-            try {
-                return $this->getLayout()->getFieldByHash($fieldHandle);
-            } catch (FreeformException $e) {
-                try {
-                    return $this->getLayout()->getSpecialField($fieldHandle);
-                } catch (FreeformException $e) {
-                    return null;
-                }
-            }
-        }
+        return $this->getLayout()->getField($fieldHandle);
     }
 
     public function getMetadata(string $key, $defaultValue = null)
@@ -466,7 +446,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     public function hasFieldType(string $type): bool
     {
-        return $this->getLayout()->hasFieldType($type);
+        return $this->getLayout()->getFields()->hasFieldType($type);
     }
 
     public function getProperties(): PropertyBag
@@ -484,9 +464,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->attributeBag;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
-        return $this->id ? (int) $this->id : null;
+        return $this->id;
     }
 
     public function getUid(): string
@@ -509,15 +489,12 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->color;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getOptInDataStorageTargetHash()
+    public function getOptInDataStorageTargetHash(): ?string
     {
         return $this->optInDataStorageTargetHash;
     }
 
-    public function getLimitFormSubmissions(): string
+    public function getLimitFormSubmissions(): ?string
     {
         return $this->limitFormSubmissions;
     }
@@ -537,25 +514,14 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->description;
     }
 
-    public function getCurrentPage(): Page
+    public function getCurrentPage(): \Solspace\Freeform\Form\Layout\Page
     {
-        // TODO: implement page collections, use that to get the current page
-        // e.g. $form->pages->current();
-        return new Page(0, 'Page', [], []);
-
-        return $this->currentPage;
+        return $this->getLayout()->getPages()->current();
     }
 
     public function setCurrentPage(int $index): self
     {
-        // TODO: implement page collections
-        return $this;
-        if (!$this->currentPage || $index !== $this->currentPage->getIndex()) {
-            $page = $this->layout->getPage($index);
-
-            $this->currentPage = $page;
-            $this->currentPageRows = $page->getRows();
-        }
+        $this->getLayout()->getPages()->setCurrent($index);
 
         return $this;
     }
@@ -609,12 +575,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->getMetadata('successTemplate');
     }
 
-    /**
-     * @return int
-     */
     public function isIpCollectingEnabled(): bool
     {
-        return (bool) $this->ipCollectingEnabled;
+        return $this->ipCollectingEnabled;
     }
 
     public function isAjaxEnabled(): bool
@@ -632,10 +595,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->showLoadingText;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getLoadingText()
+    public function getLoadingText(): ?string
     {
         return $this->loadingText;
     }
@@ -687,12 +647,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return \count($this->getPages()) > 1;
     }
 
-    /**
-     * @return Page[]
-     */
-    public function getPages(): array
+    public function getPages(): PageCollection
     {
-        return $this->layout->getPages();
+        return $this->getLayout()->getPages();
     }
 
     public function getFormTemplate(): ?string
@@ -788,7 +745,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public function hasErrors(): bool
     {
         $errorCount = \count($this->getErrors());
-        $errorCount += $this->getLayout()->getFieldErrorCount();
+        foreach ($this->getLayout()->getFields() as $field) {
+            $errorCount += \count($field->getErrors());
+        }
 
         return $errorCount > 0;
     }
@@ -801,14 +760,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public function isValid(): bool
     {
         return $this->valid;
-    }
-
-    /**
-     * @deprecated use ::isPagePosted() or ::isFormPosted() instead
-     */
-    public function isSubmitted(): bool
-    {
-        return $this->isPagePosted();
     }
 
     public function isFinished(): bool
@@ -845,11 +796,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->formPosted = $formPosted;
 
         return $this;
-    }
-
-    public function getCustomAttributes(): PropertyBag
-    {
-        return $this->getPropertyBag();
     }
 
     public function handleRequest(Request $request): bool
@@ -1043,14 +989,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return Freeform::getInstance()->files;
     }
 
-    /**
-     * @deprecated [Deprecated since v3.12] Instead use the ::getAttributeBag() bag
-     */
-    public function getTagAttributes(): array
-    {
-        return $this->getAttributeBag()->jsonSerialize();
-    }
-
     public function getSuppressors(): Suppressors
     {
         $suppressors = $this->suppressionEnabled ? true : $this->getPropertyBag()->get(self::DATA_SUPPRESS);
@@ -1081,17 +1019,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         );
 
         return $this;
-    }
-
-    /**
-     * @deprecated Use ::setProperties() instead. Will be removed in Freeform 4.x
-     */
-    public function setAttributes(array $attributes = null): self
-    {
-        $event = new UpdateAttributesEvent($this, $attributes ?? []);
-        Event::trigger(self::class, self::EVENT_UPDATE_ATTRIBUTES, $event);
-
-        return $this->setProperties($event->getAttributes());
     }
 
     /**
@@ -1235,7 +1162,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->properties->getRuleProperties();
     }
 
-    // TODO: update this to read all the exposable properties
     public function jsonSerialize(): array
     {
         $editableProperties = $this->attributeProvider->getEditableProperties(self::class);
@@ -1251,51 +1177,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         ];
     }
 
-    public function current(): false|Row
-    {
-        return current($this->currentPageRows);
-    }
-
-    public function next(): void
-    {
-        next($this->currentPageRows);
-    }
-
-    public function key(): ?int
-    {
-        return key($this->currentPageRows);
-    }
-
-    public function valid(): bool
-    {
-        return null !== $this->key() && false !== $this->key();
-    }
-
-    public function rewind(): void
-    {
-        reset($this->currentPageRows);
-    }
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return isset($this->currentPageRows[$offset]);
-    }
-
-    public function offsetGet(mixed $offset): ?Row
-    {
-        return $this->offsetExists($offset) ? $this->currentPageRows[$offset] : null;
-    }
-
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        throw new FreeformException('Form ArrayAccess does not allow for setting values');
-    }
-
-    public function offsetUnset(mixed $offset): void
-    {
-        throw new FreeformException('Form ArrayAccess does not allow unsetting values');
-    }
-
     public function count(): int
     {
         return \count($this->currentPageRows);
@@ -1308,25 +1189,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $currentPageIndex === (\count($this->getPages()) - 1);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function fields()
-    {
-        return array_keys($this->jsonSerialize());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function extraFields()
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         return $this->jsonSerialize();
@@ -1335,12 +1197,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     // ==========================
     // INTERFACE IMPLEMENTATIONS
     // ==========================
-
-    private function getEditableProperties(): array
+    public function getIterator(): \ArrayIterator
     {
-        $attr = new AttributeProvider();
-
-        return $attr->getEditableProperties(self::class);
+        return $this->layout->getIterator();
     }
 
     private function validate()
@@ -1396,37 +1255,5 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         if (!$event->isValid) {
             $this->valid = $event->getValidationOverride();
         }
-    }
-
-    /**
-     * Builds the form object based on $formData.
-     */
-    private function buildFromData(FormProperties $formProperties, ValidationProperties $validationProperties)
-    {
-        $this->name = $formProperties->getName();
-        $this->handle = $formProperties->getHandle();
-        $this->color = $formProperties->getColor();
-        $this->submissionTitleFormat = $formProperties->getSubmissionTitleFormat();
-        $this->description = $formProperties->getDescription();
-        $this->returnUrl = $formProperties->getReturnUrl();
-        $this->storeData = $formProperties->isStoreData();
-        $this->ipCollectingEnabled = $formProperties->isIpCollectingEnabled();
-        $this->defaultStatus = $formProperties->getDefaultStatus();
-        $this->formTemplate = $formProperties->getFormTemplate();
-        $this->optInDataStorageTargetHash = $formProperties->getOptInDataStorageTargetHash();
-        $this->limitFormSubmissions = $validationProperties->getLimitFormSubmissions();
-        $this->ajaxEnabled = $formProperties->isAjaxEnabled();
-        $this->showSpinner = $validationProperties->isShowSpinner();
-        $this->showLoadingText = $validationProperties->isShowLoadingText();
-        $this->loadingText = $validationProperties->getLoadingText();
-        $this->recaptchaEnabled = $formProperties->isRecaptchaEnabled();
-        $this->gtmEnabled = $formProperties->isGtmEnabled();
-        $this->gtmId = $formProperties->getGtmId();
-        $this->gtmEventName = $formProperties->getGtmEventName();
-
-        $event = new HydrateEvent($this, $formProperties, $validationProperties);
-        Event::trigger(self::class, self::EVENT_HYDRATE_FORM, $event);
-
-        $this->getAttributeBag()->merge(CustomFormAttributes::extractAttributes($formProperties->getTagAttributes()));
     }
 }

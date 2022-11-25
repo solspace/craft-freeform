@@ -10,8 +10,6 @@ use Stringy\Stringy;
 
 class AttributeProvider
 {
-    private array $attributesByType;
-
     public function getEditableProperties(string $class): PropertyCollection
     {
         $reflection = $this->getReflection($class);

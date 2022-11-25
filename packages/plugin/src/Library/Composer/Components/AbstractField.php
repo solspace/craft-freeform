@@ -53,8 +53,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     #[Section('general')]
     #[EditableProperty(
         type: 'textarea',
-        order: 3,
         instructions: 'Field specific user instructions',
+        order: 3,
     )]
     protected string $instructions = '';
 

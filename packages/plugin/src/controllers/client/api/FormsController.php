@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\controllers\client\api;
 
 use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Bundles\Normalizers\NormalizerProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
@@ -18,27 +19,28 @@ class FormsController extends BaseApiController
     public function __construct(
         $id,
         $module,
-        $config,
-        private AttributeProvider $attributeProvider
+        $config = [],
+        private AttributeProvider $attributeProvider,
+        private NormalizerProvider $normalizerProvider
     ) {
-        parent::__construct($id, $module, $config ?? []);
+        parent::__construct($id, $module, $config);
     }
 
     protected function get(): array
     {
-        return $this->getFormsService()->getResolvedForms();
+        return $this->normalizerProvider->normalize(
+            array_values($this->getFormsService()->getAllForms())
+        );
     }
 
     protected function getOne($id): array|object|null
     {
-        $forms = $this->getFormsService()->getResolvedForms(['id' => $id]);
-        $form = reset($forms);
-
+        $form = $this->getFormsService()->getFormById($id);
         if (!$form) {
             throw new NotFoundHttpException("Form with ID {$id} not found");
         }
 
-        return $form;
+        return $this->normalizerProvider->normalize($form);
     }
 
     protected function post(int|string $id = null): array|object

@@ -102,127 +102,135 @@ class FormsController extends BaseController
 
     public function actionDuplicate(): Response
     {
-        $this->requirePostRequest();
-
-        $id = \Craft::$app->request->post('id');
-        $model = $this->getFormService()->getFormById($id);
-
-        if (!$model) {
-            throw new FreeformException(
-                Freeform::t('Form with ID {id} not found', ['id' => $id])
-            );
-        }
-
-        $this->requireFormManagePermission($id);
-
-        $model->id = null;
-        $layout = Json::decode($model->layoutJson, true);
-        $oldHandle = $model->handle;
-
-        if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-            [$string, $mainPart, $iterator] = $matches;
-
-            $newHandle = $mainPart.((int) $iterator + 1);
-        } else {
-            $newHandle = $oldHandle.'1';
-        }
-
-        $layout['composer']['properties']['form']['handle'] = $newHandle;
-
-        $model->handle = $newHandle;
-        $model->layoutJson = Json::encode($layout);
-
-        $this->getFormsService()->save($model);
-
-        $errors = [];
-        foreach ($model->getErrors() as $errors) {
-            $errors[] = implode(', ', $errors);
-        }
-
-        $this->updateGroupPermissions(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $id, $model->id);
-        $this->updateGroupPermissions(Freeform::PERMISSION_FORMS_MANAGE, $id, $model->id);
-
+        // TODO: refactor
         return $this->asJson([
-            'errors' => $errors,
-            'success' => 0 === \count($errors),
+            'errors' => [],
+            'success' => true,
         ]);
+
+        // $this->requirePostRequest();
+        //
+        // $id = \Craft::$app->request->post('id');
+        // $model = $this->getFormService()->getFormById($id);
+        //
+        // if (!$model) {
+        //     throw new FreeformException(
+        //         Freeform::t('Form with ID {id} not found', ['id' => $id])
+        //     );
+        // }
+        //
+        // $this->requireFormManagePermission($id);
+        //
+        // $model->id = null;
+        // $layout = Json::decode($model->layoutJson, true);
+        // $oldHandle = $model->handle;
+        //
+        // if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
+        //     [$string, $mainPart, $iterator] = $matches;
+        //
+        //     $newHandle = $mainPart.((int) $iterator + 1);
+        // } else {
+        //     $newHandle = $oldHandle.'1';
+        // }
+        //
+        // $layout['composer']['properties']['form']['handle'] = $newHandle;
+        //
+        // $model->handle = $newHandle;
+        // $model->layoutJson = Json::encode($layout);
+        //
+        // $this->getFormsService()->save($model);
+        //
+        // $errors = [];
+        // foreach ($model->getErrors() as $errors) {
+        //     $errors[] = implode(', ', $errors);
+        // }
+        //
+        // $this->updateGroupPermissions(Freeform::PERMISSION_SUBMISSIONS_MANAGE, $id, $model->id);
+        // $this->updateGroupPermissions(Freeform::PERMISSION_FORMS_MANAGE, $id, $model->id);
+        //
+        // return $this->asJson([
+        //     'errors' => $errors,
+        //     'success' => 0 === \count($errors),
+        // ]);
     }
 
     public function actionSave(): Response
     {
-        $post = \Craft::$app->request->post();
-
-        if (!isset($post['formId'])) {
-            throw new FreeformException('No form ID specified');
-        }
-
-        if (!isset($post['composerState'])) {
-            throw new FreeformException('No composer data present');
-        }
-
-        $composerState = json_decode($post['composerState'], true);
-
-        $formId = $post['formId'];
-        $form = $this->getNewOrExistingForm($formId);
-        $form->metadata = $post['metadata'] ?? new \stdClass();
-        $form->type = $composerState['composer']['properties']['form']['formType'] ?? Regular::class;
-
-        $isNew = !$form->id;
-        if ($isNew) {
-            $this->requireFormCreatePermission();
-        } else {
-            $this->requireFormManagePermission($form->id);
-        }
-
-        if (\Craft::$app->request->post('duplicate', false)) {
-            $oldHandle = $composerState['composer']['properties']['form']['handle'];
-
-            if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
-                [$string, $mainPart, $iterator] = $matches;
-
-                $newHandle = $mainPart.((int) $iterator + 1);
-            } else {
-                $newHandle = $oldHandle.'1';
-            }
-
-            $composerState['composer']['properties']['form']['handle'] = $newHandle;
-        }
-
-        try {
-            $composer = new Composer(
-                $form,
-                $composerState,
-                new CraftTranslator(),
-                FreeformLogger::getInstance(FreeformLogger::FORM)
-            );
-        } catch (ComposerException $exception) {
-            return $this->asJson(
-                [
-                    'success' => false,
-                    'errors' => [$exception->getMessage()],
-                ]
-            );
-        }
-
-        $form->setLayout($composer);
-
-        if ($this->getFormService()->save($form)) {
-            return $this->asJson(
-                [
-                    'success' => true,
-                    'id' => $form->id,
-                    'handle' => $form->handle,
-                ]
-            );
-        }
-
-        $errors = array_values($form->getErrors());
-        // flattening error map
-        if ($errors) {
-            $errors = array_merge(...$errors);
-        }
-
-        return $this->asJson(['success' => false, 'errors' => $errors]);
+        // TODO: re-implement this
+        return $this->asJson(['success' => false, 'errors' => []]);
+        // $post = \Craft::$app->request->post();
+        //
+        // if (!isset($post['formId'])) {
+        //     throw new FreeformException('No form ID specified');
+        // }
+        //
+        // if (!isset($post['composerState'])) {
+        //     throw new FreeformException('No composer data present');
+        // }
+        //
+        // $composerState = json_decode($post['composerState'], true);
+        //
+        // $formId = $post['formId'];
+        // $form = $this->getNewOrExistingForm($formId);
+        // $form->metadata = $post['metadata'] ?? new \stdClass();
+        // $form->type = $composerState['composer']['properties']['form']['formType'] ?? Regular::class;
+        //
+        // $isNew = !$form->id;
+        // if ($isNew) {
+        //     $this->requireFormCreatePermission();
+        // } else {
+        //     $this->requireFormManagePermission($form->id);
+        // }
+        //
+        // if (\Craft::$app->request->post('duplicate', false)) {
+        //     $oldHandle = $composerState['composer']['properties']['form']['handle'];
+        //
+        //     if (preg_match('/^([a-zA-Z0-9]*[a-zA-Z]+)(\d+)$/', $oldHandle, $matches)) {
+        //         [$string, $mainPart, $iterator] = $matches;
+        //
+        //         $newHandle = $mainPart.((int) $iterator + 1);
+        //     } else {
+        //         $newHandle = $oldHandle.'1';
+        //     }
+        //
+        //     $composerState['composer']['properties']['form']['handle'] = $newHandle;
+        // }
+        //
+        // try {
+        //     $composer = new Composer(
+        //         $form,
+        //         $composerState,
+        //         new CraftTranslator(),
+        //         FreeformLogger::getInstance(FreeformLogger::FORM)
+        //     );
+        // } catch (ComposerException $exception) {
+        //     return $this->asJson(
+        //         [
+        //             'success' => false,
+        //             'errors' => [$exception->getMessage()],
+        //         ]
+        //     );
+        // }
+        //
+        // $form->setLayout($composer);
+        //
+        // if ($this->getFormService()->save($form)) {
+        //     return $this->asJson(
+        //         [
+        //             'success' => true,
+        //             'id' => $form->id,
+        //             'handle' => $form->handle,
+        //         ]
+        //     );
+        // }
+        //
+        // $errors = array_values($form->getErrors());
+        // // flattening error map
+        // if ($errors) {
+        //     $errors = array_merge(...$errors);
+        // }
+        //
+        // return $this->asJson(['success' => false, 'errors' => $errors]);
     }
 
     public function actionDelete(): Response
@@ -388,7 +396,7 @@ class FormsController extends BaseController
         return Freeform::getInstance()->forms;
     }
 
-    private function getNewOrExistingForm($formId): FormModel
+    private function getNewOrExistingForm($formId): Form
     {
         if ($formId) {
             $form = $this->getFormService()->getFormById($formId);
@@ -401,8 +409,6 @@ class FormsController extends BaseController
 
             return $form;
         }
-
-        return FormModel::create();
     }
 
     private function renderEditForm(string $title, FormModel $model): Response

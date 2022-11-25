@@ -742,7 +742,10 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        return new $type($data, $this->attributeProvider);
+        $layout = $this->getFormLayoutsService()->getLayout($data['id']);
+
+        /** @var Form $type */
+        return new $type($data, $layout, $this->attributeProvider);
     }
 
     private function addFormManagePermissionToUser($formId)

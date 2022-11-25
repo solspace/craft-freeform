@@ -119,56 +119,58 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public const DATA_PERSISTENT_VALUES = 'persistentValues';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    public const LIMIT_COOKIE = 'cookie';
-    public const LIMIT_IP_COOKIE = 'ip_cookie';
-
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $name = '';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $handle = '';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $description = '';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $submissionTitleFormat = '{{ dateCreated|date("Y-m-d H:i:s") }}';
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected string $color = '';
 
-    #[EditableProperty('Return URL')]
-    protected string $returnUrl = '/';
-
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected bool $storeData = true;
 
     #[EditableProperty]
     protected bool $ipCollectingEnabled = true;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected ?int $defaultStatus = null;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected ?string $formTemplate = null;
 
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected ?string $optInDataStorageTargetHash = null;
 
-    #[EditableProperty]
-    protected bool $ajaxEnabled = true;
-
-    #[EditableProperty]
-    protected bool $showSpinner = true;
-
-    #[EditableProperty]
-    protected bool $showLoadingText = true;
-
-    #[EditableProperty]
-    protected string $loadingText = '';
-
     // TODO: refactor captchas into their own integration types
-    #[EditableProperty]
+    #[EditableProperty(
+        tab: 'settings'
+    )]
     protected bool $recaptchaEnabled = false;
 
     // TODO: refactor this into a object instead of 3 different values
@@ -182,6 +184,171 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     #[EditableProperty]
     protected ?string $gtmEventName = null;
 
+    #[EditableProperty(
+        label: 'Success Behavior',
+        type: 'select',
+        instructions: "Set how you'd like the success return of this form to be handled. May also be overridden at the template level.",
+        order: 1,
+        placeholder: '',
+        options: [
+            [
+                'value' => 'reload-form-with-success-message',
+                'label' => 'Reload Form with Success Message',
+            ],
+            [
+                'value' => 'use-return-url',
+                'label' => 'Use Return URL',
+            ],
+            [
+                'value' => 'load-success-template',
+                'label' => 'Load Success Template',
+            ],
+        ],
+        tab: 'behavior',
+        group: 'success-and-errors',
+    )]
+    protected ?string $successBehavior = null;
+
+    #[EditableProperty(
+        label: 'Success Template',
+        type: 'select',
+        instructions: '',
+        order: 2,
+        placeholder: '',
+        options: [
+            [
+                'value' => 'my-success-template-name',
+                'label' => 'My Success Template Name',
+            ],
+        ],
+        tab: 'behavior',
+        group: 'success-and-errors',
+    )]
+    protected ?string $successTemplate = null;
+
+    #[EditableProperty(
+        label: 'Return URL',
+        instructions: '',
+        order: 3,
+        placeholder: '',
+        tab: 'behavior',
+        group: 'success-and-errors',
+    )]
+    protected string $returnUrl = '/';
+
+    #[EditableProperty(
+        label: 'Success Message',
+        type: 'textarea',
+        instructions: 'The text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with form.successMessage.',
+        order: 4,
+        placeholder: 'Form has been submitted successfully!',
+        tab: 'behavior',
+        group: 'success-and-errors',
+    )]
+    protected ?string $successMessage = null;
+
+    #[EditableProperty(
+        label: 'Error Message',
+        instructions: 'The text to be shown at the top of the form if there are any errors upon submit (AJAX), or load in your template with form.errorMessage.',
+        order: 5,
+        placeholder: 'Sorry, there was an error submitting the form. Please try again.',
+        tab: 'behavior',
+        group: 'success-and-errors',
+    )]
+    protected ?string $errorMessage = null;
+
+    #[EditableProperty(
+        label: 'Use AJAX',
+        instructions: "Use Freeform's built-in automatic AJAX submit feature.",
+        order: 6,
+        placeholder: '',
+        tab: 'behavior',
+        group: 'processing',
+    )]
+    protected bool $ajaxEnabled = true;
+
+    #[EditableProperty(
+        label: 'Show Processing Indicator on Submit',
+        instructions: 'Show a loading indicator on the submit button upon submission of the form.',
+        order: 7,
+        placeholder: '',
+        tab: 'behavior',
+        group: 'processing',
+    )]
+    protected bool $showSpinner = true;
+
+    #[EditableProperty(
+        label: 'Show Processing Text',
+        instructions: "Enabling this will change the submit button's label to the text of your choice.",
+        order: 8,
+        placeholder: '',
+        tab: 'behavior',
+        group: 'processing',
+    )]
+    protected bool $showLoadingText = true;
+
+    #[EditableProperty(
+        label: 'Processing Text',
+        instructions: '',
+        order: 9,
+        placeholder: 'Processing...',
+        tab: 'behavior',
+        group: 'processing',
+    )]
+    protected string $loadingText = '';
+
+    #[EditableProperty(
+        label: 'Limit Form Submission Rate',
+        type: 'select',
+        instructions: '',
+        order: 9,
+        placeholder: '',
+        options: [
+            [
+                'value' => 'no_limit',
+                'label' => 'Do not limit',
+            ],
+            [
+                'value' => 'no_limit_logged_in_users_only',
+                'label' => 'Logged in Users only (no limit)',
+            ],
+            [
+                'value' => 'cookie',
+                'label' => 'Once per Cookie only',
+            ],
+            [
+                'value' => 'ip_cookie',
+                'label' => 'Once per IP/Cookie combo',
+            ],
+            [
+                'value' => 'once_per_logged_in_users_only',
+                'label' => 'Once per logged in Users only',
+            ],
+            [
+                'value' => 'once_per_logged_in_user_or_guest_cookie_onlye',
+                'label' => 'Once per logged in User or Guest Cookie only',
+            ],
+            [
+                'value' => 'once_per_logged_in_user_or_guest_ip_cookie_combo',
+                'label' => 'Once per logged in User or Guest IP/Cookie combo',
+            ],
+        ],
+        tab: 'behavior',
+        group: 'limits',
+    )]
+    protected ?string $limitFormSubmissions = null;
+
+    #[EditableProperty(
+        label: 'Stop Submissions After',
+        type: 'datetime',
+        instructions: 'Set a date after which the form will no longer accept submissions.',
+        order: 10,
+        placeholder: '',
+        tab: 'behavior',
+        group: 'limits',
+    )]
+    protected ?string $stopSubmissionsAfter = null;
+
     protected AttributeBag $attributeBag;
 
     private PropertyBag $propertyBag;
@@ -191,8 +358,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     private ?string $uid;
 
     private array $currentPageRows = [];
-
-    private ?string $limitFormSubmissions = null;
 
     // TODO: create a collection to handle error messages
     private array $errors = [];
@@ -332,11 +497,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public function getLimitFormSubmissions(): ?string
     {
         return $this->limitFormSubmissions;
-    }
-
-    public function isLimitByIpCookie(): bool
-    {
-        return self::LIMIT_IP_COOKIE === $this->limitFormSubmissions;
     }
 
     public function getHash(): string

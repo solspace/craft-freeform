@@ -2,6 +2,10 @@ import { colors } from '@ff-client/styles/variables';
 import type { FlattenSimpleInterpolation } from 'styled-components';
 import styled, { css } from 'styled-components';
 
+export const InputWrapper = styled.div`
+  padding: 6px 0;
+`;
+
 export const Handle = styled.div`
   position: absolute;
   top: 1px;

@@ -3,6 +3,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Route, Routes } from 'react-router-dom';
 
+import { Behavior } from './tabs/behavior/behavior';
 import { Editor as IntegrationsEditor } from './tabs/integrations/editor/editor';
 import { EmptyEditor as EmptyIntegrationsEditor } from './tabs/integrations/editor/empty-editor';
 import { Integrations } from './tabs/integrations/integrations';
@@ -19,6 +20,7 @@ export const Builder: React.FC = () => {
         <BuilderContent>
           <Routes>
             <Route index element={<LayoutEditor />} />
+            <Route path="behavior" element={<Behavior />} />
             <Route path="notifications" element={<div>Notifications</div>} />
             <Route path="integrations" element={<Integrations />}>
               <Route index element={<EmptyIntegrationsEditor />} />

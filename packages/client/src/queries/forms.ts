@@ -2,7 +2,7 @@ import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
 import { useAppDispatch } from '@editor/store';
 import { update } from '@editor/store/slices/form';
-import type { Form } from '@ff-client/types/forms';
+import type { EditableProperty, Form } from '@ff-client/types/forms';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
@@ -27,5 +27,18 @@ export const useQuerySingleForm = (
         dispatch(update(form));
       },
     }
+  );
+};
+
+export const useQueryEditableProperties = (): UseQueryResult<
+  EditableProperty[],
+  AxiosError
+> => {
+  return useQuery<EditableProperty[], AxiosError>(
+    ['forms', 'editable-properties'],
+    () =>
+      axios
+        .get<EditableProperty[]>(`/client/api/forms/editable-properties`)
+        .then((res) => res.data)
   );
 };

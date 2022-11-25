@@ -42,10 +42,13 @@ class AttributeProvider
             $prop->instructions = $attribute->instructions;
             $prop->placeholder = $attribute->placeholder;
             $prop->section = $section?->handle;
+            $prop->options = $attribute->options ?? [];
             $prop->value = $property->getDefaultValue() ?? $attribute->value;
             $prop->order = $attribute->order ?? $collection->getNextOrder();
             $prop->flags = $attribute->flags;
             $prop->middleware = $attribute->middleware;
+            $prop->tab = $attribute->tab;
+            $prop->group = $attribute->group;
 
             $collection->add($prop);
         }

@@ -1,6 +1,9 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuerySingleForm } from '@ff-client/queries/forms';
+import {
+  useQueryEditableProperties,
+  useQuerySingleForm,
+} from '@ff-client/queries/forms';
 
 import { Builder } from './builder/builder';
 
@@ -10,6 +13,9 @@ type RouteParams = {
 
 export const Edit: React.FC = () => {
   const { formId } = useParams<RouteParams>();
+
+  const results = useQueryEditableProperties();
+  // console.log('results', results);
 
   const { isFetching, isError, error } = useQuerySingleForm(
     formId && Number(formId)

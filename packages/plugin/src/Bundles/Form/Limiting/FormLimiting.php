@@ -121,7 +121,7 @@ class FormLimiting extends FeatureBundle
 
     private function limitOncePerSession(Form $form)
     {
-        // FIXME
+        // TODO - If there is a session and it was active within the last 'userSessionDuration' seconds... do not let user submit again
     }
 
     private function limitByUserId(Form $form)

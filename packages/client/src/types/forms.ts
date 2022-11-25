@@ -38,11 +38,13 @@ type BaseEditableProperty<T> = {
   order: number;
   value: string | number;
   placeholder: string;
+  section?: string;
   options?: GenericValue[];
   flags: GenericValue[];
   visibilityFilters?: GenericValue[];
   middleware: GenericValue[];
-  tab: string;
+  tab?: string;
+  group?: string;
 };
 
 type IntegerProperty = BaseEditableProperty<number> & {

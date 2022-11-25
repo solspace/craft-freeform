@@ -2,8 +2,6 @@
 
 namespace Solspace\Freeform\Attributes\Field;
 
-use Attribute;
-
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class EditableProperty
 {
@@ -15,11 +13,13 @@ class EditableProperty
         public ?int $order = null,
         public mixed $value = null,
         public ?string $placeholder = null,
+        public ?string $section = null,
         public ?array $options = null,
         public ?array $flags = [],
         public ?array $visibilityFilters = null,
         public ?array $middleware = [],
         public ?string $tab = null,
+        public ?string $group = null,
     ) {
     }
 }

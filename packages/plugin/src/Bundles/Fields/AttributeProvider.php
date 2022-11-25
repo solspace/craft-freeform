@@ -50,6 +50,7 @@ class AttributeProvider
             $prop->flags = $attribute->flags;
             $prop->middleware = $attribute->middleware;
             $prop->tab = $attribute->tab;
+            $prop->group = $attribute->group;
 
             $collection->add($prop);
         }

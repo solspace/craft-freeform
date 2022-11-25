@@ -18,8 +18,8 @@ export const SelectBox: React.FC<ControlProps<string | number>> = ({
       className="text fullwidth"
       onChange={(event) => onChange && onChange(event.target.value)}
     >
-      {options.map(({ value, label }: OptionProps, index: number) => (
-        <option key={index} value={value} label={label} />
+      {options.map(({ value, label }: OptionProps, key: number) => (
+        <option key={key} value={value} label={label} />
       ))}
     </select>
   </Control>

@@ -205,11 +205,21 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 1,
         placeholder: '',
         options: [
-            'reload-form-with-success-message' => 'Reload Form with Success Message',
-            'use-return-url' => 'Use Return URL',
-            'load-success-template' => 'Load Success Template',
+            [
+                'value' => 'reload-form-with-success-message',
+                'label' => 'Reload Form with Success Message',
+            ],
+            [
+                'value' => 'use-return-url',
+                'label' => 'Use Return URL',
+            ],
+            [
+                'value' => 'load-success-template',
+                'label' => 'Load Success Template',
+            ],
         ],
         tab: 'behavior',
+        group: 'success-and-errors',
     )]
     protected ?string $successBehavior = null;
 
@@ -220,9 +230,13 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 2,
         placeholder: '',
         options: [
-            'my-success-template-name' => 'My Success Template Name',
+            [
+                'value' => 'my-success-template-name',
+                'label' => 'My Success Template Name',
+            ],
         ],
         tab: 'behavior',
+        group: 'success-and-errors',
     )]
     protected ?string $successTemplate = null;
 
@@ -232,6 +246,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 3,
         placeholder: '',
         tab: 'behavior',
+        group: 'success-and-errors',
     )]
     protected string $returnUrl = '/';
 
@@ -242,6 +257,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 4,
         placeholder: 'Form has been submitted successfully!',
         tab: 'behavior',
+        group: 'success-and-errors',
     )]
     protected ?string $successMessage = null;
 
@@ -251,6 +267,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 5,
         placeholder: 'Sorry, there was an error submitting the form. Please try again.',
         tab: 'behavior',
+        group: 'success-and-errors',
     )]
     protected ?string $errorMessage = null;
 
@@ -260,6 +277,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 6,
         placeholder: '',
         tab: 'behavior',
+        group: 'processing',
     )]
     protected bool $ajaxEnabled = true;
 
@@ -269,6 +287,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 7,
         placeholder: '',
         tab: 'behavior',
+        group: 'processing',
     )]
     protected bool $showSpinner = true;
 
@@ -278,6 +297,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 8,
         placeholder: '',
         tab: 'behavior',
+        group: 'processing',
     )]
     protected bool $showLoadingText = true;
 
@@ -287,6 +307,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 9,
         placeholder: 'Processing...',
         tab: 'behavior',
+        group: 'processing',
     )]
     protected string $loadingText = '';
 
@@ -297,15 +318,37 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         order: 9,
         placeholder: '',
         options: [
-            'no_limit' => 'Do not limit',
-            'no_limit_logged_in_users_only' => 'Logged in Users only (no limit)',
-            'cookie' => 'Once per Cookie only',
-            'ip_cookie' => 'Once per IP/Cookie combo',
-            'once_per_logged_in_users_only' => 'Once per logged in Users only',
-            'once_per_logged_in_user_or_guest_cookie_only' => 'Once per logged in User or Guest Cookie only',
-            'once_per_logged_in_user_or_guest_ip_cookie_combo' => 'Once per logged in User or Guest IP/Cookie combo',
+            [
+                'value' => 'no_limit',
+                'label' => 'Do not limit',
+            ],
+            [
+                'value' => 'no_limit_logged_in_users_only',
+                'label' => 'Logged in Users only (no limit)',
+            ],
+            [
+                'value' => 'cookie',
+                'label' => 'Once per Cookie only',
+            ],
+            [
+                'value' => 'ip_cookie',
+                'label' => 'Once per IP/Cookie combo',
+            ],
+            [
+                'value' => 'once_per_logged_in_users_only',
+                'label' => 'Once per logged in Users only',
+            ],
+            [
+                'value' => 'once_per_logged_in_user_or_guest_cookie_onlye',
+                'label' => 'Once per logged in User or Guest Cookie only',
+            ],
+            [
+                'value' => 'once_per_logged_in_user_or_guest_ip_cookie_combo',
+                'label' => 'Once per logged in User or Guest IP/Cookie combo',
+            ],
         ],
         tab: 'behavior',
+        group: 'limits',
     )]
     protected ?string $limitFormSubmissions = null;
 
@@ -315,7 +358,8 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         instructions: 'Set a date after which the form will no longer accept submissions.',
         order: 10,
         placeholder: '',
-        tab: 'behavior'
+        tab: 'behavior',
+        group: 'limits',
     )]
     protected ?string $stopSubmissionsAfter = null;
 

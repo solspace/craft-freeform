@@ -10,6 +10,7 @@ import {
 import { useAppDispatch } from '@editor/store';
 import { modifyProperty, selectForm } from '@editor/store/slices/form';
 import { useQueryEditableProperties } from '@ff-client/queries/forms';
+import type { EditableProperty, Form } from '@ff-client/types/forms';
 
 import {
   Column,
@@ -37,6 +38,121 @@ export const FieldLayout: React.FC = () => {
     );
   }
 
+  const successAndErrorsGroupFields = editableProperties.filter(
+    ({ tab, group }) => tab === 'behavior' && group === 'success-and-errors'
+  );
+
+  const processingGroupFields = editableProperties.filter(
+    ({ tab, group }) => tab === 'behavior' && group === 'processing'
+  );
+
+  const limitsGroupFields = editableProperties.filter(
+    ({ tab, group }) => tab === 'behavior' && group === 'limits'
+  );
+
+  const field: React.FC = (form: Form, editableProperty: EditableProperty) => {
+    if (editableProperty.type === 'string') {
+      return (
+        <Text
+          id={editableProperty.handle}
+          label={editableProperty.label}
+          value={(form.properties[editableProperty.handle] as string) || ''}
+          placeholder={editableProperty.placeholder}
+          instructions={editableProperty.instructions}
+          onChange={(value: string) =>
+            dispatch(
+              modifyProperty({
+                value,
+                key: editableProperty.handle,
+              })
+            )
+          }
+        />
+      );
+    }
+
+    if (editableProperty.type === 'select') {
+      return (
+        <SelectBox
+          id={editableProperty.handle}
+          label={editableProperty.label}
+          value={(form.properties[editableProperty.handle] as string) || ''}
+          options={editableProperty.options}
+          instructions={editableProperty.instructions}
+          onChange={(value: string) =>
+            dispatch(
+              modifyProperty({
+                value,
+                key: editableProperty.handle,
+              })
+            )
+          }
+        />
+      );
+    }
+
+    if (editableProperty.type === 'textarea') {
+      return (
+        <Textarea
+          rows={4}
+          id={editableProperty.handle}
+          label={editableProperty.label}
+          value={(form.properties[editableProperty.handle] as string) || ''}
+          placeholder={editableProperty.placeholder}
+          instructions={editableProperty.instructions}
+          onChange={(value: string) =>
+            dispatch(
+              modifyProperty({
+                value,
+                key: editableProperty.handle,
+              })
+            )
+          }
+        />
+      );
+    }
+
+    if (editableProperty.type === 'bool') {
+      return (
+        <LightSwitch
+          id={editableProperty.handle}
+          label={editableProperty.label}
+          value={Boolean(
+            (form.properties[editableProperty.handle] as number) || false
+          )}
+          instructions={editableProperty.instructions}
+          onChange={(value: boolean) =>
+            dispatch(
+              modifyProperty({
+                key: editableProperty.handle,
+                value: Boolean(value),
+              })
+            )
+          }
+        />
+      );
+    }
+
+    if (editableProperty.type === 'datetime') {
+      return (
+        <DateTime
+          id={editableProperty.handle}
+          label={editableProperty.label}
+          value={(form.properties[editableProperty.handle] as string) || ''}
+          instructions={editableProperty.instructions}
+          onChange={(value: string) =>
+            dispatch(
+              modifyProperty({
+                value,
+                key: editableProperty.handle,
+              })
+            )
+          }
+        />
+      );
+    }
+  };
+
   return (
     <Wrapper>
       <Column>
@@ -49,7 +165,33 @@ export const FieldLayout: React.FC = () => {
             </Row>
             <Row>
               <Column>
+                <Grid>
+                  {successAndErrorsGroupFields
+                    .sort((a, b) => a.order - b.order)
+                    .map((editableProperty) => (
+                      <GridItem key={editableProperty.handle}>
+                        {field(form, editableProperty)}
+                      </GridItem>
+                    ))}
+                </Grid>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
                 <Heading>Processing</Heading>
+              </Column>
+            </Row>
+            <Row>
+              <Column>
+                <Grid>
+                  {processingGroupFields
+                    .sort((a, b) => a.order - b.order)
+                    .map((editableProperty) => (
+                      <GridItem key={editableProperty.handle}>
+                        {field(form, editableProperty)}
+                      </GridItem>
+                    ))}
+                </Grid>
               </Column>
             </Row>
             <Row>
@@ -57,105 +199,19 @@ export const FieldLayout: React.FC = () => {
                 <Heading>Limits</Heading>
               </Column>
             </Row>
-            {/*
             <Row>
               <Column>
                 <Grid>
-                  {editableProperties
-                    .filter(({ tab }) => tab === 'behavior')
+                  {limitsGroupFields
                     .sort((a, b) => a.order - b.order)
                     .map((editableProperty) => (
                       <GridItem key={editableProperty.handle}>
-                        {editableProperty.type === 'string' && (
-                          <Text
-                            id={editableProperty.handle}
-                            label={editableProperty.label}
-                            value={editableProperty.value as string}
-                            placeholder={editableProperty.placeholder}
-                            instructions={editableProperty.instructions}
-                            onChange={(value: string) =>
-                              dispatch(
-                                modifyProperty({
-                                  value,
-                                  key: editableProperty.handle,
-                                })
-                              )
-                            }
-                          />
-                        )}
-                        {editableProperty.type === 'select' && (
-                          <SelectBox
-                            id={editableProperty.handle}
-                            label={editableProperty.label}
-                            value={editableProperty.value as string}
-                            options={editableProperty.options}
-                            instructions={editableProperty.instructions}
-                            onChange={(value: string) =>
-                              dispatch(
-                                modifyProperty({
-                                  value,
-                                  key: editableProperty.handle,
-                                })
-                              )
-                            }
-                          />
-                        )}
-                        {editableProperty.type === 'textarea' && (
-                          <Textarea
-                            rows={4}
-                            id={editableProperty.handle}
-                            label={editableProperty.label}
-                            value={editableProperty.value as string}
-                            placeholder={editableProperty.placeholder}
-                            instructions={editableProperty.instructions}
-                            onChange={(value: string) =>
-                              dispatch(
-                                modifyProperty({
-                                  value,
-                                  key: editableProperty.handle,
-                                })
-                              )
-                            }
-                          />
-                        )}
-                        {editableProperty.type === 'bool' && (
-                          <LightSwitch
-                            id={editableProperty.handle}
-                            label={editableProperty.label}
-                            value={Boolean(editableProperty.value as number)}
-                            instructions={editableProperty.instructions}
-                            onChange={(value: boolean) =>
-                              dispatch(
-                                modifyProperty({
-                                  key: editableProperty.handle,
-                                  value: Boolean(value),
-                                })
-                              )
-                            }
-                          />
-                        )}
-                        {editableProperty.type === 'datetime' && (
-                          <DateTime
-                            id={editableProperty.handle}
-                            label={editableProperty.label}
-                            value={editableProperty.value as string}
-                            instructions={editableProperty.instructions}
-                            onChange={(value: string) =>
-                              dispatch(
-                                modifyProperty({
-                                  value,
-                                  key: editableProperty.handle,
-                                })
-                              )
-                            }
-                          />
-                        )}
+                        {field(form, editableProperty)}
                       </GridItem>
                     ))}
                 </Grid>
               </Column>
             </Row>
-            */}
           </Column>
         </Row>
       </Column>

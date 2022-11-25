@@ -124,15 +124,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const DATA_PERSISTENT_VALUES = 'persistentValues';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    public const NO_LIMIT = 'no_limit';
-    public const NO_LIMIT_LOGGED_IN_USERS_ONLY = 'no_limit_logged_in_users_only';
-
-    public const LIMIT_COOKIE = 'cookie';
-    public const LIMIT_IP_COOKIE = 'ip_cookie';
-    public const LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY = 'once_per_logged_in_users_only';
-    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY = 'once_per_logged_in_user_or_guest_cookie_only';
-    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO = 'once_per_logged_in_user_or_guest_ip_cookie_combo';
-
     #[EditableProperty(
         tab: 'settings'
     )]
@@ -526,47 +517,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->optInDataStorageTargetHash;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getLimitFormSubmissions()
+    public function getLimitFormSubmissions(): string
     {
         return $this->limitFormSubmissions;
-    }
-
-    public function isNoLimit(): bool
-    {
-        return self::NO_LIMIT === $this->limitFormSubmissions;
-    }
-
-    public function isNoLimitLoggedInUsersOnly(): bool
-    {
-        return self::NO_LIMIT_LOGGED_IN_USERS_ONLY === $this->limitFormSubmissions;
-    }
-
-    public function isLimitByCookie(): bool
-    {
-        return self::LIMIT_COOKIE === $this->limitFormSubmissions;
-    }
-
-    public function isLimitByIpCookie(): bool
-    {
-        return self::LIMIT_IP_COOKIE === $this->limitFormSubmissions;
-    }
-
-    public function isLimitOncePerLoggedUsersOnly(): bool
-    {
-        return self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY === $this->limitFormSubmissions;
-    }
-
-    public function isLimitOncePerLoggedUsersOrGuestIpCookieOnly(): bool
-    {
-        return self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY === $this->limitFormSubmissions;
-    }
-
-    public function isLimitOncePerLoggedUsersOrGuestIpCookieCombo(): bool
-    {
-        return self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO === $this->limitFormSubmissions;
     }
 
     public function getHash(): string

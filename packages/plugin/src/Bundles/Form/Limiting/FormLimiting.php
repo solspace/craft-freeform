@@ -35,7 +35,7 @@ class FormLimiting extends FeatureBundle
     private const COOKIE_LIMITATIONS = [self::LIMIT_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
     private const IP_LIMITATIONS = [self::LIMIT_IP_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
     private const USER_LIMITATIONS = [self::LIMIT_AUTH, self::LIMIT_AUTH_IP_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_UNLIMITED];
-    private const ONCE_PER_LIMITATIONS = [self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY, self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY, self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO];
+    private const ONCE_PER_SESSION_LIMITATIONS = [self::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY, self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY, self::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO];
 
     private $formCache = [];
 
@@ -59,8 +59,8 @@ class FormLimiting extends FeatureBundle
             // DO NOTHING ?
         }
 
-        if (\in_array($limiting, self::ONCE_PER_LIMITATIONS, true)) {
-            $this->limitOncePer($form);
+        if (\in_array($limiting, self::ONCE_PER_SESSION_LIMITATIONS, true)) {
+            $this->limitOncePerSession($form);
         }
 
         if (\in_array($limiting, self::USER_LIMITATIONS, true)) {
@@ -119,7 +119,7 @@ class FormLimiting extends FeatureBundle
         }
     }
 
-    private function limitOncePer(Form $form)
+    private function limitOncePerSession(Form $form)
     {
         // FIXME
     }

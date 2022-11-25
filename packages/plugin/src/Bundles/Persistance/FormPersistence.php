@@ -44,8 +44,6 @@ class FormPersistence extends FeatureBundle
         $record->uid = $payload->uid;
         $record->type = $payload->type;
 
-        $record->metadata = $this->getMetadata($payload);
-
         $this->update($event, $record);
     }
 

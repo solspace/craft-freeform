@@ -59,6 +59,7 @@ use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
+use Solspace\Freeform\Services\FormLayoutsService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FormTypesService;
 use Solspace\Freeform\Services\FreeformFeedService;
@@ -109,6 +110,7 @@ use yii\web\ForbiddenHttpException;
  * @property FieldsService               $fields
  * @property FilesService                $files
  * @property FormsService                $forms
+ * @property FormLayoutsService          $formLayouts
  * @property MailerService               $mailer
  * @property MailingListsService         $mailingLists
  * @property NotificationsService        $notifications
@@ -452,6 +454,7 @@ class Freeform extends Plugin
                 'fields' => FieldsService::class,
                 'files' => FilesService::class,
                 'forms' => FormsService::class,
+                'formLayouts' => FormLayoutsService::class,
                 'mailer' => MailerService::class,
                 'mailingLists' => MailingListsService::class,
                 'notifications' => NotificationsService::class,

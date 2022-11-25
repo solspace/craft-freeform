@@ -1,0 +1,20 @@
+# Do not export those files in the Composer archive (lighter dependency)
+.gitattributes export-ignore
+.gitignore export-ignore
+.github/ export-ignore
+.nvmrc export-ignore
+.prettierignore export-ignore
+.prettierrc.json export-ignore
+.tsconfig.json export-ignore
+CHANGELOG.md export-ignore
+README.md export-ignore
+composer.lock export-ignore
+lerna.json export-ignore
+package-lock.json export-ignore
+package.json export-ignore
+packages/app export-ignore
+packages/builder export-ignore
+packages/client export-ignore
+packages/scripts export-ignore
+packages/styles export-ignore
+packages/plugin/tests export-ignore

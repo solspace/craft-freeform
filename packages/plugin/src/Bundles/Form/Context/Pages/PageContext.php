@@ -24,7 +24,7 @@ class PageContext
         Event::on(PropertyBag::class, PropertyBag::EVENT_ON_SET, [$this, 'handleFormPageJump']);
     }
 
-    public function onValidate(ValidationEvent $event)
+    public function onValidate(ValidationEvent $event): void
     {
         $form = $event->getForm();
         if (!$form->isPagePosted()) {
@@ -32,7 +32,7 @@ class PageContext
         }
     }
 
-    public function handleNavigateBack(HandleRequestEvent $event)
+    public function handleNavigateBack(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
         $bag = $form->getPropertyBag();
@@ -52,7 +52,7 @@ class PageContext
         }
     }
 
-    public function handleNavigateForward(HandleRequestEvent $event)
+    public function handleNavigateForward(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
         $bag = $form->getPropertyBag();
@@ -98,7 +98,7 @@ class PageContext
         }
     }
 
-    public function handleReset(ResetEvent $event)
+    public function handleReset(ResetEvent $event): void
     {
         $form = $event->getForm();
         $bag = $form->getPropertyBag();
@@ -107,7 +107,7 @@ class PageContext
         $bag->set(Form::PROPERTY_PAGE_HISTORY, []);
     }
 
-    public function handleFormPageJump(BagModificationEvent $event)
+    public function handleFormPageJump(BagModificationEvent $event): void
     {
         $bag = $event->getBag();
         if (!$bag instanceof PropertyBag) {
@@ -118,6 +118,6 @@ class PageContext
             return;
         }
 
-        $bag->getForm()->setCurrentPage($event->getValue());
+        $bag->getForm()->getPages()->setCurrent($event->getValue());
     }
 }

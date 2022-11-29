@@ -89,7 +89,6 @@ class LayoutPersistence extends FeatureBundle
             }
 
             $record->label = $item->label;
-            $record->handle = $item->handle;
             $record->order = $item->order;
 
             $record->save();

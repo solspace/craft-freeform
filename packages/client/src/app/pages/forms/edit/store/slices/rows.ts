@@ -16,6 +16,9 @@ export const rowsSlice = createSlice({
   name: 'rows',
   initialState,
   reducers: {
+    set: (state, action: PayloadAction<RowState>) => {
+      state.splice(0, state.length, ...action.payload);
+    },
     add: (state, action: PayloadAction<{ layoutUid: string; uid: string }>) => {
       const { layoutUid, uid } = action.payload;
       const highestOrder = Math.max(
@@ -47,7 +50,7 @@ export const rowsSlice = createSlice({
   },
 });
 
-export const { swap, add, remove } = rowsSlice.actions;
+export const { set, add, swap, remove } = rowsSlice.actions;
 
 export const selectRowsInLayout =
   (layout: Layout | undefined) =>

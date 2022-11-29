@@ -65,6 +65,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     protected FieldAttributesCollection $attributes;
 
     protected ?int $id = null;
+    protected ?string $uid = null;
     protected string $hash = '';
     protected int $pageIndex = 0;
     protected array $errors = [];
@@ -286,6 +287,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->id;
     }
 
+    public function getUid(): ?string
+    {
+        return $this->uid;
+    }
+
     public function getHandle(): ?string
     {
         return $this->handle;
@@ -471,8 +477,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     {
         return [
             'id' => $this->id,
-            'uid' => $this->id,
-            'hash' => $this->hash,
+            'uid' => $this->uid,
+            'typeClass' => static::class,
+            'properties' => [],
         ];
     }
 

@@ -5,7 +5,6 @@ export type Layout = {
 export type Page = {
   uid: string;
   label: string;
-  handle: string;
   layoutUid: string;
   order: number;
 };

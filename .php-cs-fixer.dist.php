@@ -1,7 +1,8 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/packages/plugin');
+    ->in(__DIR__ . '/packages/plugin')
+;
 
 return (new PhpCsFixer\Config())
     ->setRules([
@@ -20,4 +21,5 @@ return (new PhpCsFixer\Config())
         'ternary_to_null_coalescing' => true,
     ])
     ->setRiskyAllowed(true)
-    ->setFinder($finder);
+    ->setFinder($finder)
+;

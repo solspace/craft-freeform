@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Services\Form\LayoutsService;
 use yii\base\Component;
 
 class BaseService extends Component
@@ -12,7 +13,7 @@ class BaseService extends Component
         return Freeform::getInstance()->forms;
     }
 
-    protected function getFormLayoutsService(): FormLayoutsService
+    protected function getFormLayoutsService(): LayoutsService
     {
         return Freeform::getInstance()->formLayouts;
     }

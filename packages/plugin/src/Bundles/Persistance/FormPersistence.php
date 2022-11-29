@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Bundles\Persistance;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
 use Solspace\Freeform\Bundles\Fields\AttributeProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;

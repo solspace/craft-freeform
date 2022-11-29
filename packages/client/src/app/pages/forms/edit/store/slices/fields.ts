@@ -30,6 +30,9 @@ export const fieldsSlice = createSlice({
   name: 'fields',
   initialState,
   reducers: {
+    set: (state, action: PayloadAction<FieldState>) => {
+      state.splice(0, state.length, ...action.payload);
+    },
     add: (
       state,
       action: PayloadAction<{ fieldType: FieldType; uid: string }>
@@ -64,7 +67,7 @@ export const fieldsSlice = createSlice({
   },
 });
 
-export const { add, remove, edit } = fieldsSlice.actions;
+export const { set, add, remove, edit } = fieldsSlice.actions;
 
 export const selectField =
   (uid: string) =>

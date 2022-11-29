@@ -4,9 +4,6 @@ namespace Solspace\Freeform\Form\Layout\Cell;
 
 abstract class Cell implements CellInterface
 {
-    public const TYPE_FIELD = 'field';
-    public const TYPE_LAYOUT = 'layout';
-
     public static function create(array $config): CellInterface
     {
         $type = $config['type'] ?? self::TYPE_FIELD;

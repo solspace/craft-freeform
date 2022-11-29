@@ -67,6 +67,10 @@ interface FieldInterface
 
     public function getId(): ?int;
 
+    public function getUid(): ?string;
+
+    public function getHash(): string;
+
     public function getHandle(): ?string;
 
     public function getLabel(): ?string;
@@ -74,8 +78,6 @@ interface FieldInterface
     public function getInstructions(): ?string;
 
     public function isRequired(): bool;
-
-    public function getHash(): string;
 
     public function getErrors(): ?array;
 

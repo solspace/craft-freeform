@@ -75,8 +75,7 @@ export const {
   clearErrors,
 } = formSlice.actions;
 
-export const selectForm = (state: RootState): Form | undefined =>
-  state.form;
+export const selectForm = (state: RootState): Form | undefined => state.form;
 
 export default formSlice.reducer;
 

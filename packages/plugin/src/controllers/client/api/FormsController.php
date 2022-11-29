@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\controllers\client\api;
 
 use Solspace\Freeform\Bundles\Fields\AttributeProvider;
-use Solspace\Freeform\Bundles\Normalizers\NormalizerProvider;
+use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Types\Regular;
@@ -20,16 +20,24 @@ class FormsController extends BaseApiController
         $id,
         $module,
         $config = [],
+        private FormTransformer $formTransformer,
         private AttributeProvider $attributeProvider,
-        private NormalizerProvider $normalizerProvider
     ) {
         parent::__construct($id, $module, $config);
     }
 
+    public function actionEditableProperties(): Response
+    {
+        // TODO: Support for Form Types
+        return $this->asJson($this->attributeProvider->getEditableProperties(Regular::class));
+    }
+
     protected function get(): array
     {
-        return $this->normalizerProvider->normalize(
-            array_values($this->getFormsService()->getAllForms())
+        return $this->formTransformer->transformList(
+            array_values(
+                $this->getFormsService()->getAllForms()
+            )
         );
     }
 
@@ -40,7 +48,7 @@ class FormsController extends BaseApiController
             throw new NotFoundHttpException("Form with ID {$id} not found");
         }
 
-        return $this->normalizerProvider->normalize($form);
+        return $this->formTransformer->transform($form);
     }
 
     protected function post(int|string $id = null): array|object
@@ -67,11 +75,5 @@ class FormsController extends BaseApiController
         $this->response->statusCode = $event->getStatus() ?? 204;
 
         return $event->getResponseData();
-    }
-
-    public function actionEditableProperties(): Response
-    {
-        // TODO: Support for Form Types
-        return $this->asJson($this->attributeProvider->getEditableProperties(Regular::class));
     }
 }

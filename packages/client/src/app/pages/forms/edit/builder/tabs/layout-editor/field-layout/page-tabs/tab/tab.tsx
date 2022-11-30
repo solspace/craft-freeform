@@ -1,11 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Page } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@ff-client/app/pages/forms/edit/store';
-import {
-  selectCurrentPage,
-  setPage,
-} from '@ff-client/app/pages/forms/edit/store/slices/context';
+import { useAppDispatch } from '@editor/store';
+import { selectCurrentPage, setPage } from '@editor/store/slices/context';
 
 import { TabWrapper } from './tab.styles';
 

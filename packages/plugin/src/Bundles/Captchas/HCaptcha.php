@@ -47,6 +47,11 @@ class HCaptcha extends FeatureBundle
 
     public function validateCheckbox(ValidateEvent $event)
     {
+        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
+        if ($recaptchaDisabled) {
+            return;
+        }
+
         $field = $event->getField();
         if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
             $message = $this->getSettings()->recaptchaErrorMessage;

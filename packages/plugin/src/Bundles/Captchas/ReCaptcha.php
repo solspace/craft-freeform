@@ -57,7 +57,8 @@ class ReCaptcha extends FeatureBundle
 
     public function validateRecaptchaV2Checkbox(ValidateEvent $event)
     {
-        if ($this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
+        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
+        if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
             return;
         }
 

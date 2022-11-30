@@ -33,6 +33,7 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Fields\MailingListField;
+use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
@@ -547,6 +548,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         }
 
         if (\count($this->getLayout()->getPaymentFields())) {
+            return false;
+        }
+
+        if (!$this->getLayout()->hasFields(RecaptchaField::class)) {
             return false;
         }
 

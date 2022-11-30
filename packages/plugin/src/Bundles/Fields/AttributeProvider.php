@@ -2,9 +2,12 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Flag;
+use Solspace\Freeform\Attributes\Field\Middleware;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Section;
-use Solspace\Freeform\Library\DataObjects\FieldType\Property;
+use Solspace\Freeform\Attributes\Field\VisibilityFilter;
+use Solspace\Freeform\Library\DataObjects\FieldType\Property as PropertyDTO;
 use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
 use Stringy\Stringy;
 
@@ -17,8 +20,7 @@ class AttributeProvider
 
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
-            /** @var EditableProperty $attribute */
-            $attr = $property->getAttributes(EditableProperty::class)[0] ?? null;
+            $attr = $property->getAttributes(Property::class)[0] ?? null;
             if (!$attr) {
                 continue;
             }
@@ -35,7 +37,7 @@ class AttributeProvider
 
             $attribute = $attr->newInstance();
 
-            $prop = new Property();
+            $prop = new PropertyDTO();
             $prop->type = $attribute->type ?? $property->getType()->getName();
             $prop->handle = $property->getName();
             $prop->label = $attribute->label ?? $fallbackLabel;
@@ -45,8 +47,9 @@ class AttributeProvider
             $prop->options = $attribute->options ?? [];
             $prop->value = $property->getDefaultValue() ?? $attribute->value;
             $prop->order = $attribute->order ?? $collection->getNextOrder();
-            $prop->flags = $attribute->flags;
-            $prop->middleware = $attribute->middleware;
+            $prop->flags = $this->getFlags($property);
+            $prop->middleware = $this->getMiddleware($property);
+            $prop->visibilityFilters = $this->getVisibilityFilters($property);
             $prop->tab = $attribute->tab;
             $prop->group = $attribute->group;
 
@@ -59,5 +62,29 @@ class AttributeProvider
     public function getReflection(string $class): \ReflectionClass
     {
         return new \ReflectionClass($class);
+    }
+
+    private function getFlags(\ReflectionProperty $property): array
+    {
+        return array_map(
+            fn ($attr) => $attr->getArguments()[0],
+            $property->getAttributes(Flag::class)
+        );
+    }
+
+    private function getVisibilityFilters(\ReflectionProperty $property): array
+    {
+        return array_map(
+            fn ($attr) => $attr->getArguments()[0],
+            $property->getAttributes(VisibilityFilter::class)
+        );
+    }
+
+    private function getMiddleware(\ReflectionProperty $property): array
+    {
+        return array_map(
+            fn ($attr) => $attr->getArguments(),
+            $property->getAttributes(Middleware::class)
+        );
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -18,12 +18,12 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 {
     protected string $customInputType = 'tel';
 
-    #[EditableProperty(
+    #[Property(
         instructions: "Custom phone pattern (e.g. '(000) 000-0000' or '+0 0000 000000'), where '0' stands for a digit between 0-9. If left blank, any number and dash, dot, space, parentheses and optional + ath the beginning will be validated.",
     )]
     protected ?string $pattern = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Use JS validation',
         instructions: 'Enable this to force JS to validate the input on this field based on the pattern.',
     )]

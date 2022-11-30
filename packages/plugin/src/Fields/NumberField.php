@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\PropertyGroup;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;
@@ -15,12 +15,12 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\Numeric
 )]
 class NumberField extends TextField
 {
-    #[EditableProperty(
+    #[Property(
         label: 'Allow negative numbers?'
     )]
     protected bool $allowNegative = false;
 
-    #[EditableProperty(
+    #[Property(
         placeholder: 'Min',
     )]
     #[PropertyGroup(
@@ -30,13 +30,13 @@ class NumberField extends TextField
     )]
     protected ?int $minLength = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Max',
     )]
     #[PropertyGroup('length')]
     protected ?int $maxLength = null;
 
-    #[EditableProperty(
+    #[Property(
         placeholder: 'Max',
     )]
     #[PropertyGroup(
@@ -46,19 +46,19 @@ class NumberField extends TextField
     )]
     protected ?int $minValue = null;
 
-    #[EditableProperty(
+    #[Property(
         placeholder: 'Max'
     )]
     #[PropertyGroup('value')]
     protected ?int $maxValue = null;
 
-    #[EditableProperty(
+    #[Property(
         instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for no decimals',
     )]
     protected ?int $decimalCount = 0;
 
-    #[EditableProperty(
+    #[Property(
         instructions: 'The step',
     )]
     protected float $step = 1;

@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 
 trait OneLineTrait
 {
-    #[EditableProperty('Show all options in a single line?')]
+    #[Property('Show all options in a single line?')]
     protected bool $oneLine = false;
 
     public function isOneLine(): bool

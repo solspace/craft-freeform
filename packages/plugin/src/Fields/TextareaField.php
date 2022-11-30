@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
@@ -25,7 +25,7 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthC
 )]
 class TextareaField extends TextField implements SingleValueInterface, PlaceholderInterface
 {
-    #[EditableProperty(
+    #[Property(
         instructions: 'The number of rows in height for this field.',
     )]
     protected int $rows = 2;

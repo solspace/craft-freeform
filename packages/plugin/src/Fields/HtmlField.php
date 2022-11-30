@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -33,7 +33,7 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, SingleVa
 {
     use SingleStaticValueTrait;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Allow Twig',
         instructions: 'Used to enable Twig in HTML blocks',
     )]

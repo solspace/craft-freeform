@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Services\FormsService;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
@@ -32,12 +32,12 @@ class BuilderFieldProvider
 
             $reflectionProperties = $reflection->getProperties();
             foreach ($reflectionProperties as $property) {
-                $attributes = $property->getAttributes(EditableProperty::class);
+                $attributes = $property->getAttributes(Property::class);
                 if (!$attributes) {
                     continue;
                 }
 
-                /** @var EditableProperty $attribute */
+                /** @var Property $attribute */
                 $attribute = $attributes[0]->newInstance();
 
                 $properties[] = (object) [

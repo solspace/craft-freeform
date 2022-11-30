@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
@@ -24,7 +24,7 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Maximum Number of Stars',
         type: 'select',
         instructions: '',
@@ -43,19 +43,19 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
     )]
     protected int $maxValue = 5;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Unselected Color',
         type: 'color',
     )]
     protected string $colorIdle = '#DDDDDD';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Hover Color',
         type: 'color',
     )]
     protected string $colorHover = '#FFD700';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Selected Color',
         type: 'color',
     )]

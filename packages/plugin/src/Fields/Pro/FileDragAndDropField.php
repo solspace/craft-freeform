@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -21,14 +21,14 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public const DEFAULT_THEME = 'light';
     public const DEFAULT_PLACEHOLDER = 'Drag and drop files here or click to upload';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Accent Color',
         type: 'color',
         instructions: 'Select accent color',
     )]
     protected string $accent = self::DEFAULT_ACCENT;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Accent Color',
         type: 'select',
         instructions: 'Select accent color',
@@ -39,7 +39,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     )]
     protected string $theme = self::DEFAULT_THEME;
 
-    #[EditableProperty(
+    #[Property(
         instructions: 'Field placeholder.',
     )]
     protected string $placeholder = self::DEFAULT_PLACEHOLDER;

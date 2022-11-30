@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Persistance;
+namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Fields\AttributeProvider;

@@ -14,7 +14,9 @@ namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Flag;
+use Solspace\Freeform\Attributes\Field\Middleware;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Section;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
@@ -31,7 +33,7 @@ use Twig\Markup;
 abstract class AbstractField implements FieldInterface, \JsonSerializable
 {
     #[Section('general', 'General', 0)]
-    #[EditableProperty(
+    #[Property(
         instructions: 'Field label used to describe the field',
         order: 1,
         placeholder: 'My Field',
@@ -39,19 +41,17 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     protected string $label = '';
 
     #[Section('general')]
-    #[EditableProperty(
+    #[Property(
         instructions: 'How you\'ll refer to this field in templates',
         order: 2,
         placeholder: 'myField',
-        flags: ['code'],
-        middleware: [
-            ['handle', ['label']],
-        ]
     )]
+    #[Middleware('handle', ['label'])]
+    #[Flag('code')]
     protected string $handle = '';
 
     #[Section('general')]
-    #[EditableProperty(
+    #[Property(
         type: 'textarea',
         instructions: 'Field specific user instructions',
         order: 3,
@@ -59,7 +59,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     protected string $instructions = '';
 
     #[Section('general')]
-    #[EditableProperty('Require this field', order: 5)]
+    #[Property('Require this field', order: 5)]
     protected bool $required = false;
 
     protected FieldAttributesCollection $attributes;
@@ -92,7 +92,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         foreach ($reflection->getProperties() as $property) {
             try {
                 $propertyName = $property->getName();
-                $attributes = $property->getAttributes(EditableProperty::class);
+                $attributes = $property->getAttributes(Property::class);
 
                 // Only parse editable attributes
                 if (!$attributes || !isset($properties[$propertyName])) {
@@ -731,7 +731,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         foreach ($reflection->getProperties() as $property) {
             try {
                 $propertyName = $property->getName();
-                $attributes = $property->getAttributes(EditableProperty::class);
+                $attributes = $property->getAttributes(Property::class);
 
                 // Only parse non-editable attributes
                 if ($attributes || !isset($properties[$propertyName])) {

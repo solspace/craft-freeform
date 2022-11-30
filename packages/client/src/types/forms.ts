@@ -31,6 +31,8 @@ export type Attribute = {
   value?: string;
 };
 
+export type Middleware = [string, GenericValue[]];
+
 export enum EditablePropertyType {
   Integer = 'int',
   String = 'string',
@@ -52,9 +54,9 @@ type BaseEditableProperty<T> = {
   placeholder: string;
   section?: string;
   options?: GenericValue[];
-  flags: GenericValue[];
-  visibilityFilters?: GenericValue[];
-  middleware: GenericValue[];
+  flags: string[];
+  visibilityFilters?: string[];
+  middleware: Middleware[];
   tab?: string;
   group?: string;
 };

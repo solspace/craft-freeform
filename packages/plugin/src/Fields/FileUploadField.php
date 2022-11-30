@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Fields;
 
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
@@ -45,16 +45,16 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
         'type',
     ];
 
-    #[EditableProperty]
+    #[Property]
     protected array $fileKinds = ['image', 'document'];
 
-    #[EditableProperty(
+    #[Property(
         label: 'Maximum File Size',
         instructions: 'Specify the maximum file size, in KB.',
     )]
     protected int $maxFileSizeKB = 2048;
 
-    #[EditableProperty(
+    #[Property(
         instructions: 'Specify the maximum uploadable file count.',
     )]
     protected int $fileCount = 1;

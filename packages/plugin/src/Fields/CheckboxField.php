@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
@@ -27,7 +27,7 @@ use Twig\Markup;
 )]
 class CheckboxField extends AbstractField implements SingleValueInterface, InputOnlyInterface
 {
-    #[EditableProperty('Checked by default')]
+    #[Property('Checked by default')]
     protected bool $checkedByDefault = false;
 
     protected bool $value = false;

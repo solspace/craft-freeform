@@ -125,9 +125,9 @@ class SharpSpring extends AbstractCRMIntegration
     /**
      * Fetch the custom fields from the integration.
      *
-     * @throws IntegrationException
-     *
      * @return FieldObject[]
+     *
+     * @throws IntegrationException
      */
     public function fetchFields(): array
     {
@@ -265,9 +265,9 @@ class SharpSpring extends AbstractCRMIntegration
     /**
      * Gets the API secret for SharpSpring from settings config.
      *
-     * @throws IntegrationException
-     *
      * @return null|mixed
+     *
+     * @throws IntegrationException
      */
     private function getSecretKey()
     {
@@ -277,9 +277,9 @@ class SharpSpring extends AbstractCRMIntegration
     /**
      * Gets the account ID for SharpSpring from settings config.
      *
-     * @throws IntegrationException
-     *
      * @return null|mixed
+     *
+     * @throws IntegrationException
      */
     private function getAccountID()
     {

@@ -11,6 +11,7 @@ use Solspace\Freeform\Library\Export\ExportXml;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ExportXmlTest extends TestCase

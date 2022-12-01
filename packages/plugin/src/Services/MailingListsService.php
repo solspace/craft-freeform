@@ -248,9 +248,9 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
      *
      * @param string $class
      *
-     * @throws IntegrationException
-     *
      * @return SettingBlueprint[]
+     *
+     * @throws IntegrationException
      */
     public function getMailingListSettingBlueprints($class): array
     {

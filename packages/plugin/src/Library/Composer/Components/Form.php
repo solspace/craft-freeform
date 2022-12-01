@@ -1067,9 +1067,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @throws ComposerException
-     *
      * @return Properties\ValidationProperties
+     *
+     * @throws ComposerException
      */
     public function getValidationProperties()
     {
@@ -1077,9 +1077,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @throws ComposerException
-     *
      * @return Properties\AdminNotificationProperties
+     *
+     * @throws ComposerException
      */
     public function getAdminNotificationProperties()
     {

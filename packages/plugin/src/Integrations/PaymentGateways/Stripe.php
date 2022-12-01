@@ -30,9 +30,6 @@ use Stripe\Exception\ApiErrorException;
 use Stripe\Invoice;
 use Stripe\PaymentIntent;
 use Stripe\Subscription;
-
-use function strtolower;
-
 use yii\base\Event;
 
 class Stripe extends AbstractPaymentGatewayIntegration
@@ -252,7 +249,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     {
         $this->prepareApi();
 
-        $interval = self::PLAN_INTERVAL_CONVERSION[strtolower($plan->getInterval())];
+        $interval = self::PLAN_INTERVAL_CONVERSION[\strtolower($plan->getInterval())];
         $hash = $plan->getFormHash();
         $productId = 'freeform'.($hash ? '_'.$hash : '');
 
@@ -275,7 +272,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
             'id' => $plan->getId(),
             'nickname' => $plan->getName(),
             'amount' => self::toStripeAmount($plan->getAmount(), $plan->getCurrency()),
-            'currency' => strtolower($plan->getCurrency()),
+            'currency' => \strtolower($plan->getCurrency()),
             'interval' => $interval['interval'],
             'interval_count' => $interval['count'],
             'product' => $product,
@@ -335,9 +332,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     }
 
     /**
-     * @throws \Exception
-     *
      * @return bool|false|mixed|SubscriptionModel
+     *
+     * @throws \Exception
      */
     public function processSubscription(SubscriptionDetails $subscriptionDetails, PaymentProperties $paymentProperties)
     {
@@ -447,7 +444,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
     }
 
     /**
-     * @param      $resourceId
      * @param bool $atPeriodEnd
      *
      * @throws \Exception
@@ -605,9 +601,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @throws \Exception
-     *
      * @return array|bool|\Stripe\StripeObject
+     *
+     * @throws \Exception
      */
     public function getChargeDetails($id)
     {
@@ -627,9 +623,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @throws \Exception
-     *
      * @return array|bool|\Stripe\StripeObject
+     *
+     * @throws \Exception
      */
     public function getSubscriptionDetails($id)
     {
@@ -652,9 +648,9 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /**
      * @param mixed $id
      *
-     * @throws \Exception
-     *
      * @return bool|\Stripe\PaymentIntent
+     *
+     * @throws \Exception
      */
     public function getPaymentIntentDetails($id)
     {

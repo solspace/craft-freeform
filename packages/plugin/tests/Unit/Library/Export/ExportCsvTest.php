@@ -13,6 +13,7 @@ use Solspace\Freeform\Library\Export\ExportCsv;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ExportCsvTest extends TestCase

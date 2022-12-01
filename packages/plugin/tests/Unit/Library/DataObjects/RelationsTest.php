@@ -7,6 +7,7 @@ use Solspace\Freeform\Library\DataObjects\Relations;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class RelationsTest extends TestCase

@@ -180,9 +180,9 @@ class ChartsService extends BaseService
     /**
      * @param bool $aggregate
      *
-     * @throws \Exception
-     *
      * @return LinearChartData
+     *
+     * @throws \Exception
      */
     public function getStackedAreaChartData(
         Carbon $rangeStart,

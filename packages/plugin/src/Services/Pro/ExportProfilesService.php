@@ -190,9 +190,9 @@ class ExportProfilesService extends Component
     /**
      * @param int $id
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function deleteById($id)
     {

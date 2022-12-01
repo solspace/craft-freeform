@@ -495,9 +495,9 @@ class ActiveCampaign extends AbstractCRMIntegration
     /**
      * Gets the API Token for ActiveCampaign from settings config.
      *
-     * @throws IntegrationException
-     *
      * @return null|mixed
+     *
+     * @throws IntegrationException
      */
     private function getApiToken()
     {
@@ -505,9 +505,9 @@ class ActiveCampaign extends AbstractCRMIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     private function getPipeline()
     {
@@ -515,9 +515,9 @@ class ActiveCampaign extends AbstractCRMIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|int
+     *
+     * @throws IntegrationException
      */
     private function getPipelineId()
     {
@@ -525,9 +525,9 @@ class ActiveCampaign extends AbstractCRMIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     private function getStage()
     {
@@ -535,9 +535,9 @@ class ActiveCampaign extends AbstractCRMIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|int
+     *
+     * @throws IntegrationException
      */
     private function getStageId()
     {
@@ -545,9 +545,9 @@ class ActiveCampaign extends AbstractCRMIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     private function getOwner()
     {
@@ -555,9 +555,9 @@ class ActiveCampaign extends AbstractCRMIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|int
+     *
+     * @throws IntegrationException
      */
     private function getOwnerId()
     {

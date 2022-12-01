@@ -99,10 +99,10 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      *
      * @param string $class
      *
+     * @return SettingBlueprint[]
+     *
      * @throws IntegrationException
      * @throws \ReflectionException
-     *
-     * @return SettingBlueprint[]
      */
     public function getCRMSettingBlueprints($class): array
     {
@@ -356,9 +356,9 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
     }
 
     /**
-     * @throws FreeformException
-     *
      * @return null|mixed
+     *
+     * @throws FreeformException
      */
     private function getExtraFieldsValue(string $handle, Submission $submission, AbstractIntegration $integration)
     {

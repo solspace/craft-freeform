@@ -18,8 +18,6 @@ interface BagInterface extends \JsonSerializable, \IteratorAggregate
 
     /**
      * @param array|BagInterface $bag
-     *
-     * @return BagInterface
      */
     public function merge($bag): self;
 }

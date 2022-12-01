@@ -698,9 +698,9 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     private function getInstanceUrl()
     {
@@ -708,9 +708,9 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     private function getDataUrl()
     {
@@ -719,8 +719,6 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
 
     /**
      * Checks if Form field's type calls for a value append.
-     *
-     * @param $formField
      *
      * @return bool
      */
@@ -732,10 +730,6 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     /**
      * Goes through all of the mapped values, checks which values have to be appended and appends them to the record's
      * values.
-     *
-     * @param $mappedValues
-     * @param $record
-     * @param $appendFields
      *
      * @return mixed
      */

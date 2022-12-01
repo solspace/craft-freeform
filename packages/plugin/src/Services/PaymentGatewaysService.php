@@ -69,9 +69,9 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
      *
      * @param string $class
      *
-     * @throws IntegrationException
-     *
      * @return SettingBlueprint[]
+     *
+     * @throws IntegrationException
      */
     public function getPaymentGatewaySettingBlueprints($class): array
     {

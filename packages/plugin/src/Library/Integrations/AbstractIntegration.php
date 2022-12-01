@@ -312,9 +312,9 @@ abstract class AbstractIntegration implements IntegrationInterface
      *
      * @param string $handle
      *
-     * @throws IntegrationException
-     *
      * @return null|mixed
+     *
+     * @throws IntegrationException
      */
     final protected function getSetting($handle)
     {
@@ -348,9 +348,9 @@ abstract class AbstractIntegration implements IntegrationInterface
      * @param string $handle
      * @param mixed  $value
      *
-     * @throws IntegrationException
-     *
      * @return $this
+     *
+     * @throws IntegrationException
      */
     final protected function setSetting($handle, $value)
     {

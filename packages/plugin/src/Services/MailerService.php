@@ -159,10 +159,10 @@ class MailerService extends BaseService implements MailHandlerInterface
      * @param string $template  the source template string
      * @param array  $variables any variables that should be available to the template
      *
+     * @return string the rendered template
+     *
      * @throws TwigLoaderError
      * @throws TwigSyntaxError
-     *
-     * @return string the rendered template
      */
     public function renderString(string $template, array $variables = []): string
     {

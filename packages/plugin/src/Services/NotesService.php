@@ -7,11 +7,9 @@ use Solspace\Freeform\Records\SubmissionNoteRecord;
 class NotesService extends BaseService
 {
     /**
-     * @param $submissionId
+     * @return bool|void
      *
      * @throws \Exception
-     *
-     * @return bool|void
      */
     public function saveNote($submissionId)
     {

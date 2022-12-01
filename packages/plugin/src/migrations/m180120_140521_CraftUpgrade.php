@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\migrations;
 
-use Craft;
 use craft\db\Migration;
 use craft\db\Query;
 use Solspace\Freeform\FieldTypes\FormFieldType;
@@ -46,11 +45,11 @@ class m180120_140521_CraftUpgrade extends Migration
             false
         );
 
-        if (!Craft::$app->db->columnExists('{{%freeform_forms}}', 'formTemplateId', true)) {
+        if (!\Craft::$app->db->columnExists('{{%freeform_forms}}', 'formTemplateId', true)) {
             $this->addColumn('{{%freeform_forms}}', 'formTemplateId', 'int unsigned');
         }
 
-        $prefix = Craft::$app->db->tablePrefix;
+        $prefix = \Craft::$app->db->tablePrefix;
         if ($prefix) {
             $oldForeignKeys = [
                 $prefix.'freeform_crm_fields_integrationId_fk' => '{{%freeform_crm_fields}}',

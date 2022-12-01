@@ -34,7 +34,6 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Fields\MailingListField;
-use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Freeform;
@@ -542,25 +541,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->getValidationProperties()->getErrorMessage();
     }
 
+    // Only used for invisible recaptcha
     public function isRecaptchaEnabled(): bool
     {
-        if (!$this->recaptchaEnabled) {
-            return false;
-        }
-
-        if (\count($this->getLayout()->getFields(PaymentInterface::class))) {
-            return false;
-        }
-
-        if (!$this->getLayout()->hasFields(RecaptchaField::class)) {
-            return false;
-        }
-
-        if ($this->getPropertyBag()->get(self::DATA_DISABLE_RECAPTCHA)) {
-            return false;
-        }
-
-        return true;
+        return $this->recaptchaEnabled;
     }
 
     public function isGtmEnabled(): bool
@@ -1090,6 +1074,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
      * Returns data for dynamic notification email template.
      *
      * @return null|DynamicNotificationAttributes
+     * @throws FreeformException
      */
     public function getDynamicNotificationData()
     {

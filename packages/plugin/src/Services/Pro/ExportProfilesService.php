@@ -40,7 +40,7 @@ class ExportProfilesService extends Component
             $event = new RegisterExporterEvent();
 
             $event
-                // ->addExporter('excel', ExportExcel::class)
+                ->addExporter('excel', ExportExcel::class)
                 ->addExporter('csv', ExportCsv::class)
                 ->addExporter('json', ExportJson::class)
                 ->addExporter('xml', ExportXml::class)

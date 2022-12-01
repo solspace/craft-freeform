@@ -2,6 +2,10 @@
 
 namespace Solspace\Freeform\Library\Export;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use yii\base\ErrorException;
+
 class ExportExcel extends ExportCsv
 {
     public static function getLabel(): string
@@ -19,25 +23,24 @@ class ExportExcel extends ExportCsv
         return 'xlsx';
     }
 
-    public function export(): string
+    public function export(): mixed
     {
-        return '';
-        // $spreadsheet = new Spreadsheet();
-        // $sheet = $spreadsheet->getActiveSheet();
-        // $sheet->fromArray($this->getValuesAsArray());
-        //
-        // ob_start();
-        //
-        // $writer = new Xlsx($spreadsheet);
-        // $writer->save('php://output');
-        //
-        // $content = ob_get_clean();
-        //
-        // try {
-        //     ob_end_clean();
-        // } catch (ErrorException $e) {
-        // }
-        //
-        // return $content;
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->fromArray($this->getValuesAsArray());
+
+        ob_start();
+
+        $writer = new Xlsx($spreadsheet);
+        $writer->save('php://output');
+
+        $content = ob_get_clean();
+
+        try {
+            ob_end_clean();
+        } catch (ErrorException $e) {
+        }
+
+        return $content;
     }
 }

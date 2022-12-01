@@ -1,3 +1,5 @@
+import type { Cell, Layout, Page, Row } from '@editor/builder/types/layout';
+import type { Field } from '@editor/store/slices/fields';
 import type { GenericValue } from '@ff-client/types/properties';
 
 export type Properties = {
@@ -11,6 +13,16 @@ export type Form = {
   uid: string;
   type: string;
   properties: Properties;
+};
+
+export type ExtendedFormType = Form & {
+  layout: {
+    fields: Field[];
+    pages: Page[];
+    layouts: Layout[];
+    rows: Row[];
+    cells: Cell[];
+  };
 };
 
 export type Attribute = {
@@ -36,7 +48,7 @@ type BaseEditableProperty<T> = {
   instructions: string;
   category?: string;
   order: number;
-  value: string | number;
+  value: T;
   placeholder: string;
   section?: string;
   options?: GenericValue[];

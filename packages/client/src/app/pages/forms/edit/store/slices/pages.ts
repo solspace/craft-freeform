@@ -10,20 +10,15 @@ type SwapPayload = {
   targetUid: string;
 };
 
-const initialState: PagesState = [
-  {
-    uid: 'page-uid-1',
-    label: 'Page One',
-    handle: 'page-one',
-    layoutUid: 'layout-uid-1',
-    order: 1,
-  },
-];
+const initialState: PagesState = [];
 
 export const pagesSlice = createSlice({
   name: 'pages',
   initialState,
   reducers: {
+    set: (state, action: PayloadAction<PagesState>) => {
+      state.splice(0, state.length, ...action.payload);
+    },
     add: (state, action: PayloadAction<Page>) => {
       const maxOrder = Math.max(...state.map((page) => page.order)) ?? -1;
 
@@ -53,7 +48,7 @@ export const pagesSlice = createSlice({
   },
 });
 
-export const { swap, add, remove } = pagesSlice.actions;
+export const { set, add, swap, remove } = pagesSlice.actions;
 
 export const selectPages = (state: RootState): Page[] => state.pages;
 

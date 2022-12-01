@@ -16,6 +16,9 @@ export const layoutsSlice = createSlice({
   name: 'layouts',
   initialState,
   reducers: {
+    set: (state, action: PayloadAction<LayoutState>) => {
+      state.splice(0, state.length, ...action.payload);
+    },
     add: (state, action: PayloadAction<Layout>) => {
       state.push(action.payload);
     },
@@ -25,7 +28,7 @@ export const layoutsSlice = createSlice({
   },
 });
 
-export const { add, remove } = layoutsSlice.actions;
+export const { set, add, remove } = layoutsSlice.actions;
 
 export const selectLayout =
   (uid: string) =>
@@ -35,7 +38,7 @@ export const selectLayout =
 export const selectPageLayout =
   (page: Page) =>
   (state: RootState): Layout | undefined =>
-    state.layouts.find((layout) => layout.uid === page.layoutUid);
+    state.layouts.find((layout) => layout.uid === page?.layoutUid);
 
 export default layoutsSlice.reducer;
 

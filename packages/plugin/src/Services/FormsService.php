@@ -734,6 +734,10 @@ class FormsService extends BaseService implements FormHandlerInterface
             $data['metadata'] = json_decode($data['metadata'] ?: '{}', true);
         }
 
+        // TODO: refactor this so that this data doesn't need to be written in the metadata
+        $data['metadata']['name'] = $data['name'];
+        $data['metadata']['handle'] = $data['handle'];
+
         $type = $data['type'] ?? null;
         $reflection = new \ReflectionClass($type);
         if (!$reflection->isSubclassOf(Form::class)) {
@@ -744,7 +748,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         $layout = $this->getFormLayoutsService()->getLayout($data['id']);
 
-        /** @var Form $type */
+        // @var Form $type
         return new $type($data, $layout, $this->attributeProvider);
     }
 

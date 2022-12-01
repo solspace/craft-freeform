@@ -17,7 +17,7 @@ type Props = {
 export const Cell: React.FC<Props> = ({ cell, order }) => {
   const dispatch = useAppDispatch();
 
-  const [{ isDragging }, drag] = useDrag(
+  const [, drag] = useDrag(
     () => ({
       type: 'LayoutField',
       item: (): Record<string, string> => {

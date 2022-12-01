@@ -37,11 +37,8 @@ use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Collections\PageCollection;
-use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
-use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
-use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
@@ -49,10 +46,8 @@ use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\FormActionInterface;
 use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
-use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
-use Solspace\Freeform\Library\Rules\RuleProperties;
 use Twig\Markup;
 use yii\base\Event;
 use yii\web\Request;
@@ -387,8 +382,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
-        $this->name = $config['name'] ?? '';
-        $this->handle = $config['handle'] ?? '';
 
         $metadata = $config['metadata'] ?? [];
         $editableProperties = $this->attributeProvider->getEditableProperties(self::class);
@@ -598,16 +591,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public function getLoadingText(): ?string
     {
         return $this->loadingText;
-    }
-
-    public function getSuccessMessage(): string
-    {
-        return $this->getValidationProperties()->getSuccessMessage();
-    }
-
-    public function getErrorMessage(): string
-    {
-        return $this->getValidationProperties()->getErrorMessage();
     }
 
     public function isRecaptchaEnabled(): bool
@@ -1068,41 +1051,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     }
 
     /**
-     * @return Properties\ValidationProperties
-     *
-     * @throws ComposerException
-     */
-    public function getValidationProperties()
-    {
-        return $this->properties->getValidationProperties();
-    }
-
-    /**
-     * @return Properties\AdminNotificationProperties
-     *
-     * @throws ComposerException
-     */
-    public function getAdminNotificationProperties()
-    {
-        return $this->properties->getAdminNotificationProperties();
-    }
-
-    /**
-     * Returns data for dynamic notification email template.
-     *
-     * @return null|DynamicNotificationAttributes
-     */
-    public function getDynamicNotificationData()
-    {
-        $data = $this->getPropertyBag()->get(self::DATA_DYNAMIC_TEMPLATE_KEY);
-        if ($data) {
-            return new DynamicNotificationAttributes($data);
-        }
-
-        return null;
-    }
-
-    /**
      * Returns the assigned submission token.
      *
      * @deprecated will be removed in FF 4.x. Use EditSubmissionContext::getToken($form) instead.
@@ -1120,46 +1068,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public function getFieldPrefix()
     {
         return $this->getPropertyBag()->get('fieldIdPrefix');
-    }
-
-    /**
-     * Returns form CRM integration properties.
-     *
-     * @return Properties\IntegrationProperties
-     */
-    public function getIntegrationProperties(): IntegrationProperties
-    {
-        return $this->properties->getIntegrationProperties();
-    }
-
-    /**
-     * Returns form payment integration properties.
-     *
-     * @return Properties\PaymentProperties
-     */
-    public function getPaymentProperties()
-    {
-        return $this->properties->getPaymentProperties();
-    }
-
-    /**
-     * Returns form CRM integration properties.
-     *
-     * @return Properties\ConnectionProperties
-     */
-    public function getConnectionProperties(): ConnectionProperties
-    {
-        return $this->properties->getConnectionProperties();
-    }
-
-    /**
-     * Returns form field rule properties.
-     *
-     * @return null|RuleProperties
-     */
-    public function getRuleProperties()
-    {
-        return $this->properties->getRuleProperties();
     }
 
     public function jsonSerialize(): array

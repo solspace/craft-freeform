@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Form;
 
 use craft\db\Query;
 use Solspace\Freeform\Form\Layout\Cell\Cell;
@@ -14,8 +14,9 @@ use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
+use Solspace\Freeform\Services\BaseService;
 
-class FormLayoutsService extends BaseService
+class LayoutsService extends BaseService
 {
     private array $pages = [];
     private array $layouts = [];
@@ -59,7 +60,7 @@ class FormLayoutsService extends BaseService
                     'p.[[id]]',
                     'p.[[uid]]',
                     'p.[[label]]',
-                    'p.[[handle]]',
+                    'p.[[order]]',
                     'p.[[layoutId]]',
                     'l.[[uid]] as layoutUid',
                 ])
@@ -81,7 +82,6 @@ class FormLayoutsService extends BaseService
                 ->select(['id', 'uid'])
                 ->from(FormLayoutRecord::TABLE)
                 ->where(['formId' => $formId])
-                ->indexBy('id')
                 ->all()
             ;
         }
@@ -96,6 +96,7 @@ class FormLayoutsService extends BaseService
                 ->select([
                     'r.[[id]]',
                     'r.[[uid]]',
+                    'r.[[order]]',
                     'r.[[layoutId]]',
                     'l.[[uid]] as layoutUid',
                 ])
@@ -116,15 +117,18 @@ class FormLayoutsService extends BaseService
             $this->cells[$formId] = (new Query())
                 ->select([
                     'c.[[id]]',
-                    'c.[[type]]',
                     'c.[[uid]]',
+                    'c.[[type]]',
+                    'c.[[order]]',
                     'c.[[rowId]]',
+                    'r.[[uid]] as rowUid',
                     'c.[[type]]',
                     'c.[[fieldId]]',
                     'f.[[uid]] as fieldUid',
                     'c.[[layoutId]]',
                     'l.[[uid]] as layoutUid',
                 ])
+                ->leftJoin(FormRowRecord::TABLE.' r', 'c.[[rowId]] = r.[[id]]')
                 ->leftJoin(FormFieldRecord::TABLE.' f', 'c.[[fieldId]] = f.[[id]]')
                 ->leftJoin(FormLayoutRecord::TABLE.' l', 'c.[[layoutId]] = l.[[id]]')
                 ->from(FormCellRecord::TABLE.' c')

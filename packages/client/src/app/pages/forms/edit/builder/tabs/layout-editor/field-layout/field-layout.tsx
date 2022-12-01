@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { selectCurrentPage } from '@editor/store/slices/context';
 
 import { selectPage } from '../../../../store/slices/pages';
 
@@ -8,7 +9,8 @@ import { PageTabs } from './page-tabs/page-tabs';
 import { FieldLayoutWrapper } from './field-layout.styles';
 
 export const FieldLayout: React.FC = () => {
-  const page = useSelector(selectPage('page-uid-1'));
+  const { uid: pageUid } = useSelector(selectCurrentPage);
+  const page = useSelector(selectPage(pageUid));
 
   return (
     <FieldLayoutWrapper>

@@ -17,6 +17,9 @@ export const cellsSlice = createSlice({
   name: 'cells',
   initialState,
   reducers: {
+    set: (state, action: PayloadAction<CellState>) => {
+      state.splice(0, state.length, ...action.payload);
+    },
     add: (state, action: PayloadAction<Omit<Cell, 'order'>>) => {
       const highestOrder = Math.max(
         -1,
@@ -40,7 +43,7 @@ export const cellsSlice = createSlice({
   },
 });
 
-export const { moveTo, add, remove } = cellsSlice.actions;
+export const { set, moveTo, add, remove } = cellsSlice.actions;
 
 export const selectCellsInRow =
   (row: Row) =>

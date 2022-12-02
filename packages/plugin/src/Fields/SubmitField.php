@@ -12,8 +12,9 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Field\VisibilityFilter;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
@@ -37,30 +38,26 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, Single
     public const POSITION_RIGHT = 'right';
     public const POSITION_SPREAD = 'spread';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Submit button Label',
         instructions: 'The label of the submit button',
     )]
     protected string $labelNext = 'Submit';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Previous button Label',
         instructions: 'The label of the previous button',
-        visibilityFilters: [
-            '{{state.pages}}.length > 1',
-        ]
     )]
+    #[VisibilityFilter('{{state.pages}}.length > 1')]
     protected string $labelPrev = 'Back';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Disable the Previous button',
-        visibilityFilters: [
-            '{{state.pages}}.length > 1',
-        ]
     )]
+    #[VisibilityFilter('{{state.pages}}.length > 1')]
     protected bool $disablePrev = false;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Positioning',
         type: 'select',
         instructions: 'Choose whether the submit button is positioned on the left, center or right side',

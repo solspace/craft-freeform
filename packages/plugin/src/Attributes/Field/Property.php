@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Attributes\Field;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
-class EditableProperty
+class Property
 {
     public function __construct(
         public ?string $label = null,
@@ -15,9 +15,6 @@ class EditableProperty
         public ?string $placeholder = null,
         public ?string $section = null,
         public ?array $options = null,
-        public ?array $flags = [],
-        public ?array $visibilityFilters = null,
-        public ?array $middleware = [],
         public ?string $tab = null,
         public ?string $group = null,
     ) {

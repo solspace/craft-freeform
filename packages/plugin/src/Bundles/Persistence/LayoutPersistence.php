@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Persistance;
+namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\ActiveRecord;
 use Solspace\Freeform\controllers\client\api\FormsController;

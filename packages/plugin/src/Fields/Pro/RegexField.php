@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -15,12 +15,12 @@ use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\RegexCo
 )]
 class RegexField extends TextField implements ExtraFieldInterface
 {
-    #[EditableProperty(
+    #[Property(
         instructions: 'Enter any regex pattern here.',
     )]
     protected string $pattern = '';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Error Message',
         instructions: "The message a user should receive if an incorrect value is given. It will replace any occurrences of '{{pattern}}' with the supplied regex pattern inside the message if any are found.",
     )]

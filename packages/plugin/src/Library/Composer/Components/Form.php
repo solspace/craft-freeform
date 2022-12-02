@@ -15,7 +15,7 @@ namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Bundles\Fields\AttributeProvider;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
@@ -114,72 +114,72 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public const DATA_PERSISTENT_VALUES = 'persistentValues';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    #[EditableProperty(
-        tab: 'settings'
+    #[Property(
+        tab: 'settings',
     )]
     protected string $name = '';
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected string $handle = '';
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected string $description = '';
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected string $submissionTitleFormat = '{{ dateCreated|date("Y-m-d H:i:s") }}';
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected string $color = '';
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected bool $storeData = true;
 
-    #[EditableProperty]
+    #[Property]
     protected bool $ipCollectingEnabled = true;
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected ?int $defaultStatus = null;
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected ?string $formTemplate = null;
 
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected ?string $optInDataStorageTargetHash = null;
 
     // TODO: refactor captchas into their own integration types
-    #[EditableProperty(
+    #[Property(
         tab: 'settings'
     )]
     protected bool $recaptchaEnabled = false;
 
     // TODO: refactor this into a object instead of 3 different values
-    #[EditableProperty]
+    #[Property]
     protected bool $gtmEnabled = false;
 
     // TODO: refactor GTM into its own bundle
-    #[EditableProperty]
+    #[Property]
     protected ?string $gtmId = null;
 
-    #[EditableProperty]
+    #[Property]
     protected ?string $gtmEventName = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Success Behavior',
         type: 'select',
         instructions: "Set how you'd like the success return of this form to be handled. May also be overridden at the template level.",
@@ -204,7 +204,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected ?string $successBehavior = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Success Template',
         type: 'select',
         instructions: '',
@@ -221,7 +221,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected ?string $successTemplate = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Return URL',
         instructions: '',
         order: 3,
@@ -231,7 +231,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected string $returnUrl = '/';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Success Message',
         type: 'textarea',
         instructions: 'The text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with form.successMessage.',
@@ -242,7 +242,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected ?string $successMessage = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Error Message',
         instructions: 'The text to be shown at the top of the form if there are any errors upon submit (AJAX), or load in your template with form.errorMessage.',
         order: 5,
@@ -252,7 +252,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected ?string $errorMessage = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Use AJAX',
         instructions: "Use Freeform's built-in automatic AJAX submit feature.",
         order: 6,
@@ -262,7 +262,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected bool $ajaxEnabled = true;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Show Processing Indicator on Submit',
         instructions: 'Show a loading indicator on the submit button upon submission of the form.',
         order: 7,
@@ -272,7 +272,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected bool $showSpinner = true;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Show Processing Text',
         instructions: "Enabling this will change the submit button's label to the text of your choice.",
         order: 8,
@@ -282,7 +282,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected bool $showLoadingText = true;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Processing Text',
         instructions: '',
         order: 9,
@@ -292,7 +292,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected string $loadingText = '';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Limit Form Submission Rate',
         type: 'select',
         instructions: '',
@@ -333,7 +333,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     )]
     protected ?string $limitFormSubmissions = null;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Stop Submissions After',
         type: 'datetime',
         instructions: 'Set a date after which the form will no longer accept submissions.',
@@ -1004,10 +1004,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         return $this;
     }
 
-    /**
-     * @return null|CheckboxField
-     */
-    public function getOptInDataTargetField()
+    public function getOptInDataTargetField(): ?CheckboxField
     {
         if ($this->optInDataStorageTargetHash) {
             $field = $this->get($this->optInDataStorageTargetHash);
@@ -1048,6 +1045,21 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         }
 
         Event::trigger(self::class, self::EVENT_AFTER_RESET, $event);
+    }
+
+    /**
+     * Returns data for dynamic notification email template.
+     *
+     * @return null|DynamicNotificationAttributes
+     */
+    public function getDynamicNotificationData()
+    {
+        $data = $this->getPropertyBag()->get(self::DATA_DYNAMIC_TEMPLATE_KEY);
+        if ($data) {
+            return new DynamicNotificationAttributes($data);
+        }
+
+        return null;
     }
 
     /**

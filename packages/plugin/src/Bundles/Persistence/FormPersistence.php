@@ -1,12 +1,11 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Persistance;
+namespace Solspace\Freeform\Bundles\Persistence;
 
 use Solspace\Freeform\Bundles\Fields\AttributeProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\DataObjects\FieldType\Property;
 use Solspace\Freeform\Records\FormRecord;
 use Solspace\Freeform\Services\FormsService;
 use yii\base\Event;
@@ -82,7 +81,6 @@ class FormPersistence extends FeatureBundle
 
         $metadata = [];
 
-        /** @var Property $property */
         foreach ($properties as $property) {
             $handle = $property->handle;
             // TODO: implement value transformer calls here

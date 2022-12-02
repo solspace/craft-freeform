@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
-use Solspace\Freeform\Attributes\Field\EditableProperty;
+use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -25,7 +25,7 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
     public const POSITION_CENTER = 'center';
     public const POSITION_RIGHT = 'right';
 
-    #[EditableProperty(
+    #[Property(
         label: 'Save button Label',
         instructions: 'The label of the Save & Continue Later button.',
     )]
@@ -33,7 +33,7 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
 
     protected string $position = self::POSITION_RIGHT;
 
-    #[EditableProperty(
+    #[Property(
         label: 'Return URL',
         instructions: 'The URL the user will be redirected to after saving. Can use {token} and {key}.',
     )]

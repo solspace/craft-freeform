@@ -55,13 +55,13 @@ class HCaptcha extends FeatureBundle
             return;
         }
 
-        // or if the form doesn't have a recaptcha field, then bail
-        if (!$form->getLayout()->hasFields(RecaptchaField::class)) {
+        // or if the form has payment fields, then bail
+        if (\count($form->getLayout()->getFields(PaymentInterface::class))) {
             return;
         }
 
-        // or if the form has a payment fields, then bail
-        if (\count($form->getLayout()->getFields(PaymentInterface::class))) {
+        // or if the form doesn't have a recaptcha field, then bail
+        if (!$form->getLayout()->hasFields(RecaptchaField::class)) {
             return;
         }
 
@@ -81,7 +81,12 @@ class HCaptcha extends FeatureBundle
             return;
         }
 
-        // If the form settings for "Enable Captchas" is set to false, then bail
+        // or if the form has payment fields, then bail
+        if (\count($form->getLayout()->getFields(PaymentInterface::class))) {
+            return;
+        }
+
+        // or if the form settings for "Enable Captchas" is set to false, then bail
         if (!$form->isRecaptchaEnabled()) {
             return;
         }

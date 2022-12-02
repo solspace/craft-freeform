@@ -8,6 +8,7 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Models\Settings;
@@ -47,8 +48,20 @@ class HCaptcha extends FeatureBundle
 
     public function validateCheckbox(ValidateEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled) {
+        $form = $event->getForm();
+
+        // If the form has the property disableRecaptcha set to true, then bail
+        if ($form->getPropertyBag()->get(form::DATA_DISABLE_RECAPTCHA)) {
+            return;
+        }
+
+        // or if the form doesn't have a recaptcha field, then bail
+        if (!$form->getLayout()->hasFields(RecaptchaField::class)) {
+            return;
+        }
+
+        // or if the form has a payment fields, then bail
+        if (\count($form->getLayout()->getFields(PaymentInterface::class))) {
             return;
         }
 
@@ -61,8 +74,15 @@ class HCaptcha extends FeatureBundle
 
     public function validateInvisible(ValidationEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled) {
+        $form = $event->getForm();
+
+        // If the form has the property disableRecaptcha set to true, then bail
+        if ($form->getPropertyBag()->get(form::DATA_DISABLE_RECAPTCHA)) {
+            return;
+        }
+
+        // If the form settings for "Enable Captchas" is set to false, then bail
+        if (!$form->isRecaptchaEnabled()) {
             return;
         }
 

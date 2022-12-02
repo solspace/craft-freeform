@@ -47,8 +47,20 @@ class HCaptcha extends FeatureBundle
 
     public function validateCheckbox(ValidateEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled) {
+        $form = $event->getForm();
+
+        // If the form has the property disableRecaptcha set to true, then bail
+        if ($form->getPropertyBag()->get(form::DATA_DISABLE_RECAPTCHA)) {
+            return;
+        }
+
+        // or if the form has payment fields, then bail
+        if (\count($form->getLayout()->getPaymentFields())) {
+            return;
+        }
+
+        // or if the form doesn't have a recaptcha field, then bail
+        if (!$form->getLayout()->hasFields(RecaptchaField::class)) {
             return;
         }
 
@@ -61,8 +73,20 @@ class HCaptcha extends FeatureBundle
 
     public function validateInvisible(ValidationEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled) {
+        $form = $event->getForm();
+
+        // If the form has the property disableRecaptcha set to true, then bail
+        if ($form->getPropertyBag()->get(form::DATA_DISABLE_RECAPTCHA)) {
+            return;
+        }
+
+        // or if the form has payment fields, then bail
+        if (\count($form->getLayout()->getPaymentFields())) {
+            return;
+        }
+
+        // or if the form settings for "Enable Captchas" is set to false, then bail
+        if (!$form->isRecaptchaEnabled()) {
             return;
         }
 

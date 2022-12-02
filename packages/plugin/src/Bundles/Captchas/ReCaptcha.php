@@ -116,27 +116,24 @@ class ReCaptcha extends FeatureBundle
             return;
         }
 
-        // If using the invisible recaptcha and the form settings for "Enable Captchas" is false, then bail
+        // or if the form has the property disableRecaptcha set to true, then bail
+        if ($form->getPropertyBag()->get(form::DATA_DISABLE_RECAPTCHA)) {
+            return;
+        }
+
+        // or if the form has payment fields, then bail
+        if (\count($form->getLayout()->getPaymentFields())) {
+            return;
+        }
+
+        // or if using the invisible recaptcha and the form settings for "Enable Captchas" is set to false, then bail
         if ($settings->isInvisibleRecaptchaSetUp() && !$form->isRecaptchaEnabled()) {
             return;
         }
 
-        // If using the checkbox recaptcha
-        if (!$settings->isInvisibleRecaptchaSetUp()) {
-            // ... and the form doesn't have a recaptcha field, then bail
-            if (!$form->getLayout()->hasFields(RecaptchaField::class)) {
-                return;
-            }
-
-            // or if the form has a payment fields, then bail
-            if (\count($form->getLayout()->getPaymentFields())) {
-                return;
-            }
-
-            // or if the form has the property disableRecaptcha set, then bail
-            if ($form->getPropertyBag()->get(form::DATA_DISABLE_RECAPTCHA)) {
-                return;
-            }
+        // and finally if using the checkbox recaptcha and the form doesn't have a recaptcha field, then bail
+        if (!$settings->isInvisibleRecaptchaSetUp() && !$form->getLayout()->hasFields(RecaptchaField::class)) {
+            return;
         }
 
         $recaptchaKey = \Craft::parseEnv($settings->recaptchaKey);

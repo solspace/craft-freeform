@@ -85,7 +85,6 @@ class ReCaptcha extends FeatureBundle
     {
         if ($this->canApplyRecaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
             if (!$this->validateResponse()) {
-                \Craft::dd('fuck');
                 if ($this->behaviourDisplayError()) {
                     $message = $this->getSettings()->recaptchaErrorMessage;
                     $event->getForm()->addError(Freeform::t($message ?: 'Your submission could not be processed.'));

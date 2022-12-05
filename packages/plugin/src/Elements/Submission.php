@@ -8,6 +8,7 @@ use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\User;
+use craft\events\RegisterElementActionsEvent;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
@@ -40,6 +41,7 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
+use yii\base\Event;
 
 class Submission extends Element
 {
@@ -590,6 +592,24 @@ class Submission extends Element
             'dateCreated',
             'form',
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public static function actions(string $source): array
+    {
+        $actions = static::defineActions($source);
+
+        // Give plugins a chance to modify them
+        $event = new RegisterElementActionsEvent([
+            'source' => $source,
+            'actions' => $actions,
+        ]);
+
+        Event::trigger(static::class, self::EVENT_REGISTER_ACTIONS, $event);
+
+        return $event->actions;
     }
 
     protected static function defineActions(string $source = null): array

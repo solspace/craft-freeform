@@ -9,9 +9,9 @@ use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\FieldsService;
 use yii\base\Event;
@@ -58,48 +58,40 @@ class ReCaptcha extends FeatureBundle
 
     public function validateRecaptchaV2Checkbox(ValidateEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
-            return;
-        }
-
-        $field = $event->getField();
-        if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
-            $message = $this->getSettings()->recaptchaErrorMessage;
-            $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
+        if ($this->canApplyRecaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
+            $field = $event->getField();
+            if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
+                $message = $this->getSettings()->recaptchaErrorMessage;
+                $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
+            }
         }
     }
 
     public function validateRecaptchaV2Invisible(ValidationEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
-            return;
-        }
-
-        if (!$this->validateResponse()) {
-            if ($this->behaviourDisplayError()) {
-                $message = $this->getSettings()->recaptchaErrorMessage;
-                $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
-            } else {
-                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'reCAPTCHA - '.$this->lastError);
+        if ($this->canApplyRecaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
+            if (!$this->validateResponse()) {
+                if ($this->behaviourDisplayError()) {
+                    $message = $this->getSettings()->recaptchaErrorMessage;
+                    $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
+                } else {
+                    $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'reCAPTCHA - '.$this->lastError);
+                }
             }
         }
     }
 
     public function validateRecaptchaV3(ValidationEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled || $this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
-            return;
-        }
-
-        if (!$this->validateResponse()) {
-            if ($this->behaviourDisplayError()) {
-                $message = $this->getSettings()->recaptchaErrorMessage;
-                $event->getForm()->addError(Freeform::t($message ?: 'Your submission could not be processed.'));
-            } else {
-                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'reCAPTCHA - '.$this->lastError);
+        if ($this->canApplyRecaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
+            if (!$this->validateResponse()) {
+                \Craft::dd('fuck');
+                if ($this->behaviourDisplayError()) {
+                    $message = $this->getSettings()->recaptchaErrorMessage;
+                    $event->getForm()->addError(Freeform::t($message ?: 'Your submission could not be processed.'));
+                } else {
+                    $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'reCAPTCHA - '.$this->lastError);
+                }
             }
         }
     }
@@ -109,46 +101,20 @@ class ReCaptcha extends FeatureBundle
      */
     public function addAttributesToFormTag(AttachFormAttributesEvent $event)
     {
-        $form = $event->getForm();
-        $settings = $this->getSettings();
+        if ($this->canApplyRecaptcha($event->getForm())) {
+            $recaptchaKey = \Craft::parseEnv($this->getSettings()->recaptchaKey);
+            $type = $this->getSettings()->recaptchaType;
 
-        // If global settings are false, then bail
-        if (!$settings->recaptchaEnabled) {
-            return;
-        }
+            $event->attachAttribute('data-recaptcha', $type);
+            $event->attachAttribute('data-recaptcha-key', $recaptchaKey);
+            $event->attachAttribute('data-recaptcha-lazy-load', (bool) $this->getSettings()->recaptchaLazyLoad);
 
-        // or if the form has the property disableRecaptcha set to true, then bail
-        if ($form->getPropertyBag()->get(form::DATA_DISABLE_RECAPTCHA)) {
-            return;
-        }
-
-        // or if the form has payment fields, then bail
-        if (\count($form->getLayout()->getFields(PaymentInterface::class))) {
-            return;
-        }
-
-        // or if using the invisible recaptcha and the form settings for "Enable Captchas" is set to false, then bail
-        if ($settings->isInvisibleRecaptchaSetUp() && !$form->isRecaptchaEnabled()) {
-            return;
-        }
-
-        // and finally if using the checkbox recaptcha and the form doesn't have a recaptcha field, then bail
-        if (!$settings->isInvisibleRecaptchaSetUp() && !$form->getLayout()->hasFields(RecaptchaField::class)) {
-            return;
-        }
-
-        $recaptchaKey = \Craft::parseEnv($settings->recaptchaKey);
-        $type = $settings->recaptchaType;
-
-        $event->attachAttribute('data-recaptcha', $type);
-        $event->attachAttribute('data-recaptcha-key', $recaptchaKey);
-        $event->attachAttribute('data-recaptcha-lazy-load', (bool) $settings->recaptchaLazyLoad);
-
-        if (Settings::RECAPTCHA_TYPE_V3 === $type) {
-            $event->attachAttribute(
-                'data-recaptcha-action',
-                $event->getForm()->getPropertyBag()->get('recaptchaAction') ?? 'homepage'
-            );
+            if (Settings::RECAPTCHA_TYPE_V3 === $type) {
+                $event->attachAttribute(
+                    'data-recaptcha-action',
+                    $event->getForm()->getPropertyBag()->get('recaptchaAction') ?? 'homepage'
+                );
+            }
         }
     }
 
@@ -228,5 +194,35 @@ class ReCaptcha extends FeatureBundle
         }
 
         return $result['success'];
+    }
+
+    private function canApplyRecaptcha(Form $form): bool
+    {
+        // If global settings are false, then bail
+        if (!$this->getSettings()->recaptchaEnabled) {
+            return false;
+        }
+
+        // or if the form has the property disableRecaptcha set to true, then bail
+        if ($form->getPropertyBag()->get(Form::DATA_DISABLE_RECAPTCHA)) {
+            return false;
+        }
+
+        // or if the form has payment fields, then bail
+        if (\count($form->getLayout()->getFields(PaymentInterface::class))) {
+            return false;
+        }
+
+        // or if using the invisible recaptcha and the form settings for "Enable Captchas" is set to false, then bail
+        if ($this->getSettings()->isInvisibleRecaptchaSetUp() && !$form->isRecaptchaEnabled()) {
+            return false;
+        }
+
+        // and finally if using the checkbox recaptcha and the form doesn't have a recaptcha field, then bail
+        if (!$this->getSettings()->isInvisibleRecaptchaSetUp() && !$form->getLayout()->hasFields(RecaptchaField::class)) {
+            return false;
+        }
+
+        return true;
     }
 }

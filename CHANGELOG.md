@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.13.22 - 2022-12-06
+
+### Changed
+- Updated to only load reCAPTCHA scripts when form(s) have reCAPTCHA enabled.
+- Updated to support Craft's `sameSiteCookieValue`.
+
 ## 3.13.21 - 2022-10-25
 
 ### Added

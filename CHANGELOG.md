@@ -152,6 +152,12 @@
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
 
+## 3.13.22 - 2022-12-06
+
+### Changed
+- Updated to only load reCAPTCHA scripts when form(s) have reCAPTCHA enabled.
+- Updated to support Craft's `sameSiteCookieValue`.
+
 ## 3.13.21 - 2022-10-25
 
 ### Added

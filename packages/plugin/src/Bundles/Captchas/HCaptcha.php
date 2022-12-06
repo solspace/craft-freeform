@@ -20,16 +20,16 @@ class HCaptcha extends FeatureBundle
 
     public function __construct()
     {
-        $settings = $this->getSettings();
-        if (!$settings->recaptchaEnabled) {
+        $isCpRequest = \Craft::$app->request->getIsCpRequest();
+        if ($isCpRequest) {
             return;
         }
 
-        if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
             return;
         }
 
-        $type = $settings->recaptchaType;
+        $type = $this->getSettings()->recaptchaType;
 
         if (Settings::RECAPTCHA_TYPE_H_CHECKBOX === $type) {
             Event::on(FieldsService::class, FieldsService::EVENT_AFTER_VALIDATE, [$this, 'validateCheckbox']);
@@ -47,33 +47,32 @@ class HCaptcha extends FeatureBundle
 
     public function validateCheckbox(ValidateEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled) {
-            return;
-        }
-
-        $field = $event->getField();
-        if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
-            $message = $this->getSettings()->recaptchaErrorMessage;
-            $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
+        if ($this->canApplyHcaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_CHECKBOX)) {
+            $field = $event->getField();
+            if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
+                $message = $this->getSettings()->recaptchaErrorMessage;
+                $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
+            }
         }
     }
 
     public function validateInvisible(ValidationEvent $event)
     {
-        $recaptchaDisabled = !$event->getForm()->isRecaptchaEnabled();
-        if ($recaptchaDisabled) {
-            return;
-        }
-
-        if (!$this->validateResponse()) {
-            if ($this->behaviourDisplayError()) {
-                $message = $this->getSettings()->recaptchaErrorMessage;
-                $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
-            } else {
-                $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'hCaptcha - '.$this->lastError);
+        if ($this->canApplyHcaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_INVISIBLE)) {
+            if (!$this->validateResponse()) {
+                if ($this->behaviourDisplayError()) {
+                    $message = $this->getSettings()->recaptchaErrorMessage;
+                    $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
+                } else {
+                    $event->getForm()->markAsSpam(SpamReason::TYPE_RECAPTCHA, 'hCaptcha - '.$this->lastError);
+                }
             }
         }
+    }
+
+    private function isHcaptchaTypeSkipped(string $type): bool
+    {
+        return !$this->getSettings()->recaptchaEnabled || $this->getSettings()->getRecaptchaType() !== $type;
     }
 
     private function behaviourDisplayError(): bool
@@ -148,5 +147,35 @@ class HCaptcha extends FeatureBundle
         }
 
         return $result['success'];
+    }
+
+    private function canApplyHcaptcha(Form $form): bool
+    {
+        // If global settings are false, then bail
+        if (!$this->getSettings()->recaptchaEnabled) {
+            return false;
+        }
+
+        // or if the form has the property disableRecaptcha set to true, then bail
+        if ($form->getPropertyBag()->get(Form::DATA_DISABLE_RECAPTCHA)) {
+            return false;
+        }
+
+        // or if the form has payment fields, then bail
+        if (\count($form->getLayout()->getPaymentFields())) {
+            return false;
+        }
+
+        // or if using the invisible recaptcha and the form settings for "Enable Captchas" is set to false, then bail
+        if ($this->getSettings()->isInvisibleRecaptchaSetUp() && !$form->isRecaptchaEnabled()) {
+            return false;
+        }
+
+        // and finally if using the checkbox recaptcha and the form doesn't have a recaptcha field, then bail
+        if (!$this->getSettings()->isInvisibleRecaptchaSetUp() && !$form->getLayout()->hasFields(RecaptchaField::class)) {
+            return false;
+        }
+
+        return true;
     }
 }

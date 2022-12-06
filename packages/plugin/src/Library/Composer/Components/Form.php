@@ -40,7 +40,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFormAttributes;
 use Solspace\Freeform\Library\Composer\Components\Attributes\DynamicNotificationAttributes;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\ConnectionProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\IntegrationProperties;
@@ -1051,9 +1050,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @return Properties\ValidationProperties
-     *
      * @throws ComposerException
+     *
+     * @return Properties\ValidationProperties
      */
     public function getValidationProperties()
     {
@@ -1061,9 +1060,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @return Properties\AdminNotificationProperties
-     *
      * @throws ComposerException
+     *
+     * @return Properties\AdminNotificationProperties
      */
     public function getAdminNotificationProperties()
     {
@@ -1073,8 +1072,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /**
      * Returns data for dynamic notification email template.
      *
-     * @return null|DynamicNotificationAttributes
      * @throws FreeformException
+     *
+     * @return null|DynamicNotificationAttributes
      */
     public function getDynamicNotificationData()
     {

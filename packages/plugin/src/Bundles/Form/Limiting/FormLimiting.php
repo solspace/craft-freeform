@@ -7,6 +7,9 @@ use craft\records\Element;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Events\Forms\FormLoadedEvent;
+use Solspace\Freeform\Events\Forms\PersistStateEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -28,14 +31,19 @@ class FormLimiting extends FeatureBundle
 
     private $formCache = [];
 
+    private FormEventInterface $event;
+
     public function __construct()
     {
+        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleLimitations']);
+        Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleLimitations']);
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleLimitations']);
     }
 
-    public function handleLimitations(ValidationEvent $event)
+    public function handleLimitations(ValidationEvent|FormLoadedEvent|PersistStateEvent $event)
     {
-        $form = $event->getForm();
+        $this->event = $event;
+        $form = $this->event->getForm();
         $limiting = $form->getLimitFormSubmissions();
 
         $token = EditSubmissionContext::getToken($form);
@@ -141,12 +149,20 @@ class FormLimiting extends FeatureBundle
 
     private function addMessage(Form $form, $message = "Sorry, you've already submitted this form.")
     {
-        if (\in_array($form->getId(), $this->formCache, true)) {
-            return;
+        // Triggered during from validation
+        if ($this->event instanceof ValidationEvent) {
+            if (\in_array($form->getId(), $this->formCache, true)) {
+                return;
+            }
+
+            $form->addError(Freeform::t($message));
+
+            $this->formCache[] = $form->getId();
         }
 
-        $form->addError(Freeform::t($message));
-
-        $this->formCache[] = $form->getId();
+        // Triggered when form is loaded or submitted
+        if ($this->event instanceof FormLoadedEvent || $this->event instanceof PersistStateEvent) {
+            $form->setSubmissionLimitReached(true);
+        }
     }
 }

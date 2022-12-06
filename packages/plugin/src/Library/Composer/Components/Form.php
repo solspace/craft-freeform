@@ -1050,9 +1050,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @return Properties\ValidationProperties
-     *
      * @throws ComposerException
+     *
+     * @return Properties\ValidationProperties
      */
     public function getValidationProperties()
     {
@@ -1060,9 +1060,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @return Properties\AdminNotificationProperties
-     *
      * @throws ComposerException
+     *
+     * @return Properties\AdminNotificationProperties
      */
     public function getAdminNotificationProperties()
     {
@@ -1071,6 +1071,8 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
     /**
      * Returns data for dynamic notification email template.
+     *
+     * @throws FreeformException
      *
      * @return null|DynamicNotificationAttributes
      */

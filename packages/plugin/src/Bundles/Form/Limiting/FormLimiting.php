@@ -40,7 +40,7 @@ class FormLimiting extends FeatureBundle
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleLimitations']);
     }
 
-    public function handleLimitations(ValidationEvent|FormLoadedEvent|PersistStateEvent $event)
+    public function handleLimitations(FormEventInterface $event)
     {
         $this->event = $event;
         $form = $this->event->getForm();
@@ -160,8 +160,13 @@ class FormLimiting extends FeatureBundle
             $this->formCache[] = $form->getId();
         }
 
-        // Triggered when form is loaded or submitted
-        if ($this->event instanceof FormLoadedEvent || $this->event instanceof PersistStateEvent) {
+        // Triggered when form is loaded
+        if ($this->event instanceof FormLoadedEvent) {
+            $form->setSubmissionLimitReached(true);
+        }
+
+        // Triggered when form is submitted
+        if ($this->event instanceof PersistStateEvent) {
             $form->setSubmissionLimitReached(true);
         }
     }

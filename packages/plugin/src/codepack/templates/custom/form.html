@@ -65,19 +65,6 @@
             </div>
         {% endif %}
 
-        {% set submissionLimitReached = form.submissionLimitReached %}
-
-        {% if submissionLimitReached %}
-            {# Maybe hide the form #}
-        {% endif %}
-
-        {# ... or show a message #}
-        {% if submissionLimitReached %}
-            <div class="alert alert-warning submission-limit-reached" role="alert">
-                {{ "Submission Limit Reached" }}
-            </div>
-        {% endif %}
-
         {% if isSuccess %}
             <div class="alert alert-success" role="alert">
                 {{ form.successMessage | t }}

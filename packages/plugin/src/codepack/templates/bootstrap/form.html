@@ -57,19 +57,6 @@
             </div>
         {% endif %}
 
-        {% set submissionLimitReached = form.submissionLimitReached %}
-
-        {% if submissionLimitReached %}
-            {# Maybe hide the form #}
-        {% endif %}
-
-        {# ... or show a message #}
-        {% if submissionLimitReached %}
-            <div class="alert alert-warning submission-limit-reached" role="alert">
-                {{ "Submission Limit Reached" }}
-            </div>
-        {% endif %}
-
         {% if isSuccess %}
             {# Contents will display when AJAX is not used and form is set to return to the same page. #}
             <div class="alert alert-success" role="alert">

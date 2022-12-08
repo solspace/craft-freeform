@@ -194,6 +194,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /** @var string[] */
     private $errors;
 
+    /** @var bool */
+    private bool $submissionLimitReached;
+
     /** @var FormActionInterface[] */
     private $actions;
 
@@ -276,6 +279,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->storeData = true;
         $this->ipCollectingEnabled = true;
         $this->errors = [];
+        $this->submissionLimitReached = false;
         $this->suppressionEnabled = false;
         $this->gtmEnabled = false;
         $this->disableAjaxReset = false;
@@ -597,6 +601,18 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->errors[] = $message;
 
         return $this;
+    }
+
+    public function setSubmissionLimitReached(bool $submissionLimitReached): self
+    {
+        $this->submissionLimitReached = $submissionLimitReached;
+
+        return $this;
+    }
+
+    public function isSubmissionLimitReached(): bool
+    {
+        return $this->submissionLimitReached;
     }
 
     /**
@@ -1165,6 +1181,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
             'formTemplate' => $this->formTemplate,
             'optInDataStorageTargetHash' => $this->optInDataStorageTargetHash,
             'limitFormSubmissions' => $this->limitFormSubmissions,
+            'submissionLimitReached' => $this->submissionLimitReached,
         ];
     }
 

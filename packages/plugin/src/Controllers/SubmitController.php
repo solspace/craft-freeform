@@ -210,6 +210,7 @@ class SubmitController extends BaseController
             'actions' => $form->getActions(),
             'errors' => $fieldErrors,
             'formErrors' => $form->getErrors(),
+            'submissionLimitReached' => $form->isSubmissionLimitReached(),
             'onSuccess' => $form->getSuccessBehaviour(),
             'returnUrl' => $returnUrl,
             'html' => $form->render(),

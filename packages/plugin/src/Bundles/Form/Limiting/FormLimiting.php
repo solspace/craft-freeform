@@ -7,6 +7,9 @@ use craft\records\Element;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Events\Forms\FormLoadedEvent;
+use Solspace\Freeform\Events\Forms\PersistStateEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -30,10 +33,12 @@ class FormLimiting extends FeatureBundle
 
     public function __construct()
     {
+        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleLimitations']);
+        Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleLimitations']);
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleLimitations']);
     }
 
-    public function handleLimitations(ValidationEvent $event)
+    public function handleLimitations(FormEventInterface $event)
     {
         $form = $event->getForm();
         $limiting = $form->getLimitFormSubmissions();
@@ -44,33 +49,33 @@ class FormLimiting extends FeatureBundle
         }
 
         if (\in_array($limiting, self::USER_LIMITATIONS, true)) {
-            $this->limitByUserId($form);
+            $this->limitByUserId($form, $event);
         }
 
         if ($form->isIpCollectingEnabled() && \in_array($limiting, self::IP_LIMITATIONS, true)) {
-            $this->limitByIp($form);
+            $this->limitByIp($form, $event);
         }
 
         if (\in_array($limiting, self::COOKIE_LIMITATIONS, true)) {
-            $this->limitByCookie($form);
+            $this->limitByCookie($form, $event);
         }
 
         if (self::LIMIT_AUTH_UNLIMITED === $limiting) {
-            $this->limitLoggedInOnly($form);
+            $this->limitLoggedInOnly($form, $event);
         }
     }
 
-    private function limitByCookie(Form $form)
+    private function limitByCookie(Form $form, FormEventInterface $event)
     {
         $name = Cookies::getCookieName($form);
         $cookie = $_COOKIE[$name] ?? null;
 
         if ($cookie) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitByIp(Form $form)
+    private function limitByIp(Form $form, FormEventInterface $event)
     {
         $submissions = Submission::TABLE;
         $query = (new Query())
@@ -95,11 +100,11 @@ class FormLimiting extends FeatureBundle
         $isPosted = (bool) $query->scalar();
 
         if ($isPosted) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitByUserId(Form $form)
+    private function limitByUserId(Form $form, FormEventInterface $event)
     {
         $userId = \Craft::$app->user->getId();
         if (!$userId) {
@@ -128,25 +133,38 @@ class FormLimiting extends FeatureBundle
 
         $isPosted = (bool) $query->scalar();
         if ($isPosted) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitLoggedInOnly(Form $form)
+    private function limitLoggedInOnly(Form $form, FormEventInterface $event)
     {
         if (!\Craft::$app->user->id) {
-            $this->addMessage($form, 'You must be logged in to submit this form.');
+            $this->addMessage($form, $event, 'You must be logged in to submit this form.');
         }
     }
 
-    private function addMessage(Form $form, $message = "Sorry, you've already submitted this form.")
+    private function addMessage(Form $form, FormEventInterface $event, $message = "Sorry, you've already submitted this form.")
     {
-        if (\in_array($form->getId(), $this->formCache, true)) {
-            return;
+        // Triggered during from validation
+        if ($event instanceof ValidationEvent) {
+            if (\in_array($form->getId(), $this->formCache, true)) {
+                return;
+            }
+
+            $form->addError(Freeform::t($message));
+
+            $this->formCache[] = $form->getId();
         }
 
-        $form->addError(Freeform::t($message));
+        // Triggered when form is loaded
+        if ($event instanceof FormLoadedEvent) {
+            $form->setSubmissionLimitReached(true);
+        }
 
-        $this->formCache[] = $form->getId();
+        // Triggered when form is submitted
+        if ($event instanceof PersistStateEvent) {
+            $form->setSubmissionLimitReached(true);
+        }
     }
 }

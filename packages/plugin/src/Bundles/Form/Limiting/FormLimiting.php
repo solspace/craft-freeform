@@ -31,8 +31,6 @@ class FormLimiting extends FeatureBundle
 
     private $formCache = [];
 
-    private FormEventInterface $event;
-
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleLimitations']);
@@ -42,8 +40,7 @@ class FormLimiting extends FeatureBundle
 
     public function handleLimitations(FormEventInterface $event)
     {
-        $this->event = $event;
-        $form = $this->event->getForm();
+        $form = $event->getForm();
         $limiting = $form->getLimitFormSubmissions();
 
         $token = EditSubmissionContext::getToken($form);
@@ -52,33 +49,33 @@ class FormLimiting extends FeatureBundle
         }
 
         if (\in_array($limiting, self::USER_LIMITATIONS, true)) {
-            $this->limitByUserId($form);
+            $this->limitByUserId($form, $event);
         }
 
         if ($form->isIpCollectingEnabled() && \in_array($limiting, self::IP_LIMITATIONS, true)) {
-            $this->limitByIp($form);
+            $this->limitByIp($form, $event);
         }
 
         if (\in_array($limiting, self::COOKIE_LIMITATIONS, true)) {
-            $this->limitByCookie($form);
+            $this->limitByCookie($form, $event);
         }
 
         if (self::LIMIT_AUTH_UNLIMITED === $limiting) {
-            $this->limitLoggedInOnly($form);
+            $this->limitLoggedInOnly($form, $event);
         }
     }
 
-    private function limitByCookie(Form $form)
+    private function limitByCookie(Form $form, FormEventInterface $event)
     {
         $name = Cookies::getCookieName($form);
         $cookie = $_COOKIE[$name] ?? null;
 
         if ($cookie) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitByIp(Form $form)
+    private function limitByIp(Form $form, FormEventInterface $event)
     {
         $submissions = Submission::TABLE;
         $query = (new Query())
@@ -103,11 +100,11 @@ class FormLimiting extends FeatureBundle
         $isPosted = (bool) $query->scalar();
 
         if ($isPosted) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitByUserId(Form $form)
+    private function limitByUserId(Form $form, FormEventInterface $event)
     {
         $userId = \Craft::$app->user->getId();
         if (!$userId) {
@@ -136,21 +133,21 @@ class FormLimiting extends FeatureBundle
 
         $isPosted = (bool) $query->scalar();
         if ($isPosted) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitLoggedInOnly(Form $form)
+    private function limitLoggedInOnly(Form $form, FormEventInterface $event)
     {
         if (!\Craft::$app->user->id) {
-            $this->addMessage($form, 'You must be logged in to submit this form.');
+            $this->addMessage($form, $event, 'You must be logged in to submit this form.');
         }
     }
 
-    private function addMessage(Form $form, $message = "Sorry, you've already submitted this form.")
+    private function addMessage(Form $form, FormEventInterface $event, $message = "Sorry, you've already submitted this form.")
     {
         // Triggered during from validation
-        if ($this->event instanceof ValidationEvent) {
+        if ($event instanceof ValidationEvent) {
             if (\in_array($form->getId(), $this->formCache, true)) {
                 return;
             }
@@ -161,12 +158,12 @@ class FormLimiting extends FeatureBundle
         }
 
         // Triggered when form is loaded
-        if ($this->event instanceof FormLoadedEvent) {
+        if ($event instanceof FormLoadedEvent) {
             $form->setSubmissionLimitReached(true);
         }
 
         // Triggered when form is submitted
-        if ($this->event instanceof PersistStateEvent) {
+        if ($event instanceof PersistStateEvent) {
             $form->setSubmissionLimitReached(true);
         }
     }

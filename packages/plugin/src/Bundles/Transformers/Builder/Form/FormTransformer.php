@@ -2,17 +2,13 @@
 
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
-use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class FormTransformer
 {
     public function __construct(
-        private AttributeProvider $attributeProvider,
-        private PropertyAccessor $propertyAccess,
         private FieldsService $fieldsService,
         private LayoutsService $layoutsService,
         private FieldTransformer $fieldTransformer,
@@ -61,19 +57,15 @@ class FormTransformer
     private function transformBasic(Form $form): object
     {
         $typeClass = \get_class($form);
-        $editableProperties = $this->attributeProvider->getEditableProperties($typeClass);
-
-        $properties = [];
-        foreach ($editableProperties as $property) {
-            $handle = $property->handle;
-            $properties[$handle] = $this->propertyAccess->getValue($form, $handle);
-        }
+        $settings = $form->getSettings();
 
         return (object) [
             'id' => $form->getId(),
             'uid' => $form->getUid(),
             'type' => $typeClass,
-            'properties' => $properties,
+            'name' => $settings->name,
+            'handle' => $settings->handle,
+            'settings' => $settings->toArray(),
         ];
     }
 }

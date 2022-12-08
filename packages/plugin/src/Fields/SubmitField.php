@@ -12,9 +12,9 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Field\VisibilityFilter;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;

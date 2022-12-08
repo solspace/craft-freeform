@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\Query;
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -14,7 +14,7 @@ use yii\base\Event;
 class FieldPersistence extends FeatureBundle
 {
     public function __construct(
-        private AttributeProvider $attributeProvider,
+        private PropertyProvider $propertyProvider,
     ) {
         Event::on(
             FormsController::class,
@@ -98,7 +98,7 @@ class FieldPersistence extends FeatureBundle
 
     private function getMetadata(\stdClass $fieldData): array
     {
-        $properties = $this->attributeProvider->getEditableProperties($fieldData->typeClass);
+        $properties = $this->propertyProvider->getEditableProperties($fieldData->typeClass);
 
         $metadata = [];
 

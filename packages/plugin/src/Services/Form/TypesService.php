@@ -1,11 +1,12 @@
 <?php
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Form;
 
 use Solspace\Freeform\Events\Forms\Types\RegisterFormTypeEvent;
 use Solspace\Freeform\Form\Types\Regular;
+use Solspace\Freeform\Services\BaseService;
 
-class FormTypesService extends BaseService
+class TypesService extends BaseService
 {
     public const EVENT_REGISTER_FORM_TYPES = 'register-form-types';
 

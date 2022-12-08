@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Persistence;
 
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -14,7 +14,7 @@ class FormPersistence extends FeatureBundle
 {
     public function __construct(
         private FormsService $formsService,
-        private AttributeProvider $attributeProvider,
+        private SettingsProvider $settingsProvider,
     ) {
         Event::on(
             FormsController::class,
@@ -56,8 +56,8 @@ class FormPersistence extends FeatureBundle
     {
         $payload = $event->getPayload()->form;
 
-        $record->name = $payload->properties->name;
-        $record->handle = $payload->properties->handle;
+        $record->name = $payload->settings->general->name;
+        $record->handle = $payload->settings->general->handle;
 
         $record->metadata = $this->getMetadata($payload);
 
@@ -77,15 +77,14 @@ class FormPersistence extends FeatureBundle
 
     private function getMetadata(\stdClass $payload): array
     {
-        $properties = $this->attributeProvider->getEditableProperties($payload->type);
+        $namespaces = $this->settingsProvider->getSettingNamespaces();
 
         $metadata = [];
+        foreach ($namespaces as $namespace);
 
-        foreach ($properties as $property) {
-            $handle = $property->handle;
-            // TODO: implement value transformer calls here
-            $metadata[$handle] = $payload->properties->{$handle} ?? null;
-        }
+        // $handle = $property->handle;
+        // // TODO: implement value transformer calls here
+        // $metadata[$handle] = $payload->properties->{$handle} ?? null;
 
         return $metadata;
     }

@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields;
 
-use Solspace\Freeform\Attributes\Field\Property;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;

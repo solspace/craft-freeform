@@ -1,17 +1,17 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\Fields;
+namespace Solspace\Freeform\Bundles\Attributes\Property;
 
-use Solspace\Freeform\Attributes\Field\Flag;
-use Solspace\Freeform\Attributes\Field\Middleware;
-use Solspace\Freeform\Attributes\Field\Property;
-use Solspace\Freeform\Attributes\Field\Section;
-use Solspace\Freeform\Attributes\Field\VisibilityFilter;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Middleware;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\DataObjects\FieldType\Property as PropertyDTO;
 use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
 use Stringy\Stringy;
 
-class AttributeProvider
+class PropertyProvider
 {
     public function getEditableProperties(string $class): PropertyCollection
     {
@@ -35,6 +35,7 @@ class AttributeProvider
                 ->toTitleCase()
             ;
 
+            /** @var Property $attribute */
             $attribute = $attr->newInstance();
 
             $prop = new PropertyDTO();

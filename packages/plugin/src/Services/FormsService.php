@@ -18,7 +18,7 @@ use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -32,14 +32,15 @@ use Solspace\Freeform\Events\Forms\SaveEvent;
 use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Form\Managers\ContentManager;
+use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Markup;
 
 class FormsService extends BaseService implements FormHandlerInterface
@@ -54,7 +55,7 @@ class FormsService extends BaseService implements FormHandlerInterface
 
     private static array $spamCountIncrementedForms = [];
 
-    public function __construct(?array $config = [], private AttributeProvider $attributeProvider)
+    public function __construct(?array $config = [], private PropertyProvider $propertyProvider)
     {
         parent::__construct($config);
     }
@@ -734,10 +735,6 @@ class FormsService extends BaseService implements FormHandlerInterface
             $data['metadata'] = json_decode($data['metadata'] ?: '{}', true);
         }
 
-        // TODO: refactor this so that this data doesn't need to be written in the metadata
-        $data['metadata']['name'] = $data['name'];
-        $data['metadata']['handle'] = $data['handle'];
-
         $type = $data['type'] ?? null;
         $reflection = new \ReflectionClass($type);
         if (!$reflection->isSubclassOf(Form::class)) {
@@ -746,10 +743,16 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
+        $settings = new FormSettings($data['metadata']);
         $layout = $this->getFormLayoutsService()->getLayout($data['id']);
 
-        // @var Form $type
-        return new $type($data, $layout, $this->attributeProvider);
+        return new $type(
+            $data,
+            $layout,
+            $settings,
+            $this->propertyProvider,
+            new PropertyAccessor(),
+        );
     }
 
     private function addFormManagePermissionToUser($formId)

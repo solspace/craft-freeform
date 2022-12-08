@@ -8,6 +8,16 @@ class PropertyCollection implements \IteratorAggregate, \JsonSerializable
     /** @var Property[] */
     private array $properties = [];
 
+    public function get(string $handle): ?Property
+    {
+        return current(
+            array_filter(
+                $this->properties,
+                fn ($property) => $property->handle === $handle
+            )
+        ) ?: null;
+    }
+
     public function add(Property ...$properties): self
     {
         foreach ($properties as $property) {

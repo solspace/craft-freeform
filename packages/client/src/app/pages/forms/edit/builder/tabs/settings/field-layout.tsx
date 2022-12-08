@@ -9,10 +9,12 @@ import {
   Textarea,
 } from '@components/form-controls/controls';
 import { useAppDispatch } from '@editor/store';
-import { modifyProperty, selectForm, update } from '@editor/store/slices/form';
+import { modifySettings, selectForm, update } from '@editor/store/slices/form';
 import type { Attribute } from '@ff-client/types/forms';
 
 import { Column, Grid, GridItem, Wrapper } from './field-layout.styles';
+
+const namespace = 'general';
 
 export const FieldLayout: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -27,16 +29,11 @@ export const FieldLayout: React.FC = () => {
             <Text
               id="name"
               label="Form Name"
-              value={(form.properties.name as string) || ''}
+              value={form.settings[namespace].name || ''}
               placeholder=""
               instructions="Name or title of the form."
               onChange={(value: string) =>
-                dispatch(
-                  modifyProperty({
-                    value,
-                    key: 'name',
-                  })
-                )
+                dispatch(modifySettings({ namespace, value, key: 'name' }))
               }
             />
           </GridItem>
@@ -44,16 +41,11 @@ export const FieldLayout: React.FC = () => {
             <Text
               id="handle"
               label="Form Handle"
-              value={(form.properties.handle as string) || ''}
+              value={form.settings[namespace].handle || ''}
               placeholder=""
               instructions="How you’ll refer to this form in the templates."
               onChange={(value: string) =>
-                dispatch(
-                  modifyProperty({
-                    value,
-                    key: 'handle',
-                  })
-                )
+                dispatch(modifySettings({ namespace, value, key: 'handle' }))
               }
             />
           </GridItem>
@@ -61,7 +53,7 @@ export const FieldLayout: React.FC = () => {
             <SelectBox
               id="type"
               label="Form Type"
-              value={(form.type as string) || ''}
+              value={form.type}
               options={[
                 {
                   label: 'Regular',
@@ -69,20 +61,14 @@ export const FieldLayout: React.FC = () => {
                 },
               ]}
               instructions="Select the type of form this is. When additional form types are installed, you can choose a different form type that enables special behaviors."
-              onChange={(type: string) =>
-                dispatch(
-                  update({
-                    type,
-                  })
-                )
-              }
+              onChange={(type: string) => dispatch(update({ type }))}
             />
           </GridItem>
           <GridItem>
             <SelectBox
               id="defaultStatus"
               label="Default State"
-              value={(form.properties.defaultStatus as number) || 3}
+              value={(form.settings[namespace].defaultStatus as number) || 3}
               options={[
                 {
                   label: 'Pending',
@@ -100,10 +86,7 @@ export const FieldLayout: React.FC = () => {
               instructions="The default status to be assigned to new submissions."
               onChange={(value: number) =>
                 dispatch(
-                  modifyProperty({
-                    key: 'defaultStatus',
-                    value: Number(value),
-                  })
+                  modifySettings({ namespace, key: 'defaultStatus', value })
                 )
               }
             />
@@ -112,12 +95,13 @@ export const FieldLayout: React.FC = () => {
             <Text
               id="submissionTitleFormat"
               label="Submission Title"
-              value={(form.properties.submissionTitleFormat as string) || ''}
+              value={form.settings[namespace].submissionTitleFormat || ''}
               placeholder=""
               instructions="What the auto-generated submission titles should look like."
               onChange={(value: string) =>
                 dispatch(
-                  modifyProperty({
+                  modifySettings({
+                    namespace,
                     value,
                     key: 'submissionTitleFormat',
                   })
@@ -130,15 +114,12 @@ export const FieldLayout: React.FC = () => {
             <Text
               id="formTemplate"
               label="Formatting Template"
-              value={(form.properties.formTemplate as string) || ''}
+              value={form.settings[namespace].formTemplate || ''}
               placeholder=""
               instructions="The formatting template to assign to this form when using Render method."
               onChange={(value: string) =>
                 dispatch(
-                  modifyProperty({
-                    value,
-                    key: 'formTemplate',
-                  })
+                  modifySettings({ namespace, value, key: 'formTemplate' })
                 )
               }
             />
@@ -149,15 +130,12 @@ export const FieldLayout: React.FC = () => {
               rows={4}
               id="description"
               label="Form Description / Notes"
-              value={(form.properties.description as string) || ''}
+              value={form.settings[namespace].description || ''}
               placeholder=""
               instructions="Description or notes for this form."
               onChange={(value: string) =>
                 dispatch(
-                  modifyProperty({
-                    value,
-                    key: 'description',
-                  })
+                  modifySettings({ namespace, value, key: 'description' })
                 )
               }
             />
@@ -166,15 +144,10 @@ export const FieldLayout: React.FC = () => {
             <Color
               id="color"
               label="Form Color"
-              value={(form.properties.color as string) || '#ff0000'}
+              value={form.settings[namespace].color || '#ff0000'}
               instructions="The color to be used for the dashboard and charts inside the control panel."
               onChange={(value: string) =>
-                dispatch(
-                  modifyProperty({
-                    value,
-                    key: 'color',
-                  })
-                )
+                dispatch(modifySettings({ namespace, value, key: 'color' }))
               }
             />
           </GridItem>
@@ -182,15 +155,10 @@ export const FieldLayout: React.FC = () => {
             <LightSwitch
               id="storeData"
               label="Store Submitted Data"
-              value={(form.properties.storeData as boolean) || false}
+              value={Boolean(form.settings[namespace].storeData)}
               instructions="Should the submission data for this form be stored in the database?"
               onChange={(value: boolean) =>
-                dispatch(
-                  modifyProperty({
-                    key: 'storeData',
-                    value: Boolean(value),
-                  })
-                )
+                dispatch(modifySettings({ namespace, key: 'storeData', value }))
               }
             />
           </GridItem>
@@ -198,14 +166,11 @@ export const FieldLayout: React.FC = () => {
             <LightSwitch
               id="recaptchaEnabled"
               label="Enable Captchas"
-              value={(form.properties.recaptchaEnabled as boolean) || false}
+              value={Boolean(form.settings[namespace].recaptchaEnabled)}
               instructions="Disabling this option removes the Captcha check for this specific form."
               onChange={(value: boolean) =>
                 dispatch(
-                  modifyProperty({
-                    key: 'recaptchaEnabled',
-                    value: Boolean(value),
-                  })
+                  modifySettings({ namespace, key: 'recaptchaEnabled', value })
                 )
               }
             />
@@ -214,9 +179,7 @@ export const FieldLayout: React.FC = () => {
             <SelectBox
               id="optInDataStorageTargetHash"
               label="Opt-In Data Storage Checkbox"
-              value={
-                (form.properties.optInDataStorageTargetHash as string) || ''
-              }
+              value={form.settings[namespace].optInDataStorageTargetHash || ''}
               options={[
                 {
                   label: 'Enabled',
@@ -230,7 +193,8 @@ export const FieldLayout: React.FC = () => {
               instructions="Allow users to decide whether the submission data is saved to your site or not."
               onChange={(value: string) =>
                 dispatch(
-                  modifyProperty({
+                  modifySettings({
+                    namespace,
                     value,
                     key: 'optInDataStorageTargetHash',
                   })
@@ -240,14 +204,18 @@ export const FieldLayout: React.FC = () => {
           </GridItem>
           <GridItem />
           <GridItem>
+            {/* TODO: refactor this to use a specific form.attributes store entry */}
             <FormTagAttribute
               id="attributeBag"
               label="Form Tag Attributes"
-              value={(form.properties.attributeBag as Attribute[]) || []}
+              value={
+                (form.settings[namespace].attributeBag as Attribute[]) || []
+              }
               instructions="Add any tag attributes to the HTML element."
               onChange={(value: Attribute[]) =>
                 dispatch(
-                  modifyProperty({
+                  modifySettings({
+                    namespace,
                     value,
                     key: 'attributeBag',
                   })

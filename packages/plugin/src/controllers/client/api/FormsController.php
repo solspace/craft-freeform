@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\controllers\client\api;
 
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
@@ -21,7 +21,7 @@ class FormsController extends BaseApiController
         $module,
         $config = [],
         private FormTransformer $formTransformer,
-        private AttributeProvider $attributeProvider,
+        private PropertyProvider $propertyProvider,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -29,7 +29,7 @@ class FormsController extends BaseApiController
     public function actionEditableProperties(): Response
     {
         // TODO: Support for Form Types
-        return $this->asJson($this->attributeProvider->getEditableProperties(Regular::class));
+        return $this->asJson($this->propertyProvider->getEditableProperties(Regular::class));
     }
 
     protected function get(): array

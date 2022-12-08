@@ -31,4 +31,22 @@ class ArrayHelper
 
         return true;
     }
+
+    public static function keyFlatten(array $array, ?int $depth = null, string $separator = '.'): array
+    {
+        $recursiveIterator = new \RecursiveIteratorIterator(new \RecursiveArrayIterator($array));
+
+        $result = [];
+        foreach ($recursiveIterator as $leafValue) {
+            $keys = [];
+
+            $maxDepth = min($depth ?? $recursiveIterator->getDepth(), $recursiveIterator->getDepth());
+            foreach (range(0, $maxDepth) as $currentDepth) {
+                $keys[] = $recursiveIterator->getSubIterator($currentDepth)->key();
+            }
+            $result[implode($separator, $keys)] = $leafValue;
+        }
+
+        return $result;
+    }
 }

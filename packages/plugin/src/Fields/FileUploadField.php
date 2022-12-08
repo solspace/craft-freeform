@@ -14,8 +14,8 @@ namespace Solspace\Freeform\Fields;
 
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
-use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;

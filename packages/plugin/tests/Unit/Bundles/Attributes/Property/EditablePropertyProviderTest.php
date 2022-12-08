@@ -1,24 +1,24 @@
 <?php
 
-namespace Solspace\Tests\Freeform\Unit\Bundles\Fields;
+namespace Solspace\Tests\Freeform\Unit\Bundles\Attributes\Property;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Attributes\Field\Flag;
-use Solspace\Freeform\Attributes\Field\Middleware;
-use Solspace\Freeform\Attributes\Field\Property;
-use Solspace\Freeform\Attributes\Field\VisibilityFilter;
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Middleware;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 
 /**
  * @internal
  *
  * @coversNothing
  */
-class AttributeProviderTest extends TestCase
+class EditablePropertyProviderTest extends TestCase
 {
     public function testGetEditableProperties()
     {
-        $provider = new AttributeProvider();
+        $provider = new PropertyProvider();
 
         $editableProperties = $provider->getEditableProperties(TestAttributesClass::class);
 

@@ -1,8 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Attributes\Field;
-
-use Attribute;
+namespace Solspace\Freeform\Attributes\Property;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class PropertyGroup

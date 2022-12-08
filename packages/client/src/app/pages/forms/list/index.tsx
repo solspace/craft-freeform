@@ -32,9 +32,9 @@ export const List: React.FC = () => {
         {data.map((form) => (
           <Card key={form.id}>
             <Title>
-              <Link to={`${form.id}`}>{form.properties.name}</Link>
+              <Link to={`${form.id}`}>{form.name}</Link>
             </Title>
-            <Subtitle>{form.properties.handle}</Subtitle>
+            <Subtitle>{form.handle}</Subtitle>
           </Card>
         ))}
       </Wrapper>

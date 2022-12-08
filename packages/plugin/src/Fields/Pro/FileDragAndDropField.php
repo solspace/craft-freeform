@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use craft\helpers\UrlHelper;
-use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;

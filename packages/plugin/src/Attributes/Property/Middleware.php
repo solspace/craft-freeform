@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Attributes\Field;
+namespace Solspace\Freeform\Attributes\Property;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Middleware

@@ -15,21 +15,21 @@ use yii\base\Event;
 
 class FormLimiting extends FeatureBundle
 {
-    private const NO_LIMIT = 'no_limit';
-    private const NO_LIMIT_LOGGED_IN_USERS_ONLY = 'no_limit_logged_in_users_only';
+    public const NO_LIMIT = 'no_limit';
+    public const NO_LIMIT_LOGGED_IN_USERS_ONLY = 'no_limit_logged_in_users_only';
 
-    private const LIMIT_COOKIE = 'cookie';
+    public const LIMIT_COOKIE = 'cookie';
 
-    private const LIMIT_IP_COOKIE = 'ip_cookie';
+    public const LIMIT_IP_COOKIE = 'ip_cookie';
 
-    private const LIMIT_AUTH = 'auth';
-    private const LIMIT_AUTH_COOKIE = 'auth_cookie';
-    private const LIMIT_AUTH_IP_COOKIE = 'auth_ip_cookie';
-    private const LIMIT_AUTH_UNLIMITED = 'auth_unlimited';
+    public const LIMIT_AUTH = 'auth';
+    public const LIMIT_AUTH_COOKIE = 'auth_cookie';
+    public const LIMIT_AUTH_IP_COOKIE = 'auth_ip_cookie';
+    public const LIMIT_AUTH_UNLIMITED = 'auth_unlimited';
 
-    private const LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY = 'once_per_logged_in_users_only';
-    private const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY = 'once_per_logged_in_user_or_guest_cookie_only';
-    private const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO = 'once_per_logged_in_user_or_guest_ip_cookie_combo';
+    public const LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY = 'once_per_logged_in_users_only';
+    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY = 'once_per_logged_in_user_or_guest_cookie_only';
+    public const LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO = 'once_per_logged_in_user_or_guest_ip_cookie_combo';
 
     private const NO_LIMITATIONS = [self::NO_LIMIT, self::NO_LIMIT_LOGGED_IN_USERS_ONLY];
     private const COOKIE_LIMITATIONS = [self::LIMIT_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
@@ -47,7 +47,7 @@ class FormLimiting extends FeatureBundle
     public function handleLimitations(ValidationEvent $event)
     {
         $form = $event->getForm();
-        $limiting = $form->getLimitFormSubmissions();
+        $limiting = $form->getSettings()->getBehavior()->limitSubmissions;
 
         $token = EditSubmissionContext::getToken($form);
         if ($token) {

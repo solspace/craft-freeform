@@ -8,7 +8,7 @@ import {
   Textarea,
 } from '@components/form-controls/controls';
 import { useAppDispatch } from '@editor/store';
-import { modifyProperty, selectForm } from '@editor/store/slices/form';
+import { modifySettings, selectForm } from '@editor/store/slices/form';
 import { useQueryEditableProperties } from '@ff-client/queries/forms';
 import type { EditableProperty, Form } from '@ff-client/types/forms';
 
@@ -20,6 +20,9 @@ import {
   Row,
   Wrapper,
 } from './field-layout.styles';
+
+// TODO: refactor this whole file to come from attribute descriptors instead
+const namespace = 'behavior';
 
 export const FieldLayout: React.FC = () => {
   const { data: editableProperties, isFetching } = useQueryEditableProperties();
@@ -51,102 +54,79 @@ export const FieldLayout: React.FC = () => {
   );
 
   const field: React.FC = (form: Form, editableProperty: EditableProperty) => {
-    if (editableProperty.type === 'string') {
+    const { type, handle, label, placeholder, instructions } = editableProperty;
+    const key = handle;
+    const value = form.settings?.[namespace]?.[handle];
+
+    if (type === 'string') {
       return (
         <Text
-          id={editableProperty.handle}
-          label={editableProperty.label}
-          value={(form.properties[editableProperty.handle] as string) || ''}
-          placeholder={editableProperty.placeholder}
-          instructions={editableProperty.instructions}
+          id={handle}
+          label={label}
+          value={value || ''}
+          placeholder={placeholder}
+          instructions={instructions}
           onChange={(value: string) =>
-            dispatch(
-              modifyProperty({
-                value,
-                key: editableProperty.handle,
-              })
-            )
+            dispatch(modifySettings({ namespace, value, key }))
           }
         />
       );
     }
 
-    if (editableProperty.type === 'select') {
+    if (type === 'select') {
       return (
         <SelectBox
-          id={editableProperty.handle}
-          label={editableProperty.label}
-          value={(form.properties[editableProperty.handle] as string) || ''}
+          id={handle}
+          label={label}
+          value={value || ''}
           options={editableProperty.options}
-          instructions={editableProperty.instructions}
+          instructions={instructions}
           onChange={(value: string) =>
-            dispatch(
-              modifyProperty({
-                value,
-                key: editableProperty.handle,
-              })
-            )
+            dispatch(modifySettings({ namespace, value, key }))
           }
         />
       );
     }
 
-    if (editableProperty.type === 'textarea') {
+    if (type === 'textarea') {
       return (
         <Textarea
           rows={4}
-          id={editableProperty.handle}
-          label={editableProperty.label}
-          value={(form.properties[editableProperty.handle] as string) || ''}
-          placeholder={editableProperty.placeholder}
-          instructions={editableProperty.instructions}
+          id={handle}
+          label={label}
+          value={value || ''}
+          placeholder={placeholder}
+          instructions={instructions}
           onChange={(value: string) =>
-            dispatch(
-              modifyProperty({
-                value,
-                key: editableProperty.handle,
-              })
-            )
+            dispatch(modifySettings({ namespace, value, key }))
           }
         />
       );
     }
 
-    if (editableProperty.type === 'bool') {
+    if (type === 'bool') {
       return (
         <LightSwitch
-          id={editableProperty.handle}
-          label={editableProperty.label}
-          value={Boolean(
-            (form.properties[editableProperty.handle] as number) || false
-          )}
-          instructions={editableProperty.instructions}
+          id={handle}
+          label={label}
+          value={value}
+          instructions={instructions}
           onChange={(value: boolean) =>
-            dispatch(
-              modifyProperty({
-                key: editableProperty.handle,
-                value: Boolean(value),
-              })
-            )
+            dispatch(modifySettings({ namespace, value, key }))
           }
         />
       );
     }
 
-    if (editableProperty.type === 'datetime') {
+    if (type === 'datetime') {
       return (
         <DateTime
-          id={editableProperty.handle}
-          label={editableProperty.label}
-          value={(form.properties[editableProperty.handle] as string) || ''}
-          instructions={editableProperty.instructions}
+          id={handle}
+          label={label}
+          value={value || ''}
+          instructions={instructions}
           onChange={(value: string) =>
-            dispatch(
-              modifyProperty({
-                value,
-                key: editableProperty.handle,
-              })
-            )
+            dispatch(modifySettings({ namespace, value, key }))
           }
         />
       );

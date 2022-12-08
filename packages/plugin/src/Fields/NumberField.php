@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\Property;
-use Solspace\Freeform\Attributes\Field\PropertyGroup;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\PropertyGroup;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\NumericConstraint;
 

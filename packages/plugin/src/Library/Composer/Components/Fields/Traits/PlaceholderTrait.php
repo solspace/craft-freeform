@@ -12,8 +12,8 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use Solspace\Freeform\Attributes\Field\Property;
-use Solspace\Freeform\Attributes\Field\Section;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Freeform;
 
 trait PlaceholderTrait

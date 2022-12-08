@@ -31,4 +31,36 @@ class ArrayHelperTest extends TestCase
         $this->assertFalse(ArrayHelper::every($array, fn ($item) => $item > 1));
         $this->assertFalse(ArrayHelper::every($array, fn ($item) => $item < 4));
     }
+
+    public function testFlattenKeys(): void
+    {
+        $input = [
+            'key:0->1' => 'value->1',
+            'key:0->2' => [
+                'key:1->1' => 'value->2',
+            ],
+            'key:0->3' => 'value->3',
+            'key:0->4' => [
+                'key:1->1' => [
+                    'key:2->1' => 'value->4',
+                    'key:2->2' => 'value->5',
+                ],
+                'key:1->2' => 'value->6',
+            ],
+        ];
+
+        $expectedOutput = [
+            'key:0->1' => 'value->1',
+            'key:0->2.key:1->1' => 'value->2',
+            'key:0->3' => 'value->3',
+            'key:0->4.key:1->1.key:2->1' => 'value->4',
+            'key:0->4.key:1->1.key:2->2' => 'value->5',
+            'key:0->4.key:1->2' => 'value->6',
+        ];
+
+        $this->assertSame(
+            $expectedOutput,
+            ArrayHelper::keyFlatten($input)
+        );
+    }
 }

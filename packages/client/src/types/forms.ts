@@ -12,7 +12,13 @@ export type Form = {
   id?: number;
   uid: string;
   type: string;
-  properties: Properties;
+  name: string;
+  handle: string;
+  settings: {
+    [namespace: string]: {
+      [key: string]: GenericValue;
+    };
+  };
 };
 
 export type ExtendedFormType = Form & {

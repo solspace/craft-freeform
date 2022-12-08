@@ -12,8 +12,8 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Field\Property;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;

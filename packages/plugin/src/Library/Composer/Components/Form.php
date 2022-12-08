@@ -15,8 +15,8 @@ namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Attributes\Field\Property;
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -35,6 +35,8 @@ use Solspace\Freeform\Fields\HiddenField;
 use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Layout\Layout;
+use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
+use Solspace\Freeform\Form\Settings\Settings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Collections\PageCollection;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
@@ -48,6 +50,7 @@ use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
+use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Markup;
 use yii\base\Event;
 use yii\web\Request;
@@ -55,7 +58,6 @@ use yii\web\Request;
 // TODO: move this into the `Solspace\Freeform\Forms` namespace, as Composer will be removed
 abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAggregate, \Countable
 {
-    public const ID_KEY = 'id';
     public const HASH_KEY = 'hash';
     public const ACTION_KEY = 'freeform-action';
     public const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
@@ -69,9 +71,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public const EVENT_RENDER_AFTER_CLOSING_TAG = 'render-after-closing-tag';
     public const EVENT_OUTPUT_AS_JSON = 'output-as-json';
     public const EVENT_SET_PROPERTIES = 'set-properties';
-
-    /** @deprecated use EVENT_SET_PROPERTIES instead. */
-    public const EVENT_UPDATE_ATTRIBUTES = 'update-attributes';
     public const EVENT_SUBMIT = 'submit';
     public const EVENT_AFTER_SUBMIT = 'after-submit';
     public const EVENT_BEFORE_VALIDATE = 'before-validate';
@@ -94,24 +93,11 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public const PROPERTY_PAGE_HISTORY = 'pageHistory';
     public const PROPERTY_SPAM_REASONS = 'spamReasons';
 
-    public const SUCCESS_BEHAVIOUR_RELOAD = 'reload';
-    public const SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL = 'redirect-return-url';
-    public const SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE = 'load-success-template';
-
-    public const PAGE_INDEX_KEY = 'page_index';
     public const RETURN_URI_KEY = 'formReturnUrl';
-    public const STATUS_KEY = 'formStatus';
-
-    /** @deprecated will be removed in FF 4.x. Use EditSubmissionContext::TOKEN_KEY */
-    public const SUBMISSION_TOKEN_KEY = 'formSubmissionToken';
-    public const ELEMENT_ID_KEY = 'formElementId';
-    public const DEFAULT_PAGE_INDEX = 0;
 
     public const DATA_DYNAMIC_TEMPLATE_KEY = 'dynamicTemplate';
-    public const DATA_SUBMISSION_TOKEN = 'submissionToken';
     public const DATA_SUPPRESS = 'suppress';
     public const DATA_RELATIONS = 'relations';
-    public const DATA_PERSISTENT_VALUES = 'persistentValues';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
     #[Property(
@@ -156,11 +142,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         tab: 'settings'
     )]
     protected ?string $formTemplate = null;
-
-    #[Property(
-        tab: 'settings'
-    )]
-    protected ?string $optInDataStorageTargetHash = null;
 
     // TODO: refactor captchas into their own integration types
     #[Property(
@@ -357,7 +338,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     // TODO: create a collection to handle error messages
     private array $errors = [];
 
-    // TODO: craete a collection to handle form actions
+    // TODO: create a collection to handle form actions
     /** @var FormActionInterface[] */
     private array $actions = [];
 
@@ -378,13 +359,15 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public function __construct(
         array $config,
         private Layout $layout,
-        private AttributeProvider $attributeProvider
+        private Settings $settings,
+        private PropertyProvider $propertyProvider,
+        private PropertyAccessor $accessor,
     ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
 
         $metadata = $config['metadata'] ?? [];
-        $editableProperties = $this->attributeProvider->getEditableProperties(self::class);
+        $editableProperties = $this->propertyProvider->getEditableProperties($this::class);
         foreach ($editableProperties as $property) {
             $handle = $property->handle;
             $value = $property->value;
@@ -411,6 +394,11 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
 
     public function __get(string $name)
     {
+        $generalSettings = $this->getSettings()->getGeneral();
+        if ($this->accessor->isReadable($generalSettings, $name)) {
+            return $this->accessor->getValue($generalSettings, $name);
+        }
+
         $event = new GetCustomPropertyEvent($this, $name);
         Event::trigger(self::class, self::EVENT_GET_CUSTOM_PROPERTY, $event);
 
@@ -457,6 +445,11 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         return $this->attributeBag;
     }
 
+    public function getSettings(): Settings
+    {
+        return $this->settings;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -480,16 +473,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public function getColor(): string
     {
         return $this->color;
-    }
-
-    public function getOptInDataStorageTargetHash(): ?string
-    {
-        return $this->optInDataStorageTargetHash;
-    }
-
-    public function getLimitFormSubmissions(): ?string
-    {
-        return $this->limitFormSubmissions;
     }
 
     public function getHash(): string
@@ -560,7 +543,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
 
     public function getSuccessBehaviour(): string
     {
-        return $this->getMetadata('successBehaviour', self::SUCCESS_BEHAVIOUR_RELOAD);
+        return $this->getMetadata('successBehaviour', BehaviorSettings::SUCCESS_BEHAVIOUR_RELOAD);
     }
 
     public function getSuccessTemplate(): ?string
@@ -847,7 +830,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
 
         if (
             ($this->isSubmittedSuccessfully() || $this->isFinished())
-            && self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $this->getSuccessBehaviour()
+            && BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $this->getSuccessBehaviour()
         ) {
             return $this->getFormHandler()->renderSuccessTemplate($this);
         }
@@ -1004,10 +987,12 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         return $this;
     }
 
+    // TODO: make the hash be a UID instead
     public function getOptInDataTargetField(): ?CheckboxField
     {
-        if ($this->optInDataStorageTargetHash) {
-            $field = $this->get($this->optInDataStorageTargetHash);
+        $hash = $this->getSettings()->getGeneral()->dataStorageCheckbox;
+        if ($hash) {
+            $field = $this->get($hash);
 
             if ($field instanceof CheckboxField) {
                 return $field;
@@ -1084,7 +1069,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
 
     public function jsonSerialize(): array
     {
-        $editableProperties = $this->attributeProvider->getEditableProperties(self::class);
+        $editableProperties = $this->propertyProvider->getEditableProperties(self::class);
         $properties = [];
         foreach ($editableProperties as $property) {
             $properties[$property->handle] = $this->{$property->handle};

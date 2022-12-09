@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 4.0.9 - 2022-12-09
+
+### Added
+- Added back Excel support for exporting submissions.
+- Added `submissionLimitReached` to the Form object, allowing you to check if the user has already submitted the form when using the **Limit Form Submission Rate** setting (hide form and/or display an error message to the user instead of waiting until they attempt to submit the form).
+
+### Changed
+- Updated to only load reCAPTCHA scripts when form(s) have reCAPTCHA enabled.
+- Updated to support Craft's `sameSiteCookieValue`.
+
+### Fixed
+- Fixed a bug where the Submissions/Spam CP index includes an "Edit Submission" option that isn't usable.
+
 ## 4.0.8 - 2022-11-21
 
 ### Changed
@@ -151,6 +164,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.22.1 - 2022-12-09
+
+### Fixed
+- Fixed a bug where the `sameSiteCookieValue` fix in 3.13.22 was not compatible with PHP 7.2.x.
 
 ## 3.13.22 - 2022-12-06
 

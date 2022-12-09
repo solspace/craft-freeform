@@ -39,7 +39,7 @@ class Cookies extends FeatureBundle
                 'secure' => true,
                 'httponly' => true,
                 'samesite' => \Craft::$app->getConfig()->getGeneral()->sameSiteCookieValue ?? 'Lax',
-            ],
+            ]
         );
 
         $_COOKIE[$name] = $value;

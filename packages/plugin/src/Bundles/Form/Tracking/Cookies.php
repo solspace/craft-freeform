@@ -29,18 +29,26 @@ class Cookies extends FeatureBundle
         $name = self::getCookieName($form);
         $value = time();
 
-        setcookie(
-            $name,
-            $value,
-            [
-                'expires' => (int) strtotime('+1 year'),
-                'path' => '/',
-                'domain' => \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
-                'secure' => true,
-                'httponly' => true,
-                'samesite' => \Craft::$app->getConfig()->getGeneral()->sameSiteCookieValue ?? 'Lax',
-            ],
-        );
+        if (version_compare(phpversion(), '7.3', '<')) {
+            setcookie(
+                $name,
+                $value,
+                (int) strtotime('+1 year')
+            );
+        } else {
+            setcookie(
+                $name,
+                $value,
+                [
+                    'expires' => (int) strtotime('+1 year'),
+                    'path' => '/',
+                    'domain' => \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
+                    'secure' => true,
+                    'httponly' => true,
+                    'samesite' => \Craft::$app->getConfig()->getGeneral()->sameSiteCookieValue ?? 'Lax',
+                ]
+            );
+        }
 
         $_COOKIE[$name] = $value;
     }

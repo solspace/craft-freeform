@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.22.1 - 2022-12-09
+
+### Fixed
+- Fixed a bug where the `sameSiteCookieValue` fix in 3.13.22 was not compatible with PHP 7.2.x.
+
 ## 3.13.22 - 2022-12-06
 
 ### Changed

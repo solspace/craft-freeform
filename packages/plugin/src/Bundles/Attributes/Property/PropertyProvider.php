@@ -86,14 +86,15 @@ class PropertyProvider
         if (\is_string($options)) {
             /** @var OptionFetcherInterface $class */
             $class = $this->container->get($options);
-            $collection = $class->fetchOptions($attribute)->getOptions();
-        } elseif (\is_array($options)) {
-            foreach ($options as $key => $value) {
-                $val = $value['value'] ?? $key;
-                $label = $value['label'] ?? $value;
 
-                $collection->add($val, $label);
-            }
+            return $class->fetchOptions($attribute);
+        }
+
+        foreach ($options as $key => $value) {
+            $val = $value['value'] ?? $key;
+            $label = $value['label'] ?? $value;
+
+            $collection->add($val, $label);
         }
 
         return $collection;

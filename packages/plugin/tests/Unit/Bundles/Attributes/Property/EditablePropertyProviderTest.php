@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use yii\di\Container;
 
 /**
  * @internal
@@ -18,7 +19,9 @@ class EditablePropertyProviderTest extends TestCase
 {
     public function testGetEditableProperties()
     {
-        $provider = new PropertyProvider();
+        $mockContainer = $this->createMock(Container::class);
+
+        $provider = new PropertyProvider($mockContainer);
 
         $editableProperties = $provider->getEditableProperties(TestAttributesClass::class);
 
@@ -33,7 +36,7 @@ class EditablePropertyProviderTest extends TestCase
                     'value' => null,
                     'placeholder' => null,
                     'section' => null,
-                    'options' => [],
+                    'options' => null,
                     'flags' => [],
                     'visibilityFilters' => [],
                     'middleware' => [],
@@ -49,7 +52,7 @@ class EditablePropertyProviderTest extends TestCase
                     'value' => null,
                     'placeholder' => null,
                     'section' => null,
-                    'options' => [],
+                    'options' => null,
                     'flags' => [],
                     'visibilityFilters' => [],
                     'middleware' => [],
@@ -65,7 +68,11 @@ class EditablePropertyProviderTest extends TestCase
                     'value' => true,
                     'placeholder' => 'placeholder',
                     'section' => null,
-                    'options' => [],
+                    'options' => [
+                        ['value' => 'one', 'label' => 'One'],
+                        ['value' => 'two', 'label' => 'Two'],
+                        ['value' => 'three', 'label' => 'Three'],
+                    ],
                     'flags' => [],
                     'visibilityFilters' => [],
                     'middleware' => [],
@@ -81,7 +88,11 @@ class EditablePropertyProviderTest extends TestCase
                     'value' => null,
                     'placeholder' => null,
                     'section' => null,
-                    'options' => [],
+                    'options' => [
+                        ['value' => 0, 'label' => 'one'],
+                        ['value' => 1, 'label' => 'two'],
+                        ['value' => 2, 'label' => 'three'],
+                    ],
                     'flags' => [],
                     'visibilityFilters' => [],
                     'middleware' => [
@@ -100,7 +111,11 @@ class EditablePropertyProviderTest extends TestCase
                     'value' => null,
                     'placeholder' => null,
                     'section' => null,
-                    'options' => [],
+                    'options' => [
+                        ['value' => 'one', 'label' => 'One'],
+                        ['value' => 'two', 'label' => 'Two'],
+                        ['value' => 'three', 'label' => 'Three'],
+                    ],
                     'flags' => ['test-flag', 'another-flag'],
                     'visibilityFilters' => [],
                     'middleware' => [],
@@ -116,7 +131,7 @@ class EditablePropertyProviderTest extends TestCase
                     'value' => null,
                     'placeholder' => null,
                     'section' => null,
-                    'options' => [],
+                    'options' => null,
                     'flags' => [],
                     'visibilityFilters' => [
                         'test-filter',
@@ -146,15 +161,24 @@ class TestAttributesClass
         instructions: 'instructions',
         order: 99,
         placeholder: 'placeholder',
+        options: ['one' => 'One', 'two' => 'Two', 'three' => 'Three'],
     )]
     private bool $boolWithDefaultTrue = true;
 
-    #[Property]
+    #[Property(
+        options: ['one', 'two', 'three'],
+    )]
     #[Middleware('test', ['arg 1', 2, true])]
     #[Middleware('another one')]
     private string $propWithMiddleware;
 
-    #[Property]
+    #[Property(
+        options: [
+            ['value' => 'one', 'label' => 'One'],
+            ['value' => 'two', 'label' => 'Two'],
+            ['value' => 'three', 'label' => 'Three'],
+        ],
+    )]
     #[Flag('test-flag')]
     #[Flag('another-flag')]
     private string $propWithFlags;

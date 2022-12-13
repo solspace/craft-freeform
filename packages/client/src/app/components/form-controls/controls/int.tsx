@@ -1,37 +1,33 @@
 import React from 'react';
 import { modifySettings } from '@editor/store/slices/form';
-import type { TextareaProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
 import type { FormControlType } from '../types';
 
 import { BaseControl } from './base-control';
 
-const Textarea: React.FC<FormControlType<string, TextareaProperty>> = ({
+const Int: React.FC<FormControlType<number>> = ({
   value,
   property,
   namespace,
   dispatch,
 }) => {
-  const { handle, placeholder, rows } = property;
+  const { handle, placeholder } = property;
+
   return (
     <BaseControl property={property}>
-      <textarea
+      <input
         id={handle}
-        rows={rows}
+        type="number"
         placeholder={placeholder}
-        className={classes(
-          'text',
-          'fullwidth',
-          property.flags.includes('code') && 'code'
-        )}
-        defaultValue={value || ''}
+        className={classes('text', 'fullwidth')}
+        defaultValue={value.toString()}
         onChange={(event) =>
           dispatch(
             modifySettings({
               key: handle,
               namespace,
-              value: event.target.value,
+              value: Number(event.target.value),
             })
           )
         }
@@ -40,4 +36,4 @@ const Textarea: React.FC<FormControlType<string, TextareaProperty>> = ({
   );
 };
 
-export default Textarea;
+export default Int;

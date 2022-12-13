@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@editor/store';
 import { FocusType, setFocusedItem } from '@editor/store/slices/context';
 import { selectField } from '@editor/store/slices/fields';
-import { Text } from '@ff-client/app/components/form-controls/controls/text';
 import { useFieldType } from '@ff-client/queries/field-types';
 
 import { CellFieldWrapper, Label } from './cell-field.styles';
@@ -28,7 +27,9 @@ export const CellField: React.FC<Props> = ({ uid }) => {
       }}
     >
       <Label>{field.properties.label || type?.name}</Label>
-      <Text />
+      <div>
+        <input type="text" className="text fullwidth" />
+      </div>
     </CellFieldWrapper>
   );
 };

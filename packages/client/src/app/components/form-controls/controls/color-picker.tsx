@@ -5,22 +5,23 @@ import {
   Popover,
   SelectedColor,
   Swatch,
-} from '@components/form-controls/inputs/color.styles';
+} from '@components/form-controls/controls/color-picker.styles';
+import { modifySettings } from '@editor/store/slices/form';
 
-import type { ControlProps } from '../control';
-import { Control } from '../control';
+import type { FormControlType } from '../types';
 
-export const Color: React.FC<ControlProps<string>> = ({
-  id,
+import { BaseControl } from './base-control';
+
+const ColorPicker: React.FC<FormControlType<string>> = ({
   value,
-  label,
-  onChange,
-  instructions,
+  property,
+  namespace,
+  dispatch,
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   return (
-    <Control id={id} label={label} instructions={instructions}>
+    <BaseControl property={property}>
       <Swatch onClick={() => setShowColorPicker(!showColorPicker)}>
         <SelectedColor style={{ backgroundColor: value }} />
       </Swatch>
@@ -29,10 +30,16 @@ export const Color: React.FC<ControlProps<string>> = ({
           <Overlay onClick={() => setShowColorPicker(false)} />
           <SketchPicker
             color={value}
-            onChangeComplete={({ hex }) => onChange && onChange(hex)}
+            onChangeComplete={({ hex }) =>
+              dispatch(
+                modifySettings({ key: property.handle, namespace, value: hex })
+              )
+            }
           />
         </Popover>
       )}
-    </Control>
+    </BaseControl>
   );
 };
+
+export default ColorPicker;

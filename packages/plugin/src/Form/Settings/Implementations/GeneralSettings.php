@@ -47,7 +47,7 @@ class GeneralSettings extends SettingsNamespace
         instructions: 'The formatting template to assign to this form when using Render method.',
         options: FormattingTemplateOptions::class,
     )]
-    public string $formattingTemplate;
+    public ?string $formattingTemplate;
 
     #[Property(
         label: 'Form Description / Notes',

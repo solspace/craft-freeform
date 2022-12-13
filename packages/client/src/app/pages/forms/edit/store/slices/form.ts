@@ -82,19 +82,23 @@ export const {
 } = formSlice.actions;
 
 export const selectForm = (state: RootState): Form | undefined => state.form;
+export const selectFormSettings =
+  (namespace: string) =>
+  (state: RootState): Record<string, GenericValue> =>
+    state.form.settings?.[namespace] || {};
 
 export default formSlice.reducer;
 
 const persistForm: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
-  const { id, uid, type, settings: properties } = state.form;
+  const { id, uid, type, settings } = state.form;
 
   persist.form = {
     id,
     uid,
     type,
-    properties,
+    settings,
   };
 };
 

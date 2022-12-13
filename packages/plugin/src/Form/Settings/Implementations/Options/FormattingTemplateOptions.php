@@ -5,11 +5,10 @@ namespace Solspace\Freeform\Form\Settings\Implementations\Options;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionCollection;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionFetcherInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 
 class FormattingTemplateOptions implements OptionFetcherInterface
 {
-    public function fetchOptions(Form $form, Property $property): OptionCollection
+    public function fetchOptions(Property $property): OptionCollection
     {
         return new OptionCollection();
     }

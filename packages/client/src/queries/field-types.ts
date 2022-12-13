@@ -1,6 +1,7 @@
 import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
-import type { FieldType, PropertySection } from '@ff-client/types/fields';
+import type { FieldType } from '@ff-client/types/fields';
+import type { PropertySection } from '@ff-client/types/properties';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 

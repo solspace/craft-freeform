@@ -10,7 +10,7 @@ const String: React.FC<ControlType> = ({ field, property, dispatch }) => {
   const { uid, properties } = field;
 
   return (
-    <Control field={field} property={property}>
+    <Control property={property}>
       <input
         id={handle}
         type="text"

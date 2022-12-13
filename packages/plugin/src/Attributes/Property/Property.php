@@ -21,11 +21,10 @@ class Property
         public mixed $value = null,
         public ?string $valueGenerator = null,
         public ?string $placeholder = null,
-        public ?string $section = null,
-        public ?string $emptyOption = null,
-        public array|string|null $options = null,
         public ?string $tab = null,
         public ?string $group = null,
+        public ?string $emptyOption = null,
+        public array|string|null $options = null,
     ) {
     }
 }

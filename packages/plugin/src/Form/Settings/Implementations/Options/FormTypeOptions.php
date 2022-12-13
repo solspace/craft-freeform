@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Form\Settings\Implementations\Options;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionCollection;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionFetcherInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Services\Form\TypesService;
 
 class FormTypeOptions implements OptionFetcherInterface
@@ -15,13 +14,13 @@ class FormTypeOptions implements OptionFetcherInterface
     ) {
     }
 
-    public function fetchOptions(Form $form, Property $property): OptionCollection
+    public function fetchOptions(Property $property): OptionCollection
     {
         $options = new OptionCollection();
 
         $types = $this->typesService->getTypes();
         foreach ($types as $type) {
-            $options->add($type['className'], $type['name']);
+            $options->add($type['class'], $type['name']);
         }
 
         return $options;

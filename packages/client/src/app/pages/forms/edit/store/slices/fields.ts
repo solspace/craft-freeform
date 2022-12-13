@@ -1,12 +1,10 @@
 import type { RootState } from '@editor/store';
 import type { SaveSubscriber } from '@editor/store/middleware/state-persist';
 import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
-import type {
-  FieldProperty,
-  FieldType,
-  PropertyValueCollection,
-} from '@ff-client/types/fields';
+import type { PropertyValueCollection } from '@ff-client/types/fields';
+import type { Property } from '@ff-client/types/properties';
 import type { GenericValue } from '@ff-client/types/properties';
+import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import PubSub from 'pubsub-js';
@@ -20,7 +18,7 @@ type FieldState = Field[];
 
 type EditType = {
   uid: string;
-  property: FieldProperty;
+  property: Property;
   value: GenericValue;
 };
 

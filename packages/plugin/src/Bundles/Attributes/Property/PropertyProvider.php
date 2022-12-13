@@ -5,14 +5,21 @@ namespace Solspace\Freeform\Bundles\Attributes\Property;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionCollection;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionFetcherInterface;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\DataObjects\FieldType\Property as PropertyDTO;
 use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
 use Stringy\Stringy;
+use yii\di\Container;
 
 class PropertyProvider
 {
+    public function __construct(private Container $container)
+    {
+    }
+
     public function getEditableProperties(string $class): PropertyCollection
     {
         $reflection = $this->getReflection($class);
@@ -38,6 +45,8 @@ class PropertyProvider
             /** @var Property $attribute */
             $attribute = $attr->newInstance();
 
+            $options = $this->compileOptions($attribute);
+
             $prop = new PropertyDTO();
             $prop->type = $attribute->type ?? $property->getType()->getName();
             $prop->handle = $property->getName();
@@ -45,7 +54,7 @@ class PropertyProvider
             $prop->instructions = $attribute->instructions;
             $prop->placeholder = $attribute->placeholder;
             $prop->section = $section?->handle;
-            $prop->options = $attribute->options ?? [];
+            $prop->options = $options?->getOptions();
             $prop->value = $property->getDefaultValue() ?? $attribute->value;
             $prop->order = $attribute->order ?? $collection->getNextOrder();
             $prop->flags = $this->getFlags($property);
@@ -63,6 +72,31 @@ class PropertyProvider
     public function getReflection(string $class): \ReflectionClass
     {
         return new \ReflectionClass($class);
+    }
+
+    private function compileOptions(Property $attribute): ?OptionCollection
+    {
+        $collection = new OptionCollection();
+        $options = $attribute->options;
+
+        if (null === $options) {
+            return null;
+        }
+
+        if (\is_string($options)) {
+            /** @var OptionFetcherInterface $class */
+            $class = $this->container->get($options);
+            $collection = $class->fetchOptions($attribute)->getOptions();
+        } elseif (\is_array($options)) {
+            foreach ($options as $key => $value) {
+                $val = $value['value'] ?? $key;
+                $label = $value['label'] ?? $value;
+
+                $collection->add($val, $label);
+            }
+        }
+
+        return $collection;
     }
 
     private function getFlags(\ReflectionProperty $property): array

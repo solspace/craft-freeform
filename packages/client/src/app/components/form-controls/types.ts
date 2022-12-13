@@ -1,9 +1,9 @@
 import type { AppDispatch } from '@editor/store';
-import type { Field } from '@editor/store/slices/fields';
 import type { Property } from '@ff-client/types/properties';
 
-export type ControlType = {
-  field: Field;
-  property: Property;
+export type FormControlType<T, P extends Property = Property> = {
+  namespace: string;
+  value: T;
+  property: P;
   dispatch: AppDispatch;
 };

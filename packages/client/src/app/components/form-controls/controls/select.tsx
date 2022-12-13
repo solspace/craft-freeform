@@ -1,26 +1,41 @@
 import React from 'react';
+import { modifySettings } from '@editor/store/slices/form';
+import type { SelectProperty } from '@ff-client/types/properties';
 
-import type { ControlProps, OptionProps } from '../control';
-import { Control } from '../control';
+import type { FormControlType } from '../types';
 
-export const SelectBox: React.FC<ControlProps<string | number>> = ({
-  id,
+import { BaseControl } from './base-control';
+
+const Select: React.FC<FormControlType<string, SelectProperty>> = ({
   value,
-  label,
-  options,
-  onChange,
-  instructions,
-}) => (
-  <Control id={id} label={label} instructions={instructions}>
-    <select
-      id={id}
-      defaultValue={(value as string | number) || ''}
-      className="text fullwidth"
-      onChange={(event) => onChange && onChange(event.target.value)}
-    >
-      {options.map(({ value, label }: OptionProps, key: number) => (
-        <option key={key} value={value} label={label} />
-      ))}
-    </select>
-  </Control>
-);
+  property,
+  namespace,
+  dispatch,
+}) => {
+  const { options } = property;
+
+  return (
+    <BaseControl property={property}>
+      <select
+        id={property.handle}
+        defaultValue={value}
+        className="text fullwidth"
+        onChange={(event) =>
+          dispatch(
+            modifySettings({
+              key: property.handle,
+              namespace,
+              value: event.target.value,
+            })
+          )
+        }
+      >
+        {options.map(({ value, label }, index) => (
+          <option key={index} value={value} label={label} />
+        ))}
+      </select>
+    </BaseControl>
+  );
+};
+
+export default Select;

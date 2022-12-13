@@ -77,14 +77,21 @@ class FormPersistence extends FeatureBundle
 
     private function getMetadata(\stdClass $payload): array
     {
+        $postedSettings = $payload->settings;
         $namespaces = $this->settingsProvider->getSettingNamespaces();
 
         $metadata = [];
-        foreach ($namespaces as $namespace);
+        foreach ($namespaces as $namespace) {
+            $posted = $postedSettings->{$namespace->handle} ?? new \stdClass();
 
-        // $handle = $property->handle;
-        // // TODO: implement value transformer calls here
-        // $metadata[$handle] = $payload->properties->{$handle} ?? null;
+            $properties = [];
+            foreach ($namespace->properties as $property) {
+                $handle = $property->handle;
+                $properties[$handle] = $posted->{$handle} ?? $property->value;
+            }
+
+            $metadata[$namespace->handle] = (object) $properties;
+        }
 
         return $metadata;
     }

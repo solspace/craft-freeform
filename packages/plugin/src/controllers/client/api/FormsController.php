@@ -2,13 +2,10 @@
 
 namespace Solspace\Freeform\controllers\client\api;
 
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
-use Solspace\Freeform\Form\Types\Regular;
 use yii\web\NotFoundHttpException;
-use yii\web\Response;
 
 class FormsController extends BaseApiController
 {
@@ -21,15 +18,8 @@ class FormsController extends BaseApiController
         $module,
         $config = [],
         private FormTransformer $formTransformer,
-        private AttributeProvider $attributeProvider,
     ) {
         parent::__construct($id, $module, $config);
-    }
-
-    public function actionEditableProperties(): Response
-    {
-        // TODO: Support for Form Types
-        return $this->asJson($this->attributeProvider->getEditableProperties(Regular::class));
     }
 
     protected function get(): array

@@ -8,8 +8,10 @@ type WrapperProps = {
 export const Sidebar = styled.div<WrapperProps>`
   position: relative;
 
+  flex-basis: 300px;
   width: 300px;
   padding: ${({ lean }): string => (lean ? spacings.sm : spacings.lg)};
+  box-sizing: border-box;
 
   border-bottom-left-radius: ${borderRadius.lg};
   box-shadow: inset -1px 0 0 0 rgb(154 165 177 / 25%);

@@ -1,13 +1,9 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { LightSwitch } from '@ff-client/app/components/form-controls/controls/lightswitch';
 import { Space } from '@ff-client/app/components/layout/blocks/space';
 
-import {
-  selectIntegration,
-  toggleIntegration,
-} from '../../../../store/slices/integrations';
+import { selectIntegration } from '../../../../store/slices/integrations';
 
 import { Setting } from './setting/setting';
 import { EditorWrapper, SettingsWrapper } from './editor.styles';
@@ -29,16 +25,18 @@ export const Editor: React.FC = () => {
 
   const { id, handle, name, description, enabled, settings } = integration;
 
+  // TODO: refactor Integrations to use #[Property] instead
+
   return (
     <EditorWrapper>
       <h1 title={handle}>{name}</h1>
       {!!description && <p>{description}</p>}
 
-      <LightSwitch
+      {/* <Bool
         label="Enabled"
         onChange={() => dispatch(toggleIntegration(id))}
         value={enabled}
-      />
+      /> */}
 
       <Space />
 

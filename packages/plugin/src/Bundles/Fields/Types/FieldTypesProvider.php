@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Fields\Types;
 
-use Solspace\Freeform\Attributes\Field\Section;
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
@@ -23,7 +23,7 @@ class FieldTypesProvider
     private ?array $sections = null;
 
     public function __construct(
-        private AttributeProvider $attributeProvider,
+        private PropertyProvider $propertyProvider,
         private ImplementationProvider $implementationProvider
     ) {
     }
@@ -114,7 +114,7 @@ class FieldTypesProvider
         $type->name = $typeInstance->name;
         $type->icon = file_get_contents($typeInstance->iconPath);
         $type->implements = $this->implementationProvider->getImplementations($typeClass);
-        $type->properties = $this->attributeProvider->getEditableProperties($typeClass);
+        $type->properties = $this->propertyProvider->getEditableProperties($typeClass);
 
         return $type;
     }

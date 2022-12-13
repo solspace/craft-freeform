@@ -4,6 +4,7 @@ import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
 import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import { useQueryFormSettings } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -17,6 +18,8 @@ import {
 
 export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
+
+  const { data: formSettingsData } = useQueryFormSettings();
 
   const triggerSave = (): void => void dispatch(save());
   const saveOnCmdS = (event: KeyboardEvent): boolean | void => {
@@ -53,11 +56,14 @@ export const Tabs: React.FC = () => {
         <NavLink to="" end>
           {translate('Layout')}
         </NavLink>
-        <NavLink to="behavior">{translate('Behavior')}</NavLink>
         <NavLink to="notifications">{translate('Notifications')}</NavLink>
         <NavLink to="rules">{translate('Rules')}</NavLink>
         <NavLink to="integrations">{translate('Integrations')}</NavLink>
-        <NavLink to="settings">{translate('Settings')}</NavLink>
+        {(formSettingsData || []).map((namespace) => (
+          <NavLink key={namespace.handle} to={namespace.handle}>
+            {translate(namespace.label)}
+          </NavLink>
+        ))}
       </TabsWrapper>
 
       <SaveButtonWrapper>

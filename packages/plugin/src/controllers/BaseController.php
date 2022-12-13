@@ -8,8 +8,8 @@ use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
+use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
-use Solspace\Freeform\Services\FormTypesService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
 use Solspace\Freeform\Services\IntegrationsService;
 use Solspace\Freeform\Services\LoggerService;
@@ -35,7 +35,7 @@ class BaseController extends Controller
         return Freeform::getInstance()->forms;
     }
 
-    protected function getFormsTypesService(): FormTypesService
+    protected function getFormsTypesService(): TypesService
     {
         return Freeform::getInstance()->formTypes;
     }

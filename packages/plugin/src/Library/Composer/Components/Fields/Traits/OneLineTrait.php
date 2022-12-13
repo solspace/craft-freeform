@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
-use Solspace\Freeform\Attributes\Field\Property;
+use Solspace\Freeform\Attributes\Property\Property;
 
 trait OneLineTrait
 {

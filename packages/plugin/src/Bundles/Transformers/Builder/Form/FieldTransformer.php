@@ -2,14 +2,14 @@
 
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
-use Solspace\Freeform\Bundles\Fields\AttributeProvider;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class FieldTransformer
 {
     public function __construct(
-        private AttributeProvider $attributeProvider,
+        private PropertyProvider $propertyProvider,
         private PropertyAccessor $propertyAccess
     ) {
     }
@@ -17,7 +17,7 @@ class FieldTransformer
     public function transform(FieldInterface $field)
     {
         $typeClass = \get_class($field);
-        $editableProperties = $this->attributeProvider->getEditableProperties($typeClass);
+        $editableProperties = $this->propertyProvider->getEditableProperties($typeClass);
 
         $properties = [];
         foreach ($editableProperties as $property) {

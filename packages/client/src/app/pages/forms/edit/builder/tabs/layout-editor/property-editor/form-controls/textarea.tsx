@@ -10,7 +10,7 @@ const Textarea: React.FC<ControlType> = ({ field, property, dispatch }) => {
   const { uid, properties } = field;
 
   return (
-    <Control field={field} property={property}>
+    <Control property={property}>
       <textarea
         id={handle}
         className={classes(

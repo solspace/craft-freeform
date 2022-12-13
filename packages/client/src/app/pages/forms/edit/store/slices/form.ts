@@ -23,16 +23,16 @@ const initialState: FormState = {
   id: null,
   uid: v4(),
   type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-  properties: {
-    name: 'New Form',
-    handle: 'newForm',
-  },
+  name: 'New Form',
+  handle: 'newForm',
+  settings: {},
 };
 
 export type UpdateProps = Partial<Omit<FormState, 'properties'>>;
 
 export type ModifyProps = {
   key: string;
+  namespace: string;
   value: GenericValue;
 };
 
@@ -48,8 +48,14 @@ export const formSlice = createSlice({
     update: (state, { payload }: PayloadAction<UpdateProps>) => {
       Object.assign(state, payload);
     },
-    modifyProperty: (state, { payload }: PayloadAction<ModifyProps>) => {
-      state.properties[payload.key] = payload.value;
+    modifySettings: (state, { payload }: PayloadAction<ModifyProps>) => {
+      const { namespace, key, value } = payload;
+
+      if (!state.settings[namespace]) {
+        state.settings[namespace] = {};
+      }
+
+      state.settings[namespace][key] = value;
     },
     removeError: (state, { payload }: PayloadAction<string>) => {
       delete state.errors[payload];
@@ -68,7 +74,7 @@ export const formSlice = createSlice({
 
 export const {
   update,
-  modifyProperty,
+  modifySettings,
   addError,
   removeError,
   setErrors,
@@ -76,19 +82,23 @@ export const {
 } = formSlice.actions;
 
 export const selectForm = (state: RootState): Form | undefined => state.form;
+export const selectFormSettings =
+  (namespace: string) =>
+  (state: RootState): Record<string, GenericValue> =>
+    state.form.settings?.[namespace] || {};
 
 export default formSlice.reducer;
 
 const persistForm: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
-  const { id, uid, type, properties } = state.form;
+  const { id, uid, type, settings } = state.form;
 
   persist.form = {
     id,
     uid,
     type,
-    properties,
+    settings,
   };
 };
 

@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Attributes\Field\Property;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Services\FormsService;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 

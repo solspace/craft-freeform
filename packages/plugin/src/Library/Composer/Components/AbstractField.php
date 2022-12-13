@@ -14,10 +14,10 @@ namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Attributes\Field\Flag;
-use Solspace\Freeform\Attributes\Field\Middleware;
-use Solspace\Freeform\Attributes\Field\Property;
-use Solspace\Freeform\Attributes\Field\Section;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Middleware;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;

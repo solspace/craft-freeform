@@ -19,4 +19,5 @@ class Property
     public ?array $middleware;
     public ?string $tab;
     public ?string $group;
+    public ?bool $readonly;
 }

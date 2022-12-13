@@ -9,9 +9,9 @@ import { set as setLayouts } from '@editor/store/slices/layouts';
 import { set as setPages } from '@editor/store/slices/pages';
 import { set as setRows } from '@editor/store/slices/rows';
 import type {
-  EditableProperty,
   ExtendedFormType,
   Form,
+  FormSettingNamespace,
 } from '@ff-client/types/forms';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
@@ -54,15 +54,15 @@ export const useQuerySingleForm = (
   );
 };
 
-export const useQueryEditableProperties = (): UseQueryResult<
-  EditableProperty[],
+export const useQueryFormSettings = (): UseQueryResult<
+  FormSettingNamespace[],
   AxiosError
 > => {
-  return useQuery<EditableProperty[], AxiosError>(
-    ['forms', 'editable-properties'],
+  return useQuery<FormSettingNamespace[], AxiosError>(
+    ['forms', 'settings'],
     () =>
       axios
-        .get<EditableProperty[]>(`/client/api/forms/editable-properties`)
+        .get<FormSettingNamespace[]>(`/client/api/forms/settings`)
         .then((res) => res.data)
   );
 };

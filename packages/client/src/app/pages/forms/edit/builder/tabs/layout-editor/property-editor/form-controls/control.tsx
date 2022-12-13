@@ -1,13 +1,11 @@
 import type { PropsWithChildren } from 'react';
 import React from 'react';
-import type { Field } from '@ff-client/app/pages/forms/edit/store/slices/fields';
-import type { FieldProperty } from '@ff-client/types/fields';
+import type { Property } from '@ff-client/types/properties';
 
 import { ControlWrapper, Label } from './control.styles';
 
 type Props = {
-  field: Field;
-  property: FieldProperty;
+  property: Property;
 };
 
 export const Control: React.FC<PropsWithChildren<Props>> = ({

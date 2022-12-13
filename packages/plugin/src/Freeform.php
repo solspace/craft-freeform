@@ -60,8 +60,8 @@ use Solspace\Freeform\Services\ExportService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\LayoutsService;
+use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
-use Solspace\Freeform\Services\FormTypesService;
 use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
@@ -144,7 +144,7 @@ use yii\web\ForbiddenHttpException;
  * @property LockService                 $lock
  * @property DiagnosticsService          $diagnostics
  * @property PreflightService            $preflight
- * @property FormTypesService            $formTypes
+ * @property TypesService                $formTypes
  */
 class Freeform extends Plugin
 {
@@ -488,7 +488,7 @@ class Freeform extends Plugin
                 'lock' => LockService::class,
                 'diagnostics' => DiagnosticsService::class,
                 'preflight' => PreflightService::class,
-                'formTypes' => FormTypesService::class,
+                'formTypes' => TypesService::class,
             ]
         );
     }

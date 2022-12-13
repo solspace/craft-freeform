@@ -1,8 +1,7 @@
-export { Control } from '../control';
-export { Color } from './color';
-export { DateTime } from './datetime';
-export { FormTagAttribute } from './form-tag-attribute';
-export { LightSwitch } from './lightswitch';
-export { SelectBox } from './select';
-export { Text } from './text';
-export { Textarea } from './textarea';
+export { default as bool } from './bool';
+export { default as colorPicker } from './color-picker';
+export { default as datePicker } from './date-picker';
+export { default as int } from './int';
+export { default as select } from './select';
+export { default as string } from './string';
+export { default as textarea } from './textarea';

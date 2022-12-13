@@ -1,25 +1,43 @@
 import React from 'react';
+import { modifySettings } from '@editor/store/slices/form';
+import type { TextareaProperty } from '@ff-client/types/properties';
+import classes from '@ff-client/utils/classes';
 
-import type { ControlProps } from '../control';
-import { Control } from '../control';
+import type { FormControlType } from '../types';
 
-export const Textarea: React.FC<ControlProps<string>> = ({
-  id,
-  rows,
+import { BaseControl } from './base-control';
+
+const Textarea: React.FC<FormControlType<string, TextareaProperty>> = ({
   value,
-  label,
-  onChange,
-  placeholder,
-  instructions,
-}) => (
-  <Control id={id} label={label} instructions={instructions}>
-    <textarea
-      id={id}
-      rows={rows}
-      placeholder={placeholder}
-      className="text fullwidth"
-      defaultValue={(value as string) || ''}
-      onChange={(event) => onChange && onChange(event.target.value)}
-    />
-  </Control>
-);
+  property,
+  namespace,
+  dispatch,
+}) => {
+  const { handle, placeholder, rows } = property;
+  return (
+    <BaseControl property={property}>
+      <textarea
+        id={handle}
+        rows={rows}
+        placeholder={placeholder}
+        className={classes(
+          'text',
+          'fullwidth',
+          property.flags.includes('code') && 'code'
+        )}
+        defaultValue={value || ''}
+        onChange={(event) =>
+          dispatch(
+            modifySettings({
+              key: handle,
+              namespace,
+              value: event.target.value,
+            })
+          )
+        }
+      />
+    </BaseControl>
+  );
+};
+
+export default Textarea;

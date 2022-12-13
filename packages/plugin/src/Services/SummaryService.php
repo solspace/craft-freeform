@@ -290,10 +290,10 @@ class SummaryService extends Component
         $gtmEnabled = false;
         $types = [];
 
-        foreach ($forms as $formModel) {
-            $form = $formModel->getForm();
-            if (!\in_array($formModel->type, $types, true)) {
-                $types[] = $formModel->type;
+        foreach ($forms as $form) {
+            $type = \get_class($form);
+            if (!\in_array($type, $types, true)) {
+                $types[] = $type;
             }
 
             if (\count($form->getPages()) > 1) {
@@ -316,7 +316,7 @@ class SummaryService extends Component
                 $collectIp = true;
             }
 
-            if ($form->getOptInDataStorageTargetHash()) {
+            if ($form->getSettings()->getGeneral()->dataStorageCheckbox) {
                 $optInDataStorage = true;
             }
 

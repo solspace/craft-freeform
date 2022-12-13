@@ -1,21 +1,35 @@
 import React from 'react';
-import type { ControlProps } from '@components/form-controls/control';
-import { Control } from '@components/form-controls/control';
 import { FormTagAttributeInput } from '@components/form-controls/inputs/form-tag-attribute-input';
+import { modifySettings } from '@editor/store/slices/form';
 import type { Attribute } from '@ff-client/types/forms';
 
-export const FormTagAttribute: React.FC<ControlProps<Attribute[]>> = ({
-  id,
+import type { FormControlType } from '../types';
+
+import { BaseControl } from './base-control';
+
+export const FormTagAttribute: React.FC<FormControlType<Attribute[]>> = ({
   value,
-  label,
-  onChange,
-  instructions,
-}) => (
-  <Control id={id} label={label} instructions={instructions}>
-    <FormTagAttributeInput
-      id={id}
-      value={value || []}
-      onChange={(value) => onChange && onChange(value)}
-    />
-  </Control>
-);
+  property,
+  namespace,
+  dispatch,
+}) => {
+  const { handle } = property;
+
+  return (
+    <BaseControl property={property}>
+      <FormTagAttributeInput
+        id={handle}
+        value={value || []}
+        onChange={(value) =>
+          dispatch(
+            modifySettings({
+              namespace,
+              key: handle,
+              value,
+            })
+          )
+        }
+      />
+    </BaseControl>
+  );
+};

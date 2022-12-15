@@ -8,7 +8,7 @@ import { TOPIC_CREATED } from '@editor/store/middleware/state-persist';
 import { TOPIC_ERRORS } from '@editor/store/middleware/state-persist';
 import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { ErrorList } from '@ff-client/types/api';
-import type { Form } from '@ff-client/types/forms';
+import type { Form, SettingsNamespace } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
@@ -84,8 +84,13 @@ export const {
 export const selectForm = (state: RootState): Form | undefined => state.form;
 export const selectFormSettings =
   (namespace: string) =>
-  (state: RootState): Record<string, GenericValue> =>
+  (state: RootState): SettingsNamespace =>
     state.form.settings?.[namespace] || {};
+
+export const selectFormSetting =
+  (namespace: string, key: string) =>
+  (state: RootState): any =>
+    state.form.settings?.[namespace]?.[key];
 
 export default formSlice.reducer;
 

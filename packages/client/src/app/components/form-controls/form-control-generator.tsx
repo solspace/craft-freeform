@@ -1,6 +1,8 @@
 import type { ComponentType } from 'react';
 import React, { Suspense } from 'react';
-import { useAppDispatch } from '@editor/store';
+import { useSelector } from 'react-redux';
+import type { ValueUpdateHandler } from '@editor/builder/tabs/form-settings/form-settings';
+import { selectFormSetting } from '@editor/store/slices/form';
 import type { Property, PropertyType } from '@ff-client/types/properties';
 import camelCase from 'lodash.camelcase';
 
@@ -9,8 +11,8 @@ import * as FormControlTypes from './controls';
 import type { FormControlType } from './types';
 
 type Props = {
+  onValueUpdate: ValueUpdateHandler;
   namespace: string;
-  value: unknown;
   property: Property;
 };
 
@@ -19,11 +21,11 @@ const types: {
 } = FormControlTypes;
 
 export const FormControlGenerator: React.FC<Props> = ({
+  onValueUpdate,
   namespace,
-  value,
   property,
 }) => {
-  const dispatch = useAppDispatch();
+  const value = useSelector(selectFormSetting(namespace, property.handle));
 
   const typeName = camelCase(property.type) as PropertyType;
   const FormControl = types[typeName];
@@ -39,10 +41,9 @@ export const FormControlGenerator: React.FC<Props> = ({
     <ErrorBoundary message={`...${property.handle} <${property.type}>`}>
       <Suspense>
         <FormControl
-          namespace={namespace}
           value={value}
           property={property}
-          dispatch={dispatch}
+          onUpdateValue={onValueUpdate}
         />
       </Suspense>
     </ErrorBoundary>

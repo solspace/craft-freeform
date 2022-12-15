@@ -2,6 +2,8 @@ import type { Cell, Layout, Page, Row } from '@editor/builder/types/layout';
 import type { Field } from '@editor/store/slices/fields';
 import type { GenericValue, Property } from '@ff-client/types/properties';
 
+export type SettingsNamespace = Record<string, GenericValue>;
+
 export type Form = {
   id?: number;
   uid: string;
@@ -9,9 +11,7 @@ export type Form = {
   name: string;
   handle: string;
   settings: {
-    [namespace: string]: {
-      [key: string]: GenericValue;
-    };
+    [namespace: string]: SettingsNamespace;
   };
 };
 

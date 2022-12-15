@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   AddOptionButton,
   CheckboxWrapper,
@@ -22,6 +22,7 @@ type OptionProp = {
   label: string;
   value: string;
   default: boolean;
+  autofocus?: boolean;
 };
 
 type PayloadProp = {
@@ -42,6 +43,8 @@ type Props = {
 };
 
 const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
+  const enterKeyPress = useKeyPress('Enter');
+
   /**
    * Adds blank label/value object
    */
@@ -52,6 +55,7 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
       label: '',
       value: '',
       default: false,
+      autofocus: true,
     });
 
     if (onChange) {
@@ -87,20 +91,9 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
 
   /**
    * Find and update option property value
-   * @param event
    * @param payload
    */
-  const updateOption = (event, payload: PayloadProp): void => {
-    /**
-     * Add a new option row upon pressing enter key in any text input field
-     * @param event
-     */
-    if (event.key === 'Enter') {
-      addOption();
-
-      return;
-    }
-
+  const updateOption = (payload: PayloadProp): void => {
     const options = JSON.parse(JSON.stringify(value.options));
 
     options.forEach((option: OptionProp, index: number) => {
@@ -133,6 +126,13 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
     }
   };
 
+  // Add new option when the enter key is pressed
+  useEffect(() => {
+    if (enterKeyPress) {
+      addOption();
+    }
+  }, [enterKeyPress]);
+
   return (
     <Wrapper>
       <Row>
@@ -143,7 +143,7 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
               id="useCustomValues"
               label="Use custom values"
               checked={(value.useCustomValues as boolean) || false}
-              onClick={() =>
+              onChange={() =>
                 onChange &&
                 onChange({
                   ...value,
@@ -168,74 +168,69 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
             </thead>
             <tbody>
               {value.options &&
-                value.options.map((option: OptionProp, index: number) => {
-                  const labelId = `${handle}[${index}]['label']`;
-                  const valueId = `${handle}[${index}]['value']`;
-                  const defaultId = `${handle}[${index}]['default']`;
-
-                  return (
-                    <tr key={index}>
+                value.options.map((option: OptionProp, index: number) => (
+                  <tr key={index}>
+                    <td>
+                      <Input
+                        id={`${handle}[${index}]['label']`}
+                        type="text"
+                        placeholder=""
+                        className="text"
+                        value={(option.label as string) || ''}
+                        autoFocus={option.autofocus}
+                        onChange={(event) => {
+                          updateOption({
+                            index,
+                            key: 'label',
+                            value: event.target.value,
+                          });
+                        }}
+                      />
+                    </td>
+                    {value.useCustomValues && (
                       <td>
                         <Input
-                          id={labelId}
+                          id={`${handle}[${index}]['value']`}
                           type="text"
                           placeholder=""
                           className="text"
-                          value={(option.label as string) || ''}
+                          value={(option.value as string) || ''}
                           onChange={(event) =>
-                            updateOption(event, {
+                            updateOption({
                               index,
-                              key: 'label',
+                              key: 'value',
                               value: event.target.value,
                             })
                           }
                         />
                       </td>
-                      {value.useCustomValues && (
-                        <td>
-                          <Input
-                            id={valueId}
-                            type="text"
-                            placeholder=""
-                            className="text"
-                            value={(option.value as string) || ''}
-                            onChange={(event) =>
-                              updateOption(event, {
-                                index,
-                                key: 'value',
-                                value: event.target.value,
-                              })
-                            }
-                          />
-                        </td>
-                      )}
-                      <td>
-                        <Input
-                          type="checkbox"
-                          id={defaultId}
-                          checked={option.default}
-                          onClick={() =>
-                            updateOption({
-                              index,
-                              key: 'default',
-                              value: !option.default,
-                            })
-                          }
-                        />
-                      </td>
-                      <td>
-                        <DragButton onClick={() => dragAndDropOption(index)}>
-                          <DragIcon />
-                        </DragButton>
-                      </td>
-                      <td>
-                        <DeleteButton onClick={() => deleteOption(index)}>
-                          <DeleteIcon />
-                        </DeleteButton>
-                      </td>
-                    </tr>
-                  );
-                })}
+                    )}
+                    <td>
+                      <Input
+                        type="checkbox"
+                        id={`${handle}[${index}]['default']`}
+                        checked={(option.default as boolean) || false}
+                        onChange={() =>
+                          updateOption({
+                            index,
+                            key: 'default',
+                            value: !option.default,
+                          })
+                        }
+                      />
+                    </td>
+                    <td>
+                      <DragButton onClick={() => dragAndDropOption(index)}>
+                        <DragIcon />
+                      </DragButton>
+                    </td>
+                    <td>
+                      <DeleteButton onClick={() => deleteOption(index)}>
+                        <DeleteIcon />
+                      </DeleteButton>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </TableOptions>
           <TableAddOption>
@@ -254,6 +249,44 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
       </Row>
     </Wrapper>
   );
+};
+
+/**
+ * Helper function that listens for key down and key up events
+ * Set internal state to true or false when the target key is pressed.
+ *
+ * @param targetKey
+ */
+const useKeyPress = (targetKey: string): boolean => {
+  const [keyPressed, setKeyPressed] = useState<boolean>(false);
+
+  // If the pressed key is our target key then set to true
+  const keyDownHandler = (event: KeyboardEvent): void => {
+    if (event.key === targetKey) {
+      setKeyPressed(true);
+    }
+  };
+
+  // If the released key is our target key then set to false
+  const keyUpHandler = (event: KeyboardEvent): void => {
+    if (event.key === targetKey) {
+      setKeyPressed(false);
+    }
+  };
+
+  // Add event listeners
+  useEffect(() => {
+    window.addEventListener('keyup', keyUpHandler);
+    window.addEventListener('keydown', keyDownHandler);
+
+    // Remove event listeners as cleanup
+    return () => {
+      window.removeEventListener('keyup', keyUpHandler);
+      window.removeEventListener('keydown', keyDownHandler);
+    };
+  }, []);
+
+  return keyPressed;
 };
 
 export default CustomOptions;

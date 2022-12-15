@@ -4,14 +4,14 @@ type Props = {
   id: string;
   label?: string;
   checked?: boolean;
-  onClick?: () => void;
+  onChange?: () => void;
 };
 
 export const CheckboxInput: React.FC<Props> = ({
   id,
   label,
   checked,
-  onClick,
+  onChange,
 }) => {
   return (
     <div className="checkbox-wrapper">
@@ -20,7 +20,7 @@ export const CheckboxInput: React.FC<Props> = ({
         type="checkbox"
         checked={checked}
         className="checkbox"
-        onClick={onClick}
+        onChange={onChange}
       />
       <label htmlFor={id}>{label}</label>
     </div>

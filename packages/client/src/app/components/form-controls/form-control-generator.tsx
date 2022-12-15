@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import React, { Suspense } from 'react';
 import { useSelector } from 'react-redux';
-import type { ValueUpdateHandler } from '@editor/builder/tabs/form-settings/form-settings';
+import type { ValueUpdateHandler } from '@editor/builder/tabs/form-settings/use-value-update-generator';
 import { selectFormSetting } from '@editor/store/slices/form';
 import type { Property, PropertyType } from '@ff-client/types/properties';
 import camelCase from 'lodash.camelcase';

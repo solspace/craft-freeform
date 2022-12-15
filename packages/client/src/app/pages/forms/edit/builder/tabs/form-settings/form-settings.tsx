@@ -1,12 +1,8 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useParams } from 'react-router-dom';
 import { FormControlGenerator } from '@components/form-controls/form-control-generator';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
-import { applyMiddleware } from '@components/middleware/middleware';
-import { useAppDispatch } from '@editor/store';
-import { modifySettings } from '@editor/store/slices/form';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
-import type { Property } from '@ff-client/types/properties';
 
 import { Group } from './group/group';
 import {
@@ -14,37 +10,17 @@ import {
   FormSettingsWrapper,
   GroupsCollection,
 } from './form-settings.style';
+import { useValueUpdateGenerator } from './use-value-update-generator';
 
 type RouteParams = {
   namespace: string;
 };
 
-export type ValueUpdateHandler = <T>(value: T) => void;
-
-type ValueUpdateHandlerGenerator = (property: Property) => ValueUpdateHandler;
-
 export const FormSettings: React.FC = () => {
-  const dispatch = useAppDispatch();
-
   const { namespace } = useParams<RouteParams>();
   const { data, isFetching } = useQueryFormSettings();
 
-  const generateUpdateHandler: ValueUpdateHandlerGenerator = useCallback(
-    (property) => {
-      return (value) => {
-        dispatch((dispatch, getState) => {
-          dispatch(
-            modifySettings({
-              namespace,
-              key: property.handle,
-              value: applyMiddleware(value, property.middleware, getState),
-            })
-          );
-        });
-      };
-    },
-    [namespace, dispatch]
-  );
+  const generateUpdateHandler = useValueUpdateGenerator(namespace);
 
   if (!data && isFetching) {
     return <div>Loading...</div>;

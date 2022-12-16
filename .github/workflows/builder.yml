@@ -23,7 +23,8 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
-      - run: | 
+      - name: npm run lint
+        run: | 
           cd packages/client
           npm run lint
 
@@ -44,8 +45,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
+
       - run: npm ci
-      - run: |
+      - name: npm test
+        run: |
           cd packages/client
           npm test
 

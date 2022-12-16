@@ -19,5 +19,3 @@ Freeform is the most reliable, intuitive and powerful form building plugin for C
 - [Craft Stack Exchange](https://craftcms.stackexchange.com/questions/tagged/solspace)
 
 test
-test
-test

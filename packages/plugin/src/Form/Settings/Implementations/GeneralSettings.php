@@ -26,7 +26,7 @@ class GeneralSettings extends SettingsNamespace
         instructions: "How you'll refer to this form in the templates",
         placeholder: 'myHandle',
     )]
-    #[Middleware('handle', ['name'])]
+    #[Middleware('handle', [false])]
     public string $handle = '';
 
     #[Property(

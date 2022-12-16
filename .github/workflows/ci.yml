@@ -1,0 +1,72 @@
+name: Continous Integration
+
+on:
+  pull_request:
+    branches: [v5.0]
+
+jobs:
+  typescript:
+    runs-on: ubuntu-latest
+    name: TypeScript tests
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - run: npm install
+      - run: npm run lint
+      - run: npm test
+        env:
+          CI: true
+
+  php:
+    runs-on: ubuntu-latest
+    name: PHP Unit & Acceptance tests
+
+    strategy:
+      matrix:
+        php-versions: ['8.0.2']
+
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_DATABASE: freeform-test
+          MYSQL_PASSWORD: root
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: curl, mbstring, gd
+
+      # Cache the vendors directory to spend less resources on each run
+      - name: Cache vendors
+        uses: actions/cache@v1
+        with:
+          path: vendor/
+          key: vendors-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Run CS Fixer
+        run: composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)
+
+      - name: Run Unit Tests
+        run: composer run-script test:unit

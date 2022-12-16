@@ -1,5 +1,4 @@
 import React from 'react';
-import { modifySettings } from '@editor/store/slices/form';
 import classes from '@ff-client/utils/classes';
 
 import type { FormControlType } from '../types';
@@ -9,8 +8,7 @@ import { BaseControl } from './base-control';
 const String: React.FC<FormControlType<string>> = ({
   value,
   property,
-  namespace,
-  dispatch,
+  onUpdateValue,
 }) => {
   const { handle, placeholder } = property;
 
@@ -25,16 +23,8 @@ const String: React.FC<FormControlType<string>> = ({
           'fullwidth',
           property.flags.includes('code') && 'code'
         )}
-        defaultValue={value}
-        onChange={(event) =>
-          dispatch(
-            modifySettings({
-              key: handle,
-              namespace,
-              value: event.target.value,
-            })
-          )
-        }
+        value={value || ''}
+        onChange={(event) => onUpdateValue(event.target.value)}
       />
     </BaseControl>
   );

@@ -1,9 +1,7 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { FormControlGenerator } from '@components/form-controls/form-control-generator';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
-import { selectFormSettings } from '@editor/store/slices/form';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 
 import { Group } from './group/group';
@@ -12,6 +10,7 @@ import {
   FormSettingsWrapper,
   GroupsCollection,
 } from './form-settings.style';
+import { useValueUpdateGenerator } from './use-value-update-generator';
 
 type RouteParams = {
   namespace: string;
@@ -20,7 +19,8 @@ type RouteParams = {
 export const FormSettings: React.FC = () => {
   const { namespace } = useParams<RouteParams>();
   const { data, isFetching } = useQueryFormSettings();
-  const formSettings = useSelector(selectFormSettings(namespace));
+
+  const generateUpdateHandler = useValueUpdateGenerator(namespace);
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -31,7 +31,7 @@ export const FormSettings: React.FC = () => {
     return null;
   }
 
-  const { handle, groups, properties } = settingsNamespace;
+  const { groups, properties } = settingsNamespace;
 
   return (
     <FormSettingsWrapper>
@@ -58,9 +58,9 @@ export const FormSettings: React.FC = () => {
                 {filteredProperties.map((property) => (
                   <FormControlGenerator
                     key={property.handle}
-                    namespace={handle}
+                    namespace={namespace}
                     property={property}
-                    value={formSettings[property.handle]}
+                    onValueUpdate={generateUpdateHandler(property)}
                   />
                 ))}
               </Group>

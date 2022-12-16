@@ -164,6 +164,8 @@ class ActiveCampaign extends AbstractMailingListIntegration
     /**
      * Fetch the custom fields from the integration.
      *
+     * @param mixed $listId
+     *
      * @return FieldObject[]
      */
     public function fetchFields($listId): array

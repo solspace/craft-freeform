@@ -375,6 +375,8 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
     }
 
     /**
+     * @param mixed $data
+     *
      * @return array
      */
     private function processFields($data)

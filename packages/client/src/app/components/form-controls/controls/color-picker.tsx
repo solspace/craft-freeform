@@ -6,7 +6,6 @@ import {
   SelectedColor,
   Swatch,
 } from '@components/form-controls/controls/color-picker.styles';
-import { modifySettings } from '@editor/store/slices/form';
 
 import type { FormControlType } from '../types';
 
@@ -15,8 +14,7 @@ import { BaseControl } from './base-control';
 const ColorPicker: React.FC<FormControlType<string>> = ({
   value,
   property,
-  namespace,
-  dispatch,
+  onUpdateValue,
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
 
@@ -30,11 +28,7 @@ const ColorPicker: React.FC<FormControlType<string>> = ({
           <Overlay onClick={() => setShowColorPicker(false)} />
           <SketchPicker
             color={value}
-            onChangeComplete={({ hex }) =>
-              dispatch(
-                modifySettings({ key: property.handle, namespace, value: hex })
-              )
-            }
+            onChangeComplete={({ hex }) => onUpdateValue(hex)}
           />
         </Popover>
       )}

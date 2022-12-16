@@ -1,5 +1,4 @@
 import React from 'react';
-import { modifySettings } from '@editor/store/slices/form';
 import type { SelectProperty } from '@ff-client/types/properties';
 
 import type { FormControlType } from '../types';
@@ -9,8 +8,7 @@ import { BaseControl } from './base-control';
 const Select: React.FC<FormControlType<string, SelectProperty>> = ({
   value,
   property,
-  namespace,
-  dispatch,
+  onUpdateValue,
 }) => {
   const { options } = property;
 
@@ -18,17 +16,9 @@ const Select: React.FC<FormControlType<string, SelectProperty>> = ({
     <BaseControl property={property}>
       <select
         id={property.handle}
-        defaultValue={value}
+        value={value || ''}
         className="text fullwidth"
-        onChange={(event) =>
-          dispatch(
-            modifySettings({
-              key: property.handle,
-              namespace,
-              value: event.target.value,
-            })
-          )
-        }
+        onChange={(event) => onUpdateValue(event.target.value)}
       >
         {options.map(({ value, label }, index) => (
           <option key={index} value={value} label={label} />

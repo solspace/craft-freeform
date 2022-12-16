@@ -1,5 +1,4 @@
 import React from 'react';
-import { modifySettings } from '@editor/store/slices/form';
 import type { TextareaProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
@@ -10,8 +9,7 @@ import { BaseControl } from './base-control';
 const Textarea: React.FC<FormControlType<string, TextareaProperty>> = ({
   value,
   property,
-  namespace,
-  dispatch,
+  onUpdateValue,
 }) => {
   const { handle, placeholder, rows } = property;
   return (
@@ -25,16 +23,8 @@ const Textarea: React.FC<FormControlType<string, TextareaProperty>> = ({
           'fullwidth',
           property.flags.includes('code') && 'code'
         )}
-        defaultValue={value || ''}
-        onChange={(event) =>
-          dispatch(
-            modifySettings({
-              key: handle,
-              namespace,
-              value: event.target.value,
-            })
-          )
-        }
+        value={value || ''}
+        onChange={(event) => onUpdateValue(event.target.value)}
       />
     </BaseControl>
   );

@@ -1,6 +1,5 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
-import { modifySettings } from '@editor/store/slices/form';
 import type { DateTimeProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import format from 'date-fns/format';
@@ -16,7 +15,7 @@ const dateFormat = 'MM/dd/yyyy';
 
 const DatePickerControl: React.FC<
   FormControlType<string, DateTimeProperty>
-> = ({ value, property, namespace, dispatch }) => {
+> = ({ value, property, onUpdateValue }) => {
   const date = new Date();
   const parseValue: string = value || format(date, dateFormat);
   const selected = parse(parseValue, dateFormat, date);
@@ -29,15 +28,7 @@ const DatePickerControl: React.FC<
         selected={selected}
         dateFormat={dateFormat}
         className={classes('text', 'fullwidth')}
-        onChange={(date: Date) =>
-          dispatch(
-            modifySettings({
-              key: property.handle,
-              namespace,
-              value: format(date, dateFormat),
-            })
-          )
-        }
+        onChange={(date: Date) => onUpdateValue(format(date, dateFormat))}
       />
     </BaseControl>
   );

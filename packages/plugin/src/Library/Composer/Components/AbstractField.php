@@ -18,6 +18,8 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Validators\HandleValidator;
+use Solspace\Freeform\Attributes\Property\Validators\LengthValidator;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
@@ -48,6 +50,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     )]
     #[Middleware('handle', ['label'])]
     #[Flag('code')]
+    #[HandleValidator]
+    #[LengthValidator(100)]
     protected string $handle = '';
 
     #[Section('general')]

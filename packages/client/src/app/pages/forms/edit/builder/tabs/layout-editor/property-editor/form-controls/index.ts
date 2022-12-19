@@ -1,3 +1,4 @@
+export { default as array } from './array';
 export { default as bool } from './bool';
 export { default as int } from './int';
 export { default as string } from './string';

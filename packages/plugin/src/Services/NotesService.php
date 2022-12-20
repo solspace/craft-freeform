@@ -7,6 +7,8 @@ use Solspace\Freeform\Records\SubmissionNoteRecord;
 class NotesService extends BaseService
 {
     /**
+     * @param mixed $submissionId
+     *
      * @return bool|void
      *
      * @throws \Exception

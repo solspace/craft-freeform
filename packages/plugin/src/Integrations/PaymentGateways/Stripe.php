@@ -249,7 +249,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
     {
         $this->prepareApi();
 
-        $interval = self::PLAN_INTERVAL_CONVERSION[\strtolower($plan->getInterval())];
+        $interval = self::PLAN_INTERVAL_CONVERSION[strtolower($plan->getInterval())];
         $hash = $plan->getFormHash();
         $productId = 'freeform'.($hash ? '_'.$hash : '');
 
@@ -272,7 +272,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
             'id' => $plan->getId(),
             'nickname' => $plan->getName(),
             'amount' => self::toStripeAmount($plan->getAmount(), $plan->getCurrency()),
-            'currency' => \strtolower($plan->getCurrency()),
+            'currency' => strtolower($plan->getCurrency()),
             'interval' => $interval['interval'],
             'interval_count' => $interval['count'],
             'product' => $product,
@@ -444,7 +444,8 @@ class Stripe extends AbstractPaymentGatewayIntegration
     }
 
     /**
-     * @param bool $atPeriodEnd
+     * @param bool  $atPeriodEnd
+     * @param mixed $resourceId
      *
      * @throws \Exception
      */

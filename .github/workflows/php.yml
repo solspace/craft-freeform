@@ -1,0 +1,66 @@
+name: PHP
+
+on:
+  pull_request:
+    branches: [v5.0]
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    name: Code Style Check
+
+    strategy:
+      matrix:
+        php-versions: ['8.0.2']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: curl, mbstring, gd
+
+      # Cache the vendors directory to spend less resources on each run
+      - name: Cache vendors
+        uses: actions/cache@v3
+        with:
+          path: vendor/
+          key: vendors-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run CS Fixer
+        run: composer run fix:dry-run || (printf \"\\e[41mCS Fixer found issues\\e[0m\\n\" && exit 1)
+
+  php-tests:
+    runs-on: ubuntu-latest
+    name: Unit & Acceptance tests
+
+    strategy:
+      matrix:
+        php-versions: ['8.0.2']
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: curl, mbstring, gd
+
+      # Cache the vendors directory to spend less resources on each run
+      - name: Cache vendors
+        uses: actions/cache@v3
+        with:
+          path: vendor/
+          key: vendors-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run Unit Tests
+        run: composer run-script test:unit

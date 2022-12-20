@@ -1,0 +1,54 @@
+name: Builder
+
+on:
+  pull_request:
+    branches: [v5.0]
+
+jobs:
+  ts-linter:
+    runs-on: ubuntu-latest
+    name: Linter
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - run: npm ci
+      - name: npm run lint
+        run: | 
+          cd packages/client
+          npm run lint
+
+  ts-tests:
+    runs-on: ubuntu-latest
+    name: Tests
+
+    strategy:
+      matrix:
+        node-version: [ 16.x ]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+
+      - run: npm ci
+      - name: npm test
+        run: |
+          cd packages/client
+          npm test
+

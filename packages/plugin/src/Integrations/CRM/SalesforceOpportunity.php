@@ -720,6 +720,8 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     /**
      * Checks if Form field's type calls for a value append.
      *
+     * @param mixed $formField
+     *
      * @return bool
      */
     private function isAppendFieldType($formField)
@@ -730,6 +732,10 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     /**
      * Goes through all of the mapped values, checks which values have to be appended and appends them to the record's
      * values.
+     *
+     * @param mixed $mappedValues
+     * @param mixed $record
+     * @param mixed $appendFields
      *
      * @return mixed
      */

@@ -14,13 +14,11 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
     use OptionsKeyValuePairTrait;
 
     #[Property(
-        type: 'options',
+        label: 'Options Editor',
+        type: Property::TYPE_OPTIONS,
         instructions: 'Define your options',
     )]
-    protected array $options = [];
-
-    // /** @var Option[] */
-    // protected $options;
+    protected ?array $options = [];
 
     /** @var string */
     protected $source;
@@ -60,6 +58,9 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
      */
     public function getOptions(): array
     {
+        // TODO - https://github.com/solspace/craft-freeform/pull/553#issuecomment-1355052695
+        return [];
+
         if ($this instanceof MultipleValueInterface) {
             $values = $this->values;
         } else {

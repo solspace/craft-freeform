@@ -756,13 +756,13 @@
 - Fixed a bug where session data could sometimes not be written when no custom attributes were passed.
 - Fixed a bug where empty required File Upload fields could sometimes not show an error/halt the form.
 - Fixed a bug where creating new fields in the Field Manager would not show a clear error about a field handle already existing.
-- Fixed a bug where an error could sometimes be incorrectly logged for the MailChimp integration.
+- Fixed a bug where an error could sometimes be incorrectly logged for the Mailchimp integration.
 
 ## 3.10.8 - 2021-02-16
 
 ### Added
 - Added ability to include Twig in the Admin Recipients email textarea in the form builder (for more complex conditional notifications).
-- Added the possibility to re-subscribe people to MailChimp.
+- Added the possibility to re-subscribe people to Mailchimp.
 - Added customization options for the form auto-scroll feature (to account for floating navigation, etc).
 
 ### Fixed
@@ -786,7 +786,7 @@
 ## 3.10.5 - 2021-02-02
 
 ### Added
-- Added support for Birthday field types in the MailChimp mailing list integration.
+- Added support for Birthday field types in the Mailchimp mailing list integration.
 
 ### Fixed
 - Fixed a bug where adding the sample formatting template through the CP was not working correctly.
@@ -867,7 +867,7 @@
 - Fixed a bug where uploaded asset ID's weren't being set as the File Upload field value after upload.
 - Fixed autocomplete not being turned off on datepicker enabled fields.
 - Fixed a bug where the Active Campaign mailing list integration was not pulling in all mailing lists above 100.
-- Fixed a bug where the MailChimp mailing list integration was not properly detecting duplicates when passing non-lowercase emails.
+- Fixed a bug where the Mailchimp mailing list integration was not properly detecting duplicates when passing non-lowercase emails.
 - Fixed a bug where the Weekly Digest and Email Alert email notifications were not respecting the "testToEmailAddress" config setting.
 - Fixed a bug where textareas inside the CP Submissions detail view were unnecessarily escaping data.
 - Fixed a bug where Signature fields were redrawing incorrectly on high DPI displays.
@@ -1100,7 +1100,7 @@
 - Fixed a bug where the SharpSpring CRM integration was not working correctly for mapping to custom fields.
 - Fixed a bug where removing a Payments setup from a form would not remove all traces and error on the front end when submitting the form.
 - Fixed a bug where clicking on Form filters in the Submissions index page would not update the URL to contain the handle.
-- Fixed a bug where the MailChimp mailing list integration Contact Tags were not being updated when submitting a submission.
+- Fixed a bug where the Mailchimp mailing list integration Contact Tags were not being updated when submitting a submission.
 
 ## 3.6.12 - 2020-06-11
 
@@ -1142,8 +1142,8 @@
 
 ### Added
 - Added Pardot CRM integration.
-- Added ability to map GDPR consent / marketing settings to MailChimp contacts.
-- Added ability to map Tags to MailChimp contacts.
+- Added ability to map GDPR consent / marketing settings to Mailchimp contacts.
+- Added ability to map Tags to Mailchimp contacts.
 - Added AFTER_UPDATE and BEFORE_UPDATE events to the submission save action.
 
 ### Changed
@@ -2033,7 +2033,7 @@
 - Added ability to map submission data to Craft Entries and Users!
 - Added Password fieldtype, meant typically for using with Users connection for registration forms.
 - Added Bootstrap 4 example formatting template (to choose inside Composer).
-- Added support for mapping to website, URL, dropdown, radio, date and zip fields in MailChimp integration.
+- Added support for mapping to website, URL, dropdown, radio, date and zip fields in Mailchimp integration.
 - Added `fieldIdPrefix` parameter to `freeform.form` function to set a prefix value on field output. Helpful if you have more than 1 form on the same template and are sharing fields.
 
 ### Changed
@@ -2320,7 +2320,7 @@
 ## 2.0.0-beta.6 - 2018-02-02
 
 ### Added
-- Added a 'Use Double Opt-in?' setting for MailChimp integrations.
+- Added a 'Use Double Opt-in?' setting for Mailchimp integrations.
 - Added `onBeforeSubmit` and `onAfterSubmit` events.
 - Added an optional `renderSingleInput` method to render single Checkbox fields' input without an additional hidden input.
 

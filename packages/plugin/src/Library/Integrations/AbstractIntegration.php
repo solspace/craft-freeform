@@ -137,7 +137,7 @@ abstract class AbstractIntegration implements IntegrationInterface
 
     /**
      * Returns the MailingList service provider short name
-     * i.e. - MailChimp, Constant Contact, etc...
+     * i.e. - Mailchimp, Constant Contact, etc...
      *
      * @throws \ReflectionException
      */

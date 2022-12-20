@@ -36,7 +36,7 @@ interface IntegrationInterface
 
     /**
      * Returns the integration service provider short name
-     * i.e. - MailChimp, Constant Contact, Salesforce, etc...
+     * i.e. - Mailchimp, Constant Contact, Salesforce, etc...
      */
     public function getServiceProvider(): string;
 

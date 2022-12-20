@@ -29,8 +29,8 @@ class MailChimp extends AbstractMailingListIntegration
     public const SETTING_DATA_CENTER = 'data_center';
     public const SETTING_INTEREST_GROUPS = 'interest_groups';
 
-    public const TITLE = 'MailChimp';
-    public const LOG_CATEGORY = 'MailChimp';
+    public const TITLE = 'Mailchimp';
+    public const LOG_CATEGORY = 'Mailchimp';
 
     /** @var array */
     private $existingTags;
@@ -48,7 +48,7 @@ class MailChimp extends AbstractMailingListIntegration
                 SettingBlueprint::TYPE_TEXT,
                 self::SETTING_API_KEY,
                 'API Key',
-                'Enter your MailChimp API key here.',
+                'Enter your Mailchimp API key here.',
                 true
             ),
             new SettingBlueprint(
@@ -213,7 +213,7 @@ class MailChimp extends AbstractMailingListIntegration
             $dataCenter = $matches[1];
             $this->setSetting(self::SETTING_DATA_CENTER, $dataCenter);
         } else {
-            throw new IntegrationException('Could not detect data center for MailChimp');
+            throw new IntegrationException('Could not detect data center for Mailchimp');
         }
 
         $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
@@ -495,7 +495,7 @@ class MailChimp extends AbstractMailingListIntegration
 
         if (empty($dataCenter)) {
             throw new IntegrationException(
-                $this->getTranslator()->translate('Could not detect data center for MailChimp')
+                $this->getTranslator()->translate('Could not detect data center for Mailchimp')
             );
         }
 
@@ -556,7 +556,7 @@ class MailChimp extends AbstractMailingListIntegration
             try {
                 $this->post("lists/{$listId}/segments/{$tagId}/members", ['json' => ['email_address' => $email]]);
             } catch (RequestException $exception) {
-                $this->getLogger()->error("Could not add a MailChimp tag '{$tag}' to user {$email}");
+                $this->getLogger()->error("Could not add a Mailchimp tag '{$tag}' to user {$email}");
             }
         }
     }
@@ -570,7 +570,7 @@ class MailChimp extends AbstractMailingListIntegration
             try {
                 $this->delete("lists/{$listId}/segments/{$tagId}/members/{$emailHash}");
             } catch (RequestException $deleteException) {
-                $this->getLogger()->warning("Could not delete MailChimp tag '{$tagName}' (#{$tagId})");
+                $this->getLogger()->warning("Could not delete Mailchimp tag '{$tagName}' (#{$tagId})");
             }
         }
     }
@@ -592,7 +592,7 @@ class MailChimp extends AbstractMailingListIntegration
 
                 $this->existingTags = $tags;
             } catch (RequestException $e) {
-                $this->getLogger()->error('Could not fetch MailChimp tags');
+                $this->getLogger()->error('Could not fetch Mailchimp tags');
 
                 $this->existingTags = [];
             }
@@ -618,7 +618,7 @@ class MailChimp extends AbstractMailingListIntegration
 
             return $data->id;
         } catch (RequestException $e) {
-            $this->getLogger()->warning("Could not create a MailChimp tag '{$tagName}'");
+            $this->getLogger()->warning("Could not create a Mailchimp tag '{$tagName}'");
 
             return null;
         }

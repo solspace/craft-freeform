@@ -48,7 +48,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         order: 2,
         placeholder: 'myField',
     )]
-    #[Middleware('handle', ['label'])]
+    #[Middleware('handle')]
     #[Flag('code')]
     #[HandleValidator]
     #[LengthValidator(100)]

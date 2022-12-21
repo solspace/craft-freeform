@@ -18,7 +18,8 @@ const Bool: React.FC<ControlType> = ({ field, property, dispatch }) => {
         <CheckboxInput
           id={handle}
           label={label}
-          onClick={() => dispatch(edit({ uid, property, value: !enabled }))}
+          checked={enabled}
+          onChange={() => dispatch(edit({ uid, property, value: !enabled }))}
         />
       </CheckboxWrapper>
     </ControlWrapper>

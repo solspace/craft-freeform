@@ -38,6 +38,7 @@ class NumberField extends TextField
 
     #[Property(
         label: 'Min/Max Values',
+        type: Property::TYPE_MIN_MAX,
         instructions: 'The minimum and/or maximum numeric value this field is allowed to have (optional).',
     )]
     protected ?array $minMaxValues = [null, null];
@@ -67,7 +68,7 @@ class NumberField extends TextField
     public function getMinMaxValues(): array
     {
         if (!\is_array($this->minMaxValues)) {
-            return [];
+            return [null, null];
         }
 
         return $this->minMaxValues;
@@ -85,12 +86,16 @@ class NumberField extends TextField
 
     public function getMinValue(): int
     {
-        return $this->minMaxValues[0];
+        [$min] = $this->getMinMaxValues();
+
+        return $min;
     }
 
     public function getMaxValue(): int
     {
-        return $this->minMaxValues[1];
+        [, $max] = $this->getMinMaxValues();
+
+        return $max;
     }
 
     public function getDecimalCount(): int

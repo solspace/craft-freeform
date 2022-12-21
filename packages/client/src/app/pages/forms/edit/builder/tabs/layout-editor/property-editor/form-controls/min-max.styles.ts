@@ -2,11 +2,6 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div`
   display: flex;
-
-  div {
-    width: auto;
-    display: flex;
-  }
 `;
 
 const Input = styled.input`

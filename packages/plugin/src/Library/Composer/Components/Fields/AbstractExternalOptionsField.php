@@ -60,7 +60,6 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
     {
         // TODO - https://github.com/solspace/craft-freeform/pull/553#issuecomment-1355052695
         return [];
-
         /*
         if ($this instanceof MultipleValueInterface) {
             $values = $this->values;

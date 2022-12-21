@@ -6,6 +6,7 @@ namespace Solspace\Freeform\Attributes\Property;
 class Property
 {
     public const TYPE_OPTIONS = 'options';
+    public const TYPE_MIN_MAX = 'minMax';
     public const TYPE_SELECT = 'select';
     public const TYPE_TEXTAREA = 'textarea';
     public const TYPE_COLOR_PICKER = 'color-picker';

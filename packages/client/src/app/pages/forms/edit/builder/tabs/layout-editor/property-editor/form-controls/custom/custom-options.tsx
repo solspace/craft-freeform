@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { CheckboxInput } from '@components/form-controls/inputs/checkbox-input';
 import {
   AddOptionIcon,
@@ -15,110 +15,31 @@ import {
   Wrapper,
 } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/custom/custom-options.styles';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import translate from '@ff-client/utils/translations';
 
-type OptionProp = {
-  label: string;
-  value: string;
-  checked: boolean;
-};
-
-export type CustomOptionsProps = {
-  useCustomValues?: boolean;
-  options?: OptionProp[];
-};
+import {
+  addOption,
+  deleteOption,
+  dragAndDropOption,
+  updateChecked,
+  updateOption,
+} from './custom-options.operations';
+import { CustomOptions } from './custom-options.types';
 
 type Props = {
   handle: string;
-  value: CustomOptionsProps;
-  onChange: (value: CustomOptionsProps) => void;
-};
-
-const addOption = (
-  options: OptionProp[],
-  value: CustomOptionsProps,
-  onChange: (value: CustomOptionsProps) => void
-): void => {
-  const updatedOptions = [...options];
-
-  updatedOptions.push({
-    label: '',
-    value: '',
-    checked: false,
-  });
-
-  onChange({
-    ...value,
-    options: updatedOptions,
-  });
-};
-
-const updateOption = (
-  index: number,
-  option: OptionProp,
-  value: CustomOptionsProps,
-  onChange: (value: CustomOptionsProps) => void
-): void => {
-  const options = [...value.options];
-  options[index] = option;
-
-  onChange({
-    ...value,
-    options,
-  });
-};
-
-const deleteOption = (
-  index: number,
-  value: CustomOptionsProps,
-  onChange: (value: CustomOptionsProps) => void
-): void => {
-  const options = value.options.filter(
-    (option, optionIndex) => optionIndex !== index
-  );
-
-  onChange({
-    ...value,
-    options,
-  });
-};
-
-const updateChecked = (
-  index: number,
-  option: OptionProp,
-  value: CustomOptionsProps,
-  onChange: (value: CustomOptionsProps) => void
-): void => {
-  const options = value.options.map((option) => ({
-    ...option,
-    checked: false,
-  }));
-
-  options[index] = option;
-
-  onChange({
-    ...value,
-    options,
-  });
-};
-
-const dragAndDropOption = (
-  index: number,
-  value: CustomOptionsProps,
-  onChange: (value: CustomOptionsProps) => void
-): void => {
-  // TODO: Implement
+  value: CustomOptions;
+  onChange: (value: CustomOptions) => void;
 };
 
 const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
-  const addOptionButtonRef = useRef(null);
-
   const options = value?.options || [];
   const useCustomValues = value?.useCustomValues || false;
 
   useOnKeypress({
     callback: (event: KeyboardEvent): void => {
       if (event.key === 'Enter') {
-        addOptionButtonRef.current.click();
+        addOption(options, value, onChange);
       }
     },
   });
@@ -127,7 +48,7 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
     <Wrapper>
       <Row>
         <Column>
-          <H3>Options</H3>
+          <H3>{translate('Options')}</H3>
           <CheckboxWrapper>
             <CheckboxInput
               id="useCustomValues"
@@ -148,8 +69,8 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
           <TableOptions>
             <thead>
               <tr>
-                <td>Label</td>
-                {useCustomValues && <td>Value</td>}
+                <td>{translate('Label')}</td>
+                {useCustomValues && <td>{translate('Value')}</td>}
                 <td></td>
                 <td></td>
                 <td></td>
@@ -241,12 +162,9 @@ const CustomOptions: React.FC<Props> = ({ handle, value, onChange }) => {
             <tbody>
               <tr>
                 <td>
-                  <Button
-                    ref={addOptionButtonRef}
-                    onClick={() => addOption(options, value, onChange)}
-                  >
+                  <Button onClick={() => addOption(options, value, onChange)}>
                     <AddOptionIcon />
-                    Add an option
+                    {translate('Add an option')}
                   </Button>
                 </td>
               </tr>

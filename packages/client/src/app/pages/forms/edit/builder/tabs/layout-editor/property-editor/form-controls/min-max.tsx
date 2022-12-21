@@ -10,7 +10,7 @@ const MinMax: React.FC<ControlType> = ({ field, property, dispatch }) => {
   const { uid } = field;
 
   const [min, max] = field.properties[handle] || [null, null];
-  const minValue = !field.properties.allowNegative ? 0 : null;
+  const minValue = !field.properties?.allowNegative ? 0 : null;
 
   // TODO - Validation of value before dispatch
 

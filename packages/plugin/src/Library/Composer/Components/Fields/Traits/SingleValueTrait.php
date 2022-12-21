@@ -19,7 +19,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInter
 
 trait SingleValueTrait
 {
-    protected string $value;
+    protected string $value = '';
 
     public function getValue(): mixed
     {

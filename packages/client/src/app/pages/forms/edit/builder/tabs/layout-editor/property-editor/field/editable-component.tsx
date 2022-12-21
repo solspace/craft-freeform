@@ -13,8 +13,9 @@ type Props = {
   property: Property;
 };
 
-const types: { [key in PropertyType]?: ComponentType<ControlType> } =
-  ControlTypes;
+const types: {
+  [key in PropertyType]?: ComponentType<ControlType>;
+} = ControlTypes;
 
 export const EditableComponent: React.FC<Props> = ({ field, property }) => {
   const dispatch = useAppDispatch();

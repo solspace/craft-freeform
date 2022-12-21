@@ -31,26 +31,17 @@ class NumberField extends TextField
     protected ?int $minLength = null;
 
     #[Property(
-        label: 'Max',
+        label: 'Max Length',
     )]
     #[PropertyGroup('length')]
     protected ?int $maxLength = null;
 
     #[Property(
-        placeholder: 'Max',
-    )]
-    #[PropertyGroup(
-        'value',
         label: 'Min/Max Values',
+        type: Property::TYPE_MIN_MAX,
         instructions: 'The minimum and/or maximum numeric value this field is allowed to have (optional).',
     )]
-    protected ?int $minValue = null;
-
-    #[Property(
-        placeholder: 'Max'
-    )]
-    #[PropertyGroup('value')]
-    protected ?int $maxValue = null;
+    protected ?array $minMaxValues = [null, null];
 
     #[Property(
         instructions: 'The number of decimal places allowed.',
@@ -74,24 +65,37 @@ class NumberField extends TextField
         return $value;
     }
 
+    public function getMinMaxValues(): array
+    {
+        if (!\is_array($this->minMaxValues)) {
+            return [null, null];
+        }
+
+        return $this->minMaxValues;
+    }
+
     public function getType(): string
     {
         return self::TYPE_NUMBER;
     }
 
-    public function getMinLength(): int
+    public function getMinLength(): ?int
     {
         return $this->minLength;
     }
 
     public function getMinValue(): int
     {
-        return $this->minValue;
+        [$min] = $this->getMinMaxValues();
+
+        return $min;
     }
 
     public function getMaxValue(): int
     {
-        return $this->maxValue;
+        [, $max] = $this->getMinMaxValues();
+
+        return $max;
     }
 
     public function getDecimalCount(): int

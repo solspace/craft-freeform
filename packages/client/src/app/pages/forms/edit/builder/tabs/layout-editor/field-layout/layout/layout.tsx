@@ -1,11 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import type { Layout as LayoutType } from '@editor/builder/types/layout';
+import { selectRowsInLayout } from '@editor/store/slices/rows';
+import translate from '@ff-client/utils/translations';
 
-import { selectRowsInLayout } from '../../../../../store/slices/rows';
-import type { Layout as LayoutType } from '../../../../types/layout';
 import { Row } from '../row/row';
 
-import { Wrapper } from './layout.styles';
+import { useLayoutDrop } from './layout.drop';
+import { DropZone, FieldLayoutWrapper } from './layout.styles';
 
 type Props = {
   layout: LayoutType;
@@ -13,16 +15,19 @@ type Props = {
 
 export const Layout: React.FC<Props> = ({ layout }) => {
   const rows = useSelector(selectRowsInLayout(layout));
-
-  if (!layout) {
-    return null;
-  }
+  const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
 
   return (
-    <Wrapper>
+    <FieldLayoutWrapper ref={dropRef}>
+      {!rows.length && (
+        <div>Drag or click fields to add them to the layout</div>
+      )}
       {rows.map((row) => (
         <Row row={row} key={row.uid} />
       ))}
-    </Wrapper>
+      <DropZone style={placeholderAnimation}>
+        {translate('+ insert row')}
+      </DropZone>
+    </FieldLayoutWrapper>
   );
 };

@@ -17,7 +17,7 @@ type RowDragHook = {
   isOver: boolean;
 };
 
-export const useRowDrop = (row: Row, cellCount: number): RowDragHook => {
+export const useCellDrop = (row: Row, cellCount: number): RowDragHook => {
   const dispatch = useAppDispatch();
   const placeholderPosition = useSelector(selectCurrentPosition);
 

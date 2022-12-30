@@ -9,23 +9,27 @@ import { addNewField } from '@editor/store/thunks/fields';
 import type { FieldType } from '@ff-client/types/fields';
 
 type RowDropHook = {
-  dropRef: ConnectDropTarget;
+  ref: ConnectDropTarget;
   placeholderAnimation: SpringValues<
     PickAnimated<{ opacity: number; transform: string }>
   >;
   rowAnimation: SpringValues<PickAnimated<{ transform: string }>>;
   isOver: boolean;
+  canDrop: boolean;
 };
 
-type CollectedProps = { isOver: boolean };
+type CollectedProps = { isOver: boolean; canDrop: boolean };
 
 export const useRowDrop = (row: Row): RowDropHook => {
   const dispatch = useAppDispatch();
 
-  const [{ isOver }, dropRef] = useDrop<FieldType, void, CollectedProps>(
+  const [{ isOver, canDrop }, ref] = useDrop<FieldType, void, CollectedProps>(
     () => ({
       accept: Drag.FieldType,
-      collect: (monitor) => ({ isOver: monitor.isOver() }),
+      collect: (monitor) => ({
+        isOver: monitor.isOver(),
+        canDrop: monitor.canDrop(),
+      }),
       canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
       drop: (item) => {
         dispatch(addNewField(item, row));
@@ -40,7 +44,7 @@ export const useRowDrop = (row: Row): RowDropHook => {
       transform: isOver ? `scaleY(1)` : `scaleY(0)`,
     },
     config: {
-      tension: 300,
+      tension: 500,
     },
   });
 
@@ -54,9 +58,10 @@ export const useRowDrop = (row: Row): RowDropHook => {
   });
 
   return {
-    dropRef,
+    ref,
     placeholderAnimation,
     rowAnimation,
     isOver,
+    canDrop,
   };
 };

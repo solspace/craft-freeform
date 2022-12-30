@@ -1,9 +1,18 @@
 import { animated } from 'react-spring';
+import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Wrapper = styled(animated.div)`
-  //border: 3px dashed green;
-
   flex: 1 0;
   overflow: hidden;
+
+  padding: ${spacings.sm} ${spacings.lg};
+
+  &:first-child {
+    padding-left: 0;
+  }
+
+  &:last-child {
+    padding-right: 0;
+  }
 `;

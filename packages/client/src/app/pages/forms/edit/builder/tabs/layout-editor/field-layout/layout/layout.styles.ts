@@ -1,5 +1,5 @@
 import { animated } from 'react-spring';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
+import { borderRadius, colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const FieldLayoutWrapper = styled.div`
@@ -9,7 +9,6 @@ export const FieldLayoutWrapper = styled.div`
 
   display: flex;
   flex-direction: column;
-  gap: ${spacings.lg};
 
   height: 100%;
   padding-bottom: 60px;

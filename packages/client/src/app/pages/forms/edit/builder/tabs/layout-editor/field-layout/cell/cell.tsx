@@ -1,9 +1,8 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
 import type { Cell as CellPropType } from '@editor/builder/types/layout';
+import { Drag } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { setCell } from '@editor/store/slices/drag';
 
 import { CellField } from './cell-types/cell-field/cell-field';
 import { CellLayout } from './cell-types/cell-layout/cell-layout';
@@ -15,25 +14,18 @@ type Props = {
 };
 
 export const Cell: React.FC<Props> = ({ cell, order }) => {
-  const dispatch = useAppDispatch();
-
-  const [, drag] = useDrag(
+  const [{ isDragging }, drag] = useDrag(
     () => ({
-      type: 'LayoutField',
-      item: (): Record<string, string> => {
-        dispatch(setCell(cell.uid));
-
-        return {};
-      },
-      end: (): void => {
-        dispatch(setCell(undefined));
-      },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
+      type: Drag.Cell,
+      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+      item: cell,
     }),
-    [cell.uid]
+    [cell]
   );
+
+  if (isDragging) {
+    return null;
+  }
 
   let Component;
   switch (cell.type) {

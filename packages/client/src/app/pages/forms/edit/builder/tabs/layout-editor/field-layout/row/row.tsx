@@ -1,20 +1,21 @@
-import React from 'react';
+import type { MutableRefObject } from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useSpring } from 'react-spring';
 import type { Row as RowType } from '@editor/builder/types/layout';
 import { selectCellsInRow } from '@editor/store/slices/cells';
-import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import { Cell } from '../cell/cell';
 
+import { useOnMountAnimation } from './row.animations';
 import { useRowCellDrop } from './row.cell-drop';
 import { useRowDrop } from './row.drop';
 import {
-  CellDropZone,
-  Container,
+  CellPlaceholder,
   DropZone,
   DropZoneAnimation,
+  RowCellsContainer,
   RowWrapper,
 } from './row.styles';
 
@@ -22,8 +23,35 @@ type Props = {
   row: RowType;
 };
 
+const calculateOffset = (
+  isOver: boolean,
+  currentIndex: number,
+  cellWidth?: number,
+  placeholderPos?: number
+): number | undefined => {
+  if (!isOver) {
+    return undefined;
+  }
+
+  if (placeholderPos === undefined || cellWidth === undefined) {
+    return undefined;
+  }
+
+  if (placeholderPos > currentIndex) {
+    return -cellWidth;
+  }
+
+  if (placeholderPos < currentIndex) {
+    return cellWidth;
+  }
+
+  return 0;
+};
+
 export const Row: React.FC<Props> = ({ row }) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const cells = useSelector(selectCellsInRow(row));
+  const onMountAnimation = useOnMountAnimation();
 
   const {
     ref: rowDropRef,
@@ -36,45 +64,51 @@ export const Row: React.FC<Props> = ({ row }) => {
     isOver,
     canDrop,
     isCurrentRow,
-  } = useRowCellDrop(row);
+    placeholderPos,
+    cellWidth,
+  } = useRowCellDrop(wrapperRef, row, cells.length);
 
-  const styles = useSpring({
+  const ref = cellDropRef(
+    wrapperRef
+  ) as unknown as MutableRefObject<HTMLDivElement>;
+
+  const cellPlaceholderAnimation = useSpring({
     from: {
-      opacity: 0,
-      height: 1,
-      transform: 'scaleY(0)',
+      flexGrow: 0,
+      x: 0,
     },
     to: {
-      opacity: 1,
-      height: 72,
-      transform: 'scaleY(1)',
+      flexGrow: isOver ? 1 : 0,
+      x: placeholderPos * cellWidth,
     },
     config: {
-      friction: 23,
-      tension: 1000,
-      precision: 0.00001,
+      tension: 200,
+      friction: 10,
+      mass: 0.1,
     },
   });
 
   return (
     <RowWrapper
-      ref={cellDropRef}
-      style={styles}
-      className={classes(isCurrentRow && 'current-row')}
+      ref={ref}
+      style={onMountAnimation}
+      //className={classes(isCurrentRow && cells.length === 1 && 'empty')}
     >
       <DropZone ref={rowDropRef}>
         <DropZoneAnimation style={placeholderAnimation}>
           {translate('+ insert row')}
         </DropZoneAnimation>
       </DropZone>
-      <CellDropZone
-        className={classes(isOver && 'active', canDrop && 'can-drop')}
-      />
-      <Container style={rowAnimation}>
-        {cells.map((cell) => (
-          <Cell cell={cell} key={cell.uid} />
+      <RowCellsContainer style={rowAnimation}>
+        <CellPlaceholder style={cellPlaceholderAnimation} />
+        {cells.map((cell, idx) => (
+          <Cell
+            cell={cell}
+            key={cell.uid}
+            offsetPx={calculateOffset(isOver, idx, cellWidth, placeholderPos)}
+          />
         ))}
-      </Container>
+      </RowCellsContainer>
     </RowWrapper>
   );
 };

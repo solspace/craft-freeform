@@ -7,12 +7,4 @@ export const Wrapper = styled(animated.div)`
   overflow: hidden;
 
   padding: ${spacings.sm} ${spacings.lg};
-
-  &:first-child {
-    padding-left: 0;
-  }
-
-  &:last-child {
-    padding-right: 0;
-  }
 `;

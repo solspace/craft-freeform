@@ -2,31 +2,29 @@ import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
+const minHeight = '72px';
+
 export const RowWrapper = styled(animated.div)`
   position: relative;
 
   //min-height: 72px;
   min-height: 1px;
+  margin: 0 -${spacings.lg};
 
   background-color: #f3f7fc00;
   border: 1px solid transparent;
 
   transition: all 0.2s ease-out;
   transform-origin: 50% 0%;
-
-  &.current-row {
-    border: 1px dashed #00000033;
-    background-color: ${colors.gray050};
-  }
 `;
 
-export const Container = styled(animated.div)`
+export const RowCellsContainer = styled(animated.div)`
   position: relative;
+  z-index: 2;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: stretch;
-  gap: ${spacings.lg};
 `;
 
 export const DropZone = styled.div`
@@ -35,12 +33,15 @@ export const DropZone = styled.div`
   right: 0;
   top: -6px;
 
-  z-index: 3;
+  z-index: 4;
 
-  height: 26px;
+  height: 20px;
 `;
 
 export const DropZoneAnimation = styled(animated.div)`
+  position: relative;
+  top: 3px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,24 +60,10 @@ export const DropZoneAnimation = styled(animated.div)`
   font-family: monospace;
 `;
 
-export const CellDropZone = styled.div`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  z-index: 2;
+export const CellPlaceholder = styled(animated.div)`
+  border: 2px dashed grey;
 
-  display: none;
-
-  pointer-events: none;
-
-  &.active {
-    //border: 1px dashed ${colors.blue050};
-  }
-
-  &.can-drop {
-    display: block;
-    z-index: 2;
-  }
+  min-height: ${minHeight};
+  flex-grow: 1;
+  flex-shrink: 0;
 `;

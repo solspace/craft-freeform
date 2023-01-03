@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { useSpring } from 'react-spring';
 import type { Cell as CellPropType } from '@editor/builder/types/layout';
 import { Drag } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
@@ -10,10 +11,11 @@ import { Wrapper } from './cell.styles';
 
 type Props = {
   cell: CellPropType;
-  order?: number;
+  offsetPx?: number;
+  width?: number;
 };
 
-export const Cell: React.FC<Props> = ({ cell, order }) => {
+export const Cell: React.FC<Props> = ({ cell, offsetPx, width }) => {
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: Drag.Cell,
@@ -22,6 +24,17 @@ export const Cell: React.FC<Props> = ({ cell, order }) => {
     }),
     [cell]
   );
+
+  const style = useSpring({
+    to: {
+      width,
+      x: offsetPx || 0,
+    },
+    config: {
+      tension: 700,
+      mass: 0.5,
+    },
+  });
 
   if (isDragging) {
     return null;
@@ -39,7 +52,7 @@ export const Cell: React.FC<Props> = ({ cell, order }) => {
   }
 
   return (
-    <Wrapper ref={drag} style={{ order }}>
+    <Wrapper ref={drag} style={style}>
       <Component uid={cell.targetUid} />
     </Wrapper>
   );

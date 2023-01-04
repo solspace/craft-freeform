@@ -23,7 +23,6 @@ export const useOnMountAnimation = (): MountAnimation => {
       friction: 11,
       tension: 100,
       mass: 0.5,
-      //precision: 0.00001,
     },
   });
 };

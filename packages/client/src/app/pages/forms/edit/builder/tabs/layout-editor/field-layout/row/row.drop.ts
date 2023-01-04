@@ -43,6 +43,7 @@ export const useRowDrop = (row: Row): RowDropHook => {
       opacity: isOver ? 1 : 0,
       transform: isOver ? `scaleY(1)` : `scaleY(0)`,
     },
+    delay: isOver ? 200 : 0,
     config: {
       tension: 500,
     },
@@ -52,6 +53,7 @@ export const useRowDrop = (row: Row): RowDropHook => {
     to: {
       transform: isOver ? `translateY(10px)` : `translateY(0px)`,
     },
+    delay: isOver ? 200 : 0,
     config: {
       tension: 300,
     },

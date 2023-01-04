@@ -7,7 +7,7 @@ import { CellType } from '@editor/builder/types/layout';
 
 import { CellField } from './cell-types/cell-field/cell-field';
 import { CellLayout } from './cell-types/cell-layout/cell-layout';
-import { Wrapper } from './cell.styles';
+import { CellWrapper } from './cell.styles';
 
 type Props = {
   cell: CellPropType;
@@ -52,8 +52,8 @@ export const Cell: React.FC<Props> = ({ cell, offsetPx, width }) => {
   }
 
   return (
-    <Wrapper ref={drag} style={style}>
+    <CellWrapper ref={drag} style={style}>
       <Component uid={cell.targetUid} />
-    </Wrapper>
+    </CellWrapper>
   );
 };

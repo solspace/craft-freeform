@@ -23,8 +23,8 @@ export const RowCellsContainer = styled(animated.div)`
   z-index: 2;
 
   display: flex;
-  justify-content: space-evenly;
-  align-items: stretch;
+  //justify-content: space-evenly;
+  //align-items: stretch;
 `;
 
 export const DropZone = styled.div`

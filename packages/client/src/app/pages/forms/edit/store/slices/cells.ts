@@ -13,6 +13,10 @@ type MoveToPayload = {
 
 const initialState: CellState = [];
 
+type AddPayload = Omit<Cell, 'order'> & {
+  order?: number;
+};
+
 export const cellsSlice = createSlice({
   name: 'cells',
   initialState,
@@ -20,7 +24,8 @@ export const cellsSlice = createSlice({
     set: (state, action: PayloadAction<CellState>) => {
       state.splice(0, state.length, ...action.payload);
     },
-    add: (state, action: PayloadAction<Omit<Cell, 'order'>>) => {
+    add: (state, action: PayloadAction<AddPayload>) => {
+      const { uid, rowUid, order } = action.payload;
       const highestOrder = Math.max(
         -1,
         ...state
@@ -30,8 +35,25 @@ export const cellsSlice = createSlice({
 
       state.push({
         ...action.payload,
-        order: highestOrder + 1,
+        order: order !== undefined ? order : highestOrder + 1,
       });
+
+      if (order !== undefined) {
+        state.forEach((cell) => {
+          if (cell.rowUid !== rowUid) {
+            return;
+          }
+
+          let currentOrder = cell.order;
+          if (cell.uid !== uid) {
+            if (cell.order >= order) {
+              currentOrder = currentOrder + 1;
+            }
+          }
+
+          cell.order = currentOrder;
+        });
+      }
     },
     remove: (state, action: PayloadAction<string>) => {
       state = state.filter((cell) => cell.uid !== action.payload);

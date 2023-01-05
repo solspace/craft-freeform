@@ -7,6 +7,7 @@ export enum FormattingTemplate {
   Bootstrap = 'bootstrap-3.twig',
   Bootstrap4 = 'bootstrap-4.twig',
   Bootstrap5 = 'bootstrap-5.twig',
+  Bootstrap5Dark = 'bootstrap-5-dark.twig',
   Bootstrap5Floating = 'bootstrap-5-floating-labels.twig',
   Flexbox = 'flexbox.twig',
   Foundation = 'foundation-6.twig',

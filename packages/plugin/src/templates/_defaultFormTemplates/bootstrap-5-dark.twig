@@ -1,10 +1,25 @@
 {% css formCss %}
 
 <style>
-.form-floating > label {
-    left: 12px;
+.opinion-scale .opinion-scale-scales>*:first-child>label {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.opinion-scale .opinion-scale-scales>*:last-child>label {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.opinion-scale .opinion-scale-scales li label {
+    color: #ffffff !important;
+    border-color: #495057 !important;
+    background: #1a1d20;
+}
+.opinion-scale .opinion-scale-scales>* input:checked~label {
+    color: #ffffff !important;
+    background: #495057;
 }
 .StripeElement {
+    background: #1a1d20;
     height: 36px;
 }
 </style>
@@ -27,7 +42,11 @@
       event.detail.base = {
         fontSize: "16px",
         lineHeight: "18px",
+        color: "#ffffff",
         fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+      },
+      event.detail.invalid = {
+        color: '#dc3545',
       }
     })
   }
@@ -68,13 +87,13 @@
             {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
             {% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-12" %}
 
-            {% set class = "form-control" ~ (field.hasErrors ? " is-invalid has-validation") %}
+            {% set class = "form-control bg-dark-subtle text-white" ~ (field.hasErrors ? " is-invalid has-validation") %}
             {% if field.type == "file" %}
                 {% set class = "form-control-file" ~ (field.hasErrors ? " is-invalid") %}
             {% elseif field.type == "select" %}
-                {% set class = "form-select" %}
+                {% set class = "form-select bg-dark-subtle text-white" %}
             {% elseif field.type == "signature" %}
-                {% set class = "btn btn-light" %}
+                {% set class = "btn btn-secondary" %}
             {% elseif field.type == "table" %}
                 {% set class = "table" %}
             {% elseif isCheckbox %}
@@ -89,7 +108,7 @@
                 {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
             {% endif %}
 
-            <div class="{{ columnClass }} ff-fieldtype-{{ field.type }}{% if field.type in ['text', 'email', 'confirmation', 'datetime', 'select', 'website', 'password', 'phone', 'textarea', 'multiple_select', 'number', 'regex'] %} form-floating{% endif %}"{{ field.rulesHtmlData }}>
+            <div class="{{ columnClass }} ff-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }}>
                 {% if field.type == "checkbox_group" %}
 
                     {{ field.renderLabel({
@@ -106,11 +125,11 @@
                                    name="{{ field.handle }}[]"
                                    value="{{ option.value }}"
                                    id="{{ field.idAttribute }}-{{ index }}"
-                                   class="form-check-input{{ field.hasErrors ? " is-invalid" }}"
+                                   class="form-check-input bg-dark-subtle{{ field.hasErrors ? " is-invalid" }}"
                                     {{ option.checked ? "checked" : "" }}
                             />
 
-                            <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
+                            <label class="form-check-label text-white" for="{{ field.idAttribute }}-{{ index }}">
                                 {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
@@ -137,10 +156,10 @@
                                    name="{{ field.handle }}"
                                    value="{{ option.value }}"
                                    id="{{ field.idAttribute }}-{{ index }}"
-                                   class="form-check-input{{ field.hasErrors ? " is-invalid" }}"
+                                   class="form-check-input bg-dark-subtle{{ field.hasErrors ? " is-invalid" }}"
                                     {{ option.checked ? "checked" : "" }}
                             />
-                            <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
+                            <label class="form-check-label text-white" for="{{ field.idAttribute }}-{{ index }}">
                                 {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
@@ -166,12 +185,12 @@
                             <input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
                                    name="{{ field.handle }}[]"
                                    value="{{ loop.index0 }}"
-                                   class="form-check-input"
+                                   class="form-check-input bg-dark-subtle"
                                    id="{{ field.idAttribute }}-{{ index }}"
                                     {{ option.checked ? "checked" : "" }}
                             />
 
-                            <label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
+                            <label class="form-check-label text-white" for="{{ field.idAttribute }}-{{ index }}">
                                 {{ option.label|t('freeform')|raw }}
                             </label>
                         </div>
@@ -185,8 +204,8 @@
                 {% elseif field.type in ["checkbox", "mailing_list"] %}
 
                     <div class="form-check">
-                        {{ field.renderInput({ class: class ~ " form-check-input" ~ (field.hasErrors ? " is-invalid") }) }}
-                        {{ field.renderLabel({ labelClass: "form-check-label" ~ (field.hasErrors ? " is-invalid") ~ (field.required ? " required") }) }}
+                        {{ field.renderInput({ class: class ~ " form-check-input bg-dark-subtle" ~ (field.hasErrors ? " is-invalid") }) }}
+                        {{ field.renderLabel({ labelClass: "form-check-label text-white" ~ (field.hasErrors ? " is-invalid") ~ (field.required ? " required") }) }}
                         {{ field.renderInstructions({ instructionsClass: instructionClass }) }}
                         {{ field.renderErrors({ errorClass: errorClass }) }}
                     </div>
@@ -207,9 +226,9 @@
                         addButtonClass: "btn btn-sm btn-primary",
                         removeButtonLabel: "x",
                         removeButtonClass: "btn btn-sm btn-danger",
-                        tableTextInputClass: "form-control",
-                        tableSelectInputClass: "form-select",
-                        tableCheckboxInputClass: "form-check-input"
+                        tableTextInputClass: "form-control bg-dark-subtle text-white",
+                        tableSelectInputClass: "form-select bg-dark-subtle text-white",
+                        tableCheckboxInputClass: "form-check-input bg-dark-subtle"
                     }) }}
 
                 {% elseif field.type == "cc_details" %}
@@ -223,7 +242,7 @@
                     }) }}
 
                     {% for layoutRow in field.layoutRows %}
-                        <div class="row mb-3{{ form.customAttributes.rowClass }}">
+                        <div class="row mb-1{{ form.customAttributes.rowClass }}">
                             {% for layoutField in layoutRow %}
                                 {% set layoutWidth = (12 / (layoutRow|length)) %}
                                 {% set columnClass = columnClass|replace(' col-sm-' ~ width) %}
@@ -251,7 +270,7 @@
                     {{ field.renderInstructions }}
                     {{ field.renderErrors }}
 
-                {% elseif field.type in ["rating", "file", "opinion_scale", "signature", "html", "rich_text"] %}
+                {% else %}
 
                     {{ field.render({
                         class: class,
@@ -260,30 +279,6 @@
                         instructionsBelowField: true,
                         errorClass: errorClass,
                     }) }}
-
-                {% else %}
-
-                    {% set inputAttributes = {} %}
-                    {% if field.type in ['textarea', 'multiple_select'] %}
-                        {% set inputAttributes = { style: 'height:' ~ (25 * field.rows|default(5)) ~ 'px' } %}
-                    {% endif %}
-
-                    {{ field.renderInput({
-                        class: class,
-                        instructionsBelowField: true,
-                        errorClass: errorClass,
-                        placeholder: field.label,
-                        inputAttributes: inputAttributes,
-                    }) }}
-
-                    {{ field.renderLabel({
-                        labelClass: labelClass,
-                        instructionsClass: instructionClass,
-                        errorClass: errorClass,
-                    }) }}
-
-                    {{ field.renderInstructions }}
-                    {{ field.renderErrors }}
 
                 {% endif %}
             </div>

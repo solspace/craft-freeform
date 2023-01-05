@@ -35,6 +35,41 @@
     "template": "/bootstrap/form"
   },
   {
+    "urlParts": ["bootstrap-dark\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"], "\\/success"],
+    "urlPattern": "bootstrap-dark/{slug}/submissions/{id}/success",
+    "template": "/bootstrap-dark/view_submission"
+  },
+  {
+    "urlParts": ["bootstrap-dark\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"]],
+    "urlPattern": "bootstrap-dark/{slug}/submissions/{id}",
+    "template": "/bootstrap-dark/view_submission"
+  },
+  {
+    "urlParts": ["bootstrap-dark\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/edit\\/", ["token","\\\\w+"]],
+    "urlPattern": "bootstrap-dark/{slug}/submissions/edit/{token}",
+    "template": "/bootstrap-dark/edit_submission"
+  },
+  {
+    "urlParts": ["bootstrap-dark\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/delete\\/", ["token","\\\\w+"]],
+    "urlPattern": "bootstrap-dark/{slug}/submissions/delete/{token}",
+    "template": "/bootstrap-dark/delete_submission"
+  },
+  {
+    "urlParts": ["bootstrap-dark\\/", ["slug","[^\\\\\\/]+"], "\\/submissions"],
+    "urlPattern": "bootstrap-dark/{slug}/submissions",
+    "template": "/bootstrap-dark/submissions"
+  },
+  {
+    "urlParts": ["bootstrap-dark\\/",["slug","[^\\\\\\/]+"]],
+    "urlPattern": "bootstrap-dark/{slug}",
+    "template": "/bootstrap-dark/form"
+  },
+  {
+    "urlParts": ["bootstrap-dark\\/",["slug","[^\\\\\\/]+"], "\\/success"],
+    "urlPattern": "bootstrap-dark/{slug}/success",
+    "template": "/bootstrap-dark/form"
+  },
+  {
     "urlParts": ["custom\\/",["slug","[^\\\\\\/]+"]],
     "urlPattern": "custom/{slug}",
     "template": "/custom/form"

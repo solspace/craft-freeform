@@ -10,9 +10,10 @@
 
 <div class="container">
 
-    <h2>Returning Success to Same Page</h2>
-    <p>The following example shows how to have a successful submit return to the same page with a success query in the URL. There are other ways to do this, including using AJAX.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Returning Success to Same Page</h2>
+        <p>The following example shows how to have a successful submit return to the same page with a success query in the URL. There are other ways to do this, including using AJAX.</p>
+    </div>
 
     {% if form %}
 
@@ -20,7 +21,7 @@
     
         {# Detect the query in the URI and display success message #}
         {% if craft.app.request.getQueryParam('success') == 1 %}
-            <div class="alert alert-success" role="alert">
+            <div class="alert alert-success">
                 <h4 class="alert-heading mb-1">Thank you!</h4>
                 <p class="mb-0">Your submission was successful!</p>
             </div>
@@ -34,7 +35,7 @@
 
     {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or on your test from:

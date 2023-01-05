@@ -12,97 +12,165 @@
 
 <div class="container">
 
-    <h2>Extras</h2>
-    <p class="mb-5">
-        This section of the demo templates shows Freeform handling some real world / common implementations of forms.
-    </p>
+    <div class="my-5">
+        <h2>Extras</h2>
+        <p>This section of the demo templates shows Freeform handling some real world / common implementations of forms.</p>
+    </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Example Name</th>
-            <th>Description</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/current-user-data/">Populate a form with Current User Data</a></td>
-                <td>This example shows you how to populate a form with some User account values from the currently logged in user.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/craft-entry-data/">Populate a form with Craft Entry Data</a></td>
-                <td>This example shows how to populate some of a form's fields with some data from a Craft Entry.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/date-pickers/">Adjustments to a Date Field Date/Time Picker</a></td>
-                <td>This example shows some ways to manipulate a Date &amp; Time field type using Freeform's developer events.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/suppress-edit-submissions/">Suppress Notifications when Editing Submissions</a></td>
-                <td>This example shows how to suppress email notifications and other integrations from being triggered when editing an existing submission.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/js-override/">Overriding Freeform JS behavior</a></td>
-                <td>This example shows how to manually override Freeform's built-in JS behavior inside a template.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/submission-limit/">Setting Submission Limits</a></td>
-                <td>This example shows how to set a limit for the number of submissions a form can have.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/submission-duplicate/">Checking Submission Duplicates</a></td>
-                <td>This example shows how to check if the user has already submitted the form when using the <i>Limit Form Submission Rate</i> setting.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/twig-cache">Twig Template Caching on Forms</a></td>
-                <td>This example will show how to refresh the CSRF token and other parts of Freeform when using Twig Caching on a template that contains a form.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/formatting-inside-template/">Formatting Directly Inside Regular Template</a></td>
-                <td>This example shows how you can add formatting code directly inside a regular template.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/manual-form/">Manual Rendering of Forms</a></td>
-                <td>This example shows how to manually template a basic form.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/manual-multipage/">Manual Multi-Page Forms</a></td>
-                <td>This example shows how to manually template multi-page forms.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/multiple-forms/">Multiple Forms in the Same Page</a></td>
-                <td>This example shows how you might have the same form (or 2 similar ones) more than once in the same template.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/parsley/">Form Validation with Parsley</a></td>
-                <td>This example will show you how to implement form validation for your Freeform forms with <a href="https://parsleyjs.org/">Parsley JS</a>.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/relating-submission/">Relating Submissions to Elements</a></td>
-                <td>This example will relate the newly created submission to another element via the Freeform Submission relation element field type.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/form-field-type/">Freeform Form Element Field Type</a></td>
-                <td>This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/ajax-div-success/">Alternate Success Markup from Div after AJAX Submit</a></td>
-                <td>This example shows how to override the default AJAX success message and load a success message from a <code>div</code> instead.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/ajax-template-success">Alternate Success from Template after AJAX Submit</a></td>
-                <td>This example shows how to override the default AJAX success message and load a success message from another template instead.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/override-return-url/">Overiding Success Return URL</a></td>
-                <td>This example shows how to manipulate a form to allow a user to override the Return URL for successful submits.</td>
-            </tr>
-            <tr>
-                <td><a href="{{ siteUrl }}demo/extras/success-same-page/">Returning Success to Same Page</a></td>
-                <td>This example shows how to have a successful submit return to the same page with a success query in the URL.</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/current-user-data/">Populate a form with Current User Data</a></h4>
+                    <p class="card-text text-muted">This example shows you how to populate a form with some User account values from the currently logged in user.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/craft-entry-data/">Populate a form with Craft Entry Data</a></h4>
+                    <p class="card-text text-muted">This example shows how to populate some of a form's fields with some data from a Craft Entry.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/date-pickers/">Adjustments to a Date Field Date/Time Picker</a></h4>
+                    <p class="card-text text-muted">This example shows some ways to manipulate a Date &amp; Time field type using Freeform's developer events.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/suppress-edit-submissions/">Suppress Notifications when Editing Submissions</a></h4>
+                    <p class="card-text text-muted">This example shows how to suppress email notifications and other integrations from being triggered when editing an existing submission.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/js-override/">Overriding Freeform JS behavior</a></h4>
+                    <p class="card-text text-muted">This example shows how to manually override Freeform's built-in JS behavior inside a template.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/submission-limit/">Setting Submission Limits</a></h4>
+                    <p class="card-text text-muted">This example shows how to set a limit for the number of submissions a form can have.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/submission-duplicate/">Checking Submission Duplicates</a></h4>
+                    <p class="card-text text-muted">This example shows how to check if the user has already submitted the form when using the <i>Limit Form Submission Rate</i> setting.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/twig-cache/">Twig Template Caching on Forms</a></h4>
+                    <p class="card-text text-muted">This example will show how to refresh the CSRF token and other parts of Freeform when using Twig Caching on a template that contains a form.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/formatting-inside-template/">Formatting Directly Inside Regular Template</a></h4>
+                    <p class="card-text text-muted">This example shows how you can add formatting code directly inside a regular template.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/manual-form/">Manual Rendering of Forms</a></h4>
+                    <p class="card-text text-muted">This example shows how to manually template a basic form.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/manual-multipage/">Manual Multi-Page Forms</a></h4>
+                    <p class="card-text text-muted">This example shows how to manually template multi-page forms.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/multiple-forms/">Multiple Forms in the Same Page</a></h4>
+                    <p class="card-text text-muted">This example shows how you might have the same form (or 2 similar ones) more than once in the same template.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/parsley/">Form Validation with Parsley</a></h4>
+                    <p class="card-text text-muted">This example will show you how to implement form validation for your Freeform forms with <a href="https://parsleyjs.org/">Parsley JS</a>.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/relating-submission/">Relating Submissions to Elements</a></h4>
+                    <p class="card-text text-muted">This example will relate the newly created submission to another element via the Freeform Submission relation element field type.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/form-field-type/">Freeform Form Element Field Type</a></h4>
+                    <p class="card-text text-muted">This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/ajax-div-success/">Alternate Success Markup from Div after AJAX Submit</a></h4>
+                    <p class="card-text text-muted">This example shows how to override the default AJAX success message and load a success message from a <code>div</code> instead.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/ajax-template-success/">Alternate Success from Template after AJAX Submit</a></h4>
+                    <p class="card-text text-muted">This example shows how to override the default AJAX success message and load a success message from another template instead.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/override-return-url/">Overiding Success Return URL</a></h4>
+                    <p class="card-text text-muted">This example shows how to manipulate a form to allow a user to override the Return URL for successful submits.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h4 class="card-title"><a href="{{ siteUrl }}demo/extras/success-same-page/">Returning Success to Same Page</a></h4>
+                    <p class="card-text text-muted">This example shows how to have a successful submit return to the same page with a success query in the URL.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
 </div>
 

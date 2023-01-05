@@ -1,0 +1,152 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+{% set darkMode = true %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% set formHandle   = craft.app.request.segment(3) %}
+        {% set submissionId = craft.app.request.segment(5) %}
+        {% set isSuccess    = craft.app.request.segment(6) == "success" %}
+
+        {% set form = craft.freeform.form(formHandle) %}
+
+        {% if isSuccess %}
+            <div class="alert alert-success">
+                {{ form.successMessage | t }}
+            </div>
+        {% endif %}
+
+        {# Allow Admins only to view submission data for Demo Templates by default #}
+        {% if currentUser and currentUser.admin %}
+            {% set submission = craft.freeform.submissions({
+                id: submissionId,
+                form: formHandle,
+            }).one %}
+
+            {% if submission %}
+
+                {% if craft.freeform.pro %}
+                    <div class="float-end">
+                    {% if currentUser and currentUser.admin %}
+                        <a class="btn btn-sm btn-warning me-2" href="{{ siteUrl }}demo/bootstrap-dark/{{ form.handle }}/submissions/edit/{{ submission.token }}">
+                            {{ "Edit"|t("freeform") }}
+                        </a>
+                    {% endif %}
+                        <a class="btn btn-sm btn-danger" href="{{ siteUrl }}demo/bootstrap-dark/{{ form.handle }}/submissions/delete/{{ submission.token }}">
+                            {{ "Delete"|t("freeform") }}
+                        </a>
+                    </div>
+                {% endif %}
+
+                <h3 class="my-5">{{ submission.title }}</h3>
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-7">
+                            <table class="table table-striped">
+                                {% for field in submission %}
+                                    <tr>
+                                        <th style="width: 20%;">{{ field.label }}</th>
+                                        <td>
+                                            {% if field.type == "file" %}
+            
+                                                {% set assetIds = submission[field.handle].value %}
+                                                {% if assetIds %}
+                                                    {% for assetId in assetIds %}
+                                                        {% set asset = craft.assets.id(assetId).one() %}
+                                                        {% if asset %}
+                                                            {% if asset.kind == "image" %}
+                                                                <img src="{{ asset.url }}" class="img-responsive" />
+                                                            {% else %}
+                                                                <a href="{{ asset.url }}">{{ asset.filename }}</a>
+                                                            {% endif %}
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% endif %}
+            
+                                            {% elseif field.type == "table" %}
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                        {% for column in field.tableLayout %}
+                                                            <th>{{ column.label|default("-") }}</th>
+                                                        {% endfor %}
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    {% for row in submission[field.handle].value %}
+                                                        <tr>
+                                                        {% for index, column in field.tableLayout %}
+                                                            <td>{{ row[index] }}</td>
+                                                        {% endfor %}
+                                                        </tr>
+                                                    {% endfor %}
+                                                    </tbody>
+                                                </table>
+            
+                                            {% elseif field.type == "signature" %}
+                                                {% if submission[field.handle] %}
+                                                    <img src="{{ submission[field.handle] }}" alt="">
+                                                {% endif %}
+                                            {% else %}
+                                                {{ submission[field.handle] }}
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        <div class="col-md-5 bg-dark-subtle rounded-3">
+                            <table class="table table-striped">
+                                <tr>
+                                    <th style="width: 20%;">Title</th>
+                                    <td>{{ submission.title }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 20%;">ID#</th>
+                                    <td>{{ submission.id }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 20%;">Date</th>
+                                    <td>{{ submission.dateCreated|date('F j, Y \\a\\t g:ia') }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 20%;">Status</th>
+                                    <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 20%;">Author</th>
+                                    <td>{{ submission.author ? submission.author.username : "Guest" }}</td>
+                                </tr>
+                                <tr>
+                                    <th style="width: 20%;">Form</th>
+                                    <td><a href="{{ siteUrl }}demo/bootstrap-dark/{{ form.handle }}">{{ form.name }}</a></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-danger" role="alert">
+                    Sorry, no submission was found.
+                </div>
+
+            {% endif %}
+
+        {% elseif not isSuccess %}
+
+            <div class="alert alert-danger" role="alert">
+                Sorry, we didn't find what you're looking for.
+            </div>
+
+        {% endif %}
+
+    </div>
+
+{% endblock %}

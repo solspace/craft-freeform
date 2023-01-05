@@ -10,14 +10,15 @@
 
 <div class="container">
 
-    <h2>Freeform Form Element Field Type<h2>
-    <p>This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Freeform Form Element Field Type<h2>
+        <p>This example will show how to display and adjust forms that are assigned to Craft Entries via the Freeform Form element field type.</p>
+    </div>
 
     {# Make sure the test Craft entry exists #}
     {% if entry %}
 
-        <div class="alert alert-secondary" role="alert">
+        <div class="alert alert-secondary">
             <p class="mb-3 font-italic">Craft Entry:</p>
             <h2>{{ entry.title }} <small>({{ entry.id }})</small></h2>
             <p class="mb-0">Posted on {{ entry.postDate.format('F d, Y') }}</p>
@@ -44,7 +45,7 @@
 
     {% else %}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or on your test from:

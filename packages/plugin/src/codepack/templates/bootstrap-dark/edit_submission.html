@@ -1,0 +1,51 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+{% set darkMode = true %}
+
+{% set formHandle = craft.app.request.segment(3) %}
+{% set submissionToken = craft.app.request.segment(6) %}
+{% set form = craft.freeform.form(formHandle, {
+    submitClass: "btn btn-primary",
+    returnUrl: "{{ siteUrl }}demo/bootstrap-dark/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
+    submissionToken: submissionToken|default(null),
+    formattingTemplate: 'bootstrap-5-dark.twig',
+}) %}
+
+{% block content %}
+
+    <div class="container">
+
+        {% if form %}
+
+            {# Display a tip for demo templates #}
+            <div class="alert alert-info">
+                <p class="mb-0">
+                    This demo includes the <code>formattingTemplate</code> parameter to force the use of the <code>bootstrap-5-dark.twig</code>
+                    formatting template included with Freeform. It also uses the <code>returnUrl</code> parameter to force a redirect, so it
+                    may conflict with the <b>Success Behavior</b> you currently have set for the form.
+                </p>
+            </div>
+
+            <h2 class="my-3">Edit Submission</h2>
+            {# Display an alert about Submission Editing requiring Freeform Pro #}
+            {% if not craft.freeform.pro %}
+                <div class="alert alert-danger">
+                    <p class="mb-0">
+                        Front end Submission Editing requires Freeform Pro edition in order to work.
+                    </p>
+                </div>
+            {% endif %}
+
+            <h3 class="my-3">{{ form.name }}</h3>
+            {{ form.render }}
+
+        {% else %}
+            <div class="alert alert-danger">
+                Form with the handle '{{ formHandle }}' does not exist.
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}

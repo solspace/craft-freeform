@@ -9,38 +9,36 @@
     submitClass: "btn btn-primary",
     returnUrl: "{{ siteUrl }}demo/bootstrap/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
     submissionToken: submissionToken|default(null),
-    formattingTemplate: 'bootstrap-4.twig',
+    formattingTemplate: 'bootstrap-5.twig',
 }) %}
 
 {% block content %}
 
     <div class="container">
-        <h2 class="mb-5">Edit Submission</h2>
+
+    {% if form %}
+
+        {# Display a tip for demo templates #}
+        <div class="alert alert-info">
+            <p class="mb-0">
+                This demo includes the <code>formattingTemplate</code> parameter to force the use of the <code>bootstrap-5.twig</code>
+                formatting template included with Freeform. It also uses the <code>returnUrl</code> parameter to force a redirect, so it
+                may conflict with the <b>Success Behavior</b> you currently have set for the form.
+            </p>
+        </div>
+
+        <h2 class="my-3">Edit Submission</h2>
         {# Display an alert about Submission Editing requiring Freeform Pro #}
         {% if not craft.freeform.pro %}
             <div class="alert alert-danger">
-                <h5 class="alert-heading">Please note...</h5>
                 <p class="mb-0">
                     Front end Submission Editing requires Freeform Pro edition in order to work.
                 </p>
             </div>
         {% endif %}
-        {% if form %}
 
-            {# Display a tip for demo templates #}
-            <div class="alert alert-info" role="alert">
-                <h5 class="alert-heading">For your information...</h5>
-                <p class="mb-0">
-                    If you wish to experience a demo that uses your chosen formatting template and fully respects your chosen success behavior, please try the <a href="{{ siteUrl }}demo/custom">Custom Formatting Template</a> demo page. This demo page forces a few things:
-                    <ul class="mt-2">
-                        <li>The <code>formattingTemplate</code> parameter is applied to force the sample <code>bootstrap-4.twig</code> formatting template included with Freeform. We have automatically loaded the Bootstrap 4 library inside this demo as well.</li>
-                        <li>If the <b>Success Behavior</b> is set to <i>Use Return URL</i>, <i>Reload Form with Success Message</i> (with AJAX) or <i>No Effect</i>, this demo page contains a <code>returnUrl</code> parameter that will force redirect to the following URL upon successful submit of the form: <code>{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/SUBMISSION_ID/success</code></li>
-                    </ul>
-                </p>
-            </div>
-
-            <h3 class="mb-5">{{ form.name }}</h3>
-            {{ form.render }}
+        <h3 class="my-3">{{ form.name }}</h3>
+        {{ form.render }}
 
         {% else %}
             <div class="alert alert-danger">

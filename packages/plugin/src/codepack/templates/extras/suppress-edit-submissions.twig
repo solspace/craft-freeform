@@ -10,13 +10,14 @@
 
 <div class="container">
 
-    <h2>Suppress Notifications when Editing Submissions</h2>
-    <p>The following example shows how to suppress email notifications and other integrations from being triggered when editing an existing submission.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Suppress Notifications when Editing Submissions</h2>
+    	p>The following example shows how to suppress email notifications and other integrations from being triggered when editing an existing submission.</p>
+    </div>
 
 	{% if form %}
 
-		<div class="alert alert-secondary" role="alert">
+		<div class="alert alert-secondary">
 			<p class="mb-3 font-italic">Most Recent Submission from this Form:</p>
 			{% for submission in craft.freeform.submissions({
 				form: form.handle,
@@ -54,7 +55,7 @@
 
 	{% else %}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or on your test from:

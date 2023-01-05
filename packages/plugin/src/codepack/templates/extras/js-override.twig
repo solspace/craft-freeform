@@ -10,9 +10,10 @@
 
 <div class="container">
 
-    <h2>Overriding Freeform JS behavior</h2>
-    <p>This example shows how to manually override Freeform's built-in JS behavior inside a template.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Overriding Freeform JS behavior</h2>
+        <p>This example shows how to manually override Freeform's built-in JS behavior inside a template.</p>
+    </div>
 
     {% if form %}
 
@@ -44,7 +45,7 @@
     {% else %}
     {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or your test form:

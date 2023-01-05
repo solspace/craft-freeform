@@ -10,15 +10,16 @@
 
 <div class="container">
 
-    <h2>Manual Multi-Page Forms</h2>
-    <p>This example shows how to manually template multi-page forms.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Manual Multi-Page Forms</h2>
+        <p>This example shows how to manually template multi-page forms.</p>
+    </div>
 
 	{% if form %}
 
 		<h3 class="mb-3">{{ form.name }}</h3>
 
-		{# Replace "freeform-demo/extra/manual-multipage" where to return after the form will be submitted, or remove it to have it respect the value set inside the form builder #}
+		{# Replace "demo/extras/manual-multipage" where to return after the form will be submitted, or remove it to have it respect the value set inside the form builder #}
 		{{ form.renderTag({returnUrl: "demo/extras/manual-multipage"}) }}
 
 			{# Display any general errors upon submit #}
@@ -135,7 +136,7 @@
 	{% else %}
 	{# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or your test form:

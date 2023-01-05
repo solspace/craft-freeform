@@ -11,44 +11,31 @@
 
     <h2>Forms <small class="text-muted">(Bootstrap Example)</small></h2>
     <p class="mb-5">
-        This section of the demo templates will showcase any of your forms through the Freeform sample Bootstrap 4 formatting template.
-        It will override any formatting template you've specified for the form. This section is best for quickly getting a taste for
-        Freeform's features, and troubleshooting forms that may not be working correctly. For closer to real world usage, we encourage
-        you to use the <a href="{{ siteUrl }}demo/custom">Custom Formatting Template</a> area of the demo instead.
+        This section of the demo templates lets you get a quick preview of what your forms look like by forcing the Freeform
+        <b>Bootstrap 5</b> formatting template on your forms. This is also a great way to troubleshoot potential rendering issues.
     </p>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Form Name</th>
-            <th>Handle</th>
-            {% if currentUser and currentUser.admin %}
-            <th>Submissions</th>
-            {% endif %}
-        </tr>
-        </thead>
-        <tbody>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for form in forms %}
-            <tr>
-                <td>{{ form.id }}</td>
-                <td>
-                    <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}">
-                        {{ form.name }}
-                    </a>
-                </td>
-                <td class="code">{{ form.handle }}</td>
-                {% if currentUser and currentUser.admin %}
-                    <td>
-                        <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions">
-                            {{ craft.freeform.submissions({formId: form.id}).count }} submissions
-                        </a>
-                    </td>
-                {% endif %}
-            </tr>
+        <div class="col">
+        <div class="card h-100" style="border-left: 5px solid {{ form.color }};">
+            <div class="card-body">
+                <h4 class="card-title"><a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}">{{ form.name }}</a></h4>
+                <h6 class="card-subtitle mb-2 text-muted fw-normal">ID: <span class="text-secondary fw-semibold">{{ form.id }}</span> / Handle: <span class="text-secondary fw-semibold">{{ form.handle }}</span></h6>
+                <p class="card-text text-muted">{{ form.description }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}" type="button" class="btn btn-sm btn-secondary me-2">
+                    View Form
+                </a>
+                <a{% if currentUser and currentUser.admin %} href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions"{% endif %} type="button" class="btn btn-sm btn-outline-secondary">
+                    Submissions &nbsp;<span class="badge bg-secondary text-white">{{ craft.freeform.submissions({formId: form.id}).count }}</span>
+                </a>
+            </div>
+        </div>
+        </div>
         {% endfor %}
-        </tbody>
-    </table>
+    </div>
 
 </div>
 

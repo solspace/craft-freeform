@@ -10,9 +10,10 @@
 
 <div class="container">
 
-    <h2>Setting Submission Limits</h2>
-    <p>This example shows how to set a limit for the number of submissions a form can have.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Setting Submission Limits</h2>
+        <p>This example shows how to set a limit for the number of submissions a form can have.</p>
+    </div>
 
     {% if form %}
 
@@ -48,7 +49,7 @@
     {% else %}
     {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or your test form:

@@ -10,9 +10,10 @@
 
 <div class="container">
 
-    <h2>Overiding Success Return URL</h2>
-    <p>This example shows how to manipulate a form to allow a user to override the Return URL for successful submits. This could be done via a checkbox, select field, radio group, or hidden field. This specific example just uses a checkbox that is paired with the Submit button for a simpler setup.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Overiding Success Return URL</h2>
+        <p>This example shows how to manipulate a form to allow a user to override the Return URL for successful submits. This could be done via a checkbox, select field, radio group, or hidden field. This specific example just uses a checkbox that is paired with the Submit button for a simpler setup.</p>
+    </div>
 
     {% if form %}
 
@@ -73,7 +74,7 @@
     {% else %}
     {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or on your test from:

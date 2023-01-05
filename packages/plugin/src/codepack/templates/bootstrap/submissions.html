@@ -5,30 +5,32 @@
 
 {% block content %}
 
-    <div class="container">
+<div class="container">
 
-        {% if currentUser and currentUser.admin %}
+    {% if currentUser and currentUser.admin %}
 
-            {% set formHandle = craft.app.request.segment(3) %}
+        {% set formHandle = craft.app.request.segment(3) %}
 
-            {% set form = craft.freeform.form(formHandle) %}
-            {% set submissions = craft.freeform.submissions({
-                form: formHandle,
-            }).all %}
+        {% set form = craft.freeform.form(formHandle) %}
+        {% set submissions = craft.freeform.submissions({
+            form: formHandle,
+        }).all %}
 
-            <h2>Submissions</h2>
-            <h5 class="mb-5">
-                Form: <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}">{{ form.name }}</a>
-            </h5>
+        <h2 class="my-5">{{ craft.freeform.submissions({formId: form.id}).count }} Submissions for <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}">{{ form.name }}</a></h2>
 
-            {% if submissions is empty %}
-                <div>There are no submissions</div>
-            {% else %}
-                <table class="table table-hover">
-                    <thead class="table-secondary">
+        {% if submissions is empty %}
+            <div>There are no submissions</div>
+        {% else %}
+
+            <div class="overflow-x-scroll">
+
+                <table class="table table-sm table-striped">
+                    <thead class="bg-dark-subtle">
                     <tr>
-                        <th>#</th>
+                        <th>ID#</th>
+                        <th>Date</th>
                         <th>Status</th>
+                        <th>Author</th>
                         <th>Title</th>
                         {% for field in (submissions|first) %}
                             <th>{{ field.label }}</th>
@@ -43,9 +45,11 @@
                     <tbody>
                     {% for submission in submissions %}
                         <tr>
-                            <td>{{ submission.id }}</td>
-                            <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
-                            <td>
+                            <th class="text-nowrap">{{ submission.id }}</th>
+                            <td class="text-nowrap">{{ submission.dateCreated|date('Y-m-d H:i') }}</td>
+                            <td class="text-nowrap" style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
+                            <td class="text-nowrap">{{ submission.author ? submission.author.username : "Guest" }}</td>
+                            <td class="text-nowrap">
                                 <a href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/{{ submission.id }}">
                                     {{ submission.title }}
                                 </a>
@@ -63,9 +67,12 @@
                             {% endfor %}
                             {% if craft.freeform.pro %}
                                 {% if currentUser and currentUser.admin %}
-                                    <td>
-                                        <a class="btn btn-outline-primary btn-sm" href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/edit/{{ submission.token }}">
+                                    <td class="text-nowrap">
+                                        <a class="btn btn-warning btn-sm" href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/edit/{{ submission.token }}">
                                             {{ "Edit"|t("freeform") }}
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" href="{{ siteUrl }}demo/bootstrap/{{ form.handle }}/submissions/delete/{{ submission.token }}">
+                                            {{ "Delete"|t("freeform") }}
                                         </a>
                                     </td>
                                 {% endif %}
@@ -74,16 +81,15 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            {% endif %}
-
-        {% else %}
-            <div class="alert alert-danger" role="alert">
-                <p class="lead">
-                    Sorry, we couldn't find what you're looking for
-                </p>
             </div>
         {% endif %}
 
-    </div>
+    {% else %}
+        <div class="alert alert-danger">
+            Sorry, we couldn't find what you're looking for.
+        </div>
+    {% endif %}
+
+</div>
 
 {% endblock %}

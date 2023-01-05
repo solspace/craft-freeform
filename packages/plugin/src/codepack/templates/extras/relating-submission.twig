@@ -14,13 +14,14 @@
 
 <div class="container">
 
-    <h2>Relating Submissions to Elements<h2>
-    <p>The following example will relate the newly created submission to another element (in this case a Craft Entry) via the Freeform Submission relation element field type.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Relating Submissions to Elements<h2>
+        <p>The following example will relate the newly created submission to another element (in this case a Craft Entry) via the Freeform Submission relation element field type.</p>
+    </div>
 
     {% if entry and form %}
 
-        <div class="alert alert-secondary mb-5" role="alert">
+        <div class="alert alert-secondary mb-5">
             <p class="mb-3 font-italic">Craft Entry:</p>
             <h2>{{ entry.title }} <small>({{ entry.id }})</small></h2>
             <p class="mb-0">Posted on {{ entry.postDate.format('F d, Y') }}</p>
@@ -38,7 +39,7 @@
     {% else %}
     {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or on your test from:

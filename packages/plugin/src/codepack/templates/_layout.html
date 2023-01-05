@@ -1,5 +1,6 @@
+{% if darkMode is not defined %}{% set darkMode = "" %}{% endif %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" {% if darkMode %}data-bs-theme="dark"{% else %}data-bs-theme="light"{% endif %}>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,68 +9,51 @@
     <meta name="author" content="Solspace">
     <title>Freeform Demo | {{ pageTitle ? pageTitle : "Home" }}</title>
     <link rel="stylesheet" href="{{ siteUrl }}assets/demo/css/main.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     {% block headerCss %}{% endblock %}
 </head>
 
-<body>
-
-{% if page is not defined %}
-    {% set page = "" %}
-{% endif %}
-
+{% if page is not defined %}{% set page = "" %}{% endif %}
 {% set page = craft.app.request.segment(2) %}
 
-<nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="{{ siteUrl }}demo/">
-        <img src="{{ siteUrl }}assets/demo/images/icon.svg" alt="Freeform Demo">
-        Freeform Demo
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item {{ page == 'bootstrap' ? 'active' }}">
-                <a class="nav-link" href="{{ siteUrl }}demo/bootstrap">Bootstrap Example</a>
-            </li>
-            <li class="nav-item {{ page == 'custom' ? 'active' }}">
-                <a class="nav-link" href="{{ siteUrl }}demo/custom">Custom Formatting Template</a>
-            </li>
-            <li class="nav-item {{ page == 'extras' ? 'active' }}">
-                <a class="nav-link" href="{{ siteUrl }}demo/extras">Extras</a>
-            </li>
-        </ul>
-        <div class="navbar-nav dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Resources
+<body class="bg-body">
+
+<header class="d-flex bg-dark-subtle text-bg-dark fixed-top flex-wrap justify-content-center py-2 mb-4" data-bs-theme="dark">
+    <div class="container">
+        <div class="d-flex align-items-center flex-wrap justify-content py-2">
+            <a href="{{ siteUrl }}demo/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+                <img src="{{ siteUrl }}assets/demo/images/icon.svg" class="me-2" height="40" width="40" alt="Freeform Demo">
+                <span class="fs-4">Freeform Demo</span>
             </a>
-            <div class="dropdown-menu dropdown-menu-right text-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="https://plugins.craftcms.com/freeform/">Plugin Store</a>
-                <a class="dropdown-item" href="https://docs.solspace.com/craft/freeform/v3/">Documentation</a>
-                <a class="dropdown-item" href="https://docs.solspace.com/craft/freeform/v3/guides/">Guides</a>
-                <a class="dropdown-item" href="https://docs.solspace.com/craft/freeform/v3/setup/common-issues.html">Troubleshooting</a>
-                <a class="dropdown-item" href="https://docs.solspace.com/craft/freeform/v3/support.html">Support</a>
-            </div>
+            <ul class="nav nav-pills text-white">
+                <li class="nav-item"><a href="{{ siteUrl }}demo/bootstrap" class="nav-link text-white{{ page == 'bootstrap' ? ' active' }}">Bootstrap</a></li>
+                <li class="nav-item"><a href="{{ siteUrl }}demo/bootstrap-dark" class="nav-link text-white{{ page == 'bootstrap-dark' ? ' active' }}">Bootstrap Dark</a></li>
+                <li class="nav-item"><a href="{{ siteUrl }}demo/custom" class="nav-link text-white{{ page == 'custom' ? ' active' }}">Custom</a></li>
+                <li class="nav-item"><a href="{{ siteUrl }}demo/extras" class="nav-link text-white{{ page == 'extras' ? ' active' }}">Extras</a></li>
+            </ul>
         </div>
     </div>
-</nav>
+</header>
 
 {% block content %}{% endblock %}
 
-<footer class="bg-light text-muted">
-    <div class="container">
-        <p class="float-right">
-            <a href="#">Back to top</a>
-        </p>
-        <p><a href="https://docs.solspace.com/craft/freeform">Freeform</a> for Craft CMS. &copy; 2008-{{ "now"|date("Y") }} <a href="https://solspace.com">Solspace, Inc.</a></p>
+<footer class="bg-dark-subtle" data-bs-theme="dark">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center py-2 my-2">
+        <p class="col-md-4 mb-0 text-muted">&copy; 2008-{{ "now"|date("Y") }} <a href="https://solspace.com" class="text-muted link-light text-decoration-none">Solspace, Inc.</p>
+        <a href="https://solspace.com/" class="col-md-2 d-flex align-items-center justify-content-center mb-3 mb-md-0 me-md-auto">
+            <img src="{{ siteUrl }}assets/demo/images/solspace.svg" class="me-2" height="40" width="40" alt="Solspace">
+        </a>
+        <ul class="nav col-md-6 justify-content-end">
+            <li class="nav-item"><a href="https://plugins.craftcms.com/freeform/" class="nav-link px-2 text-muted link-light">Plugin Store</a></li>
+            <li class="nav-item"><a href="https://docs.solspace.com/craft/freeform/v4/" class="nav-link px-2 text-muted link-light">Docs</a></li>
+            <li class="nav-item"><a href="https://docs.solspace.com/craft/freeform/v4/guides/" class="nav-link px-2 text-muted link-light">Guides</a></li>
+            <li class="nav-item"><a href="https://docs.solspace.com/craft/freeform/v4/setup/common-issues.html" class="nav-link px-2 text-muted link-light">Troubleshooting</a></li>
+            <li class="nav-item"><a href="https://docs.solspace.com/craft/freeform/v4/support.html" class="nav-link px-2 text-muted link-light">Support</a></li>
+        </ul>
     </div>
 </footer>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
 
 {% block footerJs %}{% endblock %}
 

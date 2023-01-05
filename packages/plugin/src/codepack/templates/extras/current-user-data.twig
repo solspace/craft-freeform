@@ -10,9 +10,10 @@
 
 <div class="container">
 
-    <h2>Populate a form with Current User Data</h2>
-    <p>The following example populates a form with some User account values from the currently logged in user.</p>
-    <hr />
+    <div class="my-5">
+        <h2>Populate a form with Current User Data</h2>
+        <p>The following example populates a form with some User account values from the currently logged in user.</p>
+    </div>
 
     {% if form %}
 
@@ -31,7 +32,7 @@
     {% else %}
     {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning" role="alert">
+        <div class="alert alert-warning">
             <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
             <p>
                 In order to view this page live, you'll need to make some adjustments to this template or your test form:

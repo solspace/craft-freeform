@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDrag } from 'react-dnd';
+import { Drag } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { addNewField } from '@editor/store/thunks/fields';
 import type { FieldType } from '@ff-client/types/fields';
@@ -18,7 +19,7 @@ export const Field: React.FC<Props> = ({ fieldType }) => {
   };
 
   const [, drag] = useDrag(() => ({
-    type: 'BaseField',
+    type: Drag.FieldType,
     item: fieldType,
   }));
 

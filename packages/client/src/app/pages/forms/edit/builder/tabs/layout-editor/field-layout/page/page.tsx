@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import type { Page as PageType } from '@editor/builder/types/layout';
+import { selectPageLayout } from '@editor/store/slices/layouts';
 
-import { selectPageLayout } from '../../../../../store/slices/layouts';
-import type { Page as PageType } from '../../../../types/layout';
 import { Layout } from '../layout/layout';
 
 import { PageWrapper } from './pages.styles';

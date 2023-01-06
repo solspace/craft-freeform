@@ -1,3 +1,4 @@
+import type { Row } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
 import type { AppThunk } from '@editor/store';
 import { add as addCell } from '@editor/store/slices/cells';
@@ -8,7 +9,7 @@ import type { FieldType } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
 export const addNewField =
-  (fieldType: FieldType): AppThunk =>
+  (fieldType: FieldType, row?: Row): AppThunk =>
   (dispatch, getState) => {
     const fieldUid = v4();
     const cellUid = v4();
@@ -22,7 +23,13 @@ export const addNewField =
     }
 
     dispatch(addField({ fieldType, uid: fieldUid }));
-    dispatch(addRow({ layoutUid: currentPage.layoutUid, uid: rowUid }));
+    dispatch(
+      addRow({
+        layoutUid: currentPage.layoutUid,
+        uid: rowUid,
+        order: row?.order,
+      })
+    );
     dispatch(
       addCell({
         type: CellType.Field,

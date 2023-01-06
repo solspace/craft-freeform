@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -23,11 +24,31 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
     public const COLUMN_TYPE_SELECT = 'select';
     public const COLUMN_TYPE_CHECKBOX = 'checkbox';
 
-    /** @var array */
-    protected $tableLayout;
+    #[Property(
+        label: 'Table Layout',
+        type: Property::TYPE_TABLE,
+        instructions: 'Use semicolon ";" separated values for select options.',
+        options: [
+            [
+                'value' => self::COLUMN_TYPE_STRING,
+                'label' => 'Text',
+            ],
+            [
+                'value' => self::COLUMN_TYPE_CHECKBOX,
+                'label' => 'Checkbox',
+            ],
+            [
+                'value' => self::COLUMN_TYPE_SELECT,
+                'label' => 'Select',
+            ],
+        ],
+    )]
+    protected ?array $tableLayout = [];
 
-    /** @var bool */
-    protected $useScript;
+    #[Property(
+        label: 'Use built-in Table JS?'
+    )]
+    protected bool $useScript = false;
 
     /** @var int */
     protected $maxRows;

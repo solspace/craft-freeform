@@ -13,7 +13,7 @@ import {
   TableAddOption,
   TableOptions,
   Wrapper,
-} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/custom/custom-options.styles';
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-types/custom-options.styles';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import translate from '@ff-client/utils/translations';
 

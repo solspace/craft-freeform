@@ -3,4 +3,5 @@ export { default as int } from './int';
 export { default as minMax } from './min-max';
 export { default as options } from './options';
 export { default as string } from './string';
+export { default as table } from './table';
 export { default as textarea } from './textarea';

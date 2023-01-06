@@ -1,7 +1,7 @@
 import type { ComponentType } from 'react';
 import React from 'react';
-import * as ControlTypes from '@editor/builder/tabs/layout-editor/property-editor/form-controls/custom';
-import sourceOptions from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-options';
+import * as ControlTypes from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-types';
+import sourceOptions from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-types/source-options';
 import type { GenericValue } from '@ff-client/types/properties';
 
 import { Column, H3, Row, Wrapper } from './options-editor.styles';

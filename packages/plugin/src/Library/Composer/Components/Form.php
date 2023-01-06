@@ -301,7 +301,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
                 'label' => 'Once per logged in Users only',
             ],
             [
-                'value' => 'once_per_logged_in_user_or_guest_cookie_onlye',
+                'value' => 'once_per_logged_in_user_or_guest_cookie_only',
                 'label' => 'Once per logged in User or Guest Cookie only',
             ],
             [

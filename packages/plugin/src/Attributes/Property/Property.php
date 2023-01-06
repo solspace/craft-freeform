@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Attributes\Property;
 #[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Property
 {
+    public const TYPE_TABLE = 'table';
     public const TYPE_OPTIONS = 'options';
     public const TYPE_MIN_MAX = 'minMax';
     public const TYPE_SELECT = 'select';

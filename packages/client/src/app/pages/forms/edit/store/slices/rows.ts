@@ -51,7 +51,9 @@ export const rowsSlice = createSlice({
       }
     },
     remove: (state, action: PayloadAction<string>) => {
-      state = state.filter((row) => row.uid !== action.payload);
+      const index = state.findIndex((row) => row.uid === action.payload);
+
+      state.splice(index, 1);
     },
     swap: (state, action: PayloadAction<SwapPayload>) => {
       const current = state.find(

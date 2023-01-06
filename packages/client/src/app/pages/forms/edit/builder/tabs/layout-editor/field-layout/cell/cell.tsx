@@ -1,40 +1,25 @@
 import React from 'react';
-import { useDrag } from 'react-dnd';
-import { useSpring } from 'react-spring';
+import { DragPreviewImage } from 'react-dnd';
 import type { Cell as CellPropType } from '@editor/builder/types/layout';
-import { Drag } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
 
 import { CellField } from './cell-types/cell-field/cell-field';
 import { CellLayout } from './cell-types/cell-layout/cell-layout';
+import { useCellDragAnimation } from './cell.animations';
+import { useCellDrag } from './cell.drag';
+import { createPreview } from './cell.preview';
 import { CellWrapper } from './cell.styles';
 
 type Props = {
   cell: CellPropType;
+  index: number;
   offsetPx?: number;
   width?: number;
 };
 
-export const Cell: React.FC<Props> = ({ cell, offsetPx, width }) => {
-  const [{ isDragging }, drag] = useDrag(
-    () => ({
-      type: Drag.Cell,
-      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
-      item: cell,
-    }),
-    [cell]
-  );
-
-  const style = useSpring({
-    to: {
-      width,
-      x: offsetPx || 0,
-    },
-    config: {
-      tension: 700,
-      mass: 0.5,
-    },
-  });
+export const Cell: React.FC<Props> = ({ cell, index, offsetPx, width }) => {
+  const { isDragging, drag, preview } = useCellDrag(cell, index);
+  const style = useCellDragAnimation(width, offsetPx);
 
   if (isDragging) {
     return null;
@@ -52,8 +37,11 @@ export const Cell: React.FC<Props> = ({ cell, offsetPx, width }) => {
   }
 
   return (
-    <CellWrapper ref={drag} style={style}>
-      <Component uid={cell.targetUid} />
-    </CellWrapper>
+    <>
+      <DragPreviewImage connect={preview} src={createPreview(cell.type)} />
+      <CellWrapper ref={drag} style={style}>
+        <Component uid={cell.targetUid} />
+      </CellWrapper>
+    </>
   );
 };

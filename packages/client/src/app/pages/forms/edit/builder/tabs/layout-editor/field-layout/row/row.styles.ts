@@ -7,7 +7,6 @@ const minHeight = '72px';
 export const RowWrapper = styled(animated.div)`
   position: relative;
 
-  //min-height: 72px;
   min-height: 1px;
   margin: 0 -${spacings.lg};
 
@@ -23,14 +22,12 @@ export const RowCellsContainer = styled(animated.div)`
   z-index: 2;
 
   display: flex;
-  //justify-content: space-evenly;
-  //align-items: stretch;
 `;
 
 export const DropZone = styled.div`
   position: absolute;
-  left: 0;
-  right: 0;
+  left: ${spacings.lg};
+  right: ${spacings.lg};
   top: -6px;
 
   z-index: 4;

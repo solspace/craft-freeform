@@ -1,5 +1,5 @@
 import { animated } from 'react-spring';
-import { borderRadius, colors } from '@ff-client/styles/variables';
+import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const FieldLayoutWrapper = styled.div`
@@ -20,6 +20,7 @@ export const DropZone = styled(animated.div)`
 
   overflow: hidden;
   height: 28px;
+  margin: 0 ${spacings.lg};
 
   background-color: ${colors.gray050};
   border: 1px solid ${colors.hairline};

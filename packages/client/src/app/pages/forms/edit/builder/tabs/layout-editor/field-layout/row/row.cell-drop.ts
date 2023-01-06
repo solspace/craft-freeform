@@ -2,15 +2,18 @@ import type { MutableRefObject } from 'react';
 import { useEffect, useState } from 'react';
 import type { ConnectDropTarget } from 'react-dnd';
 import { useDrop } from 'react-dnd';
+import type { DragItem } from '@editor/builder/types/drag';
+import { Drag } from '@editor/builder/types/drag';
 import type { Row } from '@editor/builder/types/layout';
-import { Drag } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { moveTo } from '@editor/store/slices/cells';
-import { addNewFieldToRow } from '@editor/store/thunks/fields';
+import { moveExistingCellToExistingRow } from '@editor/store/thunks/cells';
+import { addNewFieldToExistingRow } from '@editor/store/thunks/fields';
 
 type CellDrop = {
   isOver: boolean;
   isCurrentRow: boolean;
+  isDraggingCell: boolean;
+  dragCellIndex: number;
   canDrop: boolean;
 };
 
@@ -19,6 +22,8 @@ type CellDropHook = {
   isOver: boolean;
   canDrop: boolean;
   isCurrentRow: boolean;
+  isDraggingCell: boolean;
+  dragCellIndex: number | undefined;
   hoverPosition: number | undefined;
   cellWidth: number | undefined;
 };
@@ -34,20 +39,37 @@ export const useRowCellDrop = (
   const [cellWidth, setCellWidth] = useState<number>();
   const [hoverPosition, setHoverPosition] = useState<number>();
 
-  const [{ isOver, isCurrentRow, canDrop }, ref] = useDrop<any, void, CellDrop>(
+  const [
+    { isOver, isCurrentRow, dragCellIndex, isDraggingCell, canDrop },
+    ref,
+  ] = useDrop<DragItem, void, CellDrop>(
     {
       accept: [Drag.Cell, Drag.FieldType],
-      collect: (monitor) => ({
-        isOver: monitor.isOver({ shallow: true }),
-        canDrop: monitor.canDrop(),
-        isCurrentRow: monitor.getItem()?.rowUid === row.uid,
-      }),
+      collect: (monitor) => {
+        const item = monitor.getItem();
+
+        const isDraggingCell = item?.type === Drag.Cell;
+        const isCurrentRow =
+          item?.type === Drag.Cell && item.data.rowUid === row.uid;
+
+        return {
+          isOver: monitor.isOver({ shallow: true }),
+          canDrop: monitor.canDrop(),
+          dragCellIndex: item?.type === Drag.Cell && item.index,
+          isCurrentRow,
+          isDraggingCell,
+        };
+      },
+      canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
       hover: (item, monitor) => {
         if (width === undefined || offsetX === undefined) {
           return;
         }
 
-        const count = cellCount + (item?.rowUid === row.uid ? 0 : 1);
+        const isThisRow =
+          item.type === Drag.Cell && item.data.rowUid === row.uid;
+
+        const count = cellCount + (isThisRow ? 0 : 1);
         if (count <= 1) {
           return;
         }
@@ -61,14 +83,12 @@ export const useRowCellDrop = (
         }
       },
       drop: (item) => {
-        const isCell = item?.targetUid !== undefined;
-
-        if (isCell) {
+        if (item.type === Drag.Cell) {
           dispatch(
-            moveTo({ uid: item.uid, rowUid: row.uid, position: hoverPosition })
+            moveExistingCellToExistingRow(item.data, row, hoverPosition)
           );
-        } else {
-          dispatch(addNewFieldToRow(item, row, hoverPosition));
+        } else if (item.type === Drag.FieldType) {
+          dispatch(addNewFieldToExistingRow(item.data, row, hoverPosition));
         }
 
         setHoverPosition(undefined);
@@ -78,19 +98,29 @@ export const useRowCellDrop = (
   );
 
   useEffect(() => {
-    if (isOver && !isCurrentRow) {
-      setCellWidth(width / (cellCount + 1));
+    let count = cellCount;
+
+    if (isOver) {
+      if (!isCurrentRow) {
+        count += 1;
+      }
     } else {
-      setCellWidth(width / cellCount);
+      if (isCurrentRow) {
+        count -= 1;
+      }
     }
+
+    setCellWidth(width / Math.max(1, count));
   }, [isOver, width, isCurrentRow]);
 
   return {
     ref,
     isOver,
     isCurrentRow,
+    isDraggingCell,
     canDrop,
     hoverPosition,
     cellWidth,
+    dragCellIndex,
   };
 };

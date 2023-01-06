@@ -1,11 +1,3 @@
-export enum Drag {
-  FieldType = 'field-type',
-  FavoriteField = 'favorite-field',
-  Cell = 'cell',
-  Row = 'row',
-  Page = 'page',
-}
-
 export type Layout = {
   uid: string;
 };

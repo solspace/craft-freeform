@@ -8,7 +8,7 @@ import { add as addRow } from '@editor/store/slices/rows';
 import type { FieldType } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
-export const addNewField =
+export const addNewFieldToNewRow =
   (fieldType: FieldType, row?: Row): AppThunk =>
   (dispatch, getState) => {
     const fieldUid = v4();
@@ -40,7 +40,7 @@ export const addNewField =
     );
   };
 
-export const addNewFieldToRow =
+export const addNewFieldToExistingRow =
   (fieldType: FieldType, row: Row, order: number): AppThunk =>
   (dispatch, getState) => {
     const fieldUid = v4();

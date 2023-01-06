@@ -31,18 +31,29 @@ export const useRowDimensions = (
   return [width, offsetX];
 };
 
-export const calculateCellOffset = (
-  isOver: boolean,
-  currentIndex: number,
-  cellWidth?: number,
-  hoverPosition?: number
-): number | undefined => {
-  if (!isOver) {
-    return undefined;
+type CalculateOffset = (props: {
+  isOver: boolean;
+  currentIndex: number;
+  cellWidth?: number;
+  hoverPosition?: number;
+  hoverItemOriginalIndex?: number;
+  isCurrentRow: boolean;
+}) => number | undefined;
+
+export const calculateCellOffset: CalculateOffset = ({
+  isOver,
+  currentIndex,
+  cellWidth,
+  hoverPosition,
+  hoverItemOriginalIndex,
+  isCurrentRow,
+}): number | undefined => {
+  if (!isOver || hoverPosition === undefined || cellWidth === undefined) {
+    return 0;
   }
 
-  if (hoverPosition === undefined || cellWidth === undefined) {
-    return undefined;
+  if (isCurrentRow && hoverItemOriginalIndex <= currentIndex) {
+    currentIndex -= 1;
   }
 
   if (hoverPosition <= currentIndex) {
@@ -50,8 +61,7 @@ export const calculateCellOffset = (
   }
 
   if (hoverPosition > currentIndex) {
-    console.log(hoverPosition, currentIndex);
-    //return 0;
+    return 0;
   }
 
   return 0;

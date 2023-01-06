@@ -38,8 +38,10 @@ export const Row: React.FC<Props> = ({ row }) => {
   const {
     ref: cellDropRef,
     isOver,
+    isCurrentRow,
     hoverPosition,
     cellWidth,
+    dragCellIndex,
   } = useRowCellDrop(wrapperRef, row, cells.length, width, offsetX);
 
   const ref = cellDropRef(
@@ -57,14 +59,17 @@ export const Row: React.FC<Props> = ({ row }) => {
         {cells.map((cell, idx) => (
           <Cell
             cell={cell}
+            index={idx}
             key={cell.uid}
             width={cellWidth || width}
-            offsetPx={calculateCellOffset(
+            offsetPx={calculateCellOffset({
               isOver,
-              idx,
+              currentIndex: idx,
               cellWidth,
-              hoverPosition
-            )}
+              hoverPosition,
+              hoverItemOriginalIndex: dragCellIndex,
+              isCurrentRow,
+            })}
           />
         ))}
       </RowCellsContainer>

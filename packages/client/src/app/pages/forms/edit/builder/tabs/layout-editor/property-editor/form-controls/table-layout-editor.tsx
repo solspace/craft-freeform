@@ -1,28 +1,29 @@
 import React from 'react';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import type { Option as PropertyOption } from '@ff-client/types/properties';
-import translate from '@ff-client/utils/translations';
-
 import {
   addOption,
   deleteOption,
   dragAndDropOption,
   updateOption,
-} from './table-layout-editor.operations';
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/table-layout-editor.operations';
+import {
+  Column,
+  Row,
+  Wrapper,
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/table-layout-editor.styles';
+import type { Option } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/table-layout-editor.types';
 import {
   AddOptionIcon,
   Button,
-  Column,
   DeleteIcon,
   DragIcon,
   Input,
-  Row,
   Select,
   TableAddOption,
   TableOptions,
-  Wrapper,
-} from './table-layout-editor.styles';
-import type { Option } from './table-layout-editor.types';
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/tabular.styles';
+import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import type { Option as PropertyOption } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
 type Props = {
   handle: string;

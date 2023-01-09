@@ -27,6 +27,8 @@ export const shadows = {
 };
 
 export const colors = {
+  hairline: 'rgba(51,64,77,.1)',
+
   error: 'var(--error-color)',
   warning: 'var(--warning-color)',
   success: 'var(--success-color)',

@@ -19,8 +19,11 @@ export const rowsSlice = createSlice({
     set: (state, action: PayloadAction<RowState>) => {
       state.splice(0, state.length, ...action.payload);
     },
-    add: (state, action: PayloadAction<{ layoutUid: string; uid: string }>) => {
-      const { layoutUid, uid } = action.payload;
+    add: (
+      state,
+      action: PayloadAction<{ layoutUid: string; uid: string; order?: number }>
+    ) => {
+      const { layoutUid, uid, order } = action.payload;
       const highestOrder = Math.max(
         -1,
         ...state
@@ -30,9 +33,22 @@ export const rowsSlice = createSlice({
 
       state.push({
         uid,
-        order: highestOrder + 1,
+        order: order !== undefined ? order : highestOrder + 1,
         layoutUid,
       });
+
+      if (order !== undefined) {
+        state.forEach((row) => {
+          let currentOrder = row.order;
+          if (row.uid !== uid) {
+            if (row.order >= order) {
+              currentOrder = currentOrder + 1;
+            }
+          }
+
+          row.order = currentOrder;
+        });
+      }
     },
     remove: (state, action: PayloadAction<string>) => {
       state = state.filter((row) => row.uid !== action.payload);

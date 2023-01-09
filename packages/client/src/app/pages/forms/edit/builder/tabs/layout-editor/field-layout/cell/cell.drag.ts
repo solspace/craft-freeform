@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import type { ConnectDragPreview, ConnectDragSource } from 'react-dnd';
 import { useDrag } from 'react-dnd';
 import type { DragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
 import type { Cell } from '@editor/builder/types/layout';
+
+import { useDragContext } from '../../drag.context';
 
 type DropResult = {
   isDragging: boolean;
@@ -30,6 +33,16 @@ export const useCellDrag = (cell: Cell, index: number): CellDrag => {
     }),
     [cell]
   );
+
+  const { dragOn, dragOff } = useDragContext();
+
+  useEffect(() => {
+    if (isDragging) {
+      dragOn(Drag.Cell);
+    } else {
+      dragOff();
+    }
+  }, [isDragging]);
 
   return { isDragging, drag, preview };
 };

@@ -55,7 +55,7 @@ export const useRowCellDrop = (
         return {
           isOver: monitor.isOver({ shallow: true }),
           canDrop: monitor.canDrop(),
-          dragCellIndex: item?.type === Drag.Cell && item.index,
+          dragCellIndex: item?.type === Drag.Cell ? item.index : undefined,
           isCurrentRow,
           isDraggingCell,
         };
@@ -100,14 +100,8 @@ export const useRowCellDrop = (
   useEffect(() => {
     let count = cellCount;
 
-    if (isOver) {
-      if (!isCurrentRow) {
-        count += 1;
-      }
-    } else {
-      if (isCurrentRow) {
-        count -= 1;
-      }
+    if (isOver && !isCurrentRow) {
+      count += 1;
     }
 
     setCellWidth(width / Math.max(1, count));

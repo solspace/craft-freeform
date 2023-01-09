@@ -7,9 +7,13 @@ import translate from '@ff-client/utils/translations';
 
 import { Cell } from '../cell/cell';
 
-import { useOnMountAnimation } from './row.animations';
+import {
+  useOnMountAnimation,
+  usePlaceholderAnimation,
+  useRowAnimation,
+} from './row.animations';
 import { useRowCellDrop } from './row.cell-drop';
-import { calculateCellOffset, useRowDimensions } from './row.dimensions';
+import { useRowDimensions } from './row.dimensions';
 import { useRowDrop } from './row.drop';
 import {
   DropZone,
@@ -29,19 +33,18 @@ export const Row: React.FC<Props> = ({ row }) => {
 
   const [width, offsetX] = useRowDimensions(wrapperRef);
 
-  const {
-    ref: rowDropRef,
-    placeholderAnimation,
-    rowAnimation,
-  } = useRowDrop(row);
+  const { ref: rowDropRef, isOver: isOverRow } = useRowDrop(row);
+  const placeholderAnimation = usePlaceholderAnimation(isOverRow);
+  const rowAnimation = useRowAnimation(isOverRow);
 
   const {
     ref: cellDropRef,
     isOver,
     isCurrentRow,
+    isDraggingCell,
+    dragCellIndex,
     hoverPosition,
     cellWidth,
-    dragCellIndex,
   } = useRowCellDrop(wrapperRef, row, cells.length, width, offsetX);
 
   const ref = cellDropRef(
@@ -59,17 +62,14 @@ export const Row: React.FC<Props> = ({ row }) => {
         {cells.map((cell, idx) => (
           <Cell
             cell={cell}
+            isOver={isOver}
+            hoverPosition={hoverPosition}
+            isCurrentRow={isCurrentRow}
+            isDraggingCell={isDraggingCell}
+            dragCellIndex={dragCellIndex}
             index={idx}
             key={cell.uid}
             width={cellWidth || width}
-            offsetPx={calculateCellOffset({
-              isOver,
-              currentIndex: idx,
-              cellWidth,
-              hoverPosition,
-              hoverItemOriginalIndex: dragCellIndex,
-              isCurrentRow,
-            })}
           />
         ))}
       </RowCellsContainer>

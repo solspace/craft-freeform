@@ -1,7 +1,5 @@
 import type { ConnectDropTarget } from 'react-dnd';
 import { useDrop } from 'react-dnd';
-import type { PickAnimated, SpringValues } from 'react-spring';
-import { useSpring } from 'react-spring';
 import type { DragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
 import type { Row } from '@editor/builder/types/layout';
@@ -11,10 +9,6 @@ import { addNewFieldToNewRow } from '@editor/store/thunks/fields';
 
 type RowDropHook = {
   ref: ConnectDropTarget;
-  placeholderAnimation: SpringValues<
-    PickAnimated<{ opacity: number; transform: string }>
-  >;
-  rowAnimation: SpringValues<PickAnimated<{ transform: string }>>;
   isOver: boolean;
   canDrop: boolean;
 };
@@ -45,31 +39,8 @@ export const useRowDrop = (row: Row): RowDropHook => {
     [row]
   );
 
-  const placeholderAnimation = useSpring({
-    to: {
-      opacity: isOver ? 1 : 0,
-      transform: isOver ? `scaleY(1)` : `scaleY(0)`,
-    },
-    delay: isOver ? 200 : 0,
-    config: {
-      tension: 500,
-    },
-  });
-
-  const rowAnimation = useSpring({
-    to: {
-      transform: isOver ? `translateY(10px)` : `translateY(0px)`,
-    },
-    delay: isOver ? 200 : 0,
-    config: {
-      tension: 300,
-    },
-  });
-
   return {
     ref,
-    placeholderAnimation,
-    rowAnimation,
     isOver,
     canDrop,
   };

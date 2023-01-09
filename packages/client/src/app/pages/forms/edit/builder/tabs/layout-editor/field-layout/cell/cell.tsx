@@ -13,17 +13,35 @@ import { CellWrapper } from './cell.styles';
 type Props = {
   cell: CellPropType;
   index: number;
-  offsetPx?: number;
   width?: number;
+  isOver: boolean;
+  isCurrentRow: boolean;
+  isDraggingCell: boolean;
+  dragCellIndex?: number;
+  hoverPosition?: number;
 };
 
-export const Cell: React.FC<Props> = ({ cell, index, offsetPx, width }) => {
+export const Cell: React.FC<Props> = ({
+  cell,
+  index,
+  width,
+  isOver,
+  isCurrentRow,
+  isDraggingCell,
+  dragCellIndex,
+  hoverPosition,
+}) => {
   const { isDragging, drag, preview } = useCellDrag(cell, index);
-  const style = useCellDragAnimation(width, offsetPx);
-
-  if (isDragging) {
-    return null;
-  }
+  const style = useCellDragAnimation({
+    width,
+    isDragging,
+    isOver,
+    isCurrentRow,
+    isDraggingCell,
+    dragCellIndex,
+    index,
+    hoverPosition,
+  });
 
   let Component;
   switch (cell.type) {

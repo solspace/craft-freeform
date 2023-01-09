@@ -1,30 +1,31 @@
 import React from 'react';
 import { CheckboxInput } from '@components/form-controls/inputs/checkbox-input';
 import {
-  AddOptionIcon,
-  Button,
-  CheckboxWrapper,
-  Column,
-  DeleteIcon,
-  DragIcon,
-  H3,
-  Input,
-  Row,
-  TableAddOption,
-  TableOptions,
-  Wrapper,
-} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-types/custom-options.styles';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
-import translate from '@ff-client/utils/translations';
-
-import {
   addOption,
   deleteOption,
   dragAndDropOption,
   updateChecked,
   updateOption,
-} from './custom-options.operations';
-import { CustomOptions } from './custom-options.types';
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-types/custom-options.operations';
+import {
+  Column,
+  H3,
+  Row,
+  Wrapper,
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-types/custom-options.styles';
+import { CustomOptions } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/source-types/custom-options.types';
+import {
+  AddOptionIcon,
+  Button,
+  CheckboxWrapper,
+  DeleteIcon,
+  DragIcon,
+  Input,
+  TableAddOption,
+  TableOptions,
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/tabular.styles';
+import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import translate from '@ff-client/utils/translations';
 
 type Props = {
   handle: string;

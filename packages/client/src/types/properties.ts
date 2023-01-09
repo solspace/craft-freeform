@@ -28,6 +28,7 @@ type BaseProperty<T> = {
   section?: string;
   tab?: string;
   group?: string;
+  options?: Option[];
 };
 
 export type IntegerProperty = BaseProperty<number> & {

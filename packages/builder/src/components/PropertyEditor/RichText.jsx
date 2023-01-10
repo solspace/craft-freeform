@@ -19,6 +19,9 @@ export default class RichText extends BasePropertyEditor {
   };
 
   modules = {
+    clipboard: {
+      matchVisual: false,
+    },
     toolbar: [
       [
         { header: [1, 2, 3, false] },
@@ -102,6 +105,8 @@ export default class RichText extends BasePropertyEditor {
    */
   updateValue = (value) => {
     const { updateField } = this.context;
+
+    console.log(value);
 
     updateField({
       value: value,

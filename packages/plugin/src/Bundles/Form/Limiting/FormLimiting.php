@@ -28,6 +28,7 @@ class FormLimiting extends FeatureBundle
     private const COOKIE_LIMITATIONS = [self::LIMIT_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
     private const IP_LIMITATIONS = [self::LIMIT_IP_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
     private const USER_LIMITATIONS = [self::LIMIT_AUTH, self::LIMIT_AUTH_IP_COOKIE, self::LIMIT_AUTH_COOKIE];
+    private const LOGGED_IN_ONLY = [self::LIMIT_AUTH, self::LIMIT_AUTH_UNLIMITED];
 
     private $formCache = [];
 
@@ -48,6 +49,10 @@ class FormLimiting extends FeatureBundle
             return;
         }
 
+        if (self::LIMIT_AUTH === $limiting) {
+            $this->limitLoggedInOnly($form, $event);
+        }
+
         if (\in_array($limiting, self::USER_LIMITATIONS, true)) {
             $this->limitByUserId($form, $event);
         }
@@ -60,7 +65,7 @@ class FormLimiting extends FeatureBundle
             $this->limitByCookie($form, $event);
         }
 
-        if (self::LIMIT_AUTH_UNLIMITED === $limiting) {
+        if (\in_array($limiting, self::LOGGED_IN_ONLY, true)) {
             $this->limitLoggedInOnly($form, $event);
         }
     }

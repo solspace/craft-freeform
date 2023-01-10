@@ -68,7 +68,7 @@
             {% set class = "form-control" ~ (field.hasErrors ? " is-invalid has-validation") %}
             {% if field.type == "file" %}
                 {% set class = "form-control-file" ~ (field.hasErrors ? " is-invalid") %}
-            {% elseif field.type == "select" %}
+            {% elseif field.type == "select" or field.type == "dynamic_recipients" and (field.showAsSelect) %}
                 {% set class = "form-select" %}
             {% elseif field.type == "signature" %}
                 {% set class = "btn btn-light" %}

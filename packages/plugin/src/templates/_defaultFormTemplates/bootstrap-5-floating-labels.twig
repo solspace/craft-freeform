@@ -71,7 +71,7 @@
             {% set class = "form-control" ~ (field.hasErrors ? " is-invalid has-validation") %}
             {% if field.type == "file" %}
                 {% set class = "form-control-file" ~ (field.hasErrors ? " is-invalid") %}
-            {% elseif field.type == "select" %}
+            {% elseif field.type == "select" or field.type == "dynamic_recipients" and (field.showAsSelect) %}
                 {% set class = "form-select" %}
             {% elseif field.type == "signature" %}
                 {% set class = "btn btn-light" %}
@@ -89,7 +89,7 @@
                 {% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
             {% endif %}
 
-            <div class="{{ columnClass }} ff-fieldtype-{{ field.type }}{% if field.type in ['text', 'email', 'confirmation', 'datetime', 'select', 'website', 'password', 'phone', 'textarea', 'multiple_select', 'number', 'regex'] %} form-floating{% endif %}"{{ field.rulesHtmlData }}>
+            <div class="{{ columnClass }} ff-fieldtype-{{ field.type }}{% if field.type in ['text', 'email', 'confirmation', 'datetime', 'select', 'website', 'password', 'phone', 'textarea', 'multiple_select', 'number', 'regex'] or field.type == 'dynamic_recipients' and (field.showAsSelect) %} form-floating{% endif %}"{{ field.rulesHtmlData }}>
                 {% if field.type == "checkbox_group" %}
 
                     {{ field.renderLabel({

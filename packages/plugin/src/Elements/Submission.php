@@ -512,6 +512,24 @@ class Submission extends Element
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public static function actions(string $source): array
+    {
+        $actions = static::defineActions($source);
+
+        // Give plugins a chance to modify them
+        $event = new RegisterElementActionsEvent([
+            'source' => $source,
+            'actions' => $actions,
+        ]);
+
+        Event::trigger(static::class, self::EVENT_REGISTER_ACTIONS, $event);
+
+        return $event->actions;
+    }
+
+    /**
      * {@inheritDoc}
      */
     protected static function defineSources(string $context = null): array
@@ -592,24 +610,6 @@ class Submission extends Element
             'dateCreated',
             'form',
         ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public static function actions(string $source): array
-    {
-        $actions = static::defineActions($source);
-
-        // Give plugins a chance to modify them
-        $event = new RegisterElementActionsEvent([
-            'source' => $source,
-            'actions' => $actions,
-        ]);
-
-        Event::trigger(static::class, self::EVENT_REGISTER_ACTIONS, $event);
-
-        return $event->actions;
     }
 
     protected static function defineActions(string $source = null): array

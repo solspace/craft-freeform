@@ -467,6 +467,8 @@ class HubSpot extends AbstractCRMIntegration
     /**
      * Get posted email value.
      *
+     * @param mixed $contactProps
+     *
      * @return string
      */
     private function getEmailFieldValue($contactProps)
@@ -486,6 +488,8 @@ class HubSpot extends AbstractCRMIntegration
 
     /**
      * Get's posted domain value.
+     *
+     * @param mixed $companyProps
      *
      * @return string
      */
@@ -507,6 +511,8 @@ class HubSpot extends AbstractCRMIntegration
     /**
      * Checks if Form field's type calls for a value append.
      *
+     * @param mixed $formField
+     *
      * @return bool
      */
     private function isAppendFieldType($formField)
@@ -520,6 +526,10 @@ class HubSpot extends AbstractCRMIntegration
 
     /**
      * Queries for a contact based on email.
+     *
+     * @param mixed $email
+     * @param mixed $client
+     * @param mixed $contactProps
      *
      * @return mixed
      */
@@ -537,6 +547,10 @@ class HubSpot extends AbstractCRMIntegration
     /**
      * Updates HS Contact based on email.
      *
+     * @param mixed $email
+     * @param mixed $client
+     * @param mixed $contactProps
+     *
      * @return mixed
      */
     private function updateContactByEmail($email, $client, $contactProps)
@@ -552,6 +566,10 @@ class HubSpot extends AbstractCRMIntegration
 
     /**
      * Queries for a HS Company based on a domain.
+     *
+     * @param mixed $companyDomain
+     * @param mixed $client
+     * @param mixed $queryProperties
      *
      * @return mixed
      */
@@ -578,6 +596,10 @@ class HubSpot extends AbstractCRMIntegration
     /**
      * Updates HS Company based on company id.
      *
+     * @param mixed $companyId
+     * @param mixed $client
+     * @param mixed $companyProps
+     *
      * @return mixed
      */
     private function updateCompanyById($companyId, $client, $companyProps)
@@ -593,6 +615,9 @@ class HubSpot extends AbstractCRMIntegration
 
     /**
      * Creates a new HS Company.
+     *
+     * @param mixed $client
+     * @param mixed $companyProps
      *
      * @return mixed
      */
@@ -610,6 +635,9 @@ class HubSpot extends AbstractCRMIntegration
     /**
      * Creates a new HS contact.
      *
+     * @param mixed $client
+     * @param mixed $contactProps
+     *
      * @return mixed
      */
     private function createContact($client, $contactProps)
@@ -625,6 +653,10 @@ class HubSpot extends AbstractCRMIntegration
 
     /**
      * Appends appendable newly posted values to the current company's values.
+     *
+     * @param mixed $companyProps
+     * @param mixed $appendCompanyFields
+     * @param mixed $company
      *
      * @return mixed
      */
@@ -660,6 +692,10 @@ class HubSpot extends AbstractCRMIntegration
 
     /**
      * Appends appendable newly posted values to the current contact's values.
+     *
+     * @param mixed $contactProps
+     * @param mixed $appendContactFields
+     * @param mixed $contact
      *
      * @return mixed
      */

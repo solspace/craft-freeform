@@ -194,6 +194,8 @@ class FormsService extends BaseService implements FormHandlerInterface
     }
 
     /**
+     * @param mixed $handleOrId
+     *
      * @return null|FormModel
      */
     public function getFormByHandleOrId($handleOrId)
@@ -520,6 +522,9 @@ class FormsService extends BaseService implements FormHandlerInterface
     }
 
     /**
+     * @param mixed $deletedStatusId
+     * @param mixed $newStatusId
+     *
      * @throws \Exception
      */
     public function swapDeletedStatusToDefault($deletedStatusId, $newStatusId)

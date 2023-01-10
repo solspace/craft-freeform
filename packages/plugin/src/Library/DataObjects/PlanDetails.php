@@ -47,8 +47,8 @@ class PlanDetails
     ) {
         $this->name = $name;
         $this->amount = $amount;
-        $this->currency = \strtolower($currency);
-        $this->interval = \strtolower($interval);
+        $this->currency = strtolower($currency);
+        $this->interval = strtolower($interval);
         $this->formName = $formName;
         $this->formHash = $formHash;
     }
@@ -102,10 +102,10 @@ class PlanDetails
     protected function generateId(): string
     {
         $name = @iconv('UTF-8', 'ASCII//IGNORE//TRANSLIT', $this->name);
-        $name = \strtolower($name);
+        $name = strtolower($name);
         $name = str_replace(' ', '_', $name);
-        $name = \preg_replace('/\W+/', '', $name);
-        $amount = \preg_replace('/[^0-9]/', '_', (string) $this->amount);
+        $name = preg_replace('/\W+/', '', $name);
+        $amount = preg_replace('/[^0-9]/', '_', (string) $this->amount);
 
         $id = "{$amount}_{$this->currency}_{$this->interval}";
 

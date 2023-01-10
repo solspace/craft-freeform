@@ -194,7 +194,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /** @var string[] */
     private $errors;
 
-    /** @var bool */
     private bool $submissionLimitReached;
 
     /** @var FormActionInterface[] */
@@ -1066,9 +1065,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @throws ComposerException
-     *
      * @return Properties\ValidationProperties
+     *
+     * @throws ComposerException
      */
     public function getValidationProperties()
     {
@@ -1076,9 +1075,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     }
 
     /**
-     * @throws ComposerException
-     *
      * @return Properties\AdminNotificationProperties
+     *
+     * @throws ComposerException
      */
     public function getAdminNotificationProperties()
     {
@@ -1088,9 +1087,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /**
      * Returns data for dynamic notification email template.
      *
-     * @throws FreeformException
-     *
      * @return null|DynamicNotificationAttributes
+     *
+     * @throws FreeformException
      */
     public function getDynamicNotificationData()
     {

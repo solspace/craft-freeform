@@ -2,11 +2,12 @@ import type { ConnectDropTarget } from 'react-dnd';
 import { useDrop } from 'react-dnd';
 import type { PickAnimated, SpringValues } from 'react-spring';
 import { useSpring } from 'react-spring';
+import type { DragItem } from '@editor/builder/types/drag';
+import { Drag } from '@editor/builder/types/drag';
 import type { Layout } from '@editor/builder/types/layout';
-import { Drag } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { addNewField } from '@editor/store/thunks/fields';
-import type { FieldType } from '@ff-client/types/properties';
+import { moveExistingCellToNewRow } from '@editor/store/thunks/cells';
+import { addNewFieldToNewRow } from '@editor/store/thunks/fields';
 
 type LayoutDropHook = {
   dropRef: ConnectDropTarget;
@@ -22,13 +23,19 @@ type CollectProps = {
 export const useLayoutDrop = (layout: Layout): LayoutDropHook => {
   const dispatch = useAppDispatch();
 
-  const [{ isOver }, dropRef] = useDrop<FieldType, void, CollectProps>(
+  const [{ isOver }, dropRef] = useDrop<DragItem, void, CollectProps>(
     () => ({
-      accept: Drag.FieldType,
+      accept: [Drag.FieldType, Drag.Cell],
       collect: (monitor) => ({ isOver: monitor.isOver({ shallow: true }) }),
       canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
       drop: (item) => {
-        dispatch(addNewField(item));
+        if (item.type === Drag.FieldType) {
+          dispatch(addNewFieldToNewRow(item.data));
+        }
+
+        if (item.type === Drag.Cell) {
+          dispatch(moveExistingCellToNewRow(item.data));
+        }
       },
     }),
     [layout]

@@ -6,18 +6,21 @@ import { selectFocus } from '@editor/store/slices/context';
 import { FieldLayout } from './field-layout/field-layout';
 import { FieldList } from './field-list/field-list';
 import { PropertyEditor } from './property-editor/property-editor';
+import { DragContextProvider } from './drag.context';
 import { Grid } from './layout-editor.styles';
 
 export const LayoutEditor: React.FC = () => {
   const { active } = useSelector(selectFocus);
 
   return (
-    <Grid>
-      <SidebarSlider swiped={active}>
-        <PropertyEditor />
-        <FieldList />
-      </SidebarSlider>
-      <FieldLayout />
-    </Grid>
+    <DragContextProvider>
+      <Grid>
+        <SidebarSlider swiped={active}>
+          <PropertyEditor />
+          <FieldList />
+        </SidebarSlider>
+        <FieldLayout />
+      </Grid>
+    </DragContextProvider>
   );
 };

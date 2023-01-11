@@ -3,16 +3,14 @@ import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const FieldLayoutWrapper = styled.div`
-  // border: 3px dashed blue;
-
   position: relative;
 
   display: flex;
   flex-direction: column;
-  gap: ${spacings.lg};
 
   height: 100%;
   padding-bottom: 60px;
+  margin: 0 -18px;
 `;
 
 export const DropZone = styled(animated.div)`
@@ -22,6 +20,7 @@ export const DropZone = styled(animated.div)`
 
   overflow: hidden;
   height: 28px;
+  margin: 0 ${spacings.lg};
 
   background-color: ${colors.gray050};
   border: 1px solid ${colors.hairline};

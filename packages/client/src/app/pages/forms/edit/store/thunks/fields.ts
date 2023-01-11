@@ -8,7 +8,7 @@ import { add as addRow } from '@editor/store/slices/rows';
 import type { FieldType } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
-export const addNewField =
+export const addNewFieldToNewRow =
   (fieldType: FieldType, row?: Row): AppThunk =>
   (dispatch, getState) => {
     const fieldUid = v4();
@@ -36,6 +36,31 @@ export const addNewField =
         rowUid,
         targetUid: fieldUid,
         uid: cellUid,
+      })
+    );
+  };
+
+export const addNewFieldToExistingRow =
+  (fieldType: FieldType, row: Row, order: number): AppThunk =>
+  (dispatch, getState) => {
+    const fieldUid = v4();
+    const cellUid = v4();
+
+    const state = getState();
+
+    const currentPage = selectCurrentPage(state);
+    if (!currentPage) {
+      throw new Error('No pages present');
+    }
+
+    dispatch(addField({ fieldType, uid: fieldUid }));
+    dispatch(
+      addCell({
+        type: CellType.Field,
+        rowUid: row.uid,
+        targetUid: fieldUid,
+        uid: cellUid,
+        order,
       })
     );
   };

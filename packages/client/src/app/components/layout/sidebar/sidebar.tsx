@@ -9,6 +9,7 @@ export const Sidebar = styled.div<WrapperProps>`
   position: relative;
 
   flex-basis: 300px;
+  flex-shrink: 0;
   width: 300px;
   padding: ${({ lean }): string => (lean ? spacings.sm : spacings.lg)};
   box-sizing: border-box;

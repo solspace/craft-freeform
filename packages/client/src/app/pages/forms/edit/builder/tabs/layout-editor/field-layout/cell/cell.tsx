@@ -1,39 +1,47 @@
 import React from 'react';
-import { useDrag } from 'react-dnd';
+import { DragPreviewImage } from 'react-dnd';
 import type { Cell as CellPropType } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
-import { useAppDispatch } from '@editor/store';
-import { setCell } from '@editor/store/slices/drag';
 
 import { CellField } from './cell-types/cell-field/cell-field';
 import { CellLayout } from './cell-types/cell-layout/cell-layout';
-import { Wrapper } from './cell.styles';
+import { useCellDragAnimation } from './cell.animations';
+import { useCellDrag } from './cell.drag';
+import { createPreview } from './cell.preview';
+import { CellWrapper } from './cell.styles';
 
 type Props = {
   cell: CellPropType;
-  order?: number;
+  index: number;
+  width?: number;
+  isOver: boolean;
+  isCurrentRow: boolean;
+  isDraggingCell: boolean;
+  dragCellIndex?: number;
+  hoverPosition?: number;
 };
 
-export const Cell: React.FC<Props> = ({ cell, order }) => {
-  const dispatch = useAppDispatch();
-
-  const [, drag] = useDrag(
-    () => ({
-      type: 'LayoutField',
-      item: (): Record<string, string> => {
-        dispatch(setCell(cell.uid));
-
-        return {};
-      },
-      end: (): void => {
-        dispatch(setCell(undefined));
-      },
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-    }),
-    [cell.uid]
-  );
+export const Cell: React.FC<Props> = ({
+  cell,
+  index,
+  width,
+  isOver,
+  isCurrentRow,
+  isDraggingCell,
+  dragCellIndex,
+  hoverPosition,
+}) => {
+  const { isDragging, drag, preview } = useCellDrag(cell, index);
+  const style = useCellDragAnimation({
+    width,
+    isDragging,
+    isOver,
+    isCurrentRow,
+    isDraggingCell,
+    dragCellIndex,
+    index,
+    hoverPosition,
+  });
 
   let Component;
   switch (cell.type) {
@@ -47,8 +55,11 @@ export const Cell: React.FC<Props> = ({ cell, order }) => {
   }
 
   return (
-    <Wrapper ref={drag} style={{ order }}>
-      <Component uid={cell.targetUid} />
-    </Wrapper>
+    <>
+      <DragPreviewImage connect={preview} src={createPreview(cell.type)} />
+      <CellWrapper ref={drag} style={style}>
+        <Component uid={cell.targetUid} />
+      </CellWrapper>
+    </>
   );
 };

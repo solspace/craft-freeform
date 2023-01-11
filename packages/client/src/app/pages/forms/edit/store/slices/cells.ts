@@ -3,7 +3,7 @@ import type { RootState } from '@editor/store';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-type CellState = Cell[];
+export type CellStore = Cell[];
 
 type MoveToPayload = {
   uid: string;
@@ -11,16 +11,21 @@ type MoveToPayload = {
   position: number;
 };
 
-const initialState: CellState = [];
+const initialState: CellStore = [];
+
+type AddPayload = Omit<Cell, 'order'> & {
+  order?: number;
+};
 
 export const cellsSlice = createSlice({
   name: 'cells',
   initialState,
   reducers: {
-    set: (state, action: PayloadAction<CellState>) => {
+    set: (state, action: PayloadAction<CellStore>) => {
       state.splice(0, state.length, ...action.payload);
     },
-    add: (state, action: PayloadAction<Omit<Cell, 'order'>>) => {
+    add: (state, action: PayloadAction<AddPayload>) => {
+      const { uid, rowUid, order } = action.payload;
       const highestOrder = Math.max(
         -1,
         ...state
@@ -30,15 +35,73 @@ export const cellsSlice = createSlice({
 
       state.push({
         ...action.payload,
-        order: highestOrder + 1,
+        order: order !== undefined ? order : highestOrder + 1,
       });
+
+      // shift all other cells on the right by 1 order
+      if (order !== undefined) {
+        state
+          .filter((cell) => cell.rowUid === rowUid)
+          .filter((cell) => cell.uid !== uid)
+          .forEach((cell) => {
+            if (cell.order >= order) {
+              cell.order += 1;
+            }
+          });
+      }
     },
     remove: (state, action: PayloadAction<string>) => {
       state = state.filter((cell) => cell.uid !== action.payload);
     },
     moveTo: (state, action: PayloadAction<MoveToPayload>) => {
-      // TODO: implement
-      console.log(action);
+      const { uid, rowUid, position } = action.payload;
+      const movedCell = state.find((cell) => cell.uid === uid);
+
+      const previosRowUid = movedCell.rowUid;
+      const previousPosition = movedCell.order;
+      const isSameRow = previosRowUid === rowUid;
+
+      if (previousPosition === undefined) {
+        return;
+      }
+
+      movedCell.rowUid = rowUid;
+      movedCell.order = position;
+
+      if (!isSameRow) {
+        // Reset the order of cells in previous row
+        state
+          .filter((cell) => cell.rowUid === previosRowUid)
+          .forEach((cell) => {
+            const isAfterMovedCell = cell.order >= previousPosition;
+            cell.order -= isAfterMovedCell ? 1 : 0;
+          });
+
+        // update all new row orders after the new cell
+        state
+          .filter((cell) => cell.rowUid === rowUid)
+          .filter((cell) => cell.uid !== movedCell.uid)
+          .forEach((cell) => {
+            const isAfterMovedCell = cell.order >= movedCell.order;
+            cell.order += isAfterMovedCell ? 1 : 0;
+          });
+      }
+
+      if (isSameRow) {
+        // re-calculate orders for the current row
+        state
+          .filter((cell) => cell.rowUid === rowUid)
+          .filter((cell) => cell.uid !== movedCell.uid)
+          .forEach((cell) => {
+            if (cell.order > previousPosition && cell.order <= position) {
+              cell.order -= 1;
+            }
+
+            if (cell.order < previousPosition && cell.order >= position) {
+              cell.order += 1;
+            }
+          });
+      }
     },
   },
 });

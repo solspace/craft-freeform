@@ -28,7 +28,7 @@ export const CellField: React.FC<Props> = ({ uid }) => {
     >
       <Label>{field.properties.label || type?.name}</Label>
       <div>
-        <input type="text" className="text fullwidth" />
+        <input type="text" className="text fullwidth" readOnly disabled />
       </div>
     </CellFieldWrapper>
   );

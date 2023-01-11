@@ -5,6 +5,8 @@ export const FieldLayoutWrapper = styled.div`
   flex-direction: column;
   align-items: stretch;
 
+  overflow: hidden;
+
   flex: 1;
   padding: var(--padding);
 `;

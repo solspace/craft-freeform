@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
+import { selectForm } from '@editor/store/slices/form';
 import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
@@ -18,6 +20,7 @@ import {
 
 export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
+  const form = useSelector(selectForm);
 
   const { data: formSettingsData } = useQueryFormSettings();
 
@@ -49,7 +52,7 @@ export const Tabs: React.FC = () => {
         <Link to=".." title={translate('Back to form list')}>
           <ChevronIcon />
         </Link>
-        <FormName>My form name</FormName>
+        <FormName>{form.name || translate('New Form')}</FormName>
       </Heading>
 
       <TabsWrapper>

@@ -7,10 +7,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 type LayoutState = Layout[];
 
-const initialState: LayoutState = [
-  { uid: 'layout-uid-1' },
-  { uid: 'layout-uid-2' },
-];
+const initialState: LayoutState = [];
 
 export const layoutsSlice = createSlice({
   name: 'layouts',

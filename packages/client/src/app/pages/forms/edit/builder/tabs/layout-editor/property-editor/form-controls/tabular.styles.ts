@@ -1,91 +1,47 @@
 import styled from 'styled-components';
 
-export const Table = styled.table`
+export const TabularOptions = styled.div`
+  display: flex;
+  border-style: solid;
+  flex-direction: column;
+  border-left-width: 1px;
+  border-bottom-width: 1px;
+  border-color: rgba(0, 0, 0, 0.1);
+`;
+
+export const Row = styled.div`
+  display: flex;
+`;
+
+export const Cell = styled.div`
   width: 100%;
-  border-spacing: 0;
+  display: flex;
+  border-left: 0;
+  align-items: center;
+  border-top-width: 1px;
+  border-right-width: 1px;
+  justify-content: center;
 
-  thead,
-  tbody {
-    tr {
-      td {
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-    }
-  }
-`;
-
-export const TableOptions = styled(Table)`
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
-  border-right: 1px solid rgba(0, 0, 0, 0.1);
-
-  thead {
-    tr {
-      td {
-        width: auto;
-        border-left: 0;
-        padding: 6px 9px !important;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-
-        &.checked-cell,
-        &.drag-and-drop-cell,
-        &.delete-cell {
-          text-align: center;
-          width: 20px !important;
-        }
-
-        &.checked-cell {
-          width: 25px !important;
-        }
-      }
-    }
+  &.check,
+  &.drag-and-drop,
+  &.delete {
+    flex: 0 0 50px;
   }
 
-  tbody {
-    tr {
-      td {
-        width: auto;
-        border-right: 1px solid rgba(0, 0, 0, 0.1);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  &.check {
+    margin: 0;
+    min-height: 100%;
+    padding: 0 !important;
 
-        &.checked-cell,
-        &.drag-and-drop-cell,
-        &.delete-cell {
-          padding: 6px 9px;
-          text-align: center;
-          width: 20px !important;
-          background-color: #ffffff;
-        }
-
-        &.checked-cell {
-          width: 25px !important;
-        }
-
-        &:last-child {
-          border-right: 0;
-        }
-
-        input[type='checkbox'] {
-          padding: 0;
-          margin: -2px 0 0 0;
-          vertical-align: middle;
-        }
-      }
+    &:before {
+      display: none;
+      position: relative;
     }
-  }
-`;
 
-export const TableAddOption = styled(Table)`
-  border-left: 1px dashed rgba(0, 0, 0, 0.1);
-  border-right: 1px dashed rgba(0, 0, 0, 0.1);
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
-
-  tbody {
-    tr {
-      td {
-        padding: 5px 0 !important;
-      }
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 `;
@@ -101,16 +57,30 @@ export const Input = styled.input`
   outline: none;
   --focus-ring: 0;
   border-radius: 0;
+  padding: 6px 9px;
   background-color: #ffffff;
+`;
+
+export const InputPreview = styled(Input)`
+  min-width: 100%;
+  cursor: pointer;
+
+  &.with-border {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.1);
+  }
 `;
 
 export const Select = styled.select`
   margin: 0;
   border: 0;
   width: 100%;
+  height: 100%;
   outline: none;
   --focus-ring: 0;
   border-radius: 0;
+  padding: 6px 9px;
   background-color: #ffffff;
 `;
 
@@ -120,19 +90,18 @@ export const Button = styled.button`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-`;
 
-const Icon = styled.div`
-  &::after {
-    font-weight: 800;
+  &:disabled {
+    color: lightgray;
+    cursor: not-allowed;
   }
 `;
 
-export const AddOptionIcon = styled(Icon)`
-  margin: 0 5px 0 0;
+const Icon = styled.div`
+  border: 0 !important;
 
   &::after {
-    content: '\\271B';
+    font-weight: 800;
   }
 `;
 

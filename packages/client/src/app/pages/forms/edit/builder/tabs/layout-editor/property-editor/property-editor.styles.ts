@@ -16,7 +16,7 @@ export const CloseLink = styled.a`
   height: 20px;
 `;
 
-type SectinoBlockProps = {
+type SectionBlockProps = {
   label?: string;
 };
 
@@ -41,7 +41,7 @@ export const SectionWrapper = styled.div`
   gap: ${spacings.lg};
 `;
 
-export const SectionBlock = styled.section<SectinoBlockProps>`
+export const SectionBlock = styled.section<SectionBlockProps>`
   position: relative;
 
   display: flex;

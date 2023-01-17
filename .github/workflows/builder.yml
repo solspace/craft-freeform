@@ -2,7 +2,7 @@ name: Builder
 
 on:
   pull_request:
-    branches: [v5.0]
+    branches: [v5]
 
 jobs:
   ts-linter:
@@ -11,7 +11,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 16.x ]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
 
       - run: npm ci
       - name: npm run lint
-        run: | 
+        run: |
           cd packages/client
           npm run lint
 
@@ -34,7 +34,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ 16.x ]
+        node-version: [16.x]
 
     steps:
       - uses: actions/checkout@v3
@@ -45,10 +45,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
 
-
       - run: npm ci
       - name: npm test
         run: |
           cd packages/client
           npm test
-

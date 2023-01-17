@@ -1,5 +1,12 @@
 # Solspace Freeform Changelog
 
+## 4.0.10 - 2023-01-17
+
+### Fixed
+- Fixed a bug where the "Once per logged in Users only" option for duplicate checking wasn't preventing guests from submitting the form.
+- Fixed a bug where extra returns were being inserted above H2s inside Rich Text fields (in the builder) when they were clicked on.
+- Fixed a bug where deleting a spam submission from the CP detail view was not working.
+
 ## 4.0.9 - 2022-12-09
 
 ### Added

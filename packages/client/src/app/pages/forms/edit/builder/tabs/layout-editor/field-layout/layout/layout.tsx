@@ -7,7 +7,7 @@ import translate from '@ff-client/utils/translations';
 import { Row } from '../row/row';
 
 import { useLayoutDrop } from './layout.drop';
-import { DropZone, FieldLayoutWrapper } from './layout.styles';
+import { DropZone, EmptyLayout, FieldLayoutWrapper } from './layout.styles';
 
 type Props = {
   layout: LayoutType;
@@ -20,7 +20,9 @@ export const Layout: React.FC<Props> = ({ layout }) => {
   return (
     <FieldLayoutWrapper ref={dropRef}>
       {!rows.length && (
-        <div>Drag or click fields to add them to the layout</div>
+        <EmptyLayout>
+          Drag or click fields to add them to the layout
+        </EmptyLayout>
       )}
       {rows.map((row) => (
         <Row row={row} key={row.uid} />

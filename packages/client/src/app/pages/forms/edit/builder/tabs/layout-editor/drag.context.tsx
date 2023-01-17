@@ -7,13 +7,15 @@ import type { Drag } from '@editor/builder/types/drag';
 type DragContextType = {
   isDragging: boolean;
   dragType?: Drag;
-  dragOn: (type: Drag) => void;
+  position?: number;
+  dragOn: (type: Drag, position?: number) => void;
   dragOff: () => void;
 };
 
 const DragContext = createContext<DragContextType>({
   isDragging: false,
   dragType: undefined,
+  position: undefined,
   dragOn: () => void {},
   dragOff: () => void {},
 });
@@ -23,18 +25,22 @@ export const DragContextProvider: React.FC<PropsWithChildren> = ({
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragType, setDragType] = useState<Drag>();
+  const [position, setPosition] = useState<number>();
 
   return (
     <DragContext.Provider
       value={{
         isDragging,
         dragType,
-        dragOn: (type) => {
+        position,
+        dragOn: (type, newPosition) => {
           setIsDragging(true);
+          setPosition(newPosition);
           setDragType(type);
         },
         dragOff: () => {
           setIsDragging(false);
+          setPosition(undefined);
           setDragType(undefined);
         },
       }}

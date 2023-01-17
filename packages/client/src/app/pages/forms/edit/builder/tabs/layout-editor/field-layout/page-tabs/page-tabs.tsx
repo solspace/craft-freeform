@@ -12,8 +12,8 @@ export const PageTabs: React.FC = () => {
   return (
     <PageTabsWrapper>
       <PageTabsContainer>
-        {pages.map((page) => (
-          <Tab key={page.uid} {...page} />
+        {pages.map((page, index) => (
+          <Tab key={page.uid} index={index} page={page} />
         ))}
       </PageTabsContainer>
 

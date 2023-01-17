@@ -2,7 +2,7 @@ import React from 'react';
 import { useAppDispatch } from '@editor/store';
 import { addNewPage } from '@editor/store/thunks/pages';
 
-import { NewTabWrapper } from './tab.styles';
+import { NewTabWrapper, PageTab } from './tab.styles';
 
 export const NewTab: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +13,7 @@ export const NewTab: React.FC = () => {
         dispatch(addNewPage());
       }}
     >
-      Add New Page
+      <PageTab>Add New Page</PageTab>
     </NewTabWrapper>
   );
 };

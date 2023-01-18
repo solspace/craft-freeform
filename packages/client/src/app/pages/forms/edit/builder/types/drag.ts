@@ -1,6 +1,6 @@
 import type { FieldType } from '@ff-client/types/properties';
 
-import type { Cell } from './layout';
+import type { Cell, Page } from './layout';
 
 export enum Drag {
   FieldType = 'field-type',
@@ -15,9 +15,8 @@ type BaseDragItem<T extends Drag, D> = {
   data: D;
 };
 
-type CellDragItem = BaseDragItem<Drag.Cell, Cell> & {
-  index: number;
-};
-type FieldTypeDragItem = BaseDragItem<Drag.FieldType, FieldType>;
+export type PageDragItem = BaseDragItem<Drag.Page, Page> & { index: number };
+export type FieldTypeDragItem = BaseDragItem<Drag.FieldType, FieldType>;
+export type CellDragItem = BaseDragItem<Drag.Cell, Cell> & { index: number };
 
-export type DragItem = CellDragItem | FieldTypeDragItem;
+export type DragItem = CellDragItem | FieldTypeDragItem | PageDragItem;

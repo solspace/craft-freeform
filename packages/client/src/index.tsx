@@ -5,6 +5,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import '../config';
+import './utils/prototypes';
 
 import { queryClient } from '../config/react-query';
 

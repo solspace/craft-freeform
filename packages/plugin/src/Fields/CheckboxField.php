@@ -36,7 +36,7 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
 
     public function isChecked(): bool
     {
-        return (bool) $this->checked;
+        return (bool) $this->value;
     }
 
     /**

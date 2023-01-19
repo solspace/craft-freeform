@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 4.0.11 - 2023-01-19
+
+### Fixed
+- Fixed a bug where the opt-in data storage checkbox was not saving submission data when checked.
+- Fixed a bug where Dynamic Recipient fields would not export with labels when the "Use Option Labels when Exporting" setting was enabled.
+
 ## 4.0.10 - 2023-01-17
 
 ### Fixed

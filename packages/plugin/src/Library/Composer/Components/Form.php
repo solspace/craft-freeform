@@ -1041,7 +1041,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public function hasOptInPermission(): bool
     {
         if ($this->getOptInDataTargetField()) {
-            return $this->getOptInDataTargetField()->isChecked();
+            return (bool) $this->getOptInDataTargetField()->getValue();
         }
 
         return true;

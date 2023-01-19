@@ -14,7 +14,7 @@ trait OptionsKeyValuePairTrait
         if ($this instanceof DynamicRecipientField) {
             /** @var Option $option */
             foreach ($this->getOptions() as $index => $option) {
-                $pairs[$index] = $option->getLabel();
+                $pairs[$option->getValue()] = $option->getLabel();
             }
         } else {
             /** @var Option $option */

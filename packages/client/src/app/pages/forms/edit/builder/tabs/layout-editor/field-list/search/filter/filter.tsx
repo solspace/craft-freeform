@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSpring } from 'react-spring';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import translate from '@ff-client/utils/translations';
 
@@ -26,6 +27,16 @@ export const Filter: React.FC = () => {
     setActive(false);
   }, active);
 
+  const style = useSpring({
+    to: {
+      opacity: active ? 1 : 0,
+      scaleY: active ? 1 : 0,
+    },
+    config: {
+      tension: 700,
+    },
+  });
+
   return (
     <>
       <FilterIcon
@@ -42,7 +53,7 @@ export const Filter: React.FC = () => {
         }}
       >
         <FilterIconSVG />
-        <DropDownWrapper>
+        <DropDownWrapper style={style}>
           <Heading>{translate('Search in')}</Heading>
           <ul>
             {list.map((item) => (

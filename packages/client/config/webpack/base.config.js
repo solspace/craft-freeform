@@ -38,6 +38,7 @@ module.exports = {
     alias: {
       '@editor': path.resolve(__dirname, '../../src/app/pages/forms/edit/'),
       '@components': path.resolve(__dirname, '../../src/app/components/'),
+      '@ff-icons': path.resolve(__dirname, '../../src/assets/icons/'),
       '@ff-client': path.resolve(__dirname, '../../src/'),
     },
   },

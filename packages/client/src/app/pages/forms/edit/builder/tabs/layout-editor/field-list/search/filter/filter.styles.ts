@@ -1,3 +1,4 @@
+import { animated } from 'react-spring';
 import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
@@ -55,14 +56,12 @@ export const FilterIcon = styled.button`
   }
 `;
 
-export const DropDownWrapper = styled.div`
+export const DropDownWrapper = styled(animated.div)`
   position: absolute;
   top: 32px;
   right: -1px;
 
-  //display: none;
-
-  padding: ${spacings.sm} ${spacings.md};
+  padding: ${spacings.md} ${spacings.xl};
   white-space: nowrap;
   text-align: left;
 
@@ -73,16 +72,12 @@ export const DropDownWrapper = styled.div`
     rgba(0, 0, 0, 0.3) 0px 30px 60px -30px;
 
   opacity: 0;
+
   transform-origin: top right;
-  transform: scaleY(0);
-  transition: all 0.2s ease-out;
 
   ${FilterIcon}.active & {
     display: block;
     background: ${colors.gray050};
-
-    opacity: 1;
-    transform: scaleY(1);
   }
 
   &:before {

@@ -22,7 +22,7 @@ type Props = {
 };
 
 export const FavoriteButton: React.FC<Props> = ({ field }) => {
-  const type = useFieldType(field.typeClass);
+  const type = useFieldType(field?.typeClass);
 
   const mutation = useFavoritesMutation();
 

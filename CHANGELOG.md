@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 4.0.12 - 2023-01-25
+
+### Added
+- Added additional data to the AJAX submit response payload for multi-page forms.
+- Added an example Bootstrap 5 formatting template that includes a preview/review of all fields across all pages.
+
 ## 4.0.11 - 2023-01-19
 
 ### Fixed

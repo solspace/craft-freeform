@@ -190,9 +190,9 @@ class SessionContext
 
     public static function getPageHash(Form $form): string
     {
-        $page = $form->getCurrentPage();
+        $pageIndex = $form->getPropertyBag()->get(Form::PROPERTY_PAGE_INDEX, 0);
 
-        return HashHelper::hash($page->getIndex(), $form->getId());
+        return HashHelper::hash($pageIndex, $form->getId());
     }
 
     public static function isFormPosted(Form $form): bool

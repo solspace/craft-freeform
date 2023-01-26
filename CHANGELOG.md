@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 4.0.13 - 2023-01-26
+
+### Fixed
+- Fixed a bug where single checkboxes were always being checked by default (as of 4.0.11).
+- Fixed a bug where custom table attributes were firing on all element types.
+
 ## 4.0.12 - 2023-01-25
 
 ### Added

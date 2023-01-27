@@ -88,4 +88,4 @@ export const SaveButtonWrapper = styled.div`
   padding: 0 ${spacings.lg};
 `;
 
-export const SaveButton = styled.button.attrs({ className: 'btn submit' })``;
+export const SaveButton = styled.button``;

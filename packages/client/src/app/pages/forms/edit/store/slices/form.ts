@@ -4,9 +4,11 @@ import type {
   ErrorsSubscriber,
   SaveSubscriber,
 } from '@editor/store/middleware/state-persist';
-import { TOPIC_CREATED } from '@editor/store/middleware/state-persist';
-import { TOPIC_ERRORS } from '@editor/store/middleware/state-persist';
-import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
+import {
+  TOPIC_CREATED,
+  TOPIC_ERRORS,
+  TOPIC_SAVE,
+} from '@editor/store/middleware/state-persist';
 import type { ErrorList } from '@ff-client/types/api';
 import type { Form, SettingsNamespace } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
@@ -17,6 +19,7 @@ import { v4 } from 'uuid';
 
 type FormState = Form & {
   errors?: ErrorList;
+  processing?: boolean;
 };
 
 const initialState: FormState = {
@@ -69,6 +72,9 @@ export const formSlice = createSlice({
     clearErrors: (state) => {
       state.errors = undefined;
     },
+    setProcessing: (state, { payload }: PayloadAction<boolean>) => {
+      state.processing = payload;
+    },
   },
 });
 
@@ -79,6 +85,7 @@ export const {
   removeError,
   setErrors,
   clearErrors,
+  setProcessing,
 } = formSlice.actions;
 
 export const selectForm = (state: RootState): Form | undefined => state.form;
@@ -91,6 +98,9 @@ export const selectFormSetting =
   (namespace: string, key: string) =>
   (state: RootState): any =>
     state.form.settings?.[namespace]?.[key];
+
+export const selectFormProcessing = (state: RootState): boolean =>
+  state.form.processing || false;
 
 export default formSlice.reducer;
 

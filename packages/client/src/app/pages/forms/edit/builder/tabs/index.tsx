@@ -3,7 +3,8 @@ import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
-import { selectForm, selectFormProcessing } from '@editor/store/slices/form';
+import { selectState, State } from '@editor/store/slices/context';
+import { selectForm } from '@editor/store/slices/form';
 import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
@@ -22,7 +23,7 @@ import {
 export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const form = useSelector(selectForm);
-  const processing = useSelector(selectFormProcessing);
+  const state = useSelector(selectState);
 
   const { data: formSettingsData } = useQueryFormSettings();
 
@@ -74,9 +75,13 @@ export const Tabs: React.FC = () => {
       <SaveButtonWrapper>
         <SaveButton
           onClick={triggerSave}
-          className={classes('btn', 'submit', processing && 'disabled')}
+          className={classes(
+            'btn',
+            'submit',
+            state === State.Processing && 'disabled'
+          )}
         >
-          {translate(processing ? 'Saving...' : 'Save')}
+          {translate(state === State.Processing ? 'Saving...' : 'Save')}
         </SaveButton>
       </SaveButtonWrapper>
     </TabWrapper>

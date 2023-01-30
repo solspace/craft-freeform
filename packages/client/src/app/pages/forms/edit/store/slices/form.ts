@@ -19,7 +19,6 @@ import { v4 } from 'uuid';
 
 type FormState = Form & {
   errors?: ErrorList;
-  processing?: boolean;
 };
 
 const initialState: FormState = {
@@ -72,9 +71,6 @@ export const formSlice = createSlice({
     clearErrors: (state) => {
       state.errors = undefined;
     },
-    setProcessing: (state, { payload }: PayloadAction<boolean>) => {
-      state.processing = payload;
-    },
   },
 });
 
@@ -85,7 +81,6 @@ export const {
   removeError,
   setErrors,
   clearErrors,
-  setProcessing,
 } = formSlice.actions;
 
 export const selectForm = (state: RootState): Form | undefined => state.form;
@@ -99,12 +94,9 @@ export const selectFormSetting =
   (state: RootState): any =>
     state.form.settings?.[namespace]?.[key];
 
-export const selectFormProcessing = (state: RootState): boolean =>
-  state.form.processing || false;
-
 export default formSlice.reducer;
 
-const persistForm: SaveSubscriber = (_, data) => {
+const persist: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
   const { id, uid, type, settings } = state.form;
@@ -126,6 +118,6 @@ const handleCreate: CreatedSubscriber = (_, { dispatch, response }) => {
   dispatch(update({ id: response.data.form.id }));
 };
 
-PubSub.subscribe(TOPIC_SAVE, persistForm);
+PubSub.subscribe(TOPIC_SAVE, persist);
 PubSub.subscribe(TOPIC_ERRORS, handleErrors);
 PubSub.subscribe(TOPIC_CREATED, handleCreate);

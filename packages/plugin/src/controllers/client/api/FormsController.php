@@ -41,7 +41,7 @@ class FormsController extends BaseApiController
         return $this->formTransformer->transform($form);
     }
 
-    protected function post(int|string $id = null): array|object
+    protected function post(int|string $id = null): array|object|null
     {
         $data = json_decode($this->request->getRawBody(), false);
 
@@ -54,7 +54,7 @@ class FormsController extends BaseApiController
         return $event->getResponseData();
     }
 
-    protected function put(int|string $id = null): array|object
+    protected function put(int|string $id = null): array|object|null
     {
         $data = json_decode($this->request->getRawBody(), false);
 

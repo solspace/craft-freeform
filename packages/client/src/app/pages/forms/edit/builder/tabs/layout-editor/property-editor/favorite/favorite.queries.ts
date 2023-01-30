@@ -2,33 +2,33 @@ import type { UseMutationResult } from 'react-query';
 import { useMutation } from 'react-query';
 import type { Field } from '@editor/store/slices/fields';
 import type { APIError } from '@ff-client/types/api';
+import type { PropertyValueCollection } from '@ff-client/types/fields';
 import type { FieldType } from '@ff-client/types/properties';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 
 type Variables = {
+  label: string;
   field: Field;
   type: FieldType;
 };
 
-type FavoritesMutation = (
-  variables: Variables
-) => Promise<AxiosResponse<FieldType>>;
+type Payload = {
+  label: string;
+  typeClass: string;
+  properties: PropertyValueCollection;
+};
 
-const favoritesMutation: FavoritesMutation = ({ field, type }) => {
-  const payload: FieldType = {
-    ...type,
-    properties: type.properties.map((property) => {
-      const value = field.properties[property.handle];
+type FavoritesMutation = (variables: Variables) => Promise<AxiosResponse>;
 
-      return {
-        ...property,
-        value,
-      };
-    }),
+const favoritesMutation: FavoritesMutation = ({ label, field, type }) => {
+  const payload: Payload = {
+    label,
+    properties: field.properties,
+    typeClass: type.typeClass,
   };
 
-  return axios.post<FieldType>('/client/api/favorites', payload);
+  return axios.post('/client/api/favorites', payload);
 };
 
 export type FavoriteMutationResult = UseMutationResult<
@@ -38,7 +38,7 @@ export type FavoriteMutationResult = UseMutationResult<
 >;
 
 export const useFavoritesMutation = (): FavoriteMutationResult => {
-  return useMutation<AxiosResponse<FieldType>, APIError, Variables, unknown>(
+  return useMutation<AxiosResponse, APIError, Variables, unknown>(
     favoritesMutation
   );
 };

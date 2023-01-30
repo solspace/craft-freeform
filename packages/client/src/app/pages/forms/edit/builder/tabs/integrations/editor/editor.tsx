@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Space } from '@ff-client/app/components/layout/blocks/space';
 
@@ -16,14 +16,14 @@ type UrlParams = {
 
 export const Editor: React.FC = () => {
   const { id: integrationId } = useParams<UrlParams>();
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
 
   const integration = useSelector(selectIntegration(Number(integrationId)));
   if (!integration) {
     return <EmptyEditor />;
   }
 
-  const { id, handle, name, description, enabled, settings } = integration;
+  const { id, handle, name, description, settings } = integration;
 
   // TODO: refactor Integrations to use #[Property] instead
 

@@ -7,6 +7,7 @@ import { selectForm, selectFormProcessing } from '@editor/store/slices/form';
 import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -73,7 +74,7 @@ export const Tabs: React.FC = () => {
       <SaveButtonWrapper>
         <SaveButton
           onClick={triggerSave}
-          className={`btn submit ${processing ? 'disabled' : ''}`}
+          className={classes('btn', 'submit', processing && 'disabled')}
         >
           {translate(processing ? 'Saving...' : 'Save')}
         </SaveButton>

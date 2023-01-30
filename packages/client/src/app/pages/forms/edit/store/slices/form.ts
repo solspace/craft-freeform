@@ -2,13 +2,11 @@ import type { RootState } from '@editor/store';
 import type {
   CreatedSubscriber,
   ErrorsSubscriber,
-  ProcessingSubscriber,
   SaveSubscriber,
 } from '@editor/store/middleware/state-persist';
 import {
   TOPIC_CREATED,
   TOPIC_ERRORS,
-  TOPIC_PROCESSING,
   TOPIC_SAVE,
 } from '@editor/store/middleware/state-persist';
 import type { ErrorList } from '@ff-client/types/api';
@@ -91,13 +89,15 @@ export const {
 } = formSlice.actions;
 
 export const selectForm = (state: RootState): Form | undefined => state.form;
-export const selectFormSettings = (namespace: string) => (
-  state: RootState
-): SettingsNamespace => state.form.settings?.[namespace] || {};
+export const selectFormSettings =
+  (namespace: string) =>
+  (state: RootState): SettingsNamespace =>
+    state.form.settings?.[namespace] || {};
 
-export const selectFormSetting = (namespace: string, key: string) => (
-  state: RootState
-): any => state.form.settings?.[namespace]?.[key];
+export const selectFormSetting =
+  (namespace: string, key: string) =>
+  (state: RootState): any =>
+    state.form.settings?.[namespace]?.[key];
 
 export const selectFormProcessing = (state: RootState): boolean =>
   state.form.processing || false;
@@ -126,11 +126,6 @@ const handleCreate: CreatedSubscriber = (_, { dispatch, response }) => {
   dispatch(update({ id: response.data.form.id }));
 };
 
-const handleProcessing: ProcessingSubscriber = (_, { dispatch, response }) => {
-  dispatch(setProcessing(response));
-};
-
 PubSub.subscribe(TOPIC_SAVE, persistForm);
 PubSub.subscribe(TOPIC_ERRORS, handleErrors);
 PubSub.subscribe(TOPIC_CREATED, handleCreate);
-PubSub.subscribe(TOPIC_PROCESSING, handleProcessing);

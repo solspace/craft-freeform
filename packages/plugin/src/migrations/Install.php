@@ -80,6 +80,14 @@ class Install extends StreamlinedInstallMigration
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
+            (new Table('freeform_favorite_fields'))
+                ->addField('id', $this->primaryKey())
+                ->addField('userId', $this->integer())
+                ->addField('label', $this->string(255)->notNull())
+                ->addField('type', $this->string(255)->notNull())
+                ->addField('metadata', $this->mediumText())
+                ->addForeignKey('userId', 'users', 'id', ForeignKey::CASCADE),
+
             (new Table('freeform_fields'))
                 ->addField('id', $this->primaryKey())
                 ->addField('type', $this->string(50)->notNull())

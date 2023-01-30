@@ -18,10 +18,10 @@ type Props = {
 };
 
 export const FavoriteForm: React.FC<Props> = ({ field, type, mutation }) => {
-  const [value, setValue] = useState('');
+  const [label, setLabel] = useState('');
 
   useEffect(() => {
-    setValue(field.properties.label || type.name);
+    setLabel(field.properties.label || type.name);
     mutation.reset();
   }, [field.uid]);
 
@@ -33,14 +33,14 @@ export const FavoriteForm: React.FC<Props> = ({ field, type, mutation }) => {
           type="text"
           className="text fullwidth"
           placeholder={field.properties?.label}
-          value={value}
-          onChange={(event) => setValue(event.target.value)}
+          value={label}
+          onChange={(event) => setLabel(event.target.value)}
         />
       </FieldInput>
       <ButtonContainer>
         <button
           onClick={() => {
-            mutation.mutate({ field, type });
+            mutation.mutate({ label, field, type });
           }}
           disabled={mutation.isLoading}
           className={classes(

@@ -39,7 +39,7 @@
         "allowExpressions": true
       }
     ],
-    "no-console": "warn",
+    "no-console": ["warn", { "allow": ["error", "warn"] }],
     "simple-import-sort/imports": [
       "error",
       {

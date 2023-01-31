@@ -24,7 +24,6 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
       uid: pageUid,
       label: `Page ${nextPageNumber}`,
       layoutUid,
-      order: nextPageNumber,
     })
   );
 };

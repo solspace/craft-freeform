@@ -4,9 +4,11 @@ import type {
   ErrorsSubscriber,
   SaveSubscriber,
 } from '@editor/store/middleware/state-persist';
-import { TOPIC_CREATED } from '@editor/store/middleware/state-persist';
-import { TOPIC_ERRORS } from '@editor/store/middleware/state-persist';
-import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
+import {
+  TOPIC_CREATED,
+  TOPIC_ERRORS,
+  TOPIC_SAVE,
+} from '@editor/store/middleware/state-persist';
 import type { ErrorList } from '@ff-client/types/api';
 import type { Form, SettingsNamespace } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
@@ -94,7 +96,7 @@ export const selectFormSetting =
 
 export default formSlice.reducer;
 
-const persistForm: SaveSubscriber = (_, data) => {
+const persist: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
   const { id, uid, type, settings } = state.form;
@@ -116,6 +118,6 @@ const handleCreate: CreatedSubscriber = (_, { dispatch, response }) => {
   dispatch(update({ id: response.data.form.id }));
 };
 
-PubSub.subscribe(TOPIC_SAVE, persistForm);
+PubSub.subscribe(TOPIC_SAVE, persist);
 PubSub.subscribe(TOPIC_ERRORS, handleErrors);
 PubSub.subscribe(TOPIC_CREATED, handleCreate);

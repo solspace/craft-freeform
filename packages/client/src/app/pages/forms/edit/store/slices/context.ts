@@ -10,6 +10,11 @@ export enum FocusType {
   Cell = 'cell',
 }
 
+export enum State {
+  Idle,
+  Processing,
+}
+
 type Focus = {
   active: boolean;
   type: FocusType;
@@ -19,9 +24,11 @@ type Focus = {
 type ContextState = {
   page?: string;
   focus: Focus;
+  state: State;
 };
 
 const initialState: ContextState = {
+  state: State.Idle,
   page: null,
   focus: {
     active: false,
@@ -43,6 +50,9 @@ const contextSlice = createSlice({
     ) => {
       state.focus = { active: true, ...payload };
     },
+    setState: (state, { payload }: PayloadAction<State>) => {
+      state.state = payload;
+    },
     focus: (state) => {
       state.focus.active = true;
     },
@@ -52,7 +62,8 @@ const contextSlice = createSlice({
   },
 });
 
-export const { setPage, setFocusedItem, unfocus } = contextSlice.actions;
+export const { setPage, setFocusedItem, setState, unfocus } =
+  contextSlice.actions;
 
 export const selectCurrentPage = (state: RootState): Page | undefined => {
   const pageUid = state.context.page;
@@ -64,5 +75,7 @@ export const selectCurrentPage = (state: RootState): Page | undefined => {
 };
 
 export const selectFocus = (state: RootState): Focus => state.context.focus;
+
+export const selectState = (state: RootState): State => state.context.state;
 
 export default contextSlice.reducer;

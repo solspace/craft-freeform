@@ -45,7 +45,7 @@ export const SidebarSlider: React.FC<PropsWithChildren<SidebarSliderProps>> = ({
       x: i ? (swiped ? -300 : 0) : swiped ? 0 : 300,
       config: {
         mass: 1,
-        tension: !open ? 350 : 200,
+        tension: !open ? 750 : 200,
         friction: 26,
       },
     }))

@@ -1,42 +1,66 @@
-import React from 'react';
-import { useDrop } from 'react-dnd';
+import type { MutableRefObject } from 'react';
+import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
-import type { DragItem } from '@editor/builder/types/drag';
-import { Drag } from '@editor/builder/types/drag';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { selectCurrentPage, setPage } from '@editor/store/slices/context';
-import { moveCellToPage } from '@editor/store/thunks/pages';
 import classes from '@ff-client/utils/classes';
 
-import { TabWrapper } from './tab.styles';
+import { useDragContext } from '../../../drag.context';
 
-export const Tab: React.FC<Page> = (page) => {
+import { useTabDrag } from './tab.drag';
+import { useTabDragAnimation } from './tab.drag-animation';
+import { useTabDrop, useTabPageDrop } from './tab.drop';
+import { PageTab, TabDrop, TabWrapper } from './tab.styles';
+
+type Props = {
+  page: Page;
+  index: number;
+};
+
+export const Tab: React.FC<Props> = ({ page, index }) => {
   const { uid } = useSelector(selectCurrentPage);
   const dispatch = useAppDispatch();
+  const { dragType } = useDragContext();
 
-  const [{ canDrop }, ref] = useDrop<DragItem, unknown, { canDrop: boolean }>({
-    accept: [Drag.Cell],
-    canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
-    collect: (monitor) => ({
-      canDrop: monitor.canDrop() && uid !== page.uid,
-    }),
-    drop: (item) => {
-      if (item.type === Drag.Cell) {
-        dispatch(moveCellToPage(item.data, page));
-      }
-    },
-  });
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  const { canDrop, ref: dropRef } = useTabDrop(uid, page);
+  const { isDragging, ref: dragRef } = useTabDrag(index, page);
+
+  const { ref: dropPageRef, dragItemIndex } = useTabPageDrop(
+    wrapperRef,
+    page,
+    index
+  );
+
+  const connectedRef = dropRef(
+    dragRef(wrapperRef)
+  ) as unknown as MutableRefObject<HTMLDivElement>;
+
+  const style = useTabDragAnimation(
+    wrapperRef,
+    index,
+    dragItemIndex,
+    isDragging
+  );
 
   return (
-    <TabWrapper
-      ref={ref}
-      className={classes(uid === page.uid && 'active', canDrop && 'can-drop')}
-      onClick={(): void => {
-        dispatch(setPage(page.uid));
-      }}
-    >
-      {page.label}
+    <TabWrapper ref={connectedRef}>
+      {(!!dragType || isDragging) && <TabDrop ref={dropPageRef} />}
+      <PageTab
+        className={classes(
+          uid === page.uid && 'active',
+          canDrop && 'can-drop',
+          isDragging && 'is-dragging'
+        )}
+        style={style}
+        onClick={(): void => {
+          dispatch(setPage(page.uid));
+        }}
+      >
+        {page.label}
+      </PageTab>
     </TabWrapper>
   );
 };

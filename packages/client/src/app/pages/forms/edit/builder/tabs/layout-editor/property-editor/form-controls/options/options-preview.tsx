@@ -5,7 +5,7 @@ import {
   Wrapper,
 } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/options/options-preview.styles';
 import optionsSources from '@editor/builder/tabs/layout-editor/property-editor/form-controls/options/options-sources';
-import { InputPreview } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/tabular.styles';
+import { InputPreview } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/table/table.editor.styles';
 import translate from '@ff-client/utils/translations';
 
 type Props = {

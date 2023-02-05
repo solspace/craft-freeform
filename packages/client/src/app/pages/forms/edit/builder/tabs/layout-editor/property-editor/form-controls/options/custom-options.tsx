@@ -21,7 +21,7 @@ import {
   Input,
   Row,
   TabularOptions,
-} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/tabular.styles';
+} from '@editor/builder/tabs/layout-editor/property-editor/form-controls/table/table.editor.styles';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import translate from '@ff-client/utils/translations';
 

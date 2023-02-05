@@ -1,3 +1,4 @@
+import { labelText } from '@ff-client/styles/mixins';
 import { colors, shadows, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
@@ -83,12 +84,7 @@ export const SectionBlock = styled.section<SectionBlockProps>`
 
     background-color: ${colors.gray050};
 
-    color: rgb(154 165 177 / 75%);
-    font-family: system-ui, BlinkMacSystemFont, -apple-system, Segoe UI, Roboto,
-      Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue,
-      sans-serif;
+    ${labelText};
     font-size: 11px;
-    font-weight: bold;
-    text-transform: uppercase;
   }
 `;

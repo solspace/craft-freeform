@@ -10,13 +10,18 @@ import OptionsEditor from '@editor/builder/tabs/layout-editor/property-editor/fo
 import OptionsPreview from '@editor/builder/tabs/layout-editor/property-editor/form-controls/options/options-preview';
 import { WrapperPreview } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/options/options-preview.styles';
 import type { ControlType } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/types';
-import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 
-const Options: React.FC<ControlType> = ({ field, property, dispatch }) => {
+import type { OptionsEditorProps } from './options-editor.types';
+
+const Options: React.FC<ControlType<OptionsEditorProps>> = ({
+  field,
+  property,
+  updateValue,
+}) => {
   const { handle } = property;
-  const { uid, properties } = field;
+  const { properties } = field;
   const value = properties[handle];
 
   const [editorVisible, setEditorVisible] = useState(false);
@@ -56,11 +61,7 @@ const Options: React.FC<ControlType> = ({ field, property, dispatch }) => {
             <CloseIcon />
           </Button>
         </Buttons>
-        <OptionsEditor
-          value={value}
-          handle={handle}
-          onChange={(value) => dispatch(edit({ uid, property, value }))}
-        />
+        <OptionsEditor value={value} handle={handle} onChange={updateValue} />
       </WrapperEditor>
     </Control>
   );

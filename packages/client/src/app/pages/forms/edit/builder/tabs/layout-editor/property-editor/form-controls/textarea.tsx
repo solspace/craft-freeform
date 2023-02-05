@@ -1,13 +1,16 @@
 import React from 'react';
-import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 import classes from '@ff-client/utils/classes';
 
 import { Control } from './control';
 import type { ControlType } from './types';
 
-const Textarea: React.FC<ControlType> = ({ field, property, dispatch }) => {
+const Textarea: React.FC<ControlType<string>> = ({
+  field,
+  property,
+  updateValue,
+}) => {
   const { handle } = property;
-  const { uid, properties } = field;
+  const { properties } = field;
 
   return (
     <Control property={property}>
@@ -21,9 +24,7 @@ const Textarea: React.FC<ControlType> = ({ field, property, dispatch }) => {
         rows={2}
         value={(properties[handle] as string) ?? ''}
         placeholder={property.placeholder}
-        onChange={(event) =>
-          dispatch(edit({ uid, property, value: event.target.value }))
-        }
+        onChange={(event) => updateValue(event.target.value)}
       />
     </Control>
   );

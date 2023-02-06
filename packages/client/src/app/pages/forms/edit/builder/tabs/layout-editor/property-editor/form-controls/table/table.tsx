@@ -26,7 +26,7 @@ const Table: React.FC<ControlType<ColumnDescription[]>> = ({
         <TableEditor
           columnTypes={columnTypes}
           columns={columns}
-          onChange={updateValue}
+          updateValue={updateValue}
         />
       </PreviewableComponent>
     </Control>

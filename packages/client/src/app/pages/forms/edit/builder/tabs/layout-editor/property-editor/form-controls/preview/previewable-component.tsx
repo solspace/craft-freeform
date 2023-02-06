@@ -3,6 +3,7 @@ import { useState } from 'react';
 import React from 'react';
 import { useSpring } from 'react-spring';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
+import classes from '@ff-client/utils/classes';
 
 import {
   EditableContentWrapper,
@@ -39,7 +40,7 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
     <PreviewWrapper>
       <EditableContentWrapper
         style={editorAnimation}
-        visible={isEditing}
+        className={classes(isEditing && 'active')}
         ref={editorRef}
       >
         {children}

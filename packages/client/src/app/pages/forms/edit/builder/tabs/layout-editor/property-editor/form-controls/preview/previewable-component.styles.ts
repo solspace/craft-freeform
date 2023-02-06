@@ -1,24 +1,30 @@
 import { animated } from 'react-spring';
-import { shadows } from '@ff-client/styles/variables';
+import { scrollBar } from '@ff-client/styles/mixins';
+import {
+  borderRadius,
+  colors,
+  shadows,
+  spacings,
+} from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const PreviewWrapper = styled.div`
   position: relative;
 `;
 
-type EditorProps = {
-  visible: boolean;
-};
-
-export const EditableContentWrapper = styled(animated.div)<EditorProps>`
+export const EditableContentWrapper = styled(animated.div)`
   position: absolute;
   left: 0;
   top: 0;
   z-index: 3;
 
-  pointer-events: ${({ visible }) => (visible ? 'all' : 'none')};
-
   box-shadow: ${shadows.panel};
+
+  pointer-events: none;
+
+  &.active {
+    pointer-events: all;
+  }
 `;
 
 export const PreviewContainer = styled.div`
@@ -29,4 +35,26 @@ export const PreviewContainer = styled.div`
   textarea {
     pointer-events: none;
   }
+`;
+
+export const PreviewEditor = styled.div`
+  width: 800px;
+
+  display: flex;
+  flex-direction: column;
+  gap: ${spacings.lg};
+
+  padding: ${spacings.lg};
+
+  box-shadow: ${shadows.box};
+  border-radius: ${borderRadius.lg};
+  background: ${colors.gray050};
+`;
+
+export const PreviewEditorContainer = styled.div`
+  max-height: 600px;
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  ${scrollBar};
 `;

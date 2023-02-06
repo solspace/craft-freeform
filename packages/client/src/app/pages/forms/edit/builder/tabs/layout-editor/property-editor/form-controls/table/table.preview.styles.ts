@@ -7,6 +7,22 @@ import {
 } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
+export const NoContent = styled.div`
+  position: absolute;
+  top: calc(50% - 15px);
+  left: 0;
+  right: 0;
+
+  opacity: 1;
+  transition: opacity 0.2s ease-out;
+
+  color: ${colors.gray200};
+  font-size: 18px;
+  font-weight: bold;
+  font-style: italic;
+  text-align: center;
+`;
+
 export const PreviewWrapper = styled.div`
   position: relative;
 
@@ -33,6 +49,10 @@ export const PreviewWrapper = styled.div`
     &:after {
       opacity: 0.5;
     }
+
+    ${NoContent} {
+      opacity: 0;
+    }
   }
 `;
 
@@ -44,19 +64,6 @@ export const Header = styled.div`
 
   ${labelText};
   font-size: 11px;
-`;
-
-export const NoContent = styled.div`
-  position: absolute;
-  top: calc(50% - 15px);
-  left: 0;
-  right: 0;
-
-  color: ${colors.gray200};
-  font-size: 18px;
-  font-weight: bold;
-  font-style: italic;
-  text-align: center;
 `;
 
 export const PreviewTable = styled.div`

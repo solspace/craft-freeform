@@ -1,33 +1,14 @@
-import { scrollBar } from '@ff-client/styles/mixins';
-import {
-  borderRadius,
-  colors,
-  shadows,
-  spacings,
-} from '@ff-client/styles/variables';
+import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const TableEditorWrapper = styled.div`
-  width: 800px;
+import {
+  PreviewEditor,
+  PreviewEditorContainer,
+} from '../preview/previewable-component.styles';
 
-  display: flex;
-  flex-direction: column;
-  gap: ${spacings.lg};
+export const TableEditorWrapper = styled(PreviewEditor)``;
 
-  padding: ${spacings.lg};
-
-  box-shadow: ${shadows.box};
-  border-radius: ${borderRadius.lg};
-  background: ${colors.gray050};
-`;
-
-export const TableContainer = styled.div`
-  max-height: 600px;
-  overflow-x: hidden;
-  overflow-y: auto;
-
-  ${scrollBar};
-`;
+export const TableContainer = styled(PreviewEditorContainer)``;
 
 export const TabularOptions = styled.table`
   width: 100%;

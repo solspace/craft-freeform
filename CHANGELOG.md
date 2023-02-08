@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.0.14 - 2023-02-08
+
+### Fixed
+- Fixed a bug where unfinalized files were not immediately being cleared upon successful submit of forms that are set not to store submission data.
+- Fixed a bug where POST Forwarding was not being triggered when approving submissions in the Spam Folder.
+- Fixed a bug where the `initHoneypot` function was triggering error warnings about premature initiation.
+- Fixed a bug where Multi-Select fields were missing some styles inside the form builder.
+
 ## 4.0.13 - 2023-01-26
 
 ### Fixed
@@ -189,6 +197,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.23 - 2023-02-08
+
+### Fixed
+- Fixed a bug where POST Forwarding was not being triggered when approving submissions in the Spam Folder.
 
 ## 3.13.22.1 - 2022-12-09
 

@@ -811,31 +811,29 @@ class Freeform extends Plugin
 
     private function initHoneypot()
     {
-        if ($this->settings->isFreeformHoneypotEnabled()) {
-            Event::on(
-                Form::class,
-                Form::EVENT_OUTPUT_AS_JSON,
-                [$this->honeypot, 'addHoneypotToJson']
-            );
+        Event::on(
+            Form::class,
+            Form::EVENT_OUTPUT_AS_JSON,
+            [$this->honeypot, 'addHoneypotToJson']
+        );
 
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
-                [$this->honeypot, 'addFormAttributes']
-            );
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
+            [$this->honeypot, 'addFormAttributes']
+        );
 
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_RENDER_OPENING_TAG,
-                [$this->honeypot, 'addHoneyPotInputToForm']
-            );
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_RENDER_OPENING_TAG,
+            [$this->honeypot, 'addHoneyPotInputToForm']
+        );
 
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_FORM_VALIDATE,
-                [$this->honeypot, 'validateFormHoneypot']
-            );
-        }
+        Event::on(
+            FormsService::class,
+            FormsService::EVENT_FORM_VALIDATE,
+            [$this->honeypot, 'validateFormHoneypot']
+        );
     }
 
     private function initConnections()

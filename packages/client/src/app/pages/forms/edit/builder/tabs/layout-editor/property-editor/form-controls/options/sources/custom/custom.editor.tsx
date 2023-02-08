@@ -69,6 +69,8 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
         />
       </CheckboxWrapper>
 
+      {activeCell}
+
       {!!options.length && (
         <TableContainer>
           <TabularOptions>
@@ -144,7 +146,10 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
 
                   <Cell tiny>
                     <Button
-                      onClick={() => updateValue(deleteOption(index, value))}
+                      onClick={() => {
+                        updateValue(deleteOption(index, value));
+                        setActiveCell(Math.max(index - 1, 0), 0);
+                      }}
                     >
                       <DeleteIcon />
                     </Button>

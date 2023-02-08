@@ -135,9 +135,10 @@ export const TableEditor: React.FC<Props> = ({
                   </Cell>
                   <Cell tiny>
                     <Button
-                      onClick={() =>
-                        updateValue(deleteColumn(rowIndex, columns))
-                      }
+                      onClick={() => {
+                        updateValue(deleteColumn(rowIndex, columns));
+                        setActiveCell(Math.max(rowIndex - 1, 0), 0);
+                      }}
                     >
                       <DeleteIcon />
                     </Button>

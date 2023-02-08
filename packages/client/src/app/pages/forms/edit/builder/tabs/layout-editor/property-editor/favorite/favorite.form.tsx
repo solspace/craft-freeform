@@ -21,7 +21,7 @@ export const FavoriteForm: React.FC<Props> = ({ field, type, mutation }) => {
   const [label, setLabel] = useState('');
 
   useEffect(() => {
-    setLabel(field.properties.label || type.name);
+    setLabel(field.properties.label || type?.name);
     mutation.reset();
   }, [field.uid]);
 

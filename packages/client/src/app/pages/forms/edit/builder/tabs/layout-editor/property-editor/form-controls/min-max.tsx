@@ -1,13 +1,15 @@
 import React from 'react';
 import { Control } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/control';
 import type { ControlType } from '@editor/builder/tabs/layout-editor/property-editor/form-controls/types';
-import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 
 import { MaxInput, MinInput, Wrapper } from './min-max.styles';
 
-const MinMax: React.FC<ControlType> = ({ field, property, dispatch }) => {
+const MinMax: React.FC<ControlType<[number, number]>> = ({
+  field,
+  property,
+  updateValue,
+}) => {
   const { handle } = property;
-  const { uid } = field;
 
   const [min, max] = field.properties[handle] || [null, null];
   const minValue = !field.properties?.allowNegative ? 0 : null;
@@ -26,16 +28,9 @@ const MinMax: React.FC<ControlType> = ({ field, property, dispatch }) => {
             className="text"
             placeholder="Min"
             onChange={({ target }) => {
-              const value =
-                target.value.length > 0 ? Number(target.value) : null;
+              const value = target.value !== '' ? Number(target.value) : null;
 
-              dispatch(
-                edit({
-                  uid,
-                  property,
-                  value: [value, max],
-                })
-              );
+              updateValue([value, max]);
             }}
           />
         </div>
@@ -48,16 +43,9 @@ const MinMax: React.FC<ControlType> = ({ field, property, dispatch }) => {
             className="text"
             placeholder="Max"
             onChange={({ target }) => {
-              const value =
-                target.value.length > 0 ? Number(target.value) : null;
+              const value = target.value !== '' ? Number(target.value) : null;
 
-              dispatch(
-                edit({
-                  uid,
-                  property,
-                  value: [min, value],
-                })
-              );
+              updateValue([min, value]);
             }}
           />
         </div>

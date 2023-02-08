@@ -1,12 +1,14 @@
 import React from 'react';
-import { edit } from '@ff-client/app/pages/forms/edit/store/slices/fields';
 
 import { Control } from './control';
 import type { ControlType } from './types';
 
-const Int: React.FC<ControlType> = ({ field, property, dispatch }) => {
+const Int: React.FC<ControlType<number>> = ({
+  field,
+  property,
+  updateValue,
+}) => {
   const { handle } = property;
-  const { uid } = field;
 
   return (
     <Control property={property}>
@@ -15,9 +17,7 @@ const Int: React.FC<ControlType> = ({ field, property, dispatch }) => {
         type="number"
         className="text fullwidth"
         value={(field.properties[handle] as string) ?? ''}
-        onChange={(event) =>
-          dispatch(edit({ uid, property, value: Number(event.target.value) }))
-        }
+        onChange={(event) => updateValue(Number(event.target.value))}
       />
     </Control>
   );

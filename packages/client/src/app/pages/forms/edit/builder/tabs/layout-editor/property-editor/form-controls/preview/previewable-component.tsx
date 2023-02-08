@@ -3,6 +3,7 @@ import { useState } from 'react';
 import React from 'react';
 import { useSpring } from 'react-spring';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
+import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import classes from '@ff-client/utils/classes';
 
 import {
@@ -24,6 +25,15 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
   const editorRef = useClickOutside<HTMLDivElement>(() => {
     setIsEditing(false);
   }, isEditing);
+
+  useOnKeypress({
+    meetsCondition: isEditing,
+    callback: (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        setIsEditing(false);
+      }
+    },
+  });
 
   const editorAnimation = useSpring({
     to: {

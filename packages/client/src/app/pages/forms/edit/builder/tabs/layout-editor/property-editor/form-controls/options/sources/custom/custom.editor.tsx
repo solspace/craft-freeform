@@ -37,12 +37,16 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
     useCustomValues ? 2 : 1
   );
 
+  const addCell = (): void => {
+    setActiveCell(options.length, 0);
+    updateValue(addOption(value));
+  };
+
   useOnKeypress(
     {
       callback: (event: KeyboardEvent): void => {
         if (event.key === 'Enter') {
-          setActiveCell(options.length, 0);
-          updateValue(addOption(value));
+          addCell();
         }
       },
     },
@@ -152,10 +156,7 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
         </TableContainer>
       )}
 
-      <button
-        className="btn add icon dashed"
-        onClick={() => updateValue(addOption(value))}
-      >
+      <button className="btn add icon dashed" onClick={addCell}>
         {translate('Add an Option')}
       </button>
     </PreviewEditor>

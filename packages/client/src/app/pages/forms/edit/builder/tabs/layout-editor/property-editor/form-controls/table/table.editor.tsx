@@ -49,8 +49,7 @@ export const TableEditor: React.FC<Props> = ({
   const keyPressHandler = useCallback(
     (event: KeyboardEvent): void => {
       if (event.key === 'Enter') {
-        setActiveCell(columns.length, 0);
-        updateValue(addColumn(columns));
+        appendAndFocus(0);
       }
     },
     [columns]

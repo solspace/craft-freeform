@@ -811,10 +811,6 @@ class Freeform extends Plugin
 
     private function initHoneypot()
     {
-        if ($this->settings->getSettingsModel()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
         if ($this->settings->isFreeformHoneypotEnabled()) {
             Event::on(
                 Form::class,

@@ -55,6 +55,10 @@ class SettingsService extends BaseService
             return false;
         }
 
+        if ($this->getSettingsModel()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return false;
+        }
+
         if ($form && $form->getPropertyBag()->get(HoneypotService::HONEYPOT_DISABLE_KEY, false)) {
             return false;
         }

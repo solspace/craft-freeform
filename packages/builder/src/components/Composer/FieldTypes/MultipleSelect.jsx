@@ -60,7 +60,7 @@ export default class Select extends HtmlInput {
     }
 
     const field = (
-      <div>
+      <div className="multiselect">
         <select
           className={this.prepareInputClass()}
           readOnly={true}

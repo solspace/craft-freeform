@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.23 - 2023-02-08
+
+### Fixed
+- Fixed a bug where POST Forwarding was not being triggered when approving submissions in the Spam Folder.
+
 ## 3.13.22.1 - 2022-12-09
 
 ### Fixed

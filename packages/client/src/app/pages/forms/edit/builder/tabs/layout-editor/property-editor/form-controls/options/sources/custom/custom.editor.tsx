@@ -69,8 +69,6 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
         />
       </CheckboxWrapper>
 
-      {activeCell}
-
       {!!options.length && (
         <TableContainer>
           <TabularOptions>

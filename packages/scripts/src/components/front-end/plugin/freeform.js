@@ -549,7 +549,7 @@ export default class Freeform {
         const input = groupInputList[inputIndex];
 
         let inputRoot = input.closest('[data-input-root]');
-        if (inputRoot === undefined) {
+        if (!inputRoot) {
           inputRoot = input.parentElement;
         }
 

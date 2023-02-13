@@ -2,9 +2,12 @@ $borderColor: #CCCCCC;
 
 .opinion-scale {
   ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+    &.opinion-scale-scales,
+    &.opinion-scale-legends {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
   }
 
   .opinion-scale-scales {

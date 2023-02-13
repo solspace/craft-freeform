@@ -86,7 +86,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         $attributes = $this->getCustomAttributes();
         $this->addInputAttribute('class', $attributes->getClass());
 
-        $output = '<div class="opinion-scale">';
+        $output = '<div class="opinion-scale" data-field-root>';
 
         $output .= '<ul class="opinion-scale-scales">';
         foreach ($this->getScales() as $index => $scale) {

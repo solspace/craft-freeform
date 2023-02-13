@@ -543,8 +543,13 @@ export default class Freeform {
       for (let inputIndex = 0; inputIndex < groupInputList.length; inputIndex++) {
         const input = groupInputList[inputIndex];
 
+        let fieldRoot = input.closest('[data-field-root]');
+        if (fieldRoot === undefined) {
+          fieldRoot = input.parentElement.parentElement;
+        }
+
         addClass(input, errorClassField);
-        input.parentElement.parentElement.appendChild(errorsList);
+        fieldRoot.appendChild(errorsList);
       }
     }
   };

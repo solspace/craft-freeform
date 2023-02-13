@@ -21,7 +21,12 @@ class FieldTransformer
 
         $properties = [];
         foreach ($editableProperties as $property) {
-            $properties[$property->handle] = $this->propertyAccess->getValue($field, $property->handle);
+            $value = $this->propertyAccess->getValue($field, $property->handle);
+            if ($property->transformer) {
+                $value = $property->transformer->reverseTransform($value);
+            }
+
+            $properties[$property->handle] = $value;
         }
 
         return (object) [

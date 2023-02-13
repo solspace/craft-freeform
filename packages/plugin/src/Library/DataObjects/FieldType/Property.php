@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Library\DataObjects\FieldType;
 
+use Solspace\Freeform\Attributes\Property\TransformerInterface;
+
 class Property
 {
     public string $type;
@@ -20,4 +22,5 @@ class Property
     public ?string $tab;
     public ?string $group;
     public ?bool $readonly;
+    public ?TransformerInterface $transformer;
 }

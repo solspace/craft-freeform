@@ -8,14 +8,6 @@ use yii\web\Response;
 
 class LayoutController extends BaseApiController
 {
-    public function __construct(
-        $id,
-        $module,
-        $config = []
-    ) {
-        parent::__construct($id, $module, $config);
-    }
-
     public function actionGet(int $formId): Response
     {
         $form = $this->getFormsService()->getFormById($formId);

@@ -81,8 +81,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     {
         $this->form = $form;
         $this->attributes = new FieldAttributesCollection();
-        $this->updateGenericProperties($properties);
-        $this->updateEditableProperties($properties);
+        $this->updateProperties($properties);
     }
 
     public function __toString(): string
@@ -90,16 +89,14 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->getValueAsString();
     }
 
-    public function updateEditableProperties(array $properties = []): void
+    public function updateProperties(array $properties = []): void
     {
         $reflection = new \ReflectionClass(static::class);
         foreach ($reflection->getProperties() as $property) {
             try {
                 $propertyName = $property->getName();
-                $attributes = $property->getAttributes(Property::class);
 
-                // Only parse editable attributes
-                if (!$attributes || !isset($properties[$propertyName])) {
+                if (!isset($properties[$propertyName])) {
                     continue;
                 }
 
@@ -726,27 +723,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     {
         if (null !== $attributes) {
             $this->customAttributes->mergeAttributes($attributes);
-        }
-    }
-
-    private function updateGenericProperties(array $properties = [])
-    {
-        $reflection = new \ReflectionClass(static::class);
-        foreach ($reflection->getProperties() as $property) {
-            try {
-                $propertyName = $property->getName();
-                $attributes = $property->getAttributes(Property::class);
-
-                // Only parse non-editable attributes
-                if ($attributes || !isset($properties[$propertyName])) {
-                    continue;
-                }
-
-                $value = $properties[$propertyName];
-                $this->{$propertyName} = $value;
-            } catch (NoSuchPropertyException $e) {
-                // Pass along
-            }
         }
     }
 

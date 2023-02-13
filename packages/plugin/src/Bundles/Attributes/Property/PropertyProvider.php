@@ -62,6 +62,7 @@ class PropertyProvider
             $prop->visibilityFilters = $this->getVisibilityFilters($property);
             $prop->tab = $attribute->tab;
             $prop->group = $attribute->group;
+            $prop->transformer = $attribute->transformer ? $this->container->get($attribute->transformer) : null;
 
             $collection->add($prop);
         }

@@ -18,6 +18,7 @@ use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
+use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Bundles\Form\PayloadForwarding\PayloadForwarding;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
@@ -166,6 +167,8 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         instructions: "Set how you'd like the success return of this form to be handled. May also be overridden at the template level.",
         order: 1,
         placeholder: '',
+        tab: 'behavior',
+        group: 'success-and-errors',
         options: [
             [
                 'value' => 'reload-form-with-success-message',
@@ -180,8 +183,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
                 'label' => 'Load Success Template',
             ],
         ],
-        tab: 'behavior',
-        group: 'success-and-errors',
     )]
     protected ?string $successBehavior = null;
 
@@ -191,14 +192,14 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         instructions: '',
         order: 2,
         placeholder: '',
+        tab: 'behavior',
+        group: 'success-and-errors',
         options: [
             [
                 'value' => 'my-success-template-name',
                 'label' => 'My Success Template Name',
             ],
         ],
-        tab: 'behavior',
-        group: 'success-and-errors',
     )]
     protected ?string $successTemplate = null;
 
@@ -279,38 +280,38 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         instructions: '',
         order: 9,
         placeholder: '',
+        tab: 'behavior',
+        group: 'limits',
         options: [
             [
-                'value' => 'no_limit',
+                'value' => FormLimiting::NO_LIMIT,
                 'label' => 'Do not limit',
             ],
             [
-                'value' => 'no_limit_logged_in_users_only',
+                'value' => FormLimiting::NO_LIMIT_LOGGED_IN_USERS_ONLY,
                 'label' => 'Logged in Users only (no limit)',
             ],
             [
-                'value' => 'cookie',
+                'value' => FormLimiting::LIMIT_COOKIE,
                 'label' => 'Once per Cookie only',
             ],
             [
-                'value' => 'ip_cookie',
+                'value' => FormLimiting::LIMIT_IP_COOKIE,
                 'label' => 'Once per IP/Cookie combo',
             ],
             [
-                'value' => 'once_per_logged_in_users_only',
+                'value' => FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY,
                 'label' => 'Once per logged in Users only',
             ],
             [
-                'value' => 'once_per_logged_in_user_or_guest_cookie_only',
+                'value' => FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY,
                 'label' => 'Once per logged in User or Guest Cookie only',
             ],
             [
-                'value' => 'once_per_logged_in_user_or_guest_ip_cookie_combo',
+                'value' => FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO,
                 'label' => 'Once per logged in User or Guest IP/Cookie combo',
             ],
         ],
-        tab: 'behavior',
-        group: 'limits',
     )]
     protected ?string $limitFormSubmissions = null;
 

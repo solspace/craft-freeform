@@ -209,6 +209,7 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         $id = $this->getIdAttribute();
         $output = '<table'
             .' data-freeform-table'
+            .' data-input-root'
             .$this->getAttributeString('class', $classString)
             .$this->getAttributeString('id', $id)
             .'>';

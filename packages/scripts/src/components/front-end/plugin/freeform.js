@@ -532,8 +532,13 @@ export default class Freeform {
         if (input.dataset.errorAppendTarget !== undefined) {
           input.appendChild(errorsList);
         } else {
+          let inputRoot = input.closest('[data-input-root]');
+          if (!inputRoot) {
+            inputRoot = input;
+          }
+
           addClass(input, errorClassField);
-          input.parentElement.appendChild(errorsList);
+          inputRoot.parentElement.appendChild(errorsList);
         }
       }
 
@@ -543,8 +548,13 @@ export default class Freeform {
       for (let inputIndex = 0; inputIndex < groupInputList.length; inputIndex++) {
         const input = groupInputList[inputIndex];
 
+        let inputRoot = input.closest('[data-input-root]');
+        if (!inputRoot) {
+          inputRoot = input.parentElement;
+        }
+
         addClass(input, errorClassField);
-        input.parentElement.parentElement.appendChild(errorsList);
+        inputRoot.parentElement.appendChild(errorsList);
       }
     }
   };

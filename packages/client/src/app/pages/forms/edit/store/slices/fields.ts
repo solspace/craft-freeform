@@ -2,7 +2,6 @@ import type { RootState } from '@editor/store';
 import type { SaveSubscriber } from '@editor/store/middleware/state-persist';
 import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { PropertyValueCollection } from '@ff-client/types/fields';
-import type { Property } from '@ff-client/types/properties';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -18,7 +17,7 @@ type FieldState = Field[];
 
 type EditType = {
   uid: string;
-  property: Property;
+  handle: string;
   value: GenericValue;
 };
 
@@ -54,11 +53,7 @@ export const fieldsSlice = createSlice({
       );
     },
     edit: (state, action: PayloadAction<EditType>) => {
-      const {
-        uid,
-        property: { handle },
-        value,
-      } = action.payload;
+      const { uid, handle, value } = action.payload;
 
       state.find((field) => field.uid === uid).properties[handle] = value;
     },

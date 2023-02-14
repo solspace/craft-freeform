@@ -1,27 +1,20 @@
 import React from 'react';
-import { useAppDispatch } from '@editor/store';
-import { addNewFieldToNewRow } from '@editor/store/thunks/fields';
-import type { FieldType } from '@ff-client/types/fields';
+import type { ConnectDragSource } from 'react-dnd';
 
-import { useFieldDrag } from './field.drag';
 import { Icon, Name, Wrapper } from './field.styles';
 
 type Props = {
-  fieldType: FieldType;
+  icon: string;
+  label: string;
+  dragRef?: ConnectDragSource;
+  onClick?: () => void;
 };
 
-export const Field: React.FC<Props> = ({ fieldType }) => {
-  const dispatch = useAppDispatch();
-  const { drag } = useFieldDrag(fieldType);
-
-  const onClick = (): void => {
-    dispatch(addNewFieldToNewRow(fieldType));
-  };
-
+export const Field: React.FC<Props> = ({ icon, label, dragRef, onClick }) => {
   return (
-    <Wrapper ref={drag} onClick={onClick}>
-      <Icon dangerouslySetInnerHTML={{ __html: fieldType.icon }} />
-      <Name>{fieldType.name}</Name>
+    <Wrapper ref={dragRef} onClick={onClick}>
+      <Icon dangerouslySetInnerHTML={{ __html: icon }} />
+      <Name>{label}</Name>
     </Wrapper>
   );
 };

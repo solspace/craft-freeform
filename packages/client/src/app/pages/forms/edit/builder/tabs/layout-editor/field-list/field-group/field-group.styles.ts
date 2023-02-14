@@ -1,7 +1,9 @@
 import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const FieldGroupWrapper = styled.div``;
+export const FieldGroupWrapper = styled.div`
+  margin-bottom: ${spacings.lg};
+`;
 
 export const GroupTitle = styled.h2``;
 

@@ -14,15 +14,13 @@ const MinMax: React.FC<ControlType<[number, number]>> = ({
   const [min, max] = field.properties[handle] || [null, null];
   const minValue = !field.properties?.allowNegative ? 0 : null;
 
-  // TODO - Validation of value before dispatch
-
   return (
     <Control property={property}>
       <Wrapper>
         <div>
           <MinInput
             id="min"
-            value={min}
+            value={min === null ? '' : min}
             type="number"
             min={minValue}
             className="text"
@@ -37,7 +35,7 @@ const MinMax: React.FC<ControlType<[number, number]>> = ({
         <div>
           <MaxInput
             id="max"
-            value={max}
+            value={max === null ? '' : max}
             type="number"
             min={minValue}
             className="text"

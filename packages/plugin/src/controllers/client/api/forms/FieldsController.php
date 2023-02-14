@@ -2,22 +2,12 @@
 
 namespace Solspace\Freeform\controllers\client\api\forms;
 
-use Solspace\Freeform\Bundles\Fields\BuilderFieldProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class FieldsController extends BaseApiController
 {
-    public function __construct(
-        $id,
-        $module,
-        $config = [],
-        private BuilderFieldProvider $fieldProvider
-    ) {
-        parent::__construct($id, $module, $config);
-    }
-
     public function actionGet(int $formId): Response
     {
         $form = $this->getFormsService()->getFormById($formId);

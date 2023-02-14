@@ -49,7 +49,7 @@ class FormFieldType extends Field
     {
         $freeform = Freeform::getInstance();
 
-        $forms = $freeform->forms->getAllForms();
+        $forms = $freeform->forms->getAllForms(true);
 
         if ($freeform->settings->isFormFieldShowOnlyAllowedForms()) {
             $allowedIds = $freeform->forms->getAllowedFormIds();

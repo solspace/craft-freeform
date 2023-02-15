@@ -2,3 +2,9 @@
 // @no-redirect
 GET {{host}}/admin/freeform/client/api/fields/types
 Authorization: Bearer {{auth-token}}
+
+### GET Favorite fields list
+// @no-redirect
+GET {{host}}/admin/freeform/client/api/fields/favorites
+Authorization: Bearer {{auth-token}}
+

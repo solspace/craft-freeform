@@ -3,7 +3,7 @@
 // Client API
 
 return [
-    'freeform/client/api/favorites' => 'freeform/client/api/fields/favorites',
+    'freeform/client/api/fields/favorites' => 'freeform/client/api/fields/favorites',
     'freeform/client/api/fields/types' => 'freeform/client/api/fields/types',
     'freeform/client/api/fields/types/sections' => 'freeform/client/api/fields/types/sections',
     'freeform/client/api/forms' => 'freeform/client/api/forms',

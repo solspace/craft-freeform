@@ -24,7 +24,7 @@ export const EditableComponent: React.FC<Props> = ({ field, property }) => {
   const dispatch = useAppDispatch();
 
   const updateValue: UpdateValue<unknown> = (value) => {
-    dispatch(edit({ uid: field.uid, property, value }));
+    dispatch(edit({ uid: field.uid, handle: property.handle, value }));
   };
 
   const FormControl = types[property.type];

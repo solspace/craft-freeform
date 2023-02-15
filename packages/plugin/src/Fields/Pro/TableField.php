@@ -30,6 +30,7 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         label: 'Table Layout',
         type: Property::TYPE_TABLE,
         instructions: 'Use semicolon ";" separated values for select options.',
+        value: [],
         transformer: TableTransformer::class,
         options: [
             [

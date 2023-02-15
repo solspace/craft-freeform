@@ -9,7 +9,7 @@ class TableTransformer extends Transformer
 {
     public function transform($value): TableProperty
     {
-        return new TableProperty($value);
+        return new TableProperty($value ?? []);
     }
 
     /**

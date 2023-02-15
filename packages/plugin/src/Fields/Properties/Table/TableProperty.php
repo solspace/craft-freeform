@@ -9,7 +9,7 @@ use Solspace\Freeform\Fields\Pro\TableField;
  */
 class TableProperty implements \IteratorAggregate
 {
-    private array $rows;
+    private array $rows = [];
 
     public function __construct(array $rows = [])
     {

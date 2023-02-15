@@ -1,8 +1,6 @@
 import type { PropsWithChildren, ReactElement } from 'react';
-import React, { useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React from 'react';
 import { animated, useSprings } from 'react-spring';
-import { selectFocus } from '@editor/store/slices/context';
 import { shadows } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
@@ -36,23 +34,19 @@ export const SidebarSlider: React.FC<PropsWithChildren<SidebarSliderProps>> = ({
 }) => {
   const subItems = children as ReactElement[];
 
-  const { active } = useSelector(selectFocus);
-  const ref = useRef<HTMLDivElement>(null);
-
   const styles = useSprings(
     subItems.length,
     subItems.map((_, i) => ({
-      x: i ? (swiped ? -300 : 0) : swiped ? 0 : 300,
+      x: i ? (swiped ? -300 : 0) : swiped ? 0 : -300,
+      opacity: i ? (swiped ? 0 : 1) : swiped ? 1 : 0,
       config: {
-        mass: 1,
-        tension: !open ? 750 : 200,
-        friction: 26,
+        tension: 200,
       },
     }))
   );
 
   return (
-    <Sidebar style={{ overflow: active ? 'visible' : 'hidden' }} ref={ref}>
+    <Sidebar>
       <SidebarSliderWrapper>
         {subItems.map((child, i) => (
           <ChildItem style={styles[i]} key={i}>

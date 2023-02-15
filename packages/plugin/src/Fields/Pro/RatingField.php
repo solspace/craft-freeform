@@ -4,8 +4,9 @@ namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
+use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
@@ -66,14 +67,15 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
         return self::TYPE_RATING;
     }
 
-    public function getOptions(): array
+    public function getOptions(): OptionsCollection
     {
-        $options = [];
+        $collection = new PresetOptions();
+
         for ($i = 1; $i <= $this->getMaxValue(); ++$i) {
-            $options[] = new Option($i, $i, $i === (int) $this->getValue());
+            $collection->add($i, $i, $i === (int) $this->getValue());
         }
 
-        return $options;
+        return $collection;
     }
 
     public function getOptionsAsKeyValuePairs(): array

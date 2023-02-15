@@ -42,6 +42,7 @@ class EditablePropertyProviderTest extends TestCase
                     'middleware' => [],
                     'tab' => null,
                     'group' => null,
+                    'transformer' => null,
                 ],
                 [
                     'type' => 'int',
@@ -58,6 +59,7 @@ class EditablePropertyProviderTest extends TestCase
                     'middleware' => [],
                     'tab' => null,
                     'group' => null,
+                    'transformer' => null,
                 ],
                 [
                     'type' => 'override-type',
@@ -78,6 +80,7 @@ class EditablePropertyProviderTest extends TestCase
                     'middleware' => [],
                     'tab' => null,
                     'group' => null,
+                    'transformer' => null,
                 ],
                 [
                     'type' => 'string',
@@ -101,6 +104,7 @@ class EditablePropertyProviderTest extends TestCase
                     ],
                     'tab' => null,
                     'group' => null,
+                    'transformer' => null,
                 ],
                 [
                     'type' => 'string',
@@ -121,6 +125,7 @@ class EditablePropertyProviderTest extends TestCase
                     'middleware' => [],
                     'tab' => null,
                     'group' => null,
+                    'transformer' => null,
                 ],
                 [
                     'type' => 'string',
@@ -141,6 +146,7 @@ class EditablePropertyProviderTest extends TestCase
                     'middleware' => [],
                     'tab' => null,
                     'group' => null,
+                    'transformer' => null,
                 ],
             ],
             $editableProperties->jsonSerialize()

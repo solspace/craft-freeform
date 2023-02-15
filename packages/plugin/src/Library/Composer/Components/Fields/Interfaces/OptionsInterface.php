@@ -12,14 +12,11 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Interfaces;
 
-use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
+use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 
 interface OptionsInterface
 {
-    /**
-     * @return Option[]
-     */
-    public function getOptions(): array;
+    public function getOptions(): OptionsCollection;
 
     public function getOptionsAsKeyValuePairs(): array;
 }

@@ -22,6 +22,7 @@ class Property
         public ?string $category = null,
         public ?int $order = null,
         public mixed $value = null,
+        public ?string $transformer = null,
         public ?string $valueGenerator = null,
         public ?string $placeholder = null,
         public ?string $tab = null,

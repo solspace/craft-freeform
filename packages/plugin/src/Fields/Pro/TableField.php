@@ -4,6 +4,8 @@ namespace Solspace\Freeform\Fields\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Transformers\TableTransformer;
+use Solspace\Freeform\Fields\Properties\Table\TableProperty;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -28,6 +30,8 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         label: 'Table Layout',
         type: Property::TYPE_TABLE,
         instructions: 'Use semicolon ";" separated values for select options.',
+        value: [],
+        transformer: TableTransformer::class,
         options: [
             [
                 'value' => self::COLUMN_TYPE_STRING,
@@ -43,7 +47,7 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
             ],
         ],
     )]
-    protected ?array $tableLayout = [];
+    protected TableProperty $tableLayout;
 
     #[Property(
         label: 'Use built-in Table JS?'

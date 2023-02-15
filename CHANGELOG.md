@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 3.13.24 - 2023-02-14
+
+### Fixed
+- Fixed a bug where the Freeform Form element field type was not sorting form options alphabetically.
+- Fixed a bug where the `freeform_integrations` table's `accessToken` column was not being set to TEXT on fresh installs.
+
 ## 3.13.23 - 2023-02-08
 
 ### Fixed

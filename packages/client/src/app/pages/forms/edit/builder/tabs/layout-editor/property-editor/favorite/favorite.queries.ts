@@ -1,6 +1,8 @@
 import type { UseMutationResult } from 'react-query';
+import { useQueryClient } from 'react-query';
 import { useMutation } from 'react-query';
 import type { Field } from '@editor/store/slices/fields';
+import { QKFavorites } from '@ff-client/queries/field-favorites';
 import type { APIError } from '@ff-client/types/api';
 import type { PropertyValueCollection } from '@ff-client/types/fields';
 import type { FieldType } from '@ff-client/types/properties';
@@ -28,7 +30,7 @@ const favoritesMutation: FavoritesMutation = ({ label, field, type }) => {
     typeClass: type.typeClass,
   };
 
-  return axios.post('/client/api/favorites', payload);
+  return axios.post('/client/api/fields/favorites', payload);
 };
 
 export type FavoriteMutationResult = UseMutationResult<
@@ -38,7 +40,14 @@ export type FavoriteMutationResult = UseMutationResult<
 >;
 
 export const useFavoritesMutation = (): FavoriteMutationResult => {
+  const queryClient = useQueryClient();
+
   return useMutation<AxiosResponse, APIError, Variables, unknown>(
-    favoritesMutation
+    favoritesMutation,
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: QKFavorites.all });
+      },
+    }
   );
 };

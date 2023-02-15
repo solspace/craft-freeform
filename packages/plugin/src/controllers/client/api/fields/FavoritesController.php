@@ -2,25 +2,24 @@
 
 namespace Solspace\Freeform\controllers\client\api\fields;
 
-use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
+use Solspace\Freeform\Bundles\Fields\FavoritesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
 use Solspace\Freeform\Library\Exceptions\Api\ErrorCollection;
 use Solspace\Freeform\Records\FavoriteFieldRecord;
-use yii\web\Response;
 
 class FavoritesController extends BaseApiController
 {
     private const CATEGORY = 'favorites';
 
-    public function __construct($id, $module, $config = [], private FieldTypesProvider $fieldTypesProvider)
+    public function __construct($id, $module, $config = [], private FavoritesProvider $favoritesProvider)
     {
         parent::__construct($id, $module, $config);
     }
 
-    public function actionSections(): Response
+    protected function get(): array
     {
-        return $this->asJson($this->fieldTypesProvider->getSections());
+        return $this->favoritesProvider->getFavoriteFields();
     }
 
     protected function post(int|string $id = null): array|object|null
@@ -69,10 +68,5 @@ class FavoritesController extends BaseApiController
         $this->response->statusCode = 201;
 
         return null;
-    }
-
-    protected function get(): array
-    {
-        return $this->fieldTypesProvider->getTypes();
     }
 }

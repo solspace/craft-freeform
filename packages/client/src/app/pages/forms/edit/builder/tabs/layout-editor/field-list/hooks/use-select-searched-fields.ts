@@ -4,11 +4,11 @@ import {
   Search,
   selectQuery,
 } from '@ff-client/app/pages/forms/edit/store/slices/search';
-import type { FieldType } from '@ff-client/types/fields';
+import type { FieldFavorite, FieldType } from '@ff-client/types/fields';
 
-type SelectSearchedFields = () => (data: FieldType[]) => FieldType[];
+type SelectSearchedFields<T> = () => (data: T[]) => T[];
 
-export const useSelectSearchedFields: SelectSearchedFields = () => {
+export const useSelectSearchedFields: SelectSearchedFields<FieldType> = () => {
   const searchQuery = useSelector(selectQuery(Search.Fields));
   const select = useCallback(
     (data: FieldType[]) => {
@@ -18,6 +18,26 @@ export const useSelectSearchedFields: SelectSearchedFields = () => {
 
       return data.filter((item) =>
         item.name.toLowerCase().includes(searchQuery)
+      );
+    },
+    [searchQuery]
+  );
+
+  return select;
+};
+
+export const useSelectSearchedFavorites: SelectSearchedFields<
+  FieldFavorite
+> = () => {
+  const searchQuery = useSelector(selectQuery(Search.Fields));
+  const select = useCallback(
+    (data: FieldFavorite[]) => {
+      if (!searchQuery) {
+        return data;
+      }
+
+      return data.filter((item) =>
+        item.label.toLowerCase().includes(searchQuery)
       );
     },
     [searchQuery]

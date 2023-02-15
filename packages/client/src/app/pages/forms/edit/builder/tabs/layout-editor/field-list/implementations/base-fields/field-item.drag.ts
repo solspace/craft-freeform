@@ -8,27 +8,25 @@ import type { FieldType } from '@ff-client/types/properties';
 import { useDragContext } from '../../../drag.context';
 
 type FieldDrag = {
-  drag: ConnectDragSource;
+  ref: ConnectDragSource;
 };
 
 type DragCollect = {
   isDragging: boolean;
 };
 
-export const useFieldDrag = (fieldType: FieldType): FieldDrag => {
+export const useBaseFieldDrag = (fieldType: FieldType): FieldDrag => {
   const { dragOn, dragOff } = useDragContext();
-  const [{ isDragging }, drag] = useDrag<DragItem, unknown, DragCollect>(
-    () => ({
+  const [{ isDragging }, ref] = useDrag<DragItem, unknown, DragCollect>(() => ({
+    type: Drag.FieldType,
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
+    item: {
       type: Drag.FieldType,
-      collect: (monitor) => ({
-        isDragging: monitor.isDragging(),
-      }),
-      item: {
-        type: Drag.FieldType,
-        data: fieldType,
-      },
-    })
-  );
+      data: fieldType,
+    },
+  }));
 
   useEffect(() => {
     if (isDragging) {
@@ -38,5 +36,5 @@ export const useFieldDrag = (fieldType: FieldType): FieldDrag => {
     }
   }, [isDragging]);
 
-  return { drag };
+  return { ref };
 };

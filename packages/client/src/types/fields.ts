@@ -25,3 +25,11 @@ export type PropertyValueCollection = {
   required?: boolean;
   [key: string]: GenericValue;
 };
+
+export type FieldFavorite = {
+  id: number;
+  uid: string;
+  label: string;
+  typeClass: string;
+  properties: Record<string, GenericValue>;
+};

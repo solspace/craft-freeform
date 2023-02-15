@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.0.15 - 2023-02-14
+
+### Added
+- Added an example Conversational style formatting template that displays one field at a time and smoothly scrolls down to the next question until complete.
+
+### Fixed
+- Fixed a bug where AJAX errors were not displaying correctly for Opinion Scale and Table fields.
+
 ## 4.0.14 - 2023-02-08
 
 ### Fixed
@@ -197,6 +205,12 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.24 - 2023-02-14
+
+### Fixed
+- Fixed a bug where the Freeform Form element field type was not sorting form options alphabetically.
+- Fixed a bug where the `freeform_integrations` table's `accessToken` column was not being set to TEXT on fresh installs.
 
 ## 3.13.23 - 2023-02-08
 

@@ -18,6 +18,7 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Transformers\AttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Validators\HandleValidator;
 use Solspace\Freeform\Attributes\Property\Validators\LengthValidator;
 use Solspace\Freeform\Freeform;
@@ -66,6 +67,13 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     #[Property('Require this field', order: 5)]
     protected bool $required = false;
 
+    #[Section('attributes', 'Attributes', 999)]
+    #[Property(
+        type: Property::TYPE_ATTRIBUTES,
+        instructions: 'Add attributes to your field elements.',
+        value: AttributesTransformer::DEFAULT_VALUE,
+        transformer: AttributesTransformer::class,
+    )]
     protected FieldAttributesCollection $attributes;
 
     protected ?int $id = null;
@@ -329,6 +337,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         }
 
         return $rules->isHidden($this, $this->getForm());
+    }
+
+    public function getAttributes(): FieldAttributesCollection
+    {
+        return $this->attributes;
     }
 
     public function getDefaultValue()

@@ -8,7 +8,13 @@ export const cloneFieldTypeFromFavorite = (
   const clone = { ...fieldType };
 
   Object.entries(favorite.properties).map(([name, value]) => {
-    clone.properties.find((property) => property.handle === name).value = value;
+    const property = clone?.properties?.find(
+      (property) => property.handle === name
+    );
+
+    if (property) {
+      property.value = value;
+    }
   });
 
   return clone;

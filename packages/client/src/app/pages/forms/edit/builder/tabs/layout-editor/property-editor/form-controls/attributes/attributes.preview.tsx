@@ -1,17 +1,19 @@
 import React from 'react';
 import classes from '@ff-client/utils/classes';
 
+import {
+  Name,
+  Operator,
+  Quote,
+  Value,
+} from './attributes.input-preview.styles';
 import { attributesToArray } from './attributes.operations';
 import {
   AttributeItem,
   AttributeList,
   AttributeListWrapper,
   AttributeTitle,
-  Name,
-  Operator,
   PreviewWrapper,
-  Quote,
-  Value,
 } from './attributes.preview.styles';
 import type { Attribute, AttributeCollection } from './attributes.types';
 
@@ -23,12 +25,16 @@ const RenderAttributes: React.FC<{ name: string; attributes: Attribute[] }> = ({
   name,
   attributes,
 }) => {
+  const attributeArray = attributesToArray(attributes);
+
   return (
-    <AttributeListWrapper className={classes(!attributes.length && 'empty')}>
+    <AttributeListWrapper
+      className={classes(!attributeArray.length && 'empty')}
+    >
       <AttributeTitle>{name}</AttributeTitle>
-      {!!attributes.length && (
+      {!!attributeArray.length && (
         <AttributeList>
-          {attributesToArray(attributes).map(([name, value], idx) => (
+          {attributeArray.map(([name, value], idx) => (
             <AttributeItem key={idx}>
               <Name>{name}</Name>
               {!!value && (

@@ -39,3 +39,9 @@ export const moveColumn = (
   // TODO: implement this method
   return columns;
 };
+
+export const cleanColumns = (
+  columns: ColumnDescription[]
+): ColumnDescription[] => {
+  return columns.filter((column) => !!column.label || !!column.value);
+};

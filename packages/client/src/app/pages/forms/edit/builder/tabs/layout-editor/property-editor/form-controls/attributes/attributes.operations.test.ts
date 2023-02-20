@@ -1,4 +1,4 @@
-import { attributesToString } from './attributes.operations';
+import { attributesToString, cleanAttributes } from './attributes.operations';
 
 describe('attributes -> operations', () => {
   describe('attributesToString()', () => {
@@ -55,6 +55,55 @@ describe('attributes -> operations', () => {
           [null, ''],
         ])
       ).toBe('');
+    });
+  });
+
+  describe('cleanAttributes()', () => {
+    it('clears all values with null', () => {
+      expect(
+        cleanAttributes({
+          container: [
+            [null, null],
+            ['one', 'two'],
+            [null, null],
+            [null, null],
+            [null, 'two'],
+            ['one', null],
+          ],
+        })
+      ).toEqual({
+        container: [
+          ['one', 'two'],
+          [null, 'two'],
+          ['one', null],
+        ],
+      });
+    });
+
+    it('clears all values with false', () => {
+      expect(
+        cleanAttributes({
+          container: [
+            [false, false],
+            ['one', 'two'],
+          ],
+        })
+      ).toEqual({
+        container: [['one', 'two']],
+      });
+    });
+
+    it('clears all values with empty string', () => {
+      expect(
+        cleanAttributes({
+          container: [
+            ['', ''],
+            ['one', 'two'],
+          ],
+        })
+      ).toEqual({
+        container: [['one', 'two']],
+      });
     });
   });
 });

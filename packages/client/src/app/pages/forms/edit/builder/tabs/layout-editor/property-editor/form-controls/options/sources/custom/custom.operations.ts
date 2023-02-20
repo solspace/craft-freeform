@@ -64,3 +64,10 @@ export const dragAndDropOption = (
 ): void => {
   // TODO: Implement
 };
+
+export const cleanOptions = (value: CustomOptions): CustomOptions => {
+  return {
+    ...value,
+    options: value.options.filter((option) => !!option.label || !!option.value),
+  };
+};

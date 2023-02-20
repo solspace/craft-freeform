@@ -3,6 +3,8 @@ import type { ControlType } from '@editor/builder/tabs/layout-editor/property-ed
 
 import { PreviewableComponent } from '../preview/previewable-component';
 
+import { AttributesEditor } from './attributes.editor';
+import { cleanAttributes } from './attributes.operations';
 import { AttributePreview } from './attributes.preview';
 import type { AttributeCollection } from './attributes.types';
 
@@ -19,8 +21,11 @@ const Attributes: React.FC<ControlType<AttributeCollection>> = ({
   return (
     <PreviewableComponent
       preview={<AttributePreview attributes={attributes} />}
+      onAfterEdit={() => {
+        updateValue(cleanAttributes(attributes));
+      }}
     >
-      <div>Editor</div>
+      <AttributesEditor attributes={attributes} updateValue={updateValue} />
     </PreviewableComponent>
   );
 };

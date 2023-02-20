@@ -70,22 +70,3 @@ export const AttributeListWrapper = styled.div`
     }
   }
 `;
-
-export const Name = styled.span`
-  color: ${colors.teal700};
-`;
-
-export const Operator = styled.span`
-  color: ${colors.gray300};
-`;
-
-export const Quote = styled.span`
-  &:before {
-    content: '"';
-    color: ${colors.gray300};
-  }
-`;
-
-export const Value = styled.span`
-  color: ${colors.red300};
-`;

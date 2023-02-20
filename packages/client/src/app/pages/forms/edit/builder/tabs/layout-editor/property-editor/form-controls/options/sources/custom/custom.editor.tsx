@@ -1,4 +1,5 @@
 import React from 'react';
+import { HelpText } from '@components/elements/help-text';
 import { CheckboxInput } from '@components/form-controls/inputs/checkbox-input';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import translate from '@ff-client/utils/translations';
@@ -123,35 +124,39 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                     </Cell>
                   )}
 
-                  <Cell tiny>
-                    <CheckboxInput
-                      id={`${index}-check`}
-                      checked={option.checked}
-                      onChange={() =>
-                        updateValue(
-                          updateChecked(
-                            index,
-                            {
-                              ...option,
-                              checked: !option.checked,
-                            },
-                            value
-                          )
-                        )
-                      }
-                    />
-                  </Cell>
+                  {options.length > 1 && (
+                    <>
+                      <Cell tiny>
+                        <CheckboxInput
+                          id={`${index}-check`}
+                          checked={option.checked}
+                          onChange={() =>
+                            updateValue(
+                              updateChecked(
+                                index,
+                                {
+                                  ...option,
+                                  checked: !option.checked,
+                                },
+                                value
+                              )
+                            )
+                          }
+                        />
+                      </Cell>
 
-                  <Cell tiny>
-                    <Button
-                      onClick={() => {
-                        updateValue(deleteOption(index, value));
-                        setActiveCell(Math.max(index - 1, 0), 0);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </Cell>
+                      <Cell tiny>
+                        <Button
+                          onClick={() => {
+                            updateValue(deleteOption(index, value));
+                            setActiveCell(Math.max(index - 1, 0), 0);
+                          }}
+                        >
+                          <DeleteIcon />
+                        </Button>
+                      </Cell>
+                    </>
+                  )}
                 </Row>
               ))}
             </tbody>
@@ -159,9 +164,15 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
         </TableContainer>
       )}
 
-      <button className="btn add icon dashed" onClick={addCell}>
-        {translate('Add an Option')}
-      </button>
+      <HelpText>
+        <span
+          dangerouslySetInnerHTML={{
+            __html: translate(
+              'Press <b>enter</b> while editing a cell to add a new row.'
+            ),
+          }}
+        />
+      </HelpText>
     </PreviewEditor>
   );
 };

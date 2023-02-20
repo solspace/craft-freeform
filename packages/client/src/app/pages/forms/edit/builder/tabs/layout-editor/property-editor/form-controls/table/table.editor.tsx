@@ -1,4 +1,5 @@
 import React, { useCallback } from 'react';
+import { HelpText } from '@components/elements/help-text';
 import {
   Button,
   Cell,
@@ -59,100 +60,108 @@ export const TableEditor: React.FC<Props> = ({
 
   return (
     <TableEditorWrapper>
-      {!!columns.length && (
-        <TableContainer>
-          <TabularOptions>
-            <tbody>
-              {columns.map((column, rowIndex) => (
-                <Row key={rowIndex}>
-                  <Cell>
-                    <Input
-                      type="text"
-                      value={column.label}
-                      placeholder={translate('Label')}
-                      autoFocus={activeCell === `${rowIndex}:0`}
-                      ref={(element) => setCellRef(element, rowIndex, 0)}
-                      onFocus={() => setActiveCell(rowIndex, 0)}
-                      onChange={(event) =>
-                        updateValue(
-                          updateColumn(
-                            rowIndex,
-                            { ...column, label: event.target.value },
-                            columns
-                          )
+      <TableContainer>
+        <TabularOptions>
+          <tbody>
+            {columns.map((column, rowIndex) => (
+              <Row key={rowIndex}>
+                <Cell>
+                  <Input
+                    type="text"
+                    value={column.label}
+                    placeholder={translate('Label')}
+                    autoFocus={activeCell === `${rowIndex}:0`}
+                    ref={(element) => setCellRef(element, rowIndex, 0)}
+                    onFocus={() => setActiveCell(rowIndex, 0)}
+                    onChange={(event) =>
+                      updateValue(
+                        updateColumn(
+                          rowIndex,
+                          { ...column, label: event.target.value },
+                          columns
                         )
-                      }
-                    />
-                  </Cell>
-                  <Cell width={110}>
-                    <Select
-                      defaultValue={column.type}
-                      title={translate('Type')}
-                      ref={(element) => setCellRef(element, rowIndex, 1)}
-                      onFocus={() => setActiveCell(rowIndex, 1)}
-                      onChange={(event) =>
-                        updateValue(
-                          updateColumn(
-                            rowIndex,
-                            { ...column, type: event.target.value },
-                            columns
-                          )
+                      )
+                    }
+                  />
+                </Cell>
+                <Cell width={110}>
+                  <Select
+                    defaultValue={column.type}
+                    title={translate('Type')}
+                    ref={(element) => setCellRef(element, rowIndex, 1)}
+                    onFocus={() => setActiveCell(rowIndex, 1)}
+                    onChange={(event) =>
+                      updateValue(
+                        updateColumn(
+                          rowIndex,
+                          { ...column, type: event.target.value },
+                          columns
                         )
-                      }
-                    >
-                      {Object.values(columnTypes).map(({ value, label }) => (
-                        <option key={value} value={value} label={label} />
-                      ))}
-                    </Select>
-                  </Cell>
-                  <Cell>
-                    <Input
-                      type="text"
-                      value={column.value}
-                      placeholder={translate('Value')}
-                      autoFocus={activeCell === `${rowIndex}:2`}
-                      ref={(element) => setCellRef(element, rowIndex, 2)}
-                      onFocus={() => setActiveCell(rowIndex, 2)}
-                      onChange={(event) =>
-                        updateValue(
-                          updateColumn(
-                            rowIndex,
-                            { ...column, value: event.target.value },
-                            columns
-                          )
+                      )
+                    }
+                  >
+                    {Object.values(columnTypes).map(({ value, label }) => (
+                      <option key={value} value={value} label={label} />
+                    ))}
+                  </Select>
+                </Cell>
+                <Cell>
+                  <Input
+                    type="text"
+                    value={column.value}
+                    placeholder={translate('Value')}
+                    autoFocus={activeCell === `${rowIndex}:2`}
+                    ref={(element) => setCellRef(element, rowIndex, 2)}
+                    onFocus={() => setActiveCell(rowIndex, 2)}
+                    onChange={(event) =>
+                      updateValue(
+                        updateColumn(
+                          rowIndex,
+                          { ...column, value: event.target.value },
+                          columns
                         )
-                      }
-                    />
-                  </Cell>
-                  <Cell tiny>
-                    <Button
-                      onClick={() =>
-                        updateValue(moveColumn(rowIndex, rowIndex, columns))
-                      }
-                    >
-                      <DragIcon />
-                    </Button>
-                  </Cell>
-                  <Cell tiny>
-                    <Button
-                      onClick={() => {
-                        updateValue(deleteColumn(rowIndex, columns));
-                        setActiveCell(Math.max(rowIndex - 1, 0), 0);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </Button>
-                  </Cell>
-                </Row>
-              ))}
-            </tbody>
-          </TabularOptions>
-        </TableContainer>
-      )}
+                      )
+                    }
+                  />
+                </Cell>
+                {columns.length > 1 && (
+                  <>
+                    <Cell tiny>
+                      <Button
+                        onClick={() =>
+                          updateValue(moveColumn(rowIndex, rowIndex, columns))
+                        }
+                      >
+                        <DragIcon />
+                      </Button>
+                    </Cell>
+                    <Cell tiny>
+                      <Button
+                        onClick={() => {
+                          updateValue(deleteColumn(rowIndex, columns));
+                          setActiveCell(Math.max(rowIndex - 1, 0), 0);
+                        }}
+                      >
+                        <DeleteIcon />
+                      </Button>
+                    </Cell>
+                  </>
+                )}
+              </Row>
+            ))}
+          </tbody>
+        </TabularOptions>
+      </TableContainer>
 
-      <button className="btn add icon dashed" onClick={() => appendAndFocus(0)}>
-        {translate('Add a Row')}
-      </button>
+      <HelpText>
+        <span
+          dangerouslySetInnerHTML={{
+            __html: translate(
+              'Press <b>enter</b> while editing a cell to add a new row.'
+            ),
+          }}
+        />
+      </HelpText>
     </TableEditorWrapper>
   );
 };

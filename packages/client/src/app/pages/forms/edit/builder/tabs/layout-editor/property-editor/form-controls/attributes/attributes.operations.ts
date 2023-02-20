@@ -1,4 +1,8 @@
-import type { Attribute } from './attributes.types';
+import type {
+  Attribute,
+  AttributeCollection,
+  AttributeTarget,
+} from './attributes.types';
 
 type ParsedAttribute = [string, string | undefined];
 
@@ -38,4 +42,57 @@ export const attributesToString = (attributes: Attribute[]): string => {
   return attributesToArray(attributes)
     .map(([key, value]) => `${key}${value !== undefined ? `="${value}"` : ''}`)
     .join(' ');
+};
+
+export const addAttribute = (
+  category: AttributeTarget,
+  attributes: AttributeCollection
+): AttributeCollection => {
+  const updated = {
+    ...attributes,
+    [category]: [...attributes[category], ['', '']],
+  };
+
+  return updated;
+};
+
+export const updateAttribute = (
+  index: number,
+  category: AttributeTarget,
+  attribute: Attribute,
+  attributes: AttributeCollection
+): AttributeCollection => {
+  const updated = {
+    ...attributes,
+    [category]: [...attributes[category]],
+  };
+
+  updated[category][index] = attribute;
+
+  return updated;
+};
+
+export const deleteAttribute = (
+  index: number,
+  category: AttributeTarget,
+  attributes: AttributeCollection
+): AttributeCollection => {
+  return {
+    ...attributes,
+    [category]: [...attributes[category].filter((_, idx) => idx !== index)],
+  };
+};
+
+export const cleanAttributes = (
+  attributes: AttributeCollection
+): AttributeCollection => {
+  const updated: AttributeCollection = {};
+
+  Object.entries(attributes).forEach(([category, attrs]) => {
+    updated[category as AttributeTarget] = attrs.filter(
+      ([key, value]) => !!key || !!value
+    );
+  });
+
+  return updated;
 };

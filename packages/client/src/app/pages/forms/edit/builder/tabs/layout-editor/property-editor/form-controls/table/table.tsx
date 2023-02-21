@@ -5,6 +5,7 @@ import { Control } from '../control';
 import { PreviewableComponent } from '../preview/previewable-component';
 
 import { TableEditor } from './table.editor';
+import { addColumn, cleanColumns } from './table.operations';
 import { TablePreview } from './table.preview';
 import type { ColumnDescription } from './table.types';
 
@@ -22,6 +23,12 @@ const Table: React.FC<ControlType<ColumnDescription[]>> = ({
     <Control property={property}>
       <PreviewableComponent
         preview={<TablePreview columnTypes={columnTypes} columns={columns} />}
+        onEdit={() => {
+          if (!columns.length) {
+            updateValue(addColumn(columns));
+          }
+        }}
+        onAfterEdit={() => updateValue(cleanColumns(columns))}
       >
         <TableEditor
           columnTypes={columnTypes}

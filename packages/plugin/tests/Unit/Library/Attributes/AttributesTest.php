@@ -24,7 +24,7 @@ class AttributesTest extends TestCase
         ;
 
         $this->assertCount(5, $attributes);
-        $this->assertEquals('text value', $attributes->get('text'));
+        $this->assertEquals(['text', 'text value'], $attributes->get(1));
     }
 
     public function testDoesNotShowFalseAttributes()
@@ -102,14 +102,14 @@ class AttributesTest extends TestCase
         $attributes = new Attributes();
         $attributes
             ->setBatch([
-                'data-boolean' => true,
-                'data-boolean-false' => false,
-                'text' => 'text value',
-                'empty-text' => '',
-                'number-value' => 123,
-                'void' => null,
-                'array-value' => ['one', 'two', 'three'],
-                'object-value' => (object) ['one' => 1, 'two' => 2, 'three' => 3],
+                ['data-boolean', true],
+                ['data-boolean-false', false],
+                ['text', 'text value'],
+                ['empty-text', ''],
+                ['number-value', 123],
+                ['void', null],
+                ['array-value', ['one', 'two', 'three']],
+                ['object-value', (object) ['one' => 1, 'two' => 2, 'three' => 3]],
             ])
         ;
 
@@ -122,14 +122,14 @@ class AttributesTest extends TestCase
     public function testConstructorAdding()
     {
         $attributes = new Attributes([
-            'data-boolean' => true,
-            'data-boolean-false' => false,
-            'text' => 'text value',
-            'empty-text' => '',
-            'number-value' => 123,
-            'void' => null,
-            'array-value' => ['one', 'two', 'three'],
-            'object-value' => (object) ['one' => 1, 'two' => 2, 'three' => 3],
+            ['data-boolean', true],
+            ['data-boolean-false', false],
+            ['text', 'text value'],
+            ['empty-text', ''],
+            ['number-value', 123],
+            ['void', null],
+            ['array-value', ['one', 'two', 'three']],
+            ['object-value', (object) ['one' => 1, 'two' => 2, 'three' => 3]],
         ]);
 
         $this->assertEquals(

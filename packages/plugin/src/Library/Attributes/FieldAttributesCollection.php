@@ -8,6 +8,7 @@ class FieldAttributesCollection extends Attributes
     private Attributes $label;
     private Attributes $instructions;
     private Attributes $container;
+    private Attributes $error;
 
     public function __construct(array $attributes = [])
     {
@@ -17,6 +18,7 @@ class FieldAttributesCollection extends Attributes
         $this->label = new Attributes();
         $this->instructions = new Attributes();
         $this->container = new Attributes();
+        $this->error = new Attributes();
     }
 
     public function getInput(): Attributes
@@ -37,5 +39,10 @@ class FieldAttributesCollection extends Attributes
     public function getContainer(): Attributes
     {
         return $this->container;
+    }
+
+    public function getError(): Attributes
+    {
+        return $this->error;
     }
 }

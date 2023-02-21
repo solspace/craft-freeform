@@ -1,4 +1,5 @@
 import type { PropsWithChildren, ReactElement } from 'react';
+import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
 import React from 'react';
@@ -15,10 +16,14 @@ import {
 
 type Props = {
   preview: ReactElement;
+  onEdit?: () => void;
+  onAfterEdit?: () => void;
 };
 
 export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
   preview,
+  onEdit,
+  onAfterEdit,
   children,
 }) => {
   const isEditorClosingRef = useRef(false);
@@ -40,6 +45,13 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
       }
     },
   });
+
+  // Call after-edit callbacks when the editor is being closed
+  useEffect(() => {
+    if (!isEditing && isEditorClosingRef.current) {
+      onAfterEdit && onAfterEdit();
+    }
+  }, [isEditing, isEditorClosingRef]);
 
   const editorAnimation = useSpring({
     to: {
@@ -73,6 +85,7 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
       <PreviewContainer
         onClick={() => {
           setIsEditing(true);
+          onEdit && onEdit();
           setRenderEditor(true);
           isEditorClosingRef.current = false;
         }}

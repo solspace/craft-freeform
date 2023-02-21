@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Attributes;
 
-class Attributes implements \ArrayAccess, \Countable
+class Attributes implements \Countable, \JsonSerializable
 {
     private array $attributes = [];
 
@@ -15,20 +15,19 @@ class Attributes implements \ArrayAccess, \Countable
     {
         $stringArray = [];
 
-        foreach ($this->attributes as $key => $value) {
-            if (null === $key && !empty($value)) {
+        foreach ($this->attributes as [$key, $value]) {
+            if (empty($key) && !empty($value)) {
                 $key = $value;
                 $value = '';
             }
 
-            if (\is_bool($value) && !$value) {
+            if ((!$key && !$value) || false === $value) {
                 continue;
             }
 
             $key = htmlspecialchars($key, \ENT_QUOTES, 'UTF-8');
 
-            $type = \gettype($value);
-            if ('boolean' === $type || '' === $value) {
+            if (true === $value || '' === $value || null === $value) {
                 $stringArray[] = $key;
 
                 continue;
@@ -57,67 +56,41 @@ class Attributes implements \ArrayAccess, \Countable
         return implode(' ', $stringArray);
     }
 
-    public function get(string $key, mixed $default = null): ?string
+    public function get(int $index, mixed $default = null): ?array
     {
-        return $this->attributes[$key] ?? $default;
+        return $this->attributes[$index] ?? $default;
     }
 
     public function set(?string $key, mixed $value = null): self
     {
-        if (empty($key)) {
-            if (empty($value)) {
-                return $this;
-            }
-
-            $key = $value;
-            $value = null;
-        }
-
-        $this->attributes[$key] = $value ?? true;
+        $this->attributes[] = [$key, $value];
 
         return $this;
     }
 
     public function setBatch(array $batch): self
     {
-        foreach ($batch as $key => $value) {
+        foreach ($batch as [$key, $value]) {
             $this->set($key, $value);
         }
 
         return $this;
     }
 
-    public function remove(string $key): self
+    public function remove(int $index): self
     {
-        if (\array_key_exists($key, $this->attributes)) {
-            unset($this->attributes[$key]);
-        }
+        unset($this->attributes[$index]);
 
         return $this;
-    }
-
-    public function offsetExists(mixed $offset): bool
-    {
-        return \array_key_exists($offset, $this->attributes);
-    }
-
-    public function offsetGet(mixed $offset): mixed
-    {
-        return $this->attributes[$offset];
-    }
-
-    public function offsetSet(mixed $offset, mixed $value): void
-    {
-        $this->set($offset, $value);
-    }
-
-    public function offsetUnset(mixed $offset): void
-    {
-        $this->remove($offset);
     }
 
     public function count(): int
     {
         return \count($this->attributes);
+    }
+
+    public function jsonSerialize(): array
+    {
+        return $this->attributes;
     }
 }

@@ -8,14 +8,14 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t }}">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
 
             <div class="btn submit menubtn"></div>
             <div class="menu">
                 <ul>
                     <li>
                         <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                            {{ "Save and continue editing"|t }}
+                            {{ "Save and continue editing"|t('app') }}
                             <span class="shortcut">⌘S</span>
                         </a>
                     </li>
@@ -35,8 +35,8 @@
 
         {{ forms.textField({
             first: true,
-            label: "Name"|t,
-            instructions: "What this export profile will be called in the CP."|t,
+            label: "Name"|t('app'),
+            instructions: "What this export profile will be called in the CP."|t('freeform'),
             id: 'name',
             name: 'name',
             value: profile.name,
@@ -46,8 +46,8 @@
         }) }}
 
         {{ forms.checkboxSelectField({
-            label: "Statuses"|t,
-            instructions: "Select which statuses to use"|t,
+            label: "Statuses"|t('freeform'),
+            instructions: "Select which statuses to use"|t('freeform'),
             name: 'statuses',
             values: profile.statuses,
             errors: profile.getErrors('statuses'),
@@ -57,36 +57,36 @@
         }) }}
 
         {{ forms.selectField({
-            label: "Date Range"|t,
-            instructions: "The date range for fetching submissions"|t,
+            label: "Date Range"|t('app'),
+            instructions: "The date range for fetching submissions"|t('freeform'),
             id: 'dateRange',
             name: 'dateRange',
             value: profile.dateRange,
             options: {
-                '': 'None',
-                'custom': 'Custom Range',
-                'presets': { optgroup: 'Presets' },
-                'today': 'Today',
-                'yesterday': 'Yesterday',
-                7: 'Last 7 days',
-                30: 'Last 30 days',
-                365: 'Last 365 days',
+                '': 'None'|t('app'),
+                'custom': 'Custom Range'|t('freeform'),
+                'presets': { optgroup: 'Presets'|t('freeform') },
+                'today': 'Today'|t('app'),
+                'yesterday': 'Yesterday'|t('app'),
+                7: 'Last 7 days'|t('freeform'),
+                30: 'Last 30 days'|t('freeform'),
+                365: 'Last 365 days'|t('freeform'),
             },
             errors: profile.getErrors('dateRange'),
         }) }}
 
         <div id="date-range" class="field {{ profile.dateRange != 'custom' ? 'hidden' }}">
             {{ forms.textField({
-                label: "Range Start"|t,
-                instructions: "Enter the beginning of the time period. Specify an exact date (e.g. '2020-09-01') or use something relative like '15 days ago'. Default is 'today'."|t,
+                label: "Range Start"|t('freeform'),
+                instructions: "Enter the beginning of the time period. Specify an exact date (e.g. '2020-09-01') or use something relative like '15 days ago'. Default is 'today'."|t('freeform'),
                 name: 'rangeStart',
                 value: profile.rangeStart,
                 errors: profile.getErrors('rangeStart'),
             }) }}
 
             {{ forms.textField({
-                label: "Range End"|t,
-                instructions: "Enter the end of the time period. Specify an exact date (e.g. '2020-09-30') or use something relative like '15 days ago'. Default is 'today'."|t,
+                label: "Range End"|t('freeform'),
+                instructions: "Enter the end of the time period. Specify an exact date (e.g. '2020-09-30') or use something relative like '15 days ago'. Default is 'today'."|t('freeform'),
                 name: 'rangeEnd',
                 value: profile.rangeEnd,
                 errors: profile.getErrors('rangeEnd'),
@@ -94,8 +94,8 @@
         </div>
 
         {{ forms.textField({
-            label: "Limit"|t,
-            instructions: "Maximum number of submissions to fetch."|t,
+            label: "Limit"|t('app'),
+            instructions: "Maximum number of submissions to fetch."|t('freeform'),
             id: 'limit',
             name: 'limit',
             size: 3,
@@ -107,23 +107,23 @@
 
         <div class="field">
             <div class="heading">
-                <label>{{ "Fields to export"|t }}</label>
+                <label>{{ "Fields to export"|t('freeform') }}</label>
                 <div class="instructions">
-                    <p>{{ "Specify the fields you wish to export and their order."|t }}</p>
+                    <p>{{ "Specify the fields you wish to export and their order."|t('freeform') }}</p>
                 </div>
             </div>
             <div class="input">
                 <table id="field-settings" class="data fullwidth collapsible">
                     <thead>
                     <th></th>
-                    <th width="50">{{ 'Enabled?'|t }}</th>
-                    <th>{{ 'Field Name'|t }}</th>
+                    <th width="50">{{ 'Enabled'|t('app') }}</th>
+                    <th>{{ 'Field Name'|t('freeform') }}</th>
                     </thead>
                     <tbody>
                     {% for fieldId, fieldData in profile.fieldSettings %}
                         <tr>
                             <td class="thin">
-                                <a class="move icon" title="{{ 'Reorder'|t }}"></a>
+                                <a class="move icon" title="{{ 'Reorder'|t('app') }}"></a>
                             </td>
                             <td width="50">
                                 {{ forms.lightswitchField({
@@ -146,9 +146,9 @@
 
         <div class="field">
             <div class="heading">
-                <label>{{ "Filters"|t }}</label>
+                <label>{{ "Filters"|t('app') }}</label>
                 <div class="instructions">
-                    <p>{{ "Add filters to narrow down your results. For searching into arrays, use LIKE and wrap values with '%', e.g. %\"option a\"% for a checkbox group field."|t }}</p>
+                    <p>{{ 'Add filters to narrow down your results. For searching into arrays, use LIKE and wrap values with "%", e.g. %"option a"% for a checkbox group field.'|t('freeform') }}</p>
                 </div>
             </div>
             <div class="input">
@@ -157,9 +157,9 @@
                        data-type="checkbox_group">
                     <thead>
                     <tr>
-                        <th class="header thin filter-field">{{ "Field" }}</th>
-                        <th class="header thin filter-type">{{ "Filter Type" }}</th>
-                        <th class="header thin filter-value" colspan="2">{{ "Value" }}</th>
+                        <th class="header thin filter-field">{{ "Field"|t('freeform') }}</th>
+                        <th class="header thin filter-type">{{ "Filter Type"|t('freeform') }}</th>
+                        <th class="header thin filter-value" colspan="2">{{ "Value"|t('app') }}</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -184,9 +184,9 @@
                                         name: 'filters['~iterator~'][type]',
                                         value: filter.type,
                                         options: {
-                                            '=': 'Equal To'|t,
-                                            '!=': 'Not Equal To'|t,
-                                            'like': 'Like'|t,
+                                            '=': 'Equal To'|t('app'),
+                                            '!=': 'Not Equal To'|t('app'),
+                                            'like': 'Like'|t('app'),
                                         }
                                     }) }}
                                 </div>
@@ -194,7 +194,7 @@
                             <td class="textual">
                                 <textarea class="code" name="filters[{{ iterator }}][value]" rows="1">{{ filter.value }}</textarea>
                             </td>
-                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t('app') }}"></a></td>
                         </tr>
                     {% endfor %}
                     <template>
@@ -213,9 +213,9 @@
                                     {{ forms.select({
                                         name: 'filters[__iterator__][type]',
                                         options: {
-                                            '=': 'Equal To'|t,
-                                            '!=': 'Not Equal To'|t,
-                                            'like': 'Like'|t,
+                                            '=': 'Equal To'|t('freeform'),
+                                            '!=': 'Not Equal To'|t('freeform'),
+                                            'like': 'Like'|t('freeform'),
                                         }
                                     }) }}
                                 </div>
@@ -223,14 +223,14 @@
                             <td class="textual">
                                 <textarea class="code" name="filters[__iterator__][value]" rows="1"></textarea>
                             </td>
-                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t }}"></a></td>
+                            <td class="thin action"><a class="delete icon" title="{{ 'Delete'|t('app') }}"></a></td>
                         </tr>
                     </template>
                     </tbody>
                 </table>
 
                 <div class="btn dashed add icon" id="add-filter">
-                    {{ addRowLabel is defined ? addRowLabel : "Add an option"|t }}
+                    {{ addRowLabel is defined ? addRowLabel : "Add an option"|t('app') }}
                 </div>
 
             </div>

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.0.16 - 2023-02-23
+
+### Fixed
+- Fixed a bug where an erroneous database index existed for email marketing integrations that would sometimes cause an error.
+
 ## 4.0.15 - 2023-02-14
 
 ### Added

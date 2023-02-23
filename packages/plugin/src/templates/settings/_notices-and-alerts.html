@@ -46,13 +46,13 @@
         errors: settings.errors("digestFrequency"),
         options: {
             "-1": "Daily" | t('freeform'),
-            "0": "Weekly - Sundays" | t('freeform'),
-            "1": "Weekly - Mondays" | t('freeform'),
-            "2": "Weekly - Tuesdays" | t('freeform'),
-            "3": "Weekly - Wednesdays" | t('freeform'),
-            "4": "Weekly - Thursdays" | t('freeform'),
-            "5": "Weekly - Fridays" | t('freeform'),
-            "6": "Weekly - Saturdays" | t('freeform'),
+            "0": "Weekly on Sundays" | t('freeform'),
+            "1": "Weekly on Mondays" | t('freeform'),
+            "2": "Weekly on Tuesdays" | t('freeform'),
+            "3": "Weekly on Wednesdays" | t('freeform'),
+            "4": "Weekly on Thursdays" | t('freeform'),
+            "5": "Weekly on Fridays" | t('freeform'),
+            "6": "Weekly on Saturdays" | t('freeform'),
         },
     }) }}
 
@@ -74,13 +74,13 @@
         errors: settings.errors("clientDigestFrequency"),
         options: {
             "-1": "Daily" | t('freeform'),
-            "0": "Weekly - Sundays" | t('freeform'),
-            "1": "Weekly - Mondays" | t('freeform'),
-            "2": "Weekly - Tuesdays" | t('freeform'),
-            "3": "Weekly - Wednesdays" | t('freeform'),
-            "4": "Weekly - Thursdays" | t('freeform'),
-            "5": "Weekly - Fridays" | t('freeform'),
-            "6": "Weekly - Saturdays" | t('freeform'),
+            "0": "Weekly on Sundays" | t('freeform'),
+            "1": "Weekly on Mondays" | t('freeform'),
+            "2": "Weekly on Tuesdays" | t('freeform'),
+            "3": "Weekly on Wednesdays" | t('freeform'),
+            "4": "Weekly on Thursdays" | t('freeform'),
+            "5": "Weekly on Fridays" | t('freeform'),
+            "6": "Weekly on Saturdays" | t('freeform'),
         },
     }) }}
 
@@ -110,13 +110,13 @@
         name: 'settings[feedInfo]',
         values: settings.feedInfo,
         options: [
-            { label: 'Site uses a JS framework (Vue.js, React.js, etc.)', value: 'jsFramework' },
-            { label: 'Caching on at least some forms', value: 'caching' },
-            { label: 'Custom module or plugin for Freeform', value: 'customModule' },
-            { label: 'Alert me on any GDPR-related improvements or fixes', value: 'gdpr' },
-            { label: 'Make use of Editing submissions on front-end', value: 'editingSubmissions' },
-            { label: 'Display submission data on front-end', value: 'displayingSubmissions' },
-            { label: 'Site uses GraphQL', value: 'graphQL' },
+            { label: 'Site uses a JS framework (Vue.js, React.js, etc.)'|t('freeform'), value: 'jsFramework' },
+            { label: 'Caching on at least some forms'|t('freeform'), value: 'caching' },
+            { label: 'Custom module or plugin for Freeform'|t('freeform'), value: 'customModule' },
+            { label: 'Alert me on any GDPR-related improvements or fixes'|t('freeform'), value: 'gdpr' },
+            { label: 'Make use of Editing submissions on front-end'|t('freeform'), value: 'editingSubmissions' },
+            { label: 'Display submission data on front-end'|t('freeform'), value: 'displayingSubmissions' },
+            { label: 'Site uses GraphQL'|t('freeform'), value: 'graphQL' },
         ],
     }) }}
 

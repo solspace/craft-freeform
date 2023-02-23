@@ -47,7 +47,7 @@
         {{ forms.selectField({
             label: "Captcha Type"|t('freeform'),
             instructions: "Choose which Captcha service and type you want to use."|t('freeform'),
-            warning: "If using reCAPTCHA, please be sure the selection here matches the type on the Google reCAPTCHA site admin console and this site has been added to the approved Domains list.",
+            warning: "If using reCAPTCHA, please be sure the selection here matches the type on the Google reCAPTCHA site admin console and this site has been added to the approved Domains list."|t('freeform'),
             id: "recaptcha-type",
             name: "settings[recaptchaType]",
             value: settings.recaptchaType,
@@ -128,7 +128,7 @@
         <div id="min-score" class="{{ settings.recaptchaType != "v3" ? "hidden" }}">
             {{ forms.selectField({
                 label: "Minimum Score"|t("freeform"),
-                instructions: "Enter the minimum score needed to pass the test. The higher the score, the more agressive the protection will be. Setting this to '0.0' would allow almost all spam through, while '1.0' could potentially block legitimate users. We recommend a value of '0.5' to '0.7'."|t("freeform"),
+                instructions: "Enter the minimum score needed to pass the test. The higher the score, the more aggressive the protection will be. Setting this to '0.0' would allow almost all spam through, while '1.0' could potentially block legitimate users. We recommend a value of '0.5' to '0.7'."|t("freeform"),
                 name: "settings[recaptchaMinScore]",
                 value: settings.recaptchaMinScore,
                 errors: settings.errors("recaptchaMinScore"),

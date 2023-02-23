@@ -147,7 +147,7 @@ export default class Payments extends BasePropertyEditor {
       <div>
         <SelectProperty
           label="Payment Type"
-          instructions="Select one of payment templates"
+          instructions="Select a payment template"
           emptyOption="Choose payment type..."
           name="paymentType"
           value={paymentType}

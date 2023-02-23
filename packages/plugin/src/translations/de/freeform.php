@@ -640,7 +640,7 @@ return [
     'Choose a payment gateway.' => 'Wähle ein Zahlungs-Gateway.',
     'Refresh Payment Gateways' => 'Aktualisiere Zahlungs-Gateways',
     'Payment Type' => 'Zahlungs-Typ',
-    'Select one of payment templates' => 'Wähle eines der Zahlungs-Templates',
+    'Select a payment template' => 'Wähle eines der Zahlungs-Templates',
     'Choose payment type...' => 'Wähle Zahlungstyp...',
     'Customer Field Mapping' => 'Kunden Feld-Mapping',
     'Payment fields to your Freeform fields.' => 'Zahlungs-Felder zu deinen Freeform-Feldern',

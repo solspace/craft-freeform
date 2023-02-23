@@ -669,7 +669,7 @@ return [
     'Choose a payment gateway.' => 'Choose a payment gateway.',
     'Refresh Payment Gateways' => 'Refresh Payment Gateways',
     'Payment Type' => 'Payment Type',
-    'Select one of payment templates' => 'Select one of payment templates',
+    'Select a payment template' => 'Select a payment template',
     'Choose payment type...' => 'Choose payment type...',
     'Customer Field Mapping' => 'Customer Field Mapping',
     'Payment fields to your Freeform fields.' => 'Payment fields to your Freeform fields.',

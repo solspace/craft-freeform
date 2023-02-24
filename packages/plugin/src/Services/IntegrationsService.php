@@ -60,9 +60,7 @@ class IntegrationsService extends BaseService
                     'integration.handle',
                     'integration.type',
                     'integration.class',
-                    'integration.accessToken',
-                    'integration.settings',
-                    'integration.forceUpdate',
+                    'integration.metadata',
                     'integration.lastUpdate',
                 ]
             )
@@ -73,12 +71,6 @@ class IntegrationsService extends BaseService
 
     protected function createIntegrationModel(array $data): IntegrationModel
     {
-        $model = new IntegrationModel($data);
-
-        $model->lastUpdate = new \DateTime($model->lastUpdate);
-        $model->forceUpdate = (bool) $model->forceUpdate;
-        $model->settings = $model->settings ? json_decode($model->settings, true) : [];
-
-        return $model;
+        return new IntegrationModel($data);
     }
 }

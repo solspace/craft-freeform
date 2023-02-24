@@ -6,9 +6,10 @@ import { selectField } from '@editor/store/slices/fields';
 import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 
-import { ErrorBoundary } from './boundaries/ErrorBoundary';
+import { ErrorBoundary } from '../../../../../../../components/form-controls/boundaries/ErrorBoundary';
+
 import { FavoriteButton } from './favorite/favorite.button';
-import { FieldProperties } from './field/field-properties';
+import { FieldProperties } from './field-properties';
 import { CloseLink, PropertyEditorWrapper } from './property-editor.styles';
 
 export const PropertyEditor: React.FC = () => {
@@ -26,8 +27,6 @@ export const PropertyEditor: React.FC = () => {
     },
   });
 
-  const component = <FieldProperties uid={uid} />;
-
   return (
     <PropertyEditorWrapper>
       <CloseLink onClick={() => dispatch(unfocus())}>
@@ -37,7 +36,7 @@ export const PropertyEditor: React.FC = () => {
       <ErrorBoundary
         message={`Could not load property editor for "${type}" type`}
       >
-        {component}
+        <FieldProperties uid={uid} />
       </ErrorBoundary>
     </PropertyEditorWrapper>
   );

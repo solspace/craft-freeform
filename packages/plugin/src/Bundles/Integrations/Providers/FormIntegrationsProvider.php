@@ -31,9 +31,9 @@ class FormIntegrationsProvider
 
             $metadata = json_decode($formIntegration->metadata ?? '{}', true);
 
-            $settings = $metadata['settings'] ?? [];
-            $integration->settings = array_merge(
-                $integration->settings,
+            $settings = $metadata['metadata'] ?? [];
+            $integration->metadata = array_merge(
+                $integration->metadata,
                 $settings
             );
         }

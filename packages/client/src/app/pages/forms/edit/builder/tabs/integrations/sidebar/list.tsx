@@ -39,6 +39,14 @@ export const List: React.FC = () => {
     );
   }
 
+  if (!data && !isFetching) {
+    return (
+      <Sidebar>
+        <Wrapper />
+      </Sidebar>
+    );
+  }
+
   const categories: Record<string, IntegrationCategory> = {};
   data.forEach((integration) => {
     const { type } = integration;

@@ -20,7 +20,7 @@ class PropertyProvider
     {
     }
 
-    public function getEditableProperties(string $class): PropertyCollection
+    public function getEditableProperties(string $class, mixed $referenceObject = null): PropertyCollection
     {
         $reflection = $this->getReflection($class);
         $collection = new PropertyCollection();
@@ -47,6 +47,11 @@ class PropertyProvider
 
             $options = $this->compileOptions($attribute);
 
+            $value = $property->getDefaultValue() ?? $attribute->value;
+            if ($referenceObject) {
+                $value = $property->getValue($referenceObject);
+            }
+
             $prop = new PropertyDTO();
             $prop->type = $attribute->type ?? $property->getType()->getName();
             $prop->handle = $property->getName();
@@ -56,7 +61,7 @@ class PropertyProvider
             $prop->section = $section?->handle;
             $prop->options = $options?->getOptions();
             $prop->required = $attribute->required;
-            $prop->value = $property->getDefaultValue() ?? $attribute->value;
+            $prop->value = $value;
             $prop->order = $attribute->order ?? $collection->getNextOrder();
             $prop->flags = $this->getFlags($property);
             $prop->middleware = $this->getMiddleware($property);

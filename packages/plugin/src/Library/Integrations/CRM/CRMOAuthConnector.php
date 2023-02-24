@@ -26,27 +26,32 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
     public const SETTING_CLIENT_SECRET = 'client_secret';
     public const SETTING_RETURN_URI = 'return_uri';
 
-    #[Flag(Flag::ENCRYPTED)]
-    #[Property(type: Property::TYPE_INTERNAL)]
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Property]
     protected string $accessToken = '';
 
-    #[Flag(Flag::ENCRYPTED)]
-    #[Property(type: Property::TYPE_INTERNAL)]
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Property]
     protected string $refreshToken = '';
 
-    #[Flag(Flag::READONLY)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Flag(self::FLAG_READONLY)]
     #[Property(
         label: 'OAuth 2.0 Return URI',
         instructions: 'You must specify this as the Return URI in your app settings to be able to authorize your credentials. DO NOT CHANGE THIS.',
     )]
-    protected string $returnUri;
+    protected string $returnUri = '';
 
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         instructions: 'Enter the Client ID of your app here.',
         required: true,
     )]
     protected string $clientId;
 
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         instructions: 'Enter the Client Secret of your app here.',
         required: true,

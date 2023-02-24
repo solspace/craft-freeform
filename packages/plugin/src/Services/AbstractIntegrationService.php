@@ -153,7 +153,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
         $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
         $reflection = new \ReflectionClass($model->class);
         foreach ($editableProperties as $property) {
-            if ($property->hasFlag(Flag::READONLY)) {
+            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
                 continue;
             }
 
@@ -170,7 +170,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
                 continue;
             }
 
-            if ($property->hasFlag(Flag::ENCRYPTED)) {
+            if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
                 $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
             }
 

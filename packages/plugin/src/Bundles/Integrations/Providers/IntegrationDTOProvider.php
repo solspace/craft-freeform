@@ -97,7 +97,11 @@ class IntegrationDTOProvider
         $dto->handle = $model->handle;
         $dto->type = $model->type;
         $dto->icon = $icon;
-        $dto->properties = $this->propertyProvider->getEditableProperties($class);
+        $dto->properties = $this->propertyProvider->getEditableProperties($class, $model->getIntegrationObject());
+        $dto->properties->removeFlagged(
+            IntegrationInterface::FLAG_INTERNAL,
+            IntegrationInterface::FLAG_GLOBAL_PROPERTY,
+        );
 
         return $dto;
     }

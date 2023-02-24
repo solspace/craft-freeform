@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
 use Psr\Log\LoggerInterface;
-use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -206,7 +205,7 @@ abstract class AbstractIntegration implements IntegrationInterface
             }
 
             $value = $properties[$handle];
-            if ($property->hasFlag(Flag::ENCRYPTED)) {
+            if ($property->hasFlag(self::FLAG_ENCRYPTED)) {
                 $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
             }
 

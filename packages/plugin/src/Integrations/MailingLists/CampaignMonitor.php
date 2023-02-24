@@ -166,7 +166,7 @@ class CampaignMonitor extends AbstractMailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return $this->getSetting(self::SETTING_API_KEY);
     }

@@ -59,7 +59,7 @@ abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
     /**
      * @throws IntegrationException
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         $client = new Client();
 

@@ -82,7 +82,7 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
      *
      * @throws IntegrationException
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return $this->getSetting(self::SETTING_API_TOKEN);
     }
@@ -112,7 +112,7 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
         }
 
         $this->setSetting(self::SETTING_DOMAIN, $domain);
-        $model->updateSettings($this->getSettings());
+        $model->updateProperties($this->getSettings());
     }
 
     /**

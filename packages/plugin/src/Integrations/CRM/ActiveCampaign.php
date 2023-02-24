@@ -472,14 +472,14 @@ class ActiveCampaign extends AbstractCRMIntegration
         $this->setSetting(self::SETTING_OWNER, $owner);
         $this->setSetting(self::SETTING_OWNER_ID, $ownerId);
 
-        $model->updateSettings($this->getSettings());
+        $model->updateProperties($this->getSettings());
     }
 
     /**
      * Authorizes the application
      * Returns the access_token.
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return $this->getApiToken();
     }

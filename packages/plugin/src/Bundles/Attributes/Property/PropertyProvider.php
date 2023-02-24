@@ -55,6 +55,7 @@ class PropertyProvider
             $prop->placeholder = $attribute->placeholder;
             $prop->section = $section?->handle;
             $prop->options = $options?->getOptions();
+            $prop->required = $attribute->required;
             $prop->value = $property->getDefaultValue() ?? $attribute->value;
             $prop->order = $attribute->order ?? $collection->getNextOrder();
             $prop->flags = $this->getFlags($property);

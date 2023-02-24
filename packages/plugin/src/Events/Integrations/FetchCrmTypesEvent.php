@@ -2,28 +2,26 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\CRM\CRMIntegrationInterface;
 
 class FetchCrmTypesEvent extends ArrayableEvent
 {
-    /** @var array */
-    private $types;
+    /** @var Type[] */
+    private array $types = [];
 
-    /**
-     * MailingListTypesEvent constructor.
-     */
-    public function __construct()
+    private PropertyProvider $propertyProvider;
+
+    public function __construct($config = [])
     {
-        $this->types = [];
+        $this->propertyProvider = \Craft::$container->get(PropertyProvider::class);
 
-        parent::__construct();
+        parent::__construct($config);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return ['types'];
@@ -35,12 +33,28 @@ class FetchCrmTypesEvent extends ArrayableEvent
 
         $isPro = Freeform::getInstance()->isPro();
         if ($isPro && $reflectionClass->implementsInterface(CRMIntegrationInterface::class)) {
-            $this->types[$class] = $reflectionClass->getConstant('TITLE');
+            $types = $reflectionClass->getAttributes(Type::class);
+            $type = reset($types);
+
+            if (!$type) {
+                return $this;
+            }
+
+            /** @var Type $type */
+            $type = $type->newInstance();
+
+            $properties = $this->propertyProvider->getEditableProperties($class);
+            $type->setProperties($properties);
+
+            $this->types[$class] = $type;
         }
 
         return $this;
     }
 
+    /**
+     * @return Type[]
+     */
     public function getTypes(): array
     {
         return $this->types;

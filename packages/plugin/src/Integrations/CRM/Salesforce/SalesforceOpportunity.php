@@ -10,21 +10,19 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Fields\CheckboxGroupField;
-use Solspace\Freeform\Integrations\CRM\Salesforce\AbstractSalesforceIntegration;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
 use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
-class SalesforceOpportunity extends AbstractSalesforceIntegration
+class SalesforceOpportunity extends BaseSalesforceIntegration
 {
     public const TITLE = 'Salesforce Opportunity';
     public const LOG_CATEGORY = 'Salesforce';
@@ -156,7 +154,7 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
      * @throws IntegrationException
      * @throws \Exception
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         $client = new Client();
 
@@ -213,7 +211,7 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
     /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave(IntegrationStorageInterface $model)
+    public function onBeforeSave()
     {
         $clientId = $this->getClientId();
         $clientSecret = $this->getClientSecret();
@@ -225,9 +223,7 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
             return;
         }
 
-        $this->fetchAccessToken();
-        $model->updateAccessToken($this->getAccessToken());
-        $model->updateSettings($this->getSettings());
+        $this->fetchTokens();
     }
 
     /**
@@ -590,7 +586,7 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
      */
     public function refreshToken(): bool
     {
-        return (bool) $this->fetchAccessToken();
+        return (bool) $this->fetchTokens();
     }
 
     /**
@@ -663,22 +659,6 @@ class SalesforceOpportunity extends AbstractSalesforceIntegration
         }
 
         return 'login';
-    }
-
-    /**
-     * @return null|mixed
-     */
-    private function getClientId()
-    {
-        return $this->getSetting(self::SETTING_CLIENT_ID);
-    }
-
-    /**
-     * @return null|mixed
-     */
-    private function getClientSecret()
-    {
-        return $this->getSetting(self::SETTING_CLIENT_SECRET);
     }
 
     /**

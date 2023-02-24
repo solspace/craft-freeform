@@ -242,14 +242,14 @@ class SharpSpring extends AbstractCRMIntegration
             return;
         }
 
-        $model->updateSettings($this->getSettings());
+        $model->updateProperties($this->getSettings());
     }
 
     /**
      * Authorizes the application
      * Returns the access_token.
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return '';
     }

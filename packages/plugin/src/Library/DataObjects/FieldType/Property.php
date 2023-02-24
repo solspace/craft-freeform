@@ -13,6 +13,7 @@ class Property
     public ?string $category;
     public int $order;
     public mixed $value;
+    public ?bool $required;
     public ?string $placeholder;
     public ?string $section;
     public ?array $options;
@@ -21,6 +22,14 @@ class Property
     public ?array $middleware;
     public ?string $tab;
     public ?string $group;
-    public ?bool $readonly;
     public ?TransformerInterface $transformer;
+
+    public function hasFlag(string $name): bool
+    {
+        if (null === $this->flags) {
+            return false;
+        }
+
+        return \in_array($name, $this->flags, true);
+    }
 }

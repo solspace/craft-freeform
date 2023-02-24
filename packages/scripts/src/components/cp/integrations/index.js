@@ -5,7 +5,7 @@ $(function () {
     change: function () {
       const val = $(this).val().split('\\').join('');
 
-      $('div#settings-' + val)
+      $('div#properties-' + val)
         .show()
         .siblings()
         .hide();
@@ -25,7 +25,7 @@ $(function () {
     });
   }
 
-  const $returnUri = $('input.setting-return_uri');
+  const $returnUri = $('input.property-returnUri');
   const urlType = $('#integration-type').data('type');
 
   $('#handle').on({

@@ -78,7 +78,7 @@ class Campaign extends AbstractMailingListIntegration
     /**
      * {@inheritDoc}
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return '';
     }

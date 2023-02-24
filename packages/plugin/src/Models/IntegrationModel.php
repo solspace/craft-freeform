@@ -14,118 +14,44 @@ namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
 use craft\helpers\UrlHelper;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Translations\CraftTranslator;
 use Solspace\Freeform\Records\IntegrationRecord;
 
-/**
- * @property string $id
- * @property string $name
- * @property string $handle
- * @property string $type
- * @property string $class
- * @property string $accessToken
- * @property string $settings
- * @property string $forceUpdate
- * @property string $lastUpdate
- */
-class IntegrationModel extends Model implements IntegrationStorageInterface
+class IntegrationModel extends Model
 {
-    /** @var int */
-    public $id;
+    public ?int $id = null;
+    public ?string $name = null;
+    public ?string $handle = null;
+    public ?string $type = null;
+    public ?string $class = null;
+    public array $metadata = [];
+    public \DateTime $lastUpdate;
 
-    /** @var string */
-    public $name;
-
-    /** @var string */
-    public $handle;
-
-    /** @var string */
-    public $type;
-
-    /** @var string */
-    public $class;
-
-    /** @var string */
-    public $accessToken;
-
-    /** @var array */
-    public $settings;
-
-    /** @var bool */
-    public $forceUpdate;
-
-    /** @var \DateTime */
-    public $lastUpdate;
-
-    /**
-     * @param string $type
-     */
-    public static function create($type): self
+    public static function create(string $type): self
     {
         $model = new self();
         $model->type = $type;
-        $model->forceUpdate = true;
         $model->lastUpdate = new \DateTime();
 
         return $model;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function safeAttributes()
+    public function safeAttributes(): array
     {
         return [
             'name',
             'handle',
             'class',
-            'accessToken',
-            'settings',
+            'metadata',
             'forceUpdate',
             'lastUpdate',
         ];
-    }
-
-    /**
-     * Update the access token.
-     */
-    public function updateAccessToken(string $accessToken)
-    {
-        $this->accessToken = $accessToken;
-    }
-
-    /**
-     * Update the settings that are to be stored.
-     */
-    public function updateSettings(array $settings = [])
-    {
-        $this->settings = $settings;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setForceUpdate(bool $value)
-    {
-        $this->forceUpdate = $value;
-    }
-
-    /**
-     * @throws IntegrationException
-     */
-    public function isOAuthConnection(): bool
-    {
-        return $this->getIntegrationObject()->isOAuthConnection();
     }
 
     public function getCpEditUrl(): string
@@ -136,13 +62,7 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
         return UrlHelper::cpUrl("freeform/settings/{$type}/{$id}");
     }
 
-    /**
-     * @return AbstractCRMIntegration|AbstractIntegration|AbstractMailingListIntegration|AbstractPaymentGatewayIntegration
-     *
-     * @throws IntegrationException
-     * @throws IntegrationNotFoundException
-     */
-    public function getIntegrationObject()
+    public function getIntegrationObject(): IntegrationInterface
     {
         $freeform = Freeform::getInstance();
 
@@ -175,36 +95,25 @@ class IntegrationModel extends Model implements IntegrationStorageInterface
             throw new IntegrationNotFoundException(sprintf('"%s" class does not exist', $className));
         }
 
-        /** @var AbstractIntegration $integration */
-        $integration = new $className(
+        return new $className(
             $this->id,
+            $this->handle,
             $this->name,
             $this->lastUpdate,
-            $this->accessToken,
-            $this->settings,
+            $this->metadata,
             FreeformLogger::getInstance($logCategory),
-            new CraftPluginConfiguration(),
             new CraftTranslator(),
-            $handler
+            $handler,
+            \Craft::$container->get(PropertyProvider::class),
         );
-
-        $integration->setForceUpdate($this->forceUpdate);
-
-        return $integration;
     }
 
     public function getTypeSlug(): string
     {
-        switch ($this->type) {
-            case IntegrationRecord::TYPE_PAYMENT_GATEWAY:
-                return 'payment-gateways';
-
-            case IntegrationRecord::TYPE_MAILING_LIST:
-                return 'mailing-lists';
-
-            case IntegrationRecord::TYPE_CRM:
-            default:
-                return 'crm';
-        }
+        return match ($this->type) {
+            IntegrationRecord::TYPE_PAYMENT_GATEWAY => 'payment-gateways',
+            IntegrationRecord::TYPE_MAILING_LIST => 'mailing-lists',
+            default => 'crm',
+        };
     }
 }

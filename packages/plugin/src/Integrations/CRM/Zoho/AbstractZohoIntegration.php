@@ -111,7 +111,7 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector implements Refr
      * @throws IntegrationException
      * @throws \Exception
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         $code = $_GET['code'] ?? null;
         $location = $_GET['location'] ?? null;
@@ -188,9 +188,9 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector implements Refr
             return;
         }
 
-        $this->fetchAccessToken();
+        $this->fetchTokens();
         $model->updateAccessToken($this->getAccessToken());
-        $model->updateSettings($this->getSettings());
+        $model->updateProperties($this->getSettings());
     }
 
     /**

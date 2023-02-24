@@ -31,7 +31,6 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Freeform\RegisterCpSubnavItemsEvent;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
-use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
@@ -495,28 +494,6 @@ class Freeform extends Plugin
 
     private function initIntegrations()
     {
-        Event::on(
-            CrmService::class,
-            CrmService::EVENT_FETCH_TYPES,
-            function (FetchCrmTypesEvent $event) {
-                $finder = new Finder();
-
-                $namespace = 'Solspace\Freeform\Integrations\CRM';
-
-                /** @var SplFileInfo[] $files */
-                $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
-                    __DIR__.'/Integrations/CRM/'
-                )
-                ;
-
-                foreach ($files as $file) {
-                    $className = str_replace('.'.$file->getExtension(), '', $file->getBasename());
-                    $className = $namespace.'\\'.$className;
-                    $event->addType($className);
-                }
-            }
-        );
-
         Event::on(
             MailingListsService::class,
             MailingListsService::EVENT_FETCH_TYPES,

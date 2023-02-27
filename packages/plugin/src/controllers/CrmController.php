@@ -25,11 +25,17 @@ use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\CrmBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Services\CrmService;
+use Solspace\Freeform\Services\IntegrationsService;
 use yii\web\HttpException;
 use yii\web\Response;
 
 class CrmController extends Controller
 {
+    public function __construct($id, $module, $config = [], private IntegrationsService $integrationsService)
+    {
+        parent::__construct($id, $module, $config);
+    }
+
     public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
@@ -94,14 +100,12 @@ class CrmController extends Controller
         $id = $post['id'] ?? null;
         $model = $this->getNewOrExistingIntegration((int) $id);
 
-        $isNew = !$model->id;
-
         $postedClass = $post['class'] ?? null;
         $model->class = $postedClass;
 
         $postedClassSettings = $post['properties'][$postedClass] ?? [];
         unset($post['properties']);
-        $post['settings'] = $postedClassSettings ?: null;
+        $post['metadata'] = $postedClassSettings ?: null;
 
         $model->setAttributes($post);
 
@@ -113,9 +117,9 @@ class CrmController extends Controller
             $model->addError('integration', $e->getMessage());
         }
 
-        $this->getCRMService()->updateModelFromIntegration($model, $integration);
+        $this->integrationsService->updateModelFromIntegration($model, $integration);
 
-        if ($this->getCRMService()->save($model)) {
+        if ($this->integrationsService->save($model)) {
             // If it's a new integration - we make the user complete OAuth2 authentication
             $model->getIntegrationObject()->initiateAuthentication();
 
@@ -183,7 +187,7 @@ class CrmController extends Controller
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $id = \Craft::$app->request->post('id');
-        $this->getCRMService()->delete($id);
+        $this->integrationsService->delete($id);
 
         return $this->asJson(['success' => true]);
     }
@@ -247,9 +251,9 @@ class CrmController extends Controller
             $model->addError('integration', $e->getMessage());
         }
 
-        $this->getCRMService()->updateModelFromIntegration($model, $integration);
+        $this->integrationsService->updateModelFromIntegration($model, $integration);
 
-        if ($this->getCRMService()->save($model)) {
+        if ($this->integrationsService->save($model)) {
             // Return JSON response if the request is an AJAX request
             \Craft::$app->session->setNotice(Freeform::t('CRM Integration saved'));
             \Craft::$app->session->setFlash('CRM Integration saved');

@@ -10,64 +10,71 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\HubSpot;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Psr\Http\Message\ResponseInterface;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Fields\CheckboxGroupField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
+#[Type(
+    name: 'HubSpot',
+    iconPath: __DIR__.'/icon.svg',
+)]
 class HubSpot extends AbstractCRMIntegration
 {
-    public const SETTING_API_KEY = 'api_key';
-    public const SETTING_IP_FIELD = 'ip_field';
-    public const SETTING_APPEND_COMPANY_DATA = 'append_company_data';
-    public const SETTING_APPEND_CONTACT_DATA = 'append_contact_data';
-
-    public const TITLE = 'HubSpot';
     public const LOG_CATEGORY = 'HubSpot';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API Key',
+        instructions: 'Enter your HubSpot API key here.',
+        required: true,
+    )]
+    protected string $apiKey = '';
+
+    #[Property(
+        label: 'IP Address Field',
+        instructions: "Enter a custom HubSpot Contact field handle where you wish to store the client's IP address from the submission (optional).",
+    )]
+    protected string $ipField = '';
+
+    #[Property(
+        label: 'Append checkbox group field values on Contact update?',
+        instructions: 'If a Contact already exists in HubSpot, enabling this will append additional checkbox group field values to the Contact inside HubSpot, instead of overwriting the options.',
+    )]
+    protected string $appendContactData = '';
+
+    #[Property(
+        label: 'Append checkbox group field values on Company update?',
+        instructions: 'If a Company already exists in HubSpot, enabling this will append additional checkbox group field values to the Company inside HubSpot, instead of overwriting the options.',
+    )]
+    protected string $appendCompanyData = '';
+
+    public function getApiKey(): string
     {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_KEY,
-                'API Key',
-                'Enter your HubSpot API key here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_IP_FIELD,
-                'IP Address Field',
-                'Enter a custom HubSpot Contact field handle where you wish to store the client\'s IP address from the submission (optional).'
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_BOOL,
-                self::SETTING_APPEND_CONTACT_DATA,
-                'Append checkbox group field values on Contact update?',
-                'If a Contact already exists in HubSpot, enabling this will append additional checkbox group field values to the Contact inside HubSpot, instead of overwriting the options.',
-                false
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_BOOL,
-                self::SETTING_APPEND_COMPANY_DATA,
-                'Append checkbox group field values on Company update?',
-                'If a Company already exists in HubSpot, enabling this will append additional checkbox group field values to the Company inside HubSpot, instead of overwriting the options.',
-                false
-            ),
-        ];
+        return $this->getProcessedValue($this->apiKey);
+    }
+
+    public function getIpField(): string
+    {
+        return $this->getProcessedValue($this->ipField);
+    }
+
+    public function getAppendContactData(): string
+    {
+        return $this->appendContactData;
+    }
+
+    public function getAppendCompanyData(): string
+    {
+        return $this->appendCompanyData;
     }
 
     /**
@@ -77,10 +84,10 @@ class HubSpot extends AbstractCRMIntegration
      */
     public function pushObject(array $keyValueList, $formFields = null): bool
     {
-        $isAppendContactData = $this->getSetting(self::SETTING_APPEND_CONTACT_DATA);
-        $isAppendCompanyData = $this->getSetting(self::SETTING_APPEND_COMPANY_DATA);
+        $isAppendContactData = $this->getAppendContactData();
+        $isAppendCompanyData = $this->getAppendCompanyData();
 
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/deals/v1/deal/');
 
         $dealProps = [];
@@ -211,10 +218,10 @@ class HubSpot extends AbstractCRMIntegration
         $contactId = null;
 
         if ($contactProps) {
-            if ($this->getSetting(self::SETTING_IP_FIELD) && isset($_SERVER['REMOTE_ADDR'])) {
+            if ($this->getIpField() && isset($_SERVER['REMOTE_ADDR'])) {
                 $contactProps[] = [
                     'value' => $_SERVER['REMOTE_ADDR'],
-                    'property' => $this->getSetting(self::SETTING_IP_FIELD),
+                    'property' => $this->getIpField(),
                 ];
             }
 
@@ -306,13 +313,7 @@ class HubSpot extends AbstractCRMIntegration
                 }
             }
 
-            $response = $client->post(
-                $endpoint,
-                [
-                    'json' => $deal,
-                    'query' => ['hapikey' => $this->getAccessToken()],
-                ]
-            );
+            $response = $client->post($endpoint, ['json' => $deal]);
 
             $this->getHandler()->onAfterResponse($this, $response);
 
@@ -327,16 +328,11 @@ class HubSpot extends AbstractCRMIntegration
      */
     public function checkConnection(): bool
     {
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/contacts/v1/lists/all/contacts/all');
 
         try {
-            $response = $client->get(
-                $endpoint,
-                [
-                    'query' => ['hapikey' => $this->getAccessToken()],
-                ]
-            );
+            $response = $client->get($endpoint);
 
             $json = json_decode((string) $response->getBody(), true);
 
@@ -375,30 +371,11 @@ class HubSpot extends AbstractCRMIntegration
         return $fieldList;
     }
 
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    public function fetchTokens(): string
+    protected function generateAuthorizedClient(): Client
     {
-        return $this->getSetting(self::SETTING_API_KEY);
-    }
-
-    /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
-     * Perform anything necessary before this integration is saved.
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-        $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
+        return new Client([
+            'query' => ['hapikey' => $this->getApiKey()],
+        ]);
     }
 
     protected function getApiRootUrl(): string
@@ -408,11 +385,8 @@ class HubSpot extends AbstractCRMIntegration
 
     private function extractCustomFields(string $endpoint, string $dataType, array &$fieldList)
     {
-        $client = new Client();
-        $response = $client->get(
-            $this->getEndpoint($endpoint),
-            ['query' => ['hapikey' => $this->getAccessToken()]]
-        );
+        $client = $this->generateAuthorizedClient();
+        $response = $client->get($this->getEndpoint($endpoint));
 
         $data = json_decode((string) $response->getBody());
 
@@ -471,7 +445,7 @@ class HubSpot extends AbstractCRMIntegration
      *
      * @return string
      */
-    private function getEmailFieldValue($contactProps)
+    private function getEmailFieldValue(array $contactProps): mixed
     {
         foreach ($contactProps as $contactProp) {
             if (isset($contactProp['property'])) {
@@ -493,7 +467,7 @@ class HubSpot extends AbstractCRMIntegration
      *
      * @return string
      */
-    private function getDomainFieldValue($companyProps)
+    private function getDomainFieldValue(array $companyProps): mixed
     {
         foreach ($companyProps as $companyProp) {
             if (isset($companyProp['name'])) {
@@ -510,12 +484,8 @@ class HubSpot extends AbstractCRMIntegration
 
     /**
      * Checks if Form field's type calls for a value append.
-     *
-     * @param mixed $formField
-     *
-     * @return bool
      */
-    private function isAppendFieldType($formField)
+    private function isAppendFieldType(mixed $formField): bool
     {
         if ($formField instanceof CheckboxGroupField) {
             return true;
@@ -524,56 +494,23 @@ class HubSpot extends AbstractCRMIntegration
         return false;
     }
 
-    /**
-     * Queries for a contact based on email.
-     *
-     * @param mixed $email
-     * @param mixed $client
-     * @param mixed $contactProps
-     *
-     * @return mixed
-     */
-    private function getContactByEmail($email, $client, $contactProps)
+    private function getContactByEmail(string $email, Client $client, array $contactProps): ResponseInterface
     {
         return $client->get(
             $this->getEndpoint('/contacts/v1/contact/email/'.$email.'/profile'),
-            [
-                'json' => ['properties' => $contactProps],
-                'query' => ['hapikey' => $this->getAccessToken()],
-            ]
+            ['json' => ['properties' => $contactProps]]
         );
     }
 
-    /**
-     * Updates HS Contact based on email.
-     *
-     * @param mixed $email
-     * @param mixed $client
-     * @param mixed $contactProps
-     *
-     * @return mixed
-     */
-    private function updateContactByEmail($email, $client, $contactProps)
+    private function updateContactByEmail(string $email, Client $client, array $contactProps): ResponseInterface
     {
         return $client->post(
             $this->getEndpoint('/contacts/v1/contact/email/'.$email.'/profile'),
-            [
-                'json' => ['properties' => $contactProps],
-                'query' => ['hapikey' => $this->getAccessToken()],
-            ]
+            ['json' => ['properties' => $contactProps]]
         );
     }
 
-    /**
-     * Queries for a HS Company based on a domain.
-     *
-     * @param mixed $companyDomain
-     * @param mixed $client
-     * @param mixed $queryProperties
-     *
-     * @return mixed
-     */
-    private function getCompanyByDomain($companyDomain, $client, $queryProperties)
+    private function getCompanyByDomain(string $companyDomain, Client $client, array $queryProperties): ResponseInterface
     {
         return $client->post(
             $this->getEndpoint('companies/v2/domains/'.$companyDomain.'/companies'),
@@ -588,80 +525,39 @@ class HubSpot extends AbstractCRMIntegration
                         'companyId' => 0,
                     ],
                 ],
-                'query' => ['hapikey' => $this->getAccessToken()],
             ]
         );
     }
 
-    /**
-     * Updates HS Company based on company id.
-     *
-     * @param mixed $companyId
-     * @param mixed $client
-     * @param mixed $companyProps
-     *
-     * @return mixed
-     */
-    private function updateCompanyById($companyId, $client, $companyProps)
+    private function updateCompanyById(int $companyId, Client $client, array $companyProps): ResponseInterface
     {
         return $client->put(
             $this->getEndpoint('companies/v2/companies/'.$companyId),
-            [
-                'json' => ['properties' => $companyProps],
-                'query' => ['hapikey' => $this->getAccessToken()],
-            ]
+            ['json' => ['properties' => $companyProps]]
         );
     }
 
-    /**
-     * Creates a new HS Company.
-     *
-     * @param mixed $client
-     * @param mixed $companyProps
-     *
-     * @return mixed
-     */
-    private function createCompany($client, $companyProps)
+    private function createCompany(Client $client, array $companyProps): ResponseInterface
     {
         return $client->post(
             $this->getEndpoint('companies/v2/companies'),
-            [
-                'json' => ['properties' => $companyProps],
-                'query' => ['hapikey' => $this->getAccessToken()],
-            ]
+            ['json' => ['properties' => $companyProps]]
         );
     }
 
-    /**
-     * Creates a new HS contact.
-     *
-     * @param mixed $client
-     * @param mixed $contactProps
-     *
-     * @return mixed
-     */
-    private function createContact($client, $contactProps)
+    private function createContact(Client $client, array $contactProps): ResponseInterface
     {
         return $client->post(
             $this->getEndpoint('/contacts/v1/contact'),
-            [
-                'json' => ['properties' => $contactProps],
-                'query' => ['hapikey' => $this->getAccessToken()],
-            ]
+            ['json' => ['properties' => $contactProps]]
         );
     }
 
-    /**
-     * Appends appendable newly posted values to the current company's values.
-     *
-     * @param mixed $companyProps
-     * @param mixed $appendCompanyFields
-     * @param mixed $company
-     *
-     * @return mixed
-     */
-    private function appendValuesToCompanyProperties($companyProps, $appendCompanyFields, $company)
-    {
+    private function appendValuesToCompanyProperties(
+        array $companyProps,
+        array $appendCompanyFields,
+        \stdClass $company
+    ): array {
         foreach ($companyProps as $key => $companyProp) {
             $companyPropValue = $companyProp['value'];
             $companyPropName = $companyProp['name'];
@@ -690,17 +586,11 @@ class HubSpot extends AbstractCRMIntegration
         return $companyProps;
     }
 
-    /**
-     * Appends appendable newly posted values to the current contact's values.
-     *
-     * @param mixed $contactProps
-     * @param mixed $appendContactFields
-     * @param mixed $contact
-     *
-     * @return mixed
-     */
-    private function appendValuesToContactProperties($contactProps, $appendContactFields, $contact)
-    {
+    private function appendValuesToContactProperties(
+        array $contactProps,
+        array $appendContactFields,
+        array $contact
+    ): array {
         foreach ($contactProps as $key => $contactProp) {
             $contactPropValue = $contactProp['value'];
             $contactPropName = $contactProp['property'];
@@ -730,7 +620,7 @@ class HubSpot extends AbstractCRMIntegration
         return $contactProps;
     }
 
-    private function extractDomainFromEmail($email)
+    private function extractDomainFromEmail($email): ?string
     {
         if (preg_match('/^.*@([^@]+)$$/', $email, $matches)) {
             return $matches[1];
@@ -739,7 +629,7 @@ class HubSpot extends AbstractCRMIntegration
         return null;
     }
 
-    private function addCompanyDomainToCompanyProps($companyDomain, $companyProps)
+    private function addCompanyDomainToCompanyProps(string $companyDomain, array $companyProps): array
     {
         foreach ($companyProps as $key => $companyProp) {
             $companyPropName = $companyProp['name'];
@@ -762,7 +652,7 @@ class HubSpot extends AbstractCRMIntegration
         return $companyProps;
     }
 
-    private function addValueToContactProps($searchPropName, $value, $contactProps)
+    private function addValueToContactProps(string $searchPropName, mixed $value, array $contactProps): array
     {
         foreach ($contactProps as $key => $contactProp) {
             $propName = $contactProp['property'];
@@ -785,7 +675,7 @@ class HubSpot extends AbstractCRMIntegration
         return $contactProps;
     }
 
-    private function formatValue($value, $formField)
+    private function formatValue(mixed $value, mixed $formField): mixed
     {
         $isMultiCheckbox = $this->isAppendFieldType($formField);
 

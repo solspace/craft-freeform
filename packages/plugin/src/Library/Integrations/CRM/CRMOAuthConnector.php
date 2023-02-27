@@ -18,13 +18,13 @@ use GuzzleHttp\Exception\RequestException;
 use JetBrains\PhpStorm\NoReturn;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use yii\base\Event;
 
 abstract class CRMOAuthConnector extends AbstractCRMIntegration
 {
-    public const SETTING_CLIENT_ID = 'client_id';
-    public const SETTING_CLIENT_SECRET = 'client_secret';
-    public const SETTING_RETURN_URI = 'return_uri';
+    public const EVENT_TOKENS_REFRESHED = 'tokens-refreshed';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_INTERNAL)]
@@ -49,17 +49,19 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
         instructions: 'Enter the Client ID of your app here.',
         required: true,
     )]
-    protected string $clientId;
+    protected string $clientId = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         instructions: 'Enter the Client Secret of your app here.',
         required: true,
     )]
-    protected string $clientSecret;
+    protected string $clientSecret = '';
+
+    private static array $refreshedTokens = [];
 
     #[NoReturn]
-    public function initiateAuthentication()
+    public function initiateAuthentication(): void
     {
         $data = [
             'response_type' => 'code',
@@ -167,6 +169,20 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
         return UrlHelper::cpUrl('freeform/settings/crm/'.$this->getHandle());
     }
 
+    protected function generateAuthorizedClient(): Client
+    {
+        if ($this instanceof RefreshTokenInterface) {
+            $this->refreshTokens();
+        }
+
+        return new Client([
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->getAccessToken(),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+    }
+
     /**
      * URL pointing to the OAuth2 authorization endpoint.
      */
@@ -176,4 +192,64 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
      * URL pointing to the OAuth2 access token endpoint.
      */
     abstract protected function getAccessTokenUrl(): string;
+
+    protected function refreshTokens(): void
+    {
+        if (\in_array($this->getId(), self::$refreshedTokens, true)) {
+            return;
+        }
+
+        $clientId = $this->getClientId();
+        $clientSecret = $this->getClientSecret();
+        $refreshToken = $this->getRefreshToken();
+
+        if (!$clientId || !$clientSecret || !$refreshToken) {
+            throw new IntegrationException('Some or all of the configuration values are missing');
+        }
+
+        $client = new Client();
+
+        $payload = [
+            'refresh_token' => $refreshToken,
+            'client_id' => $clientId,
+            'client_secret' => $clientSecret,
+            'grant_type' => 'refresh_token',
+        ];
+
+        try {
+            $response = $client->post($this->getAccessTokenUrl(), ['query' => $payload]);
+
+            $json = json_decode($response->getBody(), false);
+
+            if (!isset($json->access_token)) {
+                throw new IntegrationException(
+                    $this->getTranslator()->translate(
+                        "No 'access_token' present in auth response for {serviceProvider}",
+                        ['serviceProvider' => $this->getServiceProvider()]
+                    )
+                );
+            }
+
+            $this->accessToken = $json->access_token;
+
+            if (isset($json->refresh_token)) {
+                $this->refreshToken = $json->refresh_token;
+            }
+
+            self::$refreshedTokens[] = $this->getId();
+
+            $this->onAfterFetchAccessToken($json);
+        } catch (RequestException $e) {
+            $responseBody = (string) $e->getResponse()->getBody();
+            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
+
+            throw $e;
+        }
+
+        Event::trigger(
+            self::class,
+            self::EVENT_TOKENS_REFRESHED,
+            new TokensRefreshedEvent($this)
+        );
+    }
 }

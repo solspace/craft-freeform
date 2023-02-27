@@ -1,79 +1,90 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Freshdesk;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
+#[Type(
+    name: 'Freshdesk',
+    iconPath: __DIR__.'/icon.svg',
+)]
 class Freshdesk extends AbstractCRMIntegration
 {
-    public const SETTING_API_KEY = 'api_key';
-    public const SETTING_DOMAIN = 'domain';
-    public const SETTING_PRIORITY = 'priority';
-    public const SETTING_STATUS = 'status';
-    public const SETTING_SOURCE = 'source';
-    public const SETTING_TYPE = 'type';
-
-    public const TITLE = 'Freshdesk';
     public const LOG_CATEGORY = 'Freshdesk';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API Key',
+        instructions: 'Enter your Freshdesk API key here.',
+        required: true,
+    )]
+    protected string $apiKey = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        instructions: "Enter your Freshdesk Domain here, e.g. 'https://example.freshdesk.com'.",
+        required: true,
+    )]
+    protected string $domain = '';
+
+    #[Property(
+        label: 'Default Type (Optional)',
+        instructions: "Set the default Type for tickets, e.g. 'Question'.",
+    )]
+    protected string $type = '';
+
+    #[Property(
+        label: 'Default Priority (Optional)',
+        instructions: "Set the default Priority for tickets, e.g. '1' (low).",
+    )]
+    protected string $priority = '';
+
+    #[Property(
+        label: 'Default Status (Optional)',
+        instructions: "Set the default Status for tickets, e.g. '2' (open).",
+    )]
+    protected string $status = '';
+
+    #[Property(
+        label: 'Default Source (Optional)',
+        instructions: "Set the default Source for tickets, e.g. '1' (email), '2' (portal), etc.",
+    )]
+    protected string $source = '';
+
+    public function getApiKey(): string
     {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_KEY,
-                'API Key',
-                'Enter your Freshdesk API key here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_DOMAIN,
-                'Domain',
-                'Enter your Freshdesk Domain here, e.g. \'https://example.freshdesk.com\'.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_TYPE,
-                'Default Type (Optional)',
-                'Set the default Type for tickets, e.g. \'Question\'.',
-                false
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_PRIORITY,
-                'Default Priority (Optional)',
-                'Set the default Priority for tickets, e.g. \'1\' (low).',
-                false
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_STATUS,
-                'Default Status (Optional)',
-                'Set the default Status for tickets, e.g. \'2\' (open).',
-                false
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_SOURCE,
-                'Default Source (Optional)',
-                'Set the default Source for tickets, e.g. \'1\' (email), \'2\' (portal), etc.',
-                false
-            ),
-        ];
+        return $this->getProcessedValue($this->apiKey);
+    }
+
+    public function getDomain(): string
+    {
+        return $this->getProcessedValue($this->domain);
+    }
+
+    public function getType(): string
+    {
+        return $this->getProcessedValue($this->type);
+    }
+
+    public function getPriority(): string
+    {
+        return $this->getProcessedValue($this->priority);
+    }
+
+    public function getStatus(): string
+    {
+        return $this->getProcessedValue($this->status);
+    }
+
+    public function getSource(): string
+    {
+        return $this->getProcessedValue($this->source);
     }
 
     /**
@@ -90,14 +101,14 @@ class Freshdesk extends AbstractCRMIntegration
             if (\is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/', $value)) {
                 $value = new Carbon($value, 'UTC');
 
-                if (0 === strpos($key, 'cf_')) {
+                if (str_starts_with($key, 'cf_')) {
                     $value = $value->toDateString();
                 } else {
                     $value = $value->toIso8601ZuluString();
                 }
             }
 
-            if (0 === strpos($key, 'cf_')) {
+            if (str_starts_with($key, 'cf_')) {
                 if (!empty($value)) {
                     $customValues[$key] = $value;
                 }
@@ -111,19 +122,19 @@ class Freshdesk extends AbstractCRMIntegration
         }
 
         if (!isset($values['status']) || !$values['status']) {
-            $values['status'] = (int) ($this->getSetting(self::SETTING_STATUS) ?? 2);
+            $values['status'] = (int) ($this->getStatus() ?? 2);
         }
 
         if (!isset($values['priority']) || !$values['priority']) {
-            $values['priority'] = (int) ($this->getSetting(self::SETTING_PRIORITY) ?? 1);
+            $values['priority'] = (int) ($this->getPriority() ?? 1);
         }
 
         if (!isset($values['source']) || !$values['source']) {
-            $values['source'] = (int) ($this->getSetting(self::SETTING_SOURCE) ?? 2);
+            $values['source'] = (int) ($this->getSource() ?? 2);
         }
 
         if (!isset($values['type']) || !$values['type']) {
-            $defaultType = $this->getSetting(self::SETTING_TYPE);
+            $defaultType = $this->getType();
             if ($defaultType) {
                 $values['type'] = $defaultType;
             }
@@ -152,9 +163,8 @@ class Freshdesk extends AbstractCRMIntegration
                 }
             }
 
+            unset($values['attachments']);
             if (!empty($assetData)) {
-                unset($values['attachments']);
-
                 $multipartValues = [];
                 foreach ($values as $key => $value) {
                     $multipartValues[] = [
@@ -167,13 +177,11 @@ class Freshdesk extends AbstractCRMIntegration
 
                 $values = array_merge($values, $assetData);
                 $requestType = 'multipart';
-            } else {
-                unset($values['attachments']);
             }
         }
 
         $response = $this
-            ->getAuthorizedClient()
+            ->generateAuthorizedClient()
             ->post(
                 $this->getEndpoint('/tickets'),
                 [$requestType => $values]
@@ -189,7 +197,7 @@ class Freshdesk extends AbstractCRMIntegration
     public function checkConnection(): bool
     {
         $response = $this
-            ->getAuthorizedClient()
+            ->generateAuthorizedClient()
             ->get($this->getEndpoint('/tickets'))
         ;
 
@@ -231,7 +239,7 @@ class Freshdesk extends AbstractCRMIntegration
             ->get($this->getEndpoint('/ticket_fields'))
         ;
 
-        $data = \GuzzleHttp\json_decode($response->getBody(), false);
+        $data = json_decode($response->getBody(), false);
         foreach ($data as $field) {
             if ($field->default) {
                 continue;
@@ -281,56 +289,27 @@ class Freshdesk extends AbstractCRMIntegration
         return $fieldList;
     }
 
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    public function fetchTokens(): string
-    {
-        return $this->getSetting(self::SETTING_API_KEY);
-    }
-
-    /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
-     * Perform anything necessary before this integration is saved.
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-        $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
-    }
-
     protected function getApiRootUrl(): string
     {
         return sprintf('https://%s.freshdesk.com/api/v2/', $this->getSubdomain());
     }
 
-    /**
-     * @throws IntegrationException
-     */
+    protected function generateAuthorizedClient(): Client
+    {
+        return new Client([
+            'headers' => ['Content-Type' => 'application/json'],
+            'auth' => [$this->getApiKey(), 'password'],
+        ]);
+    }
+
     private function getSubdomain(): string
     {
-        $domain = $this->getSetting(self::SETTING_DOMAIN);
+        $domain = $this->getDomain();
 
         if (preg_match('/https:\/\/(.*).freshdesk.com/', $domain, $matches)) {
             return $matches[1];
         }
 
         return $domain ?? 'invalid';
-    }
-
-    private function getAuthorizedClient(): Client
-    {
-        return new Client([
-            'headers' => ['Content-Type' => 'application/json'],
-            'auth' => [$this->getAccessToken(), 'password'],
-        ]);
     }
 }

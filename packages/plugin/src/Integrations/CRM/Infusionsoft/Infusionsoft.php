@@ -10,10 +10,12 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Infusionsoft;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
@@ -21,41 +23,14 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
 use Solspace\Freeform\Library\Integrations\CRM\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
+use yii\base\Event;
 
+#[Type('Infusionsoft')]
 class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
 {
-    public const TITLE = 'Infusionsoft';
     public const LOG_CATEGORY = 'Infusionsoft';
 
-    public const SETTING_REFRESH_TOKEN = 'refresh_token';
-
-    protected static $_REFRESHED_TOKENS = [];
-
-    public static function getSettingBlueprints(): array
-    {
-        $defaults = parent::getSettingBlueprints();
-
-        // Add the refresh token
-        $defaults[] = new SettingBlueprint(
-            SettingBlueprint::TYPE_INTERNAL,
-            self::SETTING_REFRESH_TOKEN,
-            'Refresh Token',
-            'You should not set this',
-            false
-        );
-
-        return $defaults;
-    }
-
-    /**
-     * Push objects to the CRM.
-     *
-     * @param null|mixed $formFields
-     *
-     * @throws \Exception
-     */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function pushObject(array $keyValueList, ?array $formFields = null): bool
     {
         // This should automatically refresh the access token if needed
         $client = $this->generateAuthorizedClient();
@@ -85,13 +60,11 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             $response = $client->put($endpoint, ['json' => $keyValueList]);
             $this->getHandler()->onAfterResponse($this, $response);
             if (\count($applyTags) > 0) {
-                $responseBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
+                $responseBody = json_decode((string) $response->getBody(), true);
                 $endpoint = $this->getEndpoint('/contacts/'.$responseBody['id'].'/tags');
                 $response = $client->post(
                     $endpoint,
-                    [
-                        'json' => ['tagIds' => $applyTags],
-                    ]
+                    ['json' => ['tagIds' => $applyTags]]
                 );
             }
 
@@ -108,7 +81,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
 
             if (400 === $exceptionResponse->getStatusCode()) {
-                $errors = \GuzzleHttp\json_decode($exceptionResponse->getBody(), false);
+                $errors = json_decode($exceptionResponse->getBody(), false);
 
                 if (\is_array($errors)) {
                     foreach ($errors as $error) {
@@ -133,7 +106,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
 
         $response = $client->get($endpoint);
 
-        $json = \GuzzleHttp\json_decode($response->getBody(), true);
+        $json = json_decode($response->getBody(), true);
 
         return !empty($json);
     }
@@ -162,7 +135,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             return [];
         }
 
-        $data = \GuzzleHttp\json_decode($response->getBody(), false);
+        $data = json_decode($response->getBody(), false);
 
         $fieldList = self::getDefaultFields();
 
@@ -218,76 +191,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
         return $fieldList;
     }
 
-    /**
-     * @throws CRMIntegrationNotFoundException
-     * @throws IntegrationException
-     * @throws \ReflectionException
-     */
-    public function refreshToken(): string
-    {
-        // Prevent this method from being called more than once in a request
-        if (isset(self::$_REFRESHED_TOKENS[$this->getId()])) {
-            return $this->getAccessToken();
-        }
-
-        $client = new Client([
-            'headers' => [
-                'Authorization' => 'Basic '.base64_encode($this->getClientId().':'.$this->getClientSecret()),
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
-        ]);
-
-        $payload = [
-            'grant_type' => 'refresh_token',
-            'refresh_token' => $this->getSetting(self::SETTING_REFRESH_TOKEN),
-        ];
-
-        try {
-            $response = $client->post(
-                $this->getAccessTokenUrl(),
-                ['form_params' => $payload]
-            );
-            self::$_REFRESHED_TOKENS[$this->getId()] = true;
-        } catch (RequestException $e) {
-            throw new IntegrationException((string) $e->getResponse()->getBody());
-        }
-
-        $json = \GuzzleHttp\json_decode($response->getBody(), false);
-
-        if (!isset($json->access_token)) {
-            throw new IntegrationException(
-                $this->getTranslator()->translate(
-                    "No 'access_token' present in auth response for {serviceProvider}",
-                    ['serviceProvider' => $this->getServiceProvider()]
-                )
-            );
-        }
-
-        if (!isset($json->refresh_token)) {
-            throw new IntegrationException(
-                $this->getTranslator()->translate(
-                    "No 'refresh_token' present in auth response for {serviceProvider}.",
-                    ['serviceProvider' => $this->getServiceProvider()]
-                )
-            );
-        }
-
-        $this->setAccessToken($json->access_token);
-        $this->onAfterFetchAccessToken($json);
-
-        try {
-            Freeform::getInstance()->crm->updateAccessToken($this);
-        } catch (\Exception $e) {
-            $this->getLogger()->error('Failed to save refreshed token', [$e->getMessage()]);
-        }
-
-        return $this->getAccessToken();
-    }
-
-    /**
-     * @return array|bool|string
-     */
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field)
+    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
     {
         $value = parent::convertCustomFieldValue($fieldObject, $field);
 
@@ -296,15 +200,6 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
         }
 
         return $value;
-    }
-
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
-    {
-        // Make sure we set our refresh token!
-        if (isset($responseData->refresh_token)) {
-            $this->setSetting(self::SETTING_REFRESH_TOKEN, $responseData->refresh_token);
-        }
-        $this->setAccessTokenUpdated(true);
     }
 
     /**
@@ -329,11 +224,65 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
     }
 
     /**
-     * This method returns an array of the built-in fields and their mapping paths.
-     *
-     * @return array
+     * @throws CRMIntegrationNotFoundException
+     * @throws IntegrationException
+     * @throws \ReflectionException
      */
-    private static function getDefaultFields()
+    protected function refreshTokens(): void
+    {
+        $client = new Client([
+            'headers' => [
+                'Authorization' => 'Basic '.base64_encode($this->getClientId().':'.$this->getClientSecret()),
+                'Content-Type' => 'application/x-www-form-urlencoded',
+            ],
+        ]);
+
+        $payload = [
+            'grant_type' => 'refresh_token',
+            'refresh_token' => $this->getRefreshToken(),
+        ];
+
+        try {
+            $response = $client->post(
+                $this->getAccessTokenUrl(),
+                ['form_params' => $payload]
+            );
+        } catch (RequestException $e) {
+            throw new IntegrationException((string) $e->getResponse()->getBody());
+        }
+
+        $json = json_decode($response->getBody(), false);
+
+        if (!isset($json->access_token)) {
+            throw new IntegrationException(
+                $this->getTranslator()->translate(
+                    "No 'access_token' present in auth response for {serviceProvider}",
+                    ['serviceProvider' => $this->getServiceProvider()]
+                )
+            );
+        }
+
+        if (!isset($json->refresh_token)) {
+            throw new IntegrationException(
+                $this->getTranslator()->translate(
+                    "No 'refresh_token' present in auth response for {serviceProvider}.",
+                    ['serviceProvider' => $this->getServiceProvider()]
+                )
+            );
+        }
+
+        $this->accessToken = $json->access_token;
+        $this->refreshToken = $json->refresh_token;
+        $this->onAfterFetchAccessToken($json);
+
+        Event::trigger(
+            self::class,
+            self::EVENT_TOKENS_REFRESHED,
+            new TokensRefreshedEvent($this)
+        );
+    }
+
+    private static function getDefaultFields(): array
     {
         $fieldList = [];
 
@@ -374,12 +323,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
         return $fieldList;
     }
 
-    /**
-     * @param mixed $data
-     *
-     * @return array
-     */
-    private function processFields($data)
+    private function processFields(array $data): array
     {
         // Infusionsoft wants custom fields in their own array
         $resultData = [
@@ -398,7 +342,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             }
 
             // Deal with simple default - just rip off the fieldType (default:)
-            if (0 === strpos($fieldName, 'default:')) {
+            if (str_starts_with($fieldName, 'default:')) {
                 $processedFieldName = preg_replace('/^'.preg_quote('default:', '/').'/', '', $fieldName);
 
                 $resultData[$processedFieldName] = $fieldValue;
@@ -407,7 +351,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             }
 
             // Custom fields, we rip off the fieldHandle and insert as a 2d array into $resultData['customFields']
-            if (0 === strpos($fieldName, 'custom:')) {
+            if (str_starts_with($fieldName, 'custom:')) {
                 $processedFieldName = preg_replace('/^'.preg_quote('custom:', '/').'/', '', $fieldName);
 
                 $resultData['custom_fields'][] = [
@@ -457,39 +401,5 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
         }
 
         return array_merge($resultData, $flattenedData);
-    }
-
-    /**
-     * @throws CRMIntegrationNotFoundException
-     * @throws IntegrationException
-     * @throws \ReflectionException
-     */
-    private function generateAuthorizedClient(bool $refreshTokenIfExpired = true): Client
-    {
-        $client = new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getAccessToken(),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
-
-        if ($refreshTokenIfExpired && !isset(self::$_REFRESHED_TOKENS[$this->getId()])) {
-            try {
-                $endpoint = $this->getEndpoint('/account/profile');
-                $client->get($endpoint);
-            } catch (RequestException $e) {
-                if (401 === $e->getCode()) {
-                    $accessToken = $this->refreshToken();
-                    $client = new Client([
-                        'headers' => [
-                            'Authorization' => 'Bearer '.$accessToken,
-                            'Content-Type' => 'application/json',
-                        ],
-                    ]);
-                }
-            }
-        }
-
-        return $client;
     }
 }

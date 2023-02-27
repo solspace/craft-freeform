@@ -10,15 +10,18 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
 use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Integrations\CRM\Zoho\AbstractZohoIntegration;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
-class ZohoLead extends AbstractZohoIntegration
+#[Type(
+    name: 'Zoho - Leads',
+    iconPath: __DIR__.'/icon.svg',
+)]
+class ZohoLead extends BaseZohoIntegration
 {
-    public const TITLE = 'Zoho Lead';
     public const LOG_CATEGORY = 'Zoho';
 
     public function getModule(): string

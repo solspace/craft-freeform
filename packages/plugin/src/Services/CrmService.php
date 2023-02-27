@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\PushEvent;
@@ -47,9 +48,14 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
             $this->trigger(self::EVENT_FETCH_TYPES, $event);
             $types = $event->getTypes();
-            asort($types);
+            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
 
-            self::$integrations = $types;
+            $integrations = [];
+            foreach ($types as $type) {
+                $integrations[$type->class] = $type;
+            }
+
+            self::$integrations = $integrations;
         }
 
         return self::$integrations;

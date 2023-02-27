@@ -10,100 +10,71 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\ActiveCampaign;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
+#[Type(
+    name: 'ActiveCampaign',
+    iconPath: __DIR__.'/icon.png',
+)]
 class ActiveCampaign extends AbstractCRMIntegration
 {
-    public const SETTING_API_TOKEN = 'api_token';
-    public const SETTING_API_URL = 'api_url';
-    public const SETTING_PIPELINE = 'pipeline';
-    public const SETTING_PIPELINE_ID = 'pipeline_id';
-    public const SETTING_STAGE = 'stage';
-    public const SETTING_STAGE_ID = 'stage_id';
-    public const SETTING_OWNER = 'owner';
-    public const SETTING_OWNER_ID = 'owner_id';
-
-    public const TITLE = 'Active Campaign';
     public const LOG_CATEGORY = 'Active Campaign';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
-    {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_TOKEN,
-                'API Token',
-                'Enter your API Token here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_URL,
-                'API URL',
-                'Enter your API specific URL here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_PIPELINE,
-                'Pipeline',
-                'Enter the name or ID of the desired Pipeline.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_STAGE,
-                'Stage',
-                'Enter the name or ID of the desired Stage.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_OWNER,
-                'Owner (Optional if auto-assign enabled in AC)',
-                'Enter the username or ID of the user you wish to assign as the deal owner. If you don\'t specify an owner, Active Campaign will auto-assign an owner if it is set up.',
-                false
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_INTERNAL,
-                self::SETTING_PIPELINE_ID,
-                null,
-                null
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_INTERNAL,
-                self::SETTING_STAGE_ID,
-                null,
-                null
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_INTERNAL,
-                self::SETTING_OWNER_ID,
-                null,
-                null
-            ),
-        ];
-    }
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API Token',
+        instructions: 'Enter your API Token here.',
+        required: true,
+    )]
+    protected string $apiToken = '';
 
-    /**
-     * Push objects to the CRM.
-     *
-     * @param null|mixed $formFields
-     */
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API URL',
+        instructions: 'Enter your API specific URL here.',
+        required: true,
+    )]
+    protected string $apiUrl = '';
+
+    #[Property(
+        instructions: 'Enter the name or ID of the desired Pipeline.',
+        required: true,
+    )]
+    protected string $pipeline = '';
+
+    #[Property(
+        instructions: 'Enter the name or ID of the desired Stage.',
+        required: true,
+    )]
+    protected string $stage = '';
+
+    #[Property(
+        label: 'Owner (Optional if auto-assign enabled in AC)',
+        instructions: "Enter the username or ID of the user you wish to assign as the deal owner. If you don't specify an owner, Active Campaign will auto-assign an owner if it is set up.",
+    )]
+    protected string $owner = '';
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Property]
+    protected string $pipelineId = '';
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Property]
+    protected string $stageId = '';
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Property]
+    protected string $ownerId = '';
+
     public function pushObject(array $keyValueList, $formFields = null): bool
     {
         $client = $this->generateAuthorizedClient();
@@ -160,7 +131,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                     ['json' => ['organization' => $org]]
                 );
 
-                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+                $json = json_decode((string) $response->getBody(), false);
                 if (isset($json->organization)) {
                     $organizationId = $json->organization->id;
                 }
@@ -170,7 +141,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                 if (422 === $e->getCode()) {
                     try {
                         $response = $client->get($this->getEndpoint('/organizations'));
-                        $list = \GuzzleHttp\json_decode($response->getBody(), false);
+                        $list = json_decode($response->getBody(), false);
                         foreach ($list->organizations as $organization) {
                             if (strtolower($organization->name) === strtolower($org['name'])) {
                                 $organizationId = $organization->id;
@@ -211,7 +182,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                     ['json' => ['contact' => $contact]]
                 );
 
-                $json = \GuzzleHttp\json_decode($response->getBody(), false);
+                $json = json_decode($response->getBody(), false);
                 if (isset($json->contact)) {
                     $contactId = $json->contact->id;
                 }
@@ -276,7 +247,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                     ['json' => ['deal' => $deal]]
                 );
 
-                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+                $json = json_decode((string) $response->getBody(), false);
                 if (isset($json->deal)) {
                     $dealId = $json->deal->id;
 
@@ -303,11 +274,6 @@ class ActiveCampaign extends AbstractCRMIntegration
         return true;
     }
 
-    /**
-     * Check if it's possible to connect to the API.
-     *
-     * @throws IntegrationException
-     */
     public function checkConnection(): bool
     {
         try {
@@ -319,11 +285,6 @@ class ActiveCampaign extends AbstractCRMIntegration
         }
     }
 
-    /**
-     * Fetch the custom fields from the integration.
-     *
-     * @return FieldObject[]
-     */
     public function fetchFields(): array
     {
         $client = $this->generateAuthorizedClient();
@@ -354,7 +315,7 @@ class ActiveCampaign extends AbstractCRMIntegration
 
         try {
             $response = $client->get($this->getEndpoint('/fields'));
-            $data = \GuzzleHttp\json_decode($response->getBody(), false);
+            $data = json_decode($response->getBody(), false);
 
             foreach ($data->fields as $field) {
                 $type = FieldObject::TYPE_STRING;
@@ -426,18 +387,11 @@ class ActiveCampaign extends AbstractCRMIntegration
     }
 
     /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
      * Perform anything necessary before this integration is saved.
      *
      * @throws IntegrationException
      */
-    public function onBeforeSave(IntegrationStorageInterface $model)
+    public function onBeforeSave(): void
     {
         $apiToken = $this->getApiToken();
         $apiUrl = $this->getApiRootUrl();
@@ -450,38 +404,20 @@ class ActiveCampaign extends AbstractCRMIntegration
             return;
         }
 
-        $pipelineId = $this->fetchPipelineId($pipeline);
-        if (!$pipelineId) {
-            $pipeline = '';
+        $this->pipelineId = $this->fetchPipelineId($pipeline);
+        if (!$this->pipelineId) {
+            $this->pipeline = '';
         }
 
-        $stageId = $this->fetchStageId($stage, $pipelineId);
-        if (!$stageId) {
-            $stage = '';
+        $this->stageId = $this->fetchStageId($stage, $this->pipelineId);
+        if (!$this->stageId) {
+            $this->stage = '';
         }
 
-        $ownerId = $this->fetchOwnerId($owner);
-        if (!$ownerId) {
-            $owner = '';
+        $this->ownerId = $this->fetchOwnerId($owner);
+        if (!$this->ownerId) {
+            $this->owner = '';
         }
-
-        $this->setSetting(self::SETTING_PIPELINE, $pipeline);
-        $this->setSetting(self::SETTING_PIPELINE_ID, $pipelineId);
-        $this->setSetting(self::SETTING_STAGE, $stage);
-        $this->setSetting(self::SETTING_STAGE_ID, $stageId);
-        $this->setSetting(self::SETTING_OWNER, $owner);
-        $this->setSetting(self::SETTING_OWNER_ID, $ownerId);
-
-        $model->updateProperties($this->getSettings());
-    }
-
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     */
-    public function fetchTokens(): string
-    {
-        return $this->getApiToken();
     }
 
     /**
@@ -489,82 +425,10 @@ class ActiveCampaign extends AbstractCRMIntegration
      */
     protected function getApiRootUrl(): string
     {
-        return rtrim($this->getSetting(self::SETTING_API_URL), '/').'/api/3/';
+        return rtrim($this->getApiUrl(), '/').'/api/3/';
     }
 
-    /**
-     * Gets the API Token for ActiveCampaign from settings config.
-     *
-     * @return null|mixed
-     *
-     * @throws IntegrationException
-     */
-    private function getApiToken()
-    {
-        return $this->getSetting(self::SETTING_API_TOKEN);
-    }
-
-    /**
-     * @return null|string
-     *
-     * @throws IntegrationException
-     */
-    private function getPipeline()
-    {
-        return $this->getSetting(self::SETTING_PIPELINE);
-    }
-
-    /**
-     * @return null|int
-     *
-     * @throws IntegrationException
-     */
-    private function getPipelineId()
-    {
-        return $this->getSetting(self::SETTING_PIPELINE_ID);
-    }
-
-    /**
-     * @return null|string
-     *
-     * @throws IntegrationException
-     */
-    private function getStage()
-    {
-        return $this->getSetting(self::SETTING_STAGE);
-    }
-
-    /**
-     * @return null|int
-     *
-     * @throws IntegrationException
-     */
-    private function getStageId()
-    {
-        return $this->getSetting(self::SETTING_STAGE_ID);
-    }
-
-    /**
-     * @return null|string
-     *
-     * @throws IntegrationException
-     */
-    private function getOwner()
-    {
-        return $this->getSetting(self::SETTING_OWNER);
-    }
-
-    /**
-     * @return null|int
-     *
-     * @throws IntegrationException
-     */
-    private function getOwnerId()
-    {
-        return $this->getSetting(self::SETTING_OWNER_ID);
-    }
-
-    private function generateAuthorizedClient(): Client
+    protected function generateAuthorizedClient(): Client
     {
         return new Client([
             'headers' => [
@@ -573,7 +437,47 @@ class ActiveCampaign extends AbstractCRMIntegration
         ]);
     }
 
-    private function fetchPipelineId($pipeline = null)
+    private function getApiToken(): string
+    {
+        return $this->getProcessedValue($this->apiToken);
+    }
+
+    private function getApiUrl(): string
+    {
+        return $this->getProcessedValue($this->apiUrl);
+    }
+
+    private function getPipeline(): string
+    {
+        return $this->getProcessedValue($this->pipeline);
+    }
+
+    private function getPipelineId(): ?string
+    {
+        return $this->pipelineId;
+    }
+
+    private function getStage(): string
+    {
+        return $this->getProcessedValue($this->stage);
+    }
+
+    private function getStageId(): ?string
+    {
+        return $this->stageId;
+    }
+
+    private function getOwner(): string
+    {
+        return $this->getProcessedValue($this->owner);
+    }
+
+    private function getOwnerId(): ?string
+    {
+        return $this->ownerId;
+    }
+
+    private function fetchPipelineId($pipeline = null): ?string
     {
         if (!$pipeline) {
             return null;
@@ -590,7 +494,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                 ['query' => ['filters[title]' => $pipeline]]
             );
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+            $json = json_decode($response->getBody(), false);
             if (isset($json->dealGroups) && \count($json->dealGroups)) {
                 $item = $json->dealGroups[0];
 
@@ -603,7 +507,7 @@ class ActiveCampaign extends AbstractCRMIntegration
         return null;
     }
 
-    private function fetchStageId($stage = null, $pipeline = null)
+    private function fetchStageId($stage = null, $pipeline = null): ?string
     {
         if (!$stage) {
             return null;
@@ -627,7 +531,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                 ['query' => $query]
             );
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+            $json = json_decode($response->getBody(), false);
             if (isset($json->dealStages) && \count($json->dealStages)) {
                 $item = $json->dealStages[0];
 
@@ -640,7 +544,7 @@ class ActiveCampaign extends AbstractCRMIntegration
         return null;
     }
 
-    private function fetchOwnerId($owner = null)
+    private function fetchOwnerId($owner = null): ?string
     {
         if (!$owner) {
             return null;
@@ -654,7 +558,7 @@ class ActiveCampaign extends AbstractCRMIntegration
             $client = $this->generateAuthorizedClient();
             $response = $client->get($this->getEndpoint('/users/username/'.$owner));
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+            $json = json_decode($response->getBody(), false);
             if (isset($json->user)) {
                 return $json->user->id;
             }

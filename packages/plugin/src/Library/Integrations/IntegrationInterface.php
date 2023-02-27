@@ -28,6 +28,8 @@ interface IntegrationInterface
      */
     public function checkConnection(): bool;
 
+    public function initiateAuthentication(): void;
+
     public function getId(): ?int;
 
     public function getHandle(): ?string;
@@ -41,6 +43,4 @@ interface IntegrationInterface
      * i.e. - MailChimp, Constant Contact, Salesforce, etc...
      */
     public function getServiceProvider(): string;
-
-    public function initiateAuthentication();
 }

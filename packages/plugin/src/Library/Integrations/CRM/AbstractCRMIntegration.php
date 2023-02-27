@@ -19,14 +19,6 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 abstract class AbstractCRMIntegration extends AbstractIntegration implements CRMIntegrationInterface, \JsonSerializable
 {
     /**
-     * {@inheritDoc}
-     */
-    public function isOAuthConnection(): bool
-    {
-        return $this instanceof CRMOAuthConnector;
-    }
-
-    /**
      * @return FieldObject[]
      */
     final public function getFields(): array

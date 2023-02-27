@@ -10,35 +10,29 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
 use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Integrations\CRM\Pipedrive\AbstractPipedriveIntegration;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Property;
 
-class PipedriveDeals extends AbstractPipedriveIntegration
+#[Type(
+    name: 'Pipedrive - Deals',
+    iconPath: __DIR__.'/icon.svg',
+)]
+class PipedriveDeals extends BasePipedriveIntegration
 {
-    public const TITLE = 'Pipedrive Deals';
     public const LOG_CATEGORY = 'Pipedrive Deals';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
-    {
-        $settings = parent::getSettingBlueprints();
-        $settings[] = new SettingBlueprint(
-            SettingBlueprint::TYPE_TEXT,
-            self::SETTING_STAGE_ID,
-            'Stage ID',
-            'Enter the Pipedrive Stage ID you want the deal to be placed in.',
-            false
-        );
+    #[Property(
+        label: 'Stage ID',
+        instructions: 'Enter the Pipedrive Stage ID you want the deal to be placed in.',
+    )]
+    protected string $stageId = '';
 
-        return $settings;
+    public function getStageId(): string
+    {
+        return $this->getProcessedValue($this->stageId);
     }
 
     /**
@@ -48,7 +42,7 @@ class PipedriveDeals extends AbstractPipedriveIntegration
      */
     public function pushObject(array $keyValueList, $formFields = null): bool
     {
-        $client = $this->getAuthorizedClient();
+        $client = $this->generateAuthorizedClient();
 
         $orgId = $this->pushOrg($keyValueList);
         $personId = $this->pushPerson($keyValueList, $orgId);
@@ -70,7 +64,7 @@ class PipedriveDeals extends AbstractPipedriveIntegration
                 $fields['org_id'] = $orgId;
             }
 
-            $stageId = $this->getSetting(self::SETTING_STAGE_ID);
+            $stageId = $this->getStageId();
             if ($stageId) {
                 $fields['stage_id'] = (int) $stageId;
             }

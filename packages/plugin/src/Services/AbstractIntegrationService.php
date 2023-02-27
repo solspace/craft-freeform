@@ -27,21 +27,10 @@ use Solspace\Freeform\Records\IntegrationRecord;
 
 abstract class AbstractIntegrationService extends BaseService implements IntegrationHandlerInterface
 {
-    public const EVENT_BEFORE_SAVE = 'beforeSave';
-    public const EVENT_AFTER_SAVE = 'afterSave';
-    public const EVENT_BEFORE_DELETE = 'beforeDelete';
-    public const EVENT_AFTER_DELETE = 'afterDelete';
     public const EVENT_FETCH_TYPES = 'fetchTypes';
     public const EVENT_BEFORE_PUSH = 'beforePush';
     public const EVENT_AFTER_PUSH = 'afterPush';
     public const EVENT_AFTER_RESPONSE = 'afterResponse';
-
-    public function __construct(
-        $config = [],
-        private PropertyProvider $propertyProvider,
-    ) {
-        parent::__construct($config);
-    }
 
     /**
      * @return IntegrationModel[]
@@ -84,7 +73,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
      *
      * @throws IntegrationException
      */
-    public function getIntegrationObjectById($id): AbstractIntegration
+    public function getIntegrationObjectById($id): IntegrationInterface
     {
         $model = $this->getIntegrationById($id);
 
@@ -102,7 +91,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
      *
      * @return null|IntegrationModel
      */
-    public function getIntegrationById($id)
+    public function getIntegrationById($id): ?IntegrationModel
     {
         $data = $this->getQuery()->andWhere(['id' => $id])->one();
 
@@ -118,7 +107,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
      *
      * @return null|IntegrationModel
      */
-    public function getIntegrationByHandle(string $handle = null)
+    public function getIntegrationByHandle(string $handle = null): ?IntegrationModel
     {
         $data = $this->getQuery()->andWhere(['handle' => $handle])->one();
 
@@ -144,136 +133,6 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
                 ['id' => $integration->getId()]
             )
         ;
-    }
-
-    public function updateModelFromIntegration(IntegrationModel $model, IntegrationInterface $integration)
-    {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-
-        $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
-        $reflection = new \ReflectionClass($model->class);
-        foreach ($editableProperties as $property) {
-            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
-                continue;
-            }
-
-            $handle = $property->handle;
-            $instanceProperty = $reflection->getProperty($handle);
-            $value = $instanceProperty->getValue($integration);
-
-            if (!$value && $property->required) {
-                $model->addError(
-                    $model->class.$handle,
-                    Freeform::t('{key} is required', ['key' => $property->label])
-                );
-
-                continue;
-            }
-
-            if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
-                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
-            }
-
-            $model->metadata[$property->handle] = $value;
-        }
-    }
-
-    public function save(IntegrationModel $model): bool
-    {
-        $isNew = !$model->id;
-
-        $beforeSaveEvent = new SaveEvent($model, $isNew);
-        $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
-
-        if ($isNew) {
-            $record = new IntegrationRecord();
-        } else {
-            $record = IntegrationRecord::findOne(['id' => $model->id, 'type' => $this->getIntegrationType()]);
-
-            if (!$record) {
-                throw new IntegrationException(
-                    Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $model->id])
-                );
-            }
-        }
-
-        $record->name = $model->name;
-        $record->handle = $model->handle;
-        $record->type = $this->getIntegrationType();
-        $record->class = $model->class;
-        $record->lastUpdate = new \DateTime();
-        $record->metadata = $model->metadata;
-
-        $record->validate();
-        $model->addErrors($record->getErrors());
-
-        if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
-            $transaction = \Craft::$app->getDb()->beginTransaction();
-
-            try {
-                $record->save(false);
-
-                if ($isNew) {
-                    $model->id = $record->id;
-                }
-
-                $transaction?->commit();
-
-                $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
-
-                return true;
-            } catch (\Exception $e) {
-                $transaction?->rollBack();
-
-                throw $e;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return bool
-     *
-     * @throws \Exception
-     */
-    public function delete($id)
-    {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
-
-        $model = $this->getIntegrationById($id);
-        if (!$model) {
-            return false;
-        }
-
-        $beforeDeleteEvent = new DeleteEvent($model);
-        $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
-
-        if (!$beforeDeleteEvent->isValid) {
-            return false;
-        }
-
-        $transaction = \Craft::$app->getDb()->beginTransaction();
-
-        try {
-            $affectedRows = \Craft::$app->getDb()
-                ->createCommand()
-                ->delete(IntegrationRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
-
-            $transaction?->commit();
-
-            $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
-
-            return (bool) $affectedRows;
-        } catch (\Exception $exception) {
-            $transaction?->rollBack();
-
-            throw $exception;
-        }
     }
 
     /**

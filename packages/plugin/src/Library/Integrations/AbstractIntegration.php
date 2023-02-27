@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
@@ -77,7 +78,9 @@ abstract class AbstractIntegration implements IntegrationInterface
     /**
      * A method that initiates the authentication.
      */
-    abstract public function initiateAuthentication();
+    public function initiateAuthentication(): void
+    {
+    }
 
     /**
      * Perform anything necessary before this integration is saved.
@@ -181,6 +184,8 @@ abstract class AbstractIntegration implements IntegrationInterface
     }
 
     abstract protected function getApiRootUrl(): string;
+
+    abstract protected function generateAuthorizedClient(): Client;
 
     /**
      * Returns a combined URL of api root + endpoint.

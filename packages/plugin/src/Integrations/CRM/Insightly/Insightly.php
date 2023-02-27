@@ -1,38 +1,30 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Insightly;
 
 use GuzzleHttp\Client;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
+#[Type('Insightly')]
 class Insightly extends AbstractCRMIntegration
 {
-    public const SETTING_API_KEY = 'api_key';
-
-    public const TITLE = 'Insightly';
     public const LOG_CATEGORY = 'Insightly';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API Key',
+        instructions: 'Enter your Insightly API key here.',
+        required: true
+    )]
+    protected string $apiKey = '';
+
+    public function getApiKey(): string
     {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_KEY,
-                'API Key',
-                'Enter your Insightly API key here.',
-                true
-            ),
-        ];
+        return $this->getProcessedValue($this->apiKey);
     }
 
     /**
@@ -43,7 +35,7 @@ class Insightly extends AbstractCRMIntegration
     public function pushObject(array $keyValueList, $formFields = null): bool
     {
         $response = $this
-            ->getAuthorizedClient()
+            ->generateAuthorizedClient()
             ->post(
                 $this->getEndpoint('/Leads'),
                 ['json' => $keyValueList]
@@ -59,7 +51,7 @@ class Insightly extends AbstractCRMIntegration
     public function checkConnection(): bool
     {
         $response = $this
-            ->getAuthorizedClient()
+            ->generateAuthorizedClient()
             ->get($this->getEndpoint('/Leads'))
         ;
 
@@ -97,7 +89,7 @@ class Insightly extends AbstractCRMIntegration
         ];
 
         $response = $this
-            ->getAuthorizedClient()
+            ->generateAuthorizedClient()
             ->get($this->getEndpoint('/CustomFields/Leads'))
         ;
 
@@ -151,42 +143,16 @@ class Insightly extends AbstractCRMIntegration
         return $fieldList;
     }
 
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    public function fetchTokens(): string
-    {
-        return $this->getSetting(self::SETTING_API_KEY);
-    }
-
-    /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
-     * Perform anything necessary before this integration is saved.
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-        $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
-    }
-
     protected function getApiRootUrl(): string
     {
         return 'https://api.insightly.com/v3.0/';
     }
 
-    private function getAuthorizedClient(): Client
+    protected function generateAuthorizedClient(): Client
     {
         return new Client([
             'headers' => ['Content-Type' => 'application/json'],
-            'auth' => [$this->getAccessToken(), ''],
+            'auth' => [$this->getApiKey(), ''],
         ]);
     }
 }

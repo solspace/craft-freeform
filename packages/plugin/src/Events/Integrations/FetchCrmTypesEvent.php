@@ -45,6 +45,7 @@ class FetchCrmTypesEvent extends ArrayableEvent
 
             $properties = $this->propertyProvider->getEditableProperties($class);
             $type->setProperties($properties);
+            $type->class = $class;
 
             $this->types[$class] = $type;
         }

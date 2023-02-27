@@ -5,60 +5,59 @@ namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
-use Solspace\Freeform\Integrations\CRM\PipedriveLeads;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
-abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
+abstract class BasePipedriveIntegration extends AbstractCRMIntegration
 {
-    public const SETTING_DOMAIN = 'domain';
-    public const SETTING_API_TOKEN = 'api_token';
-    public const SETTING_USER_ID = 'user_id';
-    public const SETTING_STAGE_ID = 'stage_id';
-    public const SETTING_DETECT_DUPLICATES = 'detect_duplicates';
-
     public const PREFIX_ORGANIZATION = 'org';
     public const PREFIX_PERSON = 'prsn';
     public const PREFIX_DEALS = 'deals';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Property]
+    protected string $domain = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API Token',
+        instructions: 'Enter your Pipedrive API token here.',
+        required: true,
+    )]
+    protected string $apiToken = '';
+
+    #[Property(
+        label: 'User ID',
+        instructions: 'Enter the Pipedrive User ID you want to assign to new objects.'
+    )]
+    protected string $userId = '';
+
+    #[Property(
+        instructions: 'Enable this setting to prevent creation of organizations or persons with overlapping names and/or email addresses.',
+    )]
+    protected bool $detectDuplicates = false;
+
+    public function getDomain(): string
     {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_INTERNAL,
-                self::SETTING_DOMAIN,
-                'Domain',
-                'User specific company domain'
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_TOKEN,
-                'API Token',
-                'Enter your Pipedrive API token here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_USER_ID,
-                'User ID',
-                'Enter the Pipedrive User ID you want to assign to new objects.'
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_BOOL,
-                self::SETTING_DETECT_DUPLICATES,
-                'Detect Duplicates',
-                'Enable this setting to prevent creation of organizations or persons with overlapping names and/or email addresses.'
-            ),
-        ];
+        return $this->domain;
+    }
+
+    public function getApiToken(): string
+    {
+        return $this->getProcessedValue($this->apiToken);
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId ? (int) $this->userId : null;
+    }
+
+    public function isDetectDuplicates(): bool
+    {
+        return $this->detectDuplicates;
     }
 
     /**
@@ -67,7 +66,8 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
     public function checkConnection(): bool
     {
         try {
-            $response = $this->getAuthorizedClient()->get($this->getEndpoint('/users/me'));
+            $client = $this->generateAuthorizedClient();
+            $response = $client->get($this->getEndpoint('/users/me'));
             $json = json_decode((string) $response->getBody(), false);
 
             return isset($json->success) && true === $json->success;
@@ -77,42 +77,20 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
     }
 
     /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    public function fetchTokens(): string
-    {
-        return $this->getSetting(self::SETTING_API_TOKEN);
-    }
-
-    /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave(IntegrationStorageInterface $model)
+    public function onBeforeSave()
     {
-        $accessToken = $this->getSetting(self::SETTING_API_TOKEN);
-
-        $model->updateAccessToken($accessToken);
-        $this->setAccessToken($accessToken);
+        $client = $this->generateAuthorizedClient();
 
         try {
-            $response = $this->getAuthorizedClient()->get($this->getEndpoint('/users/me'));
+            $response = $client->get($this->getEndpoint('/users/me'));
             $domain = json_decode($response->getBody(), false)->data->company_domain;
-        } catch (RequestException $e) {
-            $domain = null;
-        }
 
-        $this->setSetting(self::SETTING_DOMAIN, $domain);
-        $model->updateProperties($this->getSettings());
+            $this->domain = $domain;
+        } catch (RequestException $e) {
+            $this->domain = null;
+        }
     }
 
     /**
@@ -213,25 +191,20 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
 
     protected function getResponse(string $endpoint, array $queryOptions = []): ResponseInterface
     {
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
 
         return $client->get(
             $endpoint,
-            [
-                'query' => array_merge(
-                    ['api_token' => $this->getAccessToken()],
-                    $queryOptions ?? []
-                ),
-                'headers' => ['Accept' => 'application/json'],
-            ]
+            ['query' => $queryOptions ?? []]
         );
     }
 
-    protected function getAuthorizedClient(): Client
+    protected function generateAuthorizedClient(): Client
     {
-        return new Client(
-            ['query' => ['api_token' => $this->getAccessToken()], 'headers' => ['Accept' => 'application/json']]
-        );
+        return new Client([
+            'query' => ['api_token' => $this->getApiToken()],
+            'headers' => ['Accept' => 'application/json'],
+        ]);
     }
 
     protected function getApiRootUrl(): string
@@ -249,7 +222,7 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
 
         $organizationId = null;
         if ($fields) {
-            $client = $this->getAuthorizedClient();
+            $client = $this->generateAuthorizedClient();
 
             try {
                 if ($this->getUserId()) {
@@ -290,7 +263,7 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
 
         $personId = null;
         if ($fields) {
-            $client = $this->getAuthorizedClient();
+            $client = $this->generateAuthorizedClient();
             $personId = $this->searchForDuplicate(['email' => $fields['email'] ?? null], 'person');
 
             try {
@@ -340,7 +313,8 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
             return;
         }
 
-        $this->getAuthorizedClient()->post(
+        $client = $this->generateAuthorizedClient();
+        $client->post(
             $this->getEndpoint('/notes'),
             [
                 'json' => [
@@ -360,7 +334,8 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
 
         $pinTarget = 'org' === $idPrefix ? 'organization' : $idPrefix;
 
-        $this->getAuthorizedClient()->post(
+        $client = $this->generateAuthorizedClient();
+        $client->post(
             $this->getEndpoint('/notes'),
             [
                 'json' => [
@@ -384,58 +359,23 @@ abstract class AbstractPipedriveIntegration extends AbstractCRMIntegration
         return $matchedFields;
     }
 
-    protected function getFieldType(string $type)
+    protected function getFieldType(string $type): ?string
     {
-        switch ($type) {
-            case 'varchar':
-            case 'varchar_auto':
-            case 'text':
-            case 'date':
-            case 'enum':
-            case 'time':
-            case 'timerange':
-            case 'daterange':
-                return FieldObject::TYPE_STRING;
-
-            case 'set':
-            case 'phone':
-                return FieldObject::TYPE_ARRAY;
-
-            case 'int':
-            case 'double':
-            case 'monetary':
-            case 'user':
-            case 'org':
-            case 'people':
-                return FieldObject::TYPE_NUMERIC;
-
-            default:
-                return null;
-        }
-    }
-
-    /**
-     * @return null|int
-     */
-    protected function getUserId()
-    {
-        $userId = $this->getSetting(self::SETTING_USER_ID);
-
-        return $userId ? (int) $userId : null;
-    }
-
-    private function getDomain()
-    {
-        return $this->getSetting(self::SETTING_DOMAIN);
+        return match ($type) {
+            'varchar', 'varchar_auto', 'text', 'date', 'enum', 'time', 'timerange', 'daterange' => FieldObject::TYPE_STRING,
+            'set', 'phone' => FieldObject::TYPE_ARRAY,
+            'int', 'double', 'monetary', 'user', 'org', 'people' => FieldObject::TYPE_NUMERIC,
+            default => null,
+        };
     }
 
     private function searchForDuplicate(array $terms, string $type)
     {
-        if (!$this->getSetting(self::SETTING_DETECT_DUPLICATES)) {
+        if (!$this->detectDuplicates) {
             return null;
         }
 
-        $client = $this->getAuthorizedClient();
+        $client = $this->generateAuthorizedClient();
         $query = $client->getConfig('query');
 
         foreach ($terms as $field => $searchTerms) {

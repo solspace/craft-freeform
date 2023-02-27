@@ -10,65 +10,59 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\SharpSpring;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
+#[Type(
+    name: 'SharpSpring',
+    iconPath: __DIR__.'/icon.svg',
+)]
 class SharpSpring extends AbstractCRMIntegration
 {
-    public const SETTING_SECRET_KEY = 'secret_key';
-    public const SETTING_ACCOUNT_ID = 'account_id';
-    public const TITLE = 'SharpSpring';
     public const LOG_CATEGORY = 'SharpSpring';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'Account ID',
+        instructions: 'Enter your Account ID here.',
+        required: true,
+    )]
+    protected string $accountId = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        instructions: 'Enter your Secret Key here.',
+        required: true,
+    )]
+    protected string $secretKey = '';
+
+    public function getAccountId(): string
     {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_ACCOUNT_ID,
-                'Account ID',
-                'Enter your Account ID here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_SECRET_KEY,
-                'Secret Key',
-                'Enter your Secret Key here.',
-                true
-            ),
-        ];
+        return $this->getProcessedValue($this->accountId);
     }
 
-    /**
-     * Push objects to the CRM.
-     *
-     * @param null|mixed $formFields
-     *
-     * @throws IntegrationException
-     */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function getSecretKey(): string
+    {
+        return $this->getProcessedValue($this->secretKey);
+    }
+
+    public function pushObject(array $keyValueList, ?array $formFields = null): bool
     {
         $contactProps = [];
 
         foreach ($keyValueList as $key => $value) {
             preg_match('/^(\w+)___(.+)$/', $key, $matches);
 
-            [$all, $target, $propName] = $matches;
+            [$_, $target, $propName] = $matches;
 
             switch ($target) {
                 case 'contact':
@@ -79,7 +73,6 @@ class SharpSpring extends AbstractCRMIntegration
             }
         }
 
-        $contactId = null;
         if ($contactProps) {
             try {
                 $payload = $this->generatePayload('createLeads', ['objects' => [$contactProps]]);
@@ -221,40 +214,6 @@ class SharpSpring extends AbstractCRMIntegration
     }
 
     /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
-     * Perform anything necessary before this integration is saved.
-     *
-     * @throws IntegrationException
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-        $accountId = $this->getAccountID();
-        $secretKey = $this->getSecretKey();
-
-        // If one of these isn't present, we just return void
-        if (!$accountId || !$secretKey) {
-            return;
-        }
-
-        $model->updateProperties($this->getSettings());
-    }
-
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     */
-    public function fetchTokens(): string
-    {
-        return '';
-    }
-
-    /**
      * Get the base SharpSpring API URL.
      */
     protected function getApiRootUrl(): string
@@ -262,38 +221,24 @@ class SharpSpring extends AbstractCRMIntegration
         return 'https://api.sharpspring.com/pubapi/v1.2/';
     }
 
-    /**
-     * Gets the API secret for SharpSpring from settings config.
-     *
-     * @return null|mixed
-     *
-     * @throws IntegrationException
-     */
-    private function getSecretKey()
+    protected function generateAuthorizedClient(): Client
     {
-        return $this->getSetting(self::SETTING_SECRET_KEY);
-    }
-
-    /**
-     * Gets the account ID for SharpSpring from settings config.
-     *
-     * @return null|mixed
-     *
-     * @throws IntegrationException
-     */
-    private function getAccountID()
-    {
-        return $this->getSetting(self::SETTING_ACCOUNT_ID);
+        return new Client([
+            'query' => [
+                'accountID' => $this->getAccountId(),
+                'secretKey' => $this->getSecretKey(),
+            ],
+        ]);
     }
 
     /**
      * Generate a properly formatted payload for SharpSpring API.
-     *
-     * @param string $method
-     * @param string $id
      */
-    private function generatePayload($method, array $params = ['where' => []], $id = 'freeform'): array
-    {
+    private function generatePayload(
+        string $method,
+        array $params = ['where' => []],
+        string $id = 'freeform'
+    ): array {
         return [
             'method' => $method,
             'params' => $params,
@@ -303,17 +248,8 @@ class SharpSpring extends AbstractCRMIntegration
 
     private function getResponse(array $payload): ResponseInterface
     {
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
 
-        return $client->post(
-            $this->getApiRootUrl(),
-            [
-                'query' => [
-                    'accountID' => $this->getAccountID(),
-                    'secretKey' => $this->getSecretKey(),
-                ],
-                'json' => $payload,
-            ]
-        );
+        return $client->post($this->getApiRootUrl(), ['json' => $payload]);
     }
 }

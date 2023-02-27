@@ -1,136 +1,34 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
 use Solspace\Freeform\Library\Integrations\CRM\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 
+#[Type(
+    name: 'Pardot (v5)',
+    iconPath: __DIR__.'/../Salesforce/icon.svg',
+)]
 class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
 {
-    public const TITLE = 'Pardot (v5)';
     public const LOG_CATEGORY = 'Pardot';
 
-    public const SETTING_BUSINESS_UNIT_ID = 'business_unit_id';
-    public const SETTING_REFRESH_TOKEN = 'refresh_token';
+    #[Property(
+        label: 'Pardot Business Unit ID',
+        instructions: 'Enter your Pardot business unit ID here',
+        required: true,
+    )]
+    protected string $businessUnitId = '';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    public function getBusinessUnitId(): string
     {
-        return array_merge(
-            parent::getSettingBlueprints(),
-            [
-                new SettingBlueprint(
-                    SettingBlueprint::TYPE_TEXT,
-                    self::SETTING_BUSINESS_UNIT_ID,
-                    'Pardot Business Unit ID',
-                    'Enter your Pardot business unit ID here',
-                    true
-                ),
-                new SettingBlueprint(
-                    SettingBlueprint::TYPE_INTERNAL,
-                    self::SETTING_REFRESH_TOKEN,
-                    'Refresh Token',
-                    'Refresh token set automatically'
-                ),
-                new SettingBlueprint(
-                    SettingBlueprint::TYPE_INTERNAL,
-                    self::SETTING_REFRESH_TOKEN,
-                    'Refresh Token',
-                    'You should not set this',
-                    false
-                ),
-            ]
-        );
-    }
-
-    /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-        $clientId = $this->getClientId();
-        $clientSecret = $this->getClientSecret();
-        $redirectUri = $this->getReturnUri();
-
-        if (!$clientId || !$clientSecret) {
-            return false;
-        }
-
-        $payload = [
-            'client_id' => $clientId,
-            'response_type' => 'code',
-            'redirect_uri' => $redirectUri,
-        ];
-
-        header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($payload));
-
-        exit;
-    }
-
-    public function refreshToken(): bool
-    {
-        $clientId = $this->getClientId();
-        $clientSecret = $this->getClientSecret();
-        $refreshToken = $this->getRefreshToken();
-
-        if (!$clientId || !$clientSecret || !$refreshToken) {
-            throw new IntegrationException('Some or all of the configuration values are missing');
-        }
-
-        $client = new Client();
-
-        $payload = [
-            'refresh_token' => $refreshToken,
-            'client_id' => $clientId,
-            'client_secret' => $clientSecret,
-            'grant_type' => 'refresh_token',
-        ];
-
-        try {
-            $response = $client->post($this->getAccessTokenUrl(), ['query' => $payload]);
-
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
-
-            if (!isset($json->access_token)) {
-                throw new IntegrationException(
-                    $this->getTranslator()->translate(
-                        "No 'access_token' present in auth response for {serviceProvider}",
-                        ['serviceProvider' => $this->getServiceProvider()]
-                    )
-                );
-            }
-
-            $this->setAccessToken($json->access_token);
-            $this->setAccessTokenUpdated(true);
-
-            $this->onAfterFetchAccessToken($json);
-        } catch (RequestException $e) {
-            $responseBody = (string) $e->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
-
-            throw $e;
-        }
-
-        return true;
-    }
-
-    /**
-     * Perform anything necessary before this integration is saved.
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
+        return $this->getProcessedValue($this->businessUnitId);
     }
 
     /**
@@ -149,7 +47,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
                 continue;
             }
 
-            if (preg_match('/^custom___/', $key)) {
+            if (str_starts_with($key, 'custom___')) {
                 unset($keyValueList[$key]);
                 $keyValueList[str_replace('custom___', '', $key)] = $value;
             }
@@ -197,7 +95,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
     /**
      * @return array|bool|string
      */
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field)
+    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
     {
         $value = parent::convertCustomFieldValue($fieldObject, $field);
 
@@ -429,38 +327,13 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
                 continue;
             }
 
-            switch ($field->type) {
-                case 'Text':
-                case 'Textarea':
-                case 'TextArea':
-                case 'Dropdown':
-                case 'Radio Button':
-                case 'Hidden':
-                    $type = FieldObject::TYPE_STRING;
-
-                    break;
-
-                case 'Checkbox':
-                case 'Multi-Select':
-                    $type = FieldObject::TYPE_ARRAY;
-
-                    break;
-
-                case 'Number':
-                    $type = FieldObject::TYPE_NUMERIC;
-
-                    break;
-
-                case 'Date':
-                    $type = FieldObject::TYPE_DATE;
-
-                    break;
-
-                default:
-                    $type = null;
-
-                    break;
-            }
+            $type = match ($field->type) {
+                'Text', 'Textarea', 'TextArea', 'Dropdown', 'Radio Button', 'Hidden' => FieldObject::TYPE_STRING,
+                'Checkbox', 'Multi-Select' => FieldObject::TYPE_ARRAY,
+                'Number' => FieldObject::TYPE_NUMERIC,
+                'Date' => FieldObject::TYPE_DATE,
+                default => null,
+            };
 
             if (null === $type) {
                 continue;
@@ -493,26 +366,11 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         return 'https://pi.pardot.com/api/';
     }
 
-    protected function getRefreshToken()
+    protected function generateAuthorizedClient(): Client
     {
-        return $this->getSetting(self::SETTING_REFRESH_TOKEN);
-    }
+        parent::generateAuthorizedClient();
 
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
-    {
-        if (isset($responseData->refresh_token)) {
-            $this->setSetting(self::SETTING_REFRESH_TOKEN, $responseData->refresh_token);
-        }
-    }
-
-    private function getBusinessUnitId()
-    {
-        return $this->getSetting(self::SETTING_BUSINESS_UNIT_ID);
-    }
-
-    private function generateAuthorizedClient(bool $refreshTokenIfExpired = true): Client
-    {
-        $client = new Client([
+        return new Client([
             'headers' => [
                 'Authorization' => 'Bearer '.$this->getAccessToken(),
                 'Pardot-Business-Unit-Id' => $this->getBusinessUnitId(),
@@ -522,45 +380,9 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
                 'format' => 'json',
             ],
         ]);
-
-        if ($refreshTokenIfExpired) {
-            try {
-                $endpoint = $this->getPardotEndpoint();
-                $response = $client->get($endpoint, ['query' => ['limit' => 1, 'format' => 'json']]);
-
-                $json = json_decode($response->getBody(), true);
-
-                if (isset($json['@attributes']) && 'ok' === $json['@attributes']['stat']) {
-                    return $client;
-                }
-            } catch (RequestException $e) {
-                if (401 === $e->getCode()) {
-                    if ($this->refreshToken()) {
-                        $client = new Client(
-                            [
-                                'headers' => [
-                                    'Authorization' => 'Bearer '.$this->getAccessToken(),
-                                    'Pardot-Business-Unit-Id' => $this->getBusinessUnitId(),
-                                    'Content-Type' => 'application/json',
-                                ],
-                                'query' => [
-                                    'format' => 'json',
-                                ],
-                            ]
-                        );
-                    }
-                }
-            }
-        }
-
-        return $client;
     }
 
-    /**
-     * @param string $object
-     * @param string $action
-     */
-    private function getPardotEndpoint($object = 'prospect', $action = 'query'): string
+    private function getPardotEndpoint(string $object = 'prospect', string $action = 'query'): string
     {
         $root = rtrim($this->getApiRootUrl(), '/');
         $object = trim($object, '/');

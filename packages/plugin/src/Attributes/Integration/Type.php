@@ -7,11 +7,12 @@ use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
 {
+    public string $class;
     private PropertyCollection $properties;
 
     public function __construct(
         public string $name,
-        public string $iconPath,
+        public ?string $iconPath = null,
     ) {
         $this->properties = new PropertyCollection();
     }
@@ -21,9 +22,11 @@ class Type
         return $this->name;
     }
 
-    public function setProperties(PropertyCollection $properties)
+    public function setProperties(PropertyCollection $properties): self
     {
         $this->properties = $properties;
+
+        return $this;
     }
 
     public function getProperties(): PropertyCollection

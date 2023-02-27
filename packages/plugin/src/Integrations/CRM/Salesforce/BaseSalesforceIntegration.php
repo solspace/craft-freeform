@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
@@ -37,6 +36,11 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         return !empty($json);
     }
 
+    protected function getInstanceUrl(): string
+    {
+        return $this->instanceUrl;
+    }
+
     abstract protected function getAuthorizationCheckUrl(): string;
 
     protected function onAfterFetchAccessToken(\stdClass $responseData)
@@ -61,18 +65,6 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
     protected function getAccessTokenUrl(): string
     {
         return 'https://'.$this->getSubdomain().'.salesforce.com/services/oauth2/token';
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        $this->fetchTokens();
-
-        return new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getAccessToken(),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
     }
 
     protected function query(string $query, array $params = []): array

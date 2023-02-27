@@ -10,14 +10,17 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM;
+namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
 use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Integrations\CRM\Pipedrive\AbstractPipedriveIntegration;
+use Solspace\Freeform\Attributes\Integration\Type;
 
-class PipedriveLeads extends AbstractPipedriveIntegration
+#[Type(
+    name: 'Pipedrive - Leads',
+    iconPath: __DIR__.'/icon.svg',
+)]
+class PipedriveLeads extends BasePipedriveIntegration
 {
-    public const TITLE = 'Pipedrive Leads';
     public const LOG_CATEGORY = 'Pipedrive Leads';
 
     /**
@@ -27,7 +30,7 @@ class PipedriveLeads extends AbstractPipedriveIntegration
      */
     public function pushObject(array $keyValueList, $formFields = null): bool
     {
-        $client = $this->getAuthorizedClient();
+        $client = $this->generateAuthorizedClient();
 
         $orgId = $this->pushOrg($keyValueList);
         $personId = $this->pushPerson($keyValueList, $orgId);

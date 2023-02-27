@@ -43,6 +43,7 @@ class EditablePropertyProviderTest extends TestCase
                     'tab' => null,
                     'group' => null,
                     'transformer' => null,
+                    'required' => false,
                 ],
                 [
                     'type' => 'int',
@@ -60,6 +61,7 @@ class EditablePropertyProviderTest extends TestCase
                     'tab' => null,
                     'group' => null,
                     'transformer' => null,
+                    'required' => false,
                 ],
                 [
                     'type' => 'override-type',
@@ -81,6 +83,7 @@ class EditablePropertyProviderTest extends TestCase
                     'tab' => null,
                     'group' => null,
                     'transformer' => null,
+                    'required' => false,
                 ],
                 [
                     'type' => 'string',
@@ -105,6 +108,7 @@ class EditablePropertyProviderTest extends TestCase
                     'tab' => null,
                     'group' => null,
                     'transformer' => null,
+                    'required' => false,
                 ],
                 [
                     'type' => 'string',
@@ -126,6 +130,7 @@ class EditablePropertyProviderTest extends TestCase
                     'tab' => null,
                     'group' => null,
                     'transformer' => null,
+                    'required' => false,
                 ],
                 [
                     'type' => 'string',
@@ -147,6 +152,7 @@ class EditablePropertyProviderTest extends TestCase
                     'tab' => null,
                     'group' => null,
                     'transformer' => null,
+                    'required' => false,
                 ],
             ],
             $editableProperties->jsonSerialize()

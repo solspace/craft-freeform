@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;

@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\migrations;
 
-use Craft;
 use craft\db\Migration;
 
 /**
@@ -11,7 +10,7 @@ use craft\db\Migration;
 class m230227_102619_MoveCRMIntegrationClasses extends Migration
 {
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeUp(): bool
     {
@@ -29,7 +28,7 @@ class m230227_102619_MoveCRMIntegrationClasses extends Migration
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function safeDown(): bool
     {

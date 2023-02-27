@@ -10,12 +10,8 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use Psr\Http\Message\ResponseInterface;
-use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
-use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -88,8 +84,6 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
 
     /**
      * @param int $id
-     *
-     * @return null|IntegrationModel
      */
     public function getIntegrationById($id): ?IntegrationModel
     {
@@ -104,8 +98,6 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
 
     /**
      * @param string $handle
-     *
-     * @return null|IntegrationModel
      */
     public function getIntegrationByHandle(string $handle = null): ?IntegrationModel
     {

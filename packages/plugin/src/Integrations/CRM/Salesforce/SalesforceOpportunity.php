@@ -472,7 +472,6 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
         $this->dataUrl = $latestVersion->url;
     }
 
-
     protected function getAuthorizationCheckUrl(): string
     {
         return $this->getEndpoint('/sobjects/Opportunity/describe');

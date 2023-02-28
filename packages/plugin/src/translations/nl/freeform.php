@@ -810,7 +810,7 @@ return [
     'Should this form collect the user\'s IP address?' => 'Moet dit formulier de gebruikers IP adres verzamelen?',
     'Store Submitted Data' => 'Ingediende gegevens opslaan',
     'Should the submission data for this form be stored in the database?' => 'Moeten de indieningsgegevens voor dit formulier worden opgeslagen in de database?',
-    'Opt-In Data Storage Checkbox' => 'Opt-In Data opslag Checkbox',
+    'Opt-In Data Storage Checkbox' => 'Opt-In Gegevensopslag Checkbox',
     'Allow users to decide whether the submission data is saved to your site or not.' => "Gebruikers toestaan \u{200b}\u{200b}te beslissen of de indieningsgegevens op uw site worden opgeslagen of niet.",
     'Enable Google Tag Manager to push successful form submission events to the Data Layer' => 'Schakel Google Tag Manager in om succesvolle formulierinzendingen naar de gegevenslaag te pushen',
     'Form tag Attributes' => 'Formulier tag attributen',

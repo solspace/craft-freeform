@@ -25,7 +25,7 @@ export default class NumberProperty extends BasePropertyItem {
         type="number"
         className={classes.join(' ')}
         name={name}
-        placeholder={placeholder ? placeholder : ''}
+        placeholder={placeholder ? this.translate(placeholder) : ''}
         readOnly={readOnly}
         disabled={disabled}
         onChange={onChangeHandler}

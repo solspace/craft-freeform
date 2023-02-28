@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Tooltip } from 'react-tippy';
+import { translate } from '../../../app';
 import BasePropertyItem from './BasePropertyItem';
 
 export default class CheckboxProperty extends BasePropertyItem {
@@ -25,7 +26,7 @@ export default class CheckboxProperty extends BasePropertyItem {
 
     let style = { fontWeight: 'normal' };
 
-    if (!!bold) {
+    if (bold) {
       style.fontWeight = 'bold';
       style.color = '#576574';
     }
@@ -44,10 +45,16 @@ export default class CheckboxProperty extends BasePropertyItem {
           value={true}
         />
         <label htmlFor={randId} style={style}>
-          {label}
+          {translate(label)}
         </label>
         {instructions && (
-          <Tooltip title={instructions} position="bottom-start" theme="light" className="ff-info" arrow={true} />
+          <Tooltip
+            title={translate(instructions)}
+            position="bottom-start"
+            theme="light"
+            className="ff-info"
+            arrow={true}
+          />
         )}
       </div>
     );

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import BasePropertyItem from './BasePropertyItem';
 import Crypto from 'crypto';
+import { translate } from '../../../app';
 
 export default class CheckboxListProperty extends BasePropertyItem {
   static propTypes = {
@@ -49,7 +50,7 @@ export default class CheckboxListProperty extends BasePropertyItem {
               data-is-numeric={!!isNumeric}
               checked={values && values.find((elem) => elem == item.key)}
             />
-            <label htmlFor={`user-group-${item.key}-${hash}`}>{item.value}</label>
+            <label htmlFor={`user-group-${item.key}-${hash}`}>{translate(item.value)}</label>
           </div>
         ))}
       </div>

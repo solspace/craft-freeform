@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { translate } from '../../../../app';
 
 export const TYPE_STRING = 'string';
 export const TYPE_SELECT = 'select';
@@ -23,7 +24,7 @@ const renderInput = (props) => {
         <select name={handle} value={value} onChange={inputChange}>
           {options.map((item) => (
             <option key={item.key} value={item.key}>
-              {item.label}
+              {translate(item.label)}
             </option>
           ))}
         </select>

@@ -58,7 +58,7 @@ abstract class AbstractSalesforceIntegration extends AbstractCRMIntegration
                 ]
             );
 
-            $result = \GuzzleHttp\json_decode($response->getBody());
+            $result = json_decode($response->getBody());
 
             if (0 === $result->totalSize || !$result->done) {
                 return [];

@@ -41,7 +41,7 @@ class QuickExportController extends BaseController
 
             $forms[$form->id] = $form->getForm();
             foreach ($form->getForm()->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || $field instanceof SignatureField || !$field->getId()) {
+                if ($field instanceof NoStorageInterface || !$field->getId()) {
                     continue;
                 }
 
@@ -117,7 +117,6 @@ class QuickExportController extends BaseController
             foreach ($form->getLayout()->getFields() as $field) {
                 if (
                     $field instanceof NoStorageInterface
-                    || $field instanceof SignatureField
                     || !$field->getId()
                     || \in_array($field->getId(), $storedFieldIds, true)
                 ) {

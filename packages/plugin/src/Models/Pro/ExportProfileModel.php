@@ -156,7 +156,7 @@ class ExportProfileModel extends Model
                 if (is_numeric($fieldId)) {
                     try {
                         $field = $form->getLayout()->getFieldById($fieldId);
-                        if ($field instanceof CreditCardDetailsField || $field instanceof SignatureField) {
+                        if ($field instanceof CreditCardDetailsField) {
                             continue;
                         }
 
@@ -207,7 +207,6 @@ class ExportProfileModel extends Model
         foreach ($form->getLayout()->getFields() as $field) {
             if (
                 $field instanceof NoStorageInterface
-                || $field instanceof SignatureField
                 || !$field->getId()
                 || \in_array($field->getId(), $storedFieldIds, true)
             ) {

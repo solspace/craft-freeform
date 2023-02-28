@@ -19,6 +19,7 @@ return [
     'Handle' => 'Handle',
     'Delete' => 'Verwijder',
     'Last Updated' => 'Laatst bijgewerekt',
+
     'Success Behavior' => 'Succes Gedrag',
     'Reload Form with Success Message' => 'Formulier opnieuw laden met succesbericht',
     'Load Success Template' => 'Successjabloon laden',

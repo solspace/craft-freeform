@@ -54,6 +54,7 @@ class FileHelper
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document' => 'docx',
         'application/x-dvi' => 'dvi',
         'message/rfc822' => 'eml',
+        'image/x-eps' => 'eps',
         'application/epub+zip' => 'epub',
         'application/x-msdownload' => 'exe',
         'video/x-f4v' => 'f4v',

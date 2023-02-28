@@ -190,7 +190,7 @@ export default class PaymentFieldsMapping extends BasePropertyEditor {
         {this.checkFixedFieldVisibility(consts.PAYMENT_FIELD_PLAN) && (
           <SelectProperty
             label="Fixed Subscription Plan"
-            instructions="Select one of existing subscription plans"
+            instructions="Select an existing subscription plan"
             emptyOption="Choose a subscription plan..."
             name="plan"
             value={plan}

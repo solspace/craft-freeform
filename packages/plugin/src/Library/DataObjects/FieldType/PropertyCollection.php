@@ -27,6 +27,21 @@ class PropertyCollection implements \IteratorAggregate, \JsonSerializable
         return $this;
     }
 
+    public function removeFlagged(string ...$flags): self
+    {
+        foreach ($this->properties as $index => $property) {
+            foreach ($flags as $flag) {
+                if ($property->hasFlag($flag)) {
+                    unset($this->properties[$index]);
+                }
+            }
+        }
+
+        $this->properties = array_values($this->properties);
+
+        return $this;
+    }
+
     public function getNextOrder(): int
     {
         if (empty($this->properties)) {

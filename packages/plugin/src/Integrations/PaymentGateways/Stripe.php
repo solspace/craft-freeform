@@ -209,7 +209,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
      *
      * @throws IntegrationException
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return $this->getSetting(
             $this->isLiveMode() ? self::SETTING_SECRET_KEY_LIVE : self::SETTING_SECRET_KEY_TEST

@@ -22,9 +22,7 @@ use craft\db\ActiveRecord;
  * @property string    $handle
  * @property string    $type
  * @property string    $class
- * @property string    $accessToken
- * @property string    $settings
- * @property bool      $forceUpdate
+ * @property string    $metadata
  * @property \DateTime $lastUpdate
  */
 class IntegrationRecord extends ActiveRecord

@@ -25,11 +25,17 @@ use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\CrmBundle;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Services\CrmService;
+use Solspace\Freeform\Services\IntegrationsService;
 use yii\web\HttpException;
 use yii\web\Response;
 
 class CrmController extends Controller
 {
+    public function __construct($id, $module, $config = [], private IntegrationsService $integrationsService)
+    {
+        parent::__construct($id, $module, $config);
+    }
+
     public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
@@ -64,7 +70,7 @@ class CrmController extends Controller
         return $this->renderEditForm($model, $title);
     }
 
-    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
+    public function actionEdit(mixed $id = null, IntegrationModel $model = null): Response
     {
         if (null === $model) {
             if (is_numeric($id)) {
@@ -94,54 +100,28 @@ class CrmController extends Controller
         $id = $post['id'] ?? null;
         $model = $this->getNewOrExistingIntegration((int) $id);
 
-        $isNew = !$model->id;
-
         $postedClass = $post['class'] ?? null;
         $model->class = $postedClass;
 
-        $postedClassSettings = $post['settings'][$postedClass] ?? [];
-        unset($post['settings']);
-
-        $settingBlueprints = $this->getCRMService()->getCRMSettingBlueprints($postedClass);
-
-        foreach ($postedClassSettings as $key => $value) {
-            $isValueValid = false;
-
-            foreach ($settingBlueprints as $blueprint) {
-                if ($blueprint->getHandle() === $key) {
-                    $isValueValid = true;
-
-                    break;
-                }
-            }
-
-            if (!$isValueValid) {
-                unset($postedClassSettings[$key]);
-            }
-        }
-
-        // Adding hidden stored settings to the list
-        foreach ($model->getIntegrationObject()->getSettings() as $key => $value) {
-            if (!isset($postedClassSettings[$key])) {
-                $postedClassSettings[$key] = $value;
-            }
-        }
-
-        $post['settings'] = $postedClassSettings ?: null;
+        $postedClassSettings = $post['properties'][$postedClass] ?? [];
+        unset($post['properties']);
+        $post['metadata'] = $postedClassSettings ?: null;
 
         $model->setAttributes($post);
 
+        $integration = $model->getIntegrationObject();
+
         try {
-            $model->getIntegrationObject()->onBeforeSave($model);
+            $integration->onBeforeSave();
         } catch (\Exception $e) {
             $model->addError('integration', $e->getMessage());
         }
 
-        if (!$model->getErrors() && $this->getCRMService()->save($model)) {
+        $this->integrationsService->updateModelFromIntegration($model, $integration);
+
+        if ($this->integrationsService->save($model)) {
             // If it's a new integration - we make the user complete OAuth2 authentication
-            if ($isNew) {
-                $model->getIntegrationObject()->initiateAuthentication();
-            }
+            $model->getIntegrationObject()->initiateAuthentication();
 
             // Return JSON response if the request is an AJAX request
             if (\Craft::$app->request->isAjax) {
@@ -177,9 +157,7 @@ class CrmController extends Controller
             }
 
             return $this->asJson(['success' => false]);
-        } catch (RequestException $e) {
-            return $this->asJson(['success' => false, 'errors' => [$e->getMessage()]]);
-        } catch (\Exception $e) {
+        } catch (RequestException|\Exception $e) {
             return $this->asJson(['success' => false, 'errors' => [$e->getMessage()]]);
         }
     }
@@ -200,10 +178,6 @@ class CrmController extends Controller
         $integration = $model->getIntegrationObject();
         $integration->initiateAuthentication();
 
-        if ($integration->isAccessTokenUpdated()) {
-            $this->getCRMService()->updateAccessToken($integration);
-        }
-
         $this->redirect(UrlHelper::cpUrl('freeform/settings/crm/'.$model->id));
     }
 
@@ -213,7 +187,7 @@ class CrmController extends Controller
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $id = \Craft::$app->request->post('id');
-        $this->getCRMService()->delete($id);
+        $this->integrationsService->delete($id);
 
         return $this->asJson(['success' => true]);
     }
@@ -225,18 +199,16 @@ class CrmController extends Controller
         $this->view->registerAssetBundle(IntegrationsBundle::class);
 
         if (\Craft::$app->request->getParam('code')) {
-            $this->handleAuthorization($model);
+            $this->handleOAuthAuthorization($model);
         }
 
         $serviceProviderTypes = $this->getCRMService()->getAllCRMServiceProviders();
-        $settingBlueprints = $this->getCRMService()->getAllCRMSettingBlueprints();
 
         $variables = [
             'integration' => $model,
             'blockTitle' => $title,
             'serviceProviderTypes' => $serviceProviderTypes,
             'continueEditingUrl' => 'freeform/settings/crm/{id}',
-            'settings' => $settingBlueprints,
         ];
 
         return $this->renderTemplate('freeform/settings/_crm_edit', $variables);
@@ -262,7 +234,7 @@ class CrmController extends Controller
         return $model;
     }
 
-    private function handleAuthorization(IntegrationModel $model): void
+    private function handleOAuthAuthorization(IntegrationModel $model): void
     {
         $integration = $model->getIntegrationObject();
         $code = \Craft::$app->request->getParam('code');
@@ -271,12 +243,17 @@ class CrmController extends Controller
             return;
         }
 
-        $accessToken = $integration->fetchAccessToken();
+        $integration->fetchTokens();
 
-        $model->accessToken = $accessToken;
-        $model->settings = $integration->getSettings();
+        try {
+            $integration->onBeforeSave();
+        } catch (\Exception $e) {
+            $model->addError('integration', $e->getMessage());
+        }
 
-        if ($this->getCRMService()->save($model)) {
+        $this->integrationsService->updateModelFromIntegration($model, $integration);
+
+        if ($this->integrationsService->save($model)) {
             // Return JSON response if the request is an AJAX request
             \Craft::$app->session->setNotice(Freeform::t('CRM Integration saved'));
             \Craft::$app->session->setFlash('CRM Integration saved');

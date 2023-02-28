@@ -21,11 +21,17 @@ use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\MailingListsBundle;
+use Solspace\Freeform\Services\IntegrationsService;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class MailingListsController extends BaseController
 {
+    public function __construct($id, $module, $config = [], private IntegrationsService $integrationsService)
+    {
+        parent::__construct($id, $module, $config);
+    }
+
     /**
      * Make sure this controller requires a logged in member.
      */
@@ -101,7 +107,7 @@ class MailingListsController extends BaseController
         }
 
         if (\Craft::$app->request->getParam('code')) {
-            $response = $this->handleAuthorization($model);
+            $response = $this->handleOAuthAuthorization($model);
 
             if (null !== $response) {
                 return $response;
@@ -177,7 +183,7 @@ class MailingListsController extends BaseController
             $model->addError('integration', $e->getMessage());
         }
 
-        if (!$model->getErrors() && $this->getMailingListsService()->save($model)) {
+        if (!$model->getErrors() && $this->integrationsService->save($model)) {
             // If it's a new integration - we make the user complete OAuth2 authentication
             if ($isNewIntegration) {
                 $model->getIntegrationObject()->initiateAuthentication();
@@ -243,7 +249,7 @@ class MailingListsController extends BaseController
 
         $id = \Craft::$app->request->post('id');
 
-        $this->getMailingListsService()->delete($id);
+        $this->integrationsService->delete($id);
 
         return $this->asJson(['success' => true]);
     }
@@ -259,37 +265,12 @@ class MailingListsController extends BaseController
         return $mailingListIntegration;
     }
 
-    private function handleAuthorization(IntegrationModel $model): ?Response
-    {
-        $integration = $model->getIntegrationObject();
-        $code = \Craft::$app->request->getParam('code');
-
-        if (!$integration instanceof MailingListOAuthConnector || empty($code)) {
-            return null;
-        }
-
-        $accessToken = $integration->fetchAccessToken();
-
-        $model->accessToken = $accessToken;
-        $model->settings = $integration->getSettings();
-
-        if ($this->getMailingListsService()->save($model)) {
-            // Return JSON response if the request is an AJAX request
-            \Craft::$app->session->setNotice(Freeform::t('Email Marketing Integration saved'));
-            \Craft::$app->session->setFlash(Freeform::t('Email Marketing Integration saved'));
-        } else {
-            \Craft::$app->session->setError(Freeform::t('Email Marketing Integration not saved'));
-        }
-
-        return $this->redirect(UrlHelper::cpUrl('freeform/settings/mailing-lists/'.$model->handle));
-    }
-
     private function renderEditForm(IntegrationModel $model, string $title): Response
     {
         $this->view->registerAssetBundle(IntegrationsBundle::class);
 
         if (\Craft::$app->request->getParam('code')) {
-            $response = $this->handleAuthorization($model);
+            $response = $this->handleOAuthAuthorization($model);
 
             if (null !== $response) {
                 return $response;
@@ -308,5 +289,30 @@ class MailingListsController extends BaseController
         ];
 
         return $this->renderTemplate('freeform/settings/_mailing_list_edit', $variables);
+    }
+
+    private function handleOAuthAuthorization(IntegrationModel $model): ?Response
+    {
+        $integration = $model->getIntegrationObject();
+        $code = \Craft::$app->request->getParam('code');
+
+        if (!$integration instanceof MailingListOAuthConnector || empty($code)) {
+            return null;
+        }
+
+        $integration->fetchTokens();
+
+        $model->accessToken = $accessToken;
+        $model->settings = $integration->getSettings();
+
+        if ($this->integrationsService->save($model)) {
+            // Return JSON response if the request is an AJAX request
+            \Craft::$app->session->setNotice(Freeform::t('Email Marketing Integration saved'));
+            \Craft::$app->session->setFlash(Freeform::t('Email Marketing Integration saved'));
+        } else {
+            \Craft::$app->session->setError(Freeform::t('Email Marketing Integration not saved'));
+        }
+
+        return $this->redirect(UrlHelper::cpUrl('freeform/settings/mailing-lists/'.$model->handle));
     }
 }

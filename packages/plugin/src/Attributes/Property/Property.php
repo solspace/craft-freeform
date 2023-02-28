@@ -16,6 +16,8 @@ class Property
     public const TYPE_DATE_TIME_PICKER = 'datetime-picker';
     public const TYPE_ATTRIBUTES = 'attributes';
 
+    public const TYPE_INTERNAL = 'internal';
+
     public function __construct(
         public ?string $label = null,
         public ?string $type = null,
@@ -23,6 +25,7 @@ class Property
         public ?string $category = null,
         public ?int $order = null,
         public mixed $value = null,
+        public bool $required = false,
         public ?string $transformer = null,
         public ?string $valueGenerator = null,
         public ?string $placeholder = null,

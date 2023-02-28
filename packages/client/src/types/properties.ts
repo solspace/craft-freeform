@@ -20,10 +20,10 @@ type BaseProperty<T> = {
   instructions?: string;
   placeholder?: string;
   value?: T | null;
-  order: number;
-  flags: string[];
+  order?: number;
+  flags?: string[];
   visibilityFilters?: string[];
-  middleware: Middleware[];
+  middleware?: Middleware[];
   category?: string;
   section?: string;
   tab?: string;

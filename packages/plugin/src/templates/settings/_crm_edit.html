@@ -58,7 +58,7 @@
                 label: "Service Provider"|t('freeform'),
                 id: 'class',
                 name: 'class',
-                options: serviceProviderTypes,
+                options: serviceProviderTypes|map(p => p.name),
                 value: integration.class,
                 errors: integration.getErrors('class'),
                 required: true
@@ -98,35 +98,39 @@
                 </ul>
             {% endif %}
 
-            <div class="settingsWrapper">
-                {% for className, settingList in settings %}
-                    <div id="settings-{{ className|replace("\\", "") }}" style="display: none;">
-                        {% for setting in settingList|filter(setting => setting.type not in ["internal", "config"]) %}
-                            {% set value = "" %}
-                            {% if integration.settings is not null and integration.settings[setting.handle] is defined %}
-                                {% set value = integration.settings[setting.handle] %}
-                            {% elseif setting.defaultValue %}
-                                {% set value = setting.defaultValue %}
+            <div class="propertiesWrapper">
+                {% for className, type in serviceProviderTypes %}
+                    <div id="properties-{{ className|replace("\\", "") }}" style="display: none;">
+                        {% for property in type.properties|filter((prop) => not prop.hasFlag('internal')) %}
+                            {% set handle = property.handle %}
+                            {% set value = property.value %}
+
+                            {% if integration.metadata[handle] is defined and integration.metadata[handle] is not null %}
+                                {% set value = integration.metadata[handle] %}
                             {% endif %}
 
                             {% set options = {
-                                label: setting.label|t('freeform'),
-                                instructions: setting.instructions|t('freeform'),
-                                class: "setting-" ~ setting.handle,
-                                name: "settings["~className~"]["~setting.handle~"]",
+                                label: property.label|t('freeform'),
+                                instructions: property.instructions|t('freeform'),
+                                class: "property-" ~ property.handle,
+                                name: "properties["~className~"]["~property.handle~"]",
                                 value: value,
-                                required: setting.required,
-                                errors: integration.errors(className~setting.handle),
+                                required: property.required,
+                                errors: integration.errors(className~property.handle),
                                 suggestEnvVars: true,
                             } %}
 
-                            {% if setting.type in ["text", "password"] %}
-                                {{ forms.autosuggestField(options) }}
-                            {% elseif setting.type == "auto" %}
-                                {{ forms.textField(options|merge({ readonly: true })) }}
-                            {% elseif setting.type == "bool" %}
+                            {% if property.type == "bool" %}
                                 {% set options = options|merge({on: value, value: 1}) %}
                                 {{ forms.lightswitchField(options) }}
+                            {% else %}
+
+                                {% if "readonly" in property.flags %}
+                                    {{ forms.textField(options|merge({ readonly: true })) }}
+                                {% else %}
+                                    {{ forms.autosuggestField(options) }}
+                                {% endif %}
+
                             {% endif %}
                         {% endfor %}
                     </div>

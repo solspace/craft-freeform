@@ -1,20 +1,4 @@
-export enum SettingType {
-  Text = 'text',
-  Boolean = 'bool',
-  Password = 'password',
-  Auto = 'auto',
-  Internal = 'internal',
-  Config = 'config',
-}
-
-export type IntegrationSetting = {
-  type: SettingType;
-  name: string;
-  handle: string;
-  instructions?: string;
-  required: boolean;
-  value: boolean | string | number | null;
-};
+import type { Property } from './properties';
 
 export type Integration = {
   id: number;
@@ -27,7 +11,7 @@ export type Integration = {
   enabled: boolean;
   icon?: string;
 
-  settings: IntegrationSetting[];
+  properties: Property[];
   mapping: [];
 };
 

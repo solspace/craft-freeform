@@ -159,7 +159,7 @@ class Dotmailer extends AbstractMailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return $this->getSetting(self::SETTING_USER_EMAIL);
     }
@@ -182,7 +182,7 @@ class Dotmailer extends AbstractMailingListIntegration
                 foreach ($json->properties as $property) {
                     if ('ApiEndpoint' === $property->name) {
                         $this->setSetting(self::SETTING_ENDPOINT, $property->value);
-                        $model->updateSettings($this->getSettings());
+                        $model->updateProperties($this->getSettings());
 
                         return;
                     }

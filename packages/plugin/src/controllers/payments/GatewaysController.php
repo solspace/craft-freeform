@@ -10,11 +10,17 @@ use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\MailingListsBundle;
+use Solspace\Freeform\Services\IntegrationsService;
 use yii\web\HttpException;
 use yii\web\Response;
 
 class GatewaysController extends BaseController
 {
+    public function __construct($id, $module, $config = [], private IntegrationsService $integrationsService)
+    {
+        parent::__construct($id, $module, $config);
+    }
+
     public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
@@ -57,7 +63,7 @@ class GatewaysController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $id = \Craft::$app->request->post('id');
-        $this->getPaymentGatewaysService()->delete($id);
+        $this->integrationsService->delete($id);
 
         return $this->asJson(['success' => true]);
     }
@@ -135,7 +141,7 @@ class GatewaysController extends BaseController
             $model->addError('integration', $e->getMessage());
         }
 
-        if (!$model->getErrors() && $this->getPaymentGatewaysService()->save($model)) {
+        if (!$model->getErrors() && $this->integrationsService->save($model)) {
             // If it's a new integration - we make the user complete OAuth2 authentication
             if ($isNewIntegration) {
                 $model->getIntegrationObject()->initiateAuthentication();

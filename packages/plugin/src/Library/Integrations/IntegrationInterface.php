@@ -16,10 +16,10 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 
 interface IntegrationInterface
 {
-    /**
-     * Setting this to true will force re-fetching of all lists.
-     */
-    public function setForceUpdate(bool $value);
+    public const FLAG_GLOBAL_PROPERTY = 'global-property';
+    public const FLAG_INTERNAL = 'internal';
+    public const FLAG_ENCRYPTED = 'encrypted';
+    public const FLAG_READONLY = 'readonly';
 
     /**
      * Check if it's possible to connect to the API.
@@ -28,9 +28,13 @@ interface IntegrationInterface
      */
     public function checkConnection(): bool;
 
-    public function getId(): int;
+    public function initiateAuthentication(): void;
 
-    public function getName(): string;
+    public function getId(): ?int;
+
+    public function getHandle(): ?string;
+
+    public function getName(): ?string;
 
     public function getLastUpdate(): \DateTime;
 
@@ -39,32 +43,4 @@ interface IntegrationInterface
      * i.e. - MailChimp, Constant Contact, Salesforce, etc...
      */
     public function getServiceProvider(): string;
-
-    /**
-     * Initiates the authentication process.
-     */
-    public function initiateAuthentication();
-
-    /**
-     * Authorizes the application and fetches the access token.
-     *
-     * @return string - access token
-     */
-    public function fetchAccessToken(): string;
-
-    /**
-     * @return null|string
-     */
-    public function getAccessToken();
-
-    public function isAccessTokenUpdated(): bool;
-
-    /**
-     * @param bool $accessTokenUpdated
-     *
-     * @return $this
-     */
-    public function setAccessTokenUpdated($accessTokenUpdated);
-
-    public function getSettings(): array;
 }

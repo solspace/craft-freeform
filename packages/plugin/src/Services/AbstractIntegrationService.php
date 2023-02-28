@@ -10,26 +10,19 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use Psr\Http\Message\ResponseInterface;
-use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Events\Integrations\DeleteEvent;
+use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
-use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Configuration\CraftPluginConfiguration;
 use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 
 abstract class AbstractIntegrationService extends BaseService implements IntegrationHandlerInterface
 {
-    public const EVENT_BEFORE_SAVE = 'beforeSave';
-    public const EVENT_AFTER_SAVE = 'afterSave';
-    public const EVENT_BEFORE_DELETE = 'beforeDelete';
-    public const EVENT_AFTER_DELETE = 'afterDelete';
     public const EVENT_FETCH_TYPES = 'fetchTypes';
     public const EVENT_BEFORE_PUSH = 'beforePush';
     public const EVENT_AFTER_PUSH = 'afterPush';
@@ -76,7 +69,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
      *
      * @throws IntegrationException
      */
-    public function getIntegrationObjectById($id): AbstractIntegration
+    public function getIntegrationObjectById($id): IntegrationInterface
     {
         $model = $this->getIntegrationById($id);
 
@@ -91,10 +84,8 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
 
     /**
      * @param int $id
-     *
-     * @return null|IntegrationModel
      */
-    public function getIntegrationById($id)
+    public function getIntegrationById($id): ?IntegrationModel
     {
         $data = $this->getQuery()->andWhere(['id' => $id])->one();
 
@@ -107,10 +98,8 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
 
     /**
      * @param string $handle
-     *
-     * @return null|IntegrationModel
      */
-    public function getIntegrationByHandle(string $handle = null)
+    public function getIntegrationByHandle(string $handle = null): ?IntegrationModel
     {
         $data = $this->getQuery()->andWhere(['handle' => $handle])->one();
 
@@ -139,165 +128,12 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     }
 
     /**
-     * @throws \Exception
-     */
-    public function save(IntegrationModel $model): bool
-    {
-        $isNew = !$model->id;
-
-        $beforeSaveEvent = new SaveEvent($model, $isNew);
-        $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
-
-        if ($isNew) {
-            $record = new IntegrationRecord();
-        } else {
-            $record = IntegrationRecord::findOne(['id' => $model->id, 'type' => $this->getIntegrationType()]);
-
-            if (!$record) {
-                throw new IntegrationException(
-                    Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $model->id])
-                );
-            }
-        }
-
-        $record->name = $model->name;
-        $record->handle = $model->handle;
-        $record->type = $this->getIntegrationType();
-        $record->class = $model->class;
-        $record->accessToken = $model->accessToken;
-        $record->settings = $model->settings;
-        $record->forceUpdate = $model->forceUpdate;
-        $record->lastUpdate = new \DateTime();
-
-        $record->validate();
-        $model->addErrors($record->getErrors());
-
-        $configuration = new CraftPluginConfiguration();
-
-        /** @var AbstractIntegration $integrationClass */
-        $integrationClass = $record->class;
-        foreach ($integrationClass::getSettingBlueprints() as $blueprint) {
-            $handle = $blueprint->getHandle();
-            if (SettingBlueprint::TYPE_CONFIG === $blueprint->getType()) {
-                $value = $configuration->get($handle);
-
-                if (!$value && $blueprint->isRequired()) {
-                    $model->addError(
-                        'class',
-                        Freeform::t(
-                            "'{key}' key missing in Freeform's plugin configuration",
-                            ['key' => $handle]
-                        )
-                    );
-                }
-            } else {
-                $value = $model->settings[$handle] ?? null;
-
-                if (!$value && $blueprint->isRequired()) {
-                    $model->addError(
-                        $integrationClass.$handle,
-                        Freeform::t(
-                            '{key} is required',
-                            ['key' => $blueprint->getLabel()]
-                        )
-                    );
-                }
-            }
-        }
-
-        if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
-            $transaction = \Craft::$app->getDb()->beginTransaction();
-
-            try {
-                $record->save(false);
-
-                if ($isNew) {
-                    $model->id = $record->id;
-                }
-
-                if (null !== $transaction) {
-                    $transaction->commit();
-                }
-
-                $this->afterSaveHandler($model);
-
-                $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
-
-                return true;
-            } catch (\Exception $e) {
-                if (null !== $transaction) {
-                    $transaction->rollBack();
-                }
-
-                throw $e;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return bool
-     *
-     * @throws \Exception
-     */
-    public function delete($id)
-    {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
-
-        $model = $this->getIntegrationById($id);
-        if (!$model) {
-            return false;
-        }
-
-        $beforeDeleteEvent = new DeleteEvent($model);
-        $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
-
-        if (!$beforeDeleteEvent->isValid) {
-            return false;
-        }
-
-        $transaction = \Craft::$app->getDb()->beginTransaction();
-
-        try {
-            $affectedRows = \Craft::$app->getDb()
-                ->createCommand()
-                ->delete(IntegrationRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
-
-            if (null !== $transaction) {
-                $transaction->commit();
-            }
-
-            $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
-
-            return (bool) $affectedRows;
-        } catch (\Exception $exception) {
-            if (null !== $transaction) {
-                $transaction->rollBack();
-            }
-
-            throw $exception;
-        }
-    }
-
-    /**
      * {@inheritDoc}
      */
     public function onAfterResponse(AbstractIntegration $integration, ResponseInterface $response)
     {
         $event = new IntegrationResponseEvent($integration, $response);
         $this->trigger(self::EVENT_AFTER_RESPONSE, $event);
-    }
-
-    /**
-     * Perform necessary actions after the integration has been saved.
-     */
-    protected function afterSaveHandler(IntegrationModel $model)
-    {
     }
 
     /**
@@ -316,9 +152,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
                     'integration.handle',
                     'integration.type',
                     'integration.class',
-                    'integration.accessToken',
-                    'integration.settings',
-                    'integration.forceUpdate',
+                    'integration.metadata',
                     'integration.lastUpdate',
                 ]
             )
@@ -330,12 +164,6 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
 
     protected function createIntegrationModel(array $data): IntegrationModel
     {
-        $model = new IntegrationModel($data);
-
-        $model->lastUpdate = new \DateTime($model->lastUpdate);
-        $model->forceUpdate = (bool) $model->forceUpdate;
-        $model->settings = $model->settings ? json_decode($model->settings, true) : [];
-
-        return $model;
+        return new IntegrationModel($data);
     }
 }

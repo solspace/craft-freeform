@@ -1,8 +1,6 @@
 import type { RootState } from '@editor/store';
-import type {
-  Integration,
-  IntegrationSetting,
-} from '@ff-client/types/integrations';
+import type { Integration } from '@ff-client/types/integrations';
+import type { Property } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -11,7 +9,7 @@ type IntegrationState = {
   dirty: boolean;
 } & Integration;
 
-type IntegrationModificationSettingPayload = {
+type IntegrationModificationPayload = {
   id: number;
   key: string;
   value: string | number | boolean;
@@ -26,11 +24,11 @@ const findIntegration = (
   return state.find((item) => item.id === id);
 };
 
-const findSetting = (
+const findProperty = (
   integration: IntegrationState,
   key: string
-): IntegrationSetting | undefined => {
-  return integration.settings.find((setting) => setting.handle === key);
+): Property | undefined => {
+  return integration.properties.find((property) => property.handle === key);
 };
 
 export const integrationsSlice = createSlice({
@@ -50,19 +48,19 @@ export const integrationsSlice = createSlice({
       const integration = findIntegration(state, action.payload);
       integration.enabled = !integration.enabled;
     },
-    modifyIntegrationSetting: (
+    modifyIntegrationProperty: (
       state,
-      action: PayloadAction<IntegrationModificationSettingPayload>
+      action: PayloadAction<IntegrationModificationPayload>
     ) => {
       const { id, key, value } = action.payload;
       const integration = findIntegration(state, id);
-      const setting = findSetting(integration, key);
-      setting.value = value;
+      const property = findProperty(integration, key);
+      property.value = value;
     },
   },
 });
 
-export const { addIntegrations, toggleIntegration, modifyIntegrationSetting } =
+export const { addIntegrations, toggleIntegration, modifyIntegrationProperty } =
   integrationsSlice.actions;
 
 export const selectIntegration =

@@ -15,17 +15,16 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Pro\Payments\SubscriptionModel;
 use Solspace\Freeform\Records\CrmFieldRecord;
@@ -34,25 +33,10 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class CrmService extends AbstractIntegrationService implements CRMHandlerInterface
 {
-    /** @var array */
-    private static $integrations;
+    private static ?array $integrations = null;
 
     /** @var PaymentModel[]|SubscriptionModel[] */
-    private $paymentAndSubscriptionCache = [];
-
-    /**
-     * Update the access token of an integration.
-     *
-     * @throws \Exception
-     */
-    public function updateAccessToken(AbstractCRMIntegration $integration)
-    {
-        $model = $this->getIntegrationById($integration->getId());
-        $model->accessToken = $integration->getAccessToken();
-        $model->settings = $integration->getSettings();
-
-        $this->save($model);
-    }
+    private array $paymentAndSubscriptionCache = [];
 
     /**
      * @throws \ReflectionException
@@ -64,59 +48,17 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
             $this->trigger(self::EVENT_FETCH_TYPES, $event);
             $types = $event->getTypes();
-            asort($types);
+            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
 
-            self::$integrations = $types;
+            $integrations = [];
+            foreach ($types as $type) {
+                $integrations[$type->class] = $type;
+            }
+
+            self::$integrations = $integrations;
         }
 
         return self::$integrations;
-    }
-
-    /**
-     * @throws \ReflectionException
-     */
-    public function getAllCRMSettingBlueprints(): array
-    {
-        $serviceProviderTypes = $this->getAllCRMServiceProviders();
-
-        // Get all blueprints per class
-        $settingBlueprints = [];
-
-        /**
-         * @var AbstractCRMIntegration $providerClass
-         * @var string                 $name
-         */
-        foreach ($serviceProviderTypes as $providerClass => $name) {
-            $settingBlueprints[$providerClass] = $providerClass::getSettingBlueprints();
-        }
-
-        return $settingBlueprints;
-    }
-
-    /**
-     * Get all setting blueprints for a specific CRM integration.
-     *
-     * @param string $class
-     *
-     * @return SettingBlueprint[]
-     *
-     * @throws IntegrationException
-     * @throws \ReflectionException
-     */
-    public function getCRMSettingBlueprints($class): array
-    {
-        $serviceProviderTypes = $this->getAllCRMServiceProviders();
-
-        /**
-         * @var AbstractCRMIntegration $providerClass
-         */
-        foreach ($serviceProviderTypes as $providerClass => $name) {
-            if ($providerClass === $class) {
-                return $providerClass::getSettingBlueprints();
-            }
-        }
-
-        throw new IntegrationException('Could not get CRM settings');
     }
 
     /**

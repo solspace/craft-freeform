@@ -13,12 +13,30 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Events\Integrations\DeleteEvent;
+use Solspace\Freeform\Events\Integrations\SaveEvent;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 
 class IntegrationsService extends BaseService
 {
+    public const EVENT_BEFORE_SAVE = 'beforeSave';
+    public const EVENT_AFTER_SAVE = 'afterSave';
+    public const EVENT_BEFORE_DELETE = 'beforeDelete';
+    public const EVENT_AFTER_DELETE = 'afterDelete';
+
+    public function __construct(
+        $config = [],
+        private PropertyProvider $propertyProvider,
+    ) {
+        parent::__construct($config);
+    }
+
     /**
      * @return IntegrationModel[]
      */
@@ -50,6 +68,127 @@ class IntegrationsService extends BaseService
         return $this->createIntegrationModel($result);
     }
 
+    public function save(IntegrationModel $model): bool
+    {
+        $isNew = !$model->id;
+
+        $beforeSaveEvent = new SaveEvent($model, $isNew);
+        $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
+
+        if ($isNew) {
+            $record = new IntegrationRecord();
+        } else {
+            $record = IntegrationRecord::findOne(['id' => $model->id]);
+
+            if (!$record) {
+                throw new IntegrationException(
+                    Freeform::t('Email Marketing integration with ID {id} not found', ['id' => $model->id])
+                );
+            }
+        }
+
+        $record->name = $model->name;
+        $record->handle = $model->handle;
+        $record->type = $model->type;
+        $record->class = $model->class;
+        $record->lastUpdate = new \DateTime();
+        $record->metadata = $model->metadata;
+
+        $record->validate();
+        $model->addErrors($record->getErrors());
+
+        if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
+            $transaction = \Craft::$app->getDb()->beginTransaction();
+
+            try {
+                $record->save(false);
+
+                if ($isNew) {
+                    $model->id = $record->id;
+                }
+
+                $transaction?->commit();
+
+                $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
+
+                return true;
+            } catch (\Exception $e) {
+                $transaction?->rollBack();
+
+                throw $e;
+            }
+        }
+
+        return false;
+    }
+
+    public function delete(int $id): bool
+    {
+        $model = $this->getById($id);
+        if (!$model) {
+            return false;
+        }
+
+        $beforeDeleteEvent = new DeleteEvent($model);
+        $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
+
+        if (!$beforeDeleteEvent->isValid) {
+            return false;
+        }
+
+        $transaction = \Craft::$app->getDb()->beginTransaction();
+
+        try {
+            $affectedRows = \Craft::$app->getDb()
+                ->createCommand()
+                ->delete(IntegrationRecord::TABLE, ['id' => $model->id])
+                ->execute()
+            ;
+
+            $transaction?->commit();
+
+            $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
+
+            return (bool) $affectedRows;
+        } catch (\Exception $exception) {
+            $transaction?->rollBack();
+
+            throw $exception;
+        }
+    }
+
+    public function updateModelFromIntegration(IntegrationModel $model, IntegrationInterface $integration)
+    {
+        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
+
+        $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
+        $reflection = new \ReflectionClass($model->class);
+        foreach ($editableProperties as $property) {
+            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
+                continue;
+            }
+
+            $handle = $property->handle;
+            $instanceProperty = $reflection->getProperty($handle);
+            $value = $instanceProperty->getValue($integration);
+
+            if (!$value && $property->required) {
+                $model->addError(
+                    $model->class.$handle,
+                    Freeform::t('{key} is required', ['key' => $property->label])
+                );
+
+                continue;
+            }
+
+            if ($property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
+            }
+
+            $model->metadata[$property->handle] = $value;
+        }
+    }
+
     protected function getQuery(): Query
     {
         return (new Query())
@@ -60,9 +199,7 @@ class IntegrationsService extends BaseService
                     'integration.handle',
                     'integration.type',
                     'integration.class',
-                    'integration.accessToken',
-                    'integration.settings',
-                    'integration.forceUpdate',
+                    'integration.metadata',
                     'integration.lastUpdate',
                 ]
             )
@@ -73,12 +210,6 @@ class IntegrationsService extends BaseService
 
     protected function createIntegrationModel(array $data): IntegrationModel
     {
-        $model = new IntegrationModel($data);
-
-        $model->lastUpdate = new \DateTime($model->lastUpdate);
-        $model->forceUpdate = (bool) $model->forceUpdate;
-        $model->settings = $model->settings ? json_decode($model->settings, true) : [];
-
-        return $model;
+        return new IntegrationModel($data);
     }
 }

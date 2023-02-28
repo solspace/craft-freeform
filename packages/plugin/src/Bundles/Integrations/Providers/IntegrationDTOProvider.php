@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\Providers;
 
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Library\DataObjects\Integrations\Integration;
 use Solspace\Freeform\Library\DataObjects\Integrations\IntegrationCategory;
-use Solspace\Freeform\Library\DataObjects\Integrations\IntegrationSetting;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 
@@ -17,6 +17,10 @@ class IntegrationDTOProvider
         IntegrationRecord::TYPE_MAILING_LIST => 'Email Marketing',
         IntegrationRecord::TYPE_PAYMENT_GATEWAY => 'Payments',
     ];
+
+    public function __construct(private PropertyProvider $propertyProvider)
+    {
+    }
 
     public function convertOne(IntegrationModel $model): ?Integration
     {
@@ -30,9 +34,11 @@ class IntegrationDTOProvider
      */
     public function convert(array $models): array
     {
-        return array_map(
-            fn ($model) => $this->createDTOFromModel($model),
-            $models
+        return array_filter(
+            array_map(
+                fn ($model) => $this->createDTOFromModel($model),
+                $models
+            )
         );
     }
 
@@ -63,12 +69,24 @@ class IntegrationDTOProvider
         return array_values($categories);
     }
 
-    private function createDTOFromModel(IntegrationModel $model): Integration
+    private function createDTOFromModel(IntegrationModel $model): ?Integration
     {
         /** @var IntegrationInterface $class */
         $class = $model->class;
 
-        $icon = $class::getIconPath();
+        $reflection = new \ReflectionClass($class);
+
+        $typeAttributes = $reflection->getAttributes(Type::class);
+        $type = reset($typeAttributes);
+
+        $type = $type ? $type->newInstance() : null;
+
+        /** @var Type $type */
+        if (!$type) {
+            return null;
+        }
+
+        $icon = $type->iconPath;
         if ($icon) {
             [$_, $icon] = \Craft::$app->assetManager->publish($icon);
         }
@@ -79,28 +97,11 @@ class IntegrationDTOProvider
         $dto->handle = $model->handle;
         $dto->type = $model->type;
         $dto->icon = $icon;
-        $dto->settings = [];
-
-        /** @var SettingBlueprint[] $blueprints */
-        $blueprints = $class::getSettingBlueprints();
-        foreach ($blueprints as $blueprint) {
-            if (!$blueprint->isInstanceSetting()) {
-                continue;
-            }
-
-            $handle = $blueprint->getHandle();
-            $value = $model->settings[$handle] ?? $blueprint->getDefaultValue();
-
-            $settingDto = new IntegrationSetting();
-            $settingDto->type = $blueprint->getType();
-            $settingDto->name = $blueprint->getLabel();
-            $settingDto->handle = $handle;
-            $settingDto->required = $blueprint->isRequired();
-            $settingDto->instructions = $blueprint->getInstructions();
-            $settingDto->value = $value;
-
-            $dto->settings[] = $settingDto;
-        }
+        $dto->properties = $this->propertyProvider->getEditableProperties($class, $model->getIntegrationObject());
+        $dto->properties->removeFlagged(
+            IntegrationInterface::FLAG_INTERNAL,
+            IntegrationInterface::FLAG_GLOBAL_PROPERTY,
+        );
 
         return $dto;
     }

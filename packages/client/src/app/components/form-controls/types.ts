@@ -1,7 +1,8 @@
 import type { Property } from '@ff-client/types/properties';
 
-export type FormControlType<T, P extends Property = Property> = {
+export type ControlType<T, C = unknown> = {
+  property: Property;
   value: T;
-  property: P;
-  onUpdateValue: (value: T) => void;
+  updateValue: (value: T) => void;
+  context?: C;
 };

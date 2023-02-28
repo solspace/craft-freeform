@@ -204,7 +204,7 @@ class MailChimp extends AbstractMailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function fetchAccessToken(): string
+    public function fetchTokens(): string
     {
         return $this->getSetting(self::SETTING_API_KEY);
     }
@@ -224,7 +224,7 @@ class MailChimp extends AbstractMailingListIntegration
         }
 
         $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
-        $model->updateSettings($this->getSettings());
+        $model->updateProperties($this->getSettings());
     }
 
     /**

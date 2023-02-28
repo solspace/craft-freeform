@@ -12,10 +12,12 @@
 
 namespace Solspace\Freeform\Library\Integrations;
 
+use craft\helpers\App;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -23,81 +25,18 @@ use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractIntegration implements IntegrationInterface
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $name;
-
-    /** @var \DateTime */
-    private $lastUpdate;
-
-    /** @var string */
-    private $accessToken;
-
-    /** @var bool */
-    private $accessTokenUpdated;
-
-    /** @var array */
-    private $settings;
-
-    /** @var ConfigurationInterface */
-    private $configuration;
-
-    /** @var LoggerInterface */
-    private $logger;
-
-    /** @var bool */
-    private $forceUpdate;
-
-    /** @var TranslatorInterface */
-    private $translator;
-
-    /** @var IntegrationHandlerInterface */
-    private $handler;
-
-    /**
-     * @param int        $id
-     * @param string     $name
-     * @param string     $accessToken
-     * @param null|array $settings
-     */
     public function __construct(
-        $id,
-        $name,
-        \DateTime $lastUpdate,
-        $accessToken,
-        $settings,
-        LoggerInterface $logger,
-        ConfigurationInterface $configuration,
-        TranslatorInterface $translator,
-        IntegrationHandlerInterface $handler
+        private ?int $id,
+        private string $handle,
+        private string $name,
+        private \DateTime $lastUpdate,
+        array $properties,
+        private LoggerInterface $logger,
+        private TranslatorInterface $translator,
+        private IntegrationHandlerInterface $handler,
+        private PropertyProvider $propertyProvider,
     ) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->lastUpdate = $lastUpdate;
-        $this->accessToken = $accessToken;
-        $this->settings = $settings;
-        $this->logger = $logger;
-        $this->configuration = $configuration;
-        $this->translator = $translator;
-        $this->handler = $handler;
-    }
-
-    public static function getIconPath(): ?string
-    {
-        return null;
-    }
-
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
-    {
-        return [];
+        $this->processProperties($properties);
     }
 
     /**
@@ -107,17 +46,17 @@ abstract class AbstractIntegration implements IntegrationInterface
      */
     abstract public function checkConnection(): bool;
 
-    /**
-     * Returns true if this connection uses the OAuth2 protocol.
-     */
-    abstract public function isOAuthConnection(): bool;
-
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getName(): string
+    public function getHandle(): string
+    {
+        return $this->handle;
+    }
+
+    public function getName(): ?string
     {
         return $this->name;
     }
@@ -128,79 +67,26 @@ abstract class AbstractIntegration implements IntegrationInterface
     }
 
     /**
-     * Setting this to true will force re-fetching of all lists.
-     */
-    final public function setForceUpdate(bool $value)
-    {
-        $this->forceUpdate = $value;
-    }
-
-    final public function isForceUpdate(): bool
-    {
-        return (bool) $this->forceUpdate;
-    }
-
-    /**
      * Returns the MailingList service provider short name
      * i.e. - MailChimp, Constant Contact, etc...
-     *
-     * @throws \ReflectionException
      */
     public function getServiceProvider(): string
     {
-        $reflection = new \ReflectionClass($this);
-
-        return $reflection->getShortName();
+        return (new \ReflectionClass($this))->getShortName();
     }
 
     /**
      * A method that initiates the authentication.
      */
-    abstract public function initiateAuthentication();
-
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    abstract public function fetchAccessToken(): string;
+    public function initiateAuthentication(): void
+    {
+    }
 
     /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave(IntegrationStorageInterface $model)
+    public function onBeforeSave()
     {
-    }
-
-    final public function getSettings(): array
-    {
-        return $this->settings ?: [];
-    }
-
-    /**
-     * @return null|string
-     */
-    final public function getAccessToken()
-    {
-        return $this->accessToken;
-    }
-
-    public function isAccessTokenUpdated(): bool
-    {
-        return $this->accessTokenUpdated ?? false;
-    }
-
-    /**
-     * @param bool $accessTokenUpdated
-     *
-     * @return $this
-     */
-    public function setAccessTokenUpdated($accessTokenUpdated)
-    {
-        $this->accessTokenUpdated = (bool) $accessTokenUpdated;
-
-        return $this;
     }
 
     /**
@@ -277,11 +163,6 @@ abstract class AbstractIntegration implements IntegrationInterface
         }
     }
 
-    final protected function setAccessToken(string $accessToken)
-    {
-        $this->accessToken = $accessToken;
-    }
-
     protected function getHandler(): IntegrationHandlerInterface
     {
         return $this->handler;
@@ -297,14 +178,19 @@ abstract class AbstractIntegration implements IntegrationInterface
         return $this->translator;
     }
 
+    protected function getProcessedValue(mixed $value): bool|string|null
+    {
+        return App::parseEnv($value);
+    }
+
     abstract protected function getApiRootUrl(): string;
+
+    abstract protected function generateAuthorizedClient(): Client;
 
     /**
      * Returns a combined URL of api root + endpoint.
-     *
-     * @param string $endpoint
      */
-    final protected function getEndpoint($endpoint): string
+    final protected function getEndpoint(string $endpoint): string
     {
         $root = rtrim($this->getApiRootUrl(), '/');
         $endpoint = ltrim($endpoint, '/');
@@ -312,79 +198,23 @@ abstract class AbstractIntegration implements IntegrationInterface
         return "{$root}/{$endpoint}";
     }
 
-    /**
-     * Get settings by handle.
-     *
-     * @param string $handle
-     *
-     * @return null|mixed
-     *
-     * @throws IntegrationException
-     */
-    final protected function getSetting($handle)
+    private function processProperties(array $properties = []): void
     {
-        $blueprint = $this->getSettingBlueprint($handle);
+        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
 
-        if (SettingBlueprint::TYPE_CONFIG === $blueprint->getType()) {
-            return $this->configuration->get($blueprint->getHandle());
-        }
-
-        if (isset($this->settings[$handle])) {
-            if (SettingBlueprint::TYPE_BOOL === $blueprint->getType()) {
-                return (bool) $this->settings[$handle];
+        $classProperties = $this->propertyProvider->getEditableProperties(static::class);
+        foreach ($classProperties as $property) {
+            $handle = $property->handle;
+            if (!\array_key_exists($handle, $properties)) {
+                continue;
             }
 
-            return \Craft::parseEnv($this->settings[$handle]);
-        }
-
-        if ($blueprint->isRequired()) {
-            throw new IntegrationException(
-                $this->getTranslator()->translate(
-                    '{setting} setting not specified',
-                    ['setting' => $blueprint->getLabel()]
-                )
-            );
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $handle
-     * @param mixed  $value
-     *
-     * @return $this
-     *
-     * @throws IntegrationException
-     */
-    final protected function setSetting($handle, $value)
-    {
-        // Check for blueprint validity
-        $this->getSettingBlueprint($handle);
-
-        $this->settings[$handle] = $value;
-
-        return $this;
-    }
-
-    /**
-     * @param string $handle
-     *
-     * @throws IntegrationException
-     */
-    private function getSettingBlueprint($handle): SettingBlueprint
-    {
-        foreach (static::getSettingBlueprints() as $blueprint) {
-            if ($blueprint->getHandle() === $handle) {
-                return $blueprint;
+            $value = $properties[$handle];
+            if ($property->hasFlag(self::FLAG_ENCRYPTED)) {
+                $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
             }
-        }
 
-        throw new IntegrationException(
-            $this->getTranslator()->translate(
-                'Could not find setting blueprints for {handle}',
-                ['handle' => $handle]
-            )
-        );
+            $this->{$handle} = $value;
+        }
     }
 }

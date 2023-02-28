@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { Field as FieldInput } from '@components/__refactor/form-controls/controls/base-control.styles';
 import { ApiErrorsBlock } from '@components/errors/api-errors';
-import { Field as FieldInput } from '@components/form-controls/controls/base-control.styles';
 import type { Field } from '@editor/store/slices/fields';
 import type { FieldType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
-import { Label } from '../form-controls/control.styles';
+import { Label } from '../../../../../../../../components/form-controls/control.styles';
 
 import { ButtonContainer, FavoriteFormWrapper } from './favorite.form.styles';
 import type { FavoriteMutationResult } from './favorite.queries';

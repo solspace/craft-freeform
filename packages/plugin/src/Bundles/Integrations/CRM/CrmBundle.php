@@ -2,10 +2,13 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\CRM;
 
+use Composer\Autoload\ClassMapGenerator;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Services\CrmService;
 use yii\base\Event;
 
 class CrmBundle extends FeatureBundle
@@ -20,6 +23,12 @@ class CrmBundle extends FeatureBundle
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'handleIntegrations']
+        );
+
+        Event::on(
+            CrmService::class,
+            CrmService::EVENT_FETCH_TYPES,
+            [$this, 'registerTypes']
         );
     }
 
@@ -37,5 +46,17 @@ class CrmBundle extends FeatureBundle
         }
 
         $this->plugin()->crm->pushObject($submission);
+    }
+
+    public function registerTypes(FetchCrmTypesEvent $event): void
+    {
+        $path = \Craft::getAlias('@freeform/Integrations/CRM');
+
+        $classMap = ClassMapGenerator::createMap($path);
+        $classes = array_keys($classMap);
+
+        foreach ($classes as $class) {
+            $event->addType($class);
+        }
     }
 }

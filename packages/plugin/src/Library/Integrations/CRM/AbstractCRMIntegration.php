@@ -12,60 +12,12 @@
 
 namespace Solspace\Freeform\Library\Integrations\CRM;
 
-use Psr\Log\LoggerInterface;
-use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractCRMIntegration extends AbstractIntegration implements CRMIntegrationInterface, \JsonSerializable
 {
-    /** @var CRMHandlerInterface */
-    private $crmHandler;
-
-    /**
-     * AbstractMailingList constructor.
-     *
-     * @param int        $id
-     * @param string     $name
-     * @param string     $accessToken
-     * @param null|array $settings
-     */
-    final public function __construct(
-        $id,
-        $name,
-        \DateTime $lastUpdate,
-        $accessToken,
-        $settings,
-        LoggerInterface $logger,
-        ConfigurationInterface $configuration,
-        TranslatorInterface $translator,
-        CRMHandlerInterface $crmHandler
-    ) {
-        parent::__construct(
-            $id,
-            $name,
-            $lastUpdate,
-            $accessToken,
-            $settings,
-            $logger,
-            $configuration,
-            $translator,
-            $crmHandler
-        );
-
-        $this->crmHandler = $crmHandler;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isOAuthConnection(): bool
-    {
-        return $this instanceof CRMOAuthConnector;
-    }
-
     /**
      * @return FieldObject[]
      */
@@ -73,9 +25,9 @@ abstract class AbstractCRMIntegration extends AbstractIntegration implements CRM
     {
         if ($this->isForceUpdate()) {
             $fields = $this->fetchFields();
-            $this->crmHandler->updateFields($this, $fields);
+            $this->getHandler()->updateFields($this, $fields);
         } else {
-            $fields = $this->crmHandler->getFields($this);
+            $fields = $this->getHandler()->getFields($this);
         }
 
         return $fields;
@@ -106,5 +58,10 @@ abstract class AbstractCRMIntegration extends AbstractIntegration implements CRM
             'name' => $this->getName(),
             'fields' => $fields,
         ];
+    }
+
+    protected function getHandler(): CRMHandlerInterface
+    {
+        return parent::getHandler();
     }
 }

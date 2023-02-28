@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { FormControlGenerator } from '@components/form-controls/form-control-generator';
+import { FormControlGenerator } from '@components/__refactor/form-controls/form-control-generator';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 

@@ -231,7 +231,7 @@ class Freshdesk extends AbstractCRMIntegration
             ->get($this->getEndpoint('/ticket_fields'))
         ;
 
-        $data = \GuzzleHttp\json_decode($response->getBody(), false);
+        $data = json_decode($response->getBody(), false);
         foreach ($data as $field) {
             if ($field->default) {
                 continue;

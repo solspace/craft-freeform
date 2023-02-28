@@ -267,7 +267,7 @@ class WebhooksService extends BaseService
         $settings = $data['settings'] ?? [];
 
         if (\is_string($settings)) {
-            $settings = \GuzzleHttp\json_decode($settings, true);
+            $settings = json_decode($settings, true);
         }
 
         if (!$id || !$type || !class_exists($type)) {

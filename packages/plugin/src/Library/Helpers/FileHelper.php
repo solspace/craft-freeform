@@ -65,6 +65,7 @@ class FileHelper
         'application/x-gzip' => 'gzip',
         'image/heic' => 'heic',
         'image/heif' => 'heif',
+        'image/webp' => 'webp',
         'application/mac-binhex40' => 'hqx',
         'application/mac-binhex' => 'hqx',
         'application/x-binhex40' => 'hqx',

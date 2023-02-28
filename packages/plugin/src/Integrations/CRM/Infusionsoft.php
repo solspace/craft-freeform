@@ -85,7 +85,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             $response = $client->put($endpoint, ['json' => $keyValueList]);
             $this->getHandler()->onAfterResponse($this, $response);
             if (\count($applyTags) > 0) {
-                $responseBody = \GuzzleHttp\json_decode((string) $response->getBody(), true);
+                $responseBody = json_decode((string) $response->getBody(), true);
                 $endpoint = $this->getEndpoint('/contacts/'.$responseBody['id'].'/tags');
                 $response = $client->post(
                     $endpoint,
@@ -108,7 +108,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
 
             if (400 === $exceptionResponse->getStatusCode()) {
-                $errors = \GuzzleHttp\json_decode($exceptionResponse->getBody(), false);
+                $errors = json_decode($exceptionResponse->getBody(), false);
 
                 if (\is_array($errors)) {
                     foreach ($errors as $error) {
@@ -133,7 +133,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
 
         $response = $client->get($endpoint);
 
-        $json = \GuzzleHttp\json_decode($response->getBody(), true);
+        $json = json_decode($response->getBody(), true);
 
         return !empty($json);
     }
@@ -162,7 +162,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             return [];
         }
 
-        $data = \GuzzleHttp\json_decode($response->getBody(), false);
+        $data = json_decode($response->getBody(), false);
 
         $fieldList = self::getDefaultFields();
 
@@ -252,7 +252,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             throw new IntegrationException((string) $e->getResponse()->getBody());
         }
 
-        $json = \GuzzleHttp\json_decode($response->getBody(), false);
+        $json = json_decode($response->getBody(), false);
 
         if (!isset($json->access_token)) {
             throw new IntegrationException(

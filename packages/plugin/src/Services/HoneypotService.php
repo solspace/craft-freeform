@@ -199,7 +199,7 @@ class HoneypotService extends BaseService
      */
     private function getHoneypotList(): array
     {
-        $sessionHoneypotList = \GuzzleHttp\json_decode(
+        $sessionHoneypotList = json_decode(
             \Craft::$app->session->get(self::FORM_HONEYPOT_KEY, '[]'),
             true
         );
@@ -266,7 +266,7 @@ class HoneypotService extends BaseService
     {
         \Craft::$app->session->set(
             self::FORM_HONEYPOT_KEY,
-            \GuzzleHttp\json_encode($honeypotList)
+            json_encode($honeypotList)
         );
     }
 

@@ -107,7 +107,7 @@ abstract class AbstractExport implements ExportInterface
 
                     if ($field instanceof MultipleValueInterface) {
                         if (preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
-                            $value = (array) \GuzzleHttp\json_decode($value, true);
+                            $value = (array) json_decode($value, true);
                         }
                     }
 

@@ -67,7 +67,7 @@ export default class Connections extends BasePropertyEditor {
         </ul>
 
         <button className="btn add icon" onClick={this.props.addConnection}>
-          Add a connection
+          {translate('Add a connection')}
         </button>
       </div>
     );

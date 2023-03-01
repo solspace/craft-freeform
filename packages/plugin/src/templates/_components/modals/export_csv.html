@@ -25,12 +25,12 @@
     <input type="hidden" name="spam" value="{{ isSpam ? "1" }}" />
 
     <div class="header">
-        <h1>{{ "Export data"|t }}</h1>
+        <h1>{{ "Export data"|t('freeform') }}</h1>
     </div>
     <div class="body">
         <div class="field">
             <div class="heading">
-                <label>{{ "Export as"|t }}</label>
+                <label>{{ "Export as"|t('freeform') }}</label>
             </div>
             <div class="select">
                 <select class="select" name="export_type">
@@ -43,7 +43,7 @@
 
         <div class="field">
             <div class="heading">
-                <label>{{ "Form"|t }}</label>
+                <label>{{ "Form"|t('freeform') }}</label>
             </div>
             <div class="select">
                 <select class="select" name="form_id">
@@ -62,7 +62,7 @@
 
             <div class="form-field-list field{{ form.id != selectedFormId ? ' hidden' }}" data-id="{{ form.id }}">
                 <div class="heading">
-                    <label>{{ ("Fields for"|t) ~ " " ~ form.name }}</label>
+                    <label>{{ ("Fields for"|t('freeform')) ~ " " ~ form.name }}</label>
                 </div>
                 <div class="checkbox-select">
                     {% for fieldId, fieldSetting in fields %}
@@ -98,8 +98,8 @@
     </div>
     <div class="footer">
         <div class="buttons right last">
-            <input type="button" class="btn cancel" value="{{ "Cancel"|t }}"/>
-            <input type="submit" class="btn submit" value="{{ "Export"|t }}"/>
+            <input type="button" class="btn cancel" value="{{ 'Cancel'|t('freeform') }}"/>
+            <input type="submit" class="btn submit" value="{{ 'Export'|t('freeform') }}"/>
 
             <div class="spinner" style="display: none;"></div>
         </div>

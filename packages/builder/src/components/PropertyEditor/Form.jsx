@@ -17,6 +17,7 @@ import {
   SUCCESS_BEHAVIOUR_RELOAD,
   SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL,
 } from '../../constants/Form';
+import { translate } from '../../app';
 
 @connect((state) => ({
   formTypes: state.formTypes,
@@ -143,13 +144,13 @@ export default class Form extends BasePropertyEditor {
     let optionGroups = [];
     if (isDefaultTemplates || !templateList.length) {
       optionGroups.push({
-        label: 'Solspace Templates',
+        label: translate('Solspace Templates'),
         options: solspaceTemplateList,
       });
     }
 
     optionGroups.push({
-      label: 'Custom Templates',
+      label: translate('Custom Templates'),
       options: templateList,
     });
 
@@ -204,9 +205,9 @@ export default class Form extends BasePropertyEditor {
           value={successBehaviour}
           onChangeHandler={this.updateMetadata}
           options={[
-            { key: SUCCESS_BEHAVIOUR_RELOAD, value: 'Reload Form with Success Message' },
-            { key: SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, value: 'Load Success Template' },
-            { key: SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, value: 'Use Return URL' },
+            { key: SUCCESS_BEHAVIOUR_RELOAD, value: translate('Reload Form with Success Message') },
+            { key: SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, value: translate('Load Success Template') },
+            { key: SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, value: translate('Use Return URL') },
           ]}
         />
 

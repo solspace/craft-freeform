@@ -4,6 +4,7 @@ import * as consts from '@ff/builder/constants/Payments';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { translate } from '../../../../app';
 import BasePropertyEditor from '../../BasePropertyEditor';
 import CustomProperty from '../../PropertyItems/CustomProperty';
 import NumberProperty from '../../PropertyItems/NumberPoperty';
@@ -190,7 +191,7 @@ export default class PaymentFieldsMapping extends BasePropertyEditor {
         {this.checkFixedFieldVisibility(consts.PAYMENT_FIELD_PLAN) && (
           <SelectProperty
             label="Fixed Subscription Plan"
-            instructions="Select one of existing subscription plans"
+            instructions="Select an existing subscription plan"
             emptyOption="Choose a subscription plan..."
             name="plan"
             value={plan}
@@ -224,7 +225,7 @@ export default class PaymentFieldsMapping extends BasePropertyEditor {
 
         {this.checkFieldVisibility(consts.PAYMENT_FIELD_PLAN) && (
           <button className="btn download icon" onClick={fetchPlans} disabled={isFetching}>
-            {isFetching ? 'Refreshing...' : 'Refresh plans'}
+            {translate(isFetching ? 'Refreshing...' : 'Refresh plans')}
           </button>
         )}
 

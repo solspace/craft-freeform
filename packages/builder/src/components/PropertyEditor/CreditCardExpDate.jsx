@@ -75,7 +75,7 @@ export default class CreditCardExpDate extends BasePropertyEditor {
 
         <TextProperty
           label="Placeholder"
-          instructions="Field placeholder."
+          instructions="Field placeholder"
           name="placeholder"
           value={placeholder}
           onChangeHandler={this.updateChildField}

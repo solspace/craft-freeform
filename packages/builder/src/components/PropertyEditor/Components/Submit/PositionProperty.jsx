@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import { translate } from '../../../../app';
 import * as SubmitPositions from '../../../../constants/SubmitPositions';
 import CustomProperty from '../../PropertyItems/CustomProperty';
 
@@ -34,7 +35,7 @@ export default class PositionProperty extends Component {
                 checked={position === SubmitPositions.LEFT}
                 onChange={onChangeHandler}
               />
-              Left
+              {translate('Left')}
             </label>
           </div>
           <div>
@@ -46,7 +47,7 @@ export default class PositionProperty extends Component {
                 checked={position === SubmitPositions.CENTER}
                 onChange={onChangeHandler}
               />
-              Center
+              {translate('Center')}
             </label>
           </div>
           <div>
@@ -58,7 +59,7 @@ export default class PositionProperty extends Component {
                 checked={position === SubmitPositions.RIGHT}
                 onChange={onChangeHandler}
               />
-              Right
+              {translate('Right')}
             </label>
           </div>
         </div>

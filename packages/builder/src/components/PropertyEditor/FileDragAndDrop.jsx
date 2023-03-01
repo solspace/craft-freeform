@@ -119,7 +119,7 @@ export default class FileDragAndDrop extends BasePropertyEditor {
 
         <TextProperty
           label="Placeholder"
-          instructions="Field placeholder."
+          instructions="Field placeholder"
           name="placeholder"
           placeholder="Drag and drop files here or click to upload"
           value={placeholder}

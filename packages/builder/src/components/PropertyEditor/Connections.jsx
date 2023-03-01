@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { translate } from '../../app';
 import { addConnection, removeConnection, updateConnection } from './../../actions/Connections';
 import BasePropertyEditor from './BasePropertyEditor';
 import ConnectionWrapper from './Components/Connections/ConnectionWrapper';
@@ -67,7 +68,7 @@ export default class Connections extends BasePropertyEditor {
         </ul>
 
         <button className="btn add icon" onClick={this.props.addConnection}>
-          Add a connection
+          {translate('Add a connection')}
         </button>
       </div>
     );

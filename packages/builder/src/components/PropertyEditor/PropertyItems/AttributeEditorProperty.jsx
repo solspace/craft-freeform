@@ -4,8 +4,8 @@ import { translate } from '../../../app';
 import { CustomProperty, MatrixEditorProperty } from './';
 
 export const attributeColumns = [
-  { handle: 'attribute', label: 'Attribute' },
-  { handle: 'value', label: 'Value' },
+  { handle: 'attribute', label: translate('Attribute') },
+  { handle: 'value', label: translate('Value') },
 ];
 
 export default class AttributeEditorProperty extends Component {

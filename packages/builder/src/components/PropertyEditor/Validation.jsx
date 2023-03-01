@@ -15,6 +15,7 @@ import {
   LIMIT_AUTH_IP_COOKIE,
   LIMIT_AUTH,
 } from '../../constants/Form';
+import { translate } from '../../app';
 
 @connect((state) => ({
   properties: state.composer.properties,
@@ -105,12 +106,12 @@ export default class Validation extends BasePropertyEditor {
             emptyOption="Do not limit"
             onChangeHandler={this.update}
             options={[
-              { key: LIMIT_AUTH_UNLIMITED, value: 'Logged in Users only (no limit)' },
-              { key: LIMIT_COOKIE, value: 'Once per Cookie only' },
-              { key: LIMIT_IP_COOKIE, value: 'Once per IP/Cookie combo' },
-              { key: LIMIT_AUTH, value: 'Once per logged in Users only' },
-              { key: LIMIT_AUTH_COOKIE, value: 'Once per logged in User or Guest Cookie only' },
-              { key: LIMIT_AUTH_IP_COOKIE, value: 'Once per logged in User or Guest IP/Cookie combo' },
+              { key: LIMIT_AUTH_UNLIMITED, value: translate('Logged in Users only (no limit)') },
+              { key: LIMIT_COOKIE, value: translate('Once per Cookie only') },
+              { key: LIMIT_IP_COOKIE, value: translate('Once per IP/Cookie combo') },
+              { key: LIMIT_AUTH, value: translate('Once per logged in Users only') },
+              { key: LIMIT_AUTH_COOKIE, value: translate('Once per logged in User or Guest Cookie only') },
+              { key: LIMIT_AUTH_IP_COOKIE, value: translate('Once per logged in User or Guest IP/Cookie combo') },
             ]}
           />
         )}

@@ -20,7 +20,7 @@ export default class TextareaProperty extends BasePropertyItem {
         onChange={onChangeHandler}
         value={value}
         data-nullable={!!nullable}
-        placeholder={placeholder}
+        placeholder={placeholder ? this.translate(placeholder) : ''}
       />
     );
   }

@@ -29,7 +29,7 @@ class Cookies extends FeatureBundle
         $name = self::getCookieName($form);
         $value = time();
 
-        if (version_compare(phpversion(), '7.3', '<')) {
+        if (version_compare(PHP_VERSION, '7.3', '<')) {
             setcookie(
                 $name,
                 $value,

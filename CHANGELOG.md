@@ -1,5 +1,21 @@
 # Solspace Freeform Changelog
 
+## 4.0.17 - 2023-03-01
+
+### Added
+- Added support for `.eps` files in the Freeform file helper validation.
+- Added support for `.webp` files in the Freeform file helper validation.
+
+### Changed
+- Updated English and Dutch (NL) translations to include all missing items.
+- Updated default Freeform formatting templates to no longer include `lineHeight` for Stripe fields.
+- Updated Signature field data to be included in exports.
+
+### Fixed
+- Fixed a bug where many items where not translatable in the Freeform control panel.
+- Fixed a bug where using "Database Tables" for session storage context would result in an error when submitting forms.
+- Fixed a bug where some migrations and integrations could error when using Guzzle JSON calls.
+
 ## 4.0.16 - 2023-02-23
 
 ### Fixed

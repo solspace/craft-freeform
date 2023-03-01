@@ -12,7 +12,7 @@
 - Updated Signature field data to be included in exports.
 
 ### Fixed
-- Fixed a bug where many items where not translatable in the Freeform control panel.
+- Fixed a bug where many items were not translatable in the Freeform control panel.
 - Fixed a bug where using "Database Tables" for session storage context would result in an error when submitting forms.
 - Fixed a bug where some migrations and integrations could error when using Guzzle JSON calls.
 

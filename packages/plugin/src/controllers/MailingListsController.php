@@ -13,28 +13,31 @@
 namespace Solspace\Freeform\controllers;
 
 use craft\helpers\UrlHelper;
+use GuzzleHttp\Exception\RequestException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\MailingLists\MailingListOAuthConnector;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListOAuthConnector;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\MailingListsBundle;
 use Solspace\Freeform\Services\IntegrationsService;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class MailingListsController extends BaseController
 {
-    public function __construct($id, $module, $config = [], private IntegrationsService $integrationsService)
-    {
+    public function __construct(
+        $id,
+        $module,
+        $config = [],
+        private IntegrationsService $integrationsService
+    ) {
         parent::__construct($id, $module, $config);
     }
 
-    /**
-     * Make sure this controller requires a logged in member.
-     */
     public function init(): void
     {
         if (!\Craft::$app->request->getIsConsoleRequest()) {
@@ -44,22 +47,19 @@ class MailingListsController extends BaseController
         parent::init();
     }
 
-    /**
-     * Presents a list of all mailing list integrations.
-     */
     public function actionIndex(): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
-        $mailingListIntegrations = $this->getMailingListsService()->getAllIntegrations();
+        $integrations = $this->getMailingListsService()->getAllIntegrations();
 
         \Craft::$app->view->registerAssetBundle(MailingListsBundle::class);
 
         return $this->renderTemplate(
             'freeform/settings/_mailing_lists',
             [
-                'integrations' => $mailingListIntegrations,
-                'providers' => $this->getMailingListsService()->getAllMailingListServiceProviders(),
+                'integrations' => $integrations,
+                'providers' => $this->getMailingListsService()->getAllServiceProviders(),
             ]
         );
     }
@@ -69,11 +69,12 @@ class MailingListsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $model = IntegrationModel::create(IntegrationRecord::TYPE_MAILING_LIST);
+        $title = Freeform::t('Create new mailing list');
 
-        return $this->renderEditForm($model, 'Create new mailing list');
+        return $this->renderEditForm($model, $title);
     }
 
-    public function actionEdit(int $id = null, IntegrationModel $model = null): Response
+    public function actionEdit(mixed $id = null, IntegrationModel $model = null): Response
     {
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
@@ -140,54 +141,29 @@ class MailingListsController extends BaseController
             );
         }
 
-        $isNewIntegration = !$model->id;
-
         $postedClass = $post['class'];
         $model->class = $postedClass;
 
-        $postedClassSettings = $post['settings'][$postedClass] ?? [];
-        unset($post['settings']);
-
-        $settingBlueprints = $this->getMailingListsService()->getMailingListSettingBlueprints($postedClass);
-
-        foreach ($postedClassSettings as $key => $value) {
-            $isValueValid = false;
-
-            foreach ($settingBlueprints as $blueprint) {
-                if ($blueprint->getHandle() === $key) {
-                    $isValueValid = true;
-
-                    break;
-                }
-            }
-
-            if (!$isValueValid) {
-                unset($postedClassSettings[$key]);
-            }
-        }
-
-        // Adding hidden stored settings to the list
-        foreach ($model->getIntegrationObject()->getSettings() as $key => $value) {
-            if (!isset($postedClassSettings[$key])) {
-                $postedClassSettings[$key] = $value;
-            }
-        }
-
-        $post['settings'] = $postedClassSettings ?: null;
+        $postedClassSettings = $post['properties'][$postedClass] ?? [];
+        unset($post['properties']);
+        $post['metadata'] = $postedClassSettings ?: null;
 
         $model->setAttributes($post);
+        $this->integrationsService->parsePostedModelData($model);
+
+        $integration = $model->getIntegrationObject();
 
         try {
-            $model->getIntegrationObject()->onBeforeSave($model);
+            $integration->onBeforeSave();
         } catch (\Exception $e) {
             $model->addError('integration', $e->getMessage());
         }
 
-        if (!$model->getErrors() && $this->integrationsService->save($model)) {
+        $this->integrationsService->updateModelFromIntegration($model, $integration);
+
+        if ($this->integrationsService->save($model)) {
             // If it's a new integration - we make the user complete OAuth2 authentication
-            if ($isNewIntegration) {
-                $model->getIntegrationObject()->initiateAuthentication();
-            }
+            $model->getIntegrationObject()->initiateAuthentication();
 
             // Return JSON response if the request is an AJAX request
             if (\Craft::$app->request->isAjax) {
@@ -222,8 +198,8 @@ class MailingListsController extends BaseController
             }
 
             return $this->asJson(['success' => false]);
-        } catch (IntegrationException $exception) {
-            return $this->asJson(['success' => false, 'errors' => $exception->getMessage()]);
+        } catch (RequestException|\Exception $e) {
+            return $this->asJson(['success' => false, 'errors' => [$e->getMessage()]]);
         }
     }
 
@@ -238,8 +214,9 @@ class MailingListsController extends BaseController
         }
 
         $integration = $model->getIntegrationObject();
-
         $integration->initiateAuthentication();
+
+        $this->redirect(UrlHelper::cpUrl('freeform/settings/mailing-lists/'.$model->id));
     }
 
     public function actionDelete(): Response
@@ -248,7 +225,6 @@ class MailingListsController extends BaseController
         PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
 
         $id = \Craft::$app->request->post('id');
-
         $this->integrationsService->delete($id);
 
         return $this->asJson(['success' => true]);
@@ -267,43 +243,60 @@ class MailingListsController extends BaseController
 
     private function renderEditForm(IntegrationModel $model, string $title): Response
     {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_SETTINGS_ACCESS);
+
         $this->view->registerAssetBundle(IntegrationsBundle::class);
 
         if (\Craft::$app->request->getParam('code')) {
-            $response = $this->handleOAuthAuthorization($model);
-
-            if (null !== $response) {
-                return $response;
-            }
+            $this->handleOAuthAuthorization($model);
         }
 
-        $serviceProviderTypes = $this->getMailingListsService()->getAllMailingListServiceProviders();
-        $settingBlueprints = $this->getMailingListsService()->getAllMailingListSettingBlueprints();
+        $serviceProviderTypes = $this->getMailingListsService()->getAllServiceProviders();
 
         $variables = [
             'integration' => $model,
+            'integrationObject' => $model->getIntegrationObject(),
             'blockTitle' => $title,
             'serviceProviderTypes' => $serviceProviderTypes,
             'continueEditingUrl' => 'freeform/settings/mailing-lists/{handle}',
-            'settings' => $settingBlueprints,
         ];
 
         return $this->renderTemplate('freeform/settings/_mailing_list_edit', $variables);
     }
 
-    private function handleOAuthAuthorization(IntegrationModel $model): ?Response
+    private function getNewOrExistingIntegration(int $id = null): IntegrationModel
+    {
+        if (null === $id) {
+            $model = null;
+        } else {
+            $model = $this->getMailingListsService()->getIntegrationById($id);
+        }
+
+        if (!$model) {
+            $model = IntegrationModel::create(IntegrationRecord::TYPE_MAILING_LIST);
+        }
+
+        return $model;
+    }
+
+    private function handleOAuthAuthorization(IntegrationModel $model): void
     {
         $integration = $model->getIntegrationObject();
         $code = \Craft::$app->request->getParam('code');
 
         if (!$integration instanceof MailingListOAuthConnector || empty($code)) {
-            return null;
+            return;
         }
 
         $integration->fetchTokens();
 
-        $model->accessToken = $accessToken;
-        $model->settings = $integration->getSettings();
+        try {
+            $integration->onBeforeSave();
+        } catch (\Exception $e) {
+            $model->addError('integration', $e->getMessage());
+        }
+
+        $this->integrationsService->updateModelFromIntegration($model, $integration);
 
         if ($this->integrationsService->save($model)) {
             // Return JSON response if the request is an AJAX request
@@ -313,6 +306,6 @@ class MailingListsController extends BaseController
             \Craft::$app->session->setError(Freeform::t('Email Marketing Integration not saved'));
         }
 
-        return $this->redirect(UrlHelper::cpUrl('freeform/settings/mailing-lists/'.$model->handle));
+        $this->redirect(UrlHelper::cpUrl('freeform/settings/mailing-lists/'.$model->id));
     }
 }

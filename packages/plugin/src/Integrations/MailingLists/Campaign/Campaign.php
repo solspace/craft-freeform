@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\MailingLists;
+namespace Solspace\Freeform\Integrations\MailingLists\Campaign;
 
 use craft\base\Field;
 use craft\fields\Checkboxes;
@@ -17,25 +17,29 @@ use craft\fields\RadioButtons;
 use craft\fields\Tags;
 use craft\fields\Url;
 use craft\fields\Users;
+use GuzzleHttp\Client;
 use putyourlightson\campaign\Campaign as CampaignPlugin;
 use putyourlightson\campaign\elements\ContactElement;
 use putyourlightson\campaign\elements\MailingListElement;
 use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
+#[Type(
+    name: 'Craft Campaign',
+    iconPath: __DIR__.'/icon.svg',
+)]
 class Campaign extends AbstractMailingListIntegration
 {
-    public const TITLE = 'Craft Campaign';
     public const LOG_CATEGORY = 'CraftCampaign';
 
-    /** @var array */
-    private static $fieldCache;
+    private static array $fieldCache;
 
-    /** @var array - a list of allowed field types and their value type */
-    private static $fieldTypeMap = [
+    /** @var array a list of allowed field types and their value type */
+    private static array $fieldTypeMap = [
         Checkboxes::class => FieldObject::TYPE_ARRAY,
         Color::class => FieldObject::TYPE_STRING,
         Date::class => FieldObject::TYPE_STRING,
@@ -66,21 +70,6 @@ class Campaign extends AbstractMailingListIntegration
     public function checkConnection(): bool
     {
         return self::isInstallable();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function fetchTokens(): string
-    {
-        return '';
     }
 
     /**
@@ -207,5 +196,10 @@ class Campaign extends AbstractMailingListIntegration
     protected function getApiRootUrl(): string
     {
         return '';
+    }
+
+    protected function generateAuthorizedClient(): Client
+    {
+        return new Client();
     }
 }

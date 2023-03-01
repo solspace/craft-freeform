@@ -2,11 +2,14 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\EmailMarketing;
 
+use Composer\Autoload\ClassMapGenerator;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Services\MailingListsService;
 use yii\base\Event;
 
 class EmailMarketingBundle extends FeatureBundle
@@ -18,10 +21,28 @@ class EmailMarketingBundle extends FeatureBundle
         }
 
         Event::on(
+            MailingListsService::class,
+            MailingListsService::EVENT_FETCH_TYPES,
+            [$this, 'registerTypes']
+        );
+
+        Event::on(
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'handleMailingListUpdate']
         );
+    }
+
+    public function registerTypes(FetchMailingListTypesEvent $event): void
+    {
+        $path = \Craft::getAlias('@freeform/Integrations/MailingLists');
+
+        $classMap = ClassMapGenerator::createMap($path);
+        $classes = array_keys($classMap);
+
+        foreach ($classes as $class) {
+            $event->addType($class);
+        }
     }
 
     public function handleMailingListUpdate(ProcessSubmissionEvent $event): void

@@ -10,59 +10,21 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\MailingLists;
+namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 
-use Psr\Log\LoggerInterface;
-use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
 use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
-use Solspace\Freeform\Library\Translations\TranslatorInterface;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
 abstract class AbstractMailingListIntegration extends AbstractIntegration implements MailingListIntegrationInterface, IntegrationInterface, \JsonSerializable
 {
     public const TYPE = 'mailing_list';
 
-    /** @var MailingListHandlerInterface */
-    private $mailingListHandler;
-
-    /**
-     * AbstractMailingList constructor.
-     *
-     * @param int        $id
-     * @param string     $name
-     * @param string     $accessToken
-     * @param null|array $settings
-     */
-    final public function __construct(
-        $id,
-        $name,
-        \DateTime $lastUpdate,
-        $accessToken,
-        $settings,
-        LoggerInterface $logger,
-        ConfigurationInterface $configuration,
-        TranslatorInterface $translator,
-        MailingListHandlerInterface $mailingListHandler
-    ) {
-        parent::__construct(
-            $id,
-            $name,
-            $lastUpdate,
-            $accessToken,
-            $settings,
-            $logger,
-            $configuration,
-            $translator,
-            $mailingListHandler
-        );
-
-        $this->mailingListHandler = $mailingListHandler;
-    }
+    private MailingListHandlerInterface $mailingListHandler;
 
     /**
      * {@inheritDoc}
@@ -70,14 +32,6 @@ abstract class AbstractMailingListIntegration extends AbstractIntegration implem
     public static function isInstallable(): bool
     {
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isOAuthConnection(): bool
-    {
-        return $this instanceof MailingListOAuthConnector;
     }
 
     /**
@@ -140,11 +94,9 @@ abstract class AbstractMailingListIntegration extends AbstractIntegration implem
     /**
      * Fetch all custom fields for each list.
      *
-     * @param string $listId
-     *
      * @return FieldObject[]
      *
      * @throws IntegrationException
      */
-    abstract protected function fetchFields($listId): array;
+    abstract protected function fetchFields(string $listId): array;
 }

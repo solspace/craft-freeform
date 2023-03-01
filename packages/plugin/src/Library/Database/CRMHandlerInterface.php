@@ -15,8 +15,8 @@ namespace Solspace\Freeform\Library\Database;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 
 interface CRMHandlerInterface extends IntegrationHandlerInterface
 {

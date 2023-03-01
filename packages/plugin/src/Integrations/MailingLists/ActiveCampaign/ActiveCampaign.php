@@ -1,48 +1,49 @@
 <?php
 
-namespace Solspace\Freeform\Integrations\MailingLists;
+namespace Solspace\Freeform\Integrations\MailingLists\ActiveCampaign;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
+#[Type(
+    name: 'ActiveCampaign',
+    iconPath: __DIR__.'/icon.svg',
+)]
 class ActiveCampaign extends AbstractMailingListIntegration
 {
-    public const SETTING_API_URL = 'api_url';
-    public const SETTING_API_KEY = 'api_key';
-
-    public const TITLE = 'ActiveCampaign';
     public const LOG_CATEGORY = 'ActiveCampaign';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API URL',
+        instructions: 'Enter your ActiveCampaign API Access URL here.',
+        required: true,
+    )]
+    protected string $apiUrl = '';
+
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API Key',
+        instructions: 'Enter your ActiveCampaign API key here.',
+        required: true,
+    )]
+    protected string $apiKey = '';
+
+    public function getApiUrl(): string
     {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_URL,
-                'API URL',
-                'Enter your ActiveCampaign API Access URL here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_KEY,
-                'API Key',
-                'Enter your ActiveCampaign API key here.',
-                true
-            ),
-        ];
+        return $this->getProcessedValue($this->apiUrl);
+    }
+
+    public function getApiKey(): string
+    {
+        return $this->getProcessedValue($this->apiKey);
     }
 
     /**
@@ -76,7 +77,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
             $response = $client->post($endpoint, ['json' => $contactData]);
             $this->getHandler()->onAfterResponse($this, $response);
 
-            $json = \GuzzleHttp\json_decode($response->getBody());
+            $json = json_decode($response->getBody());
             $contactId = $json->contact->id;
         } catch (RequestException $exception) {
             throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
@@ -226,32 +227,6 @@ class ActiveCampaign extends AbstractMailingListIntegration
     }
 
     /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    public function fetchTokens(): string
-    {
-        return $this->getSetting(self::SETTING_API_KEY);
-    }
-
-    /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
-     * Perform anything necessary before this integration is saved.
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-        $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected function fetchLists(): array
@@ -300,18 +275,17 @@ class ActiveCampaign extends AbstractMailingListIntegration
 
     protected function getApiRootUrl(): string
     {
-        return $this->getSetting(self::SETTING_API_URL).'/api/3/';
+        return $this->getApiUrl().'/api/3/';
     }
 
-    private function generateAuthorizedClient(): Client
+    protected function generateAuthorizedClient(): Client
     {
-        return new Client(['headers' => ['Api-Token' => $this->getSetting(self::SETTING_API_KEY)]]);
+        return new Client([
+            'headers' => ['Api-Token' => $this->getApiKey()],
+        ]);
     }
 
-    /**
-     * @return null|int|string
-     */
-    private function getTagId(string $name, Client $client)
+    private function getTagId(string $name, Client $client): mixed
     {
         static $tags;
 

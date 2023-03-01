@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\CRM;
+namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
@@ -21,7 +21,7 @@ interface CRMIntegrationInterface
      *
      * @return FieldObject[]
      */
-    public function getFields();
+    public function getFields(): array;
 
     /**
      * Push objects to the CRM.

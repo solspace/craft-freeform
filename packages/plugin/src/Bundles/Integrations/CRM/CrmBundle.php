@@ -20,16 +20,28 @@ class CrmBundle extends FeatureBundle
         }
 
         Event::on(
-            Submission::class,
-            Submission::EVENT_PROCESS_SUBMISSION,
-            [$this, 'handleIntegrations']
-        );
-
-        Event::on(
             CrmService::class,
             CrmService::EVENT_FETCH_TYPES,
             [$this, 'registerTypes']
         );
+
+        Event::on(
+            Submission::class,
+            Submission::EVENT_PROCESS_SUBMISSION,
+            [$this, 'handleIntegrations']
+        );
+    }
+
+    public function registerTypes(FetchCrmTypesEvent $event): void
+    {
+        $path = \Craft::getAlias('@freeform/Integrations/CRM');
+
+        $classMap = ClassMapGenerator::createMap($path);
+        $classes = array_keys($classMap);
+
+        foreach ($classes as $class) {
+            $event->addType($class);
+        }
     }
 
     public function handleIntegrations(ProcessSubmissionEvent $event): void
@@ -46,17 +58,5 @@ class CrmBundle extends FeatureBundle
         }
 
         $this->plugin()->crm->pushObject($submission);
-    }
-
-    public function registerTypes(FetchCrmTypesEvent $event): void
-    {
-        $path = \Craft::getAlias('@freeform/Integrations/CRM');
-
-        $classMap = ClassMapGenerator::createMap($path);
-        $classes = array_keys($classMap);
-
-        foreach ($classes as $class) {
-            $event->addType($class);
-        }
     }
 }

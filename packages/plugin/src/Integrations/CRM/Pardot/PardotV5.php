@@ -7,9 +7,9 @@ use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
-use Solspace\Freeform\Library\Integrations\CRM\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 
 #[Type(
     name: 'Pardot (v5)',

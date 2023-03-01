@@ -10,10 +10,10 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\MailingLists\DataObjects;
+namespace Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects;
 
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\MailingLists\MailingListIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
 
 class ListObject implements \JsonSerializable
 {

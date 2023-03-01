@@ -34,94 +34,107 @@
 
 {% block content %}
 
-    <div id="integration-type" data-type="mailing-lists">
-        <input type="hidden" name="action" value="freeform/mailing-lists/save">
-        {{ redirectInput('freeform/settings/mailing-lists') }}
-        {% if integration.handle %}
-            <input type="hidden" name="id" value="{{ integration.id }}">
-        {% endif %}
-        {{ csrfInput() }}
+    {% if serviceProviderTypes|length == 0 %}
 
-        {{ forms.selectField({
-            first: true,
-            label: "Service Provider"|t('freeform'),
-            id: 'class',
-            name: 'class',
-            options: serviceProviderTypes,
-            value: integration.class,
-            errors: integration.getErrors('class'),
-            required: true
-        }) }}
-
-        {{ forms.textField({
-            label: "Name"|t('freeform'),
-            instructions: "What this integration will be called in the CP."|t('freeform'),
-            id: 'name',
-            name: 'name',
-            value: integration.name,
-            errors: integration.getErrors('name'),
-            autofocus: true,
-            required: true
-        }) }}
-
-        {{ forms.textField({
-            label: "Handle"|t('freeform'),
-            instructions: "The unique name used to identify this integration."|t('freeform'),
-            class: "code",
-            id: 'handle',
-            name: 'handle',
-            value: integration.handle,
-            errors: integration.getErrors('handle'),
-            required: true
-        }) }}
-
-        <hr>
-
-        {% if integration.id %}
-            {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
-        {% elseif integration.errors('integration') %}
-            <ul class="errors field">
-                {% for error in integration.errors('integration') %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-
-        <div class="settingsWrapper">
-            {% for className, settingList in settings %}
-                <div id="settings-{{ className|replace("\\", "") }}" style="display: none;">
-                    {% for setting in settingList|filter(setting => setting.type not in ["internal", "config"]) %}
-                        {% set value = "" %}
-                        {% if integration.settings is not null and integration.settings[setting.handle] is defined %}
-                            {% set value = integration.settings[setting.handle] %}
-                        {% elseif setting.defaultValue %}
-                            {% set value = setting.defaultValue %}
-                        {% endif %}
-
-                        {% set options = {
-                            label: setting.label|t('freeform'),
-                            instructions: setting.instructions|t('freeform'),
-                            class: "setting-" ~ setting.handle,
-                            name: "settings["~className~"]["~setting.handle~"]",
-                            value: value,
-                            required: setting.required,
-                            errors: integration.errors(className~setting.handle),
-                            suggestEnvVars: true,
-                        } %}
-
-                        {% if setting.type in ["text", "password"] %}
-                            {{ forms.autosuggestField(options) }}
-                        {% elseif setting.type == "auto" %}
-                            {{ forms.textField(options|merge({ readonly: true })) }}
-                        {% elseif setting.type == "bool" %}
-                            {% set options = options|merge({on: value, value: 1}) %}
-                            {{ forms.lightswitchField(options) }}
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            {% endfor %}
+        <div>
+            {{ "There are no Mailing List integrations currently installed. Please visit {link_open}Solspace Freeform marketplace{link_close} to purchase CRM integrations"|t('freeform', {
+                link_open: '<a href="https://solspace.com/">',
+                link_close: '</a>',
+            })|raw }}
         </div>
-    </div>
+
+    {% else %}
+
+        <div id="integration-type" data-type="mailing-lists">
+            <input type="hidden" name="action" value="freeform/mailing-lists/save">
+            {{ redirectInput('freeform/settings/mailing-lists') }}
+            {% if integration.id %}
+                <input type="hidden" name="id" value="{{ integration.id }}">
+            {% endif %}
+            {{ csrfInput() }}
+
+            {{ forms.selectField({
+                first: true,
+                label: "Service Provider"|t('freeform'),
+                id: 'class',
+                name: 'class',
+                options: serviceProviderTypes|map(p => p.name),
+                value: integration.class,
+                errors: integration.getErrors('class'),
+                required: true
+            }) }}
+
+            {{ forms.textField({
+                label: "Name"|t('freeform'),
+                instructions: "What this integration will be called in the CP."|t('freeform'),
+                id: 'name',
+                name: 'name',
+                value: integration.name,
+                errors: integration.getErrors('name'),
+                autofocus: true,
+                required: true
+            }) }}
+
+            {{ forms.textField({
+                label: "Handle"|t('freeform'),
+                instructions: "The unique name used to identify this integration."|t('freeform'),
+                class: "code",
+                id: 'handle',
+                name: 'handle',
+                value: integration.handle,
+                errors: integration.getErrors('handle'),
+                required: true
+            }) }}
+
+            <hr>
+
+            {% if integration.id %}
+                {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
+            {% elseif integration.errors('integration') %}
+                <ul class="errors field">
+                    {% for error in integration.errors('integration') %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <div class="propertiesWrapper">
+                {% for className, type in serviceProviderTypes %}
+                    <div id="properties-{{ className|replace("\\", "") }}" style="display: none;">
+                        {% for property in type.properties|filter((prop) => not prop.hasFlag('internal')) %}
+                            {% set handle = property.handle %}
+                            {% set value = attribute(integrationObject, handle)|default(property.value) %}
+
+                            {% set options = {
+                                label: property.label|t('freeform'),
+                                instructions: property.instructions|t('freeform'),
+                                class: "property-" ~ property.handle,
+                                name: "properties["~className~"]["~property.handle~"]",
+                                value: value,
+                                required: property.required,
+                                errors: integration.errors(className~property.handle),
+                                suggestEnvVars: true,
+                            } %}
+
+                            {% if property.type == "bool" %}
+                                {% set options = options|merge({on: value, value: 1}) %}
+                                {{ forms.lightswitchField(options) }}
+                            {% else %}
+
+                                {% if "readonly" in property.flags %}
+                                    {{ forms.textField(options|merge({ readonly: true })) }}
+                                {% else %}
+                                    {{ forms.autosuggestField(options) }}
+                                {% endif %}
+
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    {% endif %}
 
 {% endblock %}
 

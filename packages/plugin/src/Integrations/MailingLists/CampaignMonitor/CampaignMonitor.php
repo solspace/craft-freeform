@@ -10,58 +10,50 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\MailingLists;
+namespace Solspace\Freeform\Integrations\MailingLists\CampaignMonitor;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
+#[Type(
+    name: 'Campaign Monitor',
+    iconPath: __DIR__.'/icon.svg',
+)]
 class CampaignMonitor extends AbstractMailingListIntegration
 {
-    public const TITLE = 'Campaign Monitor';
     public const LOG_CATEGORY = 'Campaign Monitor';
 
-    public const SETTING_API_KEY = 'api_key';
-    public const SETTING_CLIENT_ID = 'client_id';
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'API Key',
+        instructions: 'Enter your Campaign Monitor API key here.',
+        required: true,
+    )]
+    protected string $apiKey = '';
 
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'Client ID',
+        instructions: 'Enter your Campaign Monitor Client ID here.',
+        required: true,
+    )]
+    protected string $clientId = '';
+
+    public function getApiKey(): string
     {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_API_KEY,
-                'API Key',
-                'Enter your Campaign Monitor API key here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_CLIENT_ID,
-                'Client ID',
-                'Enter your Campaign Monitor Client ID here.',
-                true
-            ),
-        ];
+        return $this->getProcessedValue($this->apiKey);
     }
 
-    /**
-     * Returns the MailingList service provider short name
-     * i.e. - MailChimp, Constant Contact, etc...
-     */
-    public function getServiceProvider(): string
+    public function getClientId(): string
     {
-        return 'Campaign Monitor';
+        return $this->getProcessedValue($this->clientId);
     }
 
     /**
@@ -69,15 +61,10 @@ class CampaignMonitor extends AbstractMailingListIntegration
      */
     public function checkConnection(): bool
     {
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
 
         try {
-            $response = $client->get(
-                $this->getEndpoint('/clients/'.$this->getClientID().'.json'),
-                [
-                    'auth' => [$this->getAccessToken(), 'freeform'],
-                ]
-            );
+            $response = $client->get($this->getEndpoint('/clients/'.$this->getClientID().'.json'));
 
             $json = json_decode((string) $response->getBody());
 
@@ -97,7 +84,7 @@ class CampaignMonitor extends AbstractMailingListIntegration
      */
     public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues): bool
     {
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint("/subscribers/{$mailingList->getId()}.json");
 
         try {
@@ -131,13 +118,7 @@ class CampaignMonitor extends AbstractMailingListIntegration
                     'RestartSubscriptionBasedAutoresponders' => true,
                 ];
 
-                $response = $client->post(
-                    $endpoint,
-                    [
-                        'auth' => [$this->getAccessToken(), 'freeform'],
-                        'json' => $data,
-                    ]
-                );
+                $response = $client->post($endpoint, ['json' => $data]);
 
                 $this->getHandler()->onAfterResponse($this, $response);
             }
@@ -154,34 +135,6 @@ class CampaignMonitor extends AbstractMailingListIntegration
     }
 
     /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-    }
-
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    public function fetchTokens(): string
-    {
-        return $this->getSetting(self::SETTING_API_KEY);
-    }
-
-    /**
-     * Perform anything necessary before this integration is saved.
-     *
-     * @throws IntegrationException
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-        $model->updateAccessToken($this->getSetting(self::SETTING_API_KEY));
-    }
-
-    /**
      * Makes an API call that fetches mailing lists
      * Builds ListObject objects based on the results
      * And returns them.
@@ -192,16 +145,11 @@ class CampaignMonitor extends AbstractMailingListIntegration
      */
     protected function fetchLists(): array
     {
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/clients/'.$this->getClientID().'/lists.json');
 
         try {
-            $response = $client->get(
-                $endpoint,
-                [
-                    'auth' => [$this->getAccessToken(), 'freeform'],
-                ]
-            );
+            $response = $client->get($endpoint);
         } catch (RequestException $e) {
             $responseBody = (string) $e->getResponse()->getBody();
             $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
@@ -252,16 +200,11 @@ class CampaignMonitor extends AbstractMailingListIntegration
      */
     protected function fetchFields($listId): array
     {
-        $client = new Client();
+        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint("/lists/{$listId}/customfields.json");
 
         try {
-            $response = $client->get(
-                $endpoint,
-                [
-                    'auth' => [$this->getAccessToken(), 'freeform'],
-                ]
-            );
+            $response = $client->get($endpoint);
         } catch (RequestException $e) {
             $responseBody = (string) $e->getResponse()->getBody();
             $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
@@ -279,33 +222,13 @@ class CampaignMonitor extends AbstractMailingListIntegration
 
         if (\is_array($json)) {
             foreach ($json as $field) {
-                switch ($field->DataType) {
-                    case 'Text':
-                    case 'MultiSelectOne':
-                        $type = FieldObject::TYPE_STRING;
-
-                        break;
-
-                    case 'Number':
-                        $type = FieldObject::TYPE_NUMERIC;
-
-                        break;
-
-                    case 'MultiSelectMany':
-                        $type = FieldObject::TYPE_ARRAY;
-
-                        break;
-
-                    case 'Date':
-                        $type = FieldObject::TYPE_DATE;
-
-                        break;
-
-                    default:
-                        $type = null;
-
-                        break;
-                }
+                $type = match ($field->DataType) {
+                    'Text', 'MultiSelectOne' => FieldObject::TYPE_STRING,
+                    'Number' => FieldObject::TYPE_NUMERIC,
+                    'MultiSelectMany' => FieldObject::TYPE_ARRAY,
+                    'Date' => FieldObject::TYPE_DATE,
+                    default => null,
+                };
 
                 if (null === $type) {
                     continue;
@@ -323,6 +246,13 @@ class CampaignMonitor extends AbstractMailingListIntegration
         return $fieldList;
     }
 
+    protected function generateAuthorizedClient(): Client
+    {
+        return new Client([
+            'auth' => [$this->getApiKey(), 'freeform'],
+        ]);
+    }
+
     /**
      * Returns the API root url without endpoints specified.
      *
@@ -331,10 +261,5 @@ class CampaignMonitor extends AbstractMailingListIntegration
     protected function getApiRootUrl(): string
     {
         return 'https://api.createsend.com/api/v3.1/';
-    }
-
-    private function getClientID(): string
-    {
-        return $this->getSetting(self::SETTING_CLIENT_ID);
     }
 }

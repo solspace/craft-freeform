@@ -6,7 +6,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Integrations\CRM\CRMIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 
 class FetchCrmTypesEvent extends ArrayableEvent
 {

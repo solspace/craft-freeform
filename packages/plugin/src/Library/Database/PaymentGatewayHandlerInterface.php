@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\Library\Database;
 
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
 
 interface PaymentGatewayHandlerInterface extends IntegrationHandlerInterface
 {

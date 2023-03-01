@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\PaymentGateways\DataObjects;
+namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects;
 
 class PlanObject implements \JsonSerializable
 {

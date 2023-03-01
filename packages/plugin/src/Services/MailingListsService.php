@@ -13,17 +13,14 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
-use Solspace\Freeform\Models\IntegrationModel;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 use Solspace\Freeform\Models\MailingListModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\MailingListFieldRecord;
@@ -31,8 +28,7 @@ use Solspace\Freeform\Records\MailingListRecord;
 
 class MailingListsService extends AbstractIntegrationService implements MailingListHandlerInterface
 {
-    /** @var array */
-    private static $integrations;
+    private static ?array $integrations = null;
 
     /**
      * Updates the mailing lists of a given mailing list integration.
@@ -179,12 +175,10 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
     public function getListById(AbstractMailingListIntegration $integration, $id): ListObject
     {
         $data = $this->getMailingListQuery()
-            ->where(
-                [
-                    'list.resourceId' => $id,
-                    'list.integrationId' => $integration->getId(),
-                ]
-            )
+            ->where([
+                'list.resourceId' => $id,
+                'list.integrationId' => $integration->getId(),
+            ])
             ->one()
         ;
 
@@ -211,62 +205,23 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
         );
     }
 
-    public function getAllMailingListServiceProviders(): array
+    public function getAllServiceProviders(): array
     {
         if (null === self::$integrations) {
             $event = new FetchMailingListTypesEvent();
             $this->trigger(self::EVENT_FETCH_TYPES, $event);
             $types = $event->getTypes();
-            asort($types);
+            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
 
-            self::$integrations = $types;
+            $integrations = [];
+            foreach ($types as $type) {
+                $integrations[$type->class] = $type;
+            }
+
+            self::$integrations = $integrations;
         }
 
         return self::$integrations;
-    }
-
-    public function getAllMailingListSettingBlueprints(): array
-    {
-        $serviceProviderTypes = $this->getAllMailingListServiceProviders();
-
-        // Get all blueprints per class
-        $settingBlueprints = [];
-
-        /**
-         * @var AbstractIntegration $providerClass
-         * @var string              $name
-         */
-        foreach ($serviceProviderTypes as $providerClass => $name) {
-            $settingBlueprints[$providerClass] = $providerClass::getSettingBlueprints();
-        }
-
-        return $settingBlueprints;
-    }
-
-    /**
-     * Get all setting blueprints for a specific mailing list integration.
-     *
-     * @param string $class
-     *
-     * @return SettingBlueprint[]
-     *
-     * @throws IntegrationException
-     */
-    public function getMailingListSettingBlueprints($class): array
-    {
-        $serviceProviderTypes = $this->getAllMailingListServiceProviders();
-
-        /**
-         * @var AbstractIntegration $providerClass
-         * @var string              $name
-         */
-        foreach ($serviceProviderTypes as $providerClass => $name) {
-            if ($providerClass === $class) {
-                return $providerClass::getSettingBlueprints();
-            }
-        }
-
-        throw new IntegrationException('Could not get Email Marketing settings');
     }
 
     /**
@@ -275,22 +230,6 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
     protected function getIntegrationType(): string
     {
         return IntegrationRecord::TYPE_MAILING_LIST;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function afterSaveHandler(IntegrationModel $model)
-    {
-        try {
-            if ($model->getIntegrationObject()->checkConnection()) {
-                $mailingList = $model->getIntegrationObject();
-                $mailingList->setForceUpdate(true);
-                $mailingList->getLists();
-            }
-        } catch (IntegrationException $e) {
-            \Craft::$app->session->setError($e->getMessage());
-        }
     }
 
     /**

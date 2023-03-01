@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Library\Integrations;
 use craft\helpers\App;
 use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\Pro\DatetimeField;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -72,7 +73,15 @@ abstract class AbstractIntegration implements IntegrationInterface
      */
     public function getServiceProvider(): string
     {
-        return (new \ReflectionClass($this))->getShortName();
+        $reflection = (new \ReflectionClass($this));
+        $type = $reflection->getAttributes(Type::class);
+        $type = reset($type);
+
+        if (!$type) {
+            return $reflection->getShortName();
+        }
+
+        return $type->newInstance()->name;
     }
 
     /**

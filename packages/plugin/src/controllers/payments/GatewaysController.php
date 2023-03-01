@@ -5,7 +5,7 @@ namespace Solspace\Freeform\controllers\payments;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;

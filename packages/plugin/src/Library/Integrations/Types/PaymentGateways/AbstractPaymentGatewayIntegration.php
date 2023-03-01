@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\PaymentGateways;
+namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
@@ -18,7 +18,7 @@ use Solspace\Freeform\Library\Database\PaymentGatewayHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\DataObjects\PlanObject;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\PlanObject;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration implements PaymentGatewayIntegrationInterface, IntegrationInterface, \JsonSerializable

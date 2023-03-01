@@ -10,9 +10,9 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\MailingLists;
+namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
 interface MailingListIntegrationInterface
 {

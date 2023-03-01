@@ -10,71 +10,24 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\MailingLists;
+namespace Solspace\Freeform\Integrations\MailingLists\ConstantContact;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
-use Solspace\Freeform\Library\Integrations\MailingLists\MailingListOAuthConnector;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
-use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListOAuthConnector;
 
-class ConstantContact3 extends MailingListOAuthConnector
+#[Type(
+    name: 'Constant Contact',
+    iconPath: __DIR__.'/icon.jpeg',
+)]
+class ConstantContact3 extends MailingListOAuthConnector implements RefreshTokenInterface
 {
-    public const TITLE = 'Constant Contact';
     public const LOG_CATEGORY = 'Constant Contact';
-    public const SETTING_REFRESH_TOKEN = 'refresh_token';
-
-    /**
-     * Returns the MailingList service provider short name
-     * i.e. - MailChimp, Constant Contact, etc...
-     */
-    public function getServiceProvider(): string
-    {
-        return 'Constant Contact';
-    }
-
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
-    {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_AUTO,
-                self::SETTING_RETURN_URI,
-                'Redirect URI',
-                'You must specify this as the Return URI in your app settings to be able to authorize your credentials. DO NOT CHANGE THIS.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_CLIENT_ID,
-                'API Key',
-                'Enter the API Key of your app in here',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_CLIENT_SECRET,
-                'App Secret',
-                'Enter the Client Secret of your app here',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_INTERNAL,
-                self::SETTING_REFRESH_TOKEN,
-                'Refresh Token',
-                'You should not set this',
-                false
-            ),
-        ];
-    }
 
     /**
      * Check if it's possible to connect to the API.
@@ -93,7 +46,7 @@ class ConstantContact3 extends MailingListOAuthConnector
 
             try {
                 $response = $client->get($endpoint);
-                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+                $json = json_decode((string) $response->getBody(), false);
 
                 return isset($json->lists);
             } catch (RequestException $exception) {
@@ -171,71 +124,6 @@ class ConstantContact3 extends MailingListOAuthConnector
     }
 
     /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
-        $apiKey = $this->getClientId();
-        $secret = $this->getClientSecret();
-
-        if (!$apiKey || !$secret) {
-            return false;
-        }
-
-        $payload = [
-            'response_type' => 'code',
-            'client_id' => $apiKey,
-            'redirect_uri' => $this->getReturnUri(),
-            'scope' => 'contact_data offline_access',
-            'state' => session_id(),
-        ];
-
-        header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($payload));
-
-        exit;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getRefreshToken()
-    {
-        return $this->getSetting(self::SETTING_REFRESH_TOKEN);
-    }
-
-    /**
-     * @param string $refreshToken
-     *
-     * @throws IntegrationException
-     */
-    public function setRefreshToken(string $refreshToken = null): self
-    {
-        $this->setSetting(self::SETTING_REFRESH_TOKEN, $refreshToken);
-
-        return $this;
-    }
-
-    /**
-     * @throws IntegrationException
-     */
-    public function updateAccessToken()
-    {
-        $record = $this->getIntegrationRecord();
-        $record->accessToken = $this->getAccessToken();
-        $record->save(false);
-    }
-
-    /**
-     * @throws IntegrationException
-     */
-    public function updateSettings()
-    {
-        $record = $this->getIntegrationRecord();
-        $record->settings = $this->getSettings();
-        $record->save(false);
-    }
-
-    /**
      * Makes an API call that fetches mailing lists
      * Builds ListObject objects based on the results
      * And returns them.
@@ -295,11 +183,9 @@ class ConstantContact3 extends MailingListOAuthConnector
     /**
      * Fetch all custom fields for each list.
      *
-     * @param string $listId
-     *
      * @return FieldObject[]
      */
-    protected function fetchFields($listId): array
+    protected function fetchFields(string $listId): array
     {
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/contact_custom_fields');
@@ -373,50 +259,6 @@ class ConstantContact3 extends MailingListOAuthConnector
     /**
      * @throws IntegrationException
      */
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
-    {
-        if (isset($responseData->refresh_token)) {
-            $this->setRefreshToken($responseData->refresh_token);
-        }
-    }
-
-    /**
-     * @throws IntegrationException
-     */
-    private function generateAuthorizedClient(bool $refreshTokenIfExpired = true): Client
-    {
-        $client = new Client(
-            [
-                'headers' => [
-                    'Authorization' => 'Bearer '.$this->getAccessToken(),
-                    'Content-Type' => 'application/json',
-                ],
-            ]
-        );
-
-        if ($refreshTokenIfExpired) {
-            try {
-                $this->checkConnection(false);
-            } catch (IntegrationException $e) {
-                if (401 === $e->getCode()) {
-                    $client = new Client(
-                        [
-                            'headers' => [
-                                'Authorization' => 'Bearer '.$this->getRefreshedAccessToken(),
-                                'Content-Type' => 'application/json',
-                            ],
-                        ]
-                    );
-                }
-            }
-        }
-
-        return $client;
-    }
-
-    /**
-     * @throws IntegrationException
-     */
     private function getRefreshedAccessToken(): string
     {
         if (!$this->getRefreshToken() || !$this->getClientId() || !$this->getClientSecret()) {
@@ -442,7 +284,7 @@ class ConstantContact3 extends MailingListOAuthConnector
                 ]
             );
 
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
             if (!isset($json->access_token)) {
                 throw new IntegrationException(
                     $this->getTranslator()->translate("No 'access_token' present in auth response for Constant Contact")
@@ -468,24 +310,5 @@ class ConstantContact3 extends MailingListOAuthConnector
                 $e->getPrevious()
             );
         }
-    }
-
-    /**
-     * @throws IntegrationException
-     */
-    private function getIntegrationRecord(): IntegrationRecord
-    {
-        $record = IntegrationRecord::findOne(['id' => $this->getId()]);
-
-        if (!$record) {
-            throw new IntegrationException(
-                $this->getTranslator()->translate(
-                    'Mailing List integration with ID {id} not found',
-                    ['id' => $this->getId()]
-                )
-            );
-        }
-
-        return $record;
     }
 }

@@ -157,6 +157,23 @@ class IntegrationsService extends BaseService
         }
     }
 
+    public function parsePostedModelData(IntegrationModel $model): void
+    {
+        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
+
+        $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
+        foreach ($editableProperties as $property) {
+            $handle = $property->handle;
+            $value = $model->metadata[$handle] ?? null;
+
+            if ($value && $property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
+
+                $model->metadata[$property->handle] = $value;
+            }
+        }
+    }
+
     public function updateModelFromIntegration(IntegrationModel $model, IntegrationInterface $integration)
     {
         $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;

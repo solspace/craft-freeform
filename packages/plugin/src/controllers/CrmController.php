@@ -18,8 +18,8 @@ use GuzzleHttp\Exception\RequestException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
-use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
+use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Resources\Bundles\CrmBundle;
@@ -31,8 +31,12 @@ use yii\web\Response;
 
 class CrmController extends Controller
 {
-    public function __construct($id, $module, $config = [], private IntegrationsService $integrationsService)
-    {
+    public function __construct(
+        $id,
+        $module,
+        $config = [],
+        private IntegrationsService $integrationsService
+    ) {
         parent::__construct($id, $module, $config);
     }
 
@@ -57,7 +61,7 @@ class CrmController extends Controller
             'freeform/settings/_crm',
             [
                 'integrations' => $integrations,
-                'providers' => $this->getCRMService()->getAllCRMServiceProviders(),
+                'providers' => $this->getCRMService()->getAllServiceProviders(),
             ]
         );
     }
@@ -108,6 +112,7 @@ class CrmController extends Controller
         $post['metadata'] = $postedClassSettings ?: null;
 
         $model->setAttributes($post);
+        $this->integrationsService->parsePostedModelData($model);
 
         $integration = $model->getIntegrationObject();
 
@@ -202,7 +207,7 @@ class CrmController extends Controller
             $this->handleOAuthAuthorization($model);
         }
 
-        $serviceProviderTypes = $this->getCRMService()->getAllCRMServiceProviders();
+        $serviceProviderTypes = $this->getCRMService()->getAllServiceProviders();
 
         $variables = [
             'integration' => $model,

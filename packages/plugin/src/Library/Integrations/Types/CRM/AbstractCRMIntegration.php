@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\CRM;
+namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;

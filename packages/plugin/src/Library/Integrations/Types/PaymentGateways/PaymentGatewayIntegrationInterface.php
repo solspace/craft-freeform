@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\PaymentGateways;
+namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;

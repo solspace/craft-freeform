@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Library\Integrations\CRM;
+namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 
 use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
@@ -20,9 +20,10 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
+use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
 use yii\base\Event;
 
-abstract class CRMOAuthConnector extends AbstractCRMIntegration
+abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
 {
     public const EVENT_TOKENS_REFRESHED = 'tokens-refreshed';
 
@@ -76,11 +77,15 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
         exit;
     }
 
+    /**
+     * @throws IntegrationException
+     */
     public function fetchTokens(): string
     {
         $client = new Client();
 
         $code = $_GET['code'] ?? null;
+        $this->onBeforeFetchAccessToken($code);
 
         if (null === $code) {
             return '';

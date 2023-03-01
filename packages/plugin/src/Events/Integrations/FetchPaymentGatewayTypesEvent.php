@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Events\Integrations;
 
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 
 class FetchPaymentGatewayTypesEvent extends ArrayableEvent
 {

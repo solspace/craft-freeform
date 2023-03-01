@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Models\Pro\Payments;
 
 use craft\base\Model;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Library\Payments\PaymentInterface;
 
 abstract class AbstractPaymentModel extends Model implements PaymentInterface

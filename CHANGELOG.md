@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 3.13.25 - 2023-03-01
+
+### Added
+- Added support for `.eps` files in the Freeform file helper validation.
+- Added support for `.webp` files in the Freeform file helper validation.
+
+### Changed
+- Updated the Dutch (NL) translations to include many missing items.
+
+### Fixed
+- Fixed a bug where many items were not translatable in the Freeform control panel.
+- Fixed a bug where using "Database Tables" for session storage context would result in an error when submitting forms.
+
 ## 3.13.24 - 2023-02-14
 
 ### Fixed

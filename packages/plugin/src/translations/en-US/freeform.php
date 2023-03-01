@@ -141,6 +141,7 @@ return [
     // Payments Controller
     'Payments' => 'Payments',
     'Payment Gateway' => 'Payment Gateway',
+    'Gateway' => 'Gateway',
     'Choose a payment gateway.' => 'Choose a payment gateway.',
     'Choose a payment gateway...' => 'Choose a payment gateway...',
     'Refresh Payment Gateways' => 'Refresh Payment Gateways',
@@ -552,6 +553,7 @@ return [
     'How you’ll refer to this status in the templates.' => 'How you’ll refer to this status in the templates.',
     'The color of the status circle when viewing inside CP.' => 'The color of the status circle when viewing inside CP.',
     'Set this status to be selected by default when creating new forms?' => 'Set this status to be selected by default when creating new forms?',
+    'Status' => 'Status',
     'Statuses' => 'Statuses',
     'Status saved' => 'Status saved',
     'Status not saved' => 'Status not saved',
@@ -1007,7 +1009,6 @@ return [
     'Full' => 'Full',
     'Range Start' => 'Range Start',
     'Range End' => 'Range End',
-
     'Sort Direction' => 'Sort Direction',
     'Ascending' => 'Ascending',
     'Descending' => 'Descending',
@@ -1232,9 +1233,16 @@ return [
     'Subscription plan is not configured!' => 'Subscription plan is not configured!',
     '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.' => '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.',
     'Requires Pro version' => 'Requires Pro version',
+    'Unknown' => 'Unknown',
+    'Cancel Subscription' => 'Cancel Subscription',
+    'Card Number' => 'Card Number',
+    'See in' => 'See in',
 
     // Exporting
     'Quick Export' => 'Quick Export',
+    'Export data' => 'Export data',
+    'Export as' => 'Export as',
+    'Fields for' => 'Fields for',
     'No export profiles found' => 'No export profiles found',
     'Export Profiles' => 'Export Profiles',
     'New Export Profile' => 'New Export Profile',
@@ -1285,7 +1293,7 @@ return [
     'Email Message' => 'Email Message',
     'The text content of the email notification.' => 'The text content of the email notification.',
 
-    // Spam Reasons
+    // Spam
     'Spam Reasons' => 'Spam Reasons',
     'Marked as spam because' => 'Marked as spam because',
     'generic' => 'Unknown',
@@ -1306,4 +1314,5 @@ return [
     'Your IP has been blocked' => 'Your IP has been blocked',
     'Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.' => 'Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.',
     'Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.' => 'Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.',
+    'Allow' => 'Allow',
 ];

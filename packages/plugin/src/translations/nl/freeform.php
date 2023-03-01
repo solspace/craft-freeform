@@ -141,6 +141,7 @@ return [
     // Payments Controller
     'Payments' => 'Betalingen',
     'Payment Gateway' => 'Betalingsgateway',
+    'Gateway' => 'Poort',
     'Choose a payment gateway.' => 'Kies een betalingsgateway.',
     'Choose a payment gateway...' => 'Kies een betalingsgateway...',
     'Refresh Payment Gateways' => 'Ververs betalingsgateways',
@@ -552,6 +553,7 @@ return [
     'How you’ll refer to this status in the templates.' => 'Hoe u naar deze status in de sjablonen zult verwijzen.',
     'The color of the status circle when viewing inside CP.' => 'De kleur van de statuscirkel bij het bekijken binnen CP.',
     'Set this status to be selected by default when creating new forms?' => 'Deze status standaard laten instellen bij het maken van nieuwe formulieren?',
+    'Status' => 'Status',
     'Statuses' => 'Statussen',
     'Status saved' => 'Status opgeslagen',
     'Status not saved' => 'Status niet opgeslagen',
@@ -1231,9 +1233,16 @@ return [
     'Subscription plan is not configured!' => 'Abonnementsplan is niet geconfigureerd!',
     '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.' => '<a href="{url}">Opwaarderen naar Pro</a> om toegang te krijgen tot populaire API integraties.',
     'Requires Pro version' => 'Vereist Pro versie',
+    'Unknown' => 'Onbekend',
+    'Cancel Subscription' => 'Annuleer abonnement',
+    'Card Number' => 'Kaartnummer',
+    'See in' => 'Zien in',
 
     // Exporting
     'Quick Export' => 'Snel Exporteren',
+    'Export data' => 'Exportgegevens',
+    'Export as' => 'Exporteren als',
+    'Fields for' => 'Velden voor',
     'No export profiles found' => 'Geen exportprofielen gevonden',
     'Export Profiles' => 'Profielen Exporteren',
     'New Export Profile' => 'Nieuw Export Profiel',
@@ -1305,4 +1314,5 @@ return [
     'Your IP has been blocked' => 'Uw IP is geblokkeerd',
     'Sorry, we cannot accept your submission at this time. Not enough time has passed before submitting the form.' => 'Sorry, we kunnen uw inzending op dit moment niet accepteren. Er is niet genoeg tijd verstreken voordat het formulier is verzonden.',
     'Sorry, we cannot accept your submission at this time. Too much time has passed before submitting the form.' => 'Sorry, we kunnen uw inzending op dit moment niet accepteren. Er is te veel tijd verstreken voordat het formulier is verzonden.',
+    'Allow' => 'Toestaan',
 ];

@@ -8,7 +8,6 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
-use Solspace\Freeform\Fields\Pro\SignatureField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;

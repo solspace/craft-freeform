@@ -72,7 +72,6 @@ export default class Entries extends ConnectionBase {
       entryTypeInput = (
         <SelectProperty
           label="Entry Type"
-          translationCategory={'app'}
           name="entryType"
           value={entryType}
           emptyOption="Select an entry type"
@@ -86,7 +85,6 @@ export default class Entries extends ConnectionBase {
       <div>
         <SelectProperty
           label="Section"
-          translationCategory={'app'}
           name="section"
           value={section}
           emptyOption="Select a section"

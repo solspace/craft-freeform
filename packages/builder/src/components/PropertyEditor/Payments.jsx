@@ -3,6 +3,7 @@ import * as consts from '@ff/builder/constants/Payments';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { translate } from '../../app';
 import BasePropertyEditor from './BasePropertyEditor';
 import IntegrationMappingTable from './Components/IntegrationMappingTable/IntegrationMappingTable';
 import PaymentFieldsMapping from './Components/Payments/PaymentFieldsMapping';
@@ -225,7 +226,7 @@ export default class Payments extends BasePropertyEditor {
         >
           <div className="composer-add-new-template-wrapper">
             <button className="btn refresh icon" onClick={fetchPaymentGateways} disabled={isFetching}>
-              {isFetching ? 'Refreshing...' : 'Refresh Payment Gateways'}
+              {translate(isFetching ? 'Refreshing...' : 'Refresh Payment Gateways')}
             </button>
           </div>
         </SelectProperty>

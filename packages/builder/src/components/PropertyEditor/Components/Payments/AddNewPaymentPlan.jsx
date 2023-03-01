@@ -6,7 +6,7 @@ import * as consts from '../../../../constants/Payments';
 import TextProperty from '../../PropertyItems/TextProperty';
 import SelectProperty from '../../PropertyItems/SelectProperty';
 import { createPaymentPlan } from '../../../../actions/PaymentGateways';
-import { notificator } from '../../../../app';
+import { notificator, translate } from '../../../../app';
 
 @connect(
   (state) => ({
@@ -85,7 +85,7 @@ export default class AddNewPaymentPlan extends Component {
     if (!isOpen) {
       return (
         <button className="btn download icon" onClick={this.toggleForm}>
-          {'Add new plan'}
+          {translate('Add new plan')}
         </button>
       );
     }

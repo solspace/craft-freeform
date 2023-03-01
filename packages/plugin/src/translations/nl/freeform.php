@@ -983,7 +983,6 @@ return [
     'Fixed Interval' => 'Vast interval',
     'The frequency with which a subscription should be billed.' => 'De frequentie waarmee een abonnement moet worden gefactureerd.',
 
-
     'Notification added successfully' => 'Notificatie succesvol toegevoegd',
     'Template added successfully' => 'Template succesvol toegevoegd',
     'Template Name' => 'Template naam',

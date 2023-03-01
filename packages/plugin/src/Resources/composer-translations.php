@@ -429,4 +429,7 @@ return [
     'All Assets',
     'Filename',
     '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.',
+    'Activate users?',
+    'Send activation email?',
+    'The user will receive an email with activation details if this is checked.',
 ];

@@ -12,67 +12,14 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
-use Psr\Log\LoggerInterface;
-use Solspace\Freeform\Library\Configuration\ConfigurationInterface;
-use Solspace\Freeform\Library\Database\PaymentGatewayHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\PlanObject;
-use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
 abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration implements PaymentGatewayIntegrationInterface, IntegrationInterface, \JsonSerializable
 {
     public const TYPE = 'payment_gateway';
-
-    /**
-     * Payment Gateway service.
-     *
-     * @var PaymentGatewayHandlerInterface
-     */
-    private $paymentGatewayHandler;
-
-    /**
-     * AbstractPaymentGatewayIntegration constructor.
-     *
-     * @param int        $id
-     * @param string     $name
-     * @param string     $accessToken
-     * @param null|array $settings
-     */
-    final public function __construct(
-        $id,
-        $name,
-        \DateTime $lastUpdate,
-        $accessToken,
-        $settings,
-        LoggerInterface $logger,
-        ConfigurationInterface $configuration,
-        TranslatorInterface $translator,
-        PaymentGatewayHandlerInterface $paymentGatewayHandler
-    ) {
-        parent::__construct(
-            $id,
-            $name,
-            $lastUpdate,
-            $accessToken,
-            $settings,
-            $logger,
-            $configuration,
-            $translator,
-            $paymentGatewayHandler
-        );
-
-        $this->paymentGatewayHandler = $paymentGatewayHandler;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function isOAuthConnection(): bool
-    {
-        return false;
-    }
 
     /**
      * Retuns list of available payment plans.

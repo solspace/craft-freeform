@@ -30,6 +30,7 @@ class SharpSpring extends AbstractCRMIntegration
 {
     public const LOG_CATEGORY = 'SharpSpring';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'Account ID',
@@ -38,6 +39,7 @@ class SharpSpring extends AbstractCRMIntegration
     )]
     protected string $accountId = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         instructions: 'Enter your Secret Key here.',

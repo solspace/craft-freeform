@@ -1,13 +1,11 @@
 {% extends "freeform/_layouts/settings" %}
 
-{% set title = "CRM"|t("freeform") %}
-
 {% block actionButton %}
 
     {% if currentUser.can("freeform-settingsAccess") and providers|length > 0 %}
         <div class="buttons">
-            <a href="{{ url('freeform/settings/crm/new') }}" class="btn submit add icon">
-                {{ "New CRM Integration"|t('freeform') }}
+            <a href="{{ url('freeform/settings/'~type~'/new') }}" class="btn submit add icon">
+                {{ "New Integration"|t('freeform') }}
             </a>
         </div>
     {% endif %}
@@ -16,12 +14,12 @@
 
 {% block content %}
 
-    <div id="no-crm-integrations" class="padded{% if integrations|length %} hidden{% endif %}">
-        <p>{{ "No CRM integrations exist yet"|t('freeform') }}</p>
+    <div id="no-integrations" class="padded{% if integrations|length %} hidden{% endif %}">
+        <p>{{ "No integrations exist yet"|t('freeform') }}</p>
     </div>
 
     {% if integrations|length %}
-        <table id="crm-integrations" class="data fullwidth collapsible">
+        <table id="integrations" class="data fullwidth collapsible">
             <thead>
             <tr>
                 <th scope="col">{{ "Name"|t('freeform') }}</th>
@@ -36,7 +34,7 @@
                 <tr data-id="{{ integration.id }}" data-name="{{ integration.name }}">
                     <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
                         {% if craft.freeform.pro %}
-                            <a href="{{ url('freeform/settings/crm/'~integration.id) }}">{{ integration.name }}</a>
+                            <a href="{{ url('freeform/settings/'~type~'/'~integration.id) }}">{{ integration.name }}</a>
                         {% else %}
                             {{ integration.name }}
                         {% endif %}
@@ -76,10 +74,10 @@
 
 {% js %}
     var adminTable = new Craft.AdminTable({
-    tableSelector: '#crm-integrations',
-    noObjectsSelector: '#no-crm-integrations',
-    newObjectBtnSelector: '#new-crm-integration',
-    deleteAction: 'freeform/crm/delete',
+    tableSelector: '#integrations',
+    noObjectsSelector: '#no-integrations',
+    newObjectBtnSelector: '#new-integration',
+    deleteAction: 'freeform/{{ type }}/delete',
     confirmDeleteMessage: '{{ "Are you sure you want to remove the “{name}” integration?"|t('freeform') }}'
     });
 {% endjs %}

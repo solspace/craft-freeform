@@ -31,6 +31,7 @@ class HubSpot extends AbstractCRMIntegration
 {
     public const LOG_CATEGORY = 'HubSpot';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API Key',

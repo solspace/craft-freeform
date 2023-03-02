@@ -68,6 +68,16 @@ class IntegrationsService extends BaseService
         return $this->createIntegrationModel($result);
     }
 
+    public function getByHandle(string $handle): ?IntegrationModel
+    {
+        $result = $this->getQuery()->where(['handle' => $handle])->one();
+        if (!$result) {
+            return null;
+        }
+
+        return $this->createIntegrationModel($result);
+    }
+
     public function save(IntegrationModel $model): bool
     {
         $isNew = !$model->id;
@@ -154,6 +164,29 @@ class IntegrationsService extends BaseService
             $transaction?->rollBack();
 
             throw $exception;
+        }
+    }
+
+    public function decryptModelValues(IntegrationModel $model)
+    {
+        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
+
+        if (!$model->class) {
+            return;
+        }
+
+        $properties = $this->propertyProvider->getEditableProperties($model->class);
+        foreach ($properties as $property) {
+            if (!$property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+                continue;
+            }
+
+            $value = $model->metadata[$property->handle];
+            if ($value) {
+                $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
+            }
+
+            $model->metadata[$property->handle] = $value;
         }
     }
 

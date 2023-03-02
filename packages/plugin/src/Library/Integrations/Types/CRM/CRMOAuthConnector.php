@@ -45,6 +45,7 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
     )]
     protected string $returnUri = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         instructions: 'Enter the Client ID of your app here.',
@@ -52,6 +53,7 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
     )]
     protected string $clientId = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         instructions: 'Enter the Client Secret of your app here.',

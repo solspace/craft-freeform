@@ -13,11 +13,10 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\Library\Database\PaymentGatewayHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\PlanObject;
 use Solspace\Freeform\Models\IntegrationModel;
@@ -28,8 +27,7 @@ use Solspace\Freeform\Records\Pro\Payments\SubscriptionPlanRecord;
 
 class PaymentGatewaysService extends AbstractIntegrationService implements PaymentGatewayHandlerInterface
 {
-    /** @var array */
-    private static $integrations;
+    private static ?array $integrations = null;
 
     /**
      * @return AbstractPaymentGatewayIntegration
@@ -38,56 +36,20 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
     {
         if (null === self::$integrations) {
             $event = new FetchPaymentGatewayTypesEvent();
-            $this->trigger(self::EVENT_FETCH_TYPES, $event);
 
-            self::$integrations = $event->getTypes();
+            $this->trigger(self::EVENT_FETCH_TYPES, $event);
+            $types = $event->getTypes();
+            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
+
+            $integrations = [];
+            foreach ($types as $type) {
+                $integrations[$type->class] = $type;
+            }
+
+            self::$integrations = $integrations;
         }
 
         return self::$integrations;
-    }
-
-    public function getAllPaymentGatewaySettingBlueprints(): array
-    {
-        $serviceProviderTypes = $this->getAllPaymentGatewayServiceProviders();
-
-        // Get all blueprints per class
-        $settingBlueprints = [];
-
-        /**
-         * @var AbstractIntegration $providerClass
-         * @var string              $name
-         */
-        foreach ($serviceProviderTypes as $providerClass => $name) {
-            $settingBlueprints[$providerClass] = $providerClass::getSettingBlueprints();
-        }
-
-        return $settingBlueprints;
-    }
-
-    /**
-     * Get all setting blueprints for a specific mailing list integration.
-     *
-     * @param string $class
-     *
-     * @return SettingBlueprint[]
-     *
-     * @throws IntegrationException
-     */
-    public function getPaymentGatewaySettingBlueprints($class): array
-    {
-        $serviceProviderTypes = $this->getAllPaymentGatewayServiceProviders();
-
-        /**
-         * @var AbstractIntegration $providerClass
-         * @var string              $name
-         */
-        foreach ($serviceProviderTypes as $providerClass => $name) {
-            if ($providerClass === $class) {
-                return $providerClass::getSettingBlueprints();
-            }
-        }
-
-        throw new IntegrationException('Could not get Payment Gateway settings');
     }
 
     /**

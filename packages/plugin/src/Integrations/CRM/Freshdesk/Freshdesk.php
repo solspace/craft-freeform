@@ -18,6 +18,7 @@ class Freshdesk extends AbstractCRMIntegration
 {
     public const LOG_CATEGORY = 'Freshdesk';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API Key',

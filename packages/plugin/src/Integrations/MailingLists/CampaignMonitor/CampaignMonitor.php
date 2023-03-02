@@ -30,6 +30,7 @@ class CampaignMonitor extends AbstractMailingListIntegration
 {
     public const LOG_CATEGORY = 'Campaign Monitor';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API Key',
@@ -38,6 +39,7 @@ class CampaignMonitor extends AbstractMailingListIntegration
     )]
     protected string $apiKey = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'Client ID',

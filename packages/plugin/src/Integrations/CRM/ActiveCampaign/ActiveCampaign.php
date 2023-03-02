@@ -29,6 +29,7 @@ class ActiveCampaign extends AbstractCRMIntegration
 {
     public const LOG_CATEGORY = 'Active Campaign';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API Token',
@@ -37,6 +38,7 @@ class ActiveCampaign extends AbstractCRMIntegration
     )]
     protected string $apiToken = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API URL',

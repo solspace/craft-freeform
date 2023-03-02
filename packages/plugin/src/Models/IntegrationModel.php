@@ -97,8 +97,8 @@ class IntegrationModel extends Model
 
         return new $className(
             $this->id,
-            $this->handle,
-            $this->name,
+            $this->handle ?? '',
+            $this->name ?? '',
             $this->lastUpdate,
             $this->metadata,
             FreeformLogger::getInstance($logCategory),

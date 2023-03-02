@@ -28,6 +28,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
     )]
     protected string $apiUrl = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API Key',

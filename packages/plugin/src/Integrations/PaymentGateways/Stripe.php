@@ -3,6 +3,10 @@
 namespace Solspace\Freeform\Integrations\PaymentGateways;
 
 use craft\helpers\UrlHelper;
+use GuzzleHttp\Client;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Events\Payments\UpdateDataEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
@@ -11,9 +15,7 @@ use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationStorageInterface;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
-use Solspace\Freeform\Library\Integrations\SettingBlueprint;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Payments\PaymentInterface;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
@@ -32,22 +34,13 @@ use Stripe\PaymentIntent;
 use Stripe\Subscription;
 use yii\base\Event;
 
+#[Type(
+    name: 'Stripe',
+    iconPath: __DIR__.'/icon.svg',
+)]
 class Stripe extends AbstractPaymentGatewayIntegration
 {
-    public const SETTING_PUBLIC_KEY_LIVE = 'public_key_live';
-    public const SETTING_SECRET_KEY_LIVE = 'secret_key_live';
-    public const SETTING_PUBLIC_KEY_TEST = 'public_key_test';
-    public const SETTING_SECRET_KEY_TEST = 'secret_key_test';
-    public const SETTING_LIVE_MODE = 'live_mode';
-    public const SETTING_WEBHOOK_KEY = 'webhook_key';
-    public const SETTING_SUPPRESS_ON_FAIL = 'suppress_on_fail';
-    public const SETTING_SEND_ON_SUCCESS = 'send_on_success';
-
-    public const TITLE = 'Stripe';
     public const LOG_CATEGORY = 'Stripe';
-
-    public const PRODUCT_TYPE_SERVICE = 'service';
-    public const PRODUCT_TYPE_GOOD = 'good';
 
     public const EVENT_UPDATE_PAYMENT_INTENT_DATA = 'updatePaymentIntentData';
     public const EVENT_UPDATE_SUBSCRIPTION_DATA = 'updateSubscriptionData';
@@ -78,11 +71,112 @@ class Stripe extends AbstractPaymentGatewayIntegration
         PaymentProperties::PLAN_INTERVAL_ANNUALLY => ['interval' => 'year', 'count' => 1],
     ];
 
+    #[Property(
+        label: 'Suppress Email Notifications & Integrations when Payments Fail',
+        instructions: 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
+    )]
+    protected bool $suppressOnFail = false;
+
+    #[Property(
+        label: 'Send Success Email from Stripe to Submitter',
+        instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, which will then automatically trigger Stripe sending a success email notification.",
+    )]
+    protected bool $sendOnSuccess = true;
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'Public Key (Live)',
+        instructions: 'Enter your Stripe LIVE public key here.',
+        required: true,
+    )]
+    protected string $publicKeyLive = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'Secret Key (Live)',
+        instructions: 'Enter your Stripe LIVE secret key here.',
+        required: true,
+    )]
+    protected string $secretKeyLive = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'Public Key (Test)',
+        instructions: 'Enter your Stripe TEST public key here.',
+        required: true,
+    )]
+    protected string $publicKeyTest = '';
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
+    #[Property(
+        label: 'Secret Key (Test)',
+        instructions: 'Enter your Stripe TEST secret key here.',
+        required: true,
+    )]
+    protected string $secretKeyTest = '';
+
+    #[Property(
+        label: 'LIVE mode',
+        instructions: 'Enable this to start using LIVE public and secret keys.',
+    )]
+    protected bool $liveMode = false;
+
+    #[Flag(self::FLAG_ENCRYPTED)]
+    #[Property(
+        label: 'Webhook Secret',
+        instructions: 'Enter your Stripe webhook secret here.',
+    )]
+    protected string $webhookSecret = '';
+
     /** @var \Exception */
     protected $lastError;
     protected $lastErrorDetails;
 
-    public static function toStripeAmount($amount, $currency)
+    public function isSuppressOnFail(): bool
+    {
+        return $this->suppressOnFail;
+    }
+
+    public function isSendOnSuccess(): bool
+    {
+        return $this->sendOnSuccess;
+    }
+
+    public function getPublicKeyLive(): string
+    {
+        return $this->getProcessedValue($this->publicKeyLive);
+    }
+
+    public function getSecretKeyLive(): string
+    {
+        return $this->getProcessedValue($this->secretKeyLive);
+    }
+
+    public function getPublicKeyTest(): string
+    {
+        return $this->getProcessedValue($this->publicKeyTest);
+    }
+
+    public function getSecretKeyTest(): string
+    {
+        return $this->getProcessedValue($this->secretKeyTest);
+    }
+
+    public function getWebhookSecret(): string
+    {
+        return $this->getProcessedValue($this->webhookSecret);
+    }
+
+    public function isLiveMode(): bool
+    {
+        return $this->liveMode;
+    }
+
+    public static function toStripeAmount($amount, $currency): int
     {
         if (\in_array(strtoupper($currency), self::ZERO_DECIMAL_CURRENCIES)) {
             return $amount;
@@ -91,7 +185,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         return ceil($amount * 100);
     }
 
-    public static function fromStripeAmount($amount, $currency)
+    public static function fromStripeAmount($amount, $currency): int
     {
         if (\in_array(strtoupper($currency), self::ZERO_DECIMAL_CURRENCIES)) {
             return $amount;
@@ -105,75 +199,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $stripeInterval = ['interval' => $interval, 'count' => $intervalCount];
 
         return array_search($stripeInterval, self::PLAN_INTERVAL_CONVERSION);
-    }
-
-    /**
-     * Returns a list of additional settings for this integration
-     * Could be used for anything, like - AccessTokens.
-     *
-     * @return SettingBlueprint[]
-     */
-    public static function getSettingBlueprints(): array
-    {
-        return [
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_BOOL,
-                self::SETTING_SUPPRESS_ON_FAIL,
-                'Suppress Email Notifications & Integrations when Payments Fail',
-                'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
-                false
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_BOOL,
-                self::SETTING_SEND_ON_SUCCESS,
-                'Send Success Email from Stripe to Submitter',
-                "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, which will then automatically trigger Stripe sending a success email notification.",
-                false,
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_PUBLIC_KEY_LIVE,
-                'Public Key (Live)',
-                'Enter your Stripe LIVE public key here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_SECRET_KEY_LIVE,
-                'Secret Key (Live)',
-                'Enter your Stripe LIVE secret key here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_PUBLIC_KEY_TEST,
-                'Public Key (Test)',
-                'Enter your Stripe TEST public key here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_SECRET_KEY_TEST,
-                'Secret Key (Test)',
-                'Enter your Stripe TEST secret key here.',
-                true
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_BOOL,
-                self::SETTING_LIVE_MODE,
-                'LIVE mode',
-                'Enable this to start using LIVE public and secret keys.',
-                false
-            ),
-            new SettingBlueprint(
-                SettingBlueprint::TYPE_TEXT,
-                self::SETTING_WEBHOOK_KEY,
-                'Webhook Secret',
-                'Enter your Stripe webhook secret here.',
-                false
-            ),
-        ];
     }
 
     public function getWebhookUrl(): string
@@ -201,26 +226,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
         }
 
         return $charges instanceof StripeAPI\Collection;
-    }
-
-    /**
-     * Authorizes the application
-     * Returns the access_token.
-     *
-     * @throws IntegrationException
-     */
-    public function fetchTokens(): string
-    {
-        return $this->getSetting(
-            $this->isLiveMode() ? self::SETTING_SECRET_KEY_LIVE : self::SETTING_SECRET_KEY_TEST
-        );
-    }
-
-    /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication()
-    {
     }
 
     public function fetchFields(): array
@@ -344,7 +349,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $submission = $subscriptionDetails->getSubmission();
         $submissionId = $submission->getId();
 
-        if (0 === strpos($token, 'declined:')) {
+        if (str_starts_with($token, 'declined:')) {
             $this->lastError = new \Exception($token);
 
             return false;
@@ -667,18 +672,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
     }
 
     /**
-     * Perform anything necessary before this integration is saved.
-     */
-    public function onBeforeSave(IntegrationStorageInterface $model)
-    {
-        $model->updateAccessToken(
-            $this->getSetting(
-                $this->isLiveMode() ? self::SETTING_SECRET_KEY_LIVE : self::SETTING_SECRET_KEY_TEST
-            )
-        );
-    }
-
-    /**
      * Returns last error happened during Stripe API calls.
      *
      * @return null|\Exception
@@ -706,16 +699,11 @@ class Stripe extends AbstractPaymentGatewayIntegration
      */
     public function getExternalDashboardLink(string $resourceId, string $type): string
     {
-        switch ($type) {
-            case PaymentInterface::TYPE_SINGLE:
-                return "https://dashboard.stripe.com/payments/{$resourceId}";
-
-            case PaymentInterface::TYPE_SUBSCRIPTION:
-                return "https://dashboard.stripe.com/subscriptions/{$resourceId}";
-
-            default:
-                return '';
-        }
+        return match ($type) {
+            PaymentInterface::TYPE_SINGLE => "https://dashboard.stripe.com/payments/{$resourceId}",
+            PaymentInterface::TYPE_SUBSCRIPTION => "https://dashboard.stripe.com/subscriptions/{$resourceId}",
+            default => '',
+        };
     }
 
     /**
@@ -723,14 +711,12 @@ class Stripe extends AbstractPaymentGatewayIntegration
      */
     public function getPublicKey(): string
     {
-        return $this->getSetting(
-            $this->isLiveMode() ? self::SETTING_PUBLIC_KEY_LIVE : self::SETTING_PUBLIC_KEY_TEST
-        );
+        return $this->isLiveMode() ? $this->getSecretKeyLive() : $this->getSecretKeyTest();
     }
 
     public function prepareApi()
     {
-        StripeAPI\Stripe::setApiKey($this->getAccessToken());
+        StripeAPI\Stripe::setApiKey($this->getPublicKey());
         StripeApi\Stripe::setApiVersion('2019-08-14');
 
         StripeApi\Stripe::setAppInfo(
@@ -740,19 +726,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
         );
 
         $this->lastError = null;
-    }
-
-    public function sendOnSuccess(): bool
-    {
-        return $this->getSetting(self::SETTING_SEND_ON_SUCCESS) ?? true;
-    }
-
-    /**
-     * @throws IntegrationException
-     */
-    protected function isLiveMode(): bool
-    {
-        return $this->getSetting(self::SETTING_LIVE_MODE);
     }
 
     /**
@@ -767,7 +740,7 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $submission = $paymentDetails->getSubmission();
         $submissionId = $submission->getId();
 
-        if ('declined' == substr($paymentIntentId, 0, 8)) {
+        if (str_starts_with($paymentIntentId, 'declined')) {
             $this->lastError = new \Exception('Your card was declined', 400);
             $this->lastErrorDetails = substr($paymentIntentId, 10);
 
@@ -998,5 +971,10 @@ class Stripe extends AbstractPaymentGatewayIntegration
         FreeformLogger::getInstance(FreeformLogger::STRIPE)->error($exception->getMessage());
 
         return false;
+    }
+
+    protected function generateAuthorizedClient(): Client
+    {
+        return new Client();
     }
 }

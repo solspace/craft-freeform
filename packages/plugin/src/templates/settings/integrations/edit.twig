@@ -1,0 +1,53 @@
+{% extends "freeform/_layouts/settings" %}
+
+{% set saveShortcutRedirect = 'freeform/settings/'~type~'/{id}' %}
+{% set fullPageForm = true %}
+
+{% block actionButton %}
+    <div class="buttons">
+        <div class="btngroup submit">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
+
+            <div class="btn submit menubtn"></div>
+            <div class="menu">
+                <ul>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
+                            {{ "Save and continue editing"|t('freeform') }}
+                            <span class="shortcut">⌘S</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="formsubmit" data-redirect="{{ url('freeform/settings/'~type~'/new')|hash }}">
+                            {{ "Save and add another"|t('freeform') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+{% block content %}
+
+    {% if serviceProviderTypes|length == 0 %}
+
+        <div>
+            {{ "There are no Integrations currently installed. Please visit {link_open}Solspace Freeform marketplace{link_close} to purchase CRM integrations"|t('freeform', {
+                link_open: '<a href="https://solspace.com/">',
+                link_close: '</a>',
+            })|raw }}
+        </div>
+
+    {% else %}
+
+        {% include 'freeform/settings/integrations/_components/properties-editor' %}
+
+    {% endif %}
+
+{% endblock %}
+
+{% js %}
+    {% if not integration.handle %}new Craft.HandleGenerator('#name', '#handle');{% endif %}
+{% endjs %}

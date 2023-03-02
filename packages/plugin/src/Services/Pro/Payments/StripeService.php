@@ -87,7 +87,7 @@ class StripeService extends Component
 
             $mapping = $properties->getCustomerFieldMapping();
             if (isset($mapping['email']) && $form->get($mapping['email'])) {
-                if ($integration->sendOnSuccess()) {
+                if ($integration->isSendOnSuccess()) {
                     $paymentIntentProperties['receipt_email'] = $form->get($mapping['email'])->getValueAsString();
                 }
             }

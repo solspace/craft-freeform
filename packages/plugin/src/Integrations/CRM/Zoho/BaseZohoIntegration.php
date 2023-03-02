@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
-use Solspace\Freeform\Library\Integrations\CRM\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 
 abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshTokenInterface
 {

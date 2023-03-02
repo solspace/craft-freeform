@@ -23,8 +23,8 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Pro\Payments\SubscriptionModel;
 use Solspace\Freeform\Records\CrmFieldRecord;
@@ -41,7 +41,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
     /**
      * @throws \ReflectionException
      */
-    public function getAllCRMServiceProviders(): array
+    public function getAllServiceProviders(): array
     {
         if (null === self::$integrations) {
             $event = new FetchCrmTypesEvent();

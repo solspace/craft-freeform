@@ -15,8 +15,8 @@ namespace Solspace\Freeform\Library\Database;
 use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\MailingListIntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\MailingLists\AbstractMailingListIntegration;
-use Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
 interface MailingListHandlerInterface extends IntegrationHandlerInterface
 {

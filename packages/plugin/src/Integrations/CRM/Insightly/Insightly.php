@@ -6,14 +6,15 @@ use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 
 #[Type('Insightly')]
 class Insightly extends AbstractCRMIntegration
 {
     public const LOG_CATEGORY = 'Insightly';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API Key',

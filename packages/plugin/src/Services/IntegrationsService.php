@@ -68,6 +68,16 @@ class IntegrationsService extends BaseService
         return $this->createIntegrationModel($result);
     }
 
+    public function getByHandle(string $handle): ?IntegrationModel
+    {
+        $result = $this->getQuery()->where(['handle' => $handle])->one();
+        if (!$result) {
+            return null;
+        }
+
+        return $this->createIntegrationModel($result);
+    }
+
     public function save(IntegrationModel $model): bool
     {
         $isNew = !$model->id;
@@ -154,6 +164,46 @@ class IntegrationsService extends BaseService
             $transaction?->rollBack();
 
             throw $exception;
+        }
+    }
+
+    public function decryptModelValues(IntegrationModel $model)
+    {
+        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
+
+        if (!$model->class) {
+            return;
+        }
+
+        $properties = $this->propertyProvider->getEditableProperties($model->class);
+        foreach ($properties as $property) {
+            if (!$property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+                continue;
+            }
+
+            $value = $model->metadata[$property->handle];
+            if ($value) {
+                $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
+            }
+
+            $model->metadata[$property->handle] = $value;
+        }
+    }
+
+    public function parsePostedModelData(IntegrationModel $model): void
+    {
+        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
+
+        $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
+        foreach ($editableProperties as $property) {
+            $handle = $property->handle;
+            $value = $model->metadata[$handle] ?? null;
+
+            if ($value && $property->hasFlag(IntegrationInterface::FLAG_ENCRYPTED)) {
+                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
+
+                $model->metadata[$property->handle] = $value;
+            }
         }
     }
 

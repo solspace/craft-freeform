@@ -30,7 +30,7 @@ class WebhooksController extends BaseController
             throw new HttpException(400, Freeform::t('Invalid integration'));
         }
 
-        $endpointSecret = \Craft::parseEnv($integration->getSettings()[Stripe::SETTING_WEBHOOK_KEY]);
+        $endpointSecret = $integration->getWebhookSecret();
 
         if (!$endpointSecret) {
             throw new HttpException(400, Freeform::t('Integration is not configured properly'));

@@ -16,13 +16,12 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\CRM\CRMOAuthConnector;
-use Solspace\Freeform\Library\Integrations\CRM\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 use yii\base\Event;
 
 #[Type('Infusionsoft')]

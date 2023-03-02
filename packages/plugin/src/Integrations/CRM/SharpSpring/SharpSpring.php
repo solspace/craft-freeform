@@ -19,8 +19,8 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 
 #[Type(
     name: 'SharpSpring',
@@ -30,6 +30,7 @@ class SharpSpring extends AbstractCRMIntegration
 {
     public const LOG_CATEGORY = 'SharpSpring';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'Account ID',
@@ -38,6 +39,7 @@ class SharpSpring extends AbstractCRMIntegration
     )]
     protected string $accountId = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         instructions: 'Enter your Secret Key here.',

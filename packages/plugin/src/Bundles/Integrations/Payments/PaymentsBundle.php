@@ -6,15 +6,14 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 use yii\base\Event;
 
 class PaymentsBundle extends FeatureBundle
@@ -139,16 +138,14 @@ class PaymentsBundle extends FeatureBundle
     /**
      * Gets last error from integration and adds it to submission element.
      *
-     * @param Submission                        $submission
-     * @param AbstractPaymentGatewayIntegration $integration
+     * @param Submission $submission
      */
-    private function applyPaymentErrors($submission, $integration)
+    private function applyPaymentErrors($submission, AbstractPaymentGatewayIntegration $integration)
     {
         $error = $integration->getLastError();
         $submission->addError($error->getMessage());
 
-        $settings = $integration->getSettings();
-        $suppress = $settings[Stripe::SETTING_SUPPRESS_ON_FAIL] ?? false;
+        $suppress = $integration->isSuppressOnFail();
 
         if ((bool) $suppress) {
             $submission->getForm()->enableSuppression();

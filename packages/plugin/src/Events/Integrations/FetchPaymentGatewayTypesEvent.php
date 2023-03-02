@@ -2,23 +2,24 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\PaymentGatewayIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 
 class FetchPaymentGatewayTypesEvent extends ArrayableEvent
 {
-    /** @var array */
-    private $types;
+    /** @var Type[] */
+    private array $types = [];
 
-    /**
-     * FetchPaymentGatewayTypesEvent constructor.
-     */
-    public function __construct()
+    private PropertyProvider $propertyProvider;
+
+    public function __construct($config = [])
     {
-        $this->types = [];
+        $this->propertyProvider = \Craft::$container->get(PropertyProvider::class);
 
-        parent::__construct();
+        parent::__construct($config);
     }
 
     /**
@@ -31,14 +32,25 @@ class FetchPaymentGatewayTypesEvent extends ArrayableEvent
 
     public function addType(string $class): self
     {
-        if (!Freeform::getInstance()->isPro()) {
-            return $this;
-        }
-
         $reflectionClass = new \ReflectionClass($class);
 
-        if ($reflectionClass->implementsInterface(PaymentGatewayIntegrationInterface::class)) {
-            $this->types[$class] = $reflectionClass->getConstant('TITLE');
+        $isPro = Freeform::getInstance()->isPro();
+        if ($isPro && $reflectionClass->implementsInterface(PaymentGatewayIntegrationInterface::class)) {
+            $types = $reflectionClass->getAttributes(Type::class);
+            $type = reset($types);
+
+            if (!$type) {
+                return $this;
+            }
+
+            /** @var Type $type */
+            $type = $type->newInstance();
+
+            $properties = $this->propertyProvider->getEditableProperties($class);
+            $type->setProperties($properties);
+            $type->class = $class;
+
+            $this->types[$class] = $type;
         }
 
         return $this;

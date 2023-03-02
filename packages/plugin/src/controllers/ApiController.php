@@ -24,7 +24,7 @@ use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
-use Solspace\Freeform\Library\Integrations\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Models\FieldModel;
 use yii\base\Exception;
 use yii\web\Response;

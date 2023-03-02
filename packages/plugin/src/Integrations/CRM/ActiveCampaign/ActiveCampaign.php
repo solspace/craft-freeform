@@ -18,8 +18,8 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\CRM\AbstractCRMIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 
 #[Type(
     name: 'ActiveCampaign',
@@ -29,6 +29,7 @@ class ActiveCampaign extends AbstractCRMIntegration
 {
     public const LOG_CATEGORY = 'Active Campaign';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API Token',
@@ -37,6 +38,7 @@ class ActiveCampaign extends AbstractCRMIntegration
     )]
     protected string $apiToken = '';
 
+    #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Property(
         label: 'API URL',

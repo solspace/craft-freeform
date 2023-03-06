@@ -28,6 +28,7 @@ class IntegrationModel extends Model
     public ?int $id = null;
     public ?string $name = null;
     public ?string $handle = null;
+    public ?bool $enabled = null;
     public ?string $type = null;
     public ?string $class = null;
     public array $metadata = [];

@@ -4,28 +4,33 @@ import type { Property } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-type IntegrationState = {
-  updated: number;
-  dirty: boolean;
+import type { SaveSubscriber } from '../middleware/state-persist';
+import { TOPIC_SAVE } from '../middleware/state-persist';
+
+type Value = string | number | boolean;
+
+export type IntegrationEntry = {
+  values: { [key: string]: Value };
+  dirtyValues: { [key: string]: Value };
 } & Integration;
 
 type IntegrationModificationPayload = {
   id: number;
   key: string;
-  value: string | number | boolean;
+  value: Value;
 };
 
-const initialState: IntegrationState[] = [];
+const initialState: IntegrationEntry[] = [];
 
 const findIntegration = (
-  state: IntegrationState[],
+  state: IntegrationEntry[],
   id: number
-): IntegrationState | undefined => {
+): IntegrationEntry | undefined => {
   return state.find((item) => item.id === id);
 };
 
 const findProperty = (
-  integration: IntegrationState,
+  integration: IntegrationEntry,
   key: string
 ): Property | undefined => {
   return integration.properties.find((property) => property.handle === key);
@@ -37,9 +42,14 @@ export const integrationsSlice = createSlice({
   reducers: {
     addIntegrations: (state, action: PayloadAction<Integration[]>) => {
       action.payload.forEach((integration) => {
+        const values: { [key: string]: Value } = {};
+        integration.properties.forEach((prop) => {
+          values[prop.handle] = prop.value;
+        });
+
         state.push({
-          updated: 1,
-          dirty: false,
+          dirtyValues: {},
+          values,
           ...integration,
         });
       });
@@ -55,7 +65,19 @@ export const integrationsSlice = createSlice({
       const { id, key, value } = action.payload;
       const integration = findIntegration(state, id);
       const property = findProperty(integration, key);
-      property.value = value;
+
+      integration.values[key] = value;
+      integration.dirtyValues = {
+        ...integration.dirtyValues,
+        [key]: value,
+      };
+
+      if (
+        integration.dirtyValues[key] !== undefined &&
+        integration.dirtyValues[key] === property.value
+      ) {
+        delete integration.dirtyValues[key];
+      }
     },
   },
 });
@@ -65,7 +87,19 @@ export const { addIntegrations, toggleIntegration, modifyIntegrationProperty } =
 
 export const selectIntegration =
   (id: number) =>
-  (state: RootState): IntegrationState =>
+  (state: RootState): IntegrationEntry =>
     state.integrations.find((item) => item.id === id);
 
 export default integrationsSlice.reducer;
+
+const persistIntegrations: SaveSubscriber = (_, data) => {
+  const { state, persist } = data;
+
+  persist.integrations = state.integrations.map((integration) => ({
+    id: integration.id,
+    enabled: Boolean(integration.enabled),
+    values: integration.dirtyValues,
+  }));
+};
+
+PubSub.subscribe(TOPIC_SAVE, persistIntegrations);

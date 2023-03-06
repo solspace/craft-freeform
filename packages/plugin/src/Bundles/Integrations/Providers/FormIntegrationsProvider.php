@@ -17,6 +17,7 @@ class FormIntegrationsProvider
     {
         $integrations = $this->integrationsService->getAllIntegrations();
 
+        /** @var FormIntegrationRecord[] $formIntegrationRecords */
         $formIntegrationRecords = FormIntegrationRecord::find()
             ->where(['formId' => $form?->getId() ?? null])
             ->indexBy('integrationId')
@@ -31,10 +32,10 @@ class FormIntegrationsProvider
 
             $metadata = json_decode($formIntegration->metadata ?? '{}', true);
 
-            $settings = $metadata['metadata'] ?? [];
+            $integration->enabled = $formIntegration->enabled;
             $integration->metadata = array_merge(
                 $integration->metadata,
-                $settings
+                $metadata
             );
         }
 

@@ -95,6 +95,7 @@ class IntegrationDTOProvider
         $dto->id = $model->id;
         $dto->name = $model->name;
         $dto->handle = $model->handle;
+        $dto->enabled = (bool) $model->enabled;
         $dto->type = $model->type;
         $dto->icon = $icon;
         $dto->properties = $this->propertyProvider->getEditableProperties($class, $model->getIntegrationObject());

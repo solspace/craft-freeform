@@ -73,8 +73,9 @@ export const { set, add, moveTo, updateLabel, remove } = pagesSlice.actions;
 export const selectPages = (state: RootState): Page[] =>
   [...state.pages].sort(sortByOrder);
 
-export const selectPage = (uid: string) => (
-  state: RootState
-): Page | undefined => state.pages.find((page) => page.uid === uid);
+export const selectPage =
+  (uid: string) =>
+  (state: RootState): Page | undefined =>
+    state.pages.find((page) => page.uid === uid);
 
 export default pagesSlice.reducer;

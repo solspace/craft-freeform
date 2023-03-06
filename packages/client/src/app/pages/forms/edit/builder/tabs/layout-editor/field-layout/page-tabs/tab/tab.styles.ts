@@ -59,7 +59,7 @@ export const TabDrop = styled.div`
 
 export const Input = styled.input`
   border: 0;
-  padding: 3px;
+  padding: 0 !important;
   line-height: 1rem;
   font-size: 0.75rem;
   box-shadow: none !important;

@@ -38,9 +38,9 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
     index
   );
 
-  const connectedRef = (dropRef(
+  const connectedRef = dropRef(
     dragRef(wrapperRef)
-  ) as unknown) as MutableRefObject<HTMLDivElement>;
+  ) as unknown as MutableRefObject<HTMLDivElement>;
 
   const style = useTabDragAnimation(
     wrapperRef,

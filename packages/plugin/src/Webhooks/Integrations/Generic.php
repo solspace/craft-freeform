@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Webhooks\Integrations;
 
 use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
-use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Webhooks\AbstractWebhook;
 
 class Generic extends AbstractWebhook

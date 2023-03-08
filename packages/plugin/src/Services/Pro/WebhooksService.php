@@ -6,7 +6,7 @@ use craft\db\Query;
 use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Webhooks\SaveEvent;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Webhooks\AbstractWebhook;
 use Solspace\Freeform\Library\Webhooks\WebhookInterface;
 use Solspace\Freeform\Models\Pro\WebhookModel;

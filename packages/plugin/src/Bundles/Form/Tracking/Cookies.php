@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Bundles\Form\Tracking;
 
 use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class Cookies extends FeatureBundle

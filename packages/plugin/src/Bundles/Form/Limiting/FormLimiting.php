@@ -8,9 +8,9 @@ use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class FormLimiting extends FeatureBundle
@@ -47,7 +47,9 @@ class FormLimiting extends FeatureBundle
     public function handleLimitations(ValidationEvent $event)
     {
         $form = $event->getForm();
-        $limiting = $form->getSettings()->getBehavior()->limitSubmissions;
+        $behaviorSettings = $form->getSettings()->getBehavior();
+
+        $limiting = $behaviorSettings->limitSubmissions;
 
         $token = EditSubmissionContext::getToken($form);
         if ($token) {
@@ -67,7 +69,7 @@ class FormLimiting extends FeatureBundle
             $this->limitByUserId($form);
         }
 
-        if ($form->isIpCollectingEnabled() && \in_array($limiting, self::IP_LIMITATIONS, true)) {
+        if ($behaviorSettings->collectIpAddresses && \in_array($limiting, self::IP_LIMITATIONS, true)) {
             $this->limitByIp($form);
         }
 

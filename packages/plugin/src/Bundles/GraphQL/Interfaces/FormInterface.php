@@ -10,8 +10,8 @@ use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 
 class FormInterface extends AbstractInterface
 {

@@ -17,11 +17,11 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
 use Solspace\Freeform\Events\Submissions\UpdateEvent;
-use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Composer\Components\Page;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
@@ -169,7 +169,7 @@ class SubmissionsController extends BaseController
                     'url' => '#tab-'.$page->getIndex(),
                     'label' => $page->getLabel(),
                 ],
-                $layout->getPages()
+                $layout->getPages()->getIterator()
             ),
         ];
 

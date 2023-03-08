@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
 use Solspace\Freeform\Library\Connections\Transformers\AbstractFieldTransformer;
 use Solspace\Freeform\Library\Connections\Transformers\DirectValueTransformer;

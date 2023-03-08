@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 
 class FieldTransformer

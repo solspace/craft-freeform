@@ -6,10 +6,10 @@ use Solspace\Freeform\Events\Bags\BagModificationEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
-use Solspace\Freeform\Fields\SubmitField;
+use Solspace\Freeform\Fields\Implementations\SubmitField;
 use Solspace\Freeform\Form\Bags\PropertyBag;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
 use yii\base\Event;
 

@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\ArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class ReturnUrlEvent extends ArrayableEvent
 {

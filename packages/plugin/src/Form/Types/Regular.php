@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Form\Types;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class Regular extends Form
 {

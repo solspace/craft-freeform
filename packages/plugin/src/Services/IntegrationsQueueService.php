@@ -14,8 +14,8 @@ namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Models\IntegrationsQueueModel;
 use Solspace\Freeform\Records\IntegrationsQueueRecord;
 

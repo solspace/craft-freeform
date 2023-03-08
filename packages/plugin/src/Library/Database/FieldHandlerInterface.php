@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Library\Database;
 
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\DataContainers\Option;
+use Solspace\Freeform\Form\Form;
 
 interface FieldHandlerInterface
 {

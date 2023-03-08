@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\Library\Mailing;
 
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\NotificationRecord;
 
 interface MailHandlerInterface

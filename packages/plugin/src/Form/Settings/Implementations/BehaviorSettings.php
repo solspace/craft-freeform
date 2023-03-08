@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Form\Settings\Implementations;
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
+use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 
@@ -72,6 +73,13 @@ class BehaviorSettings extends SettingsNamespace
     public bool $ajax = true;
 
     #[Property(
+        label: 'Collect IP Addresses',
+        instructions: "Should this form collect the user's IP address?",
+        group: self::SECTION_PROCESSING,
+    )]
+    public bool $collectIpAddresses = true;
+
+    #[Property(
         label: 'Show Processing Indicator on Submit',
         instructions: 'Show a loading indicator on the submit button upon submission of the form.',
         group: self::SECTION_PROCESSING,
@@ -95,36 +103,7 @@ class BehaviorSettings extends SettingsNamespace
         label: 'Limit Form Submission Rate',
         type: Property::TYPE_SELECT,
         group: self::SECTION_LIMITS,
-        options: [
-            [
-                'value' => FormLimiting::NO_LIMIT,
-                'label' => 'Do not limit',
-            ],
-            [
-                'value' => FormLimiting::NO_LIMIT_LOGGED_IN_USERS_ONLY,
-                'label' => 'Logged in Users only (no limit)',
-            ],
-            [
-                'value' => FormLimiting::LIMIT_COOKIE,
-                'label' => 'Once per Cookie only',
-            ],
-            [
-                'value' => FormLimiting::LIMIT_IP_COOKIE,
-                'label' => 'Once per IP/Cookie combo',
-            ],
-            [
-                'value' => FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USERS_ONLY,
-                'label' => 'Once per logged in Users only',
-            ],
-            [
-                'value' => FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_COOKIE_ONLY,
-                'label' => 'Once per logged in User or Guest Cookie only',
-            ],
-            [
-                'value' => FormLimiting::LIMIT_ONCE_PER_LOGGED_IN_USER_OR_GUEST_IP_COOKIE_COMBO,
-                'label' => 'Once per logged in User or Guest IP/Cookie combo',
-            ],
-        ],
+        options: FormLimitingOptions::class,
     )]
     public string $limitSubmissions = FormLimiting::NO_LIMIT;
 

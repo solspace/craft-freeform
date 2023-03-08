@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Library\Connections\Transformers;
 
-use Solspace\Freeform\Fields\Pro\DatetimeField;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
 
 abstract class AbstractFieldTransformer implements TransformerInterface
 {

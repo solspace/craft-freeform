@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Events\Fields;
 
 use craft\events\CancelableEvent;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Fields\AbstractField;
 
 /**
  * @template T of AbstractField

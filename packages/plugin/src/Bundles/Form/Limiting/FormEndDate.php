@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Bundles\Form\Limiting;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class FormEndDate extends FeatureBundle

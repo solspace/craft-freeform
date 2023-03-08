@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Form\Bags;
 
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bags\AbstractBag;
-use Solspace\Freeform\Library\Composer\Components\Form;
 
 class AbstractFormBag extends AbstractBag
 {

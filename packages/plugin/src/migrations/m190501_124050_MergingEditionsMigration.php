@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\migrations;
 
 use craft\db\Migration;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
 use yii\db\Query;

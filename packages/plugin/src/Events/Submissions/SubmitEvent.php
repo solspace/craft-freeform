@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Events\Submissions;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class SubmitEvent extends CancelableArrayableEvent
 {

@@ -16,7 +16,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 

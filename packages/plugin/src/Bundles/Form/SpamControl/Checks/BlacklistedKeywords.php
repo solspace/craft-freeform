@@ -4,9 +4,9 @@ namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
 use Solspace\Commons\Helpers\ComparisonHelper;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 
 class BlacklistedKeywords extends AbstractCheck implements BundleInterface

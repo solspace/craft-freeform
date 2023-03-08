@@ -29,12 +29,12 @@ use Solspace\Freeform\Events\Forms\FormValidateEvent;
 use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\SaveEvent;
-use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
-use Solspace\Freeform\Fields\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FormExceptions\InvalidFormTypeException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -437,7 +437,7 @@ class FormsService extends BaseService implements FormHandlerInterface
     public function renderSuccessTemplate(Form $form): ?Markup
     {
         $settings = $this->getSettingsService();
-        $templateName = $form->getSuccessTemplate();
+        $templateName = $form->getSettings()->getBehavior()->successTemplate;
         if (empty($templateName)) {
             return null;
         }

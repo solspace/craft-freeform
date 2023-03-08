@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Events\Connections;
 
 use craft\base\ElementInterface;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
 
 class ConnectEvent extends CancelableArrayableEvent

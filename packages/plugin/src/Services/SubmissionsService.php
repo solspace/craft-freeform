@@ -24,13 +24,13 @@ use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
-use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
+use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
+use Solspace\Freeform\Fields\Interfaces\StaticValueInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use yii\base\Event;
 
@@ -211,14 +211,19 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $dateCreated = new \DateTime();
 
-        $fieldsByHandle = $form->getLayout()->getFieldsByHandle();
+        $fieldsByHandle = $form->getLayout()->getFields()->getListByHandle();
 
         if (!$submission->id) {
-            $submission->ip = $form->isIpCollectingEnabled() ? \Craft::$app->request->getUserIP() : null;
+            $behaviorSettings = $form->getSettings()->getBehavior();
+            $generalSettings = $form->getSettings()->getGeneral();
+
+            $collectIps = $behaviorSettings->collectIpAddresses;
+
+            $submission->ip = $collectIps ? \Craft::$app->request->getUserIP() : null;
             $submission->formId = $form->getId();
             $submission->isSpam = $form->isMarkedAsSpam();
             $submission->dateCreated = $dateCreated;
-            $submission->statusId = $form->getDefaultStatus();
+            $submission->statusId = $generalSettings->defaultStatus;
         }
 
         $submission->title = \Craft::$app->view->renderString(

@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties\FormProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\ValidationProperties;
 

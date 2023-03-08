@@ -5,11 +5,11 @@ namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class ElementEditBundle extends FeatureBundle

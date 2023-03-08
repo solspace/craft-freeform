@@ -10,8 +10,8 @@ use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FormArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FormInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormResolver;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Models\FormModel;
 use yii\db\Schema;
 

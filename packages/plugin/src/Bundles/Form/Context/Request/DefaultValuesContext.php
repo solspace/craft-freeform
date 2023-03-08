@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Bundles\Form\Context\Request;
 
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Fields\CheckboxField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
+use Solspace\Freeform\Form\Form;
 use yii\base\Event;
 
 class DefaultValuesContext

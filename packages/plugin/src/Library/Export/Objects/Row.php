@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Export\Objects;
 
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultiDimensionalValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
 
 class Row implements \IteratorAggregate
 {

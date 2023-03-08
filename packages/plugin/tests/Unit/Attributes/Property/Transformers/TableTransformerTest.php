@@ -4,7 +4,7 @@ namespace Solspace\Tests\Freeform\Unit\Attributes\Property\Transformers;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Property\Transformers\TableTransformer;
-use Solspace\Freeform\Fields\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Properties\Table\TableProperty;
 
 /**

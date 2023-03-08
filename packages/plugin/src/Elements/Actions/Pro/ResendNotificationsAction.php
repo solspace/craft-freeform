@@ -7,9 +7,9 @@ use craft\elements\db\ElementQueryInterface;
 use craft\web\View;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class ResendNotificationsAction extends ElementAction

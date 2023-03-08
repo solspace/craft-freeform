@@ -12,10 +12,10 @@
 
 namespace Solspace\Freeform\Library\Factories;
 
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Stringy\Stringy;
 

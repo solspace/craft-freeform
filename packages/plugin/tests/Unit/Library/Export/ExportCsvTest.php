@@ -4,10 +4,10 @@ namespace Solspace\Tests\Freeform\Unit\Library\Export;
 
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Fields\Pro\TableField;
-use Solspace\Freeform\Fields\TextareaField;
-use Solspace\Freeform\Fields\TextField;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Implementations\TextField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Export\ExportCsv;
 

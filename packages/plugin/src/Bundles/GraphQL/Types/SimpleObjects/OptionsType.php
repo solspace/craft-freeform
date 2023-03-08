@@ -6,7 +6,7 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
-use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
+use Solspace\Freeform\Fields\DataContainers\Option;
 
 class OptionsType extends AbstractObjectType
 {

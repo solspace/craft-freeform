@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Events\Forms;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class RenderTagEvent extends ArrayableEvent implements FormEventInterface
 {

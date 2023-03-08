@@ -6,7 +6,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;

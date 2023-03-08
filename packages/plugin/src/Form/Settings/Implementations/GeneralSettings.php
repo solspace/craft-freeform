@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultStatusGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 use Solspace\Freeform\Form\Types\Regular;
@@ -41,6 +42,12 @@ class GeneralSettings extends SettingsNamespace
         instructions: 'What the auto-generated submission titles should look like.',
     )]
     public string $submissionTitle = '{{ dateCreated|date("Y-m-d H:i:s") }}';
+
+    #[Property(
+        instructions: 'The default status to be assigned to new submissions.',
+        valueGenerator: DefaultStatusGenerator::class,
+    )]
+    public ?int $defaultStatus = null;
 
     #[Property(
         type: Property::TYPE_SELECT,

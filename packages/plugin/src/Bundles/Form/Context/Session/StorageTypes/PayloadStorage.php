@@ -8,7 +8,7 @@ use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
 use yii\base\Event;
 

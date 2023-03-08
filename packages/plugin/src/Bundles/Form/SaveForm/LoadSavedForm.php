@@ -5,8 +5,8 @@ namespace Solspace\Freeform\Bundles\Form\SaveForm;
 use Solspace\Freeform\Bundles\Form\SaveForm\Events\LoadFormEvent;
 use Solspace\Freeform\Events\Forms\RegisterContextEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Records\SavedFormRecord;
 use yii\base\Event;
 

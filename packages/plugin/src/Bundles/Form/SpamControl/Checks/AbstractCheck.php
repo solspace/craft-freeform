@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\SettingsService;
 use yii\base\Event;

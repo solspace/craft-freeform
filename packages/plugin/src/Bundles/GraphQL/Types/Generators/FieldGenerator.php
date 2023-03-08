@@ -11,9 +11,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
-use Solspace\Freeform\Fields\Pro\OpinionScaleField;
-use Solspace\Freeform\Fields\Pro\TableField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface as FreeformFieldInterface;
+use Solspace\Freeform\Fields\FieldInterface as FreeformFieldInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 
 class FieldGenerator extends AbstractGenerator
 {

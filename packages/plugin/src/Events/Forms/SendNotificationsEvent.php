@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\MailerService;
 
 class SendNotificationsEvent extends CancelableArrayableEvent

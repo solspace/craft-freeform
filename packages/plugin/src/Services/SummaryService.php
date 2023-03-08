@@ -5,10 +5,10 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
+use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Connections\Entries;
 use Solspace\Freeform\Library\Connections\Users;
 use Solspace\Freeform\Library\DataObjects\Summary\InstallSummary;
@@ -291,6 +291,8 @@ class SummaryService extends Component
         $types = [];
 
         foreach ($forms as $form) {
+            $behaviorSettings = $form->getSettings()->getBehavior();
+
             $type = \get_class($form);
             if (!\in_array($type, $types, true)) {
                 $types[] = $type;
@@ -304,7 +306,7 @@ class SummaryService extends Component
                 $builtInAjax = true;
             }
 
-            if (!$form->isStoreData()) {
+            if (!$form->getSettings()->getGeneral()->storeData) {
                 $notStoringSubmissions = true;
             }
 
@@ -312,7 +314,7 @@ class SummaryService extends Component
                 $postForwarding = true;
             }
 
-            if ($form->isIpCollectingEnabled()) {
+            if ($behaviorSettings->collectIpAddresses) {
                 $collectIp = true;
             }
 
@@ -320,7 +322,7 @@ class SummaryService extends Component
                 $optInDataStorage = true;
             }
 
-            if ($form->getLimitFormSubmissions()) {
+            if ($behaviorSettings->limitSubmissions) {
                 $limitSubmissionRate = true;
             }
 
@@ -334,7 +336,8 @@ class SummaryService extends Component
                 $adminNotifications = true;
             }
 
-            if ($form->isShowLoadingText() || $form->isShowSpinner()) {
+            $behaviorSettings = $form->getSettings()->getBehavior();
+            if ($behaviorSettings->showLoadingText || $behaviorSettings->showSpinner) {
                 $loadingIndicators = true;
             }
 

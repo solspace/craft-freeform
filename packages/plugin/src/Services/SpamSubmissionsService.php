@@ -16,8 +16,8 @@ use craft\db\Query;
 use craft\records\Element;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Database\SpamSubmissionHandlerInterface;
 
 class SpamSubmissionsService extends SubmissionsService implements SpamSubmissionHandlerInterface

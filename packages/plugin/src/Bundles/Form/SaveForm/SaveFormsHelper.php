@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\SaveForm;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class SaveFormsHelper
 {

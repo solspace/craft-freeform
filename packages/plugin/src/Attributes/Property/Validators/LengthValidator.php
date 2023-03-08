@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Attributes\Property\Validators;
 
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Validator;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class LengthValidator extends Validator

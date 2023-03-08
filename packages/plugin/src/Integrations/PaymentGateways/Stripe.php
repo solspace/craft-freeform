@@ -9,7 +9,6 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Events\Payments\UpdateDataEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;

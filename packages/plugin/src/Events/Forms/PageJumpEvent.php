@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class PageJumpEvent extends ArrayableEvent

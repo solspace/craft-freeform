@@ -26,6 +26,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
   const { dragType } = useDragContext();
 
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -49,31 +50,38 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
     isDragging
   );
 
+  const persistInputChanges = (): void => {
+    dispatch(
+      updateLabel({
+        uid: page.uid,
+        label: inputRef.current.value || page.label,
+      })
+    );
+  };
+
   const handleKeyboardEvent = (
     event: KeyboardEvent<HTMLInputElement>
   ): void => {
     if (event.key === 'Enter') {
-      dispatch(
-        updateLabel({
-          uid: page.uid,
-          label: (event.target as HTMLInputElement).value || page.label,
-        })
-      );
+      persistInputChanges();
+      setIsEditing(false);
+    }
 
+    if (event.key === 'Escape') {
       setIsEditing(false);
     }
   };
 
-  const ref = useClickOutside<HTMLDivElement>(
-    (): void => setIsEditing(false),
-    isEditing
-  );
+  const clickOutsideRef = useClickOutside<HTMLDivElement>((): void => {
+    persistInputChanges();
+    setIsEditing(false);
+  }, isEditing);
 
   return (
     <TabWrapper ref={connectedRef}>
       {(!!dragType || isDragging) && <TabDrop ref={dropPageRef} />}
       <PageTab
-        ref={ref}
+        ref={clickOutsideRef}
         className={classes(
           uid === page.uid && 'active',
           canDrop && 'can-drop',
@@ -90,6 +98,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
         {isEditing ? (
           <Input
             type="text"
+            ref={inputRef}
             autoFocus={true}
             className="text small"
             placeholder={page.label}

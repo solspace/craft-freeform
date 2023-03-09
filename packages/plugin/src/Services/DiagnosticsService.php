@@ -38,7 +38,7 @@ class DiagnosticsService extends BaseService
                         'You have an incompatible version of Craft installed. This version of Freeform currently supports Craft 4.0.0 and greater.'
                     ),
                     new SuggestionValidator(
-                        fn ($value) => version_compare($value['version'], '4.4.0', '<'),
+                        fn ($value) => version_compare($value['version'], '4.5.0', '<'),
                         'Potential Craft Compatibility issue',
                         "The current version of Freeform installed may not be fully compatible with the version of Craft installed. Please confirm you're using a version of Freeform tested for compatibility with this version of Craft."
                     ),
@@ -233,22 +233,15 @@ class DiagnosticsService extends BaseService
 
     public function getFreeformChecks()
     {
-        $licenseStatus = (new Query())
-            ->select('licenseKeyStatus')
-            ->from(Table::PLUGINS)
-            ->where(['handle' => 'freeform'])
-            ->scalar()
-        ;
 
         [$emailTransport, $emailIssues] = $this->getEmailSettings();
 
         return [
             new DiagnosticItem(
-                'Freeform {{ value.isPro ? "Pro " }}{{ value.version }}{{ value.isTrial ? " (trial)"}}',
+                'Freeform {{ value.isPro ? "Pro " }}{{ value.version }}',
                 [
                     'isPro' => Freeform::getInstance()->isPro(),
                     'version' => Freeform::getInstance()->getVersion(),
-                    'isTrial' => 'trial' === $licenseStatus,
                 ]
             ),
             new DiagnosticItem(

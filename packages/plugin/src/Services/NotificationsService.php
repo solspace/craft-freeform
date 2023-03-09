@@ -41,8 +41,30 @@ class NotificationsService extends BaseService
                 self::$notificationCache = [];
             }
 
-            $databaseNotifications = $this->getDatabaseService()->getAll($indexById);
-            $fileNotifications = $this->getFilesService()->getAll($indexById);
+            $storageType = $this->getSettingsService()->getSettingsModel()->emailTemplateStorageType;
+
+            $isFile = $isDb = false;
+
+            switch ($storageType) {
+                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE:
+                    $isDb = true;
+
+                    break;
+
+                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES:
+                    $isFile = true;
+
+                    break;
+
+                default:
+                    $isDb = true;
+                    $isFile = true;
+
+                    break;
+            }
+
+            $databaseNotifications = $isDb ? $this->getDatabaseService()->getAll($indexById) : [];
+            $fileNotifications = $isFile ? $this->getFilesService()->getAll($indexById) : [];
 
             $notifications = [];
             foreach ($databaseNotifications as $notification) {

@@ -5,7 +5,7 @@ export const EditorWrapper = styled.div`
   flex: 1;
 
   background: ${colors.white};
-  padding: ${spacings.md};
+  padding: ${spacings.xl};
 `;
 
 export const SettingsWrapper = styled.div`

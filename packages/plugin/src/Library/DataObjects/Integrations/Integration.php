@@ -9,6 +9,7 @@ class Integration
     public int $id;
     public string $name;
     public string $handle;
+    public bool $enabled;
     public string $type;
     public ?string $icon;
     public PropertyCollection $properties;

@@ -39,7 +39,7 @@ class FormIntegrationRecord extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['formId', 'integrationId'], 'unique'],
+            [['formId', 'integrationId'], 'unique', 'targetAttribute' => ['formId', 'integrationId']],
             [['formId', 'integrationId'], 'required'],
         ];
     }

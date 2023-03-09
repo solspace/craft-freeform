@@ -50,13 +50,13 @@ class HubSpot extends AbstractCRMIntegration
         label: 'Append checkbox group field values on Contact update?',
         instructions: 'If a Contact already exists in HubSpot, enabling this will append additional checkbox group field values to the Contact inside HubSpot, instead of overwriting the options.',
     )]
-    protected string $appendContactData = '';
+    protected bool $appendContactData = false;
 
     #[Property(
         label: 'Append checkbox group field values on Company update?',
         instructions: 'If a Company already exists in HubSpot, enabling this will append additional checkbox group field values to the Company inside HubSpot, instead of overwriting the options.',
     )]
-    protected string $appendCompanyData = '';
+    protected bool $appendCompanyData = false;
 
     public function getApiKey(): string
     {
@@ -68,12 +68,12 @@ class HubSpot extends AbstractCRMIntegration
         return $this->getProcessedValue($this->ipField);
     }
 
-    public function getAppendContactData(): string
+    public function getAppendContactData(): bool
     {
         return $this->appendContactData;
     }
 
-    public function getAppendCompanyData(): string
+    public function getAppendCompanyData(): bool
     {
         return $this->appendCompanyData;
     }

@@ -11,6 +11,10 @@ export const NewTabWrapper = styled(TabWrapper)`
 `;
 
 export const PageTab = styled(animated.div)`
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 4px 18px;
   border-radius: 4px 4px 0 0;
   background: white;
@@ -33,6 +37,10 @@ export const PageTab = styled(animated.div)`
     z-index: 1;
   }
 
+  &.is-editing {
+    padding: 4px 6px;
+  }
+
   &:hover {
     cursor: pointer;
   }
@@ -47,4 +55,17 @@ export const TabDrop = styled.div`
   z-index: 2;
 
   width: 100%;
+`;
+
+export const Input = styled.input`
+  border: 0;
+  padding: 0 !important;
+  line-height: 1rem;
+  font-size: 0.75rem;
+  box-shadow: none !important;
+
+  &:hover,
+  &:active {
+    box-shadow: none !important;
+  }
 `;

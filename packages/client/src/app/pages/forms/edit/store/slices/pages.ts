@@ -10,6 +10,11 @@ type MoveToPayload = {
   order: number;
 };
 
+type UpdateLabelPayload = {
+  uid: string;
+  label: string;
+};
+
 const initialState: PagesStore = [];
 
 const sortByOrder = (a: Page, b: Page): number => a.order - b.order;
@@ -55,10 +60,15 @@ export const pagesSlice = createSlice({
           }
         });
     },
+    updateLabel: (state, action: PayloadAction<UpdateLabelPayload>) => {
+      const { uid, label } = action.payload;
+
+      state.find((page) => page.uid === uid).label = label;
+    },
   },
 });
 
-export const { set, add, moveTo, remove } = pagesSlice.actions;
+export const { set, add, moveTo, updateLabel, remove } = pagesSlice.actions;
 
 export const selectPages = (state: RootState): Page[] =>
   [...state.pages].sort(sortByOrder);

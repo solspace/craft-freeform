@@ -1,6 +1,5 @@
 import type { PagesStore } from './pages';
-import { add } from './pages';
-import reducer, { moveTo } from './pages';
+import reducer, { add, moveTo, updateLabel } from './pages';
 
 /**
  * generates rows with cells in them based on the passed parameters
@@ -24,9 +23,9 @@ const mockStoreGenerator = (count: number): PagesStore => {
   return store;
 };
 
-// Extracts [page uid, order] tuples from each page in the store
-const narrowStore = (store: PagesStore): Array<[string, number]> =>
-  store.map(({ uid, order }) => [uid, order]);
+// Extracts [page uid, label, order] tuples from each page in the store
+const narrowStore = (store: PagesStore): Array<[string, string, number]> =>
+  store.map(({ uid, label, order }) => [uid, label, order]);
 
 describe('pages reducer', () => {
   describe('adding a page', () => {
@@ -46,7 +45,7 @@ describe('pages reducer', () => {
         )
       );
 
-      expect(result).toEqual([['new-page', 0]]);
+      expect(result).toEqual([['new-page', 'New Page', 0]]);
     });
 
     it('add page to existing pages', () => {
@@ -64,9 +63,9 @@ describe('pages reducer', () => {
       );
 
       expect(result).toEqual([
-        ['page-0', 0],
-        ['page-1', 1],
-        ['new-page', 2],
+        ['page-0', 'Page 0', 0],
+        ['page-1', 'Page 1', 1],
+        ['new-page', 'New Page', 2],
       ]);
     });
   });
@@ -89,11 +88,11 @@ describe('pages reducer', () => {
       );
 
       expect(result).toEqual([
-        ['page-0', 2],
-        ['page-1', 0],
-        ['page-2', 1],
-        ['page-3', 3],
-        ['page-4', 4],
+        ['page-0', 'Page 0', 2],
+        ['page-1', 'Page 1', 0],
+        ['page-2', 'Page 2', 1],
+        ['page-3', 'Page 3', 3],
+        ['page-4', 'Page 4', 4],
       ]);
     });
 
@@ -109,11 +108,11 @@ describe('pages reducer', () => {
       );
 
       expect(result).toEqual([
-        ['page-0', 0],
-        ['page-1', 2],
-        ['page-2', 3],
-        ['page-3', 1],
-        ['page-4', 4],
+        ['page-0', 'Page 0', 0],
+        ['page-1', 'Page 1', 2],
+        ['page-2', 'Page 2', 3],
+        ['page-3', 'Page 3', 1],
+        ['page-4', 'Page 4', 4],
       ]);
     });
 
@@ -129,11 +128,38 @@ describe('pages reducer', () => {
       );
 
       expect(result).toEqual([
-        ['page-0', 0],
-        ['page-1', 1],
-        ['page-2', 2],
-        ['page-3', 3],
-        ['page-4', 4],
+        ['page-0', 'Page 0', 0],
+        ['page-1', 'Page 1', 1],
+        ['page-2', 'Page 2', 2],
+        ['page-3', 'Page 3', 3],
+        ['page-4', 'Page 4', 4],
+      ]);
+    });
+  });
+
+  describe('updating a page label', () => {
+    let mockStore: PagesStore;
+    beforeEach(() => {
+      mockStore = mockStoreGenerator(5);
+    });
+
+    it('update first page label to One', () => {
+      const result = narrowStore(
+        reducer(
+          mockStore,
+          updateLabel({
+            uid: 'page-0',
+            label: 'One',
+          })
+        )
+      );
+
+      expect(result).toEqual([
+        ['page-0', 'One', 0],
+        ['page-1', 'Page 1', 1],
+        ['page-2', 'Page 2', 2],
+        ['page-3', 'Page 3', 3],
+        ['page-4', 'Page 4', 4],
       ]);
     });
   });

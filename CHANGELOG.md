@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.0.18 - 2023-03-10
+
+### Changed
+- Addressed some minor Craft 4.4 compatibiity issues in the control panel.
+- Made some minor adjustments to the CP Submission detail view.
+- Improved Dutch (NL) language translations.
+
+### Fixed
+- Fixed a bug where the "Email Template" dropdowns in the form builder displayed both Database and File groups even if just one was selected.
+
 ## 4.0.17 - 2023-03-01
 
 ### Added

@@ -3,7 +3,7 @@
 ## 4.0.18 - 2023-03-10
 
 ### Changed
-- Addressed some minor Craft 4.4 compatibiity issues in the control panel.
+- Addressed some minor Craft 4.4 compatibility issues in the control panel.
 - Made some minor adjustments to the CP Submission detail view.
 - Improved Dutch (NL) language translations.
 

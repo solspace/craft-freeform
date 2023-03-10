@@ -1,8 +1,12 @@
 import type { PropsWithChildren } from 'react';
 import React from 'react';
+import {
+  ControlWrapper,
+  FormField,
+} from '@components/form-controls/control.styles';
+import FormInstructions from '@components/form-controls/instructions';
+import FormLabel from '@components/form-controls/label';
 import type { Property } from '@ff-client/types/properties';
-
-import { ControlWrapper, Label } from './control.styles';
 
 type Props = {
   property: Property;
@@ -14,8 +18,13 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
 }) => {
   return (
     <ControlWrapper>
-      <Label htmlFor={property.handle}>{property.label}</Label>
-      {children}
+      {property.label && (
+        <FormLabel label={property.label} handle={property.handle} />
+      )}
+      <FormField>{children}</FormField>
+      {property.instructions && (
+        <FormInstructions instructions={property.instructions} />
+      )}
     </ControlWrapper>
   );
 };

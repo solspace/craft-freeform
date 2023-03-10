@@ -2,11 +2,11 @@ import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { ThemedSkeleton } from '@ff-client/app/components/skeletons/themed-skeleton';
 
-import { EditorWrapper } from './editor.styles';
+import { PropertyEditorWrapper } from './property-editor.styles';
 
 export const EmptyEditor: React.FC = () => {
   return (
-    <EditorWrapper>
+    <PropertyEditorWrapper>
       <ThemedSkeleton>
         <Skeleton width={120} height={20} />
         <br />
@@ -21,6 +21,6 @@ export const EmptyEditor: React.FC = () => {
         <Skeleton width={300} height={10} />
         <Skeleton height={30} />
       </ThemedSkeleton>
-    </EditorWrapper>
+    </PropertyEditorWrapper>
   );
 };

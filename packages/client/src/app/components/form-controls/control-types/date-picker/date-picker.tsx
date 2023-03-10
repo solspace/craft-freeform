@@ -5,32 +5,33 @@ import classes from '@ff-client/utils/classes';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
 
-import type { FormControlType } from '../types';
-
-import { BaseControl } from './base-control';
+import { Control } from '../../control';
+import type { ControlType } from '../../types';
 
 import 'react-datepicker/dist/react-datepicker.css';
 
 const dateFormat = 'MM/dd/yyyy';
 
-const DatePickerControl: React.FC<
-  FormControlType<string, DateTimeProperty>
-> = ({ value, property, onUpdateValue }) => {
+const DatePickerControl: React.FC<ControlType<string, DateTimeProperty>> = ({
+  value,
+  property,
+  updateValue,
+}) => {
   const date = new Date();
   const parseValue: string = value || format(date, dateFormat);
   const selected = parse(parseValue, dateFormat, date);
 
   return (
-    <BaseControl property={property}>
+    <Control property={property}>
       <DatePicker
         id={property.handle}
         minDate={date}
         selected={selected}
         dateFormat={dateFormat}
         className={classes('text', 'fullwidth')}
-        onChange={(date: Date) => onUpdateValue(format(date, dateFormat))}
+        onChange={(date: Date) => updateValue(format(date, dateFormat))}
       />
-    </BaseControl>
+    </Control>
   );
 };
 

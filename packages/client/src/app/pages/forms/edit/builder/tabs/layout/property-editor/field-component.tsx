@@ -14,11 +14,13 @@ type Props = {
 export const FieldComponent: React.FC<Props> = ({ property, field }) => {
   const dispatch = useAppDispatch();
 
-  const updateValue: ControlTypes.UpdateValue<unknown> = (value) => {
+  const updateValue: ControlTypes.UpdateValue<ControlTypes.ValueType> = (
+    value
+  ) => {
     dispatch(edit({ uid: field.uid, handle: property.handle, value }));
   };
 
-  const value = field.properties?.[property.handle] as unknown;
+  const value = field.properties?.[property.handle];
 
   return (
     <FormComponent

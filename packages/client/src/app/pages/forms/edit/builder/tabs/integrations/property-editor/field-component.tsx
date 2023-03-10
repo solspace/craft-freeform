@@ -11,15 +11,15 @@ type Props = {
   property: Property;
 };
 
-type ValueType = string | number | boolean;
-
 export const FieldComponent: React.FC<Props> = ({ integration, property }) => {
   const dispatch = useAppDispatch();
 
   const { id } = integration;
   const { handle: key } = property;
 
-  const updateValue: ControlTypes.UpdateValue<ValueType> = (value) => {
+  const updateValue: ControlTypes.UpdateValue<ControlTypes.ValueType> = (
+    value
+  ) => {
     dispatch(modifyIntegrationProperty({ id, key, value }));
   };
 

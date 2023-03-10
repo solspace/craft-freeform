@@ -1,5 +1,4 @@
 import React from 'react';
-import { CheckboxInput } from '@components/__refactor/form-controls/inputs/checkbox-input';
 import { ControlWrapper } from '@components/form-controls/control.styles';
 import type { ControlType } from '@components/form-controls/types';
 
@@ -15,12 +14,14 @@ const Bool: React.FC<ControlType<boolean>> = ({
   return (
     <ControlWrapper>
       <CheckboxWrapper>
-        <CheckboxInput
+        <input
           id={handle}
-          label={label}
+          type="checkbox"
           checked={enabled}
+          className="checkbox"
           onChange={() => updateValue(!enabled)}
         />
+        <label htmlFor={handle}>{label}</label>
       </CheckboxWrapper>
     </ControlWrapper>
   );

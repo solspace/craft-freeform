@@ -5,21 +5,20 @@ import {
   Popover,
   SelectedColor,
   Swatch,
-} from '@components/__refactor/form-controls/controls/color-picker.styles';
+} from '@components/form-controls/control-types/color-picker/color-picker.styles';
+import type { ControlType } from '@components/form-controls/types';
 
-import type { FormControlType } from '../types';
+import { Control } from '../../control';
 
-import { BaseControl } from './base-control';
-
-const ColorPicker: React.FC<FormControlType<string>> = ({
+const ColorPicker: React.FC<ControlType<string>> = ({
   value,
   property,
-  onUpdateValue,
+  updateValue,
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   return (
-    <BaseControl property={property}>
+    <Control property={property}>
       <Swatch onClick={() => setShowColorPicker(!showColorPicker)}>
         <SelectedColor style={{ backgroundColor: value }} />
       </Swatch>
@@ -28,11 +27,11 @@ const ColorPicker: React.FC<FormControlType<string>> = ({
           <Overlay onClick={() => setShowColorPicker(false)} />
           <SketchPicker
             color={value}
-            onChangeComplete={({ hex }) => onUpdateValue(hex)}
+            onChangeComplete={({ hex }) => updateValue(hex)}
           />
         </Popover>
       )}
-    </BaseControl>
+    </Control>
   );
 };
 

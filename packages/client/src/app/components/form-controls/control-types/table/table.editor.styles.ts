@@ -22,16 +22,16 @@ type CellProps = {
 };
 export const Cell = styled.td<CellProps>`
   width: ${({ tiny, width }) =>
-    tiny ? '20px' : width ? `${width}px` : 'auto'};
+    tiny ? '32px' : width ? `${width}px` : 'auto'};
 
-  padding: 0 !important;
+  padding: ${({ tiny }) => (tiny ? '6px 9px !important' : '0 !important')};
 
   border: 1px solid rgba(0, 0, 0, 0.1);
-`;
 
-// TODO: move to options styles
-export const CheckboxWrapper = styled.div`
-  margin: 0 0 10px 0;
+  label {
+    display: none;
+  }
+}
 `;
 
 export const Input = styled.input`
@@ -47,15 +47,6 @@ export const Input = styled.input`
   }
 `;
 
-export const InputPreview = styled(Input)`
-  cursor: pointer;
-  min-width: 100%;
-
-  &.with-border {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
-`;
-
 export const Select = styled.select`
   width: 100%;
   height: 100%;
@@ -68,12 +59,11 @@ export const Select = styled.select`
 `;
 
 export const Button = styled.button`
+  padding: 1px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
-
-  margin: 0 5px;
 
   &:disabled {
     cursor: not-allowed;

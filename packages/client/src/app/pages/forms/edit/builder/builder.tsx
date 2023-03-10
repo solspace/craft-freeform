@@ -4,10 +4,10 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { Route, Routes } from 'react-router-dom';
 
 import { FormSettings } from './tabs/form-settings/form-settings';
-import { Editor as IntegrationsEditor } from './tabs/integrations/editor/editor';
-import { EmptyEditor as EmptyIntegrationsEditor } from './tabs/integrations/editor/empty-editor';
 import { Integrations } from './tabs/integrations/integrations';
-import { LayoutEditor } from './tabs/layout-editor/layout-editor';
+import { EmptyEditor as EmptyIntegrationsEditor } from './tabs/integrations/property-editor/empty-editor';
+import { PropertyEditor as IntegrationsEditor } from './tabs/integrations/property-editor/property-editor';
+import { LayoutEditor } from './tabs/layout/layout';
 import { BuilderContent, BuilderWrapper } from './builder.styles';
 import { Tabs } from './tabs';
 

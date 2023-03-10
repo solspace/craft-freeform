@@ -1,26 +1,28 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import Bool from '@components/__refactor/form-controls/controls/bool';
+import Bool from '@components/form-controls/control-types/bool/bool';
 import { useAppDispatch } from '@editor/store';
-import { Space } from '@ff-client/app/components/layout/blocks/space';
-import { PropertyType } from '@ff-client/types/properties';
-
 import {
   selectIntegration,
   toggleIntegration,
-} from '../../../../store/slices/integrations';
+} from '@editor/store/slices/integrations';
+import { Space } from '@ff-client/app/components/layout/blocks/space';
+import { PropertyType } from '@ff-client/types/properties';
 
-import { EditorWrapper, SettingsWrapper } from './editor.styles';
 import { EmptyEditor } from './empty-editor';
 import { FieldComponent } from './field-component';
+import {
+  PropertyEditorWrapper,
+  SettingsWrapper,
+} from './property-editor.styles';
 
 type UrlParams = {
   id: string;
   formId: string;
 };
 
-export const Editor: React.FC = () => {
+export const PropertyEditor: React.FC = () => {
   const { id: integrationId } = useParams<UrlParams>();
   const dispatch = useAppDispatch();
 
@@ -31,10 +33,8 @@ export const Editor: React.FC = () => {
 
   const { id, handle, enabled, name, description, properties } = integration;
 
-  // TODO: refactor Integrations to use #[Property] instead
-
   return (
-    <EditorWrapper>
+    <PropertyEditorWrapper>
       <h1 title={handle}>{name}</h1>
       {!!description && <p>{description}</p>}
 
@@ -45,7 +45,7 @@ export const Editor: React.FC = () => {
           type: PropertyType.Boolean,
         }}
         value={enabled}
-        onUpdateValue={() => dispatch(toggleIntegration(id))}
+        updateValue={() => dispatch(toggleIntegration(id))}
       />
 
       <Space />
@@ -59,6 +59,6 @@ export const Editor: React.FC = () => {
           />
         ))}
       </SettingsWrapper>
-    </EditorWrapper>
+    </PropertyEditorWrapper>
   );
 };

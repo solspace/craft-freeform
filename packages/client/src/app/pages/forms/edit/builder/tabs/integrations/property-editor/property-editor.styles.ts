@@ -1,7 +1,7 @@
 import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const EditorWrapper = styled.div`
+export const PropertyEditorWrapper = styled.div`
   flex: 1;
 
   background: ${colors.white};

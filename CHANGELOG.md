@@ -237,6 +237,12 @@
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
 
+## 3.13.26 - 2023-03-10
+
+### Changed
+- Addressed some minor Craft 3.8 compatibility issues in the control panel.
+- Improved Dutch (NL) language translations.
+
 ## 3.13.25 - 2023-03-01
 
 ### Added

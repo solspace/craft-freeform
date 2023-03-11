@@ -6,8 +6,12 @@ type Props = {
   instructions: string;
 };
 
-const FormInstructions: React.FC<Props> = ({ instructions }) => (
-  <Instructions>{instructions}</Instructions>
-);
+const FormInstructions: React.FC<Props> = ({ instructions }) => {
+  if (!instructions) {
+    return null;
+  }
+
+  return <Instructions>{instructions}</Instructions>;
+};
 
 export default FormInstructions;

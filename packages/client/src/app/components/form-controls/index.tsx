@@ -9,8 +9,6 @@ import { ErrorBoundary } from './boundaries/ErrorBoundary';
 
 export type UpdateValue<T> = (value: T) => void;
 
-export type ValueType = string | number | boolean;
-
 type Props = {
   value: unknown;
   property: Property;

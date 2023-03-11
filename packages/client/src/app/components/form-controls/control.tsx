@@ -18,13 +18,9 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
 }) => {
   return (
     <ControlWrapper>
-      {property.label && (
-        <FormLabel label={property.label} handle={property.handle} />
-      )}
+      <FormLabel label={property.label} handle={property.handle} />
       <FormField>{children}</FormField>
-      {property.instructions && (
-        <FormInstructions instructions={property.instructions} />
-      )}
+      <FormInstructions instructions={property.instructions} />
     </ControlWrapper>
   );
 };

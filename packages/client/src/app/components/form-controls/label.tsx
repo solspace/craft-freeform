@@ -7,8 +7,12 @@ type Props = {
   handle: string;
 };
 
-const FormLabel: React.FC<Props> = ({ label, handle }) => (
-  <Label htmlFor={handle}>{label}</Label>
-);
+const FormLabel: React.FC<Props> = ({ label, handle }) => {
+  if (!label) {
+    return null;
+  }
+
+  return <Label htmlFor={handle}>{label}</Label>;
+};
 
 export default FormLabel;

@@ -7,7 +7,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { SaveSubscriber } from '../middleware/state-persist';
 import { TOPIC_SAVE } from '../middleware/state-persist';
 
-type Value = string | number | boolean;
+export type Value = string | number | boolean;
 
 export type IntegrationEntry = {
   values: { [key: string]: Value };

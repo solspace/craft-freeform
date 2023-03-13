@@ -88,7 +88,7 @@ class PreflightService extends BaseService
         $forms = $this->getFormsService()->getAllForms();
         $outdatedBehaviourCount = 0;
         foreach ($forms as $form) {
-            if ('no-effect' === $form->getSuccessBehaviour()) {
+            if ('no-effect' === $form->getSettings()->getBehavior()->successBehavior) {
                 ++$outdatedBehaviourCount;
             }
         }

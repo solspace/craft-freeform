@@ -13,9 +13,9 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 /**

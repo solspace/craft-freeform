@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Bundles\Form\HiddenInputs;
 
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class FreeformActionInput extends FeatureBundle

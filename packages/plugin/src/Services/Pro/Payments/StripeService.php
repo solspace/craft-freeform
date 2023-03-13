@@ -15,17 +15,16 @@ namespace Solspace\Freeform\Services\Pro\Payments;
 use craft\base\Component;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
-use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SinglePaymentAction;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SubscriptionPaymentIntentAction;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Composer\Components\Page;
-use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -301,21 +300,12 @@ class StripeService extends Component
 
     private function hasPaymentFieldDisplayed(Form $form): bool
     {
-        return $form->getLayout()->hasFields(PaymentInterface::class);
+        return $form->getLayout()->getFields()->hasFieldOfClass(PaymentInterface::class);
     }
 
     private function isFieldOnPage(AbstractField $field, Page $page): bool
     {
-        $pageFields = $page->getFields();
-        $fieldHandle = $field->getHandle();
-
-        foreach ($pageFields as $pageField) {
-            if ($fieldHandle == $pageField->getHandle()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $page->getFields()->has($field->getHandle());
     }
 
     private function getDynamicFieldValues(Form $form, PaymentProperties $paymentProperties): array

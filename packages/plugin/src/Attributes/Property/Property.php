@@ -29,8 +29,6 @@ class Property
         public ?string $transformer = null,
         public ?string $valueGenerator = null,
         public ?string $placeholder = null,
-        public ?string $tab = null,
-        public ?string $group = null,
         public ?string $emptyOption = null,
         public array|string|null $options = null,
     ) {

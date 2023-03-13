@@ -17,8 +17,8 @@ use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Fields\CheckboxGroupField;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Implementations\CheckboxGroupField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 

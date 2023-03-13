@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Form\Managers;
 
 use craft\db\Connection;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager\TableInfo;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\db\Schema;
 
 class ContentManager

@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Payments\Stripe;
 
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class StripePaymentsBundle extends FeatureBundle

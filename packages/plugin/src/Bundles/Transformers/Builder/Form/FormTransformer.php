@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 

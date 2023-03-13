@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
-use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
+use Solspace\Freeform\Integrations\PaymentGateways\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;

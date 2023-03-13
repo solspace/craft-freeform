@@ -12,8 +12,8 @@
 
 namespace Solspace\Freeform\Library\FileUploads;
 
-use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Form\Form;
 
 interface FileUploadHandlerInterface
 {

@@ -13,12 +13,12 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
-use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\Pro\FileDragAndDropField;
-use Solspace\Freeform\Fields\Pro\SignatureField;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
+use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 class FieldModel extends Model implements \JsonSerializable

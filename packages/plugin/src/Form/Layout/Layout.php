@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Form\Layout;
 
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\PageCollection;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 
 /**
  * @implements \IteratorAggregate<int, Page>

@@ -4,15 +4,14 @@ namespace Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers;
 
 use craft\events\DefineSourceTableAttributesEvent;
 use craft\events\RegisterElementActionsEvent;
-use craft\events\RegisterElementTableAttributesEvent;
 use craft\events\SetElementTableAttributeHtmlEvent;
 use craft\helpers\ElementHelper;
 use craft\services\ElementSources;
 use Solspace\Freeform\Elements\Actions\Pro\Payments\FixPaymentsAction;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\Interfaces\PaymentInterface as FieldPaymentInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface as FieldPaymentInterface;
 use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Payments\PaymentInterface;
 use yii\base\Event;

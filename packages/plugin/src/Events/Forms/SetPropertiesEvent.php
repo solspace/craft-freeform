@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class SetPropertiesEvent extends ArrayableEvent implements FormEventInterface
 {

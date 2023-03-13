@@ -3,9 +3,9 @@
 namespace Solspace\Tests\Freeform\Unit\Library\Collections;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Fields\TextField;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Library\Collections\FieldCollection;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 
 /**
  * @internal

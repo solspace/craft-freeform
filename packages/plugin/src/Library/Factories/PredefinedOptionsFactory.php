@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Library\Factories;
 
+use Solspace\Freeform\Fields\DataContainers\Option;
+use Solspace\Freeform\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
 
 class PredefinedOptionsFactory

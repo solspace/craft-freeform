@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
 use Solspace\Commons\Helpers\ComparisonHelper;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
-use Solspace\Freeform\Fields\EmailField;
+use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 

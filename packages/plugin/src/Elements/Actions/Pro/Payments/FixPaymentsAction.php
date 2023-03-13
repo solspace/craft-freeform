@@ -5,8 +5,8 @@ namespace Solspace\Freeform\Elements\Actions\Pro\Payments;
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 class FixPaymentsAction extends ElementAction

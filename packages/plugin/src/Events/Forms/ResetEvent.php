@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class ResetEvent extends CancelableArrayableEvent implements FormEventInterface
 {

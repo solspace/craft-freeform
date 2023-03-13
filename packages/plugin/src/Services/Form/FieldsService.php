@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Services\Form;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Services\BaseService;
 

@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Library\Database;
 
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 interface SubmissionHandlerInterface
 {

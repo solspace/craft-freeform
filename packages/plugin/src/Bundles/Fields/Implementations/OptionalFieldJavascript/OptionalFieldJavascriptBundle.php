@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\Bundles\Fields\Implementations\OptionalFieldJavascript;
 
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
-use Solspace\Freeform\Fields\Pro\DatetimeField;
-use Solspace\Freeform\Fields\Pro\PhoneField;
-use Solspace\Freeform\Fields\Pro\SignatureField;
+use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
+use Solspace\Freeform\Fields\Implementations\Pro\PhoneField;
+use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class OptionalFieldJavascriptBundle extends FeatureBundle

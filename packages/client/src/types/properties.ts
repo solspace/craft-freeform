@@ -80,9 +80,10 @@ export type FieldType = {
   properties: Property[];
 };
 
-export type PropertySection = {
+export type Section = {
   handle: string;
   label: string;
+  icon?: string;
   order: number;
 };
 

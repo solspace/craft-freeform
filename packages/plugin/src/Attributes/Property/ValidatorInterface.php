@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Attributes\Property;
 
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 
 interface ValidatorInterface
 {

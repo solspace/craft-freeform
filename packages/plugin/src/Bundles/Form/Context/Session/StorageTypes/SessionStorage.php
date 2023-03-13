@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes;
 
 use Carbon\Carbon;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 class SessionStorage implements FormContextStorageInterface
 {

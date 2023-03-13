@@ -5,10 +5,10 @@ namespace Solspace\Freeform\Bundles\Submissions;
 use craft\events\DefineSourceTableAttributesEvent;
 use craft\services\ElementSources;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use yii\base\Event;
 
 class CustomSourceFields extends FeatureBundle

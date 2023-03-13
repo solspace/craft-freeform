@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Library\Export;
 
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Fields\Pro\TableField;
-use Solspace\Freeform\Fields\TextareaField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
 
 class ExportCsv extends AbstractExport
 {

@@ -4,8 +4,8 @@ namespace Solspace\Freeform\Bundles\Form\SpamControl\Checks;
 
 use Solspace\Freeform\Bundles\Form\SpamControl\FormInitTime;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 
 class MinimumSubmissionTime extends AbstractCheck

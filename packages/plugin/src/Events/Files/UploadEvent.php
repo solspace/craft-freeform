@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Events\Files;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 
 class UploadEvent extends CancelableArrayableEvent
 {

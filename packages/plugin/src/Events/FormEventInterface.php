@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Events;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 interface FormEventInterface
 {

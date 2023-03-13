@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Library\Rules;
 
 use Solspace\Commons\Helpers\ComparisonHelper;
-use Solspace\Freeform\Fields\CheckboxField;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\Implementations\CheckboxField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Composer\Components\Properties;
 use Solspace\Freeform\Library\Composer\Components\Properties\AbstractProperties;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
@@ -207,8 +207,10 @@ class RuleProperties extends AbstractProperties
                             $item['show'] ?? self::DEFAULT_SHOW,
                             $item['matchAll'] ?? self::DEFAULT_MATCH_ALL,
                             $item['criteria'] ?? [],
-                            function (string $hash) use ($propertyCollection): FieldProperties {
-                                return $propertyCollection->getFieldProperties($hash);
+                            function (string $hash): FieldProperties {
+                                // TODO: get properties from field object
+                                return [];
+                                // return $propertyCollection->getFieldProperties($hash);
                             }
                         );
                     }
@@ -245,8 +247,9 @@ class RuleProperties extends AbstractProperties
                             $item['targetPageHash'] ?? '',
                             $item['matchAll'] ?? self::DEFAULT_MATCH_ALL,
                             $item['criteria'] ?? [],
-                            function (string $hash) use ($propertyCollection): FieldProperties {
-                                return $propertyCollection->getFieldProperties($hash);
+                            function (string $hash): FieldProperties {
+                                return [];
+                                // return $propertyCollection->getFieldProperties($hash);
                             }
                         );
                     }

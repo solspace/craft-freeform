@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Collections;
 
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 /**
@@ -56,6 +56,11 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess
         return $list;
     }
 
+    public function getListByHandle(string $implements = null): array
+    {
+        return $this->getList($implements, true);
+    }
+
     public function has(int|string $identificator): bool
     {
         try {
@@ -70,6 +75,11 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess
         $this->fields[] = $field;
 
         return $this;
+    }
+
+    public function hasFieldOfClass(string $implementation): bool
+    {
+        return !empty($this->getList($implementation));
     }
 
     public function hasFieldType(string $type): bool

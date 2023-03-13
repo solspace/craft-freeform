@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Events\ArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Form\Form;
 
 class ValidateEvent extends ArrayableEvent
 {

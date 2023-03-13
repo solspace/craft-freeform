@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Properties\Table;
 
-use Solspace\Freeform\Fields\Pro\TableField;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 
 /**
  * @implements \IteratorAggregate<int, TableColumn>

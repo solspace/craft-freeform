@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Events\Forms;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use yii\base\Event;
 
 class PersistFormEvent extends Event

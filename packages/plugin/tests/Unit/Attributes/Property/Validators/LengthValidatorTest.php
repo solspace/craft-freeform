@@ -4,7 +4,7 @@ namespace Solspace\Tests\Freeform\Unit\Attributes\Property\Validators;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Property\Validators\LengthValidator;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 
 /**
  * @internal

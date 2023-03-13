@@ -3,13 +3,12 @@
 namespace Solspace\Freeform\Library\Export;
 
 use Carbon\Carbon;
-use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\TextareaField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
+use Solspace\Freeform\Fields\Implementations\TextareaField;
+use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
+use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Export\Objects\Column;
 use Solspace\Freeform\Library\Export\Objects\Row;

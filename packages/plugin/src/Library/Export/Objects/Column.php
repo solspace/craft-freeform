@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Library\Export\Objects;
 
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
 
 class Column
 {

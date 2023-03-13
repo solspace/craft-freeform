@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
+use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Stringy\Stringy;
 
 class ImplementationProvider

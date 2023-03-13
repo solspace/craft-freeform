@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Attributes\Property\PropertyTypes;
 
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 
 interface ValueGeneratorInterface
 {

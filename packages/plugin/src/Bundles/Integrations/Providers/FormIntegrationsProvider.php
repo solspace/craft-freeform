@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Integrations\Providers;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
 use Solspace\Freeform\Services\IntegrationsService;
 

@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Bundles\Form\Context\Session\StorageTypes;
 use Carbon\Carbon;
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\SessionContextRecord;
 
 class DatabaseStorage implements FormContextStorageInterface

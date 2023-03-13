@@ -4,9 +4,8 @@ namespace Solspace\Freeform\Bundles\GraphQL\Resolvers;
 
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
-use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Composer\Components\Row;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Layout\Row;
 
 class FieldResolver extends Resolver
 {

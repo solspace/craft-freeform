@@ -4,10 +4,10 @@ namespace Solspace\Freeform\Bundles\Integrations\Payments;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
-use Solspace\Freeform\Fields\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
+use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;

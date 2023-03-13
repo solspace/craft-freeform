@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Migrations\Notifications;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Notifications\NotificationFilesService;

@@ -12,8 +12,8 @@
 
 namespace Solspace\Freeform\Services;
 
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\NotificationRecord;

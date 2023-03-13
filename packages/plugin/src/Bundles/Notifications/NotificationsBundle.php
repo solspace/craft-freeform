@@ -5,8 +5,8 @@ namespace Solspace\Freeform\Bundles\Notifications;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class NotificationsBundle extends FeatureBundle

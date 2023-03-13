@@ -6,7 +6,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
@@ -41,7 +41,15 @@ class FieldTypesProvider
         if (null === $this->sections) {
             $types = $this->getRegisteredTypes();
 
-            $list = [new Section(null, 'Configuration', 50)];
+            $list = [
+                new Section(
+                    null,
+                    'Configuration',
+                    file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
+                    50
+                ),
+            ];
+
             foreach ($types as $type) {
                 $reflection = new \ReflectionClass($type);
 
@@ -57,6 +65,8 @@ class FieldTypesProvider
                     if (!$section->label || \array_key_exists($section->handle, $list)) {
                         continue;
                     }
+
+                    $section->icon = $section->icon ? file_get_contents($section->icon) : null;
 
                     $list[$section->handle] = $section;
                 }

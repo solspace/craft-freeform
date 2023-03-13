@@ -19,9 +19,9 @@ use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
 use yii\filters\Cors;
@@ -130,7 +130,9 @@ class SubmitController extends BaseController
         $storeSubmissionEvent = new StoreSubmissionEvent($form, $submission);
         Event::trigger(Form::class, Form::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
 
-        if ($form->isStoreData() && $storeSubmissionEvent->isValid && $form->hasOptInPermission()) {
+        $isStoreData = $form->getSettings()->getGeneral()->storeData;
+
+        if ($isStoreData && $storeSubmissionEvent->isValid && $form->hasOptInPermission()) {
             $this->getSubmissionsService()->storeSubmission($form, $submission);
         }
 
@@ -200,7 +202,7 @@ class SubmitController extends BaseController
             'actions' => $form->getActions(),
             'errors' => $fieldErrors,
             'formErrors' => $form->getErrors(),
-            'onSuccess' => $form->getSuccessBehaviour(),
+            'onSuccess' => $form->getSettings()->getBehavior()->successBehavior,
             'returnUrl' => $returnUrl,
             'html' => $form->render(),
         ];

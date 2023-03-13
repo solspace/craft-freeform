@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Bundles\Form\Submissions;
 
 use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class StatusChange extends FeatureBundle

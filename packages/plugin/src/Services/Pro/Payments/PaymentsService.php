@@ -12,8 +12,8 @@
 
 namespace Solspace\Freeform\Services\Pro\Payments;
 
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Payments\PaymentHandlerInterface;
 use Solspace\Freeform\Library\Payments\PaymentInterface;
 use Solspace\Freeform\Library\Pro\Payments\Traits\ModelServiceTrait;

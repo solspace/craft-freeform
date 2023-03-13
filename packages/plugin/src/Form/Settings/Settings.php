@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Form\Settings;
 
+use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
@@ -14,7 +16,7 @@ class Settings
     private BehaviorSettings $behavior;
     private GeneralSettings $general;
 
-    public function __construct(array $settings = [])
+    public function __construct(array $settings = [], PropertyProvider $propertyProvider)
     {
         $this->behavior = new BehaviorSettings();
         $this->general = new GeneralSettings();
@@ -30,8 +32,22 @@ class Settings
             }
 
             $object = $access->getValue($this, $property->getName());
-            foreach ($propertySettings as $key => $value) {
-                $access->setValue($object, $key, $value);
+            if (!$object instanceof SettingsNamespace) {
+                continue;
+            }
+
+            $properties = $propertyProvider->getEditableProperties($object::class);
+
+            foreach ($properties as $property) {
+                $handle = $property->handle;
+
+                $value = $propertySettings[$handle] ?? $property->value;
+
+                if ($property->transformer instanceof TransformerInterface) {
+                    $value = $property->transformer->transform($value);
+                }
+
+                $access->setValue($object, $handle, $value);
             }
         }
     }

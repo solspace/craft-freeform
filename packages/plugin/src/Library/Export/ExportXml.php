@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Library\Export;
 
-use Solspace\Freeform\Fields\Pro\TableField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\TableField;
+use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
 
 class ExportXml extends AbstractExport
 {

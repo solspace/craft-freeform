@@ -2,9 +2,9 @@
 
 namespace Solspace\Freeform\Bundles\Fields\Types;
 
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use yii\base\Event;
 
 class RegisterFieldTypesEvent extends Event

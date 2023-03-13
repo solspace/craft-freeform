@@ -4,11 +4,11 @@ namespace Solspace\Freeform\Bundles\Form\FormAttributes;
 
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
+use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bags\BagInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class FormAttributesBundle extends FeatureBundle
@@ -67,6 +67,8 @@ class FormAttributesBundle extends FeatureBundle
         $form = $event->getForm();
         $bag = $form->getAttributeBag();
 
+        $behaviorSettings = $form->getSettings()->getBehavior();
+
         $this->attachConditionally($event, $bag, 'id');
         $this->attachConditionally($event, $bag, 'name');
         $this->attachConditionally($event, $bag, 'method');
@@ -79,9 +81,9 @@ class FormAttributesBundle extends FeatureBundle
         $event->attachAttribute('data-handle', $form->getHandle());
         $event->attachAttribute('data-ajax', $form->isAjaxEnabled());
         $event->attachAttribute('data-disable-submit', $formService->isFormSubmitDisable());
-        $event->attachAttribute('data-show-spinner', $form->isShowSpinner());
+        $event->attachAttribute('data-show-spinner', $behaviorSettings->showSpinner);
 
-        if ($form->getLayout()->hasFields(FileUploadInterface::class)) {
+        if ($form->getLayout()->getFields()->hasFieldType(FileUploadInterface::class)) {
             $event->attachAttribute('enctype', 'multipart/form-data');
         }
 
@@ -94,17 +96,23 @@ class FormAttributesBundle extends FeatureBundle
             $event->attachAttribute('data-scroll-to-anchor', $form->getAnchor());
         }
 
-        if ($form->isShowLoadingText()) {
+        if ($behaviorSettings->showLoadingText) {
             $event->attachAttribute('data-show-loading-text', true);
-            $event->attachAttribute('data-loading-text', $form->getLoadingText());
+            $event->attachAttribute('data-loading-text', $behaviorSettings->loadingText);
         }
 
-        if ($form->getSuccessMessage()) {
-            $event->attachAttribute('data-success-message', \Craft::t('app', $form->getSuccessMessage()));
+        if ($behaviorSettings->successMessage) {
+            $event->attachAttribute(
+                'data-success-message',
+                \Craft::t('app', $behaviorSettings->successMessage)
+            );
         }
 
-        if ($form->getErrorMessage()) {
-            $event->attachAttribute('data-error-message', \Craft::t('app', $form->getErrorMessage()));
+        if ($behaviorSettings->errorMessage) {
+            $event->attachAttribute(
+                'data-error-message',
+                \Craft::t('app', $behaviorSettings->errorMessage)
+            );
         }
     }
 

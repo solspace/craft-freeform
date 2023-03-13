@@ -6,8 +6,8 @@ use craft\base\ElementInterface;
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Form;
 
 class FormResolver extends Resolver
 {

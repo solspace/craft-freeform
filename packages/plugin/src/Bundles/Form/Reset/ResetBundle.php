@@ -3,12 +3,12 @@
 namespace Solspace\Freeform\Bundles\Form\Reset;
 
 use Solspace\Freeform\Events\Forms\ResetEvent;
-use Solspace\Freeform\Fields\HiddenField;
+use Solspace\Freeform\Fields\Implementations\HiddenField;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
+use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
+use Solspace\Freeform\Fields\Interfaces\StaticValueInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\StaticValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class ResetBundle extends FeatureBundle

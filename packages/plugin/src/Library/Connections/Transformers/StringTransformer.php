@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Library\Connections\Transformers;
 use craft\base\Field;
 use craft\fields\BaseOptionsField;
 use craft\fields\BaseRelationField;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\OptionsInterface;
+use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 
 class StringTransformer extends AbstractFieldTransformer
 {

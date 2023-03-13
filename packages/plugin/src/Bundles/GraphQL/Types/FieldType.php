@@ -6,7 +6,7 @@ use craft\helpers\StringHelper;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface as FreeformFieldInterface;
+use Solspace\Freeform\Fields\FieldInterface as FreeformFieldInterface;
 
 class FieldType extends AbstractObjectType
 {

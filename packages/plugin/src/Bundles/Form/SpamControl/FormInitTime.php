@@ -6,8 +6,8 @@ use Solspace\Freeform\Bundles\Form\SaveForm\Events\SaveFormEvent;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Composer\Components\Form;
 use yii\base\Event;
 
 class FormInitTime extends FeatureBundle

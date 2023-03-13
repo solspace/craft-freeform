@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Events\Mailer;
 use craft\mail\Message;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
 
 class SendEmailEvent extends CancelableArrayableEvent

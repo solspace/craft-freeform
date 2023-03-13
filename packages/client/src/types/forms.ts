@@ -1,6 +1,10 @@
 import type { Cell, Layout, Page, Row } from '@editor/builder/types/layout';
 import type { Field } from '@editor/store/slices/fields';
-import type { GenericValue, Property } from '@ff-client/types/properties';
+import type {
+  GenericValue,
+  Property,
+  Section,
+} from '@ff-client/types/properties';
 
 export type SettingsNamespace = Record<string, GenericValue>;
 
@@ -31,14 +35,9 @@ export type Attribute = {
   value?: string;
 };
 
-export type FormSettingGroup = {
-  handle: string;
-  label: string;
-};
-
 export type FormSettingNamespace = {
   label: string;
   handle: string;
-  groups: FormSettingGroup[];
+  sections: Section[];
   properties: Property[];
 };

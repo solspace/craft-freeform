@@ -7,9 +7,9 @@ use Solspace\Freeform\Events\Fields\TransformValueEvent;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
-use Solspace\Freeform\Library\Composer\Components\FieldInterface;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PersistentValueInterface;
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
+use Solspace\Freeform\Form\Form;
 use yii\base\Event;
 
 class StorageContext

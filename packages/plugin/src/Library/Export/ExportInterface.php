@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\Export;
 
-use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
 
 interface ExportInterface

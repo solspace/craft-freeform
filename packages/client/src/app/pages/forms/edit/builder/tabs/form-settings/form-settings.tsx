@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { FormControlGenerator } from '@components/__refactor/form-controls/form-control-generator';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
+import { FieldComponent } from '@editor/builder/tabs/form-settings/field-component';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 
 import { Group } from './group/group';
@@ -10,7 +10,6 @@ import {
   FormSettingsWrapper,
   GroupsCollection,
 } from './form-settings.style';
-import { useValueUpdateGenerator } from './use-value-update-generator';
 
 type RouteParams = {
   namespace: string;
@@ -19,8 +18,6 @@ type RouteParams = {
 export const FormSettings: React.FC = () => {
   const { namespace } = useParams<RouteParams>();
   const { data, isFetching } = useQueryFormSettings();
-
-  const generateUpdateHandler = useValueUpdateGenerator(namespace);
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -56,11 +53,10 @@ export const FormSettings: React.FC = () => {
             return (
               <Group key={index} group={group}>
                 {filteredProperties.map((property) => (
-                  <FormControlGenerator
+                  <FieldComponent
                     key={property.handle}
                     namespace={namespace}
                     property={property}
-                    onValueUpdate={generateUpdateHandler(property)}
                   />
                 ))}
               </Group>

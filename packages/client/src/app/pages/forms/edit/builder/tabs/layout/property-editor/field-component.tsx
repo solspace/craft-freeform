@@ -4,7 +4,7 @@ import { FormComponent } from '@components/form-controls';
 import { useAppDispatch } from '@editor/store';
 import type { Field } from '@editor/store/slices/fields';
 import { edit } from '@editor/store/slices/fields';
-import type { Property } from '@ff-client/types/properties';
+import type { GenericValue, Property } from '@ff-client/types/properties';
 
 type Props = {
   property: Property;
@@ -14,11 +14,11 @@ type Props = {
 export const FieldComponent: React.FC<Props> = ({ property, field }) => {
   const dispatch = useAppDispatch();
 
-  const updateValue: ControlTypes.UpdateValue<unknown> = (value) => {
+  const updateValue: ControlTypes.UpdateValue<GenericValue> = (value) => {
     dispatch(edit({ uid: field.uid, handle: property.handle, value }));
   };
 
-  const value = field.properties?.[property.handle] as unknown;
+  const value = field.properties?.[property.handle];
 
   return (
     <FormComponent

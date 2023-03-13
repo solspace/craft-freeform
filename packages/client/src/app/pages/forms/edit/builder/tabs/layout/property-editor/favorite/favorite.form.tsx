@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Field as FieldInput } from '@components/__refactor/form-controls/controls/base-control.styles';
 import { ApiErrorsBlock } from '@components/errors/api-errors';
+import { ControlWrapper } from '@components/form-controls/control.styles';
+import String from '@components/form-controls/control-types/string/string';
 import type { Field } from '@editor/store/slices/fields';
 import type { FieldType } from '@ff-client/types/properties';
+import { PropertyType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
-
-import { Label } from '../../../../../../../../components/form-controls/control.styles';
 
 import { ButtonContainer, FavoriteFormWrapper } from './favorite.form.styles';
 import type { FavoriteMutationResult } from './favorite.queries';
@@ -27,16 +27,19 @@ export const FavoriteForm: React.FC<Props> = ({ field, type, mutation }) => {
 
   return (
     <FavoriteFormWrapper>
-      <FieldInput>
-        <Label>{translate('Create a favorite')}</Label>
-        <input
-          type="text"
-          className="text fullwidth"
-          placeholder={field.properties?.label}
+      <ControlWrapper>
+        <String
+          property={{
+            label: translate('Create a favorite'),
+            handle: field.properties?.handle,
+            flags: [],
+            placeholder: field.properties?.label,
+            type: PropertyType.String,
+          }}
           value={label}
-          onChange={(event) => setLabel(event.target.value)}
+          updateValue={(value) => setLabel(value)}
         />
-      </FieldInput>
+      </ControlWrapper>
       <ButtonContainer>
         <button
           onClick={() => {

@@ -1,7 +1,6 @@
 import React from 'react';
-import { CheckboxInput } from '@components/__refactor/form-controls/inputs/checkbox-input';
 import { HelpText } from '@components/elements/help-text';
-import { CheckboxWrapper } from '@components/form-controls/control-types/bool/bool.styles';
+import Bool from '@components/form-controls/control-types/bool/bool';
 import {
   Button,
   Cell,
@@ -14,6 +13,7 @@ import {
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
 import { PreviewEditor } from '@components/form-controls/preview/previewable-component.styles';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
+import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import type { CustomOptions } from '../../options.types';
@@ -56,20 +56,20 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
 
   return (
     <PreviewEditor>
-      <CheckboxWrapper>
-        <CheckboxInput
-          id="useCustomValues"
-          label="Use custom values"
-          checked={useCustomValues}
-          onChange={() =>
-            updateValue({
-              ...value,
-              useCustomValues: !useCustomValues,
-            })
-          }
-        />
-      </CheckboxWrapper>
-
+      <Bool
+        property={{
+          label: 'Use custom values',
+          handle: 'useCustomValues',
+          type: PropertyType.Boolean,
+        }}
+        value={useCustomValues}
+        updateValue={() =>
+          updateValue({
+            ...value,
+            useCustomValues: !useCustomValues,
+          })
+        }
+      />
       {!!options.length && (
         <TableContainer>
           <TabularOptions>
@@ -127,10 +127,14 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                   {options.length > 1 && (
                     <>
                       <Cell tiny>
-                        <CheckboxInput
-                          id={`${index}-check`}
-                          checked={option.checked}
-                          onChange={() =>
+                        <Bool
+                          property={{
+                            label: '',
+                            handle: `${index}-check`,
+                            type: PropertyType.Boolean,
+                          }}
+                          value={option.checked}
+                          updateValue={() =>
                             updateValue(
                               updateChecked(
                                 index,

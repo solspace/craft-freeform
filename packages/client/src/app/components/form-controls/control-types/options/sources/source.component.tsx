@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react';
-import { Suspense } from 'react';
-import React from 'react';
-import { ErrorBoundary } from '@components/__refactor/form-controls/boundaries/ErrorBoundary';
+import React, { Suspense } from 'react';
+import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
 
 import type { Options } from '../options.types';
 import { Source } from '../options.types';

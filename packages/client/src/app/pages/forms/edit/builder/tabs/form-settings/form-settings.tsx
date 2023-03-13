@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
-import { FieldComponent } from '@editor/builder/tabs/form-settings/field-component';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 
+import { FieldComponent } from './field-component';
 import {
   FormSettingsContainer,
   FormSettingsWrapper,
@@ -27,8 +27,6 @@ export const FormSettings: React.FC = () => {
   useEffect(() => {
     setSectionIndex(0);
   }, [namespace]);
-
-  const generateUpdateHandler = useValueUpdateGenerator(namespace);
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -63,11 +61,10 @@ export const FormSettings: React.FC = () => {
         {properties
           .filter((property) => property.section === selectedSection?.handle)
           .map((property) => (
-            <FormControlGenerator
+            <FieldComponent
               key={property.handle}
               namespace={namespace}
               property={property}
-              onValueUpdate={generateUpdateHandler(property)}
             />
           ))}
       </FormSettingsContainer>

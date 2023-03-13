@@ -6,6 +6,7 @@ import {
   useFetchFieldPropertySections,
   useFieldType,
 } from '@ff-client/queries/field-types';
+import type { Property } from '@ff-client/types/properties';
 
 import { FieldComponent } from './field-component';
 import {
@@ -14,6 +15,9 @@ import {
   SectionWrapper,
   Title,
 } from './property-editor.styles';
+
+const sectionFilter = (handle: string) => (property: Property) =>
+  property.section === handle;
 
 export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const { data: sections, isFetching } = useFetchFieldPropertySections();
@@ -35,29 +39,36 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
     );
   }
 
+  const sectionBlocks: React.ReactElement[] = [];
+  sections.forEach(({ handle, label, icon }) => {
+    const properties = type.properties.filter(sectionFilter(handle));
+    if (!properties.length) {
+      return;
+    }
+
+    sectionBlocks.push(
+      <SectionBlock label={label} key={handle}>
+        {!!icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
+        {properties
+          .sort((a, b) => a.order - b.order)
+          .map((property) => (
+            <FieldComponent
+              key={property.handle}
+              field={field}
+              property={property}
+            />
+          ))}
+      </SectionBlock>
+    );
+  });
+
   return (
     <>
       <Title>
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
         <span>{type.name}</span>
       </Title>
-      <SectionWrapper>
-        {sections.map(({ handle, label, icon }) => (
-          <SectionBlock label={label} key={handle}>
-            {!!icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
-            {type.properties
-              .filter((property) => property.section === handle)
-              .sort((a, b) => a.order - b.order)
-              .map((property) => (
-                <FieldComponent
-                  key={property.handle}
-                  field={field}
-                  property={property}
-                />
-              ))}
-          </SectionBlock>
-        ))}
-      </SectionWrapper>
+      <SectionWrapper>{sectionBlocks}</SectionWrapper>
     </>
   );
 };

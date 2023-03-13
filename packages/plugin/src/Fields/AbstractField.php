@@ -37,7 +37,12 @@ use Twig\Markup;
 
 abstract class AbstractField implements FieldInterface, \JsonSerializable
 {
-    #[Section('general', 'General', 0)]
+    #[Section(
+        handle: 'general',
+        label: 'General',
+        icon: __DIR__.'/SectionIcons/bookmark.svg',
+        order: 0,
+    )]
     #[Property(
         instructions: 'Field label used to describe the field',
         order: 1,
@@ -69,7 +74,12 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     #[Property('Require this field', order: 5)]
     protected bool $required = false;
 
-    #[Section('attributes', 'Attributes', 999)]
+    #[Section(
+        handle: 'attributes',
+        label: 'Attributes',
+        icon: __DIR__.'/SectionIcons/list.svg',
+        order: 999,
+    )]
     #[Property(
         type: Property::TYPE_ATTRIBUTES,
         instructions: 'Add attributes to your field elements.',

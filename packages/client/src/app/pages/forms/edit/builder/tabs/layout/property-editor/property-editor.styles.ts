@@ -72,6 +72,18 @@ export const SectionBlock = styled.section<SectionBlockProps>`
     box-shadow: ${shadows.bottom};
   }
 
+  > ${Icon} {
+    position: absolute;
+    left: 2px;
+    top: -4px;
+    z-index: 1;
+
+    width: 10px;
+    height: 10px;
+
+    fill: rgb(154 165 177 / 75%);
+  }
+
   &:after {
     content: '${({ label }) => label}';
 
@@ -80,7 +92,7 @@ export const SectionBlock = styled.section<SectionBlockProps>`
     top: -7px;
 
     display: block;
-    padding: 0 5px;
+    padding: 0 5px 0 22px;
 
     background-color: ${colors.gray050};
 

@@ -8,8 +8,3 @@ export const GroupContainer = styled.div`
   gap: ${spacings.xl};
   grid-template-columns: repeat(2, 1fr);
 `;
-
-export const GroupHeader = styled.h2`
-  padding: 0 0 ${spacings.lg};
-  margin: 0;
-`;

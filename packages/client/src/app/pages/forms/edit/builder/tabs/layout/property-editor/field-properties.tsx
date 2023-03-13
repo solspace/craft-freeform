@@ -42,8 +42,9 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
         <span>{type.name}</span>
       </Title>
       <SectionWrapper>
-        {sections.map(({ handle, label }) => (
+        {sections.map(({ handle, label, icon }) => (
           <SectionBlock label={label} key={handle}>
+            {!!icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
             {type.properties
               .filter((property) => property.section === handle)
               .sort((a, b) => a.order - b.order)

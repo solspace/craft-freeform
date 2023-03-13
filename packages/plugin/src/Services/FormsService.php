@@ -743,7 +743,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             );
         }
 
-        $settings = new FormSettings($data['metadata']);
+        $settings = new FormSettings($data['metadata'], $this->propertyProvider);
         $layout = $this->getFormLayoutsService()->getLayout($data['id']);
 
         return new $type(

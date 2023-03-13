@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Attributes\Form;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Settings\Settings;
 use Solspace\Freeform\Form\Settings\SettingsInterface;
@@ -42,8 +43,24 @@ class SettingsProvider
 
             /** @var SettingNamespace $namespace */
             $namespace = $namespaceAttribute->newInstance();
+            $namespace->sections = [];
             $namespace->handle = $property->getName();
             $namespace->properties = $this->propertyProvider->getEditableProperties($propertyReflection->getName());
+
+            foreach ($propertyReflection->getProperties() as $prop) {
+                $section = $prop->getAttributes(Section::class);
+                $section = reset($section);
+                $section = $section ? $section->newInstance() : null;
+
+                /** @var Section $section */
+                if ($section && $section->label) {
+                    $namespace->sections[] = [
+                        'handle' => $section->handle,
+                        'label' => $section->label,
+                        'icon' => $section->icon ? file_get_contents($section->icon) : null,
+                    ];
+                }
+            }
 
             $namespaces[] = $namespace;
         }

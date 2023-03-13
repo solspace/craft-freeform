@@ -1,7 +1,7 @@
 import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
 import type { FieldType } from '@ff-client/types/fields';
-import type { PropertySection } from '@ff-client/types/properties';
+import type { Section } from '@ff-client/types/properties';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
@@ -23,14 +23,14 @@ export const useFetchFieldTypes: FetchFieldTypesQuery = ({ select } = {}) =>
   );
 
 export const useFetchFieldPropertySections = (): UseQueryResult<
-  PropertySection[],
+  Section[],
   AxiosError
 > =>
-  useQuery<PropertySection[], AxiosError>(
+  useQuery<Section[], AxiosError>(
     ['field-types', 'property-sections'],
     () =>
       axios
-        .get<PropertySection[]>(`/client/api/fields/types/sections`)
+        .get<Section[]>(`/client/api/fields/types/sections`)
         .then((res) => res.data)
         .then((res) => res.sort((a, b) => a.order - b.order)),
     {

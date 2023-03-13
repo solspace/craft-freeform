@@ -98,12 +98,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public const DATA_RELATIONS = 'relations';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    // TODO: refactor captchas into their own integration types
-    #[Property(
-        tab: 'settings'
-    )]
-    protected bool $recaptchaEnabled = false;
-
     // TODO: refactor this into a object instead of 3 different values
     #[Property]
     protected bool $gtmEnabled = false;
@@ -306,7 +300,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
 
     public function isRecaptchaEnabled(): bool
     {
-        if (!$this->recaptchaEnabled) {
+        if (!$this->getSettings()->getGeneral()->captchas) {
             return false;
         }
 

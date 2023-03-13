@@ -1,12 +1,12 @@
 import type { PropsWithChildren } from 'react';
 import React from 'react';
-import type { FormSettingGroup } from '@ff-client/types/forms';
+import type { Section } from '@ff-client/types/forms';
 import translate from '@ff-client/utils/translations';
 
 import { GroupContainer, GroupHeader, GroupWrapper } from './group.styles';
 
 type Props = {
-  group: FormSettingGroup;
+  group: Section;
 };
 
 export const Group: React.FC<PropsWithChildren<Props>> = ({

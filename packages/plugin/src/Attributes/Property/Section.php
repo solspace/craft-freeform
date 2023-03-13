@@ -8,6 +8,7 @@ class Section
     public function __construct(
         public ?string $handle,
         public ?string $label = null,
+        public ?string $icon = null,
         public ?int $order = 100,
     ) {
     }

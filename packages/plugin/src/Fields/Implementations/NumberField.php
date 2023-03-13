@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyGroup;
 use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 
@@ -19,22 +18,6 @@ class NumberField extends TextField
         label: 'Allow negative numbers?'
     )]
     protected bool $allowNegative = false;
-
-    #[Property(
-        placeholder: 'Min',
-    )]
-    #[PropertyGroup(
-        'length',
-        label: 'Min/Max Length',
-        instructions: 'The minimum and/or maximum character length this field is allowed to have (optional).',
-    )]
-    protected ?int $minLength = null;
-
-    #[Property(
-        label: 'Max Length',
-    )]
-    #[PropertyGroup('length')]
-    protected ?int $maxLength = null;
 
     #[Property(
         label: 'Min/Max Values',
@@ -77,11 +60,6 @@ class NumberField extends TextField
     public function getType(): string
     {
         return self::TYPE_NUMBER;
-    }
-
-    public function getMinLength(): ?int
-    {
-        return $this->minLength;
     }
 
     public function getMinValue(): int
@@ -132,7 +110,7 @@ class NumberField extends TextField
             $this->translate('Only positive numbers allowed')
         );
         $constraints[] = new LengthConstraint(
-            $this->getMinLength(),
+            null,
             $this->getMaxLength(),
             $this->translate('The value must be no more than {{max}} characters'),
             $this->translate('The value must be no less than {{min}} characters'),

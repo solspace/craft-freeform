@@ -66,8 +66,6 @@ class PropertyProvider
             $prop->flags = $this->getFlags($property);
             $prop->middleware = $this->getMiddleware($property);
             $prop->visibilityFilters = $this->getVisibilityFilters($property);
-            $prop->tab = $attribute->tab;
-            $prop->group = $attribute->group;
             $prop->transformer = $attribute->transformer ? $this->container->get($attribute->transformer) : null;
 
             $collection->add($prop);

@@ -18,17 +18,17 @@ use yii\base\Event;
 
 class FormLimiting extends FeatureBundle
 {
-    private const LIMIT_AUTH_UNLIMITED = 'auth_unlimited';
-    private const LIMIT_COOKIE = 'cookie';
-    private const LIMIT_IP_COOKIE = 'ip_cookie';
-    private const LIMIT_AUTH = 'auth';
-    private const LIMIT_AUTH_COOKIE = 'auth_cookie';
-    private const LIMIT_AUTH_IP_COOKIE = 'auth_ip_cookie';
+    public const LIMIT_AUTH_UNLIMITED = 'auth_unlimited';
+    public const LIMIT_COOKIE = 'cookie';
+    public const LIMIT_IP_COOKIE = 'ip_cookie';
+    public const LIMIT_AUTH = 'auth';
+    public const LIMIT_AUTH_COOKIE = 'auth_cookie';
+    public const LIMIT_AUTH_IP_COOKIE = 'auth_ip_cookie';
 
-    private const COOKIE_LIMITATIONS = [self::LIMIT_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
-    private const IP_LIMITATIONS = [self::LIMIT_IP_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
-    private const USER_LIMITATIONS = [self::LIMIT_AUTH, self::LIMIT_AUTH_IP_COOKIE, self::LIMIT_AUTH_COOKIE];
-    private const LOGGED_IN_ONLY = [self::LIMIT_AUTH, self::LIMIT_AUTH_UNLIMITED];
+    public const COOKIE_LIMITATIONS = [self::LIMIT_COOKIE, self::LIMIT_AUTH_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
+    public const IP_LIMITATIONS = [self::LIMIT_IP_COOKIE, self::LIMIT_AUTH_IP_COOKIE];
+    public const USER_LIMITATIONS = [self::LIMIT_AUTH, self::LIMIT_AUTH_IP_COOKIE, self::LIMIT_AUTH_COOKIE];
+    public const LOGGED_IN_ONLY = [self::LIMIT_AUTH, self::LIMIT_AUTH_UNLIMITED];
 
     private $formCache = [];
 

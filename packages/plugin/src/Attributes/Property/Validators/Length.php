@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Attributes\Property\Validators;
 
+use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
-use Solspace\Freeform\Freeform;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class Length implements PropertyValidatorInterface
@@ -22,7 +22,7 @@ class Length implements PropertyValidatorInterface
             return [];
         }
 
-        $message = Freeform::t(
+        $message = StringHelper::replaceValues(
             $this->message,
             [
                 'current' => $currentLength,

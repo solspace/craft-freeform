@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Library\DataObjects\FieldType;
 use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 
-class Property
+class Property implements \JsonSerializable
 {
     public string $type;
     public string $handle;
@@ -55,5 +55,17 @@ class Property
         }
 
         return \in_array($name, $this->flags, true);
+    }
+
+    public function jsonSerialize(): array
+    {
+        $reflection = new \ReflectionClass($this);
+
+        $array = [];
+        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            $array[$property->getName()] = $property->getValue($this);
+        }
+
+        return $array;
     }
 }

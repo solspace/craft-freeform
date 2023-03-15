@@ -61,24 +61,10 @@ class FieldPersistence extends FeatureBundle
                 $record->type = $fieldData->typeClass;
             }
 
-            $record->metadata = $this->getMetadata($fieldData);
+            $record->metadata = $this->getValidatedMetadata($fieldData, $event);
 
             $records[] = $record;
             $usedUIDs[] = $record->uid;
-        }
-
-        $errors = [];
-        foreach ($records as $record) {
-            $record->validate();
-            if ($record->hasErrors()) {
-                $errors[$record->uid] = $record->getErrors();
-            }
-        }
-
-        if ($errors) {
-            $event->addErrorsToResponse('fields', $errors);
-
-            return;
         }
 
         $deletableUIDs = array_diff($existingUIDs, $usedUIDs);
@@ -91,12 +77,16 @@ class FieldPersistence extends FeatureBundle
             ;
         }
 
+        if ($event->hasErrors()) {
+            return;
+        }
+
         foreach ($records as $record) {
             $record->save();
         }
     }
 
-    private function getMetadata(\stdClass $fieldData): array
+    private function getValidatedMetadata(\stdClass $fieldData, PersistFormEvent $event): array
     {
         $properties = $this->propertyProvider->getEditableProperties($fieldData->typeClass);
 
@@ -105,8 +95,21 @@ class FieldPersistence extends FeatureBundle
         /** @var Property $property */
         foreach ($properties as $property) {
             $handle = $property->handle;
-            // TODO: implement value transformer calls here
-            $metadata[$handle] = $fieldData->properties->{$handle} ?? null;
+            $value = $fieldData->properties->{$handle} ?? null;
+
+            $errors = [];
+            foreach ($property->getValidators() as $validator) {
+                $errors = array_merge($errors, $validator->validate($value));
+            }
+
+            if ($errors) {
+                $event->addErrorsToResponse(
+                    'fields',
+                    [$fieldData->uid => [$property->handle => $errors]]
+                );
+            }
+
+            $metadata[$handle] = $value;
         }
 
         return $metadata;

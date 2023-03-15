@@ -1,4 +1,5 @@
 import { animated } from 'react-spring';
+import { errorAlert } from '@ff-client/styles/mixins';
 import { colors } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
@@ -25,6 +26,12 @@ export const PageTab = styled(animated.div)`
 
   &.active {
     background: ${colors.gray050};
+  }
+
+  &.errors {
+    color: ${colors.error};
+
+    ${errorAlert};
   }
 
   &.can-drop {

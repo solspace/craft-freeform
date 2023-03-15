@@ -8,6 +8,7 @@ import { MaxInput, MinInput, Wrapper } from './min-max.styles';
 const MinMax: React.FC<ControlType<[number, number], Field>> = ({
   value,
   property,
+  errors,
   updateValue,
   context,
 }) => {
@@ -15,7 +16,7 @@ const MinMax: React.FC<ControlType<[number, number], Field>> = ({
   const minValue = !context.properties?.allowNegative ? 0 : null;
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <Wrapper>
         <div>
           <MinInput

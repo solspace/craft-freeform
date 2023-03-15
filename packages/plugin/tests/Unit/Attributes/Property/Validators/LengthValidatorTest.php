@@ -3,7 +3,7 @@
 namespace Solspace\Tests\Freeform\Unit\Attributes\Property\Validators;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Attributes\Property\Validators\LengthValidator;
+use Solspace\Freeform\Attributes\Property\Validators\Length;
 use Solspace\Freeform\Fields\FieldInterface;
 
 /**
@@ -15,7 +15,7 @@ class LengthValidatorTest extends TestCase
 {
     public function testValidOnSameLength()
     {
-        $validator = new LengthValidator(100);
+        $validator = new Length(100);
 
         $mock = $this->createMock(FieldInterface::class);
         $mock
@@ -32,7 +32,7 @@ class LengthValidatorTest extends TestCase
 
     public function testValidOnSmallerLength()
     {
-        $validator = new LengthValidator(100);
+        $validator = new Length(100);
 
         $mock = $this->createMock(FieldInterface::class);
         $mock
@@ -49,7 +49,7 @@ class LengthValidatorTest extends TestCase
 
     public function testInvalidOnLargerLength()
     {
-        $validator = new LengthValidator(100);
+        $validator = new Length(100);
 
         $mock = $this->createMock(FieldInterface::class);
         $mock
@@ -67,7 +67,7 @@ class LengthValidatorTest extends TestCase
 
     public function testCustomErrorMessage()
     {
-        $validator = new LengthValidator(
+        $validator = new Length(
             100,
             'This is max {max}, This is current {current}, this is max {max}'
         );
@@ -90,7 +90,7 @@ class LengthValidatorTest extends TestCase
 
     public function testDefaultsTo255()
     {
-        $validator = new LengthValidator();
+        $validator = new Length();
 
         $mock = $this->createMock(FieldInterface::class);
         $mock

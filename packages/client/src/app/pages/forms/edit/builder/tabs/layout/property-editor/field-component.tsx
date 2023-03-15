@@ -25,6 +25,7 @@ export const FieldComponent: React.FC<Props> = ({ property, field }) => {
       value={value}
       property={property}
       updateValue={updateValue}
+      errors={field.errors?.[property.handle]}
       context={field}
     />
   );

@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Form\Properties\GTM\GTMProperty;
 use Solspace\Freeform\Form\Properties\GTM\GTMValueTransformer;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
@@ -26,6 +27,7 @@ class GeneralSettings extends SettingsNamespace
     #[Property(
         label: 'Form Name',
         instructions: 'Name or title of the form',
+        required: true,
         placeholder: 'My Form',
     )]
     public string $name = '';
@@ -34,9 +36,12 @@ class GeneralSettings extends SettingsNamespace
     #[Property(
         label: 'Form Handle',
         instructions: "How you'll refer to this form in the templates",
+        required: true,
         placeholder: 'myHandle',
     )]
     #[Middleware('handle', [false])]
+    #[Validators\Handle]
+    #[Validators\Length(255)]
     public string $handle = '';
 
     #[Section('general')]
@@ -44,6 +49,7 @@ class GeneralSettings extends SettingsNamespace
         label: 'Form Type',
         type: Property::TYPE_SELECT,
         instructions: 'Select the type of form this is. When additional form types are installed, you can choose a different form type that enables special behaviors.',
+        required: true,
         options: FormTypeOptions::class,
     )]
     public string $type = Regular::class;
@@ -51,12 +57,14 @@ class GeneralSettings extends SettingsNamespace
     #[Section('general')]
     #[Property(
         instructions: 'What the auto-generated submission titles should look like.',
+        required: true,
     )]
     public string $submissionTitle = '{{ dateCreated|date("Y-m-d H:i:s") }}';
 
     #[Section('general')]
     #[Property(
         instructions: 'The default status to be assigned to new submissions.',
+        required: true,
         valueGenerator: DefaultStatusGenerator::class,
     )]
     public ?int $defaultStatus = null;

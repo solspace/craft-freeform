@@ -6,12 +6,13 @@ import classes from '@ff-client/utils/classes';
 const Textarea: React.FC<ControlType<string>> = ({
   value,
   property,
+  errors,
   updateValue,
 }) => {
   const { handle } = property;
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <textarea
         id={handle}
         className={classes(

@@ -1,7 +1,7 @@
 export const API_ERROR = 'api_error';
 
 export type ErrorList = {
-  [key: string]: string[];
+  [key: string]: any;
 };
 
 type ErrorCollection = {

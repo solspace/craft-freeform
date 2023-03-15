@@ -5,14 +5,20 @@ import { Label } from './control.styles';
 type Props = {
   label: string;
   handle: string;
+  required?: boolean;
 };
 
-const FormLabel: React.FC<Props> = ({ label, handle }) => {
+const FormLabel: React.FC<Props> = ({ label, handle, required }) => {
   if (!label) {
     return null;
   }
 
-  return <Label htmlFor={handle}>{label}</Label>;
+  return (
+    <Label htmlFor={handle}>
+      {label}
+      {required && <span className="required" />}
+    </Label>
+  );
 };
 
 export default FormLabel;

@@ -7,20 +7,28 @@ import {
 import FormInstructions from '@components/form-controls/instructions';
 import FormLabel from '@components/form-controls/label';
 import type { Property } from '@ff-client/types/properties';
+import classes from '@ff-client/utils/classes';
+
+import { FormErrorList } from './error-list';
 
 type Props = {
   property: Property;
+  errors?: string[];
 };
 
 export const Control: React.FC<PropsWithChildren<Props>> = ({
   children,
   property,
+  errors,
 }) => {
+  const { label, handle, required, instructions } = property;
+
   return (
-    <ControlWrapper>
-      <FormLabel label={property.label} handle={property.handle} />
+    <ControlWrapper className={classes(!!errors && 'errors')}>
+      <FormLabel label={label} handle={handle} required={required} />
+      <FormInstructions instructions={instructions} />
       <FormField>{children}</FormField>
-      <FormInstructions instructions={property.instructions} />
+      <FormErrorList errors={errors} />
     </ControlWrapper>
   );
 };

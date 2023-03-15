@@ -3,7 +3,11 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { selectCurrentPage, setPage } from '@editor/store/slices/context';
+import {
+  selectCurrentPage,
+  selectPageHasErrors,
+  setPage,
+} from '@editor/store/slices/context';
 import { updateLabel } from '@editor/store/slices/pages';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import classes from '@ff-client/utils/classes';
@@ -24,6 +28,8 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
   const { uid } = useSelector(selectCurrentPage);
   const dispatch = useAppDispatch();
   const { dragType } = useDragContext();
+
+  const pageHasErrors = useSelector(selectPageHasErrors(page.uid));
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -84,6 +90,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
         ref={clickOutsideRef}
         className={classes(
           uid === page.uid && 'active',
+          pageHasErrors && 'errors',
           canDrop && 'can-drop',
           isEditing && 'is-editing',
           isDragging && 'is-dragging'
@@ -106,7 +113,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
             onKeyUp={handleKeyboardEvent}
           />
         ) : (
-          page.label
+          <span>{page.label}</span>
         )}
       </PageTab>
     </TabWrapper>

@@ -13,6 +13,7 @@ type Props = {
   value: unknown;
   property: Property;
   updateValue: UpdateValue<unknown>;
+  errors?: string[];
   context?: unknown;
 };
 
@@ -24,6 +25,7 @@ export const FormComponent: React.FC<Props> = ({
   value,
   updateValue,
   property,
+  errors,
   context,
 }) => {
   const type = camelCase(property.type) as PropertyType;
@@ -41,6 +43,7 @@ export const FormComponent: React.FC<Props> = ({
           value={value}
           property={property}
           updateValue={updateValue}
+          errors={errors}
           context={context}
         />
       </Suspense>

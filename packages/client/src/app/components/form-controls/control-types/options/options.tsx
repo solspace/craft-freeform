@@ -3,6 +3,7 @@ import {
   ControlWrapper,
   Label,
 } from '@components/form-controls/control.styles';
+import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
 import translate from '@ff-client/utils/translations';
 
@@ -11,7 +12,11 @@ import { SourceComponent } from './sources/source.component';
 import type { Source } from './options.types';
 import { Options, sourceLabels } from './options.types';
 
-const Options: React.FC<ControlType<Options>> = ({ value, updateValue }) => {
+const Options: React.FC<ControlType<Options>> = ({
+  value,
+  errors,
+  updateValue,
+}) => {
   const { source } = value;
 
   return (
@@ -33,6 +38,8 @@ const Options: React.FC<ControlType<Options>> = ({ value, updateValue }) => {
       </ControlWrapper>
 
       <SourceComponent value={value} updateValue={updateValue} />
+
+      <FormErrorList errors={errors} />
     </>
   );
 };

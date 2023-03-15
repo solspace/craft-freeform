@@ -13,6 +13,7 @@ export const TOPIC_SAVE = Symbol('form.save');
 export const TOPIC_ERRORS = Symbol('form.save.errors');
 export const TOPIC_CREATED = Symbol('form.save.crated');
 export const TOPIC_UPDATED = Symbol('form.save.updated');
+export const TOPIC_UPSERTED = Symbol('form.save.upserted');
 
 type WithDispatch = { readonly dispatch: AppDispatch };
 
@@ -51,6 +52,7 @@ const publishCreated = (
   response: AxiosResponse
 ): void => {
   PubSub.publish(TOPIC_CREATED, { dispatch, response } as CreateData);
+  PubSub.publish(TOPIC_UPSERTED, { dispatch, response } as CreateData);
 
   dispatch(setState(State.Idle));
 };
@@ -60,6 +62,7 @@ const publishUpdated = (
   response: AxiosResponse
 ): void => {
   PubSub.publish(TOPIC_UPDATED, { dispatch, response } as CreateData);
+  PubSub.publish(TOPIC_UPSERTED, { dispatch, response } as CreateData);
 
   dispatch(setState(State.Idle));
 };

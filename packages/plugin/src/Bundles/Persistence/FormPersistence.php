@@ -59,15 +59,11 @@ class FormPersistence extends FeatureBundle
         $record->name = $payload->settings->general->name;
         $record->handle = $payload->settings->general->handle;
 
-        $record->metadata = $this->getMetadata($payload);
+        $record->metadata = $this->getValidatedMetadata($payload, $event);
 
-        $record->validate();
-        $record->save();
-
-        if ($record->hasErrors()) {
-            $event->addErrorsToResponse('form', $record->getErrors());
-
-            return;
+        if (!$event->hasErrors()) {
+            $record->validate();
+            $record->save();
         }
 
         $form = $this->formsService->getFormById($record->id);
@@ -75,7 +71,7 @@ class FormPersistence extends FeatureBundle
         $event->addToResponse('form', $form);
     }
 
-    private function getMetadata(\stdClass $payload): array
+    private function getValidatedMetadata(\stdClass $payload, PersistFormEvent $event): array
     {
         $postedSettings = $payload->settings;
         $namespaces = $this->settingsProvider->getSettingNamespaces();
@@ -87,7 +83,27 @@ class FormPersistence extends FeatureBundle
             $properties = [];
             foreach ($namespace->properties as $property) {
                 $handle = $property->handle;
-                $properties[$handle] = $posted->{$handle} ?? $property->value;
+                $value = $posted->{$handle} ?? $property->value;
+
+                $errors = [];
+
+                $validators = $property->getValidators();
+                foreach ($validators as $validator) {
+                    $errors = array_merge($errors, $validator->validate($value));
+                }
+
+                if ($errors) {
+                    $event->addErrorsToResponse(
+                        'form',
+                        [
+                            $namespace->handle => [
+                                $handle => $errors,
+                            ],
+                        ]
+                    );
+                }
+
+                $properties[$handle] = $value;
             }
 
             $metadata[$namespace->handle] = (object) $properties;

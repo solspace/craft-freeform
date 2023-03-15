@@ -5,17 +5,18 @@ import type { ControlType } from '@components/form-controls/types';
 const Int: React.FC<ControlType<number>> = ({
   value,
   property,
+  errors,
   updateValue,
 }) => {
   const { handle } = property;
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <input
         id={handle}
         type="number"
         className="text fullwidth"
-        value={value}
+        value={value || ''}
         onChange={(event) => updateValue(Number(event.target.value))}
       />
     </Control>

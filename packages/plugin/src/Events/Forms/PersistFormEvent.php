@@ -54,6 +54,26 @@ class PersistFormEvent extends Event
         return $this;
     }
 
+    public function hasErrors(): bool
+    {
+        if (!isset($this->responseData['errors'])) {
+            return false;
+        }
+
+        foreach ($this->responseData['errors'] as $key => $errors) {
+            if (\count($errors) > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getErrorsFor(string $key): array
+    {
+        return $this->responseData['errors'][$key] ?? [];
+    }
+
     public function addErrorsToResponse(string $key, array $errors): self
     {
         if (empty($errors)) {
@@ -62,7 +82,7 @@ class PersistFormEvent extends Event
 
         $errorList = $this->responseData['errors'] ?? [];
 
-        $errorList[$key] = array_merge(
+        $errorList[$key] = array_merge_recursive(
             $errorList[$key] ?? [],
             $errors
         );

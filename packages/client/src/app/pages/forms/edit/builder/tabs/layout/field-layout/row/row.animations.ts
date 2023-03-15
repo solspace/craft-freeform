@@ -3,7 +3,7 @@ import { useSpring } from 'react-spring';
 
 type MountAnimation = {
   opacity: SpringValue<number>;
-  height: SpringValue<number>;
+  minHeight: SpringValue<number>;
   transform: SpringValue<string>;
 };
 
@@ -11,12 +11,12 @@ export const useOnMountAnimation = (): MountAnimation => {
   return useSpring({
     from: {
       opacity: 0,
-      height: 1,
+      minHeight: 1,
       transform: 'scaleY(0)',
     },
     to: {
       opacity: 1,
-      height: 72,
+      minHeight: 72,
       transform: 'scaleY(1)',
     },
     config: {

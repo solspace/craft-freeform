@@ -56,14 +56,18 @@ class FormPersistence extends FeatureBundle
     {
         $payload = $event->getPayload()->form;
 
-        $record->name = $payload->settings->general->name;
-        $record->handle = $payload->settings->general->handle;
+        $record->name = $payload->settings?->general?->name ?? null;
+        $record->handle = $payload?->settings?->general?->handle ?? null;
 
         $record->metadata = $this->getValidatedMetadata($payload, $event);
 
         if (!$event->hasErrors()) {
             $record->validate();
             $record->save();
+        }
+
+        if (!$record->id) {
+            return;
         }
 
         $form = $this->formsService->getFormById($record->id);

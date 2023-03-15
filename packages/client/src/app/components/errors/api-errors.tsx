@@ -12,7 +12,7 @@ export const ApiErrorsBlock: React.FC<Props> = ({
   handle,
   error,
 }) => {
-  const list = error.errors?.[category]?.[handle];
+  const list = error.errors?.[category]?.[handle] as string[];
 
   if (!list) {
     return null;

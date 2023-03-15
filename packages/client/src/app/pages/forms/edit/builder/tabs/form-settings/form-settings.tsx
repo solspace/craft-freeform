@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
+import { selectFormErrors } from '@editor/store/slices/form';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
+import { hasErrors } from '@ff-client/utils/errors';
 
 import { FieldComponent } from './field-component';
 import {
@@ -22,6 +25,8 @@ export const FormSettings: React.FC = () => {
   const { namespace } = useParams<RouteParams>();
   const { data, isFetching } = useQueryFormSettings();
 
+  const formErrors = useSelector(selectFormErrors);
+
   const [sectionIndex, setSectionIndex] = useState(0);
 
   useEffect(() => {
@@ -40,6 +45,15 @@ export const FormSettings: React.FC = () => {
   const { sections, properties } = settingsNamespace;
   const selectedSection = sections[sectionIndex];
 
+  const sectionsWithErrors: string[] = [];
+  properties.forEach((prop) => {
+    if (hasErrors(formErrors?.[namespace]?.[prop.handle])) {
+      if (!sectionsWithErrors.includes(prop.section)) {
+        sectionsWithErrors.push(prop.section);
+      }
+    }
+  });
+
   return (
     <FormSettingsWrapper>
       <Sidebar lean>
@@ -47,7 +61,10 @@ export const FormSettings: React.FC = () => {
           {sections.map((section, idx) => (
             <SectionLink
               key={section.handle}
-              className={classes(idx === sectionIndex && 'active')}
+              className={classes(
+                idx === sectionIndex && 'active',
+                sectionsWithErrors.includes(section.handle) && 'errors'
+              )}
               onClick={() => setSectionIndex(idx)}
             >
               <SectionIcon dangerouslySetInnerHTML={{ __html: section.icon }} />

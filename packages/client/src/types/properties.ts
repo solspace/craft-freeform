@@ -18,6 +18,7 @@ type BaseProperty<T> = {
   handle: string;
   label?: string;
   instructions?: string;
+  required?: boolean;
   placeholder?: string;
   value?: T | null;
   order?: number;

@@ -1,14 +1,15 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
 import { selectState, State } from '@editor/store/slices/context';
-import { selectForm } from '@editor/store/slices/form';
-import ChevronIcon from '@ff-client/assets/icons/chevron-left-solid.svg';
+import { selectFieldsHaveErrors } from '@editor/store/slices/fields';
+import { selectForm, selectFormErrors } from '@editor/store/slices/form';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
+import { hasErrors } from '@ff-client/utils/errors';
 import translate from '@ff-client/utils/translations';
 
 import {
@@ -24,6 +25,9 @@ export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const form = useSelector(selectForm);
   const state = useSelector(selectState);
+
+  const formErrors = useSelector(selectFormErrors);
+  const fieldsHaveErrors = useSelector(selectFieldsHaveErrors);
 
   const { data: formSettingsData } = useQueryFormSettings();
 
@@ -52,22 +56,31 @@ export const Tabs: React.FC = () => {
   return (
     <TabWrapper>
       <Heading>
-        <Link to=".." title={translate('Back to form list')}>
-          <ChevronIcon />
-        </Link>
         <FormName>{form.name || translate('New Form')}</FormName>
       </Heading>
 
       <TabsWrapper>
-        <NavLink to="" end>
-          {translate('Layout')}
+        <NavLink to="" end className={classes(fieldsHaveErrors && 'errors')}>
+          <span>{translate('Layout')}</span>
         </NavLink>
-        <NavLink to="notifications">{translate('Notifications')}</NavLink>
-        <NavLink to="rules">{translate('Rules')}</NavLink>
-        <NavLink to="integrations">{translate('Integrations')}</NavLink>
+        <NavLink to="notifications">
+          <span>{translate('Notifications')}</span>
+        </NavLink>
+        <NavLink to="rules">
+          <span>{translate('Rules')}</span>
+        </NavLink>
+        <NavLink to="integrations">
+          <span>{translate('Integrations')}</span>
+        </NavLink>
         {(formSettingsData || []).map((namespace) => (
-          <NavLink key={namespace.handle} to={namespace.handle}>
-            {translate(namespace.label)}
+          <NavLink
+            key={namespace.handle}
+            to={namespace.handle}
+            className={classes(
+              hasErrors(formErrors?.[namespace.handle]) && 'errors'
+            )}
+          >
+            <span>{translate(namespace.label)}</span>
           </NavLink>
         ))}
       </TabsWrapper>

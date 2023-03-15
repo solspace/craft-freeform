@@ -4,5 +4,6 @@ export type ControlType<T, C = unknown> = {
   property: Property;
   value: T;
   updateValue: (value: T) => void;
+  errors?: string[];
   context?: C;
 };

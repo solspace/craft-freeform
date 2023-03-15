@@ -4,12 +4,12 @@ import type {
   ErrorsSubscriber,
   SaveSubscriber,
 } from '@editor/store/middleware/state-persist';
+import { TOPIC_UPSERTED } from '@editor/store/middleware/state-persist';
 import {
   TOPIC_CREATED,
   TOPIC_ERRORS,
   TOPIC_SAVE,
 } from '@editor/store/middleware/state-persist';
-import type { ErrorList } from '@ff-client/types/api';
 import type { Form, SettingsNamespace } from '@ff-client/types/forms';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -17,8 +17,14 @@ import { createSlice } from '@reduxjs/toolkit';
 import PubSub from 'pubsub-js';
 import { v4 } from 'uuid';
 
+type FormErrors = {
+  [key: string]: {
+    [key: string]: string[];
+  };
+};
+
 type FormState = Form & {
-  errors?: ErrorList;
+  errors: FormErrors;
 };
 
 const initialState: FormState = {
@@ -28,6 +34,7 @@ const initialState: FormState = {
   name: 'New Form',
   handle: 'newForm',
   settings: {},
+  errors: {},
 };
 
 export type UpdateProps = Partial<Omit<FormState, 'properties'>>;
@@ -62,10 +69,7 @@ export const formSlice = createSlice({
     removeError: (state, { payload }: PayloadAction<string>) => {
       delete state.errors[payload];
     },
-    addError: (state, { payload }: PayloadAction<ErrorProps>) => {
-      state.errors[payload.key] = payload.errors;
-    },
-    setErrors: (state, { payload }: PayloadAction<ErrorList>) => {
+    setErrors: (state, { payload }: PayloadAction<FormErrors>) => {
       state.errors = payload;
     },
     clearErrors: (state) => {
@@ -74,14 +78,8 @@ export const formSlice = createSlice({
   },
 });
 
-export const {
-  update,
-  modifySettings,
-  addError,
-  removeError,
-  setErrors,
-  clearErrors,
-} = formSlice.actions;
+export const { update, modifySettings, removeError, setErrors, clearErrors } =
+  formSlice.actions;
 
 export const selectForm = (state: RootState): Form | undefined => state.form;
 export const selectFormSettings =
@@ -93,6 +91,9 @@ export const selectFormSetting =
   (namespace: string, key: string) =>
   (state: RootState): any =>
     state.form.settings?.[namespace]?.[key];
+
+export const selectFormErrors = (state: RootState): FormErrors =>
+  state.form.errors;
 
 export default formSlice.reducer;
 
@@ -111,7 +112,11 @@ const persist: SaveSubscriber = (_, data) => {
 
 const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {
   dispatch(clearErrors());
-  dispatch(setErrors(response.errors?.form));
+  dispatch(setErrors(response.errors?.form as FormErrors));
+};
+
+const handleUpsert: ErrorsSubscriber = (_, { dispatch }) => {
+  dispatch(clearErrors());
 };
 
 const handleCreate: CreatedSubscriber = (_, { dispatch, response }) => {
@@ -121,3 +126,4 @@ const handleCreate: CreatedSubscriber = (_, { dispatch, response }) => {
 PubSub.subscribe(TOPIC_SAVE, persist);
 PubSub.subscribe(TOPIC_ERRORS, handleErrors);
 PubSub.subscribe(TOPIC_CREATED, handleCreate);
+PubSub.subscribe(TOPIC_UPSERTED, handleUpsert);

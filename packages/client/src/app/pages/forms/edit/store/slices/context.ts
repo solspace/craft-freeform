@@ -1,5 +1,7 @@
 import type { Page } from '@editor/builder/types/layout';
+import { CellType } from '@editor/builder/types/layout';
 import type { RootState } from '@editor/store';
+import { hasErrors } from '@ff-client/utils/errors';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -73,6 +75,39 @@ export const selectCurrentPage = (state: RootState): Page | undefined => {
 
   return state.pages.find(Boolean);
 };
+
+export const selectPageHasErrors =
+  (uid: string) =>
+  (state: RootState): boolean => {
+    let pageHasErrors = false;
+
+    const fieldUidsWithErrors = state.fields
+      .filter((field) => hasErrors(field.errors))
+      .map((field) => field.uid);
+
+    const layoutUid = state.pages.find((page) => page.uid === uid).layoutUid;
+
+    state.rows
+      .filter((row) => row.layoutUid === layoutUid)
+      .forEach((row) => {
+        if (pageHasErrors) {
+          return;
+        }
+
+        const cells = state.cells.filter((cell) => cell.rowUid === row.uid);
+
+        cells.forEach((cell) => {
+          if (
+            cell.type === CellType.Field &&
+            fieldUidsWithErrors.includes(cell.targetUid)
+          ) {
+            pageHasErrors = true;
+          }
+        });
+      });
+
+    return pageHasErrors;
+  };
 
 export const selectFocus = (state: RootState): Focus => state.context.focus;
 

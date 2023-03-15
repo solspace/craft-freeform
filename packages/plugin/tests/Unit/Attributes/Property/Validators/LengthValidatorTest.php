@@ -3,8 +3,7 @@
 namespace Solspace\Tests\Freeform\Unit\Attributes\Property\Validators;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Attributes\Property\Validators\LengthValidator;
-use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Attributes\Property\Validators\Length;
 
 /**
  * @internal
@@ -15,94 +14,62 @@ class LengthValidatorTest extends TestCase
 {
     public function testValidOnSameLength()
     {
-        $validator = new LengthValidator(100);
-
-        $mock = $this->createMock(FieldInterface::class);
-        $mock
-            ->expects($this->never())
-            ->method('addError')
-        ;
+        $validator = new Length(100);
 
         $value = str_repeat('.', 100);
 
-        $result = $validator->validate($mock, $value);
+        $result = $validator->validate($value);
 
-        $this->assertTrue($result);
+        $this->assertEmpty($result);
     }
 
     public function testValidOnSmallerLength()
     {
-        $validator = new LengthValidator(100);
-
-        $mock = $this->createMock(FieldInterface::class);
-        $mock
-            ->expects($this->never())
-            ->method('addError')
-        ;
+        $validator = new Length(100);
 
         $value = str_repeat('.', 99);
 
-        $result = $validator->validate($mock, $value);
+        $result = $validator->validate($value);
 
-        $this->assertTrue($result);
+        $this->assertEmpty($result);
     }
 
     public function testInvalidOnLargerLength()
     {
-        $validator = new LengthValidator(100);
-
-        $mock = $this->createMock(FieldInterface::class);
-        $mock
-            ->expects($this->once())
-            ->method('addError')
-            ->with('Value contains 101 characters, 100 allowed.')
-        ;
+        $validator = new Length(100);
 
         $value = str_repeat('.', 101);
 
-        $result = $validator->validate($mock, $value);
+        $result = $validator->validate($value);
 
-        $this->assertFalse($result);
+        $this->assertSame(['Value contains 101 characters, 100 allowed.'], $result);
     }
 
     public function testCustomErrorMessage()
     {
-        $validator = new LengthValidator(
+        $validator = new Length(
             100,
             'This is max {max}, This is current {current}, this is max {max}'
         );
 
-        $array = ['one', 'two', 'three'];
-
-        $mock = $this->createMock(FieldInterface::class);
-        $mock
-            ->expects($this->once())
-            ->method('addError')
-            ->with('This is max 100, This is current 101, this is max 100')
-        ;
-
         $value = str_repeat('.', 101);
 
-        $result = $validator->validate($mock, $value);
+        $result = $validator->validate($value);
 
-        $this->assertFalse($result);
+        $this->assertSame(
+            ['This is max 100, This is current 101, this is max 100'],
+            $result
+        );
     }
 
     public function testDefaultsTo255()
     {
-        $validator = new LengthValidator();
-
-        $mock = $this->createMock(FieldInterface::class);
-        $mock
-            ->expects($this->once())
-            ->method('addError')
-            ->with('Value contains 256 characters, 255 allowed.')
-        ;
+        $validator = new Length();
 
         $value = str_repeat('.', 256);
 
-        $result = $validator->validate($mock, $value);
+        $result = $validator->validate($value);
 
-        $this->assertFalse($result);
+        $this->assertSame(['Value contains 256 characters, 255 allowed.'], $result);
     }
 }

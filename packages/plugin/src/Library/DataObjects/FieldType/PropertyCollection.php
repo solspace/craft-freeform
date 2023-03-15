@@ -67,7 +67,7 @@ class PropertyCollection implements \IteratorAggregate, \JsonSerializable
     public function jsonSerialize(): array
     {
         return array_map(
-            fn ($item) => (array) $item,
+            fn (Property $item) => $item->jsonSerialize(),
             $this->properties
         );
     }

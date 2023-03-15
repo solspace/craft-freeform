@@ -19,8 +19,7 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Transformers\AttributesTransformer;
-use Solspace\Freeform\Attributes\Property\Validators\HandleValidator;
-use Solspace\Freeform\Attributes\Property\Validators\LengthValidator;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -30,8 +29,6 @@ use Solspace\Freeform\Fields\Validation\Validator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
-use Solspace\Freeform\Library\Composer\Components\Attributes;
-use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
 use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Twig\Markup;
 
@@ -46,20 +43,22 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     #[Property(
         instructions: 'Field label used to describe the field',
         order: 1,
+        required: true,
         placeholder: 'My Field',
     )]
     protected string $label = '';
 
     #[Section('general')]
     #[Property(
-        instructions: 'How you\'ll refer to this field in templates',
+        instructions: "How you'll refer to this field in templates",
         order: 2,
+        required: true,
         placeholder: 'myField',
     )]
     #[Middleware('handle')]
     #[Flag('code')]
-    #[HandleValidator]
-    #[LengthValidator(100)]
+    #[Validators\Handle]
+    #[Validators\Length(100)]
     protected string $handle = '';
 
     #[Section('general')]

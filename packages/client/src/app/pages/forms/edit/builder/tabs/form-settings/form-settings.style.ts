@@ -32,14 +32,17 @@ export const SectionLink = styled.button`
   border-radius: ${borderRadius.lg};
 
   color: ${colors.gray700};
-  font-size: 12px;
-  line-height: 12px;
 
   transition: background-color 0.2s ease-out;
   text-decoration: none;
 
   &.active {
     background-color: ${colors.gray200};
+  }
+
+  &.errors {
+    color: ${colors.error};
+    fill: ${colors.error};
   }
 
   &:hover:not(.active) {
@@ -53,6 +56,6 @@ export const SectionHeader = styled.h2`
 `;
 
 export const SectionIcon = styled.div`
-  width: 13px;
-  height: 13px;
+  width: 18px;
+  height: 18px;
 `;

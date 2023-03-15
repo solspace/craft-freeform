@@ -7,7 +7,9 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionCollection;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionFetcherInterface;
+use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\DataObjects\FieldType\Property as PropertyDTO;
 use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
@@ -67,6 +69,11 @@ class PropertyProvider
             $prop->middleware = $this->getMiddleware($property);
             $prop->visibilityFilters = $this->getVisibilityFilters($property);
             $prop->transformer = $attribute->transformer ? $this->container->get($attribute->transformer) : null;
+            $prop->setValidators($this->getValidators($property));
+
+            if ($prop->required) {
+                $prop->addValidator(new Required());
+            }
 
             $collection->add($prop);
         }
@@ -127,5 +134,20 @@ class PropertyProvider
             fn ($attr) => $attr->getArguments(),
             $property->getAttributes(Middleware::class)
         );
+    }
+
+    private function getValidators(\ReflectionProperty $property): array
+    {
+        $validators = [];
+
+        $attributes = $property->getAttributes();
+        foreach ($attributes as $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            if ($attributeInstance instanceof PropertyValidatorInterface) {
+                $validators[] = $attributeInstance;
+            }
+        }
+
+        return $validators;
     }
 }

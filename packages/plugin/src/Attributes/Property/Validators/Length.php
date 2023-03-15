@@ -3,11 +3,10 @@
 namespace Solspace\Freeform\Attributes\Property\Validators;
 
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Attributes\Property\Validator;
-use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
-class LengthValidator extends Validator
+class Length implements PropertyValidatorInterface
 {
     public function __construct(
         private int $length = 255,
@@ -15,12 +14,12 @@ class LengthValidator extends Validator
     ) {
     }
 
-    public function validate(FieldInterface $field, mixed $value): bool
+    public function validate(mixed $value): array
     {
         $currentLength = \strlen($value);
 
         if ($currentLength <= $this->length) {
-            return true;
+            return [];
         }
 
         $message = StringHelper::replaceValues(
@@ -31,8 +30,6 @@ class LengthValidator extends Validator
             ]
         );
 
-        $field->addError($message);
-
-        return false;
+        return [$message];
     }
 }

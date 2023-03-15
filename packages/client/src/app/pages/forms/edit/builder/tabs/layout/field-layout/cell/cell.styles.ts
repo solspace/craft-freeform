@@ -4,6 +4,10 @@ import styled from 'styled-components';
 
 export const CellWrapper = styled(animated.div)`
   overflow: hidden;
-
   padding: ${spacings.sm} ${spacings.lg};
+
+  &,
+  * {
+    cursor: pointer;
+  }
 `;

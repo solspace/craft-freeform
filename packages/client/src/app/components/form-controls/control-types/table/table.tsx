@@ -11,12 +11,13 @@ import type { ColumnDescription } from './table.types';
 const Table: React.FC<ControlType<ColumnDescription[]>> = ({
   value: columns,
   property,
+  errors,
   updateValue,
 }) => {
   const { options: columnTypes } = property;
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <PreviewableComponent
         preview={<TablePreview columnTypes={columnTypes} columns={columns} />}
         onEdit={() => {

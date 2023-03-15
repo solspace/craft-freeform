@@ -1,6 +1,10 @@
 import { createGlobalStyle } from 'styled-components';
 
 export const EditorGlobalStyles = createGlobalStyle`
+  #freeform-client-app {
+    height: 100vh;
+  }
+
   #global-header, #global-footer {
     display: none;
   }
@@ -9,12 +13,12 @@ export const EditorGlobalStyles = createGlobalStyle`
     #main {
       #main-content {
         padding: 0;
-        width: calc(100vw - 50px);
+        width: calc(100vw - 226px);
       }
     }
   }
 
-  #global-sidebar {
+  /* #global-sidebar {
     width: 50px;
     overflow: hidden;
 
@@ -39,13 +43,9 @@ export const EditorGlobalStyles = createGlobalStyle`
         }
       }
     }
-  }
+  } */
 
-  #page-container {
+  /* #page-container {
     padding-left: 50px !important;
-  }
-
-  #freeform-client-app {
-    height: 100vh;
-  }
+  } */
 `;

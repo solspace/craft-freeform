@@ -6,12 +6,13 @@ import classes from '@ff-client/utils/classes';
 const String: React.FC<ControlType<string>> = ({
   value,
   property,
+  errors,
   updateValue,
 }) => {
   const { handle } = property;
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <input
         id={handle}
         type="text"

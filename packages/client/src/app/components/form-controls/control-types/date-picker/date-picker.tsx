@@ -15,6 +15,7 @@ const dateFormat = 'MM/dd/yyyy';
 const DatePickerControl: React.FC<ControlType<string, DateTimeProperty>> = ({
   value,
   property,
+  errors,
   updateValue,
 }) => {
   const date = new Date();
@@ -22,7 +23,7 @@ const DatePickerControl: React.FC<ControlType<string, DateTimeProperty>> = ({
   const selected = parse(parseValue, dateFormat, date);
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <DatePicker
         id={property.handle}
         minDate={date}

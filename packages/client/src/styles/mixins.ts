@@ -31,3 +31,18 @@ export const labelText = css`
   text-transform: uppercase;
   color: rgb(154 165 177 / 75%);
 `;
+
+export const errorAlert = css`
+  span:after {
+    content: 'alert';
+
+    position: relative;
+    top: 1px;
+
+    padding-left: 5px;
+
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'liga', 'dlig';
+    font-family: Craft;
+  }
+`;

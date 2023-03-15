@@ -6,12 +6,13 @@ import type { SelectProperty } from '@ff-client/types/properties';
 const Select: React.FC<ControlType<string, SelectProperty>> = ({
   value,
   property,
+  errors,
   updateValue,
 }) => {
   const { handle, options } = property;
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <select
         id={handle}
         value={value ?? ''}

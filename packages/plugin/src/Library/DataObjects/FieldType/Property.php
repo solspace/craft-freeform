@@ -2,9 +2,10 @@
 
 namespace Solspace\Freeform\Library\DataObjects\FieldType;
 
+use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 
-class Property
+class Property implements \JsonSerializable
 {
     public string $type;
     public string $handle;
@@ -21,6 +22,32 @@ class Property
     public ?array $middleware;
     public ?TransformerInterface $transformer;
 
+    private array $validators = [];
+
+    public function setValidators(array $validators): self
+    {
+        foreach ($validators as $validator) {
+            $this->addValidator($validator);
+        }
+
+        return $this;
+    }
+
+    public function addValidator(PropertyValidatorInterface $validator): self
+    {
+        $this->validators[] = $validator;
+
+        return $this;
+    }
+
+    /**
+     * @return PropertyValidatorInterface[]
+     */
+    public function getValidators(): array
+    {
+        return $this->validators;
+    }
+
     public function hasFlag(string $name): bool
     {
         if (null === $this->flags) {
@@ -28,5 +55,17 @@ class Property
         }
 
         return \in_array($name, $this->flags, true);
+    }
+
+    public function jsonSerialize(): array
+    {
+        $reflection = new \ReflectionClass($this);
+
+        $array = [];
+        foreach ($reflection->getProperties(\ReflectionProperty::IS_PUBLIC) as $property) {
+            $array[$property->getName()] = $property->getValue($this);
+        }
+
+        return $array;
     }
 }

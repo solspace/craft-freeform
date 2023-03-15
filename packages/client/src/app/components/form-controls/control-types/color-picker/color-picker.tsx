@@ -13,12 +13,13 @@ import { Control } from '../../control';
 const ColorPicker: React.FC<ControlType<string>> = ({
   value,
   property,
+  errors,
   updateValue,
 }) => {
   const [showColorPicker, setShowColorPicker] = useState(false);
 
   return (
-    <Control property={property}>
+    <Control property={property} errors={errors}>
       <Swatch onClick={() => setShowColorPicker(!showColorPicker)}>
         <SelectedColor style={{ backgroundColor: value }} />
       </Swatch>

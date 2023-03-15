@@ -1,3 +1,4 @@
+import { errorAlert } from '@ff-client/styles/mixins';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
@@ -80,6 +81,18 @@ export const TabsWrapper = styled.div`
       box-shadow: 0 0 0 1px ${colors.gray200}, 0 2px 12px rgb(205 216 228 / 50%) !important;
 
       color: ${colors.gray700};
+    }
+
+    &.errors {
+      position: relative;
+      color: ${colors.error};
+
+      ${errorAlert};
+    }
+
+    > span[data-icon] {
+      position: relative;
+      left: 5px;
     }
   }
 `;

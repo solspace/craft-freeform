@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListOb
 
 #[Type(
     name: 'MailChimp',
+    readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
 class MailChimp extends AbstractMailingListIntegration

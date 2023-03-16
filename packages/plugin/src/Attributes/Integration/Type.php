@@ -8,10 +8,13 @@ use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
 class Type
 {
     public string $class;
+    public string $shortName;
+
     private PropertyCollection $properties;
 
     public function __construct(
         public string $name,
+        public ?string $readme = null,
         public ?string $iconPath = null,
     ) {
         $this->properties = new PropertyCollection();
@@ -20,6 +23,15 @@ class Type
     public function __toString(): string
     {
         return $this->name;
+    }
+
+    public function getReadmeContent(): ?string
+    {
+        if ($this->readme && file_exists($this->readme)) {
+            return file_get_contents($this->readme);
+        }
+
+        return null;
     }
 
     public function setProperties(PropertyCollection $properties): self

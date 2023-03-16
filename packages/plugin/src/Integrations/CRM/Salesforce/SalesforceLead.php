@@ -22,6 +22,7 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Type(
     name: 'Salesforce - Leads',
+    readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
 class SalesforceLead extends BaseSalesforceIntegration

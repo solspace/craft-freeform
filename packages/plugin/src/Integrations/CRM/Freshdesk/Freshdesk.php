@@ -12,6 +12,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 
 #[Type(
     name: 'Freshdesk',
+    readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
 class Freshdesk extends AbstractCRMIntegration

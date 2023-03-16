@@ -71,7 +71,6 @@ class IntegrationDTOProvider
 
     private function createDTOFromModel(IntegrationModel $model): ?Integration
     {
-        /** @var IntegrationInterface $class */
         $class = $model->class;
 
         $reflection = new \ReflectionClass($class);

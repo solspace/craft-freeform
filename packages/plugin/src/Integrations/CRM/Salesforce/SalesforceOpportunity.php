@@ -24,6 +24,7 @@ use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Type(
     name: 'Salesforce - Opportunity',
+    readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
 class SalesforceOpportunity extends BaseSalesforceIntegration

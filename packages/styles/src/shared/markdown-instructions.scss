@@ -1,0 +1,38 @@
+@import url(https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.2.0/github-markdown-light.min.css);
+
+.markdown-instructions {
+  padding: 16px;
+
+  background: #f3f7fc;
+  border-radius: 3px;
+  border: 1px solid #cbd6e2;
+
+  font-size: 14px;
+
+  pre {
+    background: #d1ddea;
+  }
+
+  ul {
+    padding-left: 20px;
+  }
+
+  ul {
+    list-style: disc;
+    ul {
+      list-style: square;
+      ul {
+        list-style: circle;
+        ul {
+          list-style: disc;
+          ul {
+            list-style: square;
+            ul {
+              list-style: circle;
+            }
+          }
+        }
+      }
+    }
+  }
+}

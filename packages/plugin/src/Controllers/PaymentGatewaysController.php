@@ -193,11 +193,13 @@ class PaymentGatewaysController extends BaseController
 
         $serviceProviderTypes = $this->getPaymentGatewaysService()->getAllPaymentGatewayServiceProviders();
         $settingBlueprints = $this->getPaymentGatewaysService()->getAllPaymentGatewaySettingBlueprints();
+        $readmes = $this->getPaymentGatewaysService()->getAllReadmes();
 
         $variables = [
             'integration' => $model,
             'blockTitle' => $title,
             'serviceProviderTypes' => $serviceProviderTypes,
+            'readmes' => $readmes,
             'continueEditingUrl' => 'freeform/settings/payment-gateways/{handle}',
             'settings' => $settingBlueprints,
             'webhookUrl' => $model->id ? $model->getIntegrationObject()->getWebhookUrl() : '',

@@ -120,6 +120,29 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
         throw new IntegrationException('Could not get CRM settings');
     }
 
+    public function getAllReadmes(): array
+    {
+        $dir = \Craft::getAlias('@freeform').'/Integrations/CRM/readmes/';
+        $serviceProviderTypes = $this->getAllCRMServiceProviders();
+
+        $readmes = [];
+
+        /**
+         * @var AbstractIntegration $providerClass
+         * @var string              $name
+         */
+        foreach ($serviceProviderTypes as $providerClass => $name) {
+            $filePath = $dir.$name.'.md';
+            $content = null;
+            if (file_exists($filePath)) {
+                $content = file_get_contents($filePath);
+            }
+            $readmes[$providerClass] = $content;
+        }
+
+        return $readmes;
+    }
+
     /**
      * Updates the fields of a given CRM integration.
      *

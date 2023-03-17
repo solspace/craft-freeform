@@ -67,8 +67,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
     }
 
     /**
-     * @param mixed $id
-     *
      * @throws NotificationException
      * @throws NotificationNotFoundException
      */

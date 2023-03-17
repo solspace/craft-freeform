@@ -17,9 +17,5 @@ use Solspace\Freeform\Library\Notifications\AbstractNotification;
 
 interface NotificationHandlerInterface
 {
-    /**
-     * @param AbstractNotification $notification
-     * @param ResponseInterface $response
-     */
     public function onAfterResponse(AbstractNotification $notification, ResponseInterface $response);
 }

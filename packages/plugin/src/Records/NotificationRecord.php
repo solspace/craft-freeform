@@ -18,7 +18,6 @@ use craft\db\ActiveRecord;
 /**
  * Class NotificationRecord.
  *
- *
  * @property int       $id
  * @property string    $name
  * @property string    $handle

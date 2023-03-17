@@ -38,7 +38,6 @@ class NotificationsService extends BaseService
     }
 
     /**
-     * @return array
      * @throws NotificationException
      */
     public function getAllNotifications(): array
@@ -59,10 +58,6 @@ class NotificationsService extends BaseService
         return $models;
     }
 
-    /**
-     * @param int $id
-     * @return NotificationModel|null
-     */
     public function getById(int $id): ?NotificationModel
     {
         $result = $this->getQuery()->where(['id' => $id])->one();
@@ -73,10 +68,6 @@ class NotificationsService extends BaseService
         return $this->createNotificationModel($result);
     }
 
-    /**
-     * @param string $handle
-     * @return NotificationModel|null
-     */
     public function getByHandle(string $handle): ?NotificationModel
     {
         $result = $this->getQuery()->where(['handle' => $handle])->one();
@@ -88,8 +79,6 @@ class NotificationsService extends BaseService
     }
 
     /**
-     * @param NotificationModel $model
-     * @return bool
      * @throws NotificationException
      * @throws \yii\db\Exception
      */
@@ -148,8 +137,6 @@ class NotificationsService extends BaseService
     }
 
     /**
-     * @param int $id
-     * @return bool
      * @throws \yii\db\Exception
      */
     public function delete(int $id): bool
@@ -188,8 +175,6 @@ class NotificationsService extends BaseService
     }
 
     /**
-     * @param NotificationModel $model
-     * @return void
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
@@ -217,8 +202,6 @@ class NotificationsService extends BaseService
     }
 
     /**
-     * @param NotificationModel $model
-     * @return void
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
      */
@@ -240,9 +223,6 @@ class NotificationsService extends BaseService
     }
 
     /**
-     * @param NotificationModel $model
-     * @param NotificationInterface $integration
-     * @return void
      * @throws \ReflectionException
      * @throws \yii\base\Exception
      * @throws \yii\base\InvalidConfigException
@@ -279,9 +259,6 @@ class NotificationsService extends BaseService
         }
     }
 
-    /**
-     * @return Query
-     */
     protected function getQuery(): Query
     {
         return (new Query())
@@ -298,13 +275,9 @@ class NotificationsService extends BaseService
             )
             ->from(NotificationRecord::TABLE.' notification')
             ->orderBy(['id' => \SORT_ASC])
-            ;
+        ;
     }
 
-    /**
-     * @param array $data
-     * @return NotificationModel
-     */
     protected function createNotificationModel(array $data): NotificationModel
     {
         return new NotificationModel($data);

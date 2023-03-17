@@ -21,22 +21,14 @@ class ConditionalNotificationsService extends AbstractNotificationService implem
 {
     private static ?array $integrations = null;
 
-    /**
-     * @return string
-     */
-    protected function getNotificationType(): string
-    {
-        return NotificationRecord::TYPE_CONDITIONAL;
-    }
-
-    /**
-     * @param AbstractNotification $notification
-     * @param ResponseInterface $response
-     * @return void
-     */
     public function onAfterResponse(AbstractNotification $notification, ResponseInterface $response)
     {
         // TODO: Implement onAfterResponse() method.
+    }
+
+    protected function getNotificationType(): string
+    {
+        return NotificationRecord::TYPE_CONDITIONAL;
     }
 
     // TODO - Implement other functionality similar to NotificationsService

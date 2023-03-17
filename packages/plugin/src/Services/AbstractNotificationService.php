@@ -31,7 +31,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
     public const EVENT_AFTER_RESPONSE = 'afterResponse';
 
     /**
-     * @return array
      * @throws NotificationException
      */
     public function getAllNotifications(): array
@@ -53,7 +52,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
     }
 
     /**
-     * @return array
      * @throws NotificationException
      */
     public function getAllNotificationObjects(): array
@@ -69,8 +67,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
     }
 
     /**
-     * @param $id
-     * @return NotificationInterface
      * @throws NotificationException
      * @throws NotificationNotFoundException
      */
@@ -87,10 +83,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
         );
     }
 
-    /**
-     * @param $id
-     * @return NotificationModel|null
-     */
     public function getNotificationById($id): ?NotificationModel
     {
         $data = $this->getQuery()->andWhere(['id' => $id])->one();
@@ -102,10 +94,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
         return null;
     }
 
-    /**
-     * @param string|null $handle
-     * @return NotificationModel|null
-     */
     public function getNotificationByHandle(string $handle = null): ?NotificationModel
     {
         $data = $this->getQuery()->andWhere(['handle' => $handle])->one();
@@ -119,9 +107,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
 
     /**
      * Flag the given notification so that it's updated the next time it's accessed.
-     *
-     * @param AbstractNotification $notification
-     * @return void
      */
     public function flagNotificationForUpdating(AbstractNotification $notification)
     {
@@ -137,11 +122,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
         ;
     }
 
-    /**
-     * @param AbstractNotification $notification
-     * @param ResponseInterface $response
-     * @return void
-     */
     public function onAfterResponse(AbstractNotification $notification, ResponseInterface $response)
     {
         $event = new NotificationResponseEvent($notification, $response);
@@ -149,15 +129,10 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
     }
 
     /**
-     * Return the notification type - Admin or Conditional
-     *
-     * @return string
+     * Return the notification type - Admin or Conditional.
      */
     abstract protected function getNotificationType(): string;
 
-    /**
-     * @return Query
-     */
     protected function getQuery(): Query
     {
         return (new Query())
@@ -178,10 +153,6 @@ abstract class AbstractNotificationService extends BaseService implements Notifi
         ;
     }
 
-    /**
-     * @param array $data
-     * @return NotificationModel
-     */
     protected function createNotificationModel(array $data): NotificationModel
     {
         return new NotificationModel($data);

@@ -19,13 +19,11 @@ use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
-
-use function Solspace\Freeform\Fields\is_countable;
-
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Helpers\FileHelper;
+use function Solspace\Freeform\Fields\is_countable;
 
 #[Type(
     name: 'File Upload',

@@ -230,11 +230,13 @@ class CrmController extends Controller
 
         $serviceProviderTypes = $this->getCRMService()->getAllCRMServiceProviders();
         $settingBlueprints = $this->getCRMService()->getAllCRMSettingBlueprints();
+        $readmes = $this->getCRMService()->getAllReadmes();
 
         $variables = [
             'integration' => $model,
             'blockTitle' => $title,
             'serviceProviderTypes' => $serviceProviderTypes,
+            'readmes' => $readmes,
             'continueEditingUrl' => 'freeform/settings/crm/{id}',
             'settings' => $settingBlueprints,
         ];

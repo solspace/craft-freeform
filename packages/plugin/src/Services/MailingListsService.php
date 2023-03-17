@@ -243,6 +243,29 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
         return $settingBlueprints;
     }
 
+    public function getAllReadmes(): array
+    {
+        $dir = \Craft::getAlias('@freeform').'/Integrations/MailingLists/readmes/';
+        $serviceProviderTypes = $this->getAllMailingListServiceProviders();
+
+        $readmes = [];
+
+        /**
+         * @var AbstractIntegration $providerClass
+         * @var string              $name
+         */
+        foreach ($serviceProviderTypes as $providerClass => $name) {
+            $filePath = $dir.$name.'.md';
+            $content = null;
+            if (file_exists($filePath)) {
+                $content = file_get_contents($filePath);
+            }
+            $readmes[$providerClass] = $content;
+        }
+
+        return $readmes;
+    }
+
     /**
      * Get all setting blueprints for a specific mailing list integration.
      *

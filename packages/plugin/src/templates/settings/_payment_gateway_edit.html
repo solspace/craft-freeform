@@ -90,6 +90,13 @@
     <div class="settingsWrapper">
       {% for className, settingList in settings %}
         <div id="settings-{{ className|replace("\\", "") }}" style="display: none;">
+
+          {% if readmes[className] %}
+            <div class="markdown-instructions markdown-body">
+              {{ readmes[className]|markdown }}
+            </div>
+          {% endif %}
+
           {% for setting in settingList|filter(setting => setting.type not in ["internal", "config"]) %}
             {% set value = "" %}
             {% if integration.settings is not null and integration.settings[setting.handle] is defined %}

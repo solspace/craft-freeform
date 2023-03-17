@@ -298,11 +298,13 @@ class MailingListsController extends BaseController
 
         $serviceProviderTypes = $this->getMailingListsService()->getAllMailingListServiceProviders();
         $settingBlueprints = $this->getMailingListsService()->getAllMailingListSettingBlueprints();
+        $readmes = $this->getMailingListsService()->getAllReadmes();
 
         $variables = [
             'integration' => $model,
             'blockTitle' => $title,
             'serviceProviderTypes' => $serviceProviderTypes,
+            'readmes' => $readmes,
             'continueEditingUrl' => 'freeform/settings/mailing-lists/{handle}',
             'settings' => $settingBlueprints,
         ];

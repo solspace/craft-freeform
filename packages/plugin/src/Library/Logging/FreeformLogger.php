@@ -29,6 +29,8 @@ class FreeformLogger
 
     public const FREEFORM = 'Freeform';
     public const FORM = 'Form';
+    public const ADMIN_NOTIFICATION = 'Admin Notification';
+    public const CONDITIONAL_NOTIFICATION = 'Conditional Notification';
     public const EMAIL_NOTIFICATION = 'Email Notification';
     public const CRM_INTEGRATION = 'CRM Integration';
     public const MAILING_LIST_INTEGRATION = 'Email Marketing Integration';

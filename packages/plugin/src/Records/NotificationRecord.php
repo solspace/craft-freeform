@@ -14,43 +14,61 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Freeform\Library\DataObjects\EmailTemplate;
-use Solspace\Freeform\Library\Mailing\NotificationInterface;
 
 /**
- * Class Freeform_NotificationRecord.
+ * Class NotificationRecord.
  *
- * @property int    $id
- * @property string $filepath
- * @property string $name
- * @property string $handle
- * @property string $description
- * @property string $fromName
- * @property string $fromEmail
- * @property string $replyToName
- * @property string $replyToEmail
- * @property bool   $includeAttachments
- * @property string $subject
- * @property string $bodyHtml
- * @property string $bodyText
- * @property int    $sortOrder
- * @property string $cc
- * @property string $bcc
- * @property string $presetAssets
- * @property bool   $autoText
+ *
+ * @property int       $id
+ * @property string    $name
+ * @property string    $handle
+ * @property string    $type
+ * @property string    $class
+ * @property string    $metadata
+ * @property \DateTime $lastUpdate
  */
-class NotificationRecord extends ActiveRecord implements NotificationInterface, \JsonSerializable
+class NotificationRecord extends ActiveRecord
 {
     public const TABLE = '{{%freeform_notifications}}';
 
-    /** @var string */
-    public $filepath;
+    public const TYPE_ADMIN = 'admin';
+    public const TYPE_CONDITIONAL = 'conditional';
 
     public static function tableName(): string
     {
         return self::TABLE;
     }
 
+    public function rules(): array
+    {
+        return [
+            [['handle'], 'unique'],
+            [['name', 'handle'], 'required'],
+        ];
+    }
+
+    /*
+     * TODO - Refactor into #Property
+     *
+     * @property int    $id
+     * @property string $filepath
+     * @property string $name
+     * @property string $handle
+     * @property string $description
+     * @property string $fromName
+     * @property string $fromEmail
+     * @property string $replyToName
+     * @property string $replyToEmail
+     * @property bool   $includeAttachments
+     * @property string $subject
+     * @property string $bodyHtml
+     * @property string $bodyText
+     * @property int    $sortOrder
+     * @property string $cc
+     * @property string $bcc
+     * @property string $presetAssets
+     * @property bool   $autoText
+     *
     public static function create(): self
     {
         $record = new self();
@@ -77,9 +95,6 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
         return $record;
     }
 
-    /**
-     * @param string $filePath
-     */
     public static function createFromTemplate($filePath): self
     {
         $template = new EmailTemplate($filePath);
@@ -221,4 +236,5 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
             'description' => $this->description,
         ];
     }
+    */
 }

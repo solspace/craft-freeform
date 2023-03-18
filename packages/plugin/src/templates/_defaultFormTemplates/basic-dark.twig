@@ -6,22 +6,18 @@ html, body {
     margin: 0 auto;
     font-family: sans-serif;
 }
-
 * {
   box-sizing: border-box;
 }
-
 .freeform-row::after {
   content: "";
   clear: both;
   display: block;
 }
-
 [class*="freeform-col-"] {
     float: left;
     padding: 15px;
 }
-
 
 /* BUTTONS */
 button {
@@ -46,15 +42,15 @@ button:hover {
     background-color: #0b5ed7;
     border-color: #0a58ca;
 }
-button .previous {
+button[data-freeform-action="back"] {
     font: 400 18px sans-serif;
     color: #6c757d;
     background-color: transparent;
-    border-color: transparent;
+    border-color: #6c757d;
 }
-button .previous:hover {
+button[data-freeform-action="back"]:hover {
     color: #ffffff;
-    background-color: transparent;
+    background-color: #6c757d;
     border-color: #6c757d;
 }
 button[type=submit].ff-loading {
@@ -79,82 +75,97 @@ button[type=submit].ff-loading:before {
     0% {
         transform: rotate(0);
     }
-100% {
-    transform: rotate(1turn);
+    100% {
+        transform: rotate(1turn);
     }
 }
+
+/* PAGE TABS */
 .freeform-pages {
     display: flex;
     padding: 0;
-    margin: 0 0 10px;
+    margin: 0 0 25px 10px;
     list-style: none;
+    border-bottom: 2px solid #dddddd;
 }
 .freeform-pages li {
-    margin: 0 10px 0 0;
+    color: #6c757d;
+    background: transparent;
+    padding: 10px 20px;
+    margin: 0;
 }
+.freeform-pages li.active {
+    color: black;
+    font-weight: bold;
+    background: #dddddd;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+/* FORM LAYOUT */
 .freeform-row {
     font: normal 16px sans-serif;
     color: #ffffff;
-    display: flex;
     justify-content: space-between;
     padding: 0;
-    margin: 0 -15px;
+    margin: 0;
 }
-.freeform-row .freeform-column {
+.freeform-row [class*="freeform-col-"] {
     flex: 1 0;
-    padding: 10px 0;
-    margin: 0 15px;
+    padding: 10px;
+    margin: 0;
     box-sizing: border-box;
 }
-.freeform-row .freeform-column > .freeform-row:first-child {
+.freeform-row [class*="freeform-col-"] > .freeform-row:first-child {
     margin-top: -10px;
 }
-.freeform-row .freeform-column label {
+.freeform-row [class*="freeform-col-"] label {
     display: block;
     margin: 0 0 10px 0;
 }
-.freeform-row .freeform-column .freeform-input[type="checkbox"],
-.freeform-row .freeform-column .freeform-input[type="radio"] {
+.freeform-row [class*="freeform-col-"] .freeform-input[type="checkbox"],
+.freeform-row [class*="freeform-col-"] .freeform-input[type="radio"] {
     margin-right: 10px;
     width: auto;
     display: inline;
     transform: scale(1.15);
 }
 
-
-.freeform-row .freeform-column .input-group-one-line {
+.freeform-row [class*="freeform-col-"] .input-group-one-line {
     display: flex;
     flex-wrap: wrap;
 }
-.freeform-row .freeform-column .input-group-one-line label {
+.freeform-row [class*="freeform-col-"] .input-group-one-line label {
     padding-right: 15px;
 }
-.freeform-row .freeform-column .input-group-one-line label input[type="radio"],
-.freeform-row .freeform-column .input-group-one-line label input[type="checkbox"] {
+.freeform-row [class*="freeform-col-"] .input-group-one-line label input[type="radio"],
+.freeform-row [class*="freeform-col-"] .input-group-one-line label input[type="checkbox"] {
     margin-right: 10px;
     display: inline-block;
     transform: scale(1.15);
 }
-.freeform-row .freeform-column .freeform-label {
+.freeform-row [class*="freeform-col-"] .freeform-label {
     font-weight: 400;
 }
-.freeform-row .freeform-column .freeform-label.freeform-required:after {
+.freeform-row [class*="freeform-col-"] .freeform-label.freeform-required:after {
     content: "*";
     margin-left: 5px;
     color: #dc3545;
 }
+.freeform-row.freeform-payments {
+    margin: -10px;
+}
 
 /* BASIC FIELD STYLES */
-
-.freeform-row .freeform-column input,
-.freeform-row .freeform-column .freeform-input.StripeElement,
-.freeform-row .freeform-column textarea,
-.freeform-row .freeform-column select {
+.freeform-row [class*="freeform-col-"] input,
+.freeform-row [class*="freeform-col-"] .freeform-input.StripeElement,
+.freeform-row [class*="freeform-col-"] textarea,
+.freeform-row [class*="freeform-col-"] select {
     box-sizing: border-box;
     font: normal 16px sans-serif;
     color: #ffffff;
     background-color: #1d1f23;
-    border: 1px solid #767676;
+    border: 1px solid #6c757d;
     border-radius: 5px;
     padding: 10px 15px;
     width: 100%;
@@ -162,11 +173,11 @@ button[type=submit].ff-loading:before {
     resize: none;
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
 }
-.freeform-row .freeform-column select:not(select[multiple]) {
+.freeform-row [class*="freeform-col-"] select:not(select[multiple]) {
     background-image:
         linear-gradient(45deg, transparent 50%, gray 50%),
         linear-gradient(135deg, gray 50%, transparent 50%),
-        linear-gradient(to right, #767676, #767676);
+        linear-gradient(to right, #6c757d, #6c757d);
     background-position:
         calc(100% - 20px) calc(1em + 2px),
         calc(100% - 15px) calc(1em + 2px),
@@ -180,44 +191,71 @@ button[type=submit].ff-loading:before {
     -webkit-appearance: none;
     -moz-appearance: none;
 }
-.freeform-row .freeform-column input:focus,
-.freeform-row .freeform-column .freeform-input.StripeElement--focus,
-.freeform-row .freeform-column textarea:focus,
-.freeform-row .freeform-column select:focus {
+.freeform-row [class*="freeform-col-"] input:focus,
+.freeform-row [class*="freeform-col-"] .freeform-input.StripeElement--focus,
+.freeform-row [class*="freeform-col-"] textarea:focus,
+.freeform-row [class*="freeform-col-"] select:focus {
     border: 1px solid #0b5ed7;
     outline: 0;
     transition: border-color .15s ease-in-out;
 }
-.freeform-row .freeform-column input::placeholder,
-.freeform-row .freeform-column textarea::placeholder {
+.freeform-row [class*="freeform-col-"] input::placeholder,
+.freeform-row [class*="freeform-col-"] textarea::placeholder {
     font: normal 16px sans-serif;
     color: #6c757d;
 }
-.freeform-row .freeform-column input.freeform-has-errors,
-.freeform-row .freeform-column .freeform-input.StripeElement--invalid,
-.freeform-row .freeform-column textarea.freeform-has-errors,
-.freeform-row .freeform-column select.freeform-has-errors {
+.freeform-row [class*="freeform-col-"] input.freeform-has-errors,
+.freeform-row [class*="freeform-col-"] .freeform-input.StripeElement--invalid,
+.freeform-row [class*="freeform-col-"] textarea.freeform-has-errors,
+.freeform-row [class*="freeform-col-"] select.freeform-has-errors {
     border: 1px solid #dc3545;
 }
-
-.freeform-row .freeform-column .freeform-input.StripeElement--invalid :after {
-    font: 400 14px sans-serif;
-    color: #b02a37;
-    line-height: 1.5;
-    content: "This field is required";
+.freeform-row [class*="freeform-col-"] .freeform-input-only-label {
+    font-weight: normal;
+}
+.freeform-row [class*="freeform-col-"] .freeform-input-only-label > .freeform-input {
+    display: inline-block;
+    width: auto;
+    margin-right: 10px;
+}
+.freeform-row [class*="freeform-col-"] .freeform-errors,
+.freeform-row [class*="freeform-col-"] .ff-errors {
     padding: 0;
-    display: inline;
-    vertical-align: middle;
-    visibility: visible;
-    transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
+    margin: -5px 0 0 0;
+    padding: 0 20px;
+}
+.freeform-row [class*="freeform-col-"] .freeform-errors > li,
+.freeform-row [class*="freeform-col-"] .ff-errors > li {
+    font: 200 16px sans-serif;
+    color: #dc3545;
+    margin-top: 15px;
+}
+.freeform-row [class*="freeform-col-"] .freeform-instructions {
+    margin: 0 0 5px;
+    font-size: 13px;
+    color: #6c757d;
+    margin: -5px 0 10px 0;
 }
 
+/* SINGLE CHECKBOX FIELDS */
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox label,
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-mailing_list label {
+    display: inline-block;
+    margin: 0 0 10px 0;
+}
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox input[type="checkbox"],
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-mailing_list input[type="checkbox"] {
+    margin-right: 10px;
+    width: auto;
+    display: inline-block;
+    transform: scale(1.15);
+}
 
 /* OPINION SCALE FIELDS */
 .freeform-fieldtype-opinion_scale .opinion-scale-scales label:not(:first-child) {
     color: #ffffff !important;
     background-color: #1d1f23;
-    border: 1px solid #767676;
+    border: 1px solid #6c757d;
     padding: 10px 15px;
     margin: 0;
     cursor: pointer;
@@ -253,7 +291,7 @@ button[type=submit].ff-loading:before {
 /* FILE UPLOAD DRAG & DROP FIELDS */
 .freeform-file-drag-and-drop {
     background-color: #1d1f23 !important;
-    border: 1px dashed #767676 !important;
+    border: 1px dashed #6c757d !important;
 }
 .freeform-file-drag-and-drop input {
     display: none !important;
@@ -285,7 +323,7 @@ button[type=submit].ff-loading:before {
     border-color: #6c757d;
 }
 .freeform-fieldtype-signature canvas {
-    border: 1px solid #767676;
+    border: 1px solid #6c757d;
     border-radius: 5px;
 }
 
@@ -352,78 +390,38 @@ button[type=submit].ff-loading:before {
     min-width: 200px;
 }
 
+/* SUBMIT BUTTON ALIGNMENT */
 
-
-
-.freeform-row .freeform-column .freeform-input-only-label {
-    font-weight: normal;
-}
-.freeform-row .freeform-column .freeform-input-only-label > .freeform-input {
-    display: inline-block;
-    width: auto;
-    margin-right: 10px;
-}
-.freeform-row .freeform-column .freeform-errors,
-.freeform-row .freeform-column .ff-errors {
-    padding: 0;
-    margin: -5px 0 0 0;
-    padding: 0 20px;
-}
-.freeform-row .freeform-column .freeform-errors > li,
-.freeform-row .freeform-column .ff-errors > li {
-    font: 200 16px sans-serif;
-    color: #dc3545;
-    margin-top: 15px;
-}
-.freeform-row .freeform-column .freeform-instructions {
-    margin: 0 0 5px;
-    font-size: 13px;
-    color: #6c757d;
-    margin: -5px 0 10px 0;
-}
-.freeform-row .freeform-column.freeform-column-content-align-left {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-left {
     display: flex;
     justify-content: flex-start;
 }
-.freeform-row .freeform-column.freeform-column-content-align-left>button:not(:first-of-type) {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-left > button:not(:first-of-type) {
     margin-left: 5px;
 }
-.freeform-row .freeform-column.freeform-column-content-align-center {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-center {
     display: flex;
     justify-content: center;
 }
-.freeform-row .freeform-column.freeform-column-content-align-center>button:not(:first-of-type) {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-center > button:not(:first-of-type) {
     margin-left: 5px;
 }
-.freeform-row .freeform-column.freeform-column-content-align-right {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-right {
     display: flex;
     justify-content: flex-end;
 }
-.freeform-row .freeform-column.freeform-column-content-align-right>button:not(:first-of-type) {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-right > button:not(:first-of-type) {
     margin-left: 5px;
 }
-.freeform-row .freeform-column.freeform-column-content-align-spread {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-spread {
     display: flex;
     justify-content: space-between;
 }
-.freeform-row .freeform-column.freeform-column-content-align-spread>button:not(:first-of-type) {
+.freeform-row [class*="freeform-col-"].freeform-column-content-align-spread > button:not(:first-of-type) {
     margin-left: 5px;
 }
-.ff-form-errors {
-    padding: 15px;
-    border: 1px solid #f5c6cb;
-    background: #f8d7da;
-    border-radius: 5px;
-    color: #721c24;
-}
-.ff-form-errors>p {
-    margin: 0;
-}
-.freeform-form-has-errors {
-    color: #721c24;
-}
 
-
+/* ERRORS AND SUCCESS */
 #freeform-success-error-banner,
 .freeform-ajax-form-success,
 .freeform-ajax-form-errors {
@@ -435,14 +433,14 @@ button[type=submit].ff-loading:before {
 .freeform-ajax-form-success p,
 .freeform-form-errors,
 .freeform-ajax-form-errors p {
-    font: normal 18px sans-serif;
+    font: normal 16px sans-serif;
     color: #ffffff;
     line-height: 1.5;
     text-align: center;
     border-radius: 5px;
     margin: auto;
     margin-bottom: 20px;
-    padding: 15px;
+    padding: 10px;
     position: relative;
     justify-content: center;
 }
@@ -457,45 +455,13 @@ button[type=submit].ff-loading:before {
     border: 1px solid #dc3545;
 }
 
-
-
-
-.freeform-row .freeform-column.freeform-fieldtype-checkbox label,
-.freeform-row .freeform-column.freeform-fieldtype-mailing_list label {
-    display: inline-block;
-    margin: 0 0 10px 0;
-}
-.freeform-row .freeform-column.freeform-fieldtype-checkbox input[type="checkbox"],
-.freeform-row .freeform-column.freeform-fieldtype-mailing_list input[type="checkbox"] {
-    margin-right: 10px;
-    width: auto;
-    display: inline-block;
-    transform: scale(1.15);
-}
-
-
-
 /* RESPONSIVE */
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: 800px) {
     [class*="freeform-col-"] {
         width: 100%;
     }
 }
-@media only screen and (max-width: 1300px) {
-    .freeform-row .freeform-column.freeform-col-1 { width: 8.33%; }
-    .freeform-row .freeform-column.freeform-col-2 { width: 16.66%; }
-    .freeform-row .freeform-column.freeform-col-3 { width: 25%; }
-    .freeform-row .freeform-column.freeform-col-4 { width: 33.33%; }
-    .freeform-row .freeform-column.freeform-col-5 { width: 41.66%; }
-    .freeform-row .freeform-column.freeform-col-6 { width: 50%; }
-    .freeform-row .freeform-column.freeform-col-7 { width: 58.33%; }
-    .freeform-row .freeform-column.freeform-col-8 { width: 66.66%; }
-    .freeform-row .freeform-column.freeform-col-9 { width: 75%; }
-    .freeform-row .freeform-column.freeform-col-10 { width: 83.33%; }
-    .freeform-row .freeform-column.freeform-col-11 { width: 91.66%; }
-    .freeform-row .freeform-column.freeform-col-12 { width: 100%; }
-}
-@media only screen and (max-width: 1600px) {
+@media only screen and (min-width: 801px) {
     .freeform-col-1 { width: 8.33%; }
     .freeform-col-2 { width: 16.66%; }
     .freeform-col-3 { width: 25%; }
@@ -509,9 +475,6 @@ button[type=submit].ff-loading:before {
     .freeform-col-11 { width: 91.66%; }
     .freeform-col-12 { width: 100%; }
 }
-
-*/
-
 </style>
 
 {{ form.renderTag }}
@@ -541,44 +504,19 @@ button[type=submit].ff-loading:before {
 {% if form.pages|length > 1 %}
     <ul class="freeform-pages">
         {% for page in form.pages %}
-            <li>
-                {% if form.currentPage.index == page.index %}
-                    <b>{{ page.label }}</b>
-                {% else %}
-                    {{ page.label }}
-                {% endif %}
+            <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
+                {{ page.label }}
             </li>
         {% endfor %}
     </ul>
-{% endif %}
-
-{% if not form.ajaxEnabled and form.submittedSuccessfully %}
-    <div class="freeform-alert freeform-alert-success">
-        {{ form.successMessage | t('freeform') }}
-    </div>
-{% endif %}
-
-{% if form.hasErrors %}
-    <div class="freeform-form-has-errors">
-        {{ form.errorMessage | t('freeform') }}
-
-        {% if form.errors|length %}
-            <ul>
-                {% for error in form.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
 {% endif %}
 
 {% for row in form %}
 <div class="freeform-row {{ form.customAttributes.rowClass }}">
     {% for field in row %}
     {% set width = (12 / (row|length)) %}
-    {% set columnClass = "freeform-column " %}
+    {% set columnClass = "freeform-col-" ~ width %}
     {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-    {% set columnClass = columnClass ~ " freeform-col-" ~ width %}
     {% if field.type == "submit" or field.type == "save" %}
         {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
     {% endif %}
@@ -595,13 +533,14 @@ button[type=submit].ff-loading:before {
                 errorClass: "freeform-errors",
                 instructionsClass: "freeform-instructions",
             }) }}
-
             {# FOR FREEFORM PAYMENTS #}
             {% if field.layoutRows is defined %}
                 {% for layoutRow in field.layoutRows %}
-                    <div class="freeform-row {{ form.customAttributes.rowClass }}">
+                    <div class="freeform-row freeform-payments {{ form.customAttributes.rowClass }}">
                         {% for layoutField in layoutRow %}
-                            <div class="{{ columnClass }}">
+                            {% set layoutWidth = (12 / (layoutRow|length)) %}
+                            {% set paymentColumnClass = "freeform-col-" ~ layoutWidth %}
+                            <div class="{{ paymentColumnClass }}">
                                 {{ layoutField.render({
                                     class: "freeform-input",
                                     labelClass: "freeform-label" ~ (layoutField.inputOnly ? " freeform-input-only-label" : "") ~ (layoutField.required ? " freeform-required" : ""),

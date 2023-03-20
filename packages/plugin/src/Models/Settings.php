@@ -63,7 +63,7 @@ class Settings extends Model
     public const CONTEXT_TYPE_DATABASE = 'database';
 
     public const DEFAULT_AJAX = true;
-    public const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.twig';
+    public const DEFAULT_FORMATTING_TEMPLATE = 'basic-light.twig';
 
     public const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
     public const DEFAULT_SESSION_ENTRY_TTL = 10800; // 3 hours

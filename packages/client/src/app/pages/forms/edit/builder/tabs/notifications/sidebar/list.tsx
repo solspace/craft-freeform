@@ -1,24 +1,22 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Sidebar } from '@ff-client/app/components/layout/sidebar/sidebar';
-import { useQueryFormIntegrations } from '@ff-client/queries/integrations';
-import type { IntegrationCategory } from '@ff-client/types/integrations';
-
-import { Category } from './category/category';
-import { CategorySkeleton } from './category/category.skeleton';
-import { Wrapper } from './list.styles';
+import { Sidebar } from '@components/layout/sidebar/sidebar';
+import { Category } from '@editor/builder/tabs/notifications/sidebar/category/category';
+import { CategorySkeleton } from '@editor/builder/tabs/notifications/sidebar/category/category.skeleton';
+import { Wrapper } from '@editor/builder/tabs/notifications/sidebar/list.styles';
+import { useQueryFormNotifications } from '@ff-client/queries/notifications';
+import type { NotificationCategory } from '@ff-client/types/notifications';
 
 const categoryLabels: Record<string, string> = {
-  crm: 'CRM',
-  mailing_list: 'Email Marketing',
-  payment_gateway: 'Payment',
+  admin: 'Admin',
+  conditional: 'Conditional',
 };
 
 export const List: React.FC = () => {
   const { formId, id } = useParams();
   const navigate = useNavigate();
 
-  const { data, isFetching } = useQueryFormIntegrations(Number(formId ?? 0));
+  const { data, isFetching } = useQueryFormNotifications(Number(formId ?? 0));
 
   useEffect(() => {
     if (!id && data) {
@@ -47,9 +45,9 @@ export const List: React.FC = () => {
     );
   }
 
-  const categories: Record<string, IntegrationCategory> = {};
-  data.forEach((integration) => {
-    const { type } = integration;
+  const categories: Record<string, NotificationCategory> = {};
+  data.forEach((notification) => {
+    const { type } = notification;
     if (!categories[type]) {
       categories[type] = {
         type,
@@ -58,7 +56,7 @@ export const List: React.FC = () => {
       };
     }
 
-    categories[type].children.push(integration);
+    categories[type].children.push(notification);
   });
 
   return (

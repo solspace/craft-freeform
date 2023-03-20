@@ -13,6 +13,7 @@ import fields from './slices/fields';
 import form from './slices/form';
 import integrations from './slices/integrations';
 import layouts from './slices/layouts';
+import notifications from './slices/notifications';
 import pages from './slices/pages';
 import rows from './slices/rows';
 import search from './slices/search';
@@ -24,6 +25,7 @@ export const store = configureStore({
     fields,
     context,
     integrations,
+    notifications,
     layouts,
     pages,
     rows,

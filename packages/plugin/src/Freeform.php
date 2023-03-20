@@ -50,7 +50,9 @@ use Solspace\Freeform\Records\FeedRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
+use Solspace\Freeform\Services\AdminNotificationsService;
 use Solspace\Freeform\Services\ChartsService;
+use Solspace\Freeform\Services\ConditionalNotificationsService;
 use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\DashboardService;
@@ -105,45 +107,47 @@ use yii\web\ForbiddenHttpException;
 /**
  * Class Plugin.
  *
- * @property CrmService                  $crm
- * @property FieldsService               $fields
- * @property FilesService                $files
- * @property FormsService                $forms
- * @property LayoutsService              $formLayouts
- * @property MailerService               $mailer
- * @property MailingListsService         $mailingLists
- * @property NotificationsService        $notifications
- * @property SettingsService             $settings
- * @property StatusesService             $statuses
- * @property SubmissionsService          $submissions
- * @property SpamSubmissionsService      $spamSubmissions
- * @property LoggerService               $logger
- * @property HoneypotService             $honeypot
- * @property IntegrationsService         $integrations
- * @property IntegrationsQueueService    $integrationsQueue
- * @property PaymentGatewaysService      $paymentGateways
- * @property ConnectionsService          $connections
- * @property ChartsService               $charts
- * @property WidgetsService              $widgets
- * @property ExportService               $export
- * @property ExportProfilesService       $exportProfiles
- * @property ExportNotificationsService  $exportNotifications
- * @property RulesService                $rules
- * @property PaymentNotificationsService $paymentNotifications
- * @property PaymentsService             $payments
- * @property StripeService               $stripe
- * @property SubscriptionPlansService    $subscriptionPlans
- * @property SubscriptionsService        $subscriptions
- * @property WebhooksService             $webhooks
- * @property RelationsService            $relations
- * @property PayloadForwardingService    $payloadForwarding
- * @property DigestService               $digest
- * @property SummaryService              $summary
- * @property FreeformFeedService         $feed
- * @property LockService                 $lock
- * @property DiagnosticsService          $diagnostics
- * @property PreflightService            $preflight
- * @property TypesService                $formTypes
+ * @property CrmService                      $crm
+ * @property FieldsService                   $fields
+ * @property FilesService                    $files
+ * @property FormsService                    $forms
+ * @property LayoutsService                  $formLayouts
+ * @property MailerService                   $mailer
+ * @property MailingListsService             $mailingLists
+ * @property NotificationsService            $notifications
+ * @property AdminNotificationsService       $adminNotifications
+ * @property ConditionalNotificationsService $conditionalNotifications
+ * @property SettingsService                 $settings
+ * @property StatusesService                 $statuses
+ * @property SubmissionsService              $submissions
+ * @property SpamSubmissionsService          $spamSubmissions
+ * @property LoggerService                   $logger
+ * @property HoneypotService                 $honeypot
+ * @property IntegrationsService             $integrations
+ * @property IntegrationsQueueService        $integrationsQueue
+ * @property PaymentGatewaysService          $paymentGateways
+ * @property ConnectionsService              $connections
+ * @property ChartsService                   $charts
+ * @property WidgetsService                  $widgets
+ * @property ExportService                   $export
+ * @property ExportProfilesService           $exportProfiles
+ * @property ExportNotificationsService      $exportNotifications
+ * @property RulesService                    $rules
+ * @property PaymentNotificationsService     $paymentNotifications
+ * @property PaymentsService                 $payments
+ * @property StripeService                   $stripe
+ * @property SubscriptionPlansService        $subscriptionPlans
+ * @property SubscriptionsService            $subscriptions
+ * @property WebhooksService                 $webhooks
+ * @property RelationsService                $relations
+ * @property PayloadForwardingService        $payloadForwarding
+ * @property DigestService                   $digest
+ * @property SummaryService                  $summary
+ * @property FreeformFeedService             $feed
+ * @property LockService                     $lock
+ * @property DiagnosticsService              $diagnostics
+ * @property PreflightService                $preflight
+ * @property TypesService                    $formTypes
  */
 class Freeform extends Plugin
 {
@@ -457,6 +461,8 @@ class Freeform extends Plugin
                 'mailer' => MailerService::class,
                 'mailingLists' => MailingListsService::class,
                 'notifications' => NotificationsService::class,
+                'adminNotifications' => AdminNotificationsService::class,
+                'conditionalNotifications' => ConditionalNotificationsService::class,
                 'settings' => SettingsService::class,
                 'statuses' => StatusesService::class,
                 'submissions' => SubmissionsService::class,

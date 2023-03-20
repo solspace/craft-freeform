@@ -1,9 +1,6 @@
 <style>
 /* LAYOUT */
 html, body {
-    background: #212529;
-    padding: 20px;
-    margin: 0 auto;
     font-family: sans-serif;
 }
 * {
@@ -391,7 +388,6 @@ button[type=submit].ff-loading:before {
 }
 
 /* SUBMIT BUTTON ALIGNMENT */
-
 .freeform-row [class*="freeform-col-"].freeform-column-content-align-left {
     display: flex;
     justify-content: flex-start;
@@ -455,7 +451,7 @@ button[type=submit].ff-loading:before {
     border: 1px solid #dc3545;
 }
 
-/* RESPONSIVE */
+/* RESPONSIVE GRID */
 @media only screen and (max-width: 800px) {
     [class*="freeform-col-"] {
         width: 100%;
@@ -477,90 +473,93 @@ button[type=submit].ff-loading:before {
 }
 </style>
 
-{{ form.renderTag }}
+<div class="freeform-form-container">
 
-<div id="freeform-success-error-banner">
-    {% if not form.ajaxEnabled and form.submittedSuccessfully %}
-        <div class="freeform-form-success">
-            {{ form.successMessage | t('freeform') }}
-        </div>
-    {% endif %}
+    {{ form.renderTag }}
 
-    {% if form.hasErrors %}
-        <div class="freeform-form-errors">
-            {{ form.errorMessage | t('freeform') }}
-
-            {% if form.errors|length %}
-                <ul>
-                    {% for error in form.errors %}
-                        <li>{{ error }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-    {% endif %}
-</div>
-
-{% if form.pages|length > 1 %}
-    <ul class="freeform-pages">
-        {% for page in form.pages %}
-            <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
-                {{ page.label }}
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% for row in form %}
-<div class="freeform-row {{ form.customAttributes.rowClass }}">
-    {% for field in row %}
-    {% set width = (12 / (row|length)) %}
-    {% set columnClass = "freeform-col-" ~ width %}
-    {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-    {% if field.type == "submit" or field.type == "save" %}
-        {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
-    {% endif %}
-    <div class="{{ columnClass }} freeform-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }}>
-        {% if field.type in ["checkbox", "mailing_list"] %}
-            {{ field.renderInput({ class: "freeform-input" ~ (field.hasErrors ? " is-invalid") }) -}}
-            {{- field.renderLabel({ labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : "") }) }}
-            {{ field.renderInstructions({ instructionsClass: "freeform-instructions" }) }}
-            {{ field.renderErrors({ errorClass: "freeform-errors" }) }}
-        {% else %}
-            {{ field.render({
-                class: field.type not in ["submit", "save", "signature"] ? "freeform-input" : "",
-                labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
-                errorClass: "freeform-errors",
-                instructionsClass: "freeform-instructions",
-            }) }}
-            {# FOR FREEFORM PAYMENTS #}
-            {% if field.layoutRows is defined %}
-                {% for layoutRow in field.layoutRows %}
-                    <div class="freeform-row freeform-payments {{ form.customAttributes.rowClass }}">
-                        {% for layoutField in layoutRow %}
-                            {% set layoutWidth = (12 / (layoutRow|length)) %}
-                            {% set paymentColumnClass = "freeform-col-" ~ layoutWidth %}
-                            <div class="{{ paymentColumnClass }}">
-                                {{ layoutField.render({
-                                    class: "freeform-input",
-                                    labelClass: "freeform-label" ~ (layoutField.inputOnly ? " freeform-input-only-label" : "") ~ (layoutField.required ? " freeform-required" : ""),
-                                    errorClass: "freeform-errors",
-                                    instructionsClass: "freeform-instructions",
-                                }) }}
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-            {% endif %}
+    <div id="freeform-success-error-banner">
+        {% if not form.ajaxEnabled and form.submittedSuccessfully %}
+            <div class="freeform-form-success">
+                {{ form.successMessage | t('freeform') }}
+            </div>
         {% endif %}
 
+        {% if form.hasErrors %}
+            <div class="freeform-form-errors">
+                {{ form.errorMessage | t('freeform') }}
+
+                {% if form.errors|length %}
+                    <ul>
+                        {% for error in form.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    {% if form.pages|length > 1 %}
+        <ul class="freeform-pages">
+            {% for page in form.pages %}
+                <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
+                    {{ page.label }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% for row in form %}
+    <div class="freeform-row {{ form.customAttributes.rowClass }}">
+        {% for field in row %}
+        {% set width = (12 / (row|length)) %}
+        {% set columnClass = "freeform-col-" ~ width %}
+        {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+        {% if field.type == "submit" or field.type == "save" %}
+            {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
+        {% endif %}
+        <div class="{{ columnClass }} freeform-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }}>
+            {% if field.type in ["checkbox", "mailing_list"] %}
+                {{ field.renderInput({ class: "freeform-input" ~ (field.hasErrors ? " is-invalid") }) -}}
+                {{- field.renderLabel({ labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : "") }) }}
+                {{ field.renderInstructions({ instructionsClass: "freeform-instructions" }) }}
+                {{ field.renderErrors({ errorClass: "freeform-errors" }) }}
+            {% else %}
+                {{ field.render({
+                    class: field.type not in ["submit", "save", "signature"] ? "freeform-input" : "",
+                    labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
+                    errorClass: "freeform-errors",
+                    instructionsClass: "freeform-instructions",
+                }) }}
+                {# FOR FREEFORM PAYMENTS #}
+                {% if field.layoutRows is defined %}
+                    {% for layoutRow in field.layoutRows %}
+                        <div class="freeform-row freeform-payments {{ form.customAttributes.rowClass }}">
+                            {% for layoutField in layoutRow %}
+                                {% set layoutWidth = (12 / (layoutRow|length)) %}
+                                {% set paymentColumnClass = "freeform-col-" ~ layoutWidth %}
+                                <div class="{{ paymentColumnClass }}">
+                                    {{ layoutField.render({
+                                        class: "freeform-input",
+                                        labelClass: "freeform-label" ~ (layoutField.inputOnly ? " freeform-input-only-label" : "") ~ (layoutField.required ? " freeform-required" : ""),
+                                        errorClass: "freeform-errors",
+                                        instructionsClass: "freeform-instructions",
+                                    }) }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endif %}
+
+        </div>
+        {% endfor %}
     </div>
     {% endfor %}
+
+    {{ form.renderClosingTag }}
+
 </div>
-{% endfor %}
-
-{{ form.renderClosingTag }}
-
 
 <script>
   var form = document.querySelector('[data-id="{{ form.anchor }}"]');

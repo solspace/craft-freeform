@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Tracking;
 
+use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -26,6 +27,12 @@ class Cookies extends FeatureBundle
         }
 
         $form = $event->getForm();
+
+        $limiting = $form->getLimitFormSubmissions();
+        if (!\in_array($limiting, FormLimiting::COOKIE_LIMITATIONS, true)) {
+            return;
+        }
+
         $name = self::getCookieName($form);
         $value = time();
 

@@ -1,5 +1,14 @@
 # Solspace Freeform Changelog
 
+## 4.0.19 - 2023-03-21
+
+### Added
+- Added two basic formatting template examples (dark and light modes) that are self-contained and complete to be added to any page. Does not require any frameworks or toolkits.
+- Added setup guides directly into API integration settings pages.
+
+### Changed
+- Updated the `form_posted` cookie to only be created for users if a form uses a cookie check for limiting how many times a user can submit the form.
+
 ## 4.0.18 - 2023-03-10
 
 ### Changed

@@ -34,6 +34,10 @@ button {
     transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out;
     justify-content: center;
 }
+button:only-child,
+button:last-child {
+    margin-right: 0;
+}
 button:hover {
     color: #ffffff;
     background-color: #0b5ed7;
@@ -118,7 +122,7 @@ button[type=submit].ff-loading:before {
 }
 .freeform-row [class*="freeform-col-"] label {
     display: block;
-    margin: 0 0 10px 0;
+    margin: 0 0 5px 0;
 }
 .freeform-row [class*="freeform-col-"] .freeform-input[type="checkbox"],
 .freeform-row [class*="freeform-col-"] .freeform-input[type="radio"] {
@@ -128,7 +132,11 @@ button[type=submit].ff-loading:before {
     transform: scale(1.15);
 }
 .freeform-row [class*="freeform-col-"] label:has(> .freeform-input[type="checkbox"].freeform-has-errors),
-.freeform-row [class*="freeform-col-"] label:has(> .freeform-input[type="radio"].freeform-has-errors) {
+.freeform-row [class*="freeform-col-"] label:has(> .freeform-input[type="radio"].freeform-has-errors),
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group:has(ul.freeform-errors) label:not(:first-child),
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group:has(ul.freeform-errors) div.input-group-one-line label,
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group:has(ul.freeform-errors) label:not(:first-child),
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group:has(ul.freeform-errors) div.input-group-one-line label {
     color: #dc3545 !important;
 }
 
@@ -168,7 +176,7 @@ button[type=submit].ff-loading:before {
     background-color: #ffffff;
     border: 1px solid #cbced0;
     border-radius: 5px;
-    padding: 10px 15px;
+    padding: 10px;
     width: 100%;
     display: block;
     resize: none;
@@ -208,9 +216,13 @@ button[type=submit].ff-loading:before {
 .freeform-row [class*="freeform-col-"] input.freeform-has-errors,
 .freeform-row [class*="freeform-col-"] .freeform-input.StripeElement--invalid,
 .freeform-row [class*="freeform-col-"] textarea.freeform-has-errors,
-.freeform-row [class*="freeform-col-"] select.freeform-has-errors {
+.freeform-row [class*="freeform-col-"] select.freeform-has-errors,
+.freeform-row [class*="freeform-col-"] input:has(+ ul.freeform-errors),
+.freeform-row [class*="freeform-col-"] textarea:has(+ ul.freeform-errors),
+.freeform-row [class*="freeform-col-"] select:has(+ ul.freeform-errors) {
     border: 1px solid #dc3545;
 }
+
 .freeform-row [class*="freeform-col-"] .freeform-input-only-label {
     font-weight: normal;
 }
@@ -221,15 +233,27 @@ button[type=submit].ff-loading:before {
 }
 .freeform-row [class*="freeform-col-"] .freeform-errors,
 .freeform-row [class*="freeform-col-"] .ff-errors {
-    padding: 0;
     margin: -5px 0 0 0;
-    padding: 0 20px;
+    padding: 0;
+    list-style: none;
+    display: block;
+    width: 100%;
+}
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group .freeform-errors,
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group .ff-errors,
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group .freeform-errors,
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group .ff-errors {
+    margin-top: 0;
 }
 .freeform-row [class*="freeform-col-"] .freeform-errors > li,
 .freeform-row [class*="freeform-col-"] .ff-errors > li {
-    font: 200 16px sans-serif;
+    font: italic 400 15px sans-serif;
     color: #dc3545;
-    margin-top: 15px;
+    margin-top: 10px;
+}
+.freeform-row [class*="freeform-col-"] .freeform-errors > li:not(:first-child),
+.freeform-row [class*="freeform-col-"] .ff-errors > li:not(:first-child) {
+    margin-top: 3px;
 }
 .freeform-row [class*="freeform-col-"] .freeform-instructions {
     margin: 0 0 5px;
@@ -251,7 +275,9 @@ button[type=submit].ff-loading:before {
     display: inline-block;
     transform: scale(1.15);
 }
-.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox input.freeform-has-errors + label {
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox input.freeform-has-errors + label,
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox label:has(+ ul.freeform-errors),
+.freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox label:has(+ div + ul.freeform-errors) {
     color: #dc3545 !important;
 }
 
@@ -281,7 +307,8 @@ button[type=submit].ff-loading:before {
 .freeform-fieldtype-opinion_scale input[type="radio"]:checked + label {
     background-color: #cbced0;
 }
-.freeform-fieldtype-opinion_scale .opinion-scale-scales:has(> li input.freeform-has-errors) {
+.freeform-fieldtype-opinion_scale .opinion-scale-scales:has(> li input.freeform-has-errors),
+.freeform-fieldtype-opinion_scale .opinion-scale:has(+ ul.freeform-errors) .opinion-scale-scales {
     border: 1px dashed #dc3545;
 }
 .freeform-fieldtype-opinion_scale .opinion-scale-legends li {
@@ -292,7 +319,8 @@ button[type=submit].ff-loading:before {
 }
 
 /* RATING FIELDS */
-.freeform-fieldtype-rating .freeform-has-errors + label:not(:first-child) {
+.freeform-fieldtype-rating .freeform-has-errors + label:not(:first-child),
+.freeform-fieldtype-rating div:has(+ ul.freeform-errors) label {
     color: #dc3545;
 }
 .form-rating-field-wrapper input[type="radio"] + label {
@@ -439,35 +467,37 @@ button[type=submit].ff-loading:before {
 }
 
 /* ERRORS AND SUCCESS */
-#freeform-success-error-banner,
-.freeform-ajax-form-success,
-.freeform-ajax-form-errors {
+.freeform-form-success,
+.freeform-form-errors {
     margin-left: auto;
     margin-right: auto;
-    width: 100%;
-}
-.freeform-form-success,
-.freeform-ajax-form-success p,
-.freeform-form-errors,
-.freeform-ajax-form-errors p {
-    font: normal 16px sans-serif;
-    color: #ffffff;
-    line-height: 1.5;
-    text-align: center;
-    border-radius: 5px;
-    margin: auto;
     margin-bottom: 20px;
-    padding: 10px;
-    position: relative;
-    justify-content: center;
+    padding: 15px 20px;
+    width: 100%;
+    border-radius: 5px;
 }
-.freeform-form-success,
-.freeform-ajax-form-success p {
+.freeform-form-success p,
+.freeform-form-errors p {
+    font: normal 18px sans-serif;
+    color: #ffffff;
+    margin: 0;
+}
+.freeform-form-success ul,
+.freeform-form-errors ul {
+    font: italic 15px sans-serif;
+    color: #ffffff;
+    margin: 10px 0 0 0;
+    padding: 0 0 0 25px;
+}
+.freeform-form-success ul li:not(:last-child),
+.freeform-form-errors ul li:not(:last-child) {
+    margin-bottom: 5px;
+}
+.freeform-form-success {
     background-color: #198754;
     border: 1px solid #198754;
 }
-.freeform-form-errors,
-.freeform-ajax-form-errors p {
+.freeform-form-errors {
     background-color: #dc3545;
     border: 1px solid #dc3545;
 }
@@ -501,13 +531,13 @@ button[type=submit].ff-loading:before {
     <div id="freeform-success-error-banner">
         {% if not form.ajaxEnabled and form.submittedSuccessfully %}
             <div class="freeform-form-success">
-                {{ form.successMessage | t('freeform') }}
+                <p>{{ form.successMessage | t('freeform') }}</p>
             </div>
         {% endif %}
 
         {% if form.hasErrors %}
             <div class="freeform-form-errors">
-                {{ form.errorMessage | t('freeform') }}
+                <p>{{ form.errorMessage | t('freeform') }}</p>
 
                 {% if form.errors|length %}
                     <ul>
@@ -599,10 +629,10 @@ button[type=submit].ff-loading:before {
       }
     });
     form.addEventListener('freeform-ready', function (event) {
-        event.options.errorClassBanner = 'freeform-ajax-form-errors';
+        event.options.errorClassBanner = 'freeform-form-errors';
         event.options.errorClassList = 'freeform-errors';
         event.options.errorClassField = 'freeform-has-errors';
-        event.options.successClassBanner = 'freeform-ajax-form-success';
+        event.options.successClassBanner = 'freeform-form-success';
     })
   }
 </script>

@@ -3,9 +3,10 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
-class OutputAsJsonEvent extends ArrayableEvent
+class OutputAsJsonEvent extends ArrayableEvent implements FormEventInterface
 {
     /** @var Form */
     private $form;

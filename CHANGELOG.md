@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.27 - 2023-03-23
+
+### Fixed
+- Fixed a bug where the Constant Contact integration could timeout when connecting if there were too many lists.
+
 ## 3.13.26 - 2023-03-10
 
 ### Changed

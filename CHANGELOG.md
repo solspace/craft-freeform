@@ -255,6 +255,11 @@
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
 
+## 3.13.27 - 2023-03-23
+
+### Fixed
+- Fixed a bug where the Constant Contact integration could timeout when connecting if there were too many lists.
+
 ## 3.13.26 - 2023-03-10
 
 ### Changed

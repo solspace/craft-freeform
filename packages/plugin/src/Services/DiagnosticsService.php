@@ -2,8 +2,6 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\db\Query;
-use craft\db\Table;
 use craft\helpers\App;
 use craft\helpers\UrlHelper;
 use craft\mail\transportadapters\Gmail;
@@ -241,7 +239,6 @@ class DiagnosticsService extends BaseService
 
     public function getFreeformChecks()
     {
-
         list($emailTransport, $emailIssues) = $this->getEmailSettings();
 
         return [

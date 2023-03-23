@@ -301,49 +301,54 @@ class ConstantContact3 extends MailingListOAuthConnector
      */
     protected function fetchFields($listId): array
     {
-        $client = $this->generateAuthorizedClient();
-        $endpoint = $this->getEndpoint('/contact_custom_fields');
+        static $cachedFields;
 
-        try {
-            $response = $client->get($endpoint);
-        } catch (RequestException $e) {
-            $responseBody = (string) $e->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
+        if (null === $cachedFields) {
+            $client = $this->generateAuthorizedClient();
+            $endpoint = $this->getEndpoint('/contact_custom_fields');
 
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not connect to API endpoint')
-            );
+            try {
+                $response = $client->get($endpoint);
+            } catch (RequestException $e) {
+                $responseBody = (string) $e->getResponse()->getBody();
+                $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
+
+                throw new IntegrationException(
+                    $this->getTranslator()->translate('Could not connect to API endpoint')
+                );
+            }
+
+            $fields = [
+                new FieldObject('first_name', 'First Name', FieldObject::TYPE_STRING, false),
+                new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, false),
+                new FieldObject('job_title', 'Job Title', FieldObject::TYPE_STRING, false),
+                new FieldObject('company_name', 'Company Name', FieldObject::TYPE_STRING, false),
+                new FieldObject('phone_number', 'Phone Number', FieldObject::TYPE_STRING, false),
+                new FieldObject('anniversary', 'Anniversary', FieldObject::TYPE_STRING, false),
+                new FieldObject('birthday_month', 'Birthday Month', FieldObject::TYPE_NUMERIC, false),
+                new FieldObject('birthday_day', 'Birthday Day', FieldObject::TYPE_NUMERIC, false),
+                new FieldObject('street_address_kind', 'Address: Kind', FieldObject::TYPE_STRING, false),
+                new FieldObject('street_address_street', 'Address: Street', FieldObject::TYPE_STRING, false),
+                new FieldObject('street_address_city', 'Address: City', FieldObject::TYPE_STRING, false),
+                new FieldObject('street_address_state', 'Address: State', FieldObject::TYPE_STRING, false),
+                new FieldObject('street_address_postal_code', 'Address: Postal Code', FieldObject::TYPE_STRING, false),
+                new FieldObject('street_address_country', 'Address: Country', FieldObject::TYPE_STRING, false),
+            ];
+
+            $json = json_decode((string) $response->getBody(), false);
+            foreach ($json->custom_fields as $field) {
+                $fields[] = new FieldObject(
+                    'custom_'.$field->custom_field_id,
+                    $field->label,
+                    FieldObject::TYPE_STRING,
+                    false
+                );
+            }
+
+            $cachedFields = $fields;
         }
 
-        $json = json_decode((string) $response->getBody(), false);
-
-        $fields = [
-            new FieldObject('first_name', 'First Name', FieldObject::TYPE_STRING, false),
-            new FieldObject('last_name', 'Last Name', FieldObject::TYPE_STRING, false),
-            new FieldObject('job_title', 'Job Title', FieldObject::TYPE_STRING, false),
-            new FieldObject('company_name', 'Company Name', FieldObject::TYPE_STRING, false),
-            new FieldObject('phone_number', 'Phone Number', FieldObject::TYPE_STRING, false),
-            new FieldObject('anniversary', 'Anniversary', FieldObject::TYPE_STRING, false),
-            new FieldObject('birthday_month', 'Birthday Month', FieldObject::TYPE_NUMERIC, false),
-            new FieldObject('birthday_day', 'Birthday Day', FieldObject::TYPE_NUMERIC, false),
-            new FieldObject('street_address_kind', 'Address: Kind', FieldObject::TYPE_STRING, false),
-            new FieldObject('street_address_street', 'Address: Street', FieldObject::TYPE_STRING, false),
-            new FieldObject('street_address_city', 'Address: City', FieldObject::TYPE_STRING, false),
-            new FieldObject('street_address_state', 'Address: State', FieldObject::TYPE_STRING, false),
-            new FieldObject('street_address_postal_code', 'Address: Postal Code', FieldObject::TYPE_STRING, false),
-            new FieldObject('street_address_country', 'Address: Country', FieldObject::TYPE_STRING, false),
-        ];
-
-        foreach ($json->custom_fields as $field) {
-            $fields[] = new FieldObject(
-                'custom_'.$field->custom_field_id,
-                $field->label,
-                FieldObject::TYPE_STRING,
-                false
-            );
-        }
-
-        return $fields;
+        return $cachedFields;
     }
 
     /**

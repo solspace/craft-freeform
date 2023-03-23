@@ -3,7 +3,7 @@
 ## 4.0.20 - 2023-03-23
 
 ### Changed
-- Updated the JS Honeypot Enhancment feature to use the encrypted payload instead of PHP sessions when the 'Form Session Context' setting is 'Encrypted Payload'.
+- Updated the JS Honeypot Enhancement feature to use the encrypted payload instead of PHP sessions when the 'Form Session Context' setting is 'Encrypted Payload'.
 - Various improvements and adjustments to the Basic Light and Dark example formatting template examples.
 
 ### Fixed

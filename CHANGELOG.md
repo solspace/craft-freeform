@@ -6,6 +6,9 @@
 - Updated the JS Honeypot Enhancment feature to use the encrypted payload instead of PHP sessions when the 'Form Session Context' setting is 'Encrypted Payload'.
 - Various improvements and adjustments to the Basic Light and Dark example formatting template examples.
 
+### Fixed
+- Fixed a bug where the Constant Contact integration could timeout when connecting if there were too many lists.
+
 ## 4.0.19 - 2023-03-21
 
 ### Added

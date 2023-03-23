@@ -3,9 +3,10 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
-class AttachFormAttributesEvent extends ArrayableEvent
+class AttachFormAttributesEvent extends ArrayableEvent implements FormEventInterface
 {
     /** @var Form */
     private $form;

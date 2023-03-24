@@ -76,7 +76,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
             $response = $client->post($endpoint, ['json' => $contactData]);
             $this->getHandler()->onAfterResponse($this, $response);
 
-            $json = \GuzzleHttp\json_decode($response->getBody());
+            $json = json_decode($response->getBody());
             $contactId = $json->contact->id;
         } catch (RequestException $exception) {
             throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
@@ -276,7 +276,7 @@ class ActiveCampaign extends AbstractMailingListIntegration
                 );
             }
 
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
 
             $offset += $limit;
 

@@ -101,7 +101,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         try {
             $response = $client->post($this->getAccessTokenUrl(), ['query' => $payload]);
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+            $json = json_decode($response->getBody(), false);
 
             if (!isset($json->access_token)) {
                 throw new IntegrationException(

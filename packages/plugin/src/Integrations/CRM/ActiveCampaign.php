@@ -160,7 +160,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                     ['json' => ['organization' => $org]]
                 );
 
-                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+                $json = json_decode((string) $response->getBody(), false);
                 if (isset($json->organization)) {
                     $organizationId = $json->organization->id;
                 }
@@ -170,7 +170,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                 if (422 === $e->getCode()) {
                     try {
                         $response = $client->get($this->getEndpoint('/organizations'));
-                        $list = \GuzzleHttp\json_decode($response->getBody(), false);
+                        $list = json_decode($response->getBody(), false);
                         foreach ($list->organizations as $organization) {
                             if (strtolower($organization->name) === strtolower($org['name'])) {
                                 $organizationId = $organization->id;
@@ -211,7 +211,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                     ['json' => ['contact' => $contact]]
                 );
 
-                $json = \GuzzleHttp\json_decode($response->getBody(), false);
+                $json = json_decode($response->getBody(), false);
                 if (isset($json->contact)) {
                     $contactId = $json->contact->id;
                 }
@@ -276,7 +276,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                     ['json' => ['deal' => $deal]]
                 );
 
-                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+                $json = json_decode((string) $response->getBody(), false);
                 if (isset($json->deal)) {
                     $dealId = $json->deal->id;
 
@@ -354,7 +354,7 @@ class ActiveCampaign extends AbstractCRMIntegration
 
         try {
             $response = $client->get($this->getEndpoint('/fields'));
-            $data = \GuzzleHttp\json_decode($response->getBody(), false);
+            $data = json_decode($response->getBody(), false);
 
             foreach ($data->fields as $field) {
                 $type = FieldObject::TYPE_STRING;
@@ -389,7 +389,7 @@ class ActiveCampaign extends AbstractCRMIntegration
 
         try {
             $response = $client->get($this->getEndpoint('/dealCustomFieldMeta'));
-            $data = \GuzzleHttp\json_decode($response->getBody(), false);
+            $data = json_decode($response->getBody(), false);
 
             foreach ($data->dealCustomFieldMeta as $field) {
                 $type = FieldObject::TYPE_STRING;
@@ -590,7 +590,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                 ['query' => ['filters[title]' => $pipeline]]
             );
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+            $json = json_decode($response->getBody(), false);
             if (isset($json->dealGroups) && \count($json->dealGroups)) {
                 $item = $json->dealGroups[0];
 
@@ -627,7 +627,7 @@ class ActiveCampaign extends AbstractCRMIntegration
                 ['query' => $query]
             );
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+            $json = json_decode($response->getBody(), false);
             if (isset($json->dealStages) && \count($json->dealStages)) {
                 $item = $json->dealStages[0];
 
@@ -654,7 +654,7 @@ class ActiveCampaign extends AbstractCRMIntegration
             $client = $this->generateAuthorizedClient();
             $response = $client->get($this->getEndpoint('/users/username/'.$owner));
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), false);
+            $json = json_decode($response->getBody(), false);
             if (isset($json->user)) {
                 return $json->user->id;
             }

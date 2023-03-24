@@ -93,7 +93,7 @@ class ConstantContact3 extends MailingListOAuthConnector
 
             try {
                 $response = $client->get($endpoint);
-                $json = \GuzzleHttp\json_decode((string) $response->getBody(), false);
+                $json = json_decode((string) $response->getBody(), false);
 
                 return isset($json->lists);
             } catch (RequestException $exception) {
@@ -447,7 +447,7 @@ class ConstantContact3 extends MailingListOAuthConnector
                 ]
             );
 
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
             if (!isset($json->access_token)) {
                 throw new IntegrationException(
                     $this->getTranslator()->translate("No 'access_token' present in auth response for Constant Contact")

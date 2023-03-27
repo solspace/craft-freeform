@@ -222,7 +222,7 @@ EOT;
     public function getPresetAssets()
     {
         if ($this->presetAssets) {
-            return \GuzzleHttp\json_decode($this->presetAssets, true);
+            return json_decode($this->presetAssets, true);
         }
 
         return null;

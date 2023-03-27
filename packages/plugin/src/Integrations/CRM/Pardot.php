@@ -95,7 +95,7 @@ class Pardot extends AbstractCRMIntegration
                 ]
             );
 
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
 
             if (!isset($json->api_key)) {
                 throw new IntegrationException(
@@ -190,7 +190,7 @@ class Pardot extends AbstractCRMIntegration
         try {
             $response = $client->get($endpoint, ['query' => ['limit' => 1, 'format' => 'json']]);
 
-            $json = \GuzzleHttp\json_decode($response->getBody(), true);
+            $json = json_decode($response->getBody(), true);
 
             return isset($json['@attributes']) && 'ok' === $json['@attributes']['stat'];
         } catch (RequestException $e) {
@@ -528,7 +528,7 @@ class Pardot extends AbstractCRMIntegration
                 $endpoint = $this->getPardotEndpoint();
                 $response = $client->get($endpoint, ['query' => ['limit' => 1, 'format' => 'json']]);
 
-                $json = \GuzzleHttp\json_decode($response->getBody(), true);
+                $json = json_decode($response->getBody(), true);
 
                 if (isset($json['@attributes']) && 'ok' === $json['@attributes']['stat']) {
                     return $client;

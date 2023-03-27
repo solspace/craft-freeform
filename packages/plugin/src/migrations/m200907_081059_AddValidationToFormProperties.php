@@ -25,7 +25,7 @@ class m200907_081059_AddValidationToFormProperties extends Migration
             $id = $form['id'];
             $layoutJson = $form['layoutJson'];
 
-            $layout = \GuzzleHttp\json_decode($layoutJson, true);
+            $layout = json_decode($layoutJson, true);
             if (!isset($layout['composer']['properties']['validation'])) {
                 $layout['composer']['properties']['validation'] = [
                     'type' => 'validation',
@@ -36,7 +36,7 @@ class m200907_081059_AddValidationToFormProperties extends Migration
 
                 $this->update(
                     '{{%freeform_forms}}',
-                    ['layoutJson' => \GuzzleHttp\json_encode($layout)],
+                    ['layoutJson' => json_encode($layout)],
                     ['id' => $id]
                 );
             }

@@ -84,7 +84,7 @@ class MailChimp extends AbstractMailingListIntegration
     {
         try {
             $response = $this->get('/');
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
 
             if (isset($json->error) && !empty($json->error)) {
                 throw new IntegrationException($json->error);
@@ -254,7 +254,7 @@ class MailChimp extends AbstractMailingListIntegration
             );
         }
 
-        $json = \GuzzleHttp\json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
         $lists = [];
         if (isset($json->lists)) {
@@ -288,7 +288,7 @@ class MailChimp extends AbstractMailingListIntegration
                 $this->logErrorAndThrow($e);
             }
 
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
 
             $interestGroups = [];
             if (isset($json->categories)) {
@@ -319,7 +319,7 @@ class MailChimp extends AbstractMailingListIntegration
             $this->logErrorAndThrow($e);
         }
 
-        $json = \GuzzleHttp\json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
         $interests = [];
         if (isset($json->interests)) {
@@ -374,7 +374,7 @@ class MailChimp extends AbstractMailingListIntegration
             $this->logErrorAndThrow($e);
         }
 
-        $json = \GuzzleHttp\json_decode((string) $response->getBody());
+        $json = json_decode((string) $response->getBody());
 
         $fieldList = [];
         if (isset($json->merge_fields)) {
@@ -429,7 +429,7 @@ class MailChimp extends AbstractMailingListIntegration
                 ]
             );
 
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
             $members = $json->members ?? [];
 
             if (!\count($members)) {
@@ -444,7 +444,7 @@ class MailChimp extends AbstractMailingListIntegration
                         ]
                     );
 
-                    $tempJson = \GuzzleHttp\json_decode((string) $tempResponse->getBody());
+                    $tempJson = json_decode((string) $tempResponse->getBody());
 
                     $tempSubscriberHash = $tempJson->id;
                     $marketingPermissions = $tempJson->marketing_permissions ?? [];
@@ -583,7 +583,7 @@ class MailChimp extends AbstractMailingListIntegration
                     "lists/{$listId}/segments",
                     ['query' => ['fields' => 'segments.id,segments.name', 'count' => 999]]
                 );
-                $data = \GuzzleHttp\json_decode((string) $response->getBody());
+                $data = json_decode((string) $response->getBody());
 
                 $tags = [];
                 foreach ($data->segments as $tag) {
@@ -614,7 +614,7 @@ class MailChimp extends AbstractMailingListIntegration
 
         try {
             $response = $this->post("lists/{$listId}/segments", ['json' => ['name' => $tagName, 'static_segment' => []]]);
-            $data = \GuzzleHttp\json_decode((string) $response->getBody());
+            $data = json_decode((string) $response->getBody());
 
             return $data->id;
         } catch (RequestException $e) {
@@ -630,7 +630,7 @@ class MailChimp extends AbstractMailingListIntegration
 
         try {
             $response = $this->get("lists/{$listId}/members/{$emailHash}/tags", ['query' => ['count' => 999]]);
-            $data = \GuzzleHttp\json_decode((string) $response->getBody());
+            $data = json_decode((string) $response->getBody());
 
             $memberTags = [];
             foreach ($data->tags as $tag) {

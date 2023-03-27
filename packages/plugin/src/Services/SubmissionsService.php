@@ -466,7 +466,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 }
 
                 try {
-                    $values = \GuzzleHttp\json_decode($values);
+                    $values = json_decode($values);
                     foreach ($values as $value) {
                         $assetIds[] = $value;
                     }

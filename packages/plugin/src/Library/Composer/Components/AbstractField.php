@@ -270,7 +270,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             return $this->renderRaw('');
         }
 
-        $data = \GuzzleHttp\json_encode($rule, \JSON_HEX_APOS);
+        $data = json_encode($rule, \JSON_HEX_APOS);
 
         return $this->renderRaw(" data-ff-rule='{$data}'");
     }

@@ -25,6 +25,7 @@ use craft\services\UserPermissions;
 use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
@@ -100,6 +101,11 @@ use Solspace\Freeform\Variables\FreeformVariable;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
 use yii\web\ForbiddenHttpException;
@@ -107,47 +113,45 @@ use yii\web\ForbiddenHttpException;
 /**
  * Class Plugin.
  *
- * @property CrmService                      $crm
- * @property FieldsService                   $fields
- * @property FilesService                    $files
- * @property FormsService                    $forms
- * @property LayoutsService                  $formLayouts
- * @property MailerService                   $mailer
- * @property MailingListsService             $mailingLists
- * @property NotificationsService            $notifications
- * @property AdminNotificationsService       $adminNotifications
- * @property ConditionalNotificationsService $conditionalNotifications
- * @property SettingsService                 $settings
- * @property StatusesService                 $statuses
- * @property SubmissionsService              $submissions
- * @property SpamSubmissionsService          $spamSubmissions
- * @property LoggerService                   $logger
- * @property HoneypotService                 $honeypot
- * @property IntegrationsService             $integrations
- * @property IntegrationsQueueService        $integrationsQueue
- * @property PaymentGatewaysService          $paymentGateways
- * @property ConnectionsService              $connections
- * @property ChartsService                   $charts
- * @property WidgetsService                  $widgets
- * @property ExportService                   $export
- * @property ExportProfilesService           $exportProfiles
- * @property ExportNotificationsService      $exportNotifications
- * @property RulesService                    $rules
- * @property PaymentNotificationsService     $paymentNotifications
- * @property PaymentsService                 $payments
- * @property StripeService                   $stripe
- * @property SubscriptionPlansService        $subscriptionPlans
- * @property SubscriptionsService            $subscriptions
- * @property WebhooksService                 $webhooks
- * @property RelationsService                $relations
- * @property PayloadForwardingService        $payloadForwarding
- * @property DigestService                   $digest
- * @property SummaryService                  $summary
- * @property FreeformFeedService             $feed
- * @property LockService                     $lock
- * @property DiagnosticsService              $diagnostics
- * @property PreflightService                $preflight
- * @property TypesService                    $formTypes
+ * @property CrmService                  $crm
+ * @property FieldsService               $fields
+ * @property FilesService                $files
+ * @property FormsService                $forms
+ * @property LayoutsService              $formLayouts
+ * @property MailerService               $mailer
+ * @property MailingListsService         $mailingLists
+ * @property NotificationsService        $notifications
+ * @property SettingsService             $settings
+ * @property StatusesService             $statuses
+ * @property SubmissionsService          $submissions
+ * @property SpamSubmissionsService      $spamSubmissions
+ * @property LoggerService               $logger
+ * @property HoneypotService             $honeypot
+ * @property IntegrationsService         $integrations
+ * @property IntegrationsQueueService    $integrationsQueue
+ * @property PaymentGatewaysService      $paymentGateways
+ * @property ConnectionsService          $connections
+ * @property ChartsService               $charts
+ * @property WidgetsService              $widgets
+ * @property ExportService               $export
+ * @property ExportProfilesService       $exportProfiles
+ * @property ExportNotificationsService  $exportNotifications
+ * @property RulesService                $rules
+ * @property PaymentNotificationsService $paymentNotifications
+ * @property PaymentsService             $payments
+ * @property StripeService               $stripe
+ * @property SubscriptionPlansService    $subscriptionPlans
+ * @property SubscriptionsService        $subscriptions
+ * @property WebhooksService             $webhooks
+ * @property RelationsService            $relations
+ * @property PayloadForwardingService    $payloadForwarding
+ * @property DigestService               $digest
+ * @property SummaryService              $summary
+ * @property FreeformFeedService         $feed
+ * @property LockService                 $lock
+ * @property DiagnosticsService          $diagnostics
+ * @property PreflightService            $preflight
+ * @property TypesService                $formTypes
  */
 class Freeform extends Plugin
 {
@@ -268,6 +272,7 @@ class Freeform extends Plugin
         $this->initHookHandlers();
         $this->initCleanupJobs();
         $this->initTasks();
+        $this->initContainerItems();
         $this->initBundles();
 
         if ($this->isPro() && $this->settings->getPluginName()) {
@@ -977,6 +982,22 @@ class Freeform extends Plugin
                 self::getInstance()->digest->triggerDigest();
             }
         );
+    }
+
+    private function initContainerItems()
+    {
+        \Craft::$app->setContainer([
+            'definitions' => [
+                Serializer::class => function () {
+                    $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+
+                    $encoders = [new JsonEncoder()];
+                    $normalizers = [new ObjectNormalizer($classMetadataFactory)];
+
+                    return new Serializer($normalizers, $encoders);
+                },
+            ],
+        ]);
     }
 
     private function initBundles()

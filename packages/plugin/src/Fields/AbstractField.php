@@ -18,6 +18,7 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Traits\PropertyPopulateTrait;
 use Solspace\Freeform\Attributes\Property\Transformers\AttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
@@ -29,11 +30,12 @@ use Solspace\Freeform\Fields\Validation\Validator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
-use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Twig\Markup;
 
 abstract class AbstractField implements FieldInterface, \JsonSerializable
 {
+    use PropertyPopulateTrait;
+
     #[Section(
         handle: 'general',
         label: 'General',
@@ -106,25 +108,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     public function __toString(): string
     {
         return $this->getValueAsString();
-    }
-
-    public function updateProperties(array $properties = []): void
-    {
-        $reflection = new \ReflectionClass(static::class);
-        foreach ($reflection->getProperties() as $property) {
-            try {
-                $propertyName = $property->getName();
-
-                if (!isset($properties[$propertyName])) {
-                    continue;
-                }
-
-                $value = $properties[$propertyName];
-                $this->{$propertyName} = $value;
-            } catch (NoSuchPropertyException $e) {
-                // Pass along
-            }
-        }
     }
 
     /**

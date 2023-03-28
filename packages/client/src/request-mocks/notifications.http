@@ -1,9 +1,9 @@
-### GET Form list
+### GET Notifications
 // @no-redirect
 GET {{host}}/admin/freeform/client/api/forms/1/notifications
 Authorization: Bearer {{auth-token}}
 
-
-### GET specific form
-GET {{host}}/admin/freeform/client/api/forms/1/notifications/1
+### GET Notification Types
+// @no-redirect
+GET {{host}}/admin/freeform/client/api/notification-types
 Authorization: Bearer {{auth-token}}

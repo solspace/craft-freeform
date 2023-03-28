@@ -2,11 +2,16 @@
 
 namespace Solspace\Freeform\Bundles\Notifications;
 
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
+use Solspace\Freeform\Events\Notifications\RegisterNotificationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Notifications\Admin\Admin;
+use Solspace\Freeform\Notifications\Conditional\Conditional;
+use Solspace\Freeform\Notifications\Dynamic\Dynamic;
 use yii\base\Event;
 
 class NotificationsBundle extends FeatureBundle
@@ -17,6 +22,12 @@ class NotificationsBundle extends FeatureBundle
             Submission::class,
             Submission::EVENT_PROCESS_SUBMISSION,
             [$this, 'sendNotifications']
+        );
+
+        Event::on(
+            NotificationTypesProvider::class,
+            NotificationTypesProvider::EVENT_REGISTER_NOTIFICATION_TYPES,
+            [$this, 'registerNotificationTypes']
         );
     }
 
@@ -32,5 +43,12 @@ class NotificationsBundle extends FeatureBundle
 
         $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer, $fields);
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
+    }
+
+    public function registerNotificationTypes(RegisterNotificationTypesEvent $event)
+    {
+        $event->addType(Admin::class);
+        $event->addType(Dynamic::class);
+        $event->addType(Conditional::class);
     }
 }

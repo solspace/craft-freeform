@@ -13,11 +13,22 @@
 namespace Solspace\Freeform\Notifications;
 
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Library\Notifications\AbstractNotification;
-use Solspace\Freeform\Library\Notifications\NotificationInterface;
+use Solspace\Freeform\Attributes\Property\Traits\PropertyPopulateTrait;
 
-abstract class BaseNotification extends AbstractNotification implements NotificationInterface, \JsonSerializable
+abstract class BaseNotification implements NotificationInterface
 {
+    use PropertyPopulateTrait;
+
+    protected ?int $id;
+
+    #[Property(
+        required: true
+    )]
+    protected string $name;
+
+    #[Property]
+    protected bool $enabled = true;
+
     #[Property(
         label: 'Notification Template',
         instructions: 'TODO - add instructions',
@@ -25,19 +36,33 @@ abstract class BaseNotification extends AbstractNotification implements Notifica
     )]
     protected string $notificationTemplate = '';
 
-    public function getNotificationTemplate(): string
+    public function __construct(array $properties = [])
     {
-        return $this->getProcessedValue($this->notificationTemplate);
+        $this->updateProperties($properties);
     }
 
-    /**
-     * Specify data which should be serialized to JSON.
-     */
-    public function jsonSerialize(): array
+    public function getId(): ?int
     {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-        ];
+        return $this->id;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
+    }
+
+    public function getClass(): string
+    {
+        return static::class;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getNotificationTemplate(): string
+    {
+        return $this->notificationTemplate;
     }
 }

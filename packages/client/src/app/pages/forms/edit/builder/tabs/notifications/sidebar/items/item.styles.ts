@@ -1,40 +1,36 @@
+import { NavLink } from 'react-router-dom';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
-  > a {
-    display: flex;
-    align-items: center;
-    gap: ${spacings.sm};
+export const Link = styled(NavLink)`
+  display: flex;
+  align-items: center;
+  gap: ${spacings.md};
 
-    padding: ${spacings.sm} ${spacings.md};
-    border-radius: ${borderRadius.lg};
+  padding: ${spacings.sm};
 
-    color: ${colors.gray700};
-    font-size: 12px;
-    line-height: 12px;
+  border-radius: ${borderRadius.lg};
 
-    transition: background-color 0.2s ease-out;
-    text-decoration: none;
+  color: ${colors.gray700};
+  font-size: 12px;
+  line-height: 12px;
 
-    &.active {
-      background-color: ${colors.gray200};
-    }
+  transition: background-color 0.2s ease-out;
+  text-decoration: none;
 
-    &:hover:not(.active) {
-      background-color: ${colors.gray100};
-    }
+  &.active {
+    background-color: ${colors.gray200};
   }
-`;
 
-export const Icon = styled.div`
-  display: block;
-  width: 20px;
-  height: 20px;
+  &:hover:not(.active) {
+    background-color: ${colors.gray100};
+  }
 `;
 
 export const Name = styled.div`
   flex-grow: 1;
+  padding-left: ${spacings.xl};
+  overflow: hidden;
 `;
 
 type StatusProps = {
@@ -44,6 +40,7 @@ type StatusProps = {
 export const Status = styled.div<StatusProps>`
   content: '';
 
+  flex-shrink: 0;
   justify-self: flex-end;
 
   width: 10px;

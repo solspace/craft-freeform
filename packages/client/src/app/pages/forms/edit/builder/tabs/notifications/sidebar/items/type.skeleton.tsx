@@ -2,16 +2,16 @@ import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { ThemedSkeleton } from '@ff-client/app/components/skeletons/themed-skeleton';
 
-import { ChildrenWrapper, Label, Wrapper } from './category.styles';
+import { LabelWrapper, NotificationItemWrapper, Wrapper } from './type.styles';
 
 export const CategorySkeleton: React.FC = () => {
   return (
     <ThemedSkeleton>
       <Wrapper>
-        <Label>
+        <LabelWrapper>
           <Skeleton width={50} />
-        </Label>
-        <ChildrenWrapper style={{ padding: 14 }}>
+        </LabelWrapper>
+        <NotificationItemWrapper style={{ padding: 14 }}>
           {[0, 1, 2].map((i) => (
             <div
               key={i}
@@ -28,7 +28,7 @@ export const CategorySkeleton: React.FC = () => {
               <Skeleton width={10} height={10} circle style={{ top: 6 }} />
             </div>
           ))}
-        </ChildrenWrapper>
+        </NotificationItemWrapper>
       </Wrapper>
     </ThemedSkeleton>
   );

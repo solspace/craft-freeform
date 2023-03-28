@@ -16,12 +16,9 @@ use Solspace\Freeform\Attributes\Notification\Type;
 use Solspace\Freeform\Notifications\BaseNotification;
 
 #[Type(
-    name: 'Admin',
-    iconPath: __DIR__.'/icon.svg',
+    name: 'Admin Notifications',
+    icon: __DIR__.'/icon.svg',
 )]
 class Admin extends BaseNotification
 {
-    public const TYPE = 'admin';
-
-    public const LOG_CATEGORY = 'Admin Notification';
 }

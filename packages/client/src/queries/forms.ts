@@ -8,8 +8,14 @@ import type {
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
+const QKForms = {
+  all: ['forms'] as const,
+  single: (id: number) => [...QKForms.all, id] as const,
+  settings: () => [...QKForms.all, 'settings'] as const,
+};
+
 export const useQueryForms = (): UseQueryResult<Form[], AxiosError> => {
-  return useQuery<Form[], AxiosError>('forms', () =>
+  return useQuery<Form[], AxiosError>(QKForms.all, () =>
     axios.get<Form[]>('/client/api/forms').then((res) => res.data)
   );
 };
@@ -18,7 +24,7 @@ export const useQuerySingleForm = (
   id?: number
 ): UseQueryResult<ExtendedFormType, AxiosError> => {
   return useQuery<ExtendedFormType, AxiosError>(
-    ['forms', id],
+    QKForms.single(id),
     () =>
       axios
         .get<ExtendedFormType>(`/client/api/forms/${id}`)
@@ -34,11 +40,9 @@ export const useQueryFormSettings = (): UseQueryResult<
   FormSettingNamespace[],
   AxiosError
 > => {
-  return useQuery<FormSettingNamespace[], AxiosError>(
-    ['forms', 'settings'],
-    () =>
-      axios
-        .get<FormSettingNamespace[]>(`/client/api/forms/settings`)
-        .then((res) => res.data)
+  return useQuery<FormSettingNamespace[], AxiosError>(QKForms.settings(), () =>
+    axios
+      .get<FormSettingNamespace[]>(`/client/api/forms/settings`)
+      .then((res) => res.data)
   );
 };

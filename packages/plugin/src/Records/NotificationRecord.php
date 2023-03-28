@@ -14,60 +14,37 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Library\DataObjects\EmailTemplate;
 
 /**
- * Class NotificationRecord.
- *
- * @property int       $id
- * @property string    $name
- * @property string    $handle
- * @property string    $type
- * @property string    $class
- * @property string    $metadata
- * @property \DateTime $lastUpdate
+ * @property int    $id
+ * @property string $filepath
+ * @property string $name
+ * @property string $handle
+ * @property string $description
+ * @property string $fromName
+ * @property string $fromEmail
+ * @property string $replyToName
+ * @property string $replyToEmail
+ * @property bool   $includeAttachments
+ * @property string $subject
+ * @property string $bodyHtml
+ * @property string $bodyText
+ * @property int    $sortOrder
+ * @property string $cc
+ * @property string $bcc
+ * @property string $presetAssets
+ * @property bool   $autoText
  */
 class NotificationRecord extends ActiveRecord
 {
     public const TABLE = '{{%freeform_notifications}}';
-
-    public const TYPE_ADMIN = 'admin';
-    public const TYPE_CONDITIONAL = 'conditional';
 
     public static function tableName(): string
     {
         return self::TABLE;
     }
 
-    public function rules(): array
-    {
-        return [
-            [['handle'], 'unique'],
-            [['name', 'handle'], 'required'],
-        ];
-    }
-
-    /*
-     * TODO - Refactor into #Property
-     *
-     * @property int    $id
-     * @property string $filepath
-     * @property string $name
-     * @property string $handle
-     * @property string $description
-     * @property string $fromName
-     * @property string $fromEmail
-     * @property string $replyToName
-     * @property string $replyToEmail
-     * @property bool   $includeAttachments
-     * @property string $subject
-     * @property string $bodyHtml
-     * @property string $bodyText
-     * @property int    $sortOrder
-     * @property string $cc
-     * @property string $bcc
-     * @property string $presetAssets
-     * @property bool   $autoText
-     *
     public static function create(): self
     {
         $record = new self();
@@ -225,15 +202,4 @@ class NotificationRecord extends ActiveRecord
 
         return null;
     }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => is_numeric($this->id) ? (int) $this->id : $this->id,
-            'name' => $this->name,
-            'handle' => $this->filepath,
-            'description' => $this->description,
-        ];
-    }
-    */
 }

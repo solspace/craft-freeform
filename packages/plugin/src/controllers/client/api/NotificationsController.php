@@ -12,23 +12,31 @@
 
 namespace Solspace\Freeform\controllers\client\api;
 
-use Solspace\Freeform\Bundles\Notifications\Providers\NotificationDTOProvider;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationTypesProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Symfony\Component\Serializer\Serializer;
+use yii\web\Response;
 
 class NotificationsController extends BaseApiController
 {
-    public function __construct($id, $module, $config = [], private NotificationDTOProvider $notificationDTOProvider)
-    {
+    public function __construct(
+        $id,
+        $module,
+        $config = [],
+        private NotificationTypesProvider $notificationTypesProvider,
+        private Serializer $serializer,
+    ) {
         parent::__construct($id, $module, $config);
     }
 
-    protected function get(): array
+    public function actionGetTypes(): Response
     {
-        return $this->notificationDTOProvider->getByCategory();
-    }
+        $types = $this->notificationTypesProvider->getTypes();
 
-    protected function getOne(int|string $id): array|object|null
-    {
-        return $this->notificationDTOProvider->getById($id);
+        $response = new Response();
+        $response->format = Response::FORMAT_JSON;
+        $response->content = $this->serializer->serialize($types, 'json');
+
+        return $response;
     }
 }

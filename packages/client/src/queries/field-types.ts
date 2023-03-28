@@ -5,13 +5,18 @@ import type { Section } from '@ff-client/types/properties';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
+const QKFieldTypes = {
+  all: ['field-types'] as const,
+  propertySections: () => [...QKFieldTypes.all, 'property-sections'] as const,
+};
+
 type FetchFieldTypesQuery = (options?: {
   select?: (data: FieldType[]) => FieldType[];
 }) => UseQueryResult<FieldType[], AxiosError>;
 
 export const useFetchFieldTypes: FetchFieldTypesQuery = ({ select } = {}) =>
   useQuery<FieldType[], AxiosError>(
-    'field-types',
+    QKFieldTypes.all,
     () =>
       axios
         .get<FieldType[]>(`/client/api/fields/types`)
@@ -27,7 +32,7 @@ export const useFetchFieldPropertySections = (): UseQueryResult<
   AxiosError
 > =>
   useQuery<Section[], AxiosError>(
-    ['field-types', 'property-sections'],
+    QKFieldTypes.propertySections(),
     () =>
       axios
         .get<Section[]>(`/client/api/fields/types/sections`)

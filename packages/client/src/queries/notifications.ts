@@ -1,25 +1,34 @@
 import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { addNotifications } from '@ff-client/app/pages/forms/edit/store/slices/notifications';
+import { set as setNotifications } from '@ff-client/app/pages/forms/edit/store/slices/notifications';
 import type {
   Notification,
-  NotificationCategory,
+  NotificationType,
 } from '@ff-client/types/notifications';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
-export const useQueryNotifications = (): UseQueryResult<
-  NotificationCategory[],
+const QKNotifications = {
+  all: ['notifications'] as const,
+  types: () => [...QKNotifications.all, 'types'] as const,
+  single: (id: number) => [...QKNotifications.all, 'forms', id] as const,
+};
+
+export const useQueryNotificationTypes = (): UseQueryResult<
+  NotificationType[],
   AxiosError
 > => {
-  return useQuery<NotificationCategory[], AxiosError>(
-    ['notifications'],
+  return useQuery<NotificationType[], AxiosError>(
+    QKNotifications.types(),
     () =>
       axios
-        .get<NotificationCategory[]>(`/client/api/notifications`)
+        .get<NotificationType[]>('/client/api/notification-types')
         .then((res) => res.data),
-    { staleTime: Infinity }
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    }
   );
 };
 
@@ -29,7 +38,7 @@ export const useQueryFormNotifications = (
   const dispatch = useDispatch();
 
   return useQuery<Notification[], AxiosError>(
-    ['form-notifications'],
+    QKNotifications.single(formId),
     () =>
       axios
         .get<Notification[]>(`/client/api/forms/${formId}/notifications`)
@@ -38,22 +47,8 @@ export const useQueryFormNotifications = (
       staleTime: Infinity,
       cacheTime: Infinity,
       onSuccess: (notifications) => {
-        dispatch(addNotifications(notifications));
+        dispatch(setNotifications(notifications));
       },
     }
-  );
-};
-
-export const useQuerySingleFormNotification = (
-  formId: number,
-  id: number
-): UseQueryResult<Notification, AxiosError> => {
-  return useQuery<Notification, AxiosError>(
-    ['form-notifications', id],
-    () =>
-      axios
-        .get<Notification>(`/client/api/forms/${formId}/notifications/${id}`)
-        .then((res) => res.data),
-    { staleTime: Infinity }
   );
 };

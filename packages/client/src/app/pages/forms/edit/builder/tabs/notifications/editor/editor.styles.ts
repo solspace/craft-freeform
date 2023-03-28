@@ -4,12 +4,10 @@ import styled from 'styled-components';
 export const PropertyEditorWrapper = styled.div`
   flex: 1;
 
-  background: ${colors.white};
-  padding: ${spacings.xl};
-`;
-
-export const SettingsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.xl};
+
+  background: ${colors.white};
+  padding: ${spacings.xl};
 `;

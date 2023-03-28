@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\controllers;
 
 use Solspace\Freeform\Library\Exceptions\Api\ApiException;
+use Symfony\Component\Serializer\Serializer;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -13,7 +14,7 @@ abstract class BaseApiController extends BaseController
         $request = $this->request;
 
         try {
-            $response = match ($request->method) {
+            $content = match ($request->method) {
                 'GET' => null !== $id ? $this->getOne($id) : $this->get(),
                 'POST' => $this->post($id),
                 'PUT' => $this->put($id),
@@ -26,14 +27,17 @@ abstract class BaseApiController extends BaseController
             return $this->asJson(['errors' => $exception->getErrors()->asArray()]);
         }
 
-        if (null === $response) {
+        if (null === $content) {
             $this->response->format = Response::FORMAT_RAW;
             $this->response->content = '';
 
             return $this->response;
         }
 
-        return $this->asJson($response);
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->content = $this->getSerializer()->serialize($content, 'json');
+
+        return $this->response;
     }
 
     protected function get(): array|object
@@ -59,5 +63,10 @@ abstract class BaseApiController extends BaseController
     protected function delete(int $id): bool|null
     {
         throw new NotFoundHttpException('DELETE request not supported');
+    }
+
+    protected function getSerializer(): Serializer
+    {
+        return \Craft::$container->get(Serializer::class);
     }
 }

@@ -15,8 +15,8 @@ class Property
     public const TYPE_TIME_PICKER = 'time-picker';
     public const TYPE_DATE_TIME_PICKER = 'datetime-picker';
     public const TYPE_ATTRIBUTES = 'attributes';
-
-    public const TYPE_INTERNAL = 'internal';
+    public const TYPE_LABEL = 'label';
+    public const TYPE_RECIPIENTS = 'recipients';
 
     public function __construct(
         public ?string $label = null,

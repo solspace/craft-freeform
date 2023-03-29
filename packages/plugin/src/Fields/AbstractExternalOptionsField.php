@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Fields;
 
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\Transformers\OptionsTransformer;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionsTransformer;
 use Solspace\Freeform\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Traits\OptionsKeyValuePairTrait;

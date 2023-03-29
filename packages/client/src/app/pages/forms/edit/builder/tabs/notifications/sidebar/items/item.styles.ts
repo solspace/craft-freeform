@@ -16,7 +16,10 @@ export const Link = styled(NavLink)`
   line-height: 12px;
 
   transition: background-color 0.2s ease-out;
-  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
 
   &.active {
     background-color: ${colors.gray200};
@@ -31,6 +34,12 @@ export const Name = styled.div`
   flex-grow: 1;
   padding-left: ${spacings.xl};
   overflow: hidden;
+
+  &:empty:after {
+    content: 'No Title';
+    color: ${colors.gray400};
+    font-style: italic;
+  }
 `;
 
 type StatusProps = {

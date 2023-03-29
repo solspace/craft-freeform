@@ -22,6 +22,7 @@ abstract class BaseNotification implements NotificationInterface
     protected ?int $id;
 
     #[Property(
+        type: Property::TYPE_LABEL,
         required: true
     )]
     protected string $name;

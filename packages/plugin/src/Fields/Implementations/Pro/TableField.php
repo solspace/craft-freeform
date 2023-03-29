@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\Transformers\TableTransformer;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Table\TableTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;

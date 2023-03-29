@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Library\DataObjects\FieldType;
 
 /** @implements \IteratorAggregate<int, Property> */
-class PropertyCollection implements \IteratorAggregate, \JsonSerializable
+class PropertyCollection implements \IteratorAggregate
 {
     /** @var Property[] */
     private array $properties = [];
@@ -62,13 +62,5 @@ class PropertyCollection implements \IteratorAggregate, \JsonSerializable
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->properties);
-    }
-
-    public function jsonSerialize(): array
-    {
-        return array_map(
-            fn (Property $item) => $item->jsonSerialize(),
-            $this->properties
-        );
     }
 }

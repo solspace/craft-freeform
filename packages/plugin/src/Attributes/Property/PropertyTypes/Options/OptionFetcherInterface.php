@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Attributes\Property\PropertyTypes;
+namespace Solspace\Freeform\Attributes\Property\PropertyTypes\Options;
 
 use Solspace\Freeform\Attributes\Property\Property;
 

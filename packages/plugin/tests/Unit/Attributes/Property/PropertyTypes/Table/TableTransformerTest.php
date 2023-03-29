@@ -1,9 +1,9 @@
 <?php
 
-namespace Solspace\Tests\Freeform\Unit\Attributes\Property\Transformers;
+namespace Solspace\Tests\Freeform\Unit\Attributes\Property\PropertyTypes\Table;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Attributes\Property\Transformers\TableTransformer;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Table\TableTransformer;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Properties\Table\TableProperty;
 

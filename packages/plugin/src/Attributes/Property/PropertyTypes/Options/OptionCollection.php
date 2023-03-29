@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Attributes\Property\PropertyTypes;
+namespace Solspace\Freeform\Attributes\Property\PropertyTypes\Options;
 
 class OptionCollection
 {

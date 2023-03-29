@@ -5,19 +5,11 @@ namespace Solspace\Freeform\Bundles\Integrations\Providers;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Library\DataObjects\Integrations\Integration;
-use Solspace\Freeform\Library\DataObjects\Integrations\IntegrationCategory;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
-use Solspace\Freeform\Records\IntegrationRecord;
 
 class IntegrationDTOProvider
 {
-    private const TYPE_MAP = [
-        IntegrationRecord::TYPE_CRM => 'CRM',
-        IntegrationRecord::TYPE_MAILING_LIST => 'Email Marketing',
-        IntegrationRecord::TYPE_PAYMENT_GATEWAY => 'Payments',
-    ];
-
     public function __construct(private PropertyProvider $propertyProvider)
     {
     }
@@ -40,33 +32,6 @@ class IntegrationDTOProvider
                 $models
             )
         );
-    }
-
-    /**
-     * @param IntegrationModel[] $models
-     *
-     * @return IntegrationCategory[]
-     */
-    public function convertCategorized(array $models): array
-    {
-        $categories = [];
-        foreach ($models as $model) {
-            if (!isset($categories[$model->type])) {
-                $category = new IntegrationCategory();
-                $category->type = $model->type;
-                $category->label = self::TYPE_MAP[$model->type];
-                $category->children = [];
-
-                $categories[$model->type] = $category;
-            }
-
-            $dto = $this->createDtoFromModel($model);
-
-            $category = $categories[$model->type];
-            $category->children[] = $dto;
-        }
-
-        return array_values($categories);
     }
 
     private function createDTOFromModel(IntegrationModel $model): ?Integration

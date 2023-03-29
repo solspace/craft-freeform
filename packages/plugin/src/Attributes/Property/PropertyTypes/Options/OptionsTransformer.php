@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Attributes\Property\Transformers;
+namespace Solspace\Freeform\Attributes\Property\PropertyTypes\Options;
 
 use Solspace\Freeform\Attributes\Property\Transformer;
 use Solspace\Freeform\Fields\Properties\Options\Custom\CustomOptions;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Attributes\Property\Transformers;
+namespace Solspace\Freeform\Attributes\Property\PropertyTypes\Table;
 
 use Solspace\Freeform\Attributes\Property\Transformer;
 use Solspace\Freeform\Fields\Properties\Table\TableProperty;

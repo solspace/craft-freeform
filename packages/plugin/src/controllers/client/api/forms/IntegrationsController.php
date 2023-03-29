@@ -5,6 +5,7 @@ namespace Solspace\Freeform\controllers\client\api\forms;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationDTOProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Symfony\Component\Serializer\Serializer;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -15,7 +16,8 @@ class IntegrationsController extends BaseApiController
         $module,
         $config,
         private FormIntegrationsProvider $formIntegrationsProvider,
-        private IntegrationDTOProvider $integrationDTOProvider
+        private IntegrationDTOProvider $integrationDTOProvider,
+        private Serializer $serializer,
     ) {
         parent::__construct($id, $module, $config ?? []);
     }
@@ -27,7 +29,10 @@ class IntegrationsController extends BaseApiController
         $models = $this->formIntegrationsProvider->getForForm($form);
         $dtos = $this->integrationDTOProvider->convert($models);
 
-        return $this->asJson($dtos);
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->content = $this->serializer->serialize($dtos, 'json');
+
+        return $this->response;
     }
 
     public function actionGetOne(int $formId, int $id): Response

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Attributes\Property\Transformers;
+namespace Solspace\Freeform\Attributes\Property\PropertyTypes\Attributes;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;

@@ -214,7 +214,9 @@ class HoneypotService extends BaseService
 
         if (!empty($honeypotList)) {
             foreach ($honeypotList as $index => $unserialized) {
-                $honeypotList[$index] = Honeypot::createFromUnserializedData($unserialized);
+                if (!$unserialized instanceof Honeypot) {
+                    $honeypotList[$index] = Honeypot::createFromUnserializedData($unserialized);
+                }
             }
         }
 

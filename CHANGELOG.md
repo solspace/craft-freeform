@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.0.21 - 2023-03-29
+
+### Fixed
+- Fixed a bug where the Honeypot could trigger an unserialization error in some cases.
+
 ## 4.0.20 - 2023-03-23
 
 ### Changed

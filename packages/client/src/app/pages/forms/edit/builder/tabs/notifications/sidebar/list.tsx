@@ -24,7 +24,7 @@ export const List: React.FC = () => {
         navigate(`${first.id}`);
       }
     }
-  }, [id, notificationTypes]);
+  }, [id, notificationTypes, notifications]);
 
   if (!notificationTypes && isFetching) {
     return (

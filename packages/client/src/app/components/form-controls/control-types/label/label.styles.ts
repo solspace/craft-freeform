@@ -36,7 +36,7 @@ export const EditButton = styled(animated.button)`
   }
 `;
 
-export const Label = styled(animated.h1)`
+export const LabelElement = styled(animated.h1)`
   cursor: pointer;
 
   min-height: 10px;

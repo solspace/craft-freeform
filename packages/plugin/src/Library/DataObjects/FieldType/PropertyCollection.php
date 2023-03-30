@@ -48,10 +48,13 @@ class PropertyCollection implements \IteratorAggregate
             return 1;
         }
 
-        return max(
-            0,
-            ...array_map(fn ($prop) => $prop->order ?? 0, $this->properties)
-        ) + 1;
+        $existingOrders = array_map(fn ($prop) => $prop->order ?? 1, $this->properties);
+        $order = 0;
+        do {
+            ++$order;
+        } while (\in_array($order, $existingOrders, true) || $order > 100);
+
+        return $order;
     }
 
     public function getProperties(): array

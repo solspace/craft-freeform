@@ -3,7 +3,6 @@ import React, { Suspense } from 'react';
 import * as ControlTypes from '@components/form-controls/control-types';
 import type { ControlType } from '@components/form-controls/types';
 import type { Property, PropertyType } from '@ff-client/types/properties';
-import camelCase from 'lodash.camelcase';
 
 import { ErrorBoundary } from './boundaries/ErrorBoundary';
 
@@ -28,10 +27,10 @@ export const FormComponent: React.FC<Props> = ({
   errors,
   context,
 }) => {
-  const type = camelCase(property.type) as PropertyType;
-  const FormControl = types[type];
+  const type = property.type;
+  const FormControl = types[property.type];
   if (FormControl === undefined) {
-    return <div>{`...${property.handle} <${type}>`}</div>;
+    return <div>{`[${property.handle}]: <${type}>`}</div>;
   }
 
   FormControl.displayName = `FormComponent: <${type}>`;

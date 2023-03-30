@@ -62,7 +62,7 @@ class IntegrationDTOProvider
         $dto->enabled = (bool) $model->enabled;
         $dto->type = $model->type;
         $dto->icon = $icon;
-        $dto->properties = $this->propertyProvider->getEditableProperties($class, $model->getIntegrationObject());
+        $dto->properties = $this->propertyProvider->getEditableProperties($model->getIntegrationObject());
         $dto->properties->removeFlagged(
             IntegrationInterface::FLAG_INTERNAL,
             IntegrationInterface::FLAG_GLOBAL_PROPERTY,

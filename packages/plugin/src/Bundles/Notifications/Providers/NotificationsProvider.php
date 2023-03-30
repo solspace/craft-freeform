@@ -13,12 +13,17 @@
 namespace Solspace\Freeform\Bundles\Notifications\Providers;
 
 use Solspace\Freeform\Attributes\Notification\Type;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Notifications\NotificationInterface;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 
 class NotificationsProvider
 {
+    public function __construct(private PropertyProvider $propertyProvider)
+    {
+    }
+
     public function getByForm(Form $form = null): array
     {
         /** @var FormNotificationRecord[] $records */
@@ -60,6 +65,9 @@ class NotificationsProvider
         $metadata['id'] = $record->id;
         $metadata['enabled'] = $record->enabled;
 
-        return new $class($metadata);
+        $notification = new $class();
+        $this->propertyProvider->setObjectProperties($notification, $metadata);
+
+        return $notification;
     }
 }

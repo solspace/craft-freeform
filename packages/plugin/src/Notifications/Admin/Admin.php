@@ -25,7 +25,9 @@ use Solspace\Freeform\Notifications\BaseNotification;
 class Admin extends BaseNotification
 {
     #[Property(
+        type: Property::TYPE_RECIPIENTS,
         instructions: 'List the recipients of this notification.',
+        order: 10,
         value: [],
         transformer: RecipientTransformer::class,
     )]

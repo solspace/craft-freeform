@@ -27,13 +27,15 @@ export const PropertyEditor: React.FC = () => {
 
   return (
     <PropertyEditorWrapper>
-      {properties.map((property) => (
-        <FieldComponent
-          key={property.handle}
-          notification={notification}
-          property={property}
-        />
-      ))}
+      {properties
+        .sort((a, b) => a.order - b.order)
+        .map((property) => (
+          <FieldComponent
+            key={property.handle}
+            notification={notification}
+            property={property}
+          />
+        ))}
     </PropertyEditorWrapper>
   );
 };

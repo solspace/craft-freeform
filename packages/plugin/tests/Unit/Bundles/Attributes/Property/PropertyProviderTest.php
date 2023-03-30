@@ -7,6 +7,7 @@ use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use yii\di\Container;
@@ -16,20 +17,42 @@ use yii\di\Container;
  *
  * @coversNothing
  */
-class EditablePropertyProviderTest extends TestCase
+class PropertyProviderTest extends TestCase
 {
+    public function testSetObjectProperties()
+    {
+        $mockContainer = $this->createMock(Container::class);
+        $mockContainer->method('get')->willReturn(new TestTransformer());
+
+        $provider = new PropertyProvider($mockContainer);
+
+        $object = new TestAttributesClass();
+
+        $values = [
+            'id' => 22,
+            'stringValue' => [7, 8, 'nine'],
+        ];
+
+        $provider->setObjectProperties($object, $values);
+
+        $this->assertEquals('7,8,nine', $object->getStringValue());
+        $this->assertEquals(22, $object->getId());
+    }
+
     /**
      * @dataProvider propertyDataProvider
      */
     public function testGetEditableProperties(array $checklist)
     {
         $mockContainer = $this->createMock(Container::class);
+        $mockContainer->method('get')->willReturn(new TestTransformer());
 
         $provider = new PropertyProvider($mockContainer);
 
+        $handle = $checklist['handle'];
+
         $editableProperties = $provider->getEditableProperties(TestAttributesClass::class);
 
-        $handle = $checklist['handle'];
         foreach ($checklist as $key => $expectedValue) {
             $actualValue = $editableProperties->get($handle)->{$key};
 
@@ -62,14 +85,13 @@ class EditablePropertyProviderTest extends TestCase
                 'label' => 'String Value',
                 'instructions' => null,
                 'order' => 1,
-                'value' => null,
+                'value' => ['one', 'two', 'three'],
                 'placeholder' => null,
                 'section' => null,
                 'options' => null,
                 'flags' => [],
                 'visibilityFilters' => [],
                 'middleware' => [],
-                'transformer' => null,
                 'required' => false,
             ]],
             [[
@@ -85,7 +107,6 @@ class EditablePropertyProviderTest extends TestCase
                 'flags' => [],
                 'visibilityFilters' => [],
                 'middleware' => [],
-                'transformer' => null,
                 'required' => false,
             ]],
             [[
@@ -105,7 +126,6 @@ class EditablePropertyProviderTest extends TestCase
                 'flags' => [],
                 'visibilityFilters' => [],
                 'middleware' => [],
-                'transformer' => null,
                 'required' => false,
             ]],
             [[
@@ -113,7 +133,7 @@ class EditablePropertyProviderTest extends TestCase
                 'handle' => 'propWithMiddleware',
                 'label' => 'Prop With Middleware',
                 'instructions' => null,
-                'order' => 100,
+                'order' => 3,
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
@@ -128,7 +148,6 @@ class EditablePropertyProviderTest extends TestCase
                     ['test', ['arg 1', 2, true]],
                     ['another one'],
                 ],
-                'transformer' => null,
                 'required' => false,
             ]],
             [[
@@ -136,7 +155,7 @@ class EditablePropertyProviderTest extends TestCase
                 'handle' => 'propWithFlags',
                 'label' => 'Prop With Flags',
                 'instructions' => null,
-                'order' => 101,
+                'order' => 4,
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
@@ -148,7 +167,6 @@ class EditablePropertyProviderTest extends TestCase
                 'flags' => ['test-flag', 'another-flag'],
                 'visibilityFilters' => [],
                 'middleware' => [],
-                'transformer' => null,
                 'required' => false,
             ]],
             [[
@@ -156,7 +174,7 @@ class EditablePropertyProviderTest extends TestCase
                 'handle' => 'propWithFilters',
                 'label' => 'Prop With Filters',
                 'instructions' => null,
-                'order' => 102,
+                'order' => 5,
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
@@ -168,16 +186,33 @@ class EditablePropertyProviderTest extends TestCase
                     'third-test-filter',
                 ],
                 'middleware' => [],
-                'transformer' => null,
                 'required' => false,
             ]],
         ];
     }
 }
 
+class TestTransformer implements TransformerInterface
+{
+    public function transform(mixed $value): string
+    {
+        return implode(',', $value);
+    }
+
+    public function reverseTransform($value): array
+    {
+        return explode(',', $value);
+    }
+}
+
 class TestAttributesClass
 {
-    #[Property]
+    private int $id;
+
+    #[Property(
+        value: ['one', 'two', 'three'],
+        transformer: TestTransformer::class,
+    )]
     private string $stringValue;
 
     #[Property('Optional Integer')]
@@ -215,4 +250,14 @@ class TestAttributesClass
     #[VisibilityFilter('second-test-filter')]
     #[VisibilityFilter('third-test-filter')]
     private string $propWithFilters;
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    public function getStringValue(): string
+    {
+        return $this->stringValue;
+    }
 }

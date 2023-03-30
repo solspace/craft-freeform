@@ -19,3 +19,8 @@ export type NotificationType = {
   class: string;
   properties: Property[];
 };
+
+export type Recipient = {
+  email: string;
+  name?: string;
+};

@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Services\Form;
 
-use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
@@ -34,17 +33,10 @@ class FieldsService extends BaseService
                 ...$metadata,
             ];
 
-            $editableProperties = $this->propertyProvider->getEditableProperties($type);
-            foreach ($properties as $key => $value) {
-                $editableProperty = $editableProperties->get($key);
-                if (!$editableProperty || !$editableProperty->transformer instanceof TransformerInterface) {
-                    continue;
-                }
+            $field = new $type($form);
+            $this->propertyProvider->setObjectProperties($field, $properties);
 
-                $properties[$key] = $editableProperty->transformer->transform($value);
-            }
-
-            $fields[] = new $type($form, $properties);
+            $fields[] = $field;
         }
 
         return $fields;

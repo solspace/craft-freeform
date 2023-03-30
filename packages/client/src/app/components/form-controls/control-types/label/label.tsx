@@ -5,9 +5,9 @@ import classes from '@ff-client/utils/classes';
 
 import EditIcon from './edit-icon.svg';
 import { useEditButtonAnimations, useLabelAnimation } from './label.animations';
-import { EditableLabelWrapper, EditButton, Label } from './label.styles';
+import { EditableLabelWrapper, EditButton, LabelElement } from './label.styles';
 
-const Int: React.FC<ControlType<string>> = ({
+const Label: React.FC<ControlType<string>> = ({
   value,
   property,
   errors,
@@ -42,7 +42,7 @@ const Int: React.FC<ControlType<string>> = ({
       )}
 
       {!edit && (
-        <Label
+        <LabelElement
           style={labelAnimation}
           onClick={() => {
             setEdit(true);
@@ -60,7 +60,7 @@ const Int: React.FC<ControlType<string>> = ({
               <EditIcon />
             </EditButton>
           </span>
-        </Label>
+        </LabelElement>
       )}
 
       <FormErrorList errors={errors} />
@@ -68,4 +68,4 @@ const Int: React.FC<ControlType<string>> = ({
   );
 };
 
-export default Int;
+export default Label;

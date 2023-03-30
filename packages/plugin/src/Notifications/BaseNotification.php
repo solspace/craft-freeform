@@ -13,17 +13,14 @@
 namespace Solspace\Freeform\Notifications;
 
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\Traits\PropertyPopulateTrait;
 
 abstract class BaseNotification implements NotificationInterface
 {
-    use PropertyPopulateTrait;
-
     protected ?int $id;
 
     #[Property(
         type: Property::TYPE_LABEL,
-        required: true
+        required: true,
     )]
     protected string $name;
 
@@ -36,11 +33,6 @@ abstract class BaseNotification implements NotificationInterface
         required: true,
     )]
     protected string $notificationTemplate = '';
-
-    public function __construct(array $properties = [])
-    {
-        $this->updateProperties($properties);
-    }
 
     public function getId(): ?int
     {

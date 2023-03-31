@@ -3,14 +3,14 @@
 namespace Solspace\Freeform\Events\Notifications;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 
 class DeleteEvent extends CancelableArrayableEvent
 {
-    /** @var NotificationRecord */
+    /** @var NotificationTemplateRecord */
     private $record;
 
-    public function __construct(NotificationRecord $model)
+    public function __construct(NotificationTemplateRecord $model)
     {
         $this->record = $model;
 
@@ -25,7 +25,7 @@ class DeleteEvent extends CancelableArrayableEvent
         return array_merge(parent::fields(), ['record']);
     }
 
-    public function getRecord(): NotificationRecord
+    public function getRecord(): NotificationTemplateRecord
     {
         return $this->record;
     }

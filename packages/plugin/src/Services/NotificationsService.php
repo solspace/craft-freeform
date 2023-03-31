@@ -16,7 +16,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Models\Settings;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;
 use Solspace\Freeform\Services\Notifications\NotificationFilesService;
 
@@ -27,7 +27,7 @@ class NotificationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'beforeDelete';
     public const EVENT_AFTER_DELETE = 'afterDelete';
 
-    /** @var NotificationRecord[] */
+    /** @var NotificationTemplateRecord[] */
     private static ?array $notificationCache = null;
 
     private static bool $allNotificationsLoaded = false;
@@ -41,10 +41,42 @@ class NotificationsService extends BaseService
                 self::$notificationCache = [];
             }
 
+            $storageType = $this->getSettingsService()->getSettingsModel()->emailTemplateStorageType;
+
+            $isFile = $isDb = false;
+
+            switch ($storageType) {
+                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE:
+                    $isDb = true;
+
+                    break;
+
+                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES:
+                    $isFile = true;
+
+                    break;
+
+                default:
+                    $isDb = true;
+                    $isFile = true;
+
+                    break;
+            }
+
+            $databaseNotifications = $isDb ? $this->getDatabaseService()->getAll($indexById) : [];
+            $fileNotifications = $isFile ? $this->getFilesService()->getAll($indexById) : [];
+
+            $notifications = [];
+            foreach ($databaseNotifications as $notification) {
+                $notifications[$notification->id] = $notification;
+            }
+
+            foreach ($fileNotifications as $notification) {
+                $notifications[$notification->filepath] = $notification;
+            }
+
             self::$allNotificationsLoaded = true;
-            self::$notificationCache =
-                $this->getDatabaseService()->getAll($indexById) +
-                $this->getFilesService()->getAll($indexById);
+            self::$notificationCache = $notifications;
         }
 
         if (!$indexById) {
@@ -54,7 +86,21 @@ class NotificationsService extends BaseService
         return self::$notificationCache;
     }
 
-    public function getNotificationById(mixed $id): ?NotificationRecord
+    public function getTemplateRecordById(int $id): ?NotificationTemplateRecord
+    {
+        $notifications = $this->getAllNotifications();
+
+        return $notifications[$id] ?? null;
+    }
+
+    public function getTemplateRecordByFilepath(string $filepath): ?NotificationTemplateRecord
+    {
+        $notifications = $this->getAllNotifications();
+
+        return $notifications[$filepath] ?? null;
+    }
+
+    public function getNotificationById(mixed $id): ?NotificationTemplateRecord
     {
         if (null === self::$notificationCache || !isset(self::$notificationCache[$id])) {
             $record = $this->getDatabaseService()->getById($id);
@@ -68,7 +114,7 @@ class NotificationsService extends BaseService
         return self::$notificationCache[$id];
     }
 
-    public function requireNotification(Form $form, ?string $id, ?string $context): ?NotificationRecord
+    public function requireNotification(Form $form, ?string $id, ?string $context): ?NotificationTemplateRecord
     {
         $notification = $this->getNotificationById($id);
         if (!$notification) {
@@ -88,7 +134,7 @@ class NotificationsService extends BaseService
         return $notification;
     }
 
-    public function create(string $name): NotificationRecord
+    public function create(string $name): NotificationTemplateRecord
     {
         $defaultStorage = $this->getSettingsService()->getSettingsModel()->getEmailTemplateDefault();
 

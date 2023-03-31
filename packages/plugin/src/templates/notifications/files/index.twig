@@ -4,13 +4,15 @@
 
     {% if currentUser.can("freeform-notificationsManage") %}
         {% if settings.absoluteEmailTemplateDirectory %}
-            <div class="buttons">
-                <div class="btngroup submit">
-                    <a class="btn submit add icon" href="{{ url('freeform/notifications/files/new') }}">
-                        {{ "New Template"|t('freeform') }}
-                    </a>
+            {% if settings.allowFileTemplateEdit %}
+                <div class="buttons">
+                    <div class="btngroup submit">
+                        <a class="btn submit add icon" href="{{ url('freeform/notifications/files/new') }}">
+                            {{ "New Template"|t('freeform') }}
+                        </a>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
         {% endif %}
     {% endif %}
 
@@ -34,7 +36,7 @@
                 {% for filename, notification in notifications %}
                     <tr data-id="{{ notification.filepath }}" data-name="{{ notification.name|t('freeform') }}">
                         <th scope="row" data-title="{{ 'Name'|t('freeform') }}">
-                            {% if currentUser.can("freeform-notificationsManage") %}
+                            {% if currentUser.can("freeform-notificationsManage") and settings.allowFileTemplateEdit %}
                                 <a href="{{ url('freeform/notifications/files/' ~ notification.filepath) }}">
                                     {{ notification.name }}
                                 </a>
@@ -50,7 +52,7 @@
                         </td>
                         <td class="thin">
                             <div class='action-buttons'>
-                                {% if currentUser.can("freeform-notificationsManage") %}
+                                {% if currentUser.can("freeform-notificationsManage") and settings.allowFileTemplateEdit %}
                                     <a class="clone icon" data-type="{{ type }}" data-id="{{ notification.filepath }}"
                                        title="{{ 'Duplicate'|t('freeform') }}" role="button"></a>
                                     <a class="delete icon" data-type="{{ type }}" data-id="{{ notification.filepath }}" title="{{ 'Delete'|t('freeform') }}" role="button"></a>

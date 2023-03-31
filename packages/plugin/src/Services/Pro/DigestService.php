@@ -8,7 +8,7 @@ use craft\web\View;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\FeedMessageRecord;
 use Solspace\Freeform\Records\NotificationLogRecord;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use yii\base\Component;
 
 class DigestService extends Component
@@ -58,7 +58,7 @@ class DigestService extends Component
         $templateMode = \Craft::$app->view->getTemplateMode();
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
-        $notification = NotificationRecord::createFromTemplate(self::TEMPLATE_PATH);
+        $notification = NotificationTemplateRecord::createFromTemplate(self::TEMPLATE_PATH);
 
         $recipients = $mailer->processRecipients($recipients);
         $message = $mailer->compileMessage(

@@ -8,7 +8,7 @@ use craft\web\Application;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\NotificationLogRecord;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Records\Pro\ExportNotificationRecord;
 use yii\base\Event;
 
@@ -55,7 +55,7 @@ class ExportNotifications extends FeatureBundle
                 'date' => new Carbon(),
             ];
 
-            $template = NotificationRecord::create();
+            $template = NotificationTemplateRecord::create();
             $template->fromName = \Craft::$app->projectConfig->get('email.fromName');
             $template->fromEmail = \Craft::$app->projectConfig->get('email.fromEmail');
 

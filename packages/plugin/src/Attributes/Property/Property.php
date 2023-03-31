@@ -17,6 +17,7 @@ class Property
     public const TYPE_ATTRIBUTES = 'attributes';
     public const TYPE_LABEL = 'label';
     public const TYPE_RECIPIENTS = 'recipients';
+    public const TYPE_NOTIFICATION_TEMPLATE = 'notification-template';
 
     public function __construct(
         public ?string $label = null,

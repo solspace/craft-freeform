@@ -5,5 +5,10 @@ Authorization: Bearer {{auth-token}}
 
 ### GET Notification Types
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/notification-types
+GET {{host}}/admin/freeform/client/api/notifications/types
+Authorization: Bearer {{auth-token}}
+
+### GET Notification Templates
+// @no-redirect
+GET {{host}}/admin/freeform/client/api/notifications/templates
 Authorization: Bearer {{auth-token}}

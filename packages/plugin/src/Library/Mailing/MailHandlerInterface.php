@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Library\Mailing;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 
 interface MailHandlerInterface
 {
@@ -26,7 +26,7 @@ interface MailHandlerInterface
     public function sendEmail(
         Form $form,
         array|string $recipients,
-        NotificationRecord $notification,
+        NotificationTemplateRecord $notification,
         array $fields,
         Submission $submission = null
     ): int;

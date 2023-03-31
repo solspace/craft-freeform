@@ -38,7 +38,7 @@
 
 {% block content %}
 
-    <input type="hidden" name="action" value="freeform/notifications-{{ type }}/save">
+    <input type="hidden" name="action" value="freeform/notifications/{{ type }}/save">
     {{ redirectInput('freeform/notifications/'~type) }}
     {% if notification.id %}<input type="hidden" name="notificationId" value="{{ notification.id }}">{% endif %}
     {% if notification.filepath %}<input type="hidden" name="notificationId" value="{{ notification.filepath }}">{% endif %}
@@ -59,7 +59,7 @@
     {% if notification.fileBasedTemplate %}
 
         {{ forms.textField({
-            label: "File name"|t('freeform'),
+            label: "File Name"|t('freeform'),
             instructions: "File name of the template without the extension."|t('freeform'),
             id: 'handle',
             class: 'code',
@@ -242,15 +242,14 @@
         {{ forms.elementSelectField({
             id: "preset-assets",
             name: "presetAssets",
-            label: "Predefined Assets",
-            instructions: "Select any Assets you wish to include as attachments on all email notifications using this template.",
+            label: "Predefined Assets"|t('freeform'),
+            instructions: "Select any Assets you wish to include as attachments on all email notifications using this template."|t('freeform'),
             elements: notification.getPresetAssets() ? craft.assets.id(notification.getPresetAssets()).all : [],
             selectionLabel: "Choose assets",
             elementType: "craft\\elements\\Asset",
             sources: "*",
             criteria: {
                 kind: [],
-                enabledForSite: null,
                 siteId: craft.app.sites.currentSite.id,
             },
             viewMode: "list",

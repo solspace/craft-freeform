@@ -4,14 +4,17 @@ import { useDispatch } from 'react-redux';
 import { set as setNotifications } from '@ff-client/app/pages/forms/edit/store/slices/notifications';
 import type {
   Notification,
+  NotificationTemplate,
   NotificationType,
+  TemplateType,
 } from '@ff-client/types/notifications';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
-const QKNotifications = {
+export const QKNotifications = {
   all: ['notifications'] as const,
   types: () => [...QKNotifications.all, 'types'] as const,
+  templates: () => [...QKNotifications.all, 'templates'] as const,
   single: (id: number) => [...QKNotifications.all, 'forms', id] as const,
 };
 
@@ -23,7 +26,7 @@ export const useQueryNotificationTypes = (): UseQueryResult<
     QKNotifications.types(),
     () =>
       axios
-        .get<NotificationType[]>('/client/api/notification-types')
+        .get<NotificationType[]>('/client/api/notifications/types')
         .then((res) => res.data),
     {
       staleTime: Infinity,
@@ -49,6 +52,32 @@ export const useQueryFormNotifications = (
       onSuccess: (notifications) => {
         dispatch(setNotifications(notifications));
       },
+    }
+  );
+};
+
+type NotificationTemplatePayload = {
+  allowedTypes: TemplateType[];
+  default: TemplateType;
+  templates: {
+    database: NotificationTemplate[];
+    files: NotificationTemplate[];
+  };
+};
+
+export const useQueryNotificationTemplates = (): UseQueryResult<
+  NotificationTemplatePayload,
+  AxiosError
+> => {
+  return useQuery<NotificationTemplatePayload, AxiosError>(
+    QKNotifications.templates(),
+    () =>
+      axios
+        .get<NotificationTemplatePayload>('/client/api/notifications/templates')
+        .then((res) => res.data),
+    {
+      staleTime: Infinity,
+      cacheTime: Infinity,
     }
   );
 };

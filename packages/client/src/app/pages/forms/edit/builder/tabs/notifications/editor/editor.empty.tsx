@@ -1,6 +1,6 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { ThemedSkeleton } from '@ff-client/app/components/skeletons/themed-skeleton';
+import { ThemedSkeleton } from '@components/loaders/skeletons/themed-skeleton';
 import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 

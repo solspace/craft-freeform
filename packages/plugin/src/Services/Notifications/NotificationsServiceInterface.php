@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Services\Notifications;
 
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 
 interface NotificationsServiceInterface
 {
@@ -12,15 +12,15 @@ interface NotificationsServiceInterface
     public const EVENT_AFTER_DELETE = 'afterDelete';
 
     /**
-     * @return NotificationRecord[]
+     * @return NotificationTemplateRecord[]
      */
     public function getAll(bool $indexById = true): array;
 
-    public function getById(mixed $id): ?NotificationRecord;
+    public function getById(mixed $id): ?NotificationTemplateRecord;
 
-    public function save(NotificationRecord $record): bool;
+    public function save(NotificationTemplateRecord $record): bool;
 
     public function delete(mixed $id): bool;
 
-    public function create(string $name): NotificationRecord;
+    public function create(string $name): NotificationTemplateRecord;
 }

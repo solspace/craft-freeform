@@ -4,7 +4,7 @@ namespace Solspace\Freeform\controllers\notifications;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
 use Solspace\Freeform\Services\Notifications\NotificationFilesService;
 use yii\web\HttpException;
@@ -80,11 +80,11 @@ class FilesController extends AbstractNotificationsController
         return $this->asJson(['success' => true]);
     }
 
-    protected function getNewOrExistingNotification(mixed $id): NotificationRecord
+    protected function getNewOrExistingNotification(mixed $id): NotificationTemplateRecord
     {
         $record = $this->getService()->getById($id);
         if (!$record) {
-            $record = NotificationRecord::create();
+            $record = NotificationTemplateRecord::create();
         }
 
         return $record;

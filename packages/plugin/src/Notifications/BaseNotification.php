@@ -27,13 +27,6 @@ abstract class BaseNotification implements NotificationInterface
     #[Property]
     protected bool $enabled = true;
 
-    #[Property(
-        label: 'Notification Template',
-        instructions: 'TODO - add instructions',
-        required: true,
-    )]
-    protected string $notificationTemplate = '';
-
     public function getId(): ?int
     {
         return $this->id;
@@ -52,10 +45,5 @@ abstract class BaseNotification implements NotificationInterface
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getNotificationTemplate(): string
-    {
-        return $this->notificationTemplate;
     }
 }

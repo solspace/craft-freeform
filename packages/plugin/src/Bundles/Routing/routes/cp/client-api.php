@@ -17,7 +17,8 @@ return [
     'freeform/client/api/forms/<formId:\d+>/notifications' => 'freeform/client/api/forms/notifications/get',
     'freeform/client/api/integrations' => 'freeform/client/api/integrations',
     'freeform/client/api/integrations/<id:\d+>' => 'freeform/client/api/integrations',
-    'freeform/client/api/notification-types' => 'freeform/client/api/notifications/get-types',
+    'freeform/client/api/notifications/types' => 'freeform/client/api/notifications/get-types',
+    'freeform/client/api/notifications/templates' => 'freeform/client/api/notifications/get-templates',
     'freeform/client' => 'freeform/client/view',
     'freeform/client/<id:.*>' => 'freeform/client/view',
 ];

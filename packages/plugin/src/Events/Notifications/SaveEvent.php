@@ -3,17 +3,17 @@
 namespace Solspace\Freeform\Events\Notifications;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 
 class SaveEvent extends CancelableArrayableEvent
 {
-    /** @var NotificationRecord */
+    /** @var NotificationTemplateRecord */
     private $record;
 
     /** @var bool */
     private $new;
 
-    public function __construct(NotificationRecord $model, bool $new = false)
+    public function __construct(NotificationTemplateRecord $model, bool $new = false)
     {
         $this->new = $new;
         $this->record = $model;
@@ -29,7 +29,7 @@ class SaveEvent extends CancelableArrayableEvent
         return array_merge(parent::fields(), ['record', 'new']);
     }
 
-    public function getRecord(): NotificationRecord
+    public function getRecord(): NotificationTemplateRecord
     {
         return $this->record;
     }

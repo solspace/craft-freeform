@@ -14,11 +14,10 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Freeform\Library\DataObjects\EmailTemplate;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 /**
  * @property int    $id
- * @property string $filepath
  * @property string $name
  * @property string $handle
  * @property string $description
@@ -36,9 +35,11 @@ use Solspace\Freeform\Library\DataObjects\EmailTemplate;
  * @property string $presetAssets
  * @property bool   $autoText
  */
-class NotificationRecord extends ActiveRecord
+class NotificationTemplateRecord extends ActiveRecord
 {
-    public const TABLE = '{{%freeform_notifications}}';
+    public const TABLE = '{{%freeform_notification_templates}}';
+
+    public ?string $filepath = null;
 
     public static function tableName(): string
     {
@@ -71,9 +72,9 @@ class NotificationRecord extends ActiveRecord
         return $record;
     }
 
-    public static function createFromTemplate($filePath): self
+    public static function createFromTemplate(string $filePath): self
     {
-        $template = new EmailTemplate($filePath);
+        $template = NotificationTemplate::fromFile($filePath);
 
         if (\is_string($template->isIncludeAttachments())) {
             $includeAttachments = 'true' === strtolower($template->isIncludeAttachments()) || '1' === $template->isIncludeAttachments();
@@ -81,31 +82,32 @@ class NotificationRecord extends ActiveRecord
             $includeAttachments = $template->isIncludeAttachments();
         }
 
-        $model = new self();
-        $model->filepath = pathinfo($filePath, \PATHINFO_BASENAME);
-        $model->name = $template->getName();
-        $model->handle = $template->getHandle();
-        $model->description = $template->getDescription();
-        $model->fromEmail = $template->getFromEmail();
-        $model->fromName = $template->getFromName();
-        $model->cc = $template->getCc();
-        $model->bcc = $template->getBcc();
-        $model->subject = $template->getSubject();
-        $model->replyToName = $template->getReplyToName();
-        $model->replyToEmail = $template->getReplyToEmail();
-        $model->bodyHtml = $template->getBody();
-        $model->bodyText = $template->getTextBody();
-        $model->includeAttachments = $includeAttachments;
-        $model->presetAssets = $template->getPresetAssets();
-        $model->autoText = $template->isAutoText();
+        $record = new self();
+        $record->filepath = pathinfo($filePath, \PATHINFO_BASENAME);
+        $record->name = $template->getName();
+        $record->handle = $template->getHandle();
+        $record->description = $template->getDescription();
+        $record->fromEmail = $template->getFromEmail();
+        $record->fromName = $template->getFromName();
+        $record->cc = $template->getCc();
+        $record->bcc = $template->getBcc();
+        $record->subject = $template->getSubject();
+        $record->replyToName = $template->getReplyToName();
+        $record->replyToEmail = $template->getReplyToEmail();
+        $record->bodyHtml = $template->getBody();
+        $record->bodyText = $template->getTextBody();
+        $record->includeAttachments = $includeAttachments;
+        $record->presetAssets = $template->getPresetAssets();
+        $record->autoText = $template->isAutoText();
 
-        return $model;
+        return $record;
     }
 
     public function rules(): array
     {
         return [
             [['name', 'handle', 'subject', 'fromName', 'fromEmail'], 'required'],
+            [['handle'], 'unique'],
             [
                 'bodyHtml',
                 'required',

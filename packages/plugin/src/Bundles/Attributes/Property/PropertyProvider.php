@@ -61,6 +61,9 @@ class PropertyProvider
 
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
+            $accessible = $property->isPublic();
+            $property->setAccessible(true);
+
             $attr = $property->getAttributes(Property::class)[0] ?? null;
             if (!$attr) {
                 continue;
@@ -115,6 +118,10 @@ class PropertyProvider
             }
 
             $collection->add($prop);
+
+            if (!$accessible) {
+                $property->setAccessible(false);
+            }
         }
 
         return $collection;

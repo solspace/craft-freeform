@@ -24,7 +24,7 @@ export const Builder: React.FC = () => {
             <Route index element={<LayoutEditor />} />
             <Route path="notifications" element={<Notifications />}>
               <Route index element={<EmptyNotificationsEditor />} />
-              <Route path=":id" element={<NotificationsEditor />} />
+              <Route path=":uid" element={<NotificationsEditor />} />
             </Route>
             <Route path="integrations" element={<Integrations />}>
               <Route index element={<EmptyIntegrationsEditor />} />

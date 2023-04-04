@@ -1,9 +1,8 @@
 import type { GenericValue, Property } from './properties';
 
 export type Notification = {
-  id: number;
+  id?: number;
   uid: string;
-  type: string;
   class: string;
 
   name: string;
@@ -14,8 +13,8 @@ export type Notification = {
 
 export type NotificationType = {
   name: string;
+  newInstanceName: string;
   icon: string;
-  type: string;
   class: string;
   properties: Property[];
 };

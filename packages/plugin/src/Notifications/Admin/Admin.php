@@ -22,6 +22,7 @@ use Solspace\Freeform\Notifications\BaseNotification;
 
 #[Type(
     name: 'Admin Notifications',
+    newInstanceName: 'Admin',
     icon: __DIR__.'/icon.svg',
 )]
 class Admin extends BaseNotification

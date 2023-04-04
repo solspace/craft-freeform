@@ -17,6 +17,7 @@ use Solspace\Freeform\Attributes\Property\Property;
 abstract class BaseNotification implements NotificationInterface
 {
     protected ?int $id;
+    protected ?string $uid;
 
     #[Property(
         type: Property::TYPE_LABEL,
@@ -30,6 +31,11 @@ abstract class BaseNotification implements NotificationInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getUid(): ?string
+    {
+        return $this->uid;
     }
 
     public function isEnabled(): bool

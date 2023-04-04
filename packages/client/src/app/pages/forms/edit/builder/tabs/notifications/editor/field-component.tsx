@@ -14,11 +14,11 @@ type Props = {
 export const FieldComponent: React.FC<Props> = ({ notification, property }) => {
   const dispatch = useAppDispatch();
 
-  const { id } = notification;
+  const { uid } = notification;
   const { handle: key } = property;
 
   const updateValue: ControlTypes.UpdateValue<GenericValue> = (value) => {
-    dispatch(modify({ id, key, value }));
+    dispatch(modify({ uid, key, value }));
   };
 
   const value = notification?.[property.handle];

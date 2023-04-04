@@ -9,11 +9,13 @@ type Props = {
   notification: Notification;
 };
 
-export const NotificationItem: React.FC<Props> = ({ notification: { id } }) => {
-  const { name, enabled } = useSelector(selectNotification(id));
+export const NotificationItem: React.FC<Props> = ({
+  notification: { uid },
+}) => {
+  const { name, enabled } = useSelector(selectNotification(uid));
 
   return (
-    <Link to={`${id}`}>
+    <Link to={`${uid}`}>
       <Name>{name}</Name>
       <Status enabled={enabled} />
     </Link>

@@ -9,18 +9,19 @@ import { PropertyEditorWrapper } from './editor.styles';
 import { FieldComponent } from './field-component';
 
 type UrlParams = {
-  id: string;
+  uid: string;
   formId: string;
 };
 
 export const PropertyEditor: React.FC = () => {
-  const { id } = useParams<UrlParams>();
+  const { uid } = useParams<UrlParams>();
   const { data: notificationTypes } = useQueryNotificationTypes();
 
-  const notification = useSelector(selectNotification(Number(id)));
+  const notification = useSelector(selectNotification(uid));
   if (!notification) {
     return <EmptyEditor />;
   }
+
   const properties =
     notificationTypes?.find((type) => type.class === notification.class)
       ?.properties || [];

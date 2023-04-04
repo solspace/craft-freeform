@@ -9,6 +9,7 @@ use Solspace\Freeform\Notifications\BaseNotification;
 
 #[Type(
     name: 'Dynamic Notifications',
+    newInstanceName: 'Dynamic',
     icon: __DIR__.'/icon.svg',
 )]
 class Dynamic extends BaseNotification

@@ -1,8 +1,10 @@
 import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
 import { NotificationTypeItem } from '@editor/builder/tabs/notifications/sidebar/items/type';
 import { CategorySkeleton } from '@editor/builder/tabs/notifications/sidebar/items/type.skeleton';
+import { selectNotifications } from '@editor/store/slices/notifications';
 import {
   useQueryFormNotifications,
   useQueryNotificationTypes,
@@ -11,20 +13,21 @@ import {
 import { NotificationItem } from './items/item';
 
 export const List: React.FC = () => {
-  const { formId, id } = useParams();
+  const { formId, uid } = useParams();
   const navigate = useNavigate();
 
   const { data: notificationTypes, isFetching } = useQueryNotificationTypes();
-  const { data: notifications } = useQueryFormNotifications(Number(formId));
+  useQueryFormNotifications(Number(formId));
+  const notifications = useSelector(selectNotifications);
 
   useEffect(() => {
-    if (!id && notificationTypes && notifications) {
+    if (!uid && notificationTypes && notifications) {
       const first = notifications.find(Boolean);
       if (first) {
-        navigate(`${first.id}`);
+        navigate(first.uid);
       }
     }
-  }, [id, notificationTypes, notifications]);
+  }, [uid, notificationTypes, notifications]);
 
   if (!notificationTypes && isFetching) {
     return (

@@ -8,7 +8,7 @@ import type { SaveSubscriber } from '../middleware/state-persist';
 import { TOPIC_SAVE } from '../middleware/state-persist';
 
 type NotificationModificationPayload = {
-  id: number;
+  uid: string;
   key: string;
   value: GenericValue;
 };
@@ -17,9 +17,9 @@ const initialState: Notification[] = [];
 
 const findNotification = (
   state: Notification[],
-  id: number
+  uid: string
 ): Notification | undefined => {
-  return state.find((item) => item.id === id);
+  return state.find((item) => item.uid === uid);
 };
 
 export const notificationsSlice = createSlice({
@@ -32,35 +32,37 @@ export const notificationsSlice = createSlice({
         state.push(notification);
       });
     },
-    toggle: (state, action: PayloadAction<number>) => {
+    toggle: (state, action: PayloadAction<string>) => {
       const notification = findNotification(state, action.payload);
       notification.enabled = !notification.enabled;
     },
     modify: (state, action: PayloadAction<NotificationModificationPayload>) => {
-      const { id, key, value } = action.payload;
-      const notification = findNotification(state, id);
+      const { uid, key, value } = action.payload;
+      const notification = findNotification(state, uid);
       notification[key] = value;
+    },
+    add: (state, action: PayloadAction<Notification>) => {
+      state.push(action.payload);
     },
   },
 });
 
-export const { set, toggle, modify } = notificationsSlice.actions;
+export const { set, toggle, modify, add } = notificationsSlice.actions;
+
+export const selectNotifications = (state: RootState): Notification[] =>
+  state.notifications;
 
 export const selectNotification =
-  (id: number) =>
+  (uid: string) =>
   (state: RootState): Notification =>
-    state.notifications.find((notification) => notification.id === id);
+    state.notifications.find((notification) => notification.uid === uid);
 
 export default notificationsSlice.reducer;
 
 const persistNotifications: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
-  persist.notifications = state.notifications.map((notification) => ({
-    id: notification.id,
-    enabled: Boolean(notification.enabled),
-    values: notification.dirtyValues,
-  }));
+  persist.notifications = state.notifications;
 };
 
 PubSub.subscribe(TOPIC_SAVE, persistNotifications);

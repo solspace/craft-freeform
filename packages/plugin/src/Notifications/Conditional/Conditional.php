@@ -17,6 +17,7 @@ use Solspace\Freeform\Notifications\BaseNotification;
 
 #[Type(
     name: 'Conditional Notifications',
+    newInstanceName: 'Conditional',
     icon: __DIR__.'/icon.svg',
 )]
 class Conditional extends BaseNotification

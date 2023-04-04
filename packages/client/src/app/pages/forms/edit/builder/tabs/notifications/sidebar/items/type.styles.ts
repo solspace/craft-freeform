@@ -2,14 +2,14 @@ import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
-  margin-top: ${spacings.sm};
+  margin: ${spacings.sm} 0 ${spacings.lg};
 `;
 
 export const LabelWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0;
+  gap: 5px;
 
   padding-left: 3px;
 
@@ -30,6 +30,10 @@ export const Icon = styled.div`
   height: ${iconSize}px;
 
   fill: ${colors.gray550};
+`;
+
+export const Button = styled.button`
+  align-self: end;
 `;
 
 export const NotificationItemWrapper = styled.div`

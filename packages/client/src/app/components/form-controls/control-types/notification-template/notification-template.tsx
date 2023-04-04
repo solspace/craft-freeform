@@ -50,7 +50,9 @@ const NotificationTemplate: React.FC<ControlType<string | number>> = ({
         <NotificationTemplateSelector style={{ height: 36 }}>
           <SelectedNotification empty>
             <span>
-              <LoadingText>{translate('Loading Templates')}</LoadingText>
+              <LoadingText spinner loading instant>
+                {translate('Loading Templates')}
+              </LoadingText>
             </span>
             <ChevronIcon />
           </SelectedNotification>

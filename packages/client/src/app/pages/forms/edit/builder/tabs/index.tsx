@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
 import { selectState, State } from '@editor/store/slices/context';
@@ -88,13 +89,16 @@ export const Tabs: React.FC = () => {
       <SaveButtonWrapper>
         <SaveButton
           onClick={triggerSave}
-          className={classes(
-            'btn',
-            'submit',
-            state === State.Processing && 'disabled'
-          )}
+          disabled={state === State.Processing}
+          className={classes('btn', 'submit')}
         >
-          {translate(state === State.Processing ? 'Saving...' : 'Save')}
+          <LoadingText
+            loadingText={translate('Saving')}
+            loading={state === State.Processing}
+            spinner
+          >
+            {translate('Save')}
+          </LoadingText>
         </SaveButton>
       </SaveButtonWrapper>
     </TabWrapper>

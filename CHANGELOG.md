@@ -260,6 +260,11 @@
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
 
+## 3.13.28 - 2023-04-04
+
+### Fixed
+- Fixed a bug where some migrations and integrations could error when using Guzzle JSON calls.
+
 ## 3.13.27 - 2023-03-23
 
 ### Fixed

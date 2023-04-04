@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.28 - 2023-04-04
+
+### Fixed
+- Fixed a bug where some migrations and integrations could error when using Guzzle JSON calls.
+
 ## 3.13.27 - 2023-03-23
 
 ### Fixed

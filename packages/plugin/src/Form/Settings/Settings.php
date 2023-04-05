@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Form\Settings;
 
-use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Implementations\GeneralSettings;
@@ -36,19 +35,7 @@ class Settings
                 continue;
             }
 
-            $properties = $propertyProvider->getEditableProperties($object::class);
-
-            foreach ($properties as $property) {
-                $handle = $property->handle;
-
-                $value = $propertySettings[$handle] ?? $property->value;
-
-                if ($property->transformer instanceof TransformerInterface) {
-                    $value = $property->transformer->transform($value);
-                }
-
-                $access->setValue($object, $handle, $value);
-            }
+            $propertyProvider->setObjectProperties($object, $propertySettings);
         }
     }
 

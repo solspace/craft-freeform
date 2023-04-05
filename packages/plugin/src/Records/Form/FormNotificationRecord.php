@@ -17,7 +17,6 @@ use craft\db\ActiveRecord;
 /**
  * @property int       $id
  * @property string    $class
- * @property int       $notificationId
  * @property int       $formId
  * @property bool      $enabled
  * @property string    $metadata
@@ -40,8 +39,7 @@ class FormNotificationRecord extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['formId', 'notificationId'], 'unique', 'targetAttribute' => ['formId', 'notificationId']],
-            [['formId', 'notificationId'], 'required'],
+            [['formId', 'class', 'uid'], 'required'],
         ];
     }
 }

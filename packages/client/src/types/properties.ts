@@ -8,7 +8,8 @@ export enum PropertyType {
   Boolean = 'bool',
   Select = 'select',
   Color = 'color',
-  DateTime = 'date-time',
+  DateTime = 'dateTime',
+  MinMax = 'minMax',
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -52,7 +53,9 @@ export type BooleanProperty = BaseProperty<boolean> & {
 export type Option = { value: string | number; label: string };
 
 export type SelectProperty = BaseProperty<string> & {
+  type: PropertyType.Select;
   options: Option[];
+  emptyOption?: string;
 };
 
 export type ColorProperty = BaseProperty<string> & {
@@ -63,6 +66,10 @@ export type DateTimeProperty = BaseProperty<string> & {
   type: PropertyType.DateTime;
 };
 
+export type MinMaxProperty = BaseProperty<[number, number]> & {
+  type: PropertyType.MinMax;
+};
+
 export type Property =
   | IntegerProperty
   | StringProperty
@@ -70,7 +77,8 @@ export type Property =
   | BooleanProperty
   | SelectProperty
   | ColorProperty
-  | DateTimeProperty;
+  | DateTimeProperty
+  | MinMaxProperty;
 
 export type FieldType = {
   name: string;

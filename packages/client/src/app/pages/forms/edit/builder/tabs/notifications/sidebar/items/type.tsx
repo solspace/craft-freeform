@@ -5,6 +5,7 @@ import { useAppDispatch } from '@editor/store';
 import { addNewNotification } from '@editor/store/thunks/notifications';
 import type { NotificationType } from '@ff-client/types/notifications';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 import { v4 } from 'uuid';
 
 import {
@@ -43,7 +44,7 @@ export const NotificationTypeItem: React.FC<PropsWithChildren<Props>> = ({
             navigate(uid);
           }}
         >
-          New
+          {translate('New')}
         </Button>
       </LabelWrapper>
       <NotificationItemWrapper>{children}</NotificationItemWrapper>

@@ -7,6 +7,7 @@ import { save } from '@editor/store/actions/form';
 import { selectState, State } from '@editor/store/slices/context';
 import { selectFieldsHaveErrors } from '@editor/store/slices/fields';
 import { selectForm, selectFormErrors } from '@editor/store/slices/form';
+import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
@@ -29,6 +30,7 @@ export const Tabs: React.FC = () => {
 
   const formErrors = useSelector(selectFormErrors);
   const fieldsHaveErrors = useSelector(selectFieldsHaveErrors);
+  const notificationsHaveErrors = useSelector(notificationSelectors.errors.any);
 
   const { data: formSettingsData } = useQueryFormSettings();
 
@@ -64,7 +66,10 @@ export const Tabs: React.FC = () => {
         <NavLink to="" end className={classes(fieldsHaveErrors && 'errors')}>
           <span>{translate('Layout')}</span>
         </NavLink>
-        <NavLink to="notifications">
+        <NavLink
+          to="notifications"
+          className={classes(notificationsHaveErrors && 'errors')}
+        >
           <span>{translate('Notifications')}</span>
         </NavLink>
         <NavLink to="rules">

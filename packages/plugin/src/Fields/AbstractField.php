@@ -62,8 +62,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
     #[Section('general')]
     #[Property(
-        type: 'textarea',
         instructions: 'Field specific user instructions',
+        type: Property::TYPE_TEXTAREA,
         order: 3,
     )]
     protected string $instructions = '';
@@ -79,8 +79,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         order: 999,
     )]
     #[Property(
-        type: Property::TYPE_ATTRIBUTES,
         instructions: 'Add attributes to your field elements.',
+        type: Property::TYPE_ATTRIBUTES,
         value: AttributesTransformer::DEFAULT_VALUE,
         transformer: AttributesTransformer::class,
     )]

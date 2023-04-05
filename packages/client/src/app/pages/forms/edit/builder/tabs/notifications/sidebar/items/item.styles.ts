@@ -28,6 +28,10 @@ export const Link = styled(NavLink)`
   &:hover:not(.active) {
     background-color: ${colors.gray100};
   }
+
+  &.errors {
+    color: ${colors.error};
+  }
 `;
 
 export const Name = styled.div`

@@ -2,15 +2,17 @@
 
 namespace Solspace\Freeform\Bundles\Persistence;
 
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\DataObjects\FieldType\Property;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use yii\base\Event;
 
 class NotificationPersistence extends FeatureBundle
 {
-    public function __construct()
+    public function __construct(private PropertyProvider $propertyProvider)
     {
         Event::on(
             FormsController::class,
@@ -24,54 +26,88 @@ class NotificationPersistence extends FeatureBundle
         return 400;
     }
 
-    public function handleNotificationSave(PersistFormEvent $event)
+    public function handleNotificationSave(PersistFormEvent $event): void
     {
         $notifications = $event->getPayload()->notifications;
 
-        return;
-        $errors = [];
+        /** @var FormNotificationRecord[] $record */
+        $existingRecords = FormNotificationRecord::find()
+            ->where(['formId' => $event->getFormId()])
+            ->indexBy('uid')
+            ->all()
+        ;
+
+        $usedUIDs = [];
+        $existingUIDs = array_keys($existingRecords);
+
+        $records = [];
         foreach ($notifications as $notification) {
-            $id = $notification->id;
+            $uid = $notification->uid;
             $enabled = $notification->enabled ?? false;
-            $values = (array) $notification->values;
+            $class = $notification->class;
 
-            if (!$id) {
-                continue;
-            }
-
-            /** @var FormNotificationRecord $record */
-            $record = FormNotificationRecord::find()
-                ->where(['notificationId' => $id])
-                ->one()
-            ;
-
-            $metadata = [];
-            if ($record) {
-                $metadata = json_decode($record->metadata, true);
-            } else {
+            $record = $existingRecords[$uid] ?? null;
+            if (!$record) {
                 $record = new FormNotificationRecord();
-                $record->enabled = false;
+                $record->uid = $uid;
+                $record->enabled = $enabled;
+                $record->class = $class;
                 $record->formId = $event->getFormId();
-                $record->notificationId = $id;
             }
 
-            // If no changes were made - we skip saving the record
-            if (empty($values) && (bool) $record->enabled === $enabled) {
-                continue;
-            }
-
-            $record->enabled = (bool) $enabled;
-            $record->metadata = json_encode((object) array_merge($metadata, $values));
-
+            $record->metadata = $this->getValidatedMetadata($notification, $event);
             $record->save();
 
-            if ($record->hasErrors()) {
-                $errors[$record->notificationId] = $record->getErrors();
-            }
+            $records[] = $record;
+            $usedUIDs[] = $record->uid;
         }
 
-        if ($errors) {
-            $event->addErrorsToResponse('notifications', $errors);
+        $deletableUIDs = array_diff($existingUIDs, $usedUIDs);
+        if ($deletableUIDs) {
+            \Craft::$app
+                ->db
+                ->createCommand()
+                ->delete(FormNotificationRecord::TABLE, ['uid' => $deletableUIDs])
+                ->execute()
+            ;
         }
+
+        if ($event->hasErrors()) {
+            return;
+        }
+
+        foreach ($records as $record) {
+            $record->save();
+        }
+    }
+
+    // TODO: Move this to a separate class and combine with the one in FieldPersistence
+    private function getValidatedMetadata(\stdClass $object, PersistFormEvent $event): array
+    {
+        $properties = $this->propertyProvider->getEditableProperties($object->class);
+
+        $metadata = [];
+
+        /** @var Property $property */
+        foreach ($properties as $property) {
+            $handle = $property->handle;
+            $value = $object->{$handle} ?? null;
+
+            $errors = [];
+            foreach ($property->getValidators() as $validator) {
+                $errors = array_merge($errors, $validator->validate($value));
+            }
+
+            if ($errors) {
+                $event->addErrorsToResponse(
+                    'notifications',
+                    [$object->uid => [$property->handle => $errors]]
+                );
+            }
+
+            $metadata[$handle] = $value;
+        }
+
+        return $metadata;
     }
 }

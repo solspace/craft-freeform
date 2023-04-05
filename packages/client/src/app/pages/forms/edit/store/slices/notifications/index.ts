@@ -1,24 +1,21 @@
-import type { RootState } from '@editor/store';
 import type { Notification } from '@ff-client/types/notifications';
-import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { SaveSubscriber } from '../middleware/state-persist';
-import { TOPIC_SAVE } from '../middleware/state-persist';
+import './notifications.persistence';
 
-type NotificationModificationPayload = {
-  uid: string;
-  key: string;
-  value: GenericValue;
-};
+import type {
+  ErrorPayload,
+  NotificationInstance,
+  NotificationModificationPayload,
+} from './notifications.types';
 
-const initialState: Notification[] = [];
+const initialState: NotificationInstance[] = [];
 
 const findNotification = (
-  state: Notification[],
+  state: NotificationInstance[],
   uid: string
-): Notification | undefined => {
+): NotificationInstance | undefined => {
   return state.find((item) => item.uid === uid);
 };
 
@@ -44,25 +41,22 @@ export const notificationsSlice = createSlice({
     add: (state, action: PayloadAction<Notification>) => {
       state.push(action.payload);
     },
+    clearErrors: (state) => {
+      for (const notification of state) {
+        notification.errors = undefined;
+      }
+    },
+    setErrors: (state, action: PayloadAction<ErrorPayload>) => {
+      const { payload } = action;
+
+      for (const notificaion of state) {
+        notificaion.errors = payload?.[notificaion.uid];
+      }
+    },
   },
 });
 
-export const { set, toggle, modify, add } = notificationsSlice.actions;
-
-export const selectNotifications = (state: RootState): Notification[] =>
-  state.notifications;
-
-export const selectNotification =
-  (uid: string) =>
-  (state: RootState): Notification =>
-    state.notifications.find((notification) => notification.uid === uid);
+const { actions } = notificationsSlice;
+export { actions as notificationActions };
 
 export default notificationsSlice.reducer;
-
-const persistNotifications: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
-
-  persist.notifications = state.notifications;
-};
-
-PubSub.subscribe(TOPIC_SAVE, persistNotifications);

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { selectNotification } from '@editor/store/slices/notifications';
+import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useQueryNotificationTypes } from '@ff-client/queries/notifications';
 
 import { EmptyEditor } from './editor.empty';
@@ -17,7 +17,7 @@ export const PropertyEditor: React.FC = () => {
   const { uid } = useParams<UrlParams>();
   const { data: notificationTypes } = useQueryNotificationTypes();
 
-  const notification = useSelector(selectNotification(uid));
+  const notification = useSelector(notificationSelectors.one(uid));
   if (!notification) {
     return <EmptyEditor />;
   }

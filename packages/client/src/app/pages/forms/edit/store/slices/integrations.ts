@@ -1,23 +1,21 @@
 import type { RootState } from '@editor/store';
 import type { Integration } from '@ff-client/types/integrations';
-import type { Property } from '@ff-client/types/properties';
+import type { GenericValue, Property } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { SaveSubscriber } from '../middleware/state-persist';
 import { TOPIC_SAVE } from '../middleware/state-persist';
 
-export type Value = string | number | boolean;
-
 export type IntegrationEntry = {
-  values: { [key: string]: Value };
-  dirtyValues: { [key: string]: Value };
+  values: { [key: string]: GenericValue };
+  dirtyValues: { [key: string]: GenericValue };
 } & Integration;
 
 type IntegrationModificationPayload = {
   id: number;
   key: string;
-  value: Value;
+  value: GenericValue;
 };
 
 const initialState: IntegrationEntry[] = [];
@@ -42,7 +40,7 @@ export const integrationsSlice = createSlice({
   reducers: {
     addIntegrations: (state, action: PayloadAction<Integration[]>) => {
       action.payload.forEach((integration) => {
-        const values: { [key: string]: Value } = {};
+        const values: { [key: string]: GenericValue } = {};
         integration.properties.forEach((prop) => {
           values[prop.handle] = prop.value;
         });

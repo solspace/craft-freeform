@@ -104,6 +104,7 @@ class PropertyProvider
             $prop->placeholder = $attribute->placeholder;
             $prop->section = $section?->handle;
             $prop->options = $options?->getOptions();
+            $prop->emptyOption = $attribute->emptyOption;
             $prop->required = $attribute->required;
             $prop->value = $value;
             $prop->order = $attribute->order ?? $collection->getNextOrder();

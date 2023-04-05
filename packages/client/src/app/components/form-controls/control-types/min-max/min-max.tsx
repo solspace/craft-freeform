@@ -2,16 +2,13 @@ import React from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type { Field } from '@editor/store/slices/fields';
+import type { MinMaxProperty } from '@ff-client/types/properties';
 
 import { MaxInput, MinInput, Wrapper } from './min-max.styles';
 
-const MinMax: React.FC<ControlType<[number, number], Field>> = ({
-  value,
-  property,
-  errors,
-  updateValue,
-  context,
-}) => {
+const MinMax: React.FC<
+  ControlType<[number, number], MinMaxProperty, Field>
+> = ({ value, property, errors, updateValue, context }) => {
   const [min, max] = value || [null, null];
   const minValue = !context.properties?.allowNegative ? 0 : null;
 

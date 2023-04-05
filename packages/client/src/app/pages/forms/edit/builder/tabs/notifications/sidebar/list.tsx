@@ -4,7 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
 import { NotificationTypeItem } from '@editor/builder/tabs/notifications/sidebar/items/type';
 import { CategorySkeleton } from '@editor/builder/tabs/notifications/sidebar/items/type.skeleton';
-import { selectNotifications } from '@editor/store/slices/notifications';
+import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import {
   useQueryFormNotifications,
   useQueryNotificationTypes,
@@ -18,7 +18,7 @@ export const List: React.FC = () => {
 
   const { data: notificationTypes, isFetching } = useQueryNotificationTypes();
   useQueryFormNotifications(Number(formId));
-  const notifications = useSelector(selectNotifications);
+  const notifications = useSelector(notificationSelectors.all);
 
   useEffect(() => {
     if (!uid && notificationTypes && notifications) {
@@ -50,7 +50,7 @@ export const List: React.FC = () => {
               ?.filter((notif) => notif.class === type.class)
               .map((notification) => (
                 <NotificationItem
-                  key={notification.id}
+                  key={notification.uid}
                   notification={notification}
                 />
               ))}

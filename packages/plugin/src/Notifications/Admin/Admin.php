@@ -29,16 +29,16 @@ class Admin extends BaseNotification
 {
     #[Property(
         label: 'Notification Template',
-        type: Property::TYPE_NOTIFICATION_TEMPLATE,
         instructions: 'Select a notification template to use for this notification.',
+        type: Property::TYPE_NOTIFICATION_TEMPLATE,
         order: 9,
         transformer: NotificationTemplateTransformer::class,
     )]
     protected ?NotificationTemplate $template = null;
 
     #[Property(
-        type: Property::TYPE_RECIPIENTS,
         instructions: 'List the recipients of this notification.',
+        type: Property::TYPE_RECIPIENTS,
         order: 10,
         value: [],
         transformer: RecipientTransformer::class,

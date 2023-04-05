@@ -9,6 +9,11 @@ class RecipientTransformer implements TransformerInterface
     public function transform($value): RecipientCollection
     {
         $collection = new RecipientCollection();
+
+        if (null === $value) {
+            return $collection;
+        }
+
         foreach ($value as $recipient) {
             $collection->add(new Recipient($recipient['email'], $recipient['name']));
         }

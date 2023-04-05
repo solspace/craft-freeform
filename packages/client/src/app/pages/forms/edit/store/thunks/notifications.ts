@@ -7,7 +7,7 @@ import {
 } from 'unique-names-generator';
 
 import type { AppThunk } from '..';
-import { add } from '../slices/notifications';
+import { notificationActions } from '../slices/notifications';
 
 export const addNewNotification =
   (notificationType: NotificationType, uid: string): AppThunk =>
@@ -19,16 +19,14 @@ export const addNewNotification =
       values[property.handle] = property.value;
     });
 
-    const uniqueNames = uniqueNamesGenerator({
-      dictionaries: [adjectives, animals],
+    const name = uniqueNamesGenerator({
+      dictionaries: [adjectives, [newInstanceName], animals],
       separator: ' ',
       style: 'capital',
     });
 
-    const name = `${newInstanceName} ${uniqueNames}`;
-
     dispatch(
-      add({
+      notificationActions.add({
         uid,
         class: className,
         enabled: true,

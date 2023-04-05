@@ -750,7 +750,6 @@ class FormsService extends BaseService implements FormHandlerInterface
             $data,
             $layout,
             $settings,
-            $this->propertyProvider,
             new PropertyAccessor(),
         );
     }

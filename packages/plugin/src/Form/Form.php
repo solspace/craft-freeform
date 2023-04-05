@@ -15,8 +15,6 @@ namespace Solspace\Freeform\Form;
 
 use craft\helpers\Template;
 use Solspace\Commons\Helpers\StringHelper;
-use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
@@ -55,7 +53,7 @@ use Twig\Markup;
 use yii\base\Event;
 use yii\web\Request;
 
-abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAggregate, \Countable
+abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 {
     public const HASH_KEY = 'hash';
     public const ACTION_KEY = 'freeform-action';
@@ -98,17 +96,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public const DATA_RELATIONS = 'relations';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    // TODO: refactor this into a object instead of 3 different values
-    #[Property]
-    protected bool $gtmEnabled = false;
-
-    // TODO: refactor GTM into its own bundle
-    #[Property]
-    protected ?string $gtmId = null;
-
-    #[Property]
-    protected ?string $gtmEventName = null;
-
     protected AttributeBag $attributeBag;
 
     private PropertyBag $propertyBag;
@@ -137,23 +124,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         array $config,
         private Layout $layout,
         private Settings $settings,
-        private PropertyProvider $propertyProvider,
         private PropertyAccessor $accessor,
     ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
-
-        $metadata = $config['metadata'] ?? [];
-        $editableProperties = $this->propertyProvider->getEditableProperties($this::class);
-        foreach ($editableProperties as $property) {
-            $handle = $property->handle;
-            $value = $property->value;
-            if (isset($metadata[$handle])) {
-                $value = $metadata[$handle];
-            }
-
-            $this->{$handle} = $value;
-        }
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributeBag = new AttributeBag($this);
@@ -313,21 +287,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
         }
 
         return true;
-    }
-
-    public function isGtmEnabled(): bool
-    {
-        return (bool) $this->gtmEnabled;
-    }
-
-    public function getGtmId(): string
-    {
-        return $this->gtmId ?? '';
-    }
-
-    public function getGtmEventName(): string
-    {
-        return $this->gtmEventName ?? '';
     }
 
     public function isMultiPage(): bool
@@ -731,21 +690,6 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \IteratorAg
     public function getFieldPrefix(): ?string
     {
         return $this->getPropertyBag()->get('fieldIdPrefix');
-    }
-
-    public function jsonSerialize(): array
-    {
-        $editableProperties = $this->propertyProvider->getEditableProperties(self::class);
-        $properties = [];
-        foreach ($editableProperties as $property) {
-            $properties[$property->handle] = $this->{$property->handle};
-        }
-
-        return [
-            'id' => $this->getId(),
-            'uid' => $this->getUid(),
-            'properties' => $properties,
-        ];
     }
 
     public function count(): int

@@ -18,11 +18,12 @@ class Property
     public const TYPE_LABEL = 'label';
     public const TYPE_RECIPIENTS = 'recipients';
     public const TYPE_NOTIFICATION_TEMPLATE = 'notification-template';
+    public const TYPE_FIELD = 'field';
 
     public function __construct(
         public ?string $label = null,
-        public ?string $type = null,
         public ?string $instructions = null,
+        public ?string $type = null,
         public ?string $category = null,
         public ?int $order = null,
         public mixed $value = null,

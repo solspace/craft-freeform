@@ -680,8 +680,12 @@ button[type=submit].ff-loading:before {
             {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
         {% endif %}
         <div class="{{ columnClass }} freeform-fieldtype-{{ field.type }}{% if field.type in ["text", "textarea", "email", "website", "confirmation", "regex", "phone", "datetime", "file", "select", "multiple_select", "number", "password", "file_drag_and_drop", "signature", "cc_details"] or (field.type == "dynamic_recipients" and (field.showAsSelect)) %} floating{% endif %}"{{ field.rulesHtmlData }}>
-            {% if field.type in ["text", "textarea", "email", "website", "confirmation", "regex", "phone", "datetime", "number", "password"] %}
-                {% set fieldPlaceholder = (field.placeholder ? field.placeholder : " ") %}
+            {% if field.type in ["text", "textarea", "email", "website", "confirmation", "regex", "phone", "datetime", "number", "password", "checkbox", "mailing_list"] %}
+                {% if field.type in ["checkbox", "mailing_list"] %}
+                    {% set fieldPlaceholder = "" %}
+                {% else %}
+                    {% set fieldPlaceholder = (field.placeholder ? field.placeholder : " ") %}
+                {% endif %}
                 {{ field.renderInput({ class: "freeform-input" ~ (field.hasErrors ? " is-invalid"), placeholder: fieldPlaceholder }) -}}
                 {{- field.renderLabel({ labelClass: "freeform-label" ~ (field.required ? " freeform-required" : "") }) }}
                 {{ field.renderInstructions({ instructionsClass: "freeform-instructions" }) }}

@@ -5,10 +5,11 @@ namespace Solspace\Freeform\Bundles\Attributes\Property;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionCollection;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\OptionFetcherInterface;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionCollection;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionFetcherInterface;
 use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Library\DataObjects\FieldType\Property as PropertyDTO;
@@ -22,13 +23,47 @@ class PropertyProvider
     {
     }
 
-    public function getEditableProperties(string $class, mixed $referenceObject = null): PropertyCollection
+    public function setObjectProperties(object $object, array $properties): void
     {
+        $reflection = new \ReflectionClass($object);
+        $editableProperties = $this->getEditableProperties($object);
+
+        foreach ($properties as $key => $value) {
+            $editableProperty = $editableProperties->get($key);
+            if ($editableProperty && $editableProperty->transformer instanceof TransformerInterface) {
+                $value = $editableProperty->transformer->transform($value);
+            }
+
+            try {
+                $reflectionProperty = $reflection->getProperty($key);
+            } catch (\ReflectionException $e) {
+                continue;
+            }
+
+            $accessible = $reflectionProperty->isPublic();
+
+            $reflectionProperty->setAccessible(true);
+            $reflectionProperty->setValue($object, $value);
+
+            if (!$accessible) {
+                $reflectionProperty->setAccessible(false);
+            }
+        }
+    }
+
+    public function getEditableProperties(string|object $object): PropertyCollection
+    {
+        $class = \is_string($object) ? $object : \get_class($object);
+        $referenceObject = \is_string($object) ? null : $object;
+
         $reflection = $this->getReflection($class);
         $collection = new PropertyCollection();
 
         $properties = $reflection->getProperties();
         foreach ($properties as $property) {
+            $accessible = $property->isPublic();
+            $property->setAccessible(true);
+
             $attr = $property->getAttributes(Property::class)[0] ?? null;
             if (!$attr) {
                 continue;
@@ -49,9 +84,16 @@ class PropertyProvider
 
             $options = $this->compileOptions($attribute);
 
+            /** @var null|TransformerInterface $transformer */
+            $transformer = $attribute->transformer ? $this->container->get($attribute->transformer) : null;
+
             $value = $property->getDefaultValue() ?? $attribute->value;
-            if ($referenceObject) {
+            if ($referenceObject && $property->isInitialized($referenceObject)) {
                 $value = $property->getValue($referenceObject);
+
+                if ($transformer) {
+                    $value = $transformer->reverseTransform($value);
+                }
             }
 
             $prop = new PropertyDTO();
@@ -68,7 +110,7 @@ class PropertyProvider
             $prop->flags = $this->getFlags($property);
             $prop->middleware = $this->getMiddleware($property);
             $prop->visibilityFilters = $this->getVisibilityFilters($property);
-            $prop->transformer = $attribute->transformer ? $this->container->get($attribute->transformer) : null;
+            $prop->transformer = $transformer;
             $prop->setValidators($this->getValidators($property));
 
             if ($prop->required) {
@@ -76,6 +118,10 @@ class PropertyProvider
             }
 
             $collection->add($prop);
+
+            if (!$accessible) {
+                $property->setAccessible(false);
+            }
         }
 
         return $collection;

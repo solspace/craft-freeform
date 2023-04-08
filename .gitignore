@@ -17,6 +17,10 @@ yarnstart.sh
 .php_cs.cache
 .php-cs-fixer.cache
 
+*.pem
+
 http-client.private.env.json
 
 packages/client/coverage/
+
+packages/client/src/request-mocks/http-client.env.json

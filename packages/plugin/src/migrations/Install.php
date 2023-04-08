@@ -82,11 +82,10 @@ class Install extends StreamlinedInstallMigration
 
             (new Table('freeform_forms_notifications'))
                 ->addField('id', $this->primaryKey())
-                ->addField('notificationId', $this->integer()->notNull())
+                ->addField('class', $this->string(255)->notNull())
                 ->addField('formId', $this->integer()->notNull())
                 ->addField('enabled', $this->boolean()->notNull()->defaultValue(true))
                 ->addField('metadata', $this->longText())
-                ->addForeignKey('notificationId', 'freeform_notifications', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_favorite_fields'))
@@ -107,15 +106,24 @@ class Install extends StreamlinedInstallMigration
                 ->addField('metaProperties', $this->text())
                 ->addIndex(['type']),
 
-            (new Table('freeform_notifications'))
+            (new Table('freeform_notification_templates'))
                 ->addField('id', $this->primaryKey())
                 ->addField('name', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull()->unique())
-                ->addField('type', $this->string(50)->notNull())
-                ->addField('class', $this->string(255))
-                ->addField('metadata', $this->longText())
-                ->addField('lastUpdate', $this->dateTime())
-                ->addIndex(['type']),
+                ->addField('subject', $this->string(255)->notNull())
+                ->addField('description', $this->text())
+                ->addField('fromName', $this->string(255)->notNull())
+                ->addField('fromEmail', $this->string(255)->notNull())
+                ->addField('replyToName', $this->string(255))
+                ->addField('replyToEmail', $this->string(255))
+                ->addField('cc', $this->string(255))
+                ->addField('bcc', $this->string(255))
+                ->addField('bodyHtml', $this->text())
+                ->addField('bodyText', $this->text())
+                ->addField('autoText', $this->boolean()->notNull()->defaultValue(true))
+                ->addField('includeAttachments', $this->boolean()->defaultValue(true))
+                ->addField('presetAssets', $this->string(255))
+                ->addField('sortOrder', $this->integer()),
 
             (new Table('freeform_integrations'))
                 ->addField('id', $this->primaryKey())

@@ -12,16 +12,13 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\db\Query;
-use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\Events\Notifications\DeleteEvent;
-use Solspace\Freeform\Events\Notifications\SaveEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
-use Solspace\Freeform\Library\Exceptions\Notifications\NotificationNotFoundException;
-use Solspace\Freeform\Library\Notifications\NotificationInterface;
-use Solspace\Freeform\Models\NotificationModel;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Library\Logging\FreeformLogger;
+use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
+use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;
+use Solspace\Freeform\Services\Notifications\NotificationFilesService;
 
 class NotificationsService extends BaseService
 {
@@ -30,256 +27,135 @@ class NotificationsService extends BaseService
     public const EVENT_BEFORE_DELETE = 'beforeDelete';
     public const EVENT_AFTER_DELETE = 'afterDelete';
 
-    public function __construct(
-        $config = [],
-        private PropertyProvider $propertyProvider,
-    ) {
-        parent::__construct($config);
-    }
+    /** @var NotificationTemplateRecord[] */
+    private static ?array $notificationCache = null;
 
-    /**
-     * @throws NotificationException
-     */
-    public function getAllNotifications(): array
+    private static bool $allNotificationsLoaded = false;
+
+    public function getAllNotifications(bool $indexById = true): array
     {
-        $results = $this->getQuery()->all();
+        $cacheIsNull = null === self::$notificationCache;
 
-        $models = [];
-        foreach ($results as $result) {
-            $model = $this->createNotificationModel($result);
-
-            try {
-                $model->getNotificationObject();
-                $models[] = $model;
-            } catch (NotificationNotFoundException $e) {
+        if ($cacheIsNull || !self::$allNotificationsLoaded) {
+            if ($cacheIsNull) {
+                self::$notificationCache = [];
             }
+
+            $storageType = $this->getSettingsService()->getSettingsModel()->emailTemplateStorageType;
+
+            $isFile = $isDb = false;
+
+            switch ($storageType) {
+                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE:
+                    $isDb = true;
+
+                    break;
+
+                case Settings::EMAIL_TEMPLATE_STORAGE_TYPE_FILES:
+                    $isFile = true;
+
+                    break;
+
+                default:
+                    $isDb = true;
+                    $isFile = true;
+
+                    break;
+            }
+
+            $databaseNotifications = $isDb ? $this->getDatabaseService()->getAll($indexById) : [];
+            $fileNotifications = $isFile ? $this->getFilesService()->getAll($indexById) : [];
+
+            $notifications = [];
+            foreach ($databaseNotifications as $notification) {
+                $notifications[$notification->id] = $notification;
+            }
+
+            foreach ($fileNotifications as $notification) {
+                $notifications[$notification->filepath] = $notification;
+            }
+
+            self::$allNotificationsLoaded = true;
+            self::$notificationCache = $notifications;
         }
 
-        return $models;
-    }
-
-    public function getById(int $id): ?NotificationModel
-    {
-        $result = $this->getQuery()->where(['id' => $id])->one();
-        if (!$result) {
-            return null;
+        if (!$indexById) {
+            return array_values(self::$notificationCache);
         }
 
-        return $this->createNotificationModel($result);
+        return self::$notificationCache;
     }
 
-    public function getByHandle(string $handle): ?NotificationModel
+    public function getTemplateRecordById(int $id): ?NotificationTemplateRecord
     {
-        $result = $this->getQuery()->where(['handle' => $handle])->one();
-        if (!$result) {
-            return null;
-        }
+        $notifications = $this->getAllNotifications();
 
-        return $this->createNotificationModel($result);
+        return $notifications[$id] ?? null;
     }
 
-    /**
-     * @throws NotificationException
-     * @throws \yii\db\Exception
-     */
-    public function save(NotificationModel $model): bool
+    public function getTemplateRecordByFilepath(string $filepath): ?NotificationTemplateRecord
     {
-        $isNew = !$model->id;
+        $notifications = $this->getAllNotifications();
 
-        $beforeSaveEvent = new SaveEvent($model, $isNew);
-        $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
+        return $notifications[$filepath] ?? null;
+    }
 
-        if ($isNew) {
-            $record = new NotificationRecord();
-        } else {
-            $record = NotificationRecord::findOne(['id' => $model->id]);
-
+    public function getNotificationById(mixed $id): ?NotificationTemplateRecord
+    {
+        if (null === self::$notificationCache || !isset(self::$notificationCache[$id])) {
+            $record = $this->getDatabaseService()->getById($id);
             if (!$record) {
-                throw new NotificationException(
-                    Freeform::t('Email Marketing notification with ID {id} not found', ['id' => $model->id])
-                );
+                $record = $this->getFilesService()->getById($id);
             }
+
+            self::$notificationCache[$id] = $record;
         }
 
-        $record->name = $model->name;
-        $record->handle = $model->handle;
-        $record->type = $model->type;
-        $record->class = $model->class;
-        $record->lastUpdate = new \DateTime();
-        $record->metadata = $model->metadata;
-
-        $record->validate();
-        $model->addErrors($record->getErrors());
-
-        if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
-            $transaction = \Craft::$app->getDb()->beginTransaction();
-
-            try {
-                $record->save(false);
-
-                if ($isNew) {
-                    $model->id = $record->id;
-                }
-
-                $transaction?->commit();
-
-                $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
-
-                return true;
-            } catch (\Exception $e) {
-                $transaction?->rollBack();
-
-                throw $e;
-            }
-        }
-
-        return false;
+        return self::$notificationCache[$id];
     }
 
-    /**
-     * @throws \yii\db\Exception
-     */
-    public function delete(int $id): bool
+    public function requireNotification(Form $form, ?string $id, ?string $context): ?NotificationTemplateRecord
     {
-        $model = $this->getById($id);
-        if (!$model) {
-            return false;
-        }
-
-        $beforeDeleteEvent = new DeleteEvent($model);
-        $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
-
-        if (!$beforeDeleteEvent->isValid) {
-            return false;
-        }
-
-        $transaction = \Craft::$app->getDb()->beginTransaction();
-
-        try {
-            $affectedRows = \Craft::$app->getDb()
-                ->createCommand()
-                ->delete(NotificationRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
-
-            $transaction?->commit();
-
-            $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
-
-            return (bool) $affectedRows;
-        } catch (\Exception $exception) {
-            $transaction?->rollBack();
-
-            throw $exception;
-        }
-    }
-
-    /**
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function decryptModelValues(NotificationModel $model)
-    {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-
-        if (!$model->class) {
-            return;
-        }
-
-        $properties = $this->propertyProvider->getEditableProperties($model->class);
-        foreach ($properties as $property) {
-            if (!$property->hasFlag(NotificationInterface::FLAG_ENCRYPTED)) {
-                continue;
-            }
-
-            $value = $model->metadata[$property->handle];
-            if ($value) {
-                $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
-            }
-
-            $model->metadata[$property->handle] = $value;
-        }
-    }
-
-    /**
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function parsePostedModelData(NotificationModel $model): void
-    {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-
-        $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
-        foreach ($editableProperties as $property) {
-            $handle = $property->handle;
-            $value = $model->metadata[$handle] ?? null;
-
-            if ($value && $property->hasFlag(NotificationInterface::FLAG_ENCRYPTED)) {
-                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
-
-                $model->metadata[$property->handle] = $value;
-            }
-        }
-    }
-
-    /**
-     * @throws \ReflectionException
-     * @throws \yii\base\Exception
-     * @throws \yii\base\InvalidConfigException
-     */
-    public function updateModelFromNotification(NotificationModel $model, NotificationInterface $integration)
-    {
-        $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
-
-        $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
-        $reflection = new \ReflectionClass($model->class);
-        foreach ($editableProperties as $property) {
-            if ($property->hasFlag(NotificationInterface::FLAG_READONLY)) {
-                continue;
-            }
-
-            $handle = $property->handle;
-            $instanceProperty = $reflection->getProperty($handle);
-            $value = $instanceProperty->getValue($integration);
-
-            if (!$value && $property->required) {
-                $model->addError(
-                    $model->class.$handle,
-                    Freeform::t('{key} is required', ['key' => $property->label])
-                );
-
-                continue;
-            }
-
-            if ($property->hasFlag(NotificationInterface::FLAG_ENCRYPTED)) {
-                $value = base64_encode(\Craft::$app->security->encryptByKey($value, $securityKey));
-            }
-
-            $model->metadata[$property->handle] = $value;
-        }
-    }
-
-    protected function getQuery(): Query
-    {
-        return (new Query())
-            ->select(
+        $notification = $this->getNotificationById($id);
+        if (!$notification) {
+            $logger = Freeform::getInstance()->logger->getLogger(FreeformLogger::EMAIL_NOTIFICATION);
+            $logger->warning(
+                Freeform::t(
+                    'Email notification template with ID {id} not found',
+                    ['id' => $id]
+                ),
                 [
-                    'notification.id',
-                    'notification.name',
-                    'notification.handle',
-                    'notification.type',
-                    'notification.class',
-                    'notification.metadata',
-                    'notification.lastUpdate',
+                    'form' => $form->getName(),
+                    'context' => $context,
                 ]
-            )
-            ->from(NotificationRecord::TABLE.' notification')
-            ->orderBy(['id' => \SORT_ASC])
-        ;
+            );
+        }
+
+        return $notification;
     }
 
-    protected function createNotificationModel(array $data): NotificationModel
+    public function create(string $name): NotificationTemplateRecord
     {
-        return new NotificationModel($data);
+        $defaultStorage = $this->getSettingsService()->getSettingsModel()->getEmailTemplateDefault();
+
+        return match ($defaultStorage) {
+            Settings::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE => $this->getDatabaseService()->create($name),
+            default => $this->getFilesService()->create($name),
+        };
+    }
+
+    public function databaseNotificationCount(): int
+    {
+        return \count($this->getDatabaseService()->getAll());
+    }
+
+    private function getDatabaseService(): NotificationDatabaseService
+    {
+        return \Craft::$container->get(NotificationDatabaseService::class);
+    }
+
+    private function getFilesService(): NotificationFilesService
+    {
+        return \Craft::$container->get(NotificationFilesService::class);
     }
 }

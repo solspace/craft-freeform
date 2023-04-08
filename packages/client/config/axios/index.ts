@@ -28,10 +28,11 @@ if (axios.defaults.headers.post) {
 
 // Inject the Craft CSRF token in all POST requests
 axios.interceptors.request.use((config) => {
-  if (
-    ['post', 'put', 'patch', 'delete'].includes(config.method) &&
-    config.data
-  ) {
+  if (['post', 'put', 'patch', 'delete'].includes(config.method)) {
+    if (config.data === undefined) {
+      config.data = {};
+    }
+
     if (global.Craft !== undefined) {
       config.data[Craft.csrfTokenName] = Craft.csrfTokenValue;
     }

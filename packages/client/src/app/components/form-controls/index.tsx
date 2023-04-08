@@ -31,7 +31,7 @@ export const FormComponent: React.FC<Props> = ({
   const type = camelCase(property.type) as PropertyType;
   const FormControl = types[type];
   if (FormControl === undefined) {
-    return <div>{`...${property.handle} <${type}>`}</div>;
+    return <div>{`[${property.handle}]: <${type}>`}</div>;
   }
 
   FormControl.displayName = `FormComponent: <${type}>`;

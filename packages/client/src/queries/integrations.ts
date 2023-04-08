@@ -2,25 +2,13 @@ import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { addIntegrations } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
-import type {
-  Integration,
-  IntegrationCategory,
-} from '@ff-client/types/integrations';
+import type { Integration } from '@ff-client/types/integrations';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
-export const useQueryIntegrations = (): UseQueryResult<
-  IntegrationCategory[],
-  AxiosError
-> => {
-  return useQuery<IntegrationCategory[], AxiosError>(
-    ['integrations'],
-    () =>
-      axios
-        .get<IntegrationCategory[]>(`/client/api/integrations`)
-        .then((res) => res.data),
-    { staleTime: Infinity }
-  );
+const QKIntegrations = {
+  all: ['integrations'] as const,
+  single: (id: number) => [...QKIntegrations.all, id] as const,
 };
 
 export const useQueryFormIntegrations = (
@@ -29,7 +17,7 @@ export const useQueryFormIntegrations = (
   const dispatch = useDispatch();
 
   return useQuery<Integration[], AxiosError>(
-    ['form-integrations'],
+    QKIntegrations.single(formId),
     () =>
       axios
         .get<Integration[]>(`/client/api/forms/${formId}/integrations`)
@@ -41,19 +29,5 @@ export const useQueryFormIntegrations = (
         dispatch(addIntegrations(integrations));
       },
     }
-  );
-};
-
-export const useQuerySingleFormIntegration = (
-  formId: number,
-  id: number
-): UseQueryResult<Integration, AxiosError> => {
-  return useQuery<Integration, AxiosError>(
-    ['form-integrations', id],
-    () =>
-      axios
-        .get<Integration>(`/client/api/forms/${formId}/integrations/${id}`)
-        .then((res) => res.data),
-    { staleTime: Infinity }
   );
 };

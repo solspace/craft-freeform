@@ -1,0 +1,73 @@
+<?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
+
+namespace Solspace\Freeform\Bundles\Notifications\Providers;
+
+use Solspace\Freeform\Attributes\Notification\Type;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Notifications\NotificationInterface;
+use Solspace\Freeform\Records\Form\FormNotificationRecord;
+
+class NotificationsProvider
+{
+    public function __construct(private PropertyProvider $propertyProvider)
+    {
+    }
+
+    public function getByForm(Form $form = null): array
+    {
+        /** @var FormNotificationRecord[] $records */
+        $records = FormNotificationRecord::find()
+            ->where(['formId' => $form?->getId() ?? null])
+            ->all()
+        ;
+
+        $notifications = [];
+        foreach ($records as $record) {
+            $notifications[] = $this->createNotificationObjects($record);
+        }
+
+        return array_filter($notifications);
+    }
+
+    private function createNotificationObjects(FormNotificationRecord $record): ?NotificationInterface
+    {
+        /** @var NotificationInterface $class */
+        $class = $record->class;
+
+        $reflection = new \ReflectionClass($class);
+        if (!$reflection->implementsInterface(NotificationInterface::class)) {
+            return null;
+        }
+
+        $typeAttributes = $reflection->getAttributes(Type::class);
+        $type = reset($typeAttributes);
+
+        $type = $type ? $type->newInstance() : null;
+
+        /** @var Type $type */
+        if (!$type) {
+            return null;
+        }
+
+        $metadata = json_decode($record->metadata, true);
+
+        $metadata['id'] = $record->id;
+        $metadata['enabled'] = $record->enabled;
+
+        $notification = new $class();
+        $this->propertyProvider->setObjectProperties($notification, $metadata);
+
+        return $notification;
+    }
+}

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const ReactRefreshTypeScript = require('react-refresh-typescript');
@@ -22,7 +23,9 @@ module.exports = merge(baseConfig, {
     host: '127.0.0.1',
     allowedHosts: 'all',
     hot: true,
-    server: 'https',
+    server: {
+      type: 'https',
+    },
     client: {
       webSocketURL: 'https://127.0.0.1:8080/ws',
     },

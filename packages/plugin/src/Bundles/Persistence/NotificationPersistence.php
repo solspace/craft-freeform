@@ -28,6 +28,7 @@ class NotificationPersistence extends FeatureBundle
     {
         $notifications = $event->getPayload()->notifications;
 
+        return;
         $errors = [];
         foreach ($notifications as $notification) {
             $id = $notification->id;

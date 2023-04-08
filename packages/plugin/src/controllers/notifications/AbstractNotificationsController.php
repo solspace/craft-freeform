@@ -6,7 +6,7 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\Settings;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationEditorBundle;
 use Solspace\Freeform\Services\Notifications\NotificationsServiceInterface;
 use yii\web\Response;
@@ -23,7 +23,7 @@ abstract class AbstractNotificationsController extends BaseController
         $post = $request->post();
 
         $notificationId = $post['notificationId'] ?? null;
-        $notification = $this->getService()->getById($notificationId) ?? NotificationRecord::create();
+        $notification = $this->getService()->getById($notificationId) ?? NotificationTemplateRecord::create();
 
         $notification->name = $request->post('name');
         $notification->handle = $request->post('handle');
@@ -93,12 +93,12 @@ abstract class AbstractNotificationsController extends BaseController
 
     abstract protected function getType(): string;
 
-    abstract protected function getNewOrExistingNotification(mixed $id): NotificationRecord;
+    abstract protected function getNewOrExistingNotification(mixed $id): NotificationTemplateRecord;
 
     abstract protected function getService(): NotificationsServiceInterface;
 
     protected function renderEditForm(
-        NotificationRecord $record,
+        NotificationTemplateRecord $record,
         string $title
     ): Response {
         PermissionHelper::requirePermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE);

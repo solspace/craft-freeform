@@ -12,21 +12,14 @@ class Type
 
     public function __construct(
         public string $name,
-        public ?string $iconPath = null,
+        public ?string $icon = null,
     ) {
         $this->properties = new PropertyCollection();
     }
 
-    public function __toString(): string
-    {
-        return $this->name;
-    }
-
-    public function setProperties(PropertyCollection $properties): self
+    public function setProperties(PropertyCollection $properties): void
     {
         $this->properties = $properties;
-
-        return $this;
     }
 
     public function getProperties(): PropertyCollection

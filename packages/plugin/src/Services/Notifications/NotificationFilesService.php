@@ -7,7 +7,7 @@ use craft\helpers\StringHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\BaseService;
 
 class NotificationFilesService extends BaseService implements NotificationsServiceInterface
@@ -19,7 +19,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         $settings = Freeform::getInstance()->settings->getSettingsModel();
         foreach ($settings->listTemplatesInEmailTemplateDirectory() as $filePath => $name) {
             try {
-                $model = NotificationRecord::createFromTemplate($filePath);
+                $model = NotificationTemplateRecord::createFromTemplate($filePath);
 
                 $notifications[$model->filepath] = $model;
             } catch (EmailTemplateException $exception) {
@@ -42,13 +42,13 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         return $notifications;
     }
 
-    public function getById(mixed $id): ?NotificationRecord
+    public function getById(mixed $id): ?NotificationTemplateRecord
     {
         $settings = Freeform::getInstance()->settings->getSettingsModel();
         foreach ($settings->listTemplatesInEmailTemplateDirectory() as $filePath => $name) {
             if ($id === $name) {
                 try {
-                    return NotificationRecord::createFromTemplate($filePath);
+                    return NotificationTemplateRecord::createFromTemplate($filePath);
                 } catch (EmailTemplateException $exception) {
                     \Craft::$app->session->setError(
                         Freeform::t(
@@ -66,7 +66,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         return null;
     }
 
-    public function create(string $name): NotificationRecord
+    public function create(string $name): NotificationTemplateRecord
     {
         $settings = $this->getSettingsService()->getSettingsModel();
 
@@ -96,7 +96,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         return $this->getById($templateName.$extension);
     }
 
-    public function save(NotificationRecord $record): bool
+    public function save(NotificationTemplateRecord $record): bool
     {
         $emailDirectory = Freeform::getInstance()->settings->getSettingsModel()->getAbsoluteEmailTemplateDirectory();
 

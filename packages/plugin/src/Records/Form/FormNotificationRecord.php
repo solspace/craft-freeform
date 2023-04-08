@@ -16,6 +16,7 @@ use craft\db\ActiveRecord;
 
 /**
  * @property int       $id
+ * @property string    $class
  * @property int       $notificationId
  * @property int       $formId
  * @property bool      $enabled

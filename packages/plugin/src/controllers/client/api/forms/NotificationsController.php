@@ -12,10 +12,9 @@
 
 namespace Solspace\Freeform\controllers\client\api\forms;
 
-use Solspace\Freeform\Bundles\Notifications\Providers\FormNotificationsProvider;
-use Solspace\Freeform\Bundles\Notifications\Providers\NotificationDTOProvider;
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\controllers\BaseApiController;
-use yii\web\NotFoundHttpException;
+use Symfony\Component\Serializer\Serializer;
 use yii\web\Response;
 
 class NotificationsController extends BaseApiController
@@ -24,8 +23,8 @@ class NotificationsController extends BaseApiController
         $id,
         $module,
         $config,
-        private FormNotificationsProvider $formNotificationsProvider,
-        private NotificationDTOProvider $notificationDTOProvider
+        private NotificationsProvider $formNotificationsProvider,
+        private Serializer $serializer,
     ) {
         parent::__construct($id, $module, $config ?? []);
     }
@@ -33,28 +32,17 @@ class NotificationsController extends BaseApiController
     public function actionGet(int $formId): Response
     {
         $form = $this->getFormsService()->getFormById($formId);
-
-        $models = $this->formNotificationsProvider->getForForm($form);
-        $dtos = $this->notificationDTOProvider->convert($models);
-
-        return $this->asJson($dtos);
-    }
-
-    /**
-     * @throws NotFoundHttpException
-     */
-    public function actionGetOne(int $formId, int $id): Response
-    {
-        $form = $this->getFormsService()->getFormById($formId);
         if (!$form) {
-            throw new NotFoundHttpException("Form with ID {$formId} not found");
+            return $this->asJson([]);
         }
 
-        $dto = $this->notificationDTOProvider->getById($id);
-        if (!$dto) {
-            return $this->asJson(null);
-        }
+        $notifications = $this->formNotificationsProvider->getByForm($form);
 
-        return $this->asJson($dto);
+        $serialized = $this->serializer->serialize($notifications, 'json');
+
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->content = $serialized;
+
+        return $this->response;
     }
 }

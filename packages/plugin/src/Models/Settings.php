@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Models;
 
 use craft\base\Model;
+use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -62,7 +63,7 @@ class Settings extends Model
     public const CONTEXT_TYPE_DATABASE = 'database';
 
     public const DEFAULT_AJAX = true;
-    public const DEFAULT_FORMATTING_TEMPLATE = 'flexbox.twig';
+    public const DEFAULT_FORMATTING_TEMPLATE = 'basic-light.twig';
 
     public const DEFAULT_ACTIVE_SESSION_ENTRIES = 50;
     public const DEFAULT_SESSION_ENTRY_TTL = 10800; // 3 hours
@@ -77,6 +78,9 @@ class Settings extends Model
 
     /** @var string */
     public $formTemplateDirectory;
+
+    /** @var bool */
+    public $allowFileTemplateEdit;
 
     /** @var string */
     public $emailTemplateDirectory;
@@ -373,6 +377,7 @@ class Settings extends Model
         $this->feedInfo = [];
         $this->badgeType = 'all';
 
+        $this->allowFileTemplateEdit = true;
         $this->emailTemplateDirectory = null;
         $this->emailTemplateStorageType = self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH;
         $this->emailTemplateDefault = self::EMAIL_TEMPLATE_STORAGE_TYPE_FILES;
@@ -458,6 +463,16 @@ class Settings extends Model
         }
 
         return null;
+    }
+
+    public function canManageEmailTemplates(): bool
+    {
+        $canEditTemplates = self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE === $this->emailTemplateStorageType
+            || (self::EMAIL_TEMPLATE_STORAGE_TYPE_BOTH === $this->emailTemplateStorageType && self::EMAIL_TEMPLATE_STORAGE_TYPE_DATABASE === $this->emailTemplateDefault)
+            || ($this->getAbsoluteEmailTemplateDirectory() && $this->allowFileTemplateEdit);
+
+        return PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_MANAGE)
+            && $canEditTemplates;
     }
 
     /**
@@ -721,7 +736,7 @@ class Settings extends Model
      */
     private function getTemplatesInDirectory(string $templateDirectoryPath = null): array
     {
-        if ('/' === $templateDirectoryPath || !file_exists($templateDirectoryPath)) {
+        if ('/' === $templateDirectoryPath || !file_exists($templateDirectoryPath) || !is_dir($templateDirectoryPath)) {
             return [];
         }
 

@@ -17,8 +17,8 @@ use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Attributes\AttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Section;
-use Solspace\Freeform\Attributes\Property\Transformers\AttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
@@ -29,7 +29,6 @@ use Solspace\Freeform\Fields\Validation\Validator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
-use Symfony\Component\PropertyAccess\Exception\NoSuchPropertyException;
 use Twig\Markup;
 
 abstract class AbstractField implements FieldInterface, \JsonSerializable
@@ -93,38 +92,16 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     protected int $pageIndex = 0;
     protected array $errors = [];
 
-    private Form $form;
     private mixed $defaultValue = null;
 
-    final public function __construct(Form $form, array $properties = [])
+    public function __construct(private Form $form)
     {
-        $this->form = $form;
         $this->attributes = new FieldAttributesCollection();
-        $this->updateProperties($properties);
     }
 
     public function __toString(): string
     {
         return $this->getValueAsString();
-    }
-
-    public function updateProperties(array $properties = []): void
-    {
-        $reflection = new \ReflectionClass(static::class);
-        foreach ($reflection->getProperties() as $property) {
-            try {
-                $propertyName = $property->getName();
-
-                if (!isset($properties[$propertyName])) {
-                    continue;
-                }
-
-                $value = $properties[$propertyName];
-                $this->{$propertyName} = $value;
-            } catch (NoSuchPropertyException $e) {
-                // Pass along
-            }
-        }
     }
 
     /**

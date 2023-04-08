@@ -30,7 +30,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
@@ -51,7 +51,7 @@ class MailerService extends BaseService implements MailHandlerInterface
     public function sendEmail(
         Form $form,
         array|string $recipients,
-        NotificationRecord $notification = null,
+        NotificationTemplateRecord $notification = null,
         array $fields = [],
         ?Submission $submission = null
     ): int {
@@ -355,7 +355,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         $notificationPath = __DIR__.'/../templates/_emailTemplates/error-notify.twig';
-        $notification = NotificationRecord::createFromTemplate($notificationPath);
+        $notification = NotificationTemplateRecord::createFromTemplate($notificationPath);
 
         $code = null;
         if ($exception instanceof RuntimeError) {

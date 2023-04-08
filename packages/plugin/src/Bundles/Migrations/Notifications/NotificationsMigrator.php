@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Migrations\Notifications;
 
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Notifications\NotificationFilesService;
 use Solspace\Freeform\Services\SettingsService;
@@ -27,7 +27,7 @@ class NotificationsMigrator
 
         $idToFilenameMap = [];
 
-        $dbNotifications = NotificationRecord::find()->all();
+        $dbNotifications = NotificationTemplateRecord::find()->all();
         foreach ($dbNotifications as $notification) {
             if ($notification->isFileBasedTemplate()) {
                 continue;
@@ -36,7 +36,7 @@ class NotificationsMigrator
             $attributes = $notification->getAttributes();
             unset($attributes['id']);
 
-            $file = new NotificationRecord();
+            $file = new NotificationTemplateRecord();
             $file->filepath = $notification->handle.'.twig';
             $file->setAttributes($attributes, false);
 

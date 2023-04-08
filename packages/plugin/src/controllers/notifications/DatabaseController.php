@@ -4,7 +4,7 @@ namespace Solspace\Freeform\controllers\notifications;
 
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Records\NotificationRecord;
+use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Solspace\Freeform\Resources\Bundles\NotificationIndexBundle;
 use Solspace\Freeform\Services\Notifications\NotificationDatabaseService;
 use yii\web\HttpException;
@@ -33,7 +33,7 @@ class DatabaseController extends AbstractNotificationsController
 
     public function actionCreate(): Response
     {
-        $record = NotificationRecord::create();
+        $record = NotificationTemplateRecord::create();
         $title = Freeform::t('Create a new email notification template');
 
         return $this->renderEditForm($record, $title);
@@ -64,7 +64,7 @@ class DatabaseController extends AbstractNotificationsController
             return $this->asJson(['success' => false, 'errors' => ['Notification doesn\'t exist']]);
         }
 
-        $record = NotificationRecord::create();
+        $record = NotificationTemplateRecord::create();
 
         $record->setAttributes($notification->getAttributes(), false);
         $record->id = null;
@@ -82,7 +82,7 @@ class DatabaseController extends AbstractNotificationsController
             }
             $record->handle = $handle;
 
-            if (!NotificationRecord::findOne(['handle' => $handle])) {
+            if (!NotificationTemplateRecord::findOne(['handle' => $handle])) {
                 break;
             }
         }
@@ -92,11 +92,11 @@ class DatabaseController extends AbstractNotificationsController
         return $this->asJson(['success' => true]);
     }
 
-    protected function getNewOrExistingNotification(mixed $id): NotificationRecord
+    protected function getNewOrExistingNotification(mixed $id): NotificationTemplateRecord
     {
         $record = $this->getService()->getById($id);
         if (!$record) {
-            $record = NotificationRecord::create();
+            $record = NotificationTemplateRecord::create();
         }
 
         return $record;

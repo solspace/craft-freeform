@@ -1,6 +1,9 @@
 {% css formCss %}
 
 <style>
+.freeform-alert p:last-of-type {
+    margin-bottom: 0;
+}
 .StripeElement {
     height: 36px;
 }
@@ -29,10 +32,10 @@
     form.addEventListener("freeform-ready", function (event) {
       var freeform = event.target.freeform;
 
-      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
+      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors", "freeform-alert"]);
       freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
       freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
-      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
+      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success", "freeform-alert"]);
     });
     form.addEventListener("freeform-stripe-styling", function (event) {
       event.detail.base = {
@@ -44,7 +47,7 @@
 </script>
 
 {% if form.hasErrors %}
-    <div class="alert alert-danger">
+    <div class="alert alert-danger freeform-alert">
         {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}

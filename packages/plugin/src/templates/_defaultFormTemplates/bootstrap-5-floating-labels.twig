@@ -1,6 +1,12 @@
 {% css formCss %}
 
 <style>
+.freeform-page-tabs {
+    margin: 30px 0;
+}
+.freeform-alert p:last-of-type {
+    margin-bottom: 0;
+}
 .form-floating > label {
     left: 12px;
 }
@@ -17,10 +23,10 @@
     form.addEventListener("freeform-ready", function (event) {
       var freeform = event.target.freeform;
 
-      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
+      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors", "freeform-alert"]);
       freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
       freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
-      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
+      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success", "freeform-alert"]);
     })
 
     form.addEventListener("freeform-stripe-styling", function (event) {
@@ -33,7 +39,7 @@
 </script>
 
 {% if form.pages|length > 1 %}
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs freeform-page-tabs">
     {% for page in form.pages %}
         <li class="nav-item">
             <span class="nav-link{{ form.currentPage.index == page.index ? ' font-weight-bold active' : ' disabled' }}">{{ page.label }}</span>
@@ -43,7 +49,7 @@
 {% endif %}
 
 {% if form.hasErrors %}
-    <div class="alert alert-danger">
+    <div class="alert alert-danger freeform-alert">
         {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}

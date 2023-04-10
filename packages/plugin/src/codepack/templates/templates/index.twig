@@ -1,0 +1,33 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Form Simulator" %}
+
+{% block content %}
+
+    <div class="freeform-page-heading">
+        <h2>Select a Form</h2>
+        <p>Choose a form from below that you'd like to see go through the Freeform demo simulator.</p>
+    </div>
+
+    {% if forms %}
+
+        <div class="freeform-form-tiles">
+        {% for form in forms %}
+            <style>.freeform-form-tile-item-{{ form.id }}{border-top:7px solid {{ form.color }}!important;}.freeform-form-tile-item-{{ form.id }}:hover{background:{{ form.color }}!important;}</style>
+            <a href="{{ siteUrl }}demo/templates/{{ pageTemplate }}/{{ form.handle }}" class="freeform-form-tile-item freeform-form-tile-item-{{ form.id }}">
+                <h3>{{ form.name }}</h3>
+                <p>{{ form.description|truncate(50, '...') }}</p>
+                <p class="freeform-submission-count"><b>{{ craft.freeform.submissions({formId: form.id}).count }} submissions</b>, {{ craft.freeform.submissions({formId: form.id, isSpam: true}).count }} spam</p>
+            </a>
+        {% endfor %}
+        </div>
+
+    {% else %}
+
+        <div class="freeform-warning-notice">
+            Sorry, no forms exist for this site yet.
+        </div>
+
+    {% endif %}
+
+{% endblock %}

@@ -1,23 +1,22 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Extras" %}
-{% set page = "extras" %}
+{% set pageTitle = "Multiple Forms in the Same Page | Extras" %}
 
-{# Replace 'freeformMultipleForms' with your form handle. #}
-{% set form = craft.freeform.form("freeformMultipleForms") %}
+{# Replace 'freeformMultipleForms' with your form handle #}
+{% set demoFormHandle = "freeformMultipleForms" %}
 
 {% block content %}
 
-<div class="container">
+    {% set form = craft.freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
-    <div class="my-5">
+    <div class="freeform-page-heading">
         <h2>Multiple Forms in the Same Page</h2>
         <p>This example shows how you might have the same form (or 2 similar ones) more than once in the same template. Some complex field types and features might otherwise behave incorrectly unless some adjustments are made to the templates.</p>
     </div>
 
     {% if form %}
 
-        <h3 class="mb-3">{{ form.name }} <small class="text-muted">(1st instance)</small></h3>
+        <h3>{{ form.name }} <small>(1st instance)</small></h3>
 
         {# Apply 'id' and 'fieldIdPrefix' parameters with unique values #}
         {{ form.render({
@@ -25,7 +24,9 @@
             fieldIdPrefix: 'first-form-'
         }) }}
 
-        <h3 class="mb-3">{{ form.name }} <small class="text-muted">(2nd instance)</small></h3>
+        <br /><br /><hr /><br /><br />
+
+        <h3>{{ form.name }} <small>(2nd instance)</small></h3>
 
         {# Apply 'id' and 'fieldIdPrefix' parameters with unique values #}
         {{ form.render({
@@ -34,20 +35,22 @@
         }) }}
 
     {% else %}
-    {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning">
-            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
-            <p>
-                In order to view this page live, you'll need to make some adjustments to this template or your test form:
-                <ol class="mb-0">
-                    <li>Rename your test form handle to <code>freeformMultipleForms</code> or adjust the form handle name inside this template to match your test form.</li>
-                </ol>
-            </p>
+        <div class="freeform-error">
+            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
         </div>
-    
+
     {% endif %}
 
-</div>
+    {# Instructions to get this page working correctly #}
+    <div class="extras-instructions">
+        <h4>This page will not display correctly until...</h4>
+        <p>
+            In order to view this page live, you'll need to make some adjustments to this template or your test form:
+            <ol>
+                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+            </ol>
+        </p>
+    </div>
 
 {% endblock %}

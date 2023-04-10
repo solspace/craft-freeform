@@ -1,38 +1,25 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Extras" %}
-{% set page = "extras" %}
+{% set pageTitle = "Form Validation with Parsley | Extras" %}
 
-{# Replace 'freeformParsley' with your form handle. #}
-{% set form = craft.freeform.form("freeformParsley") %}
+{# Replace 'freeformParsley' with your form handle #}
+{% set demoFormHandle = "freeformParsley" %}
 
 {# Load in custom CSS for Parsley #}
 {% block headerCss %}
     <link rel="stylesheet" href="{{ siteUrl }}assets/demo/css/parsley.css" />
 {% endblock %}
 
-{# Load Parsley JS and Freeform JS listener #}
-{% block footerJs %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.js"></script>
-    <script>
-        document.addEventListener("freeform-render-field-errors", function (event) {
-            event.preventDefault();
-        });
-    </script>
-{% endblock %}
-
 {% block content %}
 
-<div class="container">
+    {% set form = craft.freeform.form(demoFormHandle) %}
 
-    <div class="my-5">
+    <div class="freeform-page-heading">
         <h2>Form Validation with Parsley</h2>
         <p>This example will show you how to implement form validation for your Freeform forms with <a href="https://parsleyjs.org/">Parsley JS</a>.</p>
     </div>
 
     {% if form %}
-
-        <h3 class="mb-3">{{ form.name }}</h3>
 
         {# Simpler approach without additional Parsley validation available too
             {{ form.render({
@@ -42,7 +29,19 @@
         #}
 
         {# Also see Parsley site's example for more info: https://parsleyjs.org/doc/examples/simple.html #}
+
+        <div class="bs-callout bs-callout-warning hidden">
+            <h4>Oh snap!</h4>
+            <p>This form seems to be invalid :(</p>
+        </div>
+
+        <div class="bs-callout bs-callout-info hidden">
+            <h4>Yay!</h4>
+            <p>Everything seems to be ok :)</p>
+        </div>
+
         {{ form.renderTag({
+            id: "parsley-form",
             formAttributes: { "data-parsley-validate": true }
         }) }}
             {% for column in form %}
@@ -72,21 +71,46 @@
         {{ form.renderClosingTag }}
 
     {% else %}
-    {# Show instructions to developer if they wish to see this page work correctly #}
 
-        <div class="alert alert-warning">
-            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
-            <p>
-                In order to view this page live, you'll need to make some adjustments to this template or your test form:
-                <ol class="mb-0">
-                    <li>Rename your test form handle to <code>freeformParsley</code> or adjust the form handle name inside this template to match your test form.</li>
-                    <li>Make sure your test form includes at least a few fields that are required and/or of Email field type and/or Phone field type (Pro only) to see Parsley in action.</li>
-                </ol>
-            </p>
+        <div class="freeform-error">
+            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
         </div>
-    
+
     {% endif %}
 
-</div>
+    {# Instructions to get this page working correctly #}
+    <div class="extras-instructions">
+        <h4>This page will not display correctly until...</h4>
+        <p>
+            In order to view this page live, you'll need to make some adjustments to this template or your test form:
+            <ol>
+                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+                <li>Make sure your test form includes at least a few fields that are required and/or of Email field type and/or Phone field type (Pro only) to see Parsley in action.</li>
+            </ol>
+        </p>
+    </div>
 
+{% endblock %}
+
+{# Load Parsley JS and Freeform JS listener #}
+{% block footerJs %}
+    <script src="https://code.jquery.com/jquery-3.6.4.slim.js" integrity="sha256-dWvV84T6BhzO4vG6gWhsWVKVoa4lVmLnpBOZh/CAHU4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/parsley.js/2.9.2/parsley.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#parsley-form').parsley().on('field:validated', function() {
+                var ok = $('.parsley-error').length === 0;
+                $('.bs-callout-info').toggleClass('hidden', !ok);
+                $('.bs-callout-warning').toggleClass('hidden', ok);
+            })
+            .on('form:submit', function() {
+                return false; // Don't submit form for this demo
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener("freeform-render-field-errors", function (event) {
+            event.preventDefault();
+        });
+    </script>
 {% endblock %}

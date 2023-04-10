@@ -1,4 +1,55 @@
 {% css formCss %}
+<style>
+input,
+textarea,
+select {
+    margin-bottom: 0 !important;
+}
+.radio input[type="radio"],
+.checkbox input[type="checkbox"] {
+    margin: 0;
+}
+input[type="radio"] + label,
+input[type="checkbox"] + label {
+    margin: 0 15px 0 3px;
+}
+.ff-fieldtype-rating input[type="radio"] + label {
+    margin: 0 3px 0 0;
+}
+.required:after {
+    content: "*";
+    margin-left: 3px;
+    color: red;
+}
+.freeform-page-tabs {
+    border-bottom: 1px solid gray;
+}
+.freeform-page-tabs li {
+    font-weight: normal !important;
+    color: gray !important;
+}
+.freeform-page-tabs li.is-active {
+    font-weight: bold !important;
+    color: black !important;
+    border: 1px solid gray;
+    border-bottom: none;
+    background: lightgray;
+}
+.grid-margin-x {
+    padding: 7px 0;
+}
+.errors {
+    color: red;
+    margin-bottom: 0 !important;
+}
+.help-text {
+    color: gray;
+    margin-top: 0;
+}
+.has-error {
+    border-color: red;
+}
+</style>
 
 {{ form.renderTag }}
 
@@ -24,7 +75,7 @@
 </script>
 
 {% if form.pages|length > 1 %}
-    <ul class="menu">
+    <ul class="menu freeform-page-tabs">
         {% for page in form.pages %}
             <li class="menu-text{{ form.currentPage.index == page.index ? ' is-active' : '' }}">
                 {{ page.label }}
@@ -212,7 +263,7 @@
                 {% else %}
 
                     {{ field.render({
-                        class: isCheckbox ? "checkbox" : "form-control",
+                        class: isCheckbox ? "checkbox" : "",
                         instructionsClass: "help-text",
                         instructionsBelowField: true,
                         labelClass: (field.required ? " required" : ""),

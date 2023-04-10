@@ -162,26 +162,22 @@
 
 {% if form %}
 
+    {% macro pageTemplateItem(template, form) %}
+        {% if template == "divider" %}
+            <hr />
+        {% else %}
+            <a{% if craft.app.request.segment(3) == template %} class="active"{% endif %} href="{{ siteUrl }}demo/templates/{{ template }}/{{ form }}">{{ template|title|replace({'-':' '}) }}</a>
+        {% endif %}
+    {% endmacro %}
+
     <div class="freeform-info-notice">
         This page has automatically loaded the
         <div class="freeform-info-dropdown">
             <span class="freeform-info-button">{{ pageTemplate|title|replace({'-':' '}) }}</span>
             <div class="freeform-info-dropdown-content">
-                <a{{ pageTemplate == 'basic-light' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/basic-light/{{ formHandle }}">Basic Light</a>
-                <a{{ pageTemplate == 'basic-dark' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/basic-dark/{{ formHandle }}">Basic Dark</a>
-                <a{{ pageTemplate == 'basic-floating-labels' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/basic-floating-labels/{{ formHandle }}">Basic Floating Labels</a>
-                <a{{ pageTemplate == 'conversational' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/conversational/{{ formHandle }}">Basic Conversational</a>
-                <hr class="freeform-info-dropdown-divider">
-                <a{{ pageTemplate == 'grid' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/grid/{{ formHandle }}">Grid</a>
-                <a{{ pageTemplate == 'flexbox' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/flexbox/{{ formHandle }}">Flexbox</a>
-                <hr class="freeform-info-dropdown-divider">
-                <a{{ pageTemplate == 'bootstrap-5' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/bootstrap-5/{{ formHandle }}">Bootstrap 5</a>
-                <a{{ pageTemplate == 'bootstrap-5-dark' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/bootstrap-5-dark/{{ formHandle }}">Bootstrap 5 Dark Mode</a>
-                <a{{ pageTemplate == 'bootstrap-5-floating-labels' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/bootstrap-5-floating-labels/{{ formHandle }}">Bootstrap 5 Floating Labels</a>
-                <a{{ pageTemplate == 'bootstrap-5-multipage-all-fields' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/bootstrap-5-multipage-all-fields/{{ formHandle }}">Bootstrap 5 Multipage All Fields</a>
-                <hr class="freeform-info-dropdown-divider">
-                <a{{ pageTemplate == 'tailwind-3' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/tailwind-3/{{ formHandle }}">Tailwind 3</a>
-                <a{{ pageTemplate == 'foundation-6' ? ' class="active"' }} href="{{ siteUrl }}demo/templates/foundation-6/{{ formHandle }}">Foundation 6</a>
+            {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "bootstrap-5-multipage-all-fields", "divider", "tailwind-3", "foundation-6"]) -%}
+                {{ _self.pageTemplateItem(pageTemplate, formHandle) }}
+            {%- endfor %}
             </div>
         </div>
         formatting template for the

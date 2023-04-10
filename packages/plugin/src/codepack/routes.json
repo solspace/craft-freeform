@@ -1,5 +1,15 @@
 [
   {
+    "urlParts": ["templates\\/", ["*","[^\\\\\\/]+"]],
+    "urlPattern": "templates/{template}",
+    "template": "/templates"
+  },
+  {
+    "urlParts": ["templates\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"]],
+    "urlPattern": "templates/{template}/{form}",
+    "template": "/templates/form"
+  },
+  {
     "urlParts": ["bootstrap\\/", ["slug","[^\\\\\\/]+"], "\\/submissions\\/", ["id","\\\\d+"], "\\/success"],
     "urlPattern": "bootstrap/{slug}/submissions/{id}/success",
     "template": "/bootstrap/view_submission"

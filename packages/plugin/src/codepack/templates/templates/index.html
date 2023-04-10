@@ -1,0 +1,32 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Bootstrap" %}
+{% set page = "bootstrap" %}
+
+{% block content %}
+
+<div class="container">
+
+    {% set forms = craft.freeform.forms %}
+
+    <h2>Forms <small class="text-muted">(Bootstrap Example)</small></h2>
+    <p class="mb-5">
+        This section of the demo templates lets you get a quick preview of what your forms look like by forcing the Freeform
+        <b>Bootstrap 5</b> formatting template on your forms. This is also a great way to troubleshoot potential rendering issues.
+    </p>
+
+    <div class="list-group">
+    {% for form in forms %}
+        <a href="{{ siteUrl }}demo/templates/{{ craft.app.request.segment(3) }}/{{ form.handle }}" class="list-group-item d-flex justify-content-between align-items-start">
+            <div class="ms-2 me-auto">
+            <div class="fw-bold">{{ form.name }}</div>
+                {{ form.description }}
+            </div>
+            <span class="badge bg-primary rounded-pill">Submissions &nbsp;{{ craft.freeform.submissions({formId: form.id}).count }}</span>
+        </a>
+    {% endfor %}
+    </div>
+
+</div>
+
+{% endblock %}

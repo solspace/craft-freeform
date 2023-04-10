@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Formatting Template Simulator</title>
+    {% if craft.app.request.segment(3) in ["basic-dark", "bootstrap-5-dark", "conversational"] %}
+        {% set colorMode = "dark" %}
+    {% else %}
+        {% set colorMode = "light" %}
+    {% endif %}
+    <style>
+        html {
+            background: #{% if colorMode == "dark" %}212529{% else %}ffffff{% endif %};
+            padding: 0;
+            margin: 0 auto;
+        }
+        body {
+            padding: 0;
+            margin: 0 auto;
+        }
+        .freeform-form-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .freeform-info-notice {
+            font: 400 12px sans-serif;
+            text-align: center;
+            color: #{% if colorMode == "dark" %}3f4449{% else %}bababa{% endif %};
+            background: #{% if colorMode == "dark" %}191c1f{% else %}f5f5f5{% endif %};
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 50px;
+        }
+        .freeform-info-notice a {
+            color: #{% if colorMode == "dark" %}3f4449{% else %}bababa{% endif %};
+        }
+        .freeform-warning-notice {
+            font: 400 12px sans-serif;
+            text-align: center;
+            color: #f8741b;
+            background: #ffe5d4;
+            border: 1px solid #f8741b;
+            border-radius: 5px;
+            padding: 20px 30px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-right: -50%;
+            transform: translate(-50%, -50%);
+        }
+        .freeform-warning-notice a {
+            color: #f8741b;
+        }
+    </style>
+</head>
+<body>
+
+{% set form = craft.freeform.form(craft.app.request.segment(4), {
+    formattingTemplate: craft.app.request.segment(3) ~ '.twig',
+}) %}
+
+{% if form %}
+
+    <div class="freeform-info-notice">
+        This page has automatically loaded the <code>{{ craft.app.request.segment(3) ~ '.twig' }}</code> formatting template for the <b>{{ form.name }}</b> form. ← <a href="{{ siteUrl }}demo/">Return to the demo area</a>
+    </div>
+
+    <div class="freeform-form-container">
+        {{ form.render }}
+    </div>
+
+{% else %}
+
+        <div class="freeform-warning-notice">
+            Form with the handle <code>{{ craft.app.request.segment(4) }}</code> does not exist.<br /><br />
+            ← <a href="{{ siteUrl }}demo/">Return to the demo area</a>
+        </div>
+
+{% endif %}
+
+</body>
+</html>

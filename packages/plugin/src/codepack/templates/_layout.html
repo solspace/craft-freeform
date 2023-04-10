@@ -26,8 +26,28 @@
                 <span class="fs-4">Freeform Demo</span>
             </a>
             <ul class="nav nav-pills text-white">
-                <li class="nav-item"><a href="{{ siteUrl }}demo/bootstrap" class="nav-link text-white{{ page == 'bootstrap' ? ' active' }}">Bootstrap</a></li>
-                <li class="nav-item"><a href="{{ siteUrl }}demo/bootstrap-dark" class="nav-link text-white{{ page == 'bootstrap-dark' ? ' active' }}">Bootstrap Dark</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Template
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item{{ page == 'basic-light' ? ' active' }}" href="{{ siteUrl }}demo/templates/basic-light">Basic Light</a></li>
+                        <li><a class="dropdown-item{{ page == 'basic-dark' ? ' active' }}" href="{{ siteUrl }}demo/templates/basic-dark">Basic Dark</a></li>
+                        <li><a class="dropdown-item{{ page == 'basic-floating-labels' ? ' active' }}" href="{{ siteUrl }}demo/templates/basic-floating-labels">Basic Floating Labels</a></li>
+                        <li><a class="dropdown-item{{ page == 'conversational' ? ' active' }}" href="{{ siteUrl }}demo/templates/conversational">Basic Conversational</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item{{ page == 'grid' ? ' active' }}" href="{{ siteUrl }}demo/templates/grid">Grid</a></li>
+                        <li><a class="dropdown-item{{ page == 'flexbox' ? ' active' }}" href="{{ siteUrl }}demo/templates/flexbox">Flexbox</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item{{ page == 'bootstrap' ? ' active' }}" href="{{ siteUrl }}demo/templates/bootstrap-5">Bootstrap 5</a></li>
+                        <li><a class="dropdown-item{{ page == 'bootstrap-dark' ? ' active' }}" href="{{ siteUrl }}demo/templates/bootstrap-5-dark">Bootstrap 5 Dark Mode</a></li>
+                        <li><a class="dropdown-item{{ page == 'bootstrap-floating-labels' ? ' active' }}" href="{{ siteUrl }}demo/templates/bootstrap-5-floating-labels">Bootstrap 5 Floating Labels</a></li>
+                        <li><a class="dropdown-item{{ page == 'bootstrap-multipage-all-fields' ? ' active' }}" href="{{ siteUrl }}demo/templates/bootstrap-5-multipage-all-fields">Bootstrap 5 Multipage All Fields</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item{{ page == 'tailwind-3' ? ' active' }}" href="{{ siteUrl }}demo/templates/tailwind-3">Tailwind 3</a></li>
+                        <li><a class="dropdown-item{{ page == 'foundation-6' ? ' active' }}" href="{{ siteUrl }}demo/templates/foundation-6">Foundation 6</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item"><a href="{{ siteUrl }}demo/custom" class="nav-link text-white{{ page == 'custom' ? ' active' }}">Custom</a></li>
                 <li class="nav-item"><a href="{{ siteUrl }}demo/extras" class="nav-link text-white{{ page == 'extras' ? ' active' }}">Extras</a></li>
             </ul>

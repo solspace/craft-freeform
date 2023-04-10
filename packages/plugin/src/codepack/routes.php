@@ -11,6 +11,8 @@
  */
 
 return [
+    'demo/templates/<*:[^\/]+>' => ['template' => 'demo/templates/index'],
+    'demo/templates/<*:[^\/]+>/<*:[^\/]+>' => ['template' => 'demo/templates/form'],
     'demo/bootstrap/<slug:[^\/]+>/submissions/<id\d+>/success' => ['template' => 'demo/bootstrap/view_submission'],
     'demo/bootstrap/<slug:[^\/]+>/submissions/<id\d+>' => ['template' => 'demo/bootstrap/view_submission'],
     'demo/bootstrap/<slug:[^\/]+>/submissions/edit/<token\w+>' => ['template' => 'demo/bootstrap/edit_submission'],

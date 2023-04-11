@@ -135,11 +135,12 @@ class LayoutPersistence extends FeatureBundle
                 $record = new FormCellRecord();
                 $record->uid = $uid;
                 $record->formId = $form->getId();
-                $record->rowId = $this->getRecordId($form, FormRowRecord::class, $item->rowUid);
                 $record->type = $item->type;
-                $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->targetUid);
-                $record->fieldId = $this->getRecordId($form, FormFieldRecord::class, $item->targetUid);
             }
+
+            $record->rowId = $this->getRecordId($form, FormRowRecord::class, $item->rowUid);
+            $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->targetUid);
+            $record->fieldId = $this->getRecordId($form, FormFieldRecord::class, $item->targetUid);
 
             $record->order = $item->order;
             $record->save();
@@ -167,8 +168,12 @@ class LayoutPersistence extends FeatureBundle
     /**
      * @param class-string<ActiveRecord> $recordType
      */
-    private function getRecordId(Form $form, string $recordType, string $uid): ?int
+    private function getRecordId(Form $form, string $recordType, ?string $uid): ?int
     {
+        if (null === $uid) {
+            return null;
+        }
+
         $cache = $this->cache[$recordType][$form->getId()] ?? null;
         if (!$cache) {
             $this->cache[$recordType][$form->getId()] = $recordType::find()

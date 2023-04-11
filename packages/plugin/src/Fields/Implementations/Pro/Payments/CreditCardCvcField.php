@@ -35,21 +35,14 @@ class CreditCardCvcField extends TextField implements ExtraFieldInterface
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $classString = $attributes->getClass().' '.$this->getInputClassString();
-        $handle = $this->getHandle();
-        $id = $this->getIdAttribute();
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
+            ->set($this->getRequiredAttribute())
+        ;
 
-        return '<div '
-            .$this->getAttributeString('name', $handle)
-            .$this->getAttributeString('id', $id)
-            .$this->getAttributeString('class', $classString)
-            .$this->getAttributeString(
-                'placeholder',
-                $this->translate($attributes->getPlaceholder() ?: $this->getPlaceholder())
-            )
-            .$this->getRequiredAttribute()
-            .$attributes->getInputAttributesAsString()
-            .'></div>';
+        return '<div'.$attributes.'></div>';
     }
 }

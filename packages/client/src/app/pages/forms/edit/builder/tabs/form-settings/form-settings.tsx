@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
-import { selectFormErrors } from '@editor/store/slices/form';
+import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
@@ -25,7 +25,7 @@ export const FormSettings: React.FC = () => {
   const { namespace } = useParams<RouteParams>();
   const { data, isFetching } = useQueryFormSettings();
 
-  const formErrors = useSelector(selectFormErrors);
+  const formErrors = useSelector(formSelectors.errors);
 
   const [sectionIndex, setSectionIndex] = useState(0);
 

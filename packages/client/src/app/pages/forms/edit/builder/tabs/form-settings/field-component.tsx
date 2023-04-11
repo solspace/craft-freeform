@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { FormComponent } from '@components/form-controls';
-import { selectFormErrors, selectFormSetting } from '@editor/store/slices/form';
+import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import type { Property } from '@ff-client/types/properties';
 
 import { useValueUpdateGenerator } from './use-value-update-generator';
@@ -12,8 +12,10 @@ type Props = {
 };
 
 export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
-  const formErrors = useSelector(selectFormErrors);
-  const value = useSelector(selectFormSetting(namespace, property.handle));
+  const formErrors = useSelector(formSelectors.errors);
+  const value = useSelector(
+    formSelectors.settings.one(namespace, property.handle)
+  );
 
   const generateUpdateHandler = useValueUpdateGenerator(namespace);
 

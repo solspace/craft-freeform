@@ -45,6 +45,7 @@ use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
+use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FeedRecord;
@@ -984,7 +985,7 @@ class Freeform extends Plugin
         );
     }
 
-    private function initContainerItems()
+    private function initContainerItems(): void
     {
         \Craft::$app->setContainer([
             'definitions' => [
@@ -992,7 +993,10 @@ class Freeform extends Plugin
                     $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
 
                     $encoders = [new JsonEncoder()];
-                    $normalizers = [new ObjectNormalizer($classMetadataFactory)];
+                    $normalizers = [
+                        new IdentificationNormalizer(),
+                        new ObjectNormalizer($classMetadataFactory),
+                    ];
 
                     return new Serializer($normalizers, $encoders);
                 },

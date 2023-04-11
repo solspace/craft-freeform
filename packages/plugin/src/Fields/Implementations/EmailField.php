@@ -47,22 +47,17 @@ class EmailField extends AbstractField implements RecipientInterface, SingleValu
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', $this->getType())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('placeholder', Freeform::t($this->getPlaceholder()))
+            ->setIfEmpty('value', $this->getValue())
+            ->set($this->getRequiredAttribute())
+        ;
 
-        return '<input '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('type', $this->getType())
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString(
-                'placeholder',
-                Freeform::t($attributes->getPlaceholder() ?: $this->getPlaceholder())
-            )
-            .$this->getAttributeString('value', $this->getValue())
-            .$this->getRequiredAttribute()
-            .$attributes->getInputAttributesAsString()
-            .'/>';
+        return '<input'.$attributes.' />';
     }
 
     /**

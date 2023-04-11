@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\helpers\App;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
@@ -10,6 +11,7 @@ use Solspace\Freeform\Fields\Interfaces\RecaptchaInterface;
 use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Models\Settings;
 
 #[Type(
@@ -36,7 +38,7 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
         /** @var Settings $settings */
         $settings = Freeform::getInstance()->getSettings();
 
-        $key = \Craft::parseEnv($settings->recaptchaKey);
+        $key = App::parseEnv($settings->recaptchaKey);
         $type = $settings->getRecaptchaType();
         $theme = $settings->getRecaptchaTheme();
         $size = $settings->getRecaptchaSize();
@@ -52,15 +54,20 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, Single
             default:
                 $class = Settings::RECAPTCHA_TYPE_H_CHECKBOX === $type ? 'h-captcha' : 'g-recaptcha';
 
-                return '<div class="'.$class.'" '
-                    .'data-sitekey="'.($key ?: 'invalid').'" '
-                    .'data-theme="'.$theme.'" '
-                    .'data-size="'.$size.'" '
-                    .'></div>'
-                    .'<input type="hidden" '
-                    .'name="'.$this->getHandle().'" '
-                    .$this->getInputAttributesString()
-                    .'/>';
+                $attributes = (new Attributes())
+                    ->set('class', $class)
+                    ->set('data-sitekey', $key ?: 'invalid')
+                    ->set('data-theme', $theme)
+                    ->set('data-size', $size)
+                ;
+
+                $inputAttributes = $this->attributes->getInput()
+                    ->clone()
+                    ->setIfEmpty('name', $this->getHandle())
+                ;
+
+                return '<div'.$attributes.'></div>'
+                    .'<input'.$inputAttributes.' />';
         }
     }
 }

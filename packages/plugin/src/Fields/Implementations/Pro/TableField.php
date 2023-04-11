@@ -6,12 +6,12 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\Table\TableTransformer;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Fields\Properties\Table\TableProperty;
+use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
     name: 'Table',
@@ -28,8 +28,8 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
 
     #[Property(
         label: 'Table Layout',
-        type: Property::TYPE_TABLE,
         instructions: 'Use semicolon ";" separated values for select options.',
+        type: Property::TYPE_TABLE,
         value: [],
         transformer: TableTransformer::class,
         options: [
@@ -47,134 +47,84 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
             ],
         ],
     )]
-    protected TableProperty $tableLayout;
+    protected TableLayout $tableLayout;
 
     #[Property(
         label: 'Use built-in Table JS?'
     )]
     protected bool $useScript = false;
 
-    /** @var int */
-    protected $maxRows;
+    #[Property(
+        label: 'Maximum number of rows',
+        instructions: 'Set the maximum number of rows that can be added to the table.',
+    )]
+    protected ?int $maxRows;
 
-    /** @var string */
-    protected $addButtonLabel = 'Add';
+    #[Property(
+        label: 'Add Button Label',
+        instructions: 'Set the label for the add button.',
+    )]
+    protected string $addButtonLabel = 'Add';
 
-    /** @var string */
-    protected $addButtonMarkup;
+    #[Property(
+        label: 'Add Button Markup',
+        instructions: 'Set the markup for the add button.',
+    )]
+    protected ?string $addButtonMarkup;
 
-    /** @var string */
-    protected $removeButtonLabel = 'Remove';
+    #[Property(
+        label: 'Remove Button Label',
+        instructions: 'Set the label for the remove button.',
+    )]
+    protected string $removeButtonLabel = 'Remove';
 
-    /** @var string */
-    protected $removeButtonMarkup;
+    #[Property(
+        label: 'Remove Button Markup',
+        instructions: 'Set the markup for the remove button.',
+    )]
+    protected ?string $removeButtonMarkup;
 
     public function getType(): string
     {
         return self::TYPE_TABLE;
     }
 
-    /**
-     * @return null|array
-     */
-    public function getTableLayout()
+    public function getTableLayout(): TableLayout
     {
         return $this->tableLayout;
     }
 
     public function isUseScript(): bool
     {
-        return (bool) $this->useScript;
+        return $this->useScript;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getMaxRows()
+    public function getMaxRows(): ?int
     {
         return $this->maxRows;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getAddButtonLabel()
+    public function getAddButtonLabel(): string
     {
-        $attributes = $this->getCustomAttributes();
-
-        return $attributes->getAddButtonLabel() ?? $this->addButtonLabel;
+        return $this->addButtonLabel;
     }
 
-    /**
-     * @param string $addButtonLabel
-     */
-    public function setAddButtonLabel($addButtonLabel): self
-    {
-        $this->addButtonLabel = $addButtonLabel;
-
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getAddButtonMarkup()
+    public function getAddButtonMarkup(): ?string
     {
         return $this->addButtonMarkup;
     }
 
-    /**
-     * @param string $addButtonMarkup
-     */
-    public function setAddButtonMarkup($addButtonMarkup): self
+    public function getRemoveButtonLabel(): string
     {
-        $this->addButtonMarkup = $addButtonMarkup;
-
-        return $this;
+        return $this->removeButtonLabel;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getRemoveButtonLabel()
-    {
-        $attributes = $this->getCustomAttributes();
-
-        return $attributes->getRemoveButtonLabel() ?? $this->removeButtonLabel;
-    }
-
-    /**
-     * @param string $removeButtonLabel
-     */
-    public function setRemoveButtonLabel($removeButtonLabel): self
-    {
-        $this->removeButtonLabel = $removeButtonLabel;
-
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getRemoveButtonMarkup()
+    public function getRemoveButtonMarkup(): ?string
     {
         return $this->removeButtonMarkup;
     }
 
-    /**
-     * @param string $removeButtonMarkup
-     */
-    public function setRemoveButtonMarkup($removeButtonMarkup): self
-    {
-        $this->removeButtonMarkup = $removeButtonMarkup;
-
-        return $this;
-    }
-
-    /**
-     * @return $this|AbstractField
-     */
-    public function setValue(mixed $value): FieldInterface
+    public function setValue(mixed $value): self
     {
         $layout = $this->getTableLayout();
 
@@ -214,12 +164,8 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
     protected function getInputHtml(): string
     {
         $layout = $this->getTableLayout();
-        if (!$layout || !\is_array($layout)) {
-            return '';
-        }
 
-        $attributes = $this->getCustomAttributes();
-        $classString = $attributes->getClass().' '.$this->getInputClassString();
+        $attributes = $this->attributes->getInput();
 
         $handle = $this->getHandle();
         $values = $this->getValue();
@@ -237,22 +183,29 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
             $values = [$values];
         }
 
+        $tableAttributes = (new Attributes())
+            ->set('data-freeform-table')
+            ->set('class', $attributes->find('class') ?? false)
+        ;
+
         $id = $this->getIdAttribute();
-        $output = '<table'
-            .' data-freeform-table'
-            .$this->getAttributeString('class', $classString)
-            .$this->getAttributeString('id', $id)
-            .'>';
+        $output = '<table'.$tableAttributes.'>';
 
         $output .= '<thead>';
         $output .= '<tr>';
+
+        $rowAttributes = $this->attributes->getLabel();
+
         foreach ($layout as $column) {
             $label = $column['label'] ?? '';
 
-            $output .= '<th'.$this->getAttributeString('class', $attributes->getTableLabelsClass()).'>'.htmlentities($label).'</th>';
+            $output .= '<th'.$rowAttributes.'>'.htmlentities($label).'</th>';
         }
         $output .= '<th>&nbsp;</th></tr>';
         $output .= '</thead>';
+
+        $inputAttributes = clone $attributes;
+        $inputAttributes->setIfEmpty('type', 'checkbox');
 
         $output .= '<tbody>';
         foreach ($values as $rowIndex => $row) {
@@ -271,29 +224,35 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
                 switch ($type) {
                     case self::COLUMN_TYPE_CHECKBOX:
                         $value = $row[$index];
-                        $output .= '<input'
-                            .$this->getAttributeString('type', 'checkbox')
-                            .$this->getAttributeString('name', $name)
-                            .$this->getAttributeString('class', $attributes->getTableCheckboxInputClass())
-                            .$this->getAttributeString('value', $defaultValue)
-                            .$this->getAttributeString('data-default-value', $defaultValue)
-                            .($value ? ' checked' : '')
-                            .' />';
+
+                        $currentInputAttributes = (new Attributes())
+                            ->set('name', $name)
+                            ->set('value', $defaultValue)
+                            ->set('data-default-value', $defaultValue)
+                            ->set('checked', (bool) $value)
+                            ->set('class', $attributes->find('checkboxClass') ?? false)
+                        ;
+
+                        $output .= '<input'.$currentInputAttributes.' />';
 
                         break;
 
                     case self::COLUMN_TYPE_SELECT:
+                        $selectAttributes = (new Attributes())
+                            ->set('class', $attributes->find('selectClass') ?? false)
+                            ->set('name', $name)
+                        ;
+
                         $options = explode(';', $defaultValue);
-                        $output .= '<select'
-                            .$this->getAttributeString('name', $name)
-                            .$this->getAttributeString('class', $attributes->getTableSelectInputClass())
-                            .'>';
+                        $output .= '<select'.$selectAttributes.'>';
 
                         foreach ($options as $option) {
-                            $output .= '<option'
-                                .$this->getAttributeString('value', $option)
-                                .($option === $value ? ' selected' : '')
-                                .'>'
+                            $optionAttributes = (new Attributes())
+                                ->set('value', $option)
+                                ->set('selected', $option === $value)
+                            ;
+
+                            $output .= '<option '.$optionAttributes.'>'
                                 .$option
                                 .'</option>';
                         }
@@ -304,13 +263,15 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
 
                     case self::COLUMN_TYPE_STRING:
                     default:
-                        $output .= '<input'
-                            .$this->getAttributeString('type', 'text')
-                            .$this->getAttributeString('class', $attributes->getTableTextInputClass())
-                            .$this->getAttributeString('name', $name)
-                            .$this->getAttributeString('value', $value)
-                            .$this->getAttributeString('data-default-value', $defaultValue)
-                            .' />';
+                        $currentInputAttributes = $inputAttributes
+                            ->clone()
+                            ->replace('type', 'text')
+                            ->replace('name', $name)
+                            ->replace('value', $value)
+                            ->replace('data-default-value', $defaultValue)
+                        ;
+
+                        $output .= '<input'.$currentInputAttributes.' />';
 
                         break;
                 }
@@ -322,11 +283,13 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
             if ($this->getRemoveButtonMarkup()) {
                 $output .= $this->getRemoveButtonMarkup();
             } else {
-                $output .= '<button'
-                    .' data-freeform-table-remove-row'
-                    .$this->getAttributeString('class', $attributes->getRemoveButtonClass())
-                    .' type="button"'
-                    .'>'
+                $buttonAttributes = (new Attributes())
+                    ->set('data-freeform-table-remove-row')
+                    ->set('class', $attributes->find('removeButtonClass') ?? false)
+                    ->set('type', 'button')
+                ;
+
+                $output .= '<button'.$buttonAttributes.'>'
                     .$this->getRemoveButtonLabel()
                     .'</button>';
             }
@@ -340,12 +303,14 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         if ($this->getAddButtonMarkup()) {
             $output .= $this->getAddButtonMarkup();
         } else {
-            $output .= '<button'
-                .' data-freeform-table-add-row'
-                .$this->getAttributeString('class', $attributes->getAddButtonClass())
-                .' data-target="'.$id.'"'
-                .' type="button"'
-                .'>'
+            $buttonAttributes = (new Attributes())
+                ->set('data-freeform-table-add-row')
+                ->set('class', $attributes->find('addButtonClass') ?? false)
+                ->set('data-target', $id)
+                ->set('type', 'button')
+            ;
+
+            $output .= '<button'.$buttonAttributes.'>'
                 .$this->getAddButtonLabel()
                 .'</button>';
         }

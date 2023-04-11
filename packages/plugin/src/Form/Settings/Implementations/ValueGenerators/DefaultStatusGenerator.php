@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Form\Settings\Implementations\ValueGenerators;
 
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\ValueGeneratorInterface;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\StatusesService;
 
 class DefaultStatusGenerator implements ValueGeneratorInterface
@@ -13,7 +12,7 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
     {
     }
 
-    public function generateValue(Form $form, Property $property): int
+    public function generateValue(Property $property, ?object $referenceObject): int
     {
         return $this->statusesService->getDefaultStatusId();
     }

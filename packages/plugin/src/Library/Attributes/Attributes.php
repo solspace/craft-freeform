@@ -53,7 +53,22 @@ class Attributes implements \Countable, \JsonSerializable
 
         $stringArray = array_filter($stringArray);
 
-        return implode(' ', $stringArray);
+        if (empty($stringArray)) {
+            return '';
+        }
+
+        return ' '.implode(' ', $stringArray);
+    }
+
+    public function find(string $key): mixed
+    {
+        foreach ($this->attributes as $index => [$existingKey, $existingValue]) {
+            if ($existingKey === $key) {
+                return $existingValue;
+            }
+        }
+
+        return null;
     }
 
     public function get(int $index, mixed $default = null): ?array
@@ -63,6 +78,51 @@ class Attributes implements \Countable, \JsonSerializable
 
     public function set(?string $key, mixed $value = null): self
     {
+        $this->attributes[] = [$key, $value];
+
+        return $this;
+    }
+
+    public function setIfEmpty(?string $key, mixed $value = null): self
+    {
+        foreach ($this->attributes as $index => [$existingKey, $existingValue]) {
+            if ($existingKey === $key) {
+                return $this;
+            }
+        }
+
+        $this->attributes[] = [$key, $value];
+
+        return $this;
+    }
+
+    public function replace(string $key, mixed $value = null): self
+    {
+        $reversed = array_reverse($this->attributes, true);
+        foreach ($reversed as $index => [$existingKey, $existingValue]) {
+            if ($existingKey === $key) {
+                $this->attributes[$index][1] = $value;
+
+                return $this;
+            }
+        }
+
+        $this->attributes[] = [$key, $value];
+
+        return $this;
+    }
+
+    public function append(string $key, mixed $value = null): self
+    {
+        $reversed = array_reverse($this->attributes, true);
+        foreach ($reversed as $index => [$existingKey, $existingValue]) {
+            if ($existingKey === $key) {
+                $this->attributes[$index][1] = $existingValue.' '.$value;
+
+                return $this;
+            }
+        }
+
         $this->attributes[] = [$key, $value];
 
         return $this;
@@ -82,6 +142,11 @@ class Attributes implements \Countable, \JsonSerializable
         unset($this->attributes[$index]);
 
         return $this;
+    }
+
+    public function clone(): self
+    {
+        return clone $this;
     }
 
     public function count(): int

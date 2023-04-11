@@ -42,23 +42,26 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements Multipl
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle().'[]')
+            ->setIfEmpty('type', 'checkbox')
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('value', $this->getValue())
+        ;
 
         $output = '';
         foreach ($this->getOptions() as $index => $option) {
-            $output .= '<label>';
+            $inputAttributes = $attributes
+                ->clone()
+                ->replace('id', $this->getIdAttribute().'-'.$index)
+                ->replace('value', $option->value)
+                ->replace('checked', $option->checked)
+            ;
 
-            $output .= '<input '
-                .$this->getInputAttributesString()
-                .$this->getAttributeString('name', $this->getHandle().'[]')
-                .$this->getAttributeString('type', 'checkbox')
-                .$this->getAttributeString('id', $this->getIdAttribute()."-{$index}")
-                .$this->getAttributeString('value', $option->getValue())
-                .$this->getParameterString('checked', $option->isChecked())
-                .$attributes->getInputAttributesAsString()
-                .'/>';
-            $output .= $this->translate($option->getLabel());
+            $output .= '<label>';
+            $output .= '<input'.$inputAttributes.' />';
+            $output .= $this->translate($option->label);
             $output .= '</label>';
         }
 

@@ -21,6 +21,7 @@ use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
     name: 'Submit',
@@ -59,8 +60,8 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, Single
 
     #[Property(
         label: 'Positioning',
-        type: 'select',
         instructions: 'Choose whether the submit button is positioned on the left, center or right side',
+        type: Property::TYPE_SELECT,
         options: [
             'left' => 'Left',
             'center' => 'Center',
@@ -118,43 +119,38 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, Single
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $submitClass = $attributes->getInputClassOnly();
-        $formSubmitClass = $this->getForm()->getPropertyBag()->get('submitClass', '');
+        $attributes = clone $this->attributes->getInput();
+        $attributes->replace('type', 'submit');
 
-        $submitClass = trim($submitClass.' '.$formSubmitClass);
+        $inputAttributes = (new Attributes())
+            ->set('style', 'height: 0px !important; width: 0px !important; visibility: hidden !important; position: absolute !important; left: -99999px !important; top: -9999px !important;')
+            ->set('type', 'submit')
+            ->set('tabindex', -1)
+        ;
 
-        $this->addInputAttribute('class', $submitClass);
+        $backButtonAttributes = $attributes
+            ->clone()
+            ->replace('data-freeform-action', 'back')
+            ->replace('name', self::PREVIOUS_PAGE_INPUT_NAME)
+        ;
+
+        $submitButtonAttributes = $attributes
+            ->clone()
+            ->replace('data-freeform-action', 'submit')
+            ->replace('name', self::SUBMIT_INPUT_NAME)
+        ;
 
         $output = '';
-
         if (!$this->isFirstPage() && !$this->isDisablePrev()) {
-            $output .= '<input '
-                .$this->getAttributeString('style', 'height: 0px !important; width: 0px !important; visibility: hidden !important; position: absolute !important; left: -99999px !important; top: -9999px !important;')
-                .$this->getAttributeString('type', 'submit')
-                .$this->getAttributeString('tabindex', -1, false)
-                .' />';
-
-            $output .= '<button '
-                .$this->getInputAttributesString()
-                .$this->getAttributeString('data-freeform-action', 'back')
-                .$this->getAttributeString('type', 'submit')
-                .$this->getAttributeString('name', self::PREVIOUS_PAGE_INPUT_NAME)
-                .$attributes->getInputAttributesAsString()
-                .'>'
-                .$this->getLabelPrev()
-                .'</button>';
+            $output .= '<input'.$inputAttributes.' />';
+            $output .= '<button'.$attributes.$backButtonAttributes.'>';
+            $output .= $this->getLabelPrev();
+            $output .= '</button>';
         }
 
-        $output .= '<button '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('data-freeform-action', 'submit')
-            .$this->getAttributeString('type', 'submit')
-            .$this->getAttributeString('name', self::SUBMIT_INPUT_NAME)
-            .$attributes->getInputAttributesAsString()
-            .'>'
-            .$this->getLabelNext()
-            .'</button>';
+        $output .= '<button'.$attributes.$submitButtonAttributes.'>';
+        $output .= $this->getLabelNext();
+        $output .= '</button>';
 
         return $output;
     }

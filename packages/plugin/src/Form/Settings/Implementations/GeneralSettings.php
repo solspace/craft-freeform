@@ -10,6 +10,7 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Form\Properties\GTM\GTMProperty;
 use Solspace\Freeform\Form\Properties\GTM\GTMValueTransformer;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
+use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultStatusGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
@@ -64,8 +65,10 @@ class GeneralSettings extends SettingsNamespace
     #[Section('general')]
     #[Property(
         instructions: 'The default status to be assigned to new submissions.',
+        type: Property::TYPE_SELECT,
         required: true,
         valueGenerator: DefaultStatusGenerator::class,
+        options: FormStatusOptions::class,
     )]
     public ?int $defaultStatus = null;
 

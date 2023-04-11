@@ -9,9 +9,9 @@ use Solspace\Freeform\Events\Notifications\RegisterNotificationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Notifications\Admin\Admin;
-use Solspace\Freeform\Notifications\Conditional\Conditional;
-use Solspace\Freeform\Notifications\Dynamic\Dynamic;
+use Solspace\Freeform\Notifications\Types\Admin\Admin;
+use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
+use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use yii\base\Event;
 
 class NotificationsBundle extends FeatureBundle

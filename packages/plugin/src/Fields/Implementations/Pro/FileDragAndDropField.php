@@ -23,15 +23,15 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
     #[Property(
         label: 'Accent Color',
-        type: 'color',
         instructions: 'Select accent color',
+        type: Property::TYPE_COLOR_PICKER,
     )]
     protected string $accent = self::DEFAULT_ACCENT;
 
     #[Property(
         label: 'Accent Color',
-        type: 'select',
         instructions: 'Select accent color',
+        type: Property::TYPE_SELECT,
         options: [
             'light' => 'Light',
             'dark' => 'Dark',
@@ -66,9 +66,6 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
 
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', 'freeform-file-drag-and-drop '.$attributes->getClass());
-
         $messageFiles = $this->translate(
             'Maximum file upload limit of {limit} reached',
             ['limit' => $this->getFileCount()]
@@ -78,21 +75,25 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
             ['maxFileSize' => $this->getMaxFileSizeKB()]
         );
 
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->append('class', 'freeform-file-drag-and-drop__input')
+            ->replace('div-freeform-file-upload', $this->getHandle())
+            ->setIfEmpty('data-error-append-target', $this->getHandle())
+            ->replace('data-file-count', \count($this->getValue()))
+            ->replace('data-max-files', $this->getFileCount())
+            ->replace('data-max-size', $this->getMaxFileSizeBytes())
+            ->setIfEmpty('data-theme', $this->getTheme())
+            ->setIfEmpty('data-message-progress', $this->translate('Upload in progress...'))
+            ->setIfEmpty('data-message-complete', $this->translate('Upload complete!'))
+            ->setIfEmpty('data-message-files', $messageFiles)
+            ->setIfEmpty('data-message-size', $messageSize)
+            ->setIfEmpty('data-accent', $this->getAccent())
+            ->setIfEmpty('data-base-url', UrlHelper::siteUrl('/freeform'))
+        ;
+
         $output = '';
-        $output .= '<div data-freeform-file-upload="'.$this->getHandle().'" ';
-        $output .= 'data-error-append-target="'.$this->getHandle().'" ';
-        $output .= 'data-file-count="'.\count($this->getValue()).'" ';
-        $output .= 'data-max-files="'.$this->getFileCount().'" ';
-        $output .= 'data-max-size="'.$this->getMaxFileSizeBytes().'" ';
-        $output .= 'data-theme="'.$this->getTheme().'" ';
-        $output .= 'data-message-progress="'.$this->translate('Upload in progress...').'" ';
-        $output .= 'data-message-complete="'.$this->translate('Upload complete!').'" ';
-        $output .= 'data-message-files="'.$messageFiles.'" ';
-        $output .= 'data-message-size="'.$messageSize.'" ';
-        $output .= 'data-accent="'.$this->getAccent().'" ';
-        $output .= 'data-base-url="'.UrlHelper::siteUrl('/freeform').'" ';
-        $output .= $this->getInputAttributesString();
-        $output .= '>';
+        $output .= '<div'.$attributes.'>';
         $output .= '<div data-placeholder class="freeform-file-drag-and-drop__placeholder">';
         $output .= $this->translate($this->getPlaceholder());
         $output .= '</div>';

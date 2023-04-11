@@ -17,7 +17,7 @@ export const List: React.FC = () => {
   const navigate = useNavigate();
 
   const { data: notificationTypes, isFetching } = useQueryNotificationTypes();
-  useQueryFormNotifications(Number(formId));
+  useQueryFormNotifications(Number(formId || 0));
   const notifications = useSelector(notificationSelectors.all);
 
   useEffect(() => {

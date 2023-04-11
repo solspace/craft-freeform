@@ -14,10 +14,11 @@ namespace Solspace\Freeform\Library\DataObjects;
 
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
+use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Symfony\Component\Serializer\Annotation\Ignore;
 
-class NotificationTemplate
+class NotificationTemplate implements IdentificatorInterface
 {
     public const METADATA_PATTERN = '/{#\\s*__KEY__:\\s*(.*)#}/';
 
@@ -135,6 +136,11 @@ class NotificationTemplate
     public function getId(): int|string
     {
         return $this->id;
+    }
+
+    public function getNormalizeIdentificator(): int|string|null
+    {
+        return $this->getId();
     }
 
     public function getName(): string

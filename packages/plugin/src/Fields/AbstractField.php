@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields;
 
 use craft\helpers\Template;
+use PhpParser\Node\Param;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Middleware;
@@ -24,14 +25,16 @@ use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
+use Solspace\Freeform\Fields\Parameters\Parameters;
 use Solspace\Freeform\Fields\Validation\Constraints\ConstraintInterface;
 use Solspace\Freeform\Fields\Validation\Validator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
+use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Twig\Markup;
 
-abstract class AbstractField implements FieldInterface, \JsonSerializable
+abstract class AbstractField implements FieldInterface, IdentificatorInterface
 {
     #[Section(
         handle: 'general',
@@ -86,6 +89,8 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     )]
     protected FieldAttributesCollection $attributes;
 
+    protected Parameters $parameters;
+
     protected ?int $id = null;
     protected ?string $uid = null;
     protected string $hash = '';
@@ -97,6 +102,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     public function __construct(private Form $form)
     {
         $this->attributes = new FieldAttributesCollection();
+        $this->parameters = new Parameters();
     }
 
     public function __toString(): string
@@ -108,19 +114,21 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      * Render the complete set of HTML for this field
      * That includes the Label, Input and Error messages.
      *
-     * @param array $customAttributes
+     * @param array $parameters
      */
-    final public function render(array $customAttributes = null): Markup
+    final public function render(array $parameters = null): Markup
     {
-        $this->setCustomAttributes($customAttributes);
+        $this->setParameters($parameters);
 
         $output = '';
         if (!$this instanceof InputOnlyInterface) {
             $output .= $this->getLabelHtml();
         }
 
+        $instructionsBelow = 'below' === strtolower($this->parameters->instructions);
+
         // Show instructions above by default
-        if (!$this->getCustomAttributes()->isInstructionsBelowField()) {
+        if (!$instructionsBelow) {
             $output .= $this->getInstructionsHtml();
         }
 
@@ -129,7 +137,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $output .= $this->onAfterInputHtml();
 
         // Show instructions below only if set by a property
-        if ($this->getCustomAttributes()->isInstructionsBelowField()) {
+        if ($instructionsBelow) {
             $output .= $this->getInstructionsHtml();
         }
 
@@ -145,16 +153,16 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
      *
      * @param array $customAttributes
      */
-    final public function renderLabel(array $customAttributes = null): Markup
+    final public function renderLabel(array $parameters = null): Markup
     {
-        $this->setCustomAttributes($customAttributes);
+        $this->setParameters($parameters);
 
         return $this->renderRaw($this->getLabelHtml());
     }
 
-    public function renderInstructions(array $customAttributes = null): Markup
+    public function renderInstructions(array $parameters = null): Markup
     {
-        $this->setCustomAttributes($customAttributes);
+        $this->setParameters($parameters);
 
         return $this->renderRaw($this->getInstructionsHtml());
     }
@@ -162,11 +170,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     /**
      * Render the Input HTML.
      *
-     * @param array $customAttributes
+     * @param array $parameters
      */
-    final public function renderInput(array $customAttributes = null): Markup
+    final public function renderInput(array $parameters = null): Markup
     {
-        $this->setCustomAttributes($customAttributes);
+        $this->setParameters($parameters);
 
         return $this->renderRaw($this->getInputHtml());
     }
@@ -174,17 +182,19 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     /**
      * Outputs the HTML of errors.
      *
-     * @param array $customAttributes
+     * @param array $parameters
      */
-    final public function renderErrors(array $customAttributes = null): Markup
+    final public function renderErrors(array $parameters = null): Markup
     {
-        $this->setCustomAttributes($customAttributes);
+        $this->setParameters($parameters);
 
         return $this->renderRaw($this->getErrorHtml());
     }
 
+    // TODO: refactor
     final public function rulesHtmlData(): Markup
     {
+        /*
         $ruleProperties = $this->getForm()->getRuleProperties();
         if (null === $ruleProperties) {
             return $this->renderRaw('');
@@ -198,6 +208,9 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         $data = json_encode($rule, \JSON_HEX_APOS);
 
         return $this->renderRaw(" data-ff-rule='{$data}'");
+        */
+
+        return $this->renderRaw('');
     }
 
     final public function canRender(): bool
@@ -289,6 +302,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->uid;
     }
 
+    public function getNormalizeIdentificator(): int|string|null
+    {
+        return $this->getUid();
+    }
+
     public function getHandle(): ?string
     {
         return $this->handle;
@@ -309,8 +327,10 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->required;
     }
 
+    // TODO: reimplement this
     public function isHidden(): bool
     {
+        return false;
         static $rules;
 
         if (null === $rules) {
@@ -330,6 +350,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     public function getAttributes(): FieldAttributesCollection
     {
         return $this->attributes;
+    }
+
+    public function getParameters(): Parameters
+    {
+        return $this->parameters;
     }
 
     public function getDefaultValue()
@@ -368,19 +393,11 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     {
         $attribute = sprintf('form-input-%s', $this->getHandle());
 
-        if ($this->getCustomAttributes()->getId()) {
-            $attribute = $this->getCustomAttributes()->getId();
+        if ($this->parameters->id) {
+            $attribute = $this->parameters->id;
         }
 
-        return $this->getCustomAttributes()->getFieldIdPrefix().$attribute;
-    }
-
-    /**
-     * An alias for ::setCustomAttributes().
-     */
-    public function setAttributes(array $attributes = null)
-    {
-        $this->setCustomAttributes($attributes);
+        return $this->parameters->fieldIdPrefix.$attribute;
     }
 
     /**
@@ -392,126 +409,16 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     }
 
     /**
-     * @param string $name
-     * @param string $value
-     */
-    public function addInputAttribute(string $name = null, string $value = null): self
-    {
-        $this->inputAttributes[sha1($name.$value)] = ['attribute' => $name, 'value' => $value];
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @param string $value
-     */
-    public function addLabelAttribute(string $name = null, string $value = null): self
-    {
-        $this->labelAttributes[] = ['attribute' => $name, 'value' => $value];
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @param string $value
-     */
-    public function addErrorAttribute(string $name = null, string $value = null): self
-    {
-        $this->errorAttributes[] = ['attribute' => $name, 'value' => $value];
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     * @param string $value
-     */
-    public function addInstructionAttribute(string $name = null, string $value = null): self
-    {
-        $this->instructionAttributes[] = ['attribute' => $name, 'value' => $value];
-
-        return $this;
-    }
-
-    public function getInputAttributes(): array
-    {
-        return $this->inputAttributes ?? [];
-    }
-
-    final public function getInputAttributesString(): string
-    {
-        return $this->assembleAttributeString($this->inputAttributes ?? []);
-    }
-
-    public function getLabelAttributes(): array
-    {
-        return $this->labelAttributes ?? [];
-    }
-
-    final public function getLabelAttributesString(): string
-    {
-        return $this->assembleAttributeString($this->labelAttributes ?? []);
-    }
-
-    public function getErrorAttributes(): array
-    {
-        return $this->errorAttributes ?? [];
-    }
-
-    final public function getErrorAttributesString(): string
-    {
-        return $this->assembleAttributeString($this->errorAttributes ?? []);
-    }
-
-    public function getInstructionAttributes(): array
-    {
-        return $this->instructionAttributes ?? [];
-    }
-
-    final public function getInstructionAttributesString(): string
-    {
-        return $this->assembleAttributeString($this->instructionAttributes ?? []);
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->id,
-            'uid' => $this->uid,
-            'typeClass' => static::class,
-            'properties' => [],
-        ];
-    }
-
-    protected function getInputClassString(): string
-    {
-        return implode(' ', $this->inputClasses);
-    }
-
-    /**
-     * @param string $class
-     *
-     * @return $this
-     */
-    protected function addInputClass($class)
-    {
-        $this->inputClasses[] = $class;
-
-        return $this;
-    }
-
-    /**
      * Assemble the Label HTML string.
      */
     protected function getLabelHtml(): string
     {
-        $this->addLabelAttribute('class', $this->getCustomAttributes()->getLabelClass());
+        $attributes = $this->attributes->getLabel()
+            ->clone()
+            ->replace('for', $this->getIdAttribute())
+        ;
 
-        $forAttribute = sprintf(' for="%s"', $this->getIdAttribute());
-
-        $output = '<label'.$forAttribute.$this->getLabelAttributesString().'>';
+        $output = '<label '.$attributes.'>';
         $output .= $this->getLabel();
         $output .= '</label>';
         $output .= \PHP_EOL;
@@ -528,9 +435,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             return '';
         }
 
-        $this->addInstructionAttribute('class', $this->getCustomAttributes()->getInstructionsClass());
-
-        $output = '<div'.$this->getInstructionAttributesString().'>';
+        $output = '<div'.$this->attributes->getInstructions().'>';
         $output .= $this->getInstructions();
         $output .= '</div>';
         $output .= \PHP_EOL;
@@ -548,12 +453,12 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
             return '';
         }
 
-        $this
-            ->addErrorAttribute('class', 'errors')
-            ->addErrorAttribute('class', $this->getCustomAttributes()->getErrorClass())
+        $attributes = clone $this->attributes->getError()
+            ->clone()
+            ->append('class', 'errors')
         ;
 
-        $output = '<ul'.$this->getErrorAttributesString().'>';
+        $output = '<ul'.$attributes.'>';
 
         foreach ($errors as $error) {
             if (\is_array($error)) {
@@ -568,53 +473,6 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $output;
     }
 
-    /**
-     * @return CustomFieldAttributes
-     */
-    protected function getCustomAttributes(): Attributes\CustomFieldAttributes
-    {
-        return $this->customAttributes;
-    }
-
-    /**
-     * Outputs ' $name="$value"' where the $value is escaped
-     * using htmlspecialchars() if $escapeValue is TRUE.
-     *
-     * @param mixed $value
-     */
-    protected function getAttributeString(string $name, $value, bool $escapeValue = true, bool $insertEmpty = false): string
-    {
-        if ('' !== $value || $insertEmpty) {
-            return sprintf(
-                ' %s="%s"',
-                $name,
-                $escapeValue ? htmlentities($value) : $value
-            );
-        }
-
-        return '';
-    }
-
-    /**
-     * Outputs ' $name' if $enabled is true.
-     */
-    protected function getParameterString(string $name, bool $enabled): string
-    {
-        return $enabled ? sprintf(' %s', $name) : '';
-    }
-
-    /**
-     * Outputs ' $name="$value"' where the $value is a number.
-     */
-    protected function getNumericAttributeString(string $name, int $value = null): string
-    {
-        if (null !== $value && 0 !== $value) {
-            return sprintf(' %s="%s"', $name, $value);
-        }
-
-        return '';
-    }
-
     protected function getRequiredAttribute(): string
     {
         $attribute = '';
@@ -622,7 +480,7 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         if ($this->isRequired()) {
             $attribute = ' data-required';
 
-            if ($this->getCustomAttributes()->getUseRequiredAttribute()) {
+            if ($this->parameters->useRequiredAttribute) {
                 $attribute = ' required';
             }
         }
@@ -709,33 +567,22 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return null === $string ? '' : Freeform::t($string, $variables);
     }
 
-    /**
-     * @param string $output
-     */
-    protected function renderRaw($output): Markup
+    protected function renderRaw(string $output): Markup
     {
         return Template::raw($output);
     }
 
-    /**
-     * Sets the custom field attributes.
-     */
-    protected function setCustomAttributes(array $attributes = null)
+    protected function setParameters(array $parameters = null): void
     {
-        if (null !== $attributes) {
-            $this->customAttributes->mergeAttributes($attributes);
-        }
-    }
+        if (null !== $parameters && \array_key_exists('attributes', $parameters)) {
+            $attributes = $parameters['attributes'] ?? [];
+            unset($parameters['attributes']);
 
-    private function assembleAttributeString(array $attributes): string
-    {
-        return CustomFieldAttributes::extractAttributeString(
-            $attributes,
-            $this,
-            [
-                'form' => $this->getForm(),
-                'field' => $this,
-            ]
-        );
+            $this->attributes->merge($attributes);
+        }
+
+        foreach ($parameters as $key => $value) {
+            $this->parameters->add($key, $value);
+        }
     }
 }

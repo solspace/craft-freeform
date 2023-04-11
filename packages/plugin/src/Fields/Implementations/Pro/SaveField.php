@@ -75,21 +75,16 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
 
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $submitClass = $attributes->getInputClassOnly();
-        $formSubmitClass = $this->getForm()->getPropertyBag()->get('submitClass', '');
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->replace('data-freeform-action', SaveForm::SAVE_ACTION)
+            ->replace('type', 'submit')
+        ;
 
-        $submitClass = trim($submitClass.' '.$formSubmitClass);
+        $output = '<button'.$attributes.'>';
+        $output .= $this->getLabel();
+        $output .= '</button>';
 
-        $this->addInputAttribute('class', $submitClass);
-
-        return '<button '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('data-freeform-action', SaveForm::SAVE_ACTION)
-            .$this->getAttributeString('type', 'submit')
-            .$attributes->getInputAttributesAsString()
-            .'>'
-            .$this->getLabel()
-            .'</button>';
+        return $output;
     }
 }

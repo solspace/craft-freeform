@@ -12,6 +12,7 @@ use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
 use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
 #[Type(
@@ -27,8 +28,8 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
 
     #[Property(
         label: 'Maximum Number of Stars',
-        type: 'select',
         instructions: '',
+        type: Property::TYPE_SELECT,
         options: [
             1 => 1,
             2 => 2,
@@ -46,19 +47,19 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
 
     #[Property(
         label: 'Unselected Color',
-        type: 'color',
+        type: Property::TYPE_COLOR_PICKER,
     )]
     protected string $colorIdle = '#DDDDDD';
 
     #[Property(
         label: 'Hover Color',
-        type: 'color',
+        type: Property::TYPE_COLOR_PICKER,
     )]
     protected string $colorHover = '#FFD700';
 
     #[Property(
         label: 'Selected Color',
-        type: 'color',
+        type: Property::TYPE_COLOR_PICKER,
     )]
     protected string $colorSelected = '#FF7700';
 
@@ -82,7 +83,7 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
     {
         $options = [];
         foreach ($this->getOptions() as $option) {
-            $options[$option->getValue()] = $option->getLabel();
+            $options[$option->value] = $option->label;
         }
 
         return $options;
@@ -138,35 +139,37 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->replace('type', 'radio')
+        ;
+
+        $spanAttributes = (new Attributes())
+            ->append('class', 'form-rating-field-wrapper')
+            ->append('class', $this->getFormSha().'-'.$this->getHandle().'-rating-wrapper')
+            ->set('id', $this->getIdAttribute())
+        ;
 
         $output = $this->getStyles();
 
-        $generatedClass = $this->getFormSha().'-'.$this->getHandle().'-rating-wrapper';
-
         $output .= '<div>';
-        $output .= '<span class="'.$generatedClass.' form-rating-field-wrapper"';
-        $output .= $this->getAttributeString('id', $this->getIdAttribute());
-        $output .= '>';
+        $output .= '<span '.$spanAttributes.'>';
 
         $maxValue = $this->getMaxValue();
         for ($i = $maxValue; $i >= 1; --$i) {
             $starId = $this->getIdAttribute().'_star_'.$i;
 
-            $output .= '<input';
-            $output .= $this->getInputAttributesString();
-            $output .= $this->getAttributeString('name', $this->getHandle());
-            $output .= $this->getAttributeString('type', 'radio');
-            $output .= $this->getAttributeString('id', $starId);
-            $output .= $this->getAttributeString('class', $attributes->getClass());
-            $output .= $this->getAttributeString('value', $i, false);
-            $output .= $this->getParameterString('checked', (int) $this->getValue() === $i);
-            $output .= $attributes->getInputAttributesAsString();
-            $output .= ' />'.\PHP_EOL;
+            $inputAttributes = clone $attributes;
+            $inputAttributes
+                ->set('id', $starId)
+                ->replace('value', $i)
+                ->replace('checked', (int) $this->getValue() === $i)
+            ;
 
-            $output .= '<label';
-            $output .= $this->getAttributeString('for', $starId);
-            $output .= '></label>';
+            $output .= '<input'.$inputAttributes.' />'.\PHP_EOL;
+
+            $output .= '<label for="'.$starId.'"></label>';
         }
         $output .= '</span>';
         $output .= '<div style="clear: both;"></div>';

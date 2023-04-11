@@ -14,8 +14,8 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
 
     #[Property(
         label: 'Options Editor',
-        type: Property::TYPE_OPTIONS,
         instructions: 'Define your options',
+        type: Property::TYPE_OPTIONS,
         value: OptionsTransformer::DEFAULT_VALUE,
         transformer: OptionsTransformer::class,
     )]
@@ -38,17 +38,11 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
         return $this->source ?? self::SOURCE_CUSTOM;
     }
 
-    /*-
-     * @inheritDoc
-     */
     public function getOptionTarget()
     {
         return $this->target;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getOptionConfiguration(): array
     {
         return $this->configuration;

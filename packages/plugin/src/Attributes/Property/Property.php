@@ -10,14 +10,15 @@ class Property
     public const TYPE_MIN_MAX = 'minMax';
     public const TYPE_SELECT = 'select';
     public const TYPE_TEXTAREA = 'textarea';
-    public const TYPE_COLOR_PICKER = 'color-picker';
-    public const TYPE_DATE_PICKER = 'date-picker';
-    public const TYPE_TIME_PICKER = 'time-picker';
-    public const TYPE_DATE_TIME_PICKER = 'datetime-picker';
+    public const TYPE_COLOR_PICKER = 'colorPicker';
+    public const TYPE_DATE_PICKER = 'datePicker';
+    public const TYPE_TIME_PICKER = 'timePicker';
+    public const TYPE_DATE_TIME_PICKER = 'datetimePicker';
     public const TYPE_ATTRIBUTES = 'attributes';
     public const TYPE_LABEL = 'label';
     public const TYPE_RECIPIENTS = 'recipients';
-    public const TYPE_NOTIFICATION_TEMPLATE = 'notification-template';
+    public const TYPE_NOTIFICATION_TEMPLATE = 'notificationTemplate';
+    public const TYPE_RECIPIENT_MAPPING = 'recipientMapping';
     public const TYPE_FIELD = 'field';
 
     public function __construct(

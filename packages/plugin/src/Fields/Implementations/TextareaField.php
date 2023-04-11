@@ -57,22 +57,16 @@ class TextareaField extends TextField implements SingleValueInterface, Placehold
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('rows', $this->getRows())
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
+            ->set($this->getRequiredAttribute())
+        ;
 
-        return '<textarea '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString('rows', $this->getRows())
-            .$this->getNumericAttributeString('maxlength', $this->getMaxLength())
-            .$this->getRequiredAttribute()
-            .$attributes->getInputAttributesAsString()
-            .$this->getAttributeString(
-                'placeholder',
-                $this->translate($attributes->getPlaceholder() ?: $this->getPlaceholder())
-            )
-            .'>'
+        return '<textarea'.$attributes.'>'
             .htmlentities($this->getValue())
             .'</textarea>';
     }

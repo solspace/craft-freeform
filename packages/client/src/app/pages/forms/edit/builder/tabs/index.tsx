@@ -6,7 +6,7 @@ import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
 import { selectState, State } from '@editor/store/slices/context';
 import { selectFieldsHaveErrors } from '@editor/store/slices/fields';
-import { selectForm, selectFormErrors } from '@editor/store/slices/form';
+import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
@@ -25,10 +25,10 @@ import {
 
 export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
-  const form = useSelector(selectForm);
+  const form = useSelector(formSelectors.current);
   const state = useSelector(selectState);
 
-  const formErrors = useSelector(selectFormErrors);
+  const formErrors = useSelector(formSelectors.errors);
   const fieldsHaveErrors = useSelector(selectFieldsHaveErrors);
   const notificationsHaveErrors = useSelector(notificationSelectors.errors.any);
 

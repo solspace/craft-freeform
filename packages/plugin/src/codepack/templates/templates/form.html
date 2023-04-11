@@ -69,23 +69,23 @@
         {% endif %}
     {% endmacro %}
 
-    <div class="demo-nav">
-        <a href="{{ siteUrl }}demo/" class="demo-logo">
+    <div class="freeform-nav">
+        <a href="{{ siteUrl }}demo/" class="freeform-logo">
             <img src="{{ siteUrl }}assets/demo/images/icon.svg" alt="Freeform Demo"><h1>Freeform Demo</h1>
         </a>
         This page has automatically loaded the
-        <div class="demo-nav-dropdown">
-            <span class="demo-nav-button">{{ pageTemplate|title|replace({'-':' '}) }}</span>
-            <div class="demo-nav-dropdown-content">
+        <div class="freeform-nav-dropdown">
+            <span class="freeform-nav-button">{{ pageTemplate|title|replace({'-':' '}) }}</span>
+            <div class="freeform-nav-dropdown-content">
             {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "bootstrap-5-multipage-all-fields", "divider", "tailwind-3", "foundation-6"]) -%}
                 {{ _self.pageTemplateItem(pageTemplate, formHandle) }}
             {%- endfor %}
             </div>
         </div>
         formatting template for the
-        <div class="demo-nav-dropdown">
-            <span class="demo-nav-button">{{ form.name }}</span>
-            <div class="demo-nav-dropdown-content">
+        <div class="freeform-nav-dropdown">
+            <span class="freeform-nav-button">{{ form.name }}</span>
+            <div class="freeform-nav-dropdown-content">
             {% set forms = craft.freeform.forms({ limit: 5 }) %}
             {% for form in forms %}
                 <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/templates/{{ pageTemplate }}/{{ form.handle }}">{{ form.name }}</a>
@@ -93,16 +93,16 @@
             </div>
         </div>
         form.
-        <div class="demo-menu">
-            <input id="demo-menu-toggle" type="checkbox" />
-            <label class="demo-menu-hamburger" for="demo-menu-toggle">
+        <div class="freeform-menu">
+            <input id="freeform-menu-toggle" type="checkbox" />
+            <label class="freeform-menu-hamburger" for="freeform-menu-toggle">
                 <div class="top"></div>
                 <div class="top-inner"></div>
                 <div class="meat"></div>
                 <div class="bottom-inner"></div>
                 <div class="bottom"></div>
             </label>
-            <div class="demo-menu-list">
+            <div class="freeform-menu-list">
                 <a href="{{ siteUrl }}demo/bootstrap" class="{{ siteUrl == 'custom' ? ' active' }}">Bootstrap</a>
                 <a href="{{ siteUrl }}demo/custom" class="{{ siteUrl == 'custom' ? ' active' }}">Custom</a>
                 <a href="{{ siteUrl }}demo/extras" class="{{ siteUrl == 'extras' ? ' active' }}">Extras</a>

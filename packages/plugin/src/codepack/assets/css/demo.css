@@ -15,7 +15,7 @@ body {
 }
 
 /* Freeform Notices */
-.freeform-demo-nav {
+.freeform-nav {
     font: 400 12px sans-serif;
     text-align: center;
     color: var(--nav-text);
@@ -28,9 +28,9 @@ body {
     margin-bottom: 50px;
     transition: all 0.5s;
 }
-.freeform-demo-nav code,
-.freeform-demo-nav b,
-.freeform-demo-nav a {
+.freeform-nav code,
+.freeform-nav b,
+.freeform-nav a {
     color: var(--nav-highlight);
 }
 .freeform-warning-notice {
@@ -51,17 +51,17 @@ body {
     color: #f8741b;
 }
 
-.freeform-demo-nav:has(.freeform-demo-logo:hover) {
+.freeform-nav:has(.freeform-logo:hover) {
     background: var(--nav-bg-hover);
 }
 
-.freeform-demo-logo {
+.freeform-logo {
     position: absolute;
     top: 0;
     left: 0;
     margin: 10px 25px;
 }
-.freeform-demo-logo img {
+.freeform-logo img {
     display: inline-block;
     height: 25px;
     width: 25px;
@@ -69,11 +69,11 @@ body {
     box-shadow: var(--logo-glow);
     transition: all 0.5s;
 }
-.freeform-demo-logo:hover img {
+.freeform-logo:hover img {
     border-radius: 50%;
     box-shadow: 0 0 15px 3px rgb(49,109,244,0.5);
 }
-.freeform-demo-logo h1 {
+.freeform-logo h1 {
     font: 400 16px sans-serif !important;
     position: absolute;
     display: block;
@@ -84,14 +84,14 @@ body {
 }
 
 /* Freeform Nav Menu */
-.freeform-demo-menu {
+.freeform-menu {
     position: absolute;
     top: 8px;
     right: 25px;
     margin: 0;
 }
 
-.freeform-demo-menu-hamburger {
+.freeform-menu-hamburger {
     height: 10px;
     margin: 5px 25px 0 0;
     display: grid;
@@ -100,10 +100,10 @@ body {
     cursor: pointer;
     z-index: 2;
 }
-.freeform-demo-menu-hamburger:hover div {
+.freeform-menu-hamburger:hover div {
     background: #316df4;
 }
-.freeform-demo-menu-hamburger div {
+.freeform-menu-hamburger div {
     background: var(--menu-bg);
     position: relative;
     width: 25px;
@@ -111,31 +111,31 @@ body {
     margin-top: 0;
     transition: all 0.2s ease-in-out;
 }
-.freeform-demo-menu-hamburger div:nth-child(even) {
+.freeform-menu-hamburger div:nth-child(even) {
     background: transparent;
     height: 5px;
 }
-#freeform-demo-menu-toggle {
+#freeform-menu-toggle {
     display: none;
 }
-#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .top {
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .top {
     transform: rotate(-45deg);
     margin-top: 8px;
 }
-#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .meat {
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .meat {
     transform: rotate(45deg);
     margin-top: -8px;
 }
-#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .top-inner,
-#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .bottom-inner,
-#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .bottom {
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .top-inner,
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .bottom-inner,
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .bottom {
     transform: scale(0);
 }
-#freeform-demo-menu-toggle:checked ~ .freeform-demo-menu-list {
+#freeform-menu-toggle:checked ~ .freeform-menu-list {
     display: block;
 }
 
-.freeform-demo-menu-list {
+.freeform-menu-list {
     margin: 35px 25px 0 0;
     display: none;
     padding: 0;
@@ -143,7 +143,7 @@ body {
     z-index: 3;
     transition: all 0.5s ease;
 }
-.freeform-demo-menu-list a {
+.freeform-menu-list a {
     margin: 0;
     padding: 15px 25px;
     background: var(--menu-list-bg);
@@ -155,23 +155,23 @@ body {
     z-index: 3;
     transition: all 0.5s ease;
 }
-.freeform-demo-menu-list a:hover {
+.freeform-menu-list a:hover {
     color: #ffffff !important;
     text-decoration: none;
     background: #316df4;
 }
-.freeform-demo-menu-list a:first-child {
+.freeform-menu-list a:first-child {
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }
-.freeform-demo-menu-list a:last-child {
+.freeform-menu-list a:last-child {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     border-bottom: 0px;
 }
 
 /* Freeform Info Button */
-.freeform-demo-nav-button {
+.freeform-nav-button {
     background: var(--nav-button-bg);
     color: var(--nav-button-text);
     padding: 5px 8px;
@@ -183,17 +183,17 @@ body {
     cursor: pointer;
     transition: all 0.5s;
 }
-.freeform-demo-nav-button:hover {
+.freeform-nav-button:hover {
     color: var(--nav-button-hover);
     background: #0d6efd;
 }
 
 /* Freeform Info Dropdown */
-.freeform-demo-nav-dropdown {
+.freeform-nav-dropdown {
     position: relative;
     display: inline-block;
 }
-.freeform-demo-nav-dropdown-content {
+.freeform-nav-dropdown-content {
     text-align: left;
     display: none;
     position: absolute;
@@ -208,7 +208,7 @@ body {
     z-index: 1;
     transition: all 0.25s;
 }
-.freeform-demo-nav-dropdown-content a {
+.freeform-nav-dropdown-content a {
     font-size: 12px;
     color: var(--nav-dropdown-text);
     padding: 7px 8px;
@@ -216,28 +216,28 @@ body {
     display: block;
     transition: all 0.25s;
 }
-.freeform-demo-nav-dropdown-content a.active {
+.freeform-nav-dropdown-content a.active {
     color: #0d6efd;
 }
-.freeform-demo-nav-dropdown-content hr {
+.freeform-nav-dropdown-content hr {
     margin: 3px 0;
     border: 0;
     border-top: var(--nav-dropdown-divider);
 }
-.freeform-demo-nav-dropdown-content a:hover {
+.freeform-nav-dropdown-content a:hover {
     background: var(--nav-dropdown-bg-hover);
 }
-.freeform-demo-nav-dropdown-content a:first-of-type:hover {
+.freeform-nav-dropdown-content a:first-of-type:hover {
     border-top-right-radius: 5px;
 }
-.freeform-demo-nav-dropdown-content a:last-of-type:hover {
+.freeform-nav-dropdown-content a:last-of-type:hover {
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
 }
-.freeform-demo-nav-dropdown:hover .freeform-demo-nav-dropdown-content {
+.freeform-nav-dropdown:hover .freeform-nav-dropdown-content {
     display: block;
 }
-.freeform-demo-nav-dropdown:hover .freeform-demo-nav-button {
+.freeform-nav-dropdown:hover .freeform-nav-button {
     color: var(--nav-button-active);
     background: #0d6efd;
     border-bottom-left-radius: 0px;

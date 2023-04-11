@@ -5,13 +5,29 @@ html {
     margin: 0 auto;
 }
 body {
+    font-family: sans-serif;
     padding: 0;
     margin: 0 auto;
 }
 .freeform-form-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding-top: 100px !important;
+    padding-top: 80px !important;
+}
+
+.freeform-page-heading {
+    color: var(--page-text);
+    padding: 0 0 40px 0;
+}
+.freeform-page-heading h2 {
+    font: 400 35px sans-serif;
+    margin: 0 0 10px 0;
+}
+.freeform-page-heading h2:only-child {
+    margin: 0;
+}
+.freeform-page-heading p {
+    margin: 0;
 }
 
 /* Freeform Notices */
@@ -39,7 +55,7 @@ body {
     color: #f8741b;
     background: #ffe5d4;
     border: 1px solid #f8741b;
-    border-radius: 5px;
+    border-radius: 10px;
     padding: 20px 30px;
     position: absolute;
     top: 50%;
@@ -161,12 +177,12 @@ body {
     background: #316df4;
 }
 .freeform-menu-list a:first-child {
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 .freeform-menu-list a:last-child {
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
     border-bottom: 0px;
 }
 
@@ -242,4 +258,67 @@ body {
     background: #0d6efd;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
+}
+
+/* Freeform Forms Grid */
+.freeform-forms-grid {
+    display: grid;
+    grid-template-columns: 33.3% 33.3% 33.3%;
+    grid-template-rows: auto;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+.freeform-forms-grid a {
+    align-self: top;
+    min-height: 80px;
+    color: var(--nav-highlight);
+    text-decoration: none;
+    background: var(--nav-bg);
+    border: none;
+    border-radius: 10px;
+    position: relative;
+    padding: 20px;
+    margin: 5px 20px 25px 5px;
+    transition: all 0.5s;
+}
+.freeform-forms-grid a h3 {
+    padding: 0;
+    margin: 0 0 5px 0;
+    text-decoration: none;
+}
+.freeform-forms-grid a p {
+    color: var(--nav-text);
+    padding: 0;
+    margin: 0;
+    text-decoration: none;
+    font-weight: normal;
+    line-height: 1.5;
+}
+.freeform-forms-grid a:hover {
+    background: #316df4;
+    border: none;
+    text-decoration: none;
+    padding: 25px;
+    margin: 0px 15px 20px 0px;
+}
+.freeform-forms-grid a:hover h3,
+.freeform-forms-grid a:hover p {
+    color: #ffffff;
+}
+.freeform-forms-grid a:focus {
+    padding: 20px;
+    margin: 5px 20px 25px 5px;
+}
+.freeform-forms-grid .freeform-submission-count {
+    display: block;
+    background: var(--form-box-submissions) !important;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    padding: 5px 20px;
+    margin: 0;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }

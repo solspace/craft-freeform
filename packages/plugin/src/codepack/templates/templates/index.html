@@ -1,32 +1,26 @@
-{% extends "demo/_layout" %}
+{% extends "demo/templates/_layout" %}
 
 {% set pageTitle = "Bootstrap" %}
 {% set page = "bootstrap" %}
 
 {% block content %}
 
-<div class="container">
+    <div class="freeform-page-heading">
+        <h2>Select a Form</h2>
+        <p>Choose a form from below that you'd like to see go through the Freeform demo simulator.</p>
+    </div>
 
-    {% set forms = craft.freeform.forms %}
-
-    <h2>Forms <small class="text-muted">(Bootstrap Example)</small></h2>
-    <p class="mb-5">
-        This section of the demo templates lets you get a quick preview of what your forms look like by forcing the Freeform
-        <b>Bootstrap 5</b> formatting template on your forms. This is also a great way to troubleshoot potential rendering issues.
-    </p>
-
-    <div class="list-group">
+    <div class="freeform-forms-grid">
     {% for form in forms %}
-        <a href="{{ siteUrl }}demo/templates/{{ craft.app.request.segment(3) }}/{{ form.handle }}" class="list-group-item d-flex justify-content-between align-items-start">
-            <div class="ms-2 me-auto">
-            <div class="fw-bold">{{ form.name }}</div>
-                {{ form.description }}
+        <style>.freeform-forms-grid-item-{{ form.id }}:hover{background:{{ form.color }}!important;}</style>
+        <a href="{{ siteUrl }}demo/templates/{{ pageTemplate }}/{{ form.handle }}" class="freeform-forms-grid-item-{{ form.id }}" style="border-top: 10px solid {{ form.color }}">
+            <h3>{{ form.name }}</h3>
+            <p>{{ form.description|truncate(50, '...') }}</p>
+            <div class="freeform-submission-count">
+                <p>{{ craft.freeform.submissions({formId: form.id}).count }} submissions</p>
             </div>
-            <span class="badge bg-primary rounded-pill">Submissions &nbsp;{{ craft.freeform.submissions({formId: form.id}).count }}</span>
         </a>
     {% endfor %}
     </div>
-
-</div>
 
 {% endblock %}

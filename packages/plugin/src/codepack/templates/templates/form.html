@@ -19,8 +19,8 @@
     {% endif %}
     <!-- Is this a Foundation template -->
     {% if pageTemplate == "foundation-6" %}
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/css/foundation.min.css">
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/js/foundation.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/css/foundation.min.css" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/foundation-sites@6.7.5/dist/js/foundation.min.js" crossorigin="anonymous"></script>
     {% endif %}
     <!-- Is this a Tailwind template -->
     {% if pageTemplate == "tailwind-3" %}
@@ -31,128 +31,27 @@
         <script src="https://cdn.tailwindcss.com/3.1.8"></script>
     {% endif %}
     <style>
-        /* Freeform Core Styles */
-        html {
-            background: #{% if colorMode == "dark" %}212529{% else %}ffffff{% endif %};
-            padding: 0;
-            margin: 0 auto;
-        }
-        body {
-            padding: 0;
-            margin: 0 auto;
-        }
-        .freeform-form-container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        /* Freeform Notices */
-        .freeform-info-notice {
-            font: 400 12px sans-serif;
-            text-align: center;
-            color: #{% if colorMode == "dark" %}959595{% else %}8a8a8a{% endif %};
-            background: #{% if colorMode == "dark" %}131618{% else %}e8e8e8{% endif %};
-            display: block;
-            padding: 15px 15px;
-            margin-bottom: 50px;
-        }
-        .freeform-info-notice code,
-        .freeform-info-notice b,
-        .freeform-info-notice a {
-            color: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-        }
-        .freeform-warning-notice {
-            font: 400 12px sans-serif;
-            text-align: center;
-            color: #f8741b;
-            background: #ffe5d4;
-            border: 1px solid #f8741b;
-            border-radius: 5px;
-            padding: 20px 30px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-right: -50%;
-            transform: translate(-50%, -50%);
-        }
-        .freeform-warning-notice a {
-            color: #f8741b;
-        }
-
-        /* Freeform Info Button */
-        .freeform-info-button {
-            background-color: #{% if colorMode == "dark" %}3c474f{% else %}d0d0d0{% endif %};
-            color: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-            padding: 5px 8px;
-            margin: 0 3px;
-            font-size: 12px;
-            text-decoration: none;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.5s;
-        }
-        .freeform-info-button:hover {
-            color: #{% if colorMode == "dark" %}dfdfdf{% else %}dfdfdf{% endif %};
-            background-color: #0d6efd;
-        }
-
-        /* Freeform Info Dropdown */
-        .freeform-info-dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .freeform-info-dropdown-content {
-            text-align: left;
-            display: none;
-            position: absolute;
-            margin-top: 5px;
-            margin-left: 3px;
-            background-color: #{% if colorMode == "dark" %}191c1f{% else %}f1f1f1{% endif %};
-            border-bottom-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-            border-top-right-radius: 5px;
-            min-width: 200px;
-            box-shadow: 0px 0 10px 5px rgba(0,0,0,0.2);
-            z-index: 1;
-            transition: all 0.25s;
-        }
-        .freeform-info-dropdown-content a {
-            font-size: 12px;
-            color: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
-            padding: 7px 8px;
-            text-decoration: none;
-            display: block;
-            transition: all 0.25s;
-        }
-        .freeform-info-dropdown-content a.active {
-            color: #0d6efd;
-        }
-        .freeform-info-dropdown-content hr {
-            margin: 3px 0;
-            border: 0;
-            border-top: 1px solid #{% if colorMode == "dark" %}252b31{% else %}c5c5c5{% endif %};
-        }
-        .freeform-info-dropdown-content a:hover {
-            background-color: #{% if colorMode == "dark" %}252b31{% else %}dedede{% endif %};
-        }
-        .freeform-info-dropdown-content a:first-of-type:hover {
-            border-top-right-radius: 5px;
-        }
-        .freeform-info-dropdown-content a:last-of-type:hover {
-            border-bottom-left-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
-        .freeform-info-dropdown:hover .freeform-info-dropdown-content {
-            display: block;
-        }
-        .freeform-info-dropdown:hover .freeform-info-button {
-            color: #{% if colorMode == "dark" %}dfdfdf{% else %}eeeeee{% endif %};
-            background-color: #0d6efd;
-            border-bottom-left-radius: 0px;
-            border-bottom-right-radius: 0px;
+        :root {
+            --page-bg: #{% if colorMode == "dark" %}212529{% else %}ffffff{% endif %};
+            --nav-text: #{% if colorMode == "dark" %}959595{% else %}8a8a8a{% endif %};
+            --nav-bg: {% if colorMode == "dark" %}rgb(19,22,24,0.85){% else %}rgb(232,232,232,0.85){% endif %};
+            --nav-highlight: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
+            --nav-bg-hover: {% if colorMode == "dark" %}rgb(19,22,24,0.25){% else %}rgb(232,232,232,0.25){% endif %};
+            --logo-glow: 0 0 7px 1px {% if colorMode == "dark" %}rgb(255,255,255,0.2){% else %}rgb(0,0,0,0.1){% endif %};
+            --menu-bg: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
+            --menu-list-bg: #{% if colorMode == "dark" %}191c1f{% else %}f1f1f1{% endif %};
+            --menu-list-border: 1px solid #{% if colorMode == "dark" %}252b31{% else %}c5c5c5{% endif %};
+            --nav-button-bg: #{% if colorMode == "dark" %}3c474f{% else %}d0d0d0{% endif %};
+            --nav-button-text: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
+            --nav-button-hover: #{% if colorMode == "dark" %}dfdfdf{% else %}dfdfdf{% endif %};
+            --nav-button-active:  #{% if colorMode == "dark" %}dfdfdf{% else %}eeeeee{% endif %};
+            --nav-dropdown-bg: #{% if colorMode == "dark" %}191c1f{% else %}f1f1f1{% endif %};
+            --nav-dropdown-bg-hover: #{% if colorMode == "dark" %}252b31{% else %}dedede{% endif %};
+            --nav-dropdown-text: #{% if colorMode == "dark" %}dfdfdf{% else %}4e4e4e{% endif %};
+            --nav-dropdown-divider: 1px solid #{% if colorMode == "dark" %}252b31{% else %}c5c5c5{% endif %};
         }
     </style>
+    <link href="{{ siteUrl }}assets/demo/css/demo.css" rel="stylesheet">
 </head>
 <body>
 
@@ -170,20 +69,23 @@
         {% endif %}
     {% endmacro %}
 
-    <div class="freeform-info-notice">
+    <div class="demo-nav">
+        <a href="{{ siteUrl }}demo/" class="demo-logo">
+            <img src="{{ siteUrl }}assets/demo/images/icon.svg" alt="Freeform Demo"><h1>Freeform Demo</h1>
+        </a>
         This page has automatically loaded the
-        <div class="freeform-info-dropdown">
-            <span class="freeform-info-button">{{ pageTemplate|title|replace({'-':' '}) }}</span>
-            <div class="freeform-info-dropdown-content">
+        <div class="demo-nav-dropdown">
+            <span class="demo-nav-button">{{ pageTemplate|title|replace({'-':' '}) }}</span>
+            <div class="demo-nav-dropdown-content">
             {% for pageTemplate in (["basic-light", "basic-dark", "basic-floating-labels", "conversational", "divider", "grid", "flexbox", "divider", "bootstrap-5", "bootstrap-5-dark", "bootstrap-5-floating-labels", "bootstrap-5-multipage-all-fields", "divider", "tailwind-3", "foundation-6"]) -%}
                 {{ _self.pageTemplateItem(pageTemplate, formHandle) }}
             {%- endfor %}
             </div>
         </div>
         formatting template for the
-        <div class="freeform-info-dropdown">
-            <span class="freeform-info-button">{{ form.name }}</span>
-            <div class="freeform-info-dropdown-content">
+        <div class="demo-nav-dropdown">
+            <span class="demo-nav-button">{{ form.name }}</span>
+            <div class="demo-nav-dropdown-content">
             {% set forms = craft.freeform.forms({ limit: 5 }) %}
             {% for form in forms %}
                 <a{{ formHandle == form.handle ? ' class="active"' }} href="{{ siteUrl }}demo/templates/{{ pageTemplate }}/{{ form.handle }}">{{ form.name }}</a>
@@ -191,9 +93,24 @@
             </div>
         </div>
         form.
+        <div class="demo-menu">
+            <input id="demo-menu-toggle" type="checkbox" />
+            <label class="demo-menu-hamburger" for="demo-menu-toggle">
+                <div class="top"></div>
+                <div class="top-inner"></div>
+                <div class="meat"></div>
+                <div class="bottom-inner"></div>
+                <div class="bottom"></div>
+            </label>
+            <div class="demo-menu-list">
+                <a href="{{ siteUrl }}demo/bootstrap" class="{{ siteUrl == 'custom' ? ' active' }}">Bootstrap</a>
+                <a href="{{ siteUrl }}demo/custom" class="{{ siteUrl == 'custom' ? ' active' }}">Custom</a>
+                <a href="{{ siteUrl }}demo/extras" class="{{ siteUrl == 'extras' ? ' active' }}">Extras</a>
+            </div>
+        </div>
     </div>
 
-    <div class="freeform-form-container">
+    <div class="freeform-form-content">
         {{ form.render }}
     </div>
 

@@ -1,0 +1,245 @@
+/* Freeform Core Styles */
+html {
+    background: var(--page-bg);
+    padding: 0 0 50px 0;
+    margin: 0 auto;
+}
+body {
+    padding: 0;
+    margin: 0 auto;
+}
+.freeform-form-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-top: 100px !important;
+}
+
+/* Freeform Notices */
+.freeform-demo-nav {
+    font: 400 12px sans-serif;
+    text-align: center;
+    color: var(--nav-text);
+    background: var(--nav-bg);
+    display: block;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    padding: 15px 15px;
+    margin-bottom: 50px;
+    transition: all 0.5s;
+}
+.freeform-demo-nav code,
+.freeform-demo-nav b,
+.freeform-demo-nav a {
+    color: var(--nav-highlight);
+}
+.freeform-warning-notice {
+    font: 400 12px sans-serif;
+    text-align: center;
+    color: #f8741b;
+    background: #ffe5d4;
+    border: 1px solid #f8741b;
+    border-radius: 5px;
+    padding: 20px 30px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+.freeform-warning-notice a {
+    color: #f8741b;
+}
+
+.freeform-demo-nav:has(.freeform-demo-logo:hover) {
+    background: var(--nav-bg-hover);
+}
+
+.freeform-demo-logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px 25px;
+}
+.freeform-demo-logo img {
+    display: inline-block;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    box-shadow: var(--logo-glow);
+    transition: all 0.5s;
+}
+.freeform-demo-logo:hover img {
+    border-radius: 50%;
+    box-shadow: 0 0 15px 3px rgb(49,109,244,0.5);
+}
+.freeform-demo-logo h1 {
+    font: 400 16px sans-serif !important;
+    position: absolute;
+    display: block;
+    width: 150px;
+    top: 3px;
+    left: 20px;
+    margin: 0 !important;
+}
+
+/* Freeform Nav Menu */
+.freeform-demo-menu {
+    position: absolute;
+    top: 8px;
+    right: 25px;
+    margin: 0;
+}
+
+.freeform-demo-menu-hamburger {
+    height: 10px;
+    margin: 5px 25px 0 0;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    justify-items: right;
+    cursor: pointer;
+    z-index: 2;
+}
+.freeform-demo-menu-hamburger:hover div {
+    background: #316df4;
+}
+.freeform-demo-menu-hamburger div {
+    background: var(--menu-bg);
+    position: relative;
+    width: 25px;
+    height: 3px;
+    margin-top: 0;
+    transition: all 0.2s ease-in-out;
+}
+.freeform-demo-menu-hamburger div:nth-child(even) {
+    background: transparent;
+    height: 5px;
+}
+#freeform-demo-menu-toggle {
+    display: none;
+}
+#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .top {
+    transform: rotate(-45deg);
+    margin-top: 8px;
+}
+#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .meat {
+    transform: rotate(45deg);
+    margin-top: -8px;
+}
+#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .top-inner,
+#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .bottom-inner,
+#freeform-demo-menu-toggle:checked + .freeform-demo-menu-hamburger .bottom {
+    transform: scale(0);
+}
+#freeform-demo-menu-toggle:checked ~ .freeform-demo-menu-list {
+    display: block;
+}
+
+.freeform-demo-menu-list {
+    margin: 35px 25px 0 0;
+    display: none;
+    padding: 0;
+    text-align: right;
+    z-index: 3;
+    transition: all 0.5s ease;
+}
+.freeform-demo-menu-list a {
+    margin: 0;
+    padding: 15px 25px;
+    background: var(--menu-list-bg);
+    font: 400 18px sans-serif;
+    text-align: right;
+    text-decoration: none;
+    border-bottom: var(--menu-list-border);
+    display: block;
+    z-index: 3;
+    transition: all 0.5s ease;
+}
+.freeform-demo-menu-list a:hover {
+    color: #ffffff !important;
+    text-decoration: none;
+    background: #316df4;
+}
+.freeform-demo-menu-list a:first-child {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+.freeform-demo-menu-list a:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-bottom: 0px;
+}
+
+/* Freeform Info Button */
+.freeform-demo-nav-button {
+    background: var(--nav-button-bg);
+    color: var(--nav-button-text);
+    padding: 5px 8px;
+    margin: 0 3px;
+    font-size: 12px;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.freeform-demo-nav-button:hover {
+    color: var(--nav-button-hover);
+    background: #0d6efd;
+}
+
+/* Freeform Info Dropdown */
+.freeform-demo-nav-dropdown {
+    position: relative;
+    display: inline-block;
+}
+.freeform-demo-nav-dropdown-content {
+    text-align: left;
+    display: none;
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 3px;
+    background: var(--nav-dropdown-bg);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    min-width: 200px;
+    box-shadow: 0px 0 10px 5px rgba(0,0,0,0.2);
+    z-index: 1;
+    transition: all 0.25s;
+}
+.freeform-demo-nav-dropdown-content a {
+    font-size: 12px;
+    color: var(--nav-dropdown-text);
+    padding: 7px 8px;
+    text-decoration: none;
+    display: block;
+    transition: all 0.25s;
+}
+.freeform-demo-nav-dropdown-content a.active {
+    color: #0d6efd;
+}
+.freeform-demo-nav-dropdown-content hr {
+    margin: 3px 0;
+    border: 0;
+    border-top: var(--nav-dropdown-divider);
+}
+.freeform-demo-nav-dropdown-content a:hover {
+    background: var(--nav-dropdown-bg-hover);
+}
+.freeform-demo-nav-dropdown-content a:first-of-type:hover {
+    border-top-right-radius: 5px;
+}
+.freeform-demo-nav-dropdown-content a:last-of-type:hover {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.freeform-demo-nav-dropdown:hover .freeform-demo-nav-dropdown-content {
+    display: block;
+}
+.freeform-demo-nav-dropdown:hover .freeform-demo-nav-button {
+    color: var(--nav-button-active);
+    background: #0d6efd;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}

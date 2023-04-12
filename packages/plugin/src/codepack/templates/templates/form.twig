@@ -1,6 +1,6 @@
 {% extends "demo/templates/_layout" %}
 
-{% set pageTitle = "Bootstrap" %}
+{% set pageTitle = "Viewing " ~ craft.app.request.segment(4) ~ " on " ~ craft.app.request.segment(3)|title|replace({'-':' '}) ~ " template" %}
 {% set page = "bootstrap" %}
 
 {% block content %}
@@ -16,8 +16,7 @@
     {% else %}
 
         <div class="freeform-warning-notice">
-            Form with the handle <code>{{ formHandle }}</code> does not exist.<br /><br />
-            ← <a href="{{ siteUrl }}demo/">Return to the demo area</a>
+            Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
         </div>
 
     {% endif %}

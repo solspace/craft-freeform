@@ -1,0 +1,96 @@
+{% extends "demo/templates/_layout" %}
+
+{% set pageTitle = "Submissions" %}
+{% set page = "bootstrap" %}
+
+{% block content %}
+
+{% if currentUser and currentUser.admin %}
+
+    {% set formHandle = craft.app.request.segment(3) %}
+
+    {% set form = craft.freeform.form(formHandle) %}
+    {% set submissions = craft.freeform.submissions({
+        form: formHandle,
+    }).all %}
+
+    <div class="freeform-page-heading">
+        <h2>{{ craft.freeform.submissions({formId: form.id}).count }} Submissions for <a href="{{ siteUrl }}demo/bootstrap-dark/{{ form.handle }}">{{ form.name }}</a></h2>
+        <p>Choose a form from below that you'd like to see go through the Freeform demo simulator.</p>
+    </div>
+
+    <div class="freeform-table-overflow">
+        <table class="freeform-table">
+            <thead>
+                <tr>
+                    <th>ID#</th>
+                    <th class="table-col-wide-120">Date</th>
+                    <th>Status</th>
+                    <th>Author</th>
+                    <th class="table-col-wide-150">Title</th>
+                    {% for field in (submissions|first) %}
+                        <th>{{ field.label|truncate(20, '...') }}</th>
+                    {% endfor %}
+                    {% if craft.freeform.pro %}
+                        {% if currentUser and currentUser.admin %}
+                            <th class="table-col-wide-120">{{ "Actions"|t("freeform") }}</th>
+                        {% endif %}
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+        {% if submissions is empty %}
+                <tr>
+                    <td colspan="200" class="table-no-results">There are currently no submissions for this form.</td>
+                </tr>
+        {% else %}
+            {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.id }}</td>
+                    <td>{{ submission.dateCreated|date('Y-m-d H:i') }}</td>
+                    <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
+                    <td>{{ submission.author ? submission.author.username : "Guest"|t("freeform") }}</td>
+                    <td>
+                        <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}/{{ submission.id }}">
+                            {{ submission.title }}
+                        </a>
+                    </td>
+                {% for field in submission %}
+                    {% if field.type == "signature" %}
+                        <td>
+                        {% if submission[field.handle].value %}
+                            <img src="{{ submission[field.handle].value }}" alt="Signature" />
+                        {% endif %}
+                        </td>
+                    {% else %}
+                        <td>{{ submission[field.handle]|truncate(40, '...') }}</td>
+                    {% endif %}
+                {% endfor %}
+                {% if craft.freeform.pro %}
+                    {% if currentUser and currentUser.admin %}
+                        <td>
+                            <a class="freeform-button orange" href="{{ siteUrl }}demo/templates/basic-light/{{ pageTemplate }}/edit/{{ submission.token }}">
+                                {{- "Edit"|t("freeform") -}}
+                            </a>
+                            <a class="freeform-button red" href="{{ siteUrl }}demo/submissions/basic-light/{{ pageTemplate }}/delete/{{ submission.token }}">
+                                {{- "Delete"|t("freeform") -}}
+                            </a>
+                        </td>
+                    {% endif %}
+                {% endif %}
+                </tr>
+            {% endfor %}
+        {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+{% else %}
+
+    <div class="freeform-warning-notice">
+        Sorry, you do not have permission to access this page.
+    </div>
+
+{% endif %}
+
+{% endblock %}

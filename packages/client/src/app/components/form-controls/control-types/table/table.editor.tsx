@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
 import {
@@ -21,7 +21,6 @@ import {
 } from '@components/form-controls/control-types/table/table.operations';
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { Option as PropertyOption } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
@@ -36,26 +35,18 @@ export const TableEditor: React.FC<Props> = ({
   columns,
   updateValue,
 }) => {
-  const { activeCell, setActiveCell, setCellRef } = useCellNavigation(
-    columns.length,
-    3
-  );
+  const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
+    useCellNavigation(columns.length, 3);
 
-  const appendAndFocus = (cellIndex: number): void => {
-    setActiveCell(columns.length, cellIndex);
-    updateValue(addColumn(columns));
+  const appendAndFocus = (cellIndex: number, atIndex?: number): void => {
+    setActiveCell(
+      atIndex !== undefined ? atIndex + 1 : columns.length,
+      cellIndex
+    );
+    updateValue(
+      addColumn(columns, atIndex !== undefined ? atIndex : columns.length)
+    );
   };
-
-  const keyPressHandler = useCallback(
-    (event: KeyboardEvent): void => {
-      if (event.key === 'Enter') {
-        appendAndFocus(0);
-      }
-    },
-    [columns]
-  );
-
-  useOnKeypress({ callback: keyPressHandler }, [columns]);
 
   return (
     <TableEditorWrapper>
@@ -72,6 +63,14 @@ export const TableEditor: React.FC<Props> = ({
                     autoFocus={activeCell === `${rowIndex}:0`}
                     ref={(element) => setCellRef(element, rowIndex, 0)}
                     onFocus={() => setActiveCell(rowIndex, 0)}
+                    onKeyDown={keyPressHandler({
+                      onEnter: (event) => {
+                        appendAndFocus(
+                          0,
+                          event.shiftKey ? rowIndex : undefined
+                        );
+                      },
+                    })}
                     onChange={(event) =>
                       updateValue(
                         updateColumn(
@@ -89,6 +88,14 @@ export const TableEditor: React.FC<Props> = ({
                     title={translate('Type')}
                     ref={(element) => setCellRef(element, rowIndex, 1)}
                     onFocus={() => setActiveCell(rowIndex, 1)}
+                    onKeyDown={keyPressHandler({
+                      onEnter: (event) => {
+                        appendAndFocus(
+                          0,
+                          event.shiftKey ? rowIndex : undefined
+                        );
+                      },
+                    })}
                     onChange={(event) =>
                       updateValue(
                         updateColumn(
@@ -112,6 +119,14 @@ export const TableEditor: React.FC<Props> = ({
                     autoFocus={activeCell === `${rowIndex}:2`}
                     ref={(element) => setCellRef(element, rowIndex, 2)}
                     onFocus={() => setActiveCell(rowIndex, 2)}
+                    onKeyDown={keyPressHandler({
+                      onEnter: (event) => {
+                        appendAndFocus(
+                          2,
+                          event.shiftKey ? rowIndex : undefined
+                        );
+                      },
+                    })}
                     onChange={(event) =>
                       updateValue(
                         updateColumn(

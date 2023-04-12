@@ -1,10 +1,22 @@
 import React from 'react';
 
+import { ValueWrapper } from './value.styles';
+
 type Props = {
-  predefined: boolean;
+  predefined?: boolean;
   value: string;
+  onChange: (value: string) => void;
 };
 
-export const Value: React.FC<Props> = ({ predefined, value }) => {
-  return <input type="text" value={value} />;
+export const Value: React.FC<Props> = ({ predefined, value, onChange }) => {
+  return (
+    <ValueWrapper>
+      <input
+        className="text fullwidth"
+        type="text"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
+    </ValueWrapper>
+  );
 };

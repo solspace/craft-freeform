@@ -1,6 +1,17 @@
 import type { Recipient } from '@ff-client/types/notifications';
 
-export const addRecipient = (value: Recipient[]): Recipient[] => {
+export const addRecipient = (
+  value: Recipient[],
+  index?: number
+): Recipient[] => {
+  if (index !== undefined) {
+    return [
+      ...value.slice(0, index + 1),
+      { email: '', name: '' },
+      ...value.slice(index + 1),
+    ];
+  }
+
   return [...(value || []), { email: '', name: '' }];
 };
 

@@ -7,9 +7,11 @@ use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\Notifications\NotificationTemplates\NotificationTemplateTransformer;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\Notifications\Recipients\RecipientMappingTransformer;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Notifications\Recipients\RecipientTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\BaseNotification;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollection;
 
 #[Type(
@@ -39,10 +41,20 @@ class Dynamic extends BaseNotification
     protected ?NotificationTemplate $template;
 
     #[Property(
+        label: 'Default Recipients',
+        instructions: 'Specify recipients that should receive notifications if not specifically configured below.',
+        type: Property::TYPE_RECIPIENTS,
+        order: 11,
+        value: [],
+        transformer: RecipientTransformer::class,
+    )]
+    protected RecipientCollection $recipients;
+
+    #[Property(
         label: 'Recipient Mapping',
         instructions: 'Specify recipients that should receive notifications based on the value of the target field.',
         type: Property::TYPE_RECIPIENT_MAPPING,
-        order: 11,
+        order: 12,
         transformer: RecipientMappingTransformer::class,
     )]
     protected ?RecipientMappingCollection $recipientMapping;

@@ -7,6 +7,7 @@ export enum PropertyType {
   Textarea = 'textarea',
   Boolean = 'bool',
   Select = 'select',
+  Options = 'options',
   Color = 'color',
   DateTime = 'dateTime',
   MinMax = 'minMax',

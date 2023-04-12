@@ -56,13 +56,15 @@ export const useQueryFormNotifications = (
   );
 };
 
+export type NotificationTemplateGroups = {
+  database: NotificationTemplate[];
+  files: NotificationTemplate[];
+};
+
 type NotificationTemplatePayload = {
   allowedTypes: TemplateType[];
   default: TemplateType;
-  templates: {
-    database: NotificationTemplate[];
-    files: NotificationTemplate[];
-  };
+  templates: NotificationTemplateGroups;
 };
 
 export const useQueryNotificationTemplates = (): UseQueryResult<

@@ -3,7 +3,6 @@ import { Control } from '@components/form-controls/control';
 import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
-import { useQueryNotificationTemplates } from '@ff-client/queries/notifications';
 import { useNewNotificationMutation } from '@ff-client/queries/notifications.mutation';
 import { spacings } from '@ff-client/styles/variables';
 import {
@@ -19,6 +18,7 @@ import {
   useEditorAnimations,
   useSelectionAnimations,
 } from './notification-template.animations';
+import { useNotificationTemplates } from './notification-template.hooks';
 import {
   ButtonRow,
   CategorySelectionWrapper,
@@ -37,14 +37,15 @@ const NotificationTemplate: React.FC<ControlType<string | number>> = ({
   updateValue,
 }) => {
   const [open, setOpen] = React.useState(false);
-  const { data, isFetching } = useQueryNotificationTemplates();
+  const { templates, isFetching, selectedTemplate } =
+    useNotificationTemplates(value);
 
   const editorAnimations = useEditorAnimations(open);
   const selectionAnimations = useSelectionAnimations(open);
 
   const mutation = useNewNotificationMutation();
 
-  if (isFetching && !data) {
+  if (isFetching && !templates) {
     return (
       <Control property={property} errors={errors}>
         <NotificationTemplateSelector style={{ height: 36 }}>
@@ -61,16 +62,6 @@ const NotificationTemplate: React.FC<ControlType<string | number>> = ({
     );
   }
 
-  const isDb = typeof value === 'number';
-  const isFile = typeof value === 'string';
-
-  let currentTemplate: NotificationTemplate;
-  if (isDb) {
-    currentTemplate = data.templates.database.find((t) => t.id === value);
-  } else if (isFile) {
-    currentTemplate = data.templates.files.find((t) => t.id === value);
-  }
-
   const handleSelect: NotificationSelectHandler = (template) => {
     mutation.reset();
     updateValue(template.id);
@@ -84,7 +75,7 @@ const NotificationTemplate: React.FC<ControlType<string | number>> = ({
           onClick={() => setOpen(!open)}
           className={classes(open && 'open')}
         >
-          <span>{currentTemplate && currentTemplate.name}</span>
+          <span>{selectedTemplate?.name}</span>
           <ChevronIcon />
         </SelectedNotification>
 
@@ -92,13 +83,13 @@ const NotificationTemplate: React.FC<ControlType<string | number>> = ({
           <Category
             value={value}
             category={TemplateType.Database}
-            templates={data.templates.database}
+            templates={templates.database}
             onClick={handleSelect}
           />
           <Category
             value={value}
             category={TemplateType.File}
-            templates={data.templates.files}
+            templates={templates.files}
             onClick={handleSelect}
           />
         </CategorySelectionWrapper>

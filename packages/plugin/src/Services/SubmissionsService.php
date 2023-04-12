@@ -338,8 +338,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 ['statusId' => $newStatusId],
                 'statusId = :oldStatusId',
                 ['oldStatusId' => $oldStatusId]
-            )
-        ;
+            );
     }
 
     /**

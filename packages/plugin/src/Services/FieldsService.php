@@ -266,8 +266,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                 ->getDb()
                 ->createCommand()
                 ->delete(FieldRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
+                ->execute();
 
             $this->deleteFieldFromForms($model);
 

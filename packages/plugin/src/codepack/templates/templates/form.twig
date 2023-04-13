@@ -1,17 +1,22 @@
-{% extends "demo/templates/_layout" %}
+{% extends "demo/_layout" %}
 
-{% set pageTitle = "Viewing " ~ craft.app.request.segment(4) ~ " on " ~ craft.app.request.segment(3)|title|replace({'-':' '}) ~ " template" %}
-{% set page = "bootstrap" %}
+{% set form = craft.freeform.form(craft.app.request.segment(4)) %}
+{% set pageTitle = "Viewing the " ~ form.name ~ " form on " ~ craft.app.request.segment(3)|title|replace({'-':' '}) ~ " template" %}
+{% if craft.app.request.segment(5) == "edit" %}
+    {% set submissionToken = craft.app.request.segment(6) %}
+{% endif %}
 
 {% block content %}
 
     {% if form %}
     
         <div class="freeform-page-heading">
-            <h2>{{ form.name }}</h2>
+            <h2{{ craft.app.request.segment(5) == "edit" ? ' class="edit-mode-badge"' }}>{{ form.name }}</h2>
         </div>
 
-        {{ form.render }}
+        {{ form.render({
+            submissionToken: submissionToken|default(null)
+        }) }}
 
     {% else %}
 
@@ -21,4 +26,12 @@
 
     {% endif %}
 
+{% endblock %}
+
+{% block footerJs %}
+<script>
+    document.addEventListener('freeform-ready', (event) => {
+        event.options.scrollOffset = -150;
+    });
+</script>
 {% endblock %}

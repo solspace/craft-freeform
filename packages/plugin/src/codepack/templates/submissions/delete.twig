@@ -1,0 +1,37 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Deleting Submission" %}
+
+{% block content %}
+
+    {% set formHandle = craft.app.request.segment(4) %}
+    {% set form = craft.freeform.form(formHandle) %}
+    {% set token = craft.app.request.segment(5) %}
+
+    {# Allow Admins only to modify submission data for Demo Templates by default #}
+    {% if currentUser and currentUser.admin %}
+
+        <div class="freeform-page-heading">
+            <h2>Delete Submission</h2>
+            <p>This page will delete any submission sent to it. This action cannot be undone.</p>
+        </div>
+
+        {% if craft.freeform.deleteSubmissionByToken(token) %}
+            <div class="freeform-success">
+                The submission has been removed successfully!
+            </div>
+        {% else %}
+            <div class="freeform-error">
+                Error! The submission you specified cannot be found.
+            </div>
+        {% endif %}
+
+    {% else %}
+
+        <div class="freeform-warning-notice">
+            Sorry, you do not have permission to access this page.
+        </div>
+
+    {% endif %}
+
+{% endblock %}

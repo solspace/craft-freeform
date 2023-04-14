@@ -17,14 +17,4 @@ class FieldsController extends BaseApiController
 
         return $this->asJson($form->getLayout()->getFields());
     }
-
-    public function actionGetOne(int $formId, int $id): Response
-    {
-        $form = $this->getFormsService()->getFormById($formId);
-        if (!$form) {
-            throw new NotFoundHttpException("Form with ID {$formId} not found");
-        }
-
-        return $this->asJson('ss');
-    }
 }

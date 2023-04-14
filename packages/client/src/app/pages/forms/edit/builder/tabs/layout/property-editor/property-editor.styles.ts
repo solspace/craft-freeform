@@ -1,10 +1,10 @@
-import { labelText } from '@ff-client/styles/mixins';
+import { labelText, scrollBar } from '@ff-client/styles/mixins';
 import { colors, shadows, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const PropertyEditorWrapper = styled.div`
   position: relative;
-  padding: ${spacings.lg};
+  height: 100%;
 `;
 
 export const CloseLink = styled.a`
@@ -28,7 +28,10 @@ export const Title = styled.h3`
   gap: ${spacings.sm};
 
   margin: 0;
+  padding: ${spacings.lg};
+
   font-size: 16px;
+  box-shadow: ${shadows.bottom};
 `;
 
 export const Icon = styled.div`
@@ -36,10 +39,23 @@ export const Icon = styled.div`
   height: 20px;
 `;
 
+export const FieldPropertiesWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+`;
+
 export const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.lg};
+
+  padding: 0 ${spacings.lg} ${spacings.lg};
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  ${scrollBar};
 `;
 
 export const SectionBlock = styled.section<SectionBlockProps>`
@@ -98,5 +114,15 @@ export const SectionBlock = styled.section<SectionBlockProps>`
 
     ${labelText};
     font-size: 11px;
+  }
+
+  &:first-child {
+    margin-top: 0;
+
+    &:before,
+    &:after,
+    > ${Icon} {
+      display: none;
+    }
   }
 `;

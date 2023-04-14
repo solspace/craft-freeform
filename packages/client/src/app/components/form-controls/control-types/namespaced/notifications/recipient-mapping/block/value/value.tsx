@@ -1,6 +1,7 @@
 import React from 'react';
+import classes from '@ff-client/utils/classes';
 
-import { ValueWrapper } from './value.styles';
+import { Input, ValueWrapper } from './value.styles';
 
 type Props = {
   predefined?: boolean;
@@ -11,8 +12,10 @@ type Props = {
 export const Value: React.FC<Props> = ({ predefined, value, onChange }) => {
   return (
     <ValueWrapper>
-      <input
-        className="text fullwidth"
+      <Input
+        className={classes('text', 'fullwidth', predefined && 'disabled')}
+        readOnly={predefined}
+        disabled={predefined}
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}

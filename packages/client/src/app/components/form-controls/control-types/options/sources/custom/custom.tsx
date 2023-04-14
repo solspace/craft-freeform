@@ -20,12 +20,12 @@ const Custom: React.FC<Props> = ({ value, updateValue }) => {
       <Label>{translate('Options')}</Label>
       <PreviewableComponent
         preview={<CustomPreview value={value} />}
+        onAfterEdit={() => updateValue(cleanOptions(value))}
         onEdit={() => {
           if (!value.options.length) {
-            updateValue(addOption(value));
+            updateValue(addOption(value, 0));
           }
         }}
-        onAfterEdit={() => updateValue(cleanOptions(value))}
       >
         <CustomEditor value={value} updateValue={updateValue} />
       </PreviewableComponent>

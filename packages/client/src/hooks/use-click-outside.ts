@@ -3,16 +3,18 @@ import { useEffect, useRef } from 'react';
 
 export const useClickOutside = <T extends HTMLElement>(
   callback: () => void,
-  isEnabled: boolean
+  isEnabled: boolean,
+  refObject?: MutableRefObject<T>
 ): MutableRefObject<T> => {
   const ref = useRef<T>();
+  const usableRef = refObject || ref;
 
   useEffect(() => {
     const onClickHandler = (event: MouseEvent): void => {
       if (
         isEnabled &&
-        ref.current &&
-        !ref.current.contains(event.target as Node)
+        usableRef.current &&
+        !usableRef.current.contains(event.target as Node)
       ) {
         if (typeof callback === 'function') {
           callback();
@@ -25,7 +27,7 @@ export const useClickOutside = <T extends HTMLElement>(
     return (): void => {
       document.removeEventListener('click', onClickHandler, true);
     };
-  }, [ref, isEnabled]);
+  }, [usableRef, isEnabled]);
 
-  return ref;
+  return usableRef;
 };

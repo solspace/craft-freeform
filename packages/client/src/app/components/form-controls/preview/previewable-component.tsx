@@ -3,11 +3,12 @@ import { useEffect } from 'react';
 import { useRef } from 'react';
 import { useState } from 'react';
 import React from 'react';
-import { useSpring } from 'react-spring';
+import { PopUpPortal } from '@components/elements/pop-up-portal';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import classes from '@ff-client/utils/classes';
 
+import { useEditorAnimations } from './previewable-component.animations';
 import {
   EditableContentWrapper,
   PreviewContainer,
@@ -26,68 +27,60 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
   onAfterEdit,
   children,
 }) => {
-  const isEditorClosingRef = useRef(false);
+  const [isEditing, setIsEditing] = useState(undefined);
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [renderEditor, setRenderEditor] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
 
-  const editorRef = useClickOutside<HTMLDivElement>(() => {
-    setIsEditing(false);
-    isEditorClosingRef.current = true;
-  }, isEditing);
+  const { editorAnimation } = useEditorAnimations({
+    wrapper: wrapperRef.current,
+    editor: editorRef.current,
+    isEditing,
+  });
+
+  useClickOutside<HTMLDivElement>(
+    () => {
+      setIsEditing(false);
+    },
+    isEditing,
+    editorRef
+  );
 
   useOnKeypress({
     meetsCondition: isEditing,
     callback: (event: KeyboardEvent): void => {
       if (event.key === 'Escape') {
         setIsEditing(false);
-        isEditorClosingRef.current = true;
       }
     },
   });
 
   // Call after-edit callbacks when the editor is being closed
   useEffect(() => {
-    if (!isEditing && isEditorClosingRef.current) {
+    if (isEditing === false) {
       onAfterEdit && onAfterEdit();
     }
-  }, [isEditing, isEditorClosingRef]);
-
-  const editorAnimation = useSpring({
-    to: {
-      opacity: isEditing ? 1 : 0,
-      x: isEditing ? 0 : 20,
-      rotate: isEditing ? 0 : 10,
-    },
-    onResolve: () => {
-      if (isEditorClosingRef.current) {
-        setRenderEditor(false);
-        isEditorClosingRef.current = false;
-      }
-    },
-    config: {
-      tension: 700,
-    },
-  });
+  }, [isEditing]);
 
   return (
-    <PreviewWrapper>
-      {renderEditor && (
+    <PreviewWrapper ref={wrapperRef}>
+      <PopUpPortal>
         <EditableContentWrapper
-          style={editorAnimation}
+          style={{
+            pointerEvents: isEditing ? 'initial' : 'none',
+            ...editorAnimation,
+          }}
           className={classes(isEditing && 'active')}
           ref={editorRef}
         >
           {children}
         </EditableContentWrapper>
-      )}
+      </PopUpPortal>
 
       <PreviewContainer
         onClick={() => {
           setIsEditing(true);
           onEdit && onEdit();
-          setRenderEditor(true);
-          isEditorClosingRef.current = false;
         }}
       >
         {preview}

@@ -1,3 +1,5 @@
+import type { Options } from '@components/form-controls/control-types/options/options.types';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type GenericValue = any;
 
@@ -59,6 +61,10 @@ export type SelectProperty = BaseProperty<string> & {
   emptyOption?: string;
 };
 
+export type OptionsProperty = BaseProperty<Options> & {
+  type: PropertyType.Options;
+};
+
 export type ColorProperty = BaseProperty<string> & {
   type: PropertyType.Color;
 };
@@ -77,6 +83,7 @@ export type Property =
   | TextareaProperty
   | BooleanProperty
   | SelectProperty
+  | OptionsProperty
   | ColorProperty
   | DateTimeProperty
   | MinMaxProperty;

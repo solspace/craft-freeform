@@ -9,19 +9,24 @@ import { BlockWrapper } from './block.styles';
 export type RecipientMappingUpdate = (value: RecipientMapping) => void;
 
 type Props = {
+  predefined?: boolean;
   mapping: RecipientMapping;
   onChange: RecipientMappingUpdate;
+  onRemove?: () => void;
 };
 
 export const RecipientMappingBlock: React.FC<Props> = ({
+  predefined,
   mapping,
   onChange,
+  onRemove,
 }) => {
   const { value, template, recipients } = mapping;
 
   return (
     <BlockWrapper>
       <Value
+        predefined={predefined}
         value={value}
         onChange={(newValue) =>
           onChange({
@@ -41,12 +46,16 @@ export const RecipientMappingBlock: React.FC<Props> = ({
       />
       <Recipients
         recipients={recipients}
-        onChange={(newValue) =>
+        onChange={(newValue) => {
           onChange({
             ...mapping,
             recipients: newValue,
-          })
-        }
+          });
+
+          if (!predefined && newValue.length === 0) {
+            onRemove && onRemove();
+          }
+        }}
       />
     </BlockWrapper>
   );

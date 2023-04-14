@@ -1,7 +1,8 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/packages/plugin');
+    ->in(__DIR__.'/packages/plugin')
+;
 
 return (new PhpCsFixer\Config())
     ->setRules([
@@ -18,6 +19,8 @@ return (new PhpCsFixer\Config())
         'protected_to_private' => false,
         'single_trait_insert_per_statement' => true,
         'ternary_to_null_coalescing' => true,
+        'multiline_whitespace_before_semicolons' => ['strategy' => 'new_line_for_chained_calls'],
     ])
     ->setRiskyAllowed(true)
-    ->setFinder($finder);
+    ->setFinder($finder)
+;

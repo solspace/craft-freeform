@@ -134,8 +134,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
                 ['forceUpdate' => true],
                 'id = :id',
                 ['id' => $integration->getId()]
-            )
-        ;
+            );
     }
 
     /**
@@ -265,8 +264,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
             $affectedRows = \Craft::$app->getDb()
                 ->createCommand()
                 ->delete(IntegrationRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
+                ->execute();
 
             if (null !== $transaction) {
                 $transaction->commit();

@@ -338,8 +338,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 ['statusId' => $newStatusId],
                 'statusId = :oldStatusId',
                 ['oldStatusId' => $oldStatusId]
-            )
-        ;
+            );
     }
 
     /**
@@ -446,7 +445,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             ->column()
         ;
 
-        $query = Submission::find()
+        $query = $this->getFindQuery()
             ->id($ids)
             ->skipContent(true)
         ;
@@ -490,6 +489,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         return [$deletedSubmissions, $deletedAssets];
+    }
+
+    protected function getFindQuery(): Query
+    {
+        return Submission::find();
     }
 
     protected function findSubmissions(): Query

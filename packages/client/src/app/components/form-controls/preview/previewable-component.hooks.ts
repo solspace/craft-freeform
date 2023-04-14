@@ -15,13 +15,15 @@ export const usePosition = (
 ): Position => {
   const { dimensions } = usePortal();
   const [top, setTop] = useState(0);
-  let left = 0;
-  if (wrapper?.getBoundingClientRect().left !== undefined) {
-    left = wrapper?.getBoundingClientRect().left - dimensions.left;
-  }
+  const [left, setLeft] = useState(0);
 
   useEffect(() => {
     setTop(calculateTopOffset(wrapper, editor));
+
+    const currentLeft = wrapper?.getBoundingClientRect()?.left;
+    if (currentLeft) {
+      setLeft(currentLeft - dimensions.left);
+    }
   }, [isEditing]);
 
   useEffect(() => {

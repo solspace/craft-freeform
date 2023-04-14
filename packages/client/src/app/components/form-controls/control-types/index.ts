@@ -10,7 +10,6 @@ export { default as notificationTemplate } from './namespaced/notifications/noti
 export { default as recipientMapping } from './namespaced/notifications/recipient-mapping/recipient-mapping';
 export { default as recipients } from './namespaced/notifications/recipients/recipients';
 export { default as options } from './options/options';
-export { default as recipients } from './recipients/recipients';
 export { default as select } from './select/select';
 export { default as string } from './string/string';
 export { default as table } from './table/table';

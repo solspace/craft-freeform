@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 4.0.22 - 2023-04-14
+
+### Added
+- Added a "Floating Labels" basic formatting template. Ready-to-go and does not require any frameworks or toolkits.
+- Added support for `dwg`, `dxf`, `stp`, `step`, `sia` mime types in Freeform's internal file validation helper.
+
+### Changed
+- Overhauled and refreshed demo templates area. Easily try on a wide range of sample formatting templates for your forms, view submission data, check out advanced setups, etc.
+
+### Fixed
+- Fixed a bug where the Submission and Spam Purge features were not always working correctly.
+- Fixed a few minor styling issues in most of the sample formatting templates.
+
 ## 4.0.21 - 2023-03-29
 
 ### Fixed

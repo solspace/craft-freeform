@@ -334,8 +334,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 ['spamBlockCount' => ++$spamBlockCount],
                 ['id' => $form->getId()]
             )
-            ->execute()
-        ;
+            ->execute();
 
         self::$spamCountIncrementedForms[$handle] = $spamBlockCount;
 
@@ -381,8 +380,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 ->getDb()
                 ->createCommand()
                 ->delete(FormRecord::TABLE, ['id' => $formId])
-                ->execute()
-            ;
+                ->execute();
 
             if (null !== $transaction) {
                 $transaction->commit();
@@ -392,8 +390,7 @@ class FormsService extends BaseService implements FormHandlerInterface
                 ->getDb()
                 ->createCommand()
                 ->dropTableIfExists(Submission::generateContentTableName($formId, $record->handle))
-                ->execute()
-            ;
+                ->execute();
 
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($record));
 

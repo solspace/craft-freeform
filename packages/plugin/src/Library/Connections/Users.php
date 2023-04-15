@@ -128,8 +128,7 @@ class Users extends AbstractConnection
                             'app',
                             'User saved, but couldn’t send verification email. Check your email settings.'
                         )
-                    )
-                ;
+                    );
             }
         }
 

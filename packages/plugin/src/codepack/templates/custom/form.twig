@@ -1,7 +1,7 @@
 {% extends "demo/_layout" %}
 
 {% set form = craft.freeform.form(craft.app.request.segment(3)) %}
-{% set pageTitle = "Viewing the " ~ form.name ~ " form on your custom template" %}
+{% set pageTitle = form.name ~ " form with your Custom Template" %}
 
 {% block content %}
 

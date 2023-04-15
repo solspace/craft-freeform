@@ -1,7 +1,7 @@
 {% extends "demo/_layout" %}
 
 {% set form = craft.freeform.form(craft.app.request.segment(4)) %}
-{% set pageTitle = "Viewing the " ~ form.name ~ " form on " ~ craft.app.request.segment(3)|title|replace({'-':' '}) ~ " template" %}
+{% set pageTitle = form.name ~ " form with " ~ craft.app.request.segment(3)|title|replace({'-':' '}) ~ " template" %}
 {% if craft.app.request.segment(5) == "edit" %}
     {% set submissionToken = craft.app.request.segment(6) %}
 {% endif %}
@@ -31,7 +31,7 @@
 {% block footerJs %}
 <script>
     document.addEventListener('freeform-ready', (event) => {
-        event.options.scrollOffset = -150;
+        event.options.scrollOffset = -200;
     });
 </script>
 {% endblock %}

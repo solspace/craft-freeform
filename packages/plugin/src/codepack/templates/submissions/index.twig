@@ -4,7 +4,7 @@
     {% set form = craft.freeform.form(craft.app.request.segment(3)) %}
     {% set spamMode = craft.app.request.segment(4) ? true : false %}
 {% endif %}
-{% set pageTitle = "Viewing Submissions for " ~ form.name|default("-Select a Form-") %}
+{% set pageTitle = "Submissions for " ~ form.name|default("-Select a Form-") %}
 
 {% block content %}
 

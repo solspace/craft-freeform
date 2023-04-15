@@ -24,6 +24,9 @@ h3 {
     padding: 0;
     margin: 0 0 20px 0;
 }
+.hidden {
+    display: none;
+}
 
 .freeform-page-heading {
     color: var(--page-text);
@@ -141,7 +144,7 @@ html:has(.freeform-warning-notice) {
     font: 400 16px sans-serif;
     text-align: center;
     color: #0d6efd;
-    background: transparent;
+    background: #eff5ff;
     border: 1px solid #0d6efd;
     border-radius: 10px;
     padding: 15px 10px;
@@ -151,11 +154,40 @@ html:has(.freeform-warning-notice) {
     color: #198754;
     font-weight: 600;
     border-color: #198754;
+    background: #f0fff8;
 }
 .freeform-error {
     color: #dc3545;
     font-weight: 600;
     border-color: #dc3545;
+    background: #fff0f1;
+}
+.freeform-error code {
+    color: #dc3545;
+    font-weight: 600;
+    background: #ffffff;
+}
+.freeform-notice h4,
+.freeform-success h4,
+.freeform-error h4 {
+    font: 600 20px sans-serif;
+    text-align: center;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+.freeform-notice p,
+.freeform-success p,
+.freeform-error p {
+    font: 400 16px sans-serif;
+    line-height: 1.5;
+    text-align: center;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+.freeform-notice p:last-of-type,
+.freeform-success p:last-of-type,
+.freeform-error p:last-of-type {
+    margin-bottom: 0;
 }
 
 .freeform-nav:has(.freeform-logo:hover) {
@@ -181,7 +213,7 @@ html:has(.freeform-warning-notice) {
     box-shadow: 0 0 15px 3px rgb(49,109,244,0.5);
 }
 .freeform-logo h1 {
-    font: 400 16px sans-serif !important;
+    font: 600 16px sans-serif !important;
     position: absolute;
     display: block;
     width: 150px;
@@ -344,6 +376,9 @@ html:has(.freeform-warning-notice) {
     z-index: 1;
     transition: all 0.25s;
 }
+.freeform-nav-dropdown-content.extras-dropdown {
+    min-width: 310px;
+}
 .freeform-nav-dropdown-content a {
     font-size: 12px;
     color: var(--nav-dropdown-text);
@@ -449,6 +484,10 @@ html:has(.freeform-warning-notice) {
     color: var(--nav-highlight);
 }
 
+.freeform-form-tile-item {
+    border-top: 7px solid #0d6efd !important;
+}
+
 .freeform-table-overflow {
     width: 100%;
     overflow: scroll;
@@ -507,9 +546,8 @@ html:has(.freeform-warning-notice) {
 .freeform-table tbody tr:nth-of-type(even) {
     background: var(--table-row-bg-alt);
 }
-.freeform-table tbody tr.active-row {
-    font-weight: bold;
-    color: #009879;
+.freeform-table tbody tr:hover {
+    background: rgb(244,237,49,0.1);
 }
 .freeform-button {
     padding: 10px 15px;
@@ -546,4 +584,228 @@ html:has(.freeform-warning-notice) {
 }
 .freeform-submission-controls {
     float: right;
+}
+
+/* Freeform Demo Intro */
+html:has(.intro-content) {
+    background: var(--nav-bg);
+    animation-delay: 1s;
+	animation-name: bg-change;
+    animation-duration: 3s; 
+    animation-fill-mode: forwards;
+}
+.intro-content {
+    padding: 40px 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+.intro-content h2,
+.intro-content p,
+.intro-content .freeform-button {
+    text-align: center;
+    opacity: 0;
+    animation-delay: 0s;
+    animation-fill-mode: forwards;
+}
+.intro-content h2 {
+    font: 600 40px sans-serif;
+    color: #ffffff;
+    margin: 0 0 15px 0;
+    animation-name: bounce-right;
+    animation-duration: 2s;
+}
+.intro-content p {
+    font: 400 20px sans-serif;
+    color: #ffffff;
+    margin: 0;
+    animation-name: bounce-left;
+    animation-duration: 2s;
+}
+.intro-content .action-wrapper {
+    text-align: center;
+    margin: 50px 0 0 0;
+}
+.intro-content .freeform-button {
+    border: 1px solid var(--page-text);
+    border-radius: 5px;
+    background: var(--page-text);
+    color: #0f5fd5;
+    font: 600 15px sans-serif;
+    text-decoration: none;
+    padding: 15px 20px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    margin: 0 5px;
+    animation-delay: 2s;
+    animation-name: bounce-rotate;
+    animation-duration: 3s;
+}
+.intro-content .freeform-button:hover {
+    background: transparent;
+}
+.intro-content .freeform-button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: all 0.5s;
+}
+.intro-content .freeform-button span:after {
+    color: #ffffff;
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: all 0.5s;
+}
+.intro-content .freeform-button:hover span {
+    color: #ffffff;
+    padding-right: 5px;
+    margin-left: -5px;
+}
+.intro-content .freeform-button:hover span:after {
+    opacity: 1;
+    right: -10px;
+}
+.intro-content .freeform-button.main-action {
+    animation-delay: 2.5s;
+}
+@keyframes bounce-right {
+    0% {
+        opacity: .2;
+        transform: translateX(-2000px);
+    }
+    60% {
+        opacity: .7;
+        transform: translateX(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes bounce-left {
+    0% {
+        opacity: .2;
+        transform: translateX(2000px);
+    }
+    60% {
+        opacity: .7;
+        transform: translateX(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes bounce-rotate {
+    0% {
+        opacity: .2;
+        transform: perspective(800px) rotateX(-80deg);
+    }
+    20% {
+        opacity: 1;
+    }
+    60% {
+        transform: perspective(800px) rotateX(20deg);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(800px) rotateX(0);
+    }
+}
+@keyframes bg-change {
+    from {
+        background: var(--nav-bg);
+    }
+    to {
+        background: #0f5fd5;
+    }
+}
+
+/* Extras Instructions */
+.extras-instructions {
+    font: 400 16px sans-serif;
+    text-align: left;
+    color: #0d6efd;
+    background: transparent;
+    border: 2px dashed #0d6efd;
+    border-radius: 10px;
+    padding: 15px 10px;
+    margin: 75px 0 35px 0;
+}
+.extras-instructions h4 {
+    font: 400 20px sans-serif;
+    color: var(--page-text);
+    background: var(--nav-bg);
+    border: 0;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    padding: 15px 20px;
+    margin: -15px -10px 20px;
+}
+.extras-instructions p,
+.extras-instructions ul,
+.extras-instructions ol,
+.extras-instructions li {
+    font: 400 15px sans-serif;
+    color: var(--nav-text);
+    border: 0;
+    padding: 0 5px 10px;
+    margin: 0;
+}
+.extras-instructions p {
+    padding: 0 10px 10px;
+}
+.extras-instructions > ul,
+.extras-instructions > ol {
+    padding: 0 45px;
+}
+.extras-instructions > li {
+    padding: 0 0 7px 0;
+}
+.extras-instructions > li:last-of-type,
+.extras-instructions > li:last-child {
+    padding: 0 5px 0;
+    margin: 0;
+}
+.extras-instructions > ol > li:last-of-type,
+.extras-instructions > ul > li:last-child {
+    padding: 0 5px 0;
+}
+.extras-instructions > ol > li > ul li:last-of-type,
+.extras-instructions > ul > ul > li:last-child  {
+    padding: 0;
+    margin: 0;
+}
+.extras-instructions > p:last-of-type {
+    padding: 0 5px 0;
+}
+.extras-instructions-warning {
+    color: #cc6e00 !important;
+}
+
+.extras-instructions ol ul,
+.extras-instructions ul ul,
+.extras-instructions ul ol {
+    padding: 0 20px;
+    margin: 7px 0 0 0;
+}
+.extras-instructions ol ul li,
+.extras-instructions ul ul li,
+.extras-instructions ul ol li {
+    padding: 0;
+    margin: 0 0 7px 0;
+}
+
+code {
+    color: var(--nav-highlight);
+    background: var(--nav-bg);
+    padding: 2px 5px;
+    border-radius: 5px;
 }

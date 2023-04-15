@@ -1,300 +1,153 @@
 {% extends "demo/_layout" %}
 
-{% set pageTitle = "Extras" %}
-{% set page = "extras" %}
+{% set pageTitle = "Formatting Directly Inside Regular Template | Extras" %}
 
-{# Replace 'freeformInsideTemplate' with your form handle. #}
-{% set form = craft.freeform.form("freeformInsideTemplate") %}
+{# Replace 'freeformInsideTemplate' with your form handle #}
+{% set demoFormHandle = "freeformInsideTemplate" %}
 
 {% block content %}
 
-<div class="container">
+    {% set form = craft.freeform.form(demoFormHandle, { formattingTemplate: pageTemplateFile }) %}
 
-	<div class="my-5">
-		<h2>Formatting Directly Inside Regular Template</h2>
-		<p>This example shows how you can add formatting code directly inside a regular template.</p>
-	</div>
+    <div class="freeform-page-heading">
+        <h2>Formatting Directly Inside Regular Template</h2>
+        <p>This example shows how you can add formatting code directly inside a regular template.</p>
+    </div>
 
-	{% if form %}
+    {% if form %}
 
-		<style>button[type=submit].ff-loading{display:inline-flex;flex-wrap:nowrap;align-items:center}button[type=submit].ff-loading:before{content:"";display:block;flex:1 0 11px;width:11px;height:11px;margin-right:10px;border-style:solid;border-width:2px;border-color:transparent transparent #fff #fff;border-radius:50%;animation:ff-loading .5s linear infinite}@keyframes ff-loading{0%{transform:rotate(0)}100%{transform:rotate(1turn)}}label.required:after{content:"*";color:#d00;margin-left:5px}ul.errors{display:block !important}.is-invalid{color:#dc3545}.submit-align-left{text-align:left}.submit-align-right{text-align:right}.submit-align-center{text-align:center}.submit-align-center button:not(:first-of-type),.submit-align-left button:not(:first-of-type),.submit-align-right button:not(:first-of-type){margin-left:5px}.submit-align-spread button:first-child{float:left}.submit-align-spread button:last-child{float:right}</style>
+        <style>.freeform-fieldtype-table table button[data-freeform-table-remove-row]:after,button{padding:5px 15px;vertical-align:middle;cursor:pointer;transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out}.freeform-form-container{font-family:sans-serif}.freeform-row::after{content:"";clear:both;display:block}[class*=freeform-col-]{float:left;padding:15px}button{font:400 18px/1.5 sans-serif;color:#fff;text-align:center;text-decoration:none;border:1px solid #0d6efd;border-radius:5px;background-color:#0d6efd;margin-right:10px;display:inline-block;justify-content:center}button:last-child,button:only-child{margin-right:0}button:hover{color:#fff;background-color:#0b5ed7;border-color:#0a58ca}button[data-freeform-action=back]{font:400 18px sans-serif;color:#6c757d;background-color:transparent;border-color:#6c757d}.freeform-fieldtype-signature button:hover,button[data-freeform-action=back]:hover{color:#fff;background-color:#6c757d;border-color:#6c757d}button[type=submit].ff-loading{display:inline-flex;flex-wrap:nowrap;align-items:center}button[type=submit].ff-loading:before{content:"";display:block;flex:1 0 11px;width:11px;height:11px;margin-right:10px;border-style:solid;border-width:2px;border-color:transparent transparent #fff #fff;border-radius:50%;animation:.5s linear infinite ff-loading}@keyframes ff-loading{0%{transform:rotate(0)}100%{transform:rotate(1turn)}}.freeform-pages{display:flex;padding:0;margin:0 0 25px;list-style:none;border-bottom:2px solid #ddd}.freeform-pages li{color:#6c757d;background:0 0;padding:10px 20px;margin:0}.freeform-pages li.active{color:#000;font-weight:700;background:#ddd;border-top-left-radius:5px;border-top-right-radius:5px}.freeform-row{font:16px sans-serif;color:#464747;justify-content:space-between;padding:0;margin:0}.freeform-row [class*=freeform-col-]{flex:1 0;padding:10px;margin:0;box-sizing:border-box}.freeform-row [class*=freeform-col-]>.freeform-row:first-child{margin-top:-10px}.freeform-row [class*=freeform-col-] label{display:block;margin:0 0 5px}.freeform-row [class*=freeform-col-] .freeform-input[type=checkbox],.freeform-row [class*=freeform-col-] .freeform-input[type=radio]{margin-right:10px;width:auto;display:inline;transform:scale(1.15)}.freeform-row [class*=freeform-col-] label:has(> .freeform-input[type=checkbox].freeform-has-errors),.freeform-row [class*=freeform-col-] label:has(> .freeform-input[type=radio].freeform-has-errors),.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox_group:has(ul.freeform-errors) div.input-group-one-line label,.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox_group:has(ul.freeform-errors) label:not(:first-child),.freeform-row [class*=freeform-col-].freeform-fieldtype-radio_group:has(ul.freeform-errors) div.input-group-one-line label,.freeform-row [class*=freeform-col-].freeform-fieldtype-radio_group:has(ul.freeform-errors) label:not(:first-child){color:#dc3545!important}.freeform-row [class*=freeform-col-] .input-group-one-line{display:flex;flex-wrap:wrap}.freeform-row [class*=freeform-col-] .input-group-one-line label{padding-right:15px}.freeform-row [class*=freeform-col-] .input-group-one-line label input[type=checkbox],.freeform-row [class*=freeform-col-] .input-group-one-line label input[type=radio]{margin-right:10px;display:inline-block;transform:scale(1.15)}.freeform-row [class*=freeform-col-] .freeform-input-only-label,.freeform-row [class*=freeform-col-] .freeform-label{font-weight:400}.freeform-row [class*=freeform-col-] .freeform-label.freeform-required:after{content:"*";margin-left:5px;color:#dc3545}.freeform-row.freeform-payments{margin:-10px}.freeform-row [class*=freeform-col-] .freeform-input.StripeElement,.freeform-row [class*=freeform-col-] input,.freeform-row [class*=freeform-col-] select,.freeform-row [class*=freeform-col-] textarea{box-sizing:border-box;font:16px sans-serif;color:#212529;background-color:#fff;border:1px solid #cbced0;border-radius:5px;padding:10px;width:100%;display:block;resize:none;transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out}.freeform-row [class*=freeform-col-] select:not(select[multiple]){background-image:linear-gradient(45deg,transparent 50%,#6c757d 50%),linear-gradient(135deg,#6c757d 50%,transparent 50%),linear-gradient(to right,#6c757d,#6c757d);background-position:calc(100% - 20px) calc(1em + 2px),calc(100% - 15px) calc(1em + 2px),calc(100% - 2.5em) .5em;background-size:5px 5px,5px 5px,1px 1.5em;background-repeat:no-repeat;appearance:none;-webkit-appearance:none;-moz-appearance:none}.freeform-row [class*=freeform-col-] .freeform-input.StripeElement--focus,.freeform-row [class*=freeform-col-] input:focus,.freeform-row [class*=freeform-col-] select:focus,.freeform-row [class*=freeform-col-] textarea:focus{border:1px solid #0b5ed7;outline:0;transition:border-color .15s ease-in-out}.freeform-row [class*=freeform-col-] input::placeholder,.freeform-row [class*=freeform-col-] textarea::placeholder{font:16px sans-serif;color:#6c757d}.freeform-row [class*=freeform-col-] .freeform-input.StripeElement--invalid,.freeform-row [class*=freeform-col-] input.freeform-has-errors,.freeform-row [class*=freeform-col-] input:has(+ ul.freeform-errors),.freeform-row [class*=freeform-col-] select.freeform-has-errors,.freeform-row [class*=freeform-col-] select:has(+ ul.freeform-errors),.freeform-row [class*=freeform-col-] textarea.freeform-has-errors,.freeform-row [class*=freeform-col-] textarea:has(+ ul.freeform-errors){border:1px solid #dc3545}.freeform-row [class*=freeform-col-] .freeform-input-only-label>.freeform-input{display:inline-block;width:auto;margin-right:10px}.freeform-row [class*=freeform-col-] .ff-errors,.freeform-row [class*=freeform-col-] .freeform-errors{margin:-5px 0 0;padding:0;list-style:none;display:block;width:100%}.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox_group .ff-errors,.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox_group .freeform-errors,.freeform-row [class*=freeform-col-].freeform-fieldtype-radio_group .ff-errors,.freeform-row [class*=freeform-col-].freeform-fieldtype-radio_group .freeform-errors{margin-top:0}.freeform-row [class*=freeform-col-] .ff-errors>li,.freeform-row [class*=freeform-col-] .freeform-errors>li{font:italic 400 15px sans-serif;color:#dc3545;margin-top:10px}.freeform-row [class*=freeform-col-] .ff-errors>li:not(:first-child),.freeform-row [class*=freeform-col-] .freeform-errors>li:not(:first-child){margin-top:3px}.freeform-row [class*=freeform-col-] .freeform-instructions{font-size:13px;color:#969696;margin:-5px 0 10px}.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox label,.freeform-row [class*=freeform-col-].freeform-fieldtype-mailing_list label{display:inline-block;margin:0 0 10px}.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox input[type=checkbox],.freeform-row [class*=freeform-col-].freeform-fieldtype-mailing_list input[type=checkbox]{margin-right:10px;width:auto;display:inline-block;transform:scale(1.15)}.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox input.freeform-has-errors+label,.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox label:has(+ div + ul.freeform-errors),.freeform-row [class*=freeform-col-].freeform-fieldtype-checkbox label:has(+ ul.freeform-errors){color:#dc3545!important}.freeform-fieldtype-opinion_scale .opinion-scale-scales{border:1px solid #cbced0;border-radius:5px}.freeform-fieldtype-opinion_scale .opinion-scale-scales li label{color:#464747!important;background-color:#fff;border:0;border-left:1px solid #cbced0;padding:10px 15px;margin:0;cursor:pointer}.freeform-fieldtype-opinion_scale .opinion-scale-scales li:first-child label{border:0;border-left:0;border-top-left-radius:3px;border-bottom-left-radius:3px}.freeform-fieldtype-opinion_scale .opinion-scale-scales li label:hover{background-color:#eaeaea}.freeform-fieldtype-opinion_scale input[type=radio]:checked+label{background-color:#cbced0}.freeform-fieldtype-opinion_scale .opinion-scale-scales:has(> li input.freeform-has-errors),.freeform-fieldtype-opinion_scale .opinion-scale:has(+ ul.freeform-errors) .opinion-scale-scales{border:1px dashed #dc3545}.freeform-fieldtype-opinion_scale .opinion-scale-legends li{font:15px sans-serif;color:#6c757d;padding:10px 0;margin-top:0}.freeform-fieldtype-rating .freeform-has-errors+label:not(:first-child),.freeform-fieldtype-rating div:has(+ ul.freeform-errors) label{color:#dc3545}.form-rating-field-wrapper input[type=radio]+label{margin-right:5px}.freeform-file-drag-and-drop{background-color:#fff!important;border:1px dashed #6c757d!important}.freeform-file-drag-and-drop input{display:none!important}.freeform-file-drag-and-drop__placeholder{font:italic 200 16px sans-serif!important;color:#969696}.freeform-file-drag-and-drop [data-field-errors]>li[data-error],.freeform-file-drag-and-drop [data-messages]>li[data-error]{font:200 16px sans-serif;color:#dc3545;margin-top:15px}.freeform-file-drag-and-drop [data-field-errors]>li{color:#dc3545}.freeform-fieldtype-signature button{font:400 16px sans-serif;color:#6c757d;border:1px solid #6c757d;background-color:transparent}.freeform-fieldtype-signature canvas{border:1px solid #6c757d;border-radius:5px}.freeform-fieldtype-table table{width:100%;font:400 14px sans-serif;text-align:left}.freeform-fieldtype-table table thead tr th{padding-bottom:10px}.freeform-fieldtype-table table tbody tr:only-child button{display:none}.freeform-fieldtype-table table tbody tr td{padding:0 10px 10px 0}.freeform-fieldtype-table table tbody tr td:last-child{text-align:right;padding-right:0}.freeform-fieldtype-table table button[data-freeform-table-remove-row]{font-size:1px;margin:0;padding:0;visibility:hidden}.freeform-fieldtype-table table button[data-freeform-table-remove-row]:after{font:400 14px/1.5 sans-serif;color:#b02a37;content:"✕";border:1px solid #b02a37;border-radius:5px;display:inline-block;visibility:visible}.freeform-fieldtype-table table button[data-freeform-table-remove-row]:hover:after{color:#fff;background-color:#b02a37;border-color:#b02a37}.freeform-fieldtype-table button[data-freeform-table-add-row]{font:400 14px/1.5 sans-serif;color:#146c43;content:"+";border:1px solid #146c43;background-color:transparent;margin:0}.freeform-fieldtype-table button[data-freeform-table-add-row]:hover{color:#fff;background-color:#146c43;border-color:#146c43}.freeform-fieldtype-table button[data-freeform-table-add-row]:after{content:"+";margin-left:5px}.freeform-fieldtype-table input[type=checkbox]{display:block;transform:scale(1.15)}.freeform-fieldtype-table select{min-width:200px}.freeform-row [class*=freeform-col-].freeform-column-content-align-left{display:flex;justify-content:flex-start}.freeform-row [class*=freeform-col-].freeform-column-content-align-center>button:not(:first-of-type),.freeform-row [class*=freeform-col-].freeform-column-content-align-left>button:not(:first-of-type),.freeform-row [class*=freeform-col-].freeform-column-content-align-right>button:not(:first-of-type),.freeform-row [class*=freeform-col-].freeform-column-content-align-spread>button:not(:first-of-type){margin-left:5px}.freeform-row [class*=freeform-col-].freeform-column-content-align-center{display:flex;justify-content:center}.freeform-row [class*=freeform-col-].freeform-column-content-align-right{display:flex;justify-content:flex-end}.freeform-row [class*=freeform-col-].freeform-column-content-align-spread{display:flex;justify-content:space-between}.freeform-form-errors,.freeform-form-success{margin-left:auto;margin-right:auto;margin-bottom:20px;padding:15px 20px;border-radius:5px}.freeform-form-errors p,.freeform-form-success p{font:18px sans-serif;color:#fff;margin:0}.freeform-form-errors ul,.freeform-form-success ul{font:italic 15px sans-serif;color:#fff;margin:10px 0 0;padding:0 0 0 25px}.freeform-form-errors ul li:not(:last-child),.freeform-form-success ul li:not(:last-child){margin-bottom:5px}.freeform-form-success{background-color:#198754;border:1px solid #198754}.freeform-form-errors{background-color:#dc3545;border:1px solid #dc3545}@media only screen and (max-width:800px){[class*=freeform-col-]{width:100%}}@media only screen and (min-width:801px){.freeform-col-1{width:8.33%}.freeform-col-2{width:16.66%}.freeform-col-3{width:25%}.freeform-col-4{width:33.33%}.freeform-col-5{width:41.66%}.freeform-col-6{width:50%}.freeform-col-7{width:58.33%}.freeform-col-8{width:66.66%}.freeform-col-9{width:75%}.freeform-col-10{width:83.33%}.freeform-col-11{width:91.66%}.freeform-col-12{width:100%}}</style>
+                
+        <div class="freeform-form-container">
 
-		<h3 class="mb-3">{{ form.name }}</h3>
+            {{ form.renderTag }}
 
-		{{ form.renderTag() }}
-				
-		{% if form.pages|length > 1 %}
-			<ul class="nav nav-tabs">
-			{% for page in form.pages %}
-				<li class="nav-item">
-					<span class="nav-link{{ form.currentPage.index == page.index ? ' font-weight-bold active' : ' disabled' }}">{{ page.label }}</span>
-				</li>
-			{% endfor %}
-			</ul>
-		{% endif %}
+            <div id="freeform-success-error-banner">
+                {% if not form.ajaxEnabled and form.submittedSuccessfully %}
+                    <div class="freeform-form-success">
+                        <p>{{ form.successMessage | t('freeform') }}</p>
+                    </div>
+                {% endif %}
 
-		{% if form.hasErrors %}
-			<div class="alert alert-danger">
-				{{ form.errorMessage | t }}
+                {% if form.hasErrors %}
+                    <div class="freeform-form-errors">
+                        <p>{{ form.errorMessage | t('freeform') }}</p>
 
-				{% if form.errors|length %}
-					<ul class="mb-0">
-						{% for error in form.errors %}
-							<li>{{ error }}</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
-			</div>
-		{% endif %}
+                        {% if form.errors|length %}
+                            <ul>
+                                {% for error in form.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
 
-		{% for row in form %}
-			<div class="row {{ form.customAttributes.rowClass }}">
-				{% for field in row %}
-					{% set width = (12 / (row|length)) %}
+            {% if form.pages|length > 1 %}
+                <ul class="freeform-pages">
+                    {% for page in form.pages %}
+                        <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
+                            {{ page.label }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
 
-					{% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
+            {% for row in form %}
+            <div class="freeform-row {{ form.customAttributes.rowClass }}">
+                {% for field in row %}
+                {% set width = (12 / (row|length)) %}
+                {% set columnClass = "freeform-col-" ~ width %}
+                {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
+                {% if field.type == "submit" or field.type == "save" %}
+                    {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
+                {% endif %}
+                <div class="{{ columnClass }} freeform-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }}>
+                    {% if field.type in ["checkbox", "mailing_list"] %}
+                        {{ field.renderInput({ class: "freeform-input" ~ (field.hasErrors ? " is-invalid") }) -}}
+                        {{- field.renderLabel({ labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : "") }) }}
+                        {{ field.renderInstructions({ instructionsClass: "freeform-instructions" }) }}
+                        {{ field.renderErrors({ errorClass: "freeform-errors" }) }}
+                    {% else %}
+                        {{ field.render({
+                            class: field.type not in ["submit", "save", "signature"] ? "freeform-input" : "",
+                            labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
+                            errorClass: "freeform-errors",
+                            instructionsClass: "freeform-instructions",
+                        }) }}
+                        {# FOR FREEFORM PAYMENTS #}
+                        {% if field.layoutRows is defined %}
+                            {% for layoutRow in field.layoutRows %}
+                                <div class="freeform-row freeform-payments {{ form.customAttributes.rowClass }}">
+                                    {% for layoutField in layoutRow %}
+                                        {% set layoutWidth = (12 / (layoutRow|length)) %}
+                                        {% set paymentColumnClass = "freeform-col-" ~ layoutWidth %}
+                                        <div class="{{ paymentColumnClass }}">
+                                            {{ layoutField.render({
+                                                class: "freeform-input",
+                                                labelClass: "freeform-label" ~ (layoutField.inputOnly ? " freeform-input-only-label" : "") ~ (layoutField.required ? " freeform-required" : ""),
+                                                errorClass: "freeform-errors",
+                                                instructionsClass: "freeform-instructions",
+                                            }) }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endif %}
 
-					{% set columnClass = "mb-3" %}
-					{% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-					{% set columnClass = columnClass ~ " col-sm-" ~ width ~ " col-12" %}
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
 
-					{% set class = "form-control" ~ (field.hasErrors ? " is-invalid has-validation") %}
-					{% if field.type == "file" %}
-						{% set class = "form-control-file" ~ (field.hasErrors ? " is-invalid") %}
-					{% elseif field.type == "select" %}
-						{% set class = "form-select" %}
-					{% elseif field.type == "signature" %}
-						{% set class = "btn btn-light" %}
-					{% elseif field.type == "table" %}
-						{% set class = "table" %}
-					{% elseif isCheckbox %}
-						{% set class = "checkbox" %}
-					{% endif %}
+            {{ form.renderClosingTag }}
 
-					{% set labelClass = (field.required ? " required" : "") %}
-					{% set errorClass = "invalid-feedback" %}
-					{% set instructionClass = "form-text text-muted" %}
-
-					{% if field.type == "submit" %}
-						{% set columnClass = columnClass ~ " submit-align-" ~ field.position %}
-					{% endif %}
-
-					<div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
-						{% if field.type == "checkbox_group" %}
-
-							{{ field.renderLabel({
-								labelClass: labelClass,
-								instructionsClass: instructionClass,
-								errorClass: errorClass,
-							}) }}
-
-							{{ field.oneLine ? "<div>"|raw }}
-
-							{% for index, option in field.options %}
-								<div class="form-check{{ field.oneLine ? " form-check-inline" }}">
-									<input type="checkbox"
-										name="{{ field.handle }}[]"
-										value="{{ option.value }}"
-										id="{{ field.idAttribute }}-{{ index }}"
-										class="form-check-input{{ field.hasErrors ? " is-invalid" }}"
-											{{ option.checked ? "checked" : "" }}
-									/>
-
-									<label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-										{{ option.label|t('freeform')|raw }}
-									</label>
-								</div>
-							{% endfor %}
-
-							{{ field.oneLine ? "</div>"|raw }}
-
-							{{ field.renderInstructions() }}
-							{{ field.renderErrors({ errorClass: errorClass }) }}
-
-						{% elseif field.type == "radio_group" %}
-
-							{{ field.renderLabel({
-								labelClass: labelClass,
-								instructionsClass: instructionClass,
-								errorClass: errorClass,
-							}) }}
-
-							{{ field.oneLine ? "<div>"|raw }}
-
-							{% for index, option in field.options %}
-								<div class="form-check{{ field.oneLine ? " form-check-inline" }}">
-									<input type="radio"
-										name="{{ field.handle }}"
-										value="{{ option.value }}"
-										id="{{ field.idAttribute }}-{{ index }}"
-										class="form-check-input{{ field.hasErrors ? " is-invalid" }}"
-											{{ option.checked ? "checked" : "" }}
-									/>
-									<label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-										{{ option.label|t('freeform')|raw }}
-									</label>
-								</div>
-							{% endfor %}
-
-							{{ field.oneLine ? "</div>"|raw }}
-
-							{{ field.renderInstructions() }}
-							{{ field.renderErrors() }}
-
-						{% elseif field.type == "dynamic_recipients" and (field.showAsRadio or field.showAsCheckboxes) %}
-
-							{{ field.renderLabel({
-								labelClass: labelClass,
-								instructionsClass: instructionClass,
-								errorClass: errorClass,
-							}) }}
-
-							{{ field.oneLine ? "<div>"|raw }}
-
-							{% for index, option in field.options %}
-								<div class="form-check{{ field.oneLine ? " form-check-inline" }}">
-									<input type="{{ field.showAsRadio ? "radio" : "checkbox" }}"
-										name="{{ field.handle }}[]"
-										value="{{ loop.index0 }}"
-										class="form-check-input"
-										id="{{ field.idAttribute }}-{{ index }}"
-											{{ option.checked ? "checked" : "" }}
-									/>
-
-									<label class="form-check-label" for="{{ field.idAttribute }}-{{ index }}">
-										{{ option.label|t('freeform')|raw }}
-									</label>
-								</div>
-							{% endfor %}
-
-							{{ field.oneLine ? "</div>"|raw }}
-
-							{{ field.renderInstructions() }}
-							{{ field.renderErrors() }}
-
-						{% elseif field.type in ["checkbox", "mailing_list"] %}
-
-							<div class="form-check">
-								{{ field.renderInput({ class: class ~ " form-check-input" ~ (field.hasErrors ? " is-invalid") }) }}
-								{{ field.renderLabel({ labelClass: "form-check-label" ~ (field.hasErrors ? " is-invalid") ~ (field.required ? " required") }) }}
-								{{ field.renderErrors({ errorClass: errorClass }) }}
-							</div>
-
-						{% elseif field.type == "submit" %}
-
-							{{ field.render({ class: "btn btn-primary" }) }}
-
-						{% elseif field.type == "table" %}
-
-							{{ field.render({
-								class: class,
-								labelClass: labelClass,
-								instructionsClass: instructionClass,
-								instructionsBelowField: true,
-								errorClass: errorClass,
-								addButtonLabel: "Add +",
-								addButtonClass: "btn btn-sm btn-primary",
-								removeButtonLabel: "x",
-								removeButtonClass: "btn btn-sm btn-danger",
-								tableTextInputClass: "form-control",
-								tableSelectInputClass: "form-select",
-								tableCheckboxInputClass: "form-check-input"
-							}) }}
-
-						{% elseif field.type == "cc_details" %}
-
-							{# FOR FREEFORM PAYMENTS #}
-
-							{{ field.renderLabel({
-								labelClass: (field.required ? " required" : ""),
-								instructionsClass: "help-block",
-								errorClass: "help-block",
-							}) }}
-
-							{% for layoutRow in field.layoutRows %}
-								<div class="row mb-3{{ form.customAttributes.rowClass }}">
-									{% for layoutField in layoutRow %}
-										{% set layoutWidth = (12 / (layoutRow|length)) %}
-										{% set columnClass = columnClass|replace(' col-sm-' ~ width) %}
-										{% set columnClass = columnClass ~ " col-sm-" ~ layoutWidth %}
-										<div class="{{ columnClass }}">
-											{{ layoutField.render({
-												class: isCheckbox ? "checkbox" : "form-control",
-												instructionsClass: "help-block",
-												instructionsBelowField: true,
-												labelClass: (layoutField.required ? " required" : ""),
-												errorClass: "help-block",
-											}) }}
-										</div>
-									{% endfor %}
-								</div>
-							{% endfor %}
-
-							{{ field.renderInput({
-								instructionsClass: "help-block",
-								instructionsBelowField: true,
-								labelClass: (field.required ? " required" : ""),
-								errorClass: "help-block",
-							}) }}
-
-							{{ field.renderInstructions }}
-							{{ field.renderErrors }}
-
-						{% else %}
-
-							{{ field.render({
-								class: class,
-								labelClass: labelClass,
-								instructionsClass: instructionClass,
-								instructionsBelowField: true,
-								errorClass: errorClass,
-							}) }}
-
-						{% endif %}
-					</div>
-				{% endfor %}
-			</div>
-		{% endfor %}
-
-		{{ form.renderClosingTag }}
-
-		<script>
-			var form = document.querySelector('[data-id="{{ form.anchor }}"]');
-			if (form) {
-				form.addEventListener("freeform-ready", function (event) {
-				var freeform = event.target.freeform;
-
-				freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
-				freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
-				freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
-				freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
-				})
-
-				form.addEventListener("freeform-stripe-styling", function (event) {
-				event.detail.base = {
-					fontSize: "16px",
-					fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-				}
-				})
-			}
-		</script>
-
-	{% else %}
-
-	{# Show instructions to developer if they wish to see this page work correctly #}
-
-        <div class="alert alert-warning">
-            <h4 class="alert-heading mb-3">You can't see this page correctly until...</h4>
-            <p>
-                In order to view this page live, you'll need to make some adjustments to this template or your test form:
-                <ol class="mb-0">
-                    <li>Rename your test form handle to <code>freeformInsideTemplate</code> or adjust the form handle name inside this template to match your test form.</li>
-                </ol>
-            </p>
         </div>
 
-	{% endif %}
+        <script>
+            var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+            if (form) {
+                form.addEventListener("freeform-stripe-styling", function (event) {
+                event.detail.base = {
+                    fontSize: "16px",
+                    color: "#464747",
+                    fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+                    '::placeholder': {
+                        color: '#6c757d',
+                    },
+                },
+                event.detail.invalid = {
+                    color: '#dc3545',
+                }
+                });
+                form.addEventListener('freeform-ready', function (event) {
+                    event.options.errorClassBanner = 'freeform-form-errors';
+                    event.options.errorClassList = 'freeform-errors';
+                    event.options.errorClassField = 'freeform-has-errors';
+                    event.options.successClassBanner = 'freeform-form-success';
+                })
+            }
+        </script>
 
-</div>
+    {% else %}
+
+        <div class="freeform-error">
+            <p>You must rename your form handle to <code>{{ demoFormHandle }}</code> for this part of the demo to work.</p>
+        </div>
+
+    {% endif %}
+
+    {# Instructions to get this page working correctly #}
+    <div class="extras-instructions">
+        <h4>This page will not display correctly until...</h4>
+        <p>
+            In order to view this page live, you'll need to make some adjustments to this template or your test form:
+            <ol>
+                <li>Rename your test form handle to <code>{{ demoFormHandle }}</code> or adjust the form handle name inside this template to match your test form.</li>
+            </ol>
+        </p>
+    </div>
 
 {% endblock %}

@@ -25,12 +25,12 @@
     "template": "/submissions"
   },
   {
-    "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"], ["*","[^\\\\\\/]+"]],
+    "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"]],
     "urlPattern": "submissions/{form}/{id}",
     "template": "/submissions/view"
   },
   {
-    "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"], ["*","[^\\\\\\/]+"], "\\/spam\\/"],
+    "urlParts": ["submissions\\/", ["*","[^\\\\\\/]+"], "\\/", ["*","[^\\\\\\/]+"], "\\/spam\\/"],
     "urlPattern": "submissions/{form}/{id}/spam",
     "template": "/submissions/view"
   },

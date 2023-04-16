@@ -17,6 +17,15 @@ html:has(body.freeform-spam-mode) {
     margin: 0 auto;
     padding-top: 80px !important;
 }
+a {
+    color: #0d6efd;
+    text-decoration: none;
+    transition: all 0.5s;
+}
+a:hover {
+    color: #0f5fd5;
+    text-decoration: underline;
+}
 h3 {
     font: 400 30px sans-serif;
     color: var(--page-text);

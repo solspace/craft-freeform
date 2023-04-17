@@ -25,9 +25,9 @@
             <p>
                 Viewing all {{ spamMode ? " spammy submissions" : " submissions" }} for this form.
                 {% if spamMode %}
-                    Switch back to view <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}">{{ submissionCount }} regular submission{% if submissionCount > "1" %}s{% endif %}</a>.
+                    Switch back to view <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}">{{ submissionCount }} regular submission{% if submissionCount != "1" %}s{% endif %}</a>.
                 {% else %}
-                    There {% if spamCount > "1" %}are{% else %}is{% endif %} also <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}/spam">{{ spamCount }} submission{% if spamCount > "1" %}s{% endif %} flagged as spam</a>.
+                    There {% if spamCount == "1" %}is{% else %}are{% endif %} also <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}/spam">{{ spamCount }} submission{% if spamCount != "1" %}s{% endif %} flagged as spam</a>.
                 {% endif %}
             </p>
         </div>

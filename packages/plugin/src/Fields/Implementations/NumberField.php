@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 
 #[Type(
@@ -21,8 +20,8 @@ class NumberField extends TextField
 
     #[Property(
         label: 'Min/Max Values',
-        type: Property::TYPE_MIN_MAX,
         instructions: 'The minimum and/or maximum numeric value this field is allowed to have (optional).',
+        type: Property::TYPE_MIN_MAX,
     )]
     protected ?array $minMaxValues = [null, null];
 
@@ -109,13 +108,6 @@ class NumberField extends TextField
             $this->translate('{{dec}} decimal places allowed'),
             $this->translate('Only positive numbers allowed')
         );
-        $constraints[] = new LengthConstraint(
-            null,
-            $this->getMaxLength(),
-            $this->translate('The value must be no more than {{max}} characters'),
-            $this->translate('The value must be no less than {{min}} characters'),
-            $this->translate('The value must be between {{min}} and {{max}} characters')
-        );
 
         return $constraints;
     }
@@ -125,28 +117,19 @@ class NumberField extends TextField
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass().' '.$this->getInputClassString());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', 'number')
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('min', $this->getMinValue())
+            ->setIfEmpty('max', $this->getMaxValue())
+            ->setIfEmpty('step', $this->getStep())
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
+            ->setIfEmpty('value', $this->getValue())
+            ->set($this->getRequiredAttribute())
+        ;
 
-        $output = '<input '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('type', 'number')
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getNumericAttributeString('maxlength', $this->getMaxLength())
-            .$this->getNumericAttributeString('min', $this->getMinValue())
-            .$this->getNumericAttributeString('max', $this->getMaxValue())
-            .$this->getAttributeString('step', $this->getStep())
-            .$this->getAttributeString(
-                'placeholder',
-                $this->translate($attributes->getPlaceholder() ?: $this->getPlaceholder())
-            )
-            .$this->getAttributeString('value', $this->getValue())
-            .$this->getRequiredAttribute();
-
-        $output .= $attributes->getInputAttributesAsString();
-        $output .= '/>';
-
-        return $output;
+        return '<input'.$attributes.' />';
     }
 }

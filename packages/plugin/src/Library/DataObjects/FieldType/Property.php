@@ -18,6 +18,7 @@ class Property
     public ?string $placeholder;
     public ?string $section;
     public ?array $options;
+    public ?string $emptyOption;
     public ?array $flags;
     public ?array $visibilityFilters;
     public ?array $middleware;

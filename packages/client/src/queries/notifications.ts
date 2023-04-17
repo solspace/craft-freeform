@@ -1,7 +1,7 @@
 import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { set as setNotifications } from '@ff-client/app/pages/forms/edit/store/slices/notifications';
+import { notificationActions } from '@editor/store/slices/notifications';
 import type {
   Notification,
   NotificationTemplate,
@@ -50,19 +50,21 @@ export const useQueryFormNotifications = (
       staleTime: Infinity,
       cacheTime: Infinity,
       onSuccess: (notifications) => {
-        dispatch(setNotifications(notifications));
+        dispatch(notificationActions.set(notifications));
       },
     }
   );
 };
 
+export type NotificationTemplateGroups = {
+  database: NotificationTemplate[];
+  files: NotificationTemplate[];
+};
+
 type NotificationTemplatePayload = {
   allowedTypes: TemplateType[];
   default: TemplateType;
-  templates: {
-    database: NotificationTemplate[];
-    files: NotificationTemplate[];
-  };
+  templates: NotificationTemplateGroups;
 };
 
 export const useQueryNotificationTemplates = (): UseQueryResult<

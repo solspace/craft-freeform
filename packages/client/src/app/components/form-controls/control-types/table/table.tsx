@@ -20,12 +20,12 @@ const Table: React.FC<ControlType<ColumnDescription[]>> = ({
     <Control property={property} errors={errors}>
       <PreviewableComponent
         preview={<TablePreview columnTypes={columnTypes} columns={columns} />}
+        onAfterEdit={() => updateValue(cleanColumns(columns))}
         onEdit={() => {
           if (!columns.length) {
-            updateValue(addColumn(columns));
+            updateValue(addColumn(columns, 0));
           }
         }}
-        onAfterEdit={() => updateValue(cleanColumns(columns))}
       >
         <TableEditor
           columnTypes={columnTypes}

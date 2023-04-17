@@ -1,14 +1,14 @@
 import type { CustomOptions, Option } from '../../options.types';
 
-export const addOption = (value: CustomOptions): CustomOptions => ({
+export const addOption = (
+  value: CustomOptions,
+  atIndex: number
+): CustomOptions => ({
   ...value,
   options: [
-    ...(value.options || []),
-    {
-      label: '',
-      value: '',
-      checked: false,
-    },
+    ...value.options.slice(0, atIndex),
+    { label: '', value: '', checked: false },
+    ...value.options.slice(atIndex),
   ],
 });
 

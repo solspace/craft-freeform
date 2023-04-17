@@ -6,6 +6,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\TextField;
+use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Export\ExportJson;
 
@@ -30,14 +31,24 @@ class ExportJsonTest extends TestCase
 
     protected function setUp(): void
     {
+        $tableLayout1 = new TableLayout([
+            ['label' => 'T1C1'],
+            ['label' => 'T1C2'],
+            ['label' => 'T1C3'],
+        ]);
+
+        $tableLayout2 = new TableLayout([
+            ['label' => 'T2C1'],
+            ['label' => 'T2C2'],
+            ['label' => 'T2C3'],
+            ['label' => 'T2C4'],
+            ['label' => 'T2C5'],
+        ]);
+
         $this->tableField1Mock = $this->createMock(TableField::class);
         $this->tableField1Mock
             ->method('getTableLayout')
-            ->willReturn([
-                ['label' => 'T1C1'],
-                ['label' => 'T1C2'],
-                ['label' => 'T1C3'],
-            ])
+            ->willReturn($tableLayout1)
         ;
 
         $this->tableField1Mock
@@ -48,13 +59,7 @@ class ExportJsonTest extends TestCase
         $this->tableField2Mock = $this->createMock(TableField::class);
         $this->tableField2Mock
             ->method('getTableLayout')
-            ->willReturn([
-                ['label' => 'T2C1'],
-                ['label' => 'T2C2'],
-                ['label' => 'T2C3'],
-                ['label' => 'T2C4'],
-                ['label' => 'T2C5'],
-            ])
+            ->willReturn($tableLayout2)
         ;
 
         $this->tableField2Mock

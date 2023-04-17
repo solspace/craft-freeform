@@ -89,6 +89,7 @@ export const fieldsSlice = createSlice({
 export const { set, add, remove, edit, clearErrors, setErrors } =
   fieldsSlice.actions;
 
+export const selectFields = (state: RootState): Field[] => state.fields;
 export const selectField =
   (uid: string) =>
   (state: RootState): Field =>

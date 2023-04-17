@@ -3,17 +3,17 @@
 namespace Solspace\Freeform\Attributes\Property\PropertyTypes\Table;
 
 use Solspace\Freeform\Attributes\Property\Transformer;
-use Solspace\Freeform\Fields\Properties\Table\TableProperty;
+use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 
 class TableTransformer extends Transformer
 {
-    public function transform($value): TableProperty
+    public function transform($value): TableLayout
     {
-        return new TableProperty($value ?? []);
+        return new TableLayout($value ?? []);
     }
 
     /**
-     * @param TableProperty $value
+     * @param TableLayout $value
      */
     public function reverseTransform($value): array
     {

@@ -1,5 +1,5 @@
+import type { KeyboardEvent } from 'react';
 import { useCallback, useRef, useState } from 'react';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 
 type SetCell = (row: number, cell: number) => void;
 
@@ -9,6 +9,11 @@ type InputRefList = Array<Array<InputRef>>;
 
 type SetCellRef = (element: InputRef, row: number, cell: number) => void;
 
+type KeyPressHandler = (options?: {
+  onEnter?: (event: KeyboardEvent) => void;
+  onDelete?: (event: KeyboardEvent) => void;
+}) => (event: KeyboardEvent) => void;
+
 type CellNavigation = (
   rowCount: number,
   cellCount: number
@@ -16,6 +21,7 @@ type CellNavigation = (
   activeCell: `${number}:${number}`;
   setActiveCell: SetCell;
   setCellRef: SetCellRef;
+  keyPressHandler: KeyPressHandler;
 };
 
 export const useCellNavigation: CellNavigation = (rowCount, cellCount) => {
@@ -24,52 +30,92 @@ export const useCellNavigation: CellNavigation = (rowCount, cellCount) => {
   const [row, setRow] = useState(0);
   const [cell, setCell] = useState(0);
 
-  const keyPressHandler = useCallback(
-    (event: KeyboardEvent): void => {
-      let deltaRow = row;
-      let deltaCell = cell;
+  const keyPressHandler = useCallback<KeyPressHandler>(
+    (options) =>
+      (event): void => {
+        if (event.key === 'Enter' && options?.onEnter) {
+          event.preventDefault();
 
-      const currentElement = refs.current?.[row]?.[cell];
-      const isInput =
-        currentElement instanceof HTMLInputElement ||
-        currentElement instanceof HTMLTextAreaElement;
+          return options.onEnter(event);
+        }
 
-      const caret = { start: true, end: true };
-      if (isInput) {
-        const caretPosition = currentElement.selectionStart;
+        if (event.key === 'Backspace' && options?.onDelete) {
+          const value = (event.target as HTMLInputElement).value;
+          if (value.length === 0) {
+            event.preventDefault();
 
-        caret.start = caretPosition === 0;
-        caret.end = caretPosition === currentElement.value.length;
-      }
+            return options.onDelete(event);
+          }
+        }
 
-      if (event.key === 'ArrowUp' && row > 0) {
-        deltaRow--;
-      }
+        let deltaRow = row;
+        let deltaCell = cell;
 
-      if (event.key === 'ArrowDown' && row < rowCount - 1) {
-        deltaRow++;
-      }
+        const currentElement = refs.current?.[row]?.[cell];
+        const isInput =
+          currentElement instanceof HTMLInputElement ||
+          currentElement instanceof HTMLTextAreaElement;
 
-      if (event.key === 'ArrowLeft' && cell > 0 && caret.start) {
-        deltaCell--;
-      }
+        const caret = { start: true, end: true, position: 0 };
+        if (isInput) {
+          const caretPosition = currentElement.selectionStart;
 
-      if (event.key === 'ArrowRight' && cell < cellCount - 1 && caret.end) {
-        deltaCell++;
-      }
+          caret.start = caretPosition === 0;
+          caret.end = caretPosition === currentElement.value.length;
+          caret.position = caretPosition;
+        }
 
-      setRow(deltaRow);
-      setCell(deltaCell);
+        let movingLeft: boolean;
+        if (event.key === 'ArrowUp' && row > 0) {
+          deltaRow--;
+        }
 
-      const nextElement = refs.current?.[deltaRow]?.[deltaCell];
-      nextElement?.focus();
-    },
+        if (event.key === 'ArrowDown' && row < rowCount - 1) {
+          deltaRow++;
+        }
+
+        if (event.key === 'ArrowLeft' && cell > 0 && caret.start) {
+          movingLeft = true;
+          deltaCell--;
+        }
+
+        if (event.key === 'ArrowRight' && cell < cellCount - 1 && caret.end) {
+          movingLeft = false;
+          deltaCell++;
+        }
+
+        if (deltaRow === row && deltaCell === cell) {
+          return;
+        }
+
+        if (deltaRow !== row) {
+          setRow(deltaRow);
+        }
+
+        if (deltaCell !== cell) {
+          setCell(deltaCell);
+        }
+
+        const nextElement = refs.current?.[deltaRow]?.[deltaCell];
+        nextElement?.focus();
+
+        if (
+          nextElement instanceof HTMLInputElement ||
+          nextElement instanceof HTMLTextAreaElement
+        ) {
+          event.preventDefault();
+          if (movingLeft !== undefined) {
+            nextElement.setSelectionRange(
+              movingLeft ? nextElement.value.length : 0,
+              movingLeft ? nextElement.value.length : 0
+            );
+          } else {
+            nextElement.setSelectionRange(caret.position, caret.position);
+          }
+        }
+      },
     [rowCount, cellCount, row, cell]
   );
-
-  useOnKeypress({ callback: keyPressHandler, type: 'keydown' }, [
-    keyPressHandler,
-  ]);
 
   const setActiveCell: SetCell = (row, cell) => {
     setRow(row);
@@ -89,5 +135,6 @@ export const useCellNavigation: CellNavigation = (rowCount, cellCount) => {
     activeCell: `${row}:${cell}`,
     setActiveCell,
     setCellRef,
+    keyPressHandler,
   };
 };

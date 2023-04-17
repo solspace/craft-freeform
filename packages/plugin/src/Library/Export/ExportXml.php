@@ -45,7 +45,7 @@ class ExportXml extends AbstractExport
                             foreach ($tableRow as $index => $columnValue) {
                                 $columnNode = $rowNode->addChild('column', htmlspecialchars($columnValue));
 
-                                $label = $layout[$index]['label'] ?? null;
+                                $label = $layout[$index]->label ?? null;
                                 if ($label) {
                                     $columnNode->addAttribute('label', $label);
                                 }

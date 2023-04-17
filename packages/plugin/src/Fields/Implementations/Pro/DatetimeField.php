@@ -394,40 +394,34 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
 
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputClass('form-date-time-field');
-
-        if ($this->isUseDatepicker()) {
-            $this->addInputClass('form-datepicker');
-        }
-
         $hasTime = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_TIME], true);
         $hasDate = \in_array($this->getDateTimeType(), [self::DATETIME_TYPE_BOTH, self::DATETIME_TYPE_DATE], true);
         $locale = $this->locale ?: \Craft::$app->locale->id;
 
-        $this->addInputAttribute('class', $attributes->getClass().' '.$this->getInputClassString());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->append('class', 'form-date-time-field')
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', $this->getType())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
+            ->setIfEmpty('value', $this->getValue())
+            ->set($this->getRequiredAttribute())
+            ->set('data-datepicker', true)
+            ->set('data-datepicker-enabled', $this->isUseDatepicker())
+            ->set('data-datepicker-format', $this->getDatepickerFormat())
+            ->set('data-datepicker-enabletime', $hasTime)
+            ->set('data-datepicker-enabledate', $hasDate)
+            ->set('data-datepicker-clock_24h', $this->isClock24h())
+            ->set('data-datepicker-locale', $this->getSupportedLocale($locale))
+            ->set('data-datepicker-min-date', $this->getGeneratedMinDate($this->getFormat()))
+            ->set('data-datepicker-max-date', $this->getGeneratedMaxDate($this->getFormat()))
+        ;
 
-        return '<input '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('type', $this->getType())
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString('data-datepicker', true)
-            .$this->getAttributeString('data-datepicker-enabled', $this->isUseDatepicker() ?: '')
-            .$this->getAttributeString('data-datepicker-format', $this->getDatepickerFormat())
-            .$this->getAttributeString('data-datepicker-enabletime', $hasTime ?: '')
-            .$this->getAttributeString('data-datepicker-enabledate', $hasDate ?: '')
-            .$this->getAttributeString('data-datepicker-clock_24h', $this->isClock24h() ?: '')
-            .$this->getAttributeString('data-datepicker-locale', $this->getSupportedLocale($locale))
-            .$this->getAttributeString('data-datepicker-min-date', $this->getGeneratedMinDate($this->getFormat()))
-            .$this->getAttributeString('data-datepicker-max-date', $this->getGeneratedMaxDate($this->getFormat()))
-            .$this->getAttributeString(
-                'placeholder',
-                $this->translate($attributes->getPlaceholder() ?: $this->getPlaceholder())
-            )
-            .$this->getAttributeString('value', $this->getValue())
-            .$this->getRequiredAttribute()
-            .$attributes->getInputAttributesAsString()
-            .'/>';
+        if ($this->isUseDatepicker()) {
+            $attributes->append('class', 'form-datepicker');
+        }
+
+        return '<input'.$attributes.' />';
     }
 }

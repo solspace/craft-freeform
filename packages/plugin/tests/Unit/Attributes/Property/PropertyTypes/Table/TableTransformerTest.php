@@ -5,7 +5,7 @@ namespace Solspace\Tests\Freeform\Unit\Attributes\Property\PropertyTypes\Table;
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\Table\TableTransformer;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
-use Solspace\Freeform\Fields\Properties\Table\TableProperty;
+use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 
 /**
  * @internal
@@ -24,7 +24,7 @@ class TableTransformerTest extends TestCase
 
         $output = (new TableTransformer())->transform($value);
 
-        $expected = new TableProperty();
+        $expected = new TableLayout();
         $expected
             ->add('Col 1', 'one', TableField::COLUMN_TYPE_STRING)
             ->add('Col 2', 'two', TableField::COLUMN_TYPE_CHECKBOX)
@@ -36,7 +36,7 @@ class TableTransformerTest extends TestCase
 
     public function testReverseTransform()
     {
-        $value = new TableProperty();
+        $value = new TableLayout();
         $value
             ->add('Col 1', 'one', TableField::COLUMN_TYPE_STRING)
             ->add('Col 2', 'two', TableField::COLUMN_TYPE_CHECKBOX)

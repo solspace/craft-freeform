@@ -1,5 +1,7 @@
 import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
+import { useAppDispatch } from '@editor/store';
+import { formActions } from '@editor/store/slices/form';
 import type {
   ExtendedFormType,
   Form,
@@ -40,9 +42,18 @@ export const useQueryFormSettings = (): UseQueryResult<
   FormSettingNamespace[],
   AxiosError
 > => {
-  return useQuery<FormSettingNamespace[], AxiosError>(QKForms.settings(), () =>
-    axios
-      .get<FormSettingNamespace[]>(`/client/api/forms/settings`)
-      .then((res) => res.data)
+  const dispatch = useAppDispatch();
+
+  return useQuery<FormSettingNamespace[], AxiosError>(
+    QKForms.settings(),
+    () =>
+      axios
+        .get<FormSettingNamespace[]>(`/client/api/forms/settings`)
+        .then((res) => res.data),
+    {
+      onSuccess: (settings) => {
+        dispatch(formActions.setInitialSettings(settings));
+      },
+    }
   );
 };

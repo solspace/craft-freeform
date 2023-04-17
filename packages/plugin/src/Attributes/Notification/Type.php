@@ -12,6 +12,7 @@ class Type
 
     public function __construct(
         public string $name,
+        public string $newInstanceName,
         public ?string $icon = null,
     ) {
         $this->properties = new PropertyCollection();

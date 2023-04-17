@@ -40,7 +40,7 @@ class AttributesTest extends TestCase
         $attributes = new Attributes();
         $attributes->set('data-empty-test', '');
 
-        $this->assertEquals('data-empty-test', (string) $attributes);
+        $this->assertEquals(' data-empty-test', (string) $attributes);
     }
 
     public function testBooleanValuesAddOnlyKey()
@@ -48,7 +48,7 @@ class AttributesTest extends TestCase
         $attributes = new Attributes();
         $attributes->set('data-boolean-true', true);
 
-        $this->assertEquals('data-boolean-true', (string) $attributes);
+        $this->assertEquals(' data-boolean-true', (string) $attributes);
     }
 
     public function testZeroNumericGeneratesAttribute()
@@ -56,7 +56,7 @@ class AttributesTest extends TestCase
         $attributes = new Attributes();
         $attributes->set('data-numeric-zero', 0);
 
-        $this->assertEquals('data-numeric-zero="0"', (string) $attributes);
+        $this->assertEquals(' data-numeric-zero="0"', (string) $attributes);
     }
 
     public function testEscapesHtml()
@@ -65,7 +65,7 @@ class AttributesTest extends TestCase
         $attributes->set('data-inject', '"><script>alert(\'hack!\');</script>');
 
         $this->assertEquals(
-            'data-inject="&quot;&gt;&lt;script&gt;alert(&#039;hack!&#039;);&lt;/script&gt;"',
+            ' data-inject="&quot;&gt;&lt;script&gt;alert(&#039;hack!&#039;);&lt;/script&gt;"',
             (string) $attributes
         );
     }
@@ -75,7 +75,7 @@ class AttributesTest extends TestCase
         $attributes = new Attributes();
         $attributes->set('data-void');
 
-        $this->assertEquals('data-void', (string) $attributes);
+        $this->assertEquals(' data-void', (string) $attributes);
     }
 
     public function testRendersWithNullKey()
@@ -86,7 +86,7 @@ class AttributesTest extends TestCase
             ->set('', 'empty-key')
         ;
 
-        $this->assertEquals('null-key empty-key', (string) $attributes);
+        $this->assertEquals(' null-key empty-key', (string) $attributes);
     }
 
     public function testRendersObjects()
@@ -94,7 +94,7 @@ class AttributesTest extends TestCase
         $attributes = new Attributes();
         $attributes->set('data-object', (object) ['one' => 1, 'two' => 2, 'three' => 3]);
 
-        $this->assertEquals('data-object="one:1 two:2 three:3"', (string) $attributes);
+        $this->assertEquals(' data-object="one:1 two:2 three:3"', (string) $attributes);
     }
 
     public function testBatchAdding()
@@ -114,7 +114,7 @@ class AttributesTest extends TestCase
         ;
 
         $this->assertEquals(
-            'data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
+            ' data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
             (string) $attributes
         );
     }
@@ -133,7 +133,7 @@ class AttributesTest extends TestCase
         ]);
 
         $this->assertEquals(
-            'data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
+            ' data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
             (string) $attributes
         );
     }
@@ -153,7 +153,24 @@ class AttributesTest extends TestCase
         ;
 
         $this->assertEquals(
-            'data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
+            ' data-boolean text="text value" empty-text number-value="123" void array-value="one two three" object-value="one:1 two:2 three:3"',
+            (string) $attributes
+        );
+    }
+
+    public function testSetIfEmpty()
+    {
+        $attributes = new Attributes();
+        $attributes
+            ->set('text', 'text value')
+            ->set('empty-text', '')
+        ;
+
+        $attributes->setIfEmpty('text', 'new text value');
+        $attributes->setIfEmpty('non-existent', 'value');
+
+        $this->assertEquals(
+            ' text="text value" empty-text non-existent="value"',
             (string) $attributes
         );
     }

@@ -29,16 +29,14 @@ class HiddenField extends TextField implements NoRenderInterface
 
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', $this->getType())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('value', $this->getValue())
+        ;
 
-        return '<input '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('type', $this->getType())
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString('value', $this->getValue())
-            .$attributes->getInputAttributesAsString()
-            .'/>';
+        return '<input'.$attributes.' />';
     }
 }

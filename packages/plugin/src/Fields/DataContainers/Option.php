@@ -12,30 +12,15 @@
 
 namespace Solspace\Freeform\Fields\DataContainers;
 
-class Option implements \JsonSerializable
+class Option
 {
-    /** @var string */
-    private $label;
-
-    /** @var string */
-    private $value;
-
-    /** @var bool */
-    private $checked;
-
-    /**
-     * Option constructor.
-     */
-    public function __construct(string $label, string $value, bool $checked = false)
-    {
-        $this->label = $label;
-        $this->value = $value;
-        $this->checked = $checked;
+    public function __construct(
+        private string $label,
+        private string $value,
+        private bool $checked = false
+    ) {
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function __toString(): string
     {
         return $this->getLabel();
@@ -46,10 +31,7 @@ class Option implements \JsonSerializable
         return $this->label;
     }
 
-    /**
-     * @return int|string
-     */
-    public function getValue()
+    public function getValue(): string
     {
         return $this->value;
     }
@@ -57,16 +39,5 @@ class Option implements \JsonSerializable
     public function isChecked(): bool
     {
         return $this->checked;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function jsonSerialize()
-    {
-        return [
-            'label' => $this->getLabel(),
-            'value' => $this->getValue(),
-        ];
     }
 }

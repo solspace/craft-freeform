@@ -1,17 +1,13 @@
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
 
 export const addColumn = (
-  columns: ColumnDescription[]
-): ColumnDescription[] => {
-  const updated = [...columns];
-  updated.push({
-    label: '',
-    type: 'text',
-    value: '',
-  });
-
-  return updated;
-};
+  columns: ColumnDescription[],
+  atIndex: number
+): ColumnDescription[] => [
+  ...columns.slice(0, atIndex + 1),
+  { label: '', type: 'text', value: '' },
+  ...columns.slice(atIndex + 1),
+];
 
 export const updateColumn = (
   index: number,

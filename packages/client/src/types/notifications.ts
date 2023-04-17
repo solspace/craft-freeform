@@ -1,9 +1,10 @@
 import type { GenericValue, Property } from './properties';
 
+type TemplateID = string | number;
+
 export type Notification = {
-  id: number;
+  id?: TemplateID;
   uid: string;
-  type: string;
   class: string;
 
   name: string;
@@ -14,8 +15,8 @@ export type Notification = {
 
 export type NotificationType = {
   name: string;
+  newInstanceName: string;
   icon: string;
-  type: string;
   class: string;
   properties: Property[];
 };
@@ -25,13 +26,19 @@ export type Recipient = {
   name?: string;
 };
 
+export type RecipientMapping = {
+  value: string;
+  template: TemplateID;
+  recipients: Recipient[];
+};
+
 export enum TemplateType {
   Database = 'database',
   File = 'file',
 }
 
 export type NotificationTemplate = {
-  id: string | number;
+  id: TemplateID;
   name: string;
   handle: string;
   description: string;

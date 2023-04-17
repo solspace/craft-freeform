@@ -94,8 +94,11 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             return '';
         }
 
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', 'radio')
+        ;
 
         $output = '<div class="opinion-scale">';
 
@@ -105,17 +108,16 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             $isSelected = $value == $this->getValue();
             $id = $this->getIdAttribute()."-{$index}";
 
+            $inputAttributes = $attributes
+                ->clone()
+                ->replace('id', $id)
+                ->replace('value', $value)
+                ->replace('checked', $isSelected)
+            ;
+
             $output .= '<li>';
 
-            $output .= '<input '
-                .$this->getInputAttributesString()
-                .$this->getAttributeString('name', $this->getHandle())
-                .$this->getAttributeString('type', 'radio')
-                .$this->getAttributeString('id', $id)
-                .$this->getAttributeString('value', $value, true, true)
-                .$this->getParameterString('checked', $isSelected)
-                .$attributes->getInputAttributesAsString()
-                .'/>';
+            $output .= '<input'.$inputAttributes.' />';
 
             $output .= '<label for="'.$id.'">';
             $output .= $this->translate($scale['label']);

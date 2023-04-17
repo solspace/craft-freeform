@@ -2,12 +2,9 @@ import React from 'react';
 import type * as ControlTypes from '@components/form-controls';
 import { FormComponent } from '@components/form-controls';
 import { useAppDispatch } from '@editor/store';
-import type {
-  IntegrationEntry,
-  Value,
-} from '@editor/store/slices/integrations';
+import type { IntegrationEntry } from '@editor/store/slices/integrations';
 import { modifyIntegrationProperty } from '@editor/store/slices/integrations';
-import type { Property } from '@ff-client/types/properties';
+import type { GenericValue, Property } from '@ff-client/types/properties';
 
 type Props = {
   integration: IntegrationEntry;
@@ -20,7 +17,7 @@ export const FieldComponent: React.FC<Props> = ({ integration, property }) => {
   const { id } = integration;
   const { handle: key } = property;
 
-  const updateValue: ControlTypes.UpdateValue<Value> = (value) => {
+  const updateValue: ControlTypes.UpdateValue<GenericValue> = (value) => {
     dispatch(modifyIntegrationProperty({ id, key, value }));
   };
 

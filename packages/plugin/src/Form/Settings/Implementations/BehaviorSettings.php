@@ -27,8 +27,8 @@ class BehaviorSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/success.svg',
     )]
     #[Property(
-        type: Property::TYPE_SELECT,
         instructions: "Set how you'd like the success return of this form to be handled. May also be overridden at the template level.",
+        type: Property::TYPE_SELECT,
         options: [
             ['value' => self::SUCCESS_BEHAVIOUR_RELOAD, 'label' => 'Reload'],
             ['value' => self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, 'label' => 'Redirect'],
@@ -53,16 +53,16 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Property(
-        type: Property::TYPE_TEXTAREA,
         instructions: 'The text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with form.successMessage.',
+        type: Property::TYPE_TEXTAREA,
         placeholder: 'Form has been submitted successfully!',
     )]
     public string $successMessage = 'Form has been submitted successfully!';
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Property(
-        type: Property::TYPE_TEXTAREA,
         instructions: 'The text to be shown at the top of the form if there are any errors upon submit (AJAX), or load in your template with form.errorMessage.',
+        type: Property::TYPE_TEXTAREA,
         placeholder: 'Sorry, there was an error submitting the form. Please try again.',
     )]
     public string $errorMessage = 'Sorry, there was an error submitting the form. Please try again.';
@@ -119,8 +119,8 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_LIMITS)]
     #[Property(
-        type: Property::TYPE_DATE_PICKER,
         instructions: 'Set a date after which the form will no longer accept submissions.',
+        type: Property::TYPE_DATE_PICKER,
     )]
     public ?string $stopSubmissionsAfter = null;
 }

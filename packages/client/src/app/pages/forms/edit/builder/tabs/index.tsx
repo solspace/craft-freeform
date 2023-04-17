@@ -1,11 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
 import { selectState, State } from '@editor/store/slices/context';
 import { selectFieldsHaveErrors } from '@editor/store/slices/fields';
-import { selectForm, selectFormErrors } from '@editor/store/slices/form';
+import { formSelectors } from '@editor/store/slices/form/form.selectors';
+import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
@@ -23,11 +25,12 @@ import {
 
 export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
-  const form = useSelector(selectForm);
+  const form = useSelector(formSelectors.current);
   const state = useSelector(selectState);
 
-  const formErrors = useSelector(selectFormErrors);
+  const formErrors = useSelector(formSelectors.errors);
   const fieldsHaveErrors = useSelector(selectFieldsHaveErrors);
+  const notificationsHaveErrors = useSelector(notificationSelectors.errors.any);
 
   const { data: formSettingsData } = useQueryFormSettings();
 
@@ -63,7 +66,10 @@ export const Tabs: React.FC = () => {
         <NavLink to="" end className={classes(fieldsHaveErrors && 'errors')}>
           <span>{translate('Layout')}</span>
         </NavLink>
-        <NavLink to="notifications">
+        <NavLink
+          to="notifications"
+          className={classes(notificationsHaveErrors && 'errors')}
+        >
           <span>{translate('Notifications')}</span>
         </NavLink>
         <NavLink to="rules">
@@ -88,13 +94,16 @@ export const Tabs: React.FC = () => {
       <SaveButtonWrapper>
         <SaveButton
           onClick={triggerSave}
-          className={classes(
-            'btn',
-            'submit',
-            state === State.Processing && 'disabled'
-          )}
+          disabled={state === State.Processing}
+          className={classes('btn', 'submit')}
         >
-          {translate(state === State.Processing ? 'Saving...' : 'Save')}
+          <LoadingText
+            loadingText={translate('Saving')}
+            loading={state === State.Processing}
+            spinner
+          >
+            {translate('Save')}
+          </LoadingText>
         </SaveButton>
       </SaveButtonWrapper>
     </TabWrapper>

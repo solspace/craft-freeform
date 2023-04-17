@@ -64,10 +64,10 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
         $pattern = $this->getPattern();
         $pattern = str_replace('x', '0', $pattern);
 
-        $this
-            ->addInputAttribute('class', 'form-phone-pattern-field')
-            ->addInputAttribute('data-masked-input', $pattern)
-            ->addInputAttribute('data-pattern', $pattern)
+        $this->attributes
+            ->append('class', 'form-phone-pattern-field')
+            ->setIfEmpty('data-masked-input', $pattern)
+            ->setIfEmpty('data-pattern', $pattern)
         ;
 
         return parent::getInputHtml();

@@ -46,6 +46,7 @@
     "redux": "^4.2.0",
     "redux-thunk": "^2.4.1",
     "styled-components": "^5.3.5",
+    "unique-names-generator": "^4.7.1",
     "url-parse": "^1.5.10",
     "uuid": "^8.3.2"
   },

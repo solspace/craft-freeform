@@ -39,24 +39,25 @@ class RadioGroupField extends AbstractExternalOptionsField implements SingleValu
      */
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', 'radio')
+            ->set($this->getRequiredAttribute())
+        ;
 
         $output = '';
         foreach ($this->getOptions() as $index => $option) {
-            $output .= '<label>';
+            $inputAttributes = $attributes
+                ->clone()
+                ->replace('value', $option->value)
+                ->replace('checked', $option->checked)
+                ->replace('id', $this->getIdAttribute()."-{$index}")
+            ;
 
-            $output .= '<input '
-                .$this->getInputAttributesString()
-                .$this->getAttributeString('name', $this->getHandle())
-                .$this->getAttributeString('type', 'radio')
-                .$this->getAttributeString('id', $this->getIdAttribute()."-{$index}")
-                .$this->getAttributeString('value', $option->getValue(), true, true)
-                .$this->getParameterString('checked', $option->isChecked())
-                .$attributes->getInputAttributesAsString()
-                .$this->getRequiredAttribute()
-                .'/>';
-            $output .= $this->translate($option->getLabel());
+            $output .= '<label>';
+            $output .= '<input'.$inputAttributes.' />';
+            $output .= $this->translate($option->label);
             $output .= '</label>';
         }
 

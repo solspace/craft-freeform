@@ -6,8 +6,9 @@ use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 
 /**
  * @implements \IteratorAggregate<int, TableColumn>
+ * @implements \ArrayAccess<int, TableColumn>
  */
-class TableProperty implements \IteratorAggregate
+class TableLayout implements \IteratorAggregate, \ArrayAccess
 {
     private array $rows = [];
 
@@ -37,5 +38,30 @@ class TableProperty implements \IteratorAggregate
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->rows);
+    }
+
+    public function offsetExists($offset): bool
+    {
+        return isset($this->rows[$offset]);
+    }
+
+    public function offsetGet($offset): TableColumn
+    {
+        return $this->rows[$offset];
+    }
+
+    public function offsetSet($offset, $value): void
+    {
+        $this->rows[$offset] = $value;
+    }
+
+    public function offsetUnset($offset): void
+    {
+        unset($this->rows[$offset]);
+    }
+
+    public function count(): int
+    {
+        return \count($this->rows);
     }
 }

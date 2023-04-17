@@ -7,7 +7,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\SingleValueTrait;
-use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
     name: 'Signature',
@@ -100,49 +100,54 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass().' '.$this->getInputClassString());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->set('type', 'button')
+            ->set('data-signature-clear')
+        ;
 
         $hasMarginStyle = false;
-        foreach ($this->getInputAttributes() as $attribute) {
-            if ('style' === strtolower($attribute['attribute'])) {
-                if (false !== strpos($attribute['value'], 'margin')) {
+        foreach ($attributes as $attribute) {
+            [$key, $value] = $attribute;
+            if ('style' === strtolower($key)) {
+                if (str_contains($value, 'margin')) {
                     $hasMarginStyle = true;
                 }
             }
         }
 
         if (!$hasMarginStyle) {
-            $this->addInputAttribute('style', 'margin-top: 10px;');
+            $attributes->replace('style', 'margin-top: 10px;');
         }
 
-        $output = '<div class="freeform-signature-wrapper" style="position: relative;">';
-        $output .= '<input'
-            .$this->getAttributeString('type', 'hidden')
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('value', $this->getValue())
-            .$this->getRequiredAttribute()
-            .' />';
+        $inputAttributes = (new Attributes())
+            ->clone()
+            ->set('type', 'hidden')
+            ->set('name', $this->getHandle())
+            ->set('value', $this->getValue())
+            ->set($this->getRequiredAttribute())
+        ;
 
-        $output .= '<canvas'
-            .' style="padding: 1px; display: block;"'
-            .$this->getAttributeString('width', $this->getWidth())
-            .$this->getAttributeString('height', $this->getHeight())
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString('data-pen-color', $this->getPenColor())
-            .$this->getAttributeString('data-dot-size', $this->getPenDotSize())
-            .$this->getAttributeString('data-border-color', $this->getBorderColor())
-            .$this->getAttributeString('data-background-color', $this->getBackgroundColor())
-            .' data-signature-field'
-            .'>Your browser does not support the Signature field</canvas>';
+        $output = '<div class="freeform-signature-wrapper" style="position: relative;">';
+        $output .= '<input'.$inputAttributes.' />';
+
+        $canvasAttributes = (new Attributes())
+            ->set('style', 'padding: 1px; display: block;')
+            ->set('width', $this->getWidth())
+            ->set('height', $this->getHeight())
+            ->set('id', $this->getIdAttribute())
+            ->set('data-pen-color', $this->getPenColor())
+            ->set('data-dot-size', $this->getPenDotSize())
+            ->set('data-border-color', $this->getBorderColor())
+            ->set('data-background-color', $this->getBackgroundColor())
+            ->set('data-signature-field')
+        ;
+
+        $output .= '<canvas'.$canvasAttributes.'>Your browser does not support the Signature field</canvas>';
 
         if ($this->showClearButton) {
-            $output .= '<button'
-                .' type="button"'
-                .' data-signature-clear'
-                .$this->getInputAttributesString()
-                .'>';
-            $output .= Freeform::t('Clear');
+            $output .= '<button'.$attributes.'>';
+            $output .= $this->translate('Clear');
             $output .= '</button>';
         }
 

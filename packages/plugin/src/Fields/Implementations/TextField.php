@@ -36,32 +36,20 @@ class TextField extends AbstractField implements SingleValueInterface, Placehold
         return self::TYPE_TEXT;
     }
 
-    public function getMaxLength(): ?int
-    {
-        return $this->maxLength;
-    }
-
     /**
      * Outputs the HTML of input.
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass().' '.$this->getInputClassString());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', $this->customInputType ?? 'text')
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
+            ->setIfEmpty('value', $this->getValue())
+        ;
 
-        return '<input '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('type', $this->customInputType ?? 'text')
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getNumericAttributeString('maxlength', $this->getMaxLength())
-            .$this->getAttributeString(
-                'placeholder',
-                $this->translate($attributes->getPlaceholder() ?: $this->getPlaceholder())
-            )
-            .$this->getAttributeString('value', $this->getValue())
-            .$this->getRequiredAttribute()
-            .$attributes->getInputAttributesAsString()
-            .'/>';
+        return '<input'.$attributes.' />';
     }
 }

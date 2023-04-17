@@ -1,3 +1,5 @@
+import type { Options } from '@components/form-controls/control-types/options/options.types';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type GenericValue = any;
 
@@ -7,8 +9,10 @@ export enum PropertyType {
   Textarea = 'textarea',
   Boolean = 'bool',
   Select = 'select',
+  Options = 'options',
   Color = 'color',
-  DateTime = 'date-time',
+  DateTime = 'dateTime',
+  MinMax = 'minMax',
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -52,7 +56,13 @@ export type BooleanProperty = BaseProperty<boolean> & {
 export type Option = { value: string | number; label: string };
 
 export type SelectProperty = BaseProperty<string> & {
+  type: PropertyType.Select;
   options: Option[];
+  emptyOption?: string;
+};
+
+export type OptionsProperty = BaseProperty<Options> & {
+  type: PropertyType.Options;
 };
 
 export type ColorProperty = BaseProperty<string> & {
@@ -63,14 +73,20 @@ export type DateTimeProperty = BaseProperty<string> & {
   type: PropertyType.DateTime;
 };
 
+export type MinMaxProperty = BaseProperty<[number, number]> & {
+  type: PropertyType.MinMax;
+};
+
 export type Property =
   | IntegerProperty
   | StringProperty
   | TextareaProperty
   | BooleanProperty
   | SelectProperty
+  | OptionsProperty
   | ColorProperty
-  | DateTimeProperty;
+  | DateTimeProperty
+  | MinMaxProperty;
 
 export type FieldType = {
   name: string;

@@ -1,3 +1,4 @@
+import { animated } from 'react-spring';
 import styled, { keyframes } from 'styled-components';
 
 export const LoadingTextWrapper = styled.span`
@@ -12,6 +13,38 @@ export const LoadingTextWrapper = styled.span`
 
     fill: currentColor;
   }
+`;
+
+export const TextContainer = styled(animated.span)`
+  position: relative;
+
+  overflow: hidden;
+  transform-origin: center center;
+`;
+
+const TextBlock = styled(animated.span)`
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  opacity: 0;
+  white-space: nowrap;
+`;
+
+export const OriginalTextContainer = styled(TextBlock)`
+  transform: translateY(0px);
+  opacity: 1;
+`;
+export const LoadingTextContainer = styled(TextBlock)``;
+
+export const SpinnerContainer = styled(animated.span)`
+  overflow: hidden;
+  transform-origin: center right;
+`;
+
+export const DotContainer = styled(animated.span)`
+  overflow: hidden;
+  transform-origin: center left;
 `;
 
 const pulseAnimation = keyframes`

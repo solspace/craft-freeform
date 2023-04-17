@@ -33,23 +33,19 @@ class SelectField extends AbstractExternalOptionsField implements SingleValueInt
 
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->set($this->getRequiredAttribute())
+        ;
 
-        $output = '<select '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$attributes->getInputAttributesAsString()
-            .$this->getRequiredAttribute()
-            .'>';
-
+        $output = '<select'.$attributes.'>';
         foreach ($this->getOptions() as $option) {
-            $output .= '<option value="'.$option->getValue().'"'.($option->isChecked() ? ' selected' : '').'>';
-            $output .= $this->translate($option->getLabel());
+            $output .= '<option value="'.$option->value.'"'.($option->checked ? ' selected' : '').'>';
+            $output .= $this->translate($option->label);
             $output .= '</option>';
         }
-
         $output .= '</select>';
 
         return $output;

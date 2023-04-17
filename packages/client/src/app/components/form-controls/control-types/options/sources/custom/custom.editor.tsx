@@ -12,7 +12,6 @@ import {
 } from '@components/form-controls/control-types/table/table.editor.styles';
 import { useCellNavigation } from '@components/form-controls/hooks/use-cell-navigation';
 import { PreviewEditor } from '@components/form-controls/preview/previewable-component.styles';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import { PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
@@ -33,26 +32,18 @@ type Props = {
 export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
   const { options = [], useCustomValues = false } = value;
 
-  const { activeCell, setActiveCell, setCellRef } = useCellNavigation(
-    options.length,
-    useCustomValues ? 2 : 1
-  );
+  const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
+    useCellNavigation(options.length, useCustomValues ? 2 : 1);
 
-  const addCell = (): void => {
-    setActiveCell(options.length, 0);
-    updateValue(addOption(value));
+  const addCell = (cellIndex: number, atIndex?: number): void => {
+    setActiveCell(
+      atIndex !== undefined ? atIndex + 1 : options.length,
+      cellIndex
+    );
+    updateValue(
+      addOption(value, atIndex === undefined ? options.length : atIndex + 1)
+    );
   };
-
-  useOnKeypress(
-    {
-      callback: (event: KeyboardEvent): void => {
-        if (event.key === 'Enter') {
-          addCell();
-        }
-      },
-    },
-    [value]
-  );
 
   return (
     <PreviewEditor>
@@ -84,6 +75,11 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                       autoFocus={activeCell === `${index}:0`}
                       ref={(element) => setCellRef(element, index, 0)}
                       onFocus={() => setActiveCell(index, 0)}
+                      onKeyDown={keyPressHandler({
+                        onEnter: ({ shiftKey }) => {
+                          addCell(0, shiftKey ? index : undefined);
+                        },
+                      })}
                       onChange={(event) =>
                         updateValue(
                           updateOption(
@@ -108,6 +104,11 @@ export const CustomEditor: React.FC<Props> = ({ value, updateValue }) => {
                         autoFocus={activeCell === `${index}:1`}
                         ref={(element) => setCellRef(element, index, 1)}
                         onFocus={() => setActiveCell(index, 1)}
+                        onKeyDown={keyPressHandler({
+                          onEnter: ({ shiftKey }) => {
+                            addCell(1, shiftKey ? index : undefined);
+                          },
+                        })}
                         onChange={(event) =>
                           updateValue(
                             updateOption(

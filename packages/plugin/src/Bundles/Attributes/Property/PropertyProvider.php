@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionFetcherInterface;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\ValueGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
@@ -88,6 +89,13 @@ class PropertyProvider
             $transformer = $attribute->transformer ? $this->container->get($attribute->transformer) : null;
 
             $value = $property->getDefaultValue() ?? $attribute->value;
+            if (null === $referenceObject && $attribute->valueGenerator) {
+                $generator = $this->container->get($attribute->valueGenerator);
+                if ($generator instanceof ValueGeneratorInterface) {
+                    $value = $generator->generateValue($attribute, $referenceObject);
+                }
+            }
+
             if ($referenceObject && $property->isInitialized($referenceObject)) {
                 $value = $property->getValue($referenceObject);
 
@@ -104,6 +112,7 @@ class PropertyProvider
             $prop->placeholder = $attribute->placeholder;
             $prop->section = $section?->handle;
             $prop->options = $options?->getOptions();
+            $prop->emptyOption = $attribute->emptyOption;
             $prop->required = $attribute->required;
             $prop->value = $value;
             $prop->order = $attribute->order ?? $collection->getNextOrder();

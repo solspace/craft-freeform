@@ -3,12 +3,15 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\PropertyTypes\Field\FieldTransformer;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Interfaces\RememberPostedValueInterface;
-use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 #[Type(
@@ -18,8 +21,13 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 )]
 class ConfirmationField extends TextField implements DefaultFieldInterface, NoStorageInterface, RememberPostedValueInterface, ExtraFieldInterface
 {
-    /** @var int */
-    protected $targetFieldHash;
+    #[Property(
+        label: 'Target Field',
+        instructions: 'Select the field that this field should match',
+        type: Property::TYPE_FIELD,
+        transformer: FieldTransformer::class,
+    )]
+    protected ?FieldInterface $targetField;
 
     /**
      * Return the field TYPE.
@@ -29,12 +37,9 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         return self::TYPE_CONFIRMATION;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getTargetFieldHash()
+    public function getTargetField(): FieldInterface
     {
-        return $this->targetFieldHash;
+        return $this->targetField;
     }
 
     protected function validate(): array
@@ -42,7 +47,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         $errors = parent::validate();
 
         try {
-            $field = $this->getForm()->getLayout()->getFieldByHash($this->getTargetFieldHash());
+            $field = $this->getForm()->getLayout()->getField($this->getTargetField()->getUid());
             $value = $field->getValue();
 
             if ($value !== $this->getValue()) {
@@ -62,11 +67,13 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
      */
     protected function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('placeholder', $this->translate($this->getPlaceholder()))
+        ;
 
         try {
-            $field = $this->getForm()->getLayout()->getFieldByHash($this->getTargetFieldHash());
+            $field = $this->getTargetField();
 
             $output = $field->getInputHtml();
             $output = str_replace('/>', '', $output);
@@ -74,17 +81,10 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
             $output = $this->injectAttribute($output, 'name', $this->getHandle());
             $output = $this->injectAttribute($output, 'id', $this->getIdAttribute());
             $output = $this->injectAttribute($output, 'value', $this->getValue());
-            $output = $this->injectAttribute(
-                $output,
-                'placeholder',
-                Freeform::t($attributes->getPlaceholder() ?: $this->getPlaceholder())
-            );
-
-            $output .= $this->getInputAttributesString();
 
             $output = str_replace(' required', '', $output);
             $output .= $this->getRequiredAttribute();
-            $output .= $attributes->getInputAttributesAsString();
+            $output .= $attributes;
 
             $output .= ' />';
 
@@ -94,22 +94,19 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         }
     }
 
-    /**
-     * @param string $string
-     * @param string $name
-     * @param mixed  $value
-     * @param bool   $escapeValue
-     */
-    private function injectAttribute($string, $name, $value, $escapeValue = true): string
+    private function injectAttribute(string $string, string $name, mixed $value): string
     {
+        $attributes = new Attributes();
+        $attributes->set($name, $value);
+
         if (preg_match('/'.$name.'=[\'"][^\'"]*[\'"]/', $string)) {
             $string = preg_replace(
                 '/'.$name.'=[\'"][^\'"]*[\'"]/',
-                $this->getAttributeString($name, $value, $escapeValue),
+                $attributes,
                 $string
             );
         } else {
-            $string .= $this->getAttributeString($name, $value, $escapeValue);
+            $string .= $attributes;
         }
 
         return $string;

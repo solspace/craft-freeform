@@ -46,15 +46,16 @@ export const attributesToString = (attributes: Attribute[]): string => {
 
 export const addAttribute = (
   category: AttributeTarget,
-  attributes: AttributeCollection
-): AttributeCollection => {
-  const updated = {
-    ...attributes,
-    [category]: [...attributes[category], ['', '']],
-  };
-
-  return updated;
-};
+  attributes: AttributeCollection,
+  atIndex: number
+): AttributeCollection => ({
+  ...attributes,
+  [category]: [
+    ...attributes[category].slice(0, atIndex + 1),
+    ['', ''],
+    ...attributes[category].slice(atIndex + 1),
+  ],
+});
 
 export const updateAttribute = (
   index: number,

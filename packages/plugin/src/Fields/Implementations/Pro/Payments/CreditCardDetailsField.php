@@ -9,6 +9,7 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\SingleValueTrait;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 
@@ -130,11 +131,14 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
      */
     protected function getInputHtml(): string
     {
-        $handle = $this->getHandle();
-        $id = $this->getIdAttribute();
-        $value = $this->getValue();
+        $attributes = (new Attributes())
+            ->set('type', 'hidden')
+            ->set('name', $this->getHandle())
+            ->set('id', $this->getIdAttribute())
+            ->set('value', $this->getValue())
+        ;
 
-        return "<input type='hidden' name='{$handle}' id='{$id}' value='{$value}'/>";
+        return '<input'.$attributes.' />';
     }
 
     protected function getLabelHtml(): string

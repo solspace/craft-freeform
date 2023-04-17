@@ -56,16 +56,14 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
 
     public function getInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', FieldInterface::TYPE_HIDDEN)
+            ->setIfEmpty('value', '')
+        ;
 
-        $output = '<input '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('type', FieldInterface::TYPE_HIDDEN)
-            .$this->getAttributeString('value', '')
-            .$attributes->getInputAttributesAsString()
-            .'/>';
-
+        $output = '<input '.$attributes.' />';
         $output .= $this->getSingleInputHtml();
 
         return $output;
@@ -73,19 +71,17 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
 
     public function getSingleInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addInputAttribute('class', $attributes->getClass());
+        $attributes = $this->attributes->getInput()
+            ->clone()
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', $this->getType())
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('value', $this->getDefaultValue())
+            ->setIfEmpty('checked', (bool) $this->getValue())
+            ->setIfEmpty($this->getRequiredAttribute())
+        ;
 
-        return '<input '
-            .$this->getInputAttributesString()
-            .$this->getAttributeString('name', $this->getHandle())
-            .$this->getAttributeString('type', $this->getType())
-            .$this->getAttributeString('id', $this->getIdAttribute())
-            .$this->getAttributeString('value', $this->getDefaultValue())
-            .$this->getParameterString('checked', (bool) $this->getValue())
-            .$this->getRequiredAttribute()
-            .$attributes->getInputAttributesAsString()
-            .'/>';
+        return '<input '.$attributes.' />';
     }
 
     public function renderSingleInput(): Markup
@@ -95,12 +91,7 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
 
     protected function onBeforeInputHtml(): string
     {
-        $attributes = $this->getCustomAttributes();
-        $this->addLabelAttribute('class', $attributes->getLabelClass());
-
-        return '<label'
-            .$this->getLabelAttributesString()
-            .'>';
+        return '<label'.$this->attributes->getLabel().'>';
     }
 
     protected function onAfterInputHtml(): string

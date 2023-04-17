@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { HelpText } from '@components/elements/help-text';
 import type { UpdateValue } from '@components/form-controls';
-import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -45,31 +44,28 @@ export const AttributesEditor: React.FC<Props> = ({
 
   const [currentTab, currentAttributes] = entries.find(([key]) => key === tab);
 
-  const { activeCell, setActiveCell, setCellRef } = useCellNavigation(
-    currentAttributes.length,
-    2
-  );
+  const { activeCell, setActiveCell, setCellRef, keyPressHandler } =
+    useCellNavigation(currentAttributes.length, 2);
 
   // Focus first cell when switching tabs
   useEffect(() => {
     setActiveCell(0, 0);
   }, [currentTab]);
 
-  const appendAndFocus = (rowIndex: number, cellIndex: number): void => {
-    setActiveCell(rowIndex, cellIndex);
-    updateValue(addAttribute(currentTab as AttributeTarget, attributes));
+  const appendAndFocus = (
+    rowIndex: number,
+    cellIndex: number,
+    atIndex?: number
+  ): void => {
+    setActiveCell(atIndex !== undefined ? atIndex + 1 : rowIndex, cellIndex);
+    updateValue(
+      addAttribute(
+        currentTab as AttributeTarget,
+        attributes,
+        atIndex !== undefined ? atIndex : currentAttributes.length - 1
+      )
+    );
   };
-
-  useOnKeypress(
-    {
-      callback: (event: KeyboardEvent): void => {
-        if (event.key === 'Enter') {
-          appendAndFocus(currentAttributes.length, 0);
-        }
-      },
-    },
-    [currentAttributes]
-  );
 
   return (
     <AttributeEditorWrapper>
@@ -123,6 +119,15 @@ export const AttributesEditor: React.FC<Props> = ({
                       autoFocus={activeCell === `${index}:0`}
                       ref={(element) => setCellRef(element, index, 0)}
                       onFocus={() => setActiveCell(index, 0)}
+                      onKeyDown={keyPressHandler({
+                        onEnter: (event) => {
+                          appendAndFocus(
+                            event.shiftKey ? index : currentAttributes.length,
+                            0,
+                            event.shiftKey ? index : undefined
+                          );
+                        },
+                      })}
                       onChange={(event) => {
                         updateValue(
                           updateAttribute(
@@ -143,6 +148,15 @@ export const AttributesEditor: React.FC<Props> = ({
                       autoFocus={activeCell === `${index}:1`}
                       ref={(element) => setCellRef(element, index, 1)}
                       onFocus={() => setActiveCell(index, 1)}
+                      onKeyDown={keyPressHandler({
+                        onEnter: (event) => {
+                          appendAndFocus(
+                            event.shiftKey ? index : currentAttributes.length,
+                            1,
+                            event.shiftKey ? index : undefined
+                          );
+                        },
+                      })}
                       onChange={(event) => {
                         updateValue(
                           updateAttribute(
@@ -158,6 +172,7 @@ export const AttributesEditor: React.FC<Props> = ({
 
                   <Cell tiny>
                     <Button
+                      tabIndex={-1}
                       onClick={() => {
                         updateValue(
                           deleteAttribute(

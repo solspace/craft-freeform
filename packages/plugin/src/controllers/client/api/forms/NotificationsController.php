@@ -14,6 +14,7 @@ namespace Solspace\Freeform\controllers\client\api\forms;
 
 use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use yii\web\Response;
 
@@ -38,7 +39,9 @@ class NotificationsController extends BaseApiController
 
         $notifications = $this->formNotificationsProvider->getByForm($form);
 
-        $serialized = $this->serializer->serialize($notifications, 'json');
+        $serialized = $this->serializer->serialize($notifications, 'json', [
+            IdentificationNormalizer::NORMALIZE_TO_IDENTIFICATORS => true,
+        ]);
 
         $this->response->format = Response::FORMAT_JSON;
         $this->response->content = $serialized;

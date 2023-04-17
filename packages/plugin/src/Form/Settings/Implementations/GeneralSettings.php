@@ -10,6 +10,7 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Form\Properties\GTM\GTMProperty;
 use Solspace\Freeform\Form\Properties\GTM\GTMValueTransformer;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
+use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultStatusGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
@@ -47,8 +48,8 @@ class GeneralSettings extends SettingsNamespace
     #[Section('general')]
     #[Property(
         label: 'Form Type',
-        type: Property::TYPE_SELECT,
         instructions: 'Select the type of form this is. When additional form types are installed, you can choose a different form type that enables special behaviors.',
+        type: Property::TYPE_SELECT,
         required: true,
         options: FormTypeOptions::class,
     )]
@@ -64,15 +65,17 @@ class GeneralSettings extends SettingsNamespace
     #[Section('general')]
     #[Property(
         instructions: 'The default status to be assigned to new submissions.',
+        type: Property::TYPE_SELECT,
         required: true,
         valueGenerator: DefaultStatusGenerator::class,
+        options: FormStatusOptions::class,
     )]
     public ?int $defaultStatus = null;
 
     #[Section('general')]
     #[Property(
-        type: Property::TYPE_SELECT,
         instructions: 'The formatting template to assign to this form when using Render method.',
+        type: Property::TYPE_SELECT,
         options: FormattingTemplateOptions::class,
     )]
     public ?string $formattingTemplate;
@@ -80,16 +83,16 @@ class GeneralSettings extends SettingsNamespace
     #[Section('general')]
     #[Property(
         label: 'Form Description / Notes',
-        type: Property::TYPE_TEXTAREA,
         instructions: 'Description or notes for this form.',
+        type: Property::TYPE_TEXTAREA,
     )]
     public string $description = '';
 
     #[Section('general')]
     #[Property(
         label: 'Form Color',
-        type: Property::TYPE_COLOR_PICKER,
         instructions: 'The color to be used for the dashboard and charts inside the control panel.',
+        type: Property::TYPE_COLOR_PICKER,
         valueGenerator: RandomColorGenerator::class,
     )]
     public string $color = '';
@@ -109,8 +112,8 @@ class GeneralSettings extends SettingsNamespace
     #[Section('data-storage')]
     #[Property(
         label: 'Opt-In Data Storage Checkbox',
-        type: Property::TYPE_SELECT,
         instructions: 'Allow users to decide whether the submission data is saved to your site or not.',
+        type: Property::TYPE_SELECT,
         emptyOption: 'Disabled',
         options: [],
     )]
@@ -136,5 +139,5 @@ class GeneralSettings extends SettingsNamespace
         value: ['enabled' => false],
         transformer: GTMValueTransformer::class,
     )]
-    public ?GTMProperty $gtm = null;
+    public GTMProperty $gtm;
 }

@@ -10,18 +10,16 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Notifications\Conditional;
+namespace Solspace\Freeform\Notifications\Types\Conditional;
 
 use Solspace\Freeform\Attributes\Notification\Type;
 use Solspace\Freeform\Notifications\BaseNotification;
 
 #[Type(
     name: 'Conditional Notifications',
+    newInstanceName: 'Conditional',
     icon: __DIR__.'/icon.svg',
 )]
 class Conditional extends BaseNotification
 {
-    public const TYPE = 'conditional';
-
-    public const LOG_CATEGORY = 'Conditional Notification';
 }

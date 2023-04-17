@@ -55,7 +55,7 @@ class ExportCsv extends AbstractExport
                 foreach ($row as $column) {
                     if ($column->getField() instanceof TableField) {
                         foreach ($column->getField()->getTableLayout() as $layout) {
-                            $labels[] = $layout['label'] ?? '-';
+                            $labels[] = $layout->label ?? '-';
                         }
                     } else {
                         $labels[] = $this->isHandlesAsNames() ? $column->getHandle() : $column->getLabel();

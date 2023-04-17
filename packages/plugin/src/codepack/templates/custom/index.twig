@@ -13,11 +13,13 @@
 
         <div class="freeform-form-tiles">
         {% for form in forms %}
+            {% set submissionCount = craft.freeform.submissions({formId: form.id}).count %}
+            {% set spamCount = craft.freeform.submissions({formId: form.id, isSpam: true}).count %}
             <style>.freeform-form-tile-item-{{ form.id }}{border-top:7px solid {{ form.color }}!important;}.freeform-form-tile-item-{{ form.id }}:hover{background:{{ form.color }}!important;}</style>
             <a href="{{ siteUrl }}demo/custom/{{ form.handle }}" class="freeform-form-tile-item freeform-form-tile-item-{{ form.id }}">
                 <h3>{{ form.name }}</h3>
                 <p>{{ form.description|truncate(50, '...') }}</p>
-                <p class="freeform-submission-count"><b>{{ craft.freeform.submissions({formId: form.id}).count }} submissions</b>, {{ craft.freeform.submissions({formId: form.id, isSpam: true}).count }} spam</p>
+                <p class="freeform-submission-count"><b>{{ submissionCount }} submission{% if submissionCount != "1" %}s{% endif %}</b>, {{ spamCount }} spam{% if spamCount != "1" %}s{% endif %}</p>
             </a>
         {% endfor %}
         </div>

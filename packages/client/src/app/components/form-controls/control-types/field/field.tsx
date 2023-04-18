@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { ControlType } from '@components/form-controls/types';
-import { selectFields } from '@editor/store/slices/fields';
+import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import type { SelectProperty } from '@ff-client/types/properties';
 
 import Select from '../select/select';
@@ -12,7 +12,7 @@ const Field: React.FC<ControlType<string>> = ({
   errors,
   updateValue,
 }) => {
-  const fields = useSelector(selectFields);
+  const fields = useSelector(fieldSelectors.all);
 
   property.options = fields.map((field) => ({
     value: field.uid,

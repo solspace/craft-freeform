@@ -4,7 +4,7 @@ import { Control } from '@components/form-controls/control';
 import type { Option } from '@components/form-controls/control-types/options/options.types';
 import { Source } from '@components/form-controls/control-types/options/options.types';
 import type { ControlType } from '@components/form-controls/types';
-import { selectField } from '@editor/store/slices/fields';
+import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { Notification } from '@ff-client/types/notifications';
 import { RecipientMapping } from '@ff-client/types/notifications';
@@ -20,7 +20,7 @@ const RecipientMapping: React.FC<
   ControlType<RecipientMapping[], Notification>
 > = ({ value, property, errors, updateValue, context }) => {
   const fieldUid = context.field as string;
-  const field = useSelector(selectField(fieldUid));
+  const field = useSelector(fieldSelectors.one(fieldUid));
   const fieldType = useFieldType(field?.typeClass);
 
   const optionsProperty = fieldType?.properties?.find(

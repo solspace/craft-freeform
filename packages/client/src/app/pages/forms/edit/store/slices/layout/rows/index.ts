@@ -1,5 +1,4 @@
-import type { Layout, Row } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
+import type { Row } from '@editor/builder/types/layout';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -13,7 +12,7 @@ type SwapPayload = {
 const initialState: RowState = [];
 
 export const rowsSlice = createSlice({
-  name: 'rows',
+  name: 'layout/rows',
   initialState,
   reducers: {
     set: (state, action: PayloadAction<RowState>) => {
@@ -68,15 +67,7 @@ export const rowsSlice = createSlice({
   },
 });
 
-export const { set, add, swap, remove } = rowsSlice.actions;
-
-export const selectRowsInLayout =
-  (layout: Layout | undefined) =>
-  (state: RootState): Row[] =>
-    layout
-      ? state.rows
-          .filter((row) => row.layoutUid === layout.uid)
-          .sort((a, b) => a.order - b.order)
-      : [];
+const { actions } = rowsSlice;
+export { actions as rwoActions };
 
 export default rowsSlice.reducer;

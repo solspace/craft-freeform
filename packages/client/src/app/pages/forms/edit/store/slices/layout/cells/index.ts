@@ -1,5 +1,4 @@
-import type { Cell, Row } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
+import type { Cell } from '@editor/builder/types/layout';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -18,7 +17,7 @@ type AddPayload = Omit<Cell, 'order'> & {
 };
 
 export const cellsSlice = createSlice({
-  name: 'cells',
+  name: 'layout/cells',
   initialState,
   reducers: {
     set: (state, action: PayloadAction<CellStore>) => {
@@ -106,13 +105,7 @@ export const cellsSlice = createSlice({
   },
 });
 
-export const { set, moveTo, add, remove } = cellsSlice.actions;
-
-export const selectCellsInRow =
-  (row: Row) =>
-  (state: RootState): Cell[] =>
-    state.cells
-      .filter((cell) => cell.rowUid === row.uid)
-      .sort((a, b) => a.order - b.order);
+const { actions } = cellsSlice;
+export { actions as cellActions };
 
 export default cellsSlice.reducer;

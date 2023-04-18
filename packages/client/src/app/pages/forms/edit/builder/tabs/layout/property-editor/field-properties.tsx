@@ -1,7 +1,7 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useSelector } from 'react-redux';
-import { selectField } from '@ff-client/app/pages/forms/edit/store/slices/fields';
+import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import {
   useFetchFieldPropertySections,
   useFieldType,
@@ -22,7 +22,7 @@ const sectionFilter = (handle: string) => (property: Property) =>
 
 export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const { data: sections, isFetching } = useFetchFieldPropertySections();
-  const field = useSelector(selectField(uid));
+  const field = useSelector(fieldSelectors.one(uid));
   const type = useFieldType(field?.typeClass);
 
   if (!field || !type) {

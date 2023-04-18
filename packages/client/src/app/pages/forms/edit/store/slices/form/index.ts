@@ -64,9 +64,6 @@ export const formSlice = createSlice({
   },
 });
 
-export const { update, modifySettings, removeError, setErrors, clearErrors } =
-  formSlice.actions;
-
 const { actions } = formSlice;
 export { actions as formActions };
 

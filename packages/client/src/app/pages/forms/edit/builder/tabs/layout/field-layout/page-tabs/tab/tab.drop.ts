@@ -6,7 +6,7 @@ import type { DragItem, PageDragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { moveTo } from '@editor/store/slices/pages';
+import { pageActions } from '@editor/store/slices/layout/pages';
 import { moveCellToPage } from '@editor/store/thunks/pages';
 
 import { useDragContext } from '../../../drag.context';
@@ -82,7 +82,7 @@ export const useTabPageDrop: TabPageDrop = (containerRef, page, index) => {
         }
       },
       drop: (item) => {
-        dispatch(moveTo({ uid: item.data.uid, order: index }));
+        dispatch(pageActions.moveTo({ uid: item.data.uid, order: index }));
       },
     },
     [dimensions, position]

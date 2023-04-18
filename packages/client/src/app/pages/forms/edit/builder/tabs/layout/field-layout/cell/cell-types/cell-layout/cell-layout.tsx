@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectLayout } from '@ff-client/app/pages/forms/edit/store/slices/layouts';
+import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 
 import { Layout } from '../../../layout/layout';
 
@@ -9,7 +9,7 @@ type Props = {
 };
 
 export const CellLayout: React.FC<Props> = ({ uid }) => {
-  const layout = useSelector(selectLayout(uid));
+  const layout = useSelector(layoutSelectors.one(uid));
 
   if (!layout) {
     return null;

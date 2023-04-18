@@ -1,7 +1,7 @@
 import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
-import { addIntegrations } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
+import { integrationActions } from '@editor/store/slices/integrations';
 import type { Integration } from '@ff-client/types/integrations';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
@@ -26,7 +26,7 @@ export const useQueryFormIntegrations = (
       staleTime: Infinity,
       cacheTime: Infinity,
       onSuccess: (integrations) => {
-        dispatch(addIntegrations(integrations));
+        dispatch(integrationActions.add(integrations));
       },
     }
   );

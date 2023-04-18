@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { applyMiddleware } from '@components/middleware/middleware';
 import { useAppDispatch } from '@editor/store';
-import { modifySettings } from '@editor/store/slices/form';
+import { formActions } from '@editor/store/slices/form';
 import type { Property } from '@ff-client/types/properties';
 
 export type ValueUpdateHandler = <T>(value: T) => void;
@@ -18,7 +18,7 @@ export const useValueUpdateGenerator = (
       return (value) => {
         dispatch((dispatch, getState) => {
           dispatch(
-            modifySettings({
+            formActions.modifySettings({
               namespace,
               key: property.handle,
               value: applyMiddleware(value, property.middleware, getState),

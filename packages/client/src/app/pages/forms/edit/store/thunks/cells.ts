@@ -1,10 +1,10 @@
 import type { Cell, Row } from '@editor/builder/types/layout';
-import { add as addRow } from '@editor/store/slices/rows';
 import { v4 } from 'uuid';
 
 import type { AppDispatch, AppThunk } from '..';
-import { moveTo } from '../slices/cells';
-import { selectCurrentPage } from '../slices/context';
+import { contextSelectors } from '../slices/context/context.selectors';
+import { cellActions } from '../slices/layout/cells';
+import { rwoActions } from '../slices/layout/rows';
 
 import { removeEmptyRows } from './rows';
 
@@ -15,20 +15,20 @@ export const moveExistingCellToNewRow =
 
     const state = getState();
 
-    const currentPage = selectCurrentPage(state);
+    const currentPage = contextSelectors.currentPage(state);
     if (!currentPage) {
       throw new Error('No pages present');
     }
 
     dispatch(
-      addRow({
+      rwoActions.add({
         layoutUid: currentPage.layoutUid,
         uid: rowUid,
         order,
       })
     );
     dispatch(
-      moveTo({
+      cellActions.moveTo({
         uid: cell.uid,
         rowUid,
         position: 0,
@@ -43,13 +43,13 @@ export const moveExistingCellToExistingRow =
   (dispatch, getState) => {
     const state = getState();
 
-    const currentPage = selectCurrentPage(state);
+    const currentPage = contextSelectors.currentPage(state);
     if (!currentPage) {
       throw new Error('No pages present');
     }
 
     dispatch(
-      moveTo({
+      cellActions.moveTo({
         uid: cell.uid,
         rowUid: row.uid,
         position: order,

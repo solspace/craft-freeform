@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { selectIntegration } from '@ff-client/app/pages/forms/edit/store/slices/integrations';
+import { integrationSelectors } from '@editor/store/slices/integrations/integrations.selectors';
 import type { Integration as IntegrationType } from '@ff-client/types/integrations';
 
 import CogIcon from './cog-icon.svg';
@@ -13,7 +13,7 @@ export const Integration: React.FC<IntegrationType> = ({
   handle,
   icon,
 }) => {
-  const integration = useSelector(selectIntegration(id));
+  const integration = useSelector(integrationSelectors.one(id));
 
   return (
     <Wrapper>

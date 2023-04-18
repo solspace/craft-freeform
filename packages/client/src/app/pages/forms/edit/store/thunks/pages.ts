@@ -1,11 +1,11 @@
 import type { Cell, Page } from '@editor/builder/types/layout';
 import type { AppDispatch, AppThunk } from '@editor/store';
-import { add as addLayout } from '@editor/store/slices/layouts';
-import { add as addPage } from '@editor/store/slices/pages';
-import { add as addRow } from '@editor/store/slices/rows';
 import { v4 } from 'uuid';
 
-import { moveTo } from '../slices/cells';
+import { cellActions } from '../slices/layout/cells';
+import { layoutActions } from '../slices/layout/layouts';
+import { pageActions } from '../slices/layout/pages';
+import { rwoActions } from '../slices/layout/rows';
 
 import { removeEmptyRows } from './rows';
 
@@ -15,12 +15,12 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
 
   const state = getState();
 
-  const totalPages = state.pages.length;
+  const totalPages = state.layout.pages.length;
   const nextPageNumber = totalPages + 1;
 
-  dispatch(addLayout({ uid: layoutUid }));
+  dispatch(layoutActions.add({ uid: layoutUid }));
   dispatch(
-    addPage({
+    pageActions.add({
       uid: pageUid,
       label: `Page ${nextPageNumber}`,
       layoutUid,
@@ -36,13 +36,13 @@ export const moveCellToPage =
     const rowUid = v4();
 
     dispatch(
-      addRow({
+      rwoActions.add({
         layoutUid,
         uid: rowUid,
       })
     );
     dispatch(
-      moveTo({
+      cellActions.moveTo({
         uid: cell.uid,
         rowUid,
         position: 0,

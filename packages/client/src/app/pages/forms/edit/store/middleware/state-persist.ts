@@ -7,7 +7,7 @@ import PubSub from 'pubsub-js';
 import type { Middleware } from 'redux';
 
 import { save } from '../actions/form';
-import { setState, State } from '../slices/context';
+import { contextActions, State } from '../slices/context';
 
 export const TOPIC_SAVE = Symbol('form.save');
 export const TOPIC_ERRORS = Symbol('form.save.errors');
@@ -44,7 +44,7 @@ const publishErrors = (dispatch: AppDispatch, response: APIError): void => {
     response,
   } as ErrorData);
 
-  dispatch(setState(State.Idle));
+  dispatch(contextActions.setState(State.Idle));
 };
 
 const publishCreated = (
@@ -54,7 +54,7 @@ const publishCreated = (
   PubSub.publish(TOPIC_CREATED, { dispatch, response } as CreateData);
   PubSub.publish(TOPIC_UPSERTED, { dispatch, response } as CreateData);
 
-  dispatch(setState(State.Idle));
+  dispatch(contextActions.setState(State.Idle));
 };
 
 const publishUpdated = (
@@ -64,7 +64,7 @@ const publishUpdated = (
   PubSub.publish(TOPIC_UPDATED, { dispatch, response } as CreateData);
   PubSub.publish(TOPIC_UPSERTED, { dispatch, response } as CreateData);
 
-  dispatch(setState(State.Idle));
+  dispatch(contextActions.setState(State.Idle));
 };
 
 export const statePersistMiddleware: Middleware =
@@ -80,7 +80,7 @@ export const statePersistMiddleware: Middleware =
 
     const dispatch = store.dispatch as AppDispatch;
 
-    dispatch(setState(State.Processing));
+    dispatch(contextActions.setState(State.Processing));
 
     const data: SaveData = {
       dispatch,

@@ -1,11 +1,9 @@
-import type { RootState } from '@editor/store';
 import type { Integration } from '@ff-client/types/integrations';
 import type { GenericValue, Property } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { SaveSubscriber } from '../middleware/state-persist';
-import { TOPIC_SAVE } from '../middleware/state-persist';
+import './integrations.persistence';
 
 export type IntegrationEntry = {
   values: { [key: string]: GenericValue };
@@ -38,7 +36,7 @@ export const integrationsSlice = createSlice({
   name: 'integrations',
   initialState,
   reducers: {
-    addIntegrations: (state, action: PayloadAction<Integration[]>) => {
+    add: (state, action: PayloadAction<Integration[]>) => {
       action.payload.forEach((integration) => {
         const values: { [key: string]: GenericValue } = {};
         integration.properties.forEach((prop) => {
@@ -52,14 +50,11 @@ export const integrationsSlice = createSlice({
         });
       });
     },
-    toggleIntegration: (state, action: PayloadAction<number>) => {
+    toggle: (state, action: PayloadAction<number>) => {
       const integration = findIntegration(state, action.payload);
       integration.enabled = !integration.enabled;
     },
-    modifyIntegrationProperty: (
-      state,
-      action: PayloadAction<IntegrationModificationPayload>
-    ) => {
+    modify: (state, action: PayloadAction<IntegrationModificationPayload>) => {
       const { id, key, value } = action.payload;
       const integration = findIntegration(state, id);
       const property = findProperty(integration, key);
@@ -80,24 +75,7 @@ export const integrationsSlice = createSlice({
   },
 });
 
-export const { addIntegrations, toggleIntegration, modifyIntegrationProperty } =
-  integrationsSlice.actions;
-
-export const selectIntegration =
-  (id: number) =>
-  (state: RootState): IntegrationEntry =>
-    state.integrations.find((item) => item.id === id);
+const { actions } = integrationsSlice;
+export { actions as integrationActions };
 
 export default integrationsSlice.reducer;
-
-const persistIntegrations: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
-
-  persist.integrations = state.integrations.map((integration) => ({
-    id: integration.id,
-    enabled: Boolean(integration.enabled),
-    values: integration.dirtyValues,
-  }));
-};
-
-PubSub.subscribe(TOPIC_SAVE, persistIntegrations);

@@ -3,10 +3,8 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Bool from '@components/form-controls/control-types/bool/bool';
 import { useAppDispatch } from '@editor/store';
-import {
-  selectIntegration,
-  toggleIntegration,
-} from '@editor/store/slices/integrations';
+import { integrationActions } from '@editor/store/slices/integrations';
+import { integrationSelectors } from '@editor/store/slices/integrations/integrations.selectors';
 import { Space } from '@ff-client/app/components/layout/blocks/space';
 import { PropertyType } from '@ff-client/types/properties';
 
@@ -26,7 +24,9 @@ export const PropertyEditor: React.FC = () => {
   const { id: integrationId } = useParams<UrlParams>();
   const dispatch = useAppDispatch();
 
-  const integration = useSelector(selectIntegration(Number(integrationId)));
+  const integration = useSelector(
+    integrationSelectors.one(Number(integrationId))
+  );
   if (!integration) {
     return <EmptyEditor />;
   }
@@ -45,7 +45,7 @@ export const PropertyEditor: React.FC = () => {
           type: PropertyType.Boolean,
         }}
         value={enabled}
-        updateValue={() => dispatch(toggleIntegration(id))}
+        updateValue={() => dispatch(integrationActions.toggle(id))}
       />
 
       <Space />

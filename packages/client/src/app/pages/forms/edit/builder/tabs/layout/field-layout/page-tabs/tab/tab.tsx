@@ -3,12 +3,9 @@ import React, { useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import {
-  selectCurrentPage,
-  selectPageHasErrors,
-  setPage,
-} from '@editor/store/slices/context';
-import { updateLabel } from '@editor/store/slices/pages';
+import { contextActions } from '@editor/store/slices/context';
+import { contextSelectors } from '@editor/store/slices/context/context.selectors';
+import { pageActions } from '@editor/store/slices/layout/pages';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import classes from '@ff-client/utils/classes';
 
@@ -25,11 +22,11 @@ type Props = {
 };
 
 export const Tab: React.FC<Props> = ({ page, index }) => {
-  const { uid } = useSelector(selectCurrentPage);
+  const { uid } = useSelector(contextSelectors.currentPage);
   const dispatch = useAppDispatch();
   const { dragType } = useDragContext();
 
-  const pageHasErrors = useSelector(selectPageHasErrors(page.uid));
+  const pageHasErrors = useSelector(contextSelectors.hasErrors(page.uid));
 
   const wrapperRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -58,7 +55,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
 
   const persistInputChanges = (): void => {
     dispatch(
-      updateLabel({
+      pageActions.updateLabel({
         uid: page.uid,
         label: inputRef.current.value || page.label,
       })
@@ -98,7 +95,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
         style={style}
         onClick={(): void => {
           setIsEditing(false);
-          dispatch(setPage(page.uid));
+          dispatch(contextActions.setPage(page.uid));
         }}
         onDoubleClick={(): void => setIsEditing(true)}
       >

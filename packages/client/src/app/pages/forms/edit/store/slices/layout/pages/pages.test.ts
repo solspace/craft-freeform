@@ -1,5 +1,5 @@
-import type { PagesStore } from './pages';
-import reducer, { add, moveTo, updateLabel } from './pages';
+import type { PagesStore } from '.';
+import reducer, { pageActions } from '.';
 
 /**
  * generates rows with cells in them based on the passed parameters
@@ -37,7 +37,7 @@ describe('pages reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          add({
+          pageActions.add({
             uid: 'new-page',
             label: 'New Page',
             layoutUid: `---`,
@@ -54,7 +54,7 @@ describe('pages reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          add({
+          pageActions.add({
             uid: 'new-page',
             label: 'New Page',
             layoutUid: `---`,
@@ -80,7 +80,7 @@ describe('pages reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          moveTo({
+          pageActions.moveTo({
             uid: 'page-0',
             order: 2,
           })
@@ -100,7 +100,7 @@ describe('pages reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          moveTo({
+          pageActions.moveTo({
             uid: 'page-3',
             order: 1,
           })
@@ -120,7 +120,7 @@ describe('pages reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          moveTo({
+          pageActions.moveTo({
             uid: 'page-2',
             order: 2,
           })
@@ -147,7 +147,7 @@ describe('pages reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          updateLabel({
+          pageActions.updateLabel({
             uid: 'page-0',
             label: 'One',
           })

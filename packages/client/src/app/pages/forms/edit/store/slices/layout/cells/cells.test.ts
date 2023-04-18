@@ -1,8 +1,8 @@
 import { CellType } from '@editor/builder/types/layout';
 
-import type { CellStore } from './cells';
-import { add } from './cells';
-import reducer, { moveTo } from './cells';
+import type { CellStore } from '.';
+import { cellActions } from '.';
+import reducer from '.';
 
 /**
  * generates rows with cells in them based on the passed parameters
@@ -45,7 +45,7 @@ describe('cells reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          add({
+          cellActions.add({
             type: CellType.Field,
             uid: 'cell-new',
             rowUid: 'row-0',
@@ -63,7 +63,7 @@ describe('cells reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          add({
+          cellActions.add({
             type: CellType.Field,
             uid: 'cell-new',
             rowUid: 'row-0',
@@ -84,7 +84,7 @@ describe('cells reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          add({
+          cellActions.add({
             type: CellType.Field,
             uid: 'cell-new',
             rowUid: 'row-0',
@@ -113,7 +113,7 @@ describe('cells reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          moveTo({
+          cellActions.moveTo({
             uid: 'cell-0',
             rowUid: 'row-0',
             position: 2,
@@ -136,7 +136,7 @@ describe('cells reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          moveTo({
+          cellActions.moveTo({
             uid: 'cell-1',
             rowUid: 'row-0',
             position: 0,
@@ -159,7 +159,7 @@ describe('cells reducer', () => {
       const result = narrowStore(
         reducer(
           mockStore,
-          moveTo({
+          cellActions.moveTo({
             uid: 'cell-1',
             rowUid: 'row-1',
             position: 1,

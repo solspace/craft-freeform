@@ -1,12 +1,13 @@
 import type { Row } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
 import type { AppThunk } from '@editor/store';
-import { add as addCell } from '@editor/store/slices/cells';
-import { selectCurrentPage } from '@editor/store/slices/context';
-import { add as addField } from '@editor/store/slices/fields';
-import { add as addRow } from '@editor/store/slices/rows';
+import { fieldActions } from '@editor/store/slices/fields';
+import { cellActions } from '@editor/store/slices/layout/cells';
 import type { FieldType } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
+
+import { contextSelectors } from '../slices/context/context.selectors';
+import { rwoActions } from '../slices/layout/rows';
 
 export const addNewFieldToNewRow =
   (fieldType: FieldType, row?: Row): AppThunk =>
@@ -17,21 +18,21 @@ export const addNewFieldToNewRow =
 
     const state = getState();
 
-    const currentPage = selectCurrentPage(state);
+    const currentPage = contextSelectors.currentPage(state);
     if (!currentPage) {
       throw new Error('No pages present');
     }
 
-    dispatch(addField({ fieldType, uid: fieldUid }));
+    dispatch(fieldActions.add({ fieldType, uid: fieldUid }));
     dispatch(
-      addRow({
+      rwoActions.add({
         layoutUid: currentPage.layoutUid,
         uid: rowUid,
         order: row?.order,
       })
     );
     dispatch(
-      addCell({
+      cellActions.add({
         type: CellType.Field,
         rowUid,
         targetUid: fieldUid,
@@ -48,14 +49,14 @@ export const addNewFieldToExistingRow =
 
     const state = getState();
 
-    const currentPage = selectCurrentPage(state);
+    const currentPage = contextSelectors.currentPage(state);
     if (!currentPage) {
       throw new Error('No pages present');
     }
 
-    dispatch(addField({ fieldType, uid: fieldUid }));
+    dispatch(fieldActions.add({ fieldType, uid: fieldUid }));
     dispatch(
-      addCell({
+      cellActions.add({
         type: CellType.Field,
         rowUid: row.uid,
         targetUid: fieldUid,

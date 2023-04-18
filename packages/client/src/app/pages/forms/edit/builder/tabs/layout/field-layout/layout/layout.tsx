@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Layout as LayoutType } from '@editor/builder/types/layout';
-import { selectRowsInLayout } from '@editor/store/slices/rows';
+import { rowSelectors } from '@editor/store/slices/layout/rows/rows.selectors';
 import translate from '@ff-client/utils/translations';
 
 import { Row } from '../row/row';
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const Layout: React.FC<Props> = ({ layout }) => {
-  const rows = useSelector(selectRowsInLayout(layout));
+  const rows = useSelector(rowSelectors.inLayout(layout));
   const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
 
   return (

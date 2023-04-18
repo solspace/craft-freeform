@@ -6,16 +6,12 @@ import type { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import thunk from 'redux-thunk';
 
 import { statePersistMiddleware } from './middleware/state-persist';
-import cells from './slices/cells';
 import context from './slices/context';
-import drag from './slices/drag';
 import fields from './slices/fields';
 import form from './slices/form';
 import integrations from './slices/integrations';
-import layouts from './slices/layouts';
+import layout from './slices/layout';
 import notifications from './slices/notifications';
-import pages from './slices/pages';
-import rows from './slices/rows';
 import search from './slices/search';
 
 export const store = configureStore({
@@ -23,15 +19,11 @@ export const store = configureStore({
   reducer: {
     form,
     fields,
-    context,
+    layout,
     integrations,
     notifications,
-    layouts,
-    pages,
-    rows,
-    cells,
+    context,
     search,
-    drag,
   },
 });
 

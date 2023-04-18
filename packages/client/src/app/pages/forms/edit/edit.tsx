@@ -1,12 +1,9 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { set as setCells } from '@editor/store/slices/cells';
-import { setPage } from '@editor/store/slices/context';
-import { set as setFields } from '@editor/store/slices/fields';
-import { update as updateForm } from '@editor/store/slices/form';
-import { set as setLayouts } from '@editor/store/slices/layouts';
-import { set as setPages } from '@editor/store/slices/pages';
-import { set as setRows } from '@editor/store/slices/rows';
+import { contextActions } from '@editor/store/slices/context';
+import { fieldActions } from '@editor/store/slices/fields';
+import { formActions } from '@editor/store/slices/form';
+import { layoutActions } from '@editor/store/slices/layout/layouts';
 import {
   useQueryFormSettings,
   useQuerySingleForm,
@@ -14,6 +11,9 @@ import {
 import { v4 } from 'uuid';
 
 import { Builder } from './builder/builder';
+import { cellActions } from './store/slices/layout/cells';
+import { pageActions } from './store/slices/layout/pages';
+import { rwoActions } from './store/slices/layout/rows';
 import { useAppDispatch } from './store';
 
 type RouteParams = {
@@ -33,7 +33,7 @@ export const Edit: React.FC = () => {
   useEffect(() => {
     if (formId === undefined) {
       dispatch(
-        updateForm({
+        formActions.update({
           id: null,
           uid: v4(),
           type: 'Solspace\\Freeform\\Form\\Types\\Regular',
@@ -42,13 +42,13 @@ export const Edit: React.FC = () => {
           settings: {},
         })
       );
-      dispatch(setFields([]));
-      dispatch(setPages([]));
-      dispatch(setLayouts([]));
-      dispatch(setRows([]));
-      dispatch(setCells([]));
+      dispatch(fieldActions.set([]));
+      dispatch(pageActions.set([]));
+      dispatch(layoutActions.set([]));
+      dispatch(rwoActions.set([]));
+      dispatch(cellActions.set([]));
 
-      dispatch(setPage(undefined));
+      dispatch(contextActions.setPage(undefined));
 
       return;
     }
@@ -61,14 +61,14 @@ export const Edit: React.FC = () => {
       layout: { fields, pages, layouts, rows, cells },
     } = data;
 
-    dispatch(updateForm(data));
-    dispatch(setFields(fields));
-    dispatch(setPages(pages));
-    dispatch(setLayouts(layouts));
-    dispatch(setRows(rows));
-    dispatch(setCells(cells));
+    dispatch(formActions.update(data));
+    dispatch(fieldActions.set(fields));
+    dispatch(pageActions.set(pages));
+    dispatch(layoutActions.set(layouts));
+    dispatch(rwoActions.set(rows));
+    dispatch(cellActions.set(cells));
 
-    dispatch(setPage(pages.find(Boolean)?.uid));
+    dispatch(contextActions.setPage(pages.find(Boolean)?.uid));
   }, [data, formId]);
 
   if (isFetching) {

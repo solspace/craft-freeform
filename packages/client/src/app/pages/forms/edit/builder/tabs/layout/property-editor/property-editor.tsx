@@ -2,8 +2,9 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
 import { useAppDispatch } from '@editor/store';
-import { selectFocus, unfocus } from '@editor/store/slices/context';
-import { selectField } from '@editor/store/slices/fields';
+import { contextActions } from '@editor/store/slices/context';
+import { contextSelectors } from '@editor/store/slices/context/context.selectors';
+import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 
@@ -12,8 +13,8 @@ import { FieldProperties } from './field-properties';
 import { CloseLink, PropertyEditorWrapper } from './property-editor.styles';
 
 export const PropertyEditor: React.FC = () => {
-  const { active, type, uid } = useSelector(selectFocus);
-  const field = useSelector(selectField(uid));
+  const { active, type, uid } = useSelector(contextSelectors.focus);
+  const field = useSelector(fieldSelectors.one(uid));
 
   const dispatch = useAppDispatch();
 
@@ -21,14 +22,14 @@ export const PropertyEditor: React.FC = () => {
     meetsCondition: active,
     callback: (event: KeyboardEvent): void => {
       if (event.key === 'Escape') {
-        dispatch(unfocus());
+        dispatch(contextActions.unfocus());
       }
     },
   });
 
   return (
     <PropertyEditorWrapper>
-      <CloseLink onClick={() => dispatch(unfocus())}>
+      <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
         <CloseIcon />
       </CloseLink>
       <FavoriteButton field={field} />

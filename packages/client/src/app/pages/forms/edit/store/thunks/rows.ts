@@ -1,13 +1,13 @@
 import type { AppDispatch, RootState } from '..';
-import { remove } from '../slices/rows';
+import { rwoActions } from '../slices/layout/rows';
 
 export const removeEmptyRows = (
   state: RootState,
   dispatch: AppDispatch
 ): void => {
   const removeUids: string[] = [];
-  state.rows.forEach((row) => {
-    const cellCount = state.cells.filter(
+  state.layout.rows.forEach((row) => {
+    const cellCount = state.layout.cells.filter(
       (cell) => cell.rowUid === row.uid
     ).length;
 
@@ -16,5 +16,5 @@ export const removeEmptyRows = (
     }
   });
 
-  removeUids.forEach((uid) => dispatch(remove(uid)));
+  removeUids.forEach((uid) => dispatch(rwoActions.remove(uid)));
 };

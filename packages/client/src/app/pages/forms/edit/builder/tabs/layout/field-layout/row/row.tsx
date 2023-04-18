@@ -2,7 +2,7 @@ import type { MutableRefObject } from 'react';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { Row as RowType } from '@editor/builder/types/layout';
-import { selectCellsInRow } from '@editor/store/slices/cells';
+import { cellSelectors } from '@editor/store/slices/layout/cells/cells.selectors';
 import translate from '@ff-client/utils/translations';
 
 import { Cell } from '../cell/cell';
@@ -28,7 +28,7 @@ type Props = {
 
 export const Row: React.FC<Props> = ({ row }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const cells = useSelector(selectCellsInRow(row));
+  const cells = useSelector(cellSelectors.inRow(row));
   const onMountAnimation = useOnMountAnimation();
 
   const [width, offsetX] = useRowDimensions(wrapperRef);

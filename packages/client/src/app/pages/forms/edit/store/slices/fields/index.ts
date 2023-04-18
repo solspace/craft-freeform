@@ -1,17 +1,10 @@
-import type { RootState } from '@editor/store';
-import type {
-  ErrorsSubscriber,
-  SaveSubscriber,
-} from '@editor/store/middleware/state-persist';
-import { TOPIC_UPSERTED } from '@editor/store/middleware/state-persist';
-import { TOPIC_ERRORS } from '@editor/store/middleware/state-persist';
-import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 import type { PropertyValueCollection } from '@ff-client/types/fields';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import PubSub from 'pubsub-js';
+
+import './fields.persistence';
 
 type FieldErrors = {
   [key: string]: string[];
@@ -86,35 +79,7 @@ export const fieldsSlice = createSlice({
   },
 });
 
-export const { set, add, remove, edit, clearErrors, setErrors } =
-  fieldsSlice.actions;
-
-export const selectFields = (state: RootState): Field[] => state.fields;
-export const selectField =
-  (uid: string) =>
-  (state: RootState): Field =>
-    state.fields.find((field) => field.uid === uid);
-
-export const selectFieldsHaveErrors = (state: RootState): boolean =>
-  Boolean(state.fields.find((field) => field.errors !== undefined));
+const { actions } = fieldsSlice;
+export { actions as fieldActions };
 
 export default fieldsSlice.reducer;
-
-const persistFields: SaveSubscriber = (_, data) => {
-  const { state, persist } = data;
-
-  persist.fields = state.fields;
-};
-
-const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {
-  dispatch(clearErrors());
-  dispatch(setErrors(response.errors?.fields));
-};
-
-const handleUpserted: ErrorsSubscriber = (_, { dispatch }) => {
-  dispatch(clearErrors());
-};
-
-PubSub.subscribe(TOPIC_SAVE, persistFields);
-PubSub.subscribe(TOPIC_ERRORS, handleErrors);
-PubSub.subscribe(TOPIC_UPSERTED, handleUpserted);

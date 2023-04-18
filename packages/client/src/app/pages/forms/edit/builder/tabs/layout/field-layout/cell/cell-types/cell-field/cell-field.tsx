@@ -1,8 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@editor/store';
-import { FocusType, setFocusedItem } from '@editor/store/slices/context';
-import { selectField } from '@editor/store/slices/fields';
+import { contextActions, FocusType } from '@editor/store/slices/context';
+import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const CellField: React.FC<Props> = ({ uid }) => {
-  const field = useSelector(selectField(uid));
+  const field = useSelector(fieldSelectors.one(uid));
   const type = useFieldType(field?.typeClass);
   const dispatch = useAppDispatch();
 
@@ -26,7 +26,7 @@ export const CellField: React.FC<Props> = ({ uid }) => {
     <CellFieldWrapper
       className={classes(hasErrors(field.errors) && 'errors')}
       onClick={(): void => {
-        dispatch(setFocusedItem({ type: FocusType.Field, uid }));
+        dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
       <Label>{field.properties.label || type?.name}</Label>

@@ -1,5 +1,4 @@
 import type { Page } from '@editor/builder/types/layout';
-import type { RootState } from '@editor/store';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -17,10 +16,8 @@ type UpdateLabelPayload = {
 
 const initialState: PagesStore = [];
 
-const sortByOrder = (a: Page, b: Page): number => a.order - b.order;
-
 export const pagesSlice = createSlice({
-  name: 'pages',
+  name: 'layout/pages',
   initialState,
   reducers: {
     set: (state, action: PayloadAction<PagesStore>) => {
@@ -68,14 +65,7 @@ export const pagesSlice = createSlice({
   },
 });
 
-export const { set, add, moveTo, updateLabel, remove } = pagesSlice.actions;
-
-export const selectPages = (state: RootState): Page[] =>
-  [...state.pages].sort(sortByOrder);
-
-export const selectPage =
-  (uid: string) =>
-  (state: RootState): Page | undefined =>
-    state.pages.find((page) => page.uid === uid);
+const { actions } = pagesSlice;
+export { actions as pageActions };
 
 export default pagesSlice.reducer;

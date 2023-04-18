@@ -4,8 +4,9 @@ import { NavLink } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
 import { save } from '@editor/store/actions/form';
-import { selectState, State } from '@editor/store/slices/context';
-import { selectFieldsHaveErrors } from '@editor/store/slices/fields';
+import { State } from '@editor/store/slices/context';
+import { contextSelectors } from '@editor/store/slices/context/context.selectors';
+import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
@@ -26,10 +27,10 @@ import {
 export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();
   const form = useSelector(formSelectors.current);
-  const state = useSelector(selectState);
+  const state = useSelector(contextSelectors.state);
 
   const formErrors = useSelector(formSelectors.errors);
-  const fieldsHaveErrors = useSelector(selectFieldsHaveErrors);
+  const fieldsHaveErrors = useSelector(fieldSelectors.hasErrors);
   const notificationsHaveErrors = useSelector(notificationSelectors.errors.any);
 
   const { data: formSettingsData } = useQueryFormSettings();

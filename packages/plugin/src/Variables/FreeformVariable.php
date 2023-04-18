@@ -209,19 +209,21 @@ class FreeformVariable
     {
         $this->siteTemplatesDirectories = [];
 
-        $this->getSiteTemplatesDirectories(\Craft::$app->getPath()->getSiteTemplatesPath());
+        $siteTemplatesPath = \Craft::$app->getPath()->getSiteTemplatesPath();
+
+        $this->getSiteTemplatesDirectories($siteTemplatesPath, $siteTemplatesPath);
 
         return $this->siteTemplatesDirectories;
     }
 
-    private function getSiteTemplatesDirectories(string $path): void
+    private function getSiteTemplatesDirectories(string $siteTemplatesPath, string $currentPath): void
     {
-        foreach (new \DirectoryIterator($path) as $fileInfo) {
+        foreach (new \DirectoryIterator($currentPath) as $fileInfo) {
             if (!$fileInfo->isDot()) {
                 if ($fileInfo->isDir()) {
-                    $this->siteTemplatesDirectories[] = $fileInfo->getPathname();
+                    $this->siteTemplatesDirectories[] = str_replace($siteTemplatesPath, '', $fileInfo->getPathname());
 
-                    $this->getSiteTemplatesDirectories($fileInfo->getPathname());
+                    $this->getSiteTemplatesDirectories($siteTemplatesPath, $fileInfo->getPathname());
                 }
             }
         }

@@ -221,7 +221,7 @@ class FreeformVariable
         foreach (new \DirectoryIterator($currentPath) as $fileInfo) {
             if (!$fileInfo->isDot()) {
                 if ($fileInfo->isDir()) {
-                    $this->siteTemplatesDirectories[] = str_replace($siteTemplatesPath, '', $fileInfo->getPathname());
+                    $this->siteTemplatesDirectories[] = str_replace($siteTemplatesPath.'/', '', $fileInfo->getPathname());
 
                     $this->getSiteTemplatesDirectories($siteTemplatesPath, $fileInfo->getPathname());
                 }

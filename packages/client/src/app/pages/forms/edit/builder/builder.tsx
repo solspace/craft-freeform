@@ -12,6 +12,8 @@ import { LayoutEditor } from './tabs/layout/layout';
 import { PropertyEditor as NotificationsEditor } from './tabs/notifications/editor/editor';
 import { EmptyEditor as EmptyNotificationsEditor } from './tabs/notifications/editor/editor.empty';
 import { Notifications } from './tabs/notifications/notifications';
+import { RulesEditor } from './tabs/rules/editor/editor';
+import { RulesEmpty } from './tabs/rules/editor/editor.empty';
 import { Rules } from './tabs/rules/rules';
 import { BuilderContent, BuilderWrapper } from './builder.styles';
 import { Tabs } from './tabs';
@@ -33,7 +35,10 @@ export const Builder: React.FC = () => {
                 <Route index element={<EmptyIntegrationsEditor />} />
                 <Route path=":id/:handle" element={<IntegrationsEditor />} />
               </Route>
-              <Route path="rules" element={<Rules />} />
+              <Route path="rules" element={<Rules />}>
+                <Route index element={<RulesEmpty />} />
+                <Route path=":uid" element={<RulesEditor />} />
+              </Route>
               <Route path=":namespace" element={<FormSettings />} />
             </Routes>
           </BuilderContent>

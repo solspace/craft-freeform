@@ -2,6 +2,6 @@ import React from 'react';
 
 import { RulesEditorWrapper } from './editor.styles';
 
-export const Editor: React.FC = () => {
+export const RulesEditor: React.FC = () => {
   return <RulesEditorWrapper>Rules editor</RulesEditorWrapper>;
 };

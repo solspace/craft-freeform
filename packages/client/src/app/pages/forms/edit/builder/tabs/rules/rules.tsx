@@ -1,14 +1,14 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
-import { Editor } from './editor/editor';
-import { List } from './sidebar/list';
+import { MiniMap } from './sidebar/mini-map';
 import { RulesWrapper } from './rules.styles';
 
 export const Rules: React.FC = () => {
   return (
     <RulesWrapper>
-      <List />
-      <Editor />
+      <MiniMap />
+      <Outlet />
     </RulesWrapper>
   );
 };

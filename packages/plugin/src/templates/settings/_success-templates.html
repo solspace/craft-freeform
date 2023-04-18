@@ -35,7 +35,7 @@
         value: settings.successTemplateDirectory,
         errors: settings.getErrors("successTemplateDirectory"),
         instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
-        placeholder: "e.g. _freeform_success/",
+        placeholder: "e.g. _freeform/success",
     }) }}
 
     {% if settings.absoluteSuccessTemplateDirectory %}

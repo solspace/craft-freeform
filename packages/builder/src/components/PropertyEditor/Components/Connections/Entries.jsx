@@ -17,10 +17,14 @@ export default class Entries extends ConnectionBase {
   getResetWaterfall = () => ['section', 'entryType'];
 
   getSpecificCraftFields = () => {
+    const availableFields = [];
     const selectedEntryType = this.getSelectedEntryType();
     if (selectedEntryType && selectedEntryType.hasTitleField) {
-      return [{ handle: 'title', name: translate(selectedEntryType.titleLabel, {}, 'app') }];
+      availableFields.push({ handle: 'title', name: translate(selectedEntryType.titleLabel, {}, 'app') });
     }
+    availableFields.push({ handle: 'postDate', name: translate('Post Date', {}, 'app') });
+    availableFields.push({ handle: 'expiryDate', name: translate('Expiry Date', {}, 'app') });
+    return availableFields;
   };
 
   getCraftFieldLayoutFieldIds = () => {

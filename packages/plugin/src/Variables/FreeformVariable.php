@@ -32,6 +32,8 @@ use Twig\Markup;
 
 class FreeformVariable
 {
+    public array $siteTemplatesDirectories = [];
+
     /**
      * @param int|string $handleOrId
      *
@@ -201,6 +203,30 @@ class FreeformVariable
     public function notifications(): NotificationsService
     {
         return Freeform::getInstance()->notifications;
+    }
+
+    public function getAllSiteTemplatesDirectories(): array
+    {
+        $this->siteTemplatesDirectories = [];
+
+        $siteTemplatesPath = \Craft::$app->getPath()->getSiteTemplatesPath();
+
+        $this->getSiteTemplatesDirectories($siteTemplatesPath, $siteTemplatesPath);
+
+        return $this->siteTemplatesDirectories;
+    }
+
+    private function getSiteTemplatesDirectories(string $siteTemplatesPath, string $currentPath): void
+    {
+        foreach (new \DirectoryIterator($currentPath) as $fileInfo) {
+            if (!$fileInfo->isDot()) {
+                if ($fileInfo->isDir()) {
+                    $this->siteTemplatesDirectories[] = str_replace($siteTemplatesPath.'/', '', $fileInfo->getPathname());
+
+                    $this->getSiteTemplatesDirectories($siteTemplatesPath, $fileInfo->getPathname());
+                }
+            }
+        }
     }
 
     private function getFormService(): FormsService

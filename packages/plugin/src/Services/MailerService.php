@@ -27,6 +27,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadIn
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
@@ -238,7 +239,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         $presetAssets = $notification->getPresetAssets();
 
         if ($presetAssets && Freeform::getInstance()->isPro()) {
-            if (StringHelper::isTwigValue($presetAssets)) {
+            if (TwigHelper::isTwigValue($presetAssets)) {
                 $presetAssets = trim(\Craft::parseEnv($this->renderString($presetAssets, $values)));
 
                 $delimiters = [',', '.', '|', '!', '?'];

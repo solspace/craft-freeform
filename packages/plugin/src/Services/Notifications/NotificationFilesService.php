@@ -4,10 +4,10 @@ namespace Solspace\Freeform\Services\Notifications;
 
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
-use Solspace\Commons\Helpers\StringHelper as SolspaceStringHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Records\NotificationRecord;
 use Solspace\Freeform\Services\BaseService;
 
@@ -110,7 +110,7 @@ class NotificationFilesService extends BaseService implements NotificationsServi
 
         $includeAttachments = $record->isIncludeAttachmentsEnabled() ? 'true' : 'false';
         $presetAssets = $record->getPresetAssets();
-        if ($presetAssets && !SolspaceStringHelper::isTwigValue($presetAssets)) {
+        if ($presetAssets && !TwigHelper::isTwigValue($presetAssets)) {
             $presetAssets = implode(',', $presetAssets);
         } else {
             $presetAssets = '';

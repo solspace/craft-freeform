@@ -105,10 +105,27 @@ abstract class AbstractNotificationsController extends BaseController
 
         $this->view->registerAssetBundle(NotificationEditorBundle::class);
 
+        $showPresetAssets = true;
+
+        $presetAssets = $record->getPresetAssets();
+
+        // Show Preset Assets field by default but when we are using a file based template, we do extra checks
+        if ($record->isFileBasedTemplate()) {
+            // Check if the Preset Assets value is using Twig tags or using an array of numeric values?
+            if (\is_array($presetAssets) && \count($presetAssets) > 0) {
+                // If numeric values, show the Preset Assets field
+                $showPresetAssets = (\count(array_filter($presetAssets, 'is_numeric')) > 0);
+            } else {
+                // Empty or the Preset Assets value is using Twig tags, so hide the field (set a hidden field to hold the value)d
+                $showPresetAssets = false;
+            }
+        }
+
         $variables = [
             'notification' => $record,
             'title' => $title,
             'type' => $this->getType(),
+            'showPresetAssets' => $showPresetAssets,
         ];
 
         return $this->renderTemplate('freeform/notifications/edit', $variables);

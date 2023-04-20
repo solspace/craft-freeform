@@ -14,8 +14,8 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\DataObjects\EmailTemplate;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
 
 /**
@@ -207,7 +207,7 @@ class NotificationRecord extends ActiveRecord implements NotificationInterface, 
     public function getPresetAssets(): array|string|null
     {
         if ($this->presetAssets) {
-            if (StringHelper::isTwigValue($this->presetAssets)) {
+            if (TwigHelper::isTwigValue($this->presetAssets)) {
                 return $this->presetAssets;
             }
 

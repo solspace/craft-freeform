@@ -239,46 +239,13 @@
 
     {% if craft.freeform.pro %}
 
-        {# Show select Assets field by default but whern file based template, do extra checks #}
-        {% set showPresetAssets = true %}
-        {% set presetAssets = notification.getPresetAssets() %}
-
-        {% if notification.fileBasedTemplate %}
-            {% if presetAssets|length %}
-                {# Check if presetAssets is either a twig variable or an array of numeric values. Toggle the select Asset field accordingly #}
-                {% if presetAssets is iterable %}
-                    {# We have an array, so lets check if the values are numeric #}
-                    {% set presetAssets = presetAssets|filter(presetAsset => (presetAsset matches '/^\\d+$/')) %}
-
-                    {# If we find numeric values we show the select Asset field #}
-                    {% if presetAssets|length %}
-                        {% set showPresetAssets = true %}
-                    {% else %}
-                        {% set showPresetAssets = false %}
-                    {% endif %}
-                {% else %}
-                    {# We have a Twig variable so hide theselect Asset field but set a hidden field to hold the value #}
-                    {% set showPresetAssets = false %}
-
-                    {{ forms.hidden({
-                        id: "preset-assets",
-                        name: "presetAssets",
-                        value: presetAssets
-                    }) }}
-                {% endif %}
-            {% else %}
-                {# presetAssets is an empty array, so hide the select Assets field #}
-                {% set showPresetAssets = false %}
-            {% endif %}
-        {% endif %}
-
         {% if showPresetAssets %}
             {{ forms.elementSelectField({
                 id: "preset-assets",
                 name: "presetAssets",
                 label: "Predefined Assets"|t('freeform'),
                 instructions: "Select any Assets you wish to include as attachments on all email notifications using this template."|t('freeform'),
-                elements: presetAssets|length ? craft.assets.id(presetAssets).all : [],
+                elements: notification.getPresetAssets() ? craft.assets.id(notification.getPresetAssets()).all : [],
                 selectionLabel: "Choose assets",
                 elementType: "craft\\elements\\Asset",
                 sources: "*",
@@ -292,6 +259,12 @@
                 modalSettings: {
                     hideSidebar: 0,
                 }
+            }) }}
+        {% else %}
+            {{ forms.hidden({
+                id: "preset-assets",
+                name: "presetAssets",
+                value: notification.getPresetAssets()
             }) }}
         {% endif %}
 

@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Library\DataObjects;
 
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 
 class EmailTemplate
 {
@@ -116,7 +117,7 @@ class EmailTemplate
 
         $presetAssets = $this->getMetadata('presetAssets');
         if ($presetAssets) {
-            $isTwigValue = StringHelper::isTwigValue($presetAssets);
+            $isTwigValue = TwigHelper::isTwigValue($presetAssets);
             if ($isTwigValue) {
                 $this->presetAssets = $presetAssets;
             } else {

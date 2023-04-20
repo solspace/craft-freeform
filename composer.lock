@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fc574b1ede0678b3aef44f8da208e4aa",
+    "content-hash": "c10d5a0a380fead2128c5b4d6b0e4ff8",
     "packages": [
         {
             "name": "cebe/markdown",
@@ -3930,20 +3930,23 @@
         },
         {
             "name": "solspace/craft3-commons",
-            "version": "1.0.25",
+            "version": "2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/solspace/craft3-commons.git",
-                "reference": "c940b137de92cf37ee2e2b0d3007e373fd454738"
+                "reference": "33bb1ec8585db8365d03c7130a95dd728cb99aa0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/solspace/craft3-commons/zipball/c940b137de92cf37ee2e2b0d3007e373fd454738",
-                "reference": "c940b137de92cf37ee2e2b0d3007e373fd454738",
+                "url": "https://api.github.com/repos/solspace/craft3-commons/zipball/33bb1ec8585db8365d03c7130a95dd728cb99aa0",
+                "reference": "33bb1ec8585db8365d03c7130a95dd728cb99aa0",
                 "shasum": ""
             },
             "require": {
                 "monolog/monolog": "^1.23.0|^2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
             },
             "type": "library",
             "autoload": {
@@ -3958,9 +3961,9 @@
             "description": "Solspace Commons Library for Craft CMS 3 plugins",
             "support": {
                 "issues": "https://github.com/solspace/craft3-commons/issues",
-                "source": "https://github.com/solspace/craft3-commons/tree/v1.0.25"
+                "source": "https://github.com/solspace/craft3-commons/tree/v2.0.3"
             },
-            "time": "2020-08-06T14:40:45+00:00"
+            "time": "2023-04-20T09:16:57+00:00"
         },
         {
             "name": "stripe/stripe-php",
@@ -10029,5 +10032,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.1.0"
 }

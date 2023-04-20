@@ -116,7 +116,12 @@ class EmailTemplate
 
         $presetAssets = $this->getMetadata('presetAssets');
         if ($presetAssets) {
-            $this->presetAssets = StringHelper::extractSeparatedValues($presetAssets);
+            $isTwigValue = StringHelper::isTwigValue($presetAssets);
+            if ($isTwigValue) {
+                $this->presetAssets = $presetAssets;
+            } else {
+                $this->presetAssets = StringHelper::extractSeparatedValues($presetAssets);
+            }
         }
 
         $this->includeAttachments = $includeAttachments;

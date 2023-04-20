@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services\Notifications;
 
 use craft\helpers\FileHelper;
 use craft\helpers\StringHelper;
+use Solspace\Commons\Helpers\StringHelper as SolspaceStringHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Freeform\Library\Exceptions\Notifications\NotificationException;
@@ -108,7 +109,12 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         }
 
         $includeAttachments = $record->isIncludeAttachmentsEnabled() ? 'true' : 'false';
-        $presetAssets = $record->getPresetAssets() ? implode(',', $record->getPresetAssets()) : '';
+        $presetAssets = $record->getPresetAssets();
+        if ($presetAssets && !SolspaceStringHelper::isTwigValue($presetAssets)) {
+            $presetAssets = implode(',', $presetAssets);
+        } else {
+            $presetAssets = '';
+        }
 
         $output = '';
         $output .= "{# subject: {$record->getSubject()} #}".\PHP_EOL;

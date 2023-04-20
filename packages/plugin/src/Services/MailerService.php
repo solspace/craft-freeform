@@ -247,7 +247,6 @@ class MailerService extends BaseService implements MailHandlerInterface
                 $presetAssets = str_replace($delimiters, $delimiters[0], $presetAssets);
                 $presetAssets = explode($delimiters[0], $presetAssets);
                 $presetAssets = array_filter($presetAssets);
-                $presetAssets = array_filter($presetAssets);
             }
 
             foreach ($presetAssets as $assetId) {

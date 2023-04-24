@@ -239,12 +239,15 @@
 
     {% if craft.freeform.pro %}
 
+        {% set presetAssetsLabel = 'Predefined Assets' %}
+        {% set presetAssetsInstructions = 'Select any Assets you wish to include as attachments on all email notifications using this template.' %}
+
         {% if showPresetAssets %}
             {{ forms.elementSelectField({
                 id: "preset-assets",
                 name: "presetAssets",
-                label: "Predefined Assets"|t('freeform'),
-                instructions: "Select any Assets you wish to include as attachments on all email notifications using this template."|t('freeform'),
+                label: presetAssetsLabel|t('freeform'),
+                instructions: presetAssetsInstructions|t('freeform'),
                 elements: notification.getPresetAssets() ? craft.assets.id(notification.getPresetAssets()).all : [],
                 selectionLabel: "Choose assets",
                 elementType: "craft\\elements\\Asset",
@@ -261,11 +264,26 @@
                 }
             }) }}
         {% else %}
-            {{ forms.hidden({
-                id: "preset-assets",
-                name: "presetAssets",
-                value: notification.getPresetAssets()
-            }) }}
+            <div class="field">
+                <div class="heading">
+                    <label id="preset-assets-label" for="preset-assets">{{ presetAssetsLabel|t('freeform') }}</label>
+                </div>
+                <div id="preset-assets-instructions" class="instructions">
+                    <p>{{ presetAssetsInstructions|t('freeform') }}</p>
+                </div>
+                <div class="input ltr">
+                    {{ forms.hidden({
+                        id: "preset-assets",
+                        name: "presetAssets",
+                        value: notification.getPresetAssets()
+                    }) }}
+                </div>
+                <p id="preset-assets-tip" class="warning has-icon">
+                    <span class="icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Tip: </span>
+                    <span>This setting cannot be edited from the control panel because a complex Twig approach in the template file has been detected.</span>
+                </p>
+            </div>
         {% endif %}
 
     {% endif %}

@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Library\Connections\Transformers;
 
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 
 abstract class AbstractFieldTransformer implements TransformerInterface
 {
@@ -25,7 +25,7 @@ abstract class AbstractFieldTransformer implements TransformerInterface
 
     public static function create(AbstractField $field, string $craftFieldHandle): self
     {
-        if ($field instanceof MultipleValueInterface) {
+        if ($field instanceof MultiValueInterface) {
             return new ArrayTransformer($field, $craftFieldHandle);
         }
 

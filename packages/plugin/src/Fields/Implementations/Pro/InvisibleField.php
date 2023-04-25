@@ -7,8 +7,6 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\PersistentValueInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Fields\Traits\StaticValueTrait;
 
 #[Type(
@@ -16,9 +14,8 @@ use Solspace\Freeform\Fields\Traits\StaticValueTrait;
     typeShorthand: 'invisible',
     iconPath: __DIR__.'/../Icons/text.svg',
 )]
-class InvisibleField extends AbstractField implements ExtraFieldInterface, SingleValueInterface, PersistentValueInterface, NoRenderInterface
+class InvisibleField extends AbstractField implements ExtraFieldInterface, PersistentValueInterface, NoRenderInterface
 {
-    use SingleValueTrait;
     use StaticValueTrait;
 
     /**

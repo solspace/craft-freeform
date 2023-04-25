@@ -12,6 +12,7 @@ import form from './slices/form';
 import integrations from './slices/integrations';
 import layout from './slices/layout';
 import notifications from './slices/notifications';
+import rules from './slices/rules';
 import search from './slices/search';
 
 export const store = configureStore({
@@ -22,6 +23,7 @@ export const store = configureStore({
     layout,
     integrations,
     notifications,
+    rules,
     context,
     search,
   },

@@ -3,24 +3,49 @@ import styled from 'styled-components';
 
 export const CellFieldWrapper = styled.div`
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  overflow: hidden;
+  padding: 5px 7px;
+
+  width: 100%;
+  height: 100%;
+
+  background: ${colors.white};
+  border: 1px solid rgba(96, 125, 159, 0.25);
+  border-radius: ${borderRadius.md};
+
+  transition: all 0.2s ease-out;
+
+  &.has-rule:not(.active) {
+    border-right: 4px solid ${colors.gray200};
+  }
+
+  &.active {
+    background-color: ${colors.teal550};
+    color: white;
+  }
+
+  &.is-in-condition {
+    border-left: 4px solid ${colors.teal550};
+
+    &.not-equals {
+      border-left-color: ${colors.red500};
+    }
+  }
+`;
+
+export const FieldInfo = styled.div`
+  display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
   gap: ${spacings.sm};
 
-  overflow: hidden;
-  padding: 0 7px;
-
-  width: 100%;
-  height: 28px;
-
-  background: ${colors.white};
-  border: 1px solid rgba(96, 125, 159, 0.25);
-  border-left: 3px solid ${colors.red200};
-  border-radius: ${borderRadius.md};
-
-  &.active {
-    background-color: ${colors.gray100};
+  svg {
+    width: 18px;
+    height: 18px;
   }
 `;
 
@@ -37,4 +62,12 @@ export const Icon = styled.div`
 
   width: 16px;
   height: 16px;
+`;
+
+export const Small = styled.small`
+  display: block;
+  padding-left: 24px;
+
+  font-size: 10px;
+  color: ${colors.gray300};
 `;

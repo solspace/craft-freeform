@@ -7,10 +7,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
-use Solspace\Freeform\Library\Composer\Components\Properties\FieldProperties;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 
 #[Type(
@@ -18,10 +15,8 @@ use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHan
     typeShorthand: 'cc-details',
     iconPath: __DIR__.'/../../Icons/text.svg',
 )]
-class CreditCardDetailsField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, PaymentInterface, ExtraFieldInterface
+class CreditCardDetailsField extends AbstractField implements DefaultFieldInterface, PaymentInterface, ExtraFieldInterface
 {
-    use SingleValueTrait;
-
     public const LAYOUT_2_ROWS = 'two_rows';
     public const LAYOUT_3_ROWS = 'three_rows';
 

@@ -7,10 +7,8 @@ use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
@@ -20,9 +18,8 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
     typeShorthand: 'rating',
     iconPath: __DIR__.'/../Icons/text.svg',
 )]
-class RatingField extends AbstractField implements SingleValueInterface, ExtraFieldInterface, OptionsInterface
+class RatingField extends AbstractField implements ExtraFieldInterface, OptionsInterface
 {
-    use SingleValueTrait;
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;
 

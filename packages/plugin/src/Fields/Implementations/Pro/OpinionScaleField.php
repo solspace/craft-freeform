@@ -8,7 +8,6 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 
 #[Type(
     name: 'Opinion Scale',
@@ -17,13 +16,9 @@ use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 )]
 class OpinionScaleField extends AbstractField implements ExtraFieldInterface, OptionsInterface
 {
-    use SingleValueTrait;
+    protected array $scales = [];
 
-    /** @var array */
-    protected $scales;
-
-    /** @var array */
-    protected $legends;
+    protected array $legends = [];
 
     public function getType(): string
     {

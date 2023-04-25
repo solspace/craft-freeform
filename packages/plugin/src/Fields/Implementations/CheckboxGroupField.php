@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
@@ -24,7 +24,7 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
     typeShorthand: 'checkbox-group',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class CheckboxGroupField extends AbstractExternalOptionsField implements MultipleValueInterface, OneLineInterface
+class CheckboxGroupField extends AbstractExternalOptionsField implements MultiValueInterface, OneLineInterface
 {
     use MultipleValueTrait;
     use OneLineTrait;

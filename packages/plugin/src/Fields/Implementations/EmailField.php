@@ -19,9 +19,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Freeform;
 
 #[Type(
@@ -29,10 +27,9 @@ use Solspace\Freeform\Freeform;
     typeShorthand: 'email',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class EmailField extends AbstractField implements RecipientInterface, SingleValueInterface, PlaceholderInterface
+class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface
 {
     use PlaceholderTrait;
-    use SingleValueTrait;
 
     /**
      * Return the field TYPE.

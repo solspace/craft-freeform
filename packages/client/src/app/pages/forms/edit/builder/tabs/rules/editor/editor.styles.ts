@@ -1,9 +1,15 @@
-import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const RulesEditorWrapper = styled.div`
-  flex: 1;
+export const Label = styled.h1`
+  padding: 0;
+`;
 
-  background: ${colors.white};
-  padding: ${spacings.xl};
+export const ConfigurationDescription = styled.p`
+  .select {
+    margin: 0 5px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
 `;

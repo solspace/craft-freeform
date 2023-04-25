@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 
 #[Type(
@@ -22,7 +22,7 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
     typeShorthand: 'multiple-select',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class MultipleSelectField extends AbstractExternalOptionsField implements MultipleValueInterface
+class MultipleSelectField extends AbstractExternalOptionsField implements MultiValueInterface
 {
     use MultipleValueTrait;
 

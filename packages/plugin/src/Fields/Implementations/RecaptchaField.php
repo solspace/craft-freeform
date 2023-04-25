@@ -8,8 +8,6 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Interfaces\RecaptchaInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Models\Settings;
@@ -19,10 +17,8 @@ use Solspace\Freeform\Models\Settings;
     typeShorthand: 'recaptcha',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class RecaptchaField extends AbstractField implements NoStorageInterface, SingleValueInterface, InputOnlyInterface, RecaptchaInterface
+class RecaptchaField extends AbstractField implements NoStorageInterface, InputOnlyInterface, RecaptchaInterface
 {
-    use SingleValueTrait;
-
     public function getType(): string
     {
         return self::TYPE_RECAPTCHA;

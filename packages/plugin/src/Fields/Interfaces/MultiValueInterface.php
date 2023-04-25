@@ -12,6 +12,6 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface MultipleValueInterface
+interface MultiValueInterface
 {
 }

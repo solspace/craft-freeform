@@ -9,7 +9,6 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 
 #[Type(
@@ -17,7 +16,7 @@ use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
     typeShorthand: 'save',
     iconPath: __DIR__.'/../Icons/text.svg',
 )]
-class SaveField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
+class SaveField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;
 

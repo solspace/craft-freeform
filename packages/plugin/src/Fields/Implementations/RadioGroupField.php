@@ -15,19 +15,16 @@ namespace Solspace\Freeform\Fields\Implementations;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 
 #[Type(
     name: 'Radio Group',
     typeShorthand: 'radio-group',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class RadioGroupField extends AbstractExternalOptionsField implements SingleValueInterface, OneLineInterface
+class RadioGroupField extends AbstractExternalOptionsField implements OneLineInterface
 {
     use OneLineTrait;
-    use SingleValueTrait;
 
     public function getType(): string
     {

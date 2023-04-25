@@ -5,8 +5,6 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 
 #[Type(
@@ -14,10 +12,8 @@ use Solspace\Freeform\Library\Attributes\Attributes;
     typeShorthand: 'signature',
     iconPath: __DIR__.'/../Icons/text.svg',
 )]
-class SignatureField extends AbstractField implements SingleValueInterface, ExtraFieldInterface
+class SignatureField extends AbstractField implements ExtraFieldInterface
 {
-    use SingleValueTrait;
-
     public const DEFAULT_WIDTH = 400;
     public const DEFAULT_HEIGHT = 100;
     public const DEFAULT_BORDER_COLOR = '#999999';
@@ -25,26 +21,13 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
     public const DEFAULT_PEN_COLOR = '#000000';
     public const DEFAULT_PEN_DOT_SIZE = 2.5;
 
-    /** @var int */
-    protected $width;
-
-    /** @var int */
-    protected $height;
-
-    /** @var bool */
-    protected $showClearButton = true;
-
-    /** @var string */
-    protected $borderColor;
-
-    /** @var string */
-    protected $backgroundColor;
-
-    /** @var string */
-    protected $penColor;
-
-    /** @var float */
-    protected $penDotSize;
+    protected int $width;
+    protected int $height;
+    protected bool $showClearButton = true;
+    protected string $borderColor;
+    protected string $backgroundColor;
+    protected string $penColor;
+    protected float $penDotSize;
 
     /**
      * Return the field TYPE.
@@ -57,7 +40,7 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
     /**
      * @return null|int
      */
-    public function getWidth()
+    public function getWidth(): int
     {
         return $this->width ?? self::DEFAULT_WIDTH;
     }
@@ -65,7 +48,7 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
     /**
      * @return null|int
      */
-    public function getHeight()
+    public function getHeight(): int
     {
         return $this->height ?? self::DEFAULT_HEIGHT;
     }

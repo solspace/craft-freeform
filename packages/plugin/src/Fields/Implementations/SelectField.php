@@ -14,18 +14,14 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 
 #[Type(
     name: 'Select',
     typeShorthand: 'select',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class SelectField extends AbstractExternalOptionsField implements SingleValueInterface
+class SelectField extends AbstractExternalOptionsField
 {
-    use SingleValueTrait;
-
     public function getType(): string
     {
         return self::TYPE_SELECT;

@@ -5,8 +5,7 @@ namespace Solspace\Freeform\Bundles\Form\ElementEdit;
 use craft\elements\db\ElementQuery;
 use craft\fields\data\MultiOptionsFieldData;
 use Solspace\Freeform\Events\FormEventInterface;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -66,16 +65,7 @@ class ElementEditBundle extends FeatureBundle
                 if ($value instanceof MultiOptionsFieldData) {
                     $options = $value->getOptions();
 
-                    if ($field instanceof SingleValueInterface) {
-                        $firstOption = reset($options);
-                        if ($firstOption) {
-                            $value = $firstOption->selected ? $firstOption->value : '';
-                        } else {
-                            $value = '';
-                        }
-                    }
-
-                    if ($field instanceof MultipleValueInterface) {
+                    if ($field instanceof MultiValueInterface) {
                         $values = [];
                         foreach ($options as $option) {
                             if ($option->selected) {
@@ -84,6 +74,13 @@ class ElementEditBundle extends FeatureBundle
                         }
 
                         $value = $values;
+                    } else {
+                        $firstOption = reset($options);
+                        if ($firstOption) {
+                            $value = $firstOption->selected ? $firstOption->value : '';
+                        } else {
+                            $value = '';
+                        }
                     }
                 }
 

@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Fields\Implementations;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
 
 #[Type(
@@ -23,7 +22,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
     typeShorthand: 'textarea',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class TextareaField extends TextField implements SingleValueInterface, PlaceholderInterface
+class TextareaField extends TextField implements PlaceholderInterface
 {
     #[Property(
         instructions: 'The number of rows in height for this field.',

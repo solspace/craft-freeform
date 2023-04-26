@@ -4,8 +4,7 @@ namespace Solspace\Freeform\Bundles\Fields;
 
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
+use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Stringy\Stringy;
 
 class ImplementationProvider
@@ -14,9 +13,8 @@ class ImplementationProvider
         FieldInterface::class,
         \JsonSerializable::class,
         \Stringable::class,
+        IdentificatorInterface::class,
         ExtraFieldInterface::class,
-        SingleValueInterface::class,
-        MultipleValueInterface::class,
     ];
 
     public function getImplementations(string $class): array

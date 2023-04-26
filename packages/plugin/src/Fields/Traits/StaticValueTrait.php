@@ -14,13 +14,9 @@ namespace Solspace\Freeform\Fields\Traits;
 
 trait StaticValueTrait
 {
-    /** @var mixed */
-    protected $staticValue;
+    protected string $staticValue;
 
-    /**
-     * @return mixed
-     */
-    public function getStaticValue()
+    public function getStaticValue(): string
     {
         return $this->staticValue;
     }

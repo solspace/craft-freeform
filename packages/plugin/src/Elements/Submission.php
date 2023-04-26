@@ -28,7 +28,7 @@ use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -124,7 +124,7 @@ class Submission extends Element
             try {
                 $field = $this->getFieldCollection()->get($id);
 
-                if ($field instanceof MultipleValueInterface ?? \is_string($value)) {
+                if ($field instanceof MultiValueInterface ?? \is_string($value)) {
                     $value = json_decode($value, true);
                 }
 

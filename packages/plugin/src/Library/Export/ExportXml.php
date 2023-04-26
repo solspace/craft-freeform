@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Library\Export;
 
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 
 class ExportXml extends AbstractExport
 {
@@ -33,7 +33,7 @@ class ExportXml extends AbstractExport
                 $field = $column->getField();
                 $value = $column->getValue();
 
-                if ($field && $field instanceof MultipleValueInterface) {
+                if ($field && $field instanceof MultiValueInterface) {
                     $node = $submission->addChild($column->getHandle());
 
                     if ($field instanceof TableField) {

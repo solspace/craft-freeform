@@ -15,19 +15,19 @@ namespace Solspace\Freeform\Fields\Implementations;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
-use Solspace\Freeform\Fields\Traits\SingleValueTrait;
 
+/**
+ * @extends AbstractField<string>
+ */
 #[Type(
     name: 'Text',
     typeShorthand: 'text',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class TextField extends AbstractField implements SingleValueInterface, PlaceholderInterface
+class TextField extends AbstractField implements PlaceholderInterface
 {
     use PlaceholderTrait;
-    use SingleValueTrait;
 
     protected string $customInputType;
 

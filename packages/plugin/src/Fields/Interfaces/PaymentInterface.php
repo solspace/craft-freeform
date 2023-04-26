@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-interface PaymentInterface extends SingleValueInterface
+interface PaymentInterface
 {
     /**
      * Renders html to display field value in CP.

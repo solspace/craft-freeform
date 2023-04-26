@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Library\Export;
 use Carbon\Carbon;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Form\Form;
@@ -104,7 +104,7 @@ abstract class AbstractExport implements ExportInterface
                     $label = $field->getLabel();
                     $handle = $field->getHandle();
 
-                    if ($field instanceof MultipleValueInterface) {
+                    if ($field instanceof MultiValueInterface) {
                         if (preg_match('/^(\[|\{).*(\]|\})$/', $value)) {
                             $value = (array) \GuzzleHttp\json_decode($value, true);
                         }

@@ -18,7 +18,6 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\IsolatedTwig;
@@ -29,7 +28,7 @@ use Solspace\Freeform\Models\Settings;
     typeShorthand: 'html',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class HtmlField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
+class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;
 

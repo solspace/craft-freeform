@@ -34,6 +34,9 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Twig\Markup;
 
+/**
+ * @template T
+ */
 abstract class AbstractField implements FieldInterface, IdentificatorInterface
 {
     #[Section(
@@ -97,6 +100,10 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     protected int $pageIndex = 0;
     protected array $errors = [];
 
+    /** @var T */
+    protected mixed $value = null;
+
+    /** @var T */
     private mixed $defaultValue = null;
 
     public function __construct(private Form $form)
@@ -108,6 +115,24 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     public function __toString(): string
     {
         return $this->getValueAsString();
+    }
+
+    /**
+     * @return T
+     */
+    public function getValue(): mixed
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param T $value
+     */
+    public function setValue(mixed $value): FieldInterface
+    {
+        $this->value = $value;
+
+        return $this;
     }
 
     /**

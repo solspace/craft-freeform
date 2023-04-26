@@ -18,7 +18,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
@@ -31,7 +31,7 @@ use function Solspace\Freeform\Fields\is_countable;
     typeShorthand: 'file',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class FileUploadField extends AbstractField implements MultipleValueInterface, FileUploadInterface
+class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface
 {
     use FileUploadTrait;
     use MultipleValueTrait;

@@ -8,7 +8,7 @@ use Solspace\Freeform\Attributes\Property\PropertyTypes\Table\TableTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
-use Solspace\Freeform\Fields\Interfaces\MultipleValueInterface;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -18,7 +18,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
     typeShorthand: 'table',
     iconPath: __DIR__.'/../Icons/text.svg',
 )]
-class TableField extends AbstractField implements MultipleValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface
+class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface
 {
     use MultipleValueTrait;
 

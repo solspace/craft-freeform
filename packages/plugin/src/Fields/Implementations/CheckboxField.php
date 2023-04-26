@@ -16,21 +16,22 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Twig\Markup;
 
+/**
+ * @extends AbstractField<boolean>
+ */
 #[Type(
     name: 'Checkbox',
     typeShorthand: 'checkbox',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class CheckboxField extends AbstractField implements SingleValueInterface, InputOnlyInterface
+class CheckboxField extends AbstractField implements InputOnlyInterface, BooleanInterface
 {
     #[Property('Checked by default')]
     protected bool $checkedByDefault = false;
-
-    protected bool $value = false;
 
     public function getType(): string
     {
@@ -42,12 +43,17 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
         return $this->value;
     }
 
-    public function getValue(): string
+    public function isCheckedByDefault(): bool
     {
-        return $this->value ? $this->getDefaultValue() : '';
+        return $this->checkedByDefault;
     }
 
-    public function setValue(mixed $value): FieldInterface
+    public function getValue(): string
+    {
+        return $this->value;
+    }
+
+    public function setValue(mixed $value): self
     {
         $this->value = (bool) $value;
 

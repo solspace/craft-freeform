@@ -19,7 +19,6 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 use Solspace\Freeform\Library\Attributes\Attributes;
 
@@ -28,9 +27,10 @@ use Solspace\Freeform\Library\Attributes\Attributes;
     typeShorthand: 'submit',
     iconPath: __DIR__.'/Icons/text.svg',
 )]
-class SubmitField extends AbstractField implements DefaultFieldInterface, SingleValueInterface, InputOnlyInterface, NoStorageInterface
+class SubmitField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface
 {
     use SingleStaticValueTrait;
+
     public const PREVIOUS_PAGE_INPUT_NAME = 'form_previous_page_button';
     public const SUBMIT_INPUT_NAME = 'form_page_submit';
 

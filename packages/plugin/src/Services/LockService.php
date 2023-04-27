@@ -65,7 +65,6 @@ class LockService
         \Craft::$app->db
             ->createCommand()
             ->delete(LockRecord::TABLE, Db::parseDateParam('dateCreated', $date, '<'))
-            ->execute()
-        ;
+            ->execute();
     }
 }

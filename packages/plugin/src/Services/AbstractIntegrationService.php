@@ -123,8 +123,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
                 ['forceUpdate' => true],
                 'id = :id',
                 ['id' => $integration->getId()]
-            )
-        ;
+            );
     }
 
     /**

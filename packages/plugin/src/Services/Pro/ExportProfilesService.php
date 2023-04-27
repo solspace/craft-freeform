@@ -215,8 +215,7 @@ class ExportProfilesService extends Component
                 ->getDb()
                 ->createCommand()
                 ->delete(ExportProfileRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
+                ->execute();
 
             if (null !== $transaction) {
                 $transaction->commit();

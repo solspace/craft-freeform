@@ -309,8 +309,7 @@ class Freeform extends Plugin
                 ->db
                 ->createCommand()
                 ->dropTableIfExists(Submission::getContentTableName($form))
-                ->execute()
-            ;
+                ->execute();
         }
     }
 
@@ -517,8 +516,7 @@ class Freeform extends Plugin
                 /** @var SplFileInfo[] $files */
                 $files = $finder->name('*.php')->files()->ignoreDotFiles(true)->depth(0)->in(
                     __DIR__.'/Integrations/MailingLists/'
-                )
-                ;
+                );
 
                 foreach ($files as $file) {
                     $className = str_replace('.'.$file->getExtension(), '', $file->getBasename());
@@ -607,8 +605,7 @@ class Freeform extends Plugin
                 /** @var SplFileInfo[] $files */
                 $files = $finder->name('*Widget.php')->files()->ignoreDotFiles(true)->notName('Abstract*.php')->in(
                     __DIR__.'/Widgets/'
-                )
-                ;
+                );
 
                 foreach ($files as $file) {
                     $isForPro = 'Pro' === $file->getRelativePath();
@@ -777,22 +774,19 @@ class Freeform extends Plugin
 
                     $ids = (new Query())->select('[[id]]')->from('{{%elements}}')->where(
                         ['[[type]]' => Submission::class]
-                    )->column()
-                    ;
+                    )->column();
 
                     \Craft::$app->db->createCommand()->update(
                         '{{%elements_sites}}',
                         ['siteId' => $newId],
                         ['siteId' => $oldId, 'elementId' => $ids]
-                    )->execute()
-                    ;
+                    )->execute();
 
                     \Craft::$app->db->createCommand()->update(
                         '{{%content}}',
                         ['siteId' => $newId],
                         ['siteId' => $oldId, 'elementId' => $ids]
-                    )->execute()
-                    ;
+                    )->execute();
                 }
             }
         );

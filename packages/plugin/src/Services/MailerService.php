@@ -239,7 +239,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         $presetAssets = $notification->getPresetAssets();
 
         if ($presetAssets && Freeform::getInstance()->isPro()) {
-            if (TwigHelper::isTwigValue($presetAssets)) {
+            if (!\is_array($presetAssets) && TwigHelper::isTwigValue($presetAssets)) {
                 $presetAssets = trim(\Craft::parseEnv($this->renderString($presetAssets, $values)));
 
                 $delimiters = [',', '.', '|', '!', '?'];

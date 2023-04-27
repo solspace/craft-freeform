@@ -34,7 +34,7 @@ class FormPersistence extends FeatureBundle
         return 200;
     }
 
-    public function handleFormCreate(PersistFormEvent $event)
+    public function handleFormCreate(PersistFormEvent $event): void
     {
         $payload = $event->getPayload()->form;
 
@@ -45,14 +45,14 @@ class FormPersistence extends FeatureBundle
         $this->update($event, $record);
     }
 
-    public function handleFormUpdate(PersistFormEvent $event)
+    public function handleFormUpdate(PersistFormEvent $event): void
     {
         $record = FormRecord::findOne(['id' => $event->getFormId()]);
 
         $this->update($event, $record);
     }
 
-    private function update(PersistFormEvent $event, FormRecord $record)
+    private function update(PersistFormEvent $event, FormRecord $record): void
     {
         $payload = $event->getPayload()->form;
 

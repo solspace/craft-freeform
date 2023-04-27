@@ -1,0 +1,130 @@
+<?php
+
+namespace Solspace\Freeform\Bundles\Persistence\Rules;
+
+use Solspace\Freeform\controllers\client\api\FormsController;
+use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\RuleConditionRecord;
+use Solspace\Freeform\Records\Rules\RuleRecord;
+use yii\base\Event;
+
+class FieldRulesPersistence extends FeatureBundle
+{
+    public function __construct()
+    {
+        Event::on(
+            FormsController::class,
+            FormsController::EVENT_UPSERT_FORM,
+            [$this, 'handleRuleSave']
+        );
+    }
+
+    public static function getPriority(): int
+    {
+        return 500;
+    }
+
+    public function handleRuleSave(PersistFormEvent $event): void
+    {
+        $form = $event->getForm();
+        if (!$form) {
+            return;
+        }
+
+        $payload = $event->getPayload()->rules->fields;
+
+        $existingRules = $this->getExistingRules($form->getId());
+        $usedRuleUids = [];
+        foreach ($payload as $data) {
+            $field = $event->getFieldRecord($data->field);
+            if (!$field) {
+                continue;
+            }
+
+            if (isset($existingRules[$data->uid])) {
+                $record = $existingRules[$data->uid];
+                $rule = $record->getRule()->one();
+            } else {
+                $rule = new RuleRecord();
+                $rule->uid = $data->uid;
+
+                $record = new FieldRuleRecord();
+            }
+
+            $rule->combinator = $data->combinator;
+            $rule->save();
+
+            $record->id = $rule->id;
+            $record->fieldId = $field->id;
+            $record->display = $data->display;
+            $record->save();
+
+            $usedRuleUids[] = $rule->uid;
+
+            $existingConditions = $rule
+                ->getConditions()
+                ->indexBy('uid')
+                ->all()
+            ;
+
+            $usedConditionUids = [];
+            foreach ($data->conditions as $condition) {
+                $conditionField = $event->getFieldRecord($condition->field);
+                if (!$conditionField) {
+                    continue;
+                }
+
+                $conditionRecord = $existingConditions[$condition->uid] ?? null;
+                if (null === $conditionRecord) {
+                    $conditionRecord = new RuleConditionRecord();
+                    $conditionRecord->ruleId = $rule->id;
+                }
+
+                $conditionRecord->fieldId = $conditionField->id;
+                $conditionRecord->operator = $condition->operator;
+                $conditionRecord->value = $condition->value;
+                $conditionRecord->save();
+
+                $usedConditionUids[] = $conditionRecord->uid;
+            }
+
+            $removableConditionUids = array_diff(array_keys($existingConditions), $usedConditionUids);
+            if ($removableConditionUids) {
+                RuleConditionRecord::deleteAll(['uid' => $removableConditionUids]);
+            }
+        }
+
+        $removableRuleUids = array_diff(array_keys($existingRules), $usedRuleUids);
+        if ($removableRuleUids) {
+            RuleRecord::deleteAll(['uid' => $removableRuleUids]);
+        }
+    }
+
+    /**
+     * @return FieldRuleRecord[]
+     */
+    private function getExistingRules(int $formId): array
+    {
+        /** @var FieldRuleRecord[] $records */
+        $records = FieldRuleRecord::find()
+            ->select(['fr.*'])
+            ->from(FieldRuleRecord::TABLE.' fr')
+            ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
+            ->innerJoin(FormFieldRecord::TABLE.' ff', '[[fr.fieldId]] = [[ff.id]]')
+            ->where(['ff.formId' => $formId])
+            ->with('rule')
+            ->indexBy('id')
+            ->all()
+        ;
+
+        $indexed = [];
+        foreach ($records as $record) {
+            $indexed[$record->getRule()->one()->uid] = $record;
+        }
+
+        return $indexed;
+    }
+}

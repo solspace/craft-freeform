@@ -32,7 +32,7 @@ class LayoutPersistence extends FeatureBundle
         return 400;
     }
 
-    public function handleFieldSave(PersistFormEvent $event)
+    public function handleFieldSave(PersistFormEvent $event): void
     {
         $form = $event->getForm();
         if (!$form) {
@@ -52,7 +52,7 @@ class LayoutPersistence extends FeatureBundle
         $this->saveCells($form, $cells);
     }
 
-    private function saveLayouts(Form $form, array $data)
+    private function saveLayouts(Form $form, array $data): void
     {
         [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormLayoutRecord::class);
 
@@ -73,7 +73,7 @@ class LayoutPersistence extends FeatureBundle
         }
     }
 
-    private function savePages(Form $form, array $data)
+    private function savePages(Form $form, array $data): void
     {
         [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormPageRecord::class);
 
@@ -99,7 +99,7 @@ class LayoutPersistence extends FeatureBundle
         }
     }
 
-    private function saveRows(Form $form, array $data)
+    private function saveRows(Form $form, array $data): void
     {
         [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormRowRecord::class);
 
@@ -123,7 +123,7 @@ class LayoutPersistence extends FeatureBundle
         }
     }
 
-    private function saveCells(Form $form, array $data)
+    private function saveCells(Form $form, array $data): void
     {
         [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormCellRecord::class);
 

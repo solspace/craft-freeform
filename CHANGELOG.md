@@ -1,5 +1,18 @@
 # Solspace Freeform Changelog
 
+## 4.0.23 - 2023-04-28
+
+### Added
+- Added the ability to map submission data to `postDate` and `expiryDate` for Craft Entries.
+- Added the ability to preparse Twig for the "Predefined Assets" setting in email notification templates. This allows for things like dynamically attaching an asset to the email notification based on a user's selection, etc.
+
+### Changed
+- Updated Freeform template path settings to now include template folder autosuggestions.
+
+### Fixed
+- Fixed a bug where the hidden input for File Upload Drag & Drop fields was not getting an ID attribute applied to it.
+- Fixed some minor issues with demo templates.
+
 ## 4.0.22 - 2023-04-14
 
 ### Added

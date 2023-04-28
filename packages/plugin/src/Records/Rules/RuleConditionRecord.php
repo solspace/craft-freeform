@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Records\Rules;
 
+use Solspace\Freeform\Records\Form\FormFieldRecord;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -21,6 +23,11 @@ class RuleConditionRecord extends ActiveRecord
     public static function tableName(): string
     {
         return self::TABLE;
+    }
+
+    public function getField(): ActiveQuery
+    {
+        return $this->hasOne(FormFieldRecord::class, ['id' => 'fieldId']);
     }
 
     public function rules(): array

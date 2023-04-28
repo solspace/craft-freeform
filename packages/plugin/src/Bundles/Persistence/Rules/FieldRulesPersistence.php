@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\Persistence\Rules;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
@@ -108,23 +107,6 @@ class FieldRulesPersistence extends FeatureBundle
      */
     private function getExistingRules(int $formId): array
     {
-        /** @var FieldRuleRecord[] $records */
-        $records = FieldRuleRecord::find()
-            ->select(['fr.*'])
-            ->from(FieldRuleRecord::TABLE.' fr')
-            ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
-            ->innerJoin(FormFieldRecord::TABLE.' ff', '[[fr.fieldId]] = [[ff.id]]')
-            ->where(['ff.formId' => $formId])
-            ->with('rule')
-            ->indexBy('id')
-            ->all()
-        ;
-
-        $indexed = [];
-        foreach ($records as $record) {
-            $indexed[$record->getRule()->one()->uid] = $record;
-        }
-
-        return $indexed;
+        return FieldRuleRecord::getExistingRules($formId);
     }
 }

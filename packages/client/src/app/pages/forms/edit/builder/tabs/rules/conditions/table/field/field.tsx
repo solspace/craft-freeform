@@ -15,7 +15,7 @@ type Props = {
 export const FieldSelect: React.FC<Props> = ({ condition, onChange }) => {
   const { uid } = useParams();
 
-  const cartographed = useSelector(layoutSelectors.cartographed);
+  const cartographed = useSelector(layoutSelectors.cartographed.pageFieldList);
   const pages = useSelector(pageSelecors.all);
   const fields = useSelector(fieldSelectors.all);
 

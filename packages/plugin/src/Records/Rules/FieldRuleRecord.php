@@ -35,7 +35,7 @@ class FieldRuleRecord extends RuleRecord
             ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
             ->innerJoin(FormFieldRecord::TABLE.' ff', '[[fr.fieldId]] = [[ff.id]]')
             ->where(['ff.formId' => $formId])
-            ->with('rule', 'conditions')
+            ->with('rule', 'conditions', 'field')
             ->indexBy('id')
             ->all()
         ;

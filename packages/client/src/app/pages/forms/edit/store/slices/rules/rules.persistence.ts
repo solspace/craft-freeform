@@ -4,10 +4,11 @@ import { TOPIC_SAVE } from '@editor/store/middleware/state-persist';
 const persist: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
-  const { fields } = state.rules;
+  const { fields, pages } = state.rules;
 
   persist.rules = {
     fields,
+    pages,
   };
 };
 

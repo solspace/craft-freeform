@@ -47,7 +47,7 @@ class LayoutPersistence extends FeatureBundle
         $cells = $payload->cells;
 
         $this->saveLayouts($form, $layouts);
-        $this->savePages($form, $pages);
+        $this->savePages($form, $pages, $event);
         $this->saveRows($form, $rows);
         $this->saveCells($form, $cells);
     }
@@ -73,7 +73,7 @@ class LayoutPersistence extends FeatureBundle
         }
     }
 
-    private function savePages(Form $form, array $data): void
+    private function savePages(Form $form, array $data, PersistFormEvent $event): void
     {
         [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormPageRecord::class);
 
@@ -92,6 +92,7 @@ class LayoutPersistence extends FeatureBundle
             $record->order = $item->order;
 
             $record->save();
+            $event->addPageRecord($record);
         }
 
         foreach ($staleUids as $uid) {

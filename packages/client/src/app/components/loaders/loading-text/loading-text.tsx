@@ -70,7 +70,7 @@ export const LoadingText: React.FC<Props> = ({
       original: { width, height },
       loading: { width: loadingWidth },
     });
-  }, [textOriginalRef.current]);
+  }, [textOriginalRef.current, children, loadingText]);
 
   const spinnerAnimation = useSpinnerAnimation(loading, instant);
   const dotAnimation = useDotAnimation(loading, instant);

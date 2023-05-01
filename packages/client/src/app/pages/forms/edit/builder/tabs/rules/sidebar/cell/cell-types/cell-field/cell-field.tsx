@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
+import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import { operatorShorthand, operatorTypes } from '@ff-client/types/rules';
 import classes from '@ff-client/utils/classes';
@@ -30,11 +31,13 @@ export const CellField: React.FC<Props> = ({ uid }) => {
 
   const currentField = activeFieldUid === uid;
   const activeRule = useSelector(fieldRuleSelectors.one(activeFieldUid));
+  const activePageRule = useSelector(pageRuleSelectors.one(activeFieldUid));
   const hasRule = useSelector(fieldRuleSelectors.hasRule(uid));
+  const hasPageRule = useSelector(pageRuleSelectors.hasRule(uid));
 
-  const condition = activeRule?.conditions.find(
-    (condition) => condition.field === uid
-  );
+  const condition =
+    activeRule?.conditions.find((condition) => condition.field === uid) ||
+    activePageRule?.conditions.find((condition) => condition.field === uid);
 
   if (field?.properties === undefined) {
     return null;
@@ -45,7 +48,7 @@ export const CellField: React.FC<Props> = ({ uid }) => {
       onClick={() => navigate(activeFieldUid === uid ? '' : `field/${uid}`)}
       className={classes(
         currentField && 'active',
-        hasRule && 'has-rule',
+        (hasRule || hasPageRule) && 'has-rule',
         condition && 'is-in-condition',
         operatorTypes.negative.includes(condition?.operator) && 'not-equals'
       )}

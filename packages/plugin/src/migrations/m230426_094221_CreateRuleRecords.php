@@ -30,7 +30,7 @@ class m230426_094221_CreateRuleRecords extends Migration
             'uid' => $this->uid(),
         ]);
 
-        $this->addPrimaryKey('PRIMARY', '{{%freeform_rules_fields}}', 'id');
+        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
 
         $this->addForeignKey(
             null,
@@ -62,7 +62,7 @@ class m230426_094221_CreateRuleRecords extends Migration
             'uid' => $this->uid(),
         ]);
 
-        $this->addPrimaryKey('PRIMARY', '{{%freeform_rules_pages}}', 'id');
+        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
 
         $this->addForeignKey(
             null,

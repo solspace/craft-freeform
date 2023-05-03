@@ -28,7 +28,7 @@ class FieldPersistence extends FeatureBundle
         return 300;
     }
 
-    public function handleFieldSave(PersistFormEvent $event)
+    public function handleFieldSave(PersistFormEvent $event): void
     {
         $form = $event->getForm();
         if (!$form) {
@@ -73,8 +73,7 @@ class FieldPersistence extends FeatureBundle
                 ->db
                 ->createCommand()
                 ->delete(FormFieldRecord::TABLE, ['uid' => $deletableUIDs])
-                ->execute()
-            ;
+                ->execute();
         }
 
         if ($event->hasErrors()) {
@@ -83,6 +82,7 @@ class FieldPersistence extends FeatureBundle
 
         foreach ($records as $record) {
             $record->save();
+            $event->addFieldRecord($record);
         }
     }
 

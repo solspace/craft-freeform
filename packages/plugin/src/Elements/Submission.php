@@ -379,8 +379,7 @@ class Submission extends Element
                         'required' => true,
                     ],
                 ]
-            )
-        ;
+            );
 
         $html .= parent::getEditorHtml();
 
@@ -421,23 +420,19 @@ class Submission extends Element
 
             \Craft::$app->db->createCommand()
                 ->insert(self::TABLE, $insertData)
-                ->execute()
-            ;
+                ->execute();
 
             \Craft::$app->db->createCommand()
                 ->insert($contentTable, $contentData)
-                ->execute()
-            ;
+                ->execute();
         } else {
             \Craft::$app->db->createCommand()
                 ->update(self::TABLE, $insertData, ['id' => $this->id])
-                ->execute()
-            ;
+                ->execute();
 
             \Craft::$app->db->createCommand()
                 ->update($contentTable, $contentData, ['id' => $this->id])
-                ->execute()
-            ;
+                ->execute();
 
             $notesService = $this->getNotesService();
             $notesService->saveNote($this->id);

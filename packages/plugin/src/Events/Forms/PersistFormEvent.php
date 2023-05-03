@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\base\Event;
 
 class PersistFormEvent extends Event
@@ -12,6 +13,9 @@ class PersistFormEvent extends Event
     private ?int $status = null;
 
     private ?Form $form = null;
+
+    /** @var FormFieldRecord[] */
+    private array $fieldRecords = [];
 
     public function __construct(
         private \stdClass $payload,
@@ -30,6 +34,24 @@ class PersistFormEvent extends Event
         $this->form = $form;
 
         return $this;
+    }
+
+    public function addFieldRecord(FormFieldRecord $fieldRecord): self
+    {
+        $this->fieldRecords[] = $fieldRecord;
+
+        return $this;
+    }
+
+    public function getFieldRecord(string $uid): ?FormFieldRecord
+    {
+        foreach ($this->fieldRecords as $fieldRecord) {
+            if ($fieldRecord->uid === $uid) {
+                return $fieldRecord;
+            }
+        }
+
+        return null;
     }
 
     public function getPayload(): \stdClass

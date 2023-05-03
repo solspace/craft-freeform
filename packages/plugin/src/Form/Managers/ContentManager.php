@@ -131,8 +131,7 @@ class ContentManager
                     $oldColumn,
                     $newColumn
                 )
-                ->execute()
-            ;
+                ->execute();
 
             $this->table->renameFieldColumn($id, $newColumn);
         }
@@ -159,8 +158,7 @@ class ContentManager
 
             \Craft::$app->db->createCommand()
                 ->dropColumn($table->getTableName(), $fieldColumn)
-                ->execute()
-            ;
+                ->execute();
 
             $this->table->removeColumn($id);
         }
@@ -184,8 +182,7 @@ class ContentManager
 
             \Craft::$app->db->createCommand()
                 ->addColumn($table->getTableName(), $columnName, 'text')
-                ->execute()
-            ;
+                ->execute();
 
             $this->table->addColumn($columnName);
         }

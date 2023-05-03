@@ -228,11 +228,11 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
         }
 
         // We'll extract a website domain from contact's email address to latter add it to the account
-//        if ($domainDuplicateCheck && !$accountWebsite && $accountRecord) {
-//            if (isset($accountRecord->Contacts->records) && $accountRecord->Contacts->records) {
-//                $accountMapping['Website'] = $this->extractWebsiteDomainFromContacts($accountRecord->Contacts->records);
-//            }
-//        }
+        //        if ($domainDuplicateCheck && !$accountWebsite && $accountRecord) {
+        //            if (isset($accountRecord->Contacts->records) && $accountRecord->Contacts->records) {
+        //                $accountMapping['Website'] = $this->extractWebsiteDomainFromContacts($accountRecord->Contacts->records);
+        //            }
+        //        }
 
         $appendFieldsQuery = '';
 

@@ -249,8 +249,7 @@ class SaveForm extends FeatureBundle
         if ($deletableIds) {
             \Craft::$app->db->createCommand()
                 ->delete(SavedFormRecord::TABLE, ['id' => $deletableIds])
-                ->execute()
-            ;
+                ->execute();
         }
     }
 
@@ -273,7 +272,6 @@ class SaveForm extends FeatureBundle
 
         \Craft::$app->db->createCommand()
             ->delete(SavedFormRecord::TABLE, ['<', 'dateUpdated', $expirationTime])
-            ->execute()
-        ;
+            ->execute();
     }
 }

@@ -376,6 +376,76 @@ class Install extends StreamlinedInstallMigration
                 ->addIndex(['dateCreated'])
                 ->addIndex(['sessionId'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE),
+
+            (new Table('freeform_rules'))
+                ->addField('id', $this->primaryKey())
+                ->addField('combinator', $this->string(20)->notNull()),
+
+            (new Table('freeform_rules_fields'))
+                ->addField('id', $this->integer()->notNull())
+                ->addField('fieldId', $this->integer()->notNull())
+                ->addField('display', $this->string(10)->notNull())
+                ->addForeignKey(
+                    'id',
+                    'freeform_rules',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                )
+                ->addForeignKey(
+                    'fieldId',
+                    'freeform_forms_fields',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                ),
+
+            (new Table('freeform_rules_pages'))
+                ->addField('id', $this->integer()->notNull())
+                ->addField('pageId', $this->integer()->notNull())
+                ->addForeignKey(
+                    'id',
+                    'freeform_rules',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                )
+                ->addForeignKey(
+                    'pageId',
+                    'freeform_forms_pages',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                ),
+
+            (new Table('freeform_rules_conditions'))
+                ->addField('id', $this->primaryKey())
+                ->addField('ruleId', $this->integer()->notNull())
+                ->addField('fieldId', $this->integer()->notNull())
+                ->addField('operator', $this->string(20)->notNull())
+                ->addField('value', $this->text()->notNull())
+                ->addForeignKey(
+                    'ruleId',
+                    'freeform_rules',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                )
+                ->addForeignKey(
+                    'fieldId',
+                    'freeform_forms_fields',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                ),
         ];
+    }
+
+    protected function afterInstall(): bool
+    {
+        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
+        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
+
+        return parent::afterInstall();
     }
 }

@@ -24,7 +24,7 @@ class IntegrationPersistence extends FeatureBundle
         return 400;
     }
 
-    public function handleIntegrationSave(PersistFormEvent $event)
+    public function handleIntegrationSave(PersistFormEvent $event): void
     {
         $integrations = $event->getPayload()->integrations;
 

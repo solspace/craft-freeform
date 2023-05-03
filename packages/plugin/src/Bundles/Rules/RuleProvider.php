@@ -9,8 +9,15 @@ use Solspace\Freeform\Records\Rules\RuleRecord;
 
 class RuleProvider
 {
-    public function getFormRules(Form $form): array
+    public function getFormRules(?Form $form): array
     {
+        if (!$form) {
+            return [
+                'pages' => [],
+                'fields' => [],
+            ];
+        }
+
         return [
             'pages' => [],
             'fields' => $this->getFieldRules($form),

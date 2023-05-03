@@ -22,9 +22,6 @@ class RulesController extends BaseApiController
     public function actionGet(int $formId): Response
     {
         $form = $this->getFormsService()->getFormById($formId);
-        if (!$form) {
-            return $this->asJson([]);
-        }
 
         $rules = $this->ruleProvider->getFormRules($form);
         $serialized = $this->serializer->serialize($rules, 'json');

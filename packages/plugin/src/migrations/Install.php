@@ -443,8 +443,8 @@ class Install extends StreamlinedInstallMigration
 
     protected function afterInstall(): bool
     {
-        $this->addPrimaryKey('PRIMARY', '{{%freeform_rules_fields}}', 'id');
-        $this->addPrimaryKey('PRIMARY', '{{%freeform_rules_pages}}', 'id');
+        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
+        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
 
         return parent::afterInstall();
     }

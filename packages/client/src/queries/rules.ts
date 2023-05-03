@@ -2,6 +2,7 @@ import type { UseQueryResult } from 'react-query';
 import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { fieldRuleActions } from '@editor/store/slices/rules/fields';
+import { pageRuleActions } from '@editor/store/slices/rules/pages';
 import type { FieldRule, PageRule } from '@ff-client/types/rules';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
@@ -30,8 +31,9 @@ export const useQueryFormRules = (
     {
       staleTime: Infinity,
       cacheTime: Infinity,
-      onSuccess: (notifications) => {
-        dispatch(fieldRuleActions.set(notifications.fields));
+      onSuccess: (rules) => {
+        dispatch(fieldRuleActions.set(rules.fields));
+        dispatch(pageRuleActions.set(rules.pages));
       },
     }
   );

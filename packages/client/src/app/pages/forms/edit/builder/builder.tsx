@@ -14,6 +14,7 @@ import { EmptyEditor as EmptyNotificationsEditor } from './tabs/notifications/ed
 import { Notifications } from './tabs/notifications/notifications';
 import { RulesEmpty } from './tabs/rules/editor/editor.empty';
 import { FieldRulesEditor } from './tabs/rules/editor/field-editor';
+import { PageRulesEditor } from './tabs/rules/editor/page-editor';
 import { Rules } from './tabs/rules/rules';
 import { BuilderContent, BuilderWrapper } from './builder.styles';
 import { Tabs } from './tabs';
@@ -38,6 +39,7 @@ export const Builder: React.FC = () => {
               <Route path="rules" element={<Rules />}>
                 <Route index element={<RulesEmpty />} />
                 <Route path="field/:uid" element={<FieldRulesEditor />} />
+                <Route path="page/:uid" element={<PageRulesEditor />} />
               </Route>
               <Route path=":namespace" element={<FormSettings />} />
             </Routes>

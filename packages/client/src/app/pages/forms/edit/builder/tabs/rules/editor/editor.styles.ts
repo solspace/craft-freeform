@@ -15,4 +15,10 @@ export const ConfigurationDescription = styled.div`
       margin-left: 0;
     }
   }
+
+  &.short {
+    .select:first-child {
+      margin-left: 5px;
+    }
+  }
 `;

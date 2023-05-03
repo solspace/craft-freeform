@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
+use Solspace\Freeform\Records\Form\FormPageRecord;
 use yii\base\Event;
 
 class PersistFormEvent extends Event
@@ -16,6 +17,9 @@ class PersistFormEvent extends Event
 
     /** @var FormFieldRecord[] */
     private array $fieldRecords = [];
+
+    /** @var FormPageRecord[] */
+    private array $pageRecords = [];
 
     public function __construct(
         private \stdClass $payload,
@@ -48,6 +52,24 @@ class PersistFormEvent extends Event
         foreach ($this->fieldRecords as $fieldRecord) {
             if ($fieldRecord->uid === $uid) {
                 return $fieldRecord;
+            }
+        }
+
+        return null;
+    }
+
+    public function addPageRecord(FormPageRecord $pageRecord): self
+    {
+        $this->pageRecords[] = $pageRecord;
+
+        return $this;
+    }
+
+    public function getPageRecord(string $uid): ?FormPageRecord
+    {
+        foreach ($this->pageRecords as $pageRecord) {
+            if ($pageRecord->uid === $uid) {
+                return $pageRecord;
             }
         }
 

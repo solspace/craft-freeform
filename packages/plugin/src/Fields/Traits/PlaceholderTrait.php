@@ -12,14 +12,14 @@
 
 namespace Solspace\Freeform\Fields\Traits;
 
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Freeform;
 
 trait PlaceholderTrait
 {
     #[Section('general')]
-    #[Property(
+    #[Input\Text(
         instructions: 'The text that will be shown if the field doesn\'t have a value',
         order: 4,
     )]

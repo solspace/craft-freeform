@@ -13,14 +13,14 @@
 namespace Solspace\Freeform\Fields;
 
 use craft\helpers\Template;
-use PhpParser\Node\Param;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\AttributesTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Middleware;
-use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Attributes\AttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -45,37 +45,39 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         icon: __DIR__.'/SectionIcons/bookmark.svg',
         order: 0,
     )]
-    #[Property(
+    #[Input\Text(
         instructions: 'Field label used to describe the field',
         order: 1,
-        required: true,
         placeholder: 'My Field',
     )]
+    #[Validators\Required]
     protected string $label = '';
 
     #[Section('general')]
-    #[Property(
+    #[Input\Text(
         instructions: "How you'll refer to this field in templates",
         order: 2,
-        required: true,
         placeholder: 'myField',
     )]
     #[Middleware('handle')]
     #[Flag('code')]
+    #[Validators\Required]
     #[Validators\Handle]
     #[Validators\Length(100)]
     protected string $handle = '';
 
     #[Section('general')]
-    #[Property(
+    #[Input\TextArea(
         instructions: 'Field specific user instructions',
-        type: Property::TYPE_TEXTAREA,
         order: 3,
     )]
     protected string $instructions = '';
 
     #[Section('general')]
-    #[Property('Require this field', order: 5)]
+    #[Input\Boolean(
+        label: 'Require this field',
+        order: 5
+    )]
     protected bool $required = false;
 
     #[Section(
@@ -84,11 +86,10 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         icon: __DIR__.'/SectionIcons/list.svg',
         order: 999,
     )]
-    #[Property(
+    #[ValueTransformer(AttributesTransformer::class)]
+    #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
-        type: Property::TYPE_ATTRIBUTES,
         value: AttributesTransformer::DEFAULT_VALUE,
-        transformer: AttributesTransformer::class,
     )]
     protected FieldAttributesCollection $attributes;
 

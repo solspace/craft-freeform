@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
@@ -11,15 +11,15 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshTokenInterface
 {
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $domain = '';
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $apiDomain = '';
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $accountsServer = '';
 
     abstract public function getModule(): string;

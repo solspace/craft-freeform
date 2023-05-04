@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
@@ -32,7 +32,7 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
 {
     use SingleStaticValueTrait;
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Allow Twig',
         instructions: 'Used to enable Twig in HTML blocks',
     )]

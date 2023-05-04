@@ -6,7 +6,6 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\DataObjects\FieldType\Property;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use yii\base\Event;
 
@@ -86,14 +85,12 @@ class NotificationPersistence extends FeatureBundle
         $properties = $this->propertyProvider->getEditableProperties($object->class);
 
         $metadata = [];
-
-        /** @var Property $property */
         foreach ($properties as $property) {
             $handle = $property->handle;
             $value = $object->{$handle} ?? null;
 
             $errors = [];
-            foreach ($property->getValidators() as $validator) {
+            foreach ($property->validators as $validator) {
                 $errors = array_merge($errors, $validator->validate($value));
             }
 

@@ -6,7 +6,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
@@ -18,24 +19,24 @@ abstract class BasePipedriveIntegration extends AbstractCRMIntegration
     public const PREFIX_DEALS = 'deals';
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $domain = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API Token',
         instructions: 'Enter your Pipedrive API token here.',
-        required: true,
     )]
     protected string $apiToken = '';
 
-    #[Property(
+    #[Input\Text(
         label: 'User ID',
         instructions: 'Enter the Pipedrive User ID you want to assign to new objects.'
     )]
     protected string $userId = '';
 
-    #[Property(
+    #[Input\Boolean(
         instructions: 'Enable this setting to prevent creation of organizations or persons with overlapping names and/or email addresses.',
     )]
     protected bool $detectDuplicates = false;

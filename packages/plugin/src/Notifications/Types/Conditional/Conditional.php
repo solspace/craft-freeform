@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Notifications\Types\Conditional;
 
 use Solspace\Freeform\Attributes\Notification\Type;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Notifications\BaseNotification;
 
 #[Type(
@@ -22,4 +23,9 @@ use Solspace\Freeform\Notifications\BaseNotification;
 )]
 class Conditional extends BaseNotification
 {
+    #[Input\ConditionalRule(
+        label: 'Notification Rule',
+        instructions: 'Select a rule to use for this notification.',
+    )]
+    protected ConditionalNotificationRule $rule;
 }

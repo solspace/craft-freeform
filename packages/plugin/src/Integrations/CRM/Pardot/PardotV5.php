@@ -5,7 +5,8 @@ namespace Solspace\Freeform\Integrations\CRM\Pardot;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
@@ -19,10 +20,10 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
 {
     public const LOG_CATEGORY = 'Pardot';
 
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Pardot Business Unit ID',
         instructions: 'Enter your Pardot business unit ID here',
-        required: true,
     )]
     protected string $businessUnitId = '';
 

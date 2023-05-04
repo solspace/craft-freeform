@@ -3,8 +3,9 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Table\TableTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Table\TableTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
@@ -26,12 +27,11 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     public const COLUMN_TYPE_SELECT = 'select';
     public const COLUMN_TYPE_CHECKBOX = 'checkbox';
 
-    #[Property(
+    #[ValueTransformer(TableTransformer::class)]
+    #[Input\Table(
         label: 'Table Layout',
         instructions: 'Use semicolon ";" separated values for select options.',
-        type: Property::TYPE_TABLE,
         value: [],
-        transformer: TableTransformer::class,
         options: [
             [
                 'value' => self::COLUMN_TYPE_STRING,
@@ -49,36 +49,34 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     )]
     protected TableLayout $tableLayout;
 
-    #[Property(
-        label: 'Use built-in Table JS?'
-    )]
+    #[Input\Boolean('Use built-in Table JS?')]
     protected bool $useScript = false;
 
-    #[Property(
+    #[Input\Integer(
         label: 'Maximum number of rows',
         instructions: 'Set the maximum number of rows that can be added to the table.',
     )]
     protected ?int $maxRows;
 
-    #[Property(
+    #[Input\Text(
         label: 'Add Button Label',
         instructions: 'Set the label for the add button.',
     )]
     protected string $addButtonLabel = 'Add';
 
-    #[Property(
+    #[Input\Text(
         label: 'Add Button Markup',
         instructions: 'Set the markup for the add button.',
     )]
     protected ?string $addButtonMarkup;
 
-    #[Property(
+    #[Input\Text(
         label: 'Remove Button Label',
         instructions: 'Set the label for the remove button.',
     )]
     protected string $removeButtonLabel = 'Remove';
 
-    #[Property(
+    #[Input\Text(
         label: 'Remove Button Markup',
         instructions: 'Set the markup for the remove button.',
     )]

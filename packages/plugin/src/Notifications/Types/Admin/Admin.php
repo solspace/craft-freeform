@@ -13,9 +13,10 @@
 namespace Solspace\Freeform\Notifications\Types\Admin;
 
 use Solspace\Freeform\Attributes\Notification\Type;
-use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Notifications\NotificationTemplates\NotificationTemplateTransformer;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Notifications\Recipients\RecipientTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Notifications\NotificationTemplates\NotificationTemplateTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
@@ -27,21 +28,19 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 )]
 class Admin extends BaseNotification
 {
-    #[Property(
+    #[ValueTransformer(NotificationTemplateTransformer::class)]
+    #[Input\NotificationTemplate(
         label: 'Notification Template',
         instructions: 'Select a notification template to use for this notification.',
-        type: Property::TYPE_NOTIFICATION_TEMPLATE,
         order: 9,
-        transformer: NotificationTemplateTransformer::class,
     )]
     protected ?NotificationTemplate $template;
 
-    #[Property(
+    #[ValueTransformer(RecipientTransformer::class)]
+    #[Input\Recipients(
         instructions: 'List the recipients of this notification.',
-        type: Property::TYPE_RECIPIENTS,
         order: 10,
         value: [],
-        transformer: RecipientTransformer::class,
     )]
     protected RecipientCollection $recipients;
 

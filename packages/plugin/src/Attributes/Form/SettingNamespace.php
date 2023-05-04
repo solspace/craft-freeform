@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Attributes\Form;
 
-use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
+use Solspace\Freeform\Attributes\Property\PropertyCollection;
 
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class SettingNamespace

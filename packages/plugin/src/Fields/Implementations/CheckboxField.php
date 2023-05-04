@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
@@ -30,7 +30,7 @@ use Twig\Markup;
 )]
 class CheckboxField extends AbstractField implements InputOnlyInterface, BooleanInterface
 {
-    #[Property('Checked by default')]
+    #[Input\Boolean('Checked by default')]
     protected bool $checkedByDefault = false;
 
     public function getType(): string

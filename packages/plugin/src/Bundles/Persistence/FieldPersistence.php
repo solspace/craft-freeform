@@ -7,7 +7,6 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\DataObjects\FieldType\Property;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\base\Event;
 
@@ -91,14 +90,12 @@ class FieldPersistence extends FeatureBundle
         $properties = $this->propertyProvider->getEditableProperties($fieldData->typeClass);
 
         $metadata = [];
-
-        /** @var Property $property */
         foreach ($properties as $property) {
             $handle = $property->handle;
             $value = $fieldData->properties->{$handle} ?? null;
 
             $errors = [];
-            foreach ($property->getValidators() as $validator) {
+            foreach ($property->validators as $validator) {
                 $errors = array_merge($errors, $validator->validate($value));
             }
 

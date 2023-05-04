@@ -3,8 +3,9 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Field\FieldTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
@@ -21,11 +22,10 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 )]
 class ConfirmationField extends TextField implements DefaultFieldInterface, NoStorageInterface, RememberPostedValueInterface, ExtraFieldInterface
 {
-    #[Property(
+    #[ValueTransformer(FieldTransformer::class)]
+    #[Input\Field(
         label: 'Target Field',
         instructions: 'Select the field that this field should match',
-        type: Property::TYPE_FIELD,
-        transformer: FieldTransformer::class,
     )]
     protected ?FieldInterface $targetField;
 

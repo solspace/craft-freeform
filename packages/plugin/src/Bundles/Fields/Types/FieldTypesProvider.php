@@ -10,6 +10,7 @@ use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
+use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use yii\base\Event;
 
 class FieldTypesProvider
@@ -55,13 +56,11 @@ class FieldTypesProvider
 
                 $properties = $reflection->getProperties();
                 foreach ($properties as $property) {
-                    $sectionAttribute = $property->getAttributes(Section::class)[0] ?? null;
-                    if (!$sectionAttribute) {
+                    $section = AttributeHelper::findAttribute($property, Section::class);
+                    if (!$section) {
                         continue;
                     }
 
-                    /** @var Section $section */
-                    $section = $sectionAttribute->newInstance();
                     if (!$section->label || \array_key_exists($section->handle, $list)) {
                         continue;
                     }

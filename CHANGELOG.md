@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.29 - 2023-05-08
+
+### Changed
+- Updated the JS Honeypot Enhancement feature to use the encrypted payload instead of PHP sessions when the 'Form Session Context' setting is 'Encrypted Payload'.
+
 ## 3.13.28 - 2023-04-04
 
 ### Fixed

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormRenderEvent;
 use Solspace\Freeform\Events\Forms\FormValidateEvent;
@@ -11,6 +12,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Session\Honeypot;
+use Solspace\Freeform\Models\Settings;
 
 class HoneypotService extends BaseService
 {
@@ -33,7 +35,7 @@ class HoneypotService extends BaseService
      */
     public function addFormAttributes(AttachFormAttributesEvent $event)
     {
-        $isHoneypotEnabled = $this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm());
+        $isHoneypotEnabled = $this->isFreeformHoneypotEnabled($event);
         $isEnhanced = $this->isEnhanced();
 
         if ($isHoneypotEnabled && $isEnhanced) {
@@ -50,7 +52,7 @@ class HoneypotService extends BaseService
      */
     public function addHoneyPotInputToForm(FormRenderEvent $event)
     {
-        if (!$this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm())) {
+        if (!$this->isFreeformHoneypotEnabled($event)) {
             return;
         }
 
@@ -59,7 +61,7 @@ class HoneypotService extends BaseService
 
     public function addHoneypotToJson(OutputAsJsonEvent $event)
     {
-        if (!$this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm())) {
+        if (!$this->isFreeformHoneypotEnabled($event)) {
             return;
         }
 
@@ -73,9 +75,11 @@ class HoneypotService extends BaseService
 
     public function validateFormHoneypot(FormValidateEvent $event)
     {
-        if (!$this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm())) {
+        if (!$this->isFreeformHoneypotEnabled($event)) {
             return;
         }
+
+        $form = $event->getForm();
 
         /** @var array $postValues */
         $postValues = \Craft::$app->request->post(null);
@@ -93,7 +97,7 @@ class HoneypotService extends BaseService
                         return;
                     }
 
-                    $honeypotList = $this->getHoneypotList();
+                    $honeypotList = $this->getHoneypotList($form);
                     foreach ($honeypotList as $honeypot) {
                         $hasMatchingName = $key === $honeypot->getName();
                         $hasMatchingHash = $value === $honeypot->getHash();
@@ -101,7 +105,7 @@ class HoneypotService extends BaseService
                         if ($hasMatchingName && $hasMatchingHash) {
                             self::$validHoneypots[] = $key;
 
-                            $this->removeHoneypot($honeypot);
+                            $this->removeHoneypot($form, $honeypot);
 
                             return;
                         }
@@ -138,7 +142,7 @@ class HoneypotService extends BaseService
         $hash = $form->getHash();
 
         if (!isset($this->honeypotCache[$hash])) {
-            $this->honeypotCache[$hash] = $this->getNewHoneypot();
+            $this->honeypotCache[$hash] = $this->getNewHoneypot($form);
         }
 
         return $this->honeypotCache[$hash];
@@ -180,15 +184,15 @@ class HoneypotService extends BaseService
         return $event->getOutput();
     }
 
-    private function getNewHoneypot(): Honeypot
+    private function getNewHoneypot(Form $form): Honeypot
     {
         $honeypot = new Honeypot($this->isEnhanced());
 
         if ($this->isEnhanced()) {
-            $honeypotList = $this->getHoneypotList();
+            $honeypotList = $this->getHoneypotList($form);
             $honeypotList[] = $honeypot;
             $honeypotList = $this->weedOutOldHoneypots($honeypotList);
-            $this->updateHoneypotList($honeypotList);
+            $this->updateHoneypotList($form, $honeypotList);
         }
 
         return $honeypot;
@@ -197,20 +201,26 @@ class HoneypotService extends BaseService
     /**
      * @return Honeypot[]
      */
-    private function getHoneypotList(): array
+    private function getHoneypotList(Form $form): array
     {
-        $sessionHoneypotList = json_decode(
-            \Craft::$app->session->get(self::FORM_HONEYPOT_KEY, '[]'),
-            true
-        );
+        if ($this->isPayload()) {
+            $honeypotList = $form->getPropertyBag()->get('honeypotList', []);
+        } else {
+            $honeypotList = json_decode(
+                \Craft::$app->session->get(self::FORM_HONEYPOT_KEY, '[]'),
+                true
+            );
+        }
 
-        if (!empty($sessionHoneypotList)) {
-            foreach ($sessionHoneypotList as $index => $unserialized) {
-                $sessionHoneypotList[$index] = Honeypot::createFromUnserializedData($unserialized);
+        if (!empty($honeypotList)) {
+            foreach ($honeypotList as $index => $unserialized) {
+                if (!$unserialized instanceof Honeypot) {
+                    $honeypotList[$index] = Honeypot::createFromUnserializedData($unserialized);
+                }
             }
         }
 
-        return $sessionHoneypotList;
+        return $honeypotList;
     }
 
     private function weedOutOldHoneypots(array $honeypotList): array
@@ -247,9 +257,9 @@ class HoneypotService extends BaseService
     /**
      * Removes a honeypot from the list once it has been validated.
      */
-    private function removeHoneypot(Honeypot $honeypot)
+    private function removeHoneypot(Form $form, Honeypot $honeypot)
     {
-        $list = $this->getHoneypotList();
+        $list = $this->getHoneypotList($form);
 
         foreach ($list as $index => $listHoneypot) {
             if ($listHoneypot->getName() === $honeypot->getName()) {
@@ -259,19 +269,33 @@ class HoneypotService extends BaseService
             }
         }
 
-        $this->updateHoneypotList($list);
+        $this->updateHoneypotList($form, $list);
     }
 
-    private function updateHoneypotList(array $honeypotList)
+    private function updateHoneypotList(Form $form, array $honeypotList)
     {
-        \Craft::$app->session->set(
-            self::FORM_HONEYPOT_KEY,
-            json_encode($honeypotList)
-        );
+        if ($this->isPayload()) {
+            $form->getPropertyBag()->set('honeypotList', $honeypotList);
+        } else {
+            \Craft::$app->session->set(
+                self::FORM_HONEYPOT_KEY,
+                json_encode($honeypotList)
+            );
+        }
+    }
+
+    private function isPayload(): bool
+    {
+        return Settings::CONTEXT_TYPE_PAYLOAD === $this->getSettingsService()->getSettingsModel()->sessionContext;
     }
 
     private function isEnhanced(): bool
     {
         return $this->getSettingsService()->isFreeformHoneypotEnhanced();
+    }
+
+    private function isFreeformHoneypotEnabled(FormEventInterface $event): bool
+    {
+        return $this->getSettingsService()->isFreeformHoneypotEnabled($event->getForm());
     }
 }

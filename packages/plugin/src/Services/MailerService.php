@@ -54,9 +54,9 @@ class MailerService extends BaseService implements MailHandlerInterface
      * @param FieldInterface[] $fields
      * @param Submission       $submission
      *
-     * @throws FreeformException
-     *
      * @return int - number of successfully sent emails
+     *
+     * @throws FreeformException
      */
     public function sendEmail(
         Form $form,
@@ -176,10 +176,10 @@ class MailerService extends BaseService implements MailHandlerInterface
      * @param string $template  the source template string
      * @param array  $variables any variables that should be available to the template
      *
+     * @return string the rendered template
+     *
      * @throws TwigLoaderError
      * @throws TwigSyntaxError
-     *
-     * @return string the rendered template
      */
     public function renderString(string $template, array $variables = []): string
     {
@@ -189,8 +189,7 @@ class MailerService extends BaseService implements MailHandlerInterface
 
         return \Craft::$app->view->getTwig()
             ->createTemplate($template)
-            ->render($variables)
-        ;
+            ->render($variables);
     }
 
     public function compileMessage(NotificationInterface $notification, array $values): Message

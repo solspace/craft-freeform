@@ -252,8 +252,7 @@ class FormsController extends BaseController
                     ['spamBlockCount' => 0],
                     ['id' => $formId]
                 )
-                ->execute()
-            ;
+                ->execute();
         } catch (\Exception $e) {
             return $this->asErrorJson($e->getMessage());
         }
@@ -275,8 +274,7 @@ class FormsController extends BaseController
                         ['order' => $index + 1],
                         ['id' => $id]
                     )
-                    ->execute()
-            ;
+                    ->execute();
             }
 
             return $this->asJson(['success' => true]);

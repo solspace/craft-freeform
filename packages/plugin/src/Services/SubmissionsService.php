@@ -359,8 +359,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 [
                     'oldStatusId' => $oldStatusId,
                 ]
-            )
-        ;
+            );
     }
 
     /**
@@ -484,8 +483,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                     Element::tableName(),
                     ['id' => $ids]
                 )
-                ->execute()
-            ;
+                ->execute();
         } catch (\Exception $e) {
         }
 

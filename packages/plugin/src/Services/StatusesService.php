@@ -199,8 +199,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
                             'id != :id',
                             ['id' => $record->id]
                         )
-                        ->execute()
-                    ;
+                        ->execute();
                 }
 
                 $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
@@ -221,9 +220,9 @@ class StatusesService extends BaseService implements StatusHandlerInterface
     /**
      * @param int $id
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function deleteById($id)
     {
@@ -259,8 +258,7 @@ class StatusesService extends BaseService implements StatusHandlerInterface
                 ->getDb()
                 ->createCommand()
                 ->delete(StatusRecord::TABLE, ['id' => $record->id])
-                ->execute()
-            ;
+                ->execute();
 
             if (null !== $transaction) {
                 $transaction->commit();

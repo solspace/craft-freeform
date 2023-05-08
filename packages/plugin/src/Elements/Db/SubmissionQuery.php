@@ -115,9 +115,6 @@ class SubmissionQuery extends ElementQuery
         return $this;
     }
 
-    /**
-     * @param $fieldSearch
-     */
     public function fieldSearch(array $fieldSearch = []): self
     {
         $this->fieldSearch = $fieldSearch;

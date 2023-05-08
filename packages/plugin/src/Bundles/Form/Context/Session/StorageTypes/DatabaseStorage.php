@@ -86,8 +86,7 @@ class DatabaseStorage implements FormContextStorageInterface
                 \Craft::$app->db
                     ->createCommand()
                     ->insert(SessionContextRecord::TABLE, $payload)
-                    ->execute()
-                ;
+                    ->execute();
             } else {
                 \Craft::$app->db
                     ->createCommand()
@@ -101,8 +100,7 @@ class DatabaseStorage implements FormContextStorageInterface
                         [],
                         true
                     )
-                    ->execute()
-                ;
+                    ->execute();
             }
         }
     }
@@ -113,8 +111,7 @@ class DatabaseStorage implements FormContextStorageInterface
             \Craft::$app->db
                 ->createCommand()
                 ->delete(SessionContextRecord::TABLE, ['contextKey' => $key])
-                ->execute()
-            ;
+                ->execute();
 
             unset($this->context[$key]);
         }
@@ -127,8 +124,7 @@ class DatabaseStorage implements FormContextStorageInterface
         \Craft::$app->db
             ->createCommand()
             ->delete($table, ['<', 'dateUpdated', $this->referenceDate])
-            ->execute()
-        ;
+            ->execute();
 
         $idsToDelete = (new Query())
             ->select('id')
@@ -142,7 +138,6 @@ class DatabaseStorage implements FormContextStorageInterface
         \Craft::$app->db
             ->createCommand()
             ->delete($table, ['id' => $idsToDelete])
-            ->execute()
-        ;
+            ->execute();
     }
 }

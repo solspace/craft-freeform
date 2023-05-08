@@ -256,9 +256,9 @@ class FieldsService extends BaseService implements FieldHandlerInterface
     /**
      * @param int $fieldId
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function deleteById($fieldId)
     {
@@ -284,8 +284,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
                 ->getDb()
                 ->createCommand()
                 ->delete(FieldRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
+                ->execute();
 
             $this->deleteFieldFromSubmissionsTable($model);
             $this->deleteFieldFromForms($model);
@@ -439,8 +438,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
             ->getDb()
             ->createCommand()
             ->addColumn($tableName, $fieldColumnName, $record->getColumnType())
-            ->execute()
-        ;
+            ->execute();
     }
 
     private function deleteFieldFromSubmissionsTable(FieldModel $model)
@@ -452,8 +450,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
             ->getDb()
             ->createCommand()
             ->dropColumn($tableName, $fieldColumnName)
-            ->execute()
-        ;
+            ->execute();
     }
 
     /**

@@ -41,11 +41,11 @@ class SpamSubmissionsController extends SubmissionsController
     }
 
     /**
+     * @return \yii\web\Response
+     *
      * @throws FreeformException
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
-     *
-     * @return \yii\web\Response
      */
     public function actionAllow()
     {

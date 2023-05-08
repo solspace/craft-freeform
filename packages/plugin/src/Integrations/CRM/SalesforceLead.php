@@ -513,7 +513,7 @@ class SalesforceLead extends AbstractSalesforceIntegration
             return sprintf(
                 'https://%s%s.salesforce.com/services/data/v44.0/',
                 $instance,
-                ($usingCustomUrls ? '.my' : '')
+                $usingCustomUrls ? '.my' : ''
             );
         }
 

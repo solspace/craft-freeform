@@ -121,8 +121,7 @@ class StatusesController extends BaseController
                         'id = :id',
                         ['id' => $id]
                     )
-                    ->execute()
-            ;
+                    ->execute();
             }
 
             return $this->asJson(['success' => true]);

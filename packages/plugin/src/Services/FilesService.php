@@ -317,8 +317,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
                             UnfinalizedFileRecord::TABLE,
                             ['assetId' => $assetId]
                         )
-                        ->execute()
-                    ;
+                        ->execute();
                 } catch (\Exception $e) {
                 }
             }

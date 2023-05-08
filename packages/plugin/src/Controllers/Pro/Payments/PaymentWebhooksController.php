@@ -115,9 +115,9 @@ class PaymentWebhooksController extends BaseController
     }
 
     /**
-     * @throws HttpException
-     *
      * @return mixed
+     *
+     * @throws HttpException
      */
     private function getSubmissionIdFromStripeEvent(Event $event, Stripe $integration, bool $suppressError = false)
     {

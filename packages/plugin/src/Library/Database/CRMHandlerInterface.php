@@ -28,9 +28,9 @@ interface CRMHandlerInterface extends IntegrationHandlerInterface
     /**
      * @param int $id
      *
-     * @throws CRMIntegrationNotFoundException
-     *
      * @return null|AbstractCRMIntegration
+     *
+     * @throws CRMIntegrationNotFoundException
      */
     public function getIntegrationObjectById($id);
 

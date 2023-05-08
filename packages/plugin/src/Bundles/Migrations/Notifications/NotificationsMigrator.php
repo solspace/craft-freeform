@@ -96,9 +96,9 @@ class NotificationsMigrator
     }
 
     /**
-     * @throws ComposerException
-     *
      * @return FormModel[]
+     *
+     * @throws ComposerException
      */
     private function getAllForms(): array
     {

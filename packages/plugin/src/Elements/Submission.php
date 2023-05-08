@@ -115,9 +115,9 @@ class Submission extends Element
      *
      * @param string $name
      *
-     * @throws \Exception
-     *
      * @return mixed
+     *
+     * @throws \Exception
      */
     public function __get($name)
     {
@@ -266,8 +266,6 @@ class Submission extends Element
     }
 
     /**
-     * @param $name
-     *
      * @return false|int
      */
     public static function isSubmissionField($name)
@@ -364,9 +362,9 @@ class Submission extends Element
     }
 
     /**
-     * @throws ComposerException
-     *
      * @return $this
+     *
+     * @throws ComposerException
      */
     public function setFormFieldValues(array $values, bool $override = true): self
     {
@@ -393,9 +391,9 @@ class Submission extends Element
     }
 
     /**
-     * @throws ComposerException
-     *
      * @return AbstractField[]
+     *
+     * @throws ComposerException
      */
     public function getFieldMetadata(): array
     {
@@ -477,8 +475,7 @@ class Submission extends Element
                         'required' => true,
                     ],
                 ]
-            )
-        ;
+            );
 
         $html .= parent::getEditorHtml();
 
@@ -516,13 +513,11 @@ class Submission extends Element
 
             \Craft::$app->db->createCommand()
                 ->insert(self::TABLE, $insertData)
-                ->execute()
-            ;
+                ->execute();
         } else {
             \Craft::$app->db->createCommand()
                 ->update(self::TABLE, $insertData, ['id' => $this->id])
-                ->execute()
-            ;
+                ->execute();
 
             $notesService = $this->getNotesService();
             $notesService->saveNote($this->id);

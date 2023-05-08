@@ -130,9 +130,9 @@ class ConstantContact extends MailingListOAuthConnector
      * Builds ListObject objects based on the results
      * And returns them.
      *
-     * @throws IntegrationException
-     *
      * @return ListObject[]
+     *
+     * @throws IntegrationException
      */
     protected function fetchLists(): array
     {

@@ -36,9 +36,9 @@ use yii\base\Event;
 class IntegrationsService extends BaseService
 {
     /**
-     * @throws \Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException
-     *
      * @return IntegrationModel[]
+     *
+     * @throws \Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException
      */
     public function getAllIntegrations(): array
     {

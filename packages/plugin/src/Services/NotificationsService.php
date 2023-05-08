@@ -217,8 +217,7 @@ class NotificationsService extends BaseService
             $affectedRows = \Craft::$app->getDb()
                 ->createCommand()
                 ->delete(NotificationRecord::TABLE, ['id' => $record->id])
-                ->execute()
-            ;
+                ->execute();
 
             if (null !== $transaction) {
                 $transaction->commit();

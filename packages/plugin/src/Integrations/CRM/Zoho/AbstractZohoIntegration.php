@@ -101,7 +101,7 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector implements Refr
 
         header('Location: '.$this->getAuthorizeUrl().'?'.http_build_query($payload));
 
-        exit();
+        exit;
     }
 
     /**
@@ -290,9 +290,9 @@ abstract class AbstractZohoIntegration extends CRMOAuthConnector implements Refr
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return null|string
+     *
+     * @throws IntegrationException
      */
     protected function getRefreshToken()
     {

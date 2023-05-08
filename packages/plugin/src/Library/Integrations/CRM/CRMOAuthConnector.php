@@ -71,7 +71,7 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
 
         header('Location: '.$this->getAuthorizeUrl().'?'.$queryString);
 
-        exit();
+        exit;
     }
 
     /**

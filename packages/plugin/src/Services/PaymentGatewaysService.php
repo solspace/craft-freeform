@@ -69,9 +69,9 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
      *
      * @param string $class
      *
-     * @throws IntegrationException
-     *
      * @return SettingBlueprint[]
+     *
+     * @throws IntegrationException
      */
     public function getPaymentGatewaySettingBlueprints($class): array
     {
@@ -126,8 +126,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                         'resourceId' => $handle,
                     ]
                 )
-                ->execute()
-        ;
+                ->execute();
         }
 
         foreach ($plans as $plan) {
@@ -155,8 +154,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                             'resourceId' => $plan->getId(),
                         ]
                     )
-                    ->execute()
-                ;
+                    ->execute();
             }
         }
 
@@ -169,8 +167,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
                 ['forceUpdate' => 0],
                 ['id' => $id]
             )
-            ->execute()
-                ;
+            ->execute();
 
         return true;
     }

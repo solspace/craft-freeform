@@ -24,9 +24,9 @@ interface FileUploadInterface
     /**
      * Attempt to upload the file to its respective location.
      *
-     * @throws FileUploadException
-     *
      * @return int - asset ID
+     *
+     * @throws FileUploadException
      */
     public function uploadFile();
 }

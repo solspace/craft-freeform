@@ -249,10 +249,10 @@ class SettingsController extends BaseController
     }
 
     /**
+     * @return null|Response
+     *
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ForbiddenHttpException
-     *
-     * @return null|Response
      */
     public function actionSaveSettings()
     {

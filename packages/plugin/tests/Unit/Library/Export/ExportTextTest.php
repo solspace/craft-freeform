@@ -12,6 +12,7 @@ use Solspace\Freeform\Library\Export\ExportText;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class ExportTextTest extends TestCase

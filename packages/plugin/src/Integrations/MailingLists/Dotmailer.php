@@ -199,9 +199,9 @@ class Dotmailer extends AbstractMailingListIntegration
      * Builds ListObject objects based on the results
      * And returns them.
      *
-     * @throws IntegrationException
-     *
      * @return \Solspace\Freeform\Library\Integrations\MailingLists\DataObjects\ListObject[]
+     *
+     * @throws IntegrationException
      */
     protected function fetchLists(): array
     {
@@ -257,9 +257,9 @@ class Dotmailer extends AbstractMailingListIntegration
      *
      * @param string $listId
      *
-     * @throws IntegrationException
-     *
      * @return FieldObject[]
+     *
+     * @throws IntegrationException
      */
     protected function fetchFields($listId): array
     {

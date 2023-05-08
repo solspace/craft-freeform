@@ -36,11 +36,11 @@ abstract class AbstractConnection extends BaseConfiguration implements Connectio
     protected $mapping;
 
     /**
+     * @return ConnectionInterface
+     *
      * @throws ConnectionException
      * @throws \ReflectionException
      * @throws \Solspace\Commons\Exceptions\Configurations\ConfigurationException
-     *
-     * @return ConnectionInterface
      */
     public static function create(array $configuration)
     {

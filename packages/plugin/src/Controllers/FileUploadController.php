@@ -144,8 +144,7 @@ class FileUploadController extends BaseController
                 \Craft::$app->db
                     ->createCommand()
                     ->delete(UnfinalizedFileRecord::TABLE, ['assetId' => $asset->id])
-                    ->execute()
-                ;
+                    ->execute();
             }
 
             return $this->asJson(['success' => true]);

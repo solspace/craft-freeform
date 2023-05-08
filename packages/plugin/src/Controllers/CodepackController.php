@@ -109,10 +109,10 @@ class CodepackController extends BaseController
     }
 
     /**
+     * @return CodePack|Response
+     *
      * @throws InvalidParamException
      * @throws CodepackException
-     *
-     * @return CodePack|Response
      */
     private function getCodepack()
     {

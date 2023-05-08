@@ -240,9 +240,9 @@ class EmailTemplate
      * @param string $key
      * @param bool   $required
      *
-     * @throws EmailTemplateException
-     *
      * @return null|string
+     *
+     * @throws EmailTemplateException
      */
     private function getMetadata($key, $required = false)
     {

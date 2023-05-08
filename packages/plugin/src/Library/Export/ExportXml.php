@@ -2,8 +2,6 @@
 
 namespace Solspace\Freeform\Library\Export;
 
-use DOMDocument;
-use SimpleXMLElement;
 use Solspace\Freeform\Fields\Pro\TableField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultipleValueInterface;
 
@@ -26,7 +24,7 @@ class ExportXml extends AbstractExport
 
     public function export(): string
     {
-        $xml = new SimpleXMLElement('<root/>');
+        $xml = new \SimpleXMLElement('<root/>');
 
         foreach ($this->getRows() as $row) {
             $submission = $xml->addChild('submission');
@@ -72,9 +70,9 @@ class ExportXml extends AbstractExport
         return $this->formatXml($xml);
     }
 
-    protected function formatXml(SimpleXMLElement $element): string
+    protected function formatXml(\SimpleXMLElement $element): string
     {
-        $xmlDocument = new DOMDocument('1.0');
+        $xmlDocument = new \DOMDocument('1.0');
         $xmlDocument->preserveWhiteSpace = false;
         $xmlDocument->formatOutput = true;
         $xmlDocument->loadXML($element->asXML());

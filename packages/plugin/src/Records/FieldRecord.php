@@ -113,8 +113,6 @@ class FieldRecord extends ActiveRecord
 
     /**
      * Validates an attribute to see if it's a reserved keyword or not.
-     *
-     * @param $attribute
      */
     public function checkReservedKeywords($attribute)
     {

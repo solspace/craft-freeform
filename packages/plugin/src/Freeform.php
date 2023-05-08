@@ -783,22 +783,19 @@ class Freeform extends Plugin
 
                     $ids = (new Query())->select('[[id]]')->from('{{%elements}}')->where(
                         ['[[type]]' => Submission::class]
-                    )->column()
-                    ;
+                    )->column();
 
                     \Craft::$app->db->createCommand()->update(
                         '{{%elements_sites}}',
                         ['siteId' => $newId],
                         ['siteId' => $oldId, 'elementId' => $ids]
-                    )->execute()
-                    ;
+                    )->execute();
 
                     \Craft::$app->db->createCommand()->update(
                         '{{%content}}',
                         ['siteId' => $newId],
                         ['siteId' => $oldId, 'elementId' => $ids]
-                    )->execute()
-                    ;
+                    )->execute();
                 }
             }
         );

@@ -122,9 +122,9 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     /**
      * Attempt to upload the file to its respective location.
      *
-     * @throws FileUploadException
-     *
      * @return null|array - asset IDs
+     *
+     * @throws FileUploadException
      */
     public function uploadFile()
     {

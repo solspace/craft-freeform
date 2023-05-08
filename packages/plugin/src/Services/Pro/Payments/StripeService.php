@@ -471,9 +471,9 @@ class StripeService extends Component
     }
 
     /**
-     * @throws IntegrationException
-     *
      * @return CreditCardDetailsField|PaymentInterface
+     *
+     * @throws IntegrationException
      */
     private function getPaymentField(Form $form): PaymentInterface
     {

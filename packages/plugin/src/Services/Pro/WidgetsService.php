@@ -57,9 +57,9 @@ class WidgetsService extends Component
     /**
      * @param string $rangeType
      *
-     * @throws FreeformException
-     *
      * @return array - [$dateRangeStart, $dateRangeEnd]
+     *
+     * @throws FreeformException
      */
     public function getRange($rangeType): array
     {

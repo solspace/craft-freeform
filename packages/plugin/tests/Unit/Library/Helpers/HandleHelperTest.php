@@ -7,6 +7,7 @@ use Solspace\Freeform\Library\Helpers\HandleHelper;
 
 /**
  * @internal
+ *
  * @coversNothing
  */
 class HandleHelperTest extends TestCase

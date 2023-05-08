@@ -87,20 +87,20 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
                 $colLayout = '';
 
                 switch ($col) {
-                case self::FIELD_CARD_NUMBER:
-                    $colLayout = $numberField;
+                    case self::FIELD_CARD_NUMBER:
+                        $colLayout = $numberField;
 
-                    break;
+                        break;
 
-                case self::FIELD_CARD_EXPIRY:
-                    $colLayout = $expiryField;
+                    case self::FIELD_CARD_EXPIRY:
+                        $colLayout = $expiryField;
 
-                    break;
+                        break;
 
-                case self::FIELD_CARD_CVC:
-                    $colLayout = $cvcField;
+                    case self::FIELD_CARD_CVC:
+                        $colLayout = $cvcField;
 
-                    break;
+                        break;
                 }
                 $rowLayout[] = $colLayout;
             }

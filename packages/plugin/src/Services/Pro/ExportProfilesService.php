@@ -190,9 +190,9 @@ class ExportProfilesService extends Component
     /**
      * @param int $id
      *
-     * @throws \Exception
-     *
      * @return bool
+     *
+     * @throws \Exception
      */
     public function deleteById($id)
     {
@@ -216,8 +216,7 @@ class ExportProfilesService extends Component
                 ->getDb()
                 ->createCommand()
                 ->delete(ExportProfileRecord::TABLE, ['id' => $model->id])
-                ->execute()
-            ;
+                ->execute();
 
             if (null !== $transaction) {
                 $transaction->commit();
@@ -284,7 +283,7 @@ class ExportProfilesService extends Component
 
         echo $content;
 
-        exit();
+        exit;
     }
 
     private function getQuery(): Query

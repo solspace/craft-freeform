@@ -20,9 +20,9 @@ trait ModelServiceTrait
     /**
      * Validates the record if record have error passes them down to model, saves record otherwise.
      *
-     * @throws \Exception database exceptions if save failed
-     *
      * @return bool true if saved false if validation saved
+     *
+     * @throws \Exception database exceptions if save failed
      */
     protected function validateAndSave(ActiveRecord $record, Model $model): bool
     {

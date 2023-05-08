@@ -148,8 +148,6 @@ class IntegrationsQueueService extends BaseService
     /**
      * Deletes integration task from DB.
      *
-     * @param $submissionId
-     *
      * @return bool
      */
     public function deleteTasksBySubmissionId($submissionId)
@@ -159,8 +157,7 @@ class IntegrationsQueueService extends BaseService
                 ->getDb()
                 ->createCommand()
                 ->delete(IntegrationsQueueRecord::TABLE, ['submissionId' => $submissionId])
-                ->execute()
-    ;
+                ->execute();
         } catch (\yii\db\Exception $e) {
             return false;
         }
@@ -188,8 +185,6 @@ class IntegrationsQueueService extends BaseService
     }
 
     /**
-     * @param $data
-     *
      * @return IntegrationsQueueModel
      */
     protected function createTask($data)

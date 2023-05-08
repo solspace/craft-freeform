@@ -111,9 +111,9 @@ class SettingsService extends BaseService
     }
 
     /**
-     * @throws \InvalidArgumentException
-     *
      * @return FormTemplate[]
+     *
+     * @throws \InvalidArgumentException
      */
     public function getSolspaceFormTemplates(): array
     {

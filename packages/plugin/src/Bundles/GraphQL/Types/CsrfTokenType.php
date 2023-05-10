@@ -33,18 +33,4 @@ class CsrfTokenType extends ObjectType
             },
         ]));
     }
-
-    /*public function resolve(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): ?array
-    {
-        \Craft::dd(\Craft::$app->getRequest()->csrfParam);
-
-        if (\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
-            return [
-                'name' => \Craft::$app->getRequest()->csrfParam,
-                'value' => \Craft::$app->getRequest()->getCsrfToken(),
-            ];
-        }
-
-        return null;
-    }*/
 }

@@ -5,9 +5,9 @@ export const fieldRuleSelectors = {
   one:
     (fieldUid: string) =>
     (state: RootState): FieldRule | undefined =>
-      state.rules.fields.find((rule) => rule.field === fieldUid),
+      state.rules.fields.items.find((rule) => rule.field === fieldUid),
   hasRule:
     (fieldUid: string) =>
     (state: RootState): boolean =>
-      !!state.rules.fields.find((rule) => rule.field === fieldUid),
+      !!state.rules.fields.items.find((rule) => rule.field === fieldUid),
 } as const;

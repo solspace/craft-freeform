@@ -16,6 +16,7 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 /**
  * @extends AbstractField<string>
@@ -29,6 +30,7 @@ class TextField extends AbstractField implements PlaceholderInterface
 {
     use PlaceholderTrait;
 
+    #[Ignore]
     protected string $customInputType;
 
     public function getType(): string

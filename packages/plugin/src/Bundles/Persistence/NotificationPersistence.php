@@ -28,6 +28,9 @@ class NotificationPersistence extends FeatureBundle
     public function handleNotificationSave(PersistFormEvent $event): void
     {
         $notifications = $event->getPayload()->notifications;
+        if (null === $notifications) {
+            return;
+        }
 
         /** @var FormNotificationRecord[] $record */
         $existingRecords = FormNotificationRecord::find()
@@ -42,20 +45,19 @@ class NotificationPersistence extends FeatureBundle
         $records = [];
         foreach ($notifications as $notification) {
             $uid = $notification->uid;
-            $enabled = $notification->enabled ?? false;
+            $enabled = $notification->enabled ?? true;
             $class = $notification->class;
 
             $record = $existingRecords[$uid] ?? null;
             if (!$record) {
                 $record = new FormNotificationRecord();
                 $record->uid = $uid;
-                $record->enabled = $enabled;
                 $record->class = $class;
                 $record->formId = $event->getFormId();
             }
 
+            $record->enabled = $enabled;
             $record->metadata = $this->getValidatedMetadata($notification, $event);
-            $record->save();
 
             $records[] = $record;
             $usedUIDs[] = $record->uid;
@@ -76,6 +78,7 @@ class NotificationPersistence extends FeatureBundle
 
         foreach ($records as $record) {
             $record->save();
+            $event->addNotificationRecord($record);
         }
     }
 

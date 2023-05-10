@@ -5,12 +5,12 @@ namespace Solspace\Freeform\Bundles\Persistence\Rules;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Records\Rules\PageRuleRecord;
+use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
 use yii\base\Event;
 
-class PageRulesPersistence extends FeatureBundle
+class NotificationRulesPersistence extends FeatureBundle
 {
     public function __construct()
     {
@@ -33,7 +33,7 @@ class PageRulesPersistence extends FeatureBundle
             return;
         }
 
-        $payload = $event->getPayload()->rules->pages ?? null;
+        $payload = $event->getPayload()->rules->notifications ?? null;
         if (null === $payload) {
             return;
         }
@@ -41,8 +41,8 @@ class PageRulesPersistence extends FeatureBundle
         $existingRules = $this->getExistingRules($form->getId());
         $usedRuleUids = [];
         foreach ($payload as $data) {
-            $page = $event->getPageRecord($data->page);
-            if (!$page) {
+            $notification = $event->getNotificationRecord($data->notification);
+            if (!$notification) {
                 continue;
             }
 
@@ -53,14 +53,15 @@ class PageRulesPersistence extends FeatureBundle
                 $rule = new RuleRecord();
                 $rule->uid = $data->uid;
 
-                $record = new PageRuleRecord();
+                $record = new NotificationRuleRecord();
             }
 
             $rule->combinator = $data->combinator;
             $rule->save();
 
             $record->id = $rule->id;
-            $record->pageId = $page->id;
+            $record->notificationId = $notification->id;
+            $record->send = $data->send;
             $record->save();
 
             $usedRuleUids[] = $rule->uid;
@@ -105,10 +106,10 @@ class PageRulesPersistence extends FeatureBundle
     }
 
     /**
-     * @return PageRuleRecord[]
+     * @return NotificationRuleRecord[]
      */
     private function getExistingRules(int $formId): array
     {
-        return PageRuleRecord::getExistingRules($formId);
+        return NotificationRuleRecord::getExistingRules($formId);
     }
 }

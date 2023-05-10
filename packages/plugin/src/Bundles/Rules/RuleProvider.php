@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Rules;
 
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
+use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
 use Solspace\Freeform\Records\Rules\RuleConditionRecord;
 use Solspace\Freeform\Records\Rules\RuleRecord;
@@ -23,6 +24,15 @@ class RuleProvider
             'pages' => $this->getPageRules($form),
             'fields' => $this->getFieldRules($form),
         ];
+    }
+
+    public function getFormNotificationRules(?Form $form): array
+    {
+        if (!$form) {
+            return [];
+        }
+
+        return $this->getNotificationRules($form);
     }
 
     private function getFieldRules(Form $form): array
@@ -84,6 +94,40 @@ class RuleProvider
                 'uid' => $uid,
                 'page' => $pageRule->getPage()->one()->uid,
                 'enabled' => true,
+                'combinator' => $rule->combinator,
+                'conditions' => $conditions,
+            ];
+        }
+
+        return $array;
+    }
+
+    private function getNotificationRules(Form $form): array
+    {
+        $rules = NotificationRuleRecord::getExistingRules($form->getId());
+
+        $array = [];
+        foreach ($rules as $uid => $notificationRule) {
+            /** @var RuleRecord $rule */
+            $rule = $notificationRule->getRule()->one();
+
+            $conditions = [];
+
+            /** @var RuleConditionRecord $condition */
+            foreach ($rule->getConditions()->all() as $condition) {
+                $conditions[] = [
+                    'uid' => $condition->uid,
+                    'field' => $condition->getField()->one()->uid,
+                    'operator' => $condition->operator,
+                    'value' => $condition->value,
+                ];
+            }
+
+            $array[] = [
+                'uid' => $uid,
+                'notification' => $notificationRule->getNotification()->one()->uid,
+                'enabled' => true,
+                'send' => $notificationRule->send,
                 'combinator' => $rule->combinator,
                 'conditions' => $conditions,
             ];

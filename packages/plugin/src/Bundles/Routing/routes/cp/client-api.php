@@ -22,6 +22,7 @@ return [
     'freeform/client/api/forms/<formId:\d+>/notifications' => 'freeform/client/api/forms/notifications/get',
 
     'freeform/client/api/forms/<formId:\d+>/rules' => 'freeform/client/api/forms/rules/get',
+    'freeform/client/api/forms/<formId:\d+>/rules/notifications' => 'freeform/client/api/forms/rules/get-notifications',
 
     'freeform/client/api/integrations' => 'freeform/client/api/integrations',
     'freeform/client/api/integrations/<id:\d+>' => 'freeform/client/api/integrations',

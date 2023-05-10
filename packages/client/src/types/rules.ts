@@ -80,3 +80,8 @@ export type FieldRule = Rule & {
 export type PageRule = Rule & {
   page: string;
 };
+
+export type NotificationRule = Rule & {
+  notification: string;
+  send: boolean;
+};

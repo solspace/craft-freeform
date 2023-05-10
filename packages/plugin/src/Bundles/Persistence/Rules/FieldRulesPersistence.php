@@ -33,7 +33,10 @@ class FieldRulesPersistence extends FeatureBundle
             return;
         }
 
-        $payload = $event->getPayload()->rules->fields;
+        $payload = $event->getPayload()->rules->fields ?? null;
+        if (null === $payload) {
+            return;
+        }
 
         $existingRules = $this->getExistingRules($form->getId());
         $usedRuleUids = [];

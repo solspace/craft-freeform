@@ -32,6 +32,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
 
 /**
@@ -107,8 +108,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /** @var T */
     private mixed $defaultValue = null;
 
-    public function __construct(private Form $form)
-    {
+    public function __construct(
+        #[Ignore] private Form $form
+    ) {
         $this->attributes = new FieldAttributesCollection();
         $this->parameters = new Parameters();
     }

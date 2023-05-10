@@ -9,7 +9,7 @@ use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipien
 use Solspace\Freeform\Attributes\Property\Implementations\Notifications\Recipients\RecipientTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
@@ -29,7 +29,7 @@ class Dynamic extends BaseNotification
         order: 9,
         emptyOption: 'Select a field',
     )]
-    protected ?AbstractField $field;
+    protected ?FieldInterface $field;
 
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[Input\NotificationTemplate(
@@ -56,7 +56,7 @@ class Dynamic extends BaseNotification
     )]
     protected ?RecipientMappingCollection $recipientMapping;
 
-    public function getField(): ?AbstractField
+    public function getField(): ?FieldInterface
     {
         return $this->field;
     }
@@ -64,6 +64,11 @@ class Dynamic extends BaseNotification
     public function getTemplate(): ?NotificationTemplate
     {
         return $this->template;
+    }
+
+    public function getRecipients(): RecipientCollection
+    {
+        return $this->recipients;
     }
 
     public function getRecipientMapping(): ?RecipientMappingCollection

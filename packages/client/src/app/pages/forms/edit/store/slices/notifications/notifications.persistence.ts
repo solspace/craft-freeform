@@ -13,7 +13,12 @@ import { notificationActions } from '.';
 const persistNotifications: SaveSubscriber = (_, data) => {
   const { state, persist } = data;
 
-  persist.notifications = state.notifications;
+  let payload = null;
+  if (state.notifications.initialized) {
+    payload = state.notifications.items;
+  }
+
+  persist.notifications = payload;
 };
 
 const handleErrors: ErrorsSubscriber = (_, { dispatch, response }) => {

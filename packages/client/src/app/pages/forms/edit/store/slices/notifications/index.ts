@@ -10,13 +10,21 @@ import type {
   NotificationModificationPayload,
 } from './notifications.types';
 
-const initialState: NotificationInstance[] = [];
+type NotificationState = {
+  initialized: boolean;
+  items: NotificationInstance[];
+};
+
+const initialState: NotificationState = {
+  initialized: false,
+  items: [],
+};
 
 const findNotification = (
-  state: NotificationInstance[],
+  state: NotificationState,
   uid: string
 ): NotificationInstance | undefined => {
-  return state.find((item) => item.uid === uid);
+  return state.items.find((item) => item.uid === uid);
 };
 
 export const notificationsSlice = createSlice({
@@ -24,9 +32,10 @@ export const notificationsSlice = createSlice({
   initialState,
   reducers: {
     set: (state, action: PayloadAction<Notification[]>) => {
-      state.length = 0;
+      state.initialized = true;
+      state.items.length = 0;
       action.payload.forEach((notification) => {
-        state.push(notification);
+        state.items.push(notification);
       });
     },
     toggle: (state, action: PayloadAction<string>) => {
@@ -39,17 +48,17 @@ export const notificationsSlice = createSlice({
       notification[key] = value;
     },
     add: (state, action: PayloadAction<Notification>) => {
-      state.push(action.payload);
+      state.items.push(action.payload);
     },
     clearErrors: (state) => {
-      for (const notification of state) {
+      for (const notification of state.items) {
         notification.errors = undefined;
       }
     },
     setErrors: (state, action: PayloadAction<ErrorPayload>) => {
       const { payload } = action;
 
-      for (const notificaion of state) {
+      for (const notificaion of state.items) {
         notificaion.errors = payload?.[notificaion.uid];
       }
     },

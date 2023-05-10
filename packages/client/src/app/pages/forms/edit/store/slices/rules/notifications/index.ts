@@ -1,4 +1,4 @@
-import type { Condition, PageRule } from '@ff-client/types/rules';
+import type { Condition, NotificationRule } from '@ff-client/types/rules';
 import { Operator } from '@ff-client/types/rules';
 import { Combinator } from '@ff-client/types/rules';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -7,9 +7,9 @@ import { v4 } from 'uuid';
 
 import type { RuleState } from '..';
 
-type PageRulesState = RuleState<PageRule>;
+type NotificationRulesState = RuleState<NotificationRule>;
 
-const initialState: PageRulesState = {
+const initialState: NotificationRulesState = {
   initialized: false,
   items: [],
 };
@@ -19,27 +19,36 @@ type ModifyCondition = {
   conditions: Condition[];
 };
 
+type ChangeSend = {
+  ruleUid: string;
+  send: boolean;
+};
+
 type ChangeCombinator = {
   ruleUid: string;
   combinator: Combinator;
 };
 
-export const pageRulesSlice = createSlice({
-  name: 'rules/pages',
+export const notificationRulesSlice = createSlice({
+  name: 'rules/notifications',
   initialState,
   reducers: {
-    set: (state, action: PayloadAction<PageRule[]>) => {
+    set: (state, action: PayloadAction<NotificationRule[]>) => {
       state.initialized = true;
       state.items = action.payload;
     },
-    add: (state, action: PayloadAction<string>) => {
-      const pageUid = action.payload;
+    add: (
+      state,
+      action: PayloadAction<{ ruleUid: string; notificationUid: string }>
+    ) => {
+      const { ruleUid, notificationUid } = action.payload;
 
       state.items.push({
-        uid: v4(),
+        uid: ruleUid,
         enabled: true,
-        page: pageUid,
+        send: true,
         combinator: Combinator.Or,
+        notification: notificationUid,
         conditions: [
           {
             uid: v4(),
@@ -49,6 +58,12 @@ export const pageRulesSlice = createSlice({
           },
         ],
       });
+    },
+    modifySend: (state, action: PayloadAction<ChangeSend>) => {
+      const { ruleUid, send } = action.payload;
+
+      const modifyRule = state.items.find((rule) => rule.uid === ruleUid);
+      modifyRule.send = send;
     },
     modifyCombinator: (state, action: PayloadAction<ChangeCombinator>) => {
       const { ruleUid, combinator } = action.payload;
@@ -68,7 +83,7 @@ export const pageRulesSlice = createSlice({
   },
 });
 
-const { actions } = pageRulesSlice;
-export { actions as pageRuleActions };
+const { actions } = notificationRulesSlice;
+export { actions as notificationRuleActions };
 
-export default pageRulesSlice.reducer;
+export default notificationRulesSlice.reducer;

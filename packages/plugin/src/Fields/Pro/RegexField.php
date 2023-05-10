@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\RegexConstraint;
@@ -44,5 +45,19 @@ class RegexField extends TextField implements ExtraFieldInterface
         );
 
         return $constraints;
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = [];
+        $description[] = $this->getInstructions();
+        $description[] = 'Regex pattern "'.$this->getPattern().'".';
+        $description = implode(' ', $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 }

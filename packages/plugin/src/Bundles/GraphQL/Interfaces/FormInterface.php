@@ -4,13 +4,16 @@ namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
+use Solspace\Freeform\Bundles\GraphQL\Types\CsrfTokenType;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Types\HoneypotType;
+use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
 class FormInterface extends AbstractInterface
@@ -153,13 +156,55 @@ class FormInterface extends AbstractInterface
                 'type' => Type::boolean(),
                 'description' => 'Should Captchas be enabled for this form',
             ],
+            'recaptchaHandle' => [
+                'name' => 'recaptchaHandle',
+                'type' => Type::string(),
+                'description' => 'The Recaptcha handle of the form',
+                'resolve' => function ($source) {
+                    if ($source instanceof Form) {
+                        if (!Freeform::getInstance()->settings->getSettingsModel()->recaptchaEnabled) {
+                            return null;
+                        }
+
+                        // or if the form has the property disableRecaptcha set to true, then bail
+                        if ($source->getPropertyBag()->get(Form::DATA_DISABLE_RECAPTCHA)) {
+                            return null;
+                        }
+
+                        // or if the form has payment fields, then bail
+                        if (\count($source->getLayout()->getFields(PaymentInterface::class))) {
+                            return null;
+                        }
+
+                        foreach ($source->getLayout()->getFields() as $field) {
+                            if ($field instanceof RecaptchaField) {
+                                return $field->getHandle();
+                            }
+                        }
+                    }
+
+                    return null;
+                },
+            ],
             'honeypot' => [
                 'name' => 'honeypot',
-                'type' => HoneypotInterface::getType(),
+                'type' => HoneypotType::getType(),
                 'description' => 'A fresh honeypot instance',
                 'resolve' => function ($source) {
                     if ($source instanceof Form) {
-                        return Freeform::getInstance()->honeypot->getHoneypot($source);
+                        $freeform = Freeform::getInstance();
+
+                        $settingsService = $freeform->settings;
+                        $honeypotService = $freeform->honeypot;
+
+                        if ($settingsService->isFreeformHoneypotEnabled($source)) {
+                            $honeypot = $honeypotService->getHoneypot($source);
+
+                            return [
+                                'name' => $honeypot->getName(),
+                                'value' => $honeypot->getHash(),
+                            ];
+                        }
                     }
 
                     return null;
@@ -167,17 +212,25 @@ class FormInterface extends AbstractInterface
             ],
             'csrfToken' => [
                 'name' => 'csrfToken',
-                'type' => CsrfTokenInterface::getType(),
+                'type' => CsrfTokenType::getType(),
                 'description' => 'A fresh csrf token',
                 'resolve' => function () {
-                    if (!\Craft::$app->config->general->enableCsrfProtection) {
+                    if (!\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
                         return null;
                     }
 
-                    return (object) [
-                        'name' => \Craft::$app->config->general->csrfTokenName,
-                        'value' => \Craft::$app->request->csrfToken,
+                    return [
+                        'name' => \Craft::$app->getConfig()->getGeneral()->csrfTokenName,
+                        'value' => \Craft::$app->getRequest()->getCsrfToken(),
                     ];
+                },
+            ],
+            'submissionMutationName' => [
+                'name' => 'submissionMutationName',
+                'type' => Type::string(),
+                'description' => 'The forms GraphQL mutation name for submissions',
+                'resolve' => function ($source) {
+                    return Submission::gqlMutationNameByContext($source);
                 },
             ],
             // Layout

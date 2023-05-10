@@ -18,10 +18,14 @@ use craft\elements\Asset;
 use craft\errors\InvalidSubpathException;
 use craft\errors\InvalidVolumeException;
 use craft\errors\UploadFailedException;
+use craft\helpers\ArrayHelper;
 use craft\helpers\Assets;
 use craft\helpers\Assets as AssetsHelper;
 use craft\helpers\FileHelper;
+use craft\helpers\UrlHelper;
+use craft\models\VolumeFolder;
 use craft\web\UploadedFile;
+use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Freeform\Bundles\Form\Security\FormSecret;
 use Solspace\Freeform\Events\Files\UploadEvent;
 use Solspace\Freeform\Fields\FileUploadField;
@@ -33,6 +37,7 @@ use Solspace\Freeform\Library\FileUploads\FileUploadResponse;
 use Solspace\Freeform\Records\FieldRecord;
 use Solspace\Freeform\Records\UnfinalizedFileRecord;
 use yii\base\ErrorException;
+use yii\base\Exception;
 
 class FilesService extends BaseService implements FileUploadHandlerInterface
 {
@@ -51,6 +56,8 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      * All unfinalized files will be deleted after a certain amount of time.
      *
      * @return null|FileUploadResponse
+     *
+     * @throws InvalidSubpathException
      */
     public function uploadFile(FileUploadField $field, Form $form)
     {
@@ -75,13 +82,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             return null;
         }
 
-        $assetService = \Craft::$app->assets;
-
-        if (!$field->getDefaultUploadLocation()) {
-            $folder = $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
-        } else {
-            $folder = $this->getFolder($field->getAssetSourceId(), $field->getDefaultUploadLocation(), $form);
-        }
+        $folder = $this->getFileUploadFolder($form, $field);
 
         $uploadedAssetIds = $errors = [];
         for ($i = 0; $i < $uploadedFileCount; ++$i) {
@@ -137,6 +138,150 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         }
 
         return new FileUploadResponse(null, $errors);
+    }
+
+    /**
+     * Uploads a base64 encoded file and flags it as "unfinalized"
+     * It will be finalized only after the form has been submitted fully
+     * All unfinalized files will be deleted after a certain amount of time.
+     *
+     * @throws InvalidSubpathException
+     * @throws Exception
+     * @throws GuzzleException
+     */
+    public function uploadGraphQL(FileUploadField $field, Form $form): ?FileUploadResponse
+    {
+        if (!$field->getAssetSourceId()) {
+            return null;
+        }
+
+        $errors = [];
+
+        $uploadedAssetIds = [];
+
+        $handle = $field->getHandle();
+
+        $arguments = $form->getGraphQLArguments();
+
+        if (!$arguments || !isset($arguments[$handle])) {
+            return null;
+        }
+
+        $beforeUploadEvent = new UploadEvent($field);
+        $this->trigger(self::EVENT_BEFORE_UPLOAD, $beforeUploadEvent);
+
+        if (!$beforeUploadEvent->isValid) {
+            return null;
+        }
+
+        $folder = $this->getFileUploadFolder($form, $field);
+
+        foreach ($arguments[$handle] as $fileUpload) {
+            $asset = null;
+            $response = null;
+            $filename = null;
+            $tempPath = null;
+
+            if (!empty($fileUpload['fileData'])) {
+                $filename = Assets::prepareAssetName($fileUpload['filename']);
+                $extension = pathinfo($filename, \PATHINFO_EXTENSION);
+
+                $tempPath = $this->moveToBase64FileTempFolder($fileUpload, $extension);
+            } elseif (!empty($fileUpload['url'])) {
+                $url = $fileUpload['url'];
+
+                if (empty($fileUpload['filename'])) {
+                    $filename = AssetsHelper::prepareAssetName(pathinfo(UrlHelper::stripQueryString($url), \PATHINFO_BASENAME));
+                } else {
+                    $filename = AssetsHelper::prepareAssetName($fileUpload['filename']);
+                }
+
+                $extension = pathinfo($filename, \PATHINFO_EXTENSION);
+
+                // Download the file
+                $tempPath = AssetsHelper::tempFilePath($extension);
+
+                \Craft::createGuzzleClient()->request('GET', $url, [
+                    'sink' => $tempPath,
+                ]);
+            }
+
+            try {
+                $asset = new Asset();
+                $asset->kind = AssetsHelper::getFileKindByExtension($filename);
+                $asset->tempFilePath = $tempPath;
+                $asset->filename = $filename;
+                $asset->setScenario(Asset::SCENARIO_CREATE);
+                $asset->newFolderId = $folder->id;
+                $asset->setVolumeId($folder->volumeId);
+                $asset->avoidFilenameConflicts = true;
+                $asset->uploaderId = \Craft::$app->getUser()->getId();
+
+                $response = \Craft::$app->getElements()->saveElement($asset);
+            } catch (\Exception|\Throwable $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if ($response) {
+                $assetId = $asset->id;
+                $this->markAssetUnfinalized($assetId);
+
+                $uploadedAssetIds[] = $assetId;
+            } elseif ($asset) {
+                $errors = array_merge($errors, $asset->getErrors());
+            }
+        }
+
+        $field->setValue($uploadedAssetIds);
+
+        $this->trigger(self::EVENT_AFTER_UPLOAD, new UploadEvent($field));
+
+        if ($uploadedAssetIds) {
+            return new FileUploadResponse($uploadedAssetIds);
+        }
+
+        return new FileUploadResponse(null, $errors);
+    }
+
+    public function extractBase64String(array $fileUpload): array|null
+    {
+        $fileDataString = ArrayHelper::remove($fileUpload, 'fileData');
+
+        if (preg_match('/^data:((?<type>[a-z0-9]+\/[a-z0-9\+\.\-]+);)?base64,(?<data>.+)/i', $fileDataString, $matches)) {
+            return $matches;
+        }
+
+        return null;
+    }
+
+    /**
+     * @throws InvalidSubpathException
+     */
+    public function getFileUploadFolder(Form $form, FileUploadField $field): ?VolumeFolder
+    {
+        $assetService = \Craft::$app->assets;
+
+        if (!$field->getDefaultUploadLocation()) {
+            return $assetService->getRootFolderByVolumeId($field->getAssetSourceId());
+        }
+
+        return $this->getFolder($field->getAssetSourceId(), $field->getDefaultUploadLocation(), $form);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function moveToBase64FileTempFolder(array $fileUpload, string $extension): string
+    {
+        $matches = $this->extractBase64String($fileUpload);
+
+        $fileData = base64_decode($matches['data']);
+
+        $tempPath = AssetsHelper::tempFilePath($extension);
+
+        file_put_contents($tempPath, $fileData);
+
+        return $tempPath;
     }
 
     public function uploadDragAndDropFile(FileDragAndDropField $field, Form $form)

@@ -16,6 +16,7 @@ use LitEmoji\LitEmoji;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
@@ -153,6 +154,21 @@ class Submission extends Element
     public static function find(): SubmissionQuery
     {
         return (new SubmissionQuery(self::class))->isSpam(false);
+    }
+
+    public static function gqlTypeNameByContext(mixed $context): string
+    {
+        return $context->handle.'_Submission';
+    }
+
+    public static function gqlScopesByContext(mixed $context): array
+    {
+        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$context->uid];
+    }
+
+    public static function gqlMutationNameByContext(mixed $context): string
+    {
+        return 'save_'.$context->handle.'_Submission';
     }
 
     public static function displayName(): string

@@ -12,5 +12,6 @@ class RequestContext
         new GetContext();
         new StorageContext();
         new PostContext();
+        new GraphQLContext();
     }
 }

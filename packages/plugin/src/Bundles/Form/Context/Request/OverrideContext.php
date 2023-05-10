@@ -37,6 +37,11 @@ class OverrideContext
     public function handlePersistentFields(FormEventInterface $event)
     {
         $form = $event->getForm();
+
+        if ($form->isGraphQLPosted()) {
+            return;
+        }
+
         $overrideValues = $form->getPropertyBag()->get('overrideValues');
 
         if (!\is_array($overrideValues)) {

@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\InputOnlyInterface;
@@ -81,6 +82,21 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
         $this->setCustomAttributes($customAttributes);
 
         return $this->renderRaw($this->getSingleInputHtml());
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = [];
+        $description[] = $this->getInstructions();
+        $description[] = 'Single value allowed.';
+        $description[] = 'Values include ['.$this->getDefaultValue().'].';
+        $description = implode(' ', $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => Type::string(),
+            'description' => trim($description),
+        ];
     }
 
     /**

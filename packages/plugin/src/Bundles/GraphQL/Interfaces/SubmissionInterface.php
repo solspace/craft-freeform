@@ -1,0 +1,180 @@
+<?php
+
+namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
+
+use craft\gql\GqlEntityRegistry;
+use craft\gql\interfaces\Element;
+use craft\gql\interfaces\elements\Asset;
+use craft\gql\interfaces\elements\User;
+use craft\gql\types\DateTime;
+use GraphQL\Type\Definition\InterfaceType;
+use GraphQL\Type\Definition\Type;
+use Solspace\Freeform\Bundles\GraphQL\Types\ArrayType;
+use Solspace\Freeform\Bundles\GraphQL\Types\CsrfTokenType;
+use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SubmissionGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Types\HoneypotType;
+use Solspace\Freeform\Bundles\GraphQL\Types\RecaptchaType;
+
+class SubmissionInterface extends Element
+{
+    public static function getName(): string
+    {
+        return 'FreeformSubmissionInterface';
+    }
+
+    public static function getTypeGenerator(): string
+    {
+        return SubmissionGenerator::class;
+    }
+
+    public static function getType($fields = null): Type
+    {
+        if ($type = GqlEntityRegistry::getEntity(self::getName())) {
+            return $type;
+        }
+
+        return GqlEntityRegistry::createEntity(self::getName(), new InterfaceType([
+            'name' => self::getName(),
+            'fields' => self::class.'::getFieldDefinitions',
+            'description' => 'Freeform submission interface',
+            'resolveType' => self::class.'::resolveElementTypeName',
+        ]));
+    }
+
+    public static function getFieldDefinitions(): array
+    {
+        return \Craft::$app->getGql()->prepareFieldDefinitions(
+            array_merge(
+                parent::getFieldDefinitions(),
+                [
+                    'formActions' => [
+                        'name' => 'formActions',
+                        'type' => ArrayType::getType(),
+                        'description' => 'The form actions for the submission',
+                    ],
+                    'formErrors' => [
+                        'name' => 'formErrors',
+                        'type' => ArrayType::getType(),
+                        'description' => 'The form errors for submission',
+                    ],
+                    'fieldErrors' => [
+                        'name' => 'fieldErrors',
+                        'type' => ArrayType::getType(),
+                        'description' => 'The field errors for the submission',
+                    ],
+                    'values' => [
+                        'name' => 'values',
+                        'type' => ArrayType::getType(),
+                        'description' => 'The posted values of the submission',
+                    ],
+                    'finished' => [
+                        'name' => 'finished',
+                        'type' => Type::boolean(),
+                        'description' => 'Whether the submission is finished or not',
+                    ],
+                    'freeformPayload' => [
+                        'name' => 'freeformPayload',
+                        'type' => Type::string(),
+                        'description' => 'The payload of the submission',
+                    ],
+                    'hash' => [
+                        'name' => 'hash',
+                        'type' => Type::string(),
+                        'description' => 'The generated hash for the submission',
+                    ],
+                    'recaptcha' => [
+                        'name' => 'recaptcha',
+                        'type' => RecaptchaType::getType(),
+                        'description' => 'The Recaptcha of the form for the submission',
+                    ],
+                    'csrfToken' => [
+                        'name' => 'csrfToken',
+                        'type' => CsrfTokenType::getType(),
+                        'description' => 'The CSRF token (name and value) of the submission',
+                        'resolve' => function () {
+                            if (\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
+                                return [
+                                    'name' => \Craft::$app->getRequest()->csrfParam,
+                                    'value' => \Craft::$app->getRequest()->getCsrfToken(),
+                                ];
+                            }
+
+                            return null;
+                        },
+                    ],
+                    'honeypot' => [
+                        'name' => 'honeypot',
+                        'type' => HoneypotType::getType(),
+                        'description' => 'The Honeypot (name and value) of the submission',
+                    ],
+                    'html' => [
+                        'name' => 'html',
+                        'type' => Type::string(),
+                        'description' => 'The generated HTML for the submission',
+                    ],
+                    'multiPage' => [
+                        'name' => 'multiPage',
+                        'type' => Type::boolean(),
+                        'description' => 'Whether the submission has multiple pages or not',
+                    ],
+                    'onSuccess' => [
+                        'name' => 'onSuccess',
+                        'type' => Type::string(),
+                        'description' => 'The success behaviour of the submission',
+                    ],
+                    'returnUrl' => [
+                        'name' => 'returnUrl',
+                        'type' => Type::string(),
+                        'description' => 'The return URL of the submission',
+                    ],
+                    'submissionId' => [
+                        'name' => 'submissionId',
+                        'type' => Type::int(),
+                        'description' => 'The ID of the submission',
+                    ],
+                    'submissionLimitReached' => [
+                        'name' => 'submissionLimitReached',
+                        'type' => Type::boolean(),
+                        'description' => 'Whether the form submission rate limit has been reached or not',
+                    ],
+                    'submissionToken' => [
+                        'name' => 'submissionToken',
+                        'type' => Type::string(),
+                        'description' => 'The generated token for the submission.',
+                    ],
+                    'success' => [
+                        'name' => 'success',
+                        'type' => Type::boolean(),
+                        'description' => 'Whether the submission is a success or not',
+                    ],
+                    'dateCreated' => [
+                        'name' => 'dateCreated',
+                        'type' => DateTime::getType(),
+                        'description' => 'The created date for the submission',
+                    ],
+                    'isSpam' => [
+                        'name' => 'isSpam',
+                        'type' => Type::boolean(),
+                        'description' => 'Whether the submission is a spam or not',
+                    ],
+                    'spamReasons' => [
+                        'name' => 'spamReasons',
+                        'type' => ArrayType::getType(),
+                        'description' => 'Spam reasons for the submission',
+                    ],
+                    'user' => [
+                        'name' => 'user',
+                        'type' => User::getType(),
+                        'description' => 'The author of the submission',
+                    ],
+                    'assets' => [
+                        'name' => 'assets',
+                        'type' => Type::listOf(Asset::getType()),
+                        'description' => 'The assets of the submission',
+                    ],
+                ],
+            ),
+            self::getName()
+        );
+    }
+}

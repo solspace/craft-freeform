@@ -38,6 +38,7 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
+use yii\base\Event;
 use yii\base\InvalidCallException;
 use yii\base\ViewNotFoundException;
 
@@ -745,6 +746,42 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return false;
+    }
+
+    public function getReturnUrl(Form $form, Submission $submission): string
+    {
+        $request = \Craft::$app->getRequest();
+
+        $postedReturnUrl = $request->post(Form::RETURN_URI_KEY);
+        if ($postedReturnUrl) {
+            $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
+            if (false === $returnUrl) {
+                $returnUrl = $form->getReturnUrl();
+            }
+        } else {
+            $returnUrl = $form->getReturnUrl();
+        }
+
+        $returnUrl = \Craft::$app->view->renderString(
+            $returnUrl,
+            [
+                'form' => $form,
+                'submission' => $submission,
+            ]
+        );
+
+        /** @deprecated  */
+        $returnUrl = $this->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
+
+        $event = new ReturnUrlEvent($form, $submission, $returnUrl);
+        Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);
+        $returnUrl = $event->getReturnUrl();
+
+        if (!$returnUrl) {
+            $returnUrl = $request->getUrl();
+        }
+
+        return $returnUrl;
     }
 
     private function getFormQuery(): Query

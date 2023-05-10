@@ -24,6 +24,11 @@ class CreditCardNumberField extends TextField implements ExtraFieldInterface
         return $this->getCustomAttributes()->getId();
     }
 
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
+
     /**
      * Outputs the HTML of input.
      */

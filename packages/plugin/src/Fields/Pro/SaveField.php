@@ -85,4 +85,9 @@ class SaveField extends AbstractField implements DefaultFieldInterface, SingleVa
             .$this->getLabel()
             .'</button>';
     }
+
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
 }

@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\KeyValueMapInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
+use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AttributeGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FieldGenerator;
 
 class FieldInterface extends AbstractInterface
@@ -74,22 +74,22 @@ class FieldInterface extends AbstractInterface
             ],
             'inputAttributes' => [
                 'name' => 'inputAttributes',
-                'type' => Type::listOf(KeyValueMapInterface::getType()),
+                'type' => Type::listOf(AttributeGenerator::generateType()),
                 'description' => "Field's input attributes",
             ],
             'labelAttributes' => [
                 'name' => 'labelAttributes',
-                'type' => Type::listOf(KeyValueMapInterface::getType()),
+                'type' => Type::listOf(AttributeGenerator::generateType()),
                 'description' => "Field's label attributes",
             ],
             'errorAttributes' => [
                 'name' => 'errorAttributes',
-                'type' => Type::listOf(KeyValueMapInterface::getType()),
+                'type' => Type::listOf(AttributeGenerator::generateType()),
                 'description' => "Field's error attributes",
             ],
             'instructionAttributes' => [
                 'name' => 'instructionAttributes',
-                'type' => Type::listOf(KeyValueMapInterface::getType()),
+                'type' => Type::listOf(AttributeGenerator::generateType()),
                 'description' => "Field's instruction attributes",
             ],
         ], static::getName());

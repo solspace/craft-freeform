@@ -60,7 +60,7 @@ class ReCaptcha extends FeatureBundle
     {
         if ($this->canApplyRecaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
             $field = $event->getField();
-            if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
+            if (($field instanceof RecaptchaField) && !$this->validateResponse($event)) {
                 $message = $this->getSettings()->recaptchaErrorMessage;
                 $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
             }
@@ -70,7 +70,7 @@ class ReCaptcha extends FeatureBundle
     public function validateRecaptchaV2Invisible(ValidationEvent $event)
     {
         if ($this->canApplyRecaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
-            if (!$this->validateResponse()) {
+            if (!$this->validateResponse($event)) {
                 if ($this->behaviourDisplayError()) {
                     $message = $this->getSettings()->recaptchaErrorMessage;
                     $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
@@ -84,7 +84,7 @@ class ReCaptcha extends FeatureBundle
     public function validateRecaptchaV3(ValidationEvent $event)
     {
         if ($this->canApplyRecaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
-            if (!$this->validateResponse()) {
+            if (!$this->validateResponse($event)) {
                 if ($this->behaviourDisplayError()) {
                     $message = $this->getSettings()->recaptchaErrorMessage;
                     $event->getForm()->addError(Freeform::t($message ?: 'Your submission could not be processed.'));
@@ -132,9 +132,30 @@ class ReCaptcha extends FeatureBundle
         return Settings::RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR === $this->getSettings()->recaptchaBehaviour || !$this->getSettings()->spamFolderEnabled;
     }
 
-    private function validateResponse(): bool
+    private function validateResponse(ValidateEvent|ValidationEvent $event): bool
     {
-        $response = \Craft::$app->request->post('g-recaptcha-response');
+        $form = $event->getForm();
+        $field = $event->getField();
+
+        if ($form->isGraphQLPosted()) {
+            $handle = $field->getHandle();
+            $arguments = $form->getGraphQLArguments();
+
+            if (!isset($arguments[$handle])) {
+                return false;
+            }
+
+            $property = $arguments[$handle];
+
+            if (empty($property['name']) || empty($property['value']) || 'g-recaptcha-response' !== $property['name']) {
+                return false;
+            }
+
+            $response = $property['value'];
+        } else {
+            $response = \Craft::$app->request->post('g-recaptcha-response');
+        }
+
         if (!$response) {
             return false;
         }

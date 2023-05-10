@@ -50,7 +50,7 @@ class HCaptcha extends FeatureBundle
     {
         if ($this->canApplyHcaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_CHECKBOX)) {
             $field = $event->getField();
-            if (($field instanceof RecaptchaField) && !$this->validateResponse()) {
+            if (($field instanceof RecaptchaField) && !$this->validateResponse($event)) {
                 $message = $this->getSettings()->recaptchaErrorMessage;
                 $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
             }
@@ -60,7 +60,7 @@ class HCaptcha extends FeatureBundle
     public function validateInvisible(ValidationEvent $event)
     {
         if ($this->canApplyHcaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_INVISIBLE)) {
-            if (!$this->validateResponse()) {
+            if (!$this->validateResponse($event)) {
                 if ($this->behaviourDisplayError()) {
                     $message = $this->getSettings()->recaptchaErrorMessage;
                     $event->getForm()->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
@@ -86,9 +86,30 @@ class HCaptcha extends FeatureBundle
         return Freeform::getInstance()->settings->getSettingsModel();
     }
 
-    private function validateResponse(): bool
+    private function validateResponse(ValidationEvent|ValidateEvent $event): bool
     {
-        $response = \Craft::$app->request->post('h-captcha-response');
+        $form = $event->getForm();
+        $field = $event->getField();
+
+        if ($form->isGraphQLPosted()) {
+            $handle = $field->getHandle();
+            $arguments = $form->getGraphQLArguments();
+
+            if (!isset($arguments[$handle])) {
+                return false;
+            }
+
+            $property = $arguments[$handle];
+
+            if (empty($property['name']) || empty($property['value']) || 'h-captcha-response' !== $property['name']) {
+                return false;
+            }
+
+            $response = $property['value'];
+        } else {
+            $response = \Craft::$app->request->post('h-captcha-response');
+        }
+
         if (!$response) {
             return false;
         }

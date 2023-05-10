@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Fields;
 
+use craft\gql\types\Number as NumberType;
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\LengthConstraint;
 use Solspace\Freeform\Library\Composer\Components\Validation\Constraints\NumericConstraint;
 
@@ -126,6 +128,11 @@ class NumberField extends TextField
         );
 
         return $constraints;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        return NumberType::getType();
     }
 
     /**

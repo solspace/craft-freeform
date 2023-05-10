@@ -80,12 +80,20 @@ class HoneypotService extends BaseService
         }
 
         $form = $event->getForm();
+        $isEnhanced = $this->isEnhanced();
+        $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?: Honeypot::NAME_PREFIX;
+
+        if ($form->isGraphQLPosted()) {
+            $postValues = $form->getGraphQLArguments();
+
+            if (isset($postValues['honeypot']['value'], $postValues['honeypot']['name']) && $postValues['honeypot']['name'] === $honeypotName && '' === $postValues['honeypot']['value']) {
+                return;
+            }
+        }
 
         /** @var array $postValues */
         $postValues = \Craft::$app->request->post(null);
-        $isEnhanced = $this->isEnhanced();
 
-        $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?: Honeypot::NAME_PREFIX;
         if (!$isEnhanced) {
             if (isset($postValues[$honeypotName]) && '' === $postValues[$honeypotName]) {
                 return;

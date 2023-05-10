@@ -71,6 +71,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const ACTION_KEY = 'freeform-action';
     public const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
+    public const EVENT_GRAPHQL_REQUEST = 'graphql-request';
     public const EVENT_FORM_LOADED = 'form-loaded';
     public const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
     public const EVENT_REGISTER_CONTEXT = 'register-context';
@@ -250,6 +251,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /** @var bool */
     private $formPosted;
 
+    private bool $graphqlPosted;
+
+    private array $graphqlArguments;
+
     /**
      * Form constructor.
      *
@@ -271,6 +276,8 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->valid = false;
         $this->pagePosted = false;
         $this->formPosted = false;
+        $this->graphqlPosted = false;
+        $this->graphqlArguments = [];
 
         $this->properties = $properties;
         $this->translator = $translator;
@@ -740,6 +747,33 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public function setFormPosted(bool $formPosted): self
     {
         $this->formPosted = $formPosted;
+
+        return $this;
+    }
+
+    public function isGraphQLPosted(): bool
+    {
+        return $this->graphqlPosted;
+    }
+
+    public function setGraphQLPosted(bool $graphqlPosted): self
+    {
+        $this->graphqlPosted = $graphqlPosted;
+
+        $this->pagePosted = true;
+        $this->formPosted = true;
+
+        return $this;
+    }
+
+    public function getGraphQLArguments(): array
+    {
+        return $this->graphqlArguments;
+    }
+
+    public function setGraphQLArguments(array $graphqlArguments): self
+    {
+        $this->graphqlArguments = $graphqlArguments;
 
         return $this;
     }
@@ -1278,7 +1312,11 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
         $this->getFormHandler()->onFormValidate($this);
 
-        $currentPageFields = $this->getCurrentPage()->getFields();
+        if ($this->isGraphQLPosted()) {
+            $currentPageFields = $this->getLayout()->getFields();
+        } else {
+            $currentPageFields = $this->getCurrentPage()->getFields();
+        }
 
         $isFormValid = true;
         foreach ($currentPageFields as $field) {

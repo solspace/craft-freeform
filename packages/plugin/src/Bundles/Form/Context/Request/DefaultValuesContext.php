@@ -16,9 +16,13 @@ class DefaultValuesContext
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'handleDefaultValues']);
     }
 
-    public function handleDefaultValues(FormEventInterface $event)
+    public function handleDefaultValues(FormEventInterface $event): void
     {
         $form = $event->getForm();
+
+        if ($form->isGraphQLPosted()) {
+            return;
+        }
 
         foreach ($form->getLayout()->getFields() as $field) {
             if ($field instanceof PersistentValueInterface || !$field->getHandle()) {

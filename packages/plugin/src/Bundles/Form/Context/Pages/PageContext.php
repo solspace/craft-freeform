@@ -38,6 +38,10 @@ class PageContext
         $form = $event->getForm();
         $bag = $form->getPropertyBag();
 
+        if ($form->isGraphQLPosted()) {
+            return;
+        }
+
         if (!$form->isPagePosted()) {
             return;
         }

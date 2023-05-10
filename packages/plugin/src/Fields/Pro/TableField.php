@@ -2,6 +2,11 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use craft\gql\GqlEntityRegistry;
+use craft\gql\types\generators\TableRowType as TableRowTypeGenerator;
+use craft\gql\types\TableRow;
+use GraphQL\Type\Definition\InputObjectType;
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -16,6 +21,8 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
     public const COLUMN_TYPE_STRING = 'string';
     public const COLUMN_TYPE_SELECT = 'select';
     public const COLUMN_TYPE_CHECKBOX = 'checkbox';
+
+    public array $columns = [];
 
     /** @var array */
     protected $tableLayout;
@@ -152,6 +159,13 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
             return $this;
         }
 
+        if ($this->getForm()->isGraphQLPosted()) {
+            // Converts back into Freeform's TableField expected structure
+            foreach ($layout as $index => $column) {
+                $value[$index] = array_values($value[$index]);
+            }
+        }
+
         foreach ($value as $rowIndex => $row) {
             if (!\is_array($row)) {
                 continue;
@@ -178,6 +192,53 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         $this->values = $values;
 
         return $this;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        $this->setColumns();
+
+        return Type::listOf(TableRowTypeGenerator::generateType($this));
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $typeName = $this->getHandle().'_FreeformTableRowInput';
+
+        if ($inputType = GqlEntityRegistry::getEntity($typeName)) {
+            return Type::listOf($inputType);
+        }
+
+        $fields = TableRow::prepareRowFieldDefinition($this->columns);
+
+        $inputType = GqlEntityRegistry::createEntity($typeName, new InputObjectType([
+            'name' => $typeName,
+            'fields' => function () use ($fields) {
+                return $fields;
+            },
+        ]));
+
+        return Type::listOf($inputType);
+    }
+
+    /**
+     * Generates the expected structure for Craft's own TableRowType.
+     */
+    public function setColumns(): void
+    {
+        $layout = $this->getTableLayout();
+
+        foreach ($layout as $index => $column) {
+            $id = 'col'.($index + 1);
+
+            $this->columns[$id] = [
+                'id' => $id,
+                'width' => '',
+                'handle' => $id,
+                'type' => $column['type'],
+                'heading' => $column['label'],
+            ];
+        }
     }
 
     protected function getInputHtml(): string

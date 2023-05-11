@@ -5,7 +5,8 @@ namespace Solspace\Freeform\Integrations\CRM\Insightly;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 
@@ -16,10 +17,10 @@ class Insightly extends AbstractCRMIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API Key',
         instructions: 'Enter your Insightly API key here.',
-        required: true
     )]
     protected string $apiKey = '';
 

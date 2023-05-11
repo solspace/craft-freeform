@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\DataObjects\Integrations;
 
-use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
+use Solspace\Freeform\Attributes\Property\PropertyCollection;
 
 class Integration
 {

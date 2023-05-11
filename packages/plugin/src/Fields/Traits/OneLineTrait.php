@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\Fields\Traits;
 
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 
 trait OneLineTrait
 {
-    #[Property('Show all options in a single line?')]
+    #[Input\Boolean('Show all options in a single line?')]
     protected bool $oneLine = false;
 
     public function isOneLine(): bool

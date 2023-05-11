@@ -33,7 +33,10 @@ class PageRulesPersistence extends FeatureBundle
             return;
         }
 
-        $payload = $event->getPayload()->rules->pages;
+        $payload = $event->getPayload()->rules->pages ?? null;
+        if (null === $payload) {
+            return;
+        }
 
         $existingRules = $this->getExistingRules($form->getId());
         $usedRuleUids = [];

@@ -3,7 +3,7 @@
 namespace Solspace\Tests\Freeform\Unit\Fields\Properties\Options\Custom;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionsTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
 use Solspace\Freeform\Fields\Properties\Options\Custom\CustomOptions;
 
 /**

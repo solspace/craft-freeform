@@ -15,7 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -29,30 +29,30 @@ class SalesforceLead extends BaseSalesforceIntegration
 {
     public const LOG_CATEGORY = 'Salesforce';
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Assign Lead Owner?',
         instructions: 'Enabling this will make Salesforce assign a lead owner based on lead owner assignment rules.',
     )]
     protected bool $assignLeadOwner = false;
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Using custom URL?',
         instructions: 'Enable this if you connect to your Salesforce account with a custom company URL (e.g. \'mycompany.my.salesforce.com\').'
     )]
     protected bool $usingCustomUrl = false;
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Convert Leads to Contact Tasks for Returning Customers?',
         instructions: 'When a Salesforce Contact already exists with the same email address, create a new Task for the Contact instead of a new Lead.',
     )]
     protected bool $convertLeadsToTasks = false;
 
-    #[Property(
+    #[Input\Text(
         instructions: "Enter the text you'd like to have set for new Task subjects.",
     )]
     protected string $taskSubject = '';
 
-    #[Property(
+    #[Input\Text(
         instructions: "Enter a relative textual date string for the Due Date of the newly created Task (e.g. '2 days').",
     )]
     protected string $taskDueDate = '';

@@ -6,7 +6,6 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\client\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\DataObjects\FieldType\Property;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 use yii\base\Event;
 
@@ -29,6 +28,9 @@ class NotificationPersistence extends FeatureBundle
     public function handleNotificationSave(PersistFormEvent $event): void
     {
         $notifications = $event->getPayload()->notifications;
+        if (null === $notifications) {
+            return;
+        }
 
         /** @var FormNotificationRecord[] $record */
         $existingRecords = FormNotificationRecord::find()
@@ -43,20 +45,19 @@ class NotificationPersistence extends FeatureBundle
         $records = [];
         foreach ($notifications as $notification) {
             $uid = $notification->uid;
-            $enabled = $notification->enabled ?? false;
+            $enabled = $notification->enabled ?? true;
             $class = $notification->class;
 
             $record = $existingRecords[$uid] ?? null;
             if (!$record) {
                 $record = new FormNotificationRecord();
                 $record->uid = $uid;
-                $record->enabled = $enabled;
                 $record->class = $class;
                 $record->formId = $event->getFormId();
             }
 
+            $record->enabled = $enabled;
             $record->metadata = $this->getValidatedMetadata($notification, $event);
-            $record->save();
 
             $records[] = $record;
             $usedUIDs[] = $record->uid;
@@ -77,6 +78,7 @@ class NotificationPersistence extends FeatureBundle
 
         foreach ($records as $record) {
             $record->save();
+            $event->addNotificationRecord($record);
         }
     }
 
@@ -86,14 +88,12 @@ class NotificationPersistence extends FeatureBundle
         $properties = $this->propertyProvider->getEditableProperties($object->class);
 
         $metadata = [];
-
-        /** @var Property $property */
         foreach ($properties as $property) {
             $handle = $property->handle;
             $value = $object->{$handle} ?? null;
 
             $errors = [];
-            foreach ($property->getValidators() as $validator) {
+            foreach ($property->validators as $validator) {
                 $errors = array_merge($errors, $validator->validate($value));
             }
 

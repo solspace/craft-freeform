@@ -6,7 +6,8 @@ use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Events\Payments\UpdateDataEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
@@ -70,13 +71,13 @@ class Stripe extends AbstractPaymentGatewayIntegration
         PaymentProperties::PLAN_INTERVAL_ANNUALLY => ['interval' => 'year', 'count' => 1],
     ];
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Suppress Email Notifications & Integrations when Payments Fail',
         instructions: 'Failed payments will still be stored as submissions, but enabling this will suppress email notifications and API integrations from being sent.',
     )]
     protected bool $suppressOnFail = false;
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Send Success Email from Stripe to Submitter',
         instructions: "When enabled, Freeform will pass off the submitter's email address to Stripe's 'receipt_email' field, which will then automatically trigger Stripe sending a success email notification.",
     )]
@@ -84,48 +85,48 @@ class Stripe extends AbstractPaymentGatewayIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Public Key (Live)',
         instructions: 'Enter your Stripe LIVE public key here.',
-        required: true,
     )]
     protected string $publicKeyLive = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Secret Key (Live)',
         instructions: 'Enter your Stripe LIVE secret key here.',
-        required: true,
     )]
     protected string $secretKeyLive = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Public Key (Test)',
         instructions: 'Enter your Stripe TEST public key here.',
-        required: true,
     )]
     protected string $publicKeyTest = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Secret Key (Test)',
         instructions: 'Enter your Stripe TEST secret key here.',
-        required: true,
     )]
     protected string $secretKeyTest = '';
 
-    #[Property(
+    #[Input\Boolean(
         label: 'LIVE mode',
         instructions: 'Enable this to start using LIVE public and secret keys.',
     )]
     protected bool $liveMode = false;
 
     #[Flag(self::FLAG_ENCRYPTED)]
-    #[Property(
+    #[Input\Text(
         label: 'Webhook Secret',
         instructions: 'Enter your Stripe webhook secret here.',
     )]

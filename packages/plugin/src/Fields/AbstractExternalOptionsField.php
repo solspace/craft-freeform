@@ -2,8 +2,9 @@
 
 namespace Solspace\Freeform\Fields;
 
-use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionsTransformer;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\Interfaces\ExternalOptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Traits\OptionsKeyValuePairTrait;
@@ -12,12 +13,11 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
 {
     use OptionsKeyValuePairTrait;
 
-    #[Property(
+    #[ValueTransformer(OptionsTransformer::class)]
+    #[Input\Options(
         label: 'Options Editor',
         instructions: 'Define your options',
-        type: Property::TYPE_OPTIONS,
         value: OptionsTransformer::DEFAULT_VALUE,
-        transformer: OptionsTransformer::class,
     )]
     protected OptionsCollection $options;
 

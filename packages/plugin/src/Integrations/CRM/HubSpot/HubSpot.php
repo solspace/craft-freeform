@@ -17,7 +17,8 @@ use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\Implementations\CheckboxGroupField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -33,26 +34,26 @@ class HubSpot extends AbstractCRMIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API Key',
         instructions: 'Enter your HubSpot API key here.',
-        required: true,
     )]
     protected string $apiKey = '';
 
-    #[Property(
+    #[Input\Text(
         label: 'IP Address Field',
         instructions: "Enter a custom HubSpot Contact field handle where you wish to store the client's IP address from the submission (optional).",
     )]
     protected string $ipField = '';
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Append checkbox group field values on Contact update?',
         instructions: 'If a Contact already exists in HubSpot, enabling this will append additional checkbox group field values to the Contact inside HubSpot, instead of overwriting the options.',
     )]
     protected bool $appendContactData = false;
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Append checkbox group field values on Company update?',
         instructions: 'If a Company already exists in HubSpot, enabling this will append additional checkbox group field values to the Company inside HubSpot, instead of overwriting the options.',
     )]

@@ -3,11 +3,12 @@
 namespace Solspace\Tests\Freeform\Unit\Bundles\Attributes\Property;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Middleware;
-use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use yii\di\Container;
@@ -61,8 +62,8 @@ class PropertyProviderTest extends TestCase
                     "Property `%s` has a mismatched `%s` value of `%s` (expected '%s')",
                     $handle,
                     $key,
-                    \is_array($actualValue) ? StringHelper::implodeRecursively(',', $actualValue) : $actualValue,
-                    \is_array($expectedValue) ? StringHelper::implodeRecursively(',', $expectedValue) : $expectedValue
+                    json_encode($actualValue),
+                    json_encode($expectedValue)
                 );
             } catch (\Exception $e) {
                 $message = $e->getMessage();
@@ -80,7 +81,7 @@ class PropertyProviderTest extends TestCase
     {
         return [
             [[
-                'type' => 'string',
+                'type' => 'table',
                 'handle' => 'stringValue',
                 'label' => 'String Value',
                 'instructions' => null,
@@ -101,35 +102,33 @@ class PropertyProviderTest extends TestCase
                 'instructions' => null,
                 'order' => 2,
                 'value' => null,
-                'placeholder' => null,
+                'placeholder' => 'placeholder',
                 'section' => null,
-                'options' => null,
                 'flags' => [],
                 'visibilityFilters' => [],
                 'middleware' => [],
                 'required' => false,
             ]],
             [[
-                'type' => 'override-type',
+                'type' => 'select',
                 'handle' => 'boolWithDefaultTrue',
                 'label' => 'Bool With Default True',
                 'instructions' => 'instructions',
                 'order' => 99,
                 'value' => true,
-                'placeholder' => 'placeholder',
+                'placeholder' => null,
                 'section' => null,
-                'options' => [
-                    ['value' => 'one', 'label' => 'One'],
-                    ['value' => 'two', 'label' => 'Two'],
-                    ['value' => 'three', 'label' => 'Three'],
-                ],
+                'options' => (new OptionCollection())
+                    ->add('one', 'One')
+                    ->add('two', 'Two')
+                    ->add('three', 'Three'),
                 'flags' => [],
                 'visibilityFilters' => [],
                 'middleware' => [],
                 'required' => false,
             ]],
             [[
-                'type' => 'string',
+                'type' => 'select',
                 'handle' => 'propWithMiddleware',
                 'label' => 'Prop With Middleware',
                 'instructions' => null,
@@ -137,21 +136,20 @@ class PropertyProviderTest extends TestCase
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
-                'options' => [
-                    ['value' => 0, 'label' => 'one'],
-                    ['value' => 1, 'label' => 'two'],
-                    ['value' => 2, 'label' => 'three'],
-                ],
+                'options' => (new OptionCollection())
+                    ->add(0, 'one')
+                    ->add(1, 'two')
+                    ->add(2, 'three'),
                 'flags' => [],
                 'visibilityFilters' => [],
                 'middleware' => [
-                    ['test', ['arg 1', 2, true]],
-                    ['another one'],
+                    new Middleware('test', ['arg 1', 2, true]),
+                    new Middleware('another one'),
                 ],
                 'required' => false,
             ]],
             [[
-                'type' => 'string',
+                'type' => 'select',
                 'handle' => 'propWithFlags',
                 'label' => 'Prop With Flags',
                 'instructions' => null,
@@ -159,12 +157,11 @@ class PropertyProviderTest extends TestCase
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
-                'options' => [
-                    ['value' => 'one', 'label' => 'One'],
-                    ['value' => 'two', 'label' => 'Two'],
-                    ['value' => 'three', 'label' => 'Three'],
-                ],
-                'flags' => ['test-flag', 'another-flag'],
+                'options' => (new OptionCollection())
+                    ->add('one', 'One')
+                    ->add('two', 'Two')
+                    ->add('three', 'Three'),
+                'flags' => [new Flag('test-flag'), new Flag('another-flag')],
                 'visibilityFilters' => [],
                 'middleware' => [],
                 'required' => false,
@@ -178,12 +175,11 @@ class PropertyProviderTest extends TestCase
                 'value' => null,
                 'placeholder' => null,
                 'section' => null,
-                'options' => null,
                 'flags' => [],
                 'visibilityFilters' => [
-                    'test-filter',
-                    'second-test-filter',
-                    'third-test-filter',
+                    new VisibilityFilter('test-filter'),
+                    new VisibilityFilter('second-test-filter'),
+                    new VisibilityFilter('third-test-filter'),
                 ],
                 'middleware' => [],
                 'required' => false,
@@ -209,32 +205,33 @@ class TestAttributesClass
 {
     private int $id;
 
-    #[Property(
+    #[ValueTransformer(TestTransformer::class)]
+    #[Input\Table(
         value: ['one', 'two', 'three'],
-        transformer: TestTransformer::class,
     )]
     private string $stringValue;
 
-    #[Property('Optional Integer')]
+    #[Input\Integer(
+        'Optional Integer',
+        placeholder: 'placeholder',
+    )]
     private ?int $optionalInt;
 
-    #[Property(
-        type: 'override-type',
+    #[Input\Select(
         instructions: 'instructions',
         order: 99,
-        placeholder: 'placeholder',
         options: ['one' => 'One', 'two' => 'Two', 'three' => 'Three'],
     )]
     private bool $boolWithDefaultTrue = true;
 
-    #[Property(
+    #[Input\Select(
         options: ['one', 'two', 'three'],
     )]
     #[Middleware('test', ['arg 1', 2, true])]
     #[Middleware('another one')]
     private string $propWithMiddleware;
 
-    #[Property(
+    #[Input\Select(
         options: [
             ['value' => 'one', 'label' => 'One'],
             ['value' => 'two', 'label' => 'Two'],
@@ -245,7 +242,7 @@ class TestAttributesClass
     #[Flag('another-flag')]
     private string $propWithFlags;
 
-    #[Property]
+    #[Input\Text]
     #[VisibilityFilter('test-filter')]
     #[VisibilityFilter('second-test-filter')]
     #[VisibilityFilter('third-test-filter')]

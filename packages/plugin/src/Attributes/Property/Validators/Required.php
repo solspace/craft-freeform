@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 use Solspace\Freeform\Freeform;
 
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class Required implements PropertyValidatorInterface
 {
     public function __construct(

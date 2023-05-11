@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
@@ -39,29 +39,28 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, InputO
     public const POSITION_RIGHT = 'right';
     public const POSITION_SPREAD = 'spread';
 
-    #[Property(
+    #[Input\Text(
         label: 'Submit button Label',
         instructions: 'The label of the submit button',
     )]
     protected string $labelNext = 'Submit';
 
-    #[Property(
+    #[Input\Text(
         label: 'Previous button Label',
         instructions: 'The label of the previous button',
     )]
     #[VisibilityFilter('{{state.pages}}.length > 1')]
     protected string $labelPrev = 'Back';
 
-    #[Property(
+    #[Input\Boolean(
         label: 'Disable the Previous button',
     )]
     #[VisibilityFilter('{{state.pages}}.length > 1')]
     protected bool $disablePrev = false;
 
-    #[Property(
+    #[Input\Select(
         label: 'Positioning',
         instructions: 'Choose whether the submit button is positioned on the left, center or right side',
-        type: Property::TYPE_SELECT,
         options: [
             'left' => 'Left',
             'center' => 'Center',

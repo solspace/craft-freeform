@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Library\DataObjects;
 
-use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
+use Solspace\Freeform\Attributes\Property\PropertyCollection;
 
 class FieldType implements \JsonSerializable
 {

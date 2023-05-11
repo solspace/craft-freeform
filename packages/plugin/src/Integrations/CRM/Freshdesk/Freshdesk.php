@@ -6,7 +6,8 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
 
@@ -21,39 +22,39 @@ class Freshdesk extends AbstractCRMIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API Key',
         instructions: 'Enter your Freshdesk API key here.',
-        required: true,
     )]
     protected string $apiKey = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         instructions: "Enter your Freshdesk Domain here, e.g. 'https://example.freshdesk.com'.",
-        required: true,
     )]
     protected string $domain = '';
 
-    #[Property(
+    #[Input\Text(
         label: 'Default Type (Optional)',
         instructions: "Set the default Type for tickets, e.g. 'Question'.",
     )]
     protected string $type = '';
 
-    #[Property(
+    #[Input\Text(
         label: 'Default Priority (Optional)',
         instructions: "Set the default Priority for tickets, e.g. '1' (low).",
     )]
     protected string $priority = '';
 
-    #[Property(
+    #[Input\Text(
         label: 'Default Status (Optional)',
         instructions: "Set the default Status for tickets, e.g. '2' (open).",
     )]
     protected string $status = '';
 
-    #[Property(
+    #[Input\Text(
         label: 'Default Source (Optional)',
         instructions: "Set the default Source for tickets, e.g. '1' (email), '2' (portal), etc.",
     )]

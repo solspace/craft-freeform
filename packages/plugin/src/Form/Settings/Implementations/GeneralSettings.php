@@ -3,10 +3,12 @@
 namespace Solspace\Freeform\Form\Settings\Implementations;
 
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Middleware;
-use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Form\Properties\GTM\GTMProperty;
 use Solspace\Freeform\Form\Properties\GTM\GTMValueTransformer;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
@@ -25,75 +27,70 @@ class GeneralSettings extends SettingsNamespace
         label: 'General',
         icon: __DIR__.'/Icons/general.svg',
     )]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Form Name',
         instructions: 'Name or title of the form',
-        required: true,
         placeholder: 'My Form',
     )]
     public string $name = '';
 
     #[Section('general')]
-    #[Property(
+    #[Input\Text(
         label: 'Form Handle',
         instructions: "How you'll refer to this form in the templates",
-        required: true,
         placeholder: 'myHandle',
     )]
     #[Middleware('handle', [false])]
+    #[Validators\Required]
     #[Validators\Handle]
     #[Validators\Length(255)]
     public string $handle = '';
 
     #[Section('general')]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Select(
         label: 'Form Type',
         instructions: 'Select the type of form this is. When additional form types are installed, you can choose a different form type that enables special behaviors.',
-        type: Property::TYPE_SELECT,
-        required: true,
         options: FormTypeOptions::class,
     )]
     public string $type = Regular::class;
 
     #[Section('general')]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         instructions: 'What the auto-generated submission titles should look like.',
-        required: true,
     )]
     public string $submissionTitle = '{{ dateCreated|date("Y-m-d H:i:s") }}';
 
     #[Section('general')]
-    #[Property(
+    #[ValueGenerator(DefaultStatusGenerator::class)]
+    #[Validators\Required]
+    #[Input\Select(
         instructions: 'The default status to be assigned to new submissions.',
-        type: Property::TYPE_SELECT,
-        required: true,
-        valueGenerator: DefaultStatusGenerator::class,
         options: FormStatusOptions::class,
     )]
     public ?int $defaultStatus = null;
 
     #[Section('general')]
-    #[Property(
+    #[Input\Select(
         instructions: 'The formatting template to assign to this form when using Render method.',
-        type: Property::TYPE_SELECT,
         options: FormattingTemplateOptions::class,
     )]
     public ?string $formattingTemplate;
 
     #[Section('general')]
-    #[Property(
+    #[Input\Textarea(
         label: 'Form Description / Notes',
         instructions: 'Description or notes for this form.',
-        type: Property::TYPE_TEXTAREA,
     )]
     public string $description = '';
 
     #[Section('general')]
-    #[Property(
+    #[ValueGenerator(RandomColorGenerator::class)]
+    #[Input\ColorPicker(
         label: 'Form Color',
         instructions: 'The color to be used for the dashboard and charts inside the control panel.',
-        type: Property::TYPE_COLOR_PICKER,
-        valueGenerator: RandomColorGenerator::class,
     )]
     public string $color = '';
 
@@ -102,7 +99,7 @@ class GeneralSettings extends SettingsNamespace
         label: 'Data Storage',
         icon: __DIR__.'/Icons/storage.svg',
     )]
-    #[Property(
+    #[Input\Boolean(
         label: 'Store Submitted Data',
         instructions: 'Should the submission data for this form be stored in the database?',
     )]
@@ -110,10 +107,9 @@ class GeneralSettings extends SettingsNamespace
 
     // TODO: implement a way to get the options to fill on the react side
     #[Section('data-storage')]
-    #[Property(
+    #[Input\Select(
         label: 'Opt-In Data Storage Checkbox',
         instructions: 'Allow users to decide whether the submission data is saved to your site or not.',
-        type: Property::TYPE_SELECT,
         emptyOption: 'Disabled',
         options: [],
     )]
@@ -124,7 +120,7 @@ class GeneralSettings extends SettingsNamespace
         label: 'Captchas',
         icon: __DIR__.'/Icons/captchas.svg',
     )]
-    #[Property(
+    #[Input\Boolean(
         label: 'Enable Captchas',
         instructions: 'Disabling this option removes the Captcha check for this specific form.',
     )]
@@ -135,9 +131,9 @@ class GeneralSettings extends SettingsNamespace
         label: 'Google Tag Manager',
         icon: __DIR__.'/Icons/gtm.svg',
     )]
-    #[Property(
+    #[ValueTransformer(GTMValueTransformer::class)]
+    #[Input\Special\GTM(
         value: ['enabled' => false],
-        transformer: GTMValueTransformer::class,
     )]
     public GTMProperty $gtm;
 }

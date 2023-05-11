@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
 
@@ -24,7 +24,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
 )]
 class TextareaField extends TextField implements PlaceholderInterface
 {
-    #[Property(
+    #[Input\Integer(
         instructions: 'The number of rows in height for this field.',
     )]
     protected int $rows = 2;

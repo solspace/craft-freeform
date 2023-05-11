@@ -5,9 +5,14 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import { v4 } from 'uuid';
 
-type FieldRulesState = FieldRule[];
+import type { RuleState } from '..';
 
-const initialState: FieldRulesState = [];
+type FieldRulesState = RuleState<FieldRule>;
+
+const initialState: FieldRulesState = {
+  initialized: false,
+  items: [],
+};
 
 type ModifyCondition = {
   ruleUid: string;
@@ -28,13 +33,14 @@ export const fieldRulesSlice = createSlice({
   name: 'rules/fields',
   initialState,
   reducers: {
-    set: (state, action: PayloadAction<FieldRulesState>) => {
-      state.splice(0, state.length, ...action.payload);
+    set: (state, action: PayloadAction<FieldRule[]>) => {
+      state.initialized = true;
+      state.items = action.payload;
     },
     add: (state, action: PayloadAction<string>) => {
       const fieldUid = action.payload;
 
-      state.push({
+      state.items.push({
         uid: v4(),
         enabled: true,
         display: Display.Show,
@@ -53,23 +59,23 @@ export const fieldRulesSlice = createSlice({
     modifyDisplay: (state, action: PayloadAction<ChangeDisplay>) => {
       const { ruleUid, display } = action.payload;
 
-      const modifyRule = state.find((rule) => rule.uid === ruleUid);
+      const modifyRule = state.items.find((rule) => rule.uid === ruleUid);
       modifyRule.display = display;
     },
     modifyCombinator: (state, action: PayloadAction<ChangeCombinator>) => {
       const { ruleUid, combinator } = action.payload;
 
-      const modifyRule = state.find((rule) => rule.uid === ruleUid);
+      const modifyRule = state.items.find((rule) => rule.uid === ruleUid);
       modifyRule.combinator = combinator;
     },
     modifyConditions: (state, action: PayloadAction<ModifyCondition>) => {
       const { ruleUid, conditions } = action.payload;
 
-      const modifyRule = state.find((rule) => rule.uid === ruleUid);
+      const modifyRule = state.items.find((rule) => rule.uid === ruleUid);
       modifyRule.conditions = conditions;
     },
     remove: (state, action: PayloadAction<string>) => {
-      state = state.filter((rule) => rule.uid !== action.payload);
+      state.items = state.items.filter((rule) => rule.uid !== action.payload);
     },
   },
 });

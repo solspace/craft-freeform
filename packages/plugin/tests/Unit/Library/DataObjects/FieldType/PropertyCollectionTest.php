@@ -3,8 +3,9 @@
 namespace Solspace\Tests\Freeform\Unit\Library\DataObjects\FieldType;
 
 use PHPUnit\Framework\TestCase;
-use Solspace\Freeform\Library\DataObjects\FieldType\Property;
-use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
+use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\PropertyCollection;
 
 /**
  * @internal
@@ -15,11 +16,11 @@ class PropertyCollectionTest extends TestCase
 {
     public function testRemovesOneFlagged()
     {
-        $prop1 = new Property();
-        $prop1->flags = ['test', 'flag'];
+        $prop1 = new Input\Text();
+        $prop1->flags = [new Flag('test'), new Flag('flag')];
 
-        $prop2 = new Property();
-        $prop2->flags = ['test', 'other'];
+        $prop2 = new Input\Text();
+        $prop2->flags = [new Flag('test'), new Flag('other')];
 
         $collection = new PropertyCollection();
         $collection
@@ -36,11 +37,11 @@ class PropertyCollectionTest extends TestCase
 
     public function testRemovesMultipleFlagged()
     {
-        $prop1 = new Property();
-        $prop1->flags = ['test', 'flag'];
+        $prop1 = new Input\Text();
+        $prop1->flags = [new Flag('test'), new Flag('flag')];
 
-        $prop2 = new Property();
-        $prop2->flags = ['test', 'other'];
+        $prop2 = new Input\Text();
+        $prop2->flags = [new Flag('test'), new Flag('other')];
 
         $collection = new PropertyCollection();
         $collection
@@ -57,11 +58,11 @@ class PropertyCollectionTest extends TestCase
 
     public function testRemovesVariousFlags()
     {
-        $prop1 = new Property();
-        $prop1->flags = ['test', 'flag'];
+        $prop1 = new Input\Text();
+        $prop1->flags = [new Flag('test'), new Flag('flag')];
 
-        $prop2 = new Property();
-        $prop2->flags = ['test', 'other'];
+        $prop2 = new Input\Text();
+        $prop2->flags = [new Flag('test'), new Flag('other')];
 
         $collection = new PropertyCollection();
         $collection

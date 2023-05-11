@@ -16,7 +16,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
@@ -32,19 +33,19 @@ class CampaignMonitor extends AbstractMailingListIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API Key',
         instructions: 'Enter your Campaign Monitor API key here.',
-        required: true,
     )]
     protected string $apiKey = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Client ID',
         instructions: 'Enter your Campaign Monitor Client ID here.',
-        required: true,
     )]
     protected string $clientId = '';
 

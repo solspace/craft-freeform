@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Fields;
 
-use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Services\Form\FieldsService;
 
 class FieldProvider
@@ -11,7 +11,7 @@ class FieldProvider
     {
     }
 
-    public function getFieldByUid(?string $uid): ?AbstractField
+    public function getFieldByUid(?string $uid): ?FieldInterface
     {
         if (null === $uid) {
             return null;

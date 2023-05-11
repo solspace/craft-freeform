@@ -76,7 +76,8 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         $templateDirectory = $settings->getAbsoluteEmailTemplateDirectory();
         if (null === $templateDirectory) {
             throw new NotificationException(
-                Freeform::t('Email Template directory not set')
+                Freeform::t('Email Template directory not set'),
+                NotificationException::NO_EMAIL_DIR
             );
         }
 
@@ -90,7 +91,10 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         try {
             FileHelper::writeToFile($templatePath, $settings->getEmailTemplateContent());
         } catch (\Exception) {
-            throw new NotificationException('Could not get email template content. Please contact Solspace.');
+            throw new NotificationException(
+                'Could not get email template content. Please contact Solspace.',
+                NotificationException::NO_CONTENT
+            );
         }
 
         return $this->getById($templateName.$extension);

@@ -2,38 +2,55 @@
 
 namespace Solspace\Freeform\Attributes\Property;
 
-#[\Attribute(\Attribute::TARGET_PROPERTY)]
-class Property
-{
-    public const TYPE_TABLE = 'table';
-    public const TYPE_OPTIONS = 'options';
-    public const TYPE_MIN_MAX = 'minMax';
-    public const TYPE_SELECT = 'select';
-    public const TYPE_TEXTAREA = 'textarea';
-    public const TYPE_COLOR_PICKER = 'colorPicker';
-    public const TYPE_DATE_PICKER = 'datePicker';
-    public const TYPE_TIME_PICKER = 'timePicker';
-    public const TYPE_DATE_TIME_PICKER = 'datetimePicker';
-    public const TYPE_ATTRIBUTES = 'attributes';
-    public const TYPE_LABEL = 'label';
-    public const TYPE_RECIPIENTS = 'recipients';
-    public const TYPE_NOTIFICATION_TEMPLATE = 'notificationTemplate';
-    public const TYPE_RECIPIENT_MAPPING = 'recipientMapping';
-    public const TYPE_FIELD = 'field';
+use Symfony\Component\Serializer\Annotation\Ignore;
 
+/**
+ * @template T
+ */
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
+abstract class Property
+{
+    #[Ignore] public ?TransformerInterface $transformer = null;
+    #[Ignore] public ?ValueGeneratorInterface $valueGenerator = null;
+
+    /** @var PropertyValidatorInterface[] */
+    #[Ignore] public array $validators = [];
+
+    /** @var Middleware[] */
+    public array $middleware = [];
+
+    /** @var VisibilityFilter[] */
+    public array $visibilityFilters = [];
+
+    /** @var Flag[] */
+    public array $flags = [];
+
+    public ?string $section = null;
+    public bool $required = false;
+    public ?string $handle = null;
+    public ?string $type = null;
+
+    /**
+     * @param T $value
+     */
     public function __construct(
         public ?string $label = null,
         public ?string $instructions = null,
-        public ?string $type = null,
-        public ?string $category = null,
         public ?int $order = null,
         public mixed $value = null,
-        public bool $required = false,
-        public ?string $transformer = null,
-        public ?string $valueGenerator = null,
         public ?string $placeholder = null,
-        public ?string $emptyOption = null,
-        public array|string|null $options = null,
     ) {
+    }
+
+    #[Ignore]
+    public function hasFlag(string $name): bool
+    {
+        foreach ($this->flags as $flag) {
+            if ($flag->name === $name) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

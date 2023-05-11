@@ -16,7 +16,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
@@ -33,18 +34,18 @@ class MailChimp extends AbstractMailingListIntegration
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API Key',
         instructions: 'Enter your MailChimp API key here.',
-        required: true,
     )]
     protected string $apiKey = '';
 
-    #[Property('Use double opt-in?')]
+    #[Input\Boolean('Use double opt-in?')]
     protected bool $doubleOptIn = false;
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $dataCenter = '';
 
     private ?array $existingTags = null;

@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 
 #[Type(
@@ -13,25 +13,22 @@ use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 )]
 class NumberField extends TextField
 {
-    #[Property(
-        label: 'Allow negative numbers?'
-    )]
+    #[Input\Boolean('Allow negative numbers?')]
     protected bool $allowNegative = false;
 
-    #[Property(
+    #[Input\MinMax(
         label: 'Min/Max Values',
         instructions: 'The minimum and/or maximum numeric value this field is allowed to have (optional).',
-        type: Property::TYPE_MIN_MAX,
     )]
     protected ?array $minMaxValues = [null, null];
 
-    #[Property(
+    #[Input\Integer(
         instructions: 'The number of decimal places allowed.',
         placeholder: 'Leave blank for no decimals',
     )]
     protected ?int $decimalCount = 0;
 
-    #[Property(
+    #[Input\FloatingNumber(
         instructions: 'The step',
     )]
     protected float $step = 1;

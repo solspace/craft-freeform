@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
@@ -23,10 +23,8 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
     public const MIN_VALUE = 3;
     public const MAX_VALUE = 10;
 
-    #[Property(
+    #[Input\Select(
         label: 'Maximum Number of Stars',
-        instructions: '',
-        type: Property::TYPE_SELECT,
         options: [
             1 => 1,
             2 => 2,
@@ -42,22 +40,13 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
     )]
     protected int $maxValue = 5;
 
-    #[Property(
-        label: 'Unselected Color',
-        type: Property::TYPE_COLOR_PICKER,
-    )]
+    #[Input\ColorPicker('Unselected Color')]
     protected string $colorIdle = '#DDDDDD';
 
-    #[Property(
-        label: 'Hover Color',
-        type: Property::TYPE_COLOR_PICKER,
-    )]
+    #[Input\ColorPicker('Hover Color')]
     protected string $colorHover = '#FFD700';
 
-    #[Property(
-        label: 'Selected Color',
-        type: Property::TYPE_COLOR_PICKER,
-    )]
+    #[Input\ColorPicker('Selected Color')]
     protected string $colorSelected = '#FF7700';
 
     public function getType(): string

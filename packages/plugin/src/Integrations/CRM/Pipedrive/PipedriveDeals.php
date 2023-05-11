@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 
 #[Type(
     name: 'Pipedrive - Deals',
@@ -24,7 +24,7 @@ class PipedriveDeals extends BasePipedriveIntegration
 {
     public const LOG_CATEGORY = 'Pipedrive Deals';
 
-    #[Property(
+    #[Input\Text(
         label: 'Stage ID',
         instructions: 'Enter the Pipedrive Stage ID you want the deal to be placed in.',
     )]

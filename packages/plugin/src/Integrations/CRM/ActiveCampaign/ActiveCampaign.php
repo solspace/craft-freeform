@@ -16,7 +16,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
@@ -31,50 +32,50 @@ class ActiveCampaign extends AbstractCRMIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API Token',
         instructions: 'Enter your API Token here.',
-        required: true,
     )]
     protected string $apiToken = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API URL',
         instructions: 'Enter your API specific URL here.',
-        required: true,
     )]
     protected string $apiUrl = '';
 
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         instructions: 'Enter the name or ID of the desired Pipeline.',
-        required: true,
     )]
     protected string $pipeline = '';
 
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         instructions: 'Enter the name or ID of the desired Stage.',
-        required: true,
     )]
     protected string $stage = '';
 
-    #[Property(
+    #[Input\Text(
         label: 'Owner (Optional if auto-assign enabled in AC)',
         instructions: "Enter the username or ID of the user you wish to assign as the deal owner. If you don't specify an owner, Active Campaign will auto-assign an owner if it is set up.",
     )]
     protected string $owner = '';
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $pipelineId = '';
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $stageId = '';
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $ownerId = '';
 
     public function pushObject(array $keyValueList, $formFields = null): bool

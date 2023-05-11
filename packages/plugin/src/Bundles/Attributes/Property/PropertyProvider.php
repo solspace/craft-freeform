@@ -3,21 +3,27 @@
 namespace Solspace\Freeform\Bundles\Attributes\Property;
 
 use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionFetcherInterface;
+use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionCollection;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\Options\OptionFetcherInterface;
-use Solspace\Freeform\Attributes\Property\PropertyTypes\ValueGeneratorInterface;
+use Solspace\Freeform\Attributes\Property\PropertyCollection;
 use Solspace\Freeform\Attributes\Property\PropertyValidatorInterface;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Attributes\Property\Validators\Required;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
-use Solspace\Freeform\Library\DataObjects\FieldType\Property as PropertyDTO;
-use Solspace\Freeform\Library\DataObjects\FieldType\PropertyCollection;
+use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Stringy\Stringy;
 use yii\di\Container;
 
+/**
+ * @template T of object
+ */
 class PropertyProvider
 {
     public function __construct(private Container $container)
@@ -65,13 +71,31 @@ class PropertyProvider
             $accessible = $property->isPublic();
             $property->setAccessible(true);
 
-            $attr = $property->getAttributes(Property::class)[0] ?? null;
-            if (!$attr) {
+            $attribute = AttributeHelper::findAttribute($property, Property::class);
+            $section = AttributeHelper::findAttribute($property, Section::class);
+            if (!$attribute) {
                 continue;
             }
 
-            $section = $property->getAttributes(Section::class)[0] ?? null;
-            $section = $section?->newInstance();
+            $this->processOptions($attribute);
+            $this->processTransformer($property, $attribute);
+            $this->processValueGenerator($property, $attribute);
+            $this->processFlags($property, $attribute);
+            $this->processValidators($property, $attribute);
+            $this->processMiddleware($property, $attribute);
+            $this->processVisibilityFilters($property, $attribute);
+
+            $value = $property->getDefaultValue() ?? $attribute->value;
+            if (null === $referenceObject && $attribute->valueGenerator) {
+                $value = $attribute->valueGenerator->generateValue($attribute, $referenceObject);
+            }
+
+            if ($referenceObject && $property->isInitialized($referenceObject)) {
+                $value = $property->getValue($referenceObject);
+                if ($attribute->transformer) {
+                    $value = $attribute->transformer->reverseTransform($value);
+                }
+            }
 
             /** @var Section $section */
             $fallbackLabel = Stringy::create($property->getName())
@@ -80,53 +104,14 @@ class PropertyProvider
                 ->toTitleCase()
             ;
 
-            /** @var Property $attribute */
-            $attribute = $attr->newInstance();
+            $attribute->value = $value;
+            $attribute->section = $section?->handle;
+            $attribute->type ??= $property->getType()->getName();
+            $attribute->handle = $property->getName();
+            $attribute->label ??= $fallbackLabel;
+            $attribute->order ??= $collection->getNextOrder();
 
-            $options = $this->compileOptions($attribute);
-
-            /** @var null|TransformerInterface $transformer */
-            $transformer = $attribute->transformer ? $this->container->get($attribute->transformer) : null;
-
-            $value = $property->getDefaultValue() ?? $attribute->value;
-            if (null === $referenceObject && $attribute->valueGenerator) {
-                $generator = $this->container->get($attribute->valueGenerator);
-                if ($generator instanceof ValueGeneratorInterface) {
-                    $value = $generator->generateValue($attribute, $referenceObject);
-                }
-            }
-
-            if ($referenceObject && $property->isInitialized($referenceObject)) {
-                $value = $property->getValue($referenceObject);
-
-                if ($transformer) {
-                    $value = $transformer->reverseTransform($value);
-                }
-            }
-
-            $prop = new PropertyDTO();
-            $prop->type = $attribute->type ?? $property->getType()->getName();
-            $prop->handle = $property->getName();
-            $prop->label = $attribute->label ?? $fallbackLabel;
-            $prop->instructions = $attribute->instructions;
-            $prop->placeholder = $attribute->placeholder;
-            $prop->section = $section?->handle;
-            $prop->options = $options?->getOptions();
-            $prop->emptyOption = $attribute->emptyOption;
-            $prop->required = $attribute->required;
-            $prop->value = $value;
-            $prop->order = $attribute->order ?? $collection->getNextOrder();
-            $prop->flags = $this->getFlags($property);
-            $prop->middleware = $this->getMiddleware($property);
-            $prop->visibilityFilters = $this->getVisibilityFilters($property);
-            $prop->transformer = $transformer;
-            $prop->setValidators($this->getValidators($property));
-
-            if ($prop->required) {
-                $prop->addValidator(new Required());
-            }
-
-            $collection->add($prop);
+            $collection->add($attribute);
 
             if (!$accessible) {
                 $property->setAccessible(false);
@@ -141,20 +126,29 @@ class PropertyProvider
         return new \ReflectionClass($class);
     }
 
-    private function compileOptions(Property $attribute): ?OptionCollection
+    private function processOptions(Property $attribute): void
     {
+        if (!$attribute instanceof OptionsInterface) {
+            return;
+        }
+
         $collection = new OptionCollection();
         $options = $attribute->options;
 
         if (null === $options) {
-            return null;
+            return;
         }
 
         if (\is_string($options)) {
             /** @var OptionFetcherInterface $class */
             $class = $this->container->get($options);
+            if ($class instanceof OptionFetcherInterface) {
+                $attribute->options = $class->fetchOptions($attribute);
+            } else {
+                $attribute->options = $collection;
+            }
 
-            return $class->fetchOptions($attribute);
+            return;
         }
 
         foreach ($options as $key => $value) {
@@ -164,45 +158,57 @@ class PropertyProvider
             $collection->add($val, $label);
         }
 
-        return $collection;
+        $attribute->options = $collection;
     }
 
-    private function getFlags(\ReflectionProperty $property): array
+    private function processTransformer(\ReflectionProperty $property, Property $attribute): void
     {
-        return array_map(
-            fn ($attr) => $attr->getArguments()[0],
-            $property->getAttributes(Flag::class)
-        );
-    }
-
-    private function getVisibilityFilters(\ReflectionProperty $property): array
-    {
-        return array_map(
-            fn ($attr) => $attr->getArguments()[0],
-            $property->getAttributes(VisibilityFilter::class)
-        );
-    }
-
-    private function getMiddleware(\ReflectionProperty $property): array
-    {
-        return array_map(
-            fn ($attr) => $attr->getArguments(),
-            $property->getAttributes(Middleware::class)
-        );
-    }
-
-    private function getValidators(\ReflectionProperty $property): array
-    {
-        $validators = [];
-
-        $attributes = $property->getAttributes();
-        foreach ($attributes as $attribute) {
-            $attributeInstance = $attribute->newInstance();
-            if ($attributeInstance instanceof PropertyValidatorInterface) {
-                $validators[] = $attributeInstance;
-            }
+        $transformerAttribute = AttributeHelper::findAttribute($property, ValueTransformer::class);
+        if (!$transformerAttribute) {
+            return;
         }
 
-        return $validators;
+        /** @var TransformerInterface $transformer */
+        $transformer = $this->container->get($transformerAttribute->className);
+        $attribute->transformer = $transformer;
+    }
+
+    private function processValueGenerator(\ReflectionProperty $property, Property $attribute): void
+    {
+        $valueGeneratorAttribute = AttributeHelper::findAttribute($property, ValueGenerator::class);
+        if (!$valueGeneratorAttribute) {
+            return;
+        }
+
+        /** @var ValueGeneratorInterface $valueGenerator */
+        $valueGenerator = $this->container->get($valueGeneratorAttribute->className);
+        $attribute->valueGenerator = $valueGenerator;
+    }
+
+    private function processFlags(\ReflectionProperty $property, Property $attribute): void
+    {
+        $attribute->flags = AttributeHelper::findAttributes($property, Flag::class);
+    }
+
+    private function processValidators(\ReflectionProperty $property, Property $attribute): void
+    {
+        $attribute->validators = AttributeHelper::findAttributes($property, PropertyValidatorInterface::class);
+        foreach ($attribute->validators as $validator) {
+            if ($validator instanceof Required) {
+                $attribute->required = true;
+
+                break;
+            }
+        }
+    }
+
+    private function processMiddleware(\ReflectionProperty $property, Property $attribute): void
+    {
+        $attribute->middleware = AttributeHelper::findAttributes($property, Middleware::class);
+    }
+
+    private function processVisibilityFilters(\ReflectionProperty $property, Property $attribute): void
+    {
+        $attribute->visibilityFilters = AttributeHelper::findAttributes($property, VisibilityFilter::class);
     }
 }

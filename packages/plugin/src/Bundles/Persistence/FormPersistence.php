@@ -91,19 +91,14 @@ class FormPersistence extends FeatureBundle
 
                 $errors = [];
 
-                $validators = $property->getValidators();
-                foreach ($validators as $validator) {
+                foreach ($property->validators as $validator) {
                     $errors = array_merge($errors, $validator->validate($value));
                 }
 
                 if ($errors) {
                     $event->addErrorsToResponse(
                         'form',
-                        [
-                            $namespace->handle => [
-                                $handle => $errors,
-                            ],
-                        ]
+                        [$namespace->handle => [$handle => $errors]]
                     );
                 }
 

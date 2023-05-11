@@ -418,6 +418,25 @@ class Install extends StreamlinedInstallMigration
                     ForeignKey::CASCADE
                 ),
 
+            (new Table('freeform_rules_notifications'))
+                ->addField('id', $this->integer()->notNull())
+                ->addField('notificationId', $this->integer()->notNull())
+                ->addField('send', $this->boolean()->notNull())
+                ->addForeignKey(
+                    'id',
+                    'freeform_rules',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                )
+                ->addForeignKey(
+                    'notificationId',
+                    'freeform_forms_notifications',
+                    'id',
+                    ForeignKey::CASCADE,
+                    ForeignKey::CASCADE
+                ),
+
             (new Table('freeform_rules_conditions'))
                 ->addField('id', $this->primaryKey())
                 ->addField('ruleId', $this->integer()->notNull())
@@ -445,6 +464,7 @@ class Install extends StreamlinedInstallMigration
     {
         $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_fields}}', 'id');
         $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_pages}}', 'id');
+        $this->addPrimaryKey('PRIMARY_KEY', '{{%freeform_rules_notifications}}', 'id');
 
         return parent::afterInstall();
     }

@@ -17,7 +17,8 @@ use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
@@ -33,27 +34,27 @@ class Dotmailer extends AbstractMailingListIntegration
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'API User Email',
         instructions: 'Enter your Dotmailer API user email.',
-        required: true,
     )]
     protected string $userEmail = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         label: 'Password',
         instructions: 'Enter your Dotmailer API user password',
-        required: true,
     )]
     protected string $userPassword = '';
 
-    #[Property('Use double opt-in?')]
+    #[Input\Boolean('Use double opt-in?')]
     protected bool $doubleOptIn = false;
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $endpoint = '';
 
     public function getUserEmail(): string

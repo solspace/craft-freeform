@@ -12,20 +12,17 @@
 
 namespace Solspace\Freeform\Notifications;
 
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 
 abstract class BaseNotification implements NotificationInterface
 {
     protected ?int $id;
     protected ?string $uid;
 
-    #[Property(
-        type: Property::TYPE_LABEL,
-        required: true,
-    )]
+    #[Input\Label]
     protected string $name;
 
-    #[Property]
+    #[Input\Boolean]
     protected bool $enabled = true;
 
     public function getId(): ?int

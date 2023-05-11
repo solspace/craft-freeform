@@ -1,4 +1,5 @@
 import React from 'react';
+import Skeleton from 'react-loading-skeleton';
 import type { Condition } from '@ff-client/types/rules';
 import { Operator } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
@@ -12,10 +13,15 @@ import { Action, Table } from './condition-table.styles';
 
 type Props = {
   conditions: Condition[];
+  loading?: boolean;
   onChange?: (conditions: Condition[]) => void;
 };
 
-export const ConditionTable: React.FC<Props> = ({ conditions, onChange }) => {
+export const ConditionTable: React.FC<Props> = ({
+  conditions,
+  loading,
+  onChange,
+}) => {
   return (
     <Table>
       <thead>
@@ -27,6 +33,20 @@ export const ConditionTable: React.FC<Props> = ({ conditions, onChange }) => {
         </tr>
       </thead>
       <tbody>
+        {loading && (
+          <tr>
+            <td>
+              <Skeleton height={34} />
+            </td>
+            <td>
+              <Skeleton height={34} />
+            </td>
+            <td>
+              <Skeleton height={34} />
+            </td>
+            <td></td>
+          </tr>
+        )}
         {conditions.map((condition, index) => (
           <tr key={index}>
             <td>
@@ -84,27 +104,29 @@ export const ConditionTable: React.FC<Props> = ({ conditions, onChange }) => {
           </tr>
         ))}
 
-        <tr>
-          <td colSpan={4}>
-            <button
-              className="btn add icon dashed fullwidth"
-              onClick={() => {
-                onChange &&
-                  onChange([
-                    ...conditions,
-                    {
-                      uid: v4(),
-                      field: '',
-                      operator: Operator.Equals,
-                      value: '',
-                    },
-                  ]);
-              }}
-            >
-              {translate('Add condition')}
-            </button>
-          </td>
-        </tr>
+        {!loading && (
+          <tr>
+            <td colSpan={4}>
+              <button
+                className="btn add icon dashed fullwidth"
+                onClick={() => {
+                  onChange &&
+                    onChange([
+                      ...conditions,
+                      {
+                        uid: v4(),
+                        field: '',
+                        operator: Operator.Equals,
+                        value: '',
+                      },
+                    ]);
+                }}
+              >
+                {translate('Add condition')}
+              </button>
+            </td>
+          </tr>
+        )}
       </tbody>
     </Table>
   );

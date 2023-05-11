@@ -113,7 +113,14 @@ class NotificationsController extends BaseApiController
         do {
             try {
                 $record = $this->getNotificationsService()->create($name);
-            } catch (NotificationException) {
+            } catch (NotificationException $e) {
+                switch ($e->getCode()) {
+                    case NotificationException::NO_EMAIL_DIR:
+                    case NotificationException::NO_CONTENT:
+                        $errors[] = $e->getMessage();
+
+                        break 2;
+                }
             }
 
             $name = preg_replace('/\s\d+$/', '', $name);

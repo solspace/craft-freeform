@@ -25,7 +25,6 @@ use craft\services\UserPermissions;
 use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
-use Doctrine\Common\Annotations\AnnotationReader;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
@@ -45,7 +44,7 @@ use Solspace\Freeform\Jobs\PurgeUnfinalizedAssetsJob;
 use Solspace\Freeform\Library\Bundles\BundleInterface;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
-use Solspace\Freeform\Library\Serialization\Normalizers\IdentificationNormalizer;
+use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FeedRecord;
@@ -102,10 +101,6 @@ use Solspace\Freeform\Variables\FreeformVariable;
 use Solspace\Freeform\Widgets\ExtraWidgetInterface;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
-use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use yii\base\Event;
 use yii\db\Query;
@@ -984,15 +979,7 @@ class Freeform extends Plugin
         \Craft::$app->setContainer([
             'definitions' => [
                 Serializer::class => function () {
-                    $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
-
-                    $encoders = [new JsonEncoder()];
-                    $normalizers = [
-                        new IdentificationNormalizer(),
-                        new ObjectNormalizer($classMetadataFactory),
-                    ];
-
-                    return new Serializer($normalizers, $encoders);
+                    return new FreeformSerializer();
                 },
             ],
         ]);

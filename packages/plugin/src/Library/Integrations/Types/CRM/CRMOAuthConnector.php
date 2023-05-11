@@ -17,7 +17,8 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use JetBrains\PhpStorm\NoReturn;
 use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
@@ -29,17 +30,17 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $accessToken = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_INTERNAL)]
-    #[Property]
+    #[Input\Text]
     protected string $refreshToken = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_READONLY)]
-    #[Property(
+    #[Input\Text(
         label: 'OAuth 2.0 Return URI',
         instructions: 'You must specify this as the Return URI in your app settings to be able to authorize your credentials. DO NOT CHANGE THIS.',
     )]
@@ -47,17 +48,17 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         instructions: 'Enter the Client ID of your app here.',
-        required: true,
     )]
     protected string $clientId = '';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Property(
+    #[Validators\Required]
+    #[Input\Text(
         instructions: 'Enter the Client Secret of your app here.',
-        required: true,
     )]
     protected string $clientSecret = '';
 

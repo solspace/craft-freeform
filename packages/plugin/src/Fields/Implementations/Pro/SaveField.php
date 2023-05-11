@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
-use Solspace\Freeform\Attributes\Property\Property;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Bundles\Form\SaveForm\SaveForm;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\DefaultFieldInterface;
@@ -24,7 +24,7 @@ class SaveField extends AbstractField implements DefaultFieldInterface, InputOnl
     public const POSITION_CENTER = 'center';
     public const POSITION_RIGHT = 'right';
 
-    #[Property(
+    #[Input\Text(
         label: 'Save button Label',
         instructions: 'The label of the Save & Continue Later button.',
     )]
@@ -32,7 +32,7 @@ class SaveField extends AbstractField implements DefaultFieldInterface, InputOnl
 
     protected string $position = self::POSITION_RIGHT;
 
-    #[Property(
+    #[Input\Text(
         label: 'Return URL',
         instructions: 'The URL the user will be redirected to after saving. Can use {token} and {key}.',
     )]

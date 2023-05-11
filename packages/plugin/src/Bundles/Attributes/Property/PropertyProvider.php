@@ -77,6 +77,14 @@ class PropertyProvider
                 continue;
             }
 
+            $this->processOptions($attribute);
+            $this->processTransformer($property, $attribute);
+            $this->processValueGenerator($property, $attribute);
+            $this->processFlags($property, $attribute);
+            $this->processValidators($property, $attribute);
+            $this->processMiddleware($property, $attribute);
+            $this->processVisibilityFilters($property, $attribute);
+
             $value = $property->getDefaultValue() ?? $attribute->value;
             if (null === $referenceObject && $attribute->valueGenerator) {
                 $value = $attribute->valueGenerator->generateValue($attribute, $referenceObject);
@@ -102,14 +110,6 @@ class PropertyProvider
             $attribute->handle = $property->getName();
             $attribute->label ??= $fallbackLabel;
             $attribute->order ??= $collection->getNextOrder();
-
-            $this->processOptions($attribute);
-            $this->processTransformer($property, $attribute);
-            $this->processValueGenerator($property, $attribute);
-            $this->processFlags($property, $attribute);
-            $this->processValidators($property, $attribute);
-            $this->processMiddleware($property, $attribute);
-            $this->processVisibilityFilters($property, $attribute);
 
             $collection->add($attribute);
 

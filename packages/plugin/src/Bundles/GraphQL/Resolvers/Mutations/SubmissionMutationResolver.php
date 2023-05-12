@@ -156,10 +156,13 @@ class SubmissionMutationResolver extends ElementMutationResolver
             $payload[$key] = $value;
         }
 
+        $payload['assets'] = null;
         $assetsFields = $form->getLayout()->getFields(FileUploadField::class);
-        $assetsField = reset($assetsFields);
-        if ($assetsField) {
-            $payload['assets'] = $submission->getAssets($assetsField->getHandle());
+        foreach ($assetsFields as $assetsField) {
+            $assets = $submission->getAssets($assetsField->getHandle());
+            foreach ($assets as $asset) {
+                $payload['assets'][] = $asset;
+            }
         }
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);

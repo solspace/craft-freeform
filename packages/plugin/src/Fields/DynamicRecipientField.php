@@ -190,7 +190,7 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
         $description[] = $this->getInstructions();
         $description[] = $this->isShowAsCheckboxes() ? 'Multiple values allowed.' : 'Single value allowed.';
         $description[] = 'Values include ['.implode(', ', $values).'].';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

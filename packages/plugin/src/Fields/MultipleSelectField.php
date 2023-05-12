@@ -90,7 +90,7 @@ class MultipleSelectField extends AbstractExternalOptionsField implements Multip
         $description[] = $this->getInstructions();
         $description[] = 'Multiple values allowed.';
         $description[] = 'Values include ['.implode(', ', $values).'].';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

@@ -93,7 +93,7 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements Multipl
         $description[] = $this->getInstructions();
         $description[] = 'Multiple values allowed.';
         $description[] = 'Values include ['.implode(', ', $values).'].';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

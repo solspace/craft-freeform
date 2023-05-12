@@ -127,7 +127,7 @@ class RatingField extends AbstractField implements SingleValueInterface, ExtraFi
         $description[] = $this->getInstructions();
         $description[] = 'Single value allowed.';
         $description[] = 'Values include ['.implode(', ', $values).'].';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

@@ -79,24 +79,19 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         return array_filter($legends);
     }
 
-    public function getContentGqlType(): Type|array
-    {
-        return NumberType::getType();
-    }
-
     public function getContentGqlMutationArgumentType(): Type|array
     {
         $values = [];
 
         foreach ($this->getOptions() as $option) {
-            $values[] = $option->getValue();
+            $values[] = '"'.$option->getValue().'"';
         }
 
         $description = [];
         $description[] = $this->getInstructions();
         $description[] = 'Single value allowed.';
         $description[] = 'Values include ['.implode(', ', $values).'].';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

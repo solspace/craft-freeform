@@ -38,7 +38,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         $description = [];
         $description[] = $this->getInstructions();
         $description[] = 'Must match "'.$field->getHandle().'" field.';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

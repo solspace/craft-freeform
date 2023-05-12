@@ -52,7 +52,7 @@ class RegexField extends TextField implements ExtraFieldInterface
         $description = [];
         $description[] = $this->getInstructions();
         $description[] = 'Regex pattern "'.$this->getPattern().'".';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

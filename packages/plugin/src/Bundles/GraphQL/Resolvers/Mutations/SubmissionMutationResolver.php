@@ -65,17 +65,11 @@ class SubmissionMutationResolver extends ElementMutationResolver
 
         $returnUrl = $formsService->getReturnUrl($form, $submission);
 
-        $assetsFieldHandle = null;
-
         $hasFieldErrors = false;
 
         $fieldErrors = [];
 
         foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof FileUploadField) {
-                $assetsFieldHandle = $field->getHandle();
-            }
-
             if ($field->hasErrors()) {
                 $hasFieldErrors = true;
 
@@ -88,7 +82,13 @@ class SubmissionMutationResolver extends ElementMutationResolver
         if ($hasFieldErrors) {
             foreach ($fieldErrors as $fieldError) {
                 foreach ($fieldError as $message) {
-                    $userErrors[] = $message;
+                    if (\is_array($message)) {
+                        foreach ($message as $mess) {
+                            $userErrors[] = $mess;
+                        }
+                    } else {
+                        $userErrors[] = $message;
+                    }
                 }
             }
         }
@@ -96,14 +96,26 @@ class SubmissionMutationResolver extends ElementMutationResolver
         if ($form->hasErrors()) {
             foreach ($form->getErrors() as $formError) {
                 foreach ($formError as $message) {
-                    $userErrors[] = $message;
+                    if (\is_array($message)) {
+                        foreach ($message as $mess) {
+                            $userErrors[] = $mess;
+                        }
+                    } else {
+                        $userErrors[] = $message;
+                    }
                 }
             }
         }
 
         foreach ($form->getActions() as $formAction) {
             foreach ($formAction as $message) {
-                $userErrors[] = $message;
+                if (\is_array($message)) {
+                    foreach ($message as $mess) {
+                        $userErrors[] = $mess;
+                    }
+                } else {
+                    $userErrors[] = $message;
+                }
             }
         }
 
@@ -144,8 +156,10 @@ class SubmissionMutationResolver extends ElementMutationResolver
             $payload[$key] = $value;
         }
 
-        if ($assetsFieldHandle) {
-            $payload['assets'] = $submission->getAssets($assetsFieldHandle);
+        $assetsFields = $form->getLayout()->getFields(FileUploadField::class);
+        $assetsField = reset($assetsFields);
+        if ($assetsField) {
+            $payload['assets'] = $submission->getAssets($assetsField->getHandle());
         }
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);

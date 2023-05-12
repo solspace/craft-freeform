@@ -176,11 +176,13 @@ class FormInterface extends AbstractInterface
                             return null;
                         }
 
-                        foreach ($source->getLayout()->getFields() as $field) {
-                            if ($field instanceof RecaptchaField) {
-                                return $field->getHandle();
-                            }
+                        $fields = $source->getLayout()->getFields(RecaptchaField::class);
+                        $field = reset($fields);
+                        if (!$field) {
+                            return [];
                         }
+
+                        return $field->getHandle();
                     }
 
                     return null;

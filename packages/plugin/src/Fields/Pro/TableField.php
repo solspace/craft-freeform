@@ -2,10 +2,6 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
-use craft\gql\GqlEntityRegistry;
-use craft\gql\types\generators\TableRowType as TableRowTypeGenerator;
-use craft\gql\types\TableRow;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
@@ -159,13 +155,6 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
             return $this;
         }
 
-        if ($this->getForm()->isGraphQLPosted()) {
-            // Converts back into Freeform's TableField expected structure
-            foreach ($layout as $index => $column) {
-                $value[$index] = array_values($value[$index]);
-            }
-        }
-
         foreach ($value as $rowIndex => $row) {
             if (!\is_array($row)) {
                 continue;
@@ -196,49 +185,52 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
 
     public function getContentGqlType(): Type|array
     {
-        $this->setColumns();
-
-        return Type::listOf(TableRowTypeGenerator::generateType($this));
+        return Type::listOf(Type::listOf(Type::string()));
     }
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
-        $typeName = $this->getHandle().'_FreeformTableRowInput';
+        $layout = [];
+        $selectValuesInclude = '';
+        $checkboxValuesInclude = '';
 
-        if ($inputType = GqlEntityRegistry::getEntity($typeName)) {
-            return Type::listOf($inputType);
+        foreach ($this->getTableLayout() as $column) {
+            $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
+
+            if (self::COLUMN_TYPE_SELECT === $type) {
+                $selectValues = [];
+                $options = explode(';', $column['value']);
+
+                foreach ($options as $option) {
+                    $selectValues[] = '"'.$option.'"';
+                }
+
+                if (!empty($selectValues)) {
+                    $selectValuesInclude = '- '.$column['label'].' values include '.implode(', ', $selectValues).'.';
+                }
+
+                $layout[] = '"'.$column['label'].'"';
+            } elseif (self::COLUMN_TYPE_CHECKBOX === $type) {
+                $checkboxValuesInclude = '- '.$column['label'].' values include "'.$column['value'].'".';
+
+                $layout[] = '"'.$column['label'].'"';
+            } else {
+                $layout[] = '"'.$column['label'].'"';
+            }
         }
 
-        $fields = TableRow::prepareRowFieldDefinition($this->columns);
+        $description = [];
+        $description[] = $this->getInstructions();
+        $description[] = 'Expected layout [['.implode(', ', $layout).']].';
+        $description[] = $selectValuesInclude;
+        $description[] = $checkboxValuesInclude;
+        $description = implode("\n", $description);
 
-        $inputType = GqlEntityRegistry::createEntity($typeName, new InputObjectType([
-            'name' => $typeName,
-            'fields' => function () use ($fields) {
-                return $fields;
-            },
-        ]));
-
-        return Type::listOf($inputType);
-    }
-
-    /**
-     * Generates the expected structure for Craft's own TableRowType.
-     */
-    public function setColumns(): void
-    {
-        $layout = $this->getTableLayout();
-
-        foreach ($layout as $index => $column) {
-            $id = 'col'.($index + 1);
-
-            $this->columns[$id] = [
-                'id' => $id,
-                'width' => '',
-                'handle' => $id,
-                'type' => $column['type'],
-                'heading' => $column['label'],
-            ];
-        }
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function getInputHtml(): string

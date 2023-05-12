@@ -69,6 +69,9 @@ class SubmissionGenerator extends Generator implements GeneratorInterface, Singl
 
     public static function setFields(FormModel $formModel): void
     {
+        self::$inputFields = [];
+        self::$resolverFields = [];
+
         foreach ($formModel->getLayout()->getFields() as $field) {
             if ($field->includeInGqlSchema()) {
                 self::$inputFields[] = $field;

@@ -103,10 +103,10 @@ class MailingListField extends AbstractField implements DefaultFieldInterface, N
     {
         $description = [];
         $description[] = $this->getInstructions();
+        $description[] = 'Used by '.$this->getLabel().' field.';
         $description[] = 'Single value allowed.';
         $description[] = 'Values include [0, 1].';
-        $description[] = 'Used by '.$this->getLabel().' field.';
-        $description = implode(' ', $description);
+        $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),

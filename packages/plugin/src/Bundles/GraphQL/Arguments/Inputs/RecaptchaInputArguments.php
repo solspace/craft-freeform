@@ -33,20 +33,19 @@ class RecaptchaInputArguments
             return [];
         }
 
-        $fields = [];
-
-        foreach (self::$form->getLayout()->getFields() as $field) {
-            if ($field instanceof RecaptchaField) {
-                $fieldHandle = $field->getHandle();
-
-                $fields[$fieldHandle] = [
-                    'name' => $fieldHandle,
-                    'type' => RecaptchaInputType::getType(),
-                    'description' => 'The Recaptcha name/value for the submission',
-                ];
-            }
+        $fields = self::$form->getLayout()->getFields(RecaptchaField::class);
+        $field = reset($fields);
+        if (!$field) {
+            return [];
         }
 
-        return $fields;
+        $fieldHandle = $field->getHandle();
+        return [
+            $fieldHandle = [
+                'name' => $fieldHandle,
+                'type' => RecaptchaInputType::getType(),
+                'description' => 'The Recaptcha name/value for the submission',
+            ],
+        ];
     }
 }

@@ -58,11 +58,16 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      * @return null|FileUploadResponse
      *
      * @throws InvalidSubpathException
+     * @throws \Throwable|UploadFailedException
      */
     public function uploadFile(FileUploadField $field, Form $form)
     {
         if (!$field->getAssetSourceId()) {
             return null;
+        }
+
+        if ($form->isGraphQLPosted()) {
+            return $this->uploadGraphQL($field, $form);
         }
 
         if (!$_FILES || !isset($_FILES[$field->getHandle()])) {
@@ -151,10 +156,6 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
      */
     public function uploadGraphQL(FileUploadField $field, Form $form): ?FileUploadResponse
     {
-        if (!$field->getAssetSourceId()) {
-            return null;
-        }
-
         $errors = [];
 
         $uploadedAssetIds = [];

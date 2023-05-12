@@ -14,11 +14,9 @@ namespace Solspace\Freeform\Fields;
 
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
-use craft\errors\InvalidSubpathException;
 use craft\helpers\Assets;
 use craft\helpers\FileHelper;
 use GraphQL\Type\Definition\Type;
-use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
@@ -138,16 +136,7 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
     public function uploadFile()
     {
         if (!isset(self::$filesUploaded[$this->handle])) {
-            $response = null;
-
-            if ($this->getForm()->isGraphQLPosted()) {
-                try {
-                    $response = $this->getForm()->getFileUploadHandler()->uploadGraphQL($this, $this->getForm());
-                } catch (GuzzleException|InvalidSubpathException|Exception $e) {
-                }
-            } else {
-                $response = $this->getForm()->getFileUploadHandler()->uploadFile($this, $this->getForm());
-            }
+            $response = $this->getForm()->getFileUploadHandler()->uploadFile($this, $this->getForm());
 
             self::$filesUploaded[$this->handle] = null;
             self::$filesUploadedErrors[$this->handle] = [];

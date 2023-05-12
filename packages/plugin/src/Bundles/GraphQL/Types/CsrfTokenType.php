@@ -4,7 +4,6 @@ namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
 use craft\gql\base\ObjectType;
 use craft\gql\GqlEntityRegistry;
-use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\CsrfTokenArguments;
 

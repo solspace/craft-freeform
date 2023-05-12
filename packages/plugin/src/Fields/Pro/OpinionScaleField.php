@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
-use craft\gql\types\Number as NumberType;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;

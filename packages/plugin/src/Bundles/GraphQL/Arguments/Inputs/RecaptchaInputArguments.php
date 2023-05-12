@@ -40,6 +40,7 @@ class RecaptchaInputArguments
         }
 
         $fieldHandle = $field->getHandle();
+
         return [
             $fieldHandle = [
                 'name' => $fieldHandle,

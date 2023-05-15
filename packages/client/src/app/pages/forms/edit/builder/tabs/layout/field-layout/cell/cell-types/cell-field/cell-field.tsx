@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
@@ -6,8 +6,9 @@ import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
+import template from 'lodash.template';
 
-import { CellFieldWrapper, Label } from './cell-field.styles';
+import { CellFieldWrapper, Instructions, Label } from './cell-field.styles';
 
 type Props = {
   uid: string;
@@ -18,35 +19,38 @@ export const CellField: React.FC<Props> = ({ uid }) => {
   const type = useFieldType(field?.typeClass);
   const dispatch = useAppDispatch();
 
-  if (field?.properties === undefined) {
+  const preview = useMemo(() => {
+    if (
+      field?.properties === undefined ||
+      type?.previewTemplate === undefined
+    ) {
+      return 'No preview available';
+    }
+
+    try {
+      const compiled = template(type.previewTemplate);
+      return compiled(field.properties);
+    } catch (error) {
+      return `Preview template error: "${error.message}"`;
+    }
+  }, [field?.properties, type?.previewTemplate]);
+
+  if (field?.properties === undefined || !type) {
     return null;
   }
 
   return (
     <CellFieldWrapper
-      className={classes(hasErrors(field.errors) && 'errors')}
+      className={classes(hasErrors(field.errors) && 'errors', 'field')}
       onClick={(): void => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}
     >
-      <Label>{field.properties.label || type?.name}</Label>
-      <div>
-        {/* THIS IS TEMPORARY, FOR SOME MORE VARIETY, BEFORE ACTUAL FIELD RENDERING IS IMPLEMENTED */}
-        {field.typeClass ===
-          'Solspace\\Freeform\\Fields\\Implementations\\TextareaField' && (
-          <textarea
-            className="nicetext text fullwidth"
-            readOnly
-            disabled
-            rows={field.properties.rows}
-          />
-        )}
-
-        {field.typeClass !==
-          'Solspace\\Freeform\\Fields\\Implementations\\TextareaField' && (
-          <input type="text" className="text fullwidth" readOnly disabled />
-        )}
-      </div>
+      <Label className="label">{field.properties.label || type?.name}</Label>
+      {field.properties.instructions && (
+        <Instructions>{field.properties.instructions}</Instructions>
+      )}
+      <div dangerouslySetInnerHTML={{ __html: preview }} />
     </CellFieldWrapper>
   );
 };

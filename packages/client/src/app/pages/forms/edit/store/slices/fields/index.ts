@@ -3,6 +3,8 @@ import type { GenericValue } from '@ff-client/types/properties';
 import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
+import camelCase from 'lodash.camelcase';
+import { adjectives, uniqueNamesGenerator } from 'unique-names-generator';
 
 import './fields.persistence';
 
@@ -46,6 +48,15 @@ export const fieldsSlice = createSlice({
       fieldType.properties.forEach(
         (prop) => (properties[prop.handle] = prop.value)
       );
+
+      const label = uniqueNamesGenerator({
+        dictionaries: [adjectives, [fieldType.name], ['field']],
+        separator: ' ',
+        style: 'capital',
+      });
+
+      properties.label = label;
+      properties.handle = camelCase(label);
 
       state.push({
         uid,

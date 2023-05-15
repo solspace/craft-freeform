@@ -19,6 +19,7 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
     name: 'Confirmation',
     typeShorthand: 'confirmation',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class ConfirmationField extends TextField implements DefaultFieldInterface, NoStorageInterface, RememberPostedValueInterface, ExtraFieldInterface
 {
@@ -27,7 +28,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         label: 'Target Field',
         instructions: 'Select the field that this field should match',
     )]
-    protected ?FieldInterface $targetField;
+    protected ?FieldInterface $targetField = null;
 
     /**
      * Return the field TYPE.
@@ -37,7 +38,7 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         return self::TYPE_CONFIRMATION;
     }
 
-    public function getTargetField(): FieldInterface
+    public function getTargetField(): ?FieldInterface
     {
         return $this->targetField;
     }

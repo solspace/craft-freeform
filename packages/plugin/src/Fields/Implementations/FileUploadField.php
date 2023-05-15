@@ -30,6 +30,7 @@ use function Solspace\Freeform\Fields\is_countable;
     name: 'File Upload',
     typeShorthand: 'file',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/file-upload.ejs',
 )]
 class FileUploadField extends AbstractField implements MultiValueInterface, FileUploadInterface
 {

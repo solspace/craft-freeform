@@ -5,6 +5,9 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -18,52 +21,135 @@ use Solspace\Freeform\Fields\Validation\Constraints\MinDateConstraint;
     name: 'Date & Time',
     typeShorthand: 'datetime',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/date-time.ejs',
 )]
 class DatetimeField extends TextField implements InitialValueInterface, DatetimeInterface, ExtraFieldInterface
 {
     use InitialValueTrait;
+
     public const DATETIME_TYPE_BOTH = 'both';
     public const DATETIME_TYPE_DATE = 'date';
     public const DATETIME_TYPE_TIME = 'time';
 
-    /** @var string */
-    protected $dateTimeType;
+    #[Input\Text(
+        label: 'Locale (Optional)',
+        instructions: "Enter your desired custom locale (e.g. `fr`, `ru`, etc.) to force the datepicker to use that locale. Otherwise leave blank to use the default site's locale set by Craft.",
+    )]
+    protected ?string $locale = null;
 
-    /** @var bool */
-    protected $generatePlaceholder;
+    #[Input\Boolean('Use the Freeform datepicker for this field?')]
+    protected bool $useDatepicker = true;
 
-    /** @var string */
-    protected $dateOrder;
+    #[Input\Boolean('Generate placeholder from your date format settings?')]
+    protected bool $generatePlaceholder = true;
 
-    /** @var bool */
-    protected $date4DigitYear;
+    #[VisibilityFilter('properties.generatePlaceholder === false')]
+    #[Input\Text(
+        instructions: "The text that will be shown if the field doesn't have a value.",
+        order: 4,
+    )]
+    protected string $placeholder = '';
 
-    /** @var bool */
-    protected $dateLeadingZero;
+    #[Input\Select(
+        label: 'Type',
+        instructions: 'Choose between using date, time or both.',
+        options: [
+            self::DATETIME_TYPE_BOTH => 'Date & Time',
+            self::DATETIME_TYPE_DATE => 'Date',
+            self::DATETIME_TYPE_TIME => 'Time',
+        ],
+    )]
+    protected string $dateTimeType = self::DATETIME_TYPE_BOTH;
 
-    /** @var string */
-    protected $dateSeparator;
+    #[Section(
+        handle: 'date',
+        label: 'Date Settings',
+        icon: __DIR__.'/../Icons/date.svg',
+    )]
+    #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Input\Select(
+        label: 'Date Order',
+        instructions: 'Choose the order in which to show day, month and year.',
+        options: [
+            'ymd' => 'Year, Month, Day',
+            'mdy' => 'Month, Day, Year',
+            'dmy' => 'Day, Month, Year',
+        ],
+    )]
+    protected string $dateOrder = 'ymd';
 
-    /** @var bool */
-    protected $clock24h;
+    #[Section('date')]
+    #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Input\Boolean('Four digit year?')]
+    protected bool $date4DigitYear = true;
 
-    /** @var string */
-    protected $clockSeparator;
+    #[Section('date')]
+    #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Input\Boolean(
+        label: 'Leading zero on date?',
+        instructions: 'If enabled, a leading zero will be used for days and months.'
+    )]
+    protected bool $dateLeadingZero = true;
 
-    /** @var string */
-    protected $clockAMPMSeparate;
+    #[Section('date')]
+    #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Input\Select(
+        label: 'Date Separator',
+        instructions: 'Used to separate date values.',
+        emptyOption: 'None',
+        options: [
+            ' ' => 'Space',
+            '/' => '/',
+            '-' => '-',
+            '.' => '.',
+        ]
+    )]
+    protected string $dateSeparator = '-';
 
-    /** @var bool */
-    protected $useDatepicker;
+    #[Section('date')]
+    #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Input\Text(
+        label: 'Min Date',
+        instructions: 'Specify a relative textual date string or static date for the earliest date available for date picker and field validation.',
+    )]
+    protected ?string $minDate = null;
 
-    /** @var string */
-    protected $minDate;
+    #[Section('date')]
+    #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
+    #[Input\Text(
+        label: 'Max Date',
+        instructions: 'Specify a relative textual date string or static date for the latest date available for date picker and field validation.',
+    )]
+    protected ?string $maxDate = null;
 
-    /** @var string */
-    protected $maxDate;
+    #[Section(
+        handle: 'time',
+        label: 'Time settings',
+        icon: __DIR__.'/../Icons/time.svg',
+    )]
+    #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Input\Boolean('24h clock?')]
+    protected bool $clock24h = false;
 
-    /** @var string */
-    protected $locale;
+    #[Section('time')]
+    #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Input\Select(
+        label: 'Clock Separator',
+        instructions: 'Used to separate clock values.',
+        emptyOption: 'None',
+        options: [
+            ' ' => 'Space',
+            ':' => ':',
+            '-' => '-',
+            '.' => '.',
+        ]
+    )]
+    protected string $clockSeparator = ':';
+
+    #[Section('time')]
+    #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
+    #[Input\Boolean('Separate AM/PM with a space?')]
+    protected bool $clockAMPMSeparate = true;
 
     public static function getSupportedLocale(string $locale): string
     {

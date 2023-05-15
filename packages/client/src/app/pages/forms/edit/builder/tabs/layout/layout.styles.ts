@@ -6,5 +6,7 @@ export const Grid = styled.div`
   gap: 0;
 
   height: 100%;
+  overflow: hidden;
+
   background: #fff;
 `;

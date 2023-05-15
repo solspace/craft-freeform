@@ -63,7 +63,6 @@ export const useQueryNotificationRules = (
       staleTime: Infinity,
       cacheTime: Infinity,
       onSuccess: (rules) => {
-        console.log(rules);
         dispatch(notificationRuleActions.set(rules));
       },
     }

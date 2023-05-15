@@ -5,6 +5,7 @@ export type FieldType = {
   typeClass: string;
   type: string;
   icon?: string;
+  previewTemplate?: string;
   implements: string[];
   properties: Property[];
 };

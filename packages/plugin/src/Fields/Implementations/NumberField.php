@@ -10,6 +10,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
     name: 'Number',
     typeShorthand: 'number',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
 class NumberField extends TextField
 {

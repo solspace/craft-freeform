@@ -1,0 +1,11 @@
+<div class="opinion-scale">
+    <ul class="opinion-scale-scales">
+        <% scales.forEach(function(scale) { %>
+            <li class="<%= isSelected && 'active' %>">
+                <input type="radio" <%= isSelected && 'checked' %> />
+                <label><%= scale.label || scale.value %></label>
+            </li>
+        <% }); %>
+    </ul>
+
+</div>

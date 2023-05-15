@@ -16,4 +16,5 @@ export const BuilderWrapper = styled.div`
 
 export const BuilderContent = styled.div`
   flex-grow: 1;
+  overflow: hidden;
 `;

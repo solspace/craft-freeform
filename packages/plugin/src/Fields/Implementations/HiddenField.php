@@ -19,6 +19,7 @@ use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
     name: 'Hidden',
     typeShorthand: 'hidden',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
 class HiddenField extends TextField implements NoRenderInterface
 {

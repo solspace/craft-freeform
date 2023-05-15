@@ -7,7 +7,7 @@ import translate from '@ff-client/utils/translations';
 import { Row } from '../row/row';
 
 import { useLayoutDrop } from './layout.drop';
-import { DropZone, EmptyLayout, FieldLayoutWrapper } from './layout.styles';
+import { DropZone, EmptyLayout, PageFieldLayoutWrapper } from './layout.styles';
 
 type Props = {
   layout: LayoutType;
@@ -18,7 +18,7 @@ export const Layout: React.FC<Props> = ({ layout }) => {
   const { dropRef, placeholderAnimation } = useLayoutDrop(layout);
 
   return (
-    <FieldLayoutWrapper ref={dropRef}>
+    <PageFieldLayoutWrapper ref={dropRef}>
       {!rows.length && (
         <EmptyLayout>
           Drag or click fields to add them to the layout
@@ -30,6 +30,6 @@ export const Layout: React.FC<Props> = ({ layout }) => {
       <DropZone style={placeholderAnimation}>
         {translate('+ insert row')}
       </DropZone>
-    </FieldLayoutWrapper>
+    </PageFieldLayoutWrapper>
   );
 };

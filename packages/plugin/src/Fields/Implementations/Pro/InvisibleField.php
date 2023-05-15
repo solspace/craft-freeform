@@ -13,6 +13,7 @@ use Solspace\Freeform\Fields\Traits\StaticValueTrait;
     name: 'Invisible',
     typeShorthand: 'invisible',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/invisible.ejs',
 )]
 class InvisibleField extends AbstractField implements ExtraFieldInterface, PersistentValueInterface, NoRenderInterface
 {

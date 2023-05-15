@@ -12,6 +12,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\RegexConstraint;
     name: 'Regex',
     typeShorthand: 'regex',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class RegexField extends TextField implements ExtraFieldInterface
 {

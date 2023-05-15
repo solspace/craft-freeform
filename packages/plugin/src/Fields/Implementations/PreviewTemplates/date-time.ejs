@@ -1,0 +1,65 @@
+<%
+  var showDate = ['both', 'date'].includes(dateTimeType);
+  var showTime = ['both', 'time'].includes(dateTimeType);
+
+  const formatParts = [];
+
+  if (showDate) {
+    var month = dateLeadingZero ? 'm' : 'n';
+    var day = dateLeadingZero ? 'd' : 'j';
+    var year = date4DigitYear ? 'Y' : 'y';
+
+    var trio;
+
+    switch (dateOrder) {
+      case 'mdy':
+        trio = [month, day, year];
+        break;
+
+      case 'dmy':
+        trio = [day, month, year];
+        break;
+
+      case 'ymd':
+        trio = [year, month, day];
+        break;
+    }
+
+    formatParts.push(trio.join(dateSeparator));
+  }
+
+  if (showTime) {
+    let hours, minutes = 'i', ampm;
+
+    if (clock24h) {
+      hours = 'H';
+      ampm = '';
+    } else {
+      hours = 'g';
+      ampm = (clockAMPMSeparate ? ' ' : '') + 'A';
+    }
+
+    formatParts.push(hours + clockSeparator + minutes + ampm);
+  }
+
+  var format = formatParts.join(' ');
+  var readableFormat = format
+    .replace('Y', 'YYYY')
+    .replace('y', 'YY')
+    .replace('n', 'M')
+    .replace('m', 'MM')
+    .replace('j', 'D')
+    .replace('d', 'DD')
+    .replace('H', 'HH')
+    .replace('h', 'H')
+    .replace('G', 'HH')
+    .replace('g', 'H')
+    .replace('i', 'MM')
+    .replace('A', 'TT')
+    .replace('a', 'TT')
+  ;
+
+  var formattedPlaceholder = generatePlaceholder ? readableFormat : placeholder;
+%>
+
+<input type="text" placeholder="<%= formattedPlaceholder %>" />

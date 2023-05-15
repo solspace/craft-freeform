@@ -23,6 +23,7 @@ use Solspace\Freeform\Fields\Interfaces\RememberPostedValueInterface;
     name: 'Password',
     typeShorthand: 'password',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class PasswordField extends TextField implements DefaultFieldInterface, NoStorageInterface, ExtraFieldInterface, RememberPostedValueInterface
 {

@@ -122,6 +122,7 @@ class FieldTypesProvider
         $type->type = $typeInstance->typeShorthand;
         $type->name = $typeInstance->name;
         $type->icon = file_get_contents($typeInstance->iconPath);
+        $type->previewTemplate = $typeInstance->previewTemplatePath ? file_get_contents($typeInstance->previewTemplatePath) : null;
         $type->implements = $this->implementationProvider->getImplementations($typeClass);
         $type->properties = $this->propertyProvider->getEditableProperties($typeClass);
 

@@ -7,15 +7,11 @@ use Solspace\Freeform\Attributes\Property\PropertyCollection;
 class FieldType implements \JsonSerializable
 {
     public string $name = '';
-
     public string $type = '';
-
     public string $typeClass = '';
-
     public ?string $icon = null;
-
+    public ?string $previewTemplate = null;
     public array $implements = [];
-
     public ?PropertyCollection $properties;
 
     public function __construct()
@@ -45,6 +41,7 @@ class FieldType implements \JsonSerializable
             'type' => $this->type,
             'typeClass' => $this->typeClass,
             'icon' => $this->icon,
+            'previewTemplate' => $this->previewTemplate,
             'implements' => $this->implements,
             'properties' => $this->properties,
         ];

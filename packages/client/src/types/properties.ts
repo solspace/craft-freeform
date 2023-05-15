@@ -16,6 +16,7 @@ export enum PropertyType {
 }
 
 export type Middleware = [string, GenericValue[]?];
+export type VisibilityFilter = string;
 
 type BaseProperty<T> = {
   type: PropertyType;
@@ -27,7 +28,7 @@ type BaseProperty<T> = {
   value?: T | null;
   order?: number;
   flags?: string[];
-  visibilityFilters?: string[];
+  visibilityFilters?: VisibilityFilter[];
   middleware?: Middleware[];
   category?: string;
   section?: string;

@@ -6,7 +6,7 @@ export const PageTabsWrapper = styled.div`
   justify-content: space-between;
 
   border-bottom: 1px solid ${colors.gray200};
-  margin-bottom: ${spacings.lg};
+  padding: 27px ${spacings.xl} 0;
 `;
 
 export const PageTabsContainer = styled.div`

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Attributes\Attributes;
@@ -11,6 +12,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
     name: 'Signature',
     typeShorthand: 'signature',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/signature.ejs',
 )]
 class SignatureField extends AbstractField implements ExtraFieldInterface
 {
@@ -21,13 +23,26 @@ class SignatureField extends AbstractField implements ExtraFieldInterface
     public const DEFAULT_PEN_COLOR = '#000000';
     public const DEFAULT_PEN_DOT_SIZE = 2.5;
 
-    protected int $width;
-    protected int $height;
+    #[Input\Integer]
+    protected int $width = 400;
+
+    #[Input\Integer]
+    protected int $height = 100;
+
+    #[Input\Boolean]
     protected bool $showClearButton = true;
-    protected string $borderColor;
-    protected string $backgroundColor;
-    protected string $penColor;
-    protected float $penDotSize;
+
+    #[Input\ColorPicker]
+    protected string $borderColor = '#999999';
+
+    #[Input\ColorPicker]
+    protected string $backgroundColor = 'rgba(0,0,0,0)';
+
+    #[Input\ColorPicker]
+    protected string $penColor = '#000000';
+
+    #[Input\FloatingNumber]
+    protected float $penDotSize = 2.5;
 
     /**
      * Return the field TYPE.
@@ -37,45 +52,39 @@ class SignatureField extends AbstractField implements ExtraFieldInterface
         return self::TYPE_SIGNATURE;
     }
 
-    /**
-     * @return null|int
-     */
     public function getWidth(): int
     {
-        return $this->width ?? self::DEFAULT_WIDTH;
+        return $this->width;
     }
 
-    /**
-     * @return null|int
-     */
     public function getHeight(): int
     {
-        return $this->height ?? self::DEFAULT_HEIGHT;
+        return $this->height;
     }
 
     public function isShowClearButton(): bool
     {
-        return (bool) $this->showClearButton;
+        return $this->showClearButton;
     }
 
     public function getBorderColor(): string
     {
-        return $this->borderColor ?? self::DEFAULT_BORDER_COLOR;
+        return $this->borderColor;
     }
 
     public function getBackgroundColor(): string
     {
-        return $this->backgroundColor ?? self::DEFAULT_BACKGROUND_COLOR;
+        return $this->backgroundColor;
     }
 
     public function getPenColor(): string
     {
-        return $this->penColor ?? self::DEFAULT_PEN_COLOR;
+        return $this->penColor;
     }
 
     public function getPenDotSize(): float
     {
-        return (float) ($this->penDotSize ?? self::DEFAULT_PEN_DOT_SIZE);
+        return $this->penDotSize;
     }
 
     /**

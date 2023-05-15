@@ -9,6 +9,7 @@ import FormLabel from '@components/form-controls/label';
 import type { Property } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
+import { useRenderContext } from './context/render.context';
 import { FormErrorList } from './error-list';
 
 type Props = {
@@ -21,12 +22,18 @@ export const Control: React.FC<PropsWithChildren<Props>> = ({
   property,
   errors,
 }) => {
+  const { size } = useRenderContext();
   const { label, handle, required, instructions } = property;
 
   return (
     <ControlWrapper className={classes(!!errors && 'errors')}>
-      <FormLabel label={label} handle={handle} required={required} />
-      <FormInstructions instructions={instructions} />
+      <FormLabel
+        label={label}
+        handle={handle}
+        required={required}
+        title={size === 'small' && instructions}
+      />
+      {size === 'normal' && <FormInstructions instructions={instructions} />}
       <FormField>{children}</FormField>
       <FormErrorList errors={errors} />
     </ControlWrapper>

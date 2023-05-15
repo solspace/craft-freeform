@@ -1,0 +1,54 @@
+<% if (!tableLayout.length) { %>
+    Empty table configuration
+<% } %>
+
+<table class="data fullwidth">
+    <thead>
+        <tr>
+        <% tableLayout.forEach(function(column) { %>
+            <th><%= column.label %></th>
+        <% }); %>
+        </tr>
+    </thead>
+    <tbody
+        <tr>
+            <% tableLayout.forEach(function(column) { %>
+                <td>
+                    <% if (column.type === "text" ) { %>
+                        <input type="text" value="<%= column.value %>" />
+                    <% } else if (column.type === 'select') { %>
+                        <select>
+                            <option><%= column.value %></option>
+                        </select>
+                    <% } else if (column.type === 'checkbox') { %>
+                        <div>
+                            <input type="checkbox"
+                                   class="checkbox"
+                                   <% if (column.value.length > 0) { %>checked="checked"<% }%>
+                            />
+                            <label for=""></label>
+                        </div>
+                    <% } %>
+                </td>
+            <% }); %>
+        </tr>
+        <tr>
+            <% tableLayout.forEach(function(column) { %>
+                <td>
+                    <% if (column.type === "text" ) { %>
+                        <input type="text" />
+                    <% } else if (column.type === 'select') { %>
+                        <select>
+                            <option><%= column.value %></option>
+                        </select>
+                    <% } else if (column.type === 'checkbox') { %>
+                        <div>
+                            <input type="checkbox" class="checkbox" />
+                            <label for=""></label>
+                        </div>
+                    <% } %>
+                </td>
+            <% }); %>
+        </tr>
+    </tbody>
+</table>

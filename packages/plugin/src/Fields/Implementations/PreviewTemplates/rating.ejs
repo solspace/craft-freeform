@@ -1,0 +1,34 @@
+<%
+   var namespace = handle + '-' + Date.now();
+%>
+
+<style>
+        .rating<%= namespace %> {
+                display: flex;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+        }
+
+        .rating<%= namespace %> > span {
+                display: block;
+                cursor: pointer;
+
+                font-size: 200%;
+                font-weight: 100;
+                font-family: sans-serif;
+        }
+
+        .rating<%= namespace %> > span:after {
+                content: '★ ';
+        }
+
+        .rating<%= namespace %> > span:last-child {
+                margin: 0 0 5px;
+        }
+</style>
+
+<div class="rating<%= namespace %>">
+    <% for (var i = 1; i <= maxValue; i++ ) { %>
+        <span style="color: <%= i <= 2 ? colorSelected : colorIdle %>;"></span>
+    <% } %>
+</div>

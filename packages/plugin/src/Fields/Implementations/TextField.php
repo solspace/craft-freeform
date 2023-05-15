@@ -25,6 +25,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
     name: 'Text',
     typeShorthand: 'text',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
 class TextField extends AbstractField implements PlaceholderInterface
 {

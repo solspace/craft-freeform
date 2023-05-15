@@ -13,6 +13,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\PhoneConstraint;
     name: 'Phone',
     typeShorthand: 'phone',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInterface
 {

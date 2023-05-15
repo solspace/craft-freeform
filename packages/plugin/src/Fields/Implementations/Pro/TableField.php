@@ -18,6 +18,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
     name: 'Table',
     typeShorthand: 'table',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/table.ejs',
 )]
 class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface
 {

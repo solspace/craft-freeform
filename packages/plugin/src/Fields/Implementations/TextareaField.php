@@ -21,6 +21,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
     name: 'Textarea',
     typeShorthand: 'textarea',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/textarea.ejs',
 )]
 class TextareaField extends TextField implements PlaceholderInterface
 {

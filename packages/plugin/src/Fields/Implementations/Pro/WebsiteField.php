@@ -11,6 +11,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\WebsiteConstraint;
     name: 'Website',
     typeShorthand: 'website',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class WebsiteField extends TextField implements ExtraFieldInterface
 {

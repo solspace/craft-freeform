@@ -14,6 +14,7 @@ use Solspace\Freeform\Library\Helpers\FileHelper;
     name: 'File Drag & Drop',
     typeShorthand: 'file-drag-and-drop',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/file-drag-n-drop.ejs',
 )]
 class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface, PlaceholderInterface
 {

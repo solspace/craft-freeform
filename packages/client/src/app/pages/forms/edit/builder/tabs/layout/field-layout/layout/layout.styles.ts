@@ -2,13 +2,12 @@ import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const FieldLayoutWrapper = styled.div`
+export const PageFieldLayoutWrapper = styled.div`
   position: relative;
 
   display: flex;
   flex-direction: column;
 
-  height: 100%;
   padding-bottom: 60px;
   margin: 0 -18px;
 `;

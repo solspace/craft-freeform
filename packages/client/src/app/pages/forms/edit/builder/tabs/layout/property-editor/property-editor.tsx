@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
+import { RenderContextProvider } from '@components/form-controls/context/render.context';
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
@@ -28,16 +29,18 @@ export const PropertyEditor: React.FC = () => {
   });
 
   return (
-    <PropertyEditorWrapper>
-      <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
-        <CloseIcon />
-      </CloseLink>
-      <FavoriteButton field={field} />
-      <ErrorBoundary
-        message={`Could not load property editor for "${type}" type`}
-      >
-        <FieldProperties uid={uid} />
-      </ErrorBoundary>
-    </PropertyEditorWrapper>
+    <RenderContextProvider size="small">
+      <PropertyEditorWrapper>
+        <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
+          <CloseIcon />
+        </CloseLink>
+        <FavoriteButton field={field} />
+        <ErrorBoundary
+          message={`Could not load property editor for "${type}" type`}
+        >
+          <FieldProperties uid={uid} />
+        </ErrorBoundary>
+      </PropertyEditorWrapper>
+    </RenderContextProvider>
   );
 };

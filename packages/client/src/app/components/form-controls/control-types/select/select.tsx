@@ -20,7 +20,7 @@ const Select: React.FC<ControlType<string>> = ({
         onChange={(event) => updateValue(event.target.value)}
       >
         {!!emptyOption && <option value="" label={emptyOption} />}
-        {options.map(({ value, label }, index) => (
+        {options?.map(({ value, label }, index) => (
           <option key={index} value={value} label={label} />
         ))}
       </select>

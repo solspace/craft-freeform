@@ -2,9 +2,14 @@ import type { ComponentType } from 'react';
 import React, { Suspense } from 'react';
 import * as ControlTypes from '@components/form-controls/control-types';
 import type { ControlType } from '@components/form-controls/types';
-import type { Property, PropertyType } from '@ff-client/types/properties';
+import type {
+  GenericValue,
+  Property,
+  PropertyType,
+} from '@ff-client/types/properties';
 
 import { ErrorBoundary } from './boundaries/ErrorBoundary';
+import { useVisibility } from './hooks/use-visibility';
 
 export type UpdateValue<T> = (value: T) => void;
 
@@ -29,8 +34,18 @@ export const FormComponent: React.FC<Props> = ({
 }) => {
   const type = property.type;
   const FormControl = types[type];
+
+  const isVisible = useVisibility(
+    property.visibilityFilters,
+    context as GenericValue as GenericValue
+  );
+
   if (FormControl === undefined) {
     return <div>{`[${property.handle}]: <${type}>`}</div>;
+  }
+
+  if (!isVisible) {
+    return null;
   }
 
   FormControl.displayName = `FormComponent: <${type}>`;

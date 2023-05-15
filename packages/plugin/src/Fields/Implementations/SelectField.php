@@ -19,6 +19,7 @@ use Solspace\Freeform\Fields\AbstractExternalOptionsField;
     name: 'Select',
     typeShorthand: 'select',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/select.ejs',
 )]
 class SelectField extends AbstractExternalOptionsField
 {

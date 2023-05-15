@@ -26,6 +26,7 @@ use Solspace\Freeform\Freeform;
     name: 'Email',
     typeShorthand: 'email',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
 class EmailField extends AbstractField implements RecipientInterface, PlaceholderInterface
 {

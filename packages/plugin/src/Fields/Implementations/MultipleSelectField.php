@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Freeform for Craft CMS.
  *
@@ -21,6 +22,7 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
     name: 'Multi-Select',
     typeShorthand: 'multiple-select',
     iconPath: __DIR__.'/Icons/text.svg',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/multiple-select.ejs',
 )]
 class MultipleSelectField extends AbstractExternalOptionsField implements MultiValueInterface
 {

@@ -8,6 +8,7 @@ import CheckboxProperty from './PropertyItems/CheckboxProperty';
 import TextProperty from './PropertyItems/TextProperty';
 import DatePickerProperty from './PropertyItems/DatePickerProperty';
 import {
+  LIMIT_ONCE_PER_EMAIL_ADDRESS,
   LIMIT_AUTH_UNLIMITED,
   LIMIT_COOKIE,
   LIMIT_IP_COOKIE,
@@ -112,6 +113,7 @@ export default class Validation extends BasePropertyEditor {
               { key: LIMIT_AUTH, value: translate('Once per logged in Users only') },
               { key: LIMIT_AUTH_COOKIE, value: translate('Once per logged in User or Guest Cookie only') },
               { key: LIMIT_AUTH_IP_COOKIE, value: translate('Once per logged in User or Guest IP/Cookie combo') },
+              { key: LIMIT_ONCE_PER_EMAIL_ADDRESS, value: translate('Once per Email Address only') },
             ]}
           />
         )}

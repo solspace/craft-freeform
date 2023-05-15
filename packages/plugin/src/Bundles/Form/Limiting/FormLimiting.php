@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Form\Limiting;
 
 use craft\db\Query;
+use craft\db\Table;
 use craft\records\Element;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
@@ -11,6 +12,7 @@ use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\PersistStateEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Fields\EmailField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Composer\Components\Form;
@@ -18,6 +20,7 @@ use yii\base\Event;
 
 class FormLimiting extends FeatureBundle
 {
+    public const LIMIT_ONCE_PER_EMAIL = 'once_per_email';
     public const LIMIT_AUTH_UNLIMITED = 'auth_unlimited';
     public const LIMIT_COOKIE = 'cookie';
     public const LIMIT_IP_COOKIE = 'ip_cookie';
@@ -49,6 +52,10 @@ class FormLimiting extends FeatureBundle
             return;
         }
 
+        if (self::LIMIT_ONCE_PER_EMAIL === $limiting) {
+            $this->limitByEmail($form, $event);
+        }
+
         if (self::LIMIT_AUTH === $limiting) {
             $this->limitLoggedInOnly($form, $event);
         }
@@ -67,6 +74,61 @@ class FormLimiting extends FeatureBundle
 
         if (\in_array($limiting, self::LOGGED_IN_ONLY, true)) {
             $this->limitLoggedInOnly($form, $event);
+        }
+    }
+
+    private function limitByEmail(Form $form, FormEventInterface $event): void
+    {
+        // Get all email fields on the form
+        $emailFields = $form->getLayout()->getStorableFields(EmailField::class);
+
+        // Get all email field values
+        $emailFieldValues = [];
+        foreach ($emailFields as $emailField) {
+            $value = \Craft::$app->getRequest()->post($emailField->getHandle());
+            $emailFieldValues[] = '"'.$value.'"';
+        }
+
+        // If no email field values, bail
+        if (empty($emailFieldValues)) {
+            return;
+        }
+
+        // Builds an SQL query that checks existing email field values against submitted email field values
+        // E.g sc.`email_field` IN ('foo@example.com', 'bar@example.com')
+        // E.g sc.`email_field` IN ('foo@example.com', 'bar@example.com') OR sc.`another_email_field` IN ('foo@example.com', 'bar@example.com')
+        $emailFieldQuery = [];
+        $emailFieldValues = '('.implode(', ', $emailFieldValues).')';
+        foreach ($emailFields as $emailField) {
+            $emailFieldQuery[] = 'sc.[['.Submission::getFieldColumnName($emailField).']] IN '.$emailFieldValues;
+        }
+        $emailFieldQuery = implode(' OR ', $emailFieldQuery);
+
+        $elements = Table::ELEMENTS;
+        $submissions = Submission::TABLE;
+        $submissionsContents = Submission::getContentTableName($form);
+
+        $query = (new Query())
+            ->select(['s.[[id]]'])
+            ->from("{$submissions} s")
+            ->innerJoin(
+                "{$elements} e",
+                'e.[[id]] = s.[[id]]'
+            )
+            ->innerJoin("{$submissionsContents} sc", 'sc.[[id]] = s.[[id]]')
+            ->where([
+                's.[[isSpam]]' => false,
+                's.[[formId]]' => $form->getId(),
+                'e.[[dateDeleted]]' => null,
+            ])
+            ->andWhere($emailFieldQuery)
+            ->limit(1)
+        ;
+
+        $isPosted = (bool) $query->scalar();
+
+        if ($isPosted) {
+            $this->addMessage($form, $event);
         }
     }
 

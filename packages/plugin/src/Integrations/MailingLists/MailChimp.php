@@ -28,6 +28,7 @@ class MailChimp extends AbstractMailingListIntegration
     public const SETTING_DOUBLE_OPT_IN = 'double_opt_in';
     public const SETTING_DATA_CENTER = 'data_center';
     public const SETTING_INTEREST_GROUPS = 'interest_groups';
+    public const SETTING_APPEND_CONTACT_TAGS = 'append_contact_tags';
 
     public const TITLE = 'Mailchimp';
     public const LOG_CATEGORY = 'Mailchimp';
@@ -56,6 +57,13 @@ class MailChimp extends AbstractMailingListIntegration
                 self::SETTING_DOUBLE_OPT_IN,
                 'Use double opt-in?',
                 '',
+                false
+            ),
+            new SettingBlueprint(
+                SettingBlueprint::TYPE_BOOL,
+                self::SETTING_APPEND_CONTACT_TAGS,
+                'Append Mailchimp Contact Tags on update instead of overwriting?',
+                'When updating an existing contact in Mailchimp, have new Contact Tags added to existing ones instead of overwriting them.',
                 false
             ),
             new SettingBlueprint(
@@ -626,6 +634,7 @@ class MailChimp extends AbstractMailingListIntegration
 
     private function manageTags(string $listId, string $email, array $tags)
     {
+        $appendContactTags = $this->getSetting(self::SETTING_APPEND_CONTACT_TAGS);
         $emailHash = md5(strtolower($email));
 
         try {
@@ -640,8 +649,10 @@ class MailChimp extends AbstractMailingListIntegration
             $tagsToAdd = array_diff($tags, $memberTags);
             $this->addTagsForMember($listId, $email, $tagsToAdd);
 
-            $tagsToDelete = array_diff($memberTags, $tags);
-            $this->deleteTagsForMember($listId, $emailHash, $tagsToDelete);
+            if (!$appendContactTags) {
+                $tagsToDelete = array_diff($memberTags, $tags);
+                $this->deleteTagsForMember($listId, $emailHash, $tagsToDelete);
+            }
         } catch (RequestException $e) {
         }
     }

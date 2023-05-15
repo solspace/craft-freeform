@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.0.24 - Unreleased
+
+### Added
+- Added a setting to the Mailchimp integration to allow choosing between appending existing Contact Tags with new ones when updating an existing contact.
+
 ## 4.0.23 - 2023-04-28
 
 ### Added

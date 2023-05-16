@@ -8,3 +8,4 @@ export const LIMIT_IP_COOKIE = 'ip_cookie';
 export const LIMIT_AUTH = 'auth';
 export const LIMIT_AUTH_COOKIE = 'auth_cookie';
 export const LIMIT_AUTH_IP_COOKIE = 'auth_ip_cookie';
+export const LIMIT_ONCE_PER_EMAIL_ADDRESS = 'once_per_email';

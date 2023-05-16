@@ -86,7 +86,9 @@ class FormLimiting extends FeatureBundle
         $emailFieldValues = [];
         foreach ($emailFields as $emailField) {
             $value = \Craft::$app->getRequest()->post($emailField->getHandle());
-            $emailFieldValues[] = '"'.$value.'"';
+            if (!empty($value)) {
+                $emailFieldValues[] = '"'.$value.'"';
+            }
         }
 
         // If no email field values, bail

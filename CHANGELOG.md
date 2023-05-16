@@ -5,6 +5,9 @@
 ### Added
 - Added a setting to the Mailchimp integration to allow choosing between appending existing Contact Tags with new ones when updating an existing contact.
 
+### Fixed
+- Fixed a bug where attempting to Allow a spam submission for a Payment form would result in an error.
+
 ## 4.0.23 - 2023-04-28
 
 ### Added

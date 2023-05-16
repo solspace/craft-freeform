@@ -1,9 +1,9 @@
 # Solspace Freeform Changelog
 
-## 4.0.24 - Unreleased
+## 4.0.24 - 2023-05-16
 
 ### Added
-- Added the ability to limit forms to be submitted once per Email Address only.
+- Added the ability to limit forms to be submitted once per email address only.
 - Added a setting to the Mailchimp integration to allow choosing between appending existing Contact Tags with new ones when updating an existing contact.
 
 ### Fixed

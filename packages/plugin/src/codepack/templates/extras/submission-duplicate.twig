@@ -46,6 +46,8 @@
                                 Once per logged in User or Guest Cookie
                             {%- elseif form.limitFormSubmissions == "auth_ip_cookie" -%}
                                 Once per logged in User or Guest IP/Cookie combo
+                            {%- elseif form.limitFormSubmissions == "once_per_email" -%}
+                                Once per Email Address only
                             {%- else -%}
                                 '{{ form.limitFormSubmissions }}'
                             {%- endif -%}

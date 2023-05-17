@@ -9,6 +9,7 @@ import {
   NotificationTemplate,
   TemplateType,
 } from '@ff-client/types/notifications';
+import type { NotificationTemplateProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
@@ -30,12 +31,9 @@ export type NotificationSelectHandler = (
   template: NotificationTemplate
 ) => void;
 
-const NotificationTemplate: React.FC<ControlType<string | number>> = ({
-  value,
-  property,
-  errors,
-  updateValue,
-}) => {
+const NotificationTemplate: React.FC<
+  ControlType<NotificationTemplateProperty>
+> = ({ value, property, errors, updateValue }) => {
   const [open, setOpen] = React.useState(false);
   const { templates, isFetching, selectedTemplate } =
     useNotificationTemplates(value);

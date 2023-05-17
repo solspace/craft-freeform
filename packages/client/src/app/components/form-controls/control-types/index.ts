@@ -14,4 +14,5 @@ export { default as options } from './options/options';
 export { default as select } from './select/select';
 export { default as string } from './string/string';
 export { default as table } from './table/table';
+export { default as tabularData } from './tabular-data/tabular-data';
 export { default as textarea } from './textarea/textarea';

@@ -5,6 +5,7 @@ import {
 } from '@components/form-controls/control.styles';
 import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
+import type { OptionsProperty } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import { generateDefaultValue } from './sources/defaults';
@@ -12,7 +13,7 @@ import { SourceComponent } from './sources/source.component';
 import type { Source } from './options.types';
 import { Options, sourceLabels } from './options.types';
 
-const Options: React.FC<ControlType<Options>> = ({
+const Options: React.FC<ControlType<OptionsProperty>> = ({
   value,
   errors,
   updateValue,

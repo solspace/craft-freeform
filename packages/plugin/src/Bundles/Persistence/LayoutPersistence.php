@@ -17,6 +17,7 @@ use yii\base\Event;
 class LayoutPersistence extends FeatureBundle
 {
     private array $cache = [];
+    private array $rowContents = [];
 
     public function __construct()
     {
@@ -50,6 +51,8 @@ class LayoutPersistence extends FeatureBundle
         $this->savePages($form, $pages, $event);
         $this->saveRows($form, $rows);
         $this->saveCells($form, $cells);
+
+        $this->cleanupOrphans();
     }
 
     private function saveLayouts(Form $form, array $data): void
@@ -117,6 +120,10 @@ class LayoutPersistence extends FeatureBundle
 
             $record->order = $item->order;
             $record->save();
+
+            if (!$record->hasErrors()) {
+                $this->rowContents[$uid] = [];
+            }
         }
 
         foreach ($staleUids as $uid) {
@@ -143,8 +150,16 @@ class LayoutPersistence extends FeatureBundle
             $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->targetUid);
             $record->fieldId = $this->getRecordId($form, FormFieldRecord::class, $item->targetUid);
 
+            if (!$record->fieldId) {
+                continue;
+            }
+
             $record->order = $item->order ?? 0;
             $record->save();
+
+            if (!$record->hasErrors()) {
+                $this->rowContents[$item->rowUid][] = $uid;
+            }
         }
 
         foreach ($staleUids as $uid) {
@@ -198,5 +213,14 @@ class LayoutPersistence extends FeatureBundle
             ->indexBy('uid')
             ->all()
         ;
+    }
+
+    private function cleanupOrphans(): void
+    {
+        foreach ($this->rowContents as $rowUid => $contents) {
+            if (empty($contents)) {
+                FormRowRecord::deleteAll(['uid' => $rowUid]);
+            }
+        }
     }
 }

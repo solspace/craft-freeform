@@ -1,13 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { FormErrorList } from '@components/form-controls/error-list';
 import type { ControlType } from '@components/form-controls/types';
+import type { LabelProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
 import EditIcon from './edit-icon.svg';
 import { useEditButtonAnimations, useLabelAnimation } from './label.animations';
 import { EditableLabelWrapper, EditButton, LabelElement } from './label.styles';
 
-const Label: React.FC<ControlType<string>> = ({
+const Label: React.FC<ControlType<LabelProperty>> = ({
   value,
   property,
   errors,

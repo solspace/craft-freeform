@@ -22,7 +22,7 @@ type Props = {
 };
 
 const types: {
-  [key in PropertyType]?: ComponentType<ControlType<unknown>>;
+  [key in PropertyType]?: ComponentType<ControlType<Property>>;
 } = ControlTypes;
 
 export const FormComponent: React.FC<Props> = ({

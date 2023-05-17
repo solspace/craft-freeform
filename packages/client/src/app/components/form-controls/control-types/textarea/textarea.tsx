@@ -1,9 +1,10 @@
 import React from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
+import type { TextareaProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
-const Textarea: React.FC<ControlType<string>> = ({
+const Textarea: React.FC<ControlType<TextareaProperty>> = ({
   value,
   property,
   errors,

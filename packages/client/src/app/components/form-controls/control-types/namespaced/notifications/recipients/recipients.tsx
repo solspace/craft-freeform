@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { HelpText } from '@components/elements/help-text';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
-import type { Recipient } from '@ff-client/types/notifications';
+import type { RecipientsProperty } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
 import { RecipientsController } from './recipients.controller';
 import { cleanupRecipients } from './recipients.operations';
 
-const Recipients: React.FC<ControlType<Recipient[]>> = ({
+const Recipients: React.FC<ControlType<RecipientsProperty>> = ({
   value = [],
   property,
   errors,

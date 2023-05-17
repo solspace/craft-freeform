@@ -2,13 +2,13 @@ import React from 'react';
 import { Control } from '@components/form-controls/control';
 import { PreviewableComponent } from '@components/form-controls/preview/previewable-component';
 import type { ControlType } from '@components/form-controls/types';
+import type { TableProperty } from '@ff-client/types/properties';
 
 import { TableEditor } from './table.editor';
 import { addColumn, cleanColumns } from './table.operations';
 import { TablePreview } from './table.preview';
-import type { ColumnDescription } from './table.types';
 
-const Table: React.FC<ControlType<ColumnDescription[]>> = ({
+const Table: React.FC<ControlType<TableProperty>> = ({
   value: columns,
   property,
   errors,

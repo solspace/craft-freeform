@@ -58,7 +58,10 @@ export type AttributeProperty = BaseProperty<
   AttributeCollection,
   PropertyType.Attributes
 >;
-export type IntegerProperty = BaseProperty<number, PropertyType.Integer>;
+export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
+  min?: number;
+  max?: number;
+};
 export type StringProperty = BaseProperty<string, PropertyType.String>;
 export type TextareaProperty = BaseProperty<string, PropertyType.Textarea>;
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;

@@ -13,7 +13,7 @@ class FileUploadArguments extends Arguments
             'fileData' => [
                 'name' => 'fileData',
                 'type' => Type::string(),
-                'description' => 'The contents of the file in Base64 format. If provided, takes precedence over the URL.',
+                'description' => 'Expects the contents of the file in Base64 format. If provided, takes precedence over the URL.',
             ],
             'filename' => [
                 'name' => 'filename',

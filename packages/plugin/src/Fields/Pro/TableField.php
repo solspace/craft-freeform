@@ -191,6 +191,7 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
     public function getContentGqlMutationArgumentType(): Type|array
     {
         $layout = [];
+        $textValuesInclude = '';
         $selectValuesInclude = '';
         $checkboxValuesInclude = '';
 
@@ -206,15 +207,22 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
                 }
 
                 if (!empty($selectValues)) {
-                    $selectValuesInclude = '- '.$column['label'].' values include '.implode(', ', $selectValues).'.';
+                    $selectValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                    $selectValuesInclude .= '-- Single option value allowed.'."\n";
+                    $selectValuesInclude .= '-- Options include '.implode(', ', $selectValues).'.';
                 }
 
                 $layout[] = '"'.$column['label'].'"';
             } elseif (self::COLUMN_TYPE_CHECKBOX === $type) {
-                $checkboxValuesInclude = '- '.$column['label'].' values include "'.$column['value'].'".';
+                $checkboxValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                $checkboxValuesInclude .= '-- Single option value allowed.'."\n";
+                $checkboxValuesInclude .= '-- Option value is "'.$column['value'].'".';
 
                 $layout[] = '"'.$column['label'].'"';
             } else {
+                $textValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                $textValuesInclude .= '-- Single value allowed.';
+
                 $layout[] = '"'.$column['label'].'"';
             }
         }
@@ -222,6 +230,7 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         $description = [];
         $description[] = $this->getInstructions();
         $description[] = 'Expected layout [['.implode(', ', $layout).']].';
+        $description[] = $textValuesInclude;
         $description[] = $selectValuesInclude;
         $description[] = $checkboxValuesInclude;
         $description = implode("\n", $description);

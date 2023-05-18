@@ -16,7 +16,7 @@ class CsrfTokenInputArguments extends Arguments
                 'csrfToken' => [
                     'name' => 'csrfToken',
                     'type' => CsrfTokenInputType::getType(),
-                    'description' => 'The CSRF Token name/value for the submission',
+                    'description' => 'The CSRF name/value.',
                 ],
             ];
         }

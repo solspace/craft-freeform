@@ -26,29 +26,31 @@ class GraphQLContext
             return;
         }
 
-        if (!$request->getHeaders()->get('x-craft-gql-schema')) {
-            return;
-        }
+        if ($request->getHeaders()->get('x-craft-gql-schema') || $request->getHeaders()->get('x-craft-gql-solspace-freeform')) {
+            foreach ($form->getLayout()->getFields() as $field) {
+                if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
+                    continue;
+                }
 
-        foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
-                continue;
+                if (!$field->includeInGqlSchema()) {
+                    continue;
+                }
+
+                if (isset($arguments[$field->getHandle()])) {
+                    $postedValue = $arguments[$field->getHandle()];
+
+                    $event = new TransformValueEvent($field, $postedValue);
+                    Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);
+
+                    if (!$event->isValid) {
+                        return;
+                    }
+
+                    $field->setValue($event->getValue());
+                } else {
+                    $field->setValue(null);
+                }
             }
-
-            if (!$field->includeInGqlSchema() || !isset($arguments[$field->getHandle()])) {
-                continue;
-            }
-
-            $postedValue = $arguments[$field->getHandle()];
-
-            $event = new TransformValueEvent($field, $postedValue);
-            Event::trigger(FieldInterface::class, FieldInterface::EVENT_TRANSFORM_FROM_POST, $event);
-
-            if (!$event->isValid) {
-                return;
-            }
-
-            $field->setValue($event->getValue());
         }
     }
 }

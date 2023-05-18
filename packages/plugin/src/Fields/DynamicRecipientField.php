@@ -180,16 +180,24 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
+        $description = $this->getContentGqlDescription();
+
+        if ($this->isShowAsCheckboxes()) {
+            $description[] = 'Multiple option values allowed.';
+        } else {
+            $description[] = 'Single option value allowed.';
+        }
+
         $values = [];
 
         foreach ($this->getOptions() as $option) {
             $values[] = '"'.$option->getValue().'"';
         }
 
-        $description = [];
-        $description[] = $this->getInstructions();
-        $description[] = $this->isShowAsCheckboxes() ? 'Multiple values allowed.' : 'Single value allowed.';
-        $description[] = 'Values include ['.implode(', ', $values).'].';
+        if (!empty($values)) {
+            $description[] = 'Options include '.implode(', ', $values).'.';
+        }
+
         $description = implode("\n", $description);
 
         return [

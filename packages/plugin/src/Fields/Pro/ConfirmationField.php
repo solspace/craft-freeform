@@ -35,9 +35,9 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
     {
         $field = $this->getForm()->getLayout()->getFieldByHash($this->getTargetFieldHash());
 
-        $description = [];
-        $description[] = $this->getInstructions();
-        $description[] = 'Must match "'.$field->getHandle().'" field.';
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Value must match the "'.$field->getLabel().'" field value.';
+
         $description = implode("\n", $description);
 
         return [

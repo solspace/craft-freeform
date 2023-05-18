@@ -181,7 +181,24 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
-        return FileUploadInputType::getType();
+        $description = $this->getContentGqlDescription();
+
+        if (1 === $this->getFileCount()) {
+            $description[] = 'Only 1 file can be uploaded at once.';
+        } else {
+            $description[] = 'Multiple files can be uploaded at once.';
+        }
+
+        $description[] = 'File types include '.implode(', ', $this->getFileKinds()).'.';
+        $description[] = 'Max file size is '.$this->getMaxFileSizeKB().'KB.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => FileUploadInputType::getType(),
+            'description' => trim($description),
+        ];
     }
 
     /**
@@ -261,6 +278,17 @@ class FileUploadField extends AbstractField implements MultipleValueInterface, F
                     } else {
                         $uploadErrors[] = $this->translate('Invalid file data provided');
                     }
+                } elseif (!empty($fileUpload['url'])) {
+                    if (empty($fileUpload['filename'])) {
+                        // Make up a filename
+                        $url = parse_url($fileUpload['url']);
+                        $filename = pathinfo($url['path'], \PATHINFO_FILENAME);
+                        $extension = pathinfo($url['path'], \PATHINFO_EXTENSION);
+
+                        $fileUpload['filename'] = $filename.'.'.$extension;
+                    }
+
+                    ++$uploadedFiles;
                 }
             }
         }

@@ -101,11 +101,11 @@ class MailingListField extends AbstractField implements DefaultFieldInterface, N
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
-        $description = [];
-        $description[] = $this->getInstructions();
+        $description = $this->getContentGqlDescription();
         $description[] = 'Used by '.$this->getLabel().' field.';
-        $description[] = 'Single value allowed.';
-        $description[] = 'Values include [0, 1].';
+        $description[] = 'Single option value allowed.';
+        $description[] = 'Options include 0, 1.';
+
         $description = implode("\n", $description);
 
         return [

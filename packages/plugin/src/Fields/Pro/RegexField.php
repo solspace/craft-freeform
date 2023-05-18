@@ -49,9 +49,12 @@ class RegexField extends TextField implements ExtraFieldInterface
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
-        $description = [];
-        $description[] = $this->getInstructions();
-        $description[] = 'Regex pattern "'.$this->getPattern().'".';
+        $description = $this->getContentGqlDescription();
+
+        if (!empty($this->getPattern())) {
+            $description[] = 'Regex pattern: "'.$this->getPattern().'".';
+        }
+
         $description = implode("\n", $description);
 
         return [

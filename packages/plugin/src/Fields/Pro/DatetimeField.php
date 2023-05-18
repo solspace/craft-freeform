@@ -401,6 +401,20 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return DateTimeType::getType();
     }
 
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Format: "'.$this->getFormat().'".';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     protected function getInputHtml(): string
     {
         $attributes = $this->getCustomAttributes();

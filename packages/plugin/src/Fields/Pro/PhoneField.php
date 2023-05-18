@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PhoneMaskInterface;
@@ -69,5 +70,22 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
         ;
 
         return parent::getInputHtml();
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+
+        if (!empty($this->getPattern())) {
+            $description[] = 'Pattern: "'.$this->getPattern().'".';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 }

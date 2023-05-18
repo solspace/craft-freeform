@@ -17,7 +17,7 @@ class HoneypotInputArguments extends Arguments
                 'honeypot' => [
                     'name' => 'honeypot',
                     'type' => HoneypotInputType::getType(),
-                    'description' => 'The honeypot name/value for the submission',
+                    'description' => 'The honeypot name/value.',
                 ],
             ];
         }

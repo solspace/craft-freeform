@@ -551,6 +551,18 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
         return $this->hash;
     }
 
+    public function getContentGqlDescription(): array
+    {
+        $description = [];
+        $description[] = $this->getInstructions();
+
+        if ($this->isRequired()) {
+            $description[] = 'Value is required.';
+        }
+
+        return $description;
+    }
+
     public function getContentGqlType(): Type|array
     {
         return Type::string();
@@ -558,10 +570,13 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
+        $description = $this->getContentGqlDescription();
+        $description = implode("\n", $description);
+
         return [
             'name' => $this->getHandle(),
             'type' => $this->getContentGqlType(),
-            'description' => $this->getInstructions(),
+            'description' => trim($description),
         ];
     }
 

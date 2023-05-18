@@ -13,12 +13,12 @@ class HoneypotArguments extends Arguments
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
-                'description' => 'The Honeypot name',
+                'description' => 'The Honeypot field name.',
             ],
             'value' => [
                 'name' => 'value',
                 'type' => Type::string(),
-                'description' => 'The Honeypot value',
+                'description' => 'The Honeypot field value.',
             ],
         ];
     }

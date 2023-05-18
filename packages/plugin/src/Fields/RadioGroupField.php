@@ -78,21 +78,24 @@ class RadioGroupField extends AbstractExternalOptionsField implements SingleValu
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+
         $values = [];
 
         foreach ($this->getOptions() as $option) {
             $values[] = '"'.$option->getValue().'"';
         }
 
-        $description = [];
-        $description[] = $this->getInstructions();
-        $description[] = 'Single value allowed.';
-        $description[] = 'Values include ['.implode(', ', $values).'].';
+        if (!empty($values)) {
+            $description[] = 'Options include '.implode(', ', $values).'.';
+        }
+
         $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),
-            'type' => Type::string(),
+            'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];
     }

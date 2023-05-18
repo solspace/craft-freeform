@@ -13,12 +13,12 @@ class CsrfTokenArguments extends Arguments
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
-                'description' => 'The CSRF name',
+                'description' => 'The CSRF field name.',
             ],
             'value' => [
                 'name' => 'value',
                 'type' => Type::string(),
-                'description' => 'The CSRF value',
+                'description' => 'The CSRF token value.',
             ],
         ];
     }

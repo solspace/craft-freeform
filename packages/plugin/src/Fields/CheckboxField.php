@@ -86,15 +86,15 @@ class CheckboxField extends AbstractField implements SingleValueInterface, Input
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
-        $description = [];
-        $description[] = $this->getInstructions();
-        $description[] = 'Single value allowed.';
-        $description[] = 'Values include ['.$this->getDefaultValue().'].';
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+        $description[] = 'Option value is "'.$this->getDefaultValue().'".';
+
         $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),
-            'type' => Type::string(),
+            'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];
     }

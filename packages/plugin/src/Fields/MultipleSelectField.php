@@ -80,21 +80,24 @@ class MultipleSelectField extends AbstractExternalOptionsField implements Multip
 
     public function getContentGqlMutationArgumentType(): Type|array
     {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Multiple option values allowed.';
+
         $values = [];
 
         foreach ($this->getOptions() as $option) {
             $values[] = '"'.$option->getValue().'"';
         }
 
-        $description = [];
-        $description[] = $this->getInstructions();
-        $description[] = 'Multiple values allowed.';
-        $description[] = 'Values include ['.implode(', ', $values).'].';
+        if (!empty($values)) {
+            $description[] = 'Options include ['.implode(', ', $values).'].';
+        }
+
         $description = implode("\n", $description);
 
         return [
             'name' => $this->getHandle(),
-            'type' => Type::listOf(Type::string()),
+            'type' => $this->getContentGqlType(),
             'description' => trim($description),
         ];
     }

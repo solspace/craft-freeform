@@ -13,12 +13,12 @@ class RecaptchaArguments extends Arguments
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
-                'description' => 'The Recaptcha field name (E.g g-recaptcha-response)',
+                'description' => 'The Recaptcha field name (E.g "g-recaptcha-response" or "h-recaptcha-response").',
             ],
             'value' => [
                 'name' => 'value',
                 'type' => Type::string(),
-                'description' => 'The Recaptcha API response value',
+                'description' => 'The Recaptcha API response value.',
             ],
         ];
     }

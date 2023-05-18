@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\RecaptchaInputType;
 use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
 class RecaptchaInputArguments
@@ -28,11 +27,6 @@ class RecaptchaInputArguments
             return [];
         }
 
-        // or if the form has payment fields, then bail
-        if (\count(self::$form->getLayout()->getFields(PaymentInterface::class))) {
-            return [];
-        }
-
         $fields = self::$form->getLayout()->getFields(RecaptchaField::class);
         $field = reset($fields);
         if (!$field) {
@@ -45,7 +39,7 @@ class RecaptchaInputArguments
             $fieldHandle = [
                 'name' => $fieldHandle,
                 'type' => RecaptchaInputType::getType(),
-                'description' => 'The Recaptcha name/value for the submission',
+                'description' => 'The Recaptcha name/value.',
             ],
         ];
     }

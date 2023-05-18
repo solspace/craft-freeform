@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
+use Solspace\Freeform\Fields\Pro\RatingField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ObscureValueInterface;
@@ -46,6 +47,13 @@ trait SingleValueTrait
                 $objectValue = $this->getValue();
                 if (is_numeric($value)) {
                     $objectValue = $this->getActualValue($this->getValue());
+                }
+            } elseif ($this instanceof RatingField) {
+                // Prevents GraphQL from triggering an number constraint violation
+                if (!empty($this->getValue())) {
+                    $objectValue = $this->getValue();
+                } else {
+                    $this->value = $objectValue = null;
                 }
             } else {
                 $objectValue = $this->getValue();

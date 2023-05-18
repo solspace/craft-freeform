@@ -1313,7 +1313,14 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->getFormHandler()->onFormValidate($this);
 
         if ($this->isGraphQLPosted()) {
-            $currentPageFields = $this->getLayout()->getFields();
+            $currentPageFields = [];
+            foreach ($this->getLayout()->getFields() as $field) {
+                if (!$field->includeInGqlSchema()) {
+                    continue;
+                }
+
+                $currentPageFields[] = $field;
+            }
         } else {
             $currentPageFields = $this->getCurrentPage()->getFields();
         }

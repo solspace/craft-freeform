@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -87,6 +88,19 @@ class SignatureField extends AbstractField implements SingleValueInterface, Extr
     public function getPenDotSize(): float
     {
         return (float) ($this->penDotSize ?? self::DEFAULT_PEN_DOT_SIZE);
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Expects the contents of the file in Base64 format.';
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     /**

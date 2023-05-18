@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro\Payments;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -118,6 +119,20 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
     public function getValueAsString(bool $optionsAsValues = true): string
     {
         return '';
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Expects a Stripe card token value that represents a credit card\'s details.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     /**

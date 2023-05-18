@@ -261,12 +261,20 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $this->markFormAsSubmitted($form);
 
-        // If our submission already has payment info, lets not attempt to save it again. Just run the notifications
-        $paymentModel = $paymentsService->getBySubmissionId($submission->id);
-        if (!$paymentModel && $integrationsService->processPayments($submission)) {
-            $this->processNotifications($form, $submission, $mailingListOptedInFields);
+        if ($submission->id) {
+            // Stored submission
+            $paymentModel = $paymentsService->getBySubmissionId($submission->id);
+            // If we already have payment info, lets not attempt to save it again. Just run the notifications
+            if (!$paymentModel && $integrationsService->processPayments($submission)) {
+                $this->processNotifications($form, $submission, $mailingListOptedInFields);
+            } else {
+                $this->processNotifications($form, $submission, $mailingListOptedInFields);
+            }
         } else {
-            $this->processNotifications($form, $submission, $mailingListOptedInFields);
+            // Non-stored submission
+            if ($integrationsService->processPayments($submission)) {
+                $this->processNotifications($form, $submission, $mailingListOptedInFields);
+            }
         }
 
         $event = new ProcessSubmissionEvent($form, $submission);

@@ -12,6 +12,7 @@ use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
 use Solspace\Freeform\Fields\Properties\TabularData\TabularData;
+use Solspace\Freeform\Form\Form;
 
 #[Type(
     name: 'Opinion Scale',
@@ -49,6 +50,14 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         ],
     )]
     protected TabularData $legends;
+
+    public function __construct(Form $form)
+    {
+        parent::__construct($form);
+
+        $this->scales = new TabularData();
+        $this->legends = new TabularData();
+    }
 
     public function getType(): string
     {

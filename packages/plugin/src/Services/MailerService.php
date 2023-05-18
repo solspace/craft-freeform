@@ -27,6 +27,7 @@ use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadIn
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
@@ -236,7 +237,19 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         $presetAssets = $notification->getPresetAssets();
-        if ($presetAssets && \is_array($presetAssets) && Freeform::getInstance()->isPro()) {
+
+        if ($presetAssets && Freeform::getInstance()->isPro()) {
+            if (!\is_array($presetAssets) && TwigHelper::isTwigValue($presetAssets)) {
+                $presetAssets = trim(\Craft::parseEnv($this->renderString($presetAssets, $values)));
+
+                $delimiters = [',', '.', '|', '!', '?'];
+
+                // Changes '1! 2. 3, 4| 5? 6' --> '1,2,3,4,5,6'
+                $presetAssets = str_replace($delimiters, $delimiters[0], $presetAssets);
+                $presetAssets = explode($delimiters[0], $presetAssets);
+                $presetAssets = array_filter($presetAssets);
+            }
+
             foreach ($presetAssets as $assetId) {
                 $asset = \Craft::$app->assets->getAssetById((int) $assetId);
                 if ($asset) {

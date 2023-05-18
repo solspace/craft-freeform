@@ -298,26 +298,40 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     {
         $freeform = Freeform::getInstance();
 
-        $integrationsService = $freeform->integrations;
-        $connectionsService = $freeform->connections;
         $formsService = $freeform->forms;
+        $paymentsService = $freeform->payments;
+        $integrationsService = $freeform->integrations;
 
         $this->markFormAsSubmitted($form);
 
-        if ($integrationsService->processPayments($submission)) {
-            $connectionsService->connect($form, $submission);
-            $integrationsService->sendOutEmailNotifications($form, $submission);
-
-            if ($form->hasOptInPermission()) {
-                $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);
-                $integrationsService->pushToCRM($submission);
-            }
+        // If our submission already has payment info, lets not attempt to save it again. Just run the notifications
+        $paymentModel = $paymentsService->getBySubmissionId($submission->id);
+        if (!$paymentModel && $integrationsService->processPayments($submission)) {
+            $this->processNotifications($form, $submission, $mailingListOptedInFields);
+        } else {
+            $this->processNotifications($form, $submission, $mailingListOptedInFields);
         }
 
         $event = new ProcessSubmissionEvent($form, $submission);
         Event::trigger(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, $event);
 
         $formsService->onAfterSubmit($form, $submission);
+    }
+
+    public function processNotifications(Form $form, Submission $submission, array $mailingListOptedInFields): void
+    {
+        $freeform = Freeform::getInstance();
+
+        $connectionsService = $freeform->connections;
+        $integrationsService = $freeform->integrations;
+
+        $connectionsService->connect($form, $submission);
+        $integrationsService->sendOutEmailNotifications($form, $submission);
+
+        if ($form->hasOptInPermission()) {
+            $integrationsService->pushToMailingLists($submission, $mailingListOptedInFields);
+            $integrationsService->pushToCRM($submission);
+        }
     }
 
     public function delete(ElementQueryInterface $query, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool

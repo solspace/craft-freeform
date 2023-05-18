@@ -85,7 +85,18 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
             throw new FreeformException('Invalid $submission, can process only stored SpamSubmission instances.');
         }
 
-        Freeform::getInstance()->integrationsQueue->enqueueIntegrations($submission, $mailingListOptedInFields);
+        /**
+         * Save payment info as if we convert/allow a spam submission to be changed to a submission,
+         * the payment token value no longer exists when we trigger `submissionsService->postProcessSubmission` later on.
+         */
+        $freeform = Freeform::getInstance();
+
+        $integrationsService = $freeform->integrations;
+        $integrationsQueueService = $freeform->integrationsQueue;
+
+        if ($integrationsService->processPayments($submission)) {
+            $integrationsQueueService->enqueueIntegrations($submission, $mailingListOptedInFields);
+        }
     }
 
     protected function getFindQuery(): Query

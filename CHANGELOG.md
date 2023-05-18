@@ -1,5 +1,27 @@
 # Solspace Freeform Changelog
 
+## 4.0.24 - 2023-05-16
+
+### Added
+- Added the ability to limit forms to be submitted once per email address only.
+- Added a setting to the Mailchimp integration to allow choosing between appending existing Contact Tags with new ones when updating an existing contact.
+
+### Fixed
+- Fixed a bug where attempting to Allow a spam submission for a Payment form would result in an error.
+
+## 4.0.23 - 2023-04-28
+
+### Added
+- Added the ability to map submission data to `postDate` and `expiryDate` for Craft Entries.
+- Added the ability to preparse Twig for the "Predefined Assets" setting in email notification templates. This allows for things like dynamically attaching an asset to the email notification based on a user's selection, etc.
+
+### Changed
+- Updated Freeform template path settings to now include template folder autosuggestions.
+
+### Fixed
+- Fixed a bug where the hidden input for File Upload Drag & Drop fields was not getting an ID attribute applied to it.
+- Fixed some minor issues with demo templates.
+
 ## 4.0.22 - 2023-04-14
 
 ### Added
@@ -272,6 +294,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.29 - 2023-05-08
+
+### Changed
+- Updated the JS Honeypot Enhancement feature to use the encrypted payload instead of PHP sessions when the 'Form Session Context' setting is 'Encrypted Payload'.
 
 ## 3.13.28 - 2023-04-04
 

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.0.24.1 - 2023-05-18
+
+### Fixed
+- Fixed a bug where an error would occur when attempting to submit a form that has the "Store Submission Data" setting disabled on sites using the Freeform 4.0.24 version.
+
 ## 4.0.24 - 2023-05-16
 
 ### Added

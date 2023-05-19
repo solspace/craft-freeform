@@ -27,6 +27,7 @@ class TextareaField extends TextField implements PlaceholderInterface
 {
     #[Input\Integer(
         instructions: 'The number of rows in height for this field.',
+        min: 1,
     )]
     protected int $rows = 2;
 

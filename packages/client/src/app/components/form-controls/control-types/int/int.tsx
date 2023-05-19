@@ -9,7 +9,25 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
   errors,
   updateValue,
 }) => {
-  const { handle } = property;
+  const { handle, min, max } = property;
+
+  const onBlur = (event: React.FocusEvent<HTMLInputElement>): void => {
+    let newValue = Number(event.target.value);
+
+    if (min !== null) {
+      newValue = Math.max(newValue, min);
+    }
+
+    if (max !== null) {
+      newValue = Math.min(newValue, max);
+    }
+
+    updateValue(newValue);
+  };
+
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
+    updateValue(Number(event.target.value));
+  };
 
   return (
     <Control property={property} errors={errors}>
@@ -17,8 +35,9 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
         id={handle}
         type="number"
         className="text fullwidth"
-        value={value || ''}
-        onChange={(event) => updateValue(Number(event.target.value))}
+        value={value !== undefined ? value : ''}
+        onChange={onChange}
+        onBlur={onBlur}
       />
     </Control>
   );

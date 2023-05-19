@@ -46,13 +46,13 @@ class NotificationPersistence extends FeatureBundle
         foreach ($notifications as $notification) {
             $uid = $notification->uid;
             $enabled = $notification->enabled ?? true;
-            $class = $notification->class;
+            $className = $notification->className;
 
             $record = $existingRecords[$uid] ?? null;
             if (!$record) {
                 $record = new FormNotificationRecord();
                 $record->uid = $uid;
-                $record->class = $class;
+                $record->class = $className;
                 $record->formId = $event->getFormId();
             }
 
@@ -85,7 +85,7 @@ class NotificationPersistence extends FeatureBundle
     // TODO: Move this to a separate class and combine with the one in FieldPersistence
     private function getValidatedMetadata(\stdClass $object, PersistFormEvent $event): array
     {
-        $properties = $this->propertyProvider->getEditableProperties($object->class);
+        $properties = $this->propertyProvider->getEditableProperties($object->className);
 
         $metadata = [];
         foreach ($properties as $property) {

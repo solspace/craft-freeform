@@ -12,6 +12,7 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use Solspace\Freeform\Notifications\Types\Conditional\Conditional;
 use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
+use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
 use yii\base\Event;
 
 class NotificationsBundle extends FeatureBundle
@@ -31,7 +32,7 @@ class NotificationsBundle extends FeatureBundle
         );
     }
 
-    public function sendNotifications(ProcessSubmissionEvent $event)
+    public function sendNotifications(ProcessSubmissionEvent $event): void
     {
         if (!$event->isValid) {
             return;
@@ -45,9 +46,10 @@ class NotificationsBundle extends FeatureBundle
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
     }
 
-    public function registerNotificationTypes(RegisterNotificationTypesEvent $event)
+    public function registerNotificationTypes(RegisterNotificationTypesEvent $event): void
     {
         $event->addType(Admin::class);
+        $event->addType(EmailField::class);
         $event->addType(Dynamic::class);
         $event->addType(Conditional::class);
     }

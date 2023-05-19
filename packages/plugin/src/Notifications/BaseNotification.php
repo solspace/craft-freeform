@@ -40,7 +40,7 @@ abstract class BaseNotification implements NotificationInterface
         return $this->enabled;
     }
 
-    public function getClass(): string
+    public function getClassName(): string
     {
         return static::class;
     }

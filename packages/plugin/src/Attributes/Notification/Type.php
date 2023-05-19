@@ -7,7 +7,7 @@ use Solspace\Freeform\Attributes\Property\PropertyCollection;
 #[\Attribute(\Attribute::TARGET_CLASS)]
 class Type
 {
-    public string $class;
+    public string $className;
     private PropertyCollection $properties;
 
     public function __construct(

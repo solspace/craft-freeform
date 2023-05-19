@@ -12,7 +12,11 @@ import { notificationActions } from '../slices/notifications';
 export const addNewNotification =
   (notificationType: NotificationType, uid: string): AppThunk =>
   (dispatch) => {
-    const { class: className, properties, newInstanceName } = notificationType;
+    const {
+      className: className,
+      properties,
+      newInstanceName,
+    } = notificationType;
 
     const values: Record<string, GenericValue> = {};
     properties.forEach((property) => {
@@ -28,7 +32,7 @@ export const addNewNotification =
     dispatch(
       notificationActions.add({
         uid,
-        class: className,
+        className: className,
         enabled: true,
         ...values,
         name,

@@ -22,6 +22,20 @@ class ImplementationProviderTest extends TestCase
             $result,
         );
     }
+
+    public function testGetsFromArray()
+    {
+        $provider = new ImplementationProvider();
+        $result = $provider->getFromArray([
+            TestInterface1::class,
+            AnotherMultiWordInterface::class,
+        ]);
+
+        $this->assertSame(
+            ['testInterface1', 'anotherMultiWord'],
+            $result,
+        );
+    }
 }
 
 interface TestInterface1

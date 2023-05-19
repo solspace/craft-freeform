@@ -23,7 +23,7 @@ export const PropertyEditor: React.FC = () => {
   }
 
   const properties =
-    notificationTypes?.find((type) => type.class === notification.class)
+    notificationTypes?.find((type) => type.className === notification.className)
       ?.properties || [];
 
   return (

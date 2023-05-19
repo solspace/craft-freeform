@@ -24,8 +24,20 @@ class ImplementationProvider
 
         return array_values(
             $this->cleanUpInterfaceNames(
+                $this->filterExcludedInterfaces($interfaces)
+            )
+        );
+    }
+
+    public function getFromArray(array $implementations): array
+    {
+        return array_values(
+            $this->cleanUpInterfaceNames(
                 $this->filterExcludedInterfaces(
-                    $interfaces
+                    array_map(
+                        fn ($interface) => new \ReflectionClass($interface),
+                        $implementations
+                    )
                 )
             )
         );

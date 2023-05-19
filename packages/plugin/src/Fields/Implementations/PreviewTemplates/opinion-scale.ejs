@@ -1,11 +1,21 @@
 <div class="opinion-scale">
     <ul class="opinion-scale-scales">
         <% scales.forEach(function(scale) { %>
-            <li class="<%= isSelected && 'active' %>">
-                <input type="radio" <%= isSelected && 'checked' %> />
-                <label><%= scale.label || scale.value %></label>
+            <% var value = scale[0]; %>
+            <% var label = scale[1] || value; %>
+
+            <li class="">
+                <input type="radio" />
+                <label><%= label %></label>
             </li>
         <% }); %>
     </ul>
 
+    <% if (legends.length > 0 ) { %>
+        <ul class="opinion-scale-legends">
+            <% legends.forEach(function(legend) { %>
+                <li><%= legend[0] %></li>
+            <% }); %>
+        </ul>
+    <% } %>
 </div>

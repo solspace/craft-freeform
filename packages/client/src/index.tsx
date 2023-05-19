@@ -13,6 +13,7 @@ import { CpNavigation } from './app/components/cp-navigation/cp-navigation';
 import { Dashboard } from './app/pages/dashboard/dashboard';
 import { Form, Forms } from './app/pages/forms';
 import { Settings } from './app/pages/settings/settings';
+import ManualStyles from './styles/manual';
 import { generateUrl } from './utils/urls';
 import App from './App';
 
@@ -22,6 +23,7 @@ const root = ReactDOM.createRoot(container);
 root.render(
   <BrowserRouter basename={generateUrl('/client', false)}>
     <QueryClientProvider client={queryClient}>
+      <ManualStyles />
       <ReactQueryDevtools />
       <CpNavigation />
       <Routes>

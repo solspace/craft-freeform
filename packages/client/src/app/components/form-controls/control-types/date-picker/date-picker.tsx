@@ -1,5 +1,6 @@
 import React from 'react';
 import DatePicker from 'react-datepicker';
+import type { DateTimeProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import format from 'date-fns/format';
 import parse from 'date-fns/parse';
@@ -11,7 +12,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 const dateFormat = 'MM/dd/yyyy';
 
-const DatePickerControl: React.FC<ControlType<string>> = ({
+const DatePickerControl: React.FC<ControlType<DateTimeProperty>> = ({
   value,
   property,
   errors,

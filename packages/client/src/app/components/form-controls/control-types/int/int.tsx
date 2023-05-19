@@ -1,8 +1,9 @@
 import React from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
+import type { IntegerProperty } from '@ff-client/types/properties';
 
-const Int: React.FC<ControlType<number>> = ({
+const Int: React.FC<ControlType<IntegerProperty>> = ({
   value,
   property,
   errors,

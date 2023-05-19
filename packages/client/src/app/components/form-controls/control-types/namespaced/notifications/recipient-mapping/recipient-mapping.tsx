@@ -8,6 +8,7 @@ import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { Notification } from '@ff-client/types/notifications';
 import { RecipientMapping } from '@ff-client/types/notifications';
+import type { RecipientMappingProperty } from '@ff-client/types/properties';
 import { PropertyType } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
@@ -17,7 +18,7 @@ import { MappingOption } from './mapping.option';
 import { RecipientMappingWrapper } from './recipient-mapping.styles';
 
 const RecipientMapping: React.FC<
-  ControlType<RecipientMapping[], Notification>
+  ControlType<RecipientMappingProperty, Notification>
 > = ({ value, property, errors, updateValue, context }) => {
   const fieldUid = context.field as string;
   const field = useSelector(fieldSelectors.one(fieldUid));

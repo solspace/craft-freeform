@@ -1,9 +1,10 @@
 import React from 'react';
 import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
+import type { StringProperty } from '@ff-client/types/properties';
 import classes from '@ff-client/utils/classes';
 
-const String: React.FC<ControlType<string>> = ({
+const String: React.FC<ControlType<StringProperty>> = ({
   value,
   property,
   errors,

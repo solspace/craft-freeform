@@ -12,12 +12,13 @@ import { notificationRuleActions } from '@editor/store/slices/rules/notification
 import { notificationRuleSelectors } from '@editor/store/slices/rules/notifications/notification-rules.selectors';
 import { useQueryNotificationRules } from '@ff-client/queries/rules';
 import type { Notification } from '@ff-client/types/notifications';
+import type { ConditionalRulesProperty } from '@ff-client/types/properties';
 import { Combinator } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
 import { v4 } from 'uuid';
 
 const ConditionalNotificationRules: React.FC<
-  ControlType<string, Notification>
+  ControlType<ConditionalRulesProperty, Notification>
 > = ({ property, updateValue, value, context, errors }) => {
   const dispatch = useAppDispatch();
   const generatedValues = useRef<string[]>([]);

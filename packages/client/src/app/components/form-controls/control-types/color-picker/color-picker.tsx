@@ -7,10 +7,11 @@ import {
   Swatch,
 } from '@components/form-controls/control-types/color-picker/color-picker.styles';
 import type { ControlType } from '@components/form-controls/types';
+import type { ColorProperty } from '@ff-client/types/properties';
 
 import { Control } from '../../control';
 
-const ColorPicker: React.FC<ControlType<string>> = ({
+const ColorPicker: React.FC<ControlType<ColorProperty>> = ({
   value,
   property,
   errors,

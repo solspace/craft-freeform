@@ -3,63 +3,83 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataTransformer;
+use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
+use Solspace\Freeform\Fields\Properties\TabularData\TabularData;
+use Solspace\Freeform\Form\Form;
 
 #[Type(
     name: 'Opinion Scale',
     typeShorthand: 'opinion-scale',
     iconPath: __DIR__.'/../Icons/text.svg',
+    previewTemplatePath: __DIR__.'/../PreviewTemplates/opinion-scale.ejs',
 )]
 class OpinionScaleField extends AbstractField implements ExtraFieldInterface, OptionsInterface
 {
-    protected array $scales = [];
+    #[ValueTransformer(TabularDataTransformer::class)]
+    #[Input\TabularData(
+        label: 'Scales',
+        instructions: '',
+        value: [],
+        configuration: [
+            [
+                'key' => 'value',
+                'label' => 'Value',
+            ],
+            [
+                'key' => 'label',
+                'label' => 'Label (Optional)',
+            ],
+        ],
+    )]
+    protected TabularData $scales;
 
-    protected array $legends = [];
+    #[ValueTransformer(TabularDataTransformer::class)]
+    #[Input\TabularData(
+        label: 'Legends',
+        instructions: '',
+        value: [],
+        configuration: [
+            ['key' => 'label', 'label' => 'Legend'],
+        ],
+    )]
+    protected TabularData $legends;
+
+    public function __construct(Form $form)
+    {
+        parent::__construct($form);
+
+        $this->scales = new TabularData();
+        $this->legends = new TabularData();
+    }
 
     public function getType(): string
     {
         return self::TYPE_OPINION_SCALE;
     }
 
-    public function getScales(): array
+    public function getScales(): TabularData
     {
-        if (empty($this->scales)) {
-            return [];
-        }
-
-        $scales = [];
-        foreach ($this->scales as $index => $scale) {
-            if (!isset($scale['value']) || '' === $scale['value']) {
-                continue;
-            }
-
-            $value = $scale['value'];
-            $label = $scale['label'] ?? $value;
-            if (empty($label)) {
-                $label = $value;
-            }
-
-            $scales[$index] = [
-                'value' => $value,
-                'label' => $label,
-            ];
-        }
-
-        return $scales;
+        return $this->scales;
     }
 
     public function getOptions(): OptionsCollection
     {
         $collection = new PresetOptions();
-        foreach ($this->getScales() as $scale) {
+        foreach ($this->getScales() as $row) {
+            $value = $row[0] ?? null;
+            $label = $row[1] ?? $value;
+
             $collection->add(
-                $scale['label'],
-                $scale['value'],
-                $this->getValue() === $scale['value'],
+                $label,
+                $value,
+                $this->getValue() === $value,
             );
         }
 
@@ -76,11 +96,9 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         return $options;
     }
 
-    public function getLegends(): array
+    public function getLegends(): TabularData
     {
-        $legends = $this->legends ?? [];
-
-        return array_filter($legends);
+        return $this->legends;
     }
 
     protected function getInputHtml(): string

@@ -34,8 +34,10 @@ abstract class BaseApiController extends BaseController
             return $this->response;
         }
 
+        $serialized = $this->getSerializer()->serialize($content, 'json');
+
         $this->response->format = Response::FORMAT_JSON;
-        $this->response->content = $this->getSerializer()->serialize($content, 'json');
+        $this->response->content = $serialized;
 
         return $this->response;
     }

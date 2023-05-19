@@ -5,7 +5,9 @@ namespace Solspace\Freeform\Bundles\Attributes\Property;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionFetcherInterface;
+use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataConfiguration;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
+use Solspace\Freeform\Attributes\Property\Input\TabularData;
 use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Attributes\Property\PropertyCollection;
@@ -78,6 +80,7 @@ class PropertyProvider
             }
 
             $this->processOptions($attribute);
+            $this->processTabularDataConfiguration($attribute);
             $this->processTransformer($property, $attribute);
             $this->processValueGenerator($property, $attribute);
             $this->processFlags($property, $attribute);
@@ -159,6 +162,30 @@ class PropertyProvider
         }
 
         $attribute->options = $collection;
+    }
+
+    private function processTabularDataConfiguration(Property $attribute): void
+    {
+        if (!$attribute instanceof TabularData) {
+            return;
+        }
+
+        $configuration = new TabularDataConfiguration();
+        $config = $attribute->configuration;
+
+        if (null === $config || $config instanceof TabularDataConfiguration) {
+            return;
+        }
+
+        foreach ($config as $item) {
+            $configuration->add(
+                $item['key'],
+                $item['label'] ?? $item['key'],
+                $item['type'] ?? null
+            );
+        }
+
+        $attribute->configuration = $configuration;
     }
 
     private function processTransformer(\ReflectionProperty $property, Property $attribute): void

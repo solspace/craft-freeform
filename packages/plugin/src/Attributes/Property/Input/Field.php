@@ -17,7 +17,8 @@ class Field extends Property
         ?string $instructions = null,
         ?int $order = null,
         ?string $value = null,
-        public ?string $emptyOption = null
+        public ?string $emptyOption = null,
+        public ?array $implements = [],
     ) {
         parent::__construct(
             label: $label,

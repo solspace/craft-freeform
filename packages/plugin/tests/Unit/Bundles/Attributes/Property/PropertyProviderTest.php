@@ -11,6 +11,7 @@ use Solspace\Freeform\Attributes\Property\TransformerInterface;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use yii\di\Container;
 
 /**
@@ -20,12 +21,23 @@ use yii\di\Container;
  */
 class PropertyProviderTest extends TestCase
 {
-    public function testSetObjectProperties()
+    private Container $mockContainer;
+    private ImplementationProvider $mockImplementationProvider;
+
+    protected function setUp(): void
     {
         $mockContainer = $this->createMock(Container::class);
         $mockContainer->method('get')->willReturn(new TestTransformer());
 
-        $provider = new PropertyProvider($mockContainer);
+        $this->mockContainer = $mockContainer;
+
+        $mockImplementationProvider = $this->createMock(ImplementationProvider::class);
+        $this->mockImplementationProvider = $mockImplementationProvider;
+    }
+
+    public function testSetObjectProperties()
+    {
+        $provider = new PropertyProvider($this->mockContainer, $this->mockImplementationProvider);
 
         $object = new TestAttributesClass();
 
@@ -45,10 +57,7 @@ class PropertyProviderTest extends TestCase
      */
     public function testGetEditableProperties(array $checklist)
     {
-        $mockContainer = $this->createMock(Container::class);
-        $mockContainer->method('get')->willReturn(new TestTransformer());
-
-        $provider = new PropertyProvider($mockContainer);
+        $provider = new PropertyProvider($this->mockContainer, $this->mockImplementationProvider);
 
         $handle = $checklist['handle'];
 

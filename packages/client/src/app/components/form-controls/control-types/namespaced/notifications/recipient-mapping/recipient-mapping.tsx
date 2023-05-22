@@ -86,7 +86,10 @@ const RecipientMapping: React.FC<
         <button
           className={classes('btn', 'add', 'icon', 'dashed')}
           onClick={() =>
-            updateValue([...value, { value: '', recipients: [], template: '' }])
+            updateValue([
+              ...(value || []),
+              { value: '', recipients: [], template: '' },
+            ])
           }
         >
           {translate('Add a custom value')}

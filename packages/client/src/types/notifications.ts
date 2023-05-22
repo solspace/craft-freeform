@@ -5,7 +5,7 @@ type TemplateID = string | number;
 export type Notification = {
   id?: TemplateID;
   uid: string;
-  class: string;
+  className: string;
 
   name: string;
   enabled: boolean;
@@ -17,7 +17,7 @@ export type NotificationType = {
   name: string;
   newInstanceName: string;
   icon: string;
-  class: string;
+  className: string;
   properties: Property[];
 };
 

@@ -6,6 +6,7 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionFetcherInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataConfiguration;
+use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
 use Solspace\Freeform\Attributes\Property\Input\TabularData;
 use Solspace\Freeform\Attributes\Property\Middleware;
@@ -19,6 +20,7 @@ use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use Stringy\Stringy;
 use yii\di\Container;
@@ -28,8 +30,10 @@ use yii\di\Container;
  */
 class PropertyProvider
 {
-    public function __construct(private Container $container)
-    {
+    public function __construct(
+        private Container $container,
+        private ImplementationProvider $implementationProvider,
+    ) {
     }
 
     public function setObjectProperties(object $object, array $properties): void
@@ -81,6 +85,7 @@ class PropertyProvider
 
             $this->processOptions($attribute);
             $this->processTabularDataConfiguration($attribute);
+            $this->processImplementations($attribute);
             $this->processTransformer($property, $attribute);
             $this->processValueGenerator($property, $attribute);
             $this->processFlags($property, $attribute);
@@ -186,6 +191,22 @@ class PropertyProvider
         }
 
         $attribute->configuration = $configuration;
+    }
+
+    private function processImplementations(Property $attribute): void
+    {
+        if (!$attribute instanceof Field) {
+            return;
+        }
+
+        $implementations = $attribute->implements;
+        if (empty($implementations)) {
+            $attribute->implements = null;
+
+            return;
+        }
+
+        $attribute->implements = $this->implementationProvider->getFromArray($attribute->implements);
     }
 
     private function processTransformer(\ReflectionProperty $property, Property $attribute): void

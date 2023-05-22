@@ -52,3 +52,19 @@ export const useFieldType = (typeClass?: string): FieldType | undefined => {
 
   return data.find((item) => item.typeClass === typeClass);
 };
+
+type FieldTypeSearch = () => (typeClass: string) => FieldType | undefined;
+
+export const useFieldTypeSearch: FieldTypeSearch = () => {
+  const { data } = useFetchFieldTypes();
+
+  const findType = (typeClass: string): FieldType | undefined => {
+    if (!data) {
+      return undefined;
+    }
+
+    return data.find((item) => item.typeClass === typeClass);
+  };
+
+  return findType;
+};

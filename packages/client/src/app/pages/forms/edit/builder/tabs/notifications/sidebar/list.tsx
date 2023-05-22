@@ -44,10 +44,10 @@ export const List: React.FC = () => {
   return (
     <Sidebar lean>
       {notificationTypes.map((type) => (
-        <NotificationTypeItem key={type.class} type={type}>
+        <NotificationTypeItem key={type.className} type={type}>
           {notifications &&
             notifications
-              ?.filter((notif) => notif.class === type.class)
+              ?.filter((notif) => notif.className === type.className)
               .map((notification) => (
                 <NotificationItem
                   key={notification.uid}

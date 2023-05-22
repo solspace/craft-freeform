@@ -42,7 +42,7 @@ class RegisterNotificationTypesEvent extends ArrayableEvent
             return;
         }
 
-        $type->class = $class;
+        $type->className = $class;
         $type->icon = $type->icon ? file_get_contents($type->icon) : null;
         $type->setProperties($this->propertyProvider->getEditableProperties($class));
 

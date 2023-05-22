@@ -88,7 +88,9 @@ export type TabularDataProperty = BaseProperty<
 > & {
   configuration: TabularData;
 };
-export type FieldProperty = BaseProperty<string, PropertyType.Field>;
+export type FieldProperty = BaseProperty<string, PropertyType.Field> & {
+  implements?: string[];
+};
 export type LabelProperty = BaseProperty<string, PropertyType.Label>;
 export type NotificationTemplateProperty = BaseProperty<
   string | number,

@@ -171,11 +171,6 @@ class FormInterface extends AbstractInterface
                             return null;
                         }
 
-                        // or if the form has payment fields, then bail
-                        if (\count($source->getLayout()->getFields(PaymentInterface::class))) {
-                            return null;
-                        }
-
                         $fields = $source->getLayout()->getFields(RecaptchaField::class);
                         $field = reset($fields);
                         if (!$field) {

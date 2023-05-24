@@ -2,23 +2,37 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
-use craft\gql\base\ObjectType;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
-class AttributeType extends ObjectType
+class AttributeType extends AbstractObjectType
 {
     public static function getName(): string
     {
         return 'FreeformAttributeType';
     }
 
-    public static function prepareRowFieldDefinition(string $typeName): array
+    public static function getTypeDefinition(): Type
     {
-        $fields = [
-            'attribute' => Type::string(),
-            'value' => Type::string(),
-        ];
+        return AttributeInterface::getType();
+    }
 
-        return \Craft::$app->getGql()->prepareFieldDefinitions($fields, $typeName);
+    /**
+     * @param Option $source
+     * @param mixed  $arguments
+     */
+    protected function resolve($source, $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
+    {
+        if ('attribute' === $resolveInfo->fieldName) {
+            return $source['attribute'] ?? null;
+        }
+
+        if ('value' === $resolveInfo->fieldName) {
+            return $source['value'] ?? null;
+        }
+
+        return null;
     }
 }

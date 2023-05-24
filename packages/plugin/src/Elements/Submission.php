@@ -39,6 +39,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\HashHelper;
+use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
@@ -168,7 +169,11 @@ class Submission extends Element
 
     public static function gqlMutationNameByContext(mixed $context): string
     {
-        return 'save_'.$context->handle.'_Submission';
+        if ($context instanceof FormModel) {
+            $context = $context->getForm();
+        }
+
+        return 'save_'.$context->getHandle().'_Submission';
     }
 
     public static function displayName(): string

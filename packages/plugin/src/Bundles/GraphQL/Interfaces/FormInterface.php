@@ -4,16 +4,15 @@ namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\HoneypotResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
-use Solspace\Freeform\Bundles\GraphQL\Types\CsrfTokenType;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
-use Solspace\Freeform\Bundles\GraphQL\Types\HoneypotType;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
 class FormInterface extends AbstractInterface
@@ -101,6 +100,14 @@ class FormInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'Title format used for new submission titles',
             ],
+            'submissionMutationName' => [
+                'name' => 'submissionMutationName',
+                'type' => Type::string(),
+                'description' => 'The forms GraphQL mutation name for submissions',
+                'resolve' => function ($source) {
+                    return Submission::gqlMutationNameByContext($source);
+                },
+            ],
             'extraPostUrl' => [
                 'name' => 'extraPostUrl',
                 'type' => Type::string(),
@@ -159,7 +166,7 @@ class FormInterface extends AbstractInterface
             'recaptchaHandle' => [
                 'name' => 'recaptchaHandle',
                 'type' => Type::string(),
-                'description' => 'The Recaptcha handle of the form',
+                'description' => 'The Recaptcha handle for this form',
                 'resolve' => function ($source) {
                     if ($source instanceof Form) {
                         if (!Freeform::getInstance()->settings->getSettingsModel()->recaptchaEnabled) {
@@ -185,50 +192,15 @@ class FormInterface extends AbstractInterface
             ],
             'honeypot' => [
                 'name' => 'honeypot',
-                'type' => HoneypotType::getType(),
+                'type' => HoneypotInterface::getType(),
+                'resolve' => HoneypotResolver::class.'::resolve',
                 'description' => 'A fresh honeypot instance',
-                'resolve' => function ($source) {
-                    if ($source instanceof Form) {
-                        $freeform = Freeform::getInstance();
-
-                        $settingsService = $freeform->settings;
-                        $honeypotService = $freeform->honeypot;
-
-                        if ($settingsService->isFreeformHoneypotEnabled($source)) {
-                            $honeypot = $honeypotService->getHoneypot($source);
-
-                            return [
-                                'name' => $honeypot->getName(),
-                                'value' => $honeypot->getHash(),
-                            ];
-                        }
-                    }
-
-                    return null;
-                },
             ],
             'csrfToken' => [
                 'name' => 'csrfToken',
-                'type' => CsrfTokenType::getType(),
+                'type' => CsrfTokenInterface::getType(),
+                'resolve' => CsrfTokenResolver::class.'::resolve',
                 'description' => 'A fresh csrf token',
-                'resolve' => function () {
-                    if (!\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
-                        return null;
-                    }
-
-                    return [
-                        'name' => \Craft::$app->getConfig()->getGeneral()->csrfTokenName,
-                        'value' => \Craft::$app->getRequest()->getCsrfToken(),
-                    ];
-                },
-            ],
-            'submissionMutationName' => [
-                'name' => 'submissionMutationName',
-                'type' => Type::string(),
-                'description' => 'The forms GraphQL mutation name for submissions',
-                'resolve' => function ($source) {
-                    return Submission::gqlMutationNameByContext($source);
-                },
             ],
             // Layout
             'pages' => [

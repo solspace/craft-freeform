@@ -2,34 +2,37 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
-use craft\gql\base\ObjectType;
-use craft\gql\GqlEntityRegistry;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Arguments\CsrfTokenArguments;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\CsrfTokenInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
-class CsrfTokenType extends ObjectType
+class CsrfTokenType extends AbstractObjectType
 {
     public static function getName(): string
     {
         return 'FreeformCsrfTokenType';
     }
 
-    public static function getType(): Type
+    public static function getTypeDefinition(): Type
     {
-        if ($type = GqlEntityRegistry::getEntity(self::getName())) {
-            return $type;
+        return CsrfTokenInterface::getType();
+    }
+
+    /**
+     * @param Option $source
+     * @param mixed  $arguments
+     */
+    protected function resolve($source, $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
+    {
+        if ('name' === $resolveInfo->fieldName) {
+            return $source['name'] ?? null;
         }
 
-        $fields = \Craft::$app->getGql()->prepareFieldDefinitions(
-            CsrfTokenArguments::getArguments(),
-            self::getName()
-        );
+        if ('value' === $resolveInfo->fieldName) {
+            return $source['value'] ?? null;
+        }
 
-        return GqlEntityRegistry::createEntity(self::getName(), new self([
-            'name' => self::getName(),
-            'fields' => function () use ($fields) {
-                return $fields;
-            },
-        ]));
+        return null;
     }
 }

@@ -29,6 +29,7 @@ class RecaptchaInputArguments
 
         $fields = self::$form->getLayout()->getFields(RecaptchaField::class);
         $field = reset($fields);
+
         if (!$field) {
             return [];
         }

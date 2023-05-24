@@ -12,7 +12,7 @@ class RowInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformFormRowInterface';
+        return 'FreeformRowInterface';
     }
 
     public static function getTypeClass(): string
@@ -27,7 +27,7 @@ class RowInterface extends AbstractInterface
 
     public static function getDescription(): string
     {
-        return 'Freeform Form Row GraphQL Interface';
+        return 'Freeform Row GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array

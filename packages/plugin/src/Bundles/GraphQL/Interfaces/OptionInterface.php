@@ -1,32 +1,31 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
+namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
-use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\OptionsGenerator;
-use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\OptionsType;
+use Solspace\Freeform\Bundles\GraphQL\Types\Generators\OptionGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Types\OptionType;
 
-class OptionsInterface extends AbstractInterface
+class OptionInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformOptionsInterface';
+        return 'FreeformOptionInterface';
     }
 
     public static function getTypeClass(): string
     {
-        return OptionsType::class;
+        return OptionType::class;
     }
 
     public static function getGeneratorClass(): string
     {
-        return OptionsGenerator::class;
+        return OptionGenerator::class;
     }
 
     public static function getDescription(): string
     {
-        return 'A { key => value } map';
+        return 'Freeform Option GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array

@@ -1,32 +1,31 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
+namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
-use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\ScalesGenerator;
-use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\ScalesType;
+use Solspace\Freeform\Bundles\GraphQL\Types\Generators\OpinionScaleGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Types\OpinionScaleType;
 
-class ScalesInterface extends AbstractInterface
+class OpinionScaleInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformScalesInterface';
+        return 'FreeformOpinionScaleInterface';
     }
 
     public static function getTypeClass(): string
     {
-        return ScalesType::class;
+        return OpinionScaleType::class;
     }
 
     public static function getGeneratorClass(): string
     {
-        return ScalesGenerator::class;
+        return OpinionScaleGenerator::class;
     }
 
     public static function getDescription(): string
     {
-        return 'Opinion scales';
+        return 'Freeform Opinion Scale GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array

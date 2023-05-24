@@ -2,34 +2,37 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
-use craft\gql\base\ObjectType;
-use craft\gql\GqlEntityRegistry;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Arguments\HoneypotArguments;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\HoneypotInterface;
+use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
-class HoneypotType extends ObjectType
+class HoneypotType extends AbstractObjectType
 {
     public static function getName(): string
     {
         return 'FreeformHoneypotType';
     }
 
-    public static function getType(): Type
+    public static function getTypeDefinition(): Type
     {
-        if ($type = GqlEntityRegistry::getEntity(self::getName())) {
-            return $type;
+        return HoneypotInterface::getType();
+    }
+
+    /**
+     * @param Option $source
+     * @param mixed  $arguments
+     */
+    protected function resolve($source, $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
+    {
+        if ('name' === $resolveInfo->fieldName) {
+            return $source['name'] ?? null;
         }
 
-        $fields = \Craft::$app->getGql()->prepareFieldDefinitions(
-            HoneypotArguments::getArguments(),
-            self::getName()
-        );
+        if ('value' === $resolveInfo->fieldName) {
+            return $source['value'] ?? null;
+        }
 
-        return GqlEntityRegistry::createEntity(self::getName(), new self([
-            'name' => self::getName(),
-            'fields' => function () use ($fields) {
-                return $fields;
-            },
-        ]));
+        return null;
     }
 }

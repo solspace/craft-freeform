@@ -2,39 +2,29 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types\Generators;
 
-use craft\gql\base\Generator;
-use craft\gql\base\GeneratorInterface;
-use craft\gql\base\SingleGeneratorInterface;
-use craft\gql\GqlEntityRegistry;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\AttributeArguments;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\AttributeInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AttributeType;
 
-class AttributeGenerator extends Generator implements GeneratorInterface, SingleGeneratorInterface
+class AttributeGenerator extends AbstractGenerator
 {
-    public static function getName(): string
+    public static function getTypeClass(): string
     {
-        return 'FreeformAttributeType';
+        return AttributeType::class;
     }
 
-    public static function generateTypes(mixed $context = null): array
+    public static function getArgumentsClass(): string
     {
-        return [
-            self::generateType($context),
-        ];
+        return AttributeArguments::class;
     }
 
-    public static function generateType(mixed $context = null): mixed
+    public static function getInterfaceClass(): string
     {
-        if ($type = GqlEntityRegistry::getEntity(self::getName())) {
-            return $type;
-        }
+        return AttributeInterface::class;
+    }
 
-        $fields = AttributeType::prepareRowFieldDefinition(self::getName());
-
-        return GqlEntityRegistry::createEntity(self::getName(), new AttributeType([
-            'name' => self::getName(),
-            'fields' => function () use ($fields) {
-                return $fields;
-            },
-        ]));
+    public static function getDescription(): string
+    {
+        return 'The Freeform Attribute entity';
     }
 }

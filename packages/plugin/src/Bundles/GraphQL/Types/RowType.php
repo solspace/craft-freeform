@@ -9,7 +9,7 @@ class RowType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'FreeformFormRow';
+        return 'FreeformRowType';
     }
 
     public static function getTypeDefinition(): Type

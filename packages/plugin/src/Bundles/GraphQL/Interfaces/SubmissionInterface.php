@@ -9,11 +9,8 @@ use craft\gql\interfaces\elements\User;
 use craft\gql\types\DateTime;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Types\ArrayType;
-use Solspace\Freeform\Bundles\GraphQL\Types\CsrfTokenType;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SubmissionGenerator;
-use Solspace\Freeform\Bundles\GraphQL\Types\HoneypotType;
-use Solspace\Freeform\Bundles\GraphQL\Types\RecaptchaType;
 
 class SubmissionInterface extends Element
 {
@@ -36,7 +33,7 @@ class SubmissionInterface extends Element
         return GqlEntityRegistry::createEntity(self::getName(), new InterfaceType([
             'name' => self::getName(),
             'fields' => self::class.'::getFieldDefinitions',
-            'description' => 'Freeform submission interface',
+            'description' => 'Freeform Submission GraphQL Interface',
             'resolveType' => self::class.'::resolveElementTypeName',
         ]));
     }
@@ -47,26 +44,6 @@ class SubmissionInterface extends Element
             array_merge(
                 parent::getFieldDefinitions(),
                 [
-                    'formActions' => [
-                        'name' => 'formActions',
-                        'type' => ArrayType::getType(),
-                        'description' => 'The form actions for the submission',
-                    ],
-                    'formErrors' => [
-                        'name' => 'formErrors',
-                        'type' => ArrayType::getType(),
-                        'description' => 'The form errors for submission',
-                    ],
-                    'fieldErrors' => [
-                        'name' => 'fieldErrors',
-                        'type' => ArrayType::getType(),
-                        'description' => 'The field errors for the submission',
-                    ],
-                    'values' => [
-                        'name' => 'values',
-                        'type' => ArrayType::getType(),
-                        'description' => 'The posted values of the submission',
-                    ],
                     'finished' => [
                         'name' => 'finished',
                         'type' => Type::boolean(),
@@ -82,29 +59,20 @@ class SubmissionInterface extends Element
                         'type' => Type::string(),
                         'description' => 'The generated hash for the submission',
                     ],
-                    'recaptcha' => [
-                        'name' => 'recaptcha',
-                        'type' => RecaptchaType::getType(),
-                        'description' => 'The Recaptcha of the form for the submission',
+                    'recaptchaHandle' => [
+                        'name' => 'recaptchaHandle',
+                        'type' => Type::string(),
+                        'description' => 'The form Recaptcha handle for the submission',
                     ],
                     'csrfToken' => [
                         'name' => 'csrfToken',
-                        'type' => CsrfTokenType::getType(),
+                        'type' => CsrfTokenInterface::getType(),
                         'description' => 'The CSRF token (name and value) of the submission',
-                        'resolve' => function () {
-                            if (\Craft::$app->getConfig()->getGeneral()->enableCsrfProtection) {
-                                return [
-                                    'name' => \Craft::$app->getRequest()->csrfParam,
-                                    'value' => \Craft::$app->getRequest()->getCsrfToken(),
-                                ];
-                            }
-
-                            return null;
-                        },
+                        'resolve' => CsrfTokenResolver::class.'::resolve',
                     ],
                     'honeypot' => [
                         'name' => 'honeypot',
-                        'type' => HoneypotType::getType(),
+                        'type' => HoneypotInterface::getType(),
                         'description' => 'The Honeypot (name and value) of the submission',
                     ],
                     'html' => [
@@ -140,7 +108,7 @@ class SubmissionInterface extends Element
                     'submissionToken' => [
                         'name' => 'submissionToken',
                         'type' => Type::string(),
-                        'description' => 'The generated token for the submission.',
+                        'description' => 'The generated token for the submission',
                     ],
                     'success' => [
                         'name' => 'success',
@@ -159,7 +127,7 @@ class SubmissionInterface extends Element
                     ],
                     'spamReasons' => [
                         'name' => 'spamReasons',
-                        'type' => ArrayType::getType(),
+                        'type' => Type::string(),
                         'description' => 'Spam reasons for the submission',
                     ],
                     'user' => [

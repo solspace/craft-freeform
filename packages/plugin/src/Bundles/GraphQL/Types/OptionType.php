@@ -1,23 +1,22 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects;
+namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
-use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\OptionInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
-class OptionsType extends AbstractObjectType
+class OptionType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'OptionsType';
+        return 'FreeformOptionType';
     }
 
     public static function getTypeDefinition(): Type
     {
-        return OptionsInterface::getType();
+        return OptionInterface::getType();
     }
 
     /**
@@ -25,7 +24,7 @@ class OptionsType extends AbstractObjectType
      * @param mixed  $arguments
      * @param mixed  $context
      */
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): mixed
+    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): string|int|bool|null
     {
         if ('value' === $resolveInfo->fieldName) {
             return $source->getValue() ?? null;

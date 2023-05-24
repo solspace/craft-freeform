@@ -1,23 +1,22 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects;
+namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
-use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
-class ScalesType extends AbstractObjectType
+class OpinionScaleType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'ScalesType';
+        return 'FreeformOpinionScaleType';
     }
 
     public static function getTypeDefinition(): Type
     {
-        return ScalesInterface::getType();
+        return OpinionScaleInterface::getType();
     }
 
     /**

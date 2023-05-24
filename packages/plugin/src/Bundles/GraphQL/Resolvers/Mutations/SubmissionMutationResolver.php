@@ -4,12 +4,13 @@ namespace Solspace\Freeform\Bundles\GraphQL\Resolvers\Mutations;
 
 use craft\errors\GqlException;
 use craft\gql\base\ElementMutationResolver;
-use GraphQL\Error\Error;
+use GraphQL\Error\UserError;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Events\Forms\GraphQLRequestEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Fields\FileUploadField;
+use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
@@ -20,19 +21,19 @@ class SubmissionMutationResolver extends ElementMutationResolver
     protected array $immutableAttributes = ['id', 'uid'];
 
     /**
-     * @throws Error
+     * @throws UserError
      * @throws FreeformException
      * @throws GqlException
      */
     public function saveSubmission(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): ?array
     {
         if (!GqlPermissions::canCreateAllSubmissions() && !GqlPermissions::canCreateSubmissions($context->uid)) {
-            throw new Error('Unable to create Freeform submissions.');
+            throw new UserError('Unable to create Freeform submissions.');
         }
 
         $formModel = $this->getResolutionData('formModel');
         if (!$formModel) {
-            throw new Error('Form with ID {id} not found', [
+            throw new UserError('Form with ID {id} not found', [
                 'id' => $context->id,
             ]);
         }
@@ -65,68 +66,38 @@ class SubmissionMutationResolver extends ElementMutationResolver
 
         $returnUrl = $formsService->getReturnUrl($form, $submission);
 
-        $hasFieldErrors = false;
-
-        $fieldErrors = [];
+        $userErrors = [];
 
         foreach ($form->getLayout()->getFields() as $field) {
             if ($field->hasErrors()) {
-                $hasFieldErrors = true;
+                $errors = [];
+                $errors[$field->getHandle()] = $field->getErrors();
 
-                $fieldErrors[$field->getHandle()] = $field->getErrors();
+                $userErrors[] = $errors;
             }
         }
 
-        $userErrors = [];
-
-        if ($hasFieldErrors) {
-            foreach ($fieldErrors as $fieldError) {
-                foreach ($fieldError as $message) {
-                    if (\is_array($message)) {
-                        foreach ($message as $mess) {
-                            $userErrors[] = $mess;
-                        }
-                    } else {
-                        $userErrors[] = $message;
-                    }
-                }
-            }
+        if (\count($form->getErrors()) > 0) {
+            $userErrors[] = $form->getErrors();
         }
 
-        if ($form->hasErrors()) {
-            foreach ($form->getErrors() as $formError) {
-                foreach ($formError as $message) {
-                    if (\is_array($message)) {
-                        foreach ($message as $mess) {
-                            $userErrors[] = $mess;
-                        }
-                    } else {
-                        $userErrors[] = $message;
-                    }
-                }
-            }
-        }
-
-        foreach ($form->getActions() as $formAction) {
-            foreach ($formAction as $message) {
-                if (\is_array($message)) {
-                    foreach ($message as $mess) {
-                        $userErrors[] = $mess;
-                    }
-                } else {
-                    $userErrors[] = $message;
-                }
-            }
+        if (\count($form->getActions()) > 0) {
+            $userErrors[] = $form->getActions();
         }
 
         if (!empty($userErrors)) {
-            throw new Error(implode('\n', $userErrors));
+            throw new UserError(json_encode($userErrors));
         }
 
         $form->registerContext();
         $form->setFinished(true);
 
         $success = !$form->hasErrors() && empty($fieldErrors) && !$form->getActions();
+
+        $spamReasons = $submission->getSpamReasons();
+        if (\count($spamReasons) > 0) {
+            $spamReasons = json_encode($spamReasons);
+        }
 
         $payload = [
             'success' => $success,
@@ -135,19 +106,15 @@ class SubmissionMutationResolver extends ElementMutationResolver
             'finished' => $form->isFinished(),
             'submissionId' => $submission->id,
             'submissionToken' => $submission->token,
-            'formActions' => $form->getActions(),
-            'fieldErrors' => $fieldErrors,
-            'formErrors' => $form->getErrors(),
             'submissionLimitReached' => $form->isSubmissionLimitReached(),
             'onSuccess' => $form->getSuccessBehaviour(),
             'returnUrl' => $returnUrl,
             'html' => $form->render(),
-            'values' => $arguments,
             'id' => $submission->id,
             'dateCreated' => $submission->getSubmissionDate(),
             'dateUpdated' => $submission->dateUpdated,
             'isSpam' => $submission->isSpam,
-            'spamReasons' => $submission->getSpamReasons(),
+            'spamReasons' => $spamReasons,
             'user' => $submission->getUser(),
         ];
 
@@ -163,6 +130,14 @@ class SubmissionMutationResolver extends ElementMutationResolver
             foreach ($assets as $asset) {
                 $payload['assets'][] = $asset;
             }
+        }
+
+        $payload['recaptchaHandle'] = null;
+        $recaptchaFields = $form->getLayout()->getFields(RecaptchaField::class);
+        $recaptchaField = reset($recaptchaFields);
+
+        if ($recaptchaField) {
+            $payload['recaptchaHandle'] = $recaptchaField->getHandle();
         }
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);

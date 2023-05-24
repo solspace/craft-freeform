@@ -4,14 +4,13 @@ namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
-use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AttributeGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FieldGenerator;
 
 class FieldInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformFormFieldInterface';
+        return 'FreeformFieldInterface';
     }
 
     public static function getTypeClass(): string
@@ -26,7 +25,7 @@ class FieldInterface extends AbstractInterface
 
     public static function getDescription(): string
     {
-        return 'Freeform Form Field GraphQL Interface';
+        return 'Freeform Field GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array
@@ -74,22 +73,22 @@ class FieldInterface extends AbstractInterface
             ],
             'inputAttributes' => [
                 'name' => 'inputAttributes',
-                'type' => Type::listOf(AttributeGenerator::generateType()),
+                'type' => Type::listOf(AttributeInterface::getType()),
                 'description' => "Field's input attributes",
             ],
             'labelAttributes' => [
                 'name' => 'labelAttributes',
-                'type' => Type::listOf(AttributeGenerator::generateType()),
+                'type' => Type::listOf(AttributeInterface::getType()),
                 'description' => "Field's label attributes",
             ],
             'errorAttributes' => [
                 'name' => 'errorAttributes',
-                'type' => Type::listOf(AttributeGenerator::generateType()),
+                'type' => Type::listOf(AttributeInterface::getType()),
                 'description' => "Field's error attributes",
             ],
             'instructionAttributes' => [
                 'name' => 'instructionAttributes',
-                'type' => Type::listOf(AttributeGenerator::generateType()),
+                'type' => Type::listOf(AttributeInterface::getType()),
                 'description' => "Field's instruction attributes",
             ],
         ], static::getName());

@@ -23,7 +23,7 @@ const Textarea: React.FC<Props> = (props) => {
         name={name}
         rows={rows}
         className="text fullwidth"
-        onChange={({ target: { name, value } }): void => onChange(name, value)}
+        onChange={({ target: { name, value } }): void => onChange(value)}
         value={value}
       />
     </FieldBase>

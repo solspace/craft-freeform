@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\ActiveRecord;
-use Solspace\Freeform\controllers\client\api\FormsController;
+use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -40,7 +40,10 @@ class LayoutPersistence extends FeatureBundle
             return;
         }
 
-        $payload = $event->getPayload()->layout;
+        $payload = $event->getPayload()->layout ?? null;
+        if (!$payload) {
+            return;
+        }
 
         $pages = $payload->pages;
         $layouts = $payload->layouts;

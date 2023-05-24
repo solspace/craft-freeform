@@ -1,10 +1,9 @@
 ### GET Field types list
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/fields/types
+GET {{host}}/admin/freeform/api/fields/types
 Authorization: Bearer {{auth-token}}
 
 ### GET Favorite fields list
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/fields/favorites
+GET {{host}}/admin/freeform/api/fields/favorites
 Authorization: Bearer {{auth-token}}
-

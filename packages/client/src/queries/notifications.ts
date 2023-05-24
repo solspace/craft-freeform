@@ -26,7 +26,7 @@ export const useQueryNotificationTypes = (): UseQueryResult<
     QKNotifications.types(),
     () =>
       axios
-        .get<NotificationType[]>('/client/api/notifications/types')
+        .get<NotificationType[]>('/api/notifications/types')
         .then((res) => res.data),
     {
       staleTime: Infinity,
@@ -44,7 +44,7 @@ export const useQueryFormNotifications = (
     QKNotifications.single(formId),
     () =>
       axios
-        .get<Notification[]>(`/client/api/forms/${formId}/notifications`)
+        .get<Notification[]>(`/api/forms/${formId}/notifications`)
         .then((res) => res.data),
     {
       staleTime: Infinity,
@@ -75,7 +75,7 @@ export const useQueryNotificationTemplates = (): UseQueryResult<
     QKNotifications.templates(),
     () =>
       axios
-        .get<NotificationTemplatePayload>('/client/api/notifications/templates')
+        .get<NotificationTemplatePayload>('/api/notifications/templates')
         .then((res) => res.data),
     {
       staleTime: Infinity,

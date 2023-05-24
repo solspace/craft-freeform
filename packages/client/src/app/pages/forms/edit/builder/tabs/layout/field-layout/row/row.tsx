@@ -52,7 +52,7 @@ export const Row: React.FC<Props> = ({ row }) => {
   ) as unknown as MutableRefObject<HTMLDivElement>;
 
   return (
-    <RowWrapper ref={ref} style={onMountAnimation}>
+    <RowWrapper ref={ref}>
       <DropZone ref={rowDropRef}>
         <DropZoneAnimation style={placeholderAnimation}>
           {translate('+ insert row')}

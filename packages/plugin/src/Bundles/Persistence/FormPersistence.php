@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use Solspace\Freeform\Bundles\Attributes\Form\SettingsProvider;
-use Solspace\Freeform\controllers\client\api\FormsController;
+use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\FormRecord;

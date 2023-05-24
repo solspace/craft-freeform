@@ -48,12 +48,13 @@ use Solspace\Freeform\Library\DataObjects\Relations;
 use Solspace\Freeform\Library\DataObjects\Suppressors;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
+use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
 use Twig\Markup;
 use yii\base\Event;
 use yii\web\Request;
 
-abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
+abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable, CustomNormalizerInterface, \JsonSerializable
 {
     public const HASH_KEY = 'hash';
     public const ACTION_KEY = 'freeform-action';
@@ -496,44 +497,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }
 
-    public function json(array $renderProperties = null): Markup
-    {
-        $this->registerContext($renderProperties);
-        $bag = $this->getPropertyBag();
-        $behaviorSettings = $this->getSettings()->getBehavior();
-
-        $isMultipart = $this->getLayout()->getFields()->hasFieldType(FileUploadInterface::class);
-
-        $object = [
-            'hash' => $this->getHash(),
-            'handle' => $this->handle,
-            'ajax' => $this->isAjaxEnabled(),
-            'disableSubmit' => Freeform::getInstance()->forms->isFormSubmitDisable(),
-            'disableReset' => $this->disableAjaxReset,
-            'showSpinner' => $behaviorSettings->showSpinner,
-            'showLoadingText' => $behaviorSettings->showLoadingText,
-            'loadingText' => $behaviorSettings->loadingText,
-            'class' => trim($bag->get('class', '')),
-            'method' => $bag->get('method', 'post'),
-            'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
-        ];
-
-        $behavior = $this->settings->getBehavior();
-        if ($behavior->successMessage) {
-            $object['successMessage'] = Freeform::t($behavior->successMessage, [], 'app');
-        }
-
-        if ($behavior->errorMessage) {
-            $object['errorMessage'] = Freeform::t($behavior->errorMessage, [], 'app');
-        }
-
-        $event = new OutputAsJsonEvent($this, $object);
-        Event::trigger(self::class, self::EVENT_OUTPUT_AS_JSON, $event);
-        $object = $event->getJsonObject();
-
-        return Template::raw(json_encode((object) $object, \JSON_PRETTY_PRINT));
-    }
-
     public function renderTag(array $renderProperties = null): Markup
     {
         $this->registerContext($renderProperties);
@@ -715,6 +678,38 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public function getIterator(): \ArrayIterator
     {
         return $this->layout->getIterator();
+    }
+
+    public function jsonSerialize(): array
+    {
+        $settings = $this->getSettings();
+        $isMultipart = $this->getLayout()->getFields()->hasFieldType(FileUploadInterface::class);
+
+        $object = [
+            'id' => $this->getId(),
+            'hash' => $this->getHash(),
+            'name' => $this->getName(),
+            'handle' => $this->getHandle(),
+            'class' => static::class,
+            'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
+            'properties' => $this->getPropertyBag(),
+            'attributes' => $this->getAttributeBag(),
+            'settings' => [
+                'behavior' => $settings->getBehavior(),
+                'general' => $settings->getGeneral(),
+            ],
+        ];
+
+        $event = new OutputAsJsonEvent($this, $object);
+        Event::trigger(self::class, self::EVENT_OUTPUT_AS_JSON, $event);
+        $object = $event->getJsonObject();
+
+        return $object;
+    }
+
+    public function normalize(): array
+    {
+        return $this->jsonSerialize();
     }
 
     private function validate()

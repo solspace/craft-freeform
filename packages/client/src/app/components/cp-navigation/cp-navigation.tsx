@@ -10,6 +10,9 @@ const classNameHandler = ({
 }): string | undefined => (isActive ? 'sel' : undefined);
 
 export const CpNavigation: React.FC = () => {
+  // TODO: re-implement once there are more views
+  return null;
+
   useEffect(() => {
     document.querySelector('#nav-freeform > a.sel')?.classList.remove('sel');
   }, []);

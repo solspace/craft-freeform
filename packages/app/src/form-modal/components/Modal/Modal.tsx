@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { CSSTransition } from 'react-transition-group';
 
-import { SuccessBehaviour, useFormState } from '@ff-app/form-modal/hooks/use-form-state';
+import { SuccessBehavior, useFormState } from '@ff-app/form-modal/hooks/use-form-state';
 import { useFormStatusOptions } from '@ff-app/form-modal/hooks/use-form-status-options';
 import { useFormTemplatesOptions } from '@ff-app/form-modal/hooks/use-form-templates-options';
 import { useFormTypeOptions } from '@ff-app/form-modal/hooks/use-form-type-options';
@@ -13,6 +13,7 @@ import Text from '@ff-app/shared/Forms/Text/Text';
 import translate from '@ff-app/utils/translations';
 
 import { Button, Content, Footer, Grid, Header, Overlay, Wrapper } from './Modal.styles';
+import camelCase from 'lodash.camelcase';
 
 type Props = {
   closeHandler?: () => void;
@@ -61,17 +62,40 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
                   name="name"
                   label="Name"
                   required
-                  value={form.name}
-                  onChange={update}
+                  value={form.settings.general.name}
+                  onChange={(value): void =>
+                    update({
+                      ...form,
+                      settings: {
+                        ...form.settings,
+                        general: {
+                          ...form.settings.general,
+                          name: value,
+                          handle: camelCase(value as string),
+                        },
+                      },
+                    })
+                  }
                   errors={errors.name}
                 />
                 <Text
                   name="handle"
                   label="Handle"
                   required
-                  value={form.handle}
+                  value={form.settings.general.handle}
                   errors={errors.handle}
-                  onChange={update}
+                  onChange={(value): void =>
+                    update({
+                      ...form,
+                      settings: {
+                        ...form.settings,
+                        general: {
+                          ...form.settings.general,
+                          handle: value.replace(/[^a-zA-Z0-9\-_]/g, ''),
+                        },
+                      },
+                    })
+                  }
                 />
               </Grid>
 
@@ -84,9 +108,30 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
                     options={typeOptions}
                     value={form.type}
                     errors={errors.type}
-                    onChange={update}
+                    onChange={(value): void =>
+                      update({
+                        ...form,
+                        type: value,
+                      })
+                    }
                   />
-                  <ColorPicker name="color" label="Color" value={form.color} onChange={update} />
+                  <ColorPicker
+                    name="color"
+                    label="Color"
+                    value={form.settings.general.color}
+                    onChange={(value): void =>
+                      update({
+                        ...form,
+                        settings: {
+                          ...form.settings,
+                          general: {
+                            ...form.settings.general,
+                            color: value,
+                          },
+                        },
+                      })
+                    }
+                  />
                 </Grid>
               )}
 
@@ -95,48 +140,142 @@ export const Modal: React.FC<Props> = ({ closeHandler }) => {
                   name="formTemplate"
                   label="Formatting Template"
                   options={templateOptions}
-                  value={form.formTemplate}
+                  value={form.settings.general.formattingTemplate}
                   errors={errors.formTemplate}
-                  onChange={update}
+                  onChange={(value): void =>
+                    update({
+                      ...form,
+                      settings: {
+                        ...form.settings,
+                        general: {
+                          ...form.settings.general,
+                          formattingTemplate: value,
+                        },
+                      },
+                    })
+                  }
                 />
                 <Select
                   name="status"
                   label="Default Status"
                   options={statusOptions}
-                  value={form.status}
+                  value={form.settings.general.defaultStatus}
                   errors={errors.status}
-                  onChange={update}
+                  onChange={(value): void =>
+                    update({
+                      ...form,
+                      settings: {
+                        ...form.settings,
+                        general: {
+                          ...form.settings.general,
+                          defaultStatus: Number(value),
+                        },
+                      },
+                    })
+                  }
                 />
               </Grid>
 
               <Grid columns={2}>
-                <Checkbox name="ajax" label="Enable AJAX" checked={form.ajax} onClick={update} />
-                <Checkbox name="storeData" label="Store Submitted Data" checked={form.storeData} onClick={update} />
+                <Checkbox
+                  name="ajax"
+                  label="Enable AJAX"
+                  checked={form.settings.behavior.ajax}
+                  onClick={(value): void =>
+                    update({
+                      ...form,
+                      settings: {
+                        ...form.settings,
+                        behavior: {
+                          ...form.settings.behavior,
+                          ajax: value,
+                        },
+                      },
+                    })
+                  }
+                />
+                <Checkbox
+                  name="storeData"
+                  label="Store Submitted Data"
+                  checked={form.settings.general.storeData}
+                  onClick={(value): void =>
+                    update({
+                      ...form,
+                      settings: {
+                        ...form.settings,
+                        general: {
+                          ...form.settings.general,
+                          storeData: value,
+                        },
+                      },
+                    })
+                  }
+                />
               </Grid>
 
               <Grid columns={2}>
                 <Select
                   name="successBehaviour"
                   label="Success Behavior"
-                  value={form.successBehaviour}
-                  onChange={update}
+                  value={form.settings.behavior.successBehavior}
+                  onChange={(value): void =>
+                    update({
+                      ...form,
+                      settings: {
+                        ...form.settings,
+                        behavior: {
+                          ...form.settings.behavior,
+                          successBehavior: value as SuccessBehavior,
+                        },
+                      },
+                    })
+                  }
                   options={[
-                    { label: 'Reload Form with Success Message', value: SuccessBehaviour.Reload },
-                    { label: 'Load Success Template', value: SuccessBehaviour.Template },
-                    { label: 'Use Return URL', value: SuccessBehaviour.ReturnURL },
+                    { label: 'Reload Form with Success Message', value: SuccessBehavior.Reload },
+                    { label: 'Load Success Template', value: SuccessBehavior.Template },
+                    { label: 'Use Return URL', value: SuccessBehavior.ReturnURL },
                   ]}
                 />
 
-                {![SuccessBehaviour.Template, SuccessBehaviour.Reload].includes(form.successBehaviour) && (
-                  <Text name="returnUrl" label="Return URL" value={form.returnUrl} onChange={update} />
+                {![SuccessBehavior.Template, SuccessBehavior.Reload].includes(
+                  form.settings.behavior.successBehavior
+                ) && (
+                  <Text
+                    name="returnUrl"
+                    label="Return URL"
+                    value={form.settings.behavior.returnUrl}
+                    onChange={(value): void =>
+                      update({
+                        ...form,
+                        settings: {
+                          ...form.settings,
+                          behavior: {
+                            ...form.settings.behavior,
+                            returnUrl: value,
+                          },
+                        },
+                      })
+                    }
+                  />
                 )}
 
-                {form.successBehaviour === SuccessBehaviour.Template && (
+                {form.settings.behavior.successBehavior === SuccessBehavior.Template && (
                   <Select
                     name="successTemplate"
                     label="Success Template"
-                    value={form.successTemplate}
-                    onChange={update}
+                    value={form.settings.behavior.successTemplate}
+                    onChange={(value): void =>
+                      update({
+                        ...form,
+                        settings: {
+                          ...form.settings,
+                          behavior: {
+                            ...form.settings.behavior,
+                            successTemplate: value,
+                          },
+                        },
+                      })
+                    }
                     options={successTemplateOptions}
                   />
                 )}

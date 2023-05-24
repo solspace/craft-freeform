@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Persistence;
 
-use Solspace\Freeform\controllers\client\api\FormsController;
+use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
@@ -26,7 +26,10 @@ class IntegrationPersistence extends FeatureBundle
 
     public function handleIntegrationSave(PersistFormEvent $event): void
     {
-        $integrations = $event->getPayload()->integrations;
+        $integrations = $event->getPayload()->integrations ?? null;
+        if (!$integrations) {
+            return;
+        }
 
         $errors = [];
         foreach ($integrations as $integration) {

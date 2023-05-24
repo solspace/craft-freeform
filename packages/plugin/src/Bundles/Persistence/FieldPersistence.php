@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\controllers\client\api\FormsController;
+use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
@@ -34,6 +34,11 @@ class FieldPersistence extends FeatureBundle
             return;
         }
 
+        $payload = $event->getPayload()->fields ?? null;
+        if (!$payload) {
+            return;
+        }
+
         $usedUIDs = [];
         $existingUIDs = (new Query())
             ->select(['uid'])
@@ -41,8 +46,6 @@ class FieldPersistence extends FeatureBundle
             ->where(['formId' => $form->getId()])
             ->column()
         ;
-
-        $payload = $event->getPayload()->fields;
 
         $records = [];
 

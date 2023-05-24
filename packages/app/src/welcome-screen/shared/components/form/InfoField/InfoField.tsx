@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Wrapper } from '../FieldContainer/FieldContainer.styles';
 
-const InfoField: React.FC = ({ children }) => {
+const InfoField: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <Wrapper>
       <div>{children}</div>

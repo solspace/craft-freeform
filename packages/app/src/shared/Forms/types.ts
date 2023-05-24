@@ -1,1 +1,1 @@
-export type ChangeHandler = (name: string, value: string | number | boolean) => void;
+export type ChangeHandler<T = string> = (value: T) => void;

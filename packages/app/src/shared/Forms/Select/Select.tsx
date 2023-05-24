@@ -44,7 +44,7 @@ const Select: React.FC<Props> = (props) => {
         <select
           id={createId(name)}
           name={name}
-          onChange={({ target: { name, value } }): void => onChange(name, value)}
+          onChange={({ target: { value } }): void => onChange(value)}
           value={value}
         >
           {options.map(renderOption)}

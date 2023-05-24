@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import FreeformLogo from './freeform.svg';
 import { HeadingElement, Logo } from './Heading.styles';
 
-const Heading: React.FC = ({ children }) => {
+const Heading: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <>
       <Logo>

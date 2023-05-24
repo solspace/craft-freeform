@@ -75,22 +75,16 @@
                     </div>
 
                     <div class="card-footer">
-                        {% if form.storeData %}
-                            {% if canManageSubmissions %}
-                                <a class="submissions" href="{{ url('freeform/submissions/' ~ form.handle) }}">
-                                    <div>{{ submissionsByForm[form.id] ?? 0 }}</div>
-                                    {{ "Submissions"|t("freeform") }}
-                                </a>
-                            {% else %}
-                                <span class="submissions">
-                                    <div>{{ submissionsByForm[form.id] ?? 0 }}</div>
-                                    {{ "Submissions"|t("freeform") }}
-                                </span>
-                            {% endif %}
+                        {% if canManageSubmissions %}
+                            <a class="submissions" href="{{ url('freeform/submissions/' ~ form.handle) }}">
+                                <div>{{ submissionsByForm[form.id] ?? 0 }}</div>
+                                {{ "Submissions"|t("freeform") }}
+                            </a>
                         {% else %}
-                            <div class="submissions-not-stored">
-                                {{ "Submissions not stored"|t("freeform") }}
-                            </div>
+                            <span class="submissions">
+                                <div>{{ submissionsByForm[form.id] ?? 0 }}</div>
+                                {{ "Submissions"|t("freeform") }}
+                            </span>
                         {% endif %}
 
                         {% if isSpamFolderEnabled %}

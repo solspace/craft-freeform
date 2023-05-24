@@ -20,7 +20,7 @@ export const useQueryFormIntegrations = (
     QKIntegrations.single(formId),
     () =>
       axios
-        .get<Integration[]>(`/client/api/forms/${formId}/integrations`)
+        .get<Integration[]>(`/api/forms/${formId}/integrations`)
         .then((res) => res.data),
     {
       staleTime: Infinity,

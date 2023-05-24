@@ -17,7 +17,7 @@ export const useFetchFavorites: FetchFavoritesQuery = ({ select } = {}) =>
     QKFavorites.all,
     () =>
       axios
-        .get<FieldFavorite[]>(`/client/api/fields/favorites`)
+        .get<FieldFavorite[]>(`/api/fields/favorites`)
         .then((res) => res.data),
     {
       staleTime: Infinity,

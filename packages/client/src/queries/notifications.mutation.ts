@@ -20,7 +20,7 @@ const newNotificationTemplateMutation: NewNotificationTemplateMutation = (
   payload: Payload
 ) => {
   return axios.post<NotificationTemplate>(
-    '/client/api/notifications/templates',
+    '/api/notifications/templates',
     payload
   );
 };

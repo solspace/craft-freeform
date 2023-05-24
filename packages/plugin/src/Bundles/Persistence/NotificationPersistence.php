@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\controllers\client\api\FormsController;
+use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
@@ -27,8 +27,8 @@ class NotificationPersistence extends FeatureBundle
 
     public function handleNotificationSave(PersistFormEvent $event): void
     {
-        $notifications = $event->getPayload()->notifications;
-        if (null === $notifications) {
+        $notifications = $event->getPayload()->notifications ?? null;
+        if (!$notifications) {
             return;
         }
 

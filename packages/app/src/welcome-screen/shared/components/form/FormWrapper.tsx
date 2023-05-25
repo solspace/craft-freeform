@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Wrapper } from './FormWrapper.styles';
 
-const FormWrapper: React.FC = ({ children }) => {
+const FormWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   return <Wrapper>{children}</Wrapper>;
 };
 

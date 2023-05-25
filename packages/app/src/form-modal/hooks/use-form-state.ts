@@ -1,36 +1,44 @@
-import camelCase from 'lodash.camelcase';
-import { useContext, useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useContext, useEffect, useState } from 'react';
 
 import axios from '@ff-app/config/axios';
-import { ChangeHandler } from '@ff-app/shared/Forms/types';
 import { generateUrl } from '@ff-app/utils/urls';
 
 import { FormOptionsContext } from '../context/form-types-context';
+import { v4 } from 'uuid';
 
-export enum SuccessBehaviour {
+export enum SuccessBehavior {
   ReturnURL = 'redirect-return-url',
   Template = 'load-success-template',
   Reload = 'reload',
 }
 
 type FormData = {
-  name: string;
-  handle: string;
+  uid: string;
   type: string;
-  submissionTitle: string;
-  color?: string;
-  formTemplate?: string;
-  status?: number;
-  ajax: boolean;
-  storeData: boolean;
-  successBehaviour: SuccessBehaviour;
-  successTemplate?: string;
-  returnUrl?: string;
+  settings: {
+    behavior: {
+      ajax: boolean;
+      successBehavior: SuccessBehavior;
+      returnUrl: string;
+      successTemplate: string;
+    };
+    general: {
+      name: string;
+      handle: string;
+      color: string;
+      submissionTitle: string;
+      defaultStatus: number;
+      storeData: boolean;
+      formattingTemplate: string;
+    };
+  };
 };
 
 type FormSaveResponse = {
-  id: number;
-  handle: string;
+  form: {
+    id: number;
+    handle: string;
+  };
 };
 
 type FormErrors = {
@@ -40,7 +48,7 @@ type FormErrors = {
 type FormState = {
   form: FormData;
   errors: FormErrors;
-  update: ChangeHandler;
+  update: Dispatch<SetStateAction<FormData>>;
   saveHandler: () => void;
   isSaving: boolean;
 };
@@ -51,45 +59,52 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [form, setForm] = useState<FormData>({
-    name: '',
-    handle: '',
+    uid: v4(),
     type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-    submissionTitle: '{{ dateCreated|date("Y-m-d H:i:s") }}',
-    color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
-    formTemplate: defaultTemplate,
-    status: defaultStatusId,
-    ajax: ajaxByDefault,
-    storeData: true,
-    successBehaviour: SuccessBehaviour.Reload,
-    successTemplate: '',
-    returnUrl: '',
+    settings: {
+      behavior: {
+        ajax: ajaxByDefault,
+        successBehavior: SuccessBehavior.Reload,
+        successTemplate: '',
+        returnUrl: '',
+      },
+      general: {
+        name: '',
+        handle: '',
+        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`,
+        submissionTitle: '{{ dateCreated|date("Y-m-d H:i:s") }}',
+        defaultStatus: defaultStatusId,
+        formattingTemplate: defaultTemplate,
+        storeData: true,
+      },
+    },
   });
 
   useEffect(() => {
-    setForm({ ...form, status: defaultStatusId, formTemplate: defaultTemplate, ajax: ajaxByDefault });
+    setForm({
+      ...form,
+      settings: {
+        behavior: {
+          ...form.settings.behavior,
+          ajax: ajaxByDefault,
+        },
+        general: {
+          ...form.settings.general,
+          defaultStatus: defaultStatusId,
+          formattingTemplate: defaultTemplate,
+        },
+      },
+    });
   }, [defaultStatusId, defaultTemplate, ajaxByDefault]);
-
-  const update: ChangeHandler = (name, value): void => {
-    const payload = { ...form, [name]: value };
-    if (name === 'name') {
-      payload.handle = camelCase(value as string);
-    }
-
-    if (name === 'handle') {
-      payload.handle = payload.handle.replace(/[^a-zA-Z0-9\-_]/g, '');
-    }
-
-    setForm(payload);
-  };
 
   const saveHandler = (): void => {
     setIsSaving(true);
     setErrors({});
 
     axios
-      .post<FormSaveResponse>('/api/forms', form)
-      .then(({ data: { id } }) => {
-        window.location.href = generateUrl(`/forms/${id}`);
+      .post<FormSaveResponse>('/api/forms', { form })
+      .then(({ data }) => {
+        window.location.href = generateUrl(`/forms/${data.form.id}`);
       })
       .catch((error) => {
         setErrors(error.response.data.errors as FormErrors);
@@ -97,5 +112,5 @@ export const useFormState = (defaultStatusId: number, defaultTemplate: string): 
       });
   };
 
-  return { form, errors, update, saveHandler, isSaving };
+  return { form, errors, update: setForm, saveHandler, isSaving };
 };

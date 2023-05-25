@@ -2,83 +2,68 @@
 
 namespace Solspace\Freeform\controllers\api;
 
-use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\controllers\BaseController;
-use Solspace\Freeform\Freeform;
-use yii\web\Response;
+use Solspace\Freeform\Bundles\Transformers\Builder\Form\FormTransformer;
+use Solspace\Freeform\controllers\BaseApiController;
+use Solspace\Freeform\Events\Forms\PersistFormEvent;
+use yii\web\NotFoundHttpException;
 
-class FormsController extends BaseController
+class FormsController extends BaseApiController
 {
-    public function init(): void
-    {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_ACCESS);
+    public const EVENT_UPSERT_FORM = 'upsert-form';
+    public const EVENT_CREATE_FORM = 'create-form';
+    public const EVENT_UPDATE_FORM = 'update-form';
 
-        parent::init();
+    public function __construct(
+        $id,
+        $module,
+        $config = [],
+        private FormTransformer $formTransformer,
+    ) {
+        parent::__construct($id, $module, $config);
     }
 
-    public function actionOptions(): Response
+    protected function get(): array
     {
-        $freeform = Freeform::getInstance();
-
-        $types = array_map(
-            function ($type) {
-                return [
-                    'className' => $type['class'],
-                    'name' => $type['name'],
-                    'properties' => $type['properties'],
-                ];
-            },
-            $freeform->formTypes->getTypes()
+        return $this->formTransformer->transformList(
+            array_values(
+                $this->getFormsService()->getAllForms()
+            )
         );
+    }
 
-        $statuses = array_map(
-            function ($status) {
-                return [
-                    'name' => $status->name,
-                    'id' => $status->id,
-                    'isDefault' => $status->isDefault,
-                ];
-            },
-            array_values($freeform->statuses->getAllStatuses())
-        );
-
-        $nativeTemplates = $this->getSettingsService()->getSolspaceFormTemplates();
-        $customTemplates = $this->getSettingsService()->getCustomFormTemplates();
-        $successTemplates = $this->getSettingsService()->getSuccessTemplates();
-
-        $templates = ['native' => [], 'custom' => [], 'success' => []];
-        foreach ($nativeTemplates as $template) {
-            $templates['native'][] = [
-                'id' => $template->getFileName(),
-                'name' => $template->getName(),
-            ];
+    protected function getOne($id): array|object|null
+    {
+        $form = $this->getFormsService()->getFormById($id);
+        if (!$form) {
+            throw new NotFoundHttpException("Form with ID {$id} not found");
         }
 
-        foreach ($customTemplates as $template) {
-            $templates['custom'][] = [
-                'id' => $template->getFileName(),
-                'name' => $template->getName(),
-            ];
-        }
+        return $this->formTransformer->transform($form);
+    }
 
-        foreach ($successTemplates as $template) {
-            $templates['success'][] = [
-                'id' => $template->getFileName(),
-                'name' => $template->getName(),
-            ];
-        }
+    protected function post(int|string $id = null): array|object|null
+    {
+        $data = json_decode($this->request->getRawBody(), false);
 
-        if (!$this->getSettingsService()->getSettingsModel()->defaultTemplates) {
-            $templates['native'] = [];
-        }
+        $event = new PersistFormEvent($data);
+        $this->trigger(self::EVENT_CREATE_FORM, $event);
+        $this->trigger(self::EVENT_UPSERT_FORM, $event);
 
-        $templates['default'] = $freeform->forms->getDefaultFormattingTemplate();
+        $this->response->statusCode = $event->getStatus() ?? 201;
 
-        return $this->asJson([
-            'types' => $types,
-            'statuses' => $statuses,
-            'templates' => $templates,
-            'ajax' => $freeform->settings->isAjaxEnabledByDefault(),
-        ]);
+        return $event->getResponseData();
+    }
+
+    protected function put(int|string $id = null): array|object|null
+    {
+        $data = json_decode($this->request->getRawBody(), false);
+
+        $event = new PersistFormEvent($data, $id);
+        $this->trigger(self::EVENT_UPDATE_FORM, $event);
+        $this->trigger(self::EVENT_UPSERT_FORM, $event);
+
+        $this->response->statusCode = $event->getStatus() ?? 204;
+
+        return $event->getResponseData();
     }
 }

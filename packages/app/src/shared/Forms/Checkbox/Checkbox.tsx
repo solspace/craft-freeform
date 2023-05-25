@@ -7,7 +7,7 @@ import { ChangeHandler } from '../types';
 import { Handle, LightSwitch } from './Checkbox.styles';
 
 export interface Props extends FieldProps {
-  onClick?: ChangeHandler;
+  onClick?: ChangeHandler<boolean>;
   checked?: boolean;
 }
 
@@ -16,7 +16,7 @@ const Checkbox: React.FC<Props> = (props) => {
 
   return (
     <FieldBase {...props}>
-      <LightSwitch onClick={(): void => onClick(name, !checked)} className={checked ? 'on' : ''} role="checkbox">
+      <LightSwitch onClick={(): void => onClick(!checked)} className={checked ? 'on' : ''} role="checkbox">
         <Handle />
         <input id={createId(name)} type="hidden" name={name} value={checked ? '1' : '0'} />
       </LightSwitch>

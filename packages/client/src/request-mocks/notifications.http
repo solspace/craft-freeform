@@ -1,14 +1,14 @@
 ### GET Notifications
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/forms/1/notifications
+GET {{host}}/admin/freeform/api/forms/1/notifications
 Authorization: Bearer {{auth-token}}
 
 ### GET Notification Types
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/notifications/types
+GET {{host}}/admin/freeform/api/notifications/types
 Authorization: Bearer {{auth-token}}
 
 ### GET Notification Templates
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/notifications/templates
+GET {{host}}/admin/freeform/api/notifications/templates
 Authorization: Bearer {{auth-token}}

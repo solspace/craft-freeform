@@ -12,7 +12,7 @@ export const useFormOptions = (): FormOptions => {
 
   useEffect(() => {
     axios
-      .get<FormOptionsResponse>('/api/forms/options')
+      .get<FormOptionsResponse>('/api/modal/forms/options')
       .then(({ data: { types, statuses, templates, ajax } }): void => {
         setTypes(types);
         setStatuses(statuses);

@@ -22,7 +22,7 @@ const Text = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
         name={name}
         type="text"
         className="text fullwidth"
-        onChange={({ target: { name, value } }): void => onChange(name, value)}
+        onChange={({ target: { value } }): void => onChange(value)}
         value={value}
       />
     </FieldBase>

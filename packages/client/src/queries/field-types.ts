@@ -17,10 +17,7 @@ type FetchFieldTypesQuery = (options?: {
 export const useFetchFieldTypes: FetchFieldTypesQuery = ({ select } = {}) =>
   useQuery<FieldType[], AxiosError>(
     QKFieldTypes.all,
-    () =>
-      axios
-        .get<FieldType[]>(`/client/api/fields/types`)
-        .then((res) => res.data),
+    () => axios.get<FieldType[]>(`/api/fields/types`).then((res) => res.data),
     {
       staleTime: Infinity,
       select,
@@ -35,7 +32,7 @@ export const useFetchFieldPropertySections = (): UseQueryResult<
     QKFieldTypes.propertySections(),
     () =>
       axios
-        .get<Section[]>(`/client/api/fields/types/sections`)
+        .get<Section[]>(`/api/fields/types/sections`)
         .then((res) => res.data)
         .then((res) => res.sort((a, b) => a.order - b.order)),
     {

@@ -13,7 +13,7 @@ type CellDragAnimation = (options: {
   index: number;
   hoverPosition?: number;
 }) => {
-  width: SpringValue<number>;
+  width: SpringValue<string | number>;
   x: SpringValue<number>;
 };
 
@@ -88,9 +88,17 @@ export const useCellDragAnimation: CellDragAnimation = ({
   );
 
   const style = useSpring({
-    immediate: (key) => key === 'x' && !ctxDragging,
+    immediate: (key) => {
+      switch (key) {
+        case 'x':
+          return !ctxDragging;
+
+        case 'width':
+          return !ctxDragging;
+      }
+    },
     to: {
-      width,
+      width: ctxDragging ? width : '100%',
       x,
       opacity: isDragging ? 0.3 : 1,
     },

@@ -14,7 +14,7 @@ interface Props extends FieldProps {
 
 const ColorPicker: React.FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { onChange, name, value } = props;
+  const { onChange, value } = props;
 
   const ref = useRef(null);
 
@@ -28,7 +28,7 @@ const ColorPicker: React.FC<Props> = (props) => {
 
       {isOpen && (
         <PickerWrapper ref={ref}>
-          <SketchPicker color={value} onChange={({ hex }): void => onChange(name, hex)} disableAlpha />
+          <SketchPicker color={value} onChange={({ hex }): void => onChange(hex)} disableAlpha />
         </PickerWrapper>
       )}
     </FieldBase>

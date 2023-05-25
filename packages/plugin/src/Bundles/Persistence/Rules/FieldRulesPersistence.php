@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Persistence\Rules;
 
-use Solspace\Freeform\controllers\client\api\FormsController;
+use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;

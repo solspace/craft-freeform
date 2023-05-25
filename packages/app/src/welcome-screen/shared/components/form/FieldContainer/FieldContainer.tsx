@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { Wrapper } from './FieldContainer.styles';
 
 export interface FieldContainerProps {
   description: string;
 }
 
-const FieldContainer: React.FC<FieldContainerProps> = ({ description, children }) => {
+const FieldContainer: React.FC<PropsWithChildren<FieldContainerProps>> = ({ description, children }) => {
   return (
     <Wrapper>
       <div>{description}</div>

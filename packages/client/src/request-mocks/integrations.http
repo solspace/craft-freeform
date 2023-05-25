@@ -1,9 +1,9 @@
 ### GET Form list
 // @no-redirect
-GET {{host}}/admin/freeform/client/api/forms/1/integrations
+GET {{host}}/admin/freeform/api/forms/1/integrations
 Authorization: Bearer {{auth-token}}
 
 
 ### GET specific form
-GET {{host}}/admin/freeform/client/api/forms/1/integrations/1
+GET {{host}}/admin/freeform/api/forms/1/integrations/1
 Authorization: Bearer {{auth-token}}

@@ -1,7 +1,7 @@
 import { classes } from '@ff-app/utils/classes';
 import { createId } from '@ff-app/utils/html-attributes';
 import translate from '@ff-app/utils/translations';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
 export interface FieldProps {
   label?: string;
@@ -11,7 +11,14 @@ export interface FieldProps {
   errors?: string[];
 }
 
-const FieldBase: React.FC<FieldProps> = ({ name, label, instructions, required, errors, children }) => {
+const FieldBase: React.FC<PropsWithChildren<FieldProps>> = ({
+  name,
+  label,
+  instructions,
+  required,
+  errors,
+  children,
+}) => {
   return (
     <div className="field width-100">
       {label && (

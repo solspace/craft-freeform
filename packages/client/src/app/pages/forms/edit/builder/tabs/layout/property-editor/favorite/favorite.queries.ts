@@ -30,7 +30,7 @@ const favoritesMutation: FavoritesMutation = ({ label, field, type }) => {
     typeClass: type.typeClass,
   };
 
-  return axios.post('/client/api/fields/favorites', payload);
+  return axios.post('/api/fields/favorites', payload);
 };
 
 export type FavoriteMutationResult = UseMutationResult<

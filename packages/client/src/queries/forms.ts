@@ -18,7 +18,7 @@ const QKForms = {
 
 export const useQueryForms = (): UseQueryResult<Form[], AxiosError> => {
   return useQuery<Form[], AxiosError>(QKForms.all, () =>
-    axios.get<Form[]>('/client/api/forms').then((res) => res.data)
+    axios.get<Form[]>('/api/forms').then((res) => res.data)
   );
 };
 
@@ -28,9 +28,7 @@ export const useQuerySingleForm = (
   return useQuery<ExtendedFormType, AxiosError>(
     QKForms.single(id),
     () =>
-      axios
-        .get<ExtendedFormType>(`/client/api/forms/${id}`)
-        .then((res) => res.data),
+      axios.get<ExtendedFormType>(`/api/forms/${id}`).then((res) => res.data),
     {
       staleTime: Infinity,
       enabled: !!id,
@@ -48,7 +46,7 @@ export const useQueryFormSettings = (): UseQueryResult<
     QKForms.settings(),
     () =>
       axios
-        .get<FormSettingNamespace[]>(`/client/api/forms/settings`)
+        .get<FormSettingNamespace[]>(`/api/forms/settings`)
         .then((res) => res.data),
     {
       onSuccess: (settings) => {

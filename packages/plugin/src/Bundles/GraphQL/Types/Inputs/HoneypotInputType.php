@@ -24,6 +24,9 @@ class HoneypotInputType extends InputObjectType
             self::getName()
         );
 
+        // Removes deprecated fields
+        unset($fields['hash'], $fields['timestamp']);
+
         return GqlEntityRegistry::createEntity(self::getName(), new self([
             'name' => self::getName(),
             'fields' => function () use ($fields) {

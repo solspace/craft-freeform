@@ -27,7 +27,7 @@ class RowInterface extends AbstractInterface
 
     public static function getDescription(): string
     {
-        return 'Freeform Row GraphQL Interface';
+        return 'Freeform Form Row GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array

@@ -25,7 +25,7 @@ class PageInterface extends AbstractInterface
 
     public static function getDescription(): string
     {
-        return 'Freeform Page GraphQL Interface';
+        return 'Freeform Form Page GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array

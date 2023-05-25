@@ -10,7 +10,7 @@ class FieldInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformFormFieldInterface';
+        return 'FreeformFieldInterface';
     }
 
     public static function getTypeClass(): string

@@ -10,7 +10,7 @@ class PageInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformFormPageInterface';
+        return 'FreeformPageInterface';
     }
 
     public static function getTypeClass(): string
@@ -25,7 +25,7 @@ class PageInterface extends AbstractInterface
 
     public static function getDescription(): string
     {
-        return 'Freeform Form Page GraphQL Interface';
+        return 'Freeform Page GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array

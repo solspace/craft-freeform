@@ -1,10 +1,11 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Types;
+namespace Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\HoneypotInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
+use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
 class HoneypotType extends AbstractObjectType

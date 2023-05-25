@@ -34,7 +34,7 @@ class FieldGenerator extends AbstractGenerator
 
     public static function getDescription(): string
     {
-        return 'The Freeform Field entity';
+        return 'The Freeform Form Field entity';
     }
 
     public static function generateTypes($context = null): array

@@ -25,6 +25,6 @@ class PageGenerator extends AbstractGenerator
 
     public static function getDescription(): string
     {
-        return 'The Freeform Page entity';
+        return 'The Freeform Form Page entity';
     }
 }

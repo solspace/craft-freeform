@@ -10,7 +10,7 @@ class PageInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformPageInterface';
+        return 'FreeformFormPageInterface';
     }
 
     public static function getTypeClass(): string

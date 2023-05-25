@@ -9,6 +9,8 @@ use craft\gql\interfaces\elements\User;
 use craft\gql\types\DateTime;
 use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SubmissionGenerator;
 

@@ -12,7 +12,7 @@ class RowInterface extends AbstractInterface
 {
     public static function getName(): string
     {
-        return 'FreeformRowInterface';
+        return 'FreeformFormRowInterface';
     }
 
     public static function getTypeClass(): string

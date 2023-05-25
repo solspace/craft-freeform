@@ -1,10 +1,11 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
+namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
 use Solspace\Freeform\Bundles\GraphQL\Arguments\CsrfTokenArguments;
-use Solspace\Freeform\Bundles\GraphQL\Types\CsrfTokenType;
-use Solspace\Freeform\Bundles\GraphQL\Types\Generators\CsrfTokenGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
+use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\CsrfTokenGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\CsrfTokenType;
 
 class CsrfTokenInterface extends AbstractInterface
 {

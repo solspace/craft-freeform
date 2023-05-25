@@ -25,6 +25,6 @@ class RowGenerator extends AbstractGenerator
 
     public static function getDescription(): string
     {
-        return 'The Freeform Row entity';
+        return 'The Freeform Form Row entity';
     }
 }

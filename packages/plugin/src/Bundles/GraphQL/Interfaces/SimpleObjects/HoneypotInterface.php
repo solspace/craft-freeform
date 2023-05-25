@@ -1,10 +1,11 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
+namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
 use Solspace\Freeform\Bundles\GraphQL\Arguments\HoneypotArguments;
-use Solspace\Freeform\Bundles\GraphQL\Types\Generators\HoneypotGenerator;
-use Solspace\Freeform\Bundles\GraphQL\Types\HoneypotType;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
+use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\HoneypotGenerator;
+use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\HoneypotType;
 
 class HoneypotInterface extends AbstractInterface
 {

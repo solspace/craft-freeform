@@ -223,6 +223,7 @@
             label: "Form Submission Throttling"|t("freeform"),
             instructions: "Globally (affecting all users) prevent spam or attacks by limiting the number of times all forms can be submitted within a given timeframe."|t("freeform"),
             errors: settings.errors("submissionThrottlingCount"),
+            warning: "This feature is intended for extreme conditions, such as preventing your site from going down if attacked by a spammer. It should NOT be used as a 'fine-tuning' spam measure, as it applies to ALL users. For example, if you set it to '1 per minute', once one user submits any form, any other user will not be able to submit a form within that timeframe. A more realistic value for smaller websites is something like 50 per minute. Use extreme caution for larger and more active sites."|t('freeform'),
         }, input) }}
 
         {{ forms.textField({

@@ -13,9 +13,8 @@ use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\RecaptchaField;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Helpers\CaptchaHelper;
 
 class FormInterface extends AbstractInterface
 {
@@ -171,22 +170,7 @@ class FormInterface extends AbstractInterface
                 'description' => 'The Recaptcha handle for this form',
                 'resolve' => function ($source) {
                     if ($source instanceof Form) {
-                        if (!Freeform::getInstance()->settings->getSettingsModel()->recaptchaEnabled) {
-                            return null;
-                        }
-
-                        // or if the form has the property disableRecaptcha set to true, then bail
-                        if ($source->getPropertyBag()->get(Form::DATA_DISABLE_RECAPTCHA)) {
-                            return null;
-                        }
-
-                        $fields = $source->getLayout()->getFields(RecaptchaField::class);
-                        $field = reset($fields);
-                        if (!$field) {
-                            return [];
-                        }
-
-                        return $field->getHandle();
+                        return CaptchaHelper::getFieldHandle($source);
                     }
 
                     return null;

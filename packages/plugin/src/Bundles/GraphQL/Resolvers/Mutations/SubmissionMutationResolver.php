@@ -10,10 +10,10 @@ use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Events\Forms\GraphQLRequestEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Fields\FileUploadField;
-use Solspace\Freeform\Fields\RecaptchaField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Library\Helpers\CaptchaHelper;
 use yii\base\Event;
 
 class SubmissionMutationResolver extends ElementMutationResolver
@@ -116,6 +116,7 @@ class SubmissionMutationResolver extends ElementMutationResolver
             'isSpam' => $submission->isSpam,
             'spamReasons' => $spamReasons,
             'user' => $submission->getUser(),
+            'recaptchaHandle' => CaptchaHelper::getFieldHandle($form),
         ];
 
         // Allows field definitions specified in the response to be resolved
@@ -130,14 +131,6 @@ class SubmissionMutationResolver extends ElementMutationResolver
             foreach ($assets as $asset) {
                 $payload['assets'][] = $asset;
             }
-        }
-
-        $payload['recaptchaHandle'] = null;
-        $recaptchaFields = $form->getLayout()->getFields(RecaptchaField::class);
-        $recaptchaField = reset($recaptchaFields);
-
-        if ($recaptchaField) {
-            $payload['recaptchaHandle'] = $recaptchaField->getHandle();
         }
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);

@@ -55,6 +55,7 @@ use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
+use Solspace\Freeform\Library\Helpers\CaptchaHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
@@ -879,11 +880,21 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }
 
-    public function json(array $renderProperties = null): Markup
+    public function getPropertiesMarkup(array $renderProperties = null): Markup
+    {
+        return Template::raw(json_encode($this->json($renderProperties), \JSON_PRETTY_PRINT));
+    }
+
+    public function getPropertiesArray(array $renderProperties = null): array
+    {
+        return $this->json($renderProperties);
+    }
+
+    public function json(array $renderProperties = null): array
     {
         $this->registerContext($renderProperties);
         $bag = $this->getPropertyBag();
-
+        \Craft::dd($bag);
         $isMultipart = $this->getLayout()->hasFields(FileUploadInterface::class);
 
         $object = [
@@ -900,6 +911,20 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
             'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
         ];
 
+        $mailingLists = [];
+        $mailingListFields = $this->getLayout()->getFields(MailingListField::class);
+        if ($mailingListFields) {
+            foreach ($mailingListFields as $mailingListField) {
+                $mailingLists[] = $mailingListField->getHandle();
+            }
+        }
+        $object['mailingListName'] = implode(',', $mailingLists);
+
+        $object['reCaptchaEnabled'] = CaptchaHelper::canApplyCaptcha($this);
+        if ($object['reCaptchaEnabled']) {
+            $object['reCaptchaName'] = CaptchaHelper::getFieldHandle($this);
+        }
+
         if ($this->getSuccessMessage()) {
             $object['successMessage'] = $this->getTranslator()->translate($this->getSuccessMessage(), [], 'app');
         }
@@ -910,9 +935,8 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
         $event = new OutputAsJsonEvent($this, $object);
         Event::trigger(self::class, self::EVENT_OUTPUT_AS_JSON, $event);
-        $object = $event->getJsonObject();
 
-        return Template::raw(json_encode((object) $object, \JSON_PRETTY_PRINT));
+        return $event->getJsonObject();
     }
 
     public function renderTag(array $renderProperties = null): Markup

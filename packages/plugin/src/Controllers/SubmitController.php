@@ -40,17 +40,31 @@ class SubmitController extends BaseController
         $this->requirePostRequest();
 
         $request = \Craft::$app->getRequest();
+        $isAjaxRequest = $request->getIsAjax();
 
         $formId = SessionContext::getPostedFormId();
+        if (!$formId) {
+            $message = \Craft::t('freeform', 'Form ID is required');
+
+            if (!$isAjaxRequest) {
+                throw new FreeformException($message);
+            }
+
+            return $this->asJson(['success' => false, 'message' => $message]);
+        }
+
         $formModel = $this->getFormsService()->getFormById($formId);
         if (!$formModel) {
-            throw new FreeformException(
-                \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId])
-            );
+            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
+
+            if (!$isAjaxRequest) {
+                throw new FreeformException($message);
+            }
+
+            return $this->asJson(['success' => false, 'message' => $message]);
         }
 
         $form = $formModel->getForm();
-        $isAjaxRequest = $request->getIsAjax();
 
         $requestHandled = $form->handleRequest($request);
         $formsService = $this->getFormsService();

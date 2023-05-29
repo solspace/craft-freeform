@@ -3,9 +3,8 @@
 namespace Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs;
 
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\RecaptchaInputType;
-use Solspace\Freeform\Fields\RecaptchaField;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
+use Solspace\Freeform\Library\Helpers\CaptchaHelper;
 
 class RecaptchaInputArguments
 {
@@ -18,30 +17,22 @@ class RecaptchaInputArguments
 
     public static function getArguments(): array
     {
-        if (!Freeform::getInstance()->settings->getSettingsModel()->recaptchaEnabled) {
-            return [];
+        $recaptchaEnabled = CaptchaHelper::canApplyCaptcha(self::$form);
+
+        if ($recaptchaEnabled) {
+            $fieldHandle = CaptchaHelper::getFieldHandle(self::$form);
+
+            if ($fieldHandle) {
+                return [
+                    $fieldHandle = [
+                        'name' => $fieldHandle,
+                        'type' => RecaptchaInputType::getType(),
+                        'description' => 'The Recaptcha name/value.',
+                    ],
+                ];
+            }
         }
 
-        // or if the form has the property disableRecaptcha set to true, then bail
-        if (self::$form->getPropertyBag()->get(Form::DATA_DISABLE_RECAPTCHA)) {
-            return [];
-        }
-
-        $fields = self::$form->getLayout()->getFields(RecaptchaField::class);
-        $field = reset($fields);
-
-        if (!$field) {
-            return [];
-        }
-
-        $fieldHandle = $field->getHandle();
-
-        return [
-            $fieldHandle = [
-                'name' => $fieldHandle,
-                'type' => RecaptchaInputType::getType(),
-                'description' => 'The Recaptcha name/value.',
-            ],
-        ];
+        return [];
     }
 }

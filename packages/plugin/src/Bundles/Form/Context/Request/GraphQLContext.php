@@ -26,7 +26,7 @@ class GraphQLContext
             return;
         }
 
-        if ($request->getHeaders()->get('x-craft-gql-schema') || $request->getHeaders()->get('x-craft-gql-solspace-freeform')) {
+        if ($request->getHeaders()->get('x-craft-gql-schema') || $request->getHeaders()->get('X-Craft-Solspace-Freeform-Mode')) {
             foreach ($form->getLayout()->getFields() as $field) {
                 if ($field instanceof PersistentValueInterface || !$field->getHandle()) {
                     continue;

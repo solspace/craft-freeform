@@ -880,21 +880,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->getFormHandler()->renderFormTemplate($this, $formTemplate);
     }
 
-    public function getPropertiesMarkup(array $renderProperties = null): Markup
-    {
-        return Template::raw(json_encode($this->json($renderProperties), \JSON_PRETTY_PRINT));
-    }
-
-    public function getPropertiesArray(array $renderProperties = null): array
-    {
-        return $this->json($renderProperties);
-    }
-
-    public function json(array $renderProperties = null): array
+    public function json(array $renderProperties = null): Markup
     {
         $this->registerContext($renderProperties);
         $bag = $this->getPropertyBag();
-        \Craft::dd($bag);
         $isMultipart = $this->getLayout()->hasFields(FileUploadInterface::class);
 
         $object = [
@@ -935,8 +924,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
         $event = new OutputAsJsonEvent($this, $object);
         Event::trigger(self::class, self::EVENT_OUTPUT_AS_JSON, $event);
+        $object = $event->getJsonObject();
 
-        return $event->getJsonObject();
+        return Template::raw(json_encode((object) $object, \JSON_PRETTY_PRINT));
     }
 
     public function renderTag(array $renderProperties = null): Markup

@@ -884,6 +884,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     {
         $this->registerContext($renderProperties);
         $bag = $this->getPropertyBag();
+
         $isMultipart = $this->getLayout()->hasFields(FileUploadInterface::class);
 
         $object = [

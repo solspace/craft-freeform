@@ -20,7 +20,7 @@ class SubmissionLimiter extends FeatureBundle
     public function handleLimit(SubmitEvent $event)
     {
         $form = $event->getForm();
-        $limit = $form->getPropertyBag()->get(self::BAG_KEY);
+        $limit = $form->getProperties()->get(self::BAG_KEY);
 
         if (null === $limit) {
             return;

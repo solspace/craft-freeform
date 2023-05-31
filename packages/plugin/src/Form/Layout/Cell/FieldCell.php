@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Form\Layout\Cell;
 
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
+use Solspace\Freeform\Fields\FieldInterface;
 
 class FieldCell extends Cell
 {
@@ -17,8 +17,10 @@ class FieldCell extends Cell
         return $this->field;
     }
 
-    public function setField(FieldInterface $field)
+    public function setField(FieldInterface $field): self
     {
         $this->field = $field;
+
+        return $this;
     }
 }

@@ -54,8 +54,8 @@ class LoadSavedForm extends FeatureBundle
 
         $properties[SaveFormsHelper::BAG_KEY_LOADED] = true;
 
-        $form->getAttributeBag()->merge($attributes);
-        $form->getPropertyBag()->merge($properties);
+        $form->getAttributes()->merge($attributes);
+        $form->getProperties()->merge($properties);
 
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new LoadFormEvent($form));
     }
@@ -75,6 +75,6 @@ class LoadSavedForm extends FeatureBundle
         }
 
         $record->delete();
-        $form->getPropertyBag()->remove(SaveFormsHelper::BAG_KEY_SAVED_SESSION);
+        $form->getProperties()->remove(SaveFormsHelper::BAG_KEY_SAVED_SESSION);
     }
 }

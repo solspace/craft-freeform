@@ -19,12 +19,12 @@ class StatusChange extends FeatureBundle
 
     public static function getStatus(Form $form)
     {
-        return $form->getPropertyBag()->get(self::BAG_KEY_STATUS);
+        return $form->getProperties()->get(self::BAG_KEY_STATUS);
     }
 
     public function modifyStatus(CreateSubmissionFromFormEvent $event)
     {
-        $bag = $event->getForm()->getPropertyBag();
+        $bag = $event->getForm()->getProperties();
         $statusId = $bag->get(self::BAG_KEY_STATUS);
         if (!$statusId) {
             return;

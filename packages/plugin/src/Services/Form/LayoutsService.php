@@ -3,7 +3,10 @@
 namespace Solspace\Freeform\Services\Form;
 
 use craft\db\Query;
+use Solspace\Freeform\Bundles\Fields\FieldProvider;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Cell\Cell;
+use Solspace\Freeform\Form\Layout\Cell\FieldCell;
 use Solspace\Freeform\Form\Layout\Cell\LayoutCell;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Form\Layout\Page;
@@ -18,18 +21,24 @@ use Solspace\Freeform\Services\BaseService;
 
 class LayoutsService extends BaseService
 {
+    private array $fields = [];
     private array $pages = [];
     private array $layouts = [];
     private array $rows = [];
     private array $cells = [];
 
-    public function getLayout(int $formId): Layout
+    public function __construct($config = [], private ?FieldProvider $fieldProvider = null)
+    {
+        parent::__construct($config);
+    }
+
+    public function getLayout(Form $form): Layout
     {
         $layout = new Layout();
 
-        $pages = $this->getPages($formId);
-        $rows = $this->getRows($formId);
-        $cells = $this->getCells($formId);
+        $pages = $this->getPages($form);
+        $rows = $this->getRows($form);
+        $cells = $this->getCells($form);
 
         foreach ($pages as $pageData) {
             $page = new Page($pageData);
@@ -37,6 +46,7 @@ class LayoutsService extends BaseService
             $layoutUid = $pageData['layoutUid'];
 
             $this->attachRows(
+                $form,
                 $layoutUid,
                 $rows,
                 $cells,
@@ -52,10 +62,10 @@ class LayoutsService extends BaseService
         return $layout;
     }
 
-    public function getPages(int $formId): array
+    public function getPages(Form $form): array
     {
-        if (!\array_key_exists($formId, $this->pages)) {
-            $this->pages[$formId] = (new Query())
+        if (!\array_key_exists($form->getId(), $this->pages)) {
+            $this->pages[$form->getId()] = (new Query())
                 ->select([
                     'p.[[id]]',
                     'p.[[uid]]',
@@ -66,33 +76,33 @@ class LayoutsService extends BaseService
                 ])
                 ->from(FormPageRecord::TABLE.' p')
                 ->innerJoin(FormLayoutRecord::TABLE.' l', 'p.[[layoutId]] = l.[[id]]')
-                ->where(['p.[[formId]]' => $formId])
+                ->where(['p.[[formId]]' => $form->getId()])
                 ->orderBy(['p.[[order]]' => \SORT_ASC])
                 ->all()
             ;
         }
 
-        return $this->pages[$formId];
+        return $this->pages[$form->getId()];
     }
 
-    public function getLayouts(int $formId): array
+    public function getLayouts(Form $form): array
     {
-        if (!\array_key_exists($formId, $this->layouts)) {
-            $this->layouts[$formId] = (new Query())
+        if (!\array_key_exists($form->getId(), $this->layouts)) {
+            $this->layouts[$form->getId()] = (new Query())
                 ->select(['id', 'uid'])
                 ->from(FormLayoutRecord::TABLE)
-                ->where(['formId' => $formId])
+                ->where(['formId' => $form->getId()])
                 ->all()
             ;
         }
 
-        return $this->layouts[$formId];
+        return $this->layouts[$form->getId()];
     }
 
-    public function getRows(int $formId): array
+    public function getRows(Form $form): array
     {
-        if (!\array_key_exists($formId, $this->rows)) {
-            $this->rows[$formId] = (new Query())
+        if (!\array_key_exists($form->getId(), $this->rows)) {
+            $this->rows[$form->getId()] = (new Query())
                 ->select([
                     'r.[[id]]',
                     'r.[[uid]]',
@@ -102,19 +112,19 @@ class LayoutsService extends BaseService
                 ])
                 ->from(FormRowRecord::TABLE.' r')
                 ->innerJoin(FormLayoutRecord::TABLE.' l', 'r.[[layoutId]] = l.[[id]]')
-                ->where(['r.[[formId]]' => $formId])
+                ->where(['r.[[formId]]' => $form->getId()])
                 ->orderBy(['r.[[order]]' => \SORT_ASC])
                 ->all()
             ;
         }
 
-        return $this->rows[$formId];
+        return $this->rows[$form->getId()];
     }
 
-    public function getCells(int $formId): array
+    public function getCells(Form $form): array
     {
-        if (!\array_key_exists($formId, $this->cells)) {
-            $this->cells[$formId] = (new Query())
+        if (!\array_key_exists($form->getId(), $this->cells)) {
+            $this->cells[$form->getId()] = (new Query())
                 ->select([
                     'c.[[id]]',
                     'c.[[uid]]',
@@ -132,16 +142,17 @@ class LayoutsService extends BaseService
                 ->leftJoin(FormFieldRecord::TABLE.' f', 'c.[[fieldId]] = f.[[id]]')
                 ->leftJoin(FormLayoutRecord::TABLE.' l', 'c.[[layoutId]] = l.[[id]]')
                 ->from(FormCellRecord::TABLE.' c')
-                ->where(['c.[[formId]]' => $formId])
+                ->where(['c.[[formId]]' => $form->getId()])
                 ->orderBy(['c.[[order]]' => \SORT_ASC])
                 ->all()
             ;
         }
 
-        return $this->cells[$formId];
+        return $this->cells[$form->getId()];
     }
 
     private function attachRows(
+        Form $form,
         string $layoutUid,
         array $allRows,
         array $allCells,
@@ -166,11 +177,19 @@ class LayoutsService extends BaseService
                 $cell = Cell::create($cellData);
                 if ($cell instanceof LayoutCell) {
                     $this->attachRows(
+                        $form,
                         $cellData['layoutId'],
                         $allRows,
                         $allCells,
                         $cell->getRows()
                     );
+                }
+
+                if ($cell instanceof FieldCell) {
+                    $field = $this->fieldProvider->getFieldByUid($form, $cellData['fieldUid']);
+                    if ($field) {
+                        $cell->setField($field);
+                    }
                 }
 
                 $row->getCells()->add($cell);

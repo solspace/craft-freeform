@@ -21,6 +21,7 @@ use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\FileUploadTrait;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Helpers\FileHelper;
 
@@ -128,10 +129,10 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
      *
      * @throws FileUploadException
      */
-    public function uploadFile()
+    public function uploadFile(): ?array
     {
         if (!isset(self::$filesUploaded[$this->handle])) {
-            $response = $this->getForm()->getFileUploadHandler()->uploadFile($this, $this->getForm());
+            $response = Freeform::getInstance()->files->uploadFile($this, $this->getForm());
 
             self::$filesUploaded[$this->handle] = null;
             self::$filesUploadedErrors[$this->handle] = [];

@@ -23,7 +23,7 @@ class FormInitTime extends FeatureBundle
 
     public function handleFormLoaded(FormLoadedEvent $event)
     {
-        $bag = $event->getForm()->getPropertyBag();
+        $bag = $event->getForm()->getProperties();
         if (!$bag->get(self::KEY)) {
             $bag->set(self::KEY, time());
         }
@@ -31,11 +31,11 @@ class FormInitTime extends FeatureBundle
 
     public function handleFormReset(ResetEvent $event)
     {
-        $event->getForm()->getPropertyBag()->set(self::KEY, time());
+        $event->getForm()->getProperties()->set(self::KEY, time());
     }
 
     public function cleanupOnSave(SaveFormEvent $event)
     {
-        $event->getForm()->getPropertyBag()->remove(self::KEY);
+        $event->getForm()->getProperties()->remove(self::KEY);
     }
 }

@@ -26,7 +26,7 @@ class ElementEditBundle extends FeatureBundle
 
     public static function getElementId(Form $form)
     {
-        return $form->getPropertyBag()->get(self::ELEMENT_KEY);
+        return $form->getProperties()->get(self::ELEMENT_KEY);
     }
 
     public function populateFormWithElementValues(FormEventInterface $event)

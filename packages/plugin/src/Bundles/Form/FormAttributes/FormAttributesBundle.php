@@ -7,119 +7,103 @@ use Solspace\Freeform\Events\Forms\SetPropertiesEvent;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Bags\BagInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
 class FormAttributesBundle extends FeatureBundle
 {
-    private static $attributeKeys = [
-        'id',
-        'name',
-        'method',
-        'class',
-        'action',
-    ];
-
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_SET_PROPERTIES, [$this, 'separateAttributesFromProperties']);
-        Event::on(Form::class, Form::EVENT_SET_PROPERTIES, [$this, 'extractAttributesFromProperties']);
         Event::on(Form::class, Form::EVENT_ATTACH_TAG_ATTRIBUTES, [$this, 'setConditionalAttributes']);
     }
 
-    public function separateAttributesFromProperties(SetPropertiesEvent $event)
+    public function separateAttributesFromProperties(SetPropertiesEvent $event): void
     {
         $form = $event->getForm();
-        $attributes = $event->getAttributes();
+        $properties = $event->getProperties();
 
-        $attributesForAttributeBag = [];
+        if (!isset($properties['attributes'])) {
+            return;
+        }
+
+        $attributes = $properties['attributes'];
+        unset($properties['attributes']);
+
+        $event->setProperties($properties);
+
+        if (!\is_array($attributes)) {
+            return;
+        }
+
+        $rowAttributes = $attributes['row'] ?? [];
+        $errorAttributes = $attributes['error'] ?? [];
+        unset($attributes['row'], $attributes['error']);
+
         foreach ($attributes as $key => $value) {
-            if (\in_array($key, self::$attributeKeys, true)) {
-                $attributesForAttributeBag[$key] = $value;
-            }
+            $form->getAttributes()->replace($key, $value);
         }
 
-        $form->getAttributeBag()->merge($attributesForAttributeBag);
+        foreach ($rowAttributes as $key => $value) {
+            $form->getAttributes()->getRow()->replace($key, $value);
+        }
 
-        if (null === $form->getAttributeBag()->get('method')) {
-            $form->getAttributeBag()->set('method', 'post');
+        foreach ($errorAttributes as $key => $value) {
+            $form->getAttributes()->getError()->replace($key, $value);
+        }
+
+        if (null === $form->getAttributes()->get('method')) {
+            $form->getAttributes()->set('method', 'post');
         }
     }
 
-    public function extractAttributesFromProperties(SetPropertiesEvent $event)
-    {
-        $form = $event->getForm();
-        $bag = $form->getPropertyBag();
-        $attributeBag = $form->getAttributeBag();
-
-        $attributeBag->merge($bag->get('formAttributes', []));
-        $attributeBag->merge($bag->get('attributes', []));
-
-        $bag->remove('formAttributes');
-        $bag->remove('attributes');
-    }
-
-    public function setConditionalAttributes(AttachFormAttributesEvent $event)
+    public function setConditionalAttributes(AttachFormAttributesEvent $event): void
     {
         $formService = Freeform::getInstance()->forms;
 
         $form = $event->getForm();
-        $bag = $form->getAttributeBag();
+        $attributes = $form->getAttributes();
 
         $behaviorSettings = $form->getSettings()->getBehavior();
 
-        $this->attachConditionally($event, $bag, 'id');
-        $this->attachConditionally($event, $bag, 'name');
-        $this->attachConditionally($event, $bag, 'method');
-        $this->attachConditionally($event, $bag, 'class');
-        $this->attachConditionally($event, $bag, 'action');
-
-        $event->attachAttribute('data-freeform', true);
-        $event->attachAttribute('data-disable-reset', $form->isAjaxResetDisabled());
-        $event->attachAttribute('data-id', $form->getAnchor());
-        $event->attachAttribute('data-handle', $form->getHandle());
-        $event->attachAttribute('data-ajax', $form->isAjaxEnabled());
-        $event->attachAttribute('data-disable-submit', $formService->isFormSubmitDisable());
-        $event->attachAttribute('data-show-spinner', $behaviorSettings->showSpinner);
+        $attributes->set('data-freeform', true);
+        $attributes->set('data-disable-reset', $form->isAjaxResetDisabled());
+        $attributes->set('data-id', $form->getAnchor());
+        $attributes->set('data-handle', $form->getHandle());
+        $attributes->set('data-ajax', $form->isAjaxEnabled());
+        $attributes->set('data-disable-submit', $formService->isFormSubmitDisable());
+        $attributes->set('data-show-spinner', $behaviorSettings->showSpinner);
 
         if ($form->getLayout()->getFields()->hasFieldType(FileUploadInterface::class)) {
-            $event->attachAttribute('enctype', 'multipart/form-data');
+            $attributes->set('enctype', 'multipart/form-data');
         }
 
         $autoScroll = Freeform::getInstance()->settings->getSettingsModel()->autoScroll;
         if ($autoScroll) {
-            $event->attachAttribute('data-auto-scroll', $autoScroll);
+            $attributes->set('data-auto-scroll', $autoScroll);
         }
 
         if ($formService->shouldScrollToAnchor($form)) {
-            $event->attachAttribute('data-scroll-to-anchor', $form->getAnchor());
+            $attributes->set('data-scroll-to-anchor', true);
         }
 
         if ($behaviorSettings->showLoadingText) {
-            $event->attachAttribute('data-show-loading-text', true);
-            $event->attachAttribute('data-loading-text', $behaviorSettings->loadingText);
+            $attributes->set('data-show-loading-text', true);
+            $attributes->set('data-loading-text', $behaviorSettings->loadingText);
         }
 
         if ($behaviorSettings->successMessage) {
-            $event->attachAttribute(
+            $attributes->set(
                 'data-success-message',
                 \Craft::t('app', $behaviorSettings->successMessage)
             );
         }
 
         if ($behaviorSettings->errorMessage) {
-            $event->attachAttribute(
+            $attributes->set(
                 'data-error-message',
                 \Craft::t('app', $behaviorSettings->errorMessage)
             );
-        }
-    }
-
-    private function attachConditionally(AttachFormAttributesEvent $event, BagInterface $bag, string $key)
-    {
-        if ($bag->get($key)) {
-            $event->attachAttribute($key, $bag->get($key));
         }
     }
 }

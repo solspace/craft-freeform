@@ -3,25 +3,12 @@
 namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Events\ArrayableEvent;
-use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Fields\FieldInterface;
 
 class ValidateEvent extends ArrayableEvent
 {
-    /** @var AbstractField */
-    private $field;
-
-    /** @var Form */
-    private $form;
-
-    /**
-     * ValidateEvent constructor.
-     */
-    public function __construct(AbstractField $field, Form $form)
+    public function __construct(private FieldInterface $field)
     {
-        $this->field = $field;
-        $this->form = $form;
-
         parent::__construct([]);
     }
 
@@ -30,16 +17,11 @@ class ValidateEvent extends ArrayableEvent
      */
     public function fields(): array
     {
-        return ['field', 'form'];
+        return ['field'];
     }
 
-    public function getField(): AbstractField
+    public function getField(): FieldInterface
     {
         return $this->field;
-    }
-
-    public function getForm(): Form
-    {
-        return $this->form;
     }
 }

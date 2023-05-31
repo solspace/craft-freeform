@@ -5,6 +5,9 @@ namespace Solspace\Freeform\Events\Forms;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Form\Form;
 
+/**
+ * @deprecated this is no longer used
+ */
 class FormValidateEvent extends ArrayableEvent
 {
     /** @var Form */

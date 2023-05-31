@@ -8,7 +8,9 @@ class Attributes implements \Countable, \JsonSerializable
 
     public function __construct(array $attributes = [])
     {
-        $this->setBatch($attributes);
+        foreach ($attributes as $key => $value) {
+            $this->set($key, $value);
+        }
     }
 
     public function __toString(): string
@@ -71,9 +73,15 @@ class Attributes implements \Countable, \JsonSerializable
         return null;
     }
 
-    public function get(int $index, mixed $default = null): ?array
+    public function get(string $name, mixed $default = null): mixed
     {
-        return $this->attributes[$index] ?? $default;
+        foreach ($this->attributes as [$key, $value]) {
+            if ($key === $name) {
+                return $value;
+            }
+        }
+
+        return $default;
     }
 
     public function set(?string $key, mixed $value = null): self
@@ -152,6 +160,11 @@ class Attributes implements \Countable, \JsonSerializable
     public function count(): int
     {
         return \count($this->attributes);
+    }
+
+    public function toArray(): array
+    {
+        return $this->attributes;
     }
 
     public function jsonSerialize(): array

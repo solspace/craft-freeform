@@ -23,7 +23,7 @@ class ActionInput extends FeatureBundle
 
     public function attachToJson(OutputAsJsonEvent $event)
     {
-        $bag = $event->getForm()->getPropertyBag();
+        $bag = $event->getForm()->getProperties();
         $event->add('action', $bag->get('action', 'freeform/submit'));
     }
 }

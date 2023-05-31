@@ -1,6 +1,16 @@
 {% css formCss %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
 
-{{ form.renderTag }}
+{{ form.renderTag({
+    attributes: {
+        error: {
+            class: "alert alert-danger",
+        },
+        row: {
+            class: "row",
+        }
+    }
+}) }}
 
 <script>
   var form = document.querySelector('[data-id="{{ form.anchor }}"]');
@@ -41,7 +51,7 @@
 {% endif %}
 
 {% if form.hasErrors %}
-    <div class="alert alert-danger">
+    <div{{ form.attributes.error }}>
         {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
@@ -54,8 +64,49 @@
     </div>
 {% endif %}
 
+
+{{ form.attributes|dump }}
+
+{% for row in form.rows %}
+    {% set width = (12 / (row|length)) %}
+
+    <div{{ form.attributes.row }}>
+        {% for cell in row %}
+            {% set field = cell.field %}
+
+            {% set containerClass = [] %}
+
+            {% if field.type != "field" %}
+                {% if field.type in ["checkbox", "mailing_list"] %}
+                    {% set containerClass = containerClass|merge(["checkbox"]) %}
+                {% else %}
+                    {% set containerClass = containerClass|merge(["form-group"]) %}
+                {% endif %}
+            {% endif %}
+
+            {% if field.errors|length %}
+                {% set containerClass = containerClass|merge(["has-error"]) %}
+            {% endif %}
+
+            {% set containerClass = containerClass|merge(["col-xs-12", "col-sm-"~width]) %}
+
+            {{ field.render({
+                attributes: {
+                    container: { class: containerClass },
+                    label: { class: (field.required ? "required") },
+                    input: { class: "form-control" },
+                    instructions: { class: "help-block" },
+                    error: { class: "help-block" },
+                }
+            }) }}
+        {% endfor %}
+    </div>
+{% endfor %}
+
+
+
 {% for row in form %}
-    <div class="row {{ form.customAttributes.rowClass }}">
+    <div class="row {{ form.attributes.row }}">
         {% for field in row %}
             {% set width = (12 / (row|length)) %}
 

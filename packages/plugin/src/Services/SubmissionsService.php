@@ -249,12 +249,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $submission;
     }
 
-    public function postProcessSubmission(Form $form, Submission $submission)
+    public function postProcessSubmission(Form $form, Submission $submission): void
     {
         $event = new ProcessSubmissionEvent($form, $submission);
         Event::trigger(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, $event);
-
-        $this->getFormsService()->onAfterSubmit($form, $submission);
     }
 
     public function delete(array $submissions, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool

@@ -74,11 +74,11 @@ class SessionContext
         );
     }
 
-    public function addHiddenInputs(RenderTagEvent $event)
+    public function addHiddenInputs(RenderTagEvent $event): void
     {
         $form = $event->getForm();
 
-        $value = $form->getPropertyBag()->get(Form::HASH_KEY);
+        $value = $form->getProperties()->get(Form::HASH_KEY);
         $value = htmlspecialchars($value);
 
         $event->addChunk(
@@ -90,7 +90,7 @@ class SessionContext
         );
     }
 
-    public function cleanupAfterSubmit(FormEventInterface $event)
+    public function cleanupAfterSubmit(FormEventInterface $event): void
     {
         $form = $event->getForm();
 
@@ -107,20 +107,20 @@ class SessionContext
         $this->storage->removeBag($key);
     }
 
-    public function cleanupOnSaveForm(SaveFormEvent $event)
+    public function cleanupOnSaveForm(SaveFormEvent $event): void
     {
-        $event->getForm()->getPropertyBag()->remove(Form::HASH_KEY);
+        $event->getForm()->getProperties()->remove(Form::HASH_KEY);
     }
 
-    public function cleanupStorage()
+    public function cleanupStorage(): void
     {
         $this->storage->cleanup();
     }
 
-    public function registerFormHash(FormEventInterface $event)
+    public function registerFormHash(FormEventInterface $event): void
     {
         $form = $event->getForm();
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
 
         $formHash = self::getFormHash($form);
         $pageHash = self::getPageHash($form);
@@ -131,7 +131,7 @@ class SessionContext
         $bag->set(Form::HASH_KEY, $hash);
     }
 
-    public function registerFormContext(FormEventInterface $event)
+    public function registerFormContext(FormEventInterface $event): void
     {
         $form = $event->getForm();
 
@@ -146,8 +146,8 @@ class SessionContext
         }
 
         $bag = new SessionBag($form->getId());
-        $bag->setProperties($form->getPropertyBag()->toArray());
-        $bag->setAttributes($form->getAttributeBag()->toArray());
+        $bag->setProperties($form->getProperties()->toArray());
+        $bag->setAttributes($form->getAttributes()->toArray());
 
         $this->storage->registerBag($key, $bag, $form);
         $this->storage->persist();
@@ -164,8 +164,8 @@ class SessionContext
             return;
         }
 
-        $form->getPropertyBag()->merge($bag->getProperties());
-        $form->getAttributeBag()->merge($bag->getAttributes());
+        $form->getProperties()->merge($bag->getProperties());
+        $form->getAttributes()->merge($bag->getAttributes());
         $form->setFormPosted(self::isFormPosted($form));
         $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPage()));
     }
@@ -176,8 +176,8 @@ class SessionContext
 
         $sessionBag = $this->getBag($form);
         if (null !== $sessionBag) {
-            $sessionBag->setProperties($form->getPropertyBag()->toArray());
-            $sessionBag->setAttributes($form->getAttributeBag()->toArray());
+            $sessionBag->setProperties($form->getProperties()->toArray());
+            $sessionBag->setAttributes($form->getAttributes()->toArray());
             $sessionBag->setLastUpdate(new Carbon('now', 'UTC'));
         }
 
@@ -191,9 +191,9 @@ class SessionContext
 
     public static function getPageHash(Form $form): string
     {
-        $page = $form->getCurrentPage();
+        $pageIndex = $form->getCurrentPageIndex();
 
-        return HashHelper::hash($page->getIndex(), $form->getId());
+        return HashHelper::hash($pageIndex, $form->getId());
     }
 
     public static function isFormPosted(Form $form): bool
@@ -237,7 +237,7 @@ class SessionContext
 
     private static function getBagKey(Form $form)
     {
-        $hash = $form->getPropertyBag()->get(Form::HASH_KEY);
+        $hash = $form->getProperties()->get(Form::HASH_KEY);
 
         $parts = explode('-', $hash);
         if (3 !== \count($parts)) {

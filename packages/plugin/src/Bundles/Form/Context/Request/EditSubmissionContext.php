@@ -22,7 +22,7 @@ class EditSubmissionContext
 
     public static function getToken(Form $form)
     {
-        return $form->getPropertyBag()->get(self::TOKEN_KEY);
+        return $form->getProperties()->get(self::TOKEN_KEY);
     }
 
     public function skipResetOnEdit(ResetEvent $event)

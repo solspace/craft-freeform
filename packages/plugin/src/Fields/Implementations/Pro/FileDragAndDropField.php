@@ -104,8 +104,9 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         return $output;
     }
 
-    public function uploadFile()
+    public function uploadFile(): ?array
     {
+        return null;
     }
 
     protected function validate(): array

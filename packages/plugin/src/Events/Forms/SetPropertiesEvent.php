@@ -8,23 +8,20 @@ use Solspace\Freeform\Form\Form;
 
 class SetPropertiesEvent extends ArrayableEvent implements FormEventInterface
 {
-    /** @var Form */
-    private $form;
+    private Form $form;
+    private array $properties;
 
-    /** @var array */
-    private $attributes;
-
-    public function __construct(Form $form, array $attributes = [])
+    public function __construct(Form $form, array $properties = [])
     {
         $this->form = $form;
-        $this->attributes = $attributes;
+        $this->properties = $properties;
 
-        parent::__construct([]);
+        parent::__construct();
     }
 
     public function fields(): array
     {
-        return ['form', 'attributes'];
+        return ['form', 'properties'];
     }
 
     public function getForm(): Form
@@ -32,8 +29,15 @@ class SetPropertiesEvent extends ArrayableEvent implements FormEventInterface
         return $this->form;
     }
 
-    public function getAttributes(): array
+    public function getProperties(): array
     {
-        return $this->attributes;
+        return $this->properties;
+    }
+
+    public function setProperties(array $properties): self
+    {
+        $this->properties = $properties;
+
+        return $this;
     }
 }

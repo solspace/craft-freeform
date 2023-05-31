@@ -26,6 +26,7 @@ use craft\web\Application;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\View;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Bundles\Form\Context\Pages\PageContext;
 use Solspace\Freeform\controllers\SubmissionsController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Assets\RegisterEvent;
@@ -51,9 +52,7 @@ use Solspace\Freeform\Records\FeedRecord;
 use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
-use Solspace\Freeform\Services\AdminNotificationsService;
 use Solspace\Freeform\Services\ChartsService;
-use Solspace\Freeform\Services\ConditionalNotificationsService;
 use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\DashboardService;
@@ -79,7 +78,6 @@ use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
-use Solspace\Freeform\Services\Pro\PayloadForwardingService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentsService;
 use Solspace\Freeform\Services\Pro\Payments\StripeService;
@@ -140,7 +138,6 @@ use yii\web\ForbiddenHttpException;
  * @property SubscriptionsService        $subscriptions
  * @property WebhooksService             $webhooks
  * @property RelationsService            $relations
- * @property PayloadForwardingService    $payloadForwarding
  * @property DigestService               $digest
  * @property SummaryService              $summary
  * @property FreeformFeedService         $feed
@@ -169,11 +166,6 @@ class Freeform extends Plugin
     public const EDITION_PRO = 'pro';
 
     public const PERMISSIONS_HELP_LINK = 'https://docs.solspace.com/craft/freeform/v3/setup/demo-templates.html';
-    public const PERMISSION_NAMESPACE = 'Freeform';
-
-    public const VERSION_CACHE_KEY = 'freeform_version';
-    public const VERSION_CACHE_TIMESTAMP_KEY = 'freeform_version_timestamp';
-    public const VERSION_CACHE_TTL = 86400; // 24-hours
 
     public const PERMISSION_FORMS_ACCESS = 'freeform-formsAccess';
     public const PERMISSION_FORMS_CREATE = 'freeform-formsCreate';
@@ -247,7 +239,7 @@ class Freeform extends Plugin
         }
     }
 
-    public function init()
+    public function init(): void
     {
         parent::init();
         \Yii::setAlias('@freeform', __DIR__);
@@ -261,7 +253,6 @@ class Freeform extends Plugin
         $this->initFieldTypes();
         $this->initPermissions();
         $this->initEventListeners();
-        $this->initHoneypot();
         $this->initConnections();
         $this->initBetaAssets();
         $this->initPaymentAssets();
@@ -438,7 +429,7 @@ class Freeform extends Plugin
         );
     }
 
-    private function initControllerMap()
+    private function initControllerMap(): void
     {
         if (\Craft::$app->request->isConsoleRequest) {
             $this->controllerNamespace = 'Solspace\\Freeform\\Commands';
@@ -447,7 +438,7 @@ class Freeform extends Plugin
         }
     }
 
-    private function initServices()
+    private function initServices(): void
     {
         $this->setComponents(
             [
@@ -461,14 +452,11 @@ class Freeform extends Plugin
                 'mailer' => MailerService::class,
                 'mailingLists' => MailingListsService::class,
                 'notifications' => NotificationsService::class,
-                'adminNotifications' => AdminNotificationsService::class,
-                'conditionalNotifications' => ConditionalNotificationsService::class,
                 'settings' => SettingsService::class,
                 'statuses' => StatusesService::class,
                 'submissions' => SubmissionsService::class,
                 'spamSubmissions' => SpamSubmissionsService::class,
                 'logger' => LoggerService::class,
-                'honeypot' => HoneypotService::class,
                 'integrations' => IntegrationsService::class,
                 'integrationsQueue' => IntegrationsQueueService::class,
                 'paymentGateways' => PaymentGatewaysService::class,
@@ -486,7 +474,6 @@ class Freeform extends Plugin
                 'webhooks' => WebhooksService::class,
                 'relations' => RelationsService::class,
                 'notes' => NotesService::class,
-                'payloadForwarding' => PayloadForwardingService::class,
                 'digest' => DigestService::class,
                 'summary' => SummaryService::class,
                 'feed' => FreeformFeedService::class,
@@ -498,7 +485,8 @@ class Freeform extends Plugin
         );
     }
 
-    private function initIntegrations()
+    // TODO: move into a feature bundle
+    private function initIntegrations(): void
     {
         Event::on(
             MailingListsService::class,
@@ -572,7 +560,8 @@ class Freeform extends Plugin
         );
     }
 
-    private function initTwigVariables()
+    // TODO: move into a feature bundle
+    private function initTwigVariables(): void
     {
         Event::on(
             CraftVariable::class,
@@ -587,7 +576,8 @@ class Freeform extends Plugin
         \Craft::$app->view->registerTwigExtension(new FreeformTwigFilters());
     }
 
-    private function initWidgets()
+    // TODO: move into a feature bundle
+    private function initWidgets(): void
     {
         Event::on(
             Dashboard::class,
@@ -619,7 +609,8 @@ class Freeform extends Plugin
         );
     }
 
-    private function initFieldTypes()
+    // TODO: move into a feature bundle
+    private function initFieldTypes(): void
     {
         Event::on(
             Fields::class,
@@ -631,7 +622,8 @@ class Freeform extends Plugin
         );
     }
 
-    private function initPermissions()
+    // TODO: move into a feature bundle
+    private function initPermissions(): void
     {
         if (\Craft::$app->getEdition() >= \Craft::Pro) {
             Event::on(
@@ -751,11 +743,12 @@ class Freeform extends Plugin
         }
     }
 
-    private function initEventListeners()
+    // TODO: move into a feature bundle
+    private function initEventListeners(): void
     {
         Event::on(
-            FormsService::class,
-            FormsService::EVENT_RENDER_CLOSING_TAG,
+            Form::class,
+            Form::EVENT_RENDER_AFTER_CLOSING_TAG,
             [$this->forms, 'addFormPluginScripts']
         );
 
@@ -804,14 +797,8 @@ class Freeform extends Plugin
 
         if ($this->isPro()) {
             Event::on(
-                FormsService::class,
-                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
-                [$this->rules, 'addAttributesToFormTag']
-            );
-
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_PAGE_JUMP,
+                PageContext::class,
+                PageContext::EVENT_PAGE_JUMP,
                 [$this->rules, 'handleFormPageJump']
             );
 
@@ -822,56 +809,25 @@ class Freeform extends Plugin
             );
 
             Event::on(
-                FormsService::class,
-                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
+                Form::class,
+                Form::EVENT_ATTACH_TAG_ATTRIBUTES,
                 [$this->stripe, 'addAttributesToFormTag']
             );
         }
     }
 
-    private function initHoneypot()
-    {
-        if ($this->settings->getSettingsModel()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
-        if ($this->settings->isFreeformHoneypotEnabled()) {
-            Event::on(
-                Form::class,
-                Form::EVENT_OUTPUT_AS_JSON,
-                [$this->honeypot, 'addHoneypotToJson']
-            );
-
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_ATTACH_FORM_ATTRIBUTES,
-                [$this->honeypot, 'addFormAttributes']
-            );
-
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_RENDER_OPENING_TAG,
-                [$this->honeypot, 'addHoneyPotInputToForm']
-            );
-
-            Event::on(
-                FormsService::class,
-                FormsService::EVENT_FORM_VALIDATE,
-                [$this->honeypot, 'validateFormHoneypot']
-            );
-        }
-    }
-
-    private function initConnections()
+    // TODO: move into a feature bundle
+    private function initConnections(): void
     {
         Event::on(
-            FormsService::class,
-            FormsService::EVENT_FORM_VALIDATE,
+            Form::class,
+            Form::EVENT_BEFORE_VALIDATE,
             [$this->connections, 'validateConnections']
         );
     }
 
-    private function initBetaAssets()
+    // TODO: move into a feature bundle
+    private function initBetaAssets(): void
     {
         $disableFeedback = App::parseEnv('$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET');
         if ($disableFeedback && '$FREEFORM_DISABLE_BETA_FEEDBACK_WIDGET' !== $disableFeedback) {
@@ -895,7 +851,8 @@ class Freeform extends Plugin
         );
     }
 
-    private function initPaymentAssets()
+    // TODO: move into a feature bundle
+    private function initPaymentAssets(): void
     {
         if (!$this->isPro()) {
             return;
@@ -918,7 +875,8 @@ class Freeform extends Plugin
         );
     }
 
-    private function initHookHandlers()
+    // TODO: move into a feature bundle
+    private function initHookHandlers(): void
     {
         if (!$this->isPro()) {
             return;
@@ -928,7 +886,8 @@ class Freeform extends Plugin
         FormHookHandler::registerHooks();
     }
 
-    private function initCleanupJobs()
+    // TODO: move into a feature bundle
+    private function initCleanupJobs(): void
     {
         if (!$this->isInstalled || \Craft::$app->request->getIsConsoleRequest()) {
             return;
@@ -954,7 +913,8 @@ class Freeform extends Plugin
         }
     }
 
-    private function initTasks()
+    // TODO: move into a feature bundle
+    private function initTasks(): void
     {
         if (!$this->isInstalled || \Craft::$app->request->getIsConsoleRequest()) {
             return;
@@ -985,7 +945,7 @@ class Freeform extends Plugin
         ]);
     }
 
-    private function initBundles()
+    private function initBundles(): void
     {
         static $initialized;
 

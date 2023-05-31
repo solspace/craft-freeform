@@ -34,21 +34,15 @@ class FreeformVariable
 {
     /**
      * @param int|string $handleOrId
-     *
-     * @return null|Form
      */
-    public function form($handleOrId, array $properties = null)
+    public function form($handleOrId, array $properties = null): ?Form
     {
         $form = $this->getFormService()->getFormByHandleOrId($handleOrId);
-
-        if ($form) {
-            $formObject = $form->getForm();
-            $formObject->setProperties($properties);
-
-            return $formObject;
+        if (!$form) {
+            return null;
         }
 
-        return null;
+        return $form->setProperties($properties);
     }
 
     /**

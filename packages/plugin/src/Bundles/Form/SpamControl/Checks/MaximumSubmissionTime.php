@@ -27,7 +27,7 @@ class MaximumSubmissionTime extends AbstractCheck
 
     private function isMaximumSubmissionTimePassed(Form $form): bool
     {
-        $initTime = $form->getPropertyBag()->get(FormInitTime::KEY, 0);
+        $initTime = $form->getProperties()->get(FormInitTime::KEY, 0);
         $timeFormAlive = time() - $initTime;
 
         $maxTime = $this->getSettings()->formSubmitExpiration;

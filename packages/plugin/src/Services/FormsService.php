@@ -15,24 +15,17 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
+use craft\web\View;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Forms\AfterSubmitEvent;
-use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
-use Solspace\Freeform\Events\Forms\BeforeSubmitEvent;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
-use Solspace\Freeform\Events\Forms\FormRenderEvent;
-use Solspace\Freeform\Events\Forms\FormValidateEvent;
-use Solspace\Freeform\Events\Forms\PageJumpEvent;
-use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
-use Solspace\Freeform\Events\Forms\SaveEvent;
+use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Form\Managers\ContentManager;
 use Solspace\Freeform\Form\Settings\Settings as FormSettings;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
@@ -194,103 +187,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $this->getFormByHandle($handleOrId);
     }
 
-    public function save(FormModel $model): bool
-    {
-        $isNew = !$model->id;
-
-        if (!$isNew) {
-            $record = FormRecord::findOne(['id' => $model->id]);
-        } else {
-            $record = FormRecord::create();
-        }
-
-        $oldLayout = $record->layoutJson;
-        $newLayout = $model->layoutJson;
-
-        $record->type = $model->type;
-        $record->metadata = json_encode($model->metadata);
-        $record->name = $model->name;
-        $record->handle = $model->handle;
-        $record->spamBlockCount = $model->spamBlockCount;
-        $record->submissionTitleFormat = $model->submissionTitleFormat;
-        $record->description = $model->description;
-        $record->layoutJson = $model->layoutJson;
-        $record->returnUrl = $model->returnUrl;
-        $record->extraPostUrl = $model->extraPostUrl;
-        $record->extraPostTriggerPhrase = $model->extraPostTriggerPhrase;
-        $record->defaultStatus = $model->defaultStatus;
-        $record->formTemplateId = $model->formTemplateId;
-        $record->color = $model->color;
-        $record->optInDataStorageTargetHash = $model->optInDataStorageTargetHash;
-        $record->limitFormSubmissions = $model->limitFormSubmissions;
-        $record->gtmEnabled = $model->gtmEnabled;
-        $record->gtmId = $model->gtmId;
-        $record->gtmEventName = $model->gtmEventName;
-
-        if ($isNew) {
-            $record->order = 1 + ((int) (new Query())
-                ->select('MAX([[order]])')
-                ->from(FormRecord::TABLE)
-                ->scalar());
-        }
-
-        $record->validate();
-        $model->addErrors($record->getErrors());
-
-        $beforeSaveEvent = new SaveEvent($model, $isNew);
-        $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
-
-        if ($beforeSaveEvent->isValid && !$model->hasErrors()) {
-            $transaction = null;
-            if (!\Craft::$app->getDb()->getTransaction()) {
-                // we start new transaction only in case there is none, otherwise we are not ones responsible for commit
-                // TODO: do save for other similar services
-                $transaction = \Craft::$app->getDb()->getTransaction() ?? \Craft::$app->getDb()->beginTransaction();
-            }
-
-            try {
-                $record->save(false);
-
-                if ($isNew) {
-                    $model->id = $record->id;
-                    $model->uid = $record->uid;
-                }
-
-                self::$formsById[$model->id] = $model;
-
-                if (null !== $transaction) {
-                    $transaction->commit();
-                }
-
-                $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
-
-                $contentManager = new ContentManager(
-                    $model->getForm(true),
-                    $oldLayout,
-                    $newLayout
-                );
-
-                $contentManager->performDatabaseColumnAlterations();
-            } catch (\Exception $e) {
-                if (null !== $transaction) {
-                    $transaction->rollBack();
-                }
-
-                throw $e;
-            }
-        }
-
-        if ($model->hasErrors()) {
-            return false;
-        }
-
-        if ($isNew) {
-            $this->addFormManagePermissionToUser($model->id);
-        }
-
-        return true;
-    }
-
     /**
      * Increments the spam block counter by 1.
      *
@@ -392,9 +288,10 @@ class FormsService extends BaseService implements FormHandlerInterface
         $customTemplates = $settings->getCustomFormTemplates();
         $solspaceTemplates = $settings->getSolspaceFormTemplates();
 
+        $templateMode = View::TEMPLATE_MODE_SITE;
         $templatePath = null;
         foreach ($customTemplates as $template) {
-            if ($template->getFileName() === $templateName) {
+            if (str_ends_with($template->getFilePath(), $templateName)) {
                 $templatePath = $template->getFilePath();
 
                 break;
@@ -403,8 +300,9 @@ class FormsService extends BaseService implements FormHandlerInterface
 
         if (!$templatePath) {
             foreach ($solspaceTemplates as $template) {
-                if ($template->getFileName() === $templateName) {
+                if (str_ends_with($template->getFilePath(), $templateName)) {
                     $templatePath = $template->getFilePath();
+                    $templateMode = View::TEMPLATE_MODE_CP;
 
                     break;
                 }
@@ -425,7 +323,8 @@ class FormsService extends BaseService implements FormHandlerInterface
             [
                 'form' => $form,
                 'formCss' => $this->getFormattingTemplateCss($templateName),
-            ]
+            ],
+            $templateMode,
         );
 
         return Template::raw($output);
@@ -487,37 +386,17 @@ class FormsService extends BaseService implements FormHandlerInterface
         return $this->getSettingsService()->isAjaxEnabledByDefault();
     }
 
-    public function swapDeletedStatusToDefault(int $deletedStatusId, int $newStatusId)
+    public function addFormPluginScripts(RenderTagEvent $event): void
     {
-        $pattern = "/\"defaultStatus\":{$deletedStatusId}(\\}|,)/";
-
-        $forms = $this->getAllForms();
-        foreach ($forms as $form) {
-            $layout = $form->layoutJson;
-            if (preg_match($pattern, $layout)) {
-                $layout = preg_replace(
-                    $pattern,
-                    "\"defaultStatus\":{$newStatusId}$1",
-                    $form->layoutJson
-                );
-
-                $form->layoutJson = $layout;
-                $this->save($form);
-            }
+        if ($event->isScriptsDisabled()) {
+            return;
         }
-    }
 
-    public function addFormPluginScripts(FormRenderEvent $event)
-    {
         static $pluginJsLoaded;
         static $pluginCssLoaded;
 
         $form = $event->getForm();
         $insertType = $this->getSettingsService()->scriptInsertType();
-
-        if ($event->isNoScriptRenderEnabled() && !$event->isManualScriptLoading()) {
-            return;
-        }
 
         if (null === $pluginJsLoaded) {
             $jsPath = $this->getSettingsService()->getPluginJsPath();
@@ -525,20 +404,21 @@ class FormsService extends BaseService implements FormHandlerInterface
             switch ($insertType) {
                 case Settings::SCRIPT_INSERT_TYPE_INLINE:
                     $js = file_get_contents($jsPath);
-                    $event->appendJsToOutput($js);
+                    $event->addChunk($js);
 
                     break;
 
                 case Settings::SCRIPT_INSERT_TYPE_FILES:
                     $jsUrl = \Craft::$app->assetManager->getPublishedUrl($jsPath, true);
-                    $event->appendExternalJsToOutput($jsUrl);
+                    $event->addChunk('<script src="'.$jsUrl.'"></script>');
 
                     break;
 
                 case Settings::SCRIPT_INSERT_TYPE_POINTERS:
                 default:
                     $jsHash = sha1_file($jsPath);
-                    $event->appendExternalJsToOutput(UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]));
+                    $url = UrlHelper::siteUrl('freeform/plugin.js', ['v' => $jsHash]);
+                    $event->addChunk('<script src="'.$url.'"></script>');
 
                     break;
             }
@@ -556,20 +436,21 @@ class FormsService extends BaseService implements FormHandlerInterface
             switch ($insertType) {
                 case Settings::SCRIPT_INSERT_TYPE_INLINE:
                     $css = file_get_contents($cssPath);
-                    $event->appendCssToOutput($css);
+                    $event->addChunk('<style>'.$css.'</style>');
 
                     break;
 
                 case Settings::SCRIPT_INSERT_TYPE_FILES:
                     $cssUrl = \Craft::$app->assetManager->getPublishedUrl($cssPath, true);
-                    $event->appendExternalCssToOutput($cssUrl);
+                    $event->addChunk('<link rel="stylesheet" href="'.$cssUrl.'">');
 
                     break;
 
                 case Settings::SCRIPT_INSERT_TYPE_POINTERS:
                 default:
                     $cssHash = sha1_file($cssPath);
-                    $event->appendExternalCssToOutput(UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]));
+                    $url = UrlHelper::siteUrl('freeform/plugin.css', ['v' => $cssHash]);
+                    $event->addChunk('<link rel="stylesheet" href="'.$url.'">');
 
                     break;
             }
@@ -626,72 +507,6 @@ class FormsService extends BaseService implements FormHandlerInterface
         return '';
     }
 
-    public function onBeforeSubmit(Form $form): bool
-    {
-        $event = new BeforeSubmitEvent($form);
-        $this->trigger(self::EVENT_BEFORE_SUBMIT, $event);
-
-        return $event->isValid;
-    }
-
-    public function onAfterSubmit(Form $form, Submission $submission = null)
-    {
-        $event = new AfterSubmitEvent($form, $submission);
-        $this->trigger(self::EVENT_AFTER_SUBMIT, $event);
-    }
-
-    public function onBeforePageJump(Form $form)
-    {
-        $event = new PageJumpEvent($form);
-        $this->trigger(self::EVENT_PAGE_JUMP, $event);
-
-        return $event->getJumpToIndex();
-    }
-
-    public function onRenderOpeningTag(Form $form): string
-    {
-        $event = new FormRenderEvent($form);
-        $this->trigger(self::EVENT_RENDER_OPENING_TAG, $event);
-
-        return $event->getOrAttachOutputToView();
-    }
-
-    public function onRenderClosingTag(Form $form): string
-    {
-        $event = new FormRenderEvent($form);
-        $this->trigger(self::EVENT_RENDER_CLOSING_TAG, $event);
-
-        return $event->getOrAttachOutputToView();
-    }
-
-    public function onAttachFormAttributes(Form $form, array $attributes = [])
-    {
-        $event = new AttachFormAttributesEvent($form, $attributes);
-        $this->trigger(self::EVENT_ATTACH_FORM_ATTRIBUTES, $event);
-
-        return $event->getAttributes();
-    }
-
-    public function onFormValidate(Form $form)
-    {
-        $event = new FormValidateEvent($form);
-        $this->trigger(self::EVENT_FORM_VALIDATE, $event);
-    }
-
-    public function onAfterFormValidate(Form $form)
-    {
-        $event = new FormValidateEvent($form);
-        $this->trigger(self::EVENT_AFTER_FORM_VALIDATE, $event);
-    }
-
-    public function onAfterGenerateReturnUrl(Form $form, Submission $submission = null, string $returnUrl = null)
-    {
-        $event = new ReturnUrlEvent($form, $submission, $returnUrl);
-        $this->trigger(self::EVENT_AFTER_GENERATE_RETURN_URL, $event);
-
-        return $event->getReturnUrl();
-    }
-
     public function isPossibleLoadingStaticScripts(): bool
     {
         $client = new Client(['verify' => false]);
@@ -741,17 +556,15 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         $settings = new FormSettings($data['metadata'], $this->propertyProvider);
-        $layout = $this->getFormLayoutsService()->getLayout($data['id']);
 
         return new $type(
             $data,
-            $layout,
             $settings,
             new PropertyAccessor(),
         );
     }
 
-    private function addFormManagePermissionToUser($formId)
+    private function addFormManagePermissionToUser($formId): void
     {
         if (\Craft::Pro !== \Craft::$app->getEdition()) {
             return;

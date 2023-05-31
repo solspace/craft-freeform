@@ -139,8 +139,8 @@ class PayloadStorage implements FormContextStorageInterface
 
             $payload = json_encode([
                 'utime' => (new Carbon('now', 'UTC'))->timestamp,
-                'properties' => $form->getPropertyBag(),
-                'attributes' => $form->getAttributeBag(),
+                'properties' => $form->getProperties(),
+                'attributes' => $form->getAttributes(),
             ]);
 
             $encryptedPayload = base64_encode(\Craft::$app->security->encryptByKey($payload, $key));

@@ -1,0 +1,68 @@
+{% css formCss %}
+{% import "freeform/_defaultFormTemplates/bootstrap-3/_row.twig" as rowMacro %}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+{{ form.renderTag({
+    attributes: {
+        error: { class: "alert alert-danger" },
+        row: { class: "row" }
+    }
+}) }}
+
+<script>
+  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+  if (form) {
+    form.addEventListener("freeform-ready", function (event) {
+      var freeform = event.target.freeform;
+
+      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
+      freeform.setOption("errorClassList", ["help-block", "errors", "has-error"]);
+      freeform.setOption("errorClassField", "has-error");
+      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
+    })
+
+    form.addEventListener("freeform-stripe-styling", function (event) {
+      event.detail.base = {
+        fontSize: "14px",
+        fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+      }
+    })
+  }
+</script>
+<style>
+    .StripeElement {
+        padding: 8px 12px;
+    }
+</style>
+
+
+{% if form.pages|length > 1 %}
+    <ul class="nav nav-tabs">
+        {% for page in form.pages %}
+            <li class="nav-item">
+                <span class="nav-link{{ form.currentPage.index == page.index ? ' font-weight-bold active' : ' disabled' }}">{{ page.label }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if form.hasErrors %}
+    <div{{ form.attributes.error }}>
+        {{ form.errorMessage | t('freeform') }}
+
+        {% if form.errors|length %}
+            <ul>
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% for row in form.rows %}
+    {{ rowMacro.render(row, form) }}
+{% endfor %}
+
+{{ form.renderClosingTag }}

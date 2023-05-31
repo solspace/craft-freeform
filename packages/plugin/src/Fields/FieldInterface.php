@@ -20,6 +20,9 @@ interface FieldInterface
     public const EVENT_TRANSFORM_FROM_STORAGE = 'transform-from-storage';
     public const EVENT_TRANSFORM_FROM_DATABASE = 'transform-from-database';
 
+    public const EVENT_BEFORE_VALIDATE = 'before-validate';
+    public const EVENT_AFTER_VALIDATE = 'after-validate';
+
     public const TYPE_TEXT = 'text';
     public const TYPE_TEXTAREA = 'textarea';
     public const TYPE_HIDDEN = 'hidden';

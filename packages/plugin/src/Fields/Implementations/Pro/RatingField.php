@@ -187,6 +187,6 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
 
     private function getFormSha(): string
     {
-        return 'f'.HashHelper::sha1($this->getForm()->getHash(), 6);
+        return 'f'.HashHelper::sha1($this->getId(), 6);
     }
 }

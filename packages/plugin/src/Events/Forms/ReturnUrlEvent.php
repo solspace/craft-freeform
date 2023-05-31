@@ -8,27 +8,11 @@ use Solspace\Freeform\Form\Form;
 
 class ReturnUrlEvent extends ArrayableEvent
 {
-    /** @var Form */
-    private $form;
-
-    /** @var Submission */
-    private $submission;
-
-    /** @var string */
-    private $returnUrl;
-
-    /**
-     * ReturnUrlEvent constructor.
-     *
-     * @param Submission $submission
-     * @param string     $returnUrl
-     */
-    public function __construct(Form $form, Submission $submission = null, string $returnUrl = null)
-    {
-        $this->form = $form;
-        $this->submission = $submission;
-        $this->returnUrl = $returnUrl;
-
+    public function __construct(
+        private Form $form,
+        private ?Submission $submission = null,
+        private ?string $returnUrl = null
+    ) {
         parent::__construct();
     }
 
@@ -45,18 +29,12 @@ class ReturnUrlEvent extends ArrayableEvent
         return $this->form;
     }
 
-    /**
-     * @return null|Submission
-     */
-    public function getSubmission()
+    public function getSubmission(): ?Submission
     {
         return $this->submission;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getReturnUrl()
+    public function getReturnUrl(): ?string
     {
         return $this->returnUrl;
     }

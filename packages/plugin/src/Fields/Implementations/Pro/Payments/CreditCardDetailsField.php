@@ -62,53 +62,53 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
 
     public function getLayoutRows(): array
     {
-        $id = $this->getIdAttribute();
-        $children = $this->getChildren();
-        $form = $this->getForm();
-        $currentPage = $form->getCurrentPage();
+        // $id = $this->getIdAttribute();
+        // $children = $this->getChildren();
+        // $form = $this->getForm();
+        // $currentPage = $form->getCurrentPage();
+        //
+        // // TODO: make all field names in form of snake case string constants
+        // $properties = new FieldProperties($children[CreditCardNumberField::FIELD_NAME]);
+        // $numberField = CreditCardNumberField::createFromProperties($form, $properties, $currentPage);
+        // $numberField->setAttributes(['id' => $id.'_card_number']);
+        //
+        // $properties = new FieldProperties($children[CreditCardExpiryField::FIELD_NAME]);
+        // $expiryField = CreditCardExpiryField::createFromProperties($form, $properties, $currentPage);
+        // $expiryField->setAttributes(['id' => $id.'_card_expiry']);
+        //
+        // $properties = new FieldProperties($children[CreditCardCvcField::FIELD_NAME]);
+        // $cvcField = CreditCardCvcField::createFromProperties($form, $properties, $currentPage);
+        // $cvcField->setAttributes(['id' => $id.'_card_cvc']);
+        //
+        // $layout = [];
+        // $rows = self::LAYOUTS[$this->getLayout()];
+        // foreach ($rows as $row) {
+        //     $rowLayout = [];
+        //     foreach ($row as $col) {
+        //         $colLayout = '';
+        //
+        //         switch ($col) {
+        //             case self::FIELD_CARD_NUMBER:
+        //                 $colLayout = $numberField;
+        //
+        //                 break;
+        //
+        //             case self::FIELD_CARD_EXPIRY:
+        //                 $colLayout = $expiryField;
+        //
+        //                 break;
+        //
+        //             case self::FIELD_CARD_CVC:
+        //                 $colLayout = $cvcField;
+        //
+        //                 break;
+        //         }
+        //         $rowLayout[] = $colLayout;
+        //     }
+        //     $layout[] = $rowLayout;
+        // }
 
-        // TODO: make all field names in form of snake case string constants
-        $properties = new FieldProperties($children[CreditCardNumberField::FIELD_NAME]);
-        $numberField = CreditCardNumberField::createFromProperties($form, $properties, $currentPage);
-        $numberField->setAttributes(['id' => $id.'_card_number']);
-
-        $properties = new FieldProperties($children[CreditCardExpiryField::FIELD_NAME]);
-        $expiryField = CreditCardExpiryField::createFromProperties($form, $properties, $currentPage);
-        $expiryField->setAttributes(['id' => $id.'_card_expiry']);
-
-        $properties = new FieldProperties($children[CreditCardCvcField::FIELD_NAME]);
-        $cvcField = CreditCardCvcField::createFromProperties($form, $properties, $currentPage);
-        $cvcField->setAttributes(['id' => $id.'_card_cvc']);
-
-        $layout = [];
-        $rows = self::LAYOUTS[$this->getLayout()];
-        foreach ($rows as $row) {
-            $rowLayout = [];
-            foreach ($row as $col) {
-                $colLayout = '';
-
-                switch ($col) {
-                    case self::FIELD_CARD_NUMBER:
-                        $colLayout = $numberField;
-
-                        break;
-
-                    case self::FIELD_CARD_EXPIRY:
-                        $colLayout = $expiryField;
-
-                        break;
-
-                    case self::FIELD_CARD_CVC:
-                        $colLayout = $cvcField;
-
-                        break;
-                }
-                $rowLayout[] = $colLayout;
-            }
-            $layout[] = $rowLayout;
-        }
-
-        return $layout;
+        return [];
     }
 
     public function renderCpValue(int $submissionId): string

@@ -168,15 +168,14 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
         $handle = $this->getHandle();
         $values = $this->getValue();
+
         if (empty($values)) {
             $values = [];
             foreach ($layout as $column) {
-                $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
-                if (self::COLUMN_TYPE_CHECKBOX === $type) {
-                    $values[] = null;
-                } else {
-                    $values[] = $column['value'] ?? null;
-                }
+                match ($column->type) {
+                    self::COLUMN_TYPE_CHECKBOX => $values[] = null,
+                    default => $values[] = $column->value,
+                };
             }
 
             $values = [$values];
@@ -196,7 +195,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $rowAttributes = $this->attributes->getLabel();
 
         foreach ($layout as $column) {
-            $label = $column['label'] ?? '';
+            $label = $column->label;
 
             $output .= '<th'.$rowAttributes.'>'.htmlentities($label).'</th>';
         }
@@ -211,8 +210,8 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             $output .= '<tr>';
 
             foreach ($layout as $index => $column) {
-                $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
-                $defaultValue = $column['value'] ?? '';
+                $type = $column->type;
+                $defaultValue = $column->value;
                 $value = $row[$index] ?? $defaultValue;
                 $value = htmlentities($value);
 

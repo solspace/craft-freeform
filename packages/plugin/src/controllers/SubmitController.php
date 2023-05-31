@@ -21,7 +21,6 @@ use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
 use yii\filters\Cors;
@@ -118,12 +117,10 @@ class SubmitController extends BaseController
 
     private function handleSubmission(Form $form, Submission $submission): void
     {
-        $formHandler = Freeform::getInstance()->forms;
-
         $event = new SubmitEvent($form, $submission);
         Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
 
-        if (!$event->isValid || !empty($form->getActions()) || !$formHandler->onBeforeSubmit($form)) {
+        if (!$event->isValid || !empty($form->getActions())) {
             return;
         }
 
@@ -167,9 +164,6 @@ class SubmitController extends BaseController
                 'submission' => $submission,
             ]
         );
-
-        /** @deprecated  */
-        $returnUrl = Freeform::getInstance()->forms->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
 
         $event = new ReturnUrlEvent($form, $submission, $returnUrl);
         Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);

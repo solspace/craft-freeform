@@ -88,12 +88,12 @@ class SpamControl extends FeatureBundle
 
     public function handleFormReset(ResetEvent $event)
     {
-        $event->getForm()->getPropertyBag()->set(Form::PROPERTY_SPAM_REASONS, []);
+        $event->getForm()->getProperties()->set(Form::PROPERTY_SPAM_REASONS, []);
     }
 
     private function getSpamReasons(Form $form)
     {
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
 
         return $bag->get(Form::PROPERTY_SPAM_REASONS, []);
     }

@@ -21,10 +21,10 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
-use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
 use Solspace\Freeform\Fields\Parameters\Parameters;
 use Solspace\Freeform\Fields\Validation\Constraints\ConstraintInterface;
 use Solspace\Freeform\Fields\Validation\Validator;
@@ -34,6 +34,7 @@ use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
+use yii\base\Event;
 
 /**
  * @template T
@@ -148,7 +149,8 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     {
         $this->setParameters($parameters);
 
-        $output = '';
+        $output = '<div'.$this->attributes->getContainer().'>';
+
         if (!$this instanceof InputOnlyInterface) {
             $output .= $this->getLabelHtml();
         }
@@ -172,6 +174,8 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         if ($this->getErrors()) {
             $output .= $this->renderErrors();
         }
+
+        $output .= '</div>';
 
         return $this->renderRaw($output);
     }
@@ -359,20 +363,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     public function isHidden(): bool
     {
         return false;
-        static $rules;
-
-        if (null === $rules) {
-            $rules = $this->getForm()->getRuleProperties();
-            if (null === $rules) {
-                $rules = false;
-            }
-        }
-
-        if (false === $rules) {
-            return false;
-        }
-
-        return $rules->isHidden($this, $this->getForm());
     }
 
     public function getAttributes(): FieldAttributesCollection
@@ -446,7 +436,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             ->replace('for', $this->getIdAttribute())
         ;
 
-        $output = '<label '.$attributes.'>';
+        $output = '<label'.$attributes.'>';
         $output .= $this->getLabel();
         $output .= '</label>';
         $output .= \PHP_EOL;
@@ -542,16 +532,11 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     protected function validate(): array
     {
-        $form = $this->getForm();
-        $form->getFieldHandler()->beforeValidate($this, $form);
+        $event = new ValidateEvent($this);
+        Event::trigger($this, self::EVENT_BEFORE_VALIDATE, $event);
 
         $errors = $this->getErrors();
-
-        if ($this instanceof ObscureValueInterface) {
-            $value = $this->getActualValue($this->getValue());
-        } else {
-            $value = $this->getValue();
-        }
+        $value = $this->getValue();
 
         if ($this->isRequired() && !$this->isHidden()) {
             if (\is_array($value)) {
@@ -577,7 +562,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             $errors = array_merge($errors, $violationList->getErrors());
         }
 
-        $form->getFieldHandler()->afterValidate($this, $form);
+        Event::trigger($this, self::EVENT_AFTER_VALIDATE, $event);
 
         return $errors;
     }
@@ -602,7 +587,11 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     protected function setParameters(array $parameters = null): void
     {
-        if (null !== $parameters && \array_key_exists('attributes', $parameters)) {
+        if (!\is_array($parameters)) {
+            return;
+        }
+
+        if (\array_key_exists('attributes', $parameters)) {
             $attributes = $parameters['attributes'] ?? [];
             unset($parameters['attributes']);
 

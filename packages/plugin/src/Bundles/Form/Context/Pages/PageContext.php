@@ -4,17 +4,19 @@ namespace Solspace\Freeform\Bundles\Form\Context\Pages;
 
 use Solspace\Freeform\Events\Bags\BagModificationEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
+use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\Implementations\SubmitField;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
 use yii\base\Event;
 
 class PageContext
 {
+    public const EVENT_PAGE_JUMP = 'onPageJump';
+
     public function __construct()
     {
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'onValidate']);
@@ -35,7 +37,7 @@ class PageContext
     public function handleNavigateBack(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
 
         if (!$form->isPagePosted()) {
             return;
@@ -55,7 +57,7 @@ class PageContext
     public function handleNavigateForward(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
 
         $pageIndex = $bag->get(Form::PROPERTY_PAGE_INDEX, 0);
         $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
@@ -64,7 +66,9 @@ class PageContext
             return;
         }
 
-        $pageJumpIndex = Freeform::getInstance()->forms->onBeforePageJump($form);
+        $event = new PageJumpEvent($form);
+        Event::trigger($this, self::EVENT_PAGE_JUMP, $event);
+        $pageJumpIndex = $event->getJumpToIndex();
         if (-999 === $pageJumpIndex) {
             $form->setFinished(true);
 
@@ -101,7 +105,7 @@ class PageContext
     public function handleReset(ResetEvent $event): void
     {
         $form = $event->getForm();
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
 
         $bag->set(Form::PROPERTY_PAGE_INDEX, 0);
         $bag->set(Form::PROPERTY_PAGE_HISTORY, []);

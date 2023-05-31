@@ -26,6 +26,11 @@ class Layout implements \IteratorAggregate
         return $this->pageCollection;
     }
 
+    public function hasFields(string $implements): bool
+    {
+        return !empty($this->getFields($implements));
+    }
+
     public function getField(int|string $identificator): ?FieldInterface
     {
         return $this->fieldCollection->get($identificator);

@@ -27,7 +27,7 @@ class StorageContext
     {
         $form = $event->getForm();
 
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
         $storedValues = $bag->get(Form::PROPERTY_STORED_VALUES, []);
         if (empty($storedValues)) {
             return;
@@ -58,7 +58,7 @@ class StorageContext
             return;
         }
 
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
         $storedValues = $bag->get(Form::PROPERTY_STORED_VALUES, []);
 
         foreach ($form->getCurrentPage()->getFields() as $field) {
@@ -79,6 +79,6 @@ class StorageContext
         }
 
         $form = $event->getForm();
-        $form->getPropertyBag()->set(Form::PROPERTY_STORED_VALUES, []);
+        $form->getProperties()->set(Form::PROPERTY_STORED_VALUES, []);
     }
 }

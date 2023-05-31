@@ -11,7 +11,6 @@ use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
-use Solspace\Freeform\Services\Pro\PayloadForwardingService;
 use yii\base\Event;
 
 class PayloadForwarding extends FeatureBundle
@@ -31,7 +30,7 @@ class PayloadForwarding extends FeatureBundle
 
     public function attachPayloadForwardingProperties(HydrateEvent $event)
     {
-        $bag = $event->getForm()->getPropertyBag();
+        $bag = $event->getForm()->getProperties();
         $properties = $event->getFormProperties();
 
         $bag->set(self::BAG_KEY, [
@@ -49,7 +48,7 @@ class PayloadForwarding extends FeatureBundle
             return;
         }
 
-        $payloadForwarding = $form->getPropertyBag()->get(self::BAG_KEY, []);
+        $payloadForwarding = $form->getProperties()->get(self::BAG_KEY, []);
 
         $url = $payloadForwarding[self::KEY_URL] ?? null;
         $triggerPhrase = $payloadForwarding[self::KEY_TRIGGER_PHRASE] ?? null;
@@ -85,8 +84,6 @@ class PayloadForwarding extends FeatureBundle
             $payload
         );
 
-        // @deprecated remove in v4
-        Event::trigger(PayloadForwardingService::class, PayloadForwardingService::BEFORE_PAYLOAD_FORWARD, $payloadEvent);
         Event::trigger(self::class, self::EVENT_POST_FORWARDING, $payloadEvent);
 
         if (!$payloadEvent->isValid) {

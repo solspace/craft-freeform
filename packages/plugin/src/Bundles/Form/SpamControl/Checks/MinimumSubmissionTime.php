@@ -27,7 +27,7 @@ class MinimumSubmissionTime extends AbstractCheck
 
     private function isMinimumSubmissionTimePassed(Form $form): bool
     {
-        $initTime = $form->getPropertyBag()->get(FormInitTime::KEY, 0);
+        $initTime = $form->getProperties()->get(FormInitTime::KEY, 0);
         $timeFormAlive = time() - $initTime;
 
         $minTime = $this->getSettings()->minimumSubmitTime;

@@ -1,0 +1,13 @@
+{{ field.render(properties|merge({
+    instructionsBelowField: true,
+    attributes: {
+        input: { class: "table" },
+    },
+    addButtonLabel: "Add +",
+    addButtonClass: "btn btn-sm btn-primary",
+    removeButtonLabel: "x",
+    removeButtonClass: "btn btn-sm btn-danger",
+    tableTextInputClass: "form-control",
+    tableSelectInputClass: "form-control",
+    tableCheckboxInputClass: "form-check-input"
+})) }}

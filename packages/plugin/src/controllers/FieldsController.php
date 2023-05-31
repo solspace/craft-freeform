@@ -184,18 +184,6 @@ class FieldsController extends Controller
         return $this->renderEditForm($field, $field->label);
     }
 
-    public function actionDelete(): Response
-    {
-        $this->requirePostRequest();
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
-
-        $fieldId = \Craft::$app->request->post('id');
-
-        return $this->asJson([
-            'success' => $this->getFieldsService()->deleteById((int) $fieldId),
-        ]);
-    }
-
     private function renderEditForm(FieldModel $model, string $title): Response
     {
         $this->view->registerAssetBundle(FieldEditorBundle::class);

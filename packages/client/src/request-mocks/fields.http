@@ -7,3 +7,8 @@ Authorization: Bearer {{auth-token}}
 // @no-redirect
 GET {{host}}/admin/freeform/api/fields/favorites
 Authorization: Bearer {{auth-token}}
+
+### GET Forms fields list
+// @no-redirect
+GET {{host}}/admin/freeform/api/fields/forms
+Authorization: Bearer {{auth-token}}

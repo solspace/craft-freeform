@@ -27,10 +27,18 @@ export type PropertyValueCollection = {
   [key: string]: GenericValue;
 };
 
-export type FieldFavorite = {
-  id: number;
+export type FieldBase = {
+  id?: number;
   uid: string;
   label: string;
   typeClass: string;
   properties: Record<string, GenericValue>;
+};
+
+export type FieldFavorite = FieldBase;
+
+export type FieldForm = {
+  uid: string;
+  name: string;
+  fields: [FieldBase];
 };

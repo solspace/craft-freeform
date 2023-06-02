@@ -17,7 +17,7 @@ describe('attributes -> operations', () => {
           ['some-attr', ''],
           ['with-null', null],
         ])
-      ).toBe('data-test some-attr with-null');
+      ).toBe('some-attr with-null');
     });
 
     it('skips empty key, value pairs', () => {

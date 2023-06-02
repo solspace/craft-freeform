@@ -1,13 +1,13 @@
 {{ field.render(properties|merge({
     instructionsBelowField: true,
-    attributes: {
-        input: { class: "table" },
+    tableAttributes: {
+        table: { class: "table" },
+        input: { class: "form-control" },
+        select: { class: "form-control" },
+        checkbox: { class: "form-check-input" },
+        removeButton: { class: 'btn btn-danger' },
+        addButton: { class: 'btn btn-primary' },
     },
     addButtonLabel: "Add +",
-    addButtonClass: "btn btn-sm btn-primary",
     removeButtonLabel: "x",
-    removeButtonClass: "btn btn-sm btn-danger",
-    tableTextInputClass: "form-control",
-    tableSelectInputClass: "form-control",
-    tableCheckboxInputClass: "form-check-input"
 })) }}

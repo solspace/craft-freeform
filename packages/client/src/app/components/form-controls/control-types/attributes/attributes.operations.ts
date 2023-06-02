@@ -1,13 +1,13 @@
 import type {
-  Attribute,
-  AttributeCollection,
+  AttributeEntry,
   AttributeTarget,
+  EditableAttributeCollection,
 } from './attributes.types';
 
 type ParsedAttribute = [string, string | undefined];
 
 export const attributesToArray = (
-  attributes: Attribute[]
+  attributes: AttributeEntry[]
 ): ParsedAttribute[] => {
   const parsed: ParsedAttribute[] = [];
 
@@ -20,11 +20,11 @@ export const attributesToArray = (
       value = '';
     }
 
-    if ((!key && !value) || value === false) {
+    if (!key && !value) {
       return;
     }
 
-    if (value === true || value === '' || value === null) {
+    if (value === '' || value === null) {
       return parsed.push([String(key), undefined]);
     }
 
@@ -38,7 +38,7 @@ export const attributesToArray = (
   return parsed;
 };
 
-export const attributesToString = (attributes: Attribute[]): string => {
+export const attributesToString = (attributes: AttributeEntry[]): string => {
   return attributesToArray(attributes)
     .map(([key, value]) => `${key}${value !== undefined ? `="${value}"` : ''}`)
     .join(' ');
@@ -46,9 +46,9 @@ export const attributesToString = (attributes: Attribute[]): string => {
 
 export const addAttribute = (
   category: AttributeTarget,
-  attributes: AttributeCollection,
+  attributes: EditableAttributeCollection,
   atIndex: number
-): AttributeCollection => ({
+): EditableAttributeCollection => ({
   ...attributes,
   [category]: [
     ...attributes[category].slice(0, atIndex + 1),
@@ -60,9 +60,9 @@ export const addAttribute = (
 export const updateAttribute = (
   index: number,
   category: AttributeTarget,
-  attribute: Attribute,
-  attributes: AttributeCollection
-): AttributeCollection => {
+  attribute: AttributeEntry,
+  attributes: EditableAttributeCollection
+): EditableAttributeCollection => {
   const updated = {
     ...attributes,
     [category]: [...attributes[category]],
@@ -76,8 +76,8 @@ export const updateAttribute = (
 export const deleteAttribute = (
   index: number,
   category: AttributeTarget,
-  attributes: AttributeCollection
-): AttributeCollection => {
+  attributes: EditableAttributeCollection
+): EditableAttributeCollection => {
   return {
     ...attributes,
     [category]: [...attributes[category].filter((_, idx) => idx !== index)],
@@ -85,9 +85,9 @@ export const deleteAttribute = (
 };
 
 export const cleanAttributes = (
-  attributes: AttributeCollection
-): AttributeCollection => {
-  const updated: AttributeCollection = {};
+  attributes: EditableAttributeCollection
+): EditableAttributeCollection => {
+  const updated: EditableAttributeCollection = {};
 
   Object.entries(attributes).forEach(([category, attrs]) => {
     updated[category as AttributeTarget] = attrs.filter(

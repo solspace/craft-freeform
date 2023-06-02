@@ -82,11 +82,11 @@ class AttributesTest extends TestCase
     {
         $attributes = new Attributes();
         $attributes
-            ->set(null, 'null-key')
             ->set('', 'empty-key')
+            ->set('', 'other-empty-key')
         ;
 
-        $this->assertEquals(' null-key empty-key', (string) $attributes);
+        $this->assertEquals('', (string) $attributes);
     }
 
     public function testRendersObjects()
@@ -97,19 +97,19 @@ class AttributesTest extends TestCase
         $this->assertEquals(' data-object="one:1 two:2 three:3"', (string) $attributes);
     }
 
-    public function testBatchAdding()
+    public function testMergeAdding()
     {
         $attributes = new Attributes();
         $attributes
-            ->setBatch([
-                ['data-boolean', true],
-                ['data-boolean-false', false],
-                ['text', 'text value'],
-                ['empty-text', ''],
-                ['number-value', 123],
-                ['void', null],
-                ['array-value', ['one', 'two', 'three']],
-                ['object-value', (object) ['one' => 1, 'two' => 2, 'three' => 3]],
+            ->merge([
+                'data-boolean' => true,
+                'data-boolean-false' => false,
+                'text' => 'text value',
+                'empty-text' => '',
+                'number-value' => 123,
+                'void' => null,
+                'array-value' => ['one', 'two', 'three'],
+                'object-value' => (object) ['one' => 1, 'two' => 2, 'three' => 3],
             ])
         ;
 
@@ -173,5 +173,18 @@ class AttributesTest extends TestCase
             ' text="text value" empty-text non-existent="value"',
             (string) $attributes
         );
+    }
+
+    public function testReplaceWithMinus()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', ['class-1', 'class-2']);
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+
+        $attributes->set('class', 'extra-class');
+        $this->assertEquals(' class="class-1 class-2 extra-class"', (string) $attributes);
+
+        $attributes->set('-class', 'replacer');
+        $this->assertEquals(' class="replacer"', (string) $attributes);
     }
 }

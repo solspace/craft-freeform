@@ -26,11 +26,14 @@ import {
   deleteAttribute,
   updateAttribute,
 } from './attributes.operations';
-import type { AttributeCollection, AttributeTarget } from './attributes.types';
+import type {
+  AttributeTarget,
+  EditableAttributeCollection,
+} from './attributes.types';
 
 type Props = {
-  attributes: AttributeCollection;
-  updateValue: UpdateValue<AttributeCollection>;
+  attributes: EditableAttributeCollection;
+  updateValue: UpdateValue<EditableAttributeCollection>;
 };
 
 export const AttributesEditor: React.FC<Props> = ({

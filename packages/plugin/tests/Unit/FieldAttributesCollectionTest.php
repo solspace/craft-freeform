@@ -24,13 +24,11 @@ class FieldAttributesCollectionTest extends TestCase
         $collection->merge([
             'class' => 'test',
             'input' => [
-                'append' => [
-                    'class' => 'input-class',
-                    'something' => 'else',
-                ],
+                'class' => 'input-class',
+                'something' => 'else',
             ],
             'label' => [
-                'class' => 'label-class',
+                '-class' => 'label-class',
             ],
             'instructions' => [
                 'class' => 'instructions-class',
@@ -42,18 +40,19 @@ class FieldAttributesCollectionTest extends TestCase
         $this->assertEquals(
             [
                 'input' => [
-                    ['class', 'class-3 and class-4 input-class'],
-                    ['data-test', 'test'],
-                    ['something', 'else'],
+                    'class' => 'class-3 and class-4 input-class',
+                    'data-test' => 'test',
+                    'something' => 'else',
                 ],
                 'label' => [
-                    ['class', 'label-class'],
+                    'class' => 'label-class',
                 ],
                 'instructions' => [
-                    ['class', 'instructions-class'],
+                    'class' => 'instructions-class',
                 ],
                 'container' => [],
                 'error' => [],
+                'class' => 'test',
             ],
             $result
         );

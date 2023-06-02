@@ -8,11 +8,11 @@ import {
   Value,
 } from './attributes.input-preview.styles';
 import { attributesToArray } from './attributes.operations';
-import type { Attribute } from './attributes.types';
+import type { AttributeEntry } from './attributes.types';
 
 type Props = {
   name: string;
-  attributes: Attribute[];
+  attributes: AttributeEntry[];
 };
 
 export const InputPreview: React.FC<Props> = ({ name, attributes }) => {

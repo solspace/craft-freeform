@@ -30,6 +30,7 @@ use Solspace\Freeform\Fields\Validation\Constraints\ConstraintInterface;
 use Solspace\Freeform\Fields\Validation\Validator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
@@ -91,7 +92,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     #[ValueTransformer(AttributesTransformer::class)]
     #[Input\Attributes(
         instructions: 'Add attributes to your field elements.',
-        value: AttributesTransformer::DEFAULT_VALUE,
     )]
     protected FieldAttributesCollection $attributes;
 
@@ -591,14 +591,23 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
             return;
         }
 
-        if (\array_key_exists('attributes', $parameters)) {
-            $attributes = $parameters['attributes'] ?? [];
-            unset($parameters['attributes']);
-
-            $this->attributes->merge($attributes);
-        }
-
         foreach ($parameters as $key => $value) {
+            try {
+                $property = new \ReflectionProperty($this, $key);
+                $type = $property->getType();
+                if ($type) {
+                    $instance = new \ReflectionClass($type->getName());
+                    if (Attributes::class === $instance->getName() || $instance->isSubclassOf(Attributes::class)) {
+                        $this->{$key}->merge($value);
+                        unset($parameters[$key]);
+
+                        continue;
+                    }
+                }
+            } catch (\ReflectionException $e) {
+                // do nothing
+            }
+
             $this->parameters->add($key, $value);
         }
     }

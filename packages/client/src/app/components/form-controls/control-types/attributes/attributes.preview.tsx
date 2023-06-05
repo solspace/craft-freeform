@@ -15,16 +15,19 @@ import {
   AttributeTitle,
   PreviewWrapper,
 } from './attributes.preview.styles';
-import type { Attribute, AttributeCollection } from './attributes.types';
+import type {
+  AttributeEntry,
+  EditableAttributeCollection,
+} from './attributes.types';
 
 type Props = {
-  attributes: AttributeCollection;
+  attributes: EditableAttributeCollection;
 };
 
-const RenderAttributes: React.FC<{ name: string; attributes: Attribute[] }> = ({
-  name,
-  attributes,
-}) => {
+const RenderAttributes: React.FC<{
+  name: string;
+  attributes: AttributeEntry[];
+}> = ({ name, attributes }) => {
   const attributeArray = attributesToArray(attributes);
 
   return (

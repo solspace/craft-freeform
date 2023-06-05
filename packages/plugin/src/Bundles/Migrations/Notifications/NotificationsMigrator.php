@@ -2,16 +2,13 @@
 
 namespace Solspace\Freeform\Bundles\Migrations\Notifications;
 
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
-use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\Notifications\NotificationFilesService;
 use Solspace\Freeform\Services\SettingsService;
 
 class NotificationsMigrator
 {
     public function __construct(
-        private FormsService $formsService,
         private SettingsService $settings,
         private NotificationFilesService $filesService,
     ) {
@@ -62,42 +59,5 @@ class NotificationsMigrator
     // TODO: update this to use the new tables instead of old layout JSON
     private function changeFormOccurrences(array $idToFilenameMap)
     {
-        return;
-        foreach ($this->getAllForms() as $form) {
-            $json = json_decode($form->getLayoutAsJson());
-            $hasChanges = false;
-            foreach ($json->composer->properties as $key => $properties) {
-                if ('admin_notifications' === $key) {
-                    $notificationId = (int) ($properties->notificationId ?? 0);
-                    if (isset($idToFilenameMap[$notificationId])) {
-                        $json->composer->properties->admin_notifications->notificationId = $idToFilenameMap[$notificationId];
-                        $hasChanges = true;
-                    }
-
-                    continue;
-                }
-
-                if (\in_array($properties->type, ['email'], true)) {
-                    $notificationId = (int) ($properties->notificationId ?? null);
-                    if (isset($idToFilenameMap[$notificationId])) {
-                        $json->composer->properties->{$key}->notificationId = $idToFilenameMap[$notificationId];
-                        $hasChanges = true;
-                    }
-                }
-            }
-
-            if ($hasChanges) {
-                $form->layoutJson = json_encode($json);
-                $this->formsService->save($form);
-            }
-        }
-    }
-
-    /**
-     * @return Form[]
-     */
-    private function getAllForms(): array
-    {
-        return $this->formsService->getAllForms();
     }
 }

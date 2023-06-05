@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Attributes\TableAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Table\TableTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -12,7 +14,10 @@ use Solspace\Freeform\Fields\Interfaces\MultiDimensionalValueInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Properties\Table\TableLayout;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Attributes\Attributes;
+use Solspace\Freeform\Library\Attributes\TableAttributesCollection;
+use Symfony\Component\Serializer\Annotation\Ignore;
 
 #[Type(
     name: 'Table',
@@ -83,6 +88,20 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     )]
     protected ?string $removeButtonMarkup;
 
+    #[Section('attributes')]
+    #[ValueTransformer(TableAttributesTransformer::class)]
+    #[Input\Attributes(
+        instructions: 'Add attributes to your field elements.',
+    )]
+    protected TableAttributesCollection $tableAttributes;
+
+    public function __construct(#[Ignore] Form $form)
+    {
+        $this->tableAttributes = new TableAttributesCollection();
+
+        parent::__construct($form);
+    }
+
     public function getType(): string
     {
         return self::TYPE_TABLE;
@@ -121,6 +140,11 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     public function getRemoveButtonMarkup(): ?string
     {
         return $this->removeButtonMarkup;
+    }
+
+    public function getTableAttributes(): TableAttributesCollection
+    {
+        return $this->tableAttributes;
     }
 
     public function setValue(mixed $value): self
@@ -164,28 +188,28 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
     {
         $layout = $this->getTableLayout();
 
-        $attributes = $this->attributes->getInput();
-
         $handle = $this->getHandle();
         $values = $this->getValue();
+
         if (empty($values)) {
             $values = [];
             foreach ($layout as $column) {
-                $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
-                if (self::COLUMN_TYPE_CHECKBOX === $type) {
-                    $values[] = null;
-                } else {
-                    $values[] = $column['value'] ?? null;
-                }
+                match ($column->type) {
+                    self::COLUMN_TYPE_CHECKBOX => $values[] = null,
+                    default => $values[] = $column->value,
+                };
             }
 
             $values = [$values];
         }
 
-        $tableAttributes = (new Attributes())
-            ->set('data-freeform-table')
-            ->set('class', $attributes->find('class') ?? false)
+        $tableAttributes = $this->tableAttributes
+            ->getTable()
+            ->clone()
+            ->replace('data-freeform-table')
         ;
+
+        $rowAttributes = $this->tableAttributes->getRow();
 
         $id = $this->getIdAttribute();
         $output = '<table'.$tableAttributes.'>';
@@ -193,30 +217,27 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         $output .= '<thead>';
         $output .= '<tr>';
 
-        $rowAttributes = $this->attributes->getLabel();
-
         foreach ($layout as $column) {
-            $label = $column['label'] ?? '';
+            $label = $column->label;
 
-            $output .= '<th'.$rowAttributes.'>'.htmlentities($label).'</th>';
+            $output .= '<th>'.htmlentities($label).'</th>';
         }
         $output .= '<th>&nbsp;</th></tr>';
         $output .= '</thead>';
 
-        $inputAttributes = clone $attributes;
-        $inputAttributes->setIfEmpty('type', 'checkbox');
+        $columnAttributes = $this->tableAttributes->getColumn();
 
         $output .= '<tbody>';
         foreach ($values as $rowIndex => $row) {
-            $output .= '<tr>';
+            $output .= '<tr'.$rowAttributes.'>';
 
             foreach ($layout as $index => $column) {
-                $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
-                $defaultValue = $column['value'] ?? '';
+                $type = $column->type;
+                $defaultValue = $column->value;
                 $value = $row[$index] ?? $defaultValue;
                 $value = htmlentities($value);
 
-                $output .= '<td>';
+                $output .= '<td'.$columnAttributes.'>';
 
                 $name = "{$handle}[{$rowIndex}][{$index}]";
 
@@ -224,22 +245,25 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                     case self::COLUMN_TYPE_CHECKBOX:
                         $value = $row[$index];
 
-                        $currentInputAttributes = (new Attributes())
-                            ->set('name', $name)
-                            ->set('value', $defaultValue)
-                            ->set('data-default-value', $defaultValue)
-                            ->set('checked', (bool) $value)
-                            ->set('class', $attributes->find('checkboxClass') ?? false)
+                        $inputAttributes = $this->tableAttributes
+                            ->getCheckbox()
+                            ->clone()
+                            ->replace('type', 'checkbox')
+                            ->replace('name', $name)
+                            ->replace('value', $defaultValue)
+                            ->replace('data-default-value', $defaultValue)
+                            ->replace('checked', (bool) $value)
                         ;
 
-                        $output .= '<input'.$currentInputAttributes.' />';
+                        $output .= '<input'.$inputAttributes.' />';
 
                         break;
 
                     case self::COLUMN_TYPE_SELECT:
-                        $selectAttributes = (new Attributes())
-                            ->set('class', $attributes->find('selectClass') ?? false)
-                            ->set('name', $name)
+                        $selectAttributes = $this->tableAttributes
+                            ->getSelect()
+                            ->clone()
+                            ->replace('name', $name)
                         ;
 
                         $options = explode(';', $defaultValue);
@@ -262,7 +286,8 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
 
                     case self::COLUMN_TYPE_STRING:
                     default:
-                        $currentInputAttributes = $inputAttributes
+                        $inputAttributes = $this->tableAttributes
+                            ->getInput()
                             ->clone()
                             ->replace('type', 'text')
                             ->replace('name', $name)
@@ -270,7 +295,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                             ->replace('data-default-value', $defaultValue)
                         ;
 
-                        $output .= '<input'.$currentInputAttributes.' />';
+                        $output .= '<input'.$inputAttributes.' />';
 
                         break;
                 }
@@ -278,18 +303,19 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
                 $output .= '</td>';
             }
 
-            $output .= '<td>';
+            $output .= '<td'.$columnAttributes.'>';
             if ($this->getRemoveButtonMarkup()) {
                 $output .= $this->getRemoveButtonMarkup();
             } else {
-                $buttonAttributes = (new Attributes())
-                    ->set('data-freeform-table-remove-row')
-                    ->set('class', $attributes->find('removeButtonClass') ?? false)
-                    ->set('type', 'button')
+                $buttonAttributes = $this->tableAttributes
+                    ->getRemoveButton()
+                    ->clone()
+                    ->replace('data-freeform-table-remove-row')
+                    ->setIfEmpty('type', 'button')
                 ;
 
                 $output .= '<button'.$buttonAttributes.'>'
-                    .$this->getRemoveButtonLabel()
+                    .($this->getParameters()->removeButtonLabel ?? $this->getRemoveButtonLabel())
                     .'</button>';
             }
             $output .= '</td>';
@@ -302,15 +328,16 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         if ($this->getAddButtonMarkup()) {
             $output .= $this->getAddButtonMarkup();
         } else {
-            $buttonAttributes = (new Attributes())
-                ->set('data-freeform-table-add-row')
-                ->set('class', $attributes->find('addButtonClass') ?? false)
-                ->set('data-target', $id)
-                ->set('type', 'button')
+            $buttonAttributes = $this->tableAttributes
+                ->getAddButton()
+                ->clone()
+                ->replace('data-freeform-table-add-row')
+                ->replace('data-target', $id)
+                ->setIfEmpty('type', 'button')
             ;
 
             $output .= '<button'.$buttonAttributes.'>'
-                .$this->getAddButtonLabel()
+                .($this->getParameters()->addButtonLabel ?? $this->getAddButtonLabel())
                 .'</button>';
         }
 

@@ -128,7 +128,7 @@ class ReCaptcha extends FeatureBundle
         if (Settings::RECAPTCHA_TYPE_V3 === $type) {
             $event->attachAttribute(
                 'data-recaptcha-action',
-                $event->getForm()->getPropertyBag()->get('recaptchaAction') ?? 'homepage'
+                $event->getForm()->getProperties()->get('recaptchaAction') ?? 'homepage'
             );
         }
     }

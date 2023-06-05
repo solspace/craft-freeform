@@ -24,7 +24,7 @@ class SpamBundle extends FeatureBundle
         return 800;
     }
 
-    public function processSpamSubmission(ProcessSubmissionEvent $event)
+    public function processSpamSubmission(ProcessSubmissionEvent $event): void
     {
         // TODO: refactor due to mailing list field changes
         $form = $event->getForm();

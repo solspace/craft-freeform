@@ -14,7 +14,6 @@
 namespace Solspace\Freeform\Form;
 
 use craft\helpers\Template;
-use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
@@ -32,14 +31,16 @@ use Solspace\Freeform\Fields\Implementations\CheckboxField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
-use Solspace\Freeform\Form\Bags\AttributeBag;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Settings;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
+use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\PageCollection;
+use Solspace\Freeform\Library\Collections\RowCollection;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
@@ -97,12 +98,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public const DATA_RELATIONS = 'relations';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    protected AttributeBag $attributeBag;
-
+    protected Layout $layout;
+    protected FormAttributesCollection $attributes;
     private PropertyBag $propertyBag;
 
     private ?int $id;
-
     private ?string $uid;
 
     private array $currentPageRows = [];
@@ -121,9 +121,10 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     private bool $pagePosted = false;
     private bool $formPosted = false;
 
+    private int $currentPageIndex = 0;
+
     public function __construct(
         array $config,
-        private Layout $layout,
         private Settings $settings,
         private PropertyAccessor $accessor,
     ) {
@@ -131,10 +132,10 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         $this->uid = $config['uid'] ?? null;
 
         $this->propertyBag = new PropertyBag($this);
-        $this->attributeBag = new AttributeBag($this);
+        $this->attributes = new FormAttributesCollection();
 
         $pageIndex = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
-        $this->getPages()->setCurrent($pageIndex);
+        $this->currentPageIndex = $pageIndex;
 
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new FormLoadedEvent($this));
     }
@@ -172,11 +173,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this->getLayout()->getField($fieldHandle);
     }
 
-    public function getMetadata(string $key, $defaultValue = null)
-    {
-        return $this->metadata[$key] ?? $defaultValue;
-    }
-
     public function hasFieldType(string $type): bool
     {
         return $this->getLayout()->getFields()->hasFieldType($type);
@@ -184,17 +180,12 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getProperties(): PropertyBag
     {
-        return $this->getPropertyBag();
-    }
-
-    public function getPropertyBag(): PropertyBag
-    {
         return $this->propertyBag;
     }
 
-    public function getAttributeBag(): AttributeBag
+    public function getAttributes(): FormAttributesCollection
     {
-        return $this->attributeBag;
+        return $this->attributes;
     }
 
     public function getSettings(): Settings
@@ -229,7 +220,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getHash(): string
     {
-        return $this->getPropertyBag()->get(self::HASH_KEY, '');
+        return $this->getProperties()->get(self::HASH_KEY, '');
     }
 
     public function getSubmissionTitleFormat(): string
@@ -242,9 +233,31 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this->getSettings()->getGeneral()->description;
     }
 
+    public function getCurrentPageIndex(): int
+    {
+        return $this->currentPageIndex;
+    }
+
+    public function setCurrentPageIndex(int $index): self
+    {
+        $this->currentPageIndex = $index;
+
+        return $this;
+    }
+
     public function getCurrentPage(): Page
     {
-        return $this->getLayout()->getPages()->current();
+        return $this->getLayout()->getPages()->get($this->currentPageIndex);
+    }
+
+    public function getRows(): RowCollection
+    {
+        return $this->getCurrentPage()->getRows();
+    }
+
+    public function getFields(): FieldCollection
+    {
+        return $this->getCurrentPage()->getFields();
     }
 
     public function setCurrentPage(int $index): self
@@ -262,7 +275,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public function getAnchor(): string
     {
         $hash = $this->getHash();
-        $id = $this->getPropertyBag()->get('id', $this->getId());
+        $id = $this->getProperties()->get('id', $this->getId());
         $hashedId = substr(sha1($id.$this->getHandle()), 0, 6);
 
         return "{$hashedId}-form-{$hash}";
@@ -283,7 +296,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
             return false;
         }
 
-        if ($this->getPropertyBag()->get(self::DATA_DISABLE_RECAPTCHA)) {
+        if ($this->getProperties()->get(self::DATA_DISABLE_RECAPTCHA)) {
             return false;
         }
 
@@ -302,6 +315,10 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getLayout(): Layout
     {
+        if (!isset($this->layout)) {
+            $this->layout = Freeform::getInstance()->formLayouts->getLayout($this);
+        }
+
         return $this->layout;
     }
 
@@ -346,7 +363,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getSpamReasons(): array
     {
-        return $this->getPropertyBag()->get(self::PROPERTY_SPAM_REASONS, []);
+        return $this->getProperties()->get(self::PROPERTY_SPAM_REASONS, []);
     }
 
     public function disableAjaxReset(): self
@@ -363,7 +380,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function markAsSpam(string $type, string $message): self
     {
-        $bag = $this->getPropertyBag();
+        $bag = $this->getProperties();
 
         $reasons = $this->getSpamReasons();
 
@@ -438,7 +455,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function handleRequest(Request $request): bool
     {
-        $method = strtoupper($this->getPropertyBag()->get('method', 'post'));
+        $method = strtoupper($this->getProperties()->get('method', 'post'));
         if ($method !== $request->getMethod()) {
             return false;
         }
@@ -480,7 +497,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public function render(array $renderProperties = null): ?Markup
     {
         $this->setProperties($renderProperties);
-        $formTemplate = $this->getPropertyBag()->get(
+        $formTemplate = $this->getProperties()->get(
             'formattingTemplate',
             $this->getSettings()->getGeneral()->formattingTemplate
         );
@@ -507,18 +524,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         Event::trigger(self::class, self::EVENT_RENDER_BEFORE_OPEN_TAG, $beforeTag);
         $output .= $beforeTag->getChunksAsString();
 
-        $attributes = $this->getAttributeBag()->jsonSerialize();
+        $attributes = $this->getAttributes()->jsonSerialize();
         $event = new AttachFormAttributesEvent($this, $attributes);
         Event::trigger(self::class, self::EVENT_ATTACH_TAG_ATTRIBUTES, $event);
 
-        $attributes = array_merge(
-            $event->getAttributes(),
-            $this->getFormHandler()->onAttachFormAttributes($this, $event->getAttributes())
-        );
-
-        $compiledAttributes = StringHelper::compileAttributeStringFromArray($attributes);
-
-        $output .= "<form {$compiledAttributes}>".\PHP_EOL;
+        $output .= '<form'.$this->getAttributes().'>'.\PHP_EOL;
 
         $hiddenFields = $this->layout->getFields(HiddenField::class);
         foreach ($hiddenFields as $field) {
@@ -526,8 +536,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
                 $output .= $field->renderInput();
             }
         }
-
-        $output .= $this->getFormHandler()->onRenderOpeningTag($this);
 
         $afterTag = new RenderTagEvent($this);
         Event::trigger(self::class, self::EVENT_RENDER_AFTER_OPEN_TAG, $afterTag);
@@ -538,7 +546,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function renderClosingTag(): Markup
     {
-        $output = $this->getFormHandler()->onRenderClosingTag($this);
+        $output = '';
 
         $beforeTag = new RenderTagEvent($this);
         Event::trigger(self::class, self::EVENT_RENDER_BEFORE_CLOSING_TAG, $beforeTag);
@@ -575,7 +583,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getSuppressors(): Suppressors
     {
-        $suppressors = $this->suppressionEnabled ? true : $this->getPropertyBag()->get(self::DATA_SUPPRESS);
+        $suppressors = $this->suppressionEnabled ? true : $this->getProperties()->get(self::DATA_SUPPRESS);
 
         return new Suppressors($suppressors);
     }
@@ -589,18 +597,19 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getRelations(): Relations
     {
-        return new Relations($this->getPropertyBag()->get(self::DATA_RELATIONS));
+        return new Relations($this->getProperties()->get(self::DATA_RELATIONS));
     }
 
     public function setProperties(array $properties = null): self
     {
-        $this->propertyBag->merge($properties ?? []);
-
+        $event = new SetPropertiesEvent($this, $properties ?? []);
         Event::trigger(
             self::class,
             self::EVENT_SET_PROPERTIES,
-            new SetPropertiesEvent($this, $properties ?? [])
+            $event
         );
+
+        $this->propertyBag->merge($event->getProperties());
 
         return $this;
     }
@@ -635,7 +644,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function hasFieldBeenSubmitted(AbstractField $field): bool
     {
-        return isset($this->getPropertyBag()->get(self::PROPERTY_STORED_VALUES, [])[$field->getHandle()]);
+        return isset($this->getProperties()->get(self::PROPERTY_STORED_VALUES, [])[$field->getHandle()]);
     }
 
     public function reset()
@@ -652,7 +661,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getFieldPrefix(): ?string
     {
-        return $this->getPropertyBag()->get('fieldIdPrefix');
+        return $this->getProperties()->get('fieldIdPrefix');
     }
 
     public function count(): int
@@ -662,7 +671,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function isLastPage(): bool
     {
-        $currentPageIndex = $this->getPropertyBag()->get(self::PROPERTY_PAGE_INDEX, 0);
+        $currentPageIndex = $this->getProperties()->get(self::PROPERTY_PAGE_INDEX, 0);
 
         return $currentPageIndex === (\count($this->getPages()) - 1);
     }
@@ -692,8 +701,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
             'handle' => $this->getHandle(),
             'class' => static::class,
             'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
-            'properties' => $this->getPropertyBag(),
-            'attributes' => $this->getAttributeBag(),
+            'properties' => $this->getProperties(),
+            'attributes' => $this->getAttributes(),
             'settings' => [
                 'behavior' => $settings->getBehavior(),
                 'general' => $settings->getGeneral(),
@@ -723,8 +732,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
             return;
         }
 
-        $this->getFormHandler()->onFormValidate($this);
-
         $currentPageFields = $this->getCurrentPage()->getFields();
 
         $isFormValid = true;
@@ -753,8 +760,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
                 }
             }
         }
-
-        $this->getFormHandler()->onAfterFormValidate($this);
 
         $this->valid = $isFormValid;
 

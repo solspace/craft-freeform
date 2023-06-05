@@ -1,0 +1,32 @@
+{{ field.renderLabel(properties) }}
+
+{% if field.oneLine %}
+    <div>
+        {% for option in field.options %}
+            <label class="checkbox-inline">
+                <input type="checkbox"
+                       name="{{ field.handle }}[]"
+                       value="{{ option.value }}"
+                        {{ option.checked ? "checked" : "" }}
+                />
+                {{ option.label|t('freeform')|raw }}
+            </label>
+        {% endfor %}
+    </div>
+{% else %}
+    {% for option in field.options %}
+        <div class="checkbox">
+            <label>
+                <input type="checkbox"
+                       name="{{ field.handle }}[]"
+                       value="{{ option.value }}"
+                        {{ option.checked ? "checked" : "" }}
+                />
+                {{ option.label|t('freeform')|raw }}
+            </label>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{{ field.renderInstructions() }}
+{{ field.renderErrors() }}

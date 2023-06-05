@@ -4,24 +4,26 @@ namespace Solspace\Freeform\Library\Attributes;
 
 class Attributes implements \Countable, \JsonSerializable
 {
+    public const STRATEGY_APPEND = 'append';
+    public const STRATEGY_REPLACE = 'replace';
+
     private array $attributes = [];
 
     public function __construct(array $attributes = [])
     {
-        $this->setBatch($attributes);
+        $this->merge($attributes);
     }
 
     public function __toString(): string
     {
         $stringArray = [];
 
-        foreach ($this->attributes as [$key, $value]) {
-            if (empty($key) && !empty($value)) {
-                $key = $value;
-                $value = '';
+        foreach ($this->attributes as $key => $value) {
+            if (empty($key)) {
+                continue;
             }
 
-            if ((!$key && !$value) || false === $value) {
+            if (false === $value) {
                 continue;
             }
 
@@ -60,86 +62,97 @@ class Attributes implements \Countable, \JsonSerializable
         return ' '.implode(' ', $stringArray);
     }
 
-    public function find(string $key): mixed
+    public function get(string $name, mixed $default = null): mixed
     {
-        foreach ($this->attributes as $index => [$existingKey, $existingValue]) {
-            if ($existingKey === $key) {
-                return $existingValue;
-            }
+        return $this->attributes[$name] ?? $default;
+    }
+
+    public function set(string $key, mixed $value = null, string $strategy = self::STRATEGY_APPEND): self
+    {
+        if (str_starts_with($key, '-')) {
+            $strategy = self::STRATEGY_REPLACE;
+            $key = substr($key, 1);
         }
 
-        return null;
-    }
+        if (\is_array($value)) {
+            $value = implode(' ', $value);
+        }
 
-    public function get(int $index, mixed $default = null): ?array
-    {
-        return $this->attributes[$index] ?? $default;
-    }
+        switch ($strategy) {
+            case self::STRATEGY_REPLACE:
+                $this->attributes[$key] = $value;
 
-    public function set(?string $key, mixed $value = null): self
-    {
-        $this->attributes[] = [$key, $value];
+                break;
+
+            case self::STRATEGY_APPEND:
+            default:
+                if (\array_key_exists($key, $this->attributes)) {
+                    $this->attributes[$key] .= ' '.$value;
+                } else {
+                    $this->attributes[$key] = $value;
+                }
+
+                break;
+        }
 
         return $this;
     }
 
     public function setIfEmpty(?string $key, mixed $value = null): self
     {
-        foreach ($this->attributes as $index => [$existingKey, $existingValue]) {
-            if ($existingKey === $key) {
-                return $this;
-            }
+        if (!\array_key_exists($key, $this->attributes)) {
+            $this->attributes[$key] = $value;
         }
-
-        $this->attributes[] = [$key, $value];
 
         return $this;
     }
 
     public function replace(string $key, mixed $value = null): self
     {
-        $reversed = array_reverse($this->attributes, true);
-        foreach ($reversed as $index => [$existingKey, $existingValue]) {
-            if ($existingKey === $key) {
-                $this->attributes[$index][1] = $value;
-
-                return $this;
-            }
-        }
-
-        $this->attributes[] = [$key, $value];
-
-        return $this;
+        return $this->set($key, $value, self::STRATEGY_REPLACE);
     }
 
     public function append(string $key, mixed $value = null): self
     {
-        $reversed = array_reverse($this->attributes, true);
-        foreach ($reversed as $index => [$existingKey, $existingValue]) {
-            if ($existingKey === $key) {
-                $this->attributes[$index][1] = $existingValue.' '.$value;
-
-                return $this;
-            }
-        }
-
-        $this->attributes[] = [$key, $value];
-
-        return $this;
+        return $this->set($key, $value);
     }
 
-    public function setBatch(array $batch): self
+    public function merge(array $attributes): self
     {
-        foreach ($batch as [$key, $value]) {
+        $reflection = new \ReflectionClass($this);
+
+        foreach ($reflection->getProperties() as $property) {
+            if (!\array_key_exists($property->getName(), $attributes)) {
+                continue;
+            }
+
+            if (!\is_array($attributes[$property->getName()])) {
+                continue;
+            }
+
+            $type = $property->getType();
+            if (!$type) {
+                continue;
+            }
+
+            if (self::class !== $type->getName()) {
+                continue;
+            }
+
+            $this->{$property->getName()}->merge($attributes[$property->getName()]);
+            unset($attributes[$property->getName()]);
+        }
+
+        foreach ($attributes as $key => $value) {
             $this->set($key, $value);
         }
 
         return $this;
     }
 
-    public function remove(int $index): self
+    public function remove(string $key): self
     {
-        unset($this->attributes[$index]);
+        unset($this->attributes[$key]);
 
         return $this;
     }
@@ -154,8 +167,23 @@ class Attributes implements \Countable, \JsonSerializable
         return \count($this->attributes);
     }
 
+    public function toArray(): array
+    {
+        $reflection = new \ReflectionClass($this);
+        $array = $this->attributes;
+
+        foreach ($reflection->getProperties() as $property) {
+            $type = $property->getType();
+            if ($type && self::class === $type->getName()) {
+                $array[$property->getName()] = $this->{$property->getName()}->jsonSerialize();
+            }
+        }
+
+        return $array;
+    }
+
     public function jsonSerialize(): array
     {
-        return $this->attributes;
+        return $this->toArray();
     }
 }

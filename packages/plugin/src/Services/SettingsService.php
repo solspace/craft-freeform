@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Services;
 
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Bundles\Spam\Honeypot\HoneypotProvider;
 use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -55,7 +56,7 @@ class SettingsService extends BaseService
             return false;
         }
 
-        if ($form && $form->getPropertyBag()->get(HoneypotService::HONEYPOT_DISABLE_KEY, false)) {
+        if ($form && $form->getProperties()->get(HoneypotProvider::HONEYPOT_DISABLE_KEY, false)) {
             return false;
         }
 

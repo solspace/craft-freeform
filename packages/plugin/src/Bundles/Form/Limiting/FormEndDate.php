@@ -22,11 +22,11 @@ class FormEndDate extends FeatureBundle
         );
     }
 
-    public function handler(FormEventInterface $event)
+    public function handler(FormEventInterface $event): void
     {
         $form = $event->getForm();
 
-        $closeDate = $form->getMetadata(self::FORM_CLOSE_DATE_KEY);
+        $closeDate = $form->getProperties()->get(self::FORM_CLOSE_DATE_KEY);
         if (!$closeDate) {
             return;
         }

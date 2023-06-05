@@ -6,6 +6,7 @@ use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 
 class RenderTagEvent extends ArrayableEvent implements FormEventInterface
 {
@@ -61,5 +62,15 @@ class RenderTagEvent extends ArrayableEvent implements FormEventInterface
     public function getChunksAsString(): string
     {
         return StringHelper::implodeRecursively("\n", $this->chunks);
+    }
+
+    public function isScriptsDisabled(): bool
+    {
+        $settings = Freeform::getInstance()->settings;
+
+        $isFooter = $settings->isFooterScripts();
+        $isForm = $settings->isFormScripts();
+
+        return !$isFooter && !$isForm;
     }
 }

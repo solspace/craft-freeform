@@ -9,20 +9,11 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class PageJumpEvent extends ArrayableEvent
 {
-    /** @var Form */
-    private $form;
+    private ?int $jumpToIndex;
 
-    /** @var int */
-    private $jumpToIndex;
-
-    /**
-     * PageJumpEvent constructor.
-     */
-    public function __construct(Form $form)
+    public function __construct(private Form $form)
     {
-        $this->form = $form;
-
-        parent::__construct([]);
+        parent::__construct();
     }
 
     /**
@@ -38,18 +29,12 @@ class PageJumpEvent extends ArrayableEvent
         return $this->form;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getJumpToIndex()
+    public function getJumpToIndex(): ?int
     {
         return $this->jumpToIndex;
     }
 
-    /**
-     * @param mixed $jumpToIndex
-     */
-    public function setJumpToIndex(int $jumpToIndex = null)
+    public function setJumpToIndex(int $jumpToIndex = null): void
     {
         $totalPages = \count($this->getForm()->getLayout()->getPages());
 

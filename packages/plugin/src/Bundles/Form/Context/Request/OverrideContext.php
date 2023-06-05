@@ -18,7 +18,7 @@ class OverrideContext
     public function handleOverride(FormEventInterface $event)
     {
         $form = $event->getForm();
-        $overrideValues = $form->getPropertyBag()->get('overrideValues');
+        $overrideValues = $form->getProperties()->get('overrideValues');
 
         if (!\is_array($overrideValues)) {
             return;
@@ -37,7 +37,7 @@ class OverrideContext
     public function handlePersistentFields(FormEventInterface $event)
     {
         $form = $event->getForm();
-        $overrideValues = $form->getPropertyBag()->get('overrideValues');
+        $overrideValues = $form->getProperties()->get('overrideValues');
 
         if (!\is_array($overrideValues)) {
             return;

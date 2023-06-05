@@ -3,6 +3,9 @@
 namespace Solspace\Freeform\Bundles\Rules;
 
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Rules\Condition;
+use Solspace\Freeform\Library\Rules\ConditionCollection;
+use Solspace\Freeform\Library\Rules\Types\FieldRule;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
@@ -21,9 +24,50 @@ class RuleProvider
         }
 
         return [
-            'pages' => $this->getPageRules($form),
-            'fields' => $this->getFieldRules($form),
+            'pages' => $this->getPageRuleArray($form),
+            'fields' => $this->getFieldRuleArray($form),
         ];
+    }
+
+    public function getFieldRules(Form $form): array
+    {
+        $records = FieldRuleRecord::getExistingRules($form->getId());
+
+        $rules = [];
+        foreach ($records as $uid => $fieldRule) {
+            /** @var RuleRecord $rule */
+            $rule = $fieldRule->getRule()->one();
+
+            $conditionCollection = new ConditionCollection();
+
+            /** @var RuleConditionRecord $condition */
+            foreach ($rule->getConditions()->all() as $condition) {
+                $conditionCollection->add(
+                    new Condition(
+                        $condition->uid,
+                        $form->get($condition->getField()->one()->uid),
+                        $condition->operator,
+                        $condition->value
+                    )
+                );
+            }
+
+            $rule = new FieldRule(
+                $fieldRule->id,
+                $uid,
+                $fieldRule->combinator,
+                $conditionCollection,
+            );
+
+            $rule->setDisplay($fieldRule->display);
+            $rule->setField(
+                $form->get($fieldRule->getField()->one()->uid)
+            );
+
+            $rules[] = $rule;
+        }
+
+        return $rules;
     }
 
     public function getFormNotificationRules(?Form $form): array
@@ -32,10 +76,10 @@ class RuleProvider
             return [];
         }
 
-        return $this->getNotificationRules($form);
+        return $this->getNotificationRuleArray($form);
     }
 
-    private function getFieldRules(Form $form): array
+    private function getFieldRuleArray(Form $form): array
     {
         $rules = FieldRuleRecord::getExistingRules($form->getId());
 
@@ -69,7 +113,7 @@ class RuleProvider
         return $array;
     }
 
-    private function getPageRules(Form $form): array
+    private function getPageRuleArray(Form $form): array
     {
         $rules = PageRuleRecord::getExistingRules($form->getId());
 
@@ -102,7 +146,7 @@ class RuleProvider
         return $array;
     }
 
-    private function getNotificationRules(Form $form): array
+    private function getNotificationRuleArray(Form $form): array
     {
         $rules = NotificationRuleRecord::getExistingRules($form->getId());
 

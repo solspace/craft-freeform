@@ -23,7 +23,7 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess
         foreach ($this->fields as $field) {
             if (
                 $field->getHandle() === $identificator
-                || $field->getHash() === $identificator
+                || $field->getUid() === $identificator
                 || (is_numeric($identificator) && $field->getId() === (int) $identificator)) {
                 return $field;
             }

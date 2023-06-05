@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Fields;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Services\Form\FieldsService;
 
 class FieldProvider
@@ -11,18 +12,12 @@ class FieldProvider
     {
     }
 
-    public function getFieldByUid(?string $uid): ?FieldInterface
+    public function getFieldByUid(Form $form, ?string $uid): ?FieldInterface
     {
         if (null === $uid) {
             return null;
         }
 
-        $fields = $this->service->getAllFields();
-
-        foreach ($fields as $field) {
-            if ($field->getUid() === $uid) {
-                return $field;
-            }
-        }
+        return $this->service->getFieldByUid($form, $uid);
     }
 }

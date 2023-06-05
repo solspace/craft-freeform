@@ -19,7 +19,7 @@ class ReturnUrlInput extends FeatureBundle
     public function attachInput(RenderTagEvent $event)
     {
         $form = $event->getForm();
-        $bag = $form->getPropertyBag();
+        $bag = $form->getProperties();
 
         if ($bag->get('returnUrl')) {
             $name = Form::RETURN_URI_KEY;
@@ -32,7 +32,7 @@ class ReturnUrlInput extends FeatureBundle
 
     public function attachToJson(OutputAsJsonEvent $event)
     {
-        $bag = $event->getForm()->getPropertyBag();
+        $bag = $event->getForm()->getProperties();
         if ($bag->get('returnUrl')) {
             $event->add('returnUrl', $this->getHashedUrl($bag->get('returnUrl')));
         }

@@ -6,10 +6,14 @@ export enum AttributeTarget {
   Error = 'error',
 }
 
-type Value = string | boolean | number | null;
-
-export type Attribute = [Value, Value];
-
 export type AttributeCollection = {
-  [key in AttributeTarget]?: Attribute[];
+  [key in AttributeTarget]?: {
+    [attribute: string]: string;
+  };
+};
+
+export type AttributeEntry = [string, string];
+
+export type EditableAttributeCollection = {
+  [key in AttributeTarget]?: AttributeEntry[];
 };

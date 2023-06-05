@@ -26,7 +26,7 @@ class DynamicRecipients extends FeatureBundle
             return;
         }
 
-        $data = $form->getPropertyBag()->get(self::BAG_KEY);
+        $data = $form->getProperties()->get(self::BAG_KEY);
 
         $template = $data['template'] ?? null;
         $recipients = $data['recipients'] ?? [];

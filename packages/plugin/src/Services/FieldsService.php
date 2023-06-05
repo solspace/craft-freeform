@@ -19,8 +19,6 @@ use craft\elements\Category;
 use craft\elements\Entry;
 use craft\elements\Tag;
 use craft\elements\User;
-use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Events\Fields\DeleteEvent;
 use Solspace\Freeform\Events\Fields\SaveEvent;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Fields\AbstractField;
@@ -30,7 +28,6 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
 use Solspace\Freeform\Library\Database\FieldHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Factories\PredefinedOptionsFactory;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
@@ -217,57 +214,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         return false;
     }
 
-    /**
-     * @param int $fieldId
-     *
-     * @return bool
-     *
-     * @throws \Exception
-     */
-    public function deleteById($fieldId)
-    {
-        PermissionHelper::requirePermission(Freeform::PERMISSION_FIELDS_MANAGE);
-
-        $model = $this->getFieldById($fieldId);
-
-        if (!$model) {
-            return false;
-        }
-
-        $beforeDeleteEvent = new DeleteEvent($model);
-        $this->trigger(self::EVENT_BEFORE_DELETE, $beforeDeleteEvent);
-
-        if (!$beforeDeleteEvent->isValid) {
-            return false;
-        }
-
-        $transaction = \Craft::$app->getDb()->beginTransaction();
-
-        try {
-            $affectedRows = \Craft::$app
-                ->getDb()
-                ->createCommand()
-                ->delete(FieldRecord::TABLE, ['id' => $model->id])
-                ->execute();
-
-            $this->deleteFieldFromForms($model);
-
-            if (null !== $transaction) {
-                $transaction->commit();
-            }
-
-            $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($model));
-
-            return (bool) $affectedRows;
-        } catch (\Exception $exception) {
-            if (null !== $transaction) {
-                $transaction->rollBack();
-            }
-
-            throw $exception;
-        }
-    }
-
     public function beforeValidate(AbstractField $field, Form $form)
     {
         $this->trigger(self::EVENT_BEFORE_VALIDATE, new ValidateEvent($field, $form));
@@ -401,17 +347,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
      */
     private function deleteFieldFromForms(FieldModel $model)
     {
-        $forms = $this->getFormsService()->getAllForms();
-
-        foreach ($forms as $form) {
-            try {
-                $composer = $form->getComposer();
-                $composer->removeFieldById($model->id);
-                $form->layoutJson = $composer->getComposerStateJSON();
-                $this->getFormsService()->save($form);
-            } catch (FreeformException $e) {
-            }
-        }
     }
 
     private function getQuery(): Query

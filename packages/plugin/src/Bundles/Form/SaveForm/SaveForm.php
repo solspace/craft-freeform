@@ -80,14 +80,14 @@ class SaveForm extends FeatureBundle
         }
 
         $form
-            ->getPropertyBag()
+            ->getProperties()
             ->remove(SaveFormsHelper::BAG_KEY_SAVED_SESSION)
             ->remove(SaveFormsHelper::BAG_KEY_LOADED)
         ;
 
         Event::trigger(self::class, self::EVENT_SAVE_FORM, new SaveFormEvent($form));
 
-        $bag = new SessionBag($form->getId(), $form->getPropertyBag()->toArray(), $form->getAttributeBag()->toArray());
+        $bag = new SessionBag($form->getId(), $form->getProperties()->toArray(), $form->getAttributes()->toArray());
         $encryptionKey = $this->getEncryptionKey($key);
 
         $serialized = json_encode($bag);
@@ -184,7 +184,7 @@ class SaveForm extends FeatureBundle
 
     private function redirectRequest(HandleRequestEvent $event, Form $form, string $token, string $key)
     {
-        $returnUrl = $form->getPropertyBag()->get(SaveFormsHelper::BAG_REDIRECT, '');
+        $returnUrl = $form->getProperties()->get(SaveFormsHelper::BAG_REDIRECT, '');
         if (empty($returnUrl)) {
             /** @var SaveField[] $saveButtons */
             $saveButtons = $form->getCurrentPage()->getFields(SaveField::class);

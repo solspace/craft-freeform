@@ -26,28 +26,26 @@ class FormTransformer
 
     public function transform(Form $form): object
     {
-        $transformed = $this->transformBasic($form);
-
         $fields = $this->fieldsService->getFields($form);
 
-        $id = $form->getId();
+        $transformed = $this->transformBasic($form);
         $transformed->layout = (object) [
             'fields' => array_map([$this->fieldTransformer, 'transform'], $fields),
             'pages' => array_map(
                 [$this->layoutTransformer, 'transformPage'],
-                $this->layoutsService->getPages($id),
+                $this->layoutsService->getPages($form),
             ),
             'layouts' => array_map(
                 [$this->layoutTransformer, 'transformLayout'],
-                $this->layoutsService->getLayouts($id)
+                $this->layoutsService->getLayouts($form)
             ),
             'rows' => array_map(
                 [$this->layoutTransformer, 'transformRow'],
-                $this->layoutsService->getRows($id)
+                $this->layoutsService->getRows($form)
             ),
             'cells' => array_map(
                 [$this->layoutTransformer, 'transformCell'],
-                $this->layoutsService->getCells($id)
+                $this->layoutsService->getCells($form)
             ),
         ];
 

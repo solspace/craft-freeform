@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.0.25 - 2023-06-05
+
+### Fixed
+- Fixed a bug where the Field Values Chart widget would error when attempting to add to the dashboard.
+
 ## 4.0.24.1 - 2023-05-18
 
 ### Fixed

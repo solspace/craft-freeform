@@ -31,6 +31,7 @@ class FieldTransformer
 
         return (object) [
             'uid' => $field->getUid(),
+            'label' => $field->getLabel(),
             'typeClass' => $typeClass,
             'properties' => $properties,
         ];

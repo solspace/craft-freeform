@@ -1,8 +1,15 @@
 import { animated } from 'react-spring';
+import { scrollBar } from '@ff-client/styles/mixins';
 import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const FieldListWrapper = styled(animated.div)`
   position: relative;
-  padding: ${spacings.lg}; ;
+  padding: ${spacings.lg};
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  height: 100%;
+  ${scrollBar};
 `;

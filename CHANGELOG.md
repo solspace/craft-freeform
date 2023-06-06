@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.0.25 - 2023-06-05
+
+### Fixed
+- Fixed a bug where the Field Values Chart widget would error when attempting to add to the dashboard.
+
+## 4.0.24.1 - 2023-05-18
+
+### Fixed
+- Fixed a bug where an error would occur when attempting to submit a form that has the "Store Submission Data" setting disabled on sites using the Freeform 4.0.24 version.
+
 ## 4.0.24 - 2023-05-16
 
 ### Added

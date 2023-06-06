@@ -21,7 +21,6 @@ use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
 
 class SettingsService extends BaseService
 {
@@ -119,22 +118,29 @@ class SettingsService extends BaseService
     public function getSolspaceFormTemplates(): array
     {
         $templateDirectoryPath = $this->getSolspaceFormTemplateDirectory();
+        $templates = [];
 
-        $fs = new Finder();
-
-        /** @var SplFileInfo[] $fileIterator */
-        $fileIterator = $fs
+        $fileIterator = (new Finder())
             ->files()
             ->in($templateDirectoryPath)
             ->sortByName()
-            ->name('*.html')
+            ->name('index.twig')
+        ;
+
+        foreach ($fileIterator as $file) {
+            $templates[] = new FormTemplate($file->getRealPath(), $templateDirectoryPath);
+        }
+
+        $rootFiles = (new Finder())
+            ->files()
+            ->in($templateDirectoryPath)
+            ->depth(0)
+            ->sortByName()
             ->name('*.twig')
         ;
 
-        $templates = [];
-
-        foreach ($fileIterator as $file) {
-            $templates[] = new FormTemplate($file->getRealPath());
+        foreach ($rootFiles as $file) {
+            $templates[] = new FormTemplate($file->getRealPath(), $templateDirectoryPath);
         }
 
         return $templates;

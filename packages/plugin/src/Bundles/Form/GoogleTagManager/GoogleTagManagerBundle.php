@@ -41,8 +41,10 @@ class GoogleTagManagerBundle extends FeatureBundle
             $eventName = 'form-submission';
         }
 
-        $event->attachAttribute('data-gtm', true);
-        $event->attachAttribute('data-gtm-event-name', $eventName);
+        $form->getAttributes()
+            ->set('data-gtm', true)
+            ->set('data-gtm-event-name', $eventName)
+        ;
     }
 
     public function attachScripts(RenderTagEvent $event): void

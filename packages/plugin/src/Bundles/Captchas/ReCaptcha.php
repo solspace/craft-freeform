@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Captchas;
 
+use craft\helpers\App;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
@@ -105,7 +106,7 @@ class ReCaptcha extends FeatureBundle
     /**
      * Adds honeypot javascript to forms.
      */
-    public function addAttributesToFormTag(AttachFormAttributesEvent $event)
+    public function addAttributesToFormTag(AttachFormAttributesEvent $event): void
     {
         $form = $event->getForm();
         $settings = $this->getSettings();
@@ -118,15 +119,17 @@ class ReCaptcha extends FeatureBundle
             return;
         }
 
-        $recaptchaKey = \Craft::parseEnv($settings->recaptchaKey);
+        $recaptchaKey = App::parseEnv($settings->recaptchaKey);
         $type = $settings->recaptchaType;
 
-        $event->attachAttribute('data-recaptcha', $type);
-        $event->attachAttribute('data-recaptcha-key', $recaptchaKey);
-        $event->attachAttribute('data-recaptcha-lazy-load', (bool) $settings->recaptchaLazyLoad);
+        $form->getAttributes()
+            ->set('data-recaptcha', $type)
+            ->set('data-recaptcha-key', $recaptchaKey)
+            ->set('data-recaptcha-lazy-load', $settings->recaptchaLazyLoad)
+        ;
 
         if (Settings::RECAPTCHA_TYPE_V3 === $type) {
-            $event->attachAttribute(
+            $form->getAttributes()->set(
                 'data-recaptcha-action',
                 $event->getForm()->getProperties()->get('recaptchaAction') ?? 'homepage'
             );

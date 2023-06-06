@@ -117,7 +117,9 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
 
         $output .= '<ul class="opinion-scale-scales">';
         foreach ($this->getScales() as $index => $scale) {
-            $value = $scale['value'];
+            [$value, $label] = $scale;
+            $label = $label ?: $value;
+
             $isSelected = $value == $this->getValue();
             $id = $this->getIdAttribute()."-{$index}";
 
@@ -133,7 +135,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             $output .= '<input'.$inputAttributes.' />';
 
             $output .= '<label for="'.$id.'">';
-            $output .= $this->translate($scale['label']);
+            $output .= $this->translate($label);
             $output .= '</label>';
 
             $output .= '</li>';
@@ -144,7 +146,7 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
             $output .= '<ul class="opinion-scale-legends">';
             foreach ($this->getLegends() as $legend) {
                 $output .= '<li>';
-                $output .= $legend['legend'];
+                $output .= $legend[0];
                 $output .= '</li>';
             }
             $output .= '</ul>';

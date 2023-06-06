@@ -281,7 +281,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return $this->getHumanReadableFormat();
     }
 
-    public function getValue(): string
+    public function getValue(): ?string
     {
         $value = $this->value;
 

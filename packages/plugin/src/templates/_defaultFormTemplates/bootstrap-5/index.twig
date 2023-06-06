@@ -1,12 +1,10 @@
 {% css formCss %}
-{% import "freeform/_defaultFormTemplates/bootstrap-3/_row.twig" as rowMacro %}
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+{% import "freeform/_defaultFormTemplates/bootstrap-5/_row.twig" as rowMacro %}
 
 {{ form.renderTag({
     attributes: {
-        error: { class: "alert alert-danger" },
-        row: { class: "row" }
+        row: { class: "row" },
+        errors: { class: "alert alert-danger" },
     }
 }) }}
 
@@ -17,24 +15,19 @@
       var freeform = event.target.freeform;
 
       freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
-      freeform.setOption("errorClassList", ["help-block", "errors", "has-error"]);
-      freeform.setOption("errorClassField", "has-error");
+      freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
+      freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
       freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
     })
 
     form.addEventListener("freeform-stripe-styling", function (event) {
       event.detail.base = {
-        fontSize: "14px",
-        fontFamily: "Helvetica Neue, Helvetica, Arial, sans-serif",
+        fontSize: "16px",
+        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
       }
     })
   }
 </script>
-<style>
-    .StripeElement {
-        padding: 8px 12px;
-    }
-</style>
 
 
 {% if form.pages|length > 1 %}
@@ -48,11 +41,11 @@
 {% endif %}
 
 {% if form.hasErrors %}
-    <div{{ form.attributes.error }}>
+    <div{{ form.attributes.errors }}>
         {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
-            <ul>
+            <ul class="mb-0">
                 {% for error in form.errors %}
                     <li>{{ error }}</li>
                 {% endfor %}

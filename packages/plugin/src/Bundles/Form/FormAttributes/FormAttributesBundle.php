@@ -49,7 +49,7 @@ class FormAttributesBundle extends FeatureBundle
         }
 
         foreach ($errorAttributes as $key => $value) {
-            $form->getAttributes()->getError()->replace($key, $value);
+            $form->getAttributes()->getErrors()->replace($key, $value);
         }
 
         if (null === $form->getAttributes()->get('method')) {

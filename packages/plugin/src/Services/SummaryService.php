@@ -204,6 +204,9 @@ class SummaryService extends Component
         $summary->statistics->widgets = $widgets;
 
         $feedInfo = $freeform->settings->getSettingsModel()->feedInfo ?? [];
+        if (!\is_array($feedInfo)) {
+            $feedInfo = [];
+        }
 
         $other = new Other();
         $other->jsFramework = \in_array('jsFramework', $feedInfo, true);

@@ -99,7 +99,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     protected ?int $id = null;
     protected ?string $uid = null;
-    protected string $hash = '';
     protected int $pageIndex = 0;
     protected array $errors = [];
 
@@ -318,11 +317,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      * Return the field TYPE.
      */
     abstract public function getType(): string;
-
-    public function getHash(): string
-    {
-        return $this->hash;
-    }
 
     public function getId(): ?int
     {

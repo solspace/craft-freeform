@@ -21,16 +21,12 @@ class FieldResolver extends Resolver
         }
 
         $ids = $arguments['id'] ?? [];
-        $hashes = $arguments['hash'] ?? [];
         $handles = $arguments['handle'] ?? [];
         foreach ($fields as $index => $field) {
             if ($ids && !\in_array($field->getId(), $ids, false)) {
                 unset($fields[$index]);
             }
             if ($handles && !\in_array($field->getHandle(), $handles, false)) {
-                unset($fields[$index]);
-            }
-            if ($hashes && !\in_array($field->getHash(), $hashes, false)) {
                 unset($fields[$index]);
             }
         }

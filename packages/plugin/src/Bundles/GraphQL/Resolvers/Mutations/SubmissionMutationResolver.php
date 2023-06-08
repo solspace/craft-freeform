@@ -115,9 +115,15 @@ class SubmissionMutationResolver extends ElementMutationResolver
             'isSpam' => $submission->isSpam,
             'spamReasons' => $spamReasons,
             'user' => $submission->getUser(),
-            'reCaptcha' => $arguments['reCaptcha'],
-            'honeypot' => $arguments['honeypot'],
         ];
+
+        if (!empty($arguments['reCaptcha'])) {
+            $payload['reCaptcha'] = $arguments['reCaptcha'];
+        }
+
+        if (!empty($arguments['honeypot'])) {
+            $payload['honeypot'] = $arguments['honeypot'];
+        }
 
         // Allows field definitions specified in the response to be resolved
         foreach ($arguments as $key => $value) {

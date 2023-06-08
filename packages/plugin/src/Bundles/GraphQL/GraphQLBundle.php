@@ -19,6 +19,7 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterfac
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\KeyValueMapInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SubmissionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Mutations\SubmissionMutation;
@@ -51,6 +52,7 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = KeyValueMapInterface::class;
                 $event->types[] = HoneypotInterface::class;
                 $event->types[] = CsrfTokenInterface::class;
+                $event->types[] = ReCaptchaInterface::class;
                 $event->types[] = AttributeInterface::class;
                 $event->types[] = SubmissionInterface::class;
             }

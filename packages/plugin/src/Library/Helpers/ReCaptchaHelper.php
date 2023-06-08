@@ -7,9 +7,9 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Library\Composer\Components\Form;
 
-class CaptchaHelper
+class ReCaptchaHelper
 {
-    public static function canApplyCaptcha(Form $form): bool
+    public static function canApplyReCaptcha(Form $form): bool
     {
         $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
 
@@ -25,8 +25,7 @@ class CaptchaHelper
 
         // or if the form has payment fields, then bail
         if (\count($form->getLayout()->getFields(PaymentInterface::class))) {
-            // FIXME
-            // return false;
+            return false;
         }
 
         // or if using the invisible recaptcha and the form settings for "Enable Captchas" is set to false, then bail
@@ -40,17 +39,5 @@ class CaptchaHelper
         }
 
         return true;
-    }
-
-    public static function getFieldHandle(Form $form): ?string
-    {
-        $fields = $form->getLayout()->getFields(RecaptchaField::class);
-        $field = reset($fields);
-
-        if ($field) {
-            return $field->getHandle();
-        }
-
-        return null;
     }
 }

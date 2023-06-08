@@ -55,11 +55,12 @@ use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
-use Solspace\Freeform\Library\Helpers\CaptchaHelper;
+use Solspace\Freeform\Library\Helpers\ReCaptchaHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Models\Settings;
 use Twig\Markup;
 use yii\base\Arrayable;
 use yii\base\Event;
@@ -910,9 +911,22 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         }
         $object['mailingListName'] = implode(',', $mailingLists);
 
-        $object['reCaptchaEnabled'] = CaptchaHelper::canApplyCaptcha($this);
-        if ($object['reCaptchaEnabled']) {
-            $object['reCaptchaName'] = CaptchaHelper::getFieldHandle($this);
+        $reCaptchaEnabled = ReCaptchaHelper::canApplyReCaptcha($this);
+
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
+        $isHCaptcha = \in_array($settingsModel->getRecaptchaType(), [Settings::RECAPTCHA_TYPE_H_INVISIBLE, Settings::RECAPTCHA_TYPE_H_CHECKBOX], true);
+
+        if ($reCaptchaEnabled) {
+            $object['reCaptcha'] = [
+                'enabled' => true,
+                'handle' => 'reCaptcha',
+                'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
+            ];
+        } else {
+            $object['reCaptcha'] = [
+                'enabled' => false,
+            ];
         }
 
         if ($this->getSuccessMessage()) {

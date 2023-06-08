@@ -7,7 +7,7 @@ use craft\gql\base\ElementMutationResolver;
 use craft\gql\base\Mutation;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\CsrfTokenInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\HoneypotInputArguments;
-use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\RecaptchaInputArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs\ReCaptchaInputArguments;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\Mutations\SubmissionMutationResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SubmissionGenerator;
@@ -38,16 +38,16 @@ class SubmissionMutation extends Mutation
                 $mutationInputFields = SubmissionGenerator::getInputFields();
                 static::prepareResolver($mutationResolver, $mutationInputFields);
 
-                RecaptchaInputArguments::setForm($formModel->getForm());
+                ReCaptchaInputArguments::setForm($formModel->getForm());
 
                 $csrfInputArguments = CsrfTokenInputArguments::getArguments();
                 $honeypotInputArguments = HoneypotInputArguments::getArguments();
-                $recaptchaInputArguments = RecaptchaInputArguments::getArguments();
+                $reCaptchaInputArguments = ReCaptchaInputArguments::getArguments();
 
                 $mutationArguments = array_merge(
                     $csrfInputArguments,
                     $honeypotInputArguments,
-                    $recaptchaInputArguments,
+                    $reCaptchaInputArguments,
                     $mutationResolver->getResolutionData(ElementMutationResolver::CONTENT_FIELD_KEY)
                 );
 

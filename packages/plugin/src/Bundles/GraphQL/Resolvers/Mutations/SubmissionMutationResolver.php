@@ -13,7 +13,6 @@ use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Helpers\CaptchaHelper;
 use yii\base\Event;
 
 class SubmissionMutationResolver extends ElementMutationResolver
@@ -116,7 +115,8 @@ class SubmissionMutationResolver extends ElementMutationResolver
             'isSpam' => $submission->isSpam,
             'spamReasons' => $spamReasons,
             'user' => $submission->getUser(),
-            'recaptchaHandle' => CaptchaHelper::getFieldHandle($form),
+            'reCaptcha' => $arguments['reCaptcha'],
+            'honeypot' => $arguments['honeypot'],
         ];
 
         // Allows field definitions specified in the response to be resolved
@@ -140,11 +140,6 @@ class SubmissionMutationResolver extends ElementMutationResolver
 
         if (!empty($eventPayload['freeform_payload'])) {
             $payload['freeformPayload'] = $eventPayload['freeform_payload'];
-        }
-
-        if (!empty($eventPayload['honeypot'])) {
-            $payload['honeypot']['name'] = $eventPayload['honeypot']['name'];
-            $payload['honeypot']['value'] = $eventPayload['honeypot']['hash'];
         }
 
         return $payload;

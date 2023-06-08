@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Bundles\GraphQL\Arguments;
 use craft\gql\base\Arguments;
 use GraphQL\Type\Definition\Type;
 
-class RecaptchaArguments extends Arguments
+class ReCaptchaArguments extends Arguments
 {
     public static function getArguments(): array
     {
@@ -13,12 +13,12 @@ class RecaptchaArguments extends Arguments
             'name' => [
                 'name' => 'name',
                 'type' => Type::string(),
-                'description' => 'The Recaptcha field name (E.g "g-recaptcha-response" or "h-recaptcha-response").',
+                'description' => 'The ReCaptcha field name (E.g "g-recaptcha-response" or "h-recaptcha-response").',
             ],
             'value' => [
                 'name' => 'value',
                 'type' => Type::string(),
-                'description' => 'The Recaptcha response value.',
+                'description' => 'The ReCaptcha verification response value.',
             ],
         ];
     }

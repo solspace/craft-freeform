@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
@@ -10,11 +11,10 @@ use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\HoneypotResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\ReCaptchaResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Library\Composer\Components\Form;
-use Solspace\Freeform\Library\Helpers\CaptchaHelper;
 
 class FormInterface extends AbstractInterface
 {
@@ -159,34 +159,35 @@ class FormInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The name of the Event that will be added to Google Tag Manager\'s data layer ',
             ],
-            'recaptchaEnabled' => [
-                'name' => 'recaptchaEnabled',
-                'type' => Type::boolean(),
-                'description' => 'Should Captchas be enabled for this form',
-            ],
-            'recaptchaHandle' => [
-                'name' => 'recaptchaHandle',
-                'type' => Type::string(),
-                'description' => 'The Recaptcha handle for this form',
-                'resolve' => function ($source) {
-                    if ($source instanceof Form) {
-                        return CaptchaHelper::getFieldHandle($source);
-                    }
-
-                    return null;
-                },
+            'reCaptcha' => [
+                'name' => 'reCaptcha',
+                'type' => new ObjectType([
+                    'name' => 'ReCaptchaObjectType',
+                    'fields' => [
+                        'enabled' => [
+                            'type' => Type::boolean(),
+                            'description' => 'Is ReCaptcha enabled for this form',
+                        ],
+                        'name' => [
+                            'type' => Type::string(),
+                            'description' => 'The forms GraphQL mutation name for submissions',
+                        ],
+                    ],
+                ]),
+                'resolve' => ReCaptchaResolver::class.'::resolve',
+                'description' => 'The ReCaptcha for this form',
             ],
             'honeypot' => [
                 'name' => 'honeypot',
                 'type' => HoneypotInterface::getType(),
                 'resolve' => HoneypotResolver::class.'::resolve',
-                'description' => 'A fresh honeypot instance',
+                'description' => 'The Honeypot for this form',
             ],
             'csrfToken' => [
                 'name' => 'csrfToken',
                 'type' => CsrfTokenInterface::getType(),
                 'resolve' => CsrfTokenResolver::class.'::resolve',
-                'description' => 'A fresh csrf token',
+                'description' => 'The CSRF Token for this form',
             ],
             // Layout
             'pages' => [

@@ -530,11 +530,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
         $output .= '<form'.$this->getAttributes().'>'.\PHP_EOL;
 
-        $hiddenFields = $this->layout->getFields(HiddenField::class);
+        $hiddenFields = $this->getCurrentPage()->getFields()->getList(HiddenField::class);
         foreach ($hiddenFields as $field) {
-            if ($field->getPageIndex() === $this->getCurrentPage()->getIndex()) {
-                $output .= $field->renderInput();
-            }
+            $output .= $field->renderInput();
         }
 
         $afterTag = new RenderTagEvent($this);

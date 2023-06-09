@@ -199,14 +199,16 @@ class StripeService extends Component
         if ($this->hasPaymentFieldDisplayed($form)) {
             $variables = $this->getStripeVariables($form);
 
-            $event->attachAttribute('data-stripe-payment-field-id', $variables->id);
-            $event->attachAttribute('data-stripe-currency-selector', $variables->currencySelector);
-            $event->attachAttribute('data-stripe-currency-fixed', $variables->currencyFixed);
-            $event->attachAttribute('data-stripe-amount-selector', $variables->amountSelector);
-            $event->attachAttribute('data-stripe-amount-fixed', $variables->amountFixed);
-            $event->attachAttribute('data-stripe-usage', $variables->usage);
-            $event->attachAttribute('data-stripe-public-key', $variables->publicKey);
-            $event->attachAttribute('data-stripe', true);
+            $form->getAttributes()
+                ->set('data-stripe-payment-field-id', $variables->id)
+                ->set('data-stripe-currency-selector', $variables->currencySelector)
+                ->set('data-stripe-currency-fixed', $variables->currencyFixed)
+                ->set('data-stripe-amount-selector', $variables->amountSelector)
+                ->set('data-stripe-amount-fixed', $variables->amountFixed)
+                ->set('data-stripe-usage', $variables->usage)
+                ->set('data-stripe-public-key', $variables->publicKey)
+                ->set('data-stripe', true)
+            ;
         }
     }
 

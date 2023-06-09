@@ -22,15 +22,15 @@ class OptionalFieldJavascriptBundle extends FeatureBundle
 
                 foreach ($form->getLayout()->getFields() as $field) {
                     if ($field instanceof DatetimeField && $field->isUseDatepicker()) {
-                        $event->attachAttribute('data-scripts-datepicker', true);
+                        $form->getAttributes()->set('data-scripts-datepicker', true);
                     }
 
                     if ($field instanceof PhoneField && $field->isUseJsMask()) {
-                        $event->attachAttribute('data-scripts-js-mask', true);
+                        $form->getAttributes()->set('data-scripts-js-mask', true);
                     }
 
                     if ($field instanceof SignatureField) {
-                        $event->attachAttribute('data-scripts-signature', true);
+                        $form->getAttributes()->set('data-scripts-signature', true);
                     }
                 }
             }

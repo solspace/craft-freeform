@@ -18,6 +18,7 @@ use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\BooleanInterface;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
+use Solspace\Freeform\Library\Attributes\Attributes;
 use Twig\Markup;
 
 /**
@@ -49,7 +50,7 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
         return $this->checkedByDefault;
     }
 
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }
@@ -63,14 +64,13 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
 
     public function getInputHtml(): string
     {
-        $attributes = $this->attributes->getInput()
-            ->clone()
-            ->setIfEmpty('name', $this->getHandle())
-            ->setIfEmpty('type', FieldInterface::TYPE_HIDDEN)
-            ->setIfEmpty('value', '')
-        ;
+        $attributes = new Attributes([
+            'name' => $this->getHandle(),
+            'type' => FieldInterface::TYPE_HIDDEN,
+            'value' => '',
+        ]);
 
-        $output = '<input '.$attributes.' />';
+        $output = '<input'.$attributes.' />';
         $output .= $this->getSingleInputHtml();
 
         return $output;

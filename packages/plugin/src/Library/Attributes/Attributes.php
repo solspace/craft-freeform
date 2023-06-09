@@ -48,6 +48,7 @@ class Attributes implements \Countable, \JsonSerializable
                 default => $value,
             };
 
+            $value = trim($value);
             $value = htmlspecialchars($value, \ENT_QUOTES, 'UTF-8');
 
             $stringArray[] = "{$key}=\"{$value}\"";
@@ -75,6 +76,8 @@ class Attributes implements \Countable, \JsonSerializable
         }
 
         if (\is_array($value)) {
+            $value = array_map('trim', $value);
+            $value = array_filter($value);
             $value = implode(' ', $value);
         }
 
@@ -87,7 +90,7 @@ class Attributes implements \Countable, \JsonSerializable
             case self::STRATEGY_APPEND:
             default:
                 if (\array_key_exists($key, $this->attributes)) {
-                    $this->attributes[$key] .= ' '.$value;
+                    $this->attributes[$key] = trim($this->attributes[$key].' '.$value);
                 } else {
                     $this->attributes[$key] = $value;
                 }

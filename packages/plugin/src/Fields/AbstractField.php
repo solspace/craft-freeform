@@ -426,6 +426,33 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return [];
     }
 
+    public function setParameters(array $parameters = null): void
+    {
+        if (!\is_array($parameters)) {
+            return;
+        }
+
+        foreach ($parameters as $key => $value) {
+            try {
+                $property = new \ReflectionProperty($this, $key);
+                $type = $property->getType();
+                if ($type) {
+                    $instance = new \ReflectionClass($type->getName());
+                    if (Attributes::class === $instance->getName() || $instance->isSubclassOf(Attributes::class)) {
+                        $this->{$key}->merge($value);
+                        unset($parameters[$key]);
+
+                        continue;
+                    }
+                }
+            } catch (\ReflectionException $e) {
+                // do nothing
+            }
+
+            $this->parameters->add($key, $value);
+        }
+    }
+
     /**
      * Assemble the Label HTML string.
      */
@@ -583,32 +610,5 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     protected function renderRaw(string $output): Markup
     {
         return Template::raw($output);
-    }
-
-    protected function setParameters(array $parameters = null): void
-    {
-        if (!\is_array($parameters)) {
-            return;
-        }
-
-        foreach ($parameters as $key => $value) {
-            try {
-                $property = new \ReflectionProperty($this, $key);
-                $type = $property->getType();
-                if ($type) {
-                    $instance = new \ReflectionClass($type->getName());
-                    if (Attributes::class === $instance->getName() || $instance->isSubclassOf(Attributes::class)) {
-                        $this->{$key}->merge($value);
-                        unset($parameters[$key]);
-
-                        continue;
-                    }
-                }
-            } catch (\ReflectionException $e) {
-                // do nothing
-            }
-
-            $this->parameters->add($key, $value);
-        }
     }
 }

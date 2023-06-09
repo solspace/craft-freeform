@@ -1,0 +1,45 @@
+{% macro getFieldTemplate(type) -%}
+    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-4/fields/" %}
+    {{- fieldTemplatePath ~ type ~ ".twig" -}}
+{%- endmacro %}
+
+{% macro render(row, form) %}
+    {% import _self as self %}
+
+    {% set width = (12 / (row|length)) %}
+
+    <div{{ form.attributes.row }}>
+        {% for cell in row %}
+
+            {% set field = cell.field %}
+            {% do field.setParameters({
+                attributes: {
+                    container: {
+                        class: [
+                            "form-group",
+                            "col-sm-" ~ width,
+                            "col-xs-12",
+                            "col-12",
+                            field.errors|length ? "has-error",
+                        ],
+                    },
+                    label: { class: [
+                        field.required ? "required",
+                        field.hasErrors ? "is-invalid",
+                    ]},
+                    input: { class: [
+                        "form-control",
+                        "ff-fieldtype-" ~ field.type,
+                        field.hasErrors ? "is-invalid",
+                    ] },
+                    instructions: { class: ["form-text", "text-muted"] },
+                    error: { class: "invalid-feedback" },
+                }
+            }) %}
+
+            {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+
+        {% endfor %}
+    </div>
+
+{% endmacro %}

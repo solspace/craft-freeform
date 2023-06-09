@@ -187,4 +187,22 @@ class AttributesTest extends TestCase
         $attributes->set('-class', 'replacer');
         $this->assertEquals(' class="replacer"', (string) $attributes);
     }
+
+    public function testAppendingArrayValues()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', ['class-1', ' class-2']);
+        $attributes->set('class', ['class-3 ', null, null, false, ' ', 'class-4']);
+
+        $this->assertEquals(' class="class-1 class-2 class-3 class-4"', (string) $attributes);
+    }
+
+    public function testSettingSingleValueAsAppendToEmptyAttribute()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', '');
+        $attributes->set('class', 'class-1');
+
+        $this->assertEquals(' class="class-1"', (string) $attributes);
+    }
 }

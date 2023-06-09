@@ -7,6 +7,7 @@ class TableAttributesCollection extends Attributes
     protected Attributes $table;
     protected Attributes $row;
     protected Attributes $column;
+    protected Attributes $label;
     protected Attributes $input;
     protected Attributes $select;
     protected Attributes $checkbox;
@@ -18,6 +19,7 @@ class TableAttributesCollection extends Attributes
         $this->table = new Attributes();
         $this->row = new Attributes();
         $this->column = new Attributes();
+        $this->label = new Attributes();
         $this->input = new Attributes();
         $this->select = new Attributes();
         $this->checkbox = new Attributes();
@@ -40,6 +42,11 @@ class TableAttributesCollection extends Attributes
     public function getColumn(): Attributes
     {
         return $this->column;
+    }
+
+    public function getLabel(): Attributes
+    {
+        return $this->label;
     }
 
     public function getInput(): Attributes

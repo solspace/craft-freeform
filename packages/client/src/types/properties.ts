@@ -35,6 +35,7 @@ export enum PropertyType {
 export type Middleware = [string, GenericValue[]?];
 export type VisibilityFilter = string;
 export type Option = { value: string | number; label: string };
+export type OptionCollection = { label: string; children: Option[] };
 
 type BaseProperty<T, PT extends PropertyType> = {
   type: PT;
@@ -66,7 +67,7 @@ export type StringProperty = BaseProperty<string, PropertyType.String>;
 export type TextareaProperty = BaseProperty<string, PropertyType.Textarea>;
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
-  options: Option[];
+  options: Array<Option | OptionCollection>;
   emptyOption?: string;
 };
 export type TableProperty = BaseProperty<

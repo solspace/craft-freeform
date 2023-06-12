@@ -17,7 +17,7 @@ use yii\base\Event;
 
 class HCaptcha extends FeatureBundle
 {
-    private string $lastError;
+    private string $lastError = '';
 
     public function __construct()
     {

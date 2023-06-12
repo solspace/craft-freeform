@@ -24,6 +24,7 @@ use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SinglePaymentAction;
 use Solspace\Freeform\Integrations\PaymentGateways\Actions\Stripe\SubscriptionPaymentIntentAction;
+use Solspace\Freeform\Integrations\PaymentGateways\PaymentProperties;
 use Solspace\Freeform\Integrations\PaymentGateways\Stripe;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
@@ -46,7 +47,7 @@ class StripeService extends Component
         $integrationId = $properties->getIntegrationId();
         $paymentType = $properties->getPaymentType();
 
-        if (!$integrationId || PaymentProperties::PAYMENT_TYPE_SINGLE !== $paymentType || !$form->isValid()) {
+        if (!$integrationId || PaymentProperties::PAYMENT_TYPE_SINGLE !== $paymentType || !$form->isValid() || !$this->hasPaymentFieldDisplayed($form)) {
             return;
         }
 
@@ -130,7 +131,7 @@ class StripeService extends Component
             PaymentProperties::PAYMENT_TYPE_PREDEFINED_SUBSCRIPTION,
         ];
 
-        if (!\in_array($paymentType, $subscriptionTypes, true) || !$form->isValid()) {
+        if (!\in_array($paymentType, $subscriptionTypes, true) || !$form->isValid() || !$this->hasPaymentFieldDisplayed($form)) {
             return;
         }
 

@@ -77,6 +77,30 @@ class RadioGroupField extends AbstractExternalOptionsField implements OneLineInt
         return '';
     }
 
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+
+        $values = [];
+
+        foreach ($this->getOptions() as $option) {
+            $values[] = '"'.$option->getValue().'"';
+        }
+
+        if (!empty($values)) {
+            $description[] = 'Options include '.implode(', ', $values).'.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     /**
      * {@inheritDoc}
      */

@@ -96,6 +96,21 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
         return $this->renderRaw($this->getSingleInputHtml());
     }
 
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+        $description[] = 'Option value is "'.$this->getDefaultValue().'".';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     protected function onBeforeInputHtml(): string
     {
         return '<label'.$this->attributes->getLabel().'>';

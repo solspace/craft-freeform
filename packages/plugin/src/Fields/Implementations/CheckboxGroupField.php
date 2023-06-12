@@ -85,6 +85,35 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements MultiVa
         return implode(', ', $labels);
     }
 
+    public function getContentGqlType(): array|\GraphQL\Type\Definition\Type
+    {
+        return \GraphQL\Type\Definition\Type::listOf(\GraphQL\Type\Definition\Type::string());
+    }
+
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Multiple option values allowed.';
+
+        $values = [];
+
+        foreach ($this->getOptions() as $option) {
+            $values[] = '"'.$option->getValue().'"';
+        }
+
+        if (!empty($values)) {
+            $description[] = 'Options include ['.implode(', ', $values).'].';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     /**
      * {@inheritDoc}
      */

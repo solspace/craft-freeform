@@ -44,6 +44,10 @@ class PayloadStorage implements FormContextStorageInterface
     {
         $form = $event->getForm();
 
+        if ($form->isGraphQLPosted()) {
+            return;
+        }
+
         if ($event->getRequest()->isConsoleRequest) {
             return;
         }

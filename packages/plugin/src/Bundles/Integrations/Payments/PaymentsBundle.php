@@ -107,6 +107,10 @@ class PaymentsBundle extends FeatureBundle
 
             $token = $field->getValue();
 
+            if ($form->isGraphQLPosted() && !$token) {
+                return true; // no payment field value, so no processing needed
+            }
+
             $result = false;
 
             switch ($paymentType) {

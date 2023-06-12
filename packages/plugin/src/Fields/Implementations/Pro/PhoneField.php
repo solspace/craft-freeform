@@ -73,4 +73,21 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
 
         return parent::getInputHtml();
     }
+
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $description = $this->getContentGqlDescription();
+
+        if (!empty($this->getPattern())) {
+            $description[] = 'Pattern: "'.$this->getPattern().'".';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
 }

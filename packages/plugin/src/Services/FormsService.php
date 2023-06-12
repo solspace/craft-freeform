@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\base\Event;
 use craft\db\Query;
 use craft\helpers\Template;
 use craft\helpers\UrlHelper;
@@ -23,6 +24,7 @@ use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\DeleteEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
+use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
 use Solspace\Freeform\Fields\Implementations\Pro\FileDragAndDropField;
 use Solspace\Freeform\Fields\Implementations\Pro\OpinionScaleField;
 use Solspace\Freeform\Form\Form;
@@ -34,7 +36,11 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FormRecord;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Twig\Error\LoaderError;
+use Twig\Error\SyntaxError;
 use Twig\Markup;
+use yii\base\Exception;
+use yii\base\InvalidConfigException;
 
 class FormsService extends BaseService implements FormHandlerInterface
 {
@@ -520,6 +526,45 @@ class FormsService extends BaseService implements FormHandlerInterface
         }
 
         return false;
+    }
+
+    /**
+     * @throws SyntaxError
+     * @throws InvalidConfigException
+     * @throws Exception
+     * @throws LoaderError
+     */
+    public function getReturnUrl(Form $form, Submission $submission): string
+    {
+        $request = \Craft::$app->getRequest();
+
+        $postedReturnUrl = $request->post(Form::RETURN_URI_KEY);
+        if ($postedReturnUrl) {
+            $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
+            if (false === $returnUrl) {
+                $returnUrl = $form->getReturnUrl();
+            }
+        } else {
+            $returnUrl = $form->getReturnUrl();
+        }
+
+        $returnUrl = \Craft::$app->view->renderString(
+            $returnUrl,
+            [
+                'form' => $form,
+                'submission' => $submission,
+            ]
+        );
+
+        $event = new ReturnUrlEvent($form, $submission, $returnUrl);
+        Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);
+        $returnUrl = $event->getReturnUrl();
+
+        if (!$returnUrl) {
+            $returnUrl = $request->getUrl();
+        }
+
+        return $returnUrl;
     }
 
     private function getFormQuery(): Query

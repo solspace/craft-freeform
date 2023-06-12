@@ -7,6 +7,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\ScalesType;
 
+/**
+ * @deprecated Please use specific OpinionScaleGenerator instead
+ */
 class ScalesGenerator extends AbstractGenerator
 {
     public static function getTypeClass(): string

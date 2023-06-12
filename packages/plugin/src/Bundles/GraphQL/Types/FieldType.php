@@ -12,7 +12,7 @@ class FieldType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'FreeformField';
+        return 'FreeformFieldType';
     }
 
     public static function getTypeDefinition(): Type

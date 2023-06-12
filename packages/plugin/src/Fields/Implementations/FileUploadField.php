@@ -14,8 +14,11 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
+use craft\helpers\Assets;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
+use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
+use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
@@ -24,8 +27,9 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
 use Solspace\Freeform\Library\Helpers\FileHelper;
-
-use function Solspace\Freeform\Fields\is_countable;
+use yii\base\Exception;
+use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
 
 #[Type(
     name: 'File Upload',
@@ -170,108 +174,257 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
         return self::$filesUploaded[$this->handle];
     }
 
-    /**
-     * Validate the field and add error messages if any.
-     */
-    protected function validate(): array
+    public function getContentGqlType(): array|\GraphQL\Type\Definition\Type
     {
+        return \GraphQL\Type\Definition\Type::listOf(FileUploadType::getType());
+    }
+
+    public function getContentGqlMutationArgumentType(): \GraphQL\Type\Definition\Type|array
+    {
+        $description = $this->getContentGqlDescription();
+
+        if (1 === $this->getFileCount()) {
+            $description[] = 'Only 1 file can be uploaded at once.';
+        } else {
+            $description[] = 'Multiple files can be uploaded at once.';
+        }
+
+        $description[] = 'File types include '.implode(', ', $this->getFileKinds()).'.';
+        $description[] = 'Max file size is '.$this->getMaxFileSizeKB().'KB.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => FileUploadInputType::getType(),
+            'description' => trim($description),
+        ];
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function validateGraphQL(): void
+    {
+        $uploadedFiles = 0;
+
         $uploadErrors = [];
 
         $handle = $this->handle;
-        if (!isset(self::$filesUploaded[$handle])) {
-            $exists = isset($_FILES[$handle]) && !empty($_FILES[$handle]['name']) && !$this->isHidden();
 
-            if ($exists && !\is_array($_FILES[$handle]['name'])) {
-                foreach (self::FILE_KEYS as $key) {
-                    $_FILES[$handle][$key] = [$_FILES[$handle][$key]];
-                }
+        $validExtensions = $this->getValidExtensions();
+
+        $arguments = $this->getForm()->getGraphQLArguments();
+
+        $filesService = $this->getForm()->getFileUploadHandler();
+
+        if (isset($arguments[$handle]) && !$this->isHidden()) {
+            $fileCount = \count($arguments[$handle]);
+
+            if ($fileCount > $this->getFileCount()) {
+                $uploadErrors[] = $this->translate('Tried uploading {count} files. Maximum {max} files allowed.', [
+                    'count' => $fileCount,
+                    'max' => $this->getFileCount(),
+                ]);
             }
 
-            $uploadedFiles = 0;
-            if ($exists && is_countable($_FILES[$handle]['name'])) {
-                $fileCount = \count($_FILES[$handle]['name']);
+            foreach ($arguments[$handle] as &$fileUpload) {
+                if (!empty($fileUpload['fileData'])) {
+                    $matches = $filesService->extractBase64String($fileUpload);
+                    $fileData = base64_decode($matches['data']);
 
-                if ($fileCount > $this->getFileCount()) {
-                    $uploadErrors[] = $this->translate(
-                        'Tried uploading {count} files. Maximum {max} files allowed.',
-                        ['max' => $this->getFileCount(), 'count' => $fileCount]
-                    );
-                }
+                    if ($fileData) {
+                        if (empty($fileUpload['filename'])) {
+                            // Make up a filename
+                            $extension = null;
 
-                foreach ($_FILES[$handle]['name'] as $index => $name) {
-                    $extension = pathinfo($name, \PATHINFO_EXTENSION);
-                    $validExtensions = $this->getValidExtensions();
+                            if (FileHelper::isMimeTypeCheckEnabled() && !empty($matches['type'])) {
+                                try {
+                                    $extension = FileHelper::getExtensionByMimeType($matches['type']);
+                                } catch (InvalidArgumentException) {
+                                }
 
-                    $tmpName = $_FILES[$handle]['tmp_name'][$index];
-                    $errorCode = $_FILES[$handle]['error'][$index];
+                                if (!$extension) {
+                                    $uploadErrors[] = $this->translate('Invalid file type provided');
+                                }
+                            }
 
-                    if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
-                        continue;
-                    }
-
-                    // Check the mime type if the server supports it
-                    if (FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
-                        $mimeType = FileHelper::getMimeType($tmpName);
-                        $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
-
-                        if ($mimeExtension) {
-                            $extension = $mimeExtension;
-                        } else {
-                            $uploadErrors[] = $this->translate(
-                                'Unknown file type'
-                            );
+                            $fileUpload['filename'] = 'Upload.'.$extension;
                         }
-                    }
 
-                    if (empty($tmpName)) {
-                        switch ($errorCode) {
-                            case \UPLOAD_ERR_INI_SIZE:
-                            case \UPLOAD_ERR_FORM_SIZE:
-                                $uploadErrors[] = $this->translate('File size too large');
+                        $filename = Assets::prepareAssetName($fileUpload['filename']);
+                        $extension = pathinfo($filename, \PATHINFO_EXTENSION);
 
-                                break;
-
-                            case \UPLOAD_ERR_PARTIAL:
-                                $uploadErrors[] = $this->translate('The file was only partially uploaded');
-
-                                break;
+                        // Valid the extension
+                        if (!\in_array(strtolower($extension), $validExtensions, true)) {
+                            $uploadErrors[] = $this->translate("'{extension}' is not an allowed file extension", [
+                                'extension' => $extension,
+                            ]);
                         }
-                        $uploadErrors[] = $this->translate('Could not upload file');
-                    }
 
-                    // Check for the correct file extension
-                    if (!\in_array(strtolower($extension), $validExtensions, true)) {
-                        $uploadErrors[] = $this->translate(
-                            "'{extension}' is not an allowed file extension",
-                            ['extension' => $extension]
-                        );
-                    }
+                        // Cannot get the file size without moving to temp folder
+                        $tempPath = $filesService->moveToBase64FileTempFolder($fileUpload, $extension);
 
-                    $fileSizeKB = ceil($_FILES[$handle]['size'][$index] / 1024);
-                    if ($fileSizeKB > $this->getMaxFileSizeKB()) {
-                        $uploadErrors[] = $this->translate(
-                            'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
-                            ['fileSize' => $fileSizeKB, 'maxFileSize' => $this->getMaxFileSizeKB()]
-                        );
+                        $fileSizeKB = ceil(filesize($tempPath) / 1024);
+
+                        if ($fileSizeKB > $this->getMaxFileSizeKB()) {
+                            $uploadErrors[] = $this->translate('You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB', [
+                                'fileSize' => $fileSizeKB,
+                                'maxFileSize' => $this->getMaxFileSizeKB(),
+                            ]);
+                        }
+
+                        ++$uploadedFiles;
+                    } else {
+                        $uploadErrors[] = $this->translate('Invalid file data provided');
+                    }
+                } elseif (!empty($fileUpload['url'])) {
+                    if (empty($fileUpload['filename'])) {
+                        // Make up a filename
+                        $url = parse_url($fileUpload['url']);
+                        $filename = pathinfo($url['path'], \PATHINFO_FILENAME);
+                        $extension = pathinfo($url['path'], \PATHINFO_EXTENSION);
+
+                        $fileUpload['filename'] = $filename.'.'.$extension;
                     }
 
                     ++$uploadedFiles;
                 }
             }
-
-            if (!$uploadedFiles && $this->isRequired() && !$this->isHidden()) {
-                $uploadErrors[] = $this->translate('This field is required');
-            }
-
-            // if there are errors - prevent the file from being uploaded
-            if ($uploadErrors || $this->isHidden()) {
-                self::$filesUploaded[$handle] = null;
-            }
-
-            self::$filesUploadedErrors[$handle] = $uploadErrors;
         }
 
-        return self::$filesUploadedErrors[$handle];
+        if (!$uploadedFiles && $this->isRequired() && !$this->isHidden()) {
+            $uploadErrors[] = $this->translate('This field is required');
+        }
+
+        // if there are errors - prevent the file from being uploaded
+        if ($uploadErrors || $this->isHidden()) {
+            self::$filesUploaded[$handle] = null;
+        }
+
+        self::$filesUploadedErrors[$handle] = $uploadErrors;
+
+        $this->getForm()->setGraphQLArguments($arguments);
+    }
+
+    /**
+     * @throws InvalidConfigException
+     */
+    public function validateFiles(): void
+    {
+        $uploadedFiles = 0;
+
+        $uploadErrors = [];
+
+        $handle = $this->handle;
+
+        $exists = isset($_FILES[$handle]) && !empty($_FILES[$handle]['name']) && !$this->isHidden();
+
+        if ($exists && !\is_array($_FILES[$handle]['name'])) {
+            foreach (self::FILE_KEYS as $key) {
+                $_FILES[$handle][$key] = [$_FILES[$handle][$key]];
+            }
+        }
+
+        if ($exists && is_countable($_FILES[$handle]['name'])) {
+            $fileCount = \count($_FILES[$handle]['name']);
+
+            if ($fileCount > $this->getFileCount()) {
+                $uploadErrors[] = $this->translate(
+                    'Tried uploading {count} files. Maximum {max} files allowed.',
+                    ['max' => $this->getFileCount(), 'count' => $fileCount]
+                );
+            }
+
+            foreach ($_FILES[$handle]['name'] as $index => $name) {
+                $extension = pathinfo($name, \PATHINFO_EXTENSION);
+                $validExtensions = $this->getValidExtensions();
+
+                $tmpName = $_FILES[$handle]['tmp_name'][$index];
+                $errorCode = $_FILES[$handle]['error'][$index];
+
+                if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
+                    continue;
+                }
+
+                // Check the mime type if the server supports it
+                if (FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
+                    $mimeType = FileHelper::getMimeType($tmpName);
+                    $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
+
+                    if ($mimeExtension) {
+                        $extension = $mimeExtension;
+                    } else {
+                        $uploadErrors[] = $this->translate(
+                            'Unknown file type'
+                        );
+                    }
+                }
+
+                if (empty($tmpName)) {
+                    switch ($errorCode) {
+                        case \UPLOAD_ERR_INI_SIZE:
+                        case \UPLOAD_ERR_FORM_SIZE:
+                            $uploadErrors[] = $this->translate('File size too large');
+
+                            break;
+
+                        case \UPLOAD_ERR_PARTIAL:
+                            $uploadErrors[] = $this->translate('The file was only partially uploaded');
+
+                            break;
+                    }
+                    $uploadErrors[] = $this->translate('Could not upload file');
+                }
+
+                // Check for the correct file extension
+                if (!\in_array(strtolower($extension), $validExtensions, true)) {
+                    $uploadErrors[] = $this->translate(
+                        "'{extension}' is not an allowed file extension",
+                        ['extension' => $extension]
+                    );
+                }
+
+                $fileSizeKB = ceil($_FILES[$handle]['size'][$index] / 1024);
+                if ($fileSizeKB > $this->getMaxFileSizeKB()) {
+                    $uploadErrors[] = $this->translate(
+                        'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
+                        ['fileSize' => $fileSizeKB, 'maxFileSize' => $this->getMaxFileSizeKB()]
+                    );
+                }
+
+                ++$uploadedFiles;
+            }
+        }
+
+        if (!$uploadedFiles && $this->isRequired() && !$this->isHidden()) {
+            $uploadErrors[] = $this->translate('This field is required');
+        }
+
+        // if there are errors - prevent the file from being uploaded
+        if ($uploadErrors || $this->isHidden()) {
+            self::$filesUploaded[$handle] = null;
+        }
+
+        self::$filesUploadedErrors[$handle] = $uploadErrors;
+    }
+
+    /**
+     * Validate the field and add error messages if any.
+     *
+     * @throws Exception
+     */
+    protected function validate(): array
+    {
+        if (!isset(self::$filesUploaded[$this->handle])) {
+            if ($this->getForm()->isGraphQLPosted()) {
+                $this->validateGraphQL();
+            } else {
+                $this->validateFiles();
+            }
+        }
+
+        return self::$filesUploadedErrors[$this->handle];
     }
 
     /**

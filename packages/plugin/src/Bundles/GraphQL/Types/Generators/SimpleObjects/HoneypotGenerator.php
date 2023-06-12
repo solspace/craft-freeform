@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects;
 
-use Solspace\Freeform\Bundles\GraphQL\Arguments\SimpleObjects\EmptyArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\HoneypotArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\HoneypotType;
@@ -16,7 +16,7 @@ class HoneypotGenerator extends AbstractGenerator
 
     public static function getArgumentsClass(): string
     {
-        return EmptyArguments::class;
+        return HoneypotArguments::class;
     }
 
     public static function getInterfaceClass(): string
@@ -26,6 +26,6 @@ class HoneypotGenerator extends AbstractGenerator
 
     public static function getDescription(): string
     {
-        return 'A fresh honeypot instance';
+        return 'The Freeform Honeypot entity';
     }
 }

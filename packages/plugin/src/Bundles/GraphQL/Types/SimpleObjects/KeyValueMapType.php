@@ -7,6 +7,9 @@ use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\KeyValueMapInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
 
+/**
+ * @deprecated Please do not use
+ */
 class KeyValueMapType extends AbstractObjectType
 {
     public static function getName(): string

@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields;
 
 use craft\helpers\Template;
+use GraphQL\Type\Definition\Type;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\AttributesTransformer;
@@ -22,6 +23,7 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
+use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -134,7 +136,16 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     public function setValue(mixed $value): FieldInterface
     {
-        $this->value = $value;
+        if ($this instanceof RatingField) {
+            // Prevents GraphQL from triggering an number constraint violation
+            if (!empty($this->getValue())) {
+                $this->value = $value;
+            } else {
+                $this->value = null;
+            }
+        } else {
+            $this->value = $value;
+        }
 
         return $this;
     }
@@ -426,6 +437,40 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return [];
     }
 
+    public function getContentGqlDescription(): array
+    {
+        $description = [];
+        $description[] = $this->getInstructions();
+
+        if ($this->isRequired()) {
+            $description[] = 'Value is required.';
+        }
+
+        return $description;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        return Type::string();
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
+    public function includeInGqlSchema(): bool
+    {
+        return true;
+    }
+
     /**
      * Assemble the Label HTML string.
      */
@@ -532,7 +577,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     protected function validate(): array
     {
-        $event = new ValidateEvent($this);
+        $form = $this->getForm();
+
+        $event = new ValidateEvent($this, $form);
         Event::trigger($this, self::EVENT_BEFORE_VALIDATE, $event);
 
         $errors = $this->getErrors();

@@ -7,6 +7,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\KeyValueMapGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\KeyValueMapType;
 
+/**
+ * @deprecated Please do not use
+ */
 class KeyValueMapInterface extends AbstractInterface
 {
     public static function getName(): string

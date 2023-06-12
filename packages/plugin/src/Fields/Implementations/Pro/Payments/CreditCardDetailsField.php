@@ -121,6 +121,20 @@ class CreditCardDetailsField extends AbstractField implements DefaultFieldInterf
         return '';
     }
 
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Expects a Stripe card token value that represents a credit card\'s details.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     /**
      * Outputs the HTML of input.
      */

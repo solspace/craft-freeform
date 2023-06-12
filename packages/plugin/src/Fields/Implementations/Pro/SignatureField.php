@@ -87,6 +87,19 @@ class SignatureField extends AbstractField implements ExtraFieldInterface
         return $this->penDotSize;
     }
 
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Expects the contents of the file in Base64 format.';
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     /**
      * Assemble the Input HTML string.
      */

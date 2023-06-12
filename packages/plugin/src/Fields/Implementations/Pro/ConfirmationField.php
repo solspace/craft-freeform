@@ -43,6 +43,22 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         return $this->targetField;
     }
 
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $field = $this->getForm()->getLayout()->getField($this->getTargetField()->getUid());
+
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Value must match the "'.$field->getLabel().'" field value.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     protected function validate(): array
     {
         $errors = parent::validate();

@@ -25,6 +25,11 @@ class CreditCardNumberField extends TextField implements ExtraFieldInterface
         return true;
     }
 
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
+
     /**
      * Outputs the HTML of input.
      */

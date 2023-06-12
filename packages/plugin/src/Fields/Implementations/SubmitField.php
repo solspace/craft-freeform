@@ -154,6 +154,11 @@ class SubmitField extends AbstractField implements DefaultFieldInterface, InputO
         return $output;
     }
 
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
+
     private function isFirstPage(): bool
     {
         return 0 === $this->getPageIndex();

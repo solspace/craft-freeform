@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects;
 
-use Solspace\Freeform\Bundles\GraphQL\Arguments\SimpleObjects\EmptyArguments;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\CsrfTokenArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\CsrfTokenType;
@@ -16,7 +16,7 @@ class CsrfTokenGenerator extends AbstractGenerator
 
     public static function getArgumentsClass(): string
     {
-        return EmptyArguments::class;
+        return CsrfTokenArguments::class;
     }
 
     public static function getInterfaceClass(): string
@@ -26,6 +26,6 @@ class CsrfTokenGenerator extends AbstractGenerator
 
     public static function getDescription(): string
     {
-        return 'A fresh csrf token';
+        return 'The Freeform CSRF Token entity';
     }
 }

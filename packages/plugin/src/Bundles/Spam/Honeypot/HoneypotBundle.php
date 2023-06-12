@@ -111,12 +111,22 @@ class HoneypotBundle extends FeatureBundle
         }
 
         $form = $event->getForm();
+        $isEnhanced = $this->isEnhanced();
+        $settings = $this->getSettingsService();
+        $settingsModel = $settings->getSettingsModel();
+        $honeypotName = $settingsModel->customHoneypotName ?: Honeypot::NAME_PREFIX;
+
+        if ($form->isGraphQLPosted()) {
+            $postValues = $form->getGraphQLArguments();
+
+            if (isset($postValues['honeypot']['value'], $postValues['honeypot']['name']) && $postValues['honeypot']['name'] === $honeypotName && '' === $postValues['honeypot']['value']) {
+                return;
+            }
+        }
 
         /** @var array $postValues */
         $postValues = \Craft::$app->request->post();
-        $isEnhanced = $this->isEnhanced();
 
-        $honeypotName = $this->getSettingsService()->getSettingsModel()->customHoneypotName ?: Honeypot::NAME_PREFIX;
         if (!$isEnhanced) {
             if (isset($postValues[$honeypotName]) && '' === $postValues[$honeypotName]) {
                 return;
@@ -137,8 +147,8 @@ class HoneypotBundle extends FeatureBundle
             }
         }
 
-        if ($this->getSettingsService()->isSpamBehaviourDisplayErrors()) {
-            $errorMessage = $this->getSettingsService()->getCustomErrorMessage();
+        if ($settings->isSpamBehaviourDisplayErrors()) {
+            $errorMessage = $settings->getCustomErrorMessage();
             if (!$errorMessage) {
                 $errorMessage = 'Form honeypot is invalid';
             }

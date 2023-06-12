@@ -39,6 +39,23 @@ class TextField extends AbstractField implements PlaceholderInterface
         return self::TYPE_TEXT;
     }
 
+    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    {
+        $description = $this->getContentGqlDescription();
+
+        if (!empty($this->maxLength)) {
+            $description[] = 'Max length: '.$this->maxLength.'.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
     /**
      * Outputs the HTML of input.
      */

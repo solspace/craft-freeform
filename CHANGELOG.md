@@ -1,5 +1,11 @@
 # Solspace Freeform Changelog
 
+## 4.0.26 - 2023-06-12
+
+### Fixed
+- Fixed a bug that could cause issues when using the JS Honeypot enhancement.
+- Fixed a bug where an error would sometimes occur when opening the Diagnostics page.
+
 ## 4.0.25 - 2023-06-05
 
 ### Fixed

@@ -18,7 +18,7 @@ use yii\base\Event;
 
 class ReCaptcha extends FeatureBundle
 {
-    private string $lastError;
+    private string $lastError = '';
 
     public function __construct()
     {

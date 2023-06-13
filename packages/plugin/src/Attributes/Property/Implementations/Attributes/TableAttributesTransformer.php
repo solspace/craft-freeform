@@ -9,7 +9,7 @@ class TableAttributesTransformer implements TransformerInterface
 {
     public function transform($value): TableAttributesCollection
     {
-        return new TableAttributesCollection($value);
+        return new TableAttributesCollection($value ?? []);
     }
 
     public function reverseTransform($value): array

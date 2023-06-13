@@ -72,8 +72,6 @@ interface FieldInterface
 
     public function getUid(): ?string;
 
-    public function getHash(): string;
-
     public function getHandle(): ?string;
 
     public function getLabel(): ?string;

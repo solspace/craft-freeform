@@ -1,6 +1,11 @@
 {% css formCss %}
 
-{{ form.renderTag }}
+{{ form.renderTag({
+    attributes: {
+        row: { class: ["grid-x", "grid-margin-x"] },
+        errors: { class: "callout alert" },
+    },
+}) }}
 
 <script>
   var form = document.querySelector('[data-id="{{ form.anchor }}"]');
@@ -35,7 +40,7 @@
 {% endif %}
 
 {% if form.hasErrors %}
-    <div class="callout alert">
+    <div{{ form.attributes.errors }}>
         {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
@@ -49,29 +54,31 @@
 {% endif %}
 
 <div class="grid-container">
-{% for row in form %}
-    <div class="grid-x grid-margin-x {{ form.customAttributes.rowClass }}">
-        {% for field in row %}
-            {% set width = (12 / (row|length)) %}
+{% for row in form.rows %}
+    <div{{ form.attributes.row }}>
+        {% set width = (12 / (row|length)) %}
 
-            {% set isCheckbox = field.type in ["checkbox","mailing_list"] %}
+        {% for cell in row %}
 
-            {% set columnClass = "" %}
-            {% set columnClass = columnClass ~ form.customAttributes.columnClass %}
-            {% set columnClass = columnClass ~ " medium-" ~ width %}
+            {% set field = cell.field %}
+            {% do field.setParameters({
+                attributes: {
+                    container: { class: [
+                        "medium-" ~ width,
+                        "ff-fieldtype-" ~ field.type,
+                        "cell",
+                    ]},
+                    input: { class: field.type == "checkbox" ? "checkbox" : "form-control" },
+                    label: { class: field.required ? "required" },
+                    instructions: { class: "help-text" },
+                },
+            }) %}
 
-            {% if field.type == "submit" or field.type == "save" %}
-                {% set columnClass = columnClass ~ " submit submit-align-" ~ field.position %}
-            {% endif %}
+            <div{{ field.attributes.container }}>
 
-            <div class="{{ columnClass }} ff-fieldtype-{{ field.type }} cell"{{ field.rulesHtmlData }}>
+                {% if field.type == "checkbox-group" %}
 
-                {% if field.type == "checkbox_group" %}
-
-                    {{ field.renderLabel({
-                        labelClass: (field.required ? " required" : ""),
-                        instructionsClass: "help-text",
-                    }) }}
+                    {{ field.renderLabel }}
 
                     {% for index, option in field.options %}
                         {{ not field.oneLine ? '<div class="checkbox">'|raw }}
@@ -87,15 +94,12 @@
                         {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}
 
-                    {{ field.renderInstructions() }}
-                    {{ field.renderErrors() }}
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
 
-                {% elseif field.type == "radio_group" %}
+                {% elseif field.type == "radio-group" %}
 
-                    {{ field.renderLabel({
-                        labelClass: (field.required ? " required" : ""),
-                        instructionsClass: "help-text",
-                    }) }}
+                    {{ field.renderLabel }}
 
                     {% for index, option in field.options %}
                         {{ not field.oneLine ? '<div class="radio">'|raw }}
@@ -111,8 +115,8 @@
                         {{ not field.oneLine ? '</div>'|raw }}
                     {% endfor %}
 
-                    {{ field.renderInstructions() }}
-                    {{ field.renderErrors() }}
+                    {{ field.renderInstructions }}
+                    {{ field.renderErrors }}
 
                 {% elseif field.type == "cc_details" %}
 
@@ -162,37 +166,26 @@
 
                 {% elseif field.type == "signature" %}
 
-                    {{ field.render({ class: "button" }) }}
+                    {{ field.render({ attributes: {
+                        input: { class: "button" },
+                    }}) }}
 
                 {% elseif field.type == "table" %}
 
                     {{ field.render({
-                        class: "table",
-                        labelClass: (field.required ? " required" : ""),
-                        instructionsClass: "help-block",
                         instructionsBelowField: true,
-                        errorClass: "help-block",
                         addButtonLabel: "Add +",
-                        addButtonClass: "button",
                         removeButtonLabel: "x",
-                        removeButtonClass: "button",
-                        tableTextInputClass: "",
-                        tableSelectInputClass: "",
-                        tableCheckboxInputClass: ""
+                        tableAttributes: {
+                            table: { class: "table" },
+                            addButton: { class: "button" },
+                            removeButton: { class: "button" },
+                        },
                     }) }}
-
-                {% elseif field.type == "submit" or field.type == "save" %}
-
-                    {{ field.render({ class: "button" }) }}
 
                 {% else %}
 
-                    {{ field.render({
-                        class: isCheckbox ? "checkbox" : "form-control",
-                        instructionsClass: "help-text",
-                        instructionsBelowField: true,
-                        labelClass: (field.required ? " required" : ""),
-                    }) }}
+                    {{ field.render({ instructionsBelowField: true }) }}
 
                 {% endif %}
             </div>

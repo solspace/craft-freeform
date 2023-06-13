@@ -101,7 +101,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     protected ?int $id = null;
     protected ?string $uid = null;
-    protected string $hash = '';
     protected int $pageIndex = 0;
     protected array $errors = [];
 
@@ -330,11 +329,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     abstract public function getType(): string;
 
-    public function getHash(): string
-    {
-        return $this->hash;
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -469,6 +463,33 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     public function includeInGqlSchema(): bool
     {
         return true;
+    }
+
+    public function setParameters(array $parameters = null): void
+    {
+        if (!\is_array($parameters)) {
+            return;
+        }
+
+        foreach ($parameters as $key => $value) {
+            try {
+                $property = new \ReflectionProperty($this, $key);
+                $type = $property->getType();
+                if ($type) {
+                    $instance = new \ReflectionClass($type->getName());
+                    if (Attributes::class === $instance->getName() || $instance->isSubclassOf(Attributes::class)) {
+                        $this->{$key}->merge($value);
+                        unset($parameters[$key]);
+
+                        continue;
+                    }
+                }
+            } catch (\ReflectionException $e) {
+                // do nothing
+            }
+
+            $this->parameters->add($key, $value);
+        }
     }
 
     /**
@@ -630,32 +651,5 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     protected function renderRaw(string $output): Markup
     {
         return Template::raw($output);
-    }
-
-    protected function setParameters(array $parameters = null): void
-    {
-        if (!\is_array($parameters)) {
-            return;
-        }
-
-        foreach ($parameters as $key => $value) {
-            try {
-                $property = new \ReflectionProperty($this, $key);
-                $type = $property->getType();
-                if ($type) {
-                    $instance = new \ReflectionClass($type->getName());
-                    if (Attributes::class === $instance->getName() || $instance->isSubclassOf(Attributes::class)) {
-                        $this->{$key}->merge($value);
-                        unset($parameters[$key]);
-
-                        continue;
-                    }
-                }
-            } catch (\ReflectionException $e) {
-                // do nothing
-            }
-
-            $this->parameters->add($key, $value);
-        }
     }
 }

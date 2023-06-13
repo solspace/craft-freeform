@@ -16,25 +16,21 @@ use Solspace\Commons\Helpers\StringHelper;
 
 class FormTemplate implements \JsonSerializable
 {
-    /** @var string */
-    private $filePath;
+    private string $fileName;
+    private string $name;
 
-    /** @var string */
-    private $fileName;
-
-    /** @var string */
-    private $name;
-
-    /**
-     * FormTemplate constructor.
-     *
-     * @param string $filePath
-     */
-    public function __construct($filePath)
+    public function __construct(private string $filePath, string $root)
     {
-        $this->filePath = $filePath;
-        $this->fileName = pathinfo($filePath, \PATHINFO_BASENAME);
-        $this->name = StringHelper::camelize(StringHelper::humanize(pathinfo($filePath, \PATHINFO_FILENAME)));
+        $root = realpath($root);
+        $filePath = realpath($filePath);
+        $this->fileName = ltrim(str_replace($root, '', $filePath), '/');
+
+        $name = pathinfo($filePath, \PATHINFO_FILENAME);
+        if ('index' === $name) {
+            $name = pathinfo(\dirname($filePath), \PATHINFO_FILENAME);
+        }
+
+        $this->name = StringHelper::camelize(StringHelper::humanize($name));
         $this->name = str_replace(['-', '_'], ' ', $this->name);
     }
 

@@ -52,7 +52,7 @@ abstract class Collection implements \IteratorAggregate, \ArrayAccess, \Countabl
     /**
      * @return T
      */
-    public function offsetGet(mixed $offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->items[$offset];
     }

@@ -1,6 +1,11 @@
 {% css formCss %}
 
-{{ form.renderTag }}
+{{ form.renderTag({
+    attributes: {
+        row: { class: "freeform-row" },
+        errors: { class: "freeform-form-has-errors" },
+    },
+}) }}
 
 <script>
   var form = document.querySelector('[data-id="{{ form.anchor }}"]');
@@ -29,7 +34,7 @@
 {% endif %}
 
 {% if form.hasErrors %}
-    <div class="freeform-form-has-errors">
+    <div{{ form.attributes.errors }}>
         {{ form.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
@@ -42,43 +47,35 @@
     </div>
 {% endif %}
 
-{% for row in form %}
-    <div class="freeform-row {{ form.customAttributes.rowClass }}">
-        {% for field in row %}
-            {% set columnClass = "freeform-column " ~ form.customAttributes.columnClass %}
-            {% set columnClass = columnClass ~ " freeform-column-" ~ (12 / (row|length)) %}
-            {% if field.type == "submit" or field.type == "save" %}
-                {% set columnClass = columnClass ~ " freeform-column-content-align-" ~ field.position %}
-            {% endif %}
-            <div class="{{ columnClass }} ff-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }}>
+{% for row in form.rows %}
+    {% set width = (12 / (row|length)) %}
 
-                {{ field.render({
-                    class: field.type not in ["submit", "save", "signature"] ? "freeform-input" : "",
-                    labelClass: "freeform-label" ~ (field.inputOnly ? " freeform-input-only-label" : "") ~ (field.required ? " freeform-required" : ""),
-                    errorClass: "freeform-errors",
-                }) }}
+    <div{{ form.attributes.row }}>
 
-                {# FOR FREEFORM PAYMENTS #}
-                {% if field.layoutRows is defined %}
-                    {% for layoutRow in field.layoutRows %}
-                        <div class="freeform-row {{ form.customAttributes.rowClass }}">
-                            {% set layoutWidth = (12 / (layoutRow|length)) %}
-                            {% set columnClass = columnClass|replace(' col-lg-' ~ (row|length)) %}
-                            {% set columnClass = columnClass ~ " col-lg-" ~ layoutWidth %}
-                            {% for layoutField in layoutRow %}
-                                <div class="{{ columnClass }}">
-                                    {{ layoutField.render({
-                                        class: "freeform-input",
-                                        labelClass: "freeform-label" ~ (layoutField.inputOnly ? " freeform-input-only-label" : "") ~ (layoutField.required ? " freeform-required" : ""),
-                                        errorClass: "freeform-errors",
-                                    }) }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endfor %}
-                {% endif %}
+        {% for cell in row %}
 
-            </div>
+            {% set field = cell.field %}
+            {% do field.setParameters({
+                attributes: {
+                    container: { class: [
+                        "freeform-column",
+                        "freeform-column-" ~ width,
+                        "ff-fieldtype-" ~ field.type,
+                    ]},
+                    input: { class: [
+                        field.type != "signature" ? "freeform-input",
+                    ]},
+                    label: { class: [
+                        "freeform-label",
+                        field.inputOnly ? "freeform-input-only-label",
+                        field.required ? "freeform-required",
+                    ]},
+                    errors: { class: "freeform-errors" },
+                },
+            }) %}
+
+            {{ field.render }}
+
         {% endfor %}
     </div>
 {% endfor %}

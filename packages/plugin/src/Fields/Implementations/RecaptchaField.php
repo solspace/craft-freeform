@@ -24,11 +24,6 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, InputO
         return self::TYPE_RECAPTCHA;
     }
 
-    public function getHandle(): ?string
-    {
-        return 'grecaptcha_'.$this->getHash();
-    }
-
     public function includeInGqlSchema(): bool
     {
         return false;

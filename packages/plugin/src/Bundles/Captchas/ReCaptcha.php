@@ -20,7 +20,7 @@ use yii\base\Event;
 
 class ReCaptcha extends FeatureBundle
 {
-    private string $lastError;
+    private string $lastError = '';
 
     public function __construct()
     {
@@ -128,14 +128,6 @@ class ReCaptcha extends FeatureBundle
         if (ReCaptchaHelper::canApplyReCaptcha($form)) {
             $settings = $this->getSettings();
 
-            if (!$settings->recaptchaEnabled) {
-                return;
-            }
-
-            if ($settings->isInvisibleRecaptchaSetUp() && !$form->isRecaptchaEnabled()) {
-                return;
-            }
-
             $recaptchaKey = App::parseEnv($settings->recaptchaKey);
             $type = $settings->recaptchaType;
 
@@ -148,7 +140,7 @@ class ReCaptcha extends FeatureBundle
             if (Settings::RECAPTCHA_TYPE_V3 === $type) {
                 $form->getAttributes()->set(
                     'data-recaptcha-action',
-                    $form->getProperties()->get('recaptchaAction') ?? 'homepage'
+                    $event->getForm()->getProperties()->get('recaptchaAction') ?? 'homepage'
                 );
             }
         }

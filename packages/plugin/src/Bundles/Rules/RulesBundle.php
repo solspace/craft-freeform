@@ -27,7 +27,6 @@ class RulesBundle extends FeatureBundle
             return;
         }
 
-        // IF HAS ACTIVE RULE
-        $event->attachAttribute('data-has-rules', true);
+        $form->getAttributes()->set('data-has-rules');
     }
 }

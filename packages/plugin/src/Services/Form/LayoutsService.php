@@ -11,7 +11,6 @@ use Solspace\Freeform\Form\Layout\Cell\LayoutCell;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Form\Layout\Row;
-use Solspace\Freeform\Library\Collections\RowCollection;
 use Solspace\Freeform\Records\Form\FormCellRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
@@ -50,7 +49,8 @@ class LayoutsService extends BaseService
                 $layoutUid,
                 $rows,
                 $cells,
-                $page->getRows(),
+                $page,
+                $layout,
             );
         }
 
@@ -156,8 +156,10 @@ class LayoutsService extends BaseService
         string $layoutUid,
         array $allRows,
         array $allCells,
-        RowCollection $rowCollection
-    ) {
+        Page $page,
+        Layout $layout,
+    ): void {
+        $rowCollection = $page->getRows();
         $currentRows = array_filter(
             $allRows,
             fn ($row) => $row['layoutUid'] === $layoutUid
@@ -181,7 +183,8 @@ class LayoutsService extends BaseService
                         $cellData['layoutId'],
                         $allRows,
                         $allCells,
-                        $cell->getRows()
+                        $cell->getRows(),
+                        $layout,
                     );
                 }
 
@@ -189,6 +192,10 @@ class LayoutsService extends BaseService
                     $field = $this->fieldProvider->getFieldByUid($form, $cellData['fieldUid']);
                     if ($field) {
                         $cell->setField($field);
+
+                        $layout->getFields()->add($field);
+                        $page->getFields()->add($field);
+                        $row->getFields()->add($field);
                     }
                 }
 

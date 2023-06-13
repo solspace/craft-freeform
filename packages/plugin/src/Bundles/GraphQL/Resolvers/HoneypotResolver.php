@@ -21,10 +21,6 @@ class HoneypotResolver extends Resolver
             return [
                 'name' => $honeypot->getName(),
                 'value' => $honeypot->getHash(),
-                // @deprecated Please do not use
-                'hash' => null,
-                // @deprecated Please do not use
-                'timestamp' => null,
             ];
         }
 

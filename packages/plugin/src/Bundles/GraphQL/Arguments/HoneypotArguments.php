@@ -20,18 +20,6 @@ class HoneypotArguments extends Arguments
                 'type' => Type::string(),
                 'description' => 'The Honeypot field value.',
             ],
-            // @deprecated Please do not use
-            'hash' => [
-                'name' => 'hash',
-                'type' => Type::string(),
-                'description' => 'Hash',
-            ],
-            // @deprecated Please do not use
-            'timestamp' => [
-                'name' => 'timestamp',
-                'type' => Type::int(),
-                'description' => 'Timestamp of the creation date',
-            ],
         ];
     }
 }

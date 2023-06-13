@@ -34,16 +34,6 @@ class HoneypotType extends AbstractObjectType
             return $source['value'] ?? null;
         }
 
-        // @deprecated Please do not use
-        if ('hash' === $resolveInfo->fieldName) {
-            return null;
-        }
-
-        // @deprecated Please do not use
-        if ('timestamp' === $resolveInfo->fieldName) {
-            return null;
-        }
-
         return null;
     }
 }

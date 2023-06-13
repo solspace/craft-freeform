@@ -1,5 +1,26 @@
 # Solspace Freeform Changelog
 
+## 4.1.0 - 2023-06-13
+
+> {warning} If currently using GraphQL and/or headless javascript frameworks such as Vue.js, Next.js, React JS, etc, please proceed carefully and test your forms thoroughly after updating.
+
+### Added
+- Added support for GraphQL Mutations.
+- Added interactive demos for Vue.js, React JS, and Next.js frameworks.
+
+### Changed
+- Changed the way reCAPTCHA is handled in headless setups.
+
+### Deprecated
+- Deprecated `FormInterface` for GraphQL. Please use `FreeformFormInterface` instead.
+- Deprecated `FieldInterface` for GraphQL. Please use `FreeformFieldInterface` instead.
+- Deprecated `PageInterface` for GraphQL. Please use `FreeformPageInterface` instead.
+- Deprecated `RowInterface` for GraphQL. Please use `FreeformRowInterface` instead.
+- Deprecated `OptionsInterface` for GraphQL. Please use `FreeformOptionInterface` instead.
+- Deprecated `ScalesInterface` for GraphQL. Please use `FreeformOpinionScaleInterface` instead.
+- Deprecated `KeyValueMapInterface` for GraphQL. Please use `FreeformAttributeInterface` instead.
+- Deprecated `hash` and `timestamp` in `FreeformHoneypotInterface` for GraphQL. Please do not use.
+
 ## 4.0.26 - 2023-06-12
 
 ### Fixed

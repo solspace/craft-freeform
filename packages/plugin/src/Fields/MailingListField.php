@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
@@ -91,6 +92,27 @@ class MailingListField extends AbstractField implements DefaultFieldInterface, N
             .$attributes->getInputAttributesAsString()
             .($isSelected ? 'checked ' : '')
             .'/>';
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        return Type::int();
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Used by '.$this->getLabel().' field.';
+        $description[] = 'Single option value allowed.';
+        $description[] = 'Options include 0, 1.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     /**

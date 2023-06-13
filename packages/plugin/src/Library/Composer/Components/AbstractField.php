@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Library\Composer\Components;
 
 use craft\helpers\Template;
+use GraphQL\Type\Definition\Type;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Fields\CheckboxField;
 use Solspace\Freeform\Library\Composer\Components\Attributes\CustomFieldAttributes;
@@ -32,19 +33,19 @@ use Twig\Markup;
 abstract class AbstractField implements FieldInterface, \JsonSerializable
 {
     /** @var string */
+    public $handle;
+
+    /** @var string */
+    public $instructions;
+
+    /** @var string */
     protected $hash;
 
     /** @var int */
     protected $id;
 
     /** @var string */
-    protected $handle;
-
-    /** @var string */
     protected $label;
-
-    /** @var string */
-    protected $instructions;
 
     /** @var bool */
     protected $required = false;
@@ -548,6 +549,40 @@ abstract class AbstractField implements FieldInterface, \JsonSerializable
     public function jsonSerialize(): string
     {
         return $this->hash;
+    }
+
+    public function getContentGqlDescription(): array
+    {
+        $description = [];
+        $description[] = $this->getInstructions();
+
+        if ($this->isRequired()) {
+            $description[] = 'Value is required.';
+        }
+
+        return $description;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        return Type::string();
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
+    public function includeInGqlSchema(): bool
+    {
+        return true;
     }
 
     protected function getInputClassString(): string

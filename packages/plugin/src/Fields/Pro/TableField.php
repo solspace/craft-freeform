@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -16,6 +17,8 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
     public const COLUMN_TYPE_STRING = 'string';
     public const COLUMN_TYPE_SELECT = 'select';
     public const COLUMN_TYPE_CHECKBOX = 'checkbox';
+
+    public array $columns = [];
 
     /** @var array */
     protected $tableLayout;
@@ -178,6 +181,65 @@ class TableField extends AbstractField implements MultipleValueInterface, MultiD
         $this->values = $values;
 
         return $this;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        return Type::listOf(Type::listOf(Type::string()));
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $layout = [];
+        $textValuesInclude = '';
+        $selectValuesInclude = '';
+        $checkboxValuesInclude = '';
+
+        foreach ($this->getTableLayout() as $column) {
+            $type = $column['type'] ?? self::COLUMN_TYPE_STRING;
+
+            if (self::COLUMN_TYPE_SELECT === $type) {
+                $selectValues = [];
+                $options = explode(';', $column['value']);
+
+                foreach ($options as $option) {
+                    $selectValues[] = '"'.$option.'"';
+                }
+
+                if (!empty($selectValues)) {
+                    $selectValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                    $selectValuesInclude .= '-- Single option value allowed.'."\n";
+                    $selectValuesInclude .= '-- Options include '.implode(', ', $selectValues).'.';
+                }
+
+                $layout[] = '"'.$column['label'].'"';
+            } elseif (self::COLUMN_TYPE_CHECKBOX === $type) {
+                $checkboxValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                $checkboxValuesInclude .= '-- Single option value allowed.'."\n";
+                $checkboxValuesInclude .= '-- Option value is "'.$column['value'].'".';
+
+                $layout[] = '"'.$column['label'].'"';
+            } else {
+                $textValuesInclude .= '- "'.$column['label'].'" column:'."\n";
+                $textValuesInclude .= '-- Single value allowed.';
+
+                $layout[] = '"'.$column['label'].'"';
+            }
+        }
+
+        $description = [];
+        $description[] = $this->getInstructions();
+        $description[] = 'Expected layout [['.implode(', ', $layout).']].';
+        $description[] = $textValuesInclude;
+        $description[] = $selectValuesInclude;
+        $description[] = $checkboxValuesInclude;
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function getInputHtml(): string

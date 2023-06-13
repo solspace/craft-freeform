@@ -55,10 +55,12 @@ use Solspace\Freeform\Library\Exceptions\Composer\ComposerException;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\FileUploads\FileUploadHandlerInterface;
 use Solspace\Freeform\Library\FormTypes\FormTypeInterface;
+use Solspace\Freeform\Library\Helpers\ReCaptchaHelper;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Rules\RuleProperties;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Models\Settings;
 use Twig\Markup;
 use yii\base\Arrayable;
 use yii\base\Event;
@@ -71,6 +73,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     public const ACTION_KEY = 'freeform-action';
     public const SUBMISSION_FLASH_KEY = 'freeform_submission_flash';
 
+    public const EVENT_GRAPHQL_REQUEST = 'graphql-request';
     public const EVENT_FORM_LOADED = 'form-loaded';
     public const EVENT_ON_STORE_SUBMISSION = 'on-store-submission';
     public const EVENT_REGISTER_CONTEXT = 'register-context';
@@ -250,6 +253,10 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
     /** @var bool */
     private $formPosted;
 
+    private bool $graphqlPosted;
+
+    private array $graphqlArguments;
+
     /**
      * Form constructor.
      *
@@ -271,6 +278,8 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $this->valid = false;
         $this->pagePosted = false;
         $this->formPosted = false;
+        $this->graphqlPosted = false;
+        $this->graphqlArguments = [];
 
         $this->properties = $properties;
         $this->translator = $translator;
@@ -744,6 +753,33 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this;
     }
 
+    public function isGraphQLPosted(): bool
+    {
+        return $this->graphqlPosted;
+    }
+
+    public function setGraphQLPosted(bool $graphqlPosted): self
+    {
+        $this->graphqlPosted = $graphqlPosted;
+
+        $this->pagePosted = true;
+        $this->formPosted = true;
+
+        return $this;
+    }
+
+    public function getGraphQLArguments(): array
+    {
+        return $this->graphqlArguments;
+    }
+
+    public function setGraphQLArguments(array $graphqlArguments): self
+    {
+        $this->graphqlArguments = $graphqlArguments;
+
+        return $this;
+    }
+
     public function getCustomAttributes(): PropertyBag
     {
         return $this->getPropertyBag();
@@ -865,6 +901,33 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
             'method' => $bag->get('method', 'post'),
             'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
         ];
+
+        $mailingLists = [];
+        $mailingListFields = $this->getLayout()->getFields(MailingListField::class);
+        if ($mailingListFields) {
+            foreach ($mailingListFields as $mailingListField) {
+                $mailingLists[] = $mailingListField->getHandle();
+            }
+        }
+        $object['mailingListName'] = implode(',', $mailingLists);
+
+        $reCaptchaEnabled = ReCaptchaHelper::canApplyReCaptcha($this);
+
+        $settingsModel = Freeform::getInstance()->settings->getSettingsModel();
+
+        $isHCaptcha = \in_array($settingsModel->getRecaptchaType(), [Settings::RECAPTCHA_TYPE_H_INVISIBLE, Settings::RECAPTCHA_TYPE_H_CHECKBOX], true);
+
+        if ($reCaptchaEnabled) {
+            $object['reCaptcha'] = [
+                'enabled' => true,
+                'handle' => 'reCaptcha',
+                'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
+            ];
+        } else {
+            $object['reCaptcha'] = [
+                'enabled' => false,
+            ];
+        }
 
         if ($this->getSuccessMessage()) {
             $object['successMessage'] = $this->getTranslator()->translate($this->getSuccessMessage(), [], 'app');
@@ -1278,7 +1341,18 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
 
         $this->getFormHandler()->onFormValidate($this);
 
-        $currentPageFields = $this->getCurrentPage()->getFields();
+        if ($this->isGraphQLPosted()) {
+            $currentPageFields = [];
+            foreach ($this->getLayout()->getFields() as $field) {
+                if (!$field->includeInGqlSchema()) {
+                    continue;
+                }
+
+                $currentPageFields[] = $field;
+            }
+        } else {
+            $currentPageFields = $this->getCurrentPage()->getFields();
+        }
 
         $isFormValid = true;
         foreach ($currentPageFields as $field) {

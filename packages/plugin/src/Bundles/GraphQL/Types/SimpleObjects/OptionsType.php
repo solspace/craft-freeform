@@ -8,6 +8,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
+/**
+ * @deprecated Please use specific OptionType instead
+ */
 class OptionsType extends AbstractObjectType
 {
     public static function getName(): string

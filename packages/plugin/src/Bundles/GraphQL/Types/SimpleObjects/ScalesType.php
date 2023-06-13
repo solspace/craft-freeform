@@ -8,6 +8,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 
+/**
+ * @deprecated Please use specific OpinionScaleType instead
+ */
 class ScalesType extends AbstractObjectType
 {
     public static function getName(): string

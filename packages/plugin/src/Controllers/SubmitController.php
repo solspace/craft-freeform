@@ -16,14 +16,12 @@ use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
-use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
-use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\filters\Cors;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 class SubmitController extends BaseController
@@ -32,29 +30,40 @@ class SubmitController extends BaseController
 
     protected array|bool|int $allowAnonymous = true;
 
+    /**
+     * @throws InvalidConfigException
+     * @throws FreeformException
+     * @throws BadRequestHttpException
+     */
     public function actionIndex(): ?Response
     {
         $this->requirePostRequest();
 
-        $request = \Craft::$app->request;
+        $request = \Craft::$app->getRequest();
+        $isAjaxRequest = $request->getIsAjax();
 
         $formId = SessionContext::getPostedFormId();
         $formModel = $this->getFormsService()->getFormById($formId);
         if (!$formModel) {
-            throw new FreeformException(
-                \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId])
-            );
+            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
+
+            if (!$isAjaxRequest) {
+                throw new FreeformException($message);
+            }
+
+            return $this->asJson(['success' => false, 'message' => $message]);
         }
 
         $form = $formModel->getForm();
-        $isAjaxRequest = $request->getIsAjax();
 
         $requestHandled = $form->handleRequest($request);
-        $submission = $this->getSubmissionsService()->createSubmissionFromForm($form);
+        $formsService = $this->getFormsService();
+        $submissionsService = $this->getSubmissionsService();
+        $submission = $submissionsService->createSubmissionFromForm($form);
         if ($requestHandled && $form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
-            $this->handleSubmission($form, $submission);
+            $submissionsService->handleSubmission($form, $submission);
 
-            $returnUrl = $this->getReturnUrl($form, $submission);
+            $returnUrl = $formsService->getReturnUrl($form, $submission);
 
             $form->reset();
             $form->persistState();
@@ -113,76 +122,6 @@ class SubmitController extends BaseController
                 'cors' => $event->getHeaders(),
             ],
         ];
-    }
-
-    private function handleSubmission(Form $form, Submission $submission): void
-    {
-        $formHandler = Freeform::getInstance()->forms;
-
-        $event = new SubmitEvent($form, $submission);
-        Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
-
-        if (!$event->isValid || !empty($form->getActions()) || !$formHandler->onBeforeSubmit($form)) {
-            return;
-        }
-
-        $storeSubmissionEvent = new StoreSubmissionEvent($form, $submission);
-        Event::trigger(Form::class, Form::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
-
-        if ($form->isStoreData() && $storeSubmissionEvent->isValid && $form->hasOptInPermission()) {
-            $this->getSubmissionsService()->storeSubmission($form, $submission);
-        }
-
-        if ($submission->hasErrors()) {
-            $form->addErrors(array_keys($submission->getErrors()));
-        }
-
-        $mailingListOptInFields = $form->getMailingListOptedInFields();
-        if ($form->isMarkedAsSpam()) {
-            if ($submission->getId()) {
-                $this->getSpamSubmissionsService()->postProcessSubmission($form, $submission, $mailingListOptInFields);
-            }
-        } else {
-            $this->getSubmissionsService()->postProcessSubmission($form, $submission, $mailingListOptInFields);
-        }
-
-        Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
-    }
-
-    private function getReturnUrl(Form $form, Submission $submission): string
-    {
-        $request = \Craft::$app->request;
-
-        $postedReturnUrl = $request->post(Form::RETURN_URI_KEY);
-        if ($postedReturnUrl) {
-            $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
-            if (false === $returnUrl) {
-                $returnUrl = $form->getReturnUrl();
-            }
-        } else {
-            $returnUrl = $form->getReturnUrl();
-        }
-
-        $returnUrl = \Craft::$app->view->renderString(
-            $returnUrl,
-            [
-                'form' => $form,
-                'submission' => $submission,
-            ]
-        );
-
-        /** @deprecated  */
-        $returnUrl = Freeform::getInstance()->forms->onAfterGenerateReturnUrl($form, $submission, $returnUrl);
-
-        $event = new ReturnUrlEvent($form, $submission, $returnUrl);
-        Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);
-        $returnUrl = $event->getReturnUrl();
-
-        if (!$returnUrl) {
-            $returnUrl = $request->getUrl();
-        }
-
-        return $returnUrl;
     }
 
     private function toAjaxResponse(Form $form, Submission $submission, string $returnUrl = null): Response

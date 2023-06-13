@@ -4,13 +4,12 @@ namespace Solspace\Freeform\Bundles\GraphQL\Resolvers;
 
 use craft\gql\base\Resolver;
 use GraphQL\Type\Definition\ResolveInfo;
-use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Composer\Components\Row;
 
 class FieldResolver extends Resolver
 {
-    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): mixed
+    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): array
     {
         // @var AbstractField[] $fields
         if ($source instanceof Form) {

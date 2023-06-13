@@ -70,4 +70,9 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, SingleVa
 
         return $this->getValue();
     }
+
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
 }

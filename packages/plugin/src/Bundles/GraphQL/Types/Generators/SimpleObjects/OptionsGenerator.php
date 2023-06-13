@@ -7,6 +7,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\OptionsType;
 
+/**
+ * @deprecated Please use specific OptionGenerator instead
+ */
 class OptionsGenerator extends AbstractGenerator
 {
     public static function getTypeClass(): string

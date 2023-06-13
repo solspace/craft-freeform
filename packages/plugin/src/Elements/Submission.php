@@ -16,6 +16,7 @@ use LitEmoji\LitEmoji;
 use Solspace\Commons\Helpers\CryptoHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Commons\Helpers\StringHelper;
+use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Elements\Actions\DeleteAllSubmissionsAction;
 use Solspace\Freeform\Elements\Actions\DeleteSubmissionAction;
 use Solspace\Freeform\Elements\Actions\ExportCSVAction;
@@ -38,6 +39,7 @@ use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Helpers\HashHelper;
+use Solspace\Freeform\Models\FormModel;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
@@ -153,6 +155,25 @@ class Submission extends Element
     public static function find(): SubmissionQuery
     {
         return (new SubmissionQuery(self::class))->isSpam(false);
+    }
+
+    public static function gqlTypeNameByContext(mixed $context): string
+    {
+        return $context->handle.'_Submission';
+    }
+
+    public static function gqlScopesByContext(mixed $context): array
+    {
+        return [GqlPermissions::CATEGORY_SUBMISSIONS.'.'.$context->uid];
+    }
+
+    public static function gqlMutationNameByContext(mixed $context): string
+    {
+        if ($context instanceof FormModel) {
+            $context = $context->getForm();
+        }
+
+        return 'save_'.$context->getHandle().'_Submission';
     }
 
     public static function displayName(): string

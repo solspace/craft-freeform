@@ -15,7 +15,7 @@ html:has(body.freeform-spam-mode) {
 .freeform-form-content {
     max-width: 1200px;
     margin: 0 auto;
-    padding-top: 80px !important;
+    padding: 80px 10px 0 10px !important;
 }
 a {
     color: #0d6efd;

@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\SingleValueInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Traits\SingleValueTrait;
@@ -68,5 +69,29 @@ class SelectField extends AbstractExternalOptionsField implements SingleValueInt
         }
 
         return '';
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+
+        $values = [];
+
+        foreach ($this->getOptions() as $option) {
+            $values[] = '"'.$option->getValue().'"';
+        }
+
+        if (!empty($values)) {
+            $description[] = 'Options include '.implode(', ', $values).'.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 }

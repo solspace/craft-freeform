@@ -61,7 +61,13 @@ class StorageContext
         $bag = $form->getPropertyBag();
         $storedValues = $bag->get(Form::PROPERTY_STORED_VALUES, []);
 
-        foreach ($form->getCurrentPage()->getFields() as $field) {
+        if ($form->isGraphQLPosted()) {
+            $fields = $form->getLayout()->getFields();
+        } else {
+            $fields = $form->getCurrentPage()->getFields();
+        }
+
+        foreach ($fields as $field) {
             if (!$field->getHandle()) {
                 continue;
             }

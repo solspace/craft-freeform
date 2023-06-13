@@ -96,6 +96,11 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     {
     }
 
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
+
     protected function validate(): array
     {
         $errors = [];

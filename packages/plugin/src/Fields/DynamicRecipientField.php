@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
@@ -166,6 +167,44 @@ class DynamicRecipientField extends AbstractExternalOptionsField implements Reci
         }
 
         return null;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        if ($this->isShowAsCheckboxes()) {
+            return Type::listOf(Type::string());
+        }
+
+        return Type::string();
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+
+        if ($this->isShowAsCheckboxes()) {
+            $description[] = 'Multiple option values allowed.';
+        } else {
+            $description[] = 'Single option value allowed.';
+        }
+
+        $values = [];
+
+        foreach ($this->getOptions() as $option) {
+            $values[] = '"'.$option->getValue().'"';
+        }
+
+        if (!empty($values)) {
+            $description[] = 'Options include '.implode(', ', $values).'.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     /**

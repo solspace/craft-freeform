@@ -9,7 +9,7 @@ class PageType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'FreeformFormPageType';
+        return 'FreeformPageType';
     }
 
     public static function getTypeDefinition(): Type

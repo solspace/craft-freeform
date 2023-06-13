@@ -21,6 +21,10 @@ class PostContext
         $form = $event->getForm();
         $request = $event->getRequest();
 
+        if ($form->isGraphQLPosted()) {
+            return;
+        }
+
         if ($request->isConsoleRequest) {
             return;
         }

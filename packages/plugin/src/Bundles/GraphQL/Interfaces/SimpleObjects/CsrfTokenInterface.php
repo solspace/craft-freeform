@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects;
 
-use GraphQL\Type\Definition\Type;
+use Solspace\Freeform\Bundles\GraphQL\Arguments\CsrfTokenArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\AbstractInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SimpleObjects\CsrfTokenGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\CsrfTokenType;
@@ -26,22 +26,14 @@ class CsrfTokenInterface extends AbstractInterface
 
     public static function getDescription(): string
     {
-        return 'A fresh honeypot instance';
+        return 'Freeform CSRF Token GraphQL Interface';
     }
 
     public static function getFieldDefinitions(): array
     {
-        return \Craft::$app->gql->prepareFieldDefinitions([
-            'name' => [
-                'name' => 'name',
-                'type' => Type::string(),
-                'description' => 'Name of the CSRF Token',
-            ],
-            'value' => [
-                'name' => 'value',
-                'type' => Type::string(),
-                'description' => 'Value of the CSRF Token',
-            ],
-        ], static::getName());
+        return \Craft::$app->gql->prepareFieldDefinitions(
+            CsrfTokenArguments::getArguments(),
+            static::getName(),
+        );
     }
 }

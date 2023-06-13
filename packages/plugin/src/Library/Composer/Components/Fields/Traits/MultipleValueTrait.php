@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Library\Composer\Components\Fields\Traits;
 
 use Solspace\Freeform\Fields\DynamicRecipientField;
+use Solspace\Freeform\Fields\FileUploadField;
 use Solspace\Freeform\Library\Composer\Components\FieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\MultiDimensionalValueInterface;
@@ -38,6 +39,8 @@ trait MultipleValueTrait
 
         if (empty($values)) {
             $values = [];
+        } elseif ($this instanceof FileUploadField) {
+            // Let the file handler upload/create asset and set asset id
         } elseif (!$this instanceof MultiDimensionalValueInterface) {
             $values = array_map('strval', $values);
         }

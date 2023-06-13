@@ -163,6 +163,12 @@ class IntegrationsService extends BaseService
             return true; // no payment fields, so no processing needed
         }
 
+        $paymentField = reset($paymentFields);
+        $token = $paymentField->getValue();
+        if ($form->isGraphQLPosted() && !$token) {
+            return true; // no payment field value, so no processing needed
+        }
+
         // atm we support only single payment field
 
         if (!$submission->getId()) {

@@ -39,4 +39,9 @@ class RichTextField extends AbstractField implements DefaultFieldInterface, Sing
     {
         return $this->getValue();
     }
+
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
 }

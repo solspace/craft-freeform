@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DefaultFieldInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -28,6 +29,22 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
     public function getTargetFieldHash()
     {
         return $this->targetFieldHash;
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $field = $this->getForm()->getLayout()->getFieldByHash($this->getTargetFieldHash());
+
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Value must match the "'.$field->getLabel().'" field value.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function validate(): array

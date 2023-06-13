@@ -7,8 +7,8 @@ use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\FieldInterface;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\OptionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\FieldType;
 use Solspace\Freeform\Fields\Pro\OpinionScaleField;
 use Solspace\Freeform\Fields\Pro\TableField;
@@ -86,7 +86,7 @@ class FieldGenerator extends AbstractGenerator
         );
     }
 
-    private static function getFieldDefinitionsForType(string $typeName)
+    private static function getFieldDefinitionsForType(string $typeName): array
     {
         $fieldDefinitions = [
             'value' => self::getFieldValueDefinitions($typeName),
@@ -176,7 +176,7 @@ class FieldGenerator extends AbstractGenerator
         if (\in_array($typeName, $optionsFields, true)) {
             $fieldDefinitions['options'] = [
                 'name' => 'options',
-                'type' => Type::listOf(OptionsInterface::getType()),
+                'type' => Type::listOf(OptionInterface::getType()),
                 'description' => 'Options',
             ];
         }
@@ -419,7 +419,7 @@ class FieldGenerator extends AbstractGenerator
         if (FreeformFieldInterface::TYPE_OPINION_SCALE === $typeName) {
             $fieldDefinitions['scales'] = [
                 'name' => 'scales',
-                'type' => Type::listOf(ScalesInterface::getType()),
+                'type' => Type::listOf(OpinionScaleInterface::getType()),
                 'description' => 'Opinion field scales',
             ];
 
@@ -604,7 +604,7 @@ class FieldGenerator extends AbstractGenerator
         return $fieldDefinitions;
     }
 
-    private static function getFieldValueDefinitions(string $typeName)
+    private static function getFieldValueDefinitions(string $typeName): array
     {
         $multipleValues = [
             FreeformFieldInterface::TYPE_DYNAMIC_RECIPIENTS,

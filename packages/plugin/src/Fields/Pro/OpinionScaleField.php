@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Pro;
 
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Library\Composer\Components\AbstractField;
 use Solspace\Freeform\Library\Composer\Components\Fields\DataContainers\Option;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -75,6 +76,40 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
         $legends = $this->legends ?? [];
 
         return array_filter($legends);
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+
+        $values = [];
+
+        foreach ($this->getOptions() as $option) {
+            $values[] = '"'.$option->getValue().'"';
+        }
+
+        if (!empty($values)) {
+            $description[] = 'Options include '.implode(', ', $values).'.';
+        }
+
+        $legends = [];
+
+        foreach ($this->getLegends() as $legend) {
+            $legends[] = '"'.$legend['legend'].'"';
+        }
+
+        if (!empty($legends)) {
+            $description[] = 'Legends include '.implode(' to ', $legends).'.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function getInputHtml(): string

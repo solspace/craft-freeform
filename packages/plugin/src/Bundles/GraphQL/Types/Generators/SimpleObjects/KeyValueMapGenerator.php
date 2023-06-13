@@ -7,6 +7,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\KeyValueMapInterf
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\AbstractGenerator;
 use Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects\KeyValueMapType;
 
+/**
+ * @deprecated Please do not use
+ */
 class KeyValueMapGenerator extends AbstractGenerator
 {
     public static function getTypeClass(): string

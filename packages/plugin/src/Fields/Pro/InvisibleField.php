@@ -23,6 +23,11 @@ class InvisibleField extends AbstractField implements ExtraFieldInterface, Singl
         return self::TYPE_INVISIBLE;
     }
 
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
+
     /**
      * Assemble the Input HTML string.
      */

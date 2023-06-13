@@ -4,6 +4,8 @@ namespace Solspace\Freeform\Fields\Pro;
 
 use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
+use craft\gql\types\DateTime as DateTimeType;
+use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Fields\TextField;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\ExtraFieldInterface;
@@ -392,6 +394,25 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         }
 
         return $hours.$this->getClockSeparator().$minutes.$ampm;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        return DateTimeType::getType();
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Format: "'.$this->getHumanReadableFormat().'".';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function getInputHtml(): string

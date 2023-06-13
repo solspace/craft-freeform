@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields\Traits;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\FileUploadField;
 
 trait MultipleValueTrait
 {
@@ -26,14 +27,11 @@ trait MultipleValueTrait
             }
         }
 
-        // FIXME - Not sure if we need this but cannot test in FF5 yet due to other issues
-        /*
         if ($this instanceof FileUploadField) {
             // Let the file handler upload/create asset and set asset id
         } else {
             $this->value = $value;
         }
-        */
 
         return $this;
     }

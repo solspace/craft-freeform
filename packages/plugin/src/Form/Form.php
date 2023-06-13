@@ -741,18 +741,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
             ],
         ];
 
-        // FIXME - MailingListField no longer exists
-        /*
-        $mailingLists = [];
-        $mailingListFields = $this->getLayout()->getFields(MailingListField::class);
-        if ($mailingListFields) {
-            foreach ($mailingListFields as $mailingListField) {
-                $mailingLists[] = $mailingListField->getHandle();
-            }
-        }
-        $object['mailingListName'] = implode(',', $mailingLists);
-        */
-
         $reCaptchaEnabled = ReCaptchaHelper::canApplyReCaptcha($this);
 
         $settingsModel = Freeform::getInstance()->settings->getSettingsModel();

@@ -3,7 +3,7 @@
 namespace Solspace\Freeform\Services;
 
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Connections\ValidateEvent;
+use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Connections\ConnectionInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class ConnectionsService extends BaseService
 {
-    public function validateConnections(ValidateEvent $event): void
+    public function validateConnections(ValidationEvent $event): void
     {
         if (!Freeform::getInstance()->isPro()) {
             return;

@@ -86,4 +86,9 @@ class SaveField extends AbstractField implements DefaultFieldInterface, InputOnl
 
         return $output;
     }
+
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
 }

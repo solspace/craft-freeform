@@ -157,6 +157,11 @@ class SessionContext
     public function retrieveContext(HandleRequestEvent $event)
     {
         $form = $event->getForm();
+
+        if ($form->isGraphQLPosted()) {
+            return;
+        }
+
         $bag = $this->getBag($form);
         if (null === $bag) {
             $form->addError(Freeform::t('Form has expired'));

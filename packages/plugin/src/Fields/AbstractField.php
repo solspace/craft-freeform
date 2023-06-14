@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields;
 
 use craft\helpers\Template;
+use GraphQL\Type\Definition\Type;
 use Solspace\Commons\Helpers\StringHelper;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\AttributesTransformer;
@@ -42,6 +43,18 @@ use yii\base\Event;
  */
 abstract class AbstractField implements FieldInterface, IdentificatorInterface
 {
+    #[Section('general')]
+    #[Input\Text(
+        instructions: "How you'll refer to this field in templates",
+        order: 2,
+        placeholder: 'myField',
+    )]
+    #[Middleware('handle')]
+    #[Flag('code')]
+    #[Validators\Required]
+    #[Validators\Handle]
+    #[Validators\Length(100)]
+    public string $handle = '';
     #[Section(
         handle: 'general',
         label: 'General',
@@ -55,19 +68,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     )]
     #[Validators\Required]
     protected string $label = '';
-
-    #[Section('general')]
-    #[Input\Text(
-        instructions: "How you'll refer to this field in templates",
-        order: 2,
-        placeholder: 'myField',
-    )]
-    #[Middleware('handle')]
-    #[Flag('code')]
-    #[Validators\Required]
-    #[Validators\Handle]
-    #[Validators\Length(100)]
-    protected string $handle = '';
 
     #[Section('general')]
     #[Input\TextArea(
@@ -141,8 +141,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * Render the complete set of HTML for this field
      * That includes the Label, Input and Error messages.
-     *
-     * @param array $parameters
      */
     final public function render(array $parameters = null): Markup
     {
@@ -181,8 +179,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     /**
      * Render the Label HTML.
-     *
-     * @param array $customAttributes
      */
     final public function renderLabel(array $parameters = null): Markup
     {
@@ -200,8 +196,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     /**
      * Render the Input HTML.
-     *
-     * @param array $parameters
      */
     final public function renderInput(array $parameters = null): Markup
     {
@@ -212,8 +206,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     /**
      * Outputs the HTML of errors.
-     *
-     * @param array $parameters
      */
     final public function renderErrors(array $parameters = null): Markup
     {
@@ -420,6 +412,40 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return [];
     }
 
+    public function getContentGqlDescription(): array
+    {
+        $description = [];
+        $description[] = $this->getInstructions();
+
+        if ($this->isRequired()) {
+            $description[] = 'Value is required.';
+        }
+
+        return $description;
+    }
+
+    public function getContentGqlType(): Type|array
+    {
+        return Type::string();
+    }
+
+    public function getContentGqlMutationArgumentType(): Type|array
+    {
+        $description = $this->getContentGqlDescription();
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
+    }
+
+    public function includeInGqlSchema(): bool
+    {
+        return true;
+    }
+
     public function setParameters(array $parameters = null): void
     {
         if (!\is_array($parameters)) {
@@ -445,6 +471,11 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
             $this->parameters->add($key, $value);
         }
+    }
+
+    public function getForm(): Form
+    {
+        return $this->form;
     }
 
     /**
@@ -586,11 +617,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         Event::trigger($this, self::EVENT_AFTER_VALIDATE, $event);
 
         return $errors;
-    }
-
-    protected function getForm(): Form
-    {
-        return $this->form;
     }
 
     /**

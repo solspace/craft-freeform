@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields;
 
+use GraphQL\Type\Definition\Type;
 use Twig\Markup;
 
 interface FieldInterface
@@ -40,7 +41,6 @@ interface FieldInterface
     public const TYPE_FILE = 'file';
     public const TYPE_FILE_DRAG_AND_DROP = 'file-drag-and-drop';
     public const TYPE_PASSWORD = 'password';
-
     public const TYPE_RICH_TEXT = 'rich-text';
     public const TYPE_DATETIME = 'datetime';
     public const TYPE_NUMBER = 'number';
@@ -54,7 +54,6 @@ interface FieldInterface
     public const TYPE_SIGNATURE = 'signature';
     public const TYPE_TABLE = 'table';
     public const TYPE_INVISIBLE = 'invisible';
-
     public const TYPE_CREDIT_CARD_DETAILS = 'cc-details';
     public const TYPE_CREDIT_CARD_NUMBER = 'cc-number';
     public const TYPE_CREDIT_CARD_EXPIRY = 'cc-expiry';
@@ -101,4 +100,14 @@ interface FieldInterface
     public function canStoreValues(): bool;
 
     public function getConstraints(): array;
+
+    public function getContentGqlDescription(): array;
+
+    public function getContentGqlType(): Type|array;
+
+    public function getContentGqlMutationArgumentType(): Type|array;
+
+    public function includeInGqlSchema(): bool;
+
+    public function setParameters(array $parameters = null): void;
 }

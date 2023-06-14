@@ -16,14 +16,13 @@ use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
-use Solspace\Freeform\Events\Forms\ReturnUrlEvent;
-use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
+use yii\base\InvalidConfigException;
 use yii\filters\Cors;
+use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 class SubmitController extends BaseController
@@ -32,29 +31,38 @@ class SubmitController extends BaseController
 
     protected array|bool|int $allowAnonymous = true;
 
+    /**
+     * @throws InvalidConfigException
+     * @throws BadRequestHttpException
+     * @throws FreeformException
+     */
     public function actionIndex(): ?Response
     {
         $this->requirePostRequest();
 
-        $request = \Craft::$app->request;
-
-        $formId = SessionContext::getPostedFormId();
-        $formModel = $this->getFormsService()->getFormById($formId);
-        if (!$formModel) {
-            throw new FreeformException(
-                \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId])
-            );
-        }
-
-        $form = $formModel->getForm();
+        $request = \Craft::$app->getRequest();
         $isAjaxRequest = $request->getIsAjax();
 
-        $requestHandled = $form->handleRequest($request);
-        $submission = $this->getSubmissionsService()->createSubmissionFromForm($form);
-        if ($requestHandled && $form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
-            $this->handleSubmission($form, $submission);
+        $formId = SessionContext::getPostedFormId();
+        $form = $this->getFormsService()->getFormById($formId);
+        if (!$form) {
+            $message = \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId]);
 
-            $returnUrl = $this->getReturnUrl($form, $submission);
+            if (!$isAjaxRequest) {
+                throw new FreeformException($message);
+            }
+
+            return $this->asJson(['success' => false, 'message' => $message]);
+        }
+
+        $requestHandled = $form->handleRequest($request);
+        $formsService = $this->getFormsService();
+        $submissionsService = $this->getSubmissionsService();
+        $submission = $submissionsService->createSubmissionFromForm($form);
+        if ($requestHandled && $form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
+            $submissionsService->handleSubmission($form, $submission);
+
+            $returnUrl = $formsService->getReturnUrl($form, $submission);
 
             $form->reset();
             $form->persistState();
@@ -63,8 +71,10 @@ class SubmitController extends BaseController
                 return $this->toAjaxResponse($form, $submission, $returnUrl);
             }
 
-            if (BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $form->getSuccessBehaviour()) {
-                if ($form->getSuccessTemplate()) {
+            $behavior = $form->getSettings()->getBehavior();
+
+            if (BehaviorSettings::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE === $behavior->successBehavior) {
+                if ($behavior->successTemplate) {
                     return $this->redirect($request->getUrl());
                 }
             }
@@ -115,67 +125,6 @@ class SubmitController extends BaseController
         ];
     }
 
-    private function handleSubmission(Form $form, Submission $submission): void
-    {
-        $event = new SubmitEvent($form, $submission);
-        Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
-
-        if (!$event->isValid || !empty($form->getActions())) {
-            return;
-        }
-
-        $storeSubmissionEvent = new StoreSubmissionEvent($form, $submission);
-        Event::trigger(Form::class, Form::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
-
-        $isStoreData = $form->getSettings()->getGeneral()->storeData;
-
-        if ($isStoreData && $storeSubmissionEvent->isValid && $form->hasOptInPermission()) {
-            $this->getSubmissionsService()->storeSubmission($form, $submission);
-        }
-
-        if ($submission->hasErrors()) {
-            $form->addErrors(array_keys($submission->getErrors()));
-        }
-
-        $this->markFormAsSubmitted($form);
-        $this->getSubmissionsService()->postProcessSubmission($form, $submission);
-
-        Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
-    }
-
-    private function getReturnUrl(Form $form, Submission $submission): string
-    {
-        $request = \Craft::$app->request;
-
-        $postedReturnUrl = $request->post(Form::RETURN_URI_KEY);
-        if ($postedReturnUrl) {
-            $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
-            if (false === $returnUrl) {
-                $returnUrl = $form->getReturnUrl();
-            }
-        } else {
-            $returnUrl = $form->getReturnUrl();
-        }
-
-        $returnUrl = \Craft::$app->view->renderString(
-            $returnUrl,
-            [
-                'form' => $form,
-                'submission' => $submission,
-            ]
-        );
-
-        $event = new ReturnUrlEvent($form, $submission, $returnUrl);
-        Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);
-        $returnUrl = $event->getReturnUrl();
-
-        if (!$returnUrl) {
-            $returnUrl = $request->getUrl();
-        }
-
-        return $returnUrl;
-    }
-
     private function toAjaxResponse(Form $form, Submission $submission, string $returnUrl = null): Response
     {
         $fieldErrors = [];
@@ -205,13 +154,5 @@ class SubmitController extends BaseController
         Event::trigger(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, $event);
 
         return $this->asJson($event->getPayload());
-    }
-
-    /**
-     * Add a session flash variable that the form has been submitted.
-     */
-    private function markFormAsSubmitted(Form $form)
-    {
-        \Craft::$app->session->setFlash(Form::SUBMISSION_FLASH_KEY, $form->getId());
     }
 }

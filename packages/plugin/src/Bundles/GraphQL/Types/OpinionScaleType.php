@@ -1,23 +1,22 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects;
+namespace Solspace\Freeform\Bundles\GraphQL\Types;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\OptionsInterface;
-use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\OpinionScaleInterface;
 use Solspace\Freeform\Fields\DataContainers\Option;
 
-class OptionsType extends AbstractObjectType
+class OpinionScaleType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'OptionsType';
+        return 'FreeformOpinionScaleType';
     }
 
     public static function getTypeDefinition(): Type
     {
-        return OptionsInterface::getType();
+        return OpinionScaleInterface::getType();
     }
 
     /**
@@ -28,15 +27,11 @@ class OptionsType extends AbstractObjectType
     protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): mixed
     {
         if ('value' === $resolveInfo->fieldName) {
-            return $source->getValue() ?? null;
+            return $source['value'] ?? null;
         }
 
         if ('label' === $resolveInfo->fieldName) {
-            return $source->getLabel() ?? null;
-        }
-
-        if ('checked' === $resolveInfo->fieldName) {
-            return $source->isChecked() ?? false;
+            return $source['label'] ?? null;
         }
 
         return null;

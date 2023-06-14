@@ -4,35 +4,34 @@ namespace Solspace\Freeform\Bundles\GraphQL\Types\SimpleObjects;
 
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ScalesInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Types\AbstractObjectType;
 use Solspace\Freeform\Fields\DataContainers\Option;
 
-class ScalesType extends AbstractObjectType
+class ReCaptchaType extends AbstractObjectType
 {
     public static function getName(): string
     {
-        return 'ScalesType';
+        return 'FreeformReCaptchaType';
     }
 
     public static function getTypeDefinition(): Type
     {
-        return ScalesInterface::getType();
+        return ReCaptchaInterface::getType();
     }
 
     /**
      * @param Option $source
      * @param mixed  $arguments
-     * @param mixed  $context
      */
-    protected function resolve($source, $arguments, $context, ResolveInfo $resolveInfo): mixed
+    protected function resolve($source, $arguments, mixed $context, ResolveInfo $resolveInfo): mixed
     {
-        if ('value' === $resolveInfo->fieldName) {
-            return $source['value'] ?? null;
+        if ('name' === $resolveInfo->fieldName) {
+            return $source['name'] ?? null;
         }
 
-        if ('label' === $resolveInfo->fieldName) {
-            return $source['label'] ?? null;
+        if ('value' === $resolveInfo->fieldName) {
+            return $source['value'] ?? null;
         }
 
         return null;

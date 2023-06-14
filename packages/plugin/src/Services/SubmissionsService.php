@@ -20,6 +20,8 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
+use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
@@ -140,6 +142,36 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         return $submissionCountByForm;
+    }
+
+    public function handleSubmission(Form $form, Submission $submission): void
+    {
+        $freeform = Freeform::getInstance();
+
+        $event = new FormSubmitEvent($form, $submission);
+        Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
+
+        if (!$event->isValid || !empty($form->getActions())) {
+            return;
+        }
+
+        $storeSubmissionEvent = new StoreSubmissionEvent($form, $submission);
+        Event::trigger(Form::class, Form::EVENT_ON_STORE_SUBMISSION, $storeSubmissionEvent);
+
+        $isStoreData = $form->getSettings()->getGeneral()->storeData;
+
+        if ($isStoreData && $storeSubmissionEvent->isValid && $form->hasOptInPermission()) {
+            $this->storeSubmission($form, $submission);
+        }
+
+        if ($submission->hasErrors()) {
+            $form->addErrors(array_keys($submission->getErrors()));
+        }
+
+        $this->markFormAsSubmitted($form);
+        $this->postProcessSubmission($form, $submission);
+
+        Event::trigger(Form::class, Form::EVENT_AFTER_SUBMIT, $event);
     }
 
     /**
@@ -472,6 +504,12 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
                 "{$elementTable}.[[dateDeleted]]" => null,
             ])
         ;
+    }
+
+    // Add a session flash variable that the form has been submitted.
+    private function markFormAsSubmitted(Form $form): void
+    {
+        \Craft::$app->session->setFlash(Form::SUBMISSION_FLASH_KEY, $form->getId());
     }
 
     /**

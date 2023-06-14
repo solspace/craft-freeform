@@ -74,4 +74,9 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
 
         return $this->getValue();
     }
+
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
 }

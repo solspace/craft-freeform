@@ -44,4 +44,9 @@ class RichTextField extends AbstractField implements DefaultFieldInterface, Inpu
     {
         return $this->getValue();
     }
+
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
 }

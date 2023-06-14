@@ -24,6 +24,11 @@ class RecaptchaField extends AbstractField implements NoStorageInterface, InputO
         return self::TYPE_RECAPTCHA;
     }
 
+    public function includeInGqlSchema(): bool
+    {
+        return false;
+    }
+
     protected function getInputHtml(): string
     {
         /** @var Settings $settings */

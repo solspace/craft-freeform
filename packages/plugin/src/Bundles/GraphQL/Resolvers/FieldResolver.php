@@ -9,7 +9,7 @@ use Solspace\Freeform\Form\Layout\Row;
 
 class FieldResolver extends Resolver
 {
-    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): mixed
+    public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): array
     {
         // @var AbstractField[] $fields
         if ($source instanceof Form) {

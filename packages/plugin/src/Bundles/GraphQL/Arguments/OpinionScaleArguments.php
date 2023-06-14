@@ -1,10 +1,10 @@
 <?php
 
-namespace Solspace\Freeform\Bundles\GraphQL\Arguments\SimpleObjects;
+namespace Solspace\Freeform\Bundles\GraphQL\Arguments;
 
 use craft\gql\base\Arguments;
 
-class EmptyArguments extends Arguments
+class OpinionScaleArguments extends Arguments
 {
     public static function getArguments(): array
     {

@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -99,6 +100,40 @@ class OpinionScaleField extends AbstractField implements ExtraFieldInterface, Op
     public function getLegends(): TabularData
     {
         return $this->legends;
+    }
+
+    public function getContentGqlMutationArgumentType(): array|GQLType
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+
+        $values = [];
+
+        foreach ($this->getOptions() as $option) {
+            $values[] = '"'.$option->getValue().'"';
+        }
+
+        if (!empty($values)) {
+            $description[] = 'Options include '.implode(', ', $values).'.';
+        }
+
+        $legends = [];
+
+        foreach ($this->getLegends() as $legend) {
+            $legends[] = '"'.$legend['legend'].'"';
+        }
+
+        if (!empty($legends)) {
+            $description[] = 'Legends include '.implode(' to ', $legends).'.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function getInputHtml(): string

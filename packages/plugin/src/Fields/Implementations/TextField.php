@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
@@ -37,6 +38,23 @@ class TextField extends AbstractField implements PlaceholderInterface
     public function getType(): string
     {
         return self::TYPE_TEXT;
+    }
+
+    public function getContentGqlMutationArgumentType(): array|GQLType
+    {
+        $description = $this->getContentGqlDescription();
+
+        if (!empty($this->maxLength)) {
+            $description[] = 'Max length: '.$this->maxLength.'.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     /**

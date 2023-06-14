@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -41,6 +42,22 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
     public function getTargetField(): ?FieldInterface
     {
         return $this->targetField;
+    }
+
+    public function getContentGqlMutationArgumentType(): array|GQLType
+    {
+        $field = $this->getForm()->getLayout()->getField($this->getTargetField()->getUid());
+
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Value must match the "'.$field->getLabel().'" field value.';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function validate(): array

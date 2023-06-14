@@ -57,7 +57,6 @@ class FormLimiting extends FeatureBundle
         }
 
         if (\in_array($limiting, self::NO_LIMITATIONS, true)) {
-            // FIXME
             // DO NOTHING ?
         }
 

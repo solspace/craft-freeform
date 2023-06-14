@@ -2,6 +2,8 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use craft\gql\types\Number as NumberType;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
@@ -108,6 +110,46 @@ class NumberField extends TextField
         );
 
         return $constraints;
+    }
+
+    public function getContentGqlType(): GQLType|array
+    {
+        return NumberType::getType();
+    }
+
+    public function getContentGqlMutationArgumentType(): array|GQLType
+    {
+        $description = $this->getContentGqlDescription();
+
+        if ($this->isAllowNegative()) {
+            $description[] = 'Negative numbers are allowed.';
+        } else {
+            $description[] = 'Only positive numbers are allowed.';
+        }
+
+        if (!empty($this->getMinValue())) {
+            $description[] = 'Min value: '.$this->getMinValue().'.';
+        }
+
+        if (!empty($this->getMaxValue())) {
+            $description[] = 'Max value: '.$this->getMaxValue().'.';
+        }
+
+        if (!empty($this->getStep())) {
+            $description[] = 'Step value: '.$this->getStep().'.';
+        }
+
+        if (!empty($this->getDecimalCount())) {
+            $description[] = $this->getDecimalCount().' decimal places are allowed.';
+        }
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     /**

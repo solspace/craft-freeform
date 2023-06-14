@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
@@ -94,6 +95,21 @@ class CheckboxField extends AbstractField implements InputOnlyInterface, Boolean
     public function renderSingleInput(): Markup
     {
         return $this->renderRaw($this->getSingleInputHtml());
+    }
+
+    public function getContentGqlMutationArgumentType(): array|GQLType
+    {
+        $description = $this->getContentGqlDescription();
+        $description[] = 'Single option value allowed.';
+        $description[] = 'Option value is "'.$this->getDefaultValue().'".';
+
+        $description = implode("\n", $description);
+
+        return [
+            'name' => $this->getHandle(),
+            'type' => $this->getContentGqlType(),
+            'description' => trim($description),
+        ];
     }
 
     protected function onBeforeInputHtml(): string

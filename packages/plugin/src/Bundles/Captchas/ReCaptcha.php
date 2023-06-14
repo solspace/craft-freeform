@@ -62,13 +62,15 @@ class ReCaptcha extends FeatureBundle
      */
     public function validateRecaptchaV2Checkbox(ValidateEvent $event): void
     {
-        if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
-            $field = $event->getField();
+        $field = $event->getField();
+        $form = $field->getForm();
 
-            $response = $this->getCheckboxResponse($event);
+        if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
+            $response = $this->getCheckboxResponse($form);
 
             if (($field instanceof RecaptchaField) && !$this->validateResponse($response)) {
                 $message = $this->getSettings()->recaptchaErrorMessage;
+
                 $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
             }
         }
@@ -82,7 +84,7 @@ class ReCaptcha extends FeatureBundle
         $form = $event->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
-            $response = $this->getInvisibleResponse($event);
+            $response = $this->getInvisibleResponse($form);
 
             if (!$this->validateResponse($response)) {
                 if ($this->behaviourDisplayError()) {
@@ -104,7 +106,7 @@ class ReCaptcha extends FeatureBundle
         $form = $event->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
-            $response = $this->getInvisibleResponse($event);
+            $response = $this->getInvisibleResponse($form);
 
             if (!$this->validateResponse($response)) {
                 if ($this->behaviourDisplayError()) {
@@ -165,14 +167,14 @@ class ReCaptcha extends FeatureBundle
         return Settings::RECAPTCHA_BEHAVIOUR_DISPLAY_ERROR === $settings->recaptchaBehaviour || !$settings->spamFolderEnabled;
     }
 
-    private function getCheckboxResponse(ValidateEvent $event): ?string
+    private function getCheckboxResponse(Form $form): ?string
     {
-        return $this->getResponse($event->getForm());
+        return $this->getResponse($form);
     }
 
-    private function getInvisibleResponse(ValidationEvent $event): ?string
+    private function getInvisibleResponse(Form $form): ?string
     {
-        return $this->getResponse($event->getForm());
+        return $this->getResponse($form);
     }
 
     private function getResponse(Form $form): ?string

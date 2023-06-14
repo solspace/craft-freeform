@@ -4,11 +4,10 @@ namespace Solspace\Freeform\Events\Fields;
 
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Form\Form;
 
 class ValidateEvent extends ArrayableEvent
 {
-    public function __construct(private FieldInterface $field, private Form $form)
+    public function __construct(private FieldInterface $field)
     {
         parent::__construct([]);
     }
@@ -18,16 +17,11 @@ class ValidateEvent extends ArrayableEvent
      */
     public function fields(): array
     {
-        return ['field', 'form'];
+        return ['field'];
     }
 
     public function getField(): FieldInterface
     {
         return $this->field;
-    }
-
-    public function getForm(): Form
-    {
-        return $this->form;
     }
 }

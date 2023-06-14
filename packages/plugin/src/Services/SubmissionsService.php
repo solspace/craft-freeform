@@ -21,11 +21,11 @@ use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
+use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
-use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
@@ -34,7 +34,6 @@ use Solspace\Freeform\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
 
 class SubmissionsService extends BaseService implements SubmissionHandlerInterface
@@ -145,9 +144,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $submissionCountByForm;
     }
 
-    /**
-     * @throws FreeformException
-     */
     public function handleSubmission(Form $form, Submission $submission): void
     {
         $freeform = Freeform::getInstance();

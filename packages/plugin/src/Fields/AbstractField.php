@@ -474,6 +474,11 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         }
     }
 
+    public function getForm(): Form
+    {
+        return $this->form;
+    }
+
     /**
      * Assemble the Label HTML string.
      */
@@ -580,9 +585,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     protected function validate(): array
     {
-        $form = $this->getForm();
-
-        $event = new ValidateEvent($this, $form);
+        $event = new ValidateEvent($this);
         Event::trigger($this, self::EVENT_BEFORE_VALIDATE, $event);
 
         $errors = $this->getErrors();
@@ -615,11 +618,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         Event::trigger($this, self::EVENT_AFTER_VALIDATE, $event);
 
         return $errors;
-    }
-
-    protected function getForm(): Form
-    {
-        return $this->form;
     }
 
     /**

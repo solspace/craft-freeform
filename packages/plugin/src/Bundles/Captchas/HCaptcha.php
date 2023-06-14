@@ -66,10 +66,11 @@ class HCaptcha extends FeatureBundle
      */
     public function validateCheckbox(ValidateEvent $event): void
     {
-        if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_CHECKBOX)) {
-            $field = $event->getField();
+        $field = $event->getField();
+        $form = $field->getForm();
 
-            $response = $this->getCheckboxResponse($event);
+        if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_CHECKBOX)) {
+            $response = $this->getCheckboxResponse($form);
 
             if (($field instanceof RecaptchaField) && !$this->validateResponse($response)) {
                 $message = $this->getSettings()->recaptchaErrorMessage;
@@ -87,7 +88,7 @@ class HCaptcha extends FeatureBundle
         $form = $event->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_INVISIBLE)) {
-            $response = $this->getInvisibleResponse($event);
+            $response = $this->getInvisibleResponse($form);
 
             if (!$this->validateResponse($response)) {
                 if ($this->behaviourDisplayError()) {
@@ -120,14 +121,14 @@ class HCaptcha extends FeatureBundle
         return Freeform::getInstance()->settings->getSettingsModel();
     }
 
-    private function getCheckboxResponse(ValidateEvent $event): ?string
+    private function getCheckboxResponse(Form $form): ?string
     {
-        return $this->getResponse($event->getForm());
+        return $this->getResponse($form);
     }
 
-    private function getInvisibleResponse(ValidationEvent $event): ?string
+    private function getInvisibleResponse(Form $form): ?string
     {
-        return $this->getResponse($event->getForm());
+        return $this->getResponse($form);
     }
 
     private function getResponse(Form $form): ?string

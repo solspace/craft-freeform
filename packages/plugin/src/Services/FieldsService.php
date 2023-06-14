@@ -216,12 +216,12 @@ class FieldsService extends BaseService implements FieldHandlerInterface
 
     public function beforeValidate(AbstractField $field, Form $form): void
     {
-        $this->trigger(self::EVENT_BEFORE_VALIDATE, new ValidateEvent($field, $form));
+        $this->trigger(self::EVENT_BEFORE_VALIDATE, new ValidateEvent($field));
     }
 
     public function afterValidate(AbstractField $field, Form $form): void
     {
-        $this->trigger(self::EVENT_AFTER_VALIDATE, new ValidateEvent($field, $form));
+        $this->trigger(self::EVENT_AFTER_VALIDATE, new ValidateEvent($field));
     }
 
     /**

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Carbon\Exceptions\InvalidFormatException;
 use craft\gql\types\DateTime as DateTimeType;
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
@@ -479,12 +480,12 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         return $hours.$this->getClockSeparator().$minutes.$ampm;
     }
 
-    public function getContentGqlType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlType(): array|GQLType
     {
         return DateTimeType::getType();
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Format: "'.$this->getHumanReadableFormat().'".';

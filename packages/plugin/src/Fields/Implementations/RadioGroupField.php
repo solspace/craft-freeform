@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
@@ -77,7 +78,7 @@ class RadioGroupField extends AbstractExternalOptionsField implements OneLineInt
         return '';
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -87,7 +88,7 @@ class SignatureField extends AbstractField implements ExtraFieldInterface
         return $this->penDotSize;
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Expects the contents of the file in Base64 format.';

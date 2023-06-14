@@ -14,6 +14,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
@@ -72,12 +73,12 @@ class MultipleSelectField extends AbstractExternalOptionsField implements MultiV
         return implode(', ', $labels);
     }
 
-    public function getContentGqlType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlType(): array|GQLType
     {
-        return \GraphQL\Type\Definition\Type::listOf(\GraphQL\Type\Definition\Type::string());
+        return GQLType::listOf(GQLType::string());
     }
 
-    public function getContentGqlMutationArgumentType(): \GraphQL\Type\Definition\Type|array
+    public function getContentGqlMutationArgumentType(): GQLType|array
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Multiple option values allowed.';

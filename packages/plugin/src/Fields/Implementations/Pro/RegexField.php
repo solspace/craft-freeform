@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
@@ -59,7 +60,7 @@ class RegexField extends TextField implements ExtraFieldInterface
         return $constraints;
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
 

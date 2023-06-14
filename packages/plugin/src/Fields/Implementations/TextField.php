@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 use Solspace\Freeform\Fields\Traits\PlaceholderTrait;
@@ -39,7 +40,7 @@ class TextField extends AbstractField implements PlaceholderInterface
         return self::TYPE_TEXT;
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
 

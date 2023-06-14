@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Property\Implementations\Attributes\TableAttributesTransformer;
 use Solspace\Freeform\Attributes\Property\Implementations\Table\TableTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -186,12 +187,12 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         return $this;
     }
 
-    public function getContentGqlType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlType(): array|GQLType
     {
-        return \GraphQL\Type\Definition\Type::listOf(\GraphQL\Type\Definition\Type::listOf(\GraphQL\Type\Definition\Type::string()));
+        return GQLType::listOf(GQLType::listOf(GQLType::string()));
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $layout = [];
         $textValuesInclude = '';

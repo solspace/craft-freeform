@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 
 #[Type(
@@ -63,7 +64,7 @@ class SelectField extends AbstractExternalOptionsField
         return '';
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';

@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -137,12 +138,12 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         return $constraints;
     }
 
-    public function getContentGqlType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlType(): array|GQLType
     {
-        return \GraphQL\Type\Definition\Type::int();
+        return GQLType::int();
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
         $description[] = 'Single option value allowed.';

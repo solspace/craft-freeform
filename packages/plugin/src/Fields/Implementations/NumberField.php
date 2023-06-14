@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Fields\Implementations;
 
 use craft\gql\types\Number as NumberType;
 use Solspace\Freeform\Attributes\Field\Type;
+use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 
@@ -111,12 +112,12 @@ class NumberField extends TextField
         return $constraints;
     }
 
-    public function getContentGqlType(): \GraphQL\Type\Definition\Type|array
+    public function getContentGqlType(): GQLType|array
     {
         return NumberType::getType();
     }
 
-    public function getContentGqlMutationArgumentType(): array|\GraphQL\Type\Definition\Type
+    public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
 

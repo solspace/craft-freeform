@@ -25,6 +25,7 @@ use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
+use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
@@ -151,10 +152,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     {
         $freeform = Freeform::getInstance();
 
-        $formsService = $freeform->forms;
-        $spamSubmissionsService = $freeform->spamSubmissions;
-
-        $event = new \Solspace\Freeform\Events\Forms\SubmitEvent($form, $submission);
+        $event = new FormSubmitEvent($form, $submission);
         Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
 
         if (!$event->isValid || !empty($form->getActions())) {

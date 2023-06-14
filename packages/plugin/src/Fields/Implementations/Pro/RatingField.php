@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
@@ -49,6 +50,21 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
 
     #[Input\ColorPicker('Selected Color')]
     protected string $colorSelected = '#FF7700';
+
+    /**
+     * @param T $value
+     */
+    public function setValue(mixed $value): FieldInterface
+    {
+        // Prevents GraphQL from triggering an number constraint violation
+        if (!empty($this->getValue())) {
+            $this->value = $value;
+        } else {
+            $this->value = null;
+        }
+
+        return $this;
+    }
 
     public function getType(): string
     {

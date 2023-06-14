@@ -23,7 +23,6 @@ use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
-use Solspace\Freeform\Fields\Implementations\Pro\RatingField;
 use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
@@ -135,16 +134,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     public function setValue(mixed $value): FieldInterface
     {
-        if ($this instanceof RatingField) {
-            // Prevents GraphQL from triggering an number constraint violation
-            if (!empty($this->getValue())) {
-                $this->value = $value;
-            } else {
-                $this->value = null;
-            }
-        } else {
-            $this->value = $value;
-        }
+        $this->value = $value;
 
         return $this;
     }

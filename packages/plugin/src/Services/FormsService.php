@@ -528,43 +528,42 @@ class FormsService extends BaseService implements FormHandlerInterface
         return false;
     }
 
-    /**
-     * @throws SyntaxError
-     * @throws InvalidConfigException
-     * @throws Exception
-     * @throws LoaderError
-     */
-    public function getReturnUrl(Form $form, Submission $submission): string
+    public function getReturnUrl(Form $form, Submission $submission): ?string
     {
-        $request = \Craft::$app->getRequest();
+        try {
+            $request = \Craft::$app->getRequest();
 
-        $postedReturnUrl = $request->post(Form::RETURN_URI_KEY);
-        if ($postedReturnUrl) {
-            $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
-            if (false === $returnUrl) {
+            $postedReturnUrl = $request->post(Form::RETURN_URI_KEY);
+            if ($postedReturnUrl) {
+                $returnUrl = \Craft::$app->security->validateData($postedReturnUrl);
+                if (false === $returnUrl) {
+                    $returnUrl = $form->getReturnUrl();
+                }
+            } else {
                 $returnUrl = $form->getReturnUrl();
             }
-        } else {
-            $returnUrl = $form->getReturnUrl();
+
+            $returnUrl = \Craft::$app->view->renderString(
+                $returnUrl,
+                [
+                    'form' => $form,
+                    'submission' => $submission,
+                ]
+            );
+
+            $event = new ReturnUrlEvent($form, $submission, $returnUrl);
+            Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);
+            $returnUrl = $event->getReturnUrl();
+
+            if (!$returnUrl) {
+                $returnUrl = $request->getUrl();
+            }
+
+            return $returnUrl;
+        } catch (LoaderError|InvalidConfigException|SyntaxError|Exception) {
         }
 
-        $returnUrl = \Craft::$app->view->renderString(
-            $returnUrl,
-            [
-                'form' => $form,
-                'submission' => $submission,
-            ]
-        );
-
-        $event = new ReturnUrlEvent($form, $submission, $returnUrl);
-        Event::trigger(Form::class, Form::EVENT_GENERATE_RETURN_URL, $event);
-        $returnUrl = $event->getReturnUrl();
-
-        if (!$returnUrl) {
-            $returnUrl = $request->getUrl();
-        }
-
-        return $returnUrl;
+        return null;
     }
 
     private function getFormQuery(): Query

@@ -87,7 +87,7 @@ class Submission extends Element
     {
         $this->formId = $config['formId'] ?? null;
         if ($this->formId) {
-            $this->fieldCollection = $this->getForm()->getLayout()->cloneFieldCollection();
+            $this->fieldCollection = $this->getForm()->getLayout()->getFields();
         }
 
         parent::__construct($config);
@@ -350,7 +350,7 @@ class Submission extends Element
 
         $formService = Freeform::getInstance()->forms;
 
-        return $formService->getFormById((int) $this->formId)->getForm();
+        return $formService->getFormById((int) $this->formId);
     }
 
     public function getIsEditable(): bool

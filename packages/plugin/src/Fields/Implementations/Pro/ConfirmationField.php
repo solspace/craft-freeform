@@ -2,8 +2,8 @@
 
 namespace Solspace\Freeform\Fields\Implementations\Pro;
 
-use Solspace\Freeform\Attributes\Field\Type;
 use GraphQL\Type\Definition\Type as GQLType;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Implementations\Field\FieldTransformer;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;

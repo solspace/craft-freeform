@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\Fields\Implementations;
 
 use craft\gql\types\Number as NumberType;
-use Solspace\Freeform\Attributes\Field\Type;
 use GraphQL\Type\Definition\Type as GQLType;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 

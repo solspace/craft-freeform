@@ -13,8 +13,8 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
-use Solspace\Freeform\Attributes\Field\Type;
 use GraphQL\Type\Definition\Type as GQLType;
+use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Traits\MultipleValueTrait;

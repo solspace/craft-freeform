@@ -1,8 +1,8 @@
-import type { UseQueryResult } from 'react-query';
-import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { integrationActions } from '@editor/store/slices/integrations';
 import type { Integration } from '@ff-client/types/integrations';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 

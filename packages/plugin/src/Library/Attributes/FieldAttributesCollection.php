@@ -10,7 +10,7 @@ class FieldAttributesCollection extends Attributes
     protected Attributes $container;
     protected Attributes $error;
 
-    public function __construct(array $attributes = [])
+    public function __construct(?array $attributes = [])
     {
         $this->input = new Attributes();
         $this->label = new Attributes();
@@ -18,7 +18,7 @@ class FieldAttributesCollection extends Attributes
         $this->container = new Attributes();
         $this->error = new Attributes();
 
-        parent::__construct($attributes);
+        parent::__construct($attributes ?? []);
     }
 
     public function getInput(): Attributes

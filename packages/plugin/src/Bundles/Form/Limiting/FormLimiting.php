@@ -44,7 +44,7 @@ class FormLimiting extends FeatureBundle
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleLimitations']);
     }
 
-    public function handleLimitations(ValidationEvent $event)
+    public function handleLimitations(ValidationEvent $event): void
     {
         $form = $event->getForm();
         $behaviorSettings = $form->getSettings()->getBehavior();
@@ -81,7 +81,7 @@ class FormLimiting extends FeatureBundle
         }
     }
 
-    private function limitByCookie(Form $form)
+    private function limitByCookie(Form $form): void
     {
         $name = Cookies::getCookieName($form);
         $cookie = $_COOKIE[$name] ?? null;
@@ -125,7 +125,7 @@ class FormLimiting extends FeatureBundle
         // TODO - If there is a session and it was active within the last 'userSessionDuration' seconds... do not let user submit again
     }
 
-    private function limitByUserId(Form $form)
+    private function limitByUserId(Form $form): void
     {
         $userId = \Craft::$app->user->getId();
         if (!$userId) {
@@ -158,14 +158,14 @@ class FormLimiting extends FeatureBundle
         }
     }
 
-    private function limitLoggedInOnly(Form $form)
+    private function limitLoggedInOnly(Form $form): void
     {
         if (!\Craft::$app->user->id) {
             $this->addMessage($form, 'You must be logged in to submit this form.');
         }
     }
 
-    private function addMessage(Form $form, $message = "Sorry, you've already submitted this form.")
+    private function addMessage(Form $form, $message = "Sorry, you've already submitted this form."): void
     {
         if (\in_array($form->getId(), $this->formCache, true)) {
             return;

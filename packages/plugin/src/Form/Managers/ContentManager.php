@@ -6,29 +6,18 @@ use craft\db\Connection;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Managers\ContentManager\TableInfo;
+use Solspace\Freeform\Records\Form\FormFieldRecord;
 use yii\db\Schema;
 
 class ContentManager
 {
-    private ?array $oldProperties;
-    private ?array $newProperties;
-
-    private ?array $oldFields;
-    private ?array $newFields;
-
     private ?TableInfo $table = null;
 
-    public function __construct(private Form $form, ?string $oldLayout, ?string $newLayout)
+    /**
+     * @param FormFieldRecord[] $fields
+     */
+    public function __construct(private Form $form, private array $fields)
     {
-        $old = json_decode($oldLayout, true);
-        $new = json_decode($newLayout, true);
-
-        $this->oldProperties = $old['composer']['properties'] ?? null;
-        $this->newProperties = $new['composer']['properties'] ?? null;
-
-        $this->oldFields = $this->extractFieldsFromProperties($this->oldProperties);
-        $this->newFields = $this->extractFieldsFromProperties($this->newProperties);
-
         $this->getTableSchema();
     }
 
@@ -89,7 +78,7 @@ class ContentManager
 
         $oldTableName = $this->table->getTableName();
 
-        $newHandle = $this->newProperties['form']['handle'] ?? null;
+        $newHandle = $this->form->getSettings()->getGeneral()->handle;
         $newTableName = Submission::generateContentTableName($id, $newHandle);
 
         if ($oldTableName === $newTableName) {
@@ -106,20 +95,16 @@ class ContentManager
 
     private function renameFieldColumns(): void
     {
-        $old = $this->oldFields;
-        $new = $this->newFields;
-
         $table = $this->table;
-
-        foreach ($old as $id => $oldField) {
-            $newField = $new[$id] ?? null;
-
-            if (null === $newField) {
+        foreach ($this->fields as $field) {
+            $metadata = json_decode($field->metadata);
+            $handle = $metadata->handle ?? null;
+            if (!$handle) {
                 continue;
             }
 
-            $oldColumn = $table->getFieldColumnName($id);
-            $newColumn = Submission::generateFieldColumnName($id, $newField['handle']);
+            $oldColumn = $table->getFieldColumnName($field->id);
+            $newColumn = Submission::generateFieldColumnName($field->id, $handle);
 
             if ($oldColumn === $newColumn || !$oldColumn || !$newColumn) {
                 continue;
@@ -133,52 +118,49 @@ class ContentManager
                 )
                 ->execute();
 
-            $this->table->renameFieldColumn($id, $newColumn);
+            $this->table->renameFieldColumn($field->id, $newColumn);
         }
     }
 
     private function deleteUnusedFieldColumns(): void
     {
-        $old = $this->oldFields;
-        $new = $this->newFields;
-
         $table = $this->table;
 
-        foreach ($old as $id => $oldField) {
-            $newField = $new[$id] ?? null;
+        $usedFieldIds = [];
+        foreach ($this->fields as $field) {
+            $usedFieldIds[] = (int) $field->id;
+        }
 
-            if (null !== $newField) {
-                continue;
-            }
-
-            $fieldColumn = $table->getFieldColumnName($id);
-            if (!$fieldColumn) {
+        foreach ($table->getFieldColumnFieldIds() as $columnFieldId) {
+            if (\in_array($columnFieldId, $usedFieldIds, true)) {
                 continue;
             }
 
             \Craft::$app->db->createCommand()
-                ->dropColumn($table->getTableName(), $fieldColumn)
+                ->dropColumn($table->getTableName(), $columnFieldId)
                 ->execute();
 
-            $this->table->removeColumn($id);
+            $this->table->removeColumn($columnFieldId);
         }
     }
 
     private function createNewFieldColumns(): void
     {
-        $old = $this->oldFields;
-        $new = $this->newFields;
-
         $table = $this->table;
+        $existingFieldIds = $table->getFieldColumnFieldIds();
 
-        foreach ($new as $id => $newField) {
-            $oldField = $old[$id] ?? null;
-
-            if (null !== $oldField) {
+        foreach ($this->fields as $field) {
+            if (\in_array($field->id, $existingFieldIds, true)) {
                 continue;
             }
 
-            $columnName = Submission::generateFieldColumnName($id, $newField['handle'] ?? null);
+            $metadata = json_decode($field->metadata);
+            $handle = $metadata->handle ?? null;
+            if (!$handle) {
+                continue;
+            }
+
+            $columnName = Submission::generateFieldColumnName($field->id, $handle);
 
             \Craft::$app->db->createCommand()
                 ->addColumn($table->getTableName(), $columnName, 'text')
@@ -186,27 +168,6 @@ class ContentManager
 
             $this->table->addColumn($columnName);
         }
-    }
-
-    private function extractFieldsFromProperties(?array $properties): array
-    {
-        $fields = [];
-        if (null === $properties) {
-            return $fields;
-        }
-
-        foreach ($properties as $item) {
-            $id = $item['id'] ?? null;
-            $type = $item['type'] ?? null;
-
-            if (!$id || !$type) {
-                continue;
-            }
-
-            $fields[$id] = $item;
-        }
-
-        return $fields;
     }
 
     private function getTableSchema(): void

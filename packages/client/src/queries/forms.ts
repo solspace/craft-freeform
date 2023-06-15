@@ -1,5 +1,3 @@
-import type { UseQueryResult } from 'react-query';
-import { useQuery } from 'react-query';
 import { useAppDispatch } from '@editor/store';
 import { formActions } from '@editor/store/slices/form';
 import type {
@@ -7,10 +5,12 @@ import type {
   Form,
   FormSettingNamespace,
 } from '@ff-client/types/forms';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
-const QKForms = {
+export const QKForms = {
   all: ['forms'] as const,
   single: (id: number) => [...QKForms.all, id] as const,
   settings: () => [...QKForms.all, 'settings'] as const,

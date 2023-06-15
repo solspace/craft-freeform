@@ -9,4 +9,13 @@ use Solspace\Freeform\Library\Collections\Collection;
  */
 class RecipientCollection extends Collection
 {
+    public function emailsToArray(): array
+    {
+        $recipients = [];
+        foreach ($this->items as $recipient) {
+            $recipients[] = trim($recipient->getEmail());
+        }
+
+        return array_filter($recipients);
+    }
 }

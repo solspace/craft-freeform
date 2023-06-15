@@ -1,5 +1,3 @@
-import type { UseQueryResult } from 'react-query';
-import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { fieldRuleActions } from '@editor/store/slices/rules/fields';
 import { notificationRuleActions } from '@editor/store/slices/rules/notifications';
@@ -9,6 +7,8 @@ import type {
   NotificationRule,
   PageRule,
 } from '@ff-client/types/rules';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 

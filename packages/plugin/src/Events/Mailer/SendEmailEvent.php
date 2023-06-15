@@ -6,39 +6,18 @@ use craft\mail\Message;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Library\Mailing\NotificationInterface;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 class SendEmailEvent extends CancelableArrayableEvent
 {
-    /** @var Message */
-    private $message;
-
-    /** @var Form */
-    private $form;
-
-    /** @var NotificationInterface */
-    private $notification;
-
-    /** @var array */
-    private $fieldValues;
-
-    /** @var Submission */
-    private $submission;
-
     public function __construct(
-        Message $message,
-        Form $form,
-        NotificationInterface $notification,
-        array $fieldValues,
-        Submission $submission = null
+        private Message $message,
+        private Form $form,
+        private NotificationTemplate $notification,
+        private array $fieldValues,
+        private ?Submission $submission = null
     ) {
-        $this->message = $message;
-        $this->form = $form;
-        $this->notification = $notification;
-        $this->fieldValues = $fieldValues;
-        $this->submission = $submission;
-
-        parent::__construct([]);
+        parent::__construct();
     }
 
     /**
@@ -59,7 +38,7 @@ class SendEmailEvent extends CancelableArrayableEvent
         return $this->form;
     }
 
-    public function getNotification(): NotificationInterface
+    public function getNotification(): NotificationTemplate
     {
         return $this->notification;
     }

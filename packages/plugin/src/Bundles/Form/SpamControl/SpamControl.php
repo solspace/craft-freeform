@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\SpamControl;
 
+use Solspace\Freeform\Bundles\Spam\Honeypot\HoneypotProvider;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
@@ -18,8 +19,9 @@ use yii\base\Event;
 
 class SpamControl extends FeatureBundle
 {
-    public function __construct()
-    {
+    public function __construct(
+        private HoneypotProvider $honeypotProvider
+    ) {
         Event::on(Form::class, Form::EVENT_AFTER_HANDLE_REQUEST, [$this, 'redirectPage']);
         Event::on(Form::class, Form::EVENT_AFTER_VALIDATE, [$this, 'handleValidation']);
         Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'handleAjaxPayload']);
@@ -32,7 +34,7 @@ class SpamControl extends FeatureBundle
         );
     }
 
-    public function redirectPage(HandleRequestEvent $event)
+    public function redirectPage(HandleRequestEvent $event): void
     {
         $spamReasons = $this->getSpamReasons($event->getForm());
         if ($spamReasons && $this->getSettingsService()->isSpamBehaviourReloadForm()) {
@@ -40,7 +42,7 @@ class SpamControl extends FeatureBundle
         }
     }
 
-    public function handleValidation(ValidationEvent $event)
+    public function handleValidation(ValidationEvent $event): void
     {
         $form = $event->getForm();
         if ($form->isMarkedAsSpam()) {
@@ -54,20 +56,20 @@ class SpamControl extends FeatureBundle
         }
     }
 
-    public function handleAjaxPayload(PrepareAjaxResponsePayloadEvent $event)
+    public function handleAjaxPayload(PrepareAjaxResponsePayloadEvent $event): void
     {
         if (!$this->isHoneypotEnabled()) {
             return;
         }
 
-        $honeypot = Freeform::getInstance()->honeypot->getHoneypot($event->getForm());
+        $honeypot = $this->honeypotProvider->getHoneypot($event->getForm());
         $event->add('honeypot', [
             'name' => $honeypot->getName(),
             'hash' => $honeypot->getHash(),
         ]);
     }
 
-    public function persistSpamReasons(SubmitEvent $event)
+    public function persistSpamReasons(SubmitEvent $event): void
     {
         $form = $event->getForm();
         $submission = $event->getSubmission();
@@ -86,12 +88,12 @@ class SpamControl extends FeatureBundle
         }
     }
 
-    public function handleFormReset(ResetEvent $event)
+    public function handleFormReset(ResetEvent $event): void
     {
         $event->getForm()->getProperties()->set(Form::PROPERTY_SPAM_REASONS, []);
     }
 
-    private function getSpamReasons(Form $form)
+    private function getSpamReasons(Form $form): array
     {
         $bag = $form->getProperties();
 

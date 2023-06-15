@@ -5,34 +5,17 @@ namespace Solspace\Freeform\Events\Mailer;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Library\Mailing\NotificationInterface;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 
 class RenderEmailEvent extends ArrayableEvent
 {
-    /** @var Form */
-    private $form;
-
-    /** @var NotificationInterface */
-    private $notification;
-
-    /** @var array */
-    private $fieldValues;
-
-    /** @var Submission */
-    private $submission;
-
     public function __construct(
-        Form $form,
-        NotificationInterface $notification,
-        array $fieldValues,
-        Submission $submission = null
+        private Form $form,
+        private NotificationTemplate $notification,
+        private array $fieldValues,
+        private ?Submission $submission = null
     ) {
-        $this->form = $form;
-        $this->notification = $notification;
-        $this->fieldValues = $fieldValues;
-        $this->submission = $submission;
-
-        parent::__construct([]);
+        parent::__construct();
     }
 
     /**
@@ -48,7 +31,7 @@ class RenderEmailEvent extends ArrayableEvent
         return $this->form;
     }
 
-    public function getNotification(): NotificationInterface
+    public function getNotification(): NotificationTemplate
     {
         return $this->notification;
     }
@@ -61,7 +44,7 @@ class RenderEmailEvent extends ArrayableEvent
     /**
      * @return null|mixed
      */
-    public function getFieldValue(string $key)
+    public function getFieldValue(string $key): mixed
     {
         return $this->fieldValues[$key] ?? null;
     }
@@ -73,17 +56,14 @@ class RenderEmailEvent extends ArrayableEvent
         return $this;
     }
 
-    /**
-     * @param mixed $value
-     */
-    public function setFieldValue(string $key, $value): self
+    public function setFieldValue(string $key, mixed $value): self
     {
         $this->fieldValues[$key] = $value;
 
         return $this;
     }
 
-    public function getSubmission(): Submission
+    public function getSubmission(): ?Submission
     {
         return $this->submission;
     }

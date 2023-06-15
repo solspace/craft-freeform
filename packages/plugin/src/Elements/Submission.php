@@ -51,37 +51,20 @@ class Submission extends Element
 
     public const OPT_IN_DATA_TOKEN_LENGTH = 100;
 
-    /** @var int */
-    public $formId;
+    public ?int $formId = null;
+    public ?int $userId = null;
+    public ?int $statusId = null;
+    public ?int $incrementalId = null;
+    public ?string $token = null;
+    public bool $isSpam = false;
+    public ?string $ip = null;
 
-    /** @var int */
-    public $userId;
-
-    /** @var int */
-    public $statusId;
-
-    /** @var int */
-    public $incrementalId;
-
-    /** @var string */
-    public $token;
-
-    /** @var bool */
-    public $isSpam;
-
-    /** @var string */
-    public $ip;
+    private ?FieldCollection $fieldCollection = null;
+    private static array $permissionCache = [];
+    private static array $deletableTokens = [];
 
     /** @var SpamReason[] */
     private ?array $spamReasons = null;
-
-    private ?FieldCollection $fieldCollection = null;
-
-    /** @var array */
-    private static $permissionCache = [];
-
-    /** @var bool */
-    private static $deletableTokens = [];
 
     public function __construct($config = [])
     {
@@ -101,9 +84,13 @@ class Submission extends Element
             $name = (int) $matches[1];
         }
 
+        if (method_exists($this, 'get'.$name)) {
+            return $this->{'get'.$name}();
+        }
+
         try {
             return $this->getFieldCollection()->get($name);
-        } catch (FreeformException) {
+        } catch (\Exception) {
             if ($gettingByFieldMarker) {
                 return null;
             }
@@ -125,7 +112,7 @@ class Submission extends Element
             try {
                 $field = $this->getFieldCollection()->get($id);
 
-                if ($field instanceof MultiValueInterface ?? \is_string($value)) {
+                if ($field instanceof MultiValueInterface && \is_string($value)) {
                     $value = json_decode($value, true);
                 }
 
@@ -371,6 +358,11 @@ class Submission extends Element
         return self::$permissionCache[$this->formId];
     }
 
+    public function canView(User $user): bool
+    {
+        return true;
+    }
+
     public function getCpEditUrl(): ?string
     {
         return $this->getIsEditable() ? UrlHelper::cpUrl('freeform/submissions/'.$this->id) : false;
@@ -422,7 +414,7 @@ class Submission extends Element
                 $value = json_encode($value);
             }
 
-            if (\PHP_VERSION_ID >= 50400) {
+            if (\PHP_VERSION_ID >= 50400 && null !== $value) {
                 $value = LitEmoji::unicodeToShortcode($value);
             }
 

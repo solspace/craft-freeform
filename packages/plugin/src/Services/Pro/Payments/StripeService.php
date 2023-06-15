@@ -42,6 +42,8 @@ class StripeService extends Component
 
     public function preProcessPayment(ValidationEvent $event)
     {
+        // TODO: implement me
+        return;
         $form = $event->getForm();
         $properties = $form->getPaymentProperties();
         $integrationId = $properties->getIntegrationId();
@@ -122,6 +124,8 @@ class StripeService extends Component
 
     public function preProcessSubscription(ValidationEvent $event)
     {
+        // TODO: implement me
+        return;
         $form = $event->getForm();
         $properties = $form->getPaymentProperties();
         $paymentType = $properties->getPaymentType();
@@ -193,7 +197,7 @@ class StripeService extends Component
     /**
      * Adds honeypot javascript to forms.
      */
-    public function addAttributesToFormTag(AttachFormAttributesEvent $event)
+    public function addAttributesToFormTag(AttachFormAttributesEvent $event): void
     {
         $form = $event->getForm();
 
@@ -215,6 +219,17 @@ class StripeService extends Component
 
     public function getStripeVariables(Form $form): \stdClass
     {
+        // TODO: refactor this
+        return (object) [
+            'id' => '',
+            'currencySelector' => '',
+            'currencyFixed' => '',
+            'amountSelector' => '',
+            'amountFixed' => '',
+            'usage' => '',
+            'publicKey' => '',
+        ];
+
         $paymentFields = $form->getLayout()->getFields(PaymentInterface::class);
         $integrationId = $form->getPaymentProperties()->getIntegrationId();
 

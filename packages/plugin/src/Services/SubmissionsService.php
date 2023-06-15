@@ -218,7 +218,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             $submission = SpamSubmission::create($form);
         }
 
-        $fields = $form->getLayout()->getStorableFields();
+        $fields = $form->getLayout()->getFields()->getStorableFields();
         $savableFields = [];
         foreach ($fields as $field) {
             if (!$form->hasFieldBeenSubmitted($field)) {

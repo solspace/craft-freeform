@@ -54,13 +54,13 @@ class Page implements \IteratorAggregate
         return $this->rowCollection;
     }
 
-    public function getFields(): FieldCollection
+    public function getFields(string|array|null $implements = null, ?string $strategy = null): FieldCollection
     {
-        return $this->fieldCollection;
+        return $this->fieldCollection->getList($implements, $strategy);
     }
 
     public function getIterator(): \ArrayIterator
     {
-        return new \ArrayIterator($this->rowCollection);
+        return $this->rowCollection->getIterator();
     }
 }

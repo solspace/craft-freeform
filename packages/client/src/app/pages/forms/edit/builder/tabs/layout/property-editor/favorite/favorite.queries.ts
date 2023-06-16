@@ -1,11 +1,11 @@
-import type { UseMutationResult } from 'react-query';
-import { useQueryClient } from 'react-query';
-import { useMutation } from 'react-query';
 import type { Field } from '@editor/store/slices/fields';
 import { QKFavorites } from '@ff-client/queries/field-favorites';
 import type { APIError } from '@ff-client/types/api';
 import type { PropertyValueCollection } from '@ff-client/types/fields';
 import type { FieldType } from '@ff-client/types/properties';
+import type { UseMutationResult } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 

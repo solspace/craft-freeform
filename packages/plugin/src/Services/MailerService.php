@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Services;
 
+use craft\helpers\App;
 use craft\mail\Message;
 use craft\web\View;
 use Solspace\Commons\Helpers\StringHelper;
@@ -27,10 +28,12 @@ use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Collections\FieldCollection;
+use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Mailing\MailHandlerInterface;
 use Solspace\Freeform\Library\Mailing\NotificationInterface;
-use Solspace\Freeform\Records\NotificationTemplateRecord;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Twig\Error\LoaderError as TwigLoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError as TwigSyntaxError;
@@ -50,22 +53,22 @@ class MailerService extends BaseService implements MailHandlerInterface
      */
     public function sendEmail(
         Form $form,
-        array|string $recipients,
-        NotificationTemplateRecord $notification = null,
-        array $fields = [],
+        RecipientCollection $recipients,
+        FieldCollection $fields,
+        NotificationTemplate $notificationTemplate = null,
         ?Submission $submission = null
     ): int {
         $logger = FreeformLogger::getInstance(FreeformLogger::MAILER);
         $sentMailCount = 0;
 
-        if (null === $notification) {
-            return $sentMailCount;
+        if (null === $notificationTemplate) {
+            return 0;
         }
 
         $recipients = $this->processRecipients($recipients);
 
         $fieldValues = $this->getFieldValues($fields, $form, $submission);
-        $renderEvent = new RenderEmailEvent($form, $notification, $fieldValues, $submission);
+        $renderEvent = new RenderEmailEvent($form, $notificationTemplate, $fieldValues, $submission);
 
         $this->trigger(self::EVENT_BEFORE_RENDER, $renderEvent);
         $fieldValues = $renderEvent->getFieldValues();
@@ -79,10 +82,10 @@ class MailerService extends BaseService implements MailHandlerInterface
             }
 
             try {
-                $email = $this->compileMessage($notification, $fieldValues);
+                $email = $this->compileMessage($notificationTemplate, $fieldValues);
                 $email->setTo([$emailAddress]);
 
-                if ($submission && $notification->isIncludeAttachmentsEnabled()) {
+                if ($submission && $notificationTemplate->isIncludeAttachments()) {
                     foreach ($fields as $field) {
                         if ($field instanceof SignatureField && $field->getValueAsString()) {
                             $email->attach($field->getValueAsString(), [
@@ -111,7 +114,7 @@ class MailerService extends BaseService implements MailHandlerInterface
                     }
                 }
 
-                $sendEmailEvent = new SendEmailEvent($email, $form, $notification, $fieldValues, $submission);
+                $sendEmailEvent = new SendEmailEvent($email, $form, $notificationTemplate, $fieldValues, $submission);
                 $this->trigger(self::EVENT_BEFORE_SEND, $sendEmailEvent);
 
                 if (!$sendEmailEvent->isValid) {
@@ -128,29 +131,19 @@ class MailerService extends BaseService implements MailHandlerInterface
             } catch (\Exception $exception) {
                 $message = $exception->getMessage();
                 $context = [
-                    'template' => $notification->getHandle(),
+                    'template' => $notificationTemplate->getHandle(),
                     'file' => $exception->getFile(),
                 ];
 
                 $logger->error($message, $context);
 
-                $this->notifyAboutEmailSendingError($emailAddress, $notification, $exception, $form);
+                $this->notifyAboutEmailSendingError($emailAddress, $notificationTemplate, $exception, $form);
             } finally {
                 \Craft::$app->view->setTemplateMode($templateMode);
             }
         }
 
         return $sentMailCount;
-    }
-
-    /**
-     * @param int $id
-     *
-     * @return null|NotificationInterface
-     */
-    public function getNotificationById($id)
-    {
-        return Freeform::getInstance()->notifications->getNotificationById($id);
     }
 
     /**
@@ -175,12 +168,12 @@ class MailerService extends BaseService implements MailHandlerInterface
             ->render($variables);
     }
 
-    public function compileMessage(NotificationInterface $notification, array $values): Message
+    public function compileMessage(NotificationTemplate $notification, array $values): Message
     {
-        $fromName = trim(\Craft::parseEnv($this->renderString($notification->getFromName(), $values)));
-        $fromEmail = trim(\Craft::parseEnv($this->renderString($notification->getFromEmail(), $values)));
-        $text = $this->renderString($notification->getBodyText(), $values);
-        $html = $this->renderString($notification->getBodyHtml(), $values);
+        $fromName = trim(App::parseEnv($this->renderString($notification->getFromName(), $values)));
+        $fromEmail = trim(App::parseEnv($this->renderString($notification->getFromEmail(), $values)));
+        $text = $this->renderString($notification->getTextBody(), $values);
+        $html = $this->renderString($notification->getBody(), $values);
         $subject = $this->renderString($notification->getSubject(), $values);
         $subject = htmlspecialchars_decode($subject, \ENT_QUOTES);
 
@@ -224,8 +217,8 @@ class MailerService extends BaseService implements MailHandlerInterface
         }
 
         if ($notification->getReplyToEmail()) {
-            $replyToName = trim(\Craft::parseEnv($this->renderString($notification->getReplyToName() ?? '', $values)));
-            $replyTo = trim(\Craft::parseEnv($this->renderString($notification->getReplyToEmail(), $values)));
+            $replyToName = trim(App::parseEnv($this->renderString($notification->getReplyToName() ?? '', $values)));
+            $replyTo = trim(App::parseEnv($this->renderString($notification->getReplyToEmail(), $values)));
             if (!empty($replyTo)) {
                 if ($replyToName) {
                     $replyTo = [$replyTo => $replyToName];
@@ -248,7 +241,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         return $message;
     }
 
-    public function processRecipients($recipients): array
+    public function processRecipients(RecipientCollection $recipients): array
     {
         if (version_compare(\Craft::$app->getVersion(), '3.5', '>=')) {
             $testToEmailAddress = \Craft::$app->getConfig()->getGeneral()->getTestToEmailAddress();
@@ -257,29 +250,14 @@ class MailerService extends BaseService implements MailHandlerInterface
             }
         }
 
-        if (!\is_array($recipients)) {
-            $recipients = $recipients ? [$recipients] : [];
-        }
-
-        $processedRecipients = [];
-        foreach ($recipients as $index => $value) {
-            $exploded = explode(',', $value);
-            foreach ($exploded as $emailString) {
-                $processedRecipients[] = trim($emailString);
-            }
-        }
-
-        return array_filter($processedRecipients);
+        return $recipients->emailsToArray();
     }
 
-    /**
-     * @return array
-     */
-    private function parseEnvInArray(array $array)
+    private function parseEnvInArray(array $array): array
     {
         $parsed = [];
         foreach ($array as $key => $item) {
-            $parsed[$key] = trim(\Craft::parseEnv($item));
+            $parsed[$key] = trim(App::parseEnv($item));
         }
 
         return $parsed;
@@ -289,16 +267,20 @@ class MailerService extends BaseService implements MailHandlerInterface
      * @param FieldInterface[] $fields
      * @param Submission       $submission
      */
-    private function getFieldValues(array $fields, Form $form, Submission $submission = null): array
+    private function getFieldValues(FieldCollection $fields, Form $form, Submission $submission = null): array
     {
         $postedValues = [];
         $usableFields = [];
         $fieldsAndBlocks = [];
-        $rules = $form->getRuleProperties();
+
+        // TODO: RULES implement rule check
+        // $rules = $form->getRuleProperties();
 
         foreach ($fields as $field) {
             if ($field instanceof HtmlField || $field instanceof RichTextField) {
                 $fieldsAndBlocks[] = $field;
+
+                continue;
             }
 
             if ($field instanceof NoStorageInterface
@@ -309,9 +291,9 @@ class MailerService extends BaseService implements MailHandlerInterface
                 continue;
             }
 
-            if ($rules && $rules->isHidden($field, $form)) {
-                continue;
-            }
+            // if ($rules && $rules->isHidden($field, $form)) {
+            //     continue;
+            // }
 
             $fieldsAndBlocks[] = $field;
             $usableFields[] = $field;
@@ -332,7 +314,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         $postedValues['form'] = $form;
         $postedValues['submission'] = $submission;
         $postedValues['dateCreated'] = new \DateTime();
-        $postedValues['token'] = $submission ? $submission->token : null;
+        $postedValues['token'] = $submission?->token;
 
         return $postedValues;
     }
@@ -342,7 +324,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         NotificationInterface $failedNotification,
         \Exception $exception,
         Form $form
-    ) {
+    ): void {
         $recipients = $this->getSettingsService()->getFailedNotificationRecipients();
         if (!\count($recipients)) {
             return;
@@ -354,7 +336,7 @@ class MailerService extends BaseService implements MailHandlerInterface
         \Craft::$app->view->setTemplateMode(View::TEMPLATE_MODE_CP);
 
         $notificationPath = __DIR__.'/../templates/_emailTemplates/error-notify.twig';
-        $notification = NotificationTemplateRecord::createFromTemplate($notificationPath);
+        $notification = NotificationTemplate::fromFile($notificationPath);
 
         $code = null;
         if ($exception instanceof RuntimeError) {

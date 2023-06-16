@@ -122,7 +122,7 @@
 
                     {{ field.renderLabel({
                         attributes: {
-                            input: { "-class": "form-check-input" },
+                            input: { "=class": "form-check-input" },
                         }
                     }) }}
 
@@ -152,7 +152,7 @@
                 <div{{ field.attributes.container }}>
                     {{ field.renderLabel({
                         attributes: {
-                            input: { "-class": "form-check-input" },
+                            input: { "=class": "form-check-input" },
                         }
                     }) }}
 
@@ -202,8 +202,8 @@
                     <div class="form-check">
                         {{ field.renderInput({
                             attributes: {
-                                input: { "-class": "form-check-input" },
-                                label: { "-class": "form-check-label" },
+                                input: { "=class": "form-check-input" },
+                                label: { "=class": "form-check-label" },
                             }
                         }) }}
                         {{ field.renderLabel }}

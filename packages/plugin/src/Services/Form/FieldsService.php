@@ -21,7 +21,19 @@ class FieldsService extends BaseService
         parent::__construct($config);
     }
 
-    public function getFieldByUid(Form $form, string $fieldUid): ?FieldInterface
+    public function getFieldByUid(string $fieldUid): ?FieldInterface
+    {
+        $record = FormFieldRecord::findOne(['uid' => $fieldUid]);
+        if ($record) {
+            $form = $this->formsService->getFormById($record->formId);
+
+            return $this->createField($record, $form);
+        }
+
+        return null;
+    }
+
+    public function getFieldByFormAndUid(Form $form, string $fieldUid): ?FieldInterface
     {
         $records = $this->getAllFieldRecords($form);
 

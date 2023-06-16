@@ -10,6 +10,6 @@
 {% set crumbs = [
     { label: craft.freeform.name, url: url('freeform') },
     { label: "Forms"|t("freeform"), url: url('freeform/forms') },
-    { label: submission.form.name, url: url('freeform/forms/' ~ submission.form.id) },
+    { label: submission.form.name, url: url('freeform/forms/' ~ submission.getForm().id) },
     { label: "Submissions"|t('freeform'), url: url('freeform/submissions') },
 ] %}

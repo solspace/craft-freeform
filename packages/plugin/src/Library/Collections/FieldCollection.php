@@ -3,13 +3,17 @@
 namespace Solspace\Freeform\Library\Collections;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 /**
  * @implements \IteratorAggregate<int, FieldInterface>
  */
-class FieldCollection implements \IteratorAggregate, \ArrayAccess
+class FieldCollection implements \IteratorAggregate, \ArrayAccess, \Countable
 {
+    public const STRATEGY_INCLUDES = 'includes';
+    public const STRATEGY_EXCLUDES = 'excludes';
+
     /** @var FieldInterface[] */
     private array $fields;
 
@@ -32,33 +36,58 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess
         return null;
     }
 
-    public function getList(string $implements = null, bool $indexByHandle = false): array
+    public function getList(string|array|null $implements = null, ?string $strategy = self::STRATEGY_INCLUDES): self
     {
-        $list = $this->fields;
-        if (null !== $implements) {
-            $list = array_values(
-                array_filter(
-                    $this->fields,
-                    fn (FieldInterface $field) => $field instanceof $implements
-                )
-            );
+        if (null === $implements) {
+            return $this;
         }
 
-        if ($indexByHandle) {
-            $indexed = [];
-            foreach ($list as $field) {
-                $indexed[$field->getHandle()] = $field;
-            }
-
-            return $indexed;
+        if (\is_string($implements)) {
+            $implements = [$implements];
         }
 
-        return $list;
+        $list = array_values(
+            array_filter(
+                $this->fields,
+                function (FieldInterface $field) use ($implements, $strategy) {
+                    if (self::STRATEGY_EXCLUDES === $strategy) {
+                        foreach ($implements as $implement) {
+                            if ($field instanceof $implement || $field->getType() === $implement) {
+                                return false;
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    foreach ($implements as $implement) {
+                        if ($field instanceof $implement || $field->getType() === $implement) {
+                            return true;
+                        }
+                    }
+
+                    return false;
+                }
+            )
+        );
+
+        return new self($list);
     }
 
-    public function getListByHandle(string $implements = null): array
+    public function getExcludedList(string $implements): self
     {
-        return $this->getList($implements, true);
+        return $this->getList($implements, self::STRATEGY_EXCLUDES);
+    }
+
+    public function getListByHandle(string $implements = null, string $strategy = self::STRATEGY_INCLUDES): array
+    {
+        $list = $this->getList($implements, $strategy);
+        $indexed = [];
+        foreach ($list as $field) {
+            $indexed[$field->getHandle()] = $field;
+        }
+
+        return $indexed;
     }
 
     public function has(int|string $identificator): bool
@@ -96,6 +125,11 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess
         );
     }
 
+    public function getStorableFields(): self
+    {
+        return $this->getExcludedList(NoStorageInterface::class);
+    }
+
     public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->fields);
@@ -103,12 +137,12 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess
 
     public function offsetExists(mixed $offset): bool
     {
-        return \array_key_exists($offset, $this->getList(indexByHandle: true));
+        return \array_key_exists($offset, $this->getListByHandle());
     }
 
     public function offsetGet(mixed $offset): mixed
     {
-        return $this->getList(indexByHandle: true)[$offset];
+        return $this->getListByHandle()[$offset];
     }
 
     public function offsetSet(mixed $offset, mixed $value): void
@@ -119,5 +153,10 @@ class FieldCollection implements \IteratorAggregate, \ArrayAccess
     public function offsetUnset(mixed $offset): void
     {
         throw new FreeformException('Cannot delete fields directly');
+    }
+
+    public function count(): int
+    {
+        return \count($this->fields);
     }
 }

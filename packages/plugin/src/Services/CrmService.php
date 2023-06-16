@@ -184,6 +184,9 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
 
         $form = $submission->getForm();
         $layout = $form->getLayout();
+
+        // TODO: implement the new integrations push
+        return false;
         $properties = $form->getIntegrationProperties();
 
         try {

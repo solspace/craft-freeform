@@ -28,7 +28,7 @@ class FieldAttributesCollectionTest extends TestCase
                 'something' => 'else',
             ],
             'label' => [
-                '-class' => 'label-class',
+                '=class' => 'label-class',
             ],
             'instructions' => [
                 'class' => 'instructions-class',

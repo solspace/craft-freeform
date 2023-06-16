@@ -5,6 +5,7 @@ namespace Solspace\Freeform\Library\Attributes;
 class Attributes implements \Countable, \JsonSerializable
 {
     public const STRATEGY_APPEND = 'append';
+    public const STRATEGY_REMOVE = 'remove';
     public const STRATEGY_REPLACE = 'replace';
 
     private array $attributes = [];
@@ -70,8 +71,15 @@ class Attributes implements \Countable, \JsonSerializable
 
     public function set(string $key, mixed $value = null, string $strategy = self::STRATEGY_APPEND): self
     {
-        if (str_starts_with($key, '-')) {
-            $strategy = self::STRATEGY_REPLACE;
+        preg_match('/^[=+-]/', $key, $matches);
+        if ($matches) {
+            $prefix = $matches[0];
+            match ($prefix) {
+                '=' => $strategy = self::STRATEGY_REPLACE,
+                '+' => $strategy = self::STRATEGY_APPEND,
+                '-' => $strategy = self::STRATEGY_REMOVE,
+            };
+
             $key = substr($key, 1);
         }
 
@@ -81,9 +89,30 @@ class Attributes implements \Countable, \JsonSerializable
             $value = implode(' ', $value);
         }
 
+        if (\is_string($value)) {
+            $value = trim($value);
+        }
+
         switch ($strategy) {
             case self::STRATEGY_REPLACE:
                 $this->attributes[$key] = $value;
+
+                break;
+
+            case self::STRATEGY_REMOVE:
+                if (\is_string($value)) {
+                    $removable = explode(' ', $value);
+                } elseif (!\is_array($value)) {
+                    $removable = [$value];
+                } else {
+                    $removable = $value;
+                }
+
+                $removable = array_map('trim', $removable);
+
+                $attributes = explode(' ', $this->attributes[$key]);
+                $attributes = array_filter($attributes, fn ($attribute) => !\in_array($attribute, $removable, true));
+                $this->attributes[$key] = implode(' ', $attributes);
 
                 break;
 

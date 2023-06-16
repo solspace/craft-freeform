@@ -36,10 +36,7 @@ class Layout implements \IteratorAggregate
         return $this->fieldCollection->get($identificator);
     }
 
-    /**
-     * @return FieldCollection|FieldInterface[]
-     */
-    public function getFields(?string $implements = null): array|FieldCollection
+    public function getFields(?string $implements = null): FieldCollection
     {
         if (null !== $implements) {
             return $this->fieldCollection->getList($implements);

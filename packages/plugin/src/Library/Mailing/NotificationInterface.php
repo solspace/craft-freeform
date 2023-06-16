@@ -20,32 +20,17 @@ interface NotificationInterface
 
     public function getFromEmail(): string;
 
-    /**
-     * @return null|string
-     */
-    public function getCc();
+    public function getCc(): ?string;
 
-    /**
-     * @return null|string
-     */
-    public function getBcc();
+    public function getBcc(): ?string;
 
-    /**
-     * @return null|string
-     */
-    public function getReplyToName();
+    public function getReplyToName(): string;
 
-    /**
-     * @return null|string
-     */
-    public function getReplyToEmail();
+    public function getReplyToEmail(): ?string;
 
     public function isIncludeAttachmentsEnabled(): bool;
 
-    /**
-     * @return null|array
-     */
-    public function getPresetAssets();
+    public function getPresetAssets(): ?array;
 
     public function getSubject(): string;
 

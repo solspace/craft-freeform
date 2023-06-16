@@ -8,7 +8,7 @@
     submitClass: "btn btn-primary",
     returnUrl: "{{ siteUrl }}demo/bootstrap/{{ form.handle }}/{% if submission %}submissions/{{ submission.id }}/{% endif %}success",
     submissionToken: submissionToken|default(null),
-    formattingTemplate: 'bootstrap-4.twig',
+    formattingTemplate: 'bootstrap-4/index.twig',
 }) %}
 
 {% set isSuccess  = craft.app.request.segment(4) == "success" %}
@@ -32,25 +32,26 @@
         </div>
 
         {# Display a tip for forms with submit limit setting enabled #}
-        {% if form.limitFormSubmissions %}
+        {% set limit = form.settings.behavior.limitSubmissions %}
+        {% if limit %}
             <div class="alert alert-warning">
                 <h5 class="alert-heading">Please note...</h5>
                 <p class="mb-0">
                     You currently have a user submit limit setting enabled (<i>
-                        {%- if form.limitFormSubmissions == "auth_unlimited" -%}
+                        {%- if limit == "auth_unlimited" -%}
                             Logged in Users only (no limit)
-                        {%- elseif form.limitFormSubmissions == "cookie" -%}
+                        {%- elseif limit == "cookie" -%}
                             Once per Cookie
-                        {%- elseif form.limitFormSubmissions == "ip_cookie" -%}
+                        {%- elseif limit == "ip_cookie" -%}
                             Once per IP/Cookie combo
-                        {%- elseif form.limitFormSubmissions == "auth" -%}
+                        {%- elseif limit == "auth" -%}
                             Once per logged in Users
-                        {%- elseif form.limitFormSubmissions == "auth_cookie" -%}
+                        {%- elseif limit == "auth_cookie" -%}
                             Once per logged in User or Guest Cookie
-                        {%- elseif form.limitFormSubmissions == "auth_ip_cookie" -%}
+                        {%- elseif limit == "auth_ip_cookie" -%}
                             Once per logged in User or Guest IP/Cookie combo
                         {%- else -%}
-                            '{{ form.limitFormSubmissions }}'
+                            '{{ limit }}'
                         {%- endif -%}
                     </i>) for this form.
                 </p>

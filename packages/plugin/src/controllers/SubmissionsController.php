@@ -169,7 +169,7 @@ class SubmissionsController extends BaseController
                     'url' => '#tab-'.$page->getIndex(),
                     'label' => $page->getLabel(),
                 ],
-                $layout->getPages()->getIterator()
+                $layout->getPages()->getIterator()->getArrayCopy()
             ),
         ];
 

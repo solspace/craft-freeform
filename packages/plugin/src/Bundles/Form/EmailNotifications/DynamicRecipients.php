@@ -2,22 +2,21 @@
 
 namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
 
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Notifications\Types\Dynamic\Dynamic;
 use yii\base\Event;
 
 class DynamicRecipients extends FeatureBundle
 {
-    public const BAG_KEY = 'dynamicNotification';
-
-    public function __construct()
+    public function __construct(private NotificationsProvider $notificationsProvider)
     {
         Event::on(Form::class, Form::EVENT_SEND_NOTIFICATIONS, [$this, 'sendToRecipients']);
     }
 
-    public function sendToRecipients(SendNotificationsEvent $event)
+    public function sendToRecipients(SendNotificationsEvent $event): void
     {
         $form = $event->getForm();
         $suppressors = $form->getSuppressors();
@@ -26,43 +25,36 @@ class DynamicRecipients extends FeatureBundle
             return;
         }
 
-        $data = $form->getProperties()->get(self::BAG_KEY);
-
-        $template = $data['template'] ?? null;
-        $recipients = $data['recipients'] ?? [];
-        if (!\is_array($recipients) && !empty($recipients)) {
-            $recipients = [$recipients];
-        }
-
-        if (empty($recipients) || !$template) {
-            return;
-        }
-
-        $notification = Freeform::getInstance()
-            ->notifications
-            ->requireNotification(
-                $form,
-                $template,
-                'Dynamic Notification from template params'
-            )
-        ;
-
-        if (!$notification) {
-            return;
-        }
+        $notifications = $this->notificationsProvider->getByFormAndClass($form, Dynamic::class);
 
         $submission = $event->getSubmission();
         $fields = $event->getFields();
 
-        $event
-            ->getMailer()
-            ->sendEmail(
-                $form,
-                $recipients,
-                $notification,
-                $fields,
-                $submission
-            )
-        ;
+        foreach ($notifications as $notification) {
+            $fieldHandle = $notification->getField()?->getHandle();
+            if (!$fieldHandle) {
+                continue;
+            }
+
+            $value = $form->get($fieldHandle)->getValue();
+
+            $recipients = $notification->getRecipientsFromValue($value);
+            $template = $notification->getTemplateFromValue($value);
+
+            if (!$recipients->emailsToArray() || !$template) {
+                continue;
+            }
+
+            $event
+                ->getMailer()
+                ->sendEmail(
+                    $form,
+                    $recipients,
+                    $fields,
+                    $template,
+                    $submission,
+                )
+            ;
+        }
     }
 }

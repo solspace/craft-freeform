@@ -42,7 +42,7 @@ class NotificationsBundle extends FeatureBundle
         $submission = $event->getSubmission();
         $fields = $form->getLayout()->getFields();
 
-        $event = new SendNotificationsEvent($form, $submission, $this->plugin()->mailer, $fields);
+        $event = new SendNotificationsEvent($form, $submission, $fields, $this->plugin()->mailer);
         Event::trigger(Form::class, Form::EVENT_SEND_NOTIFICATIONS, $event);
     }
 

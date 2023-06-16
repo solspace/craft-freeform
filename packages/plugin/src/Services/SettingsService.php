@@ -19,6 +19,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FormTemplate;
 use Solspace\Freeform\Models\Settings;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Symfony\Component\Finder\Finder;
 
@@ -375,14 +376,22 @@ class SettingsService extends BaseService
         return $hasOldFreeform;
     }
 
-    public function getFailedNotificationRecipients(): array
+    public function getFailedNotificationRecipients(): RecipientCollection
     {
-        return StringHelper::extractSeparatedValues($this->getSettingsModel()->alertNotificationRecipients ?? '');
+        return new RecipientCollection(
+            StringHelper::extractSeparatedValues(
+                $this->getSettingsModel()->alertNotificationRecipients ?? ''
+            )
+        );
     }
 
-    public function getDigestRecipients(): array
+    public function getDigestRecipients(): RecipientCollection
     {
-        return StringHelper::extractSeparatedValues($this->getSettingsModel()->digestRecipients ?? '');
+        return new RecipientCollection(
+            StringHelper::extractSeparatedValues(
+                $this->getSettingsModel()->digestRecipients ?? ''
+            )
+        );
     }
 
     public function getDigestFrequency(): int

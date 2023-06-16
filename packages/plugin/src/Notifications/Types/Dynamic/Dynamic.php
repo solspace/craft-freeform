@@ -75,4 +75,26 @@ class Dynamic extends BaseNotification
     {
         return $this->recipientMapping;
     }
+
+    public function getTemplateFromValue(mixed $value): ?NotificationTemplate
+    {
+        $default = $this->getTemplate();
+        $mapping = $this->recipientMapping->getMappingByValue($value);
+        if (!$mapping) {
+            return $default;
+        }
+
+        return $mapping->getTemplate();
+    }
+
+    public function getRecipientsFromValue(mixed $value): RecipientCollection
+    {
+        $default = $this->getRecipients();
+        $mapping = $this->recipientMapping->getMappingByValue($value);
+        if (!$mapping) {
+            return $default;
+        }
+
+        return $mapping->getRecipients();
+    }
 }

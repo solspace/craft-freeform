@@ -11,27 +11,29 @@
 {% block content %}
 
     <div class="container">
+        {% set formTemplate = form.settings.general.formattingTemplate %}
 
         {# Display a tip for demo templates #}
         <div class="alert alert-info" role="alert">
             <h5 class="alert-heading">For your information...</h5>
             <p class="mb-0">
-                You currently have the <b><i>{{ form.formTemplate }}</i></b> formatting template assigned to this form. Within your regular site templates,
+                You currently have the <b><i>{{ formTemplate }}</i></b> formatting template assigned to this form. Within your regular site templates,
                 be sure to specify any necessary CSS, JS and framework libraries to have the correct styles show up for the form.
             </p>
-        {% if form.formTemplate == "foundation-6.twig" %}
+
+        {% if formTemplate == "foundation-6.twig" %}
             <hr>
             <p class="mb-0">
                 We've detected you're using the <b>Foundation</b> sample formatting template and have automatically loaded the Foundation library inside this demo.
                 The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
             </p>
-        {% elseif form.formTemplate == "tailwind-1.twig" %}
+        {% elseif formTemplate == "tailwind-1.twig" %}
             <hr>
             <p class="mb-0">
                 We've detected you're using the <b>Tailwind</b> sample formatting template and have automatically loaded the Tailwind library inside this demo.
                 The Bootstrap library is also loaded by default, so you may see some style conflicts in the demo area.
             </p>
-        {% elseif ( form.formTemplate == "bootstrap-3.twig" ) or ( form.formTemplate == "bootstrap-4.twig" ) or ( form.formTemplate == "bootstrap-5.twig" ) %}
+        {% elseif ( formTemplate == "bootstrap-4/index.twig" ) or ( formTemplate == "bootstrap-5/index.twig" ) %}
             <hr>
             <p class="mb-0">
                 We've detected you're using the <b>Bootstrap</b> sample formatting template and have automatically loaded the Bootstrap library inside this demo.
@@ -40,25 +42,26 @@
         </div>
 
         {# Display a tip for forms with submit limit setting enabled #}
-        {% if form.limitFormSubmissions %}
+        {% set limit = form.settings.behavior.limitSubmissions %}
+        {% if limit %}
             <div class="alert alert-warning">
                 <h5 class="alert-heading">Please note...</h5>
                 <p class="mb-0">
                     You currently have a user submit limit setting enabled (<i>
-                        {%- if form.limitFormSubmissions == "auth_unlimited" -%}
+                        {%- if limit == "auth_unlimited" -%}
                             Logged in Users only (no limit)
-                        {%- elseif form.limitFormSubmissions == "cookie" -%}
+                        {%- elseif limit == "cookie" -%}
                             Once per Cookie
-                        {%- elseif form.limitFormSubmissions == "ip_cookie" -%}
+                        {%- elseif limit == "ip_cookie" -%}
                             Once per IP/Cookie combo
-                        {%- elseif form.limitFormSubmissions == "auth" -%}
+                        {%- elseif limit == "auth" -%}
                             Once per logged in Users
-                        {%- elseif form.limitFormSubmissions == "auth_cookie" -%}
+                        {%- elseif limit == "auth_cookie" -%}
                             Once per logged in User or Guest Cookie
-                        {%- elseif form.limitFormSubmissions == "auth_ip_cookie" -%}
+                        {%- elseif limit == "auth_ip_cookie" -%}
                             Once per logged in User or Guest IP/Cookie combo
                         {%- else -%}
-                            '{{ form.limitFormSubmissions }}'
+                            '{{ limit }}'
                         {%- endif -%}
                     </i>) for this form.
                 </p>
@@ -90,7 +93,9 @@
 {% block headerCss %}
     {{ parent() }}
     {% if form %}
-        {% if form.formTemplate == "foundation-6.twig" %}
+        {% set formTemplate = form.settings.general.formattingTemplate %}
+
+        {% if formTemplate == "foundation-6.twig" %}
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/css/foundation.min.css">
             <style>
                 [type=checkbox], [type=file], [type=radio] {
@@ -102,7 +107,7 @@
                 }
             </style>
         {% endif %}
-        {% if form.formTemplate == "tailwind-1.twig" %}
+        {% if formTemplate == "tailwind-1.twig" %}
             <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
         {% endif %}
     {% endif %}
@@ -111,7 +116,9 @@
 {% block footerJs %}
     {{ parent() }}
     {% if form %}
-        {% if form.formTemplate == "foundation-6.twig" %}
+        {% set formTemplate = form.settings.general.formattingTemplate %}
+
+        {% if formTemplate == "foundation-6.twig" %}
             <script src="https://cdnjs.cloudflare.com/ajax/libs/foundation/6.5.3/js/foundation.min.js"></script>
         {% endif %}
     {% endif %}

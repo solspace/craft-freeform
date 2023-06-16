@@ -2,57 +2,59 @@
 
 namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
 
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
-use Solspace\Freeform\Fields\Interfaces\RecipientInterface;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
+use Solspace\Freeform\Notifications\Types\EmailField\EmailField;
 use yii\base\Event;
 
 class EmailRecipientNotifications extends FeatureBundle
 {
-    public function __construct()
+    public function __construct(private NotificationsProvider $notificationsProvider)
     {
         Event::on(Form::class, Form::EVENT_SEND_NOTIFICATIONS, [$this, 'sendToRecipients']);
     }
 
-    public function sendToRecipients(SendNotificationsEvent $event)
+    public function sendToRecipients(SendNotificationsEvent $event): void
     {
         $form = $event->getForm();
-        $fields = $event->getFields();
-        $submission = $event->getSubmission();
         $suppressors = $form->getSuppressors();
 
-        $recipientFields = $form->getLayout()->getFields(RecipientInterface::class);
-        foreach ($recipientFields as $field) {
-            if (!$field->shouldReceiveEmail()) {
+        if ($suppressors->isSubmitterNotifications()) {
+            return;
+        }
+
+        $notifications = $this->notificationsProvider->getByFormAndClass($form, EmailField::class);
+
+        $fields = $event->getFields();
+        $submission = $event->getSubmission();
+
+        foreach ($notifications as $notification) {
+            $fieldHandle = $notification->getField()?->getHandle();
+            $recipient = $form->get($fieldHandle)->getValue();
+
+            if (!$recipient) {
                 continue;
             }
 
-            if ($suppressors->isSubmitterNotifications()) {
+            $notificationTemplate = $notification->getTemplate();
+            if (!$notificationTemplate) {
                 continue;
             }
 
-            if ($field->isHidden()) {
-                continue;
-            }
-
-            $notification = Freeform::getInstance()
-                ->notifications
-                ->requireNotification(
-                    $form,
-                    $field->getNotificationId(),
-                    'Email Field: '.$field->getLabel()
-                )
-            ;
+            $recipientCollection = new RecipientCollection();
+            $recipientCollection->add(new Recipient($recipient));
 
             $event
                 ->getMailer()
                 ->sendEmail(
                     $form,
-                    $submission->{$field->getHandle()}->getRecipients(),
-                    $notification,
+                    $recipientCollection,
                     $fields,
+                    $notificationTemplate,
                     $submission
                 )
             ;

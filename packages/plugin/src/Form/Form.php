@@ -523,11 +523,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         Event::trigger(self::class, self::EVENT_REGISTER_CONTEXT, new RegisterContextEvent($this));
     }
 
-    /**
-     * Render a predefined template.
-     *
-     * @param array $renderProperties
-     */
     public function render(array $renderProperties = null): ?Markup
     {
         $this->setProperties($renderProperties);
@@ -578,7 +573,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function renderClosingTag(): Markup
     {
-        $output = '';
+        $output = '<input type="submit" value="Submit" />';
 
         $beforeTag = new RenderTagEvent($this);
         Event::trigger(self::class, self::EVENT_RENDER_BEFORE_CLOSING_TAG, $beforeTag);

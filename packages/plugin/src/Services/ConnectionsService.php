@@ -23,6 +23,8 @@ class ConnectionsService extends BaseService
         $form = $event->getForm();
         $submission = Submission::create($form);
 
+        // TODO: implement me
+        return;
         $list = $form->getConnectionProperties()->getList();
         foreach ($list as $connection) {
             if (!$connection->isConnectable()) {
@@ -53,6 +55,8 @@ class ConnectionsService extends BaseService
             return;
         }
 
+        // TODO: implement me
+        return;
         $list = $form->getConnectionProperties()->getList();
         foreach ($list as $connection) {
             if (!$connection->isConnectable()) {

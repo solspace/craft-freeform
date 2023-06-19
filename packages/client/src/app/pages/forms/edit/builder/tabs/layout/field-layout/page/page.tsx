@@ -5,6 +5,7 @@ import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.sel
 
 import { Layout } from '../layout/layout';
 
+import { PageButtons } from './page-buttons/page-buttons';
 import { PageWrapper } from './pages.styles';
 
 type Props = {
@@ -14,5 +15,10 @@ type Props = {
 export const Page: React.FC<Props> = ({ page }) => {
   const layout = useSelector(layoutSelectors.pageLayout(page));
 
-  return <PageWrapper>{layout && <Layout layout={layout} />}</PageWrapper>;
+  return (
+    <PageWrapper>
+      {layout && <Layout layout={layout} />}
+      <PageButtons page={page} />
+    </PageWrapper>
+  );
 };

@@ -26,11 +26,14 @@ class RecipientTransformer implements TransformerInterface
     public function reverseTransform($value): array
     {
         $recipients = [];
-        foreach ($value->all() as $recipient) {
-            $recipients[] = [
-                'email' => $recipient->getEmail(),
-                'name' => $recipient->getName(),
-            ];
+
+        if ($value instanceof RecipientCollection) {
+            foreach ($value->all() as $recipient) {
+                $recipients[] = [
+                    'email' => $recipient->getEmail(),
+                    'name' => $recipient->getName(),
+                ];
+            }
         }
 
         return $recipients;

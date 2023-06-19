@@ -8,14 +8,16 @@ import {
 } from '@ff-client/queries/field-types';
 import type { Property } from '@ff-client/types/properties';
 
-import { FieldComponent } from './field-component';
 import {
   FieldPropertiesWrapper,
   Icon,
   SectionBlock,
   SectionWrapper,
   Title,
-} from './property-editor.styles';
+} from '../../property-editor.styles';
+
+import { FavoriteButton } from './favorite/favorite.button';
+import { FieldComponent } from './field-component';
 
 const sectionFilter = (handle: string) => (property: Property) =>
   property.section === handle;
@@ -65,6 +67,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
   return (
     <FieldPropertiesWrapper>
+      <FavoriteButton field={field} />
       <Title>
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
         <span>{type.name}</span>

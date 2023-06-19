@@ -8,17 +8,17 @@ import { cleanAttributes } from './attributes.operations';
 import { AttributePreview } from './attributes.preview';
 import type {
   AttributeCollection,
-  AttributeTarget,
   EditableAttributeCollection,
+  InputAttributeTarget,
 } from './attributes.types';
 
 const convertToEditable = (
-  value: AttributeCollection
+  value: AttributeCollection<InputAttributeTarget>
 ): EditableAttributeCollection => {
   const converted: EditableAttributeCollection = {};
   for (const key in value) {
-    const typedKey: AttributeTarget = key as AttributeTarget;
-    converted[typedKey] = Object.entries(value[key as AttributeTarget]);
+    const typedKey: InputAttributeTarget = key as InputAttributeTarget;
+    converted[typedKey] = Object.entries(value[key as InputAttributeTarget]);
   }
 
   return converted;
@@ -26,12 +26,12 @@ const convertToEditable = (
 
 const convertFromEditable = (
   value: EditableAttributeCollection
-): AttributeCollection => {
-  const converted: AttributeCollection = {};
+): AttributeCollection<InputAttributeTarget> => {
+  const converted: AttributeCollection<InputAttributeTarget> = {};
   for (const key in value) {
-    const typedKey: AttributeTarget = key as AttributeTarget;
+    const typedKey: InputAttributeTarget = key as InputAttributeTarget;
     converted[typedKey] = {};
-    for (const [attrKey, attrValue] of value[key as AttributeTarget]) {
+    for (const [attrKey, attrValue] of value[key as InputAttributeTarget]) {
       converted[typedKey][attrKey] = attrValue;
     }
   }

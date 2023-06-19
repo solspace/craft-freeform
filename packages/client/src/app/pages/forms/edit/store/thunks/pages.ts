@@ -24,6 +24,18 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
       uid: pageUid,
       label: `Page ${nextPageNumber}`,
       layoutUid,
+      buttons: {
+        layout: 'save back|submit',
+        attributes: {
+          container: {},
+          submit: {},
+          back: {},
+          save: {},
+        },
+        submit: { label: 'Submit' },
+        back: { label: 'Back' },
+        save: { label: 'Save' },
+      },
     })
   );
 };

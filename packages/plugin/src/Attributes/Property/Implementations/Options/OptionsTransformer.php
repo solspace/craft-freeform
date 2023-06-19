@@ -34,6 +34,6 @@ class OptionsTransformer extends Transformer
             return $value->jsonSerialize();
         }
 
-        return [];
+        return self::DEFAULT_VALUE;
     }
 }

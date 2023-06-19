@@ -73,6 +73,7 @@ class LayoutsService extends BaseService
                     'p.[[label]]',
                     'p.[[order]]',
                     'p.[[layoutId]]',
+                    'p.[[metadata]]',
                     'l.[[uid]] as layoutUid',
                 ])
                 ->from(FormPageRecord::TABLE.' p')
@@ -81,6 +82,11 @@ class LayoutsService extends BaseService
                 ->orderBy(['p.[[order]]' => \SORT_ASC])
                 ->all()
             ;
+
+            foreach ($this->pages[$form->getId()] as $index => $page) {
+                $page['metadata'] = json_decode($page['metadata'], true);
+                $this->pages[$form->getId()][$index] = $page;
+            }
         }
 
         return $this->pages[$form->getId()];

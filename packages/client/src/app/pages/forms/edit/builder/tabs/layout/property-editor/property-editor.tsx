@@ -5,17 +5,26 @@ import { RenderContextProvider } from '@components/form-controls/context/render.
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 
-import { FavoriteButton } from './favorite/favorite.button';
-import { FieldProperties } from './field-properties';
+import { FieldProperties } from './editors/fields/field-properties';
+import { PageProperties } from './editors/pages/page-properties';
 import { CloseLink, PropertyEditorWrapper } from './property-editor.styles';
 
 export const PropertyEditor: React.FC = () => {
   const { active, type, uid } = useSelector(contextSelectors.focus);
-  const field = useSelector(fieldSelectors.one(uid));
+
+  let editor: React.ReactElement = null;
+  switch (type) {
+    case 'field':
+      editor = <FieldProperties uid={uid} />;
+      break;
+
+    case 'page':
+      editor = <PageProperties />;
+      break;
+  }
 
   const dispatch = useAppDispatch();
 
@@ -34,11 +43,10 @@ export const PropertyEditor: React.FC = () => {
         <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
           <CloseIcon />
         </CloseLink>
-        <FavoriteButton field={field} />
         <ErrorBoundary
           message={`Could not load property editor for "${type}" type`}
         >
-          <FieldProperties uid={uid} />
+          {editor}
         </ErrorBoundary>
       </PropertyEditorWrapper>
     </RenderContextProvider>

@@ -27,8 +27,8 @@ import {
   updateAttribute,
 } from './attributes.operations';
 import type {
-  AttributeTarget,
   EditableAttributeCollection,
+  InputAttributeTarget,
 } from './attributes.types';
 
 type Props = {
@@ -63,7 +63,7 @@ export const AttributesEditor: React.FC<Props> = ({
     setActiveCell(atIndex !== undefined ? atIndex + 1 : rowIndex, cellIndex);
     updateValue(
       addAttribute(
-        currentTab as AttributeTarget,
+        currentTab as InputAttributeTarget,
         attributes,
         atIndex !== undefined ? atIndex : currentAttributes.length - 1
       )
@@ -135,7 +135,7 @@ export const AttributesEditor: React.FC<Props> = ({
                         updateValue(
                           updateAttribute(
                             index,
-                            currentTab as AttributeTarget,
+                            currentTab as InputAttributeTarget,
                             [event.target.value, value],
                             attributes
                           )
@@ -164,7 +164,7 @@ export const AttributesEditor: React.FC<Props> = ({
                         updateValue(
                           updateAttribute(
                             index,
-                            currentTab as AttributeTarget,
+                            currentTab as InputAttributeTarget,
                             [tag, event.target.value],
                             attributes
                           )
@@ -180,7 +180,7 @@ export const AttributesEditor: React.FC<Props> = ({
                         updateValue(
                           deleteAttribute(
                             index,
-                            currentTab as AttributeTarget,
+                            currentTab as InputAttributeTarget,
                             attributes
                           )
                         );

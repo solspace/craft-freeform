@@ -12,12 +12,12 @@ class AttributesTransformer implements TransformerInterface
         return new FieldAttributesCollection($value);
     }
 
-    public function reverseTransform($value): array
+    public function reverseTransform($value): object
     {
         if (!$value instanceof FieldAttributesCollection) {
             $value = new FieldAttributesCollection();
         }
 
-        return $value->toArray();
+        return $value->jsonSerialize();
     }
 }

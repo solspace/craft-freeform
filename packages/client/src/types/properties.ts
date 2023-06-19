@@ -1,4 +1,7 @@
-import type { AttributeCollection } from '@components/form-controls/control-types/attributes/attributes.types';
+import type {
+  AttributeCollection,
+  InputAttributeTarget,
+} from '@components/form-controls/control-types/attributes/attributes.types';
 import type { Options } from '@components/form-controls/control-types/options/options.types';
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
 import type {
@@ -56,7 +59,7 @@ type BaseProperty<T, PT extends PropertyType> = {
 };
 
 export type AttributeProperty = BaseProperty<
-  AttributeCollection,
+  AttributeCollection<InputAttributeTarget>,
   PropertyType.Attributes
 >;
 export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {

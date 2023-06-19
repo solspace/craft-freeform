@@ -17,7 +17,6 @@ abstract class AbstractExternalOptionsField extends AbstractField implements Ext
     #[Input\Options(
         label: 'Options Editor',
         instructions: 'Define your options',
-        value: OptionsTransformer::DEFAULT_VALUE,
     )]
     protected OptionsCollection $options;
 

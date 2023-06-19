@@ -105,6 +105,7 @@ class PaymentsService implements PaymentHandlerInterface
      */
     public function getPaymentDetails(int $submissionId, Form $form = null)
     {
+        return null;
         if (null === $form) {
             $submission = Freeform::getInstance()->submissions->getSubmissionById($submissionId);
             $form = $submission->getForm();

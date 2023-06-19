@@ -9,4 +9,14 @@ use Solspace\Freeform\Library\Collections\Collection;
  */
 class RecipientMappingCollection extends Collection
 {
+    public function getMappingByValue(mixed $value): ?RecipientMapping
+    {
+        foreach ($this->items as $item) {
+            if ($value === $item->getValue()) {
+                return $item;
+            }
+        }
+
+        return null;
+    }
 }

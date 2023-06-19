@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use craft\helpers\Db;
 use craft\web\View;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Records\FeedMessageRecord;
 use Solspace\Freeform\Records\NotificationLogRecord;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
@@ -80,9 +81,9 @@ class DigestService extends Component
         \Craft::$app->view->setTemplateMode($templateMode);
     }
 
-    private function parseDigest(string $type, array $recipients, int $frequency)
+    private function parseDigest(string $type, RecipientCollection $recipients, int $frequency)
     {
-        if (empty($recipients)) {
+        if (empty($recipients->emailsToArray())) {
             return;
         }
 
@@ -121,7 +122,7 @@ class DigestService extends Component
         $record->save();
     }
 
-    private function getFormData(Carbon $rangeStart, Carbon $rangeEnd)
+    private function getFormData(Carbon $rangeStart, Carbon $rangeEnd): array
     {
         $freeform = Freeform::getInstance();
 
@@ -139,7 +140,7 @@ class DigestService extends Component
         return $data;
     }
 
-    private function getErrorData(Carbon $rangeStart, Carbon $rangeEnd)
+    private function getErrorData(Carbon $rangeStart, Carbon $rangeEnd): array
     {
         $logReader = Freeform::getInstance()->logger->getLogReader();
 
@@ -154,7 +155,7 @@ class DigestService extends Component
         return $data;
     }
 
-    private function getUpdateData()
+    private function getUpdateData(): array
     {
         $messages = FeedMessageRecord::find()
             ->where(['seen' => false])

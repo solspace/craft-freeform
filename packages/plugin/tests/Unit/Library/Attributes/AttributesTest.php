@@ -175,7 +175,7 @@ class AttributesTest extends TestCase
         );
     }
 
-    public function testReplaceWithMinus()
+    public function testReplaceWithEqualSign()
     {
         $attributes = new Attributes();
         $attributes->set('class', ['class-1', 'class-2']);
@@ -184,14 +184,82 @@ class AttributesTest extends TestCase
         $attributes->set('class', 'extra-class');
         $this->assertEquals(' class="class-1 class-2 extra-class"', (string) $attributes);
 
-        $attributes->set('-class', 'replacer');
+        $attributes->set('=class', 'replacer');
         $this->assertEquals(' class="replacer"', (string) $attributes);
+    }
+
+    public function testAppendWithPlus()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', ['class-1', 'class-2']);
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+
+        $attributes->set('class', 'extra-class');
+        $this->assertEquals(' class="class-1 class-2 extra-class"', (string) $attributes);
+
+        $attributes->set('+class', 'append-class');
+        $this->assertEquals(' class="class-1 class-2 extra-class append-class"', (string) $attributes);
+    }
+
+    public function testRemoveOneWithMinus()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', ['class-1', 'class-2']);
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+
+        $attributes->set('class', 'extra-class');
+        $this->assertEquals(' class="class-1 class-2 extra-class"', (string) $attributes);
+
+        $attributes->set('-class', 'extra-class');
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+
+        $attributes->set('-class', 'non-existing-class');
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+    }
+
+    public function testRemoveSpacesAround()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', ['class-1', 'class-2']);
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+
+        $attributes->set('class', '   extra-class ');
+        $this->assertEquals(' class="class-1 class-2 extra-class"', (string) $attributes);
+
+        $attributes->set('-class', '       extra-class   ');
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+    }
+
+    public function testRemoveSeveralWithString()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', ['class-1', 'class-2']);
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+
+        $attributes->set('class', 'extra-class');
+        $this->assertEquals(' class="class-1 class-2 extra-class"', (string) $attributes);
+
+        $attributes->set('-class', 'class-1 extra-class');
+        $this->assertEquals(' class="class-2"', (string) $attributes);
+    }
+
+    public function testRemoveSeveralWithArray()
+    {
+        $attributes = new Attributes();
+        $attributes->set('class', ['class-1', 'class-2']);
+        $this->assertEquals(' class="class-1 class-2"', (string) $attributes);
+
+        $attributes->set('class', 'extra-class');
+        $this->assertEquals(' class="class-1 class-2 extra-class"', (string) $attributes);
+
+        $attributes->set('-class', ['class-1', 'extra-class  ']);
+        $this->assertEquals(' class="class-2"', (string) $attributes);
     }
 
     public function testAppendingArrayValues()
     {
         $attributes = new Attributes();
-        $attributes->set('class', ['class-1', ' class-2']);
+        $attributes->set('class', ['class-1 ', ' class-2']);
         $attributes->set('class', ['class-3 ', null, null, false, ' ', 'class-4']);
 
         $this->assertEquals(' class="class-1 class-2 class-3 class-4"', (string) $attributes);

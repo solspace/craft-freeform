@@ -1,8 +1,8 @@
-import type { UseMutationResult } from 'react-query';
-import { useQueryClient } from 'react-query';
-import { useMutation } from 'react-query';
 import type { APIError } from '@ff-client/types/api';
 import type { NotificationTemplate } from '@ff-client/types/notifications';
+import type { UseMutationResult } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 

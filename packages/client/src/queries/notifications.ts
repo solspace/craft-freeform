@@ -1,5 +1,3 @@
-import type { UseQueryResult } from 'react-query';
-import { useQuery } from 'react-query';
 import { useDispatch } from 'react-redux';
 import { notificationActions } from '@editor/store/slices/notifications';
 import type {
@@ -8,6 +6,8 @@ import type {
   NotificationType,
   TemplateType,
 } from '@ff-client/types/notifications';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 

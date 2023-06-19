@@ -2,20 +2,21 @@
 
 namespace Solspace\Freeform\Bundles\Form\EmailNotifications;
 
+use Solspace\Freeform\Bundles\Notifications\Providers\NotificationsProvider;
 use Solspace\Freeform\Events\Forms\SendNotificationsEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Notifications\Types\Admin\Admin;
 use yii\base\Event;
 
 class AdminNotifications extends FeatureBundle
 {
-    public function __construct()
+    public function __construct(private NotificationsProvider $notificationsProvider)
     {
         Event::on(Form::class, Form::EVENT_SEND_NOTIFICATIONS, [$this, 'sendToRecipients']);
     }
 
-    public function sendToRecipients(SendNotificationsEvent $event)
+    public function sendToRecipients(SendNotificationsEvent $event): void
     {
         $form = $event->getForm();
         $suppressors = $form->getSuppressors();
@@ -24,33 +25,25 @@ class AdminNotifications extends FeatureBundle
             return;
         }
 
-        $adminNotifications = $form->getAdminNotificationProperties();
-        $notificationId = $adminNotifications->getNotificationId();
-        if (!$notificationId) {
-            return;
-        }
-
-        $notification = Freeform::getInstance()
-            ->notifications
-            ->requireNotification(
-                $form,
-                $notificationId,
-                'Admin notification'
-            )
-        ;
+        $notifications = $this->notificationsProvider->getByFormAndClass($form, Admin::class);
 
         $submission = $event->getSubmission();
         $fields = $event->getFields();
 
-        $event
-            ->getMailer()
-            ->sendEmail(
-                $form,
-                $adminNotifications->getRecipientArray($submission),
-                $notification,
-                $fields,
-                $submission
-            )
-        ;
+        foreach ($notifications as $notification) {
+            $recipients = $notification->getRecipients();
+            $template = $notification->getTemplate();
+
+            $event
+                ->getMailer()
+                ->sendEmail(
+                    $form,
+                    $recipients,
+                    $fields,
+                    $template,
+                    $submission,
+                )
+            ;
+        }
     }
 }

@@ -12,12 +12,21 @@ class FieldProvider
     {
     }
 
-    public function getFieldByUid(Form $form, ?string $uid): ?FieldInterface
+    public function getFieldByFormAndUid(Form $form, ?string $uid): ?FieldInterface
     {
         if (null === $uid) {
             return null;
         }
 
-        return $this->service->getFieldByUid($form, $uid);
+        return $this->service->getFieldByFormAndUid($form, $uid);
+    }
+
+    public function getFieldByUid(?string $uid): ?FieldInterface
+    {
+        if (null === $uid) {
+            return null;
+        }
+
+        return $this->service->getFieldByUid($uid);
     }
 }

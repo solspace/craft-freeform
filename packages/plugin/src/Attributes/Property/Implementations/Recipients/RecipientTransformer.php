@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\Attributes\Property\Implementations\Recipients;
 
 use Solspace\Freeform\Attributes\Property\TransformerInterface;
+use Solspace\Freeform\Notifications\Components\Recipients\Recipient;
+use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
 class RecipientTransformer implements TransformerInterface
 {

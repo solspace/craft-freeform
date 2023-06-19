@@ -1,6 +1,6 @@
-import type { UseQueryResult } from 'react-query';
-import { useQuery } from 'react-query';
 import type { FieldForm } from '@ff-client/types/fields';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 

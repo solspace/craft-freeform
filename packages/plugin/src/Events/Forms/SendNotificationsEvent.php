@@ -4,32 +4,19 @@ namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Services\MailerService;
 
 class SendNotificationsEvent extends CancelableArrayableEvent
 {
-    /** @var MailerService */
-    private $mailer;
-
-    /** @var Form */
-    private $form;
-
-    /** @var AbstractField[] */
-    private $fields;
-
-    /** @var Submission */
-    private $submission;
-
-    public function __construct(Form $form, Submission $submission, MailerService $mailer, array $fields = [])
-    {
-        $this->form = $form;
-        $this->submission = $submission;
-        $this->mailer = $mailer;
-        $this->fields = $fields;
-
-        parent::__construct([]);
+    public function __construct(
+        private Form $form,
+        private Submission $submission,
+        private FieldCollection $fields,
+        private MailerService $mailer
+    ) {
+        parent::__construct();
     }
 
     public function getForm(): Form
@@ -47,12 +34,12 @@ class SendNotificationsEvent extends CancelableArrayableEvent
         return $this->mailer;
     }
 
-    public function getFields(): array
+    public function getFields(): FieldCollection
     {
         return $this->fields;
     }
 
-    public function setFields(array $fields): self
+    public function setFields(FieldCollection $fields): self
     {
         $this->fields = $fields;
 

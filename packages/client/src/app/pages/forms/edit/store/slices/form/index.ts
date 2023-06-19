@@ -42,6 +42,9 @@ export const formSlice = createSlice({
           state.settings[namespace.handle][property.handle] = property.value;
         }
       }
+
+      state.settings.general.name = state.name;
+      state.settings.general.handle = state.handle;
     },
     modifySettings: (state, { payload }: PayloadAction<ModifyProps>) => {
       const { namespace, key, value } = payload;

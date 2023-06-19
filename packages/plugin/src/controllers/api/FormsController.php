@@ -66,4 +66,13 @@ class FormsController extends BaseApiController
 
         return $event->getResponseData();
     }
+
+    protected function delete(int $id): bool|null
+    {
+        $this->getFormsService()->deleteById($id);
+
+        $this->response->statusCode = 204;
+
+        return null;
+    }
 }

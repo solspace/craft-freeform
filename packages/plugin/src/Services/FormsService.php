@@ -230,7 +230,6 @@ class FormsService extends BaseService implements FormHandlerInterface
     public function deleteById(int $formId): bool
     {
         $record = $this->getFormById($formId);
-
         if (!$record) {
             return false;
         }
@@ -268,7 +267,7 @@ class FormsService extends BaseService implements FormHandlerInterface
             \Craft::$app
                 ->getDb()
                 ->createCommand()
-                ->dropTableIfExists(Submission::generateContentTableName($formId, $record->handle))
+                ->dropTableIfExists(Submission::generateContentTableName($formId, $record->getHandle()))
                 ->execute();
 
             $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($record));

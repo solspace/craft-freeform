@@ -20,9 +20,7 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use yii\base\Event;
-use yii\base\InvalidConfigException;
 use yii\filters\Cors;
-use yii\web\BadRequestHttpException;
 use yii\web\Response;
 
 class SubmitController extends BaseController
@@ -31,11 +29,6 @@ class SubmitController extends BaseController
 
     protected array|bool|int $allowAnonymous = true;
 
-    /**
-     * @throws InvalidConfigException
-     * @throws BadRequestHttpException
-     * @throws FreeformException
-     */
     public function actionIndex(): ?Response
     {
         $this->requirePostRequest();

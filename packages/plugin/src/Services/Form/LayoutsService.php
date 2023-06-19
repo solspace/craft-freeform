@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Services\Form;
 
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Fields\FieldProvider;
+use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Form\Layout\Cell\Cell;
 use Solspace\Freeform\Form\Layout\Cell\FieldCell;
@@ -168,8 +169,6 @@ class LayoutsService extends BaseService
         foreach ($currentRows as $rowData) {
             $row = new Row($rowData);
 
-            $rowCollection->add($row);
-
             $currentCells = array_filter(
                 $allCells,
                 fn ($cell) => $cell['rowId'] === $row->getId()
@@ -189,18 +188,29 @@ class LayoutsService extends BaseService
                 }
 
                 if ($cell instanceof FieldCell) {
-                    $field = $this->fieldProvider->getFieldByUid($form, $cellData['fieldUid']);
+                    $field = $this->fieldProvider->getFieldByFormAndUid($form, $cellData['fieldUid']);
                     if ($field) {
                         $cell->setField($field);
 
                         $layout->getFields()->add($field);
                         $page->getFields()->add($field);
+
+                        if ($field instanceof NoRenderInterface) {
+                            continue;
+                        }
+
                         $row->getFields()->add($field);
                     }
                 }
 
                 $row->getCells()->add($cell);
             }
+
+            if (!$row->getCells()->count()) {
+                continue;
+            }
+
+            $rowCollection->add($row);
         }
     }
 }

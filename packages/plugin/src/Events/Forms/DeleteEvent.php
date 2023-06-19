@@ -3,17 +3,13 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Models\FormModel;
+use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Form\Form;
 
-class DeleteEvent extends CancelableArrayableEvent
+class DeleteEvent extends CancelableArrayableEvent implements FormEventInterface
 {
-    /** @var FormModel */
-    private $model;
-
-    public function __construct(FormModel $model)
+    public function __construct(private Form $form)
     {
-        $this->model = $model;
-
         parent::__construct();
     }
 
@@ -22,19 +18,16 @@ class DeleteEvent extends CancelableArrayableEvent
      */
     public function fields(): array
     {
-        return array_merge(parent::fields(), ['model']);
+        return array_merge(parent::fields(), ['form']);
     }
 
-    public function getModel(): FormModel
+    public function getForm(): Form
     {
-        return $this->model;
+        return $this->form;
     }
 
-    /**
-     * @deprecated use ::getModel() instead
-     */
-    public function getRecord(): FormModel
+    public function getModel(): Form
     {
-        return $this->model;
+        return $this->getForm();
     }
 }

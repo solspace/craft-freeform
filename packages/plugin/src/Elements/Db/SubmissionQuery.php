@@ -6,6 +6,7 @@ use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Records\FormRecord;
@@ -14,87 +15,49 @@ use Solspace\Freeform\Records\StatusRecord;
 
 class SubmissionQuery extends ElementQuery
 {
-    /** @var int */
-    public $formId;
-
-    /** @var int */
-    public $userId;
-
-    /** @var string */
-    public $form;
-
-    /** @var int */
-    public $statusId;
-
-    /** @var int */
-    public $incrementalId;
-
-    /** @var string */
-    public $token;
-
-    /** @var bool */
-    public $isSpam;
-
-    /** @var array */
-    public $fieldSearch = [];
-
-    /** @var string */
-    public $spamReason;
-
+    public mixed $formId = null;
+    public mixed $userId = null;
+    public mixed $form = null;
+    public mixed $statusId = null;
+    public mixed $incrementalId = null;
+    public ?string $token = null;
+    public ?bool $isSpam = null;
+    public array $fieldSearch = [];
+    public ?string $spamReason = null;
     public bool $skipContent = false;
+    private mixed $freeformStatus = null;
 
-    /** @var string */
-    private $freeformStatus;
-
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function formId($value): self
+    public function formId(mixed $value): self
     {
         $this->formId = $value;
 
         return $this;
     }
 
-    public function userId($value): self
+    public function userId(mixed $value): self
     {
         $this->userId = $value;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function form(string $value): self
+    public function form(mixed $value): self
     {
         $this->form = $value;
 
         return $this;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function statusId($value): self
+    public function statusId(mixed $value): self
     {
-        $this->statusId = (int) $value;
+        $this->statusId = $value;
 
         return $this;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return $this
-     */
-    public function incrementalId($value): self
+    public function incrementalId(mixed $value): self
     {
-        $this->incrementalId = (int) $value;
+        $this->incrementalId = $value;
 
         return $this;
     }
@@ -106,10 +69,7 @@ class SubmissionQuery extends ElementQuery
         return $this;
     }
 
-    /**
-     * @param null|bool $value
-     */
-    public function isSpam($value): self
+    public function isSpam(?int $value = null): self
     {
         $this->isSpam = $value;
 
@@ -219,7 +179,9 @@ class SubmissionQuery extends ElementQuery
 
                 $this->query->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
                 $this->subQuery->leftJoin("{$contentTable} fc{$formId}", "[[fc{$formId}]].[[id]] = [[{$table}]].[[id]]");
-                foreach ($form->getLayout()->getStorableFields() as $field) {
+
+                $storableFields = $form->getLayout()->getFields()->getExcludedList(NoStorageInterface::class);
+                foreach ($storableFields as $field) {
                     $fieldHandle = Submission::getFieldColumnName($field);
                     $select[] = "[[fc{$formId}]].[[{$fieldHandle}]] as [[form_{$formId}__{$fieldHandle}]]";
                 }

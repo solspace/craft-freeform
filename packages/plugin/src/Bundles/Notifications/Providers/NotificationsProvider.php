@@ -18,6 +18,9 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Notifications\NotificationInterface;
 use Solspace\Freeform\Records\Form\FormNotificationRecord;
 
+/**
+ * @template T of NotificationInterface
+ */
 class NotificationsProvider
 {
     public function __construct(private PropertyProvider $propertyProvider)
@@ -29,6 +32,29 @@ class NotificationsProvider
         /** @var FormNotificationRecord[] $records */
         $records = FormNotificationRecord::find()
             ->where(['formId' => $form?->getId() ?? null])
+            ->all()
+        ;
+
+        $notifications = [];
+        foreach ($records as $record) {
+            $notifications[] = $this->createNotificationObjects($record);
+        }
+
+        return array_filter($notifications);
+    }
+
+    /**
+     * @param class-string<T> $class
+     *
+     * @return T[]
+     */
+    public function getByFormAndClass(Form $form, string $class): array
+    {
+        $records = FormNotificationRecord::find()
+            ->where([
+                'formId' => $form->getId(),
+                'class' => $class,
+            ])
             ->all()
         ;
 

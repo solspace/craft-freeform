@@ -11,6 +11,8 @@ class RulesService extends Component
 {
     public function handleFormPageJump(PageJumpEvent $event)
     {
+        // TODO: implement me
+        return;
         $form = $event->getForm();
         $ruleProperties = $form->getRuleProperties();
 

@@ -617,16 +617,6 @@ class Settings extends Model
         return $this->getArrayFromDelimitedText($this->blockedIpAddresses);
     }
 
-    public function isLimitByCookie(): bool
-    {
-        return Form::LIMIT_COOKIE === $this->limitFormSubmissions;
-    }
-
-    public function isLimitByIpCookie(): bool
-    {
-        return Form::LIMIT_IP_COOKIE === $this->limitFormSubmissions;
-    }
-
     public function getRecaptchaType(): string
     {
         $type = $this->recaptchaType;

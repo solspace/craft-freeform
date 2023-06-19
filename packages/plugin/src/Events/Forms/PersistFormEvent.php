@@ -64,6 +64,11 @@ class PersistFormEvent extends Event
         return null;
     }
 
+    public function getFieldRecords(): array
+    {
+        return $this->fieldRecords;
+    }
+
     public function addPageRecord(FormPageRecord $pageRecord): self
     {
         $this->pageRecords[] = $pageRecord;

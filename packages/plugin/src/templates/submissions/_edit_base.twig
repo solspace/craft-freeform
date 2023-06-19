@@ -26,7 +26,7 @@
     enctype="multipart/form-data"
     data-id="{{ form.anchor }}"
     data-freeform
-    {{ form.ruleProperties ? 'data-has-rules' : '' }}
+{#    {{ form.ruleProperties ? 'data-has-rules' : '' }}#}
 {% endblock %}
 
 {% block body %}
@@ -50,7 +50,7 @@
     <div id="fields">
         {% for page in layout.pages %}
             <div class="field tab-content{% if not loop.first %} hidden{% endif %}" id="tab-{{ page.index }}">
-                {% for field in layout.hiddenFields|filter(field => field.pageIndex == page.index and field.type not in ["mailing_list"]) %}
+                {% for field in page.getFields(["hidden", "invisible"]) %}
                     {% set fieldHandle = field.handle %}
 
                     <div class="fields-row">
@@ -72,7 +72,7 @@
 
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row|filter(field => field.type not in ["submit", "confirmation", "password", "save"]) -%}
+                        {%- for field in row.getFields(["confirmation", "password", "save", "hidden", "invisible"], "excludes") -%}
                             <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
                                 {% set fieldHandle = field.handle %}
 

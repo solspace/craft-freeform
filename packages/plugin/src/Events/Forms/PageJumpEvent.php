@@ -9,7 +9,7 @@ use Solspace\Freeform\Library\Logging\FreeformLogger;
 
 class PageJumpEvent extends ArrayableEvent
 {
-    private ?int $jumpToIndex;
+    private ?int $jumpToIndex = null;
 
     public function __construct(private Form $form)
     {

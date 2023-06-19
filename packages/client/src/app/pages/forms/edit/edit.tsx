@@ -8,6 +8,9 @@ import {
   useQueryFormSettings,
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
+import kebabCase from 'lodash.kebabcase';
+import { adjectives, uniqueNamesGenerator } from 'unique-names-generator';
+import { colors } from 'unique-names-generator';
 import { v4 } from 'uuid';
 
 import { Builder } from './builder/builder';
@@ -32,13 +35,19 @@ export const Edit: React.FC = () => {
 
   useEffect(() => {
     if (formId === undefined) {
+      const formName = uniqueNamesGenerator({
+        dictionaries: [colors, adjectives, ['form']],
+        separator: ' ',
+        style: 'capital',
+      });
+
       dispatch(
         formActions.update({
           id: null,
           uid: v4(),
           type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-          name: 'New Form',
-          handle: 'newForm',
+          name: formName,
+          handle: kebabCase(formName),
           settings: {},
         })
       );

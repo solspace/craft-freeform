@@ -63,9 +63,9 @@ class Row implements \IteratorAggregate
         return $this->cellCollection;
     }
 
-    public function getFields(): FieldCollection
+    public function getFields(string|array|null $implements = null, ?string $strategy = null): FieldCollection
     {
-        return $this->fieldCollection;
+        return $this->fieldCollection->getList($implements, $strategy);
     }
 
     public function getIterator(): \ArrayIterator

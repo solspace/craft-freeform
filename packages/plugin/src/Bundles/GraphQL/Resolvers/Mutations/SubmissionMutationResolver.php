@@ -96,18 +96,20 @@ class SubmissionMutationResolver extends ElementMutationResolver
             $spamReasons = json_encode($spamReasons);
         }
 
+        $settings = $form->getSettings();
+
         $payload = [
             'success' => $success,
             'hash' => $form->getHash(),
             'multiPage' => $form->isMultiPage(),
             'finished' => $form->isFinished(),
-            'submissionId' => $submission->id,
+            'submissionId' => $submission->getId(),
             'submissionToken' => $submission->token,
-            'submissionLimitReached' => $form->isSubmissionLimitReached(),
-            'onSuccess' => $form->getSuccessBehaviour(),
+            'submissionLimitReached' => $settings->getGeneral()->submissionLimitReached,
+            'onSuccess' => $settings->getBehavior()->successBehavior,
             'returnUrl' => $returnUrl,
             'html' => $form->render(),
-            'id' => $submission->id,
+            'id' => $submission->getId(),
             'dateCreated' => $submission->getSubmissionDate(),
             'dateUpdated' => $submission->dateUpdated,
             'isSpam' => $submission->isSpam,

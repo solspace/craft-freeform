@@ -174,5 +174,9 @@ class FormLimiting extends FeatureBundle
         $form->addError(Freeform::t($message));
 
         $this->formCache[] = $form->getId();
+
+        $generalSettings = $form->getSettings()->getGeneral();
+
+        $generalSettings->submissionLimitReached = true;
     }
 }

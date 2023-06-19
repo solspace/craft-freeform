@@ -136,4 +136,6 @@ class GeneralSettings extends SettingsNamespace
         value: ['enabled' => false],
     )]
     public GTMProperty $gtm;
+
+    public bool $submissionLimitReached = false;
 }

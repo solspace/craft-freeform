@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Elements;
 
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
@@ -496,6 +497,11 @@ class Submission extends Element
             ['title' => Freeform::t('Submission')],
             parent::sortOptions()
         );
+    }
+
+    public function getCurrentRevision(): ?ElementInterface
+    {
+        return null;
     }
 
     protected static function defineSources(string $context = null): array

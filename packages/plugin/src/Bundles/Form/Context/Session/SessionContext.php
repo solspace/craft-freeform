@@ -79,7 +79,6 @@ class SessionContext
         $form = $event->getForm();
 
         $value = $form->getProperties()->get(Form::HASH_KEY);
-        $value = htmlspecialchars($value);
 
         $event->addChunk(
             sprintf(
@@ -268,7 +267,9 @@ class SessionContext
         if (3 === \count($parts)) {
             [$formHash, $pageHash, $sessionToken] = $parts;
 
-            return [$formHash, $pageHash, $sessionToken];
+            if (preg_match('/^[a-zA-Z0-9]+$/', $formHash.$pageHash.$sessionToken)) {
+                return [$formHash, $pageHash, $sessionToken];
+            }
         }
 
         return [null, null, null];

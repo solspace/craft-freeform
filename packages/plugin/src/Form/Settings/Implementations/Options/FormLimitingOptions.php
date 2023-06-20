@@ -21,6 +21,10 @@ class FormLimitingOptions implements OptionFetcherInterface
                 'Logged in Users only (no limit)',
             )
             ->add(
+                FormLimiting::LIMIT_ONCE_PER_EMAIL,
+                'Once per Email Address only',
+            )
+            ->add(
                 FormLimiting::LIMIT_COOKIE,
                 'Once per Cookie only',
             )

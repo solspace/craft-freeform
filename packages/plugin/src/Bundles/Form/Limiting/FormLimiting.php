@@ -79,13 +79,19 @@ class FormLimiting extends FeatureBundle
 
     private function limitByEmail(Form $form, FormEventInterface $event): void
     {
+        $request = \Craft::$app->getRequest();
+
         // Get all email fields on the form
         $emailFields = $form->getLayout()->getStorableFields(EmailField::class);
 
         // Get all email field values
         $emailFieldValues = [];
         foreach ($emailFields as $emailField) {
-            $value = \Craft::$app->getRequest()->post($emailField->getHandle());
+            if ($request->getIsCpRequest() || $request->getIsConsoleRequest()) {
+                continue;
+            }
+
+            $value = $request->post($emailField->getHandle());
             if (!empty($value)) {
                 $emailFieldValues[] = '"'.$value.'"';
             }

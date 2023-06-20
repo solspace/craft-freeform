@@ -56,7 +56,7 @@ export const FormSettings: React.FC = () => {
 
   return (
     <FormSettingsWrapper>
-      <Sidebar lean>
+      <Sidebar $lean>
         <SectionWrapper>
           {sections.map((section, idx) => (
             <SectionLink

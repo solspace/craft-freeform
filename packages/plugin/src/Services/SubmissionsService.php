@@ -512,7 +512,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $query = $this->getFindQuery()
             ->id($ids)
-            ->skipContent(true)
         ;
 
         $count = $query->count();

@@ -252,12 +252,17 @@ class SubmissionQuery extends ElementQuery
             'form' => "{$formTable}.[[name]]",
         ];
 
+        if (\is_array($this->orderBy)) {
+            // reset the order by array to a single element
+            $this->orderBy = \array_slice($this->orderBy, 0, 1, true);
+        }
+
         foreach ($customSortTables as $column => $columnUpdate) {
             if (isset($this->orderBy[$column])) {
                 $sortOrder = $this->orderBy[$column];
 
                 unset($this->orderBy[$column]);
-                $this->subQuery->orderBy([$columnUpdate => $sortOrder]);
+                $this->query->orderBy([$columnUpdate => $sortOrder]);
             }
         }
 
@@ -294,11 +299,11 @@ class SubmissionQuery extends ElementQuery
             }
 
             $column = $this->extractColumnName($joinedForms, $key);
-            if (!$column) {
-                continue;
+            if ($column) {
+                $prefixedOrderList[$column] = $sortDirection;
+            } else {
+                $prefixedOrderList[Submission::TABLE_STD.'.[['.$key.']]'] = $sortDirection;
             }
-
-            $prefixedOrderList[$column] = $sortDirection;
         }
 
         $this->orderBy = $prefixedOrderList;

@@ -9393,6 +9393,13 @@
   "resolved" "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz"
   "version" "0.0.3"
 
+"transliteration@^2.3.5":
+  "integrity" "sha512-HAGI4Lq4Q9dZ3Utu2phaWgtm3vB6PkLUFqWAScg/UW+1eZ/Tg6Exo4oC0/3VUol/w4BlefLhUUSVBr/9/ZGQOw=="
+  "resolved" "https://registry.npmjs.org/transliteration/-/transliteration-2.3.5.tgz"
+  "version" "2.3.5"
+  dependencies:
+    "yargs" "^17.5.1"
+
 "tree-kill@^1.2.2":
   "integrity" "sha512-L0Orpi8qGpRG//Nd+H90vFB+3iHnue1zSSGmNOOCh1GLJ7rUKVwV2HvijphGQS2UmhUZewS9VgvxYIdgr+fG1A=="
   "resolved" "https://registry.npmjs.org/tree-kill/-/tree-kill-1.2.2.tgz"
@@ -10113,7 +10120,7 @@
     "y18n" "^4.0.0"
     "yargs-parser" "^18.1.2"
 
-"yargs@^17.3.1":
+"yargs@^17.3.1", "yargs@^17.5.1":
   "integrity" "sha512-8H/wTDqlSwoSnScvV2N/JHfLWOKuh5MVla9hqLjK3nsfyy6Y4kDSYSvkU5YCUEPOSnRXfIyx3Sq+B/IWudTo4g=="
   "resolved" "https://registry.npmjs.org/yargs/-/yargs-17.6.0.tgz"
   "version" "17.6.0"

@@ -72,7 +72,7 @@ class HCaptcha extends FeatureBundle
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_CHECKBOX)) {
             $response = $this->getCheckboxResponse($form);
 
-            if (($field instanceof RecaptchaField) && !$this->validateResponse($response)) {
+            if (($field instanceof RecaptchaField) && !$response || !$this->validateResponse($response)) {
                 $message = $this->getSettings()->recaptchaErrorMessage;
 
                 $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
@@ -90,7 +90,7 @@ class HCaptcha extends FeatureBundle
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_INVISIBLE)) {
             $response = $this->getInvisibleResponse($form);
 
-            if (!$this->validateResponse($response)) {
+            if (!$response || !$this->validateResponse($response)) {
                 if ($this->behaviourDisplayError()) {
                     $message = $this->getSettings()->recaptchaErrorMessage;
 

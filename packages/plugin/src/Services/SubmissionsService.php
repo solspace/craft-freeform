@@ -512,6 +512,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
 
         $query = $this->getFindQuery()
             ->id($ids)
+            ->skipContent(true)
         ;
 
         $count = $query->count();
@@ -523,6 +524,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         foreach ($query->batch() as $results) {
             /** @var Submission $submission */
             foreach ($results as $submission) {
+                $submission = $this->getSubmission($submission->getId());
                 $uploadFields = $submission->getForm()->getLayout()->getFields(FileUploadInterface::class);
                 foreach ($uploadFields as $uploadField) {
                     $value = $submission->{$uploadField->getHandle()}->getValue();

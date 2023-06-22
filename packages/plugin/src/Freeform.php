@@ -579,6 +579,10 @@ class Freeform extends Plugin
     // TODO: move into a feature bundle
     private function initWidgets(): void
     {
+        if (!PermissionHelper::checkPermission('accessPlugin-freeform')) {
+            return;
+        }
+
         Event::on(
             Dashboard::class,
             Dashboard::EVENT_REGISTER_WIDGET_TYPES,
@@ -588,9 +592,13 @@ class Freeform extends Plugin
                 $namespace = 'Solspace\Freeform\Widgets';
 
                 /** @var SplFileInfo[] $files */
-                $files = $finder->name('*Widget.php')->files()->ignoreDotFiles(true)->notName('Abstract*.php')->in(
-                    __DIR__.'/Widgets/'
-                );
+                $files = $finder
+                    ->name('*Widget.php')
+                    ->files()
+                    ->ignoreDotFiles(true)
+                    ->notName('Abstract*.php')
+                    ->in(__DIR__.'/Widgets/')
+                ;
 
                 foreach ($files as $file) {
                     $isForPro = 'Pro' === $file->getRelativePath();

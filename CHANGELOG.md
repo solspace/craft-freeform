@@ -1,5 +1,15 @@
 # Solspace Freeform Changelog
 
+## 4.1.1 - 2023-06-22
+
+### Changed
+- Updated the Diagnostics page to still show when the `allowAdminChanges` setting is set to `false`.
+
+### Fixed
+- Fixed a bug where the Submission Purge console commands were not working correctly.
+- Fixed a bug where the Submission Purge feature was not removing associated Asset files as well.
+- Fixed a bug where an error would occur when dynamically creating a sub-directory for file uploads upon submission of form.
+
 ## 4.1.0 - 2023-06-13
 
 > {warning} If currently using GraphQL and/or headless javascript frameworks such as Vue.js, Next.js, React JS, etc, please proceed carefully and test your forms thoroughly after updating.

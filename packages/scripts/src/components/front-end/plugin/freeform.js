@@ -712,6 +712,14 @@ export default class Freeform {
           this._dispatchEvent(EventTypes.EVENT_HANDLE_ACTIONS, { response, actions, cancelable: false });
         }
 
+        const payload = response?.freeform_payload;
+        if (payload) {
+          const payloadInput = form.querySelector('input[name^=freeform_payload]');
+          if (payloadInput) {
+            payloadInput.value = payload;
+          }
+        }
+
         if (honeypot) {
           const honeypotInput = form.querySelector('input[name^=freeform_form_handle]');
           if (honeypotInput) {

@@ -321,12 +321,14 @@ class SubmissionQuery extends ElementQuery
         }
 
         foreach ($this->fieldSearch as $handle => $term) {
-            $column = $this->extractColumnName($joinedForms, $handle);
-            if (!$column) {
-                continue;
-            }
+            $columns = $this->extractMatchingColumnNames($joinedForms, $handle);
 
-            $this->query->andWhere(Db::parseParam($column, $term));
+            $condition = array_map(fn ($column) => Db::parseParam($column, $term), $columns);
+            if (\count($condition)) {
+                $condition = ['or', ...$condition];
+
+                $this->subQuery->andWhere($condition);
+            }
         }
     }
 
@@ -335,23 +337,26 @@ class SubmissionQuery extends ElementQuery
      */
     private function extractColumnName(array $joinedForms, ?string $handle): ?string
     {
-        $field = null;
-        $currentForm = null;
+        $matching = $this->extractMatchingColumnNames($joinedForms, $handle);
+
+        return reset($matching);
+    }
+
+    private function extractMatchingColumnNames(array $joinedForms, ?string $handle): array
+    {
+        $matchingColumnNames = [];
         foreach ($joinedForms as $form) {
-            $currentForm = $form;
             $field = $form->get($handle);
-            if (null !== $field) {
-                break;
+            if (!$field) {
+                continue;
             }
+
+            $tableName = 'fc'.$form->getId();
+            $columnName = Submission::getFieldColumnName($field);
+
+            $matchingColumnNames[] = "[[{$tableName}]].[[{$columnName}]]";
         }
 
-        if (null === $field) {
-            return null;
-        }
-
-        $tableName = 'fc'.$currentForm->getId();
-        $columnName = Submission::getFieldColumnName($field);
-
-        return "[[{$tableName}]].[[{$columnName}]]";
+        return $matchingColumnNames;
     }
 }

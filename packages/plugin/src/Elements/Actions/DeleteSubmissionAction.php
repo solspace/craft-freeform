@@ -9,9 +9,9 @@ use Solspace\Freeform\Freeform;
 
 class DeleteSubmissionAction extends ElementAction implements DeleteActionInterface
 {
-    public string $confirmationMessage;
+    public null|string $confirmationMessage = null;
 
-    public string $successMessage;
+    public null|string $successMessage = null;
 
     public bool $hard = false;
 
@@ -46,7 +46,7 @@ class DeleteSubmissionAction extends ElementAction implements DeleteActionInterf
 
     public function performAction(ElementQueryInterface $query): bool
     {
-        Freeform::getInstance()->submissions->delete($query->all(), false, $this->hard);
+        Freeform::getInstance()->submissions->delete($query, false, $this->hard);
 
         $this->setMessage($this->successMessage);
 

@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Submissions;
 
 use craft\events\DefineSourceTableAttributesEvent;
 use craft\services\ElementSources;
+use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
@@ -24,7 +25,7 @@ class CustomSourceFields extends FeatureBundle
 
     public function handleCustomTableAttributes(DefineSourceTableAttributesEvent $event): void
     {
-        if (Submission::class === $event->elementType) {
+        if (\in_array($event->elementType, [Submission::class, SpamSubmission::class, true])) {
             static $forms;
             if (null === $forms) {
                 $forms = Freeform::getInstance()->forms->getAllForms();

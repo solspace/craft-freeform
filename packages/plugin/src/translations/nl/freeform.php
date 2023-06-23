@@ -1041,7 +1041,7 @@ return [
     'This field is required?' => 'Dit veld is verplicht?',
     'Use built-in Table JS?' => 'Ingebouwde tabel JS gebruiken?',
     'Check this to enable built-in javascript for handling adding new rows.' => 'Vink dit aan om ingebouwde javascript in te schakelen voor het afhandelen van het toevoegen van nieuwe rijen.',
-    'Table Layout' => 'Tafelindeling',
+    'Table Layout' => 'Tabelindeling',
     'Use semicolon ";" separated values for select options.' => 'Gebruik puntkomma ";" gescheiden waarden voor geselecteerde opties.',
     'Style' => 'Stijl',
     'Select style.' => 'Selecteer stijl.',

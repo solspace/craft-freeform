@@ -61,7 +61,7 @@ class ReCaptcha extends FeatureBundle
             $field = $event->getField();
             $response = $this->getCheckboxResponse($event);
 
-            if (($field instanceof RecaptchaField) && !$response || !$this->validateResponse($response)) {
+            if (($field instanceof RecaptchaField) && (!$response || !$this->validateResponse($response))) {
                 $message = $this->getSettings()->recaptchaErrorMessage;
                 $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
             }

@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.2 - 2023-06-26
+
+### Fixed
+- Fixed a bug where forms using reCAPTCHA v2 Checkbox or hCaptcha Checkbox could behave incorrectly.
+
 ## 4.1.1 - 2023-06-22
 
 ### Changed

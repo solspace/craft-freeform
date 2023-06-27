@@ -28,11 +28,12 @@ export const PropertyEditor: React.FC = () => {
   });
 
   const transitions = useTransition(active ? [context] : null, {
-    from: { transform: 'translate3d(-100%, 0, 0)', opacity: 1 },
+    from: { transform: 'translate3d(100%, 0, 0)', opacity: 1 },
     enter: { transform: 'translate3d(0%, 0, 0)', opacity: 1, zIndex: 2 },
-    leave: { transform: 'translate3d(100%, 0, 0)' },
+    leave: { transform: 'translate3d(-100%, 0, 0)' },
     config: {
       tension: 500,
+      friction: 50,
     },
   });
 

@@ -6,17 +6,31 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 
 class ButtonAttributesCollection extends Attributes
 {
-    private Attributes $container;
-    private Attributes $submit;
-    private Attributes $back;
-    private Attributes $save;
+    protected Attributes $container;
+    protected Attributes $column;
+    protected Attributes $submit;
+    protected Attributes $back;
+    protected Attributes $save;
 
     public function __construct(array $attributes = [])
     {
-        $this->container = new Attributes();
-        $this->submit = new Attributes();
-        $this->back = new Attributes();
-        $this->save = new Attributes();
+        $this->container = new Attributes(['data-freeform-controls' => true]);
+        $this->column = new Attributes();
+
+        $this->submit = new Attributes([
+            'data-freeform-action' => 'submit',
+            'type' => 'submit',
+        ]);
+
+        $this->back = new Attributes([
+            'data-freeform-action' => 'back',
+            'type' => 'button',
+        ]);
+
+        $this->save = new Attributes([
+            'data-freeform-action' => 'save',
+            'type' => 'button',
+        ]);
 
         parent::__construct($attributes);
     }
@@ -24,6 +38,11 @@ class ButtonAttributesCollection extends Attributes
     public function getContainer(): Attributes
     {
         return $this->container;
+    }
+
+    public function getColumn(): Attributes
+    {
+        return $this->column;
     }
 
     public function getSubmit(): Attributes

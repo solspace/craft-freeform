@@ -1,7 +1,4 @@
-import type {
-  AttributeCollection,
-  InputAttributeTarget,
-} from '@components/form-controls/control-types/attributes/attributes.types';
+import type { AttributeCollection } from '@components/form-controls/control-types/attributes/attributes.types';
 import type { Options } from '@components/form-controls/control-types/options/options.types';
 import type { ColumnDescription } from '@components/form-controls/control-types/table/table.types';
 import type {
@@ -33,6 +30,8 @@ export enum PropertyType {
   Table = 'table',
   TabularData = 'tabularData',
   Textarea = 'textarea',
+  PageButtonsLayout = 'pageButtonsLayout',
+  PageButton = 'pageButton',
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -59,13 +58,15 @@ type BaseProperty<T, PT extends PropertyType> = {
 };
 
 export type AttributeProperty = BaseProperty<
-  AttributeCollection<InputAttributeTarget>,
+  AttributeCollection<PropertyKey>,
   PropertyType.Attributes
 >;
+
 export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
   min?: number;
   max?: number;
 };
+
 export type StringProperty = BaseProperty<string, PropertyType.String>;
 export type TextareaProperty = BaseProperty<string, PropertyType.Textarea>;
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
@@ -73,12 +74,14 @@ export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionCollection>;
   emptyOption?: string;
 };
+
 export type TableProperty = BaseProperty<
   ColumnDescription[],
   PropertyType.Table
 > & {
   options: Option[];
 };
+
 export type OptionsProperty = BaseProperty<Options, PropertyType.Options>;
 export type ColorProperty = BaseProperty<string, PropertyType.Color>;
 export type DateTimeProperty = BaseProperty<string, PropertyType.DateTime>;
@@ -86,32 +89,54 @@ export type MinMaxProperty = BaseProperty<
   [number, number],
   PropertyType.MinMax
 >;
+
 export type TabularDataProperty = BaseProperty<
   ColumnValue[],
   PropertyType.TabularData
 > & {
   configuration: TabularData;
 };
+
 export type FieldProperty = BaseProperty<string, PropertyType.Field> & {
   implements?: string[];
 };
+
 export type LabelProperty = BaseProperty<string, PropertyType.Label>;
+
 export type NotificationTemplateProperty = BaseProperty<
   string | number,
   PropertyType.NotificationTemplate
 >;
+
 export type RecipientsProperty = BaseProperty<
   Recipient[],
   PropertyType.Recipients
 >;
+
 export type ConditionalRulesProperty = BaseProperty<
   string,
   PropertyType.ConditionalRules
 >;
+
 export type RecipientMappingProperty = BaseProperty<
   RecipientMapping[],
   PropertyType.RecipientMapping
 >;
+
+export type PageButtonsLayoutProperty = BaseProperty<
+  string,
+  PropertyType.PageButtonsLayout
+> & {
+  elements: Array<{
+    label: string;
+    value: string;
+  }>;
+};
+
+export type PageButtonProperty = BaseProperty<
+  { label: string; enabled: boolean },
+  PropertyType.PageButton
+> & { togglable: boolean; enabled: boolean };
 
 export type Property =
   | AttributeProperty
@@ -131,7 +156,9 @@ export type Property =
   | StringProperty
   | TableProperty
   | TabularDataProperty
-  | TextareaProperty;
+  | TextareaProperty
+  | PageButtonsLayoutProperty
+  | PageButtonProperty;
 
 export type FieldType = {
   name: string;

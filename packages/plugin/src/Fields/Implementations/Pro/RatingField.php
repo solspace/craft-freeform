@@ -57,8 +57,7 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
      */
     public function setValue(mixed $value): FieldInterface
     {
-        // Prevents GraphQL from triggering an number constraint violation
-        if (!empty($this->getValue())) {
+        if (!empty($value)) {
             $this->value = $value;
         } else {
             $this->value = null;
@@ -125,14 +124,8 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
         $constraints[] = new NumericConstraint(
             1,
             $this->getMaxValue(),
-            null,
-            null,
-            null,
-            false,
-            null,
-            null,
-            null,
-            $this->translate('Rating must be between {{min}} and {{max}}')
+            allowNegativeNumbers: false,
+            messageMinMax: $this->translate('Rating must be between {{min}} and {{max}}'),
         );
 
         return $constraints;

@@ -6,6 +6,9 @@ export const CellFieldWrapper = styled.div`
   flex-direction: column;
   gap: ${spacings.xs};
 
+  height: 100%;
+  padding: ${spacings.sm} ${spacings.lg};
+
   &.errors {
     color: ${colors.error};
 

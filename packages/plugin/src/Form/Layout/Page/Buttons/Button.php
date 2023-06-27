@@ -3,15 +3,25 @@
 namespace Solspace\Freeform\Form\Layout\Page\Buttons;
 
 use Solspace\Freeform\Library\Attributes\Attributes;
-use Symfony\Component\Serializer\Annotation\Ignore;
 
 class Button
 {
     private string $label;
+    private string $enabled;
 
-    public function __construct(?array $config, private Attributes $attributes)
+    public function __construct(?array $config)
     {
         $this->label = $config['label'] ?? '';
+        $this->enabled = $config['enabled'] ?? true;
+    }
+
+    public function render(Attributes $attributes): string
+    {
+        if (!$this->enabled) {
+            return '';
+        }
+
+        return '<button '.$attributes.'>'.htmlspecialchars($this->label).'</button>';
     }
 
     public function getLabel(): string
@@ -19,9 +29,8 @@ class Button
         return $this->label;
     }
 
-    #[Ignore]
-    public function getAttributes(): Attributes
+    public function getEnabled(): string
     {
-        return $this->attributes;
+        return $this->enabled;
     }
 }

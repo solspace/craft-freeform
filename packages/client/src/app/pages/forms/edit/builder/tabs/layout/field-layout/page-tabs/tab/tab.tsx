@@ -96,6 +96,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
         onClick={(): void => {
           setIsEditing(false);
           dispatch(contextActions.setPage(page.uid));
+          dispatch(contextActions.unfocus());
         }}
         onDoubleClick={(): void => setIsEditing(true)}
       >

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 export const ButtonGroupWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+
+  cursor: pointer;
 `;
 
 export const ButtonGroup = styled.div`

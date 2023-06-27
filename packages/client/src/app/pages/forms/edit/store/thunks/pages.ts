@@ -18,23 +18,26 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
   const totalPages = state.layout.pages.length;
   const nextPageNumber = totalPages + 1;
 
+  const lastPage = state.layout.pages?.[totalPages - 1];
+
   dispatch(layoutActions.add({ uid: layoutUid }));
   dispatch(
     pageActions.add({
       uid: pageUid,
       label: `Page ${nextPageNumber}`,
       layoutUid,
-      buttons: {
+      buttons: lastPage?.buttons ?? {
         layout: 'save back|submit',
         attributes: {
           container: {},
+          column: {},
           submit: {},
           back: {},
           save: {},
         },
-        submit: { label: 'Submit' },
-        back: { label: 'Back' },
-        save: { label: 'Save' },
+        submit: { label: 'Submit', enabled: true },
+        back: { label: 'Back', enabled: true },
+        save: { label: 'Save', enabled: false },
       },
     })
   );

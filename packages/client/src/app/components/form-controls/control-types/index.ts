@@ -10,6 +10,8 @@ export { default as conditionalNotificationRule } from './namespaced/notificatio
 export { default as notificationTemplate } from './namespaced/notifications/notification-template/notification-template';
 export { default as recipientMapping } from './namespaced/notifications/recipient-mapping/recipient-mapping';
 export { default as recipients } from './namespaced/notifications/recipients/recipients';
+export { default as pageButton } from './namespaced/page-buttons/button/page-button';
+export { default as pageButtonLayout } from './namespaced/page-buttons/button-layout/layout';
 export { default as options } from './options/options';
 export { default as select } from './select/select';
 export { default as string } from './string/string';

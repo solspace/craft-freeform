@@ -64,6 +64,11 @@ class Page implements \IteratorAggregate
         return $this->fieldCollection->getList($implements, $strategy);
     }
 
+    public function getButtons(): PageButtons
+    {
+        return $this->buttons;
+    }
+
     public function getIterator(): \ArrayIterator
     {
         return $this->rowCollection->getIterator();

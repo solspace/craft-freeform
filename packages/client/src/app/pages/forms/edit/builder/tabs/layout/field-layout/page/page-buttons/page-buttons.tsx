@@ -1,5 +1,9 @@
 import React from 'react';
-import type { Page, PageButtonType } from '@editor/builder/types/layout';
+import type {
+  Page,
+  PageButton,
+  PageButtonType,
+} from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
 
@@ -12,8 +16,28 @@ type Props = {
 export const PageButtons: React.FC<Props> = ({ page }) => {
   const dispatch = useAppDispatch();
 
-  const layout = page.buttons.layout;
+  const layout = page.buttons?.layout || 'save back|submit';
   const groups = layout.split(' ');
+
+  const buttonGroups: Array<Array<PageButton>> = [];
+  groups.forEach((group) => {
+    const buttons = group.split('|');
+    const buttonGroup: PageButton[] = [];
+    buttons.forEach((buttonHandle) => {
+      if (buttonHandle === 'back' && page.order === 0) {
+        return;
+      }
+
+      const button = page.buttons[buttonHandle as PageButtonType];
+      if (!button || !button.enabled) {
+        return;
+      }
+
+      buttonGroup.push(button);
+    });
+
+    buttonGroups.push(buttonGroup);
+  });
 
   return (
     <div>
@@ -27,11 +51,11 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
           );
         }}
       >
-        {groups.map((group, index) => (
+        {buttonGroups.map((group, index) => (
           <ButtonGroup key={index}>
-            {group.split('|').map((button, index) => (
+            {group.map((button, index) => (
               <button className="btn submit" key={index} type="button">
-                {page.buttons[button as PageButtonType]?.label}
+                {button.label}
               </button>
             ))}
           </ButtonGroup>

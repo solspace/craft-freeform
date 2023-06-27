@@ -34,6 +34,9 @@ return [
     'freeform/api/notifications/types' => 'freeform/api/notifications/get-types',
     'freeform/api/notifications/templates' => 'freeform/api/notifications/get-templates',
 
+    // TYPES
+    'freeform/api/types/page-buttons' => 'freeform/api/types/page-buttons/get-type',
+
     // GENERAL
     'freeform/api/general/finish-tutorial' => 'freeform/api/settings/finish-tutorial',
     'freeform/api/general/get-submission-data' => 'freeform/api/settings/get-submission-data',

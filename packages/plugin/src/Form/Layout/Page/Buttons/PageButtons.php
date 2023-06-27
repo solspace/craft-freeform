@@ -10,6 +10,9 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 
 class PageButtons
 {
+    public const PREVIOUS_PAGE_INPUT_NAME = 'form_previous_page_button';
+    public const SUBMIT_INPUT_NAME = 'form_page_submit';
+
     #[Section(
         handle: 'general',
         label: 'General',

@@ -38,20 +38,20 @@ class FieldAttributesCollectionTest extends TestCase
         $result = $collection->jsonSerialize();
 
         $this->assertEquals(
-            [
-                'input' => [
+            (object) [
+                'input' => (object) [
                     'class' => 'class-3 and class-4 input-class',
                     'data-test' => 'test',
                     'something' => 'else',
                 ],
-                'label' => [
+                'label' => (object) [
                     'class' => 'label-class',
                 ],
-                'instructions' => [
+                'instructions' => (object) [
                     'class' => 'instructions-class',
                 ],
-                'container' => [],
-                'error' => [],
+                'container' => (object) [],
+                'error' => (object) [],
                 'class' => 'test',
             ],
             $result

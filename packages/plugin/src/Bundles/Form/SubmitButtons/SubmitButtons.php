@@ -14,11 +14,11 @@ class SubmitButtons extends FeatureBundle
         Event::on(
             Form::class,
             Form::EVENT_RENDER_BEFORE_CLOSING_TAG,
-            [$this, 'addSubmitButtons']
+            [$this, 'add']
         );
     }
 
-    public function addSubmitButtons(RenderTagEvent $event): void
+    public function add(RenderTagEvent $event): void
     {
         $form = $event->getForm();
         $page = $form->getCurrentPage();

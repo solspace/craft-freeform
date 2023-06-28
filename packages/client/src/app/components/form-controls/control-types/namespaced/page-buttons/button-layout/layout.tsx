@@ -31,9 +31,7 @@ const PageButtonLayout: React.FC<ControlType<PageButtonsLayoutProperty>> = ({
           <option value=" back|submit|save ">
             {translate('Center (save on right)')}
           </option>
-          <option value="back|submit save ">
-            {translate('Save on right')}
-          </option>
+          <option value="back|submit save">{translate('Save on right')}</option>
           <option value="save back|submit">{translate('Save on left')}</option>
         </select>
       </div>

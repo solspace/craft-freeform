@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.3 - 2023-06-28
+
+### Fixed
+- Fixed a bug where server-side field validation error messages were replaced with a GraphQL query error in production mode.
+
 ## 4.1.2 - 2023-06-26
 
 ### Fixed

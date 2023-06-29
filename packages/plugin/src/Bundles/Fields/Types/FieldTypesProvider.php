@@ -5,12 +5,12 @@ namespace Solspace\Freeform\Bundles\Fields\Types;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
+use Solspace\Freeform\Bundles\Attributes\Property\SectionProvider;
 use Solspace\Freeform\Bundles\Fields\ImplementationProvider;
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\DataObjects\FieldPropertySection;
 use Solspace\Freeform\Library\DataObjects\FieldType;
 use Solspace\Freeform\Library\Exceptions\FieldExceptions\InvalidFieldTypeException;
-use Solspace\Freeform\Library\Helpers\AttributeHelper;
 use yii\base\Event;
 
 class FieldTypesProvider
@@ -25,7 +25,8 @@ class FieldTypesProvider
 
     public function __construct(
         private PropertyProvider $propertyProvider,
-        private ImplementationProvider $implementationProvider
+        private ImplementationProvider $implementationProvider,
+        private SectionProvider $sectionProvider,
     ) {
     }
 
@@ -49,27 +50,8 @@ class FieldTypesProvider
                     file_get_contents(__DIR__.'/../../../Fields/SectionIcons/gears.svg'),
                     50
                 ),
+                ...$this->sectionProvider->getSections(...$types),
             ];
-
-            foreach ($types as $type) {
-                $reflection = new \ReflectionClass($type);
-
-                $properties = $reflection->getProperties();
-                foreach ($properties as $property) {
-                    $section = AttributeHelper::findAttribute($property, Section::class);
-                    if (!$section) {
-                        continue;
-                    }
-
-                    if (!$section->label || \array_key_exists($section->handle, $list)) {
-                        continue;
-                    }
-
-                    $section->icon = $section->icon ? file_get_contents($section->icon) : null;
-
-                    $list[$section->handle] = $section;
-                }
-            }
 
             $this->sections = array_values($list);
         }

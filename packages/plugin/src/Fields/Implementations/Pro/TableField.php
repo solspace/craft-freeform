@@ -65,7 +65,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
         label: 'Maximum number of rows',
         instructions: 'Set the maximum number of rows that can be added to the table.',
     )]
-    protected ?int $maxRows;
+    protected ?int $maxRows = null;
 
     #[Input\Text(
         label: 'Add Button Label',

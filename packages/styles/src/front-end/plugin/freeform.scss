@@ -1,2 +1,7 @@
-@import "../fields/opinion-scale";
-@import "../fields/drag-and-drop-file";
+@import '../fields/opinion-scale';
+@import '../fields/drag-and-drop-file';
+
+[data-freeform-controls] {
+  display: flex;
+  justify-content: space-between;
+}

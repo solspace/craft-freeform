@@ -1,7 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { SidebarSlider } from '@components/layout/sidebar/sidebar-slider';
-import { contextSelectors } from '@editor/store/slices/context/context.selectors';
+import { Sidebar } from '@components/layout/sidebar/sidebar';
 
 import { FieldLayout } from './field-layout/field-layout';
 import { FieldList } from './field-list/field-list';
@@ -10,15 +8,13 @@ import { DragContextProvider } from './drag.context';
 import { Grid } from './layout.styles';
 
 export const LayoutEditor: React.FC = () => {
-  const { active } = useSelector(contextSelectors.focus);
-
   return (
     <DragContextProvider>
       <Grid>
-        <SidebarSlider swiped={active}>
+        <Sidebar $noPadding>
           <PropertyEditor />
           <FieldList />
-        </SidebarSlider>
+        </Sidebar>
         <FieldLayout />
       </Grid>
     </DragContextProvider>

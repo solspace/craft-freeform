@@ -399,9 +399,13 @@ class SettingsService extends BaseService
         return (int) ($this->getSettingsModel()->digestFrequency ?? DigestService::FREQUENCY_WEEKLY_MONDAYS);
     }
 
-    public function getClientDigestRecipients(): array
+    public function getClientDigestRecipients(): RecipientCollection
     {
-        return StringHelper::extractSeparatedValues($this->getSettingsModel()->clientDigestRecipients ?? '');
+        return new RecipientCollection(
+            StringHelper::extractSeparatedValues(
+                $this->getSettingsModel()->clientDigestRecipients ?? ''
+            )
+        );
     }
 
     public function getClientDigestFrequency(): int

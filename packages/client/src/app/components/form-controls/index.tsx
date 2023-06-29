@@ -54,7 +54,7 @@ export const FormComponent: React.FC<Props> = ({
     <ErrorBoundary message={`...${property.handle} <${property.type}>`}>
       <Suspense>
         <FormControl
-          value={value}
+          value={value as GenericValue}
           property={property}
           updateValue={updateValue}
           errors={errors}

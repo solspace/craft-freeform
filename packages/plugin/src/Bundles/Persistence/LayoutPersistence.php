@@ -96,6 +96,7 @@ class LayoutPersistence extends FeatureBundle
 
             $record->label = $item->label;
             $record->order = $item->order;
+            $record->metadata = ['buttons' => $item->buttons];
 
             $record->save();
             $event->addPageRecord($record);

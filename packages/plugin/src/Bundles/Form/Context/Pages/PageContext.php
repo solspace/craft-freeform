@@ -7,9 +7,9 @@ use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\PageJumpEvent;
 use Solspace\Freeform\Events\Forms\ResetEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
-use Solspace\Freeform\Fields\Implementations\SubmitField;
 use Solspace\Freeform\Form\Bags\PropertyBag;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
 use yii\base\Event;
 
@@ -47,7 +47,7 @@ class PageContext
             return;
         }
 
-        $shouldWalkBack = null !== RequestHelper::post(SubmitField::PREVIOUS_PAGE_INPUT_NAME);
+        $shouldWalkBack = null !== RequestHelper::post(PageButtons::PREVIOUS_PAGE_INPUT_NAME);
         if ($shouldWalkBack) {
             $pageHistory = $bag->get(Form::PROPERTY_PAGE_HISTORY, []);
             $index = array_pop($pageHistory) ?? 0;

@@ -1,26 +1,33 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useSelector } from 'react-redux';
+import { useAppDispatch } from '@editor/store';
+import { contextActions } from '@editor/store/slices/context';
 import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
+import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import {
   useFetchFieldPropertySections,
   useFieldType,
 } from '@ff-client/queries/field-types';
 import type { Property } from '@ff-client/types/properties';
 
-import { FieldComponent } from './field-component';
 import {
-  FieldPropertiesWrapper,
+  CloseLink,
   Icon,
   SectionBlock,
   SectionWrapper,
   Title,
-} from './property-editor.styles';
+} from '../../property-editor.styles';
+
+import { FavoriteButton } from './favorite/favorite.button';
+import { FieldComponent } from './field-component';
+import { FieldPropertiesWrapper } from './field-properties.styles';
 
 const sectionFilter = (handle: string) => (property: Property) =>
   property.section === handle;
 
 export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
+  const dispatch = useAppDispatch();
   const { data: sections, isFetching } = useFetchFieldPropertySections();
   const field = useSelector(fieldSelectors.one(uid));
   const type = useFieldType(field?.typeClass);
@@ -65,6 +72,10 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
   return (
     <FieldPropertiesWrapper>
+      <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
+        <CloseIcon />
+      </CloseLink>
+      <FavoriteButton field={field} />
       <Title>
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
         <span>{type.name}</span>

@@ -9,4 +9,8 @@ export const pageSelecors = {
     (uid: string) =>
     (state: RootState): Page | undefined =>
       state.layout.pages.find((page) => page.uid === uid),
+  pageIndex:
+    (uid: string) =>
+    (state: RootState): number =>
+      state.layout.pages.findIndex((page) => page.uid === uid),
 } as const;

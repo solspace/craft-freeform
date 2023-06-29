@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Form\Layout;
 
+use Solspace\Freeform\Form\Layout\Page\Buttons\PageButtons;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\RowCollection;
 
@@ -15,6 +16,8 @@ class Page implements \IteratorAggregate
     private string $label;
     private int $index;
 
+    private PageButtons $buttons;
+
     private RowCollection $rowCollection;
     private FieldCollection $fieldCollection;
 
@@ -24,6 +27,8 @@ class Page implements \IteratorAggregate
         $this->uid = $config['uid'] ?? null;
         $this->label = $config['label'] ?? '';
         $this->index = $config['index'] ?? 0;
+
+        $this->buttons = new PageButtons($config['metadata']['buttons'] ?? []);
 
         $this->rowCollection = new RowCollection();
         $this->fieldCollection = new FieldCollection();
@@ -57,6 +62,11 @@ class Page implements \IteratorAggregate
     public function getFields(string|array|null $implements = null, ?string $strategy = null): FieldCollection
     {
         return $this->fieldCollection->getList($implements, $strategy);
+    }
+
+    public function getButtons(): PageButtons
+    {
+        return $this->buttons;
     }
 
     public function getIterator(): \ArrayIterator

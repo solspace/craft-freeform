@@ -1,23 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useTransition } from 'react-spring';
 import { ErrorBoundary } from '@components/form-controls/boundaries/ErrorBoundary';
 import { RenderContextProvider } from '@components/form-controls/context/render.context';
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
-import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 
-import { FavoriteButton } from './favorite/favorite.button';
-import { FieldProperties } from './field-properties';
-import { CloseLink, PropertyEditorWrapper } from './property-editor.styles';
+import { FieldProperties } from './editors/fields/field-properties';
+import { PageProperties } from './editors/pages/page-properties';
+import { AnimatedBlock, PropertyEditorWrapper } from './property-editor.styles';
 
 export const PropertyEditor: React.FC = () => {
-  const { active, type, uid } = useSelector(contextSelectors.focus);
-  const field = useSelector(fieldSelectors.one(uid));
-
   const dispatch = useAppDispatch();
+
+  const context = useSelector(contextSelectors.focus);
+  const { active, type } = context;
 
   useOnKeypress({
     meetsCondition: active,
@@ -28,17 +27,32 @@ export const PropertyEditor: React.FC = () => {
     },
   });
 
+  const transitions = useTransition(active ? [context] : null, {
+    from: { transform: 'translate3d(100%, 0, 0)', opacity: 1 },
+    enter: { transform: 'translate3d(0%, 0, 0)', opacity: 1, zIndex: 2 },
+    leave: { transform: 'translate3d(-100%, 0, 0)' },
+    config: {
+      tension: 500,
+      friction: 50,
+    },
+  });
+
   return (
     <RenderContextProvider size="small">
-      <PropertyEditorWrapper>
-        <CloseLink onClick={() => dispatch(contextActions.unfocus())}>
-          <CloseIcon />
-        </CloseLink>
-        <FavoriteButton field={field} />
+      <PropertyEditorWrapper $active={active}>
         <ErrorBoundary
           message={`Could not load property editor for "${type}" type`}
         >
-          <FieldProperties uid={uid} />
+          {transitions((style, item) => (
+            <AnimatedBlock style={style}>
+              {!!item && item.type === 'field' && (
+                <FieldProperties uid={item.uid} />
+              )}
+              {!!item && item.type === 'page' && (
+                <PageProperties uid={item.uid} />
+              )}
+            </AnimatedBlock>
+          ))}
         </ErrorBoundary>
       </PropertyEditorWrapper>
     </RenderContextProvider>

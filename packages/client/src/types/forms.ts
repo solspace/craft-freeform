@@ -29,12 +29,6 @@ export type ExtendedFormType = Form & {
   };
 };
 
-export type Attribute = {
-  index?: number;
-  key: string;
-  value?: string;
-};
-
 export type FormSettingNamespace = {
   label: string;
   handle: string;

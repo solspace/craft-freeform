@@ -22,6 +22,8 @@ export const RowCellsContainer = styled(animated.div)`
   z-index: 2;
 
   display: flex;
+  flex-direction: row;
+  align-items: stretch;
 `;
 
 export const DropZone = styled.div`

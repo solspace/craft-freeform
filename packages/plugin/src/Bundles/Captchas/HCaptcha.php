@@ -23,37 +23,17 @@ class HCaptcha extends FeatureBundle
 
     public function __construct()
     {
-        if (\Craft::$app->request->isConsoleRequest) {
-            return;
-        }
+        Event::on(
+            FieldsService::class,
+            FieldsService::EVENT_AFTER_VALIDATE,
+            [$this, 'validateCheckbox']
+        );
 
-        $settings = $this->getSettings();
-
-        if (!$settings->recaptchaEnabled) {
-            return;
-        }
-
-        if ($settings->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
-        $type = $settings->recaptchaType;
-
-        if (Settings::RECAPTCHA_TYPE_H_CHECKBOX === $type) {
-            Event::on(
-                FieldsService::class,
-                FieldsService::EVENT_AFTER_VALIDATE,
-                [$this, 'validateCheckbox']
-            );
-        }
-
-        if (Settings::RECAPTCHA_TYPE_H_INVISIBLE === $type) {
-            Event::on(
-                Form::class,
-                Form::EVENT_BEFORE_VALIDATE,
-                [$this, 'validateInvisible']
-            );
-        }
+        Event::on(
+            Form::class,
+            Form::EVENT_BEFORE_VALIDATE,
+            [$this, 'validateInvisible']
+        );
     }
 
     public static function isProOnly(): bool
@@ -66,6 +46,14 @@ class HCaptcha extends FeatureBundle
      */
     public function validateCheckbox(ValidateEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $field = $event->getField();
         $form = $field->getForm();
 
@@ -85,6 +73,14 @@ class HCaptcha extends FeatureBundle
      */
     public function validateInvisible(ValidationEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $form = $event->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_INVISIBLE)) {

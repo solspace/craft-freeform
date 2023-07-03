@@ -21,23 +21,17 @@ class HCaptcha extends FeatureBundle
 
     public function __construct()
     {
-        if (\Craft::$app->request->isConsoleRequest) {
-            return;
-        }
+        Event::on(
+            FieldsService::class,
+            FieldsService::EVENT_AFTER_VALIDATE,
+            [$this, 'validateCheckbox']
+        );
 
-        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
-        $type = $this->getSettings()->recaptchaType;
-
-        if (Settings::RECAPTCHA_TYPE_H_CHECKBOX === $type) {
-            Event::on(FieldsService::class, FieldsService::EVENT_AFTER_VALIDATE, [$this, 'validateCheckbox']);
-        }
-
-        if (Settings::RECAPTCHA_TYPE_H_INVISIBLE === $type) {
-            Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'validateInvisible']);
-        }
+        Event::on(
+            Form::class,
+            Form::EVENT_BEFORE_VALIDATE,
+            [$this, 'validateInvisible']
+        );
     }
 
     public static function isProOnly(): bool
@@ -47,6 +41,18 @@ class HCaptcha extends FeatureBundle
 
     public function validateCheckbox(ValidateEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
+        if (Settings::RECAPTCHA_TYPE_H_CHECKBOX !== $this->getSettings()->recaptchaType) {
+            return;
+        }
+
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_CHECKBOX)) {
             $field = $event->getField();
             $response = $this->getCheckboxResponse($event);
@@ -60,6 +66,18 @@ class HCaptcha extends FeatureBundle
 
     public function validateInvisible(ValidationEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
+        if (Settings::RECAPTCHA_TYPE_H_INVISIBLE !== $this->getSettings()->recaptchaType) {
+            return;
+        }
+
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_INVISIBLE)) {
             $response = $this->getInvisibleResponse($event);
 

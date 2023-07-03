@@ -6,36 +6,6 @@ use Solspace\Freeform\Fields\Validation\Errors\ConstraintViolationList;
 
 class NumericConstraint implements ConstraintInterface
 {
-    /** @var int */
-    private $min;
-
-    /** @var int */
-    private $max;
-
-    /** @var int */
-    private $decimalCount;
-
-    /** @var bool */
-    private $allowNegativeNumbers;
-
-    /** @var string */
-    private $message;
-
-    /** @var string */
-    private $messageMax;
-
-    /** @var string */
-    private $messageMin;
-
-    /** @var string */
-    private $messageMinMax;
-
-    /** @var string */
-    private $messageDecimals;
-
-    /** @var string */
-    private $messageNegative;
-
     /**
      * NumericConstraint constructor.
      *
@@ -51,33 +21,23 @@ class NumericConstraint implements ConstraintInterface
      * @param string $messageNegative
      */
     public function __construct(
-        $min = null,
-        $max = null,
-        $decimalCount = null,
-        $allowNegativeNumbers = false,
-        $message = 'Value must be numeric',
-        $messageMax = 'The value must be no more than {{max}}',
-        $messageMin = 'The value must be no less than {{min}}',
-        $messageMinMax = 'The value must be between {{min}} and {{max}}',
-        $messageDecimals = '{{dec}} decimal places allowed',
-        $messageNegative = 'Only positive numbers allowed'
+        private ?int $min = null,
+        private ?int $max = null,
+        private ?int $decimalCount = null,
+        private ?bool $allowNegativeNumbers = false,
+        private ?string $message = 'Value must be numeric',
+        private ?string $messageMax = 'The value must be no more than {{max}}',
+        private ?string $messageMin = 'The value must be no less than {{min}}',
+        private ?string $messageMinMax = 'The value must be between {{min}} and {{max}}',
+        private ?string $messageDecimals = '{{dec}} decimal places allowed',
+        private ?string $messageNegative = 'Only positive numbers allowed'
     ) {
-        $this->min = $min > 0 ? (int) $min : null;
-        $this->max = $max > 0 ? (int) $max : null;
-        $this->decimalCount = $decimalCount > 0 ? (int) $decimalCount : null;
-        $this->allowNegativeNumbers = (bool) $allowNegativeNumbers;
-        $this->message = $message;
-        $this->messageMax = $messageMax;
-        $this->messageMin = $messageMin;
-        $this->messageMinMax = $messageMinMax;
-        $this->messageDecimals = $messageDecimals;
-        $this->messageNegative = $messageNegative;
     }
 
     /**
      * {@inheritDoc}
      */
-    public function validate($value)
+    public function validate($value): ConstraintViolationList
     {
         $violationList = new ConstraintViolationList();
 
@@ -106,6 +66,11 @@ class NumericConstraint implements ConstraintInterface
 
         $numericValue = str_replace(',', '.', $value);
         $numericValue = preg_replace('/[^0-9\\-\\.]/', '', $numericValue);
+        if ('' === $numericValue) {
+            return $violationList;
+        }
+
+        $numericValue = (float) $numericValue;
 
         if (!$this->allowNegativeNumbers && $numericValue < 0) {
             $violationList->addError($this->messageNegative);

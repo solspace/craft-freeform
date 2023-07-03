@@ -21,6 +21,7 @@ use craft\db\ActiveRecord;
  * @property string    $label
  * @property string    $handle
  * @property int       $order
+ * @property string    $metadata
  * @property \DateTime $dateCreated
  * @property \DateTime $dateUpdated
  * @property string    $uid

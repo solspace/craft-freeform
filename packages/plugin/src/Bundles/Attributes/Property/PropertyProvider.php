@@ -100,9 +100,10 @@ class PropertyProvider
 
             if ($referenceObject && $property->isInitialized($referenceObject)) {
                 $value = $property->getValue($referenceObject);
-                if ($attribute->transformer) {
-                    $value = $attribute->transformer->reverseTransform($value);
-                }
+            }
+
+            if ($attribute->transformer) {
+                $value = $attribute->transformer->reverseTransform($value);
             }
 
             /** @var Section $section */

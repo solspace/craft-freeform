@@ -153,7 +153,7 @@ class SessionContext
         $this->storage->cleanup();
     }
 
-    public function retrieveContext(HandleRequestEvent $event)
+    public function retrieveContext(HandleRequestEvent $event): void
     {
         $form = $event->getForm();
 
@@ -174,7 +174,7 @@ class SessionContext
         $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPage()));
     }
 
-    public function storeContext(FormEventInterface $event)
+    public function storeContext(FormEventInterface $event): void
     {
         $form = $event->getForm();
 
@@ -195,7 +195,7 @@ class SessionContext
 
     public static function getPageHash(Form $form): string
     {
-        $pageIndex = $form->getCurrentPageIndex();
+        $pageIndex = $form->getCurrentPage()->getIndex();
 
         return HashHelper::hash($pageIndex, $form->getId());
     }
@@ -205,7 +205,7 @@ class SessionContext
         return $form->getId() === self::getPostedFormId();
     }
 
-    public static function getPostedFormId()
+    public static function getPostedFormId(): ?int
     {
         [$formHash] = self::getPostedHashParts();
         if (null === $formHash) {
@@ -239,7 +239,7 @@ class SessionContext
         return CryptoHelper::getUniqueToken();
     }
 
-    private static function getBagKey(Form $form)
+    private static function getBagKey(Form $form): ?string
     {
         $hash = $form->getProperties()->get(Form::HASH_KEY);
 
@@ -275,10 +275,7 @@ class SessionContext
         return [null, null, null];
     }
 
-    /**
-     * @return null|SessionBag
-     */
-    private function getBag(Form $form)
+    private function getBag(Form $form): ?SessionBag
     {
         $key = self::getBagKey($form);
         if (null === $key) {

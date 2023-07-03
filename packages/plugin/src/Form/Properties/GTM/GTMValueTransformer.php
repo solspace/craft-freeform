@@ -16,10 +16,18 @@ class GTMValueTransformer extends Transformer
      */
     public function reverseTransform($value): \stdClass
     {
+        if (!$value) {
+            return (object) [
+                'enabled' => false,
+                'id' => null,
+                'event' => null,
+            ];
+        }
+
         return (object) [
-            'enabled' => $value->isEnabled() ?? false,
-            'id' => $value->getId() ?? null,
-            'event' => $value->getEvent() ?? null,
+            'enabled' => $value?->isEnabled() ?? false,
+            'id' => $value?->getId() ?? null,
+            'event' => $value?->getEvent() ?? null,
         ];
     }
 }

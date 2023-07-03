@@ -1,4 +1,5 @@
 import type { Page } from '@editor/builder/types/layout';
+import type { GenericValue } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 
@@ -12,6 +13,12 @@ type MoveToPayload = {
 type UpdateLabelPayload = {
   uid: string;
   label: string;
+};
+
+type EditButtonsPayload = {
+  uid: string;
+  key: string;
+  value: GenericValue;
 };
 
 const initialState: PagesStore = [];
@@ -61,6 +68,15 @@ export const pagesSlice = createSlice({
       const { uid, label } = action.payload;
 
       state.find((page) => page.uid === uid).label = label;
+    },
+    editButtons: (state, action: PayloadAction<EditButtonsPayload>) => {
+      const { uid, key, value } = action.payload;
+      const buttons = state.find((page) => page.uid === uid).buttons;
+      if (!buttons) {
+        return;
+      }
+
+      buttons[key as keyof typeof buttons] = value;
     },
   },
 });

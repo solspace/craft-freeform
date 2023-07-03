@@ -51,7 +51,7 @@ class DigestService extends Component
         $this->parseDigest(NotificationLogRecord::TYPE_DIGEST_CLIENT, $clientRecipients, $clientFrequency);
     }
 
-    public function sendDigest(array $recipients, string $type, Carbon $rangeStart, Carbon $rangeEnd)
+    public function sendDigest(array $recipients, string $type, Carbon $rangeStart, Carbon $rangeEnd): void
     {
         $isFullDigest = NotificationLogRecord::TYPE_DIGEST_DEV === $type;
         $mailer = Freeform::getInstance()->mailer;
@@ -81,7 +81,7 @@ class DigestService extends Component
         \Craft::$app->view->setTemplateMode($templateMode);
     }
 
-    private function parseDigest(string $type, RecipientCollection $recipients, int $frequency)
+    private function parseDigest(string $type, RecipientCollection $recipients, int $frequency): void
     {
         if (empty($recipients->emailsToArray())) {
             return;

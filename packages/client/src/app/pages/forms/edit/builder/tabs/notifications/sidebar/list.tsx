@@ -42,7 +42,7 @@ export const List: React.FC = () => {
   }
 
   return (
-    <Sidebar lean>
+    <Sidebar $lean>
       {notificationTypes.map((type) => (
         <NotificationTypeItem key={type.className} type={type}>
           {notifications &&

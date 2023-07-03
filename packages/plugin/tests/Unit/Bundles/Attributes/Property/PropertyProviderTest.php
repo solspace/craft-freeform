@@ -206,7 +206,11 @@ class TestTransformer implements TransformerInterface
 
     public function reverseTransform($value): array
     {
-        return explode(',', $value);
+        if (\is_string($value)) {
+            return explode(',', $value);
+        }
+
+        return $value;
     }
 }
 

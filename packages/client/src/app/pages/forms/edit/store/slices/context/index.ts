@@ -46,6 +46,14 @@ const contextSlice = createSlice({
       state,
       { payload }: PayloadAction<Omit<Focus, 'active'>>
     ) => {
+      if (
+        state.focus.active === true &&
+        state.focus.uid === payload.uid &&
+        state.focus.type === payload.type
+      ) {
+        return;
+      }
+
       state.focus = { active: true, ...payload };
     },
     setState: (state, { payload }: PayloadAction<State>) => {

@@ -8,7 +8,6 @@ export const PageFieldLayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  padding-bottom: 60px;
   margin: 0 -18px;
 `;
 

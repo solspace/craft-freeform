@@ -214,8 +214,8 @@ class Attributes implements \Countable, \JsonSerializable
         return $array;
     }
 
-    public function jsonSerialize(): array
+    public function jsonSerialize(): object
     {
-        return $this->toArray();
+        return (object) $this->toArray();
     }
 }

@@ -36,6 +36,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('layoutId', $this->integer()->notNull())
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('order', $this->integer())
+                ->addField('metadata', $this->json())
                 ->addIndex(['formId', 'order'])
                 ->addForeignKey('formId', 'freeform_forms', 'id', ForeignKey::CASCADE)
                 ->addForeignKey('layoutId', 'freeform_forms_layouts', 'id', ForeignKey::CASCADE),

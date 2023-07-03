@@ -13,6 +13,7 @@ class LayoutTransformer
             'label' => $data['label'],
             'layoutUid' => $data['layoutUid'],
             'order' => $data['order'],
+            'buttons' => $data['metadata']['buttons'] ?? null,
         ];
     }
 

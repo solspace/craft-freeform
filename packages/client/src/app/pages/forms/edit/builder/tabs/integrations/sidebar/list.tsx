@@ -62,7 +62,7 @@ export const List: React.FC = () => {
   });
 
   return (
-    <Sidebar lean>
+    <Sidebar $lean>
       <Wrapper>
         {Object.values(categories).map((category) => (
           <Category key={category.type} {...category} />

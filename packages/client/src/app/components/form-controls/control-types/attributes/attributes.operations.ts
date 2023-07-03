@@ -1,7 +1,7 @@
 import type {
   AttributeEntry,
-  AttributeTarget,
   EditableAttributeCollection,
+  InputAttributeTarget,
 } from './attributes.types';
 
 type ParsedAttribute = [string, string | undefined];
@@ -45,7 +45,7 @@ export const attributesToString = (attributes: AttributeEntry[]): string => {
 };
 
 export const addAttribute = (
-  category: AttributeTarget,
+  category: InputAttributeTarget,
   attributes: EditableAttributeCollection,
   atIndex: number
 ): EditableAttributeCollection => ({
@@ -59,7 +59,7 @@ export const addAttribute = (
 
 export const updateAttribute = (
   index: number,
-  category: AttributeTarget,
+  category: InputAttributeTarget,
   attribute: AttributeEntry,
   attributes: EditableAttributeCollection
 ): EditableAttributeCollection => {
@@ -75,7 +75,7 @@ export const updateAttribute = (
 
 export const deleteAttribute = (
   index: number,
-  category: AttributeTarget,
+  category: InputAttributeTarget,
   attributes: EditableAttributeCollection
 ): EditableAttributeCollection => {
   return {
@@ -90,7 +90,7 @@ export const cleanAttributes = (
   const updated: EditableAttributeCollection = {};
 
   Object.entries(attributes).forEach(([category, attrs]) => {
-    updated[category as AttributeTarget] = attrs.filter(
+    updated[category as InputAttributeTarget] = attrs.filter(
       ([key, value]) => !!key || !!value
     );
   });

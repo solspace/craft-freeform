@@ -1,11 +1,11 @@
-@import "../../shared/flexbox-grid";
-@import "../../shared/color-indicator";
-@import "../../shared/variables";
-@import "../settings/form-cards";
-@import "../forms/edit/banners";
+@import '../../shared/flexbox-grid';
+@import '../../shared/color-indicator';
+@import '../../shared/variables';
+@import '../settings/form-cards';
 
 #main-content {
-  #content-container, #content {
+  #content-container,
+  #content {
     max-width: 100%;
   }
 }
@@ -29,7 +29,8 @@
   }
 
   table {
-    td, th {
+    td,
+    th {
       padding-right: $spacing-wide;
     }
   }
@@ -47,7 +48,7 @@
     width: 100%;
     height: 1px;
 
-    background-color: #E8EAEC;
+    background-color: #e8eaec;
     font-size: 0;
   }
 }
@@ -66,12 +67,13 @@
 }
 
 .info-popup {
-  &:before, &:hover:before {
+  &:before,
+  &:hover:before {
     content: 'info';
     color: white;
     font-family: 'Craft';
     speak: none;
-    font-feature-settings: "liga", "dlig";
+    font-feature-settings: 'liga', 'dlig';
     text-rendering: optimizeLegibility;
     font-weight: normal;
     font-variant: normal;

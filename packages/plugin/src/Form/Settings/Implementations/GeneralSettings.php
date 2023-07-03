@@ -132,9 +132,7 @@ class GeneralSettings extends SettingsNamespace
         icon: __DIR__.'/Icons/gtm.svg',
     )]
     #[ValueTransformer(GTMValueTransformer::class)]
-    #[Input\Special\GTM(
-        value: ['enabled' => false],
-    )]
+    #[Input\Special\GTM]
     public GTMProperty $gtm;
 
     public bool $submissionLimitReached = false;

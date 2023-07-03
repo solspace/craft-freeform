@@ -128,8 +128,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     private array $graphqlArguments = [];
 
-    private int $currentPageIndex = 0;
-
     public function __construct(
         array $config,
         private Settings $settings,
@@ -140,9 +138,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
         $this->propertyBag = new PropertyBag($this);
         $this->attributes = new FormAttributesCollection();
-
-        $pageIndex = $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
-        $this->currentPageIndex = $pageIndex;
 
         Event::trigger(self::class, self::EVENT_FORM_LOADED, new FormLoadedEvent($this));
     }
@@ -240,21 +235,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this->getSettings()->getGeneral()->description;
     }
 
-    public function getCurrentPageIndex(): int
-    {
-        return $this->currentPageIndex;
-    }
-
-    public function setCurrentPageIndex(int $index): self
-    {
-        $this->currentPageIndex = $index;
-
-        return $this;
-    }
-
     public function getCurrentPage(): Page
     {
-        return $this->getLayout()->getPages()->get($this->currentPageIndex);
+        return $this->getLayout()->getPages()->get(
+            $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0)
+        );
     }
 
     public function getRows(): RowCollection
@@ -573,7 +558,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function renderClosingTag(): Markup
     {
-        $output = '<input type="submit" value="Submit" />';
+        $output = '';
 
         $beforeTag = new RenderTagEvent($this);
         Event::trigger(self::class, self::EVENT_RENDER_BEFORE_CLOSING_TAG, $beforeTag);
@@ -765,7 +750,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this->jsonSerialize();
     }
 
-    private function validate()
+    private function validate(): void
     {
         $event = new ValidationEvent($this);
         Event::trigger(self::class, self::EVENT_BEFORE_VALIDATE, $event);

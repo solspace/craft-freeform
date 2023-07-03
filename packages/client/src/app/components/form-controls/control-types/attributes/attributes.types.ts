@@ -1,4 +1,4 @@
-export enum AttributeTarget {
+export enum InputAttributeTarget {
   Container = 'container',
   Input = 'input',
   Label = 'label',
@@ -6,14 +6,14 @@ export enum AttributeTarget {
   Error = 'error',
 }
 
-export type AttributeCollection = {
-  [key in AttributeTarget]?: {
-    [attribute: string]: string;
-  };
+export type Attributes = Record<string, string>;
+
+export type AttributeCollection<T extends PropertyKey> = {
+  [key in T]?: Attributes;
 };
 
 export type AttributeEntry = [string, string];
 
 export type EditableAttributeCollection = {
-  [key in AttributeTarget]?: AttributeEntry[];
+  [key in InputAttributeTarget]?: AttributeEntry[];
 };

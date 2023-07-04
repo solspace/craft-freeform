@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\Library\Database;
 
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 
 interface PaymentGatewayHandlerInterface extends IntegrationHandlerInterface
 {
@@ -22,12 +22,12 @@ interface PaymentGatewayHandlerInterface extends IntegrationHandlerInterface
      *
      * @param FieldObject[] $plans
      */
-    public function updatePlans(AbstractPaymentGatewayIntegration $integration, array $plans): bool;
+    public function updatePlans(PaymentGatewayIntegration $integration, array $plans): bool;
 
     /**
      * Returns all FieldObjects of a particular payment gateway.
      *
      * @return FieldObject[]
      */
-    public function getPlans(AbstractPaymentGatewayIntegration $integration): array;
+    public function getPlans(PaymentGatewayIntegration $integration): array;
 }

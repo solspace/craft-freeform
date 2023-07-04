@@ -25,14 +25,14 @@ use putyourlightson\campaign\helpers\StringHelper;
 use putyourlightson\campaign\models\PendingContactModel;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
     name: 'Craft Campaign',
     iconPath: __DIR__.'/icon.svg',
 )]
-class Campaign extends AbstractMailingListIntegration
+class Campaign extends MailingListIntegration
 {
     public const LOG_CATEGORY = 'CraftCampaign';
 
@@ -129,6 +129,19 @@ class Campaign extends AbstractMailingListIntegration
     /**
      * {@inheritDoc}
      */
+    public function getApiRootUrl(): string
+    {
+        return '';
+    }
+
+    public function generateAuthorizedClient(): Client
+    {
+        return new Client();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     protected function fetchLists(): array
     {
         $lists = [];
@@ -188,18 +201,5 @@ class Campaign extends AbstractMailingListIntegration
         }
 
         return self::$fieldCache;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function getApiRootUrl(): string
-    {
-        return '';
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        return new Client();
     }
 }

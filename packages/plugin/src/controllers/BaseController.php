@@ -5,18 +5,19 @@ namespace Solspace\Freeform\controllers;
 use craft\web\Controller;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Services\ChartsService;
-use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
+use Solspace\Freeform\Services\Integrations\CrmService;
+use Solspace\Freeform\Services\Integrations\ElementsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
+use Solspace\Freeform\Services\Integrations\MailingListsService;
+use Solspace\Freeform\Services\Integrations\PaymentGatewaysService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
-use Solspace\Freeform\Services\IntegrationsService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
-use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotificationsService;
-use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
 use Solspace\Freeform\Services\Pro\ExportProfilesService;
 use Solspace\Freeform\Services\Pro\Payments\PaymentNotificationsService;
@@ -68,6 +69,11 @@ class BaseController extends Controller
     protected function getCrmService(): CrmService
     {
         return Freeform::getInstance()->crm;
+    }
+
+    protected function getElementsService(): ElementsService
+    {
+        return Freeform::getInstance()->elements;
     }
 
     protected function getNotificationsService(): NotificationsService

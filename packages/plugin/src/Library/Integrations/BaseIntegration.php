@@ -13,18 +13,16 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
-use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Implementations\Pro\DatetimeField;
 use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Translations\TranslatorInterface;
 
-abstract class AbstractIntegration implements IntegrationInterface
+abstract class BaseIntegration implements IntegrationInterface
 {
     public function __construct(
         private ?int $id,
@@ -39,13 +37,6 @@ abstract class AbstractIntegration implements IntegrationInterface
     ) {
         $this->processProperties($properties);
     }
-
-    /**
-     * Check if it's possible to connect to the API.
-     *
-     * @throws IntegrationException
-     */
-    abstract public function checkConnection(): bool;
 
     public function getId(): ?int
     {
@@ -85,13 +76,6 @@ abstract class AbstractIntegration implements IntegrationInterface
     }
 
     /**
-     * A method that initiates the authentication.
-     */
-    public function initiateAuthentication(): void
-    {
-    }
-
-    /**
      * Perform anything necessary before this integration is saved.
      */
     public function onBeforeSave()
@@ -99,9 +83,11 @@ abstract class AbstractIntegration implements IntegrationInterface
     }
 
     /**
+     * TODO: refactor into events.
+     *
      * @return array|bool|string
      */
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field)
+    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
     {
         if (FieldObject::TYPE_ARRAY === $fieldObject->getType()) {
             $value = $field->getValue();
@@ -190,21 +176,6 @@ abstract class AbstractIntegration implements IntegrationInterface
     protected function getProcessedValue(mixed $value): bool|string|null
     {
         return App::parseEnv($value);
-    }
-
-    abstract protected function getApiRootUrl(): string;
-
-    abstract protected function generateAuthorizedClient(): Client;
-
-    /**
-     * Returns a combined URL of api root + endpoint.
-     */
-    final protected function getEndpoint(string $endpoint): string
-    {
-        $root = rtrim($this->getApiRootUrl(), '/');
-        $endpoint = ltrim($endpoint, '/');
-
-        return "{$root}/{$endpoint}";
     }
 
     private function processProperties(array $properties = []): void

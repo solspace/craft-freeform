@@ -8,7 +8,7 @@ use Solspace\Freeform\Attributes\Property\ValueGeneratorInterface;
 
 class RandomColorGenerator implements ValueGeneratorInterface
 {
-    public function generateValue(Property $property, ?object $referenceObject): string
+    public function generateValue(Property $property, string $class, ?object $referenceObject): string
     {
         return ColorHelper::randomColor();
     }

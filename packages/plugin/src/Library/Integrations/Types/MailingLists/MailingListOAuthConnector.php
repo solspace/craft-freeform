@@ -24,7 +24,7 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
 use yii\base\Event;
 
-abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
+abstract class MailingListOAuthConnector extends MailingListIntegration
 {
     public const EVENT_TOKENS_REFRESHED = 'tokens-refreshed';
 

@@ -452,6 +452,11 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
         return $value;
     }
 
+    public function getApiRootUrl(): string
+    {
+        return $this->getInstanceUrl().$this->getDataUrl();
+    }
+
     /**
      * @throws CRMIntegrationNotFoundException
      */
@@ -477,11 +482,6 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
     protected function getAuthorizationCheckUrl(): string
     {
         return $this->getEndpoint('/sobjects/Opportunity/describe');
-    }
-
-    protected function getApiRootUrl(): string
-    {
-        return $this->getInstanceUrl().$this->getDataUrl();
     }
 
     private function isAppendFieldType(mixed $formField): bool

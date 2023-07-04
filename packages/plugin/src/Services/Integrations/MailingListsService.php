@@ -10,17 +10,17 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
-use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 use Solspace\Freeform\Models\MailingListModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\MailingListFieldRecord;
@@ -28,14 +28,17 @@ use Solspace\Freeform\Records\MailingListRecord;
 
 class MailingListsService extends AbstractIntegrationService implements MailingListHandlerInterface
 {
-    private static ?array $integrations = null;
+    public function getFetchEvent(): FetchIntegrationTypesEvent
+    {
+        return new FetchMailingListTypesEvent();
+    }
 
     /**
      * Updates the mailing lists of a given mailing list integration.
      *
      * @param ListObject[] $mailingLists
      */
-    public function updateLists(AbstractMailingListIntegration $integration, array $mailingLists): bool
+    public function updateLists(MailingListIntegration $integration, array $mailingLists): bool
     {
         $resourceIds = [];
         foreach ($mailingLists as $mailingList) {
@@ -122,7 +125,7 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
      *
      * @return ListObject[]
      */
-    public function getLists(AbstractMailingListIntegration $integration): array
+    public function getLists(MailingListIntegration $integration): array
     {
         $data = (new Query())
             ->select(['id', 'resourceId', 'name', 'memberCount'])
@@ -169,7 +172,7 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
      *
      * @throws ListNotFoundException
      */
-    public function getListById(AbstractMailingListIntegration $integration, $id): ListObject
+    public function getListById(MailingListIntegration $integration, $id): ListObject
     {
         $data = $this->getMailingListQuery()
             ->where([
@@ -200,25 +203,6 @@ class MailingListsService extends AbstractIntegrationService implements MailingL
             $model->getFieldObjects(),
             $model->memberCount
         );
-    }
-
-    public function getAllServiceProviders(): array
-    {
-        if (null === self::$integrations) {
-            $event = new FetchMailingListTypesEvent();
-            $this->trigger(self::EVENT_FETCH_TYPES, $event);
-            $types = $event->getTypes();
-            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
-
-            $integrations = [];
-            foreach ($types as $type) {
-                $integrations[$type->class] = $type;
-            }
-
-            self::$integrations = $integrations;
-        }
-
-        return self::$integrations;
     }
 
     /**

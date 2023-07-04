@@ -12,7 +12,7 @@ use Solspace\Freeform\Library\Composer\Components\Properties\PaymentProperties;
 use Solspace\Freeform\Library\DataObjects\CustomerDetails;
 use Solspace\Freeform\Library\DataObjects\PaymentDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
-use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 use yii\base\Event;
 
@@ -144,7 +144,7 @@ class PaymentsBundle extends FeatureBundle
      *
      * @param Submission $submission
      */
-    private function applyPaymentErrors($submission, AbstractPaymentGatewayIntegration $integration)
+    private function applyPaymentErrors($submission, PaymentGatewayIntegration $integration)
     {
         $error = $integration->getLastError();
         $submission->addError($error->getMessage());

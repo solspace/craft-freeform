@@ -3,17 +3,17 @@
 namespace Solspace\Freeform\Events\Integrations;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
+use Solspace\Freeform\Library\Integrations\BaseIntegration;
 
 class PushEvent extends CancelableArrayableEvent
 {
-    /** @var AbstractIntegration */
+    /** @var BaseIntegration */
     private $integration;
 
     /** @var array */
     private $values;
 
-    public function __construct(AbstractIntegration $integration, array $values)
+    public function __construct(BaseIntegration $integration, array $values)
     {
         $this->integration = $integration;
         $this->values = $values;
@@ -29,7 +29,7 @@ class PushEvent extends CancelableArrayableEvent
         return array_merge(parent::fields(), ['integration', 'values']);
     }
 
-    public function getIntegration(): AbstractIntegration
+    public function getIntegration(): BaseIntegration
     {
         return $this->integration;
     }

@@ -13,7 +13,7 @@ const renderOption = (
 ): React.ReactNode => {
   if ('children' in option) {
     return (
-      <optgroup label={option.label}>
+      <optgroup key={option.label} label={option.label}>
         {option.children.map(renderOption)}
       </optgroup>
     );

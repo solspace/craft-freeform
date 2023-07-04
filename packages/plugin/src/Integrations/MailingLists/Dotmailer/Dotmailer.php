@@ -21,14 +21,14 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
     name: 'Dotmailer',
     iconPath: __DIR__.'/icon.png',
 )]
-class Dotmailer extends AbstractMailingListIntegration
+class Dotmailer extends MailingListIntegration
 {
     public const LOG_CATEGORY = 'Dotmailer';
 
@@ -172,6 +172,21 @@ class Dotmailer extends AbstractMailingListIntegration
     }
 
     /**
+     * Returns the API root url without endpoints specified.
+     */
+    public function getApiRootUrl(): string
+    {
+        return rtrim($this->getVarEndpoint(), '/').'/v2/';
+    }
+
+    public function generateAuthorizedClient(): Client
+    {
+        return new Client(
+            ['auth' => [$this->getUserEmail(), $this->getUserPassword()]]
+        );
+    }
+
+    /**
      * Makes an API call that fetches mailing lists
      * Builds ListObject objects based on the results
      * And returns them.
@@ -276,20 +291,5 @@ class Dotmailer extends AbstractMailingListIntegration
         }
 
         return [];
-    }
-
-    /**
-     * Returns the API root url without endpoints specified.
-     */
-    protected function getApiRootUrl(): string
-    {
-        return rtrim($this->getVarEndpoint(), '/').'/v2/';
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        return new Client(
-            ['auth' => [$this->getUserEmail(), $this->getUserPassword()]]
-        );
     }
 }

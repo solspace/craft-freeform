@@ -14,26 +14,26 @@ namespace Solspace\Freeform\Library\Database;
 
 use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\MailingListIntegrationNotFoundException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
+use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 interface MailingListHandlerInterface extends IntegrationHandlerInterface
 {
     /**
      * Updates the mailing lists of a given mailing list integration.
      */
-    public function updateLists(AbstractMailingListIntegration $integration, array $mailingLists): bool;
+    public function updateLists(MailingListIntegration $integration, array $mailingLists): bool;
 
     /**
-     * @return AbstractMailingListIntegration[]
+     * @return MailingListIntegration[]
      */
     public function getAllIntegrationObjects(): array;
 
     /**
      * @param int $id
      *
-     * @return null|AbstractMailingListIntegration
+     * @return null|MailingListIntegration
      *
      * @throws MailingListIntegrationNotFoundException
      */
@@ -44,17 +44,17 @@ interface MailingListHandlerInterface extends IntegrationHandlerInterface
      *
      * @return ListObject[]
      */
-    public function getLists(AbstractMailingListIntegration $integration): array;
+    public function getLists(MailingListIntegration $integration): array;
 
     /**
      * @param int $id
      *
      * @throws ListNotFoundException
      */
-    public function getListById(AbstractMailingListIntegration $integration, $id): ListObject;
+    public function getListById(MailingListIntegration $integration, $id): ListObject;
 
     /**
      * Flag the given mailing list integration so that it's updated the next time it's accessed.
      */
-    public function flagIntegrationForUpdating(AbstractIntegration $integration);
+    public function flagIntegrationForUpdating(BaseIntegration $integration);
 }

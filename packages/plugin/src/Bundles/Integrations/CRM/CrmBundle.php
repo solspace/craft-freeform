@@ -8,7 +8,7 @@ use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Services\CrmService;
+use Solspace\Freeform\Services\Integrations\CrmService;
 use yii\base\Event;
 
 class CrmBundle extends FeatureBundle

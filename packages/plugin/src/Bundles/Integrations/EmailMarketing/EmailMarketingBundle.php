@@ -9,7 +9,7 @@ use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Services\MailingListsService;
+use Solspace\Freeform\Services\Integrations\MailingListsService;
 use yii\base\Event;
 
 class EmailMarketingBundle extends FeatureBundle

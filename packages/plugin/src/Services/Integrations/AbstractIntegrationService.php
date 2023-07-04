@@ -6,20 +6,22 @@
  * Time: 17:29.
  */
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
 use Psr\Http\Message\ResponseInterface;
-use Solspace\Freeform\Attributes\Property\Flag;
+use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
+use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Services\BaseService;
 
 abstract class AbstractIntegrationService extends BaseService implements IntegrationHandlerInterface
 {
@@ -27,6 +29,30 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     public const EVENT_BEFORE_PUSH = 'beforePush';
     public const EVENT_AFTER_PUSH = 'afterPush';
     public const EVENT_AFTER_RESPONSE = 'afterResponse';
+
+    private static ?array $integrations = null;
+
+    abstract public function getFetchEvent(): FetchIntegrationTypesEvent;
+
+    public function getAllServiceProviders(): array
+    {
+        if (null === self::$integrations) {
+            $event = $this->getFetchEvent();
+
+            $this->trigger(self::EVENT_FETCH_TYPES, $event);
+            $types = $event->getTypes();
+            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
+
+            $integrations = [];
+            foreach ($types as $type) {
+                $integrations[$type->class] = $type;
+            }
+
+            self::$integrations = $integrations;
+        }
+
+        return self::$integrations;
+    }
 
     /**
      * @return IntegrationModel[]
@@ -50,7 +76,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     }
 
     /**
-     * @return AbstractIntegration[]
+     * @return BaseIntegration[]
      */
     public function getAllIntegrationObjects(): array
     {
@@ -113,7 +139,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     /**
      * Flag the given mailing list integration so that it's updated the next time it's accessed.
      */
-    public function flagIntegrationForUpdating(AbstractIntegration $integration)
+    public function flagIntegrationForUpdating(BaseIntegration $integration)
     {
         \Craft::$app
             ->getDb()
@@ -129,7 +155,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     /**
      * {@inheritDoc}
      */
-    public function onAfterResponse(AbstractIntegration $integration, ResponseInterface $response)
+    public function onAfterResponse(BaseIntegration $integration, ResponseInterface $response)
     {
         $event = new IntegrationResponseEvent($integration, $response);
         $this->trigger(self::EVENT_AFTER_RESPONSE, $event);

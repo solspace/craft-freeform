@@ -12,7 +12,7 @@ class DefaultStatusGenerator implements ValueGeneratorInterface
     {
     }
 
-    public function generateValue(Property $property, ?object $referenceObject): int
+    public function generateValue(Property $property, string $class, ?object $referenceObject): int
     {
         return $this->statusesService->getDefaultStatusId();
     }

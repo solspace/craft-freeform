@@ -20,14 +20,14 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
     name: 'Campaign Monitor',
     iconPath: __DIR__.'/icon.svg',
 )]
-class CampaignMonitor extends AbstractMailingListIntegration
+class CampaignMonitor extends MailingListIntegration
 {
     public const LOG_CATEGORY = 'Campaign Monitor';
 
@@ -135,6 +135,23 @@ class CampaignMonitor extends AbstractMailingListIntegration
         }
 
         return true;
+    }
+
+    public function generateAuthorizedClient(): Client
+    {
+        return new Client([
+            'auth' => [$this->getApiKey(), 'freeform'],
+        ]);
+    }
+
+    /**
+     * Returns the API root url without endpoints specified.
+     *
+     * @throws IntegrationException
+     */
+    public function getApiRootUrl(): string
+    {
+        return 'https://api.createsend.com/api/v3.1/';
     }
 
     /**
@@ -247,22 +264,5 @@ class CampaignMonitor extends AbstractMailingListIntegration
         }
 
         return $fieldList;
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        return new Client([
-            'auth' => [$this->getApiKey(), 'freeform'],
-        ]);
-    }
-
-    /**
-     * Returns the API root url without endpoints specified.
-     *
-     * @throws IntegrationException
-     */
-    protected function getApiRootUrl(): string
-    {
-        return 'https://api.createsend.com/api/v3.1/';
     }
 }

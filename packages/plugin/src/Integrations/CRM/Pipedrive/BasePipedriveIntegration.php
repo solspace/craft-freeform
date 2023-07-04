@@ -10,9 +10,9 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BasePipedriveIntegration extends AbstractCRMIntegration
+abstract class BasePipedriveIntegration extends CRMIntegration
 {
     public const PREFIX_ORGANIZATION = 'org';
     public const PREFIX_PERSON = 'prsn';
@@ -59,6 +59,10 @@ abstract class BasePipedriveIntegration extends AbstractCRMIntegration
     public function isDetectDuplicates(): bool
     {
         return $this->detectDuplicates;
+    }
+
+    public function initiateAuthentication(): void
+    {
     }
 
     /**
@@ -190,6 +194,23 @@ abstract class BasePipedriveIntegration extends AbstractCRMIntegration
         return $fieldList;
     }
 
+    public function generateAuthorizedClient(): Client
+    {
+        return new Client([
+            'query' => ['api_token' => $this->getApiToken()],
+            'headers' => ['Accept' => 'application/json'],
+        ]);
+    }
+
+    public function getApiRootUrl(): string
+    {
+        if ($this->getDomain()) {
+            return 'https://'.$this->getDomain().'.pipedrive.com/api/v1/';
+        }
+
+        return 'https://api.pipedrive.com/api/v1';
+    }
+
     protected function getResponse(string $endpoint, array $queryOptions = []): ResponseInterface
     {
         $client = $this->generateAuthorizedClient();
@@ -198,23 +219,6 @@ abstract class BasePipedriveIntegration extends AbstractCRMIntegration
             $endpoint,
             ['query' => $queryOptions ?? []]
         );
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        return new Client([
-            'query' => ['api_token' => $this->getApiToken()],
-            'headers' => ['Accept' => 'application/json'],
-        ]);
-    }
-
-    protected function getApiRootUrl(): string
-    {
-        if ($this->getDomain()) {
-            return 'https://'.$this->getDomain().'.pipedrive.com/api/v1/';
-        }
-
-        return 'https://api.pipedrive.com/api/v1';
     }
 
     protected function pushOrg(array $fieldList)

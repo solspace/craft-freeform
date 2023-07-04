@@ -86,6 +86,12 @@ class IntegrationModel extends Model
 
                 break;
 
+            case IntegrationRecord::TYPE_ELEMENTS:
+                $logCategory = FreeformLogger::ELEMENT_CONNECTION;
+                $handler = $freeform->elements;
+
+                break;
+
             default:
                 throw new IntegrationException(Freeform::t('Unknown integration type specified'));
         }

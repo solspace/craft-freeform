@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Attributes\Property;
 
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionFetcherInterface;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Implementations\TabularData\TabularDataConfiguration;
 use Solspace\Freeform\Attributes\Property\Input\Field;
 use Solspace\Freeform\Attributes\Property\Input\OptionsInterface;
@@ -95,7 +95,7 @@ class PropertyProvider
 
             $value = $property->getDefaultValue() ?? $attribute->value;
             if (null === $referenceObject && $attribute->valueGenerator) {
-                $value = $attribute->valueGenerator->generateValue($attribute, $referenceObject);
+                $value = $attribute->valueGenerator->generateValue($attribute, $class, $referenceObject);
             }
 
             if ($referenceObject && $property->isInitialized($referenceObject)) {
@@ -115,7 +115,7 @@ class PropertyProvider
 
             $attribute->value = $value;
             $attribute->section = $section?->handle;
-            $attribute->type ??= $property->getType()->getName();
+            $attribute->type ??= $this->processType($property);
             $attribute->handle = $property->getName();
             $attribute->label ??= $fallbackLabel;
             $attribute->order ??= $collection->getNextOrder();
@@ -135,6 +135,18 @@ class PropertyProvider
         return new \ReflectionClass($class);
     }
 
+    public function processType(\ReflectionProperty $property): string
+    {
+        $type = $property->getType();
+        if ($type->isBuiltin()) {
+            return $type->getName();
+        }
+
+        $class = new \ReflectionClass($type->getName());
+
+        return lcfirst($class->getShortName());
+    }
+
     private function processOptions(Property $attribute): void
     {
         if (!$attribute instanceof OptionsInterface) {
@@ -149,9 +161,9 @@ class PropertyProvider
         }
 
         if (\is_string($options)) {
-            /** @var OptionFetcherInterface $class */
+            /** @var OptionsGeneratorInterface $class */
             $class = $this->container->get($options);
-            if ($class instanceof OptionFetcherInterface) {
+            if ($class instanceof OptionsGeneratorInterface) {
                 $attribute->options = $class->fetchOptions($attribute);
             } else {
                 $attribute->options = $collection;

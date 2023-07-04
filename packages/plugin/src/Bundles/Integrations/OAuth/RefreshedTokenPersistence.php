@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Bundles\Integrations\OAuth;
 use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
-use Solspace\Freeform\Services\IntegrationsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
 class RefreshedTokenPersistence extends FeatureBundle

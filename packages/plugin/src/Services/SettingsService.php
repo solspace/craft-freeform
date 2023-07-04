@@ -320,6 +320,8 @@ class SettingsService extends BaseService
         $nonSettingSections = [
             'statuses',
             'error-log',
+            'diagnostics',
+            'craft-preflight',
             'mailing-lists',
             'crm',
             'payment-gateways',

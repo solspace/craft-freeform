@@ -1,5 +1,13 @@
 # Solspace Freeform Changelog
 
+## 4.1.4 - 2023-07-05
+
+### Added
+- Added support for mapping to multiple groups/interests in the Mailchimp integration.
+
+### Fixed
+- Fixed a bug where the element query was being executed before Craft was fully initialized.
+
 ## 4.1.3 - 2023-06-28
 
 ### Fixed

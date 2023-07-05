@@ -8,7 +8,7 @@ use craft\records\Element;
 use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -45,10 +45,12 @@ class FormLimiting extends FeatureBundle
 
     public function __construct()
     {
+        Event::on(Form::class, Form::EVENT_FORM_LOADED, [$this, 'handleLimitations']);
+        Event::on(Form::class, Form::EVENT_PERSIST_STATE, [$this, 'handleLimitations']);
         Event::on(Form::class, Form::EVENT_BEFORE_VALIDATE, [$this, 'handleLimitations']);
     }
 
-    public function handleLimitations(ValidationEvent $event): void
+    public function handleLimitations(FormEventInterface $event): void
     {
         $form = $event->getForm();
         $behaviorSettings = $form->getSettings()->getBehavior();

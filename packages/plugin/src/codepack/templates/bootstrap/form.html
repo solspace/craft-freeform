@@ -13,6 +13,18 @@
 
 {% set isSuccess  = craft.app.request.segment(4) == "success" %}
 
+{% block footerJs %}
+    <script>
+        const myForm = document.querySelector('form');
+
+        // or freeform-ajax-after-submit or freeform-render-success
+        myForm.addEventListener('freeform-ajax-success', function (event) {
+            // Do something with event.response.submissionLimitReached
+            // Hide the form or show a message
+        });
+    </script>
+{% endblock %}
+
 {% block content %}
 
     <div class="container">
@@ -55,6 +67,19 @@
                         {%- endif -%}
                     </i>) for this form.
                 </p>
+            </div>
+        {% endif %}
+
+        {% set submissionLimitReached = form.submissionLimitReached %}
+
+        {% if submissionLimitReached %}
+            {# Maybe hide the form #}
+        {% endif %}
+
+        {# ... or show a message #}
+        {% if submissionLimitReached %}
+            <div class="alert alert-warning submission-limit-reached" role="alert">
+                {{ "Submission Limit Reached" }}
             </div>
         {% endif %}
 

@@ -143,9 +143,15 @@ class MailChimp extends AbstractMailingListIntegration
                 }
 
                 if (preg_match('/interests___interests/', $key)) {
-                    $interestId = $this->findInterestIdFromName(trim($value), $listId);
-                    if ($interestId) {
-                        $interests[$interestId] = true;
+                    $interestsSelection = explode(',', $value);
+                    $interestsSelection = array_map('trim', $interestsSelection);
+                    $interestsSelection = array_filter($interestsSelection);
+
+                    foreach ($interestsSelection as $interest) {
+                        $interestId = $this->findInterestIdFromName($interest, $listId);
+                        if ($interestId) {
+                            $interests[$interestId] = true;
+                        }
                     }
 
                     unset($mappedValues[$key]);

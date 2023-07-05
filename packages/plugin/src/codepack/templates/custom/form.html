@@ -80,7 +80,7 @@
             </div>
         {% endif %}
 
-        {% set submissionLimitReached = form.submissionLimitReached %}
+        {% set submissionLimitReached = form.settings.general.submissionLimitReached %}
 
         {% if submissionLimitReached %}
             {# Maybe hide the form #}

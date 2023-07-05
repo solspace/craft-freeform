@@ -201,6 +201,11 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
         return $value;
     }
 
+    public function getApiRootUrl(): string
+    {
+        return 'https://api.infusionsoft.com/crm/rest/v1/';
+    }
+
     /**
      * URL pointing to the OAuth2 authorization endpoint.
      */
@@ -215,11 +220,6 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
     protected function getAccessTokenUrl(): string
     {
         return 'https://api.infusionsoft.com/token';
-    }
-
-    protected function getApiRootUrl(): string
-    {
-        return 'https://api.infusionsoft.com/crm/rest/v1/';
     }
 
     /**

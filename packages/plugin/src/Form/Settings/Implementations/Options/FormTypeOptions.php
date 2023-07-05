@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\Form\Settings\Implementations\Options;
 
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;
-use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionFetcherInterface;
+use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionsGeneratorInterface;
 use Solspace\Freeform\Attributes\Property\Property;
 use Solspace\Freeform\Services\Form\TypesService;
 
-class FormTypeOptions implements OptionFetcherInterface
+class FormTypeOptions implements OptionsGeneratorInterface
 {
     public function __construct(
         private TypesService $typesService

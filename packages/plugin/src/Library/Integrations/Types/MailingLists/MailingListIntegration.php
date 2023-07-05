@@ -15,12 +15,11 @@ namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
+use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
-abstract class AbstractMailingListIntegration extends AbstractIntegration implements MailingListIntegrationInterface, IntegrationInterface, \JsonSerializable
+abstract class MailingListIntegration extends APIIntegration implements MailingListIntegrationInterface, \JsonSerializable
 {
     public const TYPE = 'mailing_list';
 

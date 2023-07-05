@@ -15,7 +15,7 @@ use Solspace\Freeform\Library\DataObjects\PlanDetails;
 use Solspace\Freeform\Library\DataObjects\SubscriptionDetails;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
 use Solspace\Freeform\Library\Payments\PaymentInterface;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
@@ -38,7 +38,7 @@ use yii\base\Event;
     name: 'Stripe',
     iconPath: __DIR__.'/icon.svg',
 )]
-class Stripe extends AbstractPaymentGatewayIntegration
+class Stripe extends PaymentGatewayIntegration
 {
     public const LOG_CATEGORY = 'Stripe';
 
@@ -135,6 +135,10 @@ class Stripe extends AbstractPaymentGatewayIntegration
     /** @var \Exception */
     protected $lastError;
     protected $lastErrorDetails;
+
+    public function initiateAuthentication(): void
+    {
+    }
 
     public function isSuppressOnFail(): bool
     {
@@ -728,6 +732,16 @@ class Stripe extends AbstractPaymentGatewayIntegration
         $this->lastError = null;
     }
 
+    public function getApiRootUrl(): string
+    {
+        return 'https://api.stripe.com/';
+    }
+
+    public function generateAuthorizedClient(): Client
+    {
+        return new Client();
+    }
+
     /**
      * @return bool|PaymentIntent
      */
@@ -792,11 +806,6 @@ class Stripe extends AbstractPaymentGatewayIntegration
         }
 
         return $intent;
-    }
-
-    protected function getApiRootUrl(): string
-    {
-        return 'https://api.stripe.com/';
     }
 
     protected function getPlanHandler(): SubscriptionPlansService
@@ -971,10 +980,5 @@ class Stripe extends AbstractPaymentGatewayIntegration
         FreeformLogger::getInstance(FreeformLogger::STRIPE)->error($exception->getMessage());
 
         return false;
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        return new Client();
     }
 }

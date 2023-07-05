@@ -352,22 +352,12 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         return $fieldList;
     }
 
-    protected function getAuthorizeUrl(): string
-    {
-        return 'https://login.salesforce.com/services/oauth2/authorize';
-    }
-
-    protected function getAccessTokenUrl(): string
-    {
-        return 'https://login.salesforce.com/services/oauth2/token';
-    }
-
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         return 'https://pi.pardot.com/api/';
     }
 
-    protected function generateAuthorizedClient(): Client
+    public function generateAuthorizedClient(): Client
     {
         parent::generateAuthorizedClient();
 
@@ -381,6 +371,16 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
                 'format' => 'json',
             ],
         ]);
+    }
+
+    protected function getAuthorizeUrl(): string
+    {
+        return 'https://login.salesforce.com/services/oauth2/authorize';
+    }
+
+    protected function getAccessTokenUrl(): string
+    {
+        return 'https://login.salesforce.com/services/oauth2/token';
     }
 
     private function getPardotEndpoint(string $object = 'prospect', string $action = 'query'): string

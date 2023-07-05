@@ -54,7 +54,6 @@ use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\ConnectionsService;
-use Solspace\Freeform\Services\CrmService;
 use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ExportService;
@@ -65,15 +64,17 @@ use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
 use Solspace\Freeform\Services\HoneypotService;
+use Solspace\Freeform\Services\Integrations\CrmService;
+use Solspace\Freeform\Services\Integrations\ElementsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
+use Solspace\Freeform\Services\Integrations\MailingListsService;
+use Solspace\Freeform\Services\Integrations\PaymentGatewaysService;
 use Solspace\Freeform\Services\IntegrationsQueueService;
-use Solspace\Freeform\Services\IntegrationsService;
 use Solspace\Freeform\Services\LockService;
 use Solspace\Freeform\Services\LoggerService;
 use Solspace\Freeform\Services\MailerService;
-use Solspace\Freeform\Services\MailingListsService;
 use Solspace\Freeform\Services\NotesService;
 use Solspace\Freeform\Services\NotificationsService;
-use Solspace\Freeform\Services\PaymentGatewaysService;
 use Solspace\Freeform\Services\PreflightService;
 use Solspace\Freeform\Services\Pro\DigestService;
 use Solspace\Freeform\Services\Pro\ExportNotificationsService;
@@ -108,6 +109,7 @@ use yii\web\ForbiddenHttpException;
  * Class Plugin.
  *
  * @property CrmService                  $crm
+ * @property ElementsService             $elements
  * @property FieldsService               $fields
  * @property FilesService                $files
  * @property FormsService                $forms
@@ -444,6 +446,7 @@ class Freeform extends Plugin
             [
                 'dashboard' => DashboardService::class,
                 'crm' => CrmService::class,
+                'elements' => ElementsService::class,
                 'charts' => ChartsService::class,
                 'fields' => FieldsService::class,
                 'files' => FilesService::class,

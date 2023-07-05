@@ -25,21 +25,6 @@ $(function () {
     });
   }
 
-  const $returnUri = $('input.property-returnUri');
-  const urlType = $('#integration-type').data('type');
-
-  $('#handle').on({
-    change: function () {
-      const val = $(this).val();
-      const updatedUrl = Craft.getCpUrl('freeform/settings/' + urlType + '/' + val);
-
-      $returnUri.val(updatedUrl);
-    },
-    keyup: function () {
-      $(this).trigger('change');
-    },
-  });
-
   const $authChecker = $('#auth-checker');
   const pendingStatusCheck = $('.pending-status-check', $authChecker);
   const integrationId = pendingStatusCheck.data('id');

@@ -63,21 +63,21 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
         return $response->getStatusCode() >= 200 && $response->getStatusCode() < 300;
     }
 
-    protected function onBeforeFetchAccessToken(&$payload)
-    {
-        $this->domain = $_GET['location'] ?? '';
-        $this->accountsServer = $_GET['accounts-server'] ?? '';
-    }
-
     /**
      * Returns the API root url without endpoints specified.
      */
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         $url = $this->apiDomain ?? 'https://www.zohoapis.com';
         $url = rtrim($url, '/');
 
         return "{$url}/crm/v2";
+    }
+
+    protected function onBeforeFetchAccessToken(&$payload)
+    {
+        $this->domain = $_GET['location'] ?? '';
+        $this->accountsServer = $_GET['accounts-server'] ?? '';
     }
 
     /**

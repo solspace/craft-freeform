@@ -247,10 +247,7 @@ class SalesforceLead extends BaseSalesforceIntegration
         return $fieldList;
     }
 
-    /**
-     * @return array|bool|string
-     */
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field)
+    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
     {
         $value = parent::convertCustomFieldValue($fieldObject, $field);
 
@@ -261,7 +258,7 @@ class SalesforceLead extends BaseSalesforceIntegration
         return $value;
     }
 
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         $instance = $this->instanceUrl;
         $usingCustomUrls = $this->usingCustomUrl;

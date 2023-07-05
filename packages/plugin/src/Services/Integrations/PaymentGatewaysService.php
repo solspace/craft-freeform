@@ -10,16 +10,14 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
-use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\Library\Database\PaymentGatewayHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\AbstractPaymentGatewayIntegration;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\PlanObject;
-use Solspace\Freeform\Models\IntegrationModel;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\Pro\Payments\SubscriptionPlanRecord;
 
@@ -27,29 +25,9 @@ use Solspace\Freeform\Records\Pro\Payments\SubscriptionPlanRecord;
 
 class PaymentGatewaysService extends AbstractIntegrationService implements PaymentGatewayHandlerInterface
 {
-    private static ?array $integrations = null;
-
-    /**
-     * @return AbstractPaymentGatewayIntegration
-     */
-    public function getAllPaymentGatewayServiceProviders(): array
+    public function getFetchEvent(): FetchIntegrationTypesEvent
     {
-        if (null === self::$integrations) {
-            $event = new FetchPaymentGatewayTypesEvent();
-
-            $this->trigger(self::EVENT_FETCH_TYPES, $event);
-            $types = $event->getTypes();
-            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
-
-            $integrations = [];
-            foreach ($types as $type) {
-                $integrations[$type->class] = $type;
-            }
-
-            self::$integrations = $integrations;
-        }
-
-        return self::$integrations;
+        return new FetchPaymentGatewayTypesEvent();
     }
 
     /**
@@ -57,7 +35,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
      *
      * @param PlanObject[] $plans
      */
-    public function updatePlans(AbstractPaymentGatewayIntegration $integration, array $plans): bool
+    public function updatePlans(PaymentGatewayIntegration $integration, array $plans): bool
     {
         $handles = [];
         foreach ($plans as $plan) {
@@ -139,7 +117,7 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
      *
      * @return SubscriptionPlanInterface[]
      */
-    public function getPlans(AbstractPaymentGatewayIntegration $integration): array
+    public function getPlans(PaymentGatewayIntegration $integration): array
     {
         $integration->setForceUpdate($this->isForceUpdate());
 
@@ -152,22 +130,5 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
     protected function getIntegrationType(): string
     {
         return IntegrationRecord::TYPE_PAYMENT_GATEWAY;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function afterSaveHandler(IntegrationModel $model)
-    {
-        try {
-            if ($model->getIntegrationObject()->checkConnection()) {
-                /** @var AbstractPaymentGatewayIntegration $paymentGateway */
-                $paymentGateway = $model->getIntegrationObject();
-                $paymentGateway->setForceUpdate(true);
-                $paymentGateway->getPlans();
-            }
-        } catch (IntegrationException $e) {
-            \Craft::$app->session->setError($e->getMessage());
-        }
     }
 }

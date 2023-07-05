@@ -7,11 +7,10 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListOAuthConnector;
+use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
-use Solspace\Freeform\Services\IntegrationsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\web\HttpException;
 use yii\web\Response;
 
@@ -102,7 +101,9 @@ abstract class IntegrationsController extends BaseController
         $this->integrationsService->updateModelFromIntegration($model, $integration);
 
         if ($this->integrationsService->save($model)) {
-            $model->getIntegrationObject()->initiateAuthentication();
+            if ($integration instanceof APIIntegration) {
+                $integration->initiateAuthentication();
+            }
 
             if (\Craft::$app->request->isAjax) {
                 return $this->asJson(['success' => true]);
@@ -173,11 +174,6 @@ abstract class IntegrationsController extends BaseController
     protected function renderEditForm(IntegrationModel $model, string $title): Response
     {
         $this->view->registerAssetBundle(IntegrationsBundle::class);
-
-        if (\Craft::$app->request->getParam('code')) {
-            $this->handleOAuthAuthorization($model);
-        }
-
         $this->getIntegrationsService()->decryptModelValues($model);
 
         $variables = [
@@ -185,7 +181,7 @@ abstract class IntegrationsController extends BaseController
             'blockTitle' => $title,
             'serviceProviderTypes' => $this->getServiceProviderTypes(),
             'continueEditingUrl' => 'freeform/settings/'.$this->getType().'/{handle}',
-            'action' => 'freeform/'.$this->getAction().'/save',
+            'action' => 'freeform/integrations/'.$this->getAction().'/save',
             'title' => $this->getTitle(),
             'type' => $this->getType(),
         ];
@@ -214,35 +210,4 @@ abstract class IntegrationsController extends BaseController
     abstract protected function getIntegrationType(): string;
 
     abstract protected function getNewOrExistingModel(string|int|null $id): IntegrationModel;
-
-    private function handleOAuthAuthorization(IntegrationModel $model): void
-    {
-        $integration = $model->getIntegrationObject();
-        if (!$integration instanceof CRMOAuthConnector && !$integration instanceof MailingListOAuthConnector) {
-            return;
-        }
-
-        $integration->fetchTokens();
-
-        try {
-            $integration->onBeforeSave();
-        } catch (\Exception $e) {
-            $model->addError('integration', $e->getMessage());
-        }
-
-        $this->integrationsService->updateModelFromIntegration($model, $integration);
-
-        if ($this->integrationsService->save($model)) {
-            \Craft::$app->session->setNotice(Freeform::t('Integration saved'));
-            \Craft::$app->session->setFlash('Integration saved');
-
-            $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$this->getType().'/'.$model->id));
-
-            return;
-        }
-
-        \Craft::$app->session->setError(Freeform::t('Integration not saved'));
-
-        $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$this->getType().'/'.$model->id));
-    }
 }

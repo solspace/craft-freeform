@@ -9,14 +9,14 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type(
     name: 'Freshdesk',
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class Freshdesk extends AbstractCRMIntegration
+class Freshdesk extends CRMIntegration
 {
     public const LOG_CATEGORY = 'Freshdesk';
 
@@ -88,6 +88,10 @@ class Freshdesk extends AbstractCRMIntegration
     public function getSource(): string
     {
         return $this->getProcessedValue($this->source);
+    }
+
+    public function initiateAuthentication(): void
+    {
     }
 
     /**
@@ -292,12 +296,12 @@ class Freshdesk extends AbstractCRMIntegration
         return $fieldList;
     }
 
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         return sprintf('https://%s.freshdesk.com/api/v2/', $this->getSubdomain());
     }
 
-    protected function generateAuthorizedClient(): Client
+    public function generateAuthorizedClient(): Client
     {
         return new Client([
             'headers' => ['Content-Type' => 'application/json'],

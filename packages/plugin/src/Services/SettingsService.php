@@ -288,6 +288,7 @@ class SettingsService extends BaseService
             'hdapi' => ['heading' => Freeform::t('Integrations')],
             'mailing-lists' => ['title' => Freeform::t('Email Marketing')],
             'crm' => ['title' => Freeform::t('CRM')],
+            'elements' => ['title' => Freeform::t('Elements')],
             'payment-gateways' => ['title' => Freeform::t('Payments')],
             'webhooks' => ['title' => Freeform::t('Webhooks')],
             'hdalerts' => ['heading' => Freeform::t('Reliability')],

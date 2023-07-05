@@ -124,6 +124,14 @@ class ConstantContact3 extends MailingListOAuthConnector implements RefreshToken
     }
 
     /**
+     * Returns the API root url without endpoints specified.
+     */
+    public function getApiRootUrl(): string
+    {
+        return 'https://api.cc.email/v3';
+    }
+
+    /**
      * Makes an API call that fetches mailing lists
      * Builds ListObject objects based on the results
      * And returns them.
@@ -230,14 +238,6 @@ class ConstantContact3 extends MailingListOAuthConnector implements RefreshToken
         }
 
         return $fields;
-    }
-
-    /**
-     * Returns the API root url without endpoints specified.
-     */
-    protected function getApiRootUrl(): string
-    {
-        return 'https://api.cc.email/v3';
     }
 
     /**

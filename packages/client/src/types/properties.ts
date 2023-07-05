@@ -6,6 +6,7 @@ import type {
   TabularData,
 } from '@components/form-controls/control-types/tabular-data/tabular-data.types';
 
+import type { FieldMapping } from './integrations';
 import type { Recipient, RecipientMapping } from './notifications';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,6 +33,7 @@ export enum PropertyType {
   Textarea = 'textarea',
   PageButtonsLayout = 'pageButtonsLayout',
   PageButton = 'pageButton',
+  FieldMapping = 'fieldMapping',
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -138,6 +140,11 @@ export type PageButtonProperty = BaseProperty<
   PropertyType.PageButton
 > & { togglable: boolean; enabled: boolean };
 
+export type FieldMappingProperty = BaseProperty<
+  FieldMapping[],
+  PropertyType.FieldMapping
+>;
+
 export type Property =
   | AttributeProperty
   | BooleanProperty
@@ -158,7 +165,8 @@ export type Property =
   | TabularDataProperty
   | TextareaProperty
   | PageButtonsLayoutProperty
-  | PageButtonProperty;
+  | PageButtonProperty
+  | FieldMappingProperty;
 
 export type FieldType = {
   name: string;

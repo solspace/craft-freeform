@@ -10,9 +10,8 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\controllers;
+namespace Solspace\Freeform\controllers\integrations;
 
-use Solspace\Freeform\controllers\integrations\IntegrationsController;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 

@@ -21,14 +21,14 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
     name: 'Dotmailer',
     iconPath: __DIR__.'/icon.png',
 )]
-class Dotmailer extends AbstractMailingListIntegration
+class Dotmailer extends MailingListIntegration
 {
     public const LOG_CATEGORY = 'Dotmailer';
 
@@ -75,6 +75,10 @@ class Dotmailer extends AbstractMailingListIntegration
     public function getVarEndpoint(): string
     {
         return $this->endpoint;
+    }
+
+    public function initiateAuthentication(): void
+    {
     }
 
     /**
@@ -169,6 +173,21 @@ class Dotmailer extends AbstractMailingListIntegration
         }
 
         throw new IntegrationException('Could not get an API endpoint');
+    }
+
+    /**
+     * Returns the API root url without endpoints specified.
+     */
+    public function getApiRootUrl(): string
+    {
+        return rtrim($this->getVarEndpoint(), '/').'/v2/';
+    }
+
+    public function generateAuthorizedClient(): Client
+    {
+        return new Client(
+            ['auth' => [$this->getUserEmail(), $this->getUserPassword()]]
+        );
     }
 
     /**
@@ -276,20 +295,5 @@ class Dotmailer extends AbstractMailingListIntegration
         }
 
         return [];
-    }
-
-    /**
-     * Returns the API root url without endpoints specified.
-     */
-    protected function getApiRootUrl(): string
-    {
-        return rtrim($this->getVarEndpoint(), '/').'/v2/';
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        return new Client(
-            ['auth' => [$this->getUserEmail(), $this->getUserPassword()]]
-        );
     }
 }

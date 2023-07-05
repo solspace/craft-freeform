@@ -31,4 +31,22 @@ class OptionCollection implements CustomNormalizerInterface
     {
         return $this->options;
     }
+
+    public function toTwigArray(): array
+    {
+        $options = [];
+
+        foreach ($this->options as $option) {
+            if (isset($option['children'])) {
+                $options[] = ['optgroup' => $option['label']];
+                foreach ($option['children'] as $child) {
+                    $options[] = ['value' => $child['value'], 'label' => $child['label']];
+                }
+            } else {
+                $options[] = ['value' => $option['value'], 'label' => $option['label']];
+            }
+        }
+
+        return $options;
+    }
 }

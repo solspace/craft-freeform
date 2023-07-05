@@ -13,11 +13,10 @@
 namespace Solspace\Freeform\Library\Integrations\Types\PaymentGateways;
 
 use Solspace\Freeform\Library\DataObjects\PlanDetails;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
-use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\PlanObject;
 
-abstract class AbstractPaymentGatewayIntegration extends AbstractIntegration implements PaymentGatewayIntegrationInterface, IntegrationInterface, \JsonSerializable
+abstract class PaymentGatewayIntegration extends APIIntegration implements PaymentGatewayIntegrationInterface, \JsonSerializable
 {
     public const TYPE = 'payment_gateway';
 

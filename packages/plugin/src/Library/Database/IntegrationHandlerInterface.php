@@ -3,9 +3,9 @@
 namespace Solspace\Freeform\Library\Database;
 
 use Psr\Http\Message\ResponseInterface;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
+use Solspace\Freeform\Library\Integrations\BaseIntegration;
 
 interface IntegrationHandlerInterface
 {
-    public function onAfterResponse(AbstractIntegration $integration, ResponseInterface $response);
+    public function onAfterResponse(BaseIntegration $integration, ResponseInterface $response);
 }

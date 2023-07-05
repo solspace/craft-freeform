@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Integrations\Providers;
 
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
-use Solspace\Freeform\Services\IntegrationsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
 class FormIntegrationsProvider
 {

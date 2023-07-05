@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\controllers\payments;
+namespace Solspace\Freeform\controllers\integrations\payments;
 
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Freeform;

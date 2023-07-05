@@ -352,6 +352,15 @@
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
 
+## 3.13.30 - 2023-07-04
+
+### Changed
+- Updated the Diagnostics and Craft 4 Preflight pages to still show when the `allowAdminChanges` setting is set to `false`.
+
+### Fixed
+- Fixed a bug that could cause issues when using the JS Honeypot enhancement.
+- Fixed a bug where an erroneous database index existed for email marketing integrations that would sometimes cause an error.
+
 ## 3.13.29 - 2023-05-08
 
 ### Changed

@@ -22,14 +22,6 @@ class ReCaptcha extends FeatureBundle
 
     public function __construct()
     {
-        if (\Craft::$app->request->isConsoleRequest) {
-            return;
-        }
-
-        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
         Event::on(
             Form::class,
             Form::EVENT_ATTACH_TAG_ATTRIBUTES,
@@ -57,6 +49,14 @@ class ReCaptcha extends FeatureBundle
 
     public function validateRecaptchaV2Checkbox(ValidateEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
             $field = $event->getField();
             $response = $this->getCheckboxResponse($event);
@@ -70,6 +70,14 @@ class ReCaptcha extends FeatureBundle
 
     public function validateRecaptchaV2Invisible(ValidationEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
             $response = $this->getInvisibleResponse($event);
 
@@ -86,6 +94,14 @@ class ReCaptcha extends FeatureBundle
 
     public function validateRecaptchaV3(ValidationEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
             $response = $this->getInvisibleResponse($event);
 
@@ -105,6 +121,14 @@ class ReCaptcha extends FeatureBundle
      */
     public function addAttributesToFormTag(AttachFormAttributesEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm())) {
             $recaptchaKey = \Craft::parseEnv($this->getSettings()->recaptchaKey);
             $type = $this->getSettings()->recaptchaType;

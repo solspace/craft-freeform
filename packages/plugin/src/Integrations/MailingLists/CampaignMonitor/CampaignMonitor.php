@@ -59,6 +59,10 @@ class CampaignMonitor extends MailingListIntegration
         return $this->getProcessedValue($this->clientId);
     }
 
+    public function initiateAuthentication(): void
+    {
+    }
+
     /**
      * Check if it's possible to connect to the API.
      */

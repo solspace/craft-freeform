@@ -142,6 +142,20 @@ abstract class MailingListOAuthConnector extends MailingListIntegration
         return $this->getAccessToken();
     }
 
+    public function generateAuthorizedClient(): Client
+    {
+        if ($this instanceof RefreshTokenInterface) {
+            $this->refreshTokens();
+        }
+
+        return new Client([
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->getAccessToken(),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+    }
+
     protected function getAccessToken(): string
     {
         return $this->accessToken;
@@ -173,20 +187,6 @@ abstract class MailingListOAuthConnector extends MailingListIntegration
     protected function getReturnUri(): string
     {
         return UrlHelper::cpUrl('freeform/settings/crm/'.$this->getHandle());
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        if ($this instanceof RefreshTokenInterface) {
-            $this->refreshTokens();
-        }
-
-        return new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getAccessToken(),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
     }
 
     /**

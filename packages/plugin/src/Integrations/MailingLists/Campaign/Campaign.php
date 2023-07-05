@@ -64,6 +64,10 @@ class Campaign extends MailingListIntegration
         return \Craft::$app->plugins->isPluginInstalled('campaign');
     }
 
+    public function initiateAuthentication(): void
+    {
+    }
+
     /**
      * {@inheritDoc}
      */

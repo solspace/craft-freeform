@@ -48,6 +48,10 @@ class ActiveCampaign extends MailingListIntegration
         return $this->getProcessedValue($this->apiKey);
     }
 
+    public function initiateAuthentication(): void
+    {
+    }
+
     /**
      * @throws IntegrationException
      */

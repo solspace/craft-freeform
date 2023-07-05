@@ -65,6 +65,10 @@ class MailChimp extends MailingListIntegration
         return $this->dataCenter;
     }
 
+    public function initiateAuthentication(): void
+    {
+    }
+
     /**
      * Check if it's possible to connect to the API.
      *

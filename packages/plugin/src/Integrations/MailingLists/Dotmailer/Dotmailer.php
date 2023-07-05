@@ -77,6 +77,10 @@ class Dotmailer extends MailingListIntegration
         return $this->endpoint;
     }
 
+    public function initiateAuthentication(): void
+    {
+    }
+
     /**
      * Check if it's possible to connect to the API.
      *

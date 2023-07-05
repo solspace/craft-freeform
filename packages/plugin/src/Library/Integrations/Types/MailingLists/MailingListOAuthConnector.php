@@ -24,7 +24,7 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
 use yii\base\Event;
 
-abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
+abstract class MailingListOAuthConnector extends MailingListIntegration
 {
     public const EVENT_TOKENS_REFRESHED = 'tokens-refreshed';
 
@@ -142,6 +142,20 @@ abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
         return $this->getAccessToken();
     }
 
+    public function generateAuthorizedClient(): Client
+    {
+        if ($this instanceof RefreshTokenInterface) {
+            $this->refreshTokens();
+        }
+
+        return new Client([
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->getAccessToken(),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+    }
+
     protected function getAccessToken(): string
     {
         return $this->accessToken;
@@ -173,20 +187,6 @@ abstract class MailingListOAuthConnector extends AbstractMailingListIntegration
     protected function getReturnUri(): string
     {
         return UrlHelper::cpUrl('freeform/settings/crm/'.$this->getHandle());
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        if ($this instanceof RefreshTokenInterface) {
-            $this->refreshTokens();
-        }
-
-        return new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getAccessToken(),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
     }
 
     /**

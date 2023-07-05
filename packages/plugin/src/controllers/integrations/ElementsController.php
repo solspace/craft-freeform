@@ -10,49 +10,48 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\controllers;
+namespace Solspace\Freeform\controllers\integrations;
 
-use Solspace\Freeform\controllers\integrations\IntegrationsController;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 
-class CrmController extends IntegrationsController
+class ElementsController extends IntegrationsController
 {
     protected function getIntegrationModels(): array
     {
-        return $this->getCRMService()->getAllIntegrations();
+        return $this->getElementsService()->getAllIntegrations();
     }
 
     protected function getServiceProviderTypes(): array
     {
-        return $this->getCrmService()->getAllServiceProviders();
+        return $this->getElementsService()->getAllServiceProviders();
     }
 
     protected function getTitle(): string
     {
-        return 'CRM';
+        return 'Elements';
     }
 
     protected function getType(): string
     {
-        return 'crm';
+        return 'elements';
     }
 
     protected function getIntegrationType(): string
     {
-        return IntegrationRecord::TYPE_CRM;
+        return IntegrationRecord::TYPE_ELEMENTS;
     }
 
     protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
     {
         if (is_numeric($id)) {
-            $model = $this->getCrmService()->getIntegrationById($id);
+            $model = $this->getElementsService()->getIntegrationById($id);
         } else {
-            $model = $this->getCrmService()->getIntegrationByHandle($id);
+            $model = $this->getElementsService()->getIntegrationByHandle($id);
         }
 
         if (!$model) {
-            $model = IntegrationModel::create(IntegrationRecord::TYPE_CRM);
+            $model = IntegrationModel::create(IntegrationRecord::TYPE_ELEMENTS);
         }
 
         return $model;

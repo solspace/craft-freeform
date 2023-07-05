@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'production',
@@ -32,6 +33,13 @@ module.exports = {
   },
 
   devtool: false,
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.DEBUG_MODE': JSON.stringify(
+        process.env.NODE_ENV === 'development'
+      ),
+    }),
+  ],
 
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],

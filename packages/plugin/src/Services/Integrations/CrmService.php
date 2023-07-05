@@ -10,21 +10,21 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
+use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\PushEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
+use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
 use Solspace\Freeform\Models\Pro\Payments\SubscriptionModel;
 use Solspace\Freeform\Records\CrmFieldRecord;
@@ -33,32 +33,12 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class CrmService extends AbstractIntegrationService implements CRMHandlerInterface
 {
-    private static ?array $integrations = null;
-
     /** @var PaymentModel[]|SubscriptionModel[] */
     private array $paymentAndSubscriptionCache = [];
 
-    /**
-     * @throws \ReflectionException
-     */
-    public function getAllServiceProviders(): array
+    public function getFetchEvent(): FetchIntegrationTypesEvent
     {
-        if (null === self::$integrations) {
-            $event = new FetchCrmTypesEvent();
-
-            $this->trigger(self::EVENT_FETCH_TYPES, $event);
-            $types = $event->getTypes();
-            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
-
-            $integrations = [];
-            foreach ($types as $type) {
-                $integrations[$type->class] = $type;
-            }
-
-            self::$integrations = $integrations;
-        }
-
-        return self::$integrations;
+        return new FetchCrmTypesEvent();
     }
 
     /**
@@ -66,7 +46,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      *
      * @param FieldObject[] $fields
      */
-    public function updateFields(AbstractCRMIntegration $integration, array $fields): bool
+    public function updateFields(CRMIntegration $integration, array $fields): bool
     {
         $handles = [];
         foreach ($fields as $field) {
@@ -152,7 +132,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      *
      * @return FieldObject[]
      */
-    public function getFields(AbstractCRMIntegration $integration): array
+    public function getFields(CRMIntegration $integration): array
     {
         $data = (new Query())
             ->select(['handle', 'label', 'type', 'required'])
@@ -190,7 +170,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
         $properties = $form->getIntegrationProperties();
 
         try {
-            /** @var AbstractCRMIntegration $integration */
+            /** @var CRMIntegration $integration */
             $integration = $this->getIntegrationObjectById($properties->getIntegrationId());
         } catch (\Exception $e) {
             return false;
@@ -278,7 +258,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
     /**
      * @return array - [isValid, values]
      */
-    private function onBeforePush(AbstractIntegration $integration, array $values): array
+    private function onBeforePush(BaseIntegration $integration, array $values): array
     {
         $event = new PushEvent($integration, $values);
         $this->trigger(self::EVENT_BEFORE_PUSH, $event);
@@ -286,7 +266,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
         return [$event->isValid, $event->getValues()];
     }
 
-    private function onAfterPush(AbstractIntegration $integration, array $values): bool
+    private function onAfterPush(BaseIntegration $integration, array $values): bool
     {
         $event = new PushEvent($integration, $values);
         $this->trigger(self::EVENT_AFTER_PUSH, $event);
@@ -299,7 +279,7 @@ class CrmService extends AbstractIntegrationService implements CRMHandlerInterfa
      *
      * @throws FreeformException
      */
-    private function getExtraFieldsValue(string $handle, Submission $submission, AbstractIntegration $integration)
+    private function getExtraFieldsValue(string $handle, Submission $submission, BaseIntegration $integration)
     {
         if (!preg_match('/^(\w+)###(.*)$/', $handle, $matches)) {
             throw new FreeformException(

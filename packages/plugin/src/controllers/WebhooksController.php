@@ -5,7 +5,7 @@ namespace Solspace\Freeform\controllers;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Models\Pro\WebhookModel;
-use Solspace\Freeform\Resources\Bundles\CrmBundle;
+use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\WebhooksBundle;
 use Solspace\Freeform\Services\Pro\WebhooksService;
 use Solspace\Freeform\Webhooks\Integrations\Generic;
@@ -29,7 +29,7 @@ class WebhooksController extends BaseController
 
         $webhooks = $this->getWebhooksService()->getAll();
 
-        \Craft::$app->view->registerAssetBundle(CrmBundle::class);
+        \Craft::$app->view->registerAssetBundle(IntegrationsBundle::class);
 
         return $this->renderTemplate(
             'freeform/settings/_webhooks',

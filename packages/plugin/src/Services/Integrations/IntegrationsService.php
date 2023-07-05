@@ -10,7 +10,7 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Services;
+namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
@@ -20,8 +20,12 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Services\BaseService;
 
 class IntegrationsService extends BaseService
 {
@@ -166,7 +170,26 @@ class IntegrationsService extends BaseService
         }
     }
 
-    public function decryptModelValues(IntegrationModel $model)
+    public function getIntegrationType(IntegrationInterface $integration): string
+    {
+        $reflection = new \ReflectionClass($integration);
+
+        if ($reflection->implementsInterface(CRMIntegrationInterface::class)) {
+            return 'crm';
+        }
+
+        if ($reflection->implementsInterface(MailingListIntegrationInterface::class)) {
+            return 'mailing-list';
+        }
+
+        if ($reflection->implementsInterface(PaymentGatewayIntegrationInterface::class)) {
+            return 'payment-gateway';
+        }
+
+        throw new IntegrationException('Unknown integration type');
+    }
+
+    public function decryptModelValues(IntegrationModel $model): void
     {
         $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
 
@@ -206,7 +229,7 @@ class IntegrationsService extends BaseService
         }
     }
 
-    public function updateModelFromIntegration(IntegrationModel $model, IntegrationInterface $integration)
+    public function updateModelFromIntegration(IntegrationModel $model, IntegrationInterface $integration): void
     {
         $securityKey = \Craft::$app->getConfig()->getGeneral()->securityKey;
 

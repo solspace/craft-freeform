@@ -12,11 +12,23 @@ import { queryClient } from '../config/react-query';
 import { CpNavigation } from './app/components/cp-navigation/cp-navigation';
 import { Form, Forms } from './app/pages/forms';
 import ManualStyles from './styles/manual';
+import { debug } from './utils/debug';
 import { generateUrl } from './utils/urls';
 import App from './App';
 
 const container = document.getElementById('freeform-client');
 const root = ReactDOM.createRoot(container);
+
+debug.log(
+  '%c\n' +
+    '  ███████╗██████╗ ███████╗███████╗███████╗ ██████╗ ██████╗ ███╗   ███╗\n' +
+    '  ██╔════╝██╔══██╗██╔════╝██╔════╝██╔════╝██╔═══██╗██╔══██╗████╗ ████║\n' +
+    '  █████╗  ██████╔╝█████╗  █████╗  █████╗  ██║   ██║██████╔╝██╔████╔██║\n' +
+    '  ██╔══╝  ██╔══██╗██╔══╝  ██╔══╝  ██╔══╝  ██║   ██║██╔══██╗██║╚██╔╝██║\n' +
+    '  ██║     ██║  ██║███████╗███████╗██║     ╚██████╔╝██║  ██║██║ ╚═╝ ██║\n' +
+    '  ╚═╝     ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝      ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝\n',
+  debug.colors.blue
+);
 
 root.render(
   <BrowserRouter basename={generateUrl('/', false)}>

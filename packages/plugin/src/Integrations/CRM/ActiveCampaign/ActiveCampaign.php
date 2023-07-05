@@ -20,13 +20,13 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type(
     name: 'ActiveCampaign',
     iconPath: __DIR__.'/icon.png',
 )]
-class ActiveCampaign extends AbstractCRMIntegration
+class ActiveCampaign extends CRMIntegration
 {
     public const LOG_CATEGORY = 'Active Campaign';
 
@@ -423,15 +423,19 @@ class ActiveCampaign extends AbstractCRMIntegration
         }
     }
 
+    public function initiateAuthentication(): void
+    {
+    }
+
     /**
      * Get the base ActiveCampaign API URL.
      */
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         return rtrim($this->getApiUrl(), '/').'/api/3/';
     }
 
-    protected function generateAuthorizedClient(): Client
+    public function generateAuthorizedClient(): Client
     {
         return new Client([
             'headers' => [

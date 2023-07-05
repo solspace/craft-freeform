@@ -72,19 +72,30 @@
                         instructions: property.instructions|t('freeform'),
                         class: "property-" ~ property.handle,
                         name: "properties["~className~"]["~property.handle~"]",
-                        value: value,
+
                         required: property.required,
                         errors: integration.errors(className~property.handle),
                         suggestEnvVars: true,
                     } %}
 
+                    {% if property.hasFlag('readonly') %}
+                        {% set options = options|merge({ readonly: true }) %}
+                    {% endif %}
+
                     {% if property.type == "bool" %}
+
                         {% set options = options|merge({on: value, value: 1}) %}
                         {{ forms.lightswitchField(options) }}
+
+                    {% elseif property.type == "select" %}
+
+                        {% set opts = property.options ? property.options.toTwigArray() : {} %}
+                        {{ forms.selectField(options|merge({ options: opts })) }}
+
                     {% else %}
 
-                        {% if "readonly" in property.flags %}
-                            {{ forms.textField(options|merge({ readonly: true })) }}
+                        {% if property.hasFlag('readonly') %}
+                            {{ forms.textField(options) }}
                         {% else %}
                             {{ forms.autosuggestField(options) }}
                         {% endif %}

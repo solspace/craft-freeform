@@ -13,10 +13,10 @@
 namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
 use Solspace\Freeform\Library\Database\CRMHandlerInterface;
-use Solspace\Freeform\Library\Integrations\AbstractIntegration;
+use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
-abstract class AbstractCRMIntegration extends AbstractIntegration implements CRMIntegrationInterface, \JsonSerializable
+abstract class CRMIntegration extends APIIntegration implements CRMIntegrationInterface, \JsonSerializable
 {
     /**
      * @return FieldObject[]

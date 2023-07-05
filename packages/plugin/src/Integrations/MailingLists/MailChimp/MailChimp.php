@@ -20,15 +20,15 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\AbstractMailingListIntegration;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
     name: 'MailChimp',
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
-class MailChimp extends AbstractMailingListIntegration
+class MailChimp extends MailingListIntegration
 {
     public const LOG_CATEGORY = 'MailChimp';
 
@@ -63,6 +63,10 @@ class MailChimp extends AbstractMailingListIntegration
     public function getDataCenter(): string
     {
         return $this->dataCenter;
+    }
+
+    public function initiateAuthentication(): void
+    {
     }
 
     /**
@@ -198,6 +202,29 @@ class MailChimp extends AbstractMailingListIntegration
         } else {
             throw new IntegrationException('Could not detect data center for MailChimp');
         }
+    }
+
+    /**
+     * Returns the API root url without endpoints specified.
+     *
+     * @throws IntegrationException
+     */
+    public function getApiRootUrl(): string
+    {
+        $dataCenter = $this->getDataCenter();
+
+        if (empty($dataCenter)) {
+            throw new IntegrationException(
+                $this->getTranslator()->translate('Could not detect data center for MailChimp')
+            );
+        }
+
+        return "https://{$dataCenter}.api.mailchimp.com/3.0/";
+    }
+
+    public function generateAuthorizedClient(): Client
+    {
+        return new Client(['auth' => ['mailchimp', $this->getApiKey()]]);
     }
 
     /**
@@ -456,29 +483,6 @@ class MailChimp extends AbstractMailingListIntegration
         );
 
         return $fieldList;
-    }
-
-    /**
-     * Returns the API root url without endpoints specified.
-     *
-     * @throws IntegrationException
-     */
-    protected function getApiRootUrl(): string
-    {
-        $dataCenter = $this->getDataCenter();
-
-        if (empty($dataCenter)) {
-            throw new IntegrationException(
-                $this->getTranslator()->translate('Could not detect data center for MailChimp')
-            );
-        }
-
-        return "https://{$dataCenter}.api.mailchimp.com/3.0/";
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        return new Client(['auth' => ['mailchimp', $this->getApiKey()]]);
     }
 
     private function logErrorAndThrow(RequestException $e)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\controllers\payments;
+namespace Solspace\Freeform\controllers\integrations\payments;
 
 use Solspace\Freeform\controllers\integrations\IntegrationsController;
 use Solspace\Freeform\Models\IntegrationModel;
@@ -35,7 +35,7 @@ class GatewaysController extends IntegrationsController
 
     protected function getServiceProviderTypes(): array
     {
-        return $this->getPaymentGatewaysService()->getAllPaymentGatewayServiceProviders();
+        return $this->getPaymentGatewaysService()->getAllServiceProviders();
     }
 
     protected function getRenderVariables(IntegrationModel $model): array

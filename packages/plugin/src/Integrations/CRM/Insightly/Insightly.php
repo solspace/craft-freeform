@@ -8,10 +8,10 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type('Insightly')]
-class Insightly extends AbstractCRMIntegration
+class Insightly extends CRMIntegration
 {
     public const LOG_CATEGORY = 'Insightly';
 
@@ -27,6 +27,10 @@ class Insightly extends AbstractCRMIntegration
     public function getApiKey(): string
     {
         return $this->getProcessedValue($this->apiKey);
+    }
+
+    public function initiateAuthentication(): void
+    {
     }
 
     /**
@@ -145,12 +149,12 @@ class Insightly extends AbstractCRMIntegration
         return $fieldList;
     }
 
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         return 'https://api.insightly.com/v3.0/';
     }
 
-    protected function generateAuthorizedClient(): Client
+    public function generateAuthorizedClient(): Client
     {
         return new Client([
             'headers' => ['Content-Type' => 'application/json'],

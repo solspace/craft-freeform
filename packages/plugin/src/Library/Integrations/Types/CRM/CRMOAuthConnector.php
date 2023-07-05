@@ -12,20 +12,22 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
-use craft\helpers\UrlHelper;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use JetBrains\PhpStorm\NoReturn;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\ReturnURLValueGenerator;
 use yii\base\Event;
 
-abstract class CRMOAuthConnector extends AbstractCRMIntegration
+abstract class CRMOAuthConnector extends CRMIntegration
 {
+    public const FLASH_INTEGRATION_ID_KEY = 'oauth-integration-id';
     public const EVENT_TOKENS_REFRESHED = 'tokens-refreshed';
 
     #[Flag(self::FLAG_ENCRYPTED)]
@@ -40,6 +42,7 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_READONLY)]
+    #[ValueGenerator(ReturnURLValueGenerator::class)]
     #[Input\Text(
         label: 'OAuth 2.0 Return URI',
         instructions: 'You must specify this as the Return URI in your app settings to be able to authorize your credentials. DO NOT CHANGE THIS.',
@@ -67,6 +70,8 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
     #[NoReturn]
     public function initiateAuthentication(): void
     {
+        \Craft::$app->session->setFlash(self::FLASH_INTEGRATION_ID_KEY, $this->getId());
+
         $data = [
             'response_type' => 'code',
             'client_id' => $this->getClientId(),
@@ -78,6 +83,20 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
         header('Location: '.$this->getAuthorizeUrl().'?'.$queryString);
 
         exit;
+    }
+
+    public function generateAuthorizedClient(): Client
+    {
+        if ($this instanceof RefreshTokenInterface) {
+            $this->refreshTokens();
+        }
+
+        return new Client([
+            'headers' => [
+                'Authorization' => 'Bearer '.$this->getAccessToken(),
+                'Content-Type' => 'application/json',
+            ],
+        ]);
     }
 
     public function fetchTokens(): string
@@ -170,21 +189,7 @@ abstract class CRMOAuthConnector extends AbstractCRMIntegration
 
     protected function getReturnUri(): string
     {
-        return UrlHelper::cpUrl('freeform/settings/crm/'.$this->getHandle());
-    }
-
-    protected function generateAuthorizedClient(): Client
-    {
-        if ($this instanceof RefreshTokenInterface) {
-            $this->refreshTokens();
-        }
-
-        return new Client([
-            'headers' => [
-                'Authorization' => 'Bearer '.$this->getAccessToken(),
-                'Content-Type' => 'application/json',
-            ],
-        ]);
+        return $this->returnUri;
     }
 
     /**

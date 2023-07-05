@@ -1,5 +1,20 @@
 import type { Property } from './properties';
 
+enum TargetFieldType {
+  Relation = 'relation',
+  Custom = 'custom',
+}
+
+type TargetField = {
+  type: TargetFieldType;
+  value: string;
+};
+
+export type FieldMapping = {
+  source: string;
+  target: TargetField;
+};
+
 export type Integration = {
   id: number;
   type: string;
@@ -12,7 +27,6 @@ export type Integration = {
   icon?: string;
 
   properties: Property[];
-  mapping: [];
 };
 
 export type IntegrationCategory = {

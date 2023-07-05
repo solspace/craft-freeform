@@ -22,13 +22,13 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\Implementations\CheckboxGroupField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type(
     name: 'HubSpot',
     iconPath: __DIR__.'/icon.svg',
 )]
-class HubSpot extends AbstractCRMIntegration
+class HubSpot extends CRMIntegration
 {
     public const LOG_CATEGORY = 'HubSpot';
 
@@ -77,6 +77,10 @@ class HubSpot extends AbstractCRMIntegration
     public function getAppendCompanyData(): bool
     {
         return $this->appendCompanyData;
+    }
+
+    public function initiateAuthentication(): void
+    {
     }
 
     /**
@@ -373,14 +377,14 @@ class HubSpot extends AbstractCRMIntegration
         return $fieldList;
     }
 
-    protected function generateAuthorizedClient(): Client
+    public function generateAuthorizedClient(): Client
     {
         return new Client([
             'query' => ['hapikey' => $this->getApiKey()],
         ]);
     }
 
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         return 'https://api.hubapi.com/';
     }

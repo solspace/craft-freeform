@@ -21,13 +21,13 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\AbstractCRMIntegration;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type(
     name: 'SharpSpring',
     iconPath: __DIR__.'/icon.svg',
 )]
-class SharpSpring extends AbstractCRMIntegration
+class SharpSpring extends CRMIntegration
 {
     public const LOG_CATEGORY = 'SharpSpring';
 
@@ -56,6 +56,10 @@ class SharpSpring extends AbstractCRMIntegration
     public function getSecretKey(): string
     {
         return $this->getProcessedValue($this->secretKey);
+    }
+
+    public function initiateAuthentication(): void
+    {
     }
 
     public function pushObject(array $keyValueList, ?array $formFields = null): bool
@@ -219,12 +223,12 @@ class SharpSpring extends AbstractCRMIntegration
     /**
      * Get the base SharpSpring API URL.
      */
-    protected function getApiRootUrl(): string
+    public function getApiRootUrl(): string
     {
         return 'https://api.sharpspring.com/pubapi/v1.2/';
     }
 
-    protected function generateAuthorizedClient(): Client
+    public function generateAuthorizedClient(): Client
     {
         return new Client([
             'query' => [

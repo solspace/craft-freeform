@@ -32,11 +32,14 @@ class Cookies extends FeatureBundle
         setcookie(
             $name,
             $value,
-            (int) strtotime('+1 year'),
-            '/',
-            \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
-            true,
-            true
+            [
+                'expires' => (int) strtotime('+1 year'),
+                'path' => '/',
+                'domain' => \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => \Craft::$app->getConfig()->getGeneral()->sameSiteCookieValue ?? 'Lax',
+            ]
         );
 
         $_COOKIE[$name] = $value;

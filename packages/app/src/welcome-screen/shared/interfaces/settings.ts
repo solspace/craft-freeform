@@ -5,9 +5,10 @@ export enum DefaultView {
 }
 export enum FormattingTemplate {
   Bootstrap = 'bootstrap-3.twig',
-  Bootstrap4 = 'bootstrap-4.twig',
-  Bootstrap5 = 'bootstrap-5.twig',
-  Bootstrap5Floating = 'bootstrap-5-floating-labels.twig',
+  Bootstrap4 = 'bootstrap-4/index.twig',
+  Bootstrap5 = 'bootstrap-5/index.twig',
+  Bootstrap5Dark = 'bootstrap-5-dark/index.twig',
+  Bootstrap5Floating = 'bootstrap-5-floating-labels/index.twig',
   Flexbox = 'flexbox.twig',
   Foundation = 'foundation-6.twig',
   Grid = 'grid.twig',

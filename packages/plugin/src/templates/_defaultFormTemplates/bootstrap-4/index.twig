@@ -1,4 +1,11 @@
 {% css formCss %}
+
+<style>
+.StripeElement {
+    height: 36px;
+}
+</style>
+
 {% import "freeform/_defaultFormTemplates/bootstrap-4/_row.twig" as rowMacro %}
 
 {{ form.renderTag({
@@ -23,6 +30,7 @@
     form.addEventListener("freeform-stripe-styling", function (event) {
       event.detail.base = {
         fontSize: "16px",
+        lineHeight: "18px",
         fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
       }
     })

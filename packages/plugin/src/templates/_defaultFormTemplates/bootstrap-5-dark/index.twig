@@ -1,12 +1,30 @@
 {% css formCss %}
 
 <style>
+.opinion-scale .opinion-scale-scales>*:first-child>label {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.opinion-scale .opinion-scale-scales>*:last-child>label {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.opinion-scale .opinion-scale-scales li label {
+    color: #ffffff !important;
+    border-color: #495057 !important;
+    background: #1a1d20;
+}
+.opinion-scale .opinion-scale-scales>* input:checked~label {
+    color: #ffffff !important;
+    background: #495057;
+}
 .StripeElement {
+    background: #1a1d20;
     height: 36px;
 }
 </style>
 
-{% import "freeform/_defaultFormTemplates/bootstrap-5/_row.twig" as rowMacro %}
+{% import "freeform/_defaultFormTemplates/bootstrap-5-dark/_row.twig" as rowMacro %}
 
 {{ form.renderTag({
     attributes: {
@@ -31,6 +49,7 @@
       event.detail.base = {
         fontSize: "16px",
         lineHeight: "18px",
+        color: "#ffffff",
         fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
       }
     })

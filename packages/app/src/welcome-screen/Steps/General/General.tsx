@@ -33,6 +33,7 @@ const General: React.FC = () => {
     { value: FormattingTemplate.Bootstrap, label: 'Bootstrap' },
     { value: FormattingTemplate.Bootstrap4, label: 'Bootstrap 4' },
     { value: FormattingTemplate.Bootstrap5, label: 'Bootstrap 5' },
+    { value: FormattingTemplate.Bootstrap5Dark, label: 'Bootstrap 5 (Dark)' },
     { value: FormattingTemplate.Bootstrap5Floating, label: 'Bootstrap 5 (Floating labels)' },
     { value: FormattingTemplate.Flexbox, label: 'Flexbox' },
     { value: FormattingTemplate.Foundation, label: 'Foundation' },

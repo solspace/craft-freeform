@@ -140,6 +140,7 @@ class SubmitController extends BaseController
             'finished' => $form->isFinished(),
             'submissionId' => $submission->id ?? null,
             'submissionToken' => $submission->token ?? null,
+            'submissionLimitReached' => $form->isSubmissionLimitReached(),
             'actions' => $form->getActions(),
             'errors' => $fieldErrors,
             'formErrors' => $form->getErrors(),

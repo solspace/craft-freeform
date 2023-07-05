@@ -134,6 +134,4 @@ class GeneralSettings extends SettingsNamespace
     #[ValueTransformer(GTMValueTransformer::class)]
     #[Input\Special\GTM]
     public GTMProperty $gtm;
-
-    public bool $submissionLimitReached = false;
 }

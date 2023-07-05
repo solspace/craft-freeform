@@ -9,6 +9,9 @@ use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
 use Solspace\Freeform\Bundles\Form\Tracking\Cookies;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\FormEventInterface;
+use Solspace\Freeform\Events\Forms\FormLoadedEvent;
+use Solspace\Freeform\Events\Forms\PersistStateEvent;
+use Solspace\Freeform\Events\Forms\ValidationEvent;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -67,31 +70,31 @@ class FormLimiting extends FeatureBundle
         }
 
         if (self::LIMIT_ONCE_PER_EMAIL === $limiting) {
-            $this->limitByEmail($form);
+            $this->limitByEmail($form, $event);
         }
 
         if (\in_array($limiting, self::ONCE_PER_SESSION_LIMITATIONS, true)) {
-            $this->limitOncePerSession($form);
+            $this->limitOncePerSession($form, $event);
         }
 
         if (\in_array($limiting, self::USER_LIMITATIONS, true)) {
-            $this->limitByUserId($form);
+            $this->limitByUserId($form, $event);
         }
 
         if ($behaviorSettings->collectIpAddresses && \in_array($limiting, self::IP_LIMITATIONS, true)) {
-            $this->limitByIp($form);
+            $this->limitByIp($form, $event);
         }
 
         if (\in_array($limiting, self::COOKIE_LIMITATIONS, true)) {
-            $this->limitByCookie($form);
+            $this->limitByCookie($form, $event);
         }
 
         if (self::LIMIT_AUTH_UNLIMITED === $limiting) {
-            $this->limitLoggedInOnly($form);
+            $this->limitLoggedInOnly($form, $event);
         }
     }
 
-    private function limitByEmail(Form $form): void
+    private function limitByEmail(Form $form, FormEventInterface $event): void
     {
         $request = \Craft::$app->getRequest();
 
@@ -150,21 +153,21 @@ class FormLimiting extends FeatureBundle
         $isPosted = (bool) $query->scalar();
 
         if ($isPosted) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitByCookie(Form $form): void
+    private function limitByCookie(Form $form, FormEventInterface $event): void
     {
         $name = Cookies::getCookieName($form);
         $cookie = $_COOKIE[$name] ?? null;
 
         if ($cookie) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitByIp(Form $form): void
+    private function limitByIp(Form $form, FormEventInterface $event): void
     {
         $submissions = Submission::TABLE;
         $query = (new Query())
@@ -189,16 +192,16 @@ class FormLimiting extends FeatureBundle
         $isPosted = (bool) $query->scalar();
 
         if ($isPosted) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitOncePerSession(Form $form)
+    private function limitOncePerSession(Form $form, FormEventInterface $event)
     {
         // TODO - If there is a session and it was active within the last 'userSessionDuration' seconds... do not let user submit again
     }
 
-    private function limitByUserId(Form $form): void
+    private function limitByUserId(Form $form, FormEventInterface $event): void
     {
         $userId = \Craft::$app->user->getId();
         if (!$userId) {
@@ -227,29 +230,38 @@ class FormLimiting extends FeatureBundle
 
         $isPosted = (bool) $query->scalar();
         if ($isPosted) {
-            $this->addMessage($form);
+            $this->addMessage($form, $event);
         }
     }
 
-    private function limitLoggedInOnly(Form $form): void
+    private function limitLoggedInOnly(Form $form, FormEventInterface $event): void
     {
         if (!\Craft::$app->user->id) {
-            $this->addMessage($form, 'You must be logged in to submit this form.');
+            $this->addMessage($form, $event, 'You must be logged in to submit this form.');
         }
     }
 
-    private function addMessage(Form $form, $message = "Sorry, you've already submitted this form."): void
+    private function addMessage(Form $form, FormEventInterface $event, $message = "Sorry, you've already submitted this form."): void
     {
-        if (\in_array($form->getId(), $this->formCache, true)) {
-            return;
+        // Triggered during from validation
+        if ($event instanceof ValidationEvent) {
+            if (\in_array($form->getId(), $this->formCache, true)) {
+                return;
+            }
+
+            $form->addError(Freeform::t($message));
+
+            $this->formCache[] = $form->getId();
         }
 
-        $form->addError(Freeform::t($message));
+        // Triggered when form is loaded
+        if ($event instanceof FormLoadedEvent) {
+            $form->setSubmissionLimitReached(true);
+        }
 
-        $this->formCache[] = $form->getId();
-
-        $generalSettings = $form->getSettings()->getGeneral();
-
-        $generalSettings->submissionLimitReached = true;
+        // Triggered when form is submitted
+        if ($event instanceof PersistStateEvent) {
+            $form->setSubmissionLimitReached(true);
+        }
     }
 }

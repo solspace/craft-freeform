@@ -49,10 +49,6 @@ class HCaptcha extends FeatureBundle
             return;
         }
 
-        if (Settings::RECAPTCHA_TYPE_H_CHECKBOX !== $this->getSettings()->recaptchaType) {
-            return;
-        }
-
         if (ReCaptchaHelper::canApplyReCaptcha($event->getForm()) && !$this->isHcaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_H_CHECKBOX)) {
             $field = $event->getField();
             $response = $this->getCheckboxResponse($event);
@@ -71,10 +67,6 @@ class HCaptcha extends FeatureBundle
         }
 
         if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
-        if (Settings::RECAPTCHA_TYPE_H_INVISIBLE !== $this->getSettings()->recaptchaType) {
             return;
         }
 

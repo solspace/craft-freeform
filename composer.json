@@ -23,7 +23,8 @@
     "stripe/stripe-php": "^7.27.3",
     "ext-json": "*",
     "symfony/serializer": "^6.0",
-    "doctrine/annotations": "^2.0"
+    "doctrine/annotations": "^2.0",
+    "phpoffice/phpspreadsheet": "^1.29"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",

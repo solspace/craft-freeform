@@ -11,6 +11,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\ExportSettings;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Library\Export\ExportCsv;
+use Solspace\Freeform\Library\Export\ExportExcel;
 use Solspace\Freeform\Library\Export\ExportInterface;
 use Solspace\Freeform\Library\Export\ExportJson;
 use Solspace\Freeform\Library\Export\ExportText;
@@ -39,7 +40,7 @@ class ExportProfilesService extends Component
             $event = new RegisterExporterEvent();
 
             $event
-                // ->addExporter('excel', ExportExcel::class)
+                ->addExporter('excel', ExportExcel::class)
                 ->addExporter('csv', ExportCsv::class)
                 ->addExporter('json', ExportJson::class)
                 ->addExporter('xml', ExportXml::class)

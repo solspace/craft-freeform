@@ -6,6 +6,7 @@ use craft\base\Element;
 use craft\elements\Entry as CraftEntry;
 use craft\models\FieldLayout;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
@@ -28,6 +29,7 @@ class Entry extends ElementIntegration
     )]
     protected string $entryTypeId = '';
 
+    #[Flag(self::FLAG_INTERNAL)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping]
     protected FieldMapping $mapping;

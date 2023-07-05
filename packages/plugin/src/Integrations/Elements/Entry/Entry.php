@@ -32,7 +32,7 @@ class Entry extends ElementIntegration
     #[Flag(self::FLAG_INTERNAL)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[Input\Special\Properties\FieldMapping]
-    protected FieldMapping $mapping;
+    protected ?FieldMapping $mapping = null;
 
     public function isConnectable(): bool
     {

@@ -254,7 +254,7 @@
                                                 <tr>
                                                     {% for column in field.tableLayout %}
                                                         <th>
-                                                            {{ column.label }}
+                                                            {{ column.label|default('') }}
                                                         </th>
                                                     {% endfor %}
                                                     <th></th>

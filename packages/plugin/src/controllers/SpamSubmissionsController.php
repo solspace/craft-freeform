@@ -13,7 +13,7 @@
 namespace Solspace\Freeform\controllers;
 
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 use Solspace\Freeform\Services\SubmissionsService;
@@ -33,7 +33,7 @@ class SpamSubmissionsController extends SubmissionsController
         $this->requirePostRequest();
 
         $id = $this->request->post('id');
-        $this->getSubmissionsService()->delete(Submission::find()->id($id));
+        $this->getSubmissionsService()->delete(SpamSubmission::find()->id($id));
 
         return $this->asJson(['success' => true]);
     }

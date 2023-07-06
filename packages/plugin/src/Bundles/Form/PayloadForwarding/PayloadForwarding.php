@@ -5,9 +5,10 @@ namespace Solspace\Freeform\Bundles\Form\PayloadForwarding;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\HydrateEvent;
-use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Events\PayloadForwarding\PayloadForwardEvent;
+use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Logging\FreeformLogger;
@@ -24,7 +25,7 @@ class PayloadForwarding extends FeatureBundle
 
     public function __construct()
     {
-        Event::on(Form::class, Form::EVENT_AFTER_SUBMIT, [$this, 'forward']);
+        Event::on(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, [$this, 'forward']);
         Event::on(Form::class, Form::EVENT_HYDRATE_FORM, [$this, 'attachPayloadForwardingProperties']);
     }
 
@@ -39,7 +40,7 @@ class PayloadForwarding extends FeatureBundle
         ]);
     }
 
-    public function forward(SubmitEvent $event)
+    public function forward(ProcessSubmissionEvent $event)
     {
         $form = $event->getForm();
         $submission = $event->getSubmission();

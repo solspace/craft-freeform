@@ -658,8 +658,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
      */
     public function hasOptInPermission(): bool
     {
-        if ($this->getOptInDataTargetField()) {
-            return $this->getOptInDataTargetField()->isChecked();
+        $field = $this->getOptInDataTargetField();
+        if ($field) {
+            return (bool) $field->getValue();
         }
 
         return true;

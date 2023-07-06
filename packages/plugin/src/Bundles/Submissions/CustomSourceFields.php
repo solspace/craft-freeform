@@ -25,7 +25,7 @@ class CustomSourceFields extends FeatureBundle
 
     public function handleCustomTableAttributes(DefineSourceTableAttributesEvent $event): void
     {
-        if (\in_array($event->elementType, [Submission::class, SpamSubmission::class, true])) {
+        if (\in_array($event->elementType, [Submission::class, SpamSubmission::class], true)) {
             static $forms;
             if (null === $forms) {
                 $forms = Freeform::getInstance()->forms->getAllForms();

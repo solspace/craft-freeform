@@ -43,10 +43,9 @@ class FileUploadBundle extends FeatureBundle
     public function finalizeFiles(SubmitEvent $event)
     {
         $form = $event->getForm();
-        $submission = $event->getSubmission();
 
-        // Handle only stored submissions
-        if (!$submission->id) {
+        // Handle only finished forms
+        if (!$event->getForm()->isFinished()) {
             return;
         }
 

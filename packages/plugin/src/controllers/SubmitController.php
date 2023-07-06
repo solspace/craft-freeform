@@ -134,19 +134,23 @@ class SubmitController extends BaseController
             $postedValues[$field->getHandle()] = $field->getValue();
         }
 
+        $form->registerContext();
+
         $payload = [
             'success' => $success,
+            'hash' => $form->getHash(),
             'multipage' => $form->isMultiPage(),
             'finished' => $form->isFinished(),
             'submissionId' => $submission->id ?? null,
             'submissionToken' => $submission->token ?? null,
             'submissionLimitReached' => $form->isSubmissionLimitReached(),
-            'actions' => $form->getActions(),
-            'errors' => $fieldErrors,
-            'formErrors' => $form->getErrors(),
             'onSuccess' => $form->getSettings()->getBehavior()->successBehavior,
             'returnUrl' => $returnUrl,
             'html' => $form->render(),
+            'id' => $submission->getId(),
+            'actions' => $form->getActions(),
+            'errors' => $fieldErrors,
+            'formErrors' => $form->getErrors(),
             'values' => $postedValues,
         ];
 

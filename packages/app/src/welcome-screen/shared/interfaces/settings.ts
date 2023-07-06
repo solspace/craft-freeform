@@ -9,6 +9,7 @@ export enum FormattingTemplate {
   Bootstrap5 = 'bootstrap-5/index.twig',
   Bootstrap5Dark = 'bootstrap-5-dark/index.twig',
   Bootstrap5Floating = 'bootstrap-5-floating-labels/index.twig',
+  Bootstrap5MPAllFields = 'bootstrap-5-multipage-all-fields/index.twig',
   Flexbox = 'flexbox.twig',
   Foundation = 'foundation-6.twig',
   Grid = 'grid.twig',

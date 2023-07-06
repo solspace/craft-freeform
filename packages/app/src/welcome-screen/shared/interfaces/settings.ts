@@ -13,6 +13,7 @@ export enum FormattingTemplate {
   Flexbox = 'flexbox.twig',
   Foundation = 'foundation-6.twig',
   Grid = 'grid.twig',
+  Conversational = 'conversational.twig',
   Tailwind1 = 'tailwind-1.twig',
   Tailwind3 = 'tailwind-3.twig',
 }

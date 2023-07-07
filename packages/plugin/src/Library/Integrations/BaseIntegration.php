@@ -190,6 +190,10 @@ abstract class BaseIntegration implements IntegrationInterface
             }
 
             $value = $properties[$handle];
+            if ($property->transformer) {
+                $value = $property->transformer->transform($value);
+            }
+
             if ($property->hasFlag(self::FLAG_ENCRYPTED)) {
                 $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
             }

@@ -43,10 +43,10 @@ abstract class Property
     }
 
     #[Ignore]
-    public function hasFlag(string $name): bool
+    public function hasFlag(...$name): bool
     {
         foreach ($this->flags as $flag) {
-            if ($flag->name === $name) {
+            if (\in_array($flag->name, $name, true)) {
                 return true;
             }
         }

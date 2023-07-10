@@ -91,6 +91,14 @@ class FieldInterface extends AbstractInterface
                 'type' => Type::listOf(AttributeInterface::getType()),
                 'description' => "Field's instruction attributes",
             ],
+            'rules' => [
+                'name' => 'rules',
+                'type' => Type::string(),
+                'description' => "Field's rules",
+                'resolve' => function ($source) {
+                    return $source->getRules();
+                },
+            ],
         ], static::getName());
     }
 }

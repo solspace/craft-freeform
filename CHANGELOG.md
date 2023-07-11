@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.31 - 2023-07-11
+
+### Added
+- Added support for mapping to multiple groups/interests in the Mailchimp integration.
+
 ## 3.13.30 - 2023-07-04
 
 ### Changed

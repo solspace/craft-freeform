@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 4.1.5 - 2023-07-11
+
+### Added
+- Added conditional rule logic for form fields in GraphQL.
+
 ## 4.1.4 - 2023-07-05
 
 ### Added
@@ -359,6 +364,11 @@
 - Removed the old Pardot CRM and Constant Contact email marketing API integrations. Please switch to the newer Pardot and Constant Contact integrations if you haven't already, and delete the old legacy ones before upgrading to Freeform 4.
 - Removed the `phpoffice/phpspreadsheet` dependency to prevent install conflicts. Excel exporting inside Freeform is temporarily disabled until a new library is implemented.
 - Removed the `league/flysystem` dependency as it is not needed.
+
+## 3.13.31 - 2023-07-11
+
+### Added
+- Added support for mapping to multiple groups/interests in the Mailchimp integration.
 
 ## 3.13.30 - 2023-07-04
 

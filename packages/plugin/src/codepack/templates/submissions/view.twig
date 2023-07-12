@@ -1,0 +1,145 @@
+{% extends "demo/_layout" %}
+
+{% set form = craft.freeform.form(craft.app.request.segment(3)) %}
+{% set pageTitle = "Submission #" ~ craft.app.request.segment(4) ~ " for " ~ form.name|default("N/A") %}
+{% set spamMode = craft.app.request.segment(5) ? true : false %}
+
+{% block content %}
+
+    {% set formHandle = craft.app.request.segment(3) %}
+    {% set submissionId = craft.app.request.segment(4) %}
+    {% set form = craft.freeform.form(formHandle) %}
+
+    {# Allow Admins only to view submission data for Demo Templates by default #}
+    {% if currentUser and currentUser.admin %}
+
+        {% set submission = craft.freeform.submissions({
+            id: submissionId,
+            form: formHandle,
+            isSpam: spamMode|default(false)
+        }).one %}
+
+        <div class="freeform-page-heading">
+            <h2{{ spamMode ? ' class="spam-mode-badge"' }}>View {{ spamMode ? "Spam" : "Submission" }}</h2>
+            <p>Viewing {{ spamMode ? "spammy " }}submission #<b>{{ submission.id }}</b> from the <a href="{{ siteUrl }}demo/submissions/{{ form.handle }}{{ spamMode ? "/spam" }}">{{ form.name }}</a> form.</p>
+        </div>
+
+        {% if submission %}
+
+            {% if craft.freeform.pro and not spamMode %}
+                <div class="freeform-submission-controls">
+                    <a class="freeform-button orange" href="{{ siteUrl }}demo/templates/basic-light/{{ form.handle }}/edit/{{ submission.token }}">
+                        {{ "Edit"|t("freeform") }}
+                    </a>
+                    <a class="freeform-button red" href="{{ siteUrl }}demo/submissions/delete/{{ form.handle }}/{{ submission.token }}">
+                        {{ "Delete"|t("freeform") }}
+                    </a>
+                </div>
+            {% endif %}
+
+            <h3>{{ submission.title }}</h3>
+
+            <div class="freeform-table-overflow">
+                <table class="freeform-table">
+                    <thead>
+                        <tr>
+                            <th>Field</td>
+                            <th>Value</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th style="width: 20%;">Title</th>
+                            <td>{{ submission.title }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 20%;">ID#</th>
+                            <td>{{ submission.id }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 20%;">Date</th>
+                            <td>{{ submission.dateCreated|date('F j, Y \\a\\t g:ia') }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 20%;">Status</th>
+                            <td style="color: {{ submission.statusModel.color }}">{{ submission.statusModel.name }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 20%;">Author</th>
+                            <td>{{ submission.author ? submission.author.username : "Guest" }}</td>
+                        </tr>
+                        <tr>
+                            <th style="width: 20%;">Form</th>
+                            <td><a href="{{ siteUrl }}demo/templates/basic-light/{{ form.handle }}">{{ form.name }}</a></td>
+                        </tr>
+                        {% for field in submission %}
+                            <tr>
+                                <th style="width: 20%;">{{ field.label }}</th>
+                                <td>
+                                    {% if field.type == "file" %}
+
+                                        {% set assetIds = submission[field.handle].value %}
+                                        {% if assetIds %}
+                                            {% for assetId in assetIds %}
+                                                {% set asset = craft.assets.id(assetId).one() %}
+                                                {% if asset %}
+                                                    {% if asset.kind == "image" %}
+                                                        <img src="{{ asset.url }}" class="img-responsive" />
+                                                    {% else %}
+                                                        <a href="{{ asset.url }}">{{ asset.filename }}</a>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        {% endif %}
+
+                                    {% elseif field.type == "table" %}
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                {% for column in field.tableLayout %}
+                                                    <th>{{ column.label|default("-") }}</th>
+                                                {% endfor %}
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            {% for row in submission[field.handle].value %}
+                                                <tr>
+                                                {% for index, column in field.tableLayout %}
+                                                    <td>{{ row[index] }}</td>
+                                                {% endfor %}
+                                                </tr>
+                                            {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                    {% elseif field.type == "signature" %}
+                                        {% if submission[field.handle] %}
+                                            <img src="{{ submission[field.handle] }}" alt="">
+                                        {% endif %}
+                                    {% else %}
+                                        {{ submission[field.handle] }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+        {% else %}
+
+            <div class="freeform-warning-notice">
+                Sorry, no submission was found.
+            </div>
+
+        {% endif %}
+
+    {% else %}
+
+        <div class="freeform-warning-notice">
+            Sorry, you do not have permission to access this page.
+        </div>
+
+    {% endif %}
+
+{% endblock %}

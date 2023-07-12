@@ -1,0 +1,820 @@
+/* Freeform Core Styles */
+html {
+    background: var(--page-bg);
+    padding: 0 0 50px 0;
+    margin: 0 auto;
+}
+body {
+    font-family: sans-serif;
+    padding: 0;
+    margin: 0 auto;
+}
+html:has(body.freeform-spam-mode) {
+    background: #ffe0dd;
+}
+.freeform-form-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 10px 0 10px !important;
+}
+a {
+    color: #0d6efd;
+    text-decoration: none;
+    transition: all 0.5s;
+}
+a:hover {
+    color: #0f5fd5;
+    text-decoration: underline;
+}
+h3 {
+    font: 400 30px sans-serif;
+    color: var(--page-text);
+    text-decoration: none;
+    padding: 0;
+    margin: 0 0 20px 0;
+}
+.hidden {
+    display: none;
+}
+
+.freeform-page-heading {
+    color: var(--page-text);
+    padding: 0 0 40px 0;
+}
+.freeform-page-heading h2 {
+    font: 400 35px sans-serif;
+    margin: 0 0 10px 0;
+}
+.freeform-page-heading h2:only-child {
+    margin: 0;
+}
+.freeform-page-heading h2.spam-mode-badge::after {
+    color: #ff0000;
+    background: var(--page-bg);
+    content: "Spam Folder";
+    font: 600 15px sans-serif;
+    border: 2px solid #ff0000;
+    border-radius: 5px;
+    float: right;
+    padding: 5px 10px;
+    margin: 0;
+    animation: spam-glow 1s ease-in-out infinite alternate;
+}
+@keyframes spam-glow {
+    from {
+        box-shadow: 0 0 10px 1px rgba(212,0,0,0.15);
+    }
+    to {
+        box-shadow: 0 0 20px 4px rgba(212,0,0,0.3);
+    }
+}
+.freeform-page-heading h2.edit-mode-badge::after {
+    color: #d88d04;
+    background: var(--page-bg);
+    content: "Editing Existing Submission";
+    font: 600 15px sans-serif;
+    border: 2px solid #d88d04;
+    border-radius: 5px;
+    box-shadow: 0px 0 10px 5px rgba(216,109,4,0.3);
+    float: right;
+    padding: 5px 10px;
+    margin: 0;
+    animation: edit-glow 1s ease-in-out infinite alternate;
+}
+@keyframes edit-glow {
+    from {
+        box-shadow: 0 0 10px 1px rgba(216,109,4,0.15);
+    }
+    to {
+        box-shadow: 0 0 20px 4px rgba(216,109,4,0.3);
+    }
+}
+.freeform-page-heading p {
+    color: var(--nav-text);
+    margin: 0;
+    line-height: 1.3;
+}
+.freeform-page-heading h2 a,
+.freeform-page-heading p a {
+    color: #0d6efd;
+    text-decoration: none;
+    transition: all 0.5s;
+}
+.freeform-page-heading h2 a:hover,
+.freeform-page-heading p a:hover {
+    color: #0f5fd5;
+    text-decoration: underline;
+}
+
+/* Freeform Notices */
+.freeform-nav {
+    font: 400 12px sans-serif;
+    text-align: center;
+    color: var(--nav-text);
+    background: var(--nav-bg);
+    display: block;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    min-height: 14px;
+    padding: 15px 15px;
+    margin-bottom: 50px;
+    transition: all 0.5s;
+}
+.freeform-nav code,
+.freeform-nav b,
+.freeform-nav a {
+    color: var(--nav-highlight);
+}
+.freeform-warning-notice {
+    font: 400 16px sans-serif;
+    text-align: center;
+    color: #fff3eb;
+    background: #f8741b;
+    border: 1px solid #f8741b;
+    border-radius: 10px;
+    padding: 40px 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+.freeform-warning-notice a {
+    color: #ffffff;
+}
+html:has(.freeform-warning-notice) {
+    background: #ffe8d8;
+}
+
+.freeform-notice,
+.freeform-success,
+.freeform-error {
+    font: 400 16px sans-serif;
+    text-align: center;
+    color: #0d6efd;
+    background: #eff5ff;
+    border: 1px solid #0d6efd;
+    border-radius: 10px;
+    padding: 15px 10px;
+    margin: 0 0 35px 0;
+}
+.freeform-success {
+    color: #198754;
+    font-weight: 600;
+    border-color: #198754;
+    background: #f0fff8;
+}
+.freeform-error {
+    color: #dc3545;
+    font-weight: 600;
+    border-color: #dc3545;
+    background: #fff0f1;
+}
+.freeform-error code {
+    color: #dc3545;
+    font-weight: 600;
+    background: #ffffff;
+}
+.freeform-notice h4,
+.freeform-success h4,
+.freeform-error h4 {
+    font: 600 20px sans-serif;
+    text-align: center;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+.freeform-notice p,
+.freeform-success p,
+.freeform-error p {
+    font: 400 16px sans-serif;
+    line-height: 1.5;
+    text-align: center;
+    padding: 0;
+    margin: 0 0 10px 0;
+}
+.freeform-notice p:last-of-type,
+.freeform-success p:last-of-type,
+.freeform-error p:last-of-type {
+    margin-bottom: 0;
+}
+
+.freeform-nav:has(.freeform-logo:hover) {
+    background: var(--nav-bg-hover);
+}
+
+.freeform-logo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 10px 25px;
+}
+.freeform-logo img {
+    display: inline-block;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+    box-shadow: var(--logo-glow);
+    transition: all 0.5s;
+}
+.freeform-logo:hover img {
+    border-radius: 50%;
+    box-shadow: 0 0 15px 3px rgb(49,109,244,0.5);
+}
+.freeform-logo h1 {
+    font: 600 16px sans-serif !important;
+    position: absolute;
+    display: block;
+    width: 150px;
+    top: 3px;
+    left: 20px;
+    margin: 0 !important;
+}
+
+/* Freeform Nav Menu */
+.freeform-menu {
+    position: absolute;
+    top: 8px;
+    right: 25px;
+    margin: 0;
+}
+
+.freeform-menu-hamburger {
+    height: 10px;
+    margin: 5px 25px 0 0;
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    justify-items: right;
+    cursor: pointer;
+    z-index: 2;
+}
+.freeform-menu-hamburger:hover div {
+    background: #316df4;
+}
+.freeform-menu-hamburger div {
+    background: var(--menu-bg);
+    position: relative;
+    width: 25px;
+    height: 3px;
+    margin-top: 0;
+    transition: all 0.2s ease-in-out;
+}
+.freeform-menu-hamburger div:nth-child(even) {
+    background: transparent;
+    height: 5px;
+}
+#freeform-menu-toggle {
+    display: none;
+}
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .top {
+    transform: rotate(-45deg);
+    margin-top: 8px;
+}
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .meat {
+    transform: rotate(45deg);
+    margin-top: -8px;
+}
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .top-inner,
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .bottom-inner,
+#freeform-menu-toggle:checked + .freeform-menu-hamburger .bottom {
+    transform: scale(0);
+}
+#freeform-menu-toggle:checked ~ .freeform-menu-list {
+    display: block;
+}
+
+.freeform-menu-list {
+    margin: 35px 25px 0 0;
+    display: none;
+    padding: 0;
+    text-align: right;
+    z-index: 3;
+    transition: all 0.5s ease;
+}
+.freeform-menu-list a {
+    margin: 0;
+    padding: 15px 25px;
+    background: var(--menu-list-bg);
+    font: 400 18px sans-serif;
+    text-align: right;
+    text-decoration: none;
+    border-bottom: var(--menu-list-border);
+    display: block;
+    z-index: 3;
+    transition: all 0.5s ease;
+}
+.freeform-menu-list a:hover {
+    color: #ffffff !important;
+    text-decoration: none;
+    background: #316df4;
+}
+.freeform-menu-list a.active {
+    color: #0d6efd !important;
+}
+.freeform-menu-list a.active:hover {
+    color: #ffffff !important;
+}
+.freeform-menu-list a:first-child {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.freeform-menu-list a:last-child {
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-bottom: 0px;
+}
+
+/* Freeform Info Button */
+.freeform-nav-button {
+    background: var(--nav-button-bg);
+    color: var(--nav-button-text);
+    padding: 5px 8px;
+    margin: 0 3px;
+    font-size: 12px;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.freeform-nav-button.dropdown-glow {
+    background: var(--page-bg);
+    animation: dropdown-glow 1s ease-in-out infinite alternate;
+}
+@keyframes dropdown-glow {
+    from {
+        box-shadow: 0 0 5px 1px rgba(49,109,244,0.5);
+    }
+    to {
+        box-shadow: 0 0 10px 2px rgba(49,109,244,0.9);
+    }
+}
+.freeform-nav-button:hover {
+    color: var(--nav-button-hover);
+    background: #0d6efd;
+}
+.freeform-nav-button .freeform-form-circle,
+.freeform-nav-dropdown-content a .freeform-form-circle {
+    display: inline-block;
+    background: gray;
+    width: 8px;
+    height: 8px;
+    margin: 0 6px 0 0;
+    border-radius: 50%;
+}
+
+/* Freeform Info Dropdown */
+.freeform-nav-dropdown {
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+.freeform-nav-dropdown-content {
+    text-align: left;
+    display: none;
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 3px;
+    background: var(--nav-dropdown-bg);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+    min-width: 200px;
+    box-shadow: 0px 0 10px 5px rgba(0,0,0,0.2);
+    z-index: 1;
+    transition: all 0.25s;
+}
+.freeform-nav-dropdown-content.extras-dropdown {
+    min-width: 310px;
+}
+.freeform-nav-dropdown-content a {
+    font-size: 12px;
+    color: var(--nav-dropdown-text);
+    padding: 7px 8px;
+    text-decoration: none;
+    display: block;
+    transition: all 0.25s;
+}
+.freeform-nav-dropdown-content a.active {
+    color: #0d6efd;
+}
+.freeform-nav-dropdown-content hr {
+    margin: 3px 0;
+    border: 0;
+    border-top: var(--nav-dropdown-divider);
+}
+.freeform-nav-dropdown-content a:hover {
+    background: var(--nav-dropdown-bg-hover);
+}
+.freeform-nav-dropdown-content a:first-of-type:hover {
+    border-top-right-radius: 5px;
+}
+.freeform-nav-dropdown-content a:last-of-type:hover {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.freeform-nav-dropdown:hover .freeform-nav-dropdown-content {
+    display: block;
+}
+.freeform-nav-dropdown:hover .freeform-nav-button {
+    color: var(--nav-button-active);
+    background: #0d6efd;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+/* Freeform Form Tiles */
+.freeform-form-tiles {
+    display: grid;
+    grid-template-columns: 33.33% 33.33% 33.33%;
+    grid-template-rows: auto;
+    background: transparent;
+    margin: 0;
+    padding: 0;
+}
+.freeform-form-tiles a {
+    align-self: top;
+    min-height: 70px;
+    color: var(--nav-highlight);
+    text-decoration: none;
+    background: var(--nav-bg);
+    border: none;
+    border-radius: 7px;
+    position: relative;
+    padding: 15px;
+    margin: 5px 15px 15px 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s;
+}
+.freeform-form-tiles a h3 {
+    font: 400 20px sans-serif;
+    text-decoration: none;
+    padding: 0;
+    margin: 0 0 5px 0;
+}
+.freeform-form-tiles a p {
+    font: 200 14px sans-serif;
+    color: var(--nav-text);
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+}
+.freeform-form-tiles a:hover {
+    background: #316df4;
+    border: none;
+    text-decoration: none;
+    padding: 20px;
+    margin: 0px 10px 10px 0px;
+}
+.freeform-form-tiles a:hover h3,
+.freeform-form-tiles a:hover p,
+.freeform-form-tiles a:hover p b {
+    color: #ffffff;
+}
+.freeform-form-tiles a:focus {
+    padding: 15px;
+    margin: 5px 15px 15px 5px;
+}
+.freeform-form-tiles .freeform-submission-count {
+    display: block;
+    background: var(--form-box-submissions) !important;
+    border-bottom-left-radius: 7px;
+    border-bottom-right-radius: 7px;
+    padding: 5px 15px;
+    position: absolute;
+    margin: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+.freeform-form-tiles .freeform-submission-count b {
+    font-weight: 400;
+    color: var(--nav-highlight);
+}
+
+.freeform-form-tile-item {
+    border-top: 7px solid #0d6efd !important;
+}
+
+.freeform-table-overflow {
+    width: 100%;
+    overflow: scroll;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+.freeform-table {
+    border-spacing: 0;
+    margin: 0;
+    color: var(--page-text);
+    font: 400 14px sans-serif;
+    min-width: 100%;
+    border: 0;
+    border-bottom: 5px solid var(--table-head-bg);;
+}
+.freeform-table thead tr {
+    background: var(--table-head-bg);
+    color: var(--nav-highlight);
+    text-align: left;
+}
+.freeform-table tbody th {
+    background: var(--table-head-bg-alt);
+    color: var(--nav-highlight);
+    text-align: left;
+}
+.freeform-table tbody tr:nth-of-type(even) th {
+    background: var(--table-head-bg-alt2);
+}
+.freeform-table a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+.freeform-table a:hover {
+    color: #0f5fd5;
+    text-decoration: underline;
+}
+.table-no-results {
+    text-align: center;
+}
+.freeform-table th,
+.freeform-table td {
+    padding: 10px 10px;
+    min-width: 50px;
+}
+.freeform-table th.table-col-wide-120 {
+    min-width: 120px;
+}
+.freeform-table th.table-col-wide-150 {
+    min-width: 150px;
+}
+.freeform-table tbody tr {
+    color: var(--nav-text);
+    background: var(    --table-row-bg);
+    border-bottom: 1px solid #dddddd;
+}
+.freeform-table tbody tr:nth-of-type(even) {
+    background: var(--table-row-bg-alt);
+}
+.freeform-table tbody tr:hover {
+    background: rgb(244,237,49,0.1);
+}
+.freeform-button {
+    padding: 10px 15px;
+    margin: 0 5px 0 0;
+    font-size: 14px;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+.freeform-table .freeform-button {
+    padding: 5px 8px;
+    margin: 0 3px 0 0;
+    font-size: 10px;
+}
+.freeform-button.orange {
+    color: #000000;
+    background: #ffc259;
+}
+.freeform-button.red {
+    color: #ffffff;
+    background: #ff0000;
+}
+.freeform-button.orange:hover {
+    color: #000000;
+    background: #e59916;
+    text-decoration: none;
+}
+.freeform-button.red:hover {
+    color: #ffffff;
+    background: #d80000;
+    text-decoration: none;
+}
+.freeform-submission-controls {
+    float: right;
+}
+
+/* Freeform Demo Intro */
+html:has(.intro-content) {
+    background: var(--nav-bg);
+    animation-delay: 1s;
+	animation-name: bg-change;
+    animation-duration: 3s; 
+    animation-fill-mode: forwards;
+}
+.intro-content {
+    padding: 40px 60px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+}
+.intro-content h2,
+.intro-content p,
+.intro-content .freeform-button {
+    text-align: center;
+    opacity: 0;
+    animation-delay: 0s;
+    animation-fill-mode: forwards;
+}
+.intro-content h2 {
+    font: 600 40px sans-serif;
+    color: #ffffff;
+    margin: 0 0 15px 0;
+    animation-name: bounce-right;
+    animation-duration: 2s;
+}
+.intro-content p {
+    font: 400 20px sans-serif;
+    color: #ffffff;
+    margin: 0;
+    animation-name: bounce-left;
+    animation-duration: 2s;
+}
+.intro-content .action-wrapper {
+    text-align: center;
+    margin: 50px 0 0 0;
+}
+.intro-content .freeform-button {
+    border: 1px solid var(--page-text);
+    border-radius: 5px;
+    background: var(--page-text);
+    color: #0f5fd5;
+    font: 600 15px sans-serif;
+    text-decoration: none;
+    padding: 15px 20px;
+    width: 200px;
+    transition: all 0.5s;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    margin: 0 5px;
+    animation-delay: 2s;
+    animation-name: bounce-rotate;
+    animation-duration: 3s;
+}
+.intro-content .freeform-button:hover {
+    background: transparent;
+}
+.intro-content .freeform-button span {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    transition: all 0.5s;
+}
+.intro-content .freeform-button span:after {
+    color: #ffffff;
+    content: '\00bb';
+    position: absolute;
+    opacity: 0;
+    top: 0;
+    right: -20px;
+    transition: all 0.5s;
+}
+.intro-content .freeform-button:hover span {
+    color: #ffffff;
+    padding-right: 5px;
+    margin-left: -5px;
+}
+.intro-content .freeform-button:hover span:after {
+    opacity: 1;
+    right: -10px;
+}
+.intro-content .freeform-button.main-action {
+    animation-delay: 2.5s;
+}
+@keyframes bounce-right {
+    0% {
+        opacity: .2;
+        transform: translateX(-2000px);
+    }
+    60% {
+        opacity: .7;
+        transform: translateX(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes bounce-left {
+    0% {
+        opacity: .2;
+        transform: translateX(2000px);
+    }
+    60% {
+        opacity: .7;
+        transform: translateX(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes bounce-rotate {
+    0% {
+        opacity: .2;
+        transform: perspective(800px) rotateX(-80deg);
+    }
+    20% {
+        opacity: 1;
+    }
+    60% {
+        transform: perspective(800px) rotateX(20deg);
+    }
+    100% {
+        opacity: 1;
+        transform: perspective(800px) rotateX(0);
+    }
+}
+@keyframes bg-change {
+    from {
+        background: var(--nav-bg);
+    }
+    to {
+        background: #0f5fd5;
+    }
+}
+
+/* Extras Instructions */
+.extras-instructions {
+    font: 400 16px sans-serif;
+    text-align: left;
+    color: #0d6efd;
+    background: transparent;
+    border: 2px dashed #0d6efd;
+    border-radius: 10px;
+    padding: 15px 10px;
+    margin: 75px 0 35px 0;
+}
+.extras-instructions h4 {
+    font: 400 20px sans-serif;
+    color: var(--page-text);
+    background: var(--nav-bg);
+    border: 0;
+    border-top-left-radius: 9px;
+    border-top-right-radius: 9px;
+    padding: 15px 20px;
+    margin: -15px -10px 20px;
+}
+.extras-instructions p,
+.extras-instructions ul,
+.extras-instructions ol,
+.extras-instructions li {
+    font: 400 15px sans-serif;
+    color: var(--nav-text);
+    border: 0;
+    padding: 0 5px 10px;
+    margin: 0;
+}
+.extras-instructions p {
+    padding: 0 10px 10px;
+}
+.extras-instructions > ul,
+.extras-instructions > ol {
+    padding: 0 45px;
+}
+.extras-instructions > li {
+    padding: 0 0 7px 0;
+}
+.extras-instructions > li:last-of-type,
+.extras-instructions > li:last-child {
+    padding: 0 5px 0;
+    margin: 0;
+}
+.extras-instructions > ol > li:last-of-type,
+.extras-instructions > ul > li:last-child {
+    padding: 0 5px 0;
+}
+.extras-instructions > ol > li > ul li:last-of-type,
+.extras-instructions > ul > ul > li:last-child  {
+    padding: 0;
+    margin: 0;
+}
+.extras-instructions > p:last-of-type {
+    padding: 0 5px 0;
+}
+.extras-instructions-warning {
+    color: #cc6e00 !important;
+}
+
+.extras-instructions ol ul,
+.extras-instructions ul ul,
+.extras-instructions ul ol {
+    padding: 0 20px;
+    margin: 7px 0 0 0;
+}
+.extras-instructions ol ul li,
+.extras-instructions ul ul li,
+.extras-instructions ul ol li {
+    padding: 0;
+    margin: 0 0 7px 0;
+}
+
+code {
+    color: var(--nav-highlight);
+    background: var(--nav-bg);
+    padding: 2px 5px;
+    border-radius: 5px;
+}

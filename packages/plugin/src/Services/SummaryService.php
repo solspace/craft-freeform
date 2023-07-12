@@ -203,6 +203,9 @@ class SummaryService extends Component
         $summary->statistics->widgets = $widgets;
 
         $feedInfo = $freeform->settings->getSettingsModel()->feedInfo ?? [];
+        if (!\is_array($feedInfo)) {
+            $feedInfo = [];
+        }
 
         $other = new Other();
         $other->jsFramework = \in_array('jsFramework', $feedInfo, true);
@@ -466,7 +469,7 @@ class SummaryService extends Component
     private function getPlugins(): array
     {
         $result = (new Query())
-            ->select(['handle', 'installDate', 'version', 'licenseKeyStatus'])
+            ->select(['handle', 'installDate', 'version'])
             ->from('{{%plugins}}')
             ->all()
         ;
@@ -489,7 +492,6 @@ class SummaryService extends Component
             $plugin->edition = $info['edition'] ?? 'lite';
             $plugin->version = $dbInfo['version'] ?? '';
             $plugin->installDate = $installDate ? new Carbon($installDate, 'UTC') : null;
-            $plugin->license = $dbInfo['licenseKeyStatus'] ?? null;
 
             $plugins[$handle] = $plugin;
         }

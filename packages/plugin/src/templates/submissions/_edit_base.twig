@@ -504,7 +504,7 @@
                 {% for reason in submission.spamReasons %}
                     <div class="data">
                         <div class="value" style="width: 100%">
-                            {{ reason.message }}
+                            {{ reason.message|t('freeform') }}
                         </div>
                     </div>
                 {% endfor %}
@@ -535,7 +535,7 @@
     {# TODO: move to payments module #}
     {% if payments is defined %}
         <div class="meta read-only">
-            <h4>Payments</h4>
+            <h4>{{ 'Payments'|t('freeform') }}</h4>
             <div class="data">
                 <h5 class="heading">{{ "Gateway"|t('freeform') }}</h5>
                 <div class="value">{{ payments.gateway|t('freeform') }}</div>

@@ -1,7 +1,7 @@
 {% extends "freeform/export/_layout" %}
 {% hook "freeform.prepareCpTemplate" %}
 
-{% set title = "Export Notifications"|t %}
+{% set title = "Export Notifications"|t('freeform') %}
 
 {% block actionButton %}
 
@@ -34,7 +34,7 @@
         {% if exportNotifications|length %}
             <table id="export-notifications" class="data fullwidth collapsible">
                 <thead>
-                <th scope="col">{{ "Name"|t('freeform') }}</th>
+                <th scope="col">{{ "Name"|t('app') }}</th>
                 <th scope="col">{{ "Profile"|t('freeform') }}</th>
                 <th scope="col">{{ "Form"|t('freeform') }}</th>
                 <th scope="col">{{ "Type"|t('freeform') }}</th>

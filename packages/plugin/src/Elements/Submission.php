@@ -554,11 +554,11 @@ class Submission extends Element
 
         if (null === $attributes) {
             $titles = [
-                'userId' => ['label' => Freeform::t('Author')],
-                'status' => ['label' => Freeform::t('Status')],
+                'userId' => ['label' => \Craft::t('app', 'Author')],
+                'status' => ['label' => \Craft::t('app', 'Status')],
                 'form' => ['label' => Freeform::t('Form')],
-                'dateCreated' => ['label' => Freeform::t('Date Created')],
-                'id' => ['label' => Freeform::t('ID')],
+                'dateCreated' => ['label' => \Craft::t('app', 'Date Created')],
+                'id' => ['label' => \Craft::t('app', 'ID')],
                 'incrementalId' => ['label' => Freeform::t('Freeform ID')],
                 'ip' => ['label' => Freeform::t('IP Address')],
                 'spamReasons' => ['label' => Freeform::t('Spam Reasons')],

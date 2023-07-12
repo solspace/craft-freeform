@@ -4,14 +4,14 @@
 {% block actionButton %}
     <div class="buttons">
         <div class="btngroup submit">
-            <input type="submit" class="btn submit" value="{{ 'Save'|t('freeform') }}">
+            <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
 
             <div class="btn submit menubtn"></div>
             <div class="menu">
                 <ul>
                     <li>
                         <a class="formsubmit" data-redirect="{{ continueEditingUrl|hash }}">
-                            {{ "Save and continue editing"|t('freeform') }}
+                            {{ "Save and continue editing"|t('app') }}
                             <span class="shortcut">⌘S</span>
                         </a>
                     </li>
@@ -418,7 +418,7 @@
     <div id="settings" class="meta">
 
         {{ forms.textField({
-            label: "Title"|t('freeform'),
+            label: "Title"|t('app'),
             id: 'title',
             name: 'title',
             value: submission.title,
@@ -465,7 +465,7 @@
         {% endset %}
 
         {{ forms.field({
-            label: 'Status'|t('freeform'),
+            label: 'Status'|t('app'),
         }, statusField) }}
 
         {{ forms.hidden({
@@ -480,7 +480,7 @@
 
     <div class="field">
         <div class="heading">
-            <label for="freeform-submission-note">{{ 'Notes about your changes'|t('freeform') }}</label>
+            <label for="freeform-submission-note">{{ 'Notes about your changes'|t('app') }}</label>
         </div>
         <div class="input">
             <textarea
@@ -518,11 +518,11 @@
 
         <div class="meta read-only">
             <div class="data">
-                <h5 class="heading">{{ "Created at"|t('freeform') }}</h5>
+                <h5 class="heading">{{ "Created at"|t('app') }}</h5>
                 <div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
             </div>
             <div class="data">
-                <h5 class="heading">{{ "Updated at"|t('freeform') }}</h5>
+                <h5 class="heading">{{ "Updated at"|t('app') }}</h5>
                 <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
             </div>
         </div>

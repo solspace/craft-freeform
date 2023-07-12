@@ -45,7 +45,7 @@
                 </td>
                 <td>
                     <div class="buttons" style="margin: 18px 0 0 15px !important;">
-                        <input type="submit" class="btn submit" value="{{ "Install"|t }}" />
+                        <input type="submit" class="btn submit" value="{{ 'Install'|t('app') }}" />
                     </div>
                 </td>
             </tr>
@@ -64,7 +64,7 @@
     <div id="components-wrapper">
         {% if codePack.templates %}
             <div>
-                <h3>{{ "Templates"|t('freeform') }}</h3>
+                <h3>{{ "Templates"|t('app') }}</h3>
 
                 <ul class="directory-structure">
                     <li class="dir">
@@ -81,7 +81,7 @@
 
         {% if codePack.assets %}
             <div>
-                <h3>{{ "Assets"|t('freeform') }}</h3>
+                <h3>{{ "Assets"|t('app') }}</h3>
 
                 <ul class="directory-structure">
                     <li class="dir">
@@ -98,7 +98,7 @@
 
         {% if codePack.routes.data %}
             <div>
-                <h3>{{ "Routes"|t('freeform') }}</h3>
+                <h3>{{ "Routes"|t('app') }}</h3>
 
                 <ul class="directory-structure routes">
                     {% for route in codePack.routes.data %}

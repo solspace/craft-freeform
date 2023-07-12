@@ -1,7 +1,7 @@
 {% extends "freeform/export/_layout" %}
 {% hook "freeform.prepareCpTemplate" %}
 
-{% set title = "Export Profiles"|t %}
+{% set title = "Export Profiles"|t('freeform') %}
 
 {% block actionButton %}
 
@@ -11,7 +11,7 @@
             {% set forms = craft.freeform.forms %}
             {% if forms|length %}
                 {% if forms|length > 1 %}
-                    <div class="btn submit menubtn add icon">{{ "New Export Profile"|t }}</div>
+                    <div class="btn submit menubtn add icon">{{ "New Export Profile"|t('freeform') }}</div>
                     <div class="menu">
                         <ul>
                             {% for form in forms %}
@@ -40,16 +40,16 @@
 
 {% set content %}
     <div id="noexport-profiles" class="padded{% if exportProfiles %} hidden{% endif %}">
-        <p>{{ "No export profiles found"|t }}</p>
+        <p>{{ "No export profiles found"|t('freeform') }}</p>
     </div>
 
     {% if exportProfiles|length %}
         <table id="export-profiles" class="data fullwidth collapsible">
             <thead>
-            <th scope="col">{{ "Name"|t }}</th>
-            <th scope="col">{{ "Form"|t }}</th>
-            <th scope="col">{{ "Submissions"|t }}</th>
-            <th>{{ "Actions"|t }}</th>
+            <th scope="col">{{ "Name"|t('app') }}</th>
+            <th scope="col">{{ "Form"|t('freeform') }}</th>
+            <th scope="col">{{ "Submissions"|t('freeform') }}</th>
+            <th>{{ "Actions"|t('app') }}</th>
             <td class="thin"></td>
             </thead>
             <tbody>

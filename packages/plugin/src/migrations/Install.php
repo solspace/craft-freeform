@@ -213,8 +213,7 @@ class Install extends StreamlinedInstallMigration
                 ->addField('status', $this->string(50)->notNull())
                 ->addField('fieldHash', $this->string(20))
                 ->addIndex(['status'], false)
-                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE)
-                ->addForeignKey('id', 'freeform_mailing_list_fields', 'id', ForeignKey::CASCADE),
+                ->addForeignKey('submissionId', 'freeform_submissions', 'id', ForeignKey::CASCADE),
 
             // Pro
             (new Table('freeform_export_profiles'))

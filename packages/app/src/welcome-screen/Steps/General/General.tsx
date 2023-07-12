@@ -32,6 +32,7 @@ const General: React.FC = () => {
   const formattingTemplateOptions: Options<FormattingTemplate> = [
     { value: FormattingTemplate.BasicLight, label: 'Basic Light' },
     { value: FormattingTemplate.BasicDark, label: 'Basic Dark' },
+    { value: FormattingTemplate.BasicFloatingLabels, label: 'Basic Floating Labels' },
     { value: FormattingTemplate.Bootstrap, label: 'Bootstrap' },
     { value: FormattingTemplate.Bootstrap4, label: 'Bootstrap 4' },
     { value: FormattingTemplate.Bootstrap5, label: 'Bootstrap 5' },

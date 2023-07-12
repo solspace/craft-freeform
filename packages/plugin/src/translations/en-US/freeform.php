@@ -60,7 +60,7 @@ return [
     'Upgrade to Pro to enable' => 'Upgrade to Pro to enable',
     'Requires Pro version' => 'Requires Pro version',
     '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.' => '<a href="{url}">Upgrade to Pro</a> to get access to popular API integrations.',
-    'Shop for CRM integrations on the {link_open}Solspace Freeform Marketplace{link_close}' => 'Zoek naar CRM integraties op de {link_open}Solspace Freeform Marketplace{link_close}',
+    'Shop for CRM integrations on the {link_open}Solspace Freeform Marketplace{link_close}' => 'Shop for CRM integrations on the {link_open}Solspace Freeform Marketplace{link_close}',
     'Are you sure you want to remove the “{name}” integration?' => 'Are you sure you want to remove the “{name}” integration?',
     'Authorized' => 'Authorized',
     'Not able to authorize.' => 'Not able to authorize.',

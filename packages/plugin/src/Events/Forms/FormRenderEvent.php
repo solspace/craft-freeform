@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Events\Forms;
 
 use Solspace\Freeform\Events\ArrayableEvent;
+use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\CssObject;
@@ -14,7 +15,7 @@ use Solspace\Freeform\Library\DataObjects\FormRenderObject\JavascriptObject;
 use Solspace\Freeform\Library\DataObjects\FormRenderObject\StringObject;
 use yii\web\View;
 
-class FormRenderEvent extends ArrayableEvent
+class FormRenderEvent extends ArrayableEvent implements FormEventInterface
 {
     /** @var Form */
     private $form;

@@ -476,11 +476,20 @@
             required: true
         }) }}
 
+        <div class="field">
+            <div class="heading">
+                <label>Form</label>
+            </div>
+            <div class="input ltr">
+                <span class="status green" style="background: {{ form.color }};"></span><a href="{{ url('freeform/submissions/&source=form%3A' ~ form.id) }}">{{ form.name }}</a>
+            </div>
+        </div>
+
     </div>
 
     <div class="field">
         <div class="heading">
-            <label for="freeform-submission-note">{{ 'Notes about your changes'|t('app') }}</label>
+            <label for="freeform-submission-note" class="h6">{{ 'Notes about your changes'|t('app') }}</label>
         </div>
         <div class="input">
             <textarea
@@ -496,46 +505,34 @@
     {% if submission.isSpam and submission.spamReasons %}
 
         <fieldset>
-            <legend>
-                {{ 'Marked as spam because'|t('freeform') }}
+            <legend class="h6">
+                {{ 'Spam Reasons'|t('freeform') }} ({{ submission.spamReasons|length }})
             </legend>
-
-            <div class="meta">
+            <ul class="spam-reasons">
                 {% for reason in submission.spamReasons %}
-                    <div class="data">
-                        <div class="value" style="width: 100%">
-                            {{ reason.message|t('freeform') }}
-                        </div>
-                    </div>
+                    <li>{{ reason.message|t('freeform') }}</li>
                 {% endfor %}
-            </div>
+            </ul>
         </fieldset>
+        <hr>
 
     {% endif %}
 
 
-    {% if submission.id %}
-
-        <div class="meta read-only">
-            <div class="data">
-                <h5 class="heading">{{ "Created at"|t('app') }}</h5>
-                <div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
-            </div>
-            <div class="data">
-                <h5 class="heading">{{ "Updated at"|t('app') }}</h5>
-                <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
-            </div>
-        </div>
-
-        {% hook 'freeform.submissions.edit.meta' %}
-
-    {% endif %}
-
-
-    {# TODO: move to payments module #}
     {% if payments is defined %}
+
         <div class="meta read-only">
-            <h4>{{ 'Payments'|t('freeform') }}</h4>
+            <div class="data">
+                <h4 class="heading h6">{{ "Payments"|t('freeform') }}</h4>
+                {% if payments.externalDashboardLink %}
+                    <div class="value">
+                        <a href={{ payments.externalDashboardLink }} target="_blank">
+                            {{ "See in"|t('freeform') }}
+                            {{ payments.serviceProvider|t('freeform') }}<span class="icon-link-ext"></span>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
             <div class="data">
                 <h5 class="heading">{{ "Gateway"|t('freeform') }}</h5>
                 <div class="value">{{ payments.gateway|t('freeform') }}</div>
@@ -548,6 +545,11 @@
                 <h5 class="heading">{{ "Status"|t('freeform') }}</h5>
                 <div class="value">
                     {% include 'freeform/_components/fields/paymentStatus.html' with { payment: payments } %}
+                    {% if payments.status == 'active' %}
+                        <a href="{{ payments.unsubscribeUrl }}" target="_blank" class="label payment-status failed" style="margin-left: 5px;">
+                            {{ "Cancel"|t('freeform') }}
+                        </a>
+                    {% endif %}
                 </div>
             </div>
 
@@ -562,16 +564,6 @@
                     <div class="value">{{ payments.amount }} {{ payments.currency|upper }}</div>
                 </div>
             {% else %}
-                {% if payments.status == 'active' %}
-                    <div class="data">
-                        <h5 class="heading"></h5>
-                        <div class="value">
-                            <a href="{{ payments.unsubscribeUrl }}" target="_blank">
-                                {{ "Cancel Subscription"|t('freeform') }}
-                            </a>
-                        </div>
-                    </div>
-                {% endif %}
                 <div class="data">
                     <h5 class="heading">{{ "Plan"|t('freeform') }}</h5>
                     <div class="value">{{ payments.plan ? payments.plan.name : 'Unknown' }}</div>
@@ -594,19 +586,33 @@
                     </div>
                 </div>
             {% endif %}
-
-            {% if payments.externalDashboardLink %}
-                <div class="data">
-                    <h5 class="heading"></h5>
-                    <div class="value"><a href={{ payments.externalDashboardLink }} target="_blank">
-                            {{ "See in"|t('freeform') }}
-                            {{ payments.serviceProvider|t('freeform') }}<span class="icon-link-ext"></span>
-                        </a>
-                    </div>
-                </div>
-            {% endif %}
         </div>
         <hr>
+
+    {% endif %}
+
+    {% if submission.id %}
+
+        <div class="meta read-only">
+            <div class="data">
+                <h5 class="heading">{{ "ID"|t('app') }}</h5>
+                <div class="value">{{ submission.id }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Freeform ID"|t('app') }}</h5>
+                <div class="value">{{ submission.incrementalId }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Created at"|t('app') }}</h5>
+                <div class="value">{{ submission.dateCreated|date('short') }} {{ submission.dateCreated|time('short') }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Updated at"|t('app') }}</h5>
+                <div class="value">{{ submission.dateUpdated|date('short') }} {{ submission.dateUpdated|time('short') }}</div>
+            </div>
+        </div>
+
+        {% hook 'freeform.submissions.edit.meta' %}
 
     {% endif %}
 

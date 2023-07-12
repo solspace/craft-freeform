@@ -313,15 +313,15 @@ class ExportProfilesService extends Component
         $exportProfile = new ExportProfileModel($data);
 
         if (\is_string($exportProfile->fields) && '' !== $exportProfile->fields) {
-            $exportProfile->fields = \GuzzleHttp\json_decode($exportProfile->fields, true);
+            $exportProfile->fields = json_decode($exportProfile->fields, true);
         }
 
         if (\is_string($exportProfile->filters) && '' !== $exportProfile->filters) {
-            $exportProfile->filters = \GuzzleHttp\json_decode($exportProfile->filters, true);
+            $exportProfile->filters = json_decode($exportProfile->filters, true);
         }
 
         if (\is_string($exportProfile->statuses) && '' !== $exportProfile->statuses && '*' !== $exportProfile->statuses) {
-            $exportProfile->statuses = \GuzzleHttp\json_decode($exportProfile->statuses, true);
+            $exportProfile->statuses = json_decode($exportProfile->statuses, true);
         }
 
         return $exportProfile;

@@ -266,7 +266,7 @@ class ActiveCampaign extends MailingListIntegration
                 );
             }
 
-            $json = \GuzzleHttp\json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody());
 
             $offset += $limit;
 

@@ -373,7 +373,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         $field = new FieldModel($data);
 
         if (\is_string($field->metaProperties) && '' !== $field->metaProperties) {
-            $field->metaProperties = \GuzzleHttp\json_decode($field->metaProperties, true);
+            $field->metaProperties = json_decode($field->metaProperties, true);
         }
 
         return $field;

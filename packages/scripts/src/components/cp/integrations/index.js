@@ -15,7 +15,7 @@ $(function () {
   $classSelector.trigger('change');
 
   const $name = $('#name');
-  if (!$name.val().length) {
+  if ($name && !$name.val().length) {
     $name.on({
       keyup: function () {
         $('#handle')
@@ -38,7 +38,7 @@ $(function () {
     data[Craft.csrfTokenName] = Craft.csrfTokenValue;
 
     $.ajax({
-      url: Craft.getCpUrl('freeform/' + type + '/check'),
+      url: Craft.getCpUrl(`freeform/${type}/check`),
       data: data,
       type: 'post',
       dataType: 'json',

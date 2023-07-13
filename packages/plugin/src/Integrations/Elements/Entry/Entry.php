@@ -29,10 +29,20 @@ class Entry extends ElementIntegration
     )]
     protected string $entryTypeId = '';
 
-    #[Flag(self::FLAG_INTERNAL)]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
-    #[Input\Special\Properties\FieldMapping]
-    protected ?FieldMapping $mapping = null;
+    #[Input\Special\Properties\FieldMapping(
+        source: 'api/elements/entries/attributes',
+    )]
+    protected ?FieldMapping $attributeMapping = null;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(FieldMappingTransformer::class)]
+    #[Input\Special\Properties\FieldMapping(
+        source: 'api/elements/entries/fields',
+        parameterFields: ['values.entryTypeId' => 'entryTypeId'],
+    )]
+    protected ?FieldMapping $fieldMapping = null;
 
     public function isConnectable(): bool
     {
@@ -105,5 +115,15 @@ class Entry extends ElementIntegration
     public function getEntryTypeId(): int
     {
         return $this->entryTypeId;
+    }
+
+    public function getAttributeMapping(): FieldMapping
+    {
+        return $this->attributeMapping;
+    }
+
+    public function getFieldMapping(): FieldMapping
+    {
+        return $this->fieldMapping;
     }
 }

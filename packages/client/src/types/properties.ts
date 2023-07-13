@@ -141,9 +141,12 @@ export type PageButtonProperty = BaseProperty<
 > & { togglable: boolean; enabled: boolean };
 
 export type FieldMappingProperty = BaseProperty<
-  FieldMapping[],
+  FieldMapping,
   PropertyType.FieldMapping
->;
+> & {
+  source?: string;
+  parameterFields?: string[];
+};
 
 export type Property =
   | AttributeProperty

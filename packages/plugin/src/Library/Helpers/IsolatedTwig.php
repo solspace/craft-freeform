@@ -7,8 +7,7 @@ use Twig\Loader\FilesystemLoader;
 
 class IsolatedTwig
 {
-    /** @var Environment */
-    private $environment;
+    private Environment $environment;
 
     public function __construct(string $templatePath = null)
     {

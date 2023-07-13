@@ -4,6 +4,7 @@ import {
   type FieldMapping,
   TargetFieldType,
 } from '@ff-client/types/integrations';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 
 import CustomIcon from './icons/custom.svg';
@@ -15,9 +16,10 @@ import {
   TypeButton,
   TypeButtonGroup,
 } from './mapping.styles';
+import type { SourceField as SourceFieldType } from './mapping.types';
 
 type Props = {
-  sources: Record<string, string>;
+  sources: SourceFieldType[];
   mapping?: FieldMapping;
   updateValue: (value: FieldMapping) => void;
 };
@@ -33,19 +35,19 @@ export const FieldMappingController: React.FC<Props> = ({
 
   return (
     <div>
-      {Object.entries(sources).length === 0 && (
+      {sources.length === 0 && (
         <HelpText>{translate('No data present')}</HelpText>
       )}
-      {Object.entries(sources).map(([key, value]) => {
-        const map = mapping[key] ?? {
+      {sources.map((source) => {
+        const map = mapping[source.id] ?? {
           type: TargetFieldType.Relation,
           value: '',
         };
 
         return (
-          <MappingWrapper key={key}>
-            <SourceField>
-              <span>{value}</span>
+          <MappingWrapper key={source.id}>
+            <SourceField className={classes(source.required && 'required')}>
+              <span>{source.label}</span>
             </SourceField>
 
             <TypeButtonGroup>
@@ -55,7 +57,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 onClick={() =>
                   updateValue({
                     ...mapping,
-                    [key]: {
+                    [source.id]: {
                       type: TargetFieldType.Relation,
                       value: '',
                     },
@@ -70,7 +72,7 @@ export const FieldMappingController: React.FC<Props> = ({
                 onClick={() =>
                   updateValue({
                     ...mapping,
-                    [key]: {
+                    [source.id]: {
                       type: TargetFieldType.Custom,
                       value: '',
                     },
@@ -88,7 +90,7 @@ export const FieldMappingController: React.FC<Props> = ({
                   onChange={(fieldUid) => {
                     updateValue({
                       ...mapping,
-                      [key]: {
+                      [source.id]: {
                         ...map,
                         value: fieldUid,
                       },
@@ -105,7 +107,7 @@ export const FieldMappingController: React.FC<Props> = ({
                   onChange={(event) => {
                     updateValue({
                       ...mapping,
-                      [key]: {
+                      [source.id]: {
                         ...map,
                         value: event.target.value,
                       },

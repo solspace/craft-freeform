@@ -8,16 +8,14 @@ use Solspace\Freeform\Form\Form;
 
 class ValidationEvent extends CancelableArrayableEvent implements FormEventInterface
 {
-    /** @var Form */
-    private $form;
-
-    private $validationOverride = false;
+    private Form $form;
+    private bool $validationOverride = false;
 
     public function __construct(Form $form)
     {
         $this->form = $form;
 
-        parent::__construct([]);
+        parent::__construct();
     }
 
     public function setValidationOverride(bool $value): self

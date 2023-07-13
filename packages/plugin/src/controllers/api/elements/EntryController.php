@@ -3,7 +3,6 @@
 namespace Solspace\Freeform\controllers\api\elements;
 
 use Solspace\Freeform\controllers\BaseApiController;
-use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -12,15 +11,15 @@ class EntryController extends BaseApiController
     public function actionAttributes(): Response
     {
         return $this->asJson([
-            'title' => 'Title',
-            'siteId' => 'Site ID',
-            'slug' => 'Slug',
-            'authorId' => 'Author',
-            'postDate' => 'Post Date',
-            'expiryDate' => 'Expiry Date',
-            'enabled' => 'Enabled',
-            'dateCreated' => 'Date Created',
-            'dateUpdated' => 'Date Updated',
+            ['id' => 'title', 'label' => 'Title', 'required' => false],
+            ['id' => 'siteId', 'label' => 'Site ID', 'required' => false],
+            ['id' => 'slug', 'label' => 'Slug', 'required' => false],
+            ['id' => 'authorId', 'label' => 'Author ID', 'required' => false],
+            ['id' => 'postDate', 'label' => 'Post Date', 'required' => false],
+            ['id' => 'expiryDate', 'label' => 'Expiry Date', 'required' => false],
+            ['id' => 'enabled', 'label' => 'Enabled', 'required' => false],
+            ['id' => 'dateCreated', 'label' => 'Date Created', 'required' => false],
+            ['id' => 'dateUpdated', 'label' => 'Date Updated', 'required' => false],
         ]);
     }
 
@@ -28,7 +27,7 @@ class EntryController extends BaseApiController
     {
         $entryTypeId = $this->request->get('entryTypeId');
         if (!$entryTypeId) {
-            throw new BadRequestHttpException('Entry type ID not specified');
+            return $this->asJson([]);
         }
 
         $entryType = \Craft::$app->sections->getEntryTypeById($entryTypeId);
@@ -40,7 +39,11 @@ class EntryController extends BaseApiController
 
         $fields = [];
         foreach ($layout->getCustomFields() as $item) {
-            $fields[$item->id] = $item->name;
+            $fields[] = [
+                'id' => $item->id,
+                'label' => $item->name,
+                'required' => $item->required,
+            ];
         }
 
         return $this->asJson($fields);

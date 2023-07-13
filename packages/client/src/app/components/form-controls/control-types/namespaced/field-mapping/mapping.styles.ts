@@ -47,6 +47,16 @@ export const SourceField = styled.div`
 
     background-color: white;
   }
+
+  &.required > span {
+    &:after {
+      content: '*';
+      position: relative;
+      right: -2px;
+
+      color: ${colors.error};
+    }
+  }
 `;
 
 export const TypeButtonGroup = styled.div`

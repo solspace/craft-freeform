@@ -22,6 +22,8 @@ interface IntegrationInterface
 
     public function getId(): ?int;
 
+    public function isEnabled(): bool;
+
     public function getHandle(): ?string;
 
     public function getName(): ?string;

@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
 import { FieldMappingController } from './mapping.controller';
+import type { SourceField } from './mapping.types';
 import { extractParameter } from './mapping.utilities';
 
 const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
@@ -23,7 +24,7 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
     });
   }
 
-  const { data, isFetching } = useQuery(
+  const { data, isFetching } = useQuery<unknown, unknown, SourceField[]>(
     ['field-mapping', property.source, params],
     () => axios.get(property.source, { params }).then((res) => res.data),
     { staleTime: Infinity, cacheTime: Infinity }

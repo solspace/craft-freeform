@@ -83,7 +83,7 @@ interface FieldInterface
 
     public function hasErrors(): bool;
 
-    public function addError(string $error): AbstractField;
+    public function addError(...$error): AbstractField;
 
     public function render(): Markup;
 

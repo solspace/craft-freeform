@@ -53,7 +53,6 @@ use Solspace\Freeform\Records\StatusRecord;
 use Solspace\Freeform\Resources\Bundles\BetaBundle;
 use Solspace\Freeform\Resources\Bundles\Pro\Payments\PaymentsBundle;
 use Solspace\Freeform\Services\ChartsService;
-use Solspace\Freeform\Services\ConnectionsService;
 use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ExportService;
@@ -126,7 +125,6 @@ use yii\web\ForbiddenHttpException;
  * @property IntegrationsService         $integrations
  * @property IntegrationsQueueService    $integrationsQueue
  * @property PaymentGatewaysService      $paymentGateways
- * @property ConnectionsService          $connections
  * @property ChartsService               $charts
  * @property WidgetsService              $widgets
  * @property ExportService               $export
@@ -255,7 +253,6 @@ class Freeform extends Plugin
         $this->initFieldTypes();
         $this->initPermissions();
         $this->initEventListeners();
-        $this->initConnections();
         $this->initBetaAssets();
         $this->initPaymentAssets();
         $this->initHookHandlers();
@@ -463,7 +460,6 @@ class Freeform extends Plugin
                 'integrations' => IntegrationsService::class,
                 'integrationsQueue' => IntegrationsQueueService::class,
                 'paymentGateways' => PaymentGatewaysService::class,
-                'connections' => ConnectionsService::class,
                 'widgets' => WidgetsService::class,
                 'export' => ExportService::class,
                 'exportProfiles' => ExportProfilesService::class,
@@ -817,16 +813,6 @@ class Freeform extends Plugin
                 [$this->stripe, 'addAttributesToFormTag']
             );
         }
-    }
-
-    // TODO: move into a feature bundle
-    private function initConnections(): void
-    {
-        Event::on(
-            Form::class,
-            Form::EVENT_BEFORE_VALIDATE,
-            [$this->connections, 'validateConnections']
-        );
     }
 
     // TODO: move into a feature bundle

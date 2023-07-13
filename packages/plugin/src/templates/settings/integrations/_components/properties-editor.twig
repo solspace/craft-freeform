@@ -43,7 +43,7 @@
 
     <hr>
 
-    {% if integration.id %}
+    {% if integration.id and integration.type != "elements" %}
         {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
     {% elseif integration.errors('integration') %}
         <ul class="errors field">

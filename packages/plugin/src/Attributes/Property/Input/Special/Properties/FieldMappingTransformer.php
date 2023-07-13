@@ -11,8 +11,10 @@ class FieldMappingTransformer implements TransformerInterface
     {
         $mapping = new FieldMapping();
 
-        foreach ($value as $source => $target) {
-            $mapping->add($source, $target['type'], $target['value']);
+        if (\is_array($value)) {
+            foreach ($value as $source => $target) {
+                $mapping->add($source, $target['type'], $target['value']);
+            }
         }
 
         return $mapping;

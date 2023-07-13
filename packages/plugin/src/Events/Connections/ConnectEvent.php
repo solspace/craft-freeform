@@ -5,28 +5,18 @@ namespace Solspace\Freeform\Events\Connections;
 use craft\base\ElementInterface;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Library\Connections\ConnectionInterface;
+use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 
 class ConnectEvent extends CancelableArrayableEvent
 {
-    /** @var Form */
-    private $form;
-
-    /** @var ConnectionInterface */
-    private $connection;
-
-    /** @var ElementInterface */
-    private $element;
-
     /**
      * ConnectEvent constructor.
      */
-    public function __construct(Form $form, ConnectionInterface $connection, ElementInterface $element)
-    {
-        $this->form = $form;
-        $this->connection = $connection;
-        $this->element = $element;
-
+    public function __construct(
+        private Form $form,
+        private ElementIntegrationInterface $connection,
+        private ElementInterface $element,
+    ) {
         parent::__construct();
     }
 
@@ -40,7 +30,7 @@ class ConnectEvent extends CancelableArrayableEvent
         return $this->form;
     }
 
-    public function getConnection(): ConnectionInterface
+    public function getConnection(): ElementIntegrationInterface
     {
         return $this->connection;
     }

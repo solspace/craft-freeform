@@ -52,7 +52,7 @@ class SubmissionMutationResolver extends ElementMutationResolver
 
         $requestHandled = $form->handleRequest($request);
 
-        $submission = $submissionsService->createSubmissionFromForm($form);
+        $submission = $form->getSubmission();
 
         if ($requestHandled && $form->isValid() && !$form->getActions()) {
             $submissionsService->handleSubmission($form, $submission);

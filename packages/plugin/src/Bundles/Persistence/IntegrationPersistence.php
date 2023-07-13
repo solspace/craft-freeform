@@ -43,7 +43,10 @@ class IntegrationPersistence extends FeatureBundle
 
             /** @var FormIntegrationRecord $record */
             $record = FormIntegrationRecord::find()
-                ->where(['integrationId' => $id])
+                ->where([
+                    'formId' => $event->getForm()->getId(),
+                    'integrationId' => $id,
+                ])
                 ->one()
             ;
 

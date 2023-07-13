@@ -2,7 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Submissions;
 
-use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
+use Solspace\Freeform\Events\Forms\CreateSubmissionEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -22,10 +22,11 @@ class StatusChange extends FeatureBundle
         return $form->getProperties()->get(self::BAG_KEY_STATUS);
     }
 
-    public function modifyStatus(CreateSubmissionFromFormEvent $event)
+    public function modifyStatus(CreateSubmissionEvent $event): void
     {
-        $bag = $event->getForm()->getProperties();
-        $statusId = $bag->get(self::BAG_KEY_STATUS);
+        $form = $event->getForm();
+
+        $statusId = self::getStatus($form);
         if (!$statusId) {
             return;
         }
@@ -37,6 +38,6 @@ class StatusChange extends FeatureBundle
             }
         }
 
-        $event->getSubmission()->statusId = $statusId;
+        $form->getSubmission()->statusId = $statusId;
     }
 }

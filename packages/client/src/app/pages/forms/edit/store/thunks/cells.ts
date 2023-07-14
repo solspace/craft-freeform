@@ -1,8 +1,9 @@
-import type { Cell, Row } from '@editor/builder/types/layout';
+import { type Cell, type Row, CellType } from '@editor/builder/types/layout';
 import { v4 } from 'uuid';
 
 import type { AppDispatch, AppThunk } from '..';
 import { contextSelectors } from '../slices/context/context.selectors';
+import { fieldActions } from '../slices/fields';
 import { cellActions } from '../slices/layout/cells';
 import { rwoActions } from '../slices/layout/rows';
 
@@ -55,6 +56,19 @@ export const moveExistingCellToExistingRow =
         position: order,
       })
     );
+
+    removeEmptyRows(getState(), dispatch as AppDispatch);
+  };
+
+export const removeCell =
+  (cell: Cell): AppThunk =>
+  (dispatch, getState) => {
+    const state = getState();
+
+    dispatch(cellActions.remove(cell.uid));
+    if (cell.type === CellType.Field) {
+      dispatch(fieldActions.remove(cell.targetUid));
+    }
 
     removeEmptyRows(getState(), dispatch as AppDispatch);
   };

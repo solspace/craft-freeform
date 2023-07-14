@@ -50,7 +50,10 @@ export const cellsSlice = createSlice({
       }
     },
     remove: (state, action: PayloadAction<string>) => {
-      state = state.filter((cell) => cell.uid !== action.payload);
+      state.splice(
+        state.findIndex((cell) => cell.uid === action.payload),
+        1
+      );
     },
     moveTo: (state, action: PayloadAction<MoveToPayload>) => {
       const { uid, rowUid, position } = action.payload;

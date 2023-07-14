@@ -105,7 +105,7 @@ export const useRowCellDrop = (
     }
 
     setCellWidth(width / Math.max(1, count));
-  }, [isOver, width, isCurrentRow]);
+  }, [isOver, cellCount, width, isCurrentRow]);
 
   return {
     ref,

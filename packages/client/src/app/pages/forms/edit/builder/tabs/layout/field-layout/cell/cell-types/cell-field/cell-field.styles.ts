@@ -8,6 +8,7 @@ export const CellFieldWrapper = styled.div`
 
   height: 100%;
   padding: ${spacings.sm} ${spacings.lg};
+  margin: 0;
 
   &.errors {
     color: ${colors.error};

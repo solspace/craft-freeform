@@ -7,11 +7,7 @@ import translate from '@ff-client/utils/translations';
 
 import { Cell } from '../cell/cell';
 
-import {
-  useOnMountAnimation,
-  usePlaceholderAnimation,
-  useRowAnimation,
-} from './row.animations';
+import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
 import { useRowCellDrop } from './row.cell-drop';
 import { useRowDimensions } from './row.dimensions';
 import { useRowDrop } from './row.drop';
@@ -29,7 +25,6 @@ type Props = {
 export const Row: React.FC<Props> = ({ row }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const cells = useSelector(cellSelectors.inRow(row));
-  const onMountAnimation = useOnMountAnimation();
 
   const [width, offsetX] = useRowDimensions(wrapperRef);
 

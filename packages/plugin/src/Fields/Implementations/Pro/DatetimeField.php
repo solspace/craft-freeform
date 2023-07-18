@@ -15,9 +15,6 @@ use Solspace\Freeform\Fields\Interfaces\DatetimeInterface;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\InitialValueInterface;
 use Solspace\Freeform\Fields\Traits\InitialValueTrait;
-use Solspace\Freeform\Fields\Validation\Constraints\DateTimeConstraint;
-use Solspace\Freeform\Fields\Validation\Constraints\MaxDateConstraint;
-use Solspace\Freeform\Fields\Validation\Constraints\MinDateConstraint;
 
 #[Type(
     name: 'Date & Time',
@@ -335,48 +332,6 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
         }
 
         return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new DateTimeConstraint(
-            $this->translate(
-                '"{value}" does not conform to "{format}" format.',
-                [
-                    'value' => $this->getValue(),
-                    'format' => $this->translate($this->getHumanReadableFormat()),
-                ]
-            ),
-            $this->getFormat()
-        );
-        $constraints[] = new MinDateConstraint(
-            $this->translate(
-                'Date "{date}" must be after "{minDate}"',
-                [
-                    'date' => $this->getValue(),
-                    'minDate' => $this->getGeneratedMinDate($this->getDateFormat()),
-                ]
-            ),
-            $this->getFormat(),
-            $this->getGeneratedMinDate()
-        );
-        $constraints[] = new MaxDateConstraint(
-            $this->translate(
-                'Date "{date}" must be before "{maxDate}"',
-                [
-                    'date' => $this->getValue(),
-                    'maxDate' => $this->getGeneratedMaxDate($this->getDateFormat()),
-                ]
-            ),
-            $this->getFormat(),
-            $this->getGeneratedMaxDate()
-        );
-
-        return $constraints;
     }
 
     public function getDatepickerFormat(): string

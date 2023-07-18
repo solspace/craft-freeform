@@ -237,7 +237,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getCurrentPage(): Page
     {
-        return $this->getLayout()->getPages()->get(
+        return $this->getLayout()->getPages()->getByIndex(
             $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0)
         );
     }
@@ -796,29 +796,14 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
         $isFormValid = true;
         foreach ($currentPageFields as $field) {
+            $field->validate($this);
             if (!$field->isValid()) {
                 $isFormValid = false;
             }
         }
 
-        if ($this->errors) {
+        if ($this->hasErrors()) {
             $isFormValid = false;
-        }
-
-        if ($isFormValid) {
-            foreach ($currentPageFields as $field) {
-                if ($field instanceof FileUploadInterface) {
-                    try {
-                        $field->uploadFile();
-                    } catch (\Exception) {
-                        $isFormValid = false;
-                    }
-
-                    if ($field->hasErrors()) {
-                        $isFormValid = false;
-                    }
-                }
-            }
         }
 
         $this->valid = $isFormValid;

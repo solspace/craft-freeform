@@ -12,13 +12,13 @@ import DragAndDropHandler from '@lib/plugin/handlers/fields/drag-and-drop';
 import TableHandler from '@lib/plugin/handlers/fields/table';
 import RecaptchaHandler from '@lib/plugin/handlers/form/recaptcha';
 import HoneypotHandler from '@lib/plugin/handlers/form/honeypot';
-import RuleSetHandler from '@lib/plugin/handlers/form/rule-set';
 import StripeHandler from '@lib/plugin/handlers/form/stripe-handler';
 import GoogleTagManager from '@lib/plugin/handlers/form/google-tag-manager';
 import SaveFormHandler from '@lib/plugin/handlers/form/save-form';
 import { isSafari } from '@lib/plugin/helpers/browser-check';
 import { addClass, getClassArray, removeClass } from '@lib/plugin/helpers/elements';
 import { SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, SUCCESS_BEHAVIOUR_RELOAD } from '@lib/plugin/constants/form';
+import RuleHandler from '@lib/plugin/handlers/form/rules';
 
 export default class Freeform {
   static _BACK_BUTTON_NAME = 'form_previous_page_button';
@@ -59,7 +59,7 @@ export default class Freeform {
   _handlers = [
     BackButtonHandler,
     StripeHandler,
-    RuleSetHandler,
+    RuleHandler,
     RecaptchaHandler,
     HoneypotHandler,
     DatePickerHandler,

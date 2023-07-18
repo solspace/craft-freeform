@@ -12,8 +12,6 @@
 
 namespace Solspace\Freeform\Fields\Implementations;
 
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\NoRFCWarningsValidation;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\FieldInterface;
@@ -69,28 +67,5 @@ class EmailField extends AbstractField implements RecipientInterface, Placeholde
         $recipients = [$this->getValue()];
 
         return array_filter($recipients);
-    }
-
-    /**
-     * Validate the field and add error messages if any.
-     */
-    protected function validate(): array
-    {
-        $errors = parent::validate();
-
-        $validator = new EmailValidator();
-        $email = $this->getValue();
-
-        if (empty($email)) {
-            return $errors;
-        }
-
-        $hasDot = preg_match('/@.+\..+$/', $email);
-
-        if (!$hasDot || !$validator->isValid($email, new NoRFCWarningsValidation())) {
-            $errors[] = $this->translate('{email} is not a valid email address', ['email' => $email]);
-        }
-
-        return $errors;
     }
 }

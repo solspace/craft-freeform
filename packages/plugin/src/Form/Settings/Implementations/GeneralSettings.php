@@ -15,6 +15,7 @@ use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOp
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultStatusGenerator;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultTemplateGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 use Solspace\Freeform\Form\Types\Regular;
@@ -73,6 +74,7 @@ class GeneralSettings extends SettingsNamespace
     public ?int $defaultStatus = null;
 
     #[Section('general')]
+    #[ValueGenerator(DefaultTemplateGenerator::class)]
     #[Input\Select(
         instructions: 'The formatting template to assign to this form when using Render method.',
         options: FormattingTemplateOptions::class,

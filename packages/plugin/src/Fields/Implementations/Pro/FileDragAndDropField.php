@@ -8,7 +8,6 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
-use Solspace\Freeform\Library\Helpers\FileHelper;
 
 #[Type(
     name: 'File Drag & Drop',
@@ -112,87 +111,5 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
     public function includeInGqlSchema(): bool
     {
         return false;
-    }
-
-    protected function validate(): array
-    {
-        $errors = [];
-        $handle = $this->getHandle();
-        $isUploaded = isset($_FILES[$handle]) && !empty($_FILES[$handle]['name']) && !$this->isHidden();
-
-        $file = $_FILES[$handle] ?? null;
-        if (!$file) {
-            if ($this->isRequired() && !$this->isHidden() && empty($this->getValue())) {
-                return [$this->translate('This field is required')];
-            }
-
-            return [];
-        }
-
-        $name = $file['name'];
-        $tmpName = $file['tmp_name'];
-        $size = $file['size'];
-        $errorCode = $file['error'];
-
-        if (\is_array($name)) {
-            $errors[] = $this->translate('Multiple field uploads not supported');
-        }
-
-        if ($this->isRequired() && !$isUploaded) {
-            $errors[] = $this->translate('This field is required');
-        }
-
-        $extension = pathinfo($name, \PATHINFO_EXTENSION);
-        $validExtensions = $this->getValidExtensions();
-
-        if (empty($tmpName) && \UPLOAD_ERR_NO_FILE === $errorCode) {
-            return $errors;
-        }
-
-        // Check the mime type if the server supports it
-        if (FileHelper::isMimeTypeCheckEnabled() && !empty($tmpName)) {
-            $mimeType = FileHelper::getMimeType($tmpName);
-            $mimeExtension = FileHelper::getExtensionByMimeType($mimeType);
-
-            if ($mimeExtension) {
-                $extension = $mimeExtension;
-            } else {
-                $errors[] = $this->translate('Unknown file type');
-            }
-        }
-
-        if (empty($tmpName)) {
-            switch ($errorCode) {
-                case \UPLOAD_ERR_INI_SIZE:
-                case \UPLOAD_ERR_FORM_SIZE:
-                    $errors[] = $this->translate('File size too large');
-
-                    break;
-
-                case \UPLOAD_ERR_PARTIAL:
-                    $errors[] = $this->translate('The file was only partially uploaded');
-
-                    break;
-            }
-            $errors[] = $this->translate('Could not upload file');
-        }
-
-        // Check for the correct file extension
-        if (!\in_array(strtolower($extension), $validExtensions, true)) {
-            $errors[] = $this->translate(
-                "'{extension}' is not an allowed file extension",
-                ['extension' => $extension]
-            );
-        }
-
-        $fileSizeKB = ceil($size / 1024);
-        if ($fileSizeKB > $this->getMaxFileSizeKB()) {
-            $errors[] = $this->translate(
-                'You tried uploading {fileSize}KB, but the maximum file upload size is {maxFileSize}KB',
-                ['fileSize' => $fileSizeKB, 'maxFileSize' => $this->getMaxFileSizeKB()]
-            );
-        }
-
-        return $errors;
     }
 }

@@ -27,12 +27,11 @@ use Solspace\Freeform\Fields\Interfaces\InputOnlyInterface;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Fields\Parameters\Parameters;
-use Solspace\Freeform\Fields\Validation\Constraints\ConstraintInterface;
-use Solspace\Freeform\Fields\Validation\Validator;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Attributes\FieldAttributesCollection;
+use Solspace\Freeform\Library\Exceptions\FieldExceptions\FieldException;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
@@ -107,6 +106,7 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     /** @var T */
     private mixed $defaultValue = null;
+    private bool $validated = false;
 
     public function __construct(
         #[Ignore] private Form $form
@@ -146,7 +146,12 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     {
         $this->setParameters($parameters);
 
-        $output = '<div'.$this->attributes->getContainer().'>';
+        $containerAttributes = $this->attributes
+            ->getContainer()
+            ->setIfEmpty('data-field-container', $this->getHandle())
+        ;
+
+        $output = '<div'.$containerAttributes.'>';
 
         if (!$this instanceof InputOnlyInterface) {
             $output .= $this->getLabelHtml();
@@ -256,8 +261,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
      */
     public function isValid(): bool
     {
-        $this->addErrors($this->validate());
-
         return empty($this->errors);
     }
 
@@ -404,14 +407,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         return $this->parameters->fieldIdPrefix.$attribute;
     }
 
-    /**
-     * @return ConstraintInterface[]
-     */
-    public function getConstraints(): array
-    {
-        return [];
-    }
-
     public function getContentGqlDescription(): array
     {
         $description = [];
@@ -476,6 +471,25 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     public function getForm(): Form
     {
         return $this->form;
+    }
+
+    /**
+     * Validate the field and add error messages if any.
+     */
+    public function validate(Form $form): void
+    {
+        if ($this->validated) {
+            throw new FieldException('Field has been validated already');
+        }
+
+        $this->validated = true;
+
+        $event = new ValidateEvent($form, $this);
+        Event::trigger($this, self::EVENT_VALIDATE, $event);
+
+        if (!$event->isValid) {
+            $this->errors = [];
+        }
     }
 
     /**
@@ -577,46 +591,6 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     protected function onAfterInputHtml(): string
     {
         return '';
-    }
-
-    /**
-     * Validate the field and add error messages if any.
-     */
-    protected function validate(): array
-    {
-        $event = new ValidateEvent($this);
-        Event::trigger($this, self::EVENT_BEFORE_VALIDATE, $event);
-
-        $errors = $this->getErrors();
-        $value = $this->getValue();
-
-        if ($this->isRequired() && !$this->isHidden()) {
-            if (\is_array($value)) {
-                $value = array_filter($value);
-
-                if (empty($value)) {
-                    $errors[] = $this->translate('This field is required');
-                }
-            } elseif (null === $value || '' === trim($value)) {
-                $errors[] = $this->translate('This field is required');
-            }
-        }
-
-        if ('' !== $value && !$this->isHidden()) {
-            static $validator;
-
-            if (null === $validator) {
-                $validator = new Validator();
-            }
-
-            $violationList = $validator->validate($this, $value);
-
-            $errors = array_merge($errors, $violationList->getErrors());
-        }
-
-        Event::trigger($this, self::EVENT_AFTER_VALIDATE, $event);
-
-        return $errors;
     }
 
     /**

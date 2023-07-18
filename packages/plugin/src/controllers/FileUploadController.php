@@ -140,7 +140,7 @@ class FileUploadController extends BaseController
             ;
         }
 
-        if ($uploadedFileExists && $asset) {
+        if ($uploadedFileExists) {
             if (\Craft::$app->elements->deleteElement($asset)) {
                 \Craft::$app->db
                     ->createCommand()
@@ -159,16 +159,14 @@ class FileUploadController extends BaseController
         $request = \Craft::$app->request;
 
         $formId = SessionContext::getPostedFormId();
-        $formModel = $this->getFormsService()->getFormById($formId);
-        if (!$formModel) {
+        $form = $this->getFormsService()->getFormById($formId);
+        if (!$form) {
             throw new FreeformException(
                 \Craft::t('freeform', 'Form with ID {id} not found', ['id' => $formId])
             );
         }
 
-        $form = $formModel->getForm();
         $form->handleRequest($request);
-
         if ($form->isFormPosted()) {
             return $form;
         }
@@ -176,7 +174,7 @@ class FileUploadController extends BaseController
         throw new BadRequestHttpException('Invalid form used');
     }
 
-    private function createErrorResponse($messages = [], $statusCode = 400): Response
+    private function createErrorResponse(array $messages = [], int $statusCode = 400): Response
     {
         $response = $this->asJson([
             'type' => 'field-error',

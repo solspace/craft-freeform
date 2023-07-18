@@ -60,7 +60,7 @@ class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnl
             if ($settings->twigInHtml) {
                 $variables = [
                     'form' => $this->getForm(),
-                    'fields' => $this->getForm()->getLayout()->getStorableFields(),
+                    'fields' => $this->getForm()->getLayout()->getFields()->getStorableFields(),
                     'allFields' => $this->getForm()->getLayout()->getFields(),
                 ];
 

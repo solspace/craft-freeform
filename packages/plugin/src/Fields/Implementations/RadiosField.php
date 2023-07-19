@@ -15,28 +15,22 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
-use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
-use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
 #[Type(
-    name: 'Checkbox Group',
-    typeShorthand: 'checkboxes',
+    name: 'Radios',
+    typeShorthand: 'radios',
     iconPath: __DIR__.'/Icons/text.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox-group.ejs',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/radio-group.ejs',
 )]
-class CheckboxGroupField extends AbstractExternalOptionsField implements MultiValueInterface, OneLineInterface
+class RadiosField extends AbstractExternalOptionsField implements OneLineInterface
 {
-    use MultipleValueTrait;
     use OneLineTrait;
 
-    /**
-     * Return the field TYPE.
-     */
     public function getType(): string
     {
-        return self::TYPE_CHECKBOX_GROUP;
+        return self::TYPE_RADIO_GROUP;
     }
 
     /**
@@ -46,19 +40,18 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements MultiVa
     {
         $attributes = $this->attributes->getInput()
             ->clone()
-            ->setIfEmpty('name', $this->getHandle().'[]')
-            ->setIfEmpty('type', 'checkbox')
-            ->setIfEmpty('id', $this->getIdAttribute())
-            ->setIfEmpty('value', $this->getValue())
+            ->setIfEmpty('name', $this->getHandle())
+            ->setIfEmpty('type', 'radio')
+            ->set($this->getRequiredAttribute())
         ;
 
         $output = '';
         foreach ($this->getOptions() as $index => $option) {
             $inputAttributes = $attributes
                 ->clone()
-                ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->value)
                 ->replace('checked', $option->checked)
+                ->replace('id', $this->getIdAttribute()."-{$index}")
             ;
 
             $output .= '<label>';
@@ -73,28 +66,22 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements MultiVa
     public function getValueAsString(bool $optionsAsValues = true): string
     {
         if (!$optionsAsValues) {
-            return implode(', ', $this->getValue());
+            return $this->getValue();
         }
 
-        $labels = [];
         foreach ($this->getOptions() as $option) {
             if ($option->isChecked()) {
-                $labels[] = $option->getLabel();
+                return $option->getLabel();
             }
         }
 
-        return implode(', ', $labels);
-    }
-
-    public function getContentGqlType(): array|GQLType
-    {
-        return GQLType::listOf(GQLType::string());
+        return '';
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
-        $description[] = 'Multiple option values allowed.';
+        $description[] = 'Single option value allowed.';
 
         $values = [];
 
@@ -103,7 +90,7 @@ class CheckboxGroupField extends AbstractExternalOptionsField implements MultiVa
         }
 
         if (!empty($values)) {
-            $description[] = 'Options include ['.implode(', ', $values).'].';
+            $description[] = 'Options include '.implode(', ', $values).'.';
         }
 
         $description = implode("\n", $description);

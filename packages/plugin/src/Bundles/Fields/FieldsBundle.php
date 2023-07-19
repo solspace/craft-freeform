@@ -4,8 +4,9 @@ namespace Solspace\Freeform\Bundles\Fields;
 
 use Solspace\Freeform\Bundles\Fields\Types\FieldTypesProvider;
 use Solspace\Freeform\Bundles\Fields\Types\RegisterFieldTypesEvent;
+use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Fields\Implementations\CheckboxField;
-use Solspace\Freeform\Fields\Implementations\CheckboxGroupField;
+use Solspace\Freeform\Fields\Implementations\DropdownField;
 use Solspace\Freeform\Fields\Implementations\EmailField;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Implementations\HiddenField;
@@ -23,9 +24,8 @@ use Solspace\Freeform\Fields\Implementations\Pro\RegexField;
 use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Implementations\Pro\TableField;
 use Solspace\Freeform\Fields\Implementations\Pro\WebsiteField;
-use Solspace\Freeform\Fields\Implementations\RadioGroupField;
+use Solspace\Freeform\Fields\Implementations\RadiosField;
 use Solspace\Freeform\Fields\Implementations\RecaptchaField;
-use Solspace\Freeform\Fields\Implementations\SelectField;
 use Solspace\Freeform\Fields\Implementations\TextareaField;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -55,11 +55,11 @@ class FieldsBundle extends FeatureBundle
             TextareaField::class,
             EmailField::class,
             HiddenField::class,
-            SelectField::class,
+            DropdownField::class,
             MultipleSelectField::class,
             CheckboxField::class,
-            CheckboxGroupField::class,
-            RadioGroupField::class,
+            CheckboxesField::class,
+            RadiosField::class,
             FileUploadField::class,
             FileDragAndDropField::class,
             NumberField::class,

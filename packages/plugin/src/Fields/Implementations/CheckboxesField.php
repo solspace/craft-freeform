@@ -15,22 +15,28 @@ namespace Solspace\Freeform\Fields\Implementations;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
+use Solspace\Freeform\Fields\Interfaces\MultiValueInterface;
 use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
+use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
 #[Type(
-    name: 'Radio Group',
-    typeShorthand: 'radios',
+    name: 'Checkboxes',
+    typeShorthand: 'checkboxes',
     iconPath: __DIR__.'/Icons/text.svg',
-    previewTemplatePath: __DIR__.'/PreviewTemplates/radio-group.ejs',
+    previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox-group.ejs',
 )]
-class RadioGroupField extends AbstractExternalOptionsField implements OneLineInterface
+class CheckboxesField extends AbstractExternalOptionsField implements MultiValueInterface, OneLineInterface
 {
+    use MultipleValueTrait;
     use OneLineTrait;
 
+    /**
+     * Return the field TYPE.
+     */
     public function getType(): string
     {
-        return self::TYPE_RADIO_GROUP;
+        return self::TYPE_CHECKBOX_GROUP;
     }
 
     /**
@@ -40,18 +46,19 @@ class RadioGroupField extends AbstractExternalOptionsField implements OneLineInt
     {
         $attributes = $this->attributes->getInput()
             ->clone()
-            ->setIfEmpty('name', $this->getHandle())
-            ->setIfEmpty('type', 'radio')
-            ->set($this->getRequiredAttribute())
+            ->setIfEmpty('name', $this->getHandle().'[]')
+            ->setIfEmpty('type', 'checkbox')
+            ->setIfEmpty('id', $this->getIdAttribute())
+            ->setIfEmpty('value', $this->getValue())
         ;
 
         $output = '';
         foreach ($this->getOptions() as $index => $option) {
             $inputAttributes = $attributes
                 ->clone()
+                ->replace('id', $this->getIdAttribute().'-'.$index)
                 ->replace('value', $option->value)
                 ->replace('checked', $option->checked)
-                ->replace('id', $this->getIdAttribute()."-{$index}")
             ;
 
             $output .= '<label>';
@@ -66,22 +73,28 @@ class RadioGroupField extends AbstractExternalOptionsField implements OneLineInt
     public function getValueAsString(bool $optionsAsValues = true): string
     {
         if (!$optionsAsValues) {
-            return $this->getValue();
+            return implode(', ', $this->getValue());
         }
 
+        $labels = [];
         foreach ($this->getOptions() as $option) {
             if ($option->isChecked()) {
-                return $option->getLabel();
+                $labels[] = $option->getLabel();
             }
         }
 
-        return '';
+        return implode(', ', $labels);
+    }
+
+    public function getContentGqlType(): array|GQLType
+    {
+        return GQLType::listOf(GQLType::string());
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType
     {
         $description = $this->getContentGqlDescription();
-        $description[] = 'Single option value allowed.';
+        $description[] = 'Multiple option values allowed.';
 
         $values = [];
 
@@ -90,7 +103,7 @@ class RadioGroupField extends AbstractExternalOptionsField implements OneLineInt
         }
 
         if (!empty($values)) {
-            $description[] = 'Options include '.implode(', ', $values).'.';
+            $description[] = 'Options include ['.implode(', ', $values).'].';
         }
 
         $description = implode("\n", $description);

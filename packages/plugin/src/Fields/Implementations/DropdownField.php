@@ -17,12 +17,12 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 
 #[Type(
-    name: 'Select',
+    name: 'Dropdown',
     typeShorthand: 'dropdown',
     iconPath: __DIR__.'/Icons/text.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/select.ejs',
 )]
-class SelectField extends AbstractExternalOptionsField
+class DropdownField extends AbstractExternalOptionsField
 {
     public function getType(): string
     {

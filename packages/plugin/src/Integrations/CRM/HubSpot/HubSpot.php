@@ -19,7 +19,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
-use Solspace\Freeform\Fields\Implementations\CheckboxGroupField;
+use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
@@ -493,7 +493,7 @@ class HubSpot extends CRMIntegration
      */
     private function isAppendFieldType(mixed $formField): bool
     {
-        if ($formField instanceof CheckboxGroupField) {
+        if ($formField instanceof CheckboxesField) {
             return true;
         }
 

@@ -15,11 +15,10 @@ namespace Solspace\Freeform\Services;
 use craft\db\Query;
 use Solspace\Freeform\Events\Fields\SaveEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
 
-class FieldsService extends BaseService implements FieldHandlerInterface
+class FieldsService extends BaseService
 {
     public const EVENT_BEFORE_SAVE = 'beforeSave';
     public const EVENT_AFTER_SAVE = 'afterSave';

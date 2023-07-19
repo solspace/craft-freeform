@@ -43,7 +43,6 @@ use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\PageCollection;
 use Solspace\Freeform\Library\Collections\RowCollection;
-use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\FormActionInterface;
@@ -591,11 +590,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public function getFormHandler(): FormHandlerInterface
     {
         return Freeform::getInstance()->forms;
-    }
-
-    public function getFieldHandler(): FieldHandlerInterface
-    {
-        return Freeform::getInstance()->fields;
     }
 
     public function getSubmissionHandler(): SubmissionHandlerInterface

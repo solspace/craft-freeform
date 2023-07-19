@@ -13,7 +13,6 @@
 namespace Solspace\Freeform\controllers;
 
 use Solspace\Freeform\Bundles\Form\Context\Session\SessionContext;
-use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Controllers\ConfigureCORSEvent;
 use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Form\Form;
@@ -51,17 +50,16 @@ class SubmitController extends BaseController
         $requestHandled = $form->handleRequest($request);
         $formsService = $this->getFormsService();
         $submissionsService = $this->getSubmissionsService();
-        $submission = $submissionsService->createSubmissionFromForm($form);
         if ($requestHandled && $form->isFormPosted() && $form->isValid() && !$form->getActions() && $form->isFinished()) {
-            $submissionsService->handleSubmission($form, $submission);
+            $submissionsService->handleSubmission($form);
 
-            $returnUrl = $formsService->getReturnUrl($form, $submission);
+            $returnUrl = $formsService->getReturnUrl($form);
 
             $form->reset();
             $form->persistState();
 
             if ($isAjaxRequest) {
-                return $this->toAjaxResponse($form, $submission, $returnUrl);
+                return $this->toAjaxResponse($form, $returnUrl);
             }
 
             $behavior = $form->getSettings()->getBehavior();
@@ -78,7 +76,7 @@ class SubmitController extends BaseController
         $form->persistState();
 
         if ($isAjaxRequest) {
-            return $this->toAjaxResponse($form, $submission);
+            return $this->toAjaxResponse($form);
         }
 
         return null;
@@ -118,8 +116,10 @@ class SubmitController extends BaseController
         ];
     }
 
-    private function toAjaxResponse(Form $form, Submission $submission, string $returnUrl = null): Response
+    private function toAjaxResponse(Form $form, string $returnUrl = null): Response
     {
+        $submission = $form->getSubmission();
+
         $fieldErrors = [];
         foreach ($form->getLayout()->getFields() as $field) {
             if ($field->hasErrors()) {

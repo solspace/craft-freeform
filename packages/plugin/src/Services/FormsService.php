@@ -521,8 +521,10 @@ class FormsService extends BaseService implements FormHandlerInterface
         return false;
     }
 
-    public function getReturnUrl(Form $form, Submission $submission): ?string
+    public function getReturnUrl(Form $form): ?string
     {
+        $submission = $form->getSubmission();
+
         try {
             $request = \Craft::$app->getRequest();
 

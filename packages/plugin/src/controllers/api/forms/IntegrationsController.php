@@ -5,7 +5,7 @@ namespace Solspace\Freeform\controllers\api\forms;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationDTOProvider;
 use Solspace\Freeform\controllers\BaseApiController;
-use Symfony\Component\Serializer\Serializer;
+use Solspace\Freeform\Library\Serialization\FreeformSerializer;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
@@ -17,7 +17,7 @@ class IntegrationsController extends BaseApiController
         $config,
         private FormIntegrationsProvider $formIntegrationsProvider,
         private IntegrationDTOProvider $integrationDTOProvider,
-        private Serializer $serializer,
+        private FreeformSerializer $serializer,
     ) {
         parent::__construct($id, $module, $config ?? []);
     }

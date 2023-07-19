@@ -14,7 +14,9 @@
 namespace Solspace\Freeform\Form;
 
 use craft\helpers\Template;
+use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\AttachFormAttributesEvent;
+use Solspace\Freeform\Events\Forms\CreateSubmissionEvent;
 use Solspace\Freeform\Events\Forms\FormLoadedEvent;
 use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
@@ -53,6 +55,7 @@ use Solspace\Freeform\Library\Helpers\ReCaptchaHelper;
 use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterface;
 use Solspace\Freeform\Models\Settings as SettingsModel;
 use Symfony\Component\PropertyAccess\PropertyAccessor;
+use Symfony\Component\Serializer\Annotation\Ignore;
 use Twig\Markup;
 use yii\base\Event;
 use yii\web\Request;
@@ -126,6 +129,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     private bool $submissionLimitReached = false;
     private bool $graphqlPosted = false;
     private array $graphqlArguments = [];
+
+    private ?Submission $submission = null;
 
     public function __construct(
         array $config,
@@ -222,11 +227,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public function getHash(): string
     {
         return $this->getProperties()->get(self::HASH_KEY, '');
-    }
-
-    public function getSubmissionTitleFormat(): string
-    {
-        return $this->getSettings()->getGeneral()->submissionTitle;
     }
 
     public function getDescription(): string
@@ -461,6 +461,19 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this->graphqlPosted;
     }
 
+    #[Ignore]
+    public function getSubmission(): ?Submission
+    {
+        return $this->submission;
+    }
+
+    public function setSubmission(Submission $submission): self
+    {
+        $this->submission = $submission;
+
+        return $this;
+    }
+
     public function setGraphQLPosted(bool $graphqlPosted): self
     {
         $this->graphqlPosted = $graphqlPosted;
@@ -485,6 +498,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function handleRequest(Request $request): bool
     {
+        $this->createSubmission();
+
         $method = strtoupper($this->getProperties()->get('method', 'post'));
         if ($method !== $request->getMethod()) {
             return false;
@@ -760,6 +775,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public function normalize(): array
     {
         return $this->jsonSerialize();
+    }
+
+    private function createSubmission(): void
+    {
+        Event::trigger(self::class, self::EVENT_CREATE_SUBMISSION, new CreateSubmissionEvent($this));
     }
 
     private function validate(): void

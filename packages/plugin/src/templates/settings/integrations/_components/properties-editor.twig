@@ -43,7 +43,7 @@
 
     <hr>
 
-    {% if integration.id %}
+    {% if integration.id and integration.type != "elements" %}
         {% include "freeform/settings/components/auth-checker" with { integration: integration } %}
     {% elseif integration.errors('integration') %}
         <ul class="errors field">
@@ -63,7 +63,7 @@
                     </div>
                 {% endif %}
 
-                {% for property in type.properties|filter((prop) => not prop.hasFlag('internal')) %}
+                {% for property in type.properties|filter((prop) => not prop.hasFlag('internal', 'instance')) %}
                     {% set handle = property.handle %}
                     {% set value = integration.metadata[handle] is defined ? integration.metadata[handle] : property.value %}
 

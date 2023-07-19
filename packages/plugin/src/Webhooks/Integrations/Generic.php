@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Webhooks\Integrations;
 use GuzzleHttp\Client;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Fields\Implementations\FileUploadField;
-use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Webhooks\AbstractWebhook;
 
@@ -14,7 +13,7 @@ class Generic extends AbstractWebhook
     public function triggerWebhook(ProcessSubmissionEvent $event): bool
     {
         $form = $event->getForm();
-        $submission = $event->getSubmission();
+        $submission = $form->getSubmission();
 
         $json = [
             'form' => [
@@ -34,11 +33,7 @@ class Generic extends AbstractWebhook
             $json['token'] = $submission->token;
         }
 
-        foreach ($form->getLayout()->getFields() as $field) {
-            if ($field instanceof NoStorageInterface) {
-                continue;
-            }
-
+        foreach ($form->getLayout()->getFields()->getStorableFields() as $field) {
             if ($field instanceof FileUploadField) {
                 $value = Freeform::getInstance()->files->getAssetUrlsFromIds($field->getValue());
             } else {

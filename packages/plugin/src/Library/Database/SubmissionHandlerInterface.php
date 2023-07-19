@@ -12,7 +12,6 @@
 
 namespace Solspace\Freeform\Library\Database;
 
-use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Form\Form;
 
@@ -27,13 +26,6 @@ interface SubmissionHandlerInterface
      * Check for a session flash variable for form submissions.
      */
     public function wasFormFlashSubmitted(Form $form): bool;
-
-    /**
-     * Creates non-stored Submission or SpamSubmission instance from form field values.
-     *
-     * @return SpamSubmission|Submission
-     */
-    public function createSubmissionFromForm(Form $form);
 
     /**
      * Runs all integrations on submission.

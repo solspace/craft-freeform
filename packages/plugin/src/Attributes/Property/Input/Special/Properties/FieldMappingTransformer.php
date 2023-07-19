@@ -9,15 +9,23 @@ class FieldMappingTransformer implements TransformerInterface
 {
     public function transform($value): FieldMapping
     {
-        return new FieldMapping();
-    }
+        $mapping = new FieldMapping();
 
-    public function reverseTransform($value): array
-    {
-        if ($value instanceof FieldMapping) {
-            return [];
+        if (\is_array($value)) {
+            foreach ($value as $source => $target) {
+                $mapping->add($source, $target['type'], $target['value']);
+            }
         }
 
-        return [];
+        return $mapping;
+    }
+
+    public function reverseTransform($value): object
+    {
+        if ($value instanceof FieldMapping) {
+            return $value->normalize();
+        }
+
+        return new \stdClass();
     }
 }

@@ -1,6 +1,6 @@
 import type { Property } from './properties';
 
-enum TargetFieldType {
+export enum TargetFieldType {
   Relation = 'relation',
   Custom = 'custom',
 }
@@ -10,10 +10,7 @@ type TargetField = {
   value: string;
 };
 
-export type FieldMapping = {
-  source: string;
-  target: TargetField;
-};
+export type FieldMapping = Record<string, TargetField>;
 
 export type Integration = {
   id: number;

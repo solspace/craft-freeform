@@ -18,20 +18,14 @@ use craft\db\Table;
 use craft\elements\db\ElementQueryInterface;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
-use Solspace\Freeform\Bundles\Form\Context\Request\EditSubmissionContext;
-use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Forms\StoreSubmissionEvent;
 use Solspace\Freeform\Events\Forms\SubmitEvent as FormSubmitEvent;
-use Solspace\Freeform\Events\Submissions\CreateSubmissionFromFormEvent;
 use Solspace\Freeform\Events\Submissions\DeleteEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Events\Submissions\SubmitEvent;
 use Solspace\Freeform\Fields\FieldInterface;
-use Solspace\Freeform\Fields\Implementations\FileUploadField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
-use Solspace\Freeform\Fields\Interfaces\ObscureValueInterface;
-use Solspace\Freeform\Fields\Interfaces\StaticValueInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
@@ -145,9 +139,9 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         return $submissionCountByForm;
     }
 
-    public function handleSubmission(Form $form, Submission $submission): void
+    public function handleSubmission(Form $form): void
     {
-        $freeform = Freeform::getInstance();
+        $submission = $form->getSubmission();
 
         $event = new FormSubmitEvent($form, $submission);
         Event::trigger(Form::class, Form::EVENT_SUBMIT, $event);
@@ -195,91 +189,6 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         return false;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function createSubmissionFromForm(Form $form)
-    {
-        $isNew = true;
-        $submission = null;
-        $editToken = EditSubmissionContext::getToken($form);
-
-        if (!$form->isMarkedAsSpam()) {
-            if ($editToken && Freeform::getInstance()->isPro()) {
-                $submission = $this->getSubmissionByToken($editToken);
-                $isNew = false;
-            }
-
-            if (null === $submission) {
-                $submission = Submission::create($form);
-            }
-        } else {
-            $submission = SpamSubmission::create($form);
-        }
-
-        $fields = $form->getLayout()->getFields()->getStorableFields();
-        $savableFields = [];
-        foreach ($fields as $field) {
-            if (!$form->hasFieldBeenSubmitted($field)) {
-                continue;
-            }
-
-            $value = $field->getValue();
-
-            // Since the value is obfuscated, we have to get the real value
-            if ($field instanceof ObscureValueInterface) {
-                $value = $field->getActualValue($value);
-            } elseif ($field instanceof StaticValueInterface) {
-                if (!empty($value)) {
-                    $value = $field->getStaticValue();
-                }
-            } elseif ($field instanceof FileUploadField && !$isNew && empty($field->getValue())) {
-                continue;
-            }
-
-            $savableFields[$field->getHandle()] = $value;
-        }
-
-        $dateCreated = new \DateTime();
-
-        $fieldsByHandle = $form->getLayout()->getFields()->getListByHandle();
-
-        if (!$submission->id) {
-            $behaviorSettings = $form->getSettings()->getBehavior();
-            $generalSettings = $form->getSettings()->getGeneral();
-
-            $collectIps = $behaviorSettings->collectIpAddresses;
-
-            $submission->ip = $collectIps ? \Craft::$app->request->getUserIP() : null;
-            $submission->formId = $form->getId();
-            $submission->isSpam = $form->isMarkedAsSpam();
-            $submission->dateCreated = $dateCreated;
-            $submission->statusId = $generalSettings->defaultStatus;
-        }
-
-        $submission->title = \Craft::$app->view->renderString(
-            $form->getSubmissionTitleFormat(),
-            array_merge(
-                $fieldsByHandle,
-                [
-                    'dateCreated' => $dateCreated,
-                    'form' => $form,
-                ]
-            )
-        );
-
-        $submission->dateUpdated = $dateCreated;
-        $submission->setFormFieldValues($savableFields, $isNew);
-
-        Event::trigger(
-            Form::class,
-            Form::EVENT_CREATE_SUBMISSION,
-            new CreateSubmissionFromFormEvent($form, $submission)
-        );
-
-        return $submission;
     }
 
     public function postProcessSubmission(Form $form, Submission $submission): void
@@ -510,19 +419,5 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
     private function markFormAsSubmitted(Form $form): void
     {
         \Craft::$app->session->setFlash(Form::SUBMISSION_FLASH_KEY, $form->getId());
-    }
-
-    /**
-     * Checks if the default set status is valid
-     * If it isn't - gets the first one and sets that.
-     */
-    private function validateAndUpdateStatus(Submission $submission)
-    {
-        $statusService = Freeform::getInstance()->statuses;
-        $statusIds = $statusService->getAllStatusIds();
-
-        if (!\in_array($submission->statusId, $statusIds, false)) {
-            $submission->statusId = reset($statusIds);
-        }
     }
 }

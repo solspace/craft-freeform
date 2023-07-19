@@ -312,9 +312,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     /**
      * @return $this
      */
-    public function addError(string $error): self
+    public function addError(...$error): self
     {
-        $this->addErrors([$error]);
+        $this->addErrors($error);
 
         return $this;
     }

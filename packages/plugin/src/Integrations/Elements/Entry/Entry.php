@@ -4,17 +4,16 @@ namespace Solspace\Freeform\Integrations\Elements\Entry;
 
 use craft\base\Element;
 use craft\elements\Entry as CraftEntry;
-use craft\models\FieldLayout;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
+use Solspace\Freeform\Attributes\Property\Validators\Required;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegration;
-use yii\base\UnknownPropertyException;
 
 #[Type(
     name: 'Entry',
@@ -23,36 +22,56 @@ use yii\base\UnknownPropertyException;
 )]
 class Entry extends ElementIntegration
 {
+    #[Required]
     #[Input\Select(
         label: 'Entry Type',
+        emptyOption: 'Select an entry type',
         options: EntryTypeOptionsGenerator::class,
     )]
     protected string $entryTypeId = '';
 
-    #[Flag(self::FLAG_INTERNAL)]
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
-    #[Input\Special\Properties\FieldMapping]
-    protected ?FieldMapping $mapping = null;
+    #[VisibilityFilter('!!values.entryTypeId')]
+    #[Input\Special\Properties\FieldMapping(
+        source: 'api/elements/entries/attributes',
+    )]
+    protected ?FieldMapping $attributeMapping = null;
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[ValueTransformer(FieldMappingTransformer::class)]
+    #[VisibilityFilter('!!values.entryTypeId')]
+    #[Input\Special\Properties\FieldMapping(
+        source: 'api/elements/entries/fields',
+        parameterFields: ['values.entryTypeId' => 'entryTypeId'],
+    )]
+    protected ?FieldMapping $fieldMapping = null;
 
     public function isConnectable(): bool
     {
         return null !== $this->getEntryTypeId();
     }
 
-    public function validate(Form $form, Submission $submission): bool
+    public function getEntryTypeId(): int
     {
-        // TODO: Implement validate() method.
+        return $this->entryTypeId;
     }
 
-    public function connect(Form $form, Submission $submission): bool
+    public function getAttributeMapping(): FieldMapping
     {
-        // TODO: Implement connect() method.
+        return $this->attributeMapping;
     }
 
-    public function buildElement(): Element
+    public function getFieldMapping(): FieldMapping
+    {
+        return $this->fieldMapping;
+    }
+
+    public function buildElement(Form $form): Element
     {
         $entryType = \Craft::$app->sections->getEntryTypeById($this->getEntryTypeId());
 
+        $element = $this->getAssignedFormElement($form);
         if ($element instanceof CraftEntry) {
             $entry = $element;
         } else {
@@ -62,48 +81,38 @@ class Entry extends ElementIntegration
             ]);
         }
 
-        $fieldLayout = $entry->getFieldLayout();
-        if (null === $fieldLayout) {
-            $fieldLayout = new FieldLayout();
-        }
-
-        foreach ($transformers as $transformer) {
-            $field = $fieldLayout->getFieldByHandle($transformer->getCraftFieldHandle());
-
-            $craftField = $transformer->getCraftFieldHandle();
-            $value = $transformer->transformValueFor($field);
-
-            try {
-                $entry->{$craftField} = $value;
-            } catch (\Exception $e) {
-            }
-
-            try {
-                $entry->setFieldValue($craftField, $value);
-            } catch (UnknownPropertyException $e) {
-            }
-        }
+        $this->processMapping($entry, $form, $this->attributeMapping);
+        $this->processMapping($entry, $form, $this->fieldMapping);
 
         if (!$entry->slug) {
             $entry->slug = $entry->title;
         }
 
-        $currentSiteId = \Craft::$app->sites->currentSite->id;
-        $siteIds = $entry->getSection()->getSiteIds();
-        if (\in_array($currentSiteId, $siteIds, false)) {
-            $siteId = $currentSiteId;
-        } else {
-            $siteId = reset($siteIds);
+        if (!$entry->siteId) {
+            $currentSiteId = \Craft::$app->sites->currentSite->id;
+            $siteIds = $entry->getSection()->getSiteIds();
+            if (\in_array($currentSiteId, $siteIds)) {
+                $siteId = $currentSiteId;
+            } else {
+                $siteId = reset($siteIds);
+            }
+
+            $entry->siteId = $siteId;
         }
 
-        $entry->siteId = $siteId;
-        $entry->enabled = !$this->isDisabled();
+        $entry->enabled = true;
 
         return $entry;
     }
 
-    public function getEntryTypeId(): int
+    public function onValidate(Form $form, Element $element): void
     {
-        return $this->entryTypeId;
+        $type = $element->getType();
+
+        if (!$type->hasTitleField && !$element->title) {
+            // If no title is present - generate one to remove errors
+            $element->title = sha1(uniqid('', true).time());
+            $element->slug = $element->title;
+        }
     }
 }

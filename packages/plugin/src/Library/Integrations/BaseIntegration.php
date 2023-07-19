@@ -26,6 +26,7 @@ abstract class BaseIntegration implements IntegrationInterface
 {
     public function __construct(
         private ?int $id,
+        private bool $enabled,
         private string $handle,
         private string $name,
         private \DateTime $lastUpdate,
@@ -41,6 +42,11 @@ abstract class BaseIntegration implements IntegrationInterface
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function isEnabled(): bool
+    {
+        return $this->enabled;
     }
 
     public function getHandle(): string
@@ -190,6 +196,10 @@ abstract class BaseIntegration implements IntegrationInterface
             }
 
             $value = $properties[$handle];
+            if ($property->transformer) {
+                $value = $property->transformer->transform($value);
+            }
+
             if ($property->hasFlag(self::FLAG_ENCRYPTED)) {
                 $value = \Craft::$app->security->decryptByKey(base64_decode($value), $securityKey);
             }

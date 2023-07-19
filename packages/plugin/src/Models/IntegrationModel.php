@@ -104,6 +104,7 @@ class IntegrationModel extends Model
 
         return new $className(
             $this->id,
+            (bool) $this->enabled,
             $this->handle ?? '',
             $this->name ?? '',
             $this->lastUpdate,

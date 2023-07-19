@@ -68,6 +68,6 @@ export const rowsSlice = createSlice({
 });
 
 const { actions } = rowsSlice;
-export { actions as rwoActions };
+export { actions as rowActions };
 
 export default rowsSlice.reducer;

@@ -7,7 +7,7 @@ import type { FieldType } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
 import { contextSelectors } from '../slices/context/context.selectors';
-import { rwoActions } from '../slices/layout/rows';
+import { rowActions } from '../slices/layout/rows';
 
 export const addNewFieldToNewRow =
   (fieldType: FieldType, row?: Row): AppThunk =>
@@ -25,7 +25,7 @@ export const addNewFieldToNewRow =
 
     dispatch(fieldActions.add({ fieldType, uid: fieldUid }));
     dispatch(
-      rwoActions.add({
+      rowActions.add({
         layoutUid: currentPage.layoutUid,
         uid: rowUid,
         order: row?.order,

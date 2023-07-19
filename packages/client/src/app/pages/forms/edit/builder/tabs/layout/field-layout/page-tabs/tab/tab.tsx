@@ -6,15 +6,25 @@ import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
 import { pageActions } from '@editor/store/slices/layout/pages';
+import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
+import { deletePage } from '@editor/store/thunks/pages';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import classes from '@ff-client/utils/classes';
+import translate from '@ff-client/utils/translations';
 
 import { useDragContext } from '../../../drag.context';
 
 import { useTabDrag } from './tab.drag';
 import { useTabDragAnimation } from './tab.drag-animation';
 import { useTabDrop, useTabPageDrop } from './tab.drop';
-import { Input, PageTab, TabDrop, TabWrapper } from './tab.styles';
+import {
+  Input,
+  PageTab,
+  RemoveTabButton,
+  TabDrop,
+  TabWrapper,
+} from './tab.styles';
+import TrashIcon from './trash.svg';
 
 type Props = {
   page: Page;
@@ -22,7 +32,9 @@ type Props = {
 };
 
 export const Tab: React.FC<Props> = ({ page, index }) => {
-  const { uid } = useSelector(contextSelectors.currentPage);
+  const currentPage = useSelector(contextSelectors.currentPage);
+  const totalPages = useSelector(pageSelecors.count);
+
   const dispatch = useAppDispatch();
   const { dragType } = useDragContext();
 
@@ -33,7 +45,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
 
   const [isEditing, setIsEditing] = useState<boolean>(false);
 
-  const { canDrop, ref: dropRef } = useTabDrop(uid, page);
+  const { canDrop, ref: dropRef } = useTabDrop(currentPage?.uid, page);
   const { isDragging, ref: dragRef } = useTabDrag(index, page);
 
   const { ref: dropPageRef, dragItemIndex } = useTabPageDrop(
@@ -86,7 +98,7 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
       <PageTab
         ref={clickOutsideRef}
         className={classes(
-          uid === page.uid && 'active',
+          currentPage?.uid === page.uid && 'active',
           pageHasErrors && 'errors',
           canDrop && 'can-drop',
           isEditing && 'is-editing',
@@ -112,6 +124,21 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
           />
         ) : (
           <span>{page.label}</span>
+        )}
+
+        {totalPages > 1 && (
+          <RemoveTabButton
+            onClick={(event) => {
+              event.stopPropagation();
+              if (!confirm(translate('Are you sure?'))) {
+                return;
+              }
+
+              dispatch(deletePage(page));
+            }}
+          >
+            <TrashIcon />
+          </RemoveTabButton>
         )}
       </PageTab>
     </TabWrapper>

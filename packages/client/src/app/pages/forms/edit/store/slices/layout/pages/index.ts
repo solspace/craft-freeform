@@ -40,9 +40,14 @@ export const pagesSlice = createSlice({
     },
     remove: (state, action: PayloadAction<string>) => {
       let order = 0;
-      state = state
-        .filter((page) => page.uid !== action.payload)
-        .map((page) => ({ ...page, order: order++ }));
+      state.splice(
+        state.findIndex((page) => page.uid === action.payload),
+        1
+      );
+
+      state.forEach((page) => {
+        page.order = order++;
+      });
     },
     moveTo: (state, action: PayloadAction<MoveToPayload>) => {
       const { uid, order } = action.payload;

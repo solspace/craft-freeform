@@ -5,7 +5,7 @@ import type { AppDispatch, AppThunk } from '..';
 import { contextSelectors } from '../slices/context/context.selectors';
 import { fieldActions } from '../slices/fields';
 import { cellActions } from '../slices/layout/cells';
-import { rwoActions } from '../slices/layout/rows';
+import { rowActions } from '../slices/layout/rows';
 
 import { removeEmptyRows } from './rows';
 
@@ -22,7 +22,7 @@ export const moveExistingCellToNewRow =
     }
 
     dispatch(
-      rwoActions.add({
+      rowActions.add({
         layoutUid: currentPage.layoutUid,
         uid: rowUid,
         order,

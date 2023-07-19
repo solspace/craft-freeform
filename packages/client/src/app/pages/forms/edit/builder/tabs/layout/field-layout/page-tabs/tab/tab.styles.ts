@@ -11,6 +11,24 @@ export const NewTabWrapper = styled(TabWrapper)`
   justify-self: flex-end;
 `;
 
+export const RemoveTabButton = styled.button`
+  position: absolute;
+  top: 3px;
+  right: 0;
+
+  transition: all 0.2s ease-in-out;
+  transform: scale(0.8);
+  opacity: 0;
+
+  &:hover {
+    transform: scale(1);
+  }
+
+  svg {
+    width: 20px;
+  }
+`;
+
 export const PageTab = styled(animated.div)`
   height: 100%;
   display: flex;
@@ -50,6 +68,10 @@ export const PageTab = styled(animated.div)`
 
   &:hover {
     cursor: pointer;
+
+    ${RemoveTabButton} {
+      opacity: 1;
+    }
   }
 `;
 

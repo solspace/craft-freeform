@@ -27,11 +27,11 @@ interface FieldInterface
     public const TYPE_TEXT = 'text';
     public const TYPE_TEXTAREA = 'textarea';
     public const TYPE_HIDDEN = 'hidden';
-    public const TYPE_SELECT = 'select';
+    public const TYPE_SELECT = 'dropdown';
     public const TYPE_MULTIPLE_SELECT = 'multiple-select';
     public const TYPE_CHECKBOX = 'checkbox';
-    public const TYPE_CHECKBOX_GROUP = 'checkbox-group';
-    public const TYPE_RADIO_GROUP = 'radio-group';
+    public const TYPE_CHECKBOX_GROUP = 'checkboxes';
+    public const TYPE_RADIO_GROUP = 'radios';
     public const TYPE_HTML = 'html';
     public const TYPE_SUBMIT = 'submit';
     public const TYPE_SAVE = 'save';

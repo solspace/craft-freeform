@@ -20,7 +20,7 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
 #[Type(
     name: 'Radio Group',
-    typeShorthand: 'radio-group',
+    typeShorthand: 'radios',
     iconPath: __DIR__.'/Icons/text.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/radio-group.ejs',
 )]

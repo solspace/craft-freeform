@@ -18,7 +18,7 @@ use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 
 #[Type(
     name: 'Select',
-    typeShorthand: 'select',
+    typeShorthand: 'dropdown',
     iconPath: __DIR__.'/Icons/text.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/select.ejs',
 )]

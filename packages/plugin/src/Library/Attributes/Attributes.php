@@ -84,7 +84,10 @@ class Attributes implements \Countable, \JsonSerializable
         }
 
         if (\is_array($value)) {
-            $value = array_map('trim', $value);
+            $value = array_map(
+                fn ($item) => null === $item ? $item : trim($item),
+                $value
+            );
             $value = array_filter($value);
             $value = implode(' ', $value);
         }

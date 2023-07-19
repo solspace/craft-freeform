@@ -28,12 +28,16 @@ class GeneralSettings extends SettingsNamespace
         label: 'General',
         icon: __DIR__.'/Icons/general.svg',
     )]
-    #[Validators\Required]
     #[Input\Text(
         label: 'Form Name',
         instructions: 'Name or title of the form',
         placeholder: 'My Form',
     )]
+    #[Middleware('injectInto', [
+        'target' => 'handle',
+        'camelize' => true,
+    ])]
+    #[Validators\Required]
     public string $name = '';
 
     #[Section('general')]
@@ -42,7 +46,7 @@ class GeneralSettings extends SettingsNamespace
         instructions: "How you'll refer to this form in the templates",
         placeholder: 'myHandle',
     )]
-    #[Middleware('handle', [false])]
+    #[Middleware('handle')]
     #[Validators\Required]
     #[Validators\Handle]
     #[Validators\Length(255)]

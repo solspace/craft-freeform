@@ -42,18 +42,6 @@ use yii\base\Event;
  */
 abstract class AbstractField implements FieldInterface, IdentificatorInterface
 {
-    #[Section('general')]
-    #[Input\Text(
-        instructions: "How you'll refer to this field in templates",
-        order: 2,
-        placeholder: 'myField',
-    )]
-    #[Middleware('handle')]
-    #[Flag('code')]
-    #[Validators\Required]
-    #[Validators\Handle]
-    #[Validators\Length(100)]
-    public string $handle = '';
     #[Section(
         handle: 'general',
         label: 'General',
@@ -65,8 +53,25 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
         order: 1,
         placeholder: 'My Field',
     )]
+    #[Middleware('injectInto', [
+        'target' => 'handle',
+        'camelize' => true,
+    ])]
     #[Validators\Required]
     protected string $label = '';
+
+    #[Section('general')]
+    #[Input\Text(
+        instructions: "How you'll refer to this field in templates",
+        order: 2,
+        placeholder: 'myField',
+    )]
+    #[Middleware('handle')]
+    #[Flag('code')]
+    #[Validators\Required]
+    #[Validators\Handle]
+    #[Validators\Length(100)]
+    protected string $handle = '';
 
     #[Section('general')]
     #[Input\TextArea(

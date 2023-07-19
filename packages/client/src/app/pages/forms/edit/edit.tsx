@@ -8,7 +8,7 @@ import {
   useQueryFormSettings,
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
-import kebabCase from 'lodash.kebabcase';
+import camelCase from 'lodash.camelcase';
 import { adjectives, uniqueNamesGenerator } from 'unique-names-generator';
 import { colors } from 'unique-names-generator';
 import { v4 } from 'uuid';
@@ -48,7 +48,7 @@ export const Edit: React.FC = () => {
           uid: v4(),
           type: 'Solspace\\Freeform\\Form\\Types\\Regular',
           name: formName,
-          handle: kebabCase(formName),
+          handle: camelCase(formName),
           settings: {},
         })
       );

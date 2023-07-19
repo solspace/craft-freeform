@@ -17,6 +17,7 @@ import { Builder } from './builder/builder';
 import { cellActions } from './store/slices/layout/cells';
 import { pageActions } from './store/slices/layout/pages';
 import { rowActions } from './store/slices/layout/rows';
+import { addNewPage } from './store/thunks/pages';
 import { useAppDispatch } from './store';
 
 type RouteParams = {
@@ -57,7 +58,7 @@ export const Edit: React.FC = () => {
       dispatch(rowActions.set([]));
       dispatch(cellActions.set([]));
 
-      dispatch(contextActions.setPage(undefined));
+      dispatch(addNewPage());
 
       return;
     }

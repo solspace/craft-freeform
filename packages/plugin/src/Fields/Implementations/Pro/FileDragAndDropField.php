@@ -12,7 +12,7 @@ use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 #[Type(
     name: 'File Drag & Drop',
     typeShorthand: 'file-drag-and-drop',
-    iconPath: __DIR__.'/../Icons/file-upload.svg',
+    iconPath: __DIR__.'/../Icons/file-upload-drag-drop.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/file-drag-n-drop.ejs',
 )]
 class FileDragAndDropField extends FileUploadField implements ExtraFieldInterface, PlaceholderInterface

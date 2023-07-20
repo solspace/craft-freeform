@@ -12,7 +12,7 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 #[Type(
     name: 'Signature',
     typeShorthand: 'signature',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/signature.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/signature.ejs',
 )]
 class SignatureField extends AbstractField implements ExtraFieldInterface

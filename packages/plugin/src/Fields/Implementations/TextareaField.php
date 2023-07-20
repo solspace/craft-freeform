@@ -20,7 +20,7 @@ use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
 #[Type(
     name: 'Textarea',
     typeShorthand: 'textarea',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/textarea.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/textarea.ejs',
 )]
 class TextareaField extends TextField implements PlaceholderInterface

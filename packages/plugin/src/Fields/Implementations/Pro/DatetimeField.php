@@ -19,7 +19,7 @@ use Solspace\Freeform\Fields\Traits\InitialValueTrait;
 #[Type(
     name: 'Date & Time',
     typeShorthand: 'datetime',
-    iconPath: __DIR__.'/../Icons/date.svg',
+    iconPath: __DIR__.'/../Icons/date-time.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/date-time.ejs',
 )]
 class DatetimeField extends TextField implements InitialValueInterface, DatetimeInterface, ExtraFieldInterface

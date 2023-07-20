@@ -13,9 +13,9 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Models\Settings;
 
 #[Type(
-    name: 'reCAPTCHA',
+    name: 'Captcha',
     typeShorthand: 'recaptcha',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/captcha.svg',
 )]
 class RecaptchaField extends AbstractField implements NoStorageInterface, InputOnlyInterface, RecaptchaInterface
 {

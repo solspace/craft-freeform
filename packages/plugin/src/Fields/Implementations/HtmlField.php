@@ -26,7 +26,7 @@ use Solspace\Freeform\Models\Settings;
 #[Type(
     name: 'HTML',
     typeShorthand: 'html',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/html.svg',
 )]
 class HtmlField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface
 {

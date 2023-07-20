@@ -5,7 +5,7 @@ namespace Solspace\Freeform\Bundles\GraphQL\Arguments;
 use craft\gql\base\Arguments;
 use GraphQL\Type\Definition\Type;
 
-class ReCaptchaArguments extends Arguments
+class SubmissionReCaptchaArguments extends Arguments
 {
     public static function getArguments(): array
     {

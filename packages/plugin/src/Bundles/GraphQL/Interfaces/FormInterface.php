@@ -2,10 +2,10 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\FormReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
@@ -13,7 +13,7 @@ use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\HoneypotResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\MailingListNameResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
-use Solspace\Freeform\Bundles\GraphQL\Resolvers\ReCaptchaResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormReCaptchaResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
 use Solspace\Freeform\Elements\Submission;
@@ -163,20 +163,8 @@ class FormInterface extends AbstractInterface
             ],
             'reCaptcha' => [
                 'name' => 'reCaptcha',
-                'type' => new ObjectType([
-                    'name' => 'ReCaptchaObjectType',
-                    'fields' => [
-                        'enabled' => [
-                            'type' => Type::boolean(),
-                            'description' => 'Is ReCaptcha enabled for this form',
-                        ],
-                        'name' => [
-                            'type' => Type::string(),
-                            'description' => 'The forms GraphQL mutation name for submissions',
-                        ],
-                    ],
-                ]),
-                'resolve' => ReCaptchaResolver::class.'::resolve',
+                'type' => FormReCaptchaInterface::getType(),
+                'resolve' => FormReCaptchaResolver::class.'::resolve',
                 'description' => 'The ReCaptcha for this form',
             ],
             'honeypot' => [

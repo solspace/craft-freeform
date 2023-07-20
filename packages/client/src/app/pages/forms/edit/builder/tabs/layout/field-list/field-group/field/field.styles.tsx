@@ -18,8 +18,6 @@ export const Wrapper = styled.div`
   border-radius: 3px;
 
   font-size: 12px;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier,
-    monospace;
 
   transition: all 0.2s ease-in-out;
 

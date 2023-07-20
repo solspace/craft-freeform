@@ -2,11 +2,11 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Arguments\Inputs;
 
-use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\ReCaptchaInputType;
+use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\SubmissionReCaptchaInputType;
 use Solspace\Freeform\Library\Composer\Components\Form;
 use Solspace\Freeform\Library\Helpers\ReCaptchaHelper;
 
-class ReCaptchaInputArguments
+class SubmissionReCaptchaInputArguments
 {
     private static Form $form;
 
@@ -23,7 +23,7 @@ class ReCaptchaInputArguments
             return [
                 'reCaptcha' => [
                     'name' => 'reCaptcha',
-                    'type' => ReCaptchaInputType::getType(),
+                    'type' => SubmissionReCaptchaInputType::getType(),
                     'description' => 'The Recaptcha name/value.',
                 ],
             ];

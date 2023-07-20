@@ -8,7 +8,7 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\ReCaptchaHelper;
 use Solspace\Freeform\Models\Settings;
 
-class ReCaptchaResolver extends Resolver
+class FormReCaptchaResolver extends Resolver
 {
     public static function resolve($source, array $arguments, $context, ResolveInfo $resolveInfo): ?array
     {
@@ -21,6 +21,7 @@ class ReCaptchaResolver extends Resolver
         if ($reCaptchaEnabled) {
             return [
                 'enabled' => true,
+                'handle' => 'reCaptcha',
                 'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
             ];
         }

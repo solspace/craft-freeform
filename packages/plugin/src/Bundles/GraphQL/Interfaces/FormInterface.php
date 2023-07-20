@@ -2,19 +2,22 @@
 
 namespace Solspace\Freeform\Bundles\GraphQL\Interfaces;
 
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\FormReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\FormReCaptchaResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\HoneypotResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\MailingListNameResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
-use Solspace\Freeform\Bundles\GraphQL\Resolvers\ReCaptchaResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\FormGenerator;
 use Solspace\Freeform\Elements\Submission;
+use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Composer\Components\Fields\Interfaces\FileUploadInterface;
 
 class FormInterface extends AbstractInterface
 {
@@ -161,20 +164,8 @@ class FormInterface extends AbstractInterface
             ],
             'reCaptcha' => [
                 'name' => 'reCaptcha',
-                'type' => new ObjectType([
-                    'name' => 'ReCaptchaObjectType',
-                    'fields' => [
-                        'enabled' => [
-                            'type' => Type::boolean(),
-                            'description' => 'Is ReCaptcha enabled for this form',
-                        ],
-                        'name' => [
-                            'type' => Type::string(),
-                            'description' => 'The forms GraphQL mutation name for submissions',
-                        ],
-                    ],
-                ]),
-                'resolve' => ReCaptchaResolver::class.'::resolve',
+                'type' => FormReCaptchaInterface::getType(),
+                'resolve' => FormReCaptchaResolver::class.'::resolve',
                 'description' => 'The ReCaptcha for this form',
             ],
             'honeypot' => [
@@ -202,6 +193,54 @@ class FormInterface extends AbstractInterface
                 'resolve' => FieldResolver::class.'::resolve',
                 'args' => FieldArguments::getArguments(),
                 'description' => "Form's fields",
+            ],
+            'mailingListName' => [
+                'name' => 'mailingListName',
+                'type' => Type::string(),
+                'resolve' => MailingListNameResolver::class.'::resolve',
+                'description' => 'The form’s mailing list field hash',
+            ],
+            'successMessage' => [
+                'name' => 'successMessage',
+                'type' => Type::string(),
+                'description' => 'The form’s success message',
+                'resolve' => function ($source) {
+                    return $source->getSuccessMessage();
+                },
+            ],
+            'errorMessage' => [
+                'name' => 'errorMessage',
+                'type' => Type::string(),
+                'description' => 'The form’s error message',
+                'resolve' => function ($source) {
+                    return $source->getErrorMessage();
+                },
+            ],
+            'disableSubmit' => [
+                'name' => 'disableSubmit',
+                'type' => Type::boolean(),
+                'description' => 'Should the form’s submit button be disabled when the form is submitted',
+                'resolve' => function () {
+                    return Freeform::getInstance()->forms->isFormSubmitDisable();
+                },
+            ],
+            'disableReset' => [
+                'name' => 'disableReset',
+                'type' => Type::boolean(),
+                'description' => 'Should the form’s submit button be disabled state be reset',
+                'resolve' => function ($source) {
+                    return $source->isDisableAjaxReset();
+                },
+            ],
+            'enctype' => [
+                'name' => 'enctype',
+                'type' => Type::string(),
+                'description' => 'The form’s enctype',
+                'resolve' => function ($source) {
+                    $isMultipart = $source->getLayout()->hasFields(FileUploadInterface::class);
+
+                    return $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded';
+                },
             ],
         ], static::getName());
     }

@@ -15,15 +15,19 @@ export type GenericValue = any;
 export enum PropertyType {
   Attributes = 'attributes',
   Boolean = 'bool',
+  Checkboxes = 'checkboxes',
   Color = 'color',
   ConditionalRules = 'conditionalRules',
   DateTime = 'dateTime',
   Field = 'field',
+  FieldMapping = 'fieldMapping',
   Integer = 'int',
   Label = 'label',
   MinMax = 'minMax',
   NotificationTemplate = 'notificationTemplate',
   Options = 'options',
+  PageButton = 'pageButton',
+  PageButtonsLayout = 'pageButtonsLayout',
   RecipientMapping = 'recipientMapping',
   Recipients = 'recipients',
   Select = 'select',
@@ -31,9 +35,6 @@ export enum PropertyType {
   Table = 'table',
   TabularData = 'tabularData',
   Textarea = 'textarea',
-  PageButtonsLayout = 'pageButtonsLayout',
-  PageButton = 'pageButton',
-  FieldMapping = 'fieldMapping',
 }
 
 export type Middleware = [string, GenericValue[]?];
@@ -75,6 +76,14 @@ export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
   options: Array<Option | OptionCollection>;
   emptyOption?: string;
+};
+export type CheckboxesProperty = BaseProperty<
+  Array<string | number>,
+  PropertyType.Checkboxes
+> & {
+  options: Array<Option | OptionCollection>;
+  selectAll?: boolean;
+  columns?: number;
 };
 
 export type TableProperty = BaseProperty<
@@ -151,25 +160,26 @@ export type FieldMappingProperty = BaseProperty<
 export type Property =
   | AttributeProperty
   | BooleanProperty
+  | CheckboxesProperty
   | ColorProperty
   | ConditionalRulesProperty
   | DateTimeProperty
+  | FieldMappingProperty
   | FieldProperty
   | IntegerProperty
   | LabelProperty
   | MinMaxProperty
   | NotificationTemplateProperty
   | OptionsProperty
+  | PageButtonProperty
+  | PageButtonsLayoutProperty
   | RecipientMappingProperty
   | RecipientsProperty
   | SelectProperty
   | StringProperty
   | TableProperty
   | TabularDataProperty
-  | TextareaProperty
-  | PageButtonsLayoutProperty
-  | PageButtonProperty
-  | FieldMappingProperty;
+  | TextareaProperty;
 
 export type FieldType = {
   name: string;

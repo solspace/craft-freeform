@@ -542,14 +542,20 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->loadingText;
     }
 
+    /**
+     * @throws ComposerException
+     */
     public function getSuccessMessage(): string
     {
-        return $this->getValidationProperties()->getSuccessMessage();
+        return $this->getTranslator()->translate($this->getValidationProperties()->getSuccessMessage(), [], 'app');
     }
 
+    /**
+     * @throws ComposerException
+     */
     public function getErrorMessage(): string
     {
-        return $this->getValidationProperties()->getErrorMessage();
+        return $this->getTranslator()->translate($this->getValidationProperties()->getErrorMessage(), [], 'app');
     }
 
     // Only used for invisible recaptcha
@@ -891,7 +897,9 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         $object = [
             'hash' => $this->getHash(),
             'handle' => $this->handle,
+            // @deprecated Please use ajaxEnabled instead
             'ajax' => $this->isAjaxEnabled(),
+            'ajaxEnabled' => $this->isAjaxEnabled(),
             'disableSubmit' => Freeform::getInstance()->forms->isFormSubmitDisable(),
             'disableReset' => $this->disableAjaxReset,
             'showSpinner' => $this->isShowSpinner(),
@@ -930,11 +938,11 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         }
 
         if ($this->getSuccessMessage()) {
-            $object['successMessage'] = $this->getTranslator()->translate($this->getSuccessMessage(), [], 'app');
+            $object['successMessage'] = $this->getSuccessMessage();
         }
 
         if ($this->getErrorMessage()) {
-            $object['errorMessage'] = $this->getTranslator()->translate($this->getErrorMessage(), [], 'app');
+            $object['errorMessage'] = $this->getErrorMessage();
         }
 
         $event = new OutputAsJsonEvent($this, $object);
@@ -1132,7 +1140,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
      *
      * @throws ComposerException
      */
-    public function getValidationProperties()
+    public function getValidationProperties(): ValidationProperties
     {
         return $this->properties->getValidationProperties();
     }

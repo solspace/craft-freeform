@@ -7,9 +7,11 @@ use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Arguments\FieldArguments;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\FieldResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\HoneypotResolver;
+use Solspace\Freeform\Bundles\GraphQL\Resolvers\MailingListNameResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\PageResolver;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\ReCaptchaResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\FormType;
@@ -203,6 +205,36 @@ class FormInterface extends AbstractInterface
                 'args' => FieldArguments::getArguments(),
                 'description' => "Form's fields",
             ],
+            'mailingListName' => [
+                'name' => 'mailingListName',
+                'type' => Type::string(),
+                'resolve' => MailingListNameResolver::class.'::resolve',
+                'description' => 'The form’s mailing list field hash',
+            ],
+            'successMessage' => [
+                'name' => 'successMessage',
+                'type' => Type::string(),
+                'description' => 'The form’s success message',
+                'resolve' => function ($source) {
+                    return $source->getSuccessMessage();
+                },
+            ],
+            'errorMessage' => [
+                'name' => 'errorMessage',
+                'type' => Type::string(),
+                'description' => 'The form’s error message',
+                'resolve' => function ($source) {
+                    return $source->getErrorMessage();
+                },
+            ],
         ], static::getName());
     }
 }
+
+/*
+'disableSubmit' => Freeform::getInstance()->forms->isFormSubmitDisable(),
+'disableReset' => $this->disableAjaxReset,
+'class' => trim($bag->get('class', '')),
+'method' => $bag->get('method', 'post'),
+'enctype' => $isMultipart ? 'multipart/form-data' : 'application/x-www-form-urlencoded',
+*/

@@ -1,5 +1,16 @@
 # Solspace Freeform Changelog
 
+## 4.1.6 - 2023-07-20
+
+### Added
+- Exposed all remaining form settings/properties for GraphQL queries, including `successMessage` and `errorMessage`.
+
+### Changed
+- Refactored the Freeform lock service to use Yii's cache to prevent performance issues.
+
+### Fixed
+- Fixed issues with reCAPTCHA when querying forms via GraphQL.
+
 ## 4.1.5 - 2023-07-11
 
 ### Added

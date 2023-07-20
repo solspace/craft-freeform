@@ -11,7 +11,7 @@ use GraphQL\Type\Definition\InterfaceType;
 use GraphQL\Type\Definition\Type;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ReCaptchaInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\SubmissionReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Resolvers\CsrfTokenResolver;
 use Solspace\Freeform\Bundles\GraphQL\Types\Generators\SubmissionGenerator;
 
@@ -64,7 +64,7 @@ class SubmissionInterface extends Element
                     ],
                     'reCaptcha' => [
                         'name' => 'reCaptcha',
-                        'type' => ReCaptchaInterface::getType(),
+                        'type' => SubmissionReCaptchaInterface::getType(),
                         'description' => 'The ReCaptcha (name and value) of the submission',
                     ],
                     'csrfToken' => [

@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Fields\Implementations\Pro;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Fields\Validation\Constraints\WebsiteConstraint;
 
 #[Type(
     name: 'Website',
@@ -23,16 +22,5 @@ class WebsiteField extends TextField implements ExtraFieldInterface
     public function getType(): string
     {
         return self::TYPE_WEBSITE;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new WebsiteConstraint($this->translate('Website not valid'));
-
-        return $constraints;
     }
 }

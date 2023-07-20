@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DragPreviewImage } from 'react-dnd';
 import type { Cell as CellPropType } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
 
 import { CellField } from './cell-types/cell-field/cell-field';
 import { CellLayout } from './cell-types/cell-layout/cell-layout';
+import { Remove } from './remove-button/remove';
 import { useCellDragAnimation } from './cell.animations';
 import { useCellDrag } from './cell.drag';
 import { createPreview } from './cell.preview';
@@ -31,6 +32,7 @@ export const Cell: React.FC<Props> = ({
   dragCellIndex,
   hoverPosition,
 }) => {
+  const [hovering, setHovering] = useState(false);
   const { isDragging, drag, preview } = useCellDrag(cell, index);
   const style = useCellDragAnimation({
     width,
@@ -57,7 +59,13 @@ export const Cell: React.FC<Props> = ({
   return (
     <>
       <DragPreviewImage connect={preview} src={createPreview(cell.type)} />
-      <CellWrapper ref={drag} style={style}>
+      <CellWrapper
+        onMouseEnter={() => setHovering(true)}
+        onMouseLeave={() => setHovering(false)}
+        ref={drag}
+        style={style}
+      >
+        <Remove cell={cell} active={hovering} />
         <Component uid={cell.targetUid} />
       </CellWrapper>
     </>

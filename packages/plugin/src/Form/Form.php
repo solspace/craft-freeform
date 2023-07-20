@@ -43,7 +43,6 @@ use Solspace\Freeform\Library\Attributes\FormAttributesCollection;
 use Solspace\Freeform\Library\Collections\FieldCollection;
 use Solspace\Freeform\Library\Collections\PageCollection;
 use Solspace\Freeform\Library\Collections\RowCollection;
-use Solspace\Freeform\Library\Database\FieldHandlerInterface;
 use Solspace\Freeform\Library\Database\FormHandlerInterface;
 use Solspace\Freeform\Library\Database\SubmissionHandlerInterface;
 use Solspace\Freeform\Library\DataObjects\FormActionInterface;
@@ -236,7 +235,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
     public function getCurrentPage(): Page
     {
-        return $this->getLayout()->getPages()->get(
+        return $this->getLayout()->getPages()->getByIndex(
             $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0)
         );
     }
@@ -604,11 +603,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return Freeform::getInstance()->forms;
     }
 
-    public function getFieldHandler(): FieldHandlerInterface
-    {
-        return Freeform::getInstance()->fields;
-    }
-
     public function getSubmissionHandler(): SubmissionHandlerInterface
     {
         return Freeform::getInstance()->submissions;
@@ -808,29 +802,14 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
 
         $isFormValid = true;
         foreach ($currentPageFields as $field) {
+            $field->validate($this);
             if (!$field->isValid()) {
                 $isFormValid = false;
             }
         }
 
-        if ($this->errors) {
+        if ($this->hasErrors()) {
             $isFormValid = false;
-        }
-
-        if ($isFormValid) {
-            foreach ($currentPageFields as $field) {
-                if ($field instanceof FileUploadInterface) {
-                    try {
-                        $field->uploadFile();
-                    } catch (\Exception) {
-                        $isFormValid = false;
-                    }
-
-                    if ($field->hasErrors()) {
-                        $isFormValid = false;
-                    }
-                }
-            }
         }
 
         $this->valid = $isFormValid;

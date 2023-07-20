@@ -31,18 +31,24 @@ class PageCollection implements \IteratorAggregate, \Countable
         return $this->currentIndex;
     }
 
+    public function getByIndex(int $index): ?Page
+    {
+        return $this->pages[$index] ?? null;
+    }
+
     public function get(int|string $identificator): ?Page
     {
-        if (is_numeric($identificator)) {
-            return $this->pages[$identificator] ?? null;
+        foreach ($this->pages as $page) {
+            if (
+                $page->getUid() === $identificator
+                || $page->getId() === $identificator
+                || $page->getLabel() === $identificator
+            ) {
+                return $page;
+            }
         }
 
-        return current(
-            array_filter(
-                $this->pages,
-                fn (Page $page) => $page->getHandle()
-            )
-        );
+        return null;
     }
 
     public function add(Page $page): self

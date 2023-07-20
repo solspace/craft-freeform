@@ -48,6 +48,20 @@ class FieldRuleRecord extends RuleRecord
         return $indexed;
     }
 
+    public static function getExistingRule(int $fieldId): ?self
+    {
+        return self::find()
+            ->select(['fr.*'])
+            ->from(self::TABLE.' fr')
+            ->innerJoin(RuleRecord::TABLE.' r', '[[fr.id]] = [[r.id]]')
+            ->innerJoin(FormFieldRecord::TABLE.' ff', '[[fr.fieldId]] = [[ff.id]]')
+            ->where(['fr.fieldId' => $fieldId])
+            ->with('rule', 'conditions', 'field')
+            ->indexBy('id')
+            ->one()
+        ;
+    }
+
     public function getRule(): ActiveQuery
     {
         return $this->hasOne(RuleRecord::class, ['id' => 'id']);

@@ -11,7 +11,6 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\OptionsInterface;
 use Solspace\Freeform\Fields\Properties\Options\OptionsCollection;
 use Solspace\Freeform\Fields\Properties\Options\Preset\PresetOptions;
-use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 
@@ -113,22 +112,6 @@ class RatingField extends AbstractField implements ExtraFieldInterface, OptionsI
     public function getColorSelected(): string
     {
         return $this->colorSelected;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new NumericConstraint(
-            1,
-            $this->getMaxValue(),
-            allowNegativeNumbers: false,
-            messageMinMax: $this->translate('Rating must be between {{min}} and {{max}}'),
-        );
-
-        return $constraints;
     }
 
     public function getContentGqlType(): array|GQLType

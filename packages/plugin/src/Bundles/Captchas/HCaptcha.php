@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Solspace\Freeform\Events\Fields\ValidateEvent;
 use Solspace\Freeform\Events\Forms\ValidationEvent;
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\RecaptchaField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -14,7 +15,6 @@ use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\DataObjects\SpamReason;
 use Solspace\Freeform\Library\Helpers\ReCaptchaHelper;
 use Solspace\Freeform\Models\Settings;
-use Solspace\Freeform\Services\FieldsService;
 use yii\base\Event;
 
 class HCaptcha extends FeatureBundle
@@ -24,8 +24,8 @@ class HCaptcha extends FeatureBundle
     public function __construct()
     {
         Event::on(
-            FieldsService::class,
-            FieldsService::EVENT_AFTER_VALIDATE,
+            FieldInterface::class,
+            FieldInterface::EVENT_VALIDATE,
             [$this, 'validateCheckbox']
         );
 

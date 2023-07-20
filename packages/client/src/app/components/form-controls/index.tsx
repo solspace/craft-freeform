@@ -36,7 +36,7 @@ export const FormComponent: React.FC<Props> = ({
   const FormControl = types[type];
 
   const isVisible = useVisibility(
-    property.visibilityFilters,
+    property.visibilityFilters || [],
     context as GenericValue as GenericValue
   );
 

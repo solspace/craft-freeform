@@ -6,7 +6,6 @@ use craft\gql\types\Number as NumberType;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Fields\Validation\Constraints\NumericConstraint;
 
 #[Type(
     name: 'Number',
@@ -61,21 +60,21 @@ class NumberField extends TextField
         return self::TYPE_NUMBER;
     }
 
-    public function getMinValue(): int
+    public function getMinValue(): ?int
     {
         [$min] = $this->getMinMaxValues();
 
         return $min;
     }
 
-    public function getMaxValue(): int
+    public function getMaxValue(): ?int
     {
         [, $max] = $this->getMinMaxValues();
 
         return $max;
     }
 
-    public function getDecimalCount(): int
+    public function getDecimalCount(): ?int
     {
         return $this->decimalCount;
     }
@@ -88,28 +87,6 @@ class NumberField extends TextField
     public function getStep(): float
     {
         return $this->step;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new NumericConstraint(
-            $this->getMinValue(),
-            $this->getMaxValue(),
-            $this->getDecimalCount(),
-            $this->isAllowNegative(),
-            $this->translate('Value must be numeric'),
-            $this->translate('The value must be no more than {{max}}'),
-            $this->translate('The value must be no less than {{min}}'),
-            $this->translate('The value must be between {{min}} and {{max}}'),
-            $this->translate('{{dec}} decimal places allowed'),
-            $this->translate('Only positive numbers allowed')
-        );
-
-        return $constraints;
     }
 
     public function getContentGqlType(): GQLType|array

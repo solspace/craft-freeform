@@ -15,6 +15,7 @@ use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOp
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultStatusGenerator;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\DefaultTemplateGenerator;
 use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 use Solspace\Freeform\Form\Types\Regular;
@@ -27,12 +28,16 @@ class GeneralSettings extends SettingsNamespace
         label: 'General',
         icon: __DIR__.'/Icons/general.svg',
     )]
-    #[Validators\Required]
     #[Input\Text(
         label: 'Form Name',
         instructions: 'Name or title of the form',
         placeholder: 'My Form',
     )]
+    #[Middleware('injectInto', [
+        'target' => 'handle',
+        'camelize' => true,
+    ])]
+    #[Validators\Required]
     public string $name = '';
 
     #[Section('general')]
@@ -41,7 +46,7 @@ class GeneralSettings extends SettingsNamespace
         instructions: "How you'll refer to this form in the templates",
         placeholder: 'myHandle',
     )]
-    #[Middleware('handle', [false])]
+    #[Middleware('handle')]
     #[Validators\Required]
     #[Validators\Handle]
     #[Validators\Length(255)]
@@ -73,6 +78,7 @@ class GeneralSettings extends SettingsNamespace
     public ?int $defaultStatus = null;
 
     #[Section('general')]
+    #[ValueGenerator(DefaultTemplateGenerator::class)]
     #[Input\Select(
         instructions: 'The formatting template to assign to this form when using Render method.',
         options: FormattingTemplateOptions::class,

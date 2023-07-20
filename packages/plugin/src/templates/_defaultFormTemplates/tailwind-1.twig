@@ -119,7 +119,7 @@
 
 
 
-            {% if field.type == "checkbox-group" %}
+            {% if field.type == "checkboxes" %}
 
                 <div{{ field.attributes.container }}>
 
@@ -150,7 +150,7 @@
 
                 </div>
 
-            {% elseif field.type == "radio-group" %}
+            {% elseif field.type == "radios" %}
 
                 <div{{ field.attributes.container }}>
                     {{ field.renderLabel({
@@ -178,7 +178,7 @@
                     {{ field.renderErrors }}
                 </div>
 
-            {% elseif field.type == "select" %}
+            {% elseif field.type == "dropdown" %}
 
                 <div{{ field.attributes.container }}>
 

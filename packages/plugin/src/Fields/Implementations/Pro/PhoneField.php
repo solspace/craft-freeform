@@ -8,7 +8,6 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 use Solspace\Freeform\Fields\Interfaces\PhoneMaskInterface;
-use Solspace\Freeform\Fields\Validation\Constraints\PhoneConstraint;
 
 #[Type(
     name: 'Phone',
@@ -44,17 +43,6 @@ class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInte
     public function getPattern(): ?string
     {
         return !empty($this->pattern) ? $this->pattern : null;
-    }
-
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new PhoneConstraint(
-            $this->translate('Invalid phone number'),
-            $this->getPattern()
-        );
-
-        return $constraints;
     }
 
     public function getInputHtml(): string

@@ -40,7 +40,9 @@ class LayoutsService extends BaseService
         $rows = $this->getRows($form);
         $cells = $this->getCells($form);
 
-        foreach ($pages as $pageData) {
+        foreach ($pages as $index => $pageData) {
+            $pageData['index'] = $index;
+
             $page = new Page($pageData);
             $layout->getPages()->add($page);
             $layoutUid = $pageData['layoutUid'];

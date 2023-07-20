@@ -27,6 +27,12 @@ type EditType = {
   value: GenericValue;
 };
 
+type EditBatch = {
+  uid: string;
+  typeClass: string;
+  properties: PropertyValueCollection;
+};
+
 type ErrorPayload = {
   [key: string]: FieldErrors;
 };
@@ -80,6 +86,13 @@ export const fieldsSlice = createSlice({
       }
 
       state.find((field) => field.uid === uid).properties[handle] = value;
+    },
+    batchEdit: (state, action: PayloadAction<EditBatch>) => {
+      const { uid, typeClass, properties } = action.payload;
+
+      const field = state.find((field) => field.uid === uid);
+      field.typeClass = typeClass;
+      field.properties = properties;
     },
     clearErrors: (state) => {
       for (const field of state) {

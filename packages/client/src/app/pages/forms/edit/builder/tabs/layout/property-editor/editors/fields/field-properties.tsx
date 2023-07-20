@@ -1,15 +1,20 @@
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { useSelector } from 'react-redux';
+import { FormComponent } from '@components/form-controls';
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
+import { changeFieldType } from '@editor/store/thunks/fields';
 import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import {
   useFetchFieldPropertySections,
+  useFetchFieldTypes,
   useFieldType,
+  useFieldTypeSearch,
 } from '@ff-client/queries/field-types';
-import type { Property } from '@ff-client/types/properties';
+import { type Property, PropertyType } from '@ff-client/types/properties';
+import translate from '@ff-client/utils/translations';
 
 import {
   CloseLink,
@@ -20,6 +25,7 @@ import {
 } from '../../property-editor.styles';
 
 import { FavoriteButton } from './favorite/favorite.button';
+import AdvancedIcon from './icons/advanced.svg';
 import { FieldComponent } from './field-component';
 import { FieldPropertiesWrapper } from './field-properties.styles';
 
@@ -28,9 +34,14 @@ const sectionFilter = (handle: string) => (property: Property) =>
 
 export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
   const dispatch = useAppDispatch();
+
   const { data: sections, isFetching } = useFetchFieldPropertySections();
+  const { data: types } = useFetchFieldTypes();
+
   const field = useSelector(fieldSelectors.one(uid));
   const type = useFieldType(field?.typeClass);
+
+  const searchFieldType = useFieldTypeSearch();
 
   if (!field || !type) {
     return <div>Not found</div>;
@@ -80,7 +91,43 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
         <Icon dangerouslySetInnerHTML={{ __html: type.icon }} />
         <span>{type.name}</span>
       </Title>
-      <SectionWrapper>{sectionBlocks}</SectionWrapper>
+      <SectionWrapper>
+        {sectionBlocks}
+
+        <SectionBlock label={translate('Advanced')}>
+          <Icon>
+            <AdvancedIcon />
+          </Icon>
+          <FormComponent
+            value={field.typeClass}
+            property={{
+              type: PropertyType.Select,
+              handle: 'typeClass',
+              label: translate('Type'),
+              instructions: translate('Change the type of this field.'),
+              options: types.map((type) => ({
+                label: type.name,
+                value: type.typeClass,
+              })),
+            }}
+            updateValue={(value) => {
+              if (
+                !confirm(
+                  translate(
+                    'Are you sure? You might potentially lose important data.'
+                  )
+                )
+              ) {
+                return;
+              }
+
+              dispatch(
+                changeFieldType(field, searchFieldType(value as string))
+              );
+            }}
+          />
+        </SectionBlock>
+      </SectionWrapper>
     </FieldPropertiesWrapper>
   );
 };

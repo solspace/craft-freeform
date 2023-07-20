@@ -21,12 +21,12 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
 #[Type(
-    name: 'Checkbox Group',
-    typeShorthand: 'checkbox-group',
+    name: 'Checkboxes',
+    typeShorthand: 'checkboxes',
     iconPath: __DIR__.'/Icons/text.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox-group.ejs',
 )]
-class CheckboxGroupField extends AbstractExternalOptionsField implements MultiValueInterface, OneLineInterface
+class CheckboxesField extends AbstractExternalOptionsField implements MultiValueInterface, OneLineInterface
 {
     use MultipleValueTrait;
     use OneLineTrait;

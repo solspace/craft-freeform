@@ -8,7 +8,7 @@ import {
   useQueryFormSettings,
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
-import kebabCase from 'lodash.kebabcase';
+import camelCase from 'lodash.camelcase';
 import { adjectives, uniqueNamesGenerator } from 'unique-names-generator';
 import { colors } from 'unique-names-generator';
 import { v4 } from 'uuid';
@@ -16,7 +16,8 @@ import { v4 } from 'uuid';
 import { Builder } from './builder/builder';
 import { cellActions } from './store/slices/layout/cells';
 import { pageActions } from './store/slices/layout/pages';
-import { rwoActions } from './store/slices/layout/rows';
+import { rowActions } from './store/slices/layout/rows';
+import { addNewPage } from './store/thunks/pages';
 import { useAppDispatch } from './store';
 
 type RouteParams = {
@@ -47,17 +48,17 @@ export const Edit: React.FC = () => {
           uid: v4(),
           type: 'Solspace\\Freeform\\Form\\Types\\Regular',
           name: formName,
-          handle: kebabCase(formName),
+          handle: camelCase(formName),
           settings: {},
         })
       );
       dispatch(fieldActions.set([]));
       dispatch(pageActions.set([]));
       dispatch(layoutActions.set([]));
-      dispatch(rwoActions.set([]));
+      dispatch(rowActions.set([]));
       dispatch(cellActions.set([]));
 
-      dispatch(contextActions.setPage(undefined));
+      dispatch(addNewPage());
 
       return;
     }
@@ -74,7 +75,7 @@ export const Edit: React.FC = () => {
     dispatch(fieldActions.set(fields));
     dispatch(pageActions.set(pages));
     dispatch(layoutActions.set(layouts));
-    dispatch(rwoActions.set(rows));
+    dispatch(rowActions.set(rows));
     dispatch(cellActions.set(cells));
 
     dispatch(contextActions.setPage(pages.find(Boolean)?.uid));

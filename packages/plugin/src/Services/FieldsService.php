@@ -12,53 +12,32 @@
 
 namespace Solspace\Freeform\Services;
 
-use craft\commerce\elements\Product;
 use craft\db\Query;
-use craft\elements\Asset;
-use craft\elements\Category;
-use craft\elements\Entry;
-use craft\elements\Tag;
-use craft\elements\User;
 use Solspace\Freeform\Events\Fields\SaveEvent;
-use Solspace\Freeform\Events\Fields\ValidateEvent;
-use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\DataContainers\Option;
-use Solspace\Freeform\Fields\Interfaces\ExternalOptionsInterface;
-use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Configuration\ExternalOptionsConfiguration;
-use Solspace\Freeform\Library\Database\FieldHandlerInterface;
-use Solspace\Freeform\Library\Factories\PredefinedOptionsFactory;
 use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Records\FieldRecord;
 
-class FieldsService extends BaseService implements FieldHandlerInterface
+class FieldsService extends BaseService
 {
     public const EVENT_BEFORE_SAVE = 'beforeSave';
     public const EVENT_AFTER_SAVE = 'afterSave';
     public const EVENT_BEFORE_DELETE = 'beforeDelete';
     public const EVENT_AFTER_DELETE = 'afterDelete';
-    public const EVENT_BEFORE_VALIDATE = 'beforeValidate';
-    public const EVENT_AFTER_VALIDATE = 'afterValidate';
 
     /** @var FieldModel[] */
-    private static $fieldCache;
+    private static ?array $fieldCache = null;
 
-    /** @var bool */
-    private static $allFieldsLoaded;
+    private static bool $allFieldsLoaded = false;
 
-    /** @var array */
-    private static $fieldHandleCache;
+    private static ?array $fieldHandleCache = null;
 
-    /** @var array */
-    private static $optionsCache = [];
+    private static array $optionsCache = [];
 
     /**
-     * @param bool $indexById
-     *
      * @return FieldModel[]
      */
-    public function getAllFields($indexById = true): array
+    public function getAllFields(bool $indexById = true): array
     {
         if (null === self::$fieldCache || !self::$allFieldsLoaded) {
             if (null === self::$fieldCache) {
@@ -92,10 +71,7 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         return self::$fieldCache;
     }
 
-    /**
-     * @param bool $indexById
-     */
-    public function getAllFieldHandles($indexById = true): array
+    public function getAllFieldHandles(bool $indexById = true): array
     {
         if (null === self::$fieldHandleCache) {
             $results = (new Query())
@@ -212,141 +188,6 @@ class FieldsService extends BaseService implements FieldHandlerInterface
         }
 
         return false;
-    }
-
-    public function beforeValidate(AbstractField $field, Form $form): void
-    {
-        $this->trigger(self::EVENT_BEFORE_VALIDATE, new ValidateEvent($field));
-    }
-
-    public function afterValidate(AbstractField $field, Form $form): void
-    {
-        $this->trigger(self::EVENT_AFTER_VALIDATE, new ValidateEvent($field));
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getOptionsFromSource(string $source, $target, array $configuration = [], $selectedValues = []): array
-    {
-        $hash = sha1(json_encode([$source, $target, $configuration, $selectedValues]));
-
-        if (!isset(self::$optionsCache[$hash])) {
-            $config = new ExternalOptionsConfiguration($configuration);
-            $labelField = $config->getLabelField() ?? 'title';
-            $valueField = $config->getValueField() ?? 'id';
-            $siteId = $config->getSiteId() ?? \Craft::$app->sites->currentSite->id;
-            $options = [];
-
-            if (!\is_array($selectedValues)) {
-                $selectedValues = [$selectedValues];
-            }
-
-            switch ($source) {
-                case ExternalOptionsInterface::SOURCE_ENTRIES:
-                    $query = Entry::find()->sectionId($target)->siteId($siteId);
-
-                    break;
-
-                case ExternalOptionsInterface::SOURCE_CATEGORIES:
-                    $query = Category::find()->groupId($target)->siteId($siteId);
-
-                    break;
-
-                case ExternalOptionsInterface::SOURCE_TAGS:
-                    $query = Tag::find()->groupId($target)->siteId($siteId);
-
-                    break;
-
-                case ExternalOptionsInterface::SOURCE_USERS:
-                    $query = User::find()
-                        ->status(User::STATUS_ACTIVE)
-                        ->groupId($target)
-                        ->siteId($siteId)
-                    ;
-
-                    break;
-
-                case ExternalOptionsInterface::SOURCE_ASSETS:
-                    $query = Asset::find()->volumeId($target)->siteId($siteId);
-
-                    break;
-
-                case ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS:
-                    if (!class_exists('craft\commerce\elements\Product')) {
-                        return [];
-                    }
-
-                    $query = Product::find()->typeId($target)->siteId($siteId);
-
-                    break;
-
-                case ExternalOptionsInterface::SOURCE_PREDEFINED:
-                    return PredefinedOptionsFactory::create($target, $config, $selectedValues);
-            }
-
-            $orderBy = $config->getOrderBy() ?? 'id';
-            $sort = 'desc' === strtolower($config->getSort()) ? \SORT_DESC : \SORT_ASC;
-            $query->orderBy([$orderBy => $sort]);
-
-            $items = $query->all();
-
-            foreach ($items as $item) {
-                switch ($source) {
-                    case ExternalOptionsInterface::SOURCE_ASSETS:
-                        $defaultLabel = $item->getFilename();
-
-                        break;
-
-                    case ExternalOptionsInterface::SOURCE_USERS:
-                        $defaultLabel = $item->username;
-
-                        break;
-
-                    default:
-                        $defaultLabel = $item->title;
-
-                        break;
-                }
-
-                if (ExternalOptionsInterface::SOURCE_COMMERCE_PRODUCTS === $source) {
-                    try {
-                        $label = $item->getDefaultVariant()->getFieldValue($labelField);
-                    } catch (\yii\base\Exception $exception) {
-                        $label = $item->{$labelField} ?? $defaultLabel;
-                    }
-
-                    try {
-                        $value = $item->getDefaultVariant()->getFieldValue($valueField);
-                    } catch (\yii\base\Exception $exception) {
-                        $value = $item->{$valueField} ?? $item->id;
-                    }
-                } else {
-                    $label = $item->{$labelField} ?? $defaultLabel;
-                    $value = $item->{$valueField} ?? $item->id;
-                }
-
-                $options[] = new Option($label, $value, \in_array($value, $selectedValues, false));
-            }
-
-            if ($config->getEmptyOption()) {
-                array_unshift(
-                    $options,
-                    new Option($config->getEmptyOption(), '', \in_array('', $selectedValues, true))
-                );
-            }
-
-            self::$optionsCache[$hash] = $options;
-        }
-
-        return self::$optionsCache[$hash];
-    }
-
-    /**
-     * @throws \Exception
-     */
-    private function deleteFieldFromForms(FieldModel $model)
-    {
     }
 
     private function getQuery(): Query

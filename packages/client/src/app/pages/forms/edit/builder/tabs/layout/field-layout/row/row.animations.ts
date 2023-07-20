@@ -37,6 +37,7 @@ export const usePlaceholderAnimation = (
 ): PlaceholderAnimation => {
   return useSpring({
     to: {
+      height: isOver ? 30 : 20,
       opacity: isOver ? 1 : 0,
       transform: isOver ? `scaleY(1)` : `scaleY(0)`,
     },
@@ -54,7 +55,7 @@ type RowAnimation = {
 export const useRowAnimation = (isOver: boolean): RowAnimation =>
   useSpring({
     to: {
-      y: isOver ? 10 : 0,
+      y: isOver ? 20 : 0,
     },
     delay: isOver ? 200 : 0,
     config: {

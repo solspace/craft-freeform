@@ -15,13 +15,15 @@ export const SearchBlock = styled.div`
 export const SearchBar = styled.input`
   padding: 6px 38px 6px 30px !important;
 
+  border-radius: 5px;
+
   &::placeholder {
     font-style: italic;
     color: ${colors.gray200};
   }
 `;
 
-const buttonSize = '18px';
+const buttonSize = '14px';
 
 export const IconStyle = css`
   position: absolute;
@@ -49,5 +51,5 @@ export const SearchIcon = styled.div`
 
   ${IconStyle}
 
-  color: ${colors.gray100};
+  color: ${colors.gray400};
 `;

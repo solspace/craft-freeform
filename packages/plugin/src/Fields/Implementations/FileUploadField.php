@@ -16,6 +16,7 @@ use craft\elements\Asset;
 use craft\elements\db\AssetQuery;
 use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
+use Solspace\Freeform\Attributes\Property\Implementations\Files\FileKindsOptionsGenerator;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Bundles\GraphQL\Types\FileUploadType;
 use Solspace\Freeform\Bundles\GraphQL\Types\Inputs\FileUploadInputType;
@@ -39,7 +40,13 @@ class FileUploadField extends AbstractField implements MultiValueInterface, File
     public const DEFAULT_MAX_FILESIZE_KB = 2048;
     public const DEFAULT_FILE_COUNT = 1;
 
-    #[Input\Select]
+    #[Input\Checkboxes(
+        label: 'File Kinds',
+        instructions: 'Select the file kinds that are allowed to be uploaded.',
+        selectAll: true,
+        columns: 2,
+        options: FileKindsOptionsGenerator::class,
+    )]
     protected array $fileKinds = ['image', 'document'];
 
     #[Input\Integer(

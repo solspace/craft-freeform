@@ -14,6 +14,8 @@ export const FilterIcon = styled.button`
   transition: all 0.2s ease-out;
 
   background: white;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 
   &:before {
     content: '';
@@ -42,6 +44,8 @@ export const FilterIcon = styled.button`
 
   &.active {
     background: ${colors.gray050};
+    border-bottom-right-radius: 0px;
+
     outline: none;
 
     &:before {
@@ -87,7 +91,7 @@ export const DropDownWrapper = styled(animated.div)`
     top: -1px;
     right: 0px;
 
-    width: 33px;
+    width: 29px;
     height: 1px;
 
     background: ${colors.gray050};

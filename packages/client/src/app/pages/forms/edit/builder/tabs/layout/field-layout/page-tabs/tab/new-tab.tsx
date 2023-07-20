@@ -2,7 +2,8 @@ import React from 'react';
 import { useAppDispatch } from '@editor/store';
 import { addNewPage } from '@editor/store/thunks/pages';
 
-import { NewTabWrapper, PageTab } from './tab.styles';
+import AddIcon from './add-icon.svg';
+import { NewTabWrapper } from './new-tab.styles';
 
 export const NewTab: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -13,7 +14,7 @@ export const NewTab: React.FC = () => {
         dispatch(addNewPage());
       }}
     >
-      <PageTab>Add New Page</PageTab>
+      <AddIcon />
     </NewTabWrapper>
   );
 };

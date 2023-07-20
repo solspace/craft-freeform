@@ -524,6 +524,11 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
         return $this->ajaxEnabled;
     }
 
+    public function isDisableAjaxReset(): bool
+    {
+        return $this->disableAjaxReset;
+    }
+
     public function isShowSpinner(): bool
     {
         return $this->showSpinner;
@@ -901,7 +906,7 @@ abstract class Form implements FormTypeInterface, \JsonSerializable, \Iterator, 
             'ajax' => $this->isAjaxEnabled(),
             'ajaxEnabled' => $this->isAjaxEnabled(),
             'disableSubmit' => Freeform::getInstance()->forms->isFormSubmitDisable(),
-            'disableReset' => $this->disableAjaxReset,
+            'disableReset' => $this->isDisableAjaxReset(),
             'showSpinner' => $this->isShowSpinner(),
             'showLoadingText' => $this->isShowLoadingText(),
             'loadingText' => $this->getLoadingText(),

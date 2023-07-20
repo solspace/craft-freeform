@@ -30,6 +30,10 @@ class FormReCaptchaType extends AbstractObjectType
             return $source['name'] ?? null;
         }
 
+        if ('handle' === $resolveInfo->fieldName) {
+            return $source['handle'] ?? null;
+        }
+
         if ('enabled' === $resolveInfo->fieldName) {
             return $source['enabled'] ?? null;
         }

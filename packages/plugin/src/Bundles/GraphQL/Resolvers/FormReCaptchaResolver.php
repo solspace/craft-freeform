@@ -21,6 +21,7 @@ class FormReCaptchaResolver extends Resolver
         if ($reCaptchaEnabled) {
             return [
                 'enabled' => true,
+                'handle' => 'reCaptcha',
                 'name' => $isHCaptcha ? 'h-recaptcha-response' : 'g-recaptcha-response',
             ];
         }

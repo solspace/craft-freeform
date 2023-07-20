@@ -37,6 +37,11 @@ class FormReCaptchaInterface extends AbstractInterface
                 'type' => Type::string(),
                 'description' => 'The forms GraphQL mutation name for submissions',
             ],
+            'handle' => [
+                'name' => 'handle',
+                'type' => Type::string(),
+                'description' => 'The forms GraphQL mutation handle for submissions',
+            ],
             'enabled' => [
                 'name' => 'enabled',
                 'type' => Type::boolean(),

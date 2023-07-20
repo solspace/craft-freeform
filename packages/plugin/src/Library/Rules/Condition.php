@@ -3,6 +3,8 @@
 namespace Solspace\Freeform\Library\Rules;
 
 use Solspace\Freeform\Fields\FieldInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\SerializedName;
 
 class Condition
 {
@@ -25,6 +27,7 @@ class Condition
     ) {
     }
 
+    #[Groups(['builder'])]
     public function getUid(): string
     {
         return $this->uid;
@@ -35,11 +38,27 @@ class Condition
         return $this->field;
     }
 
+    #[Groups(['builder'])]
+    #[SerializedName('field')]
+    public function getFieldUid(): string
+    {
+        return $this->field->getUid();
+    }
+
+    #[Groups(['front-end'])]
+    #[SerializedName('field')]
+    public function getFieldHandle(): string
+    {
+        return $this->field->getHandle();
+    }
+
+    #[Groups(['front-end', 'builder'])]
     public function getOperator(): string
     {
         return $this->operator;
     }
 
+    #[Groups(['front-end', 'builder'])]
     public function getValue(): string
     {
         return $this->value;

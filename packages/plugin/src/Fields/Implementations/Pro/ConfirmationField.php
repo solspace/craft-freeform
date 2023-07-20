@@ -60,26 +60,6 @@ class ConfirmationField extends TextField implements DefaultFieldInterface, NoSt
         ];
     }
 
-    protected function validate(): array
-    {
-        $errors = parent::validate();
-
-        try {
-            $field = $this->getForm()->getLayout()->getField($this->getTargetField()->getUid());
-            $value = $field->getValue();
-
-            if ($value !== $this->getValue()) {
-                $errors[] = $this->translate(
-                    'This value must match the value for {targetFieldLabel}',
-                    ['targetFieldLabel' => $field->getLabel()]
-                );
-            }
-        } catch (FreeformException $exception) {
-        }
-
-        return $errors;
-    }
-
     /**
      * {@inheritDoc}
      */

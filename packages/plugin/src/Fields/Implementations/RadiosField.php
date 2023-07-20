@@ -19,12 +19,12 @@ use Solspace\Freeform\Fields\Interfaces\OneLineInterface;
 use Solspace\Freeform\Fields\Traits\OneLineTrait;
 
 #[Type(
-    name: 'Radio Group',
-    typeShorthand: 'radio-group',
+    name: 'Radios',
+    typeShorthand: 'radios',
     iconPath: __DIR__.'/Icons/text.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/radio-group.ejs',
 )]
-class RadioGroupField extends AbstractExternalOptionsField implements OneLineInterface
+class RadiosField extends AbstractExternalOptionsField implements OneLineInterface
 {
     use OneLineTrait;
 

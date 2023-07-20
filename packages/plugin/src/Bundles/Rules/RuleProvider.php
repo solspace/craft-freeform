@@ -2,10 +2,12 @@
 
 namespace Solspace\Freeform\Bundles\Rules;
 
+use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Rules\Condition;
 use Solspace\Freeform\Library\Rules\ConditionCollection;
 use Solspace\Freeform\Library\Rules\Types\FieldRule;
+use Solspace\Freeform\Library\Rules\Types\PageRule;
 use Solspace\Freeform\Records\Rules\FieldRuleRecord;
 use Solspace\Freeform\Records\Rules\NotificationRuleRecord;
 use Solspace\Freeform\Records\Rules\PageRuleRecord;
@@ -14,6 +16,8 @@ use Solspace\Freeform\Records\Rules\RuleRecord;
 
 class RuleProvider
 {
+    private static array $fieldRuleCache = [];
+
     public function getFormRules(?Form $form): array
     {
         if (!$form) {
@@ -24,50 +28,63 @@ class RuleProvider
         }
 
         return [
-            'pages' => $this->getPageRuleArray($form),
-            'fields' => $this->getFieldRuleArray($form),
+            'pages' => $this->getPageRules($form),
+            'fields' => $this->getFieldRules($form),
         ];
     }
 
+    /**
+     * @return FieldRule[]
+     */
     public function getFieldRules(Form $form): array
     {
-        $records = FieldRuleRecord::getExistingRules($form->getId());
+        if (!isset(self::$fieldRuleCache[$form->getId()])) {
+            $records = FieldRuleRecord::getExistingRules($form->getId());
 
-        $rules = [];
-        foreach ($records as $uid => $fieldRule) {
-            /** @var RuleRecord $rule */
-            $rule = $fieldRule->getRule()->one();
-
-            $conditionCollection = new ConditionCollection();
-
-            /** @var RuleConditionRecord $condition */
-            foreach ($rule->getConditions()->all() as $condition) {
-                $conditionCollection->add(
-                    new Condition(
-                        $condition->uid,
-                        $form->get($condition->getField()->one()->uid),
-                        $condition->operator,
-                        $condition->value
-                    )
-                );
+            $rules = [];
+            foreach ($records as $fieldRule) {
+                $rules[] = $this->createFieldRuleFromRecord($form, $fieldRule);
             }
 
-            $rule = new FieldRule(
-                $fieldRule->id,
-                $uid,
-                $fieldRule->combinator,
-                $conditionCollection,
-            );
-
-            $rule->setDisplay($fieldRule->display);
-            $rule->setField(
-                $form->get($fieldRule->getField()->one()->uid)
-            );
-
-            $rules[] = $rule;
+            self::$fieldRuleCache[$form->getId()] = $rules;
         }
 
-        return $rules;
+        return self::$fieldRuleCache[$form->getId()];
+    }
+
+    public function getFieldRule(Form $form, FieldInterface $field): ?FieldRule
+    {
+        $rules = $this->getFieldRules($form);
+        foreach ($rules as $rule) {
+            if ($rule->getField() === $field) {
+                return $rule;
+            }
+        }
+
+        return null;
+    }
+
+    public function getPageRules(Form $form): array
+    {
+        $rules = PageRuleRecord::getExistingRules($form->getId());
+
+        $array = [];
+        foreach ($rules as $uid => $pageRule) {
+            /** @var RuleRecord $rule */
+            $ruleRecord = $pageRule->getRule()->one();
+            $rule = new PageRule(
+                $pageRule->id,
+                $uid,
+                $ruleRecord->combinator,
+                $this->compileConditions($form, $ruleRecord),
+            );
+
+            $rule->setPage($form->getLayout()->getPages()->get($pageRule->pageId));
+
+            $array[] = $rule;
+        }
+
+        return $array;
     }
 
     public function getFormNotificationRules(?Form $form): array
@@ -79,71 +96,23 @@ class RuleProvider
         return $this->getNotificationRuleArray($form);
     }
 
-    private function getFieldRuleArray(Form $form): array
+    private function createFieldRuleFromRecord(Form $form, FieldRuleRecord $record): FieldRule
     {
-        $rules = FieldRuleRecord::getExistingRules($form->getId());
+        $ruleRecord = $record->getRule()->one();
 
-        $array = [];
-        foreach ($rules as $uid => $fieldRule) {
-            /** @var RuleRecord $rule */
-            $rule = $fieldRule->getRule()->one();
+        $rule = new FieldRule(
+            $record->id,
+            $ruleRecord->uid,
+            $ruleRecord->combinator,
+            $this->compileConditions($form, $ruleRecord),
+        );
 
-            $conditions = [];
+        $rule->setDisplay($record->display);
+        $rule->setField(
+            $form->get($record->getField()->one()->uid)
+        );
 
-            /** @var RuleConditionRecord $condition */
-            foreach ($rule->getConditions()->all() as $condition) {
-                $conditions[] = [
-                    'uid' => $condition->uid,
-                    'field' => $condition->getField()->one()->uid,
-                    'operator' => $condition->operator,
-                    'value' => $condition->value,
-                ];
-            }
-
-            $array[] = [
-                'uid' => $uid,
-                'field' => $fieldRule->getField()->one()->uid,
-                'enabled' => true,
-                'display' => $fieldRule->display,
-                'combinator' => $rule->combinator,
-                'conditions' => $conditions,
-            ];
-        }
-
-        return $array;
-    }
-
-    private function getPageRuleArray(Form $form): array
-    {
-        $rules = PageRuleRecord::getExistingRules($form->getId());
-
-        $array = [];
-        foreach ($rules as $uid => $pageRule) {
-            /** @var RuleRecord $rule */
-            $rule = $pageRule->getRule()->one();
-
-            $conditions = [];
-
-            /** @var RuleConditionRecord $condition */
-            foreach ($rule->getConditions()->all() as $condition) {
-                $conditions[] = [
-                    'uid' => $condition->uid,
-                    'field' => $condition->getField()->one()->uid,
-                    'operator' => $condition->operator,
-                    'value' => $condition->value,
-                ];
-            }
-
-            $array[] = [
-                'uid' => $uid,
-                'page' => $pageRule->getPage()->one()->uid,
-                'enabled' => true,
-                'combinator' => $rule->combinator,
-                'conditions' => $conditions,
-            ];
-        }
-
-        return $array;
+        return $rule;
     }
 
     private function getNotificationRuleArray(Form $form): array
@@ -178,5 +147,24 @@ class RuleProvider
         }
 
         return $array;
+    }
+
+    private function compileConditions(Form $form, RuleRecord $ruleRecord): ConditionCollection
+    {
+        $conditionCollection = new ConditionCollection();
+
+        /** @var RuleConditionRecord $condition */
+        foreach ($ruleRecord->getConditions()->all() as $condition) {
+            $conditionCollection->add(
+                new Condition(
+                    $condition->uid,
+                    $form->get($condition->getField()->one()->uid),
+                    $condition->operator,
+                    $condition->value
+                )
+            );
+        }
+
+        return $conditionCollection;
     }
 }

@@ -4,7 +4,7 @@ import { FormComponent } from '@components/form-controls';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import type { Property } from '@ff-client/types/properties';
 
-import { useValueUpdateGenerator } from './use-value-update-generator';
+import { useFormSettingUpdateGenerator } from './use-form-setting-update-generator';
 
 type Props = {
   namespace: string;
@@ -17,7 +17,7 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
     formSelectors.settings.one(namespace, property.handle)
   );
 
-  const generateUpdateHandler = useValueUpdateGenerator(namespace);
+  const generateUpdateHandler = useFormSettingUpdateGenerator(namespace);
 
   const errors: string[] | undefined =
     formErrors?.[namespace]?.[property.handle];

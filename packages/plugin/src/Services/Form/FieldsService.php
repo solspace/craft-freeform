@@ -58,7 +58,10 @@ class FieldsService extends BaseService
 
             $fields = [];
             foreach ($records as $record) {
-                $fields[] = $this->createField($record, $forms[$record->formId]);
+                $field = $this->createField($record, $forms[$record->formId]);
+                if ($field) {
+                    $fields[] = $field;
+                }
             }
         }
 
@@ -70,14 +73,15 @@ class FieldsService extends BaseService
         $fields = [];
         foreach ($this->getAllFieldRecords($form) as $record) {
             $field = $this->createField($record, $form);
-
-            $fields[] = $field;
+            if ($field) {
+                $fields[] = $field;
+            }
         }
 
         return $fields;
     }
 
-    public function createField(FormFieldRecord $record, Form $form): mixed
+    public function createField(FormFieldRecord $record, Form $form): ?FieldInterface
     {
         $type = $record->type;
 
@@ -87,6 +91,10 @@ class FieldsService extends BaseService
             'uid' => $record->uid,
             ...$metadata,
         ];
+
+        if (!class_exists($type)) {
+            return null;
+        }
 
         $field = new $type($form);
         $this->propertyProvider->setObjectProperties($field, $properties);

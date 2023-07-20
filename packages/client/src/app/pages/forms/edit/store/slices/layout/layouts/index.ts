@@ -19,7 +19,10 @@ export const layoutsSlice = createSlice({
       state.push(action.payload);
     },
     remove: (state, action: PayloadAction<string>) => {
-      state = state.filter((layout) => layout.uid !== action.payload);
+      state.splice(
+        state.findIndex((layout) => layout.uid === action.payload),
+        1
+      );
     },
   },
 });

@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Fields;
 
 use GraphQL\Type\Definition\Type;
+use Solspace\Freeform\Form\Form;
 use Twig\Markup;
 
 interface FieldInterface
@@ -21,17 +22,16 @@ interface FieldInterface
     public const EVENT_TRANSFORM_FROM_STORAGE = 'transform-from-storage';
     public const EVENT_TRANSFORM_FROM_DATABASE = 'transform-from-database';
 
-    public const EVENT_BEFORE_VALIDATE = 'before-validate';
-    public const EVENT_AFTER_VALIDATE = 'after-validate';
+    public const EVENT_VALIDATE = 'validate';
 
     public const TYPE_TEXT = 'text';
     public const TYPE_TEXTAREA = 'textarea';
     public const TYPE_HIDDEN = 'hidden';
-    public const TYPE_SELECT = 'select';
+    public const TYPE_SELECT = 'dropdown';
     public const TYPE_MULTIPLE_SELECT = 'multiple-select';
     public const TYPE_CHECKBOX = 'checkbox';
-    public const TYPE_CHECKBOX_GROUP = 'checkbox-group';
-    public const TYPE_RADIO_GROUP = 'radio-group';
+    public const TYPE_CHECKBOX_GROUP = 'checkboxes';
+    public const TYPE_RADIO_GROUP = 'radios';
     public const TYPE_HTML = 'html';
     public const TYPE_SUBMIT = 'submit';
     public const TYPE_SAVE = 'save';
@@ -59,6 +59,8 @@ interface FieldInterface
     public const TYPE_CREDIT_CARD_EXPIRY = 'cc-expiry';
     public const TYPE_CREDIT_CARD_CVC = 'cc-cvc';
 
+    public function getForm(): Form;
+
     public function getType(): string;
 
     public function getValue(): mixed;
@@ -85,6 +87,8 @@ interface FieldInterface
 
     public function addError(...$error): AbstractField;
 
+    public function addErrors(array $errors): AbstractField;
+
     public function render(): Markup;
 
     public function renderLabel(): Markup;
@@ -98,8 +102,6 @@ interface FieldInterface
     public function canRender(): bool;
 
     public function canStoreValues(): bool;
-
-    public function getConstraints(): array;
 
     public function getContentGqlDescription(): array;
 

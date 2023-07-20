@@ -32,7 +32,7 @@ export const colors = {
   inputBorder: 'rgba(96,125,159,0.25)',
   barelyVisible: 'rgb(154 165 177 / 75%)',
 
-  error: 'var(--error-color)',
+  error: '#cf1124',
   warning: 'var(--warning-color)',
   success: 'var(--success-color)',
   notice: 'var(--notice-color)',

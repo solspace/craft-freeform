@@ -4,6 +4,7 @@ import type { RootState } from '@editor/store';
 const sortByOrder = (a: Page, b: Page): number => a.order - b.order;
 
 export const pageSelecors = {
+  count: (state: RootState): number => state.layout.pages.length,
   all: (state: RootState): Page[] => [...state.layout.pages].sort(sortByOrder),
   one:
     (uid: string) =>

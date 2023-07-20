@@ -12,21 +12,10 @@
 
 namespace Solspace\Freeform\Fields\Interfaces;
 
-use Solspace\Freeform\Library\Exceptions\FieldExceptions\FileUploadException;
-
 interface FileUploadInterface
 {
     /**
      * @return int
      */
     public function getAssetSourceId();
-
-    /**
-     * Attempt to upload the file to its respective location.
-     *
-     * @return int - asset ID
-     *
-     * @throws FileUploadException
-     */
-    public function uploadFile();
 }

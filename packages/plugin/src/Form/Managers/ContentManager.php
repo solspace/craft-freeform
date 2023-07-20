@@ -136,8 +136,10 @@ class ContentManager
                 continue;
             }
 
+            $columnName = $table->getFieldColumnName($columnFieldId);
+
             \Craft::$app->db->createCommand()
-                ->dropColumn($table->getTableName(), $columnFieldId)
+                ->dropColumn($table->getTableName(), $columnName)
                 ->execute();
 
             $this->table->removeColumn($columnFieldId);

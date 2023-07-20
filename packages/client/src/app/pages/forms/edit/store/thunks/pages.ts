@@ -2,10 +2,11 @@ import type { Cell, Page } from '@editor/builder/types/layout';
 import type { AppDispatch, AppThunk } from '@editor/store';
 import { v4 } from 'uuid';
 
+import { contextActions } from '../slices/context';
 import { cellActions } from '../slices/layout/cells';
 import { layoutActions } from '../slices/layout/layouts';
 import { pageActions } from '../slices/layout/pages';
-import { rwoActions } from '../slices/layout/rows';
+import { rowActions } from '../slices/layout/rows';
 
 import { removeEmptyRows } from './rows';
 
@@ -51,7 +52,7 @@ export const moveCellToPage =
     const rowUid = v4();
 
     dispatch(
-      rwoActions.add({
+      rowActions.add({
         layoutUid,
         uid: rowUid,
       })
@@ -65,4 +66,41 @@ export const moveCellToPage =
     );
 
     removeEmptyRows(getState(), dispatch as AppDispatch);
+  };
+
+export const deletePage =
+  (page: Page): AppThunk =>
+  (dispatch, getState) => {
+    const { uid, layoutUid } = page;
+
+    const state = getState();
+    const layout = state.layout.layouts.find(
+      (layout) => layout.uid === layoutUid
+    );
+
+    if (!layout) {
+      return;
+    }
+
+    const nextPage = state.layout.pages.find((page) => page.uid !== uid);
+
+    dispatch(contextActions.unfocus());
+    dispatch(contextActions.setPage(nextPage.uid));
+
+    // remove rows
+    state.layout.rows
+      .filter((row) => row.layoutUid === layoutUid)
+      .forEach((row) => {
+        // remove cells
+        state.layout.cells
+          .filter((cell) => cell.rowUid === row.uid)
+          .forEach((cell) => {
+            dispatch(cellActions.remove(cell.uid));
+          });
+
+        dispatch(rowActions.remove(row.uid));
+      });
+
+    dispatch(layoutActions.remove(layoutUid));
+    dispatch(pageActions.remove(uid));
   };

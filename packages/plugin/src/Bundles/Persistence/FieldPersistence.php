@@ -60,9 +60,9 @@ class FieldPersistence extends FeatureBundle
                 $record = new FormFieldRecord();
                 $record->formId = $form->getId();
                 $record->uid = $fieldData->uid;
-                $record->type = $fieldData->typeClass;
             }
 
+            $record->type = $fieldData->typeClass;
             $record->metadata = $this->getValidatedMetadata($fieldData, $event);
 
             $records[] = $record;

@@ -7,7 +7,6 @@ use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Implementations\TextField;
 use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
-use Solspace\Freeform\Fields\Validation\Constraints\RegexConstraint;
 
 #[Type(
     name: 'Regex',
@@ -44,20 +43,6 @@ class RegexField extends TextField implements ExtraFieldInterface
     public function getMessage(): string
     {
         return $this->message;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new RegexConstraint(
-            $this->translate($this->getMessage()),
-            $this->getPattern()
-        );
-
-        return $constraints;
     }
 
     public function getContentGqlMutationArgumentType(): array|GQLType

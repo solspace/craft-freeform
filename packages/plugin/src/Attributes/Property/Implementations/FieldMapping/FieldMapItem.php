@@ -37,7 +37,9 @@ class FieldMapItem
     public function extractValue(Form $form): mixed
     {
         if (self::TYPE_RELATION === $this->getType()) {
-            return $form->get($this->getValue())->getValue();
+            $field = $form->get($this->getValue());
+
+            return $field?->getValue();
         }
 
         static $twig;

@@ -16,7 +16,6 @@ use GraphQL\Type\Definition\Type as GQLType;
 use Solspace\Freeform\Attributes\Field\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\Interfaces\PlaceholderInterface;
-use Solspace\Freeform\Fields\Validation\Constraints\LengthConstraint;
 
 #[Type(
     name: 'Textarea',
@@ -40,18 +39,6 @@ class TextareaField extends TextField implements PlaceholderInterface
     public function getRows(): ?int
     {
         return $this->rows;
-    }
-
-    public function getConstraints(): array
-    {
-        $constraints = parent::getConstraints();
-        $constraints[] = new LengthConstraint(
-            null,
-            65535,
-            $this->translate('The allowed maximum length is {{max}} characters. Current size is {{difference}} characters too long.')
-        );
-
-        return $constraints;
     }
 
     /**

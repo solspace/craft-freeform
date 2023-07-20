@@ -36,7 +36,7 @@ class ProcessElementValueEvent extends CancelableArrayableEvent
         return $this->form;
     }
 
-    public function getCraftField(): CraftFieldInterface
+    public function getCraftField(): ?CraftFieldInterface
     {
         return $this->craftField;
     }

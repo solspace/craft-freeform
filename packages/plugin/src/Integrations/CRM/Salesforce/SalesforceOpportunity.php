@@ -19,7 +19,7 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\AbstractField;
-use Solspace\Freeform\Fields\Implementations\CheckboxGroupField;
+use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
@@ -486,7 +486,7 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
 
     private function isAppendFieldType(mixed $formField): bool
     {
-        return $formField instanceof CheckboxGroupField;
+        return $formField instanceof CheckboxesField;
     }
 
     /**

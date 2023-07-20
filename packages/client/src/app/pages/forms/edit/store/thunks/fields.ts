@@ -1,13 +1,17 @@
 import type { Row } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
 import type { AppThunk } from '@editor/store';
+import type { Field } from '@editor/store/slices/fields';
 import { fieldActions } from '@editor/store/slices/fields';
 import { cellActions } from '@editor/store/slices/layout/cells';
-import type { FieldType } from '@ff-client/types/fields';
+import type {
+  FieldType,
+  PropertyValueCollection,
+} from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
 import { contextSelectors } from '../slices/context/context.selectors';
-import { rwoActions } from '../slices/layout/rows';
+import { rowActions } from '../slices/layout/rows';
 
 export const addNewFieldToNewRow =
   (fieldType: FieldType, row?: Row): AppThunk =>
@@ -25,7 +29,7 @@ export const addNewFieldToNewRow =
 
     dispatch(fieldActions.add({ fieldType, uid: fieldUid }));
     dispatch(
-      rwoActions.add({
+      rowActions.add({
         layoutUid: currentPage.layoutUid,
         uid: rowUid,
         order: row?.order,
@@ -62,6 +66,32 @@ export const addNewFieldToExistingRow =
         targetUid: fieldUid,
         uid: cellUid,
         order,
+      })
+    );
+  };
+
+export const changeFieldType =
+  (field: Field, type: FieldType): AppThunk =>
+  (dispatch) => {
+    const { uid } = field;
+
+    const properties: PropertyValueCollection = {};
+
+    type.properties.forEach((property) => {
+      const targetProperty = field.properties[property.handle];
+
+      if (targetProperty) {
+        properties[property.handle] = targetProperty;
+      } else {
+        properties[property.handle] = property.value;
+      }
+    });
+
+    dispatch(
+      fieldActions.batchEdit({
+        uid,
+        typeClass: type.typeClass,
+        properties,
       })
     );
   };

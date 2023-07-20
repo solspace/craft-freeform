@@ -534,6 +534,28 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
         return $returnArray;
     }
 
+    /**
+     * Returns an array of all valid file extensions for this field.
+     */
+    public function getValidExtensions(FileUploadField $field): array
+    {
+        $allFileKinds = $this->getFileKinds();
+        $selectedFileKinds = $field->getFileKinds();
+
+        $allowedExtensions = [];
+        if ($selectedFileKinds) {
+            foreach ($selectedFileKinds as $kind) {
+                if (isset($allFileKinds[$kind])) {
+                    $allowedExtensions = array_merge($allowedExtensions, $allFileKinds[$kind]);
+                }
+            }
+        } else {
+            $allowedExtensions = \Craft::$app->getConfig()->getGeneral()->allowedFileExtensions;
+        }
+
+        return $allowedExtensions;
+    }
+
     private function getFolder($volumeId, string $subpath, Form $form)
     {
         $assetsService = \Craft::$app->getAssets();

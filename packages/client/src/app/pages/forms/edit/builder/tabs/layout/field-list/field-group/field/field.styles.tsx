@@ -38,10 +38,17 @@ export const Name = styled.span`
 `;
 
 export const Icon = styled.div`
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   flex-shrink: 0;
   flex-basis: 18px;
-  height: 18px;
+
+  svg {
+    max-width: 18px;
+    max-height: 18px;
+  }
 
   color: ${colors.gray500};
 `;

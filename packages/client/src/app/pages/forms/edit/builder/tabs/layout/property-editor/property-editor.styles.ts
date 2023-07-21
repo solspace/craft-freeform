@@ -55,7 +55,7 @@ type SectionBlockProps = {
 export const Title = styled.h3`
   display: flex;
   justify-content: flex-start;
-  align-items: center;
+  align-items: end;
   gap: ${spacings.sm};
 
   margin: 0;
@@ -63,11 +63,24 @@ export const Title = styled.h3`
 
   font-size: 16px;
   box-shadow: ${shadows.bottom};
+
+  > span {
+    display: block;
+  }
 `;
 
 export const Icon = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
   width: 20px;
   height: 20px;
+
+  svg {
+    max-width: 20px;
+    max-height: 20px;
+  }
 `;
 
 export const SectionWrapper = styled.div`
@@ -115,11 +128,11 @@ export const SectionBlock = styled.section<SectionBlockProps>`
   > ${Icon} {
     position: absolute;
     left: 2px;
-    top: -4px;
+    top: -6px;
     z-index: 1;
 
-    width: 10px;
-    height: 10px;
+    width: 14px;
+    height: 14px;
 
     fill: rgb(154 165 177 / 75%);
   }
@@ -132,7 +145,7 @@ export const SectionBlock = styled.section<SectionBlockProps>`
     top: -7px;
 
     display: block;
-    padding: 0 5px 0 22px;
+    padding: 0 5px 0 26px;
 
     background-color: ${colors.gray050};
 

@@ -63,7 +63,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     #[Section(
         handle: 'date',
         label: 'Date Settings',
-        icon: __DIR__.'/../Icons/date.svg',
+        icon: __DIR__.'/../../SectionIcons/calendar.svg',
     )]
     #[VisibilityFilter('["both", "date"].includes(properties.dateTimeType)')]
     #[Input\Select(
@@ -124,7 +124,7 @@ class DatetimeField extends TextField implements InitialValueInterface, Datetime
     #[Section(
         handle: 'time',
         label: 'Time settings',
-        icon: __DIR__.'/../Icons/time.svg',
+        icon: __DIR__.'/../../SectionIcons/time.svg',
     )]
     #[VisibilityFilter('["both", "time"].includes(properties.dateTimeType)')]
     #[Input\Boolean('24h clock?')]

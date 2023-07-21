@@ -14,6 +14,9 @@ const CellDragPlaceholderContainer = styled(animated.div)`
   top: 0;
   bottom: 0;
 
+  pointer-events: none;
+  user-select: none;
+
   background-color: #e9effd;
   border: 1px dashed #c3c3c3;
   border-radius: ${borderRadius.md};
@@ -27,6 +30,7 @@ export const CellDragPlaceholder: React.FC<Props> = ({
   const style = useSpring({
     opacity: isActive ? 1 : 0,
     x: hoverPosition * cellWidth,
+    scale: isActive ? 1 : 0,
     width: cellWidth,
     config: {
       tension: 700,

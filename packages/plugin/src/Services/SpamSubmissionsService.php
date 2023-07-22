@@ -71,6 +71,7 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
     {
         return SpamSubmission::find();
     }
+
     protected function findSubmissions(): Query
     {
         $submissionTable = Submission::TABLE;

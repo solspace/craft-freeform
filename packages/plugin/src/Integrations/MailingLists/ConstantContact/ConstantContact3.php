@@ -193,6 +193,7 @@ class ConstantContact3 extends MailingListOAuthConnector implements RefreshToken
      * Fetch all custom fields for each list.
      *
      * @return FieldObject[]
+     *
      * @throws GuzzleException|IntegrationException
      */
     protected function fetchFields(string $listId): array

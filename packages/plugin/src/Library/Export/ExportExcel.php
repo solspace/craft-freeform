@@ -5,7 +5,6 @@ namespace Solspace\Freeform\Library\Export;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Exception;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use yii\base\ErrorException;
 
 class ExportExcel extends ExportCsv
 {

@@ -11,7 +11,7 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 #[Type(
     name: 'Regex',
     typeShorthand: 'regex',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/regex.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class RegexField extends TextField implements ExtraFieldInterface

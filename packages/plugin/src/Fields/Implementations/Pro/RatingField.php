@@ -17,7 +17,7 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
 #[Type(
     name: 'Rating',
     typeShorthand: 'rating',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/rating.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/rating.ejs',
 )]
 class RatingField extends AbstractField implements ExtraFieldInterface, OptionsInterface

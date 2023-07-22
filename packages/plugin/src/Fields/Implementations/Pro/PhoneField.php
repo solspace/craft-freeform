@@ -12,7 +12,7 @@ use Solspace\Freeform\Fields\Interfaces\PhoneMaskInterface;
 #[Type(
     name: 'Phone',
     typeShorthand: 'phone',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/phone.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class PhoneField extends TextField implements PhoneMaskInterface, ExtraFieldInterface

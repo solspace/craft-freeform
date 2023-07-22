@@ -9,7 +9,7 @@ use Solspace\Freeform\Fields\Interfaces\ExtraFieldInterface;
 #[Type(
     name: 'Website',
     typeShorthand: 'website',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/website.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class WebsiteField extends TextField implements ExtraFieldInterface

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
+import { contextSelectors } from '@editor/store/slices/context/context.selectors';
 import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import classes from '@ff-client/utils/classes';
@@ -17,7 +18,16 @@ type Props = {
 export const CellField: React.FC<Props> = ({ uid }) => {
   const field = useSelector(fieldSelectors.one(uid));
   const type = useFieldType(field?.typeClass);
+  const {
+    active,
+    type: contextType,
+    uid: contextUid,
+  } = useSelector(contextSelectors.focus);
   const dispatch = useAppDispatch();
+
+  const isActive = useMemo(() => {
+    return active && contextType === FocusType.Field && contextUid === uid;
+  }, [active, contextType, contextUid, uid]);
 
   const preview = useMemo(() => {
     if (
@@ -41,7 +51,11 @@ export const CellField: React.FC<Props> = ({ uid }) => {
 
   return (
     <CellFieldWrapper
-      className={classes(hasErrors(field.errors) && 'errors', 'field')}
+      className={classes(
+        hasErrors(field.errors) && 'errors',
+        isActive && 'active',
+        'field'
+      )}
       onClick={(): void => {
         dispatch(contextActions.setFocusedItem({ type: FocusType.Field, uid }));
       }}

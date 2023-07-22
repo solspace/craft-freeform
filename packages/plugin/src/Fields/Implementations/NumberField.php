@@ -10,7 +10,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 #[Type(
     name: 'Number',
     typeShorthand: 'number',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/number.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/text.ejs',
 )]
 class NumberField extends TextField

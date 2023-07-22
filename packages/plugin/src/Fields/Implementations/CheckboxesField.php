@@ -23,7 +23,7 @@ use Solspace\Freeform\Fields\Traits\OneLineTrait;
 #[Type(
     name: 'Checkboxes',
     typeShorthand: 'checkboxes',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/checkboxes.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox-group.ejs',
 )]
 class CheckboxesField extends AbstractExternalOptionsField implements MultiValueInterface, OneLineInterface

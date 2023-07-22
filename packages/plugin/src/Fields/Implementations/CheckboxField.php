@@ -28,7 +28,7 @@ use Twig\Markup;
 #[Type(
     name: 'Checkbox',
     typeShorthand: 'checkbox',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/checkbox.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/checkbox.ejs',
 )]
 class CheckboxField extends AbstractField implements InputOnlyInterface, BooleanInterface

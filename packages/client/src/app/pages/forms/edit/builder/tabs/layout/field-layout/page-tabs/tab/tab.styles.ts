@@ -7,18 +7,18 @@ export const TabWrapper = styled(animated.div)`
   position: relative;
 `;
 
-export const NewTabWrapper = styled(TabWrapper)`
-  justify-self: flex-end;
-`;
-
 export const RemoveTabButton = styled.button`
   position: absolute;
   top: 3px;
-  right: 0;
+  right: -8px;
 
   transition: all 0.2s ease-in-out;
   transform: scale(0.8);
   opacity: 0;
+
+  &:active {
+    outline: none;
+  }
 
   &:hover {
     transform: scale(1);
@@ -30,20 +30,26 @@ export const RemoveTabButton = styled.button`
 `;
 
 export const PageTab = styled(animated.div)`
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 18px;
-  border-radius: 4px 4px 0 0;
-  background: white;
-  box-shadow: 0 0 0 1px #cdd8e4, 0 2px 12px rgb(205 216 228 / 50%);
 
-  white-space: nowrap;
+  max-width: 160px;
+  height: 100%;
+  padding: 4px 14px;
+
+  border-bottom: 2px solid ${colors.gray100};
+
   overflow: hidden;
 
+  > span {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   &.active {
-    background: ${colors.gray050};
+    border-bottom-color: ${colors.blue600};
   }
 
   &.errors {

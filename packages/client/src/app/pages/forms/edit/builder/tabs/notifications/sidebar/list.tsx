@@ -11,6 +11,7 @@ import {
 } from '@ff-client/queries/notifications';
 
 import { NotificationItem } from './items/item';
+import { ScrollableList } from './list.styles';
 
 export const List: React.FC = () => {
   const { formId, uid } = useParams();
@@ -42,20 +43,22 @@ export const List: React.FC = () => {
   }
 
   return (
-    <Sidebar $lean>
-      {notificationTypes.map((type) => (
-        <NotificationTypeItem key={type.className} type={type}>
-          {notifications &&
-            notifications
-              ?.filter((notif) => notif.className === type.className)
-              .map((notification) => (
-                <NotificationItem
-                  key={notification.uid}
-                  notification={notification}
-                />
-              ))}
-        </NotificationTypeItem>
-      ))}
+    <Sidebar $noPadding>
+      <ScrollableList>
+        {notificationTypes.map((type) => (
+          <NotificationTypeItem key={type.className} type={type}>
+            {notifications &&
+              notifications
+                ?.filter((notif) => notif.className === type.className)
+                .map((notification) => (
+                  <NotificationItem
+                    key={notification.uid}
+                    notification={notification}
+                  />
+                ))}
+          </NotificationTypeItem>
+        ))}
+      </ScrollableList>
     </Sidebar>
   );
 };

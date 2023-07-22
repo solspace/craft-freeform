@@ -17,9 +17,9 @@ use Solspace\Freeform\Library\Attributes\Attributes;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 #[Type(
-    name: 'Confirmation',
+    name: 'Confirm',
     typeShorthand: 'confirmation',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/confirm.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]
 class ConfirmationField extends TextField implements DefaultFieldInterface, NoStorageInterface, RememberPostedValueInterface, ExtraFieldInterface

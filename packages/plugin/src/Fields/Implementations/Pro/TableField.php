@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\Annotation\Ignore;
 #[Type(
     name: 'Table',
     typeShorthand: 'table',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/table.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/table.ejs',
 )]
 class TableField extends AbstractField implements MultiValueInterface, MultiDimensionalValueInterface, ExtraFieldInterface

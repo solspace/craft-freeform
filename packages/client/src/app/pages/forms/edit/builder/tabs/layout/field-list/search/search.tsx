@@ -18,7 +18,7 @@ export const Search: React.FC = () => {
         <Filter />
         <SearchBar
           type="text"
-          placeholder={translate('Search fields...')}
+          placeholder={translate('Search')}
           className="fullwidth text"
           value={query}
           onChange={(event): void => {

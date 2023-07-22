@@ -22,7 +22,7 @@ use Solspace\Freeform\Fields\Traits\MultipleValueTrait;
 #[Type(
     name: 'Multi-Select',
     typeShorthand: 'multiple-select',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/multi-select.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/multiple-select.ejs',
 )]
 class MultipleSelectField extends AbstractExternalOptionsField implements MultiValueInterface

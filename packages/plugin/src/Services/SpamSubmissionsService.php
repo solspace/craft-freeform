@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Services;
 
 use craft\db\Query;
+use craft\db\Table;
 use craft\records\Element;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
@@ -66,11 +67,22 @@ class SpamSubmissionsService extends SubmissionsService implements SpamSubmissio
         return true;
     }
 
+    protected function getFindQuery(): Query
+    {
+        return SpamSubmission::find();
+    }
     protected function findSubmissions(): Query
     {
+        $submissionTable = Submission::TABLE;
+        $elementTable = Table::ELEMENTS;
+
         return (new Query())
-            ->from(SpamSubmission::TABLE)
-            ->where(['isSpam' => true])
+            ->from($submissionTable)
+            ->innerJoin($elementTable, "{$elementTable}.[[id]] = {$submissionTable}.[[id]]")
+            ->where([
+                'isSpam' => true,
+                "{$elementTable}.[[dateDeleted]]" => null,
+            ])
         ;
     }
 }

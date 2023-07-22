@@ -17,6 +17,7 @@ use Solspace\Freeform\Library\Exceptions\DataObjects\EmailTemplateException;
 use Solspace\Freeform\Library\Serialization\Normalizers\IdentificatorInterface;
 use Solspace\Freeform\Records\NotificationTemplateRecord;
 use Symfony\Component\Serializer\Annotation\Ignore;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 
 class NotificationTemplate implements IdentificatorInterface
 {
@@ -36,7 +37,7 @@ class NotificationTemplate implements IdentificatorInterface
     private ?string $bcc = null;
 
     private bool $includeAttachments;
-    private array $presetAssets = [];
+    private string|array $presetAssets = [];
 
     private string $subject;
     private string $body;
@@ -113,7 +114,12 @@ class NotificationTemplate implements IdentificatorInterface
 
         $presetAssets = $template->getMetadata('presetAssets');
         if ($presetAssets) {
-            $template->presetAssets = StringHelper::extractSeparatedValues($presetAssets);
+            $isTwigValue = TwigHelper::isTwigValue($presetAssets);
+            if ($isTwigValue) {
+                $template->presetAssets = $presetAssets;
+            } else {
+                $template->presetAssets = StringHelper::extractSeparatedValues($presetAssets);
+            }
         }
 
         $template->includeAttachments = $includeAttachments;
@@ -198,7 +204,7 @@ class NotificationTemplate implements IdentificatorInterface
         return $this->includeAttachments;
     }
 
-    public function getPresetAssets(): array
+    public function getPresetAssets(): array|string|null
     {
         return $this->presetAssets;
     }

@@ -112,7 +112,15 @@ class NotificationFilesService extends BaseService implements NotificationsServi
         }
 
         $includeAttachments = $record->isIncludeAttachmentsEnabled() ? 'true' : 'false';
-        $presetAssets = $record->getPresetAssets() ? implode(',', $record->getPresetAssets()) : '';
+        $presetAssets = $record->getPresetAssets();
+        if ($presetAssets) {
+            // Note, we dont do anything if its using a Twig tag
+            if (\is_array($presetAssets)) {
+                $presetAssets = implode(',', $presetAssets);
+            }
+        } else {
+            $presetAssets = '';
+        }
 
         $output = '';
         $output .= "{# subject: {$record->getSubject()} #}".\PHP_EOL;

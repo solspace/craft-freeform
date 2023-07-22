@@ -50,15 +50,30 @@
             errors: settings.errors("allowFileTemplateEdit"),
         }) }}
 
-        {{ forms.textField({
-            class: "code",
+        {% set suggestionsData = [] %}
+        {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+            {% set suggestionsData = suggestionsData|merge([{
+                "name": directory
+            }]) %}
+        {% endfor %}
+
+        {{ forms.autosuggestField({
             label: "File Directory Path"|t('freeform'),
-            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
-            placeholder: "e.g. _freeform_emails/",
             id: "emailTemplateDirectory",
+            class: "ltr",
+            suggestEnvVars: false,
+            suggestAliases: false,
+            suggestions:[{
+                "label":"Existing Directories",
+                "data": suggestionsData
+            }],
+            tip: null,
+            limit: 10,
             name: "settings[emailTemplateDirectory]",
             value: settings.emailTemplateDirectory,
             errors: settings.getErrors("emailTemplateDirectory"),
+            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
+            placeholder: "e.g. _freeform/notifications",
         }) }}
 
         {% if settings.absoluteEmailTemplateDirectory %}

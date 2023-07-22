@@ -154,8 +154,11 @@ class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
 
         $formId = $this->formId;
         $fieldId = $this->fieldId;
+        $form = $this->getFormService()->getFormById($formId);
         $field = $this->getFieldService()->getFieldById($fieldId);
-        $columnName = Submission::getFieldColumnName($fieldId);
+        $columnName = Submission::generateFieldColumnName($fieldId, $field->handle);
+
+        $contentTable = Submission::generateContentTableName($form->id, $form->handle);
 
         $showEmpty = $this->showEmpty;
 
@@ -163,20 +166,20 @@ class FieldValuesWidget extends AbstractWidget implements ExtraWidgetInterface
             $query = (new Query())
                 ->select(
                     [
-                        "{$submissions}.[[{$columnName}]] as val",
-                        "COUNT({$submissions}.[[id]]) as count",
+                        "fc.[[{$columnName}]] as val",
+                        'COUNT(fc.[[id]]) as count',
                     ]
                 )
-                ->from(Submission::TABLE)
-                ->where(['between', "{$submissions}.[[dateCreated]]", $rangeStart, $rangeEnd])
-                ->andWhere(["{$submissions}.[[formId]]" => $formId])
+                ->from($contentTable.' fc')
+                ->innerJoin($submissions.' s', 's.[[id]] = fc.[[id]]')
+                ->where(['between', 's.[[dateCreated]]', $rangeStart, $rangeEnd])
                 ->groupBy([$columnName])
             ;
 
             if (version_compare(\Craft::$app->getVersion(), '3.1', '>=')) {
                 $query->innerJoin(
                     $elements,
-                    "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                    "{$elements}.[[id]] = fc.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
                 );
             }
 

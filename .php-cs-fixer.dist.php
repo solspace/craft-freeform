@@ -1,7 +1,7 @@
 <?php
 
 $finder = PhpCsFixer\Finder::create()
-    ->in(__DIR__ . '/packages/plugin')
+    ->in(__DIR__.'/packages/plugin')
 ;
 
 return (new PhpCsFixer\Config())

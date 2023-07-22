@@ -40,8 +40,8 @@
   },
   "scripts": {
     "test:unit": "vendor/bin/phpunit --configuration ./phpunit.xml",
-    "fix": "vendor/bin/php-cs-fixer fix --diff",
-    "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "fix": "vendor/bin/php-cs-fixer fix --diff --config=./.php-cs-fixer.dist.php",
+    "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff  --config=./.php-cs-fixer.dist.php",
     "cghooks": "vendor/bin/cghooks",
     "post-install-cmd": "cghooks add --ignore-lock",
     "post-update-cmd": "cghooks update"

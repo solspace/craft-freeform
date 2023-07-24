@@ -10,6 +10,8 @@ export const layoutSelectors = {
     (uid: string) =>
     (state: RootState): Layout | undefined =>
       state.layout.layouts.find((layout) => layout.uid === uid),
+  currentPageLayout: (state: RootState): Layout =>
+    layoutSelectors.pageLayout(pageSelecors.current(state))(state),
   pageLayout:
     (page: Page) =>
     (state: RootState): Layout | undefined =>

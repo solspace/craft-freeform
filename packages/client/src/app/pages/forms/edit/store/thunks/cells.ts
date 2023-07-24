@@ -5,15 +5,22 @@ import { v4 } from 'uuid';
 import type { AppDispatch, AppThunk } from '..';
 import { fieldActions } from '../slices/fields';
 import { cellActions } from '../slices/layout/cells';
+import { layoutSelectors } from '../slices/layout/layouts/layouts.selectors';
 import { rowActions } from '../slices/layout/rows';
 
 import { removeEmptyRows } from './rows';
 
 export const moveExistingCellToNewRow =
-  (options: { cell: Cell; order?: number; layout: Layout }): AppThunk =>
+  (options: { cell: Cell; order?: number; layout?: Layout }): AppThunk =>
   (dispatch, getState) => {
-    const { cell, order, layout } = options;
+    const { cell, order } = options;
+    let { layout } = options;
+
     const rowUid = v4();
+
+    if (!layout) {
+      layout = layoutSelectors.currentPageLayout(getState());
+    }
 
     dispatch(
       rowActions.add({

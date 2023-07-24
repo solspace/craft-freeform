@@ -52,23 +52,10 @@ export const FieldMappingController: React.FC<Props> = ({
 
             <TypeButtonGroup>
               <TypeButton
-                title={translate('Relationship')}
-                $active={map.type === TargetFieldType.Relation}
-                onClick={() =>
-                  updateValue({
-                    ...mapping,
-                    [source.id]: {
-                      type: TargetFieldType.Relation,
-                      value: '',
-                    },
-                  })
-                }
-              >
-                <RelationIcon />
-              </TypeButton>
-              <TypeButton
                 title={translate('Custom template')}
-                $active={map.type === TargetFieldType.Custom}
+                className={classes(
+                  map.type === TargetFieldType.Custom && 'active'
+                )}
                 onClick={() =>
                   updateValue({
                     ...mapping,
@@ -80,6 +67,23 @@ export const FieldMappingController: React.FC<Props> = ({
                 }
               >
                 <CustomIcon />
+              </TypeButton>
+              <TypeButton
+                title={translate('Relationship')}
+                className={classes(
+                  map.type === TargetFieldType.Relation && 'active'
+                )}
+                onClick={() =>
+                  updateValue({
+                    ...mapping,
+                    [source.id]: {
+                      type: TargetFieldType.Relation,
+                      value: '',
+                    },
+                  })
+                }
+              >
+                <RelationIcon />
               </TypeButton>
             </TypeButtonGroup>
 

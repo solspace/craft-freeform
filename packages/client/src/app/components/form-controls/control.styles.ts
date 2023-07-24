@@ -15,9 +15,15 @@ export const Label = styled.label<LabelProps>`
 
 export const Instructions = styled.span`
   display: block;
-  margin: 5px 0 10px;
 
-  color: ${colors.gray550};
+  color: ${colors.gray300};
+  line-height: 12px;
+  font-size: 12px;
+  font-style: italic;
+
+  &:not(:last-child) {
+    padding-bottom: 6px;
+  }
 `;
 
 export const FormField = styled.div`

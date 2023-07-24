@@ -63,25 +63,25 @@ export const TypeButtonGroup = styled.div`
   display: flex;
 `;
 
-type TypeButtonProps = {
-  $active: boolean;
-};
-
 const radius = '8px';
 
-export const TypeButton = styled.button<TypeButtonProps>`
+export const TypeButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
 
-  width: 30px;
-  height: 26px;
+  width: 34px;
+  height: 28px;
 
-  color: ${({ $active }) => ($active ? colors.gray500 : '#ccc')};
-  background-color: ${({ $active }) => ($active ? colors.gray050 : '#fff')};
+  fill: ${colors.gray550};
+  background-color: ${colors.gray200};
 
-  border: 1px solid #ccc;
   border-left: 1px solid transparent;
+
+  &.active {
+    fill: ${colors.gray050};
+    background-color: ${colors.gray550};
+  }
 
   &:first-child {
     border-top-left-radius: ${radius};
@@ -96,7 +96,7 @@ export const TypeButton = styled.button<TypeButtonProps>`
   }
 
   svg {
-    width: 20px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
   }
 `;

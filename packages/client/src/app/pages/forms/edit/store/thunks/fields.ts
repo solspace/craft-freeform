@@ -10,12 +10,18 @@ import type {
 } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
+import { layoutSelectors } from '../slices/layout/layouts/layouts.selectors';
 import { rowActions } from '../slices/layout/rows';
 
 export const addNewFieldToNewRow =
-  (options: { fieldType: FieldType; layout: Layout; row?: Row }): AppThunk =>
-  (dispatch) => {
-    const { fieldType, row, layout } = options;
+  (options: { fieldType: FieldType; layout?: Layout; row?: Row }): AppThunk =>
+  (dispatch, getState) => {
+    const { fieldType, row } = options;
+    let { layout } = options;
+
+    if (!layout) {
+      layout = layoutSelectors.currentPageLayout(getState());
+    }
 
     const fieldUid = v4();
     const cellUid = v4();

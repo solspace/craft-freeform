@@ -29,7 +29,7 @@ export const FieldItem: React.FC<Props> = ({ favorite }) => {
   const { icon } = fieldType;
 
   const onClick = (): void => {
-    dispatch(addNewFieldToNewRow(clonedFieldType));
+    dispatch(addNewFieldToNewRow({ fieldType: clonedFieldType }));
   };
 
   return <Field icon={icon} label={label} onClick={onClick} dragRef={ref} />;

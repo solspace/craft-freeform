@@ -32,7 +32,12 @@ export const useRowDrop = (row: Row): RowDropHook => {
         }
 
         if (item.type === Drag.FieldType) {
-          dispatch(addNewFieldToNewRow(item.data, row));
+          dispatch(
+            addNewFieldToNewRow({
+              fieldType: item.data,
+              row,
+            })
+          );
         }
       },
     }),

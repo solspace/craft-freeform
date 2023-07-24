@@ -18,7 +18,7 @@ export const FieldItem: React.FC<Props> = ({ fieldType }) => {
   const { ref } = useBaseFieldDrag(fieldType);
 
   const onClick = (): void => {
-    dispatch(addNewFieldToNewRow(fieldType));
+    dispatch(addNewFieldToNewRow({ fieldType }));
   };
 
   return <Field icon={icon} label={name} onClick={onClick} dragRef={ref} />;

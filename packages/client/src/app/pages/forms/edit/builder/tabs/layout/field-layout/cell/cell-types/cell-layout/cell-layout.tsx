@@ -4,6 +4,8 @@ import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.sel
 
 import { Layout } from '../../../layout/layout';
 
+import { CellLayoutWrapper } from './cell-layout.styles';
+
 type Props = {
   uid: string;
 };
@@ -15,5 +17,10 @@ export const CellLayout: React.FC<Props> = ({ uid }) => {
     return null;
   }
 
-  return <Layout layout={layout} />;
+  return (
+    <CellLayoutWrapper>
+      <h3>Group Field</h3>
+      <Layout layout={layout} />
+    </CellLayoutWrapper>
+  );
 };

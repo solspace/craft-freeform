@@ -42,6 +42,7 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
       },
     })
   );
+  dispatch(contextActions.setPage(pageUid));
 };
 
 export const moveCellToPage =

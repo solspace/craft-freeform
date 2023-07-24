@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
+
+import { DropDown } from './field-select.styles';
 
 type Props = {
   value: string;
@@ -16,12 +19,13 @@ export const FieldSelect: React.FC<Props> = ({ value, onChange }) => {
   const fields = useSelector(fieldSelectors.all);
 
   return (
-    <div className="select fullwidth">
-      <select
+    <div className="select small fullwidth">
+      <DropDown
         value={value}
+        className={classes(!value && 'empty')}
         onChange={(event) => onChange && onChange(event.target.value)}
       >
-        <option value="">{translate('Choose field')}</option>
+        <option value="">{translate('Do not map this field')}</option>
         {cartographed.map((mapped) => (
           <optgroup
             key={mapped.page}
@@ -32,13 +36,13 @@ export const FieldSelect: React.FC<Props> = ({ value, onChange }) => {
 
               return (
                 <option key={fieldUid} value={fieldUid}>
-                  {field.properties.label}
+                  {field?.properties?.label}
                 </option>
               );
             })}
           </optgroup>
         ))}
-      </select>
+      </DropDown>
     </div>
   );
 };

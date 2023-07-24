@@ -74,9 +74,7 @@ export const TypeButton = styled.button`
   height: 28px;
 
   fill: ${colors.gray550};
-  background-color: ${colors.gray200};
-
-  border-left: 1px solid transparent;
+  background-color: ${colors.elements.dropdown};
 
   &.active {
     fill: ${colors.gray050};
@@ -86,8 +84,6 @@ export const TypeButton = styled.button`
   &:first-child {
     border-top-left-radius: ${radius};
     border-bottom-left-radius: ${radius};
-
-    border-left: 1px solid #ccc;
   }
 
   &:last-child {

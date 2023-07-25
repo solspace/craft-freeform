@@ -1,5 +1,10 @@
 # Solspace Freeform Changelog
 
+## 3.13.32 - 2023-07-24
+
+### Changed
+- Refactored the Freeform lock service to use Yii's cache to prevent performance issues.
+
 ## 3.13.31 - 2023-07-11
 
 ### Added

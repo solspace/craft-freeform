@@ -3,17 +3,20 @@
 namespace Solspace\Freeform\Bundles\Integrations\CRM;
 
 use Composer\Autoload\ClassMapGenerator;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Services\Integrations\CrmService;
 use yii\base\Event;
 
 class CrmBundle extends FeatureBundle
 {
-    public function __construct()
+    public function __construct(private FormIntegrationsProvider $formIntegrationsProvider)
     {
         if (!Freeform::getInstance()->isPro()) {
             return;
@@ -51,12 +54,18 @@ class CrmBundle extends FeatureBundle
         }
 
         $form = $event->getForm();
-        $submission = $event->getSubmission();
-
         if (!$form->hasOptInPermission()) {
             return;
         }
 
-        $this->plugin()->crm->pushObject($submission);
+        /** @var CRMIntegrationInterface[] $integrations */
+        $integrations = $this->formIntegrationsProvider->getForForm($form, IntegrationInterface::TYPE_CRM);
+        foreach ($integrations as $integration) {
+            if (!$integration->isEnabled()) {
+                continue;
+            }
+
+            $integration->push($form);
+        }
     }
 }

@@ -11,6 +11,7 @@ import CustomIcon from './icons/custom.svg';
 import RelationIcon from './icons/relation.svg';
 import { FieldSelect } from './field-select';
 import {
+  MappingContainer,
   MappingWrapper,
   SourceField,
   TypeButton,
@@ -34,7 +35,7 @@ export const FieldMappingController: React.FC<Props> = ({
   }
 
   return (
-    <div>
+    <MappingContainer>
       {sources.length === 0 && (
         <HelpText>{translate('No data present')}</HelpText>
       )}
@@ -123,6 +124,6 @@ export const FieldMappingController: React.FC<Props> = ({
           </MappingWrapper>
         );
       })}
-    </div>
+    </MappingContainer>
   );
 };

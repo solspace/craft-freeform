@@ -62,7 +62,7 @@ class SharpSpring extends CRMIntegration
     {
     }
 
-    public function pushObject(array $keyValueList, ?array $formFields = null): bool
+    public function push(array $keyValueList, ?array $formFields = null): bool
     {
         $contactProps = [];
 

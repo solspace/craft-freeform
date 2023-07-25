@@ -12,56 +12,56 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
-use Solspace\Freeform\Library\Database\CRMHandlerInterface;
+use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
+use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use yii\base\Event;
 
-abstract class CRMIntegration extends APIIntegration implements CRMIntegrationInterface, \JsonSerializable
+abstract class CRMIntegration extends APIIntegration implements CRMIntegrationInterface
 {
-    /**
-     * @return FieldObject[]
-     */
-    final public function getFields(): array
+    public function getType(): string
     {
-        if ($this->isForceUpdate()) {
-            $fields = $this->fetchFields();
-            $this->getHandler()->updateFields($this, $fields);
-        } else {
-            $fields = $this->getHandler()->getFields($this);
-        }
-
-        return $fields;
+        return self::TYPE_CRM;
     }
 
-    /**
-     * Fetch the custom fields from the integration.
-     *
-     * @return FieldObject[]
-     */
-    abstract public function fetchFields(): array;
-
-    /**
-     * Specify data which should be serialized to JSON.
-     */
-    public function jsonSerialize(): array
+    protected function processMapping(Form $form, FieldMapping $mapping, string $category): array
     {
-        try {
-            $fields = $this->getFields();
-        } catch (\Exception $e) {
-            $this->getLogger()->error($e->getMessage(), ['service' => $this->getServiceProvider()]);
+        $fields = Freeform::getInstance()->crm->getFields($this, $category);
 
-            $fields = [];
+        $keyValueMap = [];
+        foreach ($mapping as $item) {
+            $integrationField = $fields[$item->getSource()] ?? null;
+            if (!$integrationField) {
+                continue;
+            }
+
+            $freeformField = $form->get($item->getValue());
+
+            $key = $item->getSource();
+            $value = $item->extractValue(
+                $form,
+                ['integration' => $this, 'category' => $category]
+            );
+
+            $event = new ProcessValueEvent(
+                $this,
+                $form,
+                $integrationField,
+                $freeformField,
+                $value
+            );
+
+            Event::trigger(
+                CRMIntegrationInterface::class,
+                CRMIntegrationInterface::EVENT_PROCESS_VALUE,
+                $event
+            );
+
+            $keyValueMap[$key] = $event->getValue();
         }
 
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'fields' => $fields,
-        ];
-    }
-
-    protected function getHandler(): CRMHandlerInterface
-    {
-        return parent::getHandler();
+        return array_filter($keyValueMap);
     }
 }

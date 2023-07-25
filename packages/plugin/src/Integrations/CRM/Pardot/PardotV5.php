@@ -37,7 +37,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
      *
      * @param null $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(array $keyValueList, $formFields = null): bool
     {
         $email = null;
         foreach ($keyValueList as $key => $value) {

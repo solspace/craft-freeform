@@ -9,21 +9,19 @@
 namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
-use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
 use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
-use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Database\IntegrationHandlerInterface;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
-use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\BaseService;
 
-abstract class AbstractIntegrationService extends BaseService implements IntegrationHandlerInterface
+abstract class AbstractIntegrationService extends BaseService
 {
     public const EVENT_FETCH_TYPES = 'fetchTypes';
     public const EVENT_BEFORE_PUSH = 'beforePush';
@@ -32,7 +30,20 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
 
     private static ?array $integrations = null;
 
+    public function __construct($config = [], private FormIntegrationsProvider $formIntegrationsProvider)
+    {
+        parent::__construct($config);
+    }
+
     abstract public function getFetchEvent(): FetchIntegrationTypesEvent;
+
+    /**
+     * @return IntegrationInterface[]
+     */
+    public function getFormIntegrations(Form $form): array
+    {
+        return $this->formIntegrationsProvider->getForForm($form, $this->getIntegrationType());
+    }
 
     public function getAllServiceProviders(): array
     {
@@ -76,7 +87,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
     }
 
     /**
-     * @return BaseIntegration[]
+     * @return IntegrationInterface[]
      */
     public function getAllIntegrationObjects(): array
     {
@@ -90,12 +101,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
         return $integrations;
     }
 
-    /**
-     * @param int $id
-     *
-     * @throws IntegrationException
-     */
-    public function getIntegrationObjectById($id): IntegrationInterface
+    public function getIntegrationObjectById(int $id): IntegrationInterface
     {
         $model = $this->getIntegrationById($id);
 
@@ -108,10 +114,7 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
         );
     }
 
-    /**
-     * @param int $id
-     */
-    public function getIntegrationById($id): ?IntegrationModel
+    public function getIntegrationById(int $id): ?IntegrationModel
     {
         $data = $this->getQuery()->andWhere(['id' => $id])->one();
 
@@ -122,9 +125,6 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
         return null;
     }
 
-    /**
-     * @param string $handle
-     */
     public function getIntegrationByHandle(string $handle = null): ?IntegrationModel
     {
         $data = $this->getQuery()->andWhere(['handle' => $handle])->one();
@@ -136,35 +136,6 @@ abstract class AbstractIntegrationService extends BaseService implements Integra
         return null;
     }
 
-    /**
-     * Flag the given mailing list integration so that it's updated the next time it's accessed.
-     */
-    public function flagIntegrationForUpdating(BaseIntegration $integration)
-    {
-        \Craft::$app
-            ->getDb()
-            ->createCommand()
-            ->update(
-                IntegrationRecord::TABLE,
-                ['forceUpdate' => true],
-                'id = :id',
-                ['id' => $integration->getId()]
-            );
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function onAfterResponse(BaseIntegration $integration, ResponseInterface $response)
-    {
-        $event = new IntegrationResponseEvent($integration, $response);
-        $this->trigger(self::EVENT_AFTER_RESPONSE, $event);
-    }
-
-    /**
-     * Return the integration type
-     * MailingList or Crm.
-     */
     abstract protected function getIntegrationType(): string;
 
     protected function getQuery(): Query

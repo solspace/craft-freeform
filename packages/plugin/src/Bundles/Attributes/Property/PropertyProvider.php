@@ -36,8 +36,11 @@ class PropertyProvider
     ) {
     }
 
-    public function setObjectProperties(object $object, array $properties): void
-    {
+    public function setObjectProperties(
+        object $object,
+        array $properties,
+        ?callable $valueUpdateCallback = null
+    ): void {
         $reflection = new \ReflectionClass($object);
         $editableProperties = $this->getEditableProperties($object);
 
@@ -51,6 +54,10 @@ class PropertyProvider
                 $reflectionProperty = $reflection->getProperty($key);
             } catch (\ReflectionException $e) {
                 continue;
+            }
+
+            if ($valueUpdateCallback) {
+                $value = $valueUpdateCallback($value, $editableProperty);
             }
 
             $accessible = $reflectionProperty->isPublic();

@@ -14,7 +14,7 @@ namespace Solspace\Freeform\Services\Integrations;
 
 use Solspace\Freeform\Events\Integrations\FetchElementTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
-use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class ElementsService extends AbstractIntegrationService
 {
@@ -25,6 +25,6 @@ class ElementsService extends AbstractIntegrationService
 
     protected function getIntegrationType(): string
     {
-        return IntegrationRecord::TYPE_ELEMENTS;
+        return IntegrationInterface::TYPE_ELEMENTS;
     }
 }

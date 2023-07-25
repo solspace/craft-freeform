@@ -29,7 +29,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
 {
     public const LOG_CATEGORY = 'Infusionsoft';
 
-    public function pushObject(array $keyValueList, ?array $formFields = null): bool
+    public function push(array $keyValueList, ?array $formFields = null): bool
     {
         // This should automatically refresh the access token if needed
         $client = $this->generateAuthorizedClient();

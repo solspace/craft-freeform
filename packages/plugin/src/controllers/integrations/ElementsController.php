@@ -12,8 +12,8 @@
 
 namespace Solspace\Freeform\controllers\integrations;
 
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
-use Solspace\Freeform\Records\IntegrationRecord;
 
 class ElementsController extends IntegrationsController
 {
@@ -39,7 +39,7 @@ class ElementsController extends IntegrationsController
 
     protected function getIntegrationType(): string
     {
-        return IntegrationRecord::TYPE_ELEMENTS;
+        return IntegrationInterface::TYPE_ELEMENTS;
     }
 
     protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
@@ -51,7 +51,7 @@ class ElementsController extends IntegrationsController
         }
 
         if (!$model) {
-            $model = IntegrationModel::create(IntegrationRecord::TYPE_ELEMENTS);
+            $model = IntegrationModel::create(IntegrationInterface::TYPE_ELEMENTS);
         }
 
         return $model;

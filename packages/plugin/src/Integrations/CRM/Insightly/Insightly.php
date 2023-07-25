@@ -38,7 +38,7 @@ class Insightly extends CRMIntegration
      *
      * @param null|mixed $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(array $keyValueList, $formFields = null): bool
     {
         $response = $this
             ->generateAuthorizedClient()

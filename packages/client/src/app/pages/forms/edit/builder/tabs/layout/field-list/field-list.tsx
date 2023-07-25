@@ -56,7 +56,6 @@ export const FieldList: React.FC = () => {
   return (
     <FieldListWrapper>
       <Search />
-      <button onClick={onClick}>Add group field</button>
       <FavoriteFields />
       <BaseFields />
       <FormsFields />

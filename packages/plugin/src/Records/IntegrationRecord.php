@@ -29,11 +29,6 @@ class IntegrationRecord extends ActiveRecord
 {
     public const TABLE = '{{%freeform_integrations}}';
 
-    public const TYPE_MAILING_LIST = 'mailing_list';
-    public const TYPE_CRM = 'crm';
-    public const TYPE_PAYMENT_GATEWAY = 'payment_gateway';
-    public const TYPE_ELEMENTS = 'elements';
-
     public static function tableName(): string
     {
         return self::TABLE;

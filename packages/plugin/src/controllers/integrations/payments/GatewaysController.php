@@ -3,8 +3,8 @@
 namespace Solspace\Freeform\controllers\integrations\payments;
 
 use Solspace\Freeform\controllers\integrations\IntegrationsController;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
-use Solspace\Freeform\Records\IntegrationRecord;
 
 class GatewaysController extends IntegrationsController
 {
@@ -20,7 +20,7 @@ class GatewaysController extends IntegrationsController
 
     protected function getIntegrationType(): string
     {
-        return IntegrationRecord::TYPE_PAYMENT_GATEWAY;
+        return IntegrationInterface::TYPE_PAYMENT_GATEWAY;
     }
 
     protected function getAction(): string
@@ -52,7 +52,7 @@ class GatewaysController extends IntegrationsController
         }
 
         if (!$paymentGateway) {
-            $paymentGateway = IntegrationModel::create(IntegrationRecord::TYPE_PAYMENT_GATEWAY);
+            $paymentGateway = IntegrationModel::create(IntegrationInterface::TYPE_PAYMENT_GATEWAY);
         }
 
         return $paymentGateway;

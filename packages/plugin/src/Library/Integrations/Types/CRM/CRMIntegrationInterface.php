@@ -12,21 +12,25 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
-interface CRMIntegrationInterface
+interface CRMIntegrationInterface extends IntegrationInterface
 {
-    /**
-     * Get a list of all fields that can be filled by the form.
-     *
-     * @return FieldObject[]
-     */
-    public function getFields(): array;
+    public const EVENT_PROCESS_VALUE = 'process-value';
 
     /**
      * Push objects to the CRM.
      *
      * @param null|mixed $formFields
      */
-    public function pushObject(array $keyValueList, ?array $formFields = null): bool;
+    public function push(Form $form): bool;
+
+    /**
+     * Fetch the custom fields from the integration.
+     *
+     * @return FieldObject[]
+     */
+    public function fetchFields(string $category): array;
 }

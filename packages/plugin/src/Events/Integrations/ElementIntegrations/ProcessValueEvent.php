@@ -8,7 +8,7 @@ use Solspace\Freeform\Fields\FieldInterface as FreeformFieldInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
-class ProcessElementValueEvent extends CancelableArrayableEvent
+class ProcessValueEvent extends CancelableArrayableEvent
 {
     public function __construct(
         private IntegrationInterface $integration,

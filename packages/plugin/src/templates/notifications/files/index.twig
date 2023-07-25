@@ -72,7 +72,7 @@
 
             {% if not settings.absoluteEmailTemplateDirectory %}
                 <p>
-                    {{ 'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.'|t('freeform', { link: cpUrl('freeform/settings/email-templates')})|raw }}
+                    {{ 'In order to add new notification template files, you\'ll first need to <a href="{link}">set the directory path in the settings</a>.'|t('freeform', { link: cpUrl('freeform/settings/template-manager')})|raw }}
                 </p>
             {% endif %}
         </div>

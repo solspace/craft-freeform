@@ -35,7 +35,7 @@ class FieldPersistence extends FeatureBundle
         }
 
         $payload = $event->getPayload()->fields ?? null;
-        if (!$payload) {
+        if (null === $payload) {
             return;
         }
 

@@ -15,7 +15,6 @@ use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
-use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Services\Integrations\ElementsService;
 use Solspace\Freeform\Services\MailerService;
 use yii\base\Event;
@@ -148,12 +147,6 @@ class ElementConnectionsBundle extends FeatureBundle
     private function getElementIntegrations(Form $form): array
     {
         $integrations = $this->integrationsProvider->getForForm($form);
-
-        $integrations = array_map(
-            fn (IntegrationModel $record) => $record->getIntegrationObject(),
-            $integrations
-        );
-
         $integrations = array_filter(
             $integrations,
             fn (IntegrationInterface $integration) => $integration instanceof ElementIntegrationInterface

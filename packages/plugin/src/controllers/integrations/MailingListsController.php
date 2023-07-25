@@ -12,11 +12,16 @@
 
 namespace Solspace\Freeform\controllers\integrations;
 
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
-use Solspace\Freeform\Records\IntegrationRecord;
 
 class MailingListsController extends IntegrationsController
 {
+    protected function getIntegrationType(): string
+    {
+        return IntegrationInterface::TYPE_MAILING_LIST;
+    }
+
     protected function getNewOrExistingModel(int|string|null $id): IntegrationModel
     {
         if (is_numeric($id)) {
@@ -26,7 +31,7 @@ class MailingListsController extends IntegrationsController
         }
 
         if (!$model) {
-            $model = IntegrationModel::create(IntegrationRecord::TYPE_MAILING_LIST);
+            $model = IntegrationModel::create(IntegrationInterface::TYPE_MAILING_LIST);
         }
 
         return $model;
@@ -50,10 +55,5 @@ class MailingListsController extends IntegrationsController
     protected function getType(): string
     {
         return 'mailing-lists';
-    }
-
-    protected function getIntegrationType(): string
-    {
-        return IntegrationRecord::TYPE_MAILING_LIST;
     }
 }

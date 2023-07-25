@@ -34,7 +34,7 @@ class ZohoLead extends BaseZohoIntegration
      *
      * @param array $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(array $keyValueList, $formFields = null): bool
     {
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/'.$this->getModule());

@@ -62,7 +62,6 @@ use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
 use Solspace\Freeform\Services\FreeformFeedService;
-use Solspace\Freeform\Services\HoneypotService;
 use Solspace\Freeform\Services\Integrations\CrmService;
 use Solspace\Freeform\Services\Integrations\ElementsService;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -121,7 +120,6 @@ use yii\web\ForbiddenHttpException;
  * @property SubmissionsService          $submissions
  * @property SpamSubmissionsService      $spamSubmissions
  * @property LoggerService               $logger
- * @property HoneypotService             $honeypot
  * @property IntegrationsService         $integrations
  * @property IntegrationsQueueService    $integrationsQueue
  * @property PaymentGatewaysService      $paymentGateways

@@ -88,7 +88,7 @@ class HubSpot extends CRMIntegration
      *
      * @param array $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(array $keyValueList, $formFields = null): bool
     {
         $isAppendContactData = $this->getAppendContactData();
         $isAppendCompanyData = $this->getAppendCompanyData();

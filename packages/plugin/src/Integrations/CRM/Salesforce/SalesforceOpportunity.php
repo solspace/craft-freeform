@@ -15,13 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 use Carbon\Carbon;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Attributes\Property\Flag;
-use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Validators;
-use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Type(
     name: 'Salesforce - Opportunity',
@@ -35,41 +29,6 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
     public const FIELD_CATEGORY_OPPORTUNITY = 'opportunity';
     public const FIELD_CATEGORY_ACCOUNT = 'account';
     public const FIELD_CATEGORY_CONTACT = 'contact';
-
-    #[Validators\Required]
-    #[Input\Text(
-        instructions: 'Enter a relative textual date string for the Close Date of the newly created Opportunity (e.g. \'7 days\').',
-    )]
-    protected string $closeDate = '';
-
-    #[Validators\Required]
-    #[Input\Text(
-        label: 'Stage Name',
-        instructions: 'Enter the Stage Name the newly created Opportunity should be assigned to (e.g. \'Prospecting\').',
-    )]
-    protected string $stage = '';
-
-    #[Input\Boolean(
-        label: 'Append checkbox group field values on Contact update?',
-        instructions: 'If a Contact already exists in Salesforce, enabling this will append additional checkbox group field values to the Contact inside Salesforce, instead of overwriting the options.',
-    )]
-    protected bool $appendContactData = false;
-
-    #[Input\Boolean(
-        label: 'Append checkbox group field values on Account update?',
-        instructions: 'If an Account already exists in Salesforce, enabling this will append additional checkbox group field values to the Account inside Salesforce, instead of overwriting the options.',
-    )]
-    protected bool $appendAccountData = false;
-
-    #[Input\Boolean(
-        label: 'Check Contact email address and Account website when checking for duplicates?',
-        instructions: 'By default, Freeform will check against Contact first name, last name and email address, as well as and Account name. If enabled, Freeform will instead check against Contact email address only and Account website. If no website is mapped, Freeform will gather the website domain from the Contact email address mapped.',
-    )]
-    protected bool $duplicateCheck = false;
-
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Text]
-    protected string $dataUrl = '';
 
     public function getCloseDate(): string
     {
@@ -108,7 +67,7 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
      *
      * @throws \Exception
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(array $keyValueList, $formFields = null): bool
     {
         $isAppendContactData = $this->isAppendContactData();
         $isAppendAccountData = $this->isAppendAccountData();
@@ -334,149 +293,9 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
         }
     }
 
-    /**
-     * Fetch the custom fields from the integration.
-     *
-     * @return FieldObject[]
-     */
-    public function fetchFields(): array
-    {
-        $client = $this->generateAuthorizedClient();
-
-        $fieldEndpoints = [
-            ['category' => self::FIELD_CATEGORY_OPPORTUNITY, 'endpoint' => 'Opportunity'],
-            ['category' => self::FIELD_CATEGORY_ACCOUNT, 'endpoint' => 'Account'],
-            ['category' => self::FIELD_CATEGORY_CONTACT, 'endpoint' => 'Contact'],
-        ];
-
-        $fieldList = [];
-        foreach ($fieldEndpoints as $item) {
-            $category = $item['category'];
-            $endpoint = $item['endpoint'];
-
-            try {
-                $response = $client->get($this->getEndpoint("/sobjects/{$endpoint}/describe"));
-            } catch (RequestException $e) {
-                $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
-
-                continue;
-            }
-
-            $data = json_decode((string) $response->getBody());
-
-            foreach ($data->fields as $field) {
-                if (!$field->updateable || !empty($field->referenceTo)) {
-                    continue;
-                }
-
-                if ('StageName' === $field->name) {
-                    continue;
-                }
-
-                $type = null;
-
-                switch ($field->type) {
-                    case 'string':
-                    case 'textarea':
-                    case 'email':
-                    case 'url':
-                    case 'address':
-                    case 'picklist':
-                    case 'phone':
-                        $type = FieldObject::TYPE_STRING;
-
-                        break;
-
-                    case 'boolean':
-                        $type = FieldObject::TYPE_BOOLEAN;
-
-                        break;
-
-                    case 'multipicklist':
-                        $type = FieldObject::TYPE_ARRAY;
-
-                        break;
-
-                    case 'int':
-                    case 'number':
-                    case 'currency':
-                        $type = FieldObject::TYPE_NUMERIC;
-
-                        break;
-
-                    case 'double':
-                        $type = FieldObject::TYPE_FLOAT;
-
-                        break;
-
-                    case 'date':
-                        $type = FieldObject::TYPE_DATE;
-
-                        break;
-
-                    case 'datetime':
-                        $type = FieldObject::TYPE_DATETIME;
-
-                        break;
-                }
-
-                if (null === $type) {
-                    continue;
-                }
-
-                $fieldObject = new FieldObject(
-                    $category.'___'.$field->name,
-                    $field->label." ({$endpoint})",
-                    $type,
-                    !$field->nillable
-                );
-
-                $fieldList[] = $fieldObject;
-            }
-        }
-
-        return $fieldList;
-    }
-
-    /**
-     * @return array|bool|string
-     */
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
-    {
-        $value = parent::convertCustomFieldValue($fieldObject, $field);
-
-        if (FieldObject::TYPE_ARRAY === $fieldObject->getType()) {
-            $value = \is_array($value) ? implode(';', $value) : $value;
-        }
-
-        return $value;
-    }
-
     public function getApiRootUrl(): string
     {
         return $this->getInstanceUrl().$this->getDataUrl();
-    }
-
-    /**
-     * @throws CRMIntegrationNotFoundException
-     */
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
-    {
-        parent::onAfterFetchAccessToken($responseData);
-
-        if (!isset($responseData->instance_url)) {
-            return;
-        }
-
-        $client = $this->generateAuthorizedClient();
-        $endpoint = $responseData->instance_url.'/services/data';
-
-        $response = $client->get($endpoint);
-        $data = json_decode((string) $response->getBody());
-
-        $latestVersion = array_pop($data);
-
-        $this->dataUrl = $latestVersion->url;
     }
 
     protected function getAuthorizationCheckUrl(): string

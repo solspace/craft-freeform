@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
+import { animated, useSpring } from 'react-spring';
 import * as ControlTypes from '@components/form-controls/control-types';
 import type { ControlType } from '@components/form-controls/types';
 import type {
@@ -7,6 +8,7 @@ import type {
   Property,
   PropertyType,
 } from '@ff-client/types/properties';
+import styled from 'styled-components';
 
 import { ErrorBoundary } from './boundaries/ErrorBoundary';
 import { useVisibility } from './hooks/use-visibility';
@@ -25,6 +27,14 @@ const types: {
   [key in PropertyType]?: ComponentType<ControlType<Property>>;
 } = ControlTypes;
 
+const AnimatedWrapper = styled(animated.div)`
+  transform-origin: top;
+
+  > div {
+    padding-bottom: 10px;
+  }
+`;
+
 export const FormComponent: React.FC<Props> = ({
   value,
   updateValue,
@@ -40,27 +50,53 @@ export const FormComponent: React.FC<Props> = ({
     context as GenericValue as GenericValue
   );
 
+  const ref = useRef<HTMLDivElement>();
+
+  const [height, setHeight] = useState<number>(0);
+  const [resizeObserver] = useState(
+    () => new ResizeObserver(([entry]) => setHeight(entry.contentRect.height))
+  );
+
+  useEffect(() => {
+    if (ref.current) {
+      resizeObserver.observe(ref.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [resizeObserver]);
+
+  const animation = useSpring({
+    opacity: isVisible ? 1 : 0,
+    scaleY: isVisible ? 1 : 0,
+    height: isVisible ? height + 14 : 0,
+    config: {
+      tension: 500,
+      friction: 40,
+      bounce: 0,
+    },
+  });
+
   if (FormControl === undefined) {
     return <div>{`[${property.handle}]: <${type}>`}</div>;
-  }
-
-  if (!isVisible) {
-    return null;
   }
 
   FormControl.displayName = `FormComponent: <${type}>`;
 
   return (
-    <ErrorBoundary message={`...${property.handle} <${property.type}>`}>
-      <Suspense>
-        <FormControl
-          value={value as GenericValue}
-          property={property}
-          updateValue={updateValue}
-          errors={errors}
-          context={context}
-        />
-      </Suspense>
-    </ErrorBoundary>
+    <AnimatedWrapper style={animation}>
+      <ErrorBoundary message={`...${property.handle} <${property.type}>`}>
+        <Suspense>
+          <div ref={ref}>
+            <FormControl
+              value={value as GenericValue}
+              property={property}
+              updateValue={updateValue}
+              errors={errors}
+              context={context}
+            />
+          </div>
+        </Suspense>
+      </ErrorBoundary>
+    </AnimatedWrapper>
   );
 };

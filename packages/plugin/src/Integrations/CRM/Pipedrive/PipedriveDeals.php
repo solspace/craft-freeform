@@ -40,7 +40,7 @@ class PipedriveDeals extends BasePipedriveIntegration
      *
      * @param null $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(array $keyValueList, $formFields = null): bool
     {
         $client = $this->generateAuthorizedClient();
 

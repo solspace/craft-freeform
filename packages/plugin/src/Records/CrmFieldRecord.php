@@ -17,6 +17,7 @@ use yii\db\ActiveQuery;
 
 /**
  * @property int    $integrationId
+ * @property string $category
  * @property string $handle
  * @property string $label
  * @property string $type

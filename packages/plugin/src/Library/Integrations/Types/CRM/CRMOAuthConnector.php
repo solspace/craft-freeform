@@ -20,6 +20,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
+use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\ReturnURLValueGenerator;
@@ -104,7 +105,6 @@ abstract class CRMOAuthConnector extends CRMIntegration
         $client = new Client();
 
         $code = $_GET['code'] ?? null;
-
         if (null === $code) {
             return '';
         }
@@ -132,7 +132,7 @@ abstract class CRMOAuthConnector extends CRMIntegration
 
         if (!isset($json->access_token)) {
             throw new IntegrationException(
-                $this->getTranslator()->translate(
+                Freeform::t(
                     "No 'access_token' present in auth response for {serviceProvider}",
                     ['serviceProvider' => $this->getServiceProvider()]
                 )
@@ -144,7 +144,7 @@ abstract class CRMOAuthConnector extends CRMIntegration
         if ($this instanceof RefreshTokenInterface) {
             if (!isset($json->refresh_token)) {
                 throw new IntegrationException(
-                    $this->getTranslator()->translate(
+                    Freeform::t(
                         "No 'refresh_token' present in auth response for {serviceProvider}. Enable offline-access for your app.",
                         ['serviceProvider' => $this->getServiceProvider()]
                     )
@@ -232,7 +232,7 @@ abstract class CRMOAuthConnector extends CRMIntegration
 
             if (!isset($json->access_token)) {
                 throw new IntegrationException(
-                    $this->getTranslator()->translate(
+                    Freeform::t(
                         "No 'access_token' present in auth response for {serviceProvider}",
                         ['serviceProvider' => $this->getServiceProvider()]
                     )
@@ -250,7 +250,9 @@ abstract class CRMOAuthConnector extends CRMIntegration
             $this->onAfterFetchAccessToken($json);
         } catch (RequestException $e) {
             $responseBody = (string) $e->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
+            Freeform::$logger
+                ->getLogger('Integrations')
+                ->error($responseBody, ['exception' => $e->getMessage()]);
 
             throw $e;
         }

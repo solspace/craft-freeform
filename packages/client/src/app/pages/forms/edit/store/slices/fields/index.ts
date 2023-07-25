@@ -76,6 +76,14 @@ export const fieldsSlice = createSlice({
         1
       );
     },
+    removeBatch: (state, { payload: uids }: PayloadAction<string[]>) => {
+      uids.forEach((uid) => {
+        state.splice(
+          state.findIndex((item) => item.uid === uid),
+          1
+        );
+      });
+    },
     edit: (state, action: PayloadAction<EditType>) => {
       const { uid, handle, value } = action.payload;
 

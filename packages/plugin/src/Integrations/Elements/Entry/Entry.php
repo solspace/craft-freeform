@@ -34,6 +34,7 @@ class Entry extends ElementIntegration
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[VisibilityFilter('!!values.entryTypeId')]
     #[Input\Special\Properties\FieldMapping(
+        instructions: 'Select the Freeform fields to be mapped to the applicable Entry attributes',
         source: 'api/elements/entries/attributes',
     )]
     protected ?FieldMapping $attributeMapping = null;
@@ -42,6 +43,7 @@ class Entry extends ElementIntegration
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[VisibilityFilter('!!values.entryTypeId')]
     #[Input\Special\Properties\FieldMapping(
+        instructions: 'Select the Freeform fields to be mapped to the applicable custom Entry fields',
         source: 'api/elements/entries/fields',
         parameterFields: ['values.entryTypeId' => 'entryTypeId'],
     )]

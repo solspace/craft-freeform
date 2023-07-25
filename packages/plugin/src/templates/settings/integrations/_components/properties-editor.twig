@@ -72,7 +72,7 @@
                         instructions: property.instructions|t('freeform'),
                         class: "property-" ~ property.handle,
                         name: "properties["~className~"]["~property.handle~"]",
-
+                        value: value,
                         required: property.required,
                         errors: integration.errors(className~property.handle),
                         suggestEnvVars: true,

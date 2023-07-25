@@ -8,7 +8,7 @@ export const PageWrapper = styled.div`
   flex-direction: column;
   gap: ${spacings.md};
 
-  padding: ${spacings.sm} ${spacings.xl} 0;
+  padding: ${spacings.sm} ${spacings.xl} ${spacings.xl};
 
   overflow-y: auto;
   overflow-x: hidden;

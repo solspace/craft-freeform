@@ -24,18 +24,20 @@ const Options: React.FC<ControlType<OptionsProperty>> = ({
     <>
       <ControlWrapper>
         <Label>{translate('Source')}</Label>
-        <select
-          id="source"
-          defaultValue={source}
-          className="text fullwidth"
-          onChange={(event) =>
-            updateValue(generateDefaultValue(event.target.value as Source))
-          }
-        >
-          {Object.entries(sourceLabels).map(([key, label]) => (
-            <option key={key} value={key} label={label} />
-          ))}
-        </select>
+        <div className="select fullwidth">
+          <select
+            id="source"
+            defaultValue={source}
+            className="text fullwidth"
+            onChange={(event) =>
+              updateValue(generateDefaultValue(event.target.value as Source))
+            }
+          >
+            {Object.entries(sourceLabels).map(([key, label]) => (
+              <option key={key} value={key} label={label} />
+            ))}
+          </select>
+        </div>
       </ControlWrapper>
 
       <SourceComponent value={value} updateValue={updateValue} />

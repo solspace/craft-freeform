@@ -6,7 +6,6 @@ export const NewTabWrapper = styled.button`
   align-items: center;
 
   padding: 0 10px;
-  margin-left: auto;
 
   transition: all 0.2s ease-in-out;
 

@@ -30,11 +30,21 @@ export const useLayoutDrop = (layout: Layout): LayoutDropHook => {
       canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
       drop: (item) => {
         if (item.type === Drag.FieldType) {
-          dispatch(addNewFieldToNewRow(item.data));
+          dispatch(
+            addNewFieldToNewRow({
+              fieldType: item.data,
+              layout,
+            })
+          );
         }
 
         if (item.type === Drag.Cell) {
-          dispatch(moveExistingCellToNewRow(item.data));
+          dispatch(
+            moveExistingCellToNewRow({
+              cell: item.data,
+              layout,
+            })
+          );
         }
       },
     }),

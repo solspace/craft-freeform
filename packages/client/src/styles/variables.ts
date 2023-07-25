@@ -27,10 +27,23 @@ export const shadows = {
   right: 'inset -1px 0 0 0 rgb(154 165 177 / 25%)',
 };
 
+export const beziers = {
+  easeOut: 'cubic-bezier(0.25, 0.1, 0.25, 1)',
+  easeIn: 'cubic-bezier(0.42, 0, 1, 1)',
+  easeInOut: 'cubic-bezier(0.42, 0, 0.58, 1)',
+  bounce: {
+    easeOut: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  },
+};
+
 export const colors = {
   hairline: 'rgba(51,64,77,.1)',
   inputBorder: 'rgba(96,125,159,0.25)',
   barelyVisible: 'rgb(154 165 177 / 75%)',
+
+  elements: {
+    dropdown: '#dfe5ec',
+  },
 
   error: '#cf1124',
   warning: 'var(--warning-color)',

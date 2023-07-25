@@ -1,4 +1,4 @@
-import type { Row } from '@editor/builder/types/layout';
+import type { Layout, Row } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
 import type { AppThunk } from '@editor/store';
 import type { Field } from '@editor/store/slices/fields';
@@ -10,27 +10,27 @@ import type {
 } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
-import { contextSelectors } from '../slices/context/context.selectors';
+import { layoutSelectors } from '../slices/layout/layouts/layouts.selectors';
 import { rowActions } from '../slices/layout/rows';
 
 export const addNewFieldToNewRow =
-  (fieldType: FieldType, row?: Row): AppThunk =>
+  (options: { fieldType: FieldType; layout?: Layout; row?: Row }): AppThunk =>
   (dispatch, getState) => {
+    const { fieldType, row } = options;
+    let { layout } = options;
+
+    if (!layout) {
+      layout = layoutSelectors.currentPageLayout(getState());
+    }
+
     const fieldUid = v4();
     const cellUid = v4();
     const rowUid = v4();
 
-    const state = getState();
-
-    const currentPage = contextSelectors.currentPage(state);
-    if (!currentPage) {
-      throw new Error('No pages present');
-    }
-
     dispatch(fieldActions.add({ fieldType, uid: fieldUid }));
     dispatch(
       rowActions.add({
-        layoutUid: currentPage.layoutUid,
+        layoutUid: layout.uid,
         uid: rowUid,
         order: row?.order,
       })
@@ -46,17 +46,12 @@ export const addNewFieldToNewRow =
   };
 
 export const addNewFieldToExistingRow =
-  (fieldType: FieldType, row: Row, order: number): AppThunk =>
-  (dispatch, getState) => {
+  (options: { fieldType: FieldType; row: Row; order: number }): AppThunk =>
+  (dispatch) => {
+    const { fieldType, row, order } = options;
+
     const fieldUid = v4();
     const cellUid = v4();
-
-    const state = getState();
-
-    const currentPage = contextSelectors.currentPage(state);
-    if (!currentPage) {
-      throw new Error('No pages present');
-    }
 
     dispatch(fieldActions.add({ fieldType, uid: fieldUid }));
     dispatch(

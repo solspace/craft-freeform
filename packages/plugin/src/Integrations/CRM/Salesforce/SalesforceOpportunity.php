@@ -16,6 +16,7 @@ use Carbon\Carbon;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
+use Solspace\Freeform\Form\Form;
 
 #[Type(
     name: 'Salesforce - Opportunity',
@@ -67,7 +68,7 @@ class SalesforceOpportunity extends BaseSalesforceIntegration
      *
      * @throws \Exception
      */
-    public function push(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
         $isAppendContactData = $this->isAppendContactData();
         $isAppendAccountData = $this->isAppendAccountData();

@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Type(
@@ -34,8 +35,10 @@ class ZohoLead extends BaseZohoIntegration
      *
      * @param array $formFields
      */
-    public function push(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/'.$this->getModule());
 
@@ -79,8 +82,10 @@ class ZohoLead extends BaseZohoIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
+        // TODO: reimplement
+        return [];
         $client = $this->generateAuthorizedClient();
 
         try {

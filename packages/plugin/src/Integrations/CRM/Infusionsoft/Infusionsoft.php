@@ -17,6 +17,7 @@ use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -29,8 +30,10 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
 {
     public const LOG_CATEGORY = 'Infusionsoft';
 
-    public function push(array $keyValueList, ?array $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         // This should automatically refresh the access token if needed
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/contacts');
@@ -115,7 +118,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
         try {
             // This will also refresh the token if its expired, hence the try-catch
@@ -181,7 +184,8 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
             $fieldObject = new FieldObject(
                 'custom:'.$field->id,
                 $field->label,
-                $type
+                $type,
+                $category
             );
 
             $fieldList[] = $fieldObject;

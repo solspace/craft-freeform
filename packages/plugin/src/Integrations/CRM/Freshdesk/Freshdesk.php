@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
@@ -99,8 +100,10 @@ class Freshdesk extends CRMIntegration
      *
      * @param null|mixed $formFields
      */
-    public function push(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $requestType = 'json';
 
         $values = $customValues = [];
@@ -216,7 +219,7 @@ class Freshdesk extends CRMIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
         $fieldList = [
             new FieldObject('name', 'Name', FieldObject::TYPE_STRING),
@@ -242,7 +245,7 @@ class Freshdesk extends CRMIntegration
         ];
 
         $response = $this
-            ->getAuthorizedClient()
+            ->generateAuthorizedClient()
             ->get($this->getEndpoint('/ticket_fields'))
         ;
 

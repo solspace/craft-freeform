@@ -103,8 +103,10 @@ abstract class BasePipedriveIntegration extends CRMIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
+        // TODO: reimplement
+        return [];
         $isLead = $this instanceof PipedriveLeads;
 
         $endpoints = [

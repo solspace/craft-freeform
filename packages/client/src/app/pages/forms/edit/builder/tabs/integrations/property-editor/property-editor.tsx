@@ -48,8 +48,6 @@ export const PropertyEditor: React.FC = () => {
         updateValue={() => dispatch(integrationActions.toggle(id))}
       />
 
-      <Space />
-
       <SettingsWrapper>
         {properties.map((property) => (
           <FieldComponent

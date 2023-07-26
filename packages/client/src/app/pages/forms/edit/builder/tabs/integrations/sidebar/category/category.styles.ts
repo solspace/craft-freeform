@@ -3,6 +3,14 @@ import styled from 'styled-components';
 
 export const Wrapper = styled.div``;
 
+export const LabelWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  line-height: 22px;
+`;
+
 export const Label = styled.span`
   padding-left: ${spacings.md};
 
@@ -20,3 +28,5 @@ export const ChildrenWrapper = styled.div`
 
   padding: ${spacings.xs} 0;
 `;
+
+export const IntegrationItemWrapper = ChildrenWrapper;

@@ -5,10 +5,9 @@ import styled from 'styled-components';
 export const Link = styled(NavLink)`
   display: flex;
   align-items: center;
-  gap: ${spacings.md};
+  gap: ${spacings.sm};
 
-  padding: ${spacings.sm};
-
+  padding: ${spacings.sm} ${spacings.md};
   border-radius: ${borderRadius.lg};
 
   color: ${colors.gray700};
@@ -16,17 +15,25 @@ export const Link = styled(NavLink)`
   line-height: 12px;
 
   transition: background-color 0.2s ease-out;
+  text-decoration: none;
+
+  &.active {
+    color: ${colors.white};
+    background-color: ${colors.gray500};
+  }
+
+  &.active.inactive {
+    .status-dot {
+      border-color: ${colors.white};
+    }
+  }
 
   &:hover {
     text-decoration: none;
   }
 
-  &.active {
-    background-color: ${colors.gray200};
-  }
-
   &:hover:not(.active) {
-    background-color: ${colors.gray100};
+    background-color: ${colors.gray200};
   }
 
   &.errors {
@@ -34,9 +41,16 @@ export const Link = styled(NavLink)`
   }
 `;
 
+const iconSize = 20;
+export const Icon = styled.div`
+  display: block;
+  width: ${iconSize}px;
+  height: ${iconSize}px;
+  fill: ${colors.gray550};
+`;
 export const Name = styled.div`
   flex-grow: 1;
-  padding-left: ${spacings.xl};
+  max-width: 90%;
   overflow: hidden;
 
   &:empty:after {

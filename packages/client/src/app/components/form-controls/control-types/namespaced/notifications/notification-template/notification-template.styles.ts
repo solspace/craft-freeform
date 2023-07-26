@@ -30,6 +30,11 @@ export const SelectedNotification = styled.div<SelectedNotificationProps>`
   padding: 7px 12px;
 
   overflow: hidden;
+  background-color: var(--ui-control-bg-color);
+
+  &:hover {
+    background-color: var(--ui-control-hover-bg-color);
+  }
 
   ${({ empty }) =>
     empty &&
@@ -41,23 +46,22 @@ export const SelectedNotification = styled.div<SelectedNotificationProps>`
   > span {
     &:empty {
       &:after {
-        content: 'Select a notification template';
-        color: ${colors.gray300};
-        font-style: italic;
+        content: 'Please select...';
+        color: ${colors.gray600};
       }
     }
   }
 
   > svg {
     position: absolute;
-    right: 10px;
-    top: calc(50% - 10px);
+    right: 6px;
+    top: calc(50% - 7px);
 
     display: block;
-
-    width: 20px;
-    height: 20px;
-
+    width: 14px;
+    height: 14px;
+    stroke-width: 3px;
+    fill: #e5e7eb;
     transition: transform 0.2s ease-in-out;
   }
 
@@ -85,9 +89,27 @@ export const CategorySelectionWrapper = styled(animated.div)`
 
 export const ButtonRow = styled(animated.div)`
   display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
   gap: ${spacings.sm};
 
   border-top: 1px solid ${colors.inputBorder};
 
   padding: ${spacings.sm};
+  background-color: ${colors.gray100};
+`;
+
+export const Button = styled.button`
+  padding-top: 2px;
+  padding-bottom: 3px;
+  background-color: var(--ui-control-bg-color);
+
+  &:hover {
+    background-color: var(--ui-control-hover-bg-color);
+  }
+
+  &.submit {
+    margin-left: auto;
+  }
 `;

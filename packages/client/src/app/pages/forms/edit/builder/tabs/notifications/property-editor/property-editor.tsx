@@ -4,9 +4,9 @@ import { useParams } from 'react-router-dom';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useQueryNotificationTypes } from '@ff-client/queries/notifications';
 
-import { EmptyEditor } from './editor.empty';
-import { PropertyEditorWrapper } from './editor.styles';
+import { EmptyEditor } from './empty-editor';
 import { FieldComponent } from './field-component';
+import { PropertyEditorWrapper } from './property-editor.styles';
 
 type UrlParams = {
   uid: string;

@@ -15,14 +15,32 @@ export const TemplateCard = styled(animated.li)`
   border: 1px solid ${colors.gray200};
   border-radius: ${borderRadius.lg};
 
-  &:hover {
+  &:hover:not(.is-active) {
     z-index: 1;
+    background-color: ${colors.gray200} !important;
+  }
+
+  &.is-active {
+    color: ${colors.white};
+    background-color: ${colors.gray500};
+    border: 1px solid ${colors.gray300};
+    
+    &:hover {
+      z-index: 1;
+    }
+
+    h4,
+    .code,
+    div {
+      color: ${colors.white};
+    }
   }
 `;
 
 export const Name = styled.h4`
   margin: 0;
   padding: 0;
+  font-size: 12px;
 `;
 
 export const Subject = styled.div`
@@ -30,6 +48,7 @@ export const Subject = styled.div`
 
   padding: 0 0 0 24px;
 
+  font-size: 12px;
   color: ${colors.gray300};
 
   max-lines: 1;
@@ -47,6 +66,7 @@ export const Subject = styled.div`
 `;
 
 export const Id = styled.div`
+  padding: 2px 0 1px;
   font-size: 10px !important;
   color: ${colors.gray300};
 `;

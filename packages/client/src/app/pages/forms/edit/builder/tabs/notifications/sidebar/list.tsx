@@ -43,16 +43,19 @@ export const List: React.FC = () => {
   }
 
   return (
-    <Sidebar $noPadding>
+    <Sidebar $lean>
       <ScrollableList>
         {notificationTypes.map((type) => (
           <NotificationTypeItem key={type.className} type={type}>
             {notifications &&
               notifications
-                ?.filter((notif) => notif.className === type.className)
+                ?.filter(
+                  (notification) => notification.className === type.className
+                )
                 .map((notification) => (
                   <NotificationItem
                     key={notification.uid}
+                    icon={type.icon}
                     notification={notification}
                   />
                 ))}

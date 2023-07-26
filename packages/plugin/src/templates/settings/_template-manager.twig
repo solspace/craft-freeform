@@ -12,15 +12,30 @@
 
     <h2 class="first">{{ "Formatting Templates"|t('freeform') }}</h2>
 
-    {{ forms.textField({
-        class: "code",
+    {% set suggestionsData = [] %}
+    {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+        {% set suggestionsData = suggestionsData|merge([{
+            "name": directory
+        }]) %}
+    {% endfor %}
+
+    {{ forms.autosuggestField({
         label: "Directory Path"|t('freeform'),
-        instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
-        placeholder: "e.g. _freeform/formatting",
         id: "formTemplateDirectory",
+        class: "code",
+        suggestEnvVars: false,
+        suggestAliases: false,
+        suggestions:[{
+            "label":"Existing Directories",
+            "data": suggestionsData
+        }],
+        tip: null,
+        limit: 10,
         name: "settings[formTemplateDirectory]",
         value: settings.formTemplateDirectory,
         errors: settings.getErrors("formTemplateDirectory"),
+        instructions: "Provide a relative path to the Craft Templates folder where your custom formatting templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your form formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
+        placeholder: "e.g. _freeform/formatting",
     }) }}
 
     {% if settings.absoluteFormTemplateDirectory %}
@@ -52,7 +67,7 @@
 
     <hr />
 
-    <h2>{{ "Email Templates"|t('freeform') }}</h2>
+    <h2>{{ "Email Notification Templates"|t('freeform') }}</h2>
 
     {{ forms.selectField({
         label: "Template Storage Type"|t('freeform'),
@@ -84,15 +99,30 @@
 
     <div id="files-directory" class="field {{ settings.emailTemplateStorageType not in ["files", "files_database"] ? "hidden" }}">
 
-        {{ forms.textField({
-            class: "code",
+        {% set suggestionsData = [] %}
+        {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+            {% set suggestionsData = suggestionsData|merge([{
+                "name": directory
+            }]) %}
+        {% endfor %}
+
+        {{ forms.autosuggestField({
             label: "File Directory Path"|t('freeform'),
-            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
-            placeholder: "e.g. _freeform/emails",
             id: "emailTemplateDirectory",
+            class: "code",
+            suggestEnvVars: false,
+            suggestAliases: false,
+            suggestions:[{
+                "label":"Existing Directories",
+                "data": suggestionsData
+            }],
+            tip: null,
+            limit: 10,
             name: "settings[emailTemplateDirectory]",
             value: settings.emailTemplateDirectory,
             errors: settings.getErrors("emailTemplateDirectory"),
+            instructions: "Provide a relative path to the Craft Templates folder where your email templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your email formatting and allows Freeform to locate these files when setting up notifications."|t('freeform'),
+            placeholder: "e.g. _freeform/notifications",
         }) }}
 
         {% if settings.absoluteEmailTemplateDirectory %}
@@ -165,15 +195,30 @@
 
     <h2>{{ "Success Templates"|t('freeform') }}</h2>
 
-    {{ forms.textField({
-        class: "code",
+    {% set suggestionsData = [] %}
+    {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+        {% set suggestionsData = suggestionsData|merge([{
+            "name": directory
+        }]) %}
+    {% endfor %}
+
+    {{ forms.autosuggestField({
         label: "Directory Path"|t('freeform'),
-        instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
-        placeholder: "e.g. _freeform/success",
         id: "successTemplateDirectory",
+        class: "code",
+        suggestEnvVars: false,
+        suggestAliases: false,
+        suggestions:[{
+            "label":"Existing Directories",
+            "data": suggestionsData
+        }],
+        tip: null,
+        limit: 10,
         name: "settings[successTemplateDirectory]",
         value: settings.successTemplateDirectory,
         errors: settings.getErrors("successTemplateDirectory"),
+        instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
+        placeholder: "e.g. _freeform/success",
     }) }}
 
     {% if settings.absoluteSuccessTemplateDirectory %}

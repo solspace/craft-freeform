@@ -14,8 +14,8 @@
 namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
-use Solspace\Freeform\Library\Helpers\TwigHelper;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 
 /**
  * @property int    $id

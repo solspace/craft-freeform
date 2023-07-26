@@ -35,7 +35,7 @@ use yii\base\Event;
 
 #[EventListener(SalesforceArrayValueProcessor::class)]
 #[Type(
-    name: 'Salesforce v58',
+    name: 'Salesforce (v58)',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]

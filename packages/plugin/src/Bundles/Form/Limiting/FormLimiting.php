@@ -71,37 +71,43 @@ class FormLimiting extends FeatureBundle
         }
 
         if (self::LIMIT_AUTH === $limiting) {
-            $this->limitLoggedInOnly($form, $event);
+            $this->limitLoggedInOnly($event);
         }
 
         if (self::LIMIT_ONCE_PER_EMAIL === $limiting) {
-            $this->limitByEmail($form, $event);
+            $this->limitByEmail($event);
         }
 
         if (\in_array($limiting, self::ONCE_PER_SESSION_LIMITATIONS, true)) {
-            $this->limitOncePerSession($form, $event);
+            $this->limitOncePerSession($event);
         }
 
         if (\in_array($limiting, self::USER_LIMITATIONS, true)) {
-            $this->limitByUserId($form, $event);
+            $this->limitByUserId($event);
         }
 
         if ($behaviorSettings->collectIpAddresses && \in_array($limiting, self::IP_LIMITATIONS, true)) {
-            $this->limitByIp($form, $event);
+            $this->limitByIp($event);
         }
 
         if (\in_array($limiting, self::COOKIE_LIMITATIONS, true)) {
-            $this->limitByCookie($form, $event);
+            $this->limitByCookie($event);
         }
 
         if (\in_array($limiting, self::LOGGED_IN_ONLY, true)) {
-            $this->limitLoggedInOnly($form, $event);
+            $this->limitLoggedInOnly($event);
         }
     }
 
-    private function limitByEmail(Form $form, FormEventInterface $event): void
+    private function limitByEmail(FormEventInterface $event): void
     {
         $request = \Craft::$app->getRequest();
+
+        if ($request->getIsCpRequest() || $request->getIsConsoleRequest()) {
+            return;
+        }
+
+        $form = $event->getForm();
 
         // Get all email fields on the form
         $emailFields = $form->getLayout()->getFields(EmailField::class);
@@ -109,10 +115,6 @@ class FormLimiting extends FeatureBundle
         // Get all email field values
         $emailFieldValues = [];
         foreach ($emailFields as $emailField) {
-            if ($request->getIsCpRequest() || $request->getIsConsoleRequest()) {
-                continue;
-            }
-
             $value = $request->post($emailField->getHandle());
             if (!empty($value)) {
                 $emailFieldValues[] = '"'.$value.'"';
@@ -158,21 +160,21 @@ class FormLimiting extends FeatureBundle
         $isPosted = (bool) $query->scalar();
 
         if ($isPosted) {
-            $this->addMessage($form, $event);
+            $this->addMessage($event);
         }
     }
 
-    private function limitByCookie(Form $form, FormEventInterface $event): void
+    private function limitByCookie(FormEventInterface $event): void
     {
-        $name = Cookies::getCookieName($form);
+        $name = Cookies::getCookieName($event->getForm());
         $cookie = $_COOKIE[$name] ?? null;
 
         if ($cookie) {
-            $this->addMessage($form, $event);
+            $this->addMessage($event);
         }
     }
 
-    private function limitByIp(Form $form, FormEventInterface $event): void
+    private function limitByIp(FormEventInterface $event): void
     {
         $submissions = Submission::TABLE;
         $query = (new Query())
@@ -180,7 +182,7 @@ class FormLimiting extends FeatureBundle
             ->from($submissions)
             ->where([
                 'isSpam' => false,
-                'formId' => $form->getId(),
+                'formId' => $event->getForm()->getId(),
                 'ip' => $_SERVER['REMOTE_ADDR'] ?? '127.0.0.1',
             ])
             ->limit(1)
@@ -197,16 +199,16 @@ class FormLimiting extends FeatureBundle
         $isPosted = (bool) $query->scalar();
 
         if ($isPosted) {
-            $this->addMessage($form, $event);
+            $this->addMessage($event);
         }
     }
 
-    private function limitOncePerSession(Form $form, FormEventInterface $event)
+    private function limitOncePerSession(FormEventInterface $event)
     {
         // TODO - If there is a session and it was active within the last 'userSessionDuration' seconds... do not let user submit again
     }
 
-    private function limitByUserId(Form $form, FormEventInterface $event): void
+    private function limitByUserId(FormEventInterface $event): void
     {
         $userId = \Craft::$app->user->getId();
         if (!$userId) {
@@ -219,7 +221,7 @@ class FormLimiting extends FeatureBundle
             ->from($submissions)
             ->where([
                 'isSpam' => false,
-                'formId' => $form->getId(),
+                'formId' => $event->getForm()->getId(),
                 'userId' => $userId,
             ])
             ->limit(1)
@@ -235,37 +237,35 @@ class FormLimiting extends FeatureBundle
 
         $isPosted = (bool) $query->scalar();
         if ($isPosted) {
-            $this->addMessage($form, $event);
+            $this->addMessage($event);
         }
     }
 
-    private function limitLoggedInOnly(Form $form, FormEventInterface $event): void
+    private function limitLoggedInOnly(FormEventInterface $event): void
     {
         if (!\Craft::$app->user->id) {
-            $this->addMessage($form, $event, 'You must be logged in to submit this form.');
+            $this->addMessage($event, 'You must be logged in to submit this form.');
         }
     }
 
-    private function addMessage(Form $form, FormEventInterface $event, $message = "Sorry, you've already submitted this form."): void
+    private function addMessage(FormEventInterface $event, $message = "Sorry, you've already submitted this form."): void
     {
+        $form = $event->getForm();
+        $formId = $form->getId();
+
         // Triggered during from validation
         if ($event instanceof ValidationEvent) {
-            if (\in_array($form->getId(), $this->formCache, true)) {
+            if (\in_array($formId, $this->formCache, true)) {
                 return;
             }
 
             $form->addError(Freeform::t($message));
 
-            $this->formCache[] = $form->getId();
+            $this->formCache[] = $formId;
         }
 
-        // Triggered when form is loaded
-        if ($event instanceof FormLoadedEvent) {
-            $form->setSubmissionLimitReached(true);
-        }
-
-        // Triggered when form is submitted
-        if ($event instanceof PersistStateEvent) {
+        // Triggered when form is loaded or when form is submitted
+        if ($event instanceof FormLoadedEvent || $event instanceof PersistStateEvent) {
             $form->setSubmissionLimitReached(true);
         }
     }

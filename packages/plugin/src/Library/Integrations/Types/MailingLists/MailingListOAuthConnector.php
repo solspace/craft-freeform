@@ -165,11 +165,11 @@ abstract class MailingListOAuthConnector extends MailingListIntegration
         return $this->refreshToken;
     }
 
-    protected function onBeforeFetchAccessToken(array &$payload)
+    protected function onBeforeFetchAccessToken(array &$payload): void
     {
     }
 
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
+    protected function onAfterFetchAccessToken(\stdClass $responseData): void
     {
     }
 

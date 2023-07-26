@@ -71,14 +71,16 @@ abstract class CRMOAuthConnector extends CRMIntegration
     #[NoReturn]
     public function initiateAuthentication(): void
     {
-        $data = [
+        $payload = [
             'response_type' => 'code',
             'client_id' => $this->getClientId(),
             'redirect_uri' => $this->getReturnUri(),
             'state' => $this->getId(),
         ];
 
-        $queryString = http_build_query($data);
+        $this->onAuthentication($payload);
+
+        $queryString = http_build_query($payload);
 
         header('Location: '.$this->getAuthorizeUrl().'?'.$queryString);
 
@@ -163,11 +165,15 @@ abstract class CRMOAuthConnector extends CRMIntegration
         return $this->refreshToken;
     }
 
-    protected function onBeforeFetchAccessToken(array &$payload)
+    protected function onAuthentication(array &$payload): void
     {
     }
 
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
+    protected function onBeforeFetchAccessToken(array &$payload): void
+    {
+    }
+
+    protected function onAfterFetchAccessToken(\stdClass $responseData): void
     {
     }
 

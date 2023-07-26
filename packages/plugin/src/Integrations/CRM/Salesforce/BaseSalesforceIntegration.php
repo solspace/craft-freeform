@@ -133,6 +133,11 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         return $this->instanceUrl;
     }
 
+    protected function onAuthentication(array &$payload): void
+    {
+        $payload['scope'] = 'refresh_token api';
+    }
+
     protected function onAfterFetchAccessToken(\stdClass $responseData): void
     {
         if (!isset($responseData->instance_url)) {

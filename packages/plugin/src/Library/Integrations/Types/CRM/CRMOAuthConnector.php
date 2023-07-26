@@ -71,12 +71,11 @@ abstract class CRMOAuthConnector extends CRMIntegration
     #[NoReturn]
     public function initiateAuthentication(): void
     {
-        \Craft::$app->session->set(self::FLASH_INTEGRATION_ID_KEY, $this->getId());
-
         $data = [
             'response_type' => 'code',
             'client_id' => $this->getClientId(),
             'redirect_uri' => $this->getReturnUri(),
+            'state' => $this->getId(),
         ];
 
         $queryString = http_build_query($data);
@@ -100,14 +99,9 @@ abstract class CRMOAuthConnector extends CRMIntegration
         ]);
     }
 
-    public function fetchTokens(): string
+    public function fetchTokens(string $code): string
     {
         $client = new Client();
-
-        $code = $_GET['code'] ?? null;
-        if (null === $code) {
-            return '';
-        }
 
         $payload = [
             'grant_type' => 'authorization_code',

@@ -16,13 +16,12 @@ class OAuthController extends BaseController
     {
         $integrationsService = $this->getIntegrationsService();
 
-        $integrationId = \Craft::$app->session->get(CRMOAuthConnector::FLASH_INTEGRATION_ID_KEY);
-        if (!$integrationId) {
-            throw new NotFoundHttpException('Integration not found');
+        $code = $this->request->get('code');
+        if (!$code) {
+            throw new NotFoundHttpException('Code not present');
         }
 
-        \Craft::$app->session->remove(CRMOAuthConnector::FLASH_INTEGRATION_ID_KEY);
-
+        $integrationId = (int) $this->request->get('state', 0);
         $model = $integrationsService->getById($integrationId);
         if (!$model) {
             throw new NotFoundHttpException('Integration not found');
@@ -34,8 +33,7 @@ class OAuthController extends BaseController
         }
 
         $type = $integrationsService->getIntegrationType($integration);
-
-        $integration->fetchTokens();
+        $integration->fetchTokens($code);
 
         try {
             $integration->onBeforeSave();

@@ -1,8 +1,9 @@
-import type { Cell, Page } from '@editor/builder/types/layout';
+import { type Cell, type Page, CellType } from '@editor/builder/types/layout';
 import type { AppDispatch, AppThunk } from '@editor/store';
 import { v4 } from 'uuid';
 
 import { contextActions } from '../slices/context';
+import { fieldActions } from '../slices/fields';
 import { cellActions } from '../slices/layout/cells';
 import { layoutActions } from '../slices/layout/layouts';
 import { pageActions } from '../slices/layout/pages';
@@ -42,6 +43,7 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
       },
     })
   );
+  dispatch(contextActions.setPage(pageUid));
 };
 
 export const moveCellToPage =
@@ -91,12 +93,21 @@ export const deletePage =
     state.layout.rows
       .filter((row) => row.layoutUid === layoutUid)
       .forEach((row) => {
-        // remove cells
+        // remove cells and fields
+        const cellUids: string[] = [];
+        const fieldUids: string[] = [];
+
         state.layout.cells
           .filter((cell) => cell.rowUid === row.uid)
           .forEach((cell) => {
-            dispatch(cellActions.remove(cell.uid));
+            cellUids.push(cell.uid);
+            if (cell.type === CellType.Field) {
+              fieldUids.push(cell.targetUid);
+            }
           });
+
+        dispatch(cellActions.removeBatch(cellUids));
+        dispatch(fieldActions.removeBatch(fieldUids));
 
         dispatch(rowActions.remove(row.uid));
       });

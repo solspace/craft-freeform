@@ -55,6 +55,14 @@ export const cellsSlice = createSlice({
         1
       );
     },
+    removeBatch: (state, { payload: uids }: PayloadAction<string[]>) => {
+      uids.forEach((uid) => {
+        state.splice(
+          state.findIndex((cell) => cell.uid === uid),
+          1
+        );
+      });
+    },
     moveTo: (state, action: PayloadAction<MoveToPayload>) => {
       const { uid, rowUid, position } = action.payload;
       const movedCell = state.find((cell) => cell.uid === uid);

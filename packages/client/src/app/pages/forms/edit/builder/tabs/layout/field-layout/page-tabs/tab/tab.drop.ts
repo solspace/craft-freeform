@@ -18,6 +18,7 @@ type TabDrop = (
 
 export const useTabDrop: TabDrop = (currentPageUid, page) => {
   const dispatch = useAppDispatch();
+  const { dragOff } = useDragContext();
 
   const [{ canDrop }, ref] = useDrop<DragItem, unknown, { canDrop: boolean }>({
     accept: [Drag.Cell],
@@ -28,6 +29,7 @@ export const useTabDrop: TabDrop = (currentPageUid, page) => {
     drop: (item) => {
       if (item.type === Drag.Cell) {
         dispatch(moveCellToPage(item.data, page));
+        dragOff();
       }
     },
   });
@@ -51,7 +53,7 @@ type TabPageDrop = <T extends HTMLElement>(
 
 export const useTabPageDrop: TabPageDrop = (containerRef, page, index) => {
   const dispatch = useAppDispatch();
-  const { position, dragOn } = useDragContext();
+  const { position, dragOn, dragOff } = useDragContext();
 
   const [dimensions, setDimensions] = useState<DOMRect>();
 
@@ -83,6 +85,7 @@ export const useTabPageDrop: TabPageDrop = (containerRef, page, index) => {
       },
       drop: (item) => {
         dispatch(pageActions.moveTo({ uid: item.data.uid, order: index }));
+        dragOff();
       },
     },
     [dimensions, position]

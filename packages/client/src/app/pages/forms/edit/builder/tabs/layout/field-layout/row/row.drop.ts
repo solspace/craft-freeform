@@ -28,11 +28,21 @@ export const useRowDrop = (row: Row): RowDropHook => {
       canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
       drop: (item) => {
         if (item.type === Drag.Cell) {
-          dispatch(moveExistingCellToNewRow(item.data, row.order));
+          dispatch(
+            moveExistingCellToNewRow({
+              cell: item.data,
+              order: row.order,
+            })
+          );
         }
 
         if (item.type === Drag.FieldType) {
-          dispatch(addNewFieldToNewRow(item.data, row));
+          dispatch(
+            addNewFieldToNewRow({
+              fieldType: item.data,
+              row,
+            })
+          );
         }
       },
     }),

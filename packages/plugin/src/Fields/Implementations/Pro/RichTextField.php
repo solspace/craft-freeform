@@ -23,7 +23,7 @@ use Solspace\Freeform\Fields\Traits\SingleStaticValueTrait;
 #[Type(
     name: 'Rich Text',
     typeShorthand: 'rich-text',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/rich-text.svg',
 )]
 class RichTextField extends AbstractField implements DefaultFieldInterface, InputOnlyInterface, NoStorageInterface, ExtraFieldInterface
 {

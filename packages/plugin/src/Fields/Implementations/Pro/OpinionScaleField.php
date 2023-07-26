@@ -18,7 +18,7 @@ use Solspace\Freeform\Form\Form;
 #[Type(
     name: 'Opinion Scale',
     typeShorthand: 'opinion-scale',
-    iconPath: __DIR__.'/../Icons/text.svg',
+    iconPath: __DIR__.'/../Icons/opinion-scale.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/opinion-scale.ejs',
 )]
 class OpinionScaleField extends AbstractField implements ExtraFieldInterface, OptionsInterface

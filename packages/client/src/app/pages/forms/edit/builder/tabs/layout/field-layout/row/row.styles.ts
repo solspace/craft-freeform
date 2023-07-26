@@ -1,5 +1,5 @@
 import { animated } from 'react-spring';
-import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
+import { borderRadius, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 const minHeight = '72px';
@@ -28,9 +28,9 @@ export const RowCellsContainer = styled(animated.div)`
 
 export const DropZone = styled.div`
   position: absolute;
-  left: ${spacings.lg};
-  right: ${spacings.lg};
-  top: -6px;
+  left: ${spacings.sm};
+  right: ${spacings.sm};
+  top: -10px;
 
   z-index: 4;
 
@@ -48,8 +48,8 @@ export const DropZoneAnimation = styled(animated.div)`
   overflow: hidden;
   height: 100%;
 
-  background-color: ${colors.gray050};
-  border: 1px solid ${colors.hairline};
+  background-color: #e9effd;
+  border: 1px dashed #c3c3c3;
   border-radius: ${borderRadius.md};
 
   font-size: 12px;

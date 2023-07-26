@@ -1,5 +1,6 @@
 export { default as attributes } from './attributes/attributes';
 export { default as bool } from './bool/bool';
+export { default as checkboxes } from './checkboxes/checkboxes';
 export { default as colorPicker } from './color-picker/color-picker';
 export { default as datePicker } from './date-picker/date-picker';
 export { default as field } from './field/field';

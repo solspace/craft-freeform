@@ -88,7 +88,13 @@ export const useRowCellDrop = (
             moveExistingCellToExistingRow(item.data, row, hoverPosition)
           );
         } else if (item.type === Drag.FieldType) {
-          dispatch(addNewFieldToExistingRow(item.data, row, hoverPosition));
+          dispatch(
+            addNewFieldToExistingRow({
+              fieldType: item.data,
+              row,
+              order: hoverPosition,
+            })
+          );
         }
 
         setHoverPosition(undefined);

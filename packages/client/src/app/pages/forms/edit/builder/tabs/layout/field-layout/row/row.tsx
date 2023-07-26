@@ -3,9 +3,9 @@ import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { Row as RowType } from '@editor/builder/types/layout';
 import { cellSelectors } from '@editor/store/slices/layout/cells/cells.selectors';
-import translate from '@ff-client/utils/translations';
 
 import { Cell } from '../cell/cell';
+import { CellDragPlaceholder } from '../cell/cell.placeholder';
 
 import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
 import { useRowCellDrop } from './row.cell-drop';
@@ -49,11 +49,14 @@ export const Row: React.FC<Props> = ({ row }) => {
   return (
     <RowWrapper ref={ref}>
       <DropZone ref={rowDropRef}>
-        <DropZoneAnimation style={placeholderAnimation}>
-          {translate('+ insert row')}
-        </DropZoneAnimation>
+        <DropZoneAnimation style={placeholderAnimation} />
       </DropZone>
       <RowCellsContainer style={rowAnimation}>
+        <CellDragPlaceholder
+          isActive={isOver}
+          hoverPosition={hoverPosition}
+          cellWidth={cellWidth}
+        />
         {cells.map((cell, idx) => (
           <Cell
             cell={cell}

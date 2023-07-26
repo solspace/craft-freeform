@@ -19,7 +19,7 @@ use Solspace\Freeform\Fields\AbstractExternalOptionsField;
 #[Type(
     name: 'Dropdown',
     typeShorthand: 'dropdown',
-    iconPath: __DIR__.'/Icons/text.svg',
+    iconPath: __DIR__.'/Icons/dropdown.svg',
     previewTemplatePath: __DIR__.'/PreviewTemplates/select.ejs',
 )]
 class DropdownField extends AbstractExternalOptionsField

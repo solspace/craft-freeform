@@ -19,4 +19,6 @@ export const Sidebar = styled.div<WrapperProps>`
   border-bottom-left-radius: ${borderRadius.lg};
   box-shadow: inset -1px 0 0 0 rgb(154 165 177 / 25%);
   background: ${colors.gray050};
+
+  overflow-y: auto;
 `;

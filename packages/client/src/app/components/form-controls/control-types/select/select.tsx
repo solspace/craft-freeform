@@ -36,16 +36,17 @@ const Select: React.FC<ControlType<SelectProperty>> = ({
 
   return (
     <Control property={property} errors={errors}>
-      <select
-        id={handle}
-        value={value ?? ''}
-        className="text fullwidth"
-        onChange={(event) => updateValue(event.target.value)}
-      >
-        {!!emptyOption && <option value="" label={emptyOption} />}
+      <div className="select fullwidth">
+        <select
+          id={handle}
+          value={value ?? ''}
+          onChange={(event) => updateValue(event.target.value)}
+        >
+          {!!emptyOption && <option value="" label={emptyOption} />}
 
-        {options?.map(renderOption)}
-      </select>
+          {options?.map(renderOption)}
+        </select>
+      </div>
     </Control>
   );
 };

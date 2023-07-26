@@ -4,7 +4,6 @@ import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
 import camelCase from 'lodash.camelcase';
-import { transliterate } from 'transliteration';
 import { adjectives, uniqueNamesGenerator } from 'unique-names-generator';
 
 import './fields.persistence';
@@ -86,12 +85,7 @@ export const fieldsSlice = createSlice({
       });
     },
     edit: (state, action: PayloadAction<EditType>) => {
-      let { value } = action.payload;
-      const { uid, handle } = action.payload;
-
-      if (handle == 'handle') {
-        value = transliterate(value);
-      }
+      const { uid, handle, value } = action.payload;
 
       state.find((field) => field.uid === uid).properties[handle] = value;
     },

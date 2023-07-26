@@ -1,7 +1,6 @@
 import type { FormSettingNamespace } from '@ff-client/types/forms';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import { createSlice } from '@reduxjs/toolkit';
-import { transliterate } from 'transliteration';
 import { v4 } from 'uuid';
 
 import './form.persistence';
@@ -48,15 +47,10 @@ export const formSlice = createSlice({
       state.settings.general.handle = state.handle;
     },
     modifySettings: (state, { payload }: PayloadAction<ModifyProps>) => {
-      let { value } = payload;
-      const { namespace, key } = payload;
+      const { namespace, key, value } = payload;
 
       if (!state.settings[namespace]) {
         state.settings[namespace] = {};
-      }
-
-      if (key == 'handle') {
-        value = transliterate(value);
       }
 
       state.settings[namespace][key] = value;

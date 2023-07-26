@@ -71,7 +71,7 @@ abstract class CRMOAuthConnector extends CRMIntegration
     #[NoReturn]
     public function initiateAuthentication(): void
     {
-        \Craft::$app->session->setFlash(self::FLASH_INTEGRATION_ID_KEY, $this->getId());
+        \Craft::$app->session->set(self::FLASH_INTEGRATION_ID_KEY, $this->getId());
 
         $data = [
             'response_type' => 'code',

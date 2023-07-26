@@ -110,7 +110,6 @@ abstract class IntegrationsController extends BaseController
             }
 
             \Craft::$app->session->setNotice(Freeform::t('Integration saved'));
-            \Craft::$app->session->setFlash('Integration saved');
 
             return $this->redirectToPostedUrl($model);
         }

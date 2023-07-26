@@ -16,10 +16,12 @@ class OAuthController extends BaseController
     {
         $integrationsService = $this->getIntegrationsService();
 
-        $integrationId = \Craft::$app->session->getFlash(CRMOAuthConnector::FLASH_INTEGRATION_ID_KEY);
+        $integrationId = \Craft::$app->session->get(CRMOAuthConnector::FLASH_INTEGRATION_ID_KEY);
         if (!$integrationId) {
             throw new NotFoundHttpException('Integration not found');
         }
+
+        \Craft::$app->session->remove(CRMOAuthConnector::FLASH_INTEGRATION_ID_KEY);
 
         $model = $integrationsService->getById($integrationId);
         if (!$model) {
@@ -45,7 +47,6 @@ class OAuthController extends BaseController
 
         if ($integrationsService->save($model)) {
             \Craft::$app->session->setNotice(Freeform::t('Integration saved'));
-            \Craft::$app->session->setFlash('Integration saved');
 
             return $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$type.'/'.$integration->getId()));
         }

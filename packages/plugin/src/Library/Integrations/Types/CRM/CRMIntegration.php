@@ -26,9 +26,13 @@ abstract class CRMIntegration extends APIIntegration implements CRMIntegrationIn
         return self::TYPE_CRM;
     }
 
-    protected function processMapping(Form $form, FieldMapping $mapping, string $category): array
+    protected function processMapping(Form $form, ?FieldMapping $mapping, string $category): array
     {
         $fields = Freeform::getInstance()->crm->getFields($this, $category);
+
+        if (null === $mapping) {
+            return [];
+        }
 
         $keyValueMap = [];
         foreach ($mapping as $item) {

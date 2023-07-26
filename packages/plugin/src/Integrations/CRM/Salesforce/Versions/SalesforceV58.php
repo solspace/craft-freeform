@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce\Versions;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use Solspace\Freeform\Attributes\EventListener;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
@@ -28,14 +29,17 @@ use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
+use Solspace\Freeform\Integrations\CRM\Salesforce\EventListeners\SalesforceArrayValueProcessor;
+use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
 use yii\base\Event;
 
+#[EventListener(SalesforceArrayValueProcessor::class)]
 #[Type(
     name: 'Salesforce v58',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class SalesforceV58 extends BaseSalesforceIntegration
+class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceIntegrationInterface
 {
     private const CATEGORY_LEAD = 'Lead';
     private const CATEGORY_OPPORTUNITY = 'Opportunity';
@@ -62,6 +66,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected bool $mapLeads = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Boolean(
         label: 'Assign Lead Owner?',
@@ -69,6 +74,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected bool $assignLeadOwner = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Boolean(
         label: 'Convert Leads to Contact Tasks for Returning Customers?',
@@ -76,6 +82,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected bool $convertLeadsToTasks = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapLeads')]
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
@@ -83,6 +90,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected string $taskSubject = '';
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapLeads')]
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
@@ -107,6 +115,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected bool $mapOpportunities = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Validators\Required]
     #[Input\Text(
@@ -114,6 +123,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected string $closeDate = '';
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapOpportunities')]
     #[Validators\Required]
     #[Input\Text(
@@ -139,6 +149,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected bool $mapAccounts = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Boolean(
         label: 'Append checkbox group field values on Account update?',
@@ -163,6 +174,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected bool $mapContacts = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
         label: 'Check Contact email address and Account website when checking for duplicates?',
@@ -170,6 +182,7 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected bool $duplicateCheck = false;
 
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Boolean(
         label: 'Append checkbox group field values on Contact update?',
@@ -187,21 +200,11 @@ class SalesforceV58 extends BaseSalesforceIntegration
     )]
     protected ?FieldMapping $contactMapping = null;
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Text]
-    protected string $dataUrl = '';
-
-    private ?string $contactId = null;
     private ?string $accountId = null;
-    private ?string $opportunityId = null;
-    private ?string $leadId = null;
 
     public function push(Form $form): bool
     {
-        $this->contactId = null;
         $this->accountId = null;
-        $this->opportunityId = null;
-        $this->leadId = null;
 
         $client = $this->generateAuthorizedClient();
 
@@ -247,11 +250,6 @@ class SalesforceV58 extends BaseSalesforceIntegration
         }
 
         return $instance.'/services/data/'.self::API_VERSION.'/';
-    }
-
-    protected function getAuthorizationCheckUrl(): string
-    {
-        return $this->getEndpoint('/sobjects/Lead/describe');
     }
 
     private function isCreateTasksForDuplicates(): bool

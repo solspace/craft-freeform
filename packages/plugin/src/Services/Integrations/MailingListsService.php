@@ -12,19 +12,18 @@
 
 namespace Solspace\Freeform\Services\Integrations;
 
-use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
-use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
 
 class MailingListsService extends AbstractIntegrationService
 {
-    public function getFetchEvent(): FetchIntegrationTypesEvent
-    {
-        return new FetchMailingListTypesEvent();
-    }
-
     protected function getIntegrationType(): string
     {
         return IntegrationInterface::TYPE_MAILING_LIST;
+    }
+
+    protected function getIntegrationInterface(): string
+    {
+        return MailingListIntegrationInterface::class;
     }
 }

@@ -84,6 +84,9 @@ abstract class BaseIntegration implements IntegrationInterface
 
     protected function getLogger(?string $category = null): LoggerInterface
     {
-        return Freeform::$logger->getLogger('Integration'.($category ? '.'.$category : ''));
+        return Freeform::getInstance()
+            ->logger
+            ->getLogger('Integration'.($category ? '.'.$category : ''))
+        ;
     }
 }

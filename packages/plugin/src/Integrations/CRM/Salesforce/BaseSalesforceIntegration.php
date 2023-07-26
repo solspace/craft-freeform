@@ -133,8 +133,6 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         return $this->instanceUrl;
     }
 
-    abstract protected function getAuthorizationCheckUrl(): string;
-
     protected function onAfterFetchAccessToken(\stdClass $responseData): void
     {
         if (!isset($responseData->instance_url)) {

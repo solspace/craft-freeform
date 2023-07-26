@@ -13,12 +13,13 @@
 namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
+use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
+use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationNotFoundException;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
@@ -26,13 +27,16 @@ use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayI
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\BaseService;
+use yii\base\Event;
 
 class IntegrationsService extends BaseService
 {
-    public const EVENT_BEFORE_SAVE = 'beforeSave';
-    public const EVENT_AFTER_SAVE = 'afterSave';
-    public const EVENT_BEFORE_DELETE = 'beforeDelete';
-    public const EVENT_AFTER_DELETE = 'afterDelete';
+    public const EVENT_REGISTER_INTEGRATION_TYPES = 'register-integration-types';
+
+    public const EVENT_BEFORE_SAVE = 'before-save';
+    public const EVENT_AFTER_SAVE = 'after-save';
+    public const EVENT_BEFORE_DELETE = 'before-delete';
+    public const EVENT_AFTER_DELETE = 'after-delete';
 
     public function __construct(
         $config = [],
@@ -42,21 +46,35 @@ class IntegrationsService extends BaseService
     }
 
     /**
+     * @return Type[]
+     */
+    public function getAllIntegrationTypes(): array
+    {
+        static $types;
+
+        if (null === $types) {
+            $event = new RegisterIntegrationTypesEvent();
+            Event::trigger(self::class, self::EVENT_REGISTER_INTEGRATION_TYPES, $event);
+
+            $types = $event->getTypes();
+            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
+        }
+
+        return $types;
+    }
+
+    /**
      * @return IntegrationModel[]
      */
     public function getAllIntegrations(): array
     {
+        $this->getAllIntegrationTypes();
         $results = $this->getQuery()->all();
 
         $models = [];
         foreach ($results as $result) {
             $model = $this->createIntegrationModel($result);
-
-            try {
-                $model->getIntegrationObject();
-                $models[] = $model;
-            } catch (IntegrationNotFoundException $e) {
-            }
+            $models[] = $model;
         }
 
         return $models;
@@ -244,7 +262,7 @@ class IntegrationsService extends BaseService
             $instanceProperty = $reflection->getProperty($handle);
             $value = $instanceProperty->getValue($integration);
 
-            if (!$value && $property->required) {
+            if (!$value && $property->required && !$property->visibilityFilters) {
                 $model->addError(
                     $model->class.$handle,
                     Freeform::t('{key} is required', ['key' => $property->label])

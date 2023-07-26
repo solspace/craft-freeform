@@ -12,8 +12,6 @@
 
 namespace Solspace\Freeform\Services\Integrations;
 
-use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
-use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
@@ -21,11 +19,6 @@ use Solspace\Freeform\Records\CrmFieldRecord;
 
 class CrmService extends AbstractIntegrationService
 {
-    public function getFetchEvent(): FetchIntegrationTypesEvent
-    {
-        return new FetchCrmTypesEvent();
-    }
-
     /**
      * @return FieldObject[]
      */
@@ -88,5 +81,10 @@ class CrmService extends AbstractIntegrationService
     protected function getIntegrationType(): string
     {
         return IntegrationInterface::TYPE_CRM;
+    }
+
+    protected function getIntegrationInterface(): string
+    {
+        return CRMIntegrationInterface::class;
     }
 }

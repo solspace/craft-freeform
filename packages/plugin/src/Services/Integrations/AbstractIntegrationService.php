@@ -9,9 +9,7 @@
 namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
-use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
-use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -24,18 +22,11 @@ use Solspace\Freeform\Services\BaseService;
 abstract class AbstractIntegrationService extends BaseService
 {
     public const EVENT_FETCH_TYPES = 'fetchTypes';
-    public const EVENT_BEFORE_PUSH = 'beforePush';
-    public const EVENT_AFTER_PUSH = 'afterPush';
-    public const EVENT_AFTER_RESPONSE = 'afterResponse';
-
-    private static ?array $integrations = null;
 
     public function __construct($config = [], private FormIntegrationsProvider $formIntegrationsProvider)
     {
         parent::__construct($config);
     }
-
-    abstract public function getFetchEvent(): FetchIntegrationTypesEvent;
 
     /**
      * @return IntegrationInterface[]
@@ -47,22 +38,23 @@ abstract class AbstractIntegrationService extends BaseService
 
     public function getAllServiceProviders(): array
     {
-        if (null === self::$integrations) {
-            $event = $this->getFetchEvent();
+        static $providers;
 
-            $this->trigger(self::EVENT_FETCH_TYPES, $event);
-            $types = $event->getTypes();
-            usort($types, fn (Type $a, Type $b) => strcmp($a->name, $b->name));
+        if (null === $providers) {
+            $types = $this->getIntegrationsService()->getAllIntegrationTypes();
 
-            $integrations = [];
+            $providers = [];
             foreach ($types as $type) {
-                $integrations[$type->class] = $type;
-            }
+                $reflection = new \ReflectionClass($type->class);
+                if (!$reflection->implementsInterface($this->getIntegrationInterface())) {
+                    continue;
+                }
 
-            self::$integrations = $integrations;
+                $providers[$type->class] = $type;
+            }
         }
 
-        return self::$integrations;
+        return $providers;
     }
 
     /**
@@ -137,6 +129,8 @@ abstract class AbstractIntegrationService extends BaseService
     }
 
     abstract protected function getIntegrationType(): string;
+
+    abstract protected function getIntegrationInterface(): string;
 
     protected function getQuery(): Query
     {

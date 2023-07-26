@@ -247,7 +247,6 @@ class Freeform extends Plugin
         $this->initServices();
         $this->initIntegrations();
         $this->initTwigVariables();
-        // $this->initWidgets();
         $this->initFieldTypes();
         $this->initPermissions();
         $this->initEventListeners();

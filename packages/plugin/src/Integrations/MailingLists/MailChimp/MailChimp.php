@@ -44,6 +44,12 @@ class MailChimp extends MailingListIntegration
     #[Input\Boolean('Use double opt-in?')]
     protected bool $doubleOptIn = false;
 
+    #[Input\Boolean(
+        label: 'Append Mailchimp Contact Tags on update instead of overwriting?',
+        instructions: 'When updating an existing contact in Mailchimp, have new Contact Tags added to existing ones instead of overwriting them.',
+    )]
+    protected bool $appendContactTags = false;
+
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Text]
     protected string $dataCenter = '';
@@ -58,6 +64,11 @@ class MailChimp extends MailingListIntegration
     public function isDoubleOptIn(): bool
     {
         return $this->doubleOptIn;
+    }
+
+    public function appendContactTags(): bool
+    {
+        return $this->appendContactTags;
     }
 
     public function getDataCenter(): string
@@ -132,9 +143,15 @@ class MailChimp extends MailingListIntegration
                 }
 
                 if (str_contains($key, 'interests___interests')) {
-                    $interestId = $this->findInterestIdFromName(trim($value), $listId);
-                    if ($interestId) {
-                        $interests[$interestId] = true;
+                    $interestsSelection = explode(',', $value);
+                    $interestsSelection = array_map('trim', $interestsSelection);
+                    $interestsSelection = array_filter($interestsSelection);
+
+                    foreach ($interestsSelection as $interest) {
+                        $interestId = $this->findInterestIdFromName($interest, $listId);
+                        if ($interestId) {
+                            $interests[$interestId] = true;
+                        }
                     }
 
                     unset($mappedValues[$key]);
@@ -588,6 +605,7 @@ class MailChimp extends MailingListIntegration
 
     private function manageTags(string $listId, string $email, array $tags): void
     {
+        $appendContactTags = $this->appendContactTags();
         $emailHash = md5(strtolower($email));
         $client = $this->generateAuthorizedClient();
 
@@ -607,8 +625,10 @@ class MailChimp extends MailingListIntegration
             $tagsToAdd = array_diff($tags, $memberTags);
             $this->addTagsForMember($listId, $email, $tagsToAdd);
 
-            $tagsToDelete = array_diff($memberTags, $tags);
-            $this->deleteTagsForMember($listId, $emailHash, $tagsToDelete);
+            if (!$appendContactTags) {
+                $tagsToDelete = array_diff($memberTags, $tags);
+                $this->deleteTagsForMember($listId, $emailHash, $tagsToDelete);
+            }
         } catch (RequestException $e) {
         }
     }

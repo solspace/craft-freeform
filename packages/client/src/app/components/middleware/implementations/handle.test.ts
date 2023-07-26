@@ -16,4 +16,15 @@ describe('handle middleware', () => {
 
     expect(result).toEqual('this_is-underscored');
   });
+
+  it('converts unicode characters to Latin characters', () => {
+    const string =
+      'Visi cilvēki piedzimst brīvi un vienlīdzīgi savā pašcieņā un tiesībās';
+
+    const result = handle(string);
+
+    expect(result).toEqual(
+      'Visicilvekipiedzimstbriviunvienlidzigisavapascienauntiesibas'
+    );
+  });
 });

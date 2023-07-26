@@ -23,17 +23,6 @@ class HoneypotBundle extends FeatureBundle
 
     public function __construct(private HoneypotProvider $honeypotProvider)
     {
-        $bypassCheck = $this->plugin()->settings->getSettingsModel()->bypassSpamCheckOnLoggedInUsers;
-        $useId = \Craft::$app->getUser()->id;
-
-        if ($bypassCheck && $useId) {
-            return;
-        }
-
-        if (!$this->plugin()->settings->isFreeformHoneypotEnabled()) {
-            return;
-        }
-
         Event::on(
             Form::class,
             Form::EVENT_OUTPUT_AS_JSON,

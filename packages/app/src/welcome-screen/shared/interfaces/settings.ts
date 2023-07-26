@@ -4,13 +4,21 @@ export enum DefaultView {
   Submissions = 'submissions',
 }
 export enum FormattingTemplate {
+  BasicLight = 'basic-light.twig',
+  BasicDark = 'basic-dark.twig',
+  BasicFloatingLabels = 'basic-floating-labels.twig',
   Bootstrap = 'bootstrap-3.twig',
-  Bootstrap4 = 'bootstrap-4.twig',
-  Bootstrap5 = 'bootstrap-5.twig',
+  Bootstrap4 = 'bootstrap-4/index.twig',
+  Bootstrap5 = 'bootstrap-5/index.twig',
+  Bootstrap5Dark = 'bootstrap-5-dark/index.twig',
+  Bootstrap5Floating = 'bootstrap-5-floating-labels/index.twig',
+  Bootstrap5MPAllFields = 'bootstrap-5-multipage-all-fields/index.twig',
   Flexbox = 'flexbox.twig',
   Foundation = 'foundation-6.twig',
   Grid = 'grid.twig',
-  Tailwind = 'tailwind-1.twig',
+  Conversational = 'conversational.twig',
+  Tailwind1 = 'tailwind-1.twig',
+  Tailwind3 = 'tailwind-3.twig',
 }
 export enum JSInsertLocation {
   Footer = 'footer',

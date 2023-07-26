@@ -23,7 +23,8 @@
     "stripe/stripe-php": "^7.27.3",
     "ext-json": "*",
     "symfony/serializer": "^6.0",
-    "doctrine/annotations": "^2.0"
+    "doctrine/annotations": "^2.0",
+    "phpoffice/phpspreadsheet": "^1.29"
   },
   "require-dev": {
     "phpunit/phpunit": "^9.3.0",
@@ -39,14 +40,14 @@
   },
   "scripts": {
     "test:unit": "vendor/bin/phpunit --configuration ./phpunit.xml",
-    "fix": "vendor/bin/php-cs-fixer fix --diff",
-    "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "fix": "vendor/bin/php-cs-fixer fix --diff --config=./.php-cs-fixer.dist.php",
+    "fix:dry-run": "vendor/bin/php-cs-fixer fix --dry-run --diff  --config=./.php-cs-fixer.dist.php",
     "cghooks": "vendor/bin/cghooks",
     "post-install-cmd": "cghooks add --ignore-lock",
     "post-update-cmd": "cghooks update"
   },
   "extra": {
-    "schemaVersion": "5.0.3",
+    "schemaVersion": "5.0.4",
     "handle": "freeform",
     "class": "Solspace\\Freeform\\Freeform",
     "name": "Freeform",

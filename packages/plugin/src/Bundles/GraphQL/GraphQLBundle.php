@@ -16,8 +16,9 @@ use Solspace\Freeform\Bundles\GraphQL\Interfaces\OptionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\PageInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\RowInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\CsrfTokenInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\FormReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\HoneypotInterface;
-use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\ReCaptchaInterface;
+use Solspace\Freeform\Bundles\GraphQL\Interfaces\SimpleObjects\SubmissionReCaptchaInterface;
 use Solspace\Freeform\Bundles\GraphQL\Interfaces\SubmissionInterface;
 use Solspace\Freeform\Bundles\GraphQL\Mutations\SubmissionMutation;
 use Solspace\Freeform\Bundles\GraphQL\Queries\FreeformQuery;
@@ -46,7 +47,8 @@ class GraphQLBundle extends FeatureBundle
                 $event->types[] = OpinionScaleInterface::class;
                 $event->types[] = HoneypotInterface::class;
                 $event->types[] = CsrfTokenInterface::class;
-                $event->types[] = ReCaptchaInterface::class;
+                $event->types[] = FormReCaptchaInterface::class;
+                $event->types[] = SubmissionReCaptchaInterface::class;
                 $event->types[] = AttributeInterface::class;
                 $event->types[] = SubmissionInterface::class;
             }

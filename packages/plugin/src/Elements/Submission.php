@@ -3,10 +3,12 @@
 namespace Solspace\Freeform\Elements;
 
 use craft\base\Element;
+use craft\base\ElementInterface;
 use craft\db\Query;
 use craft\elements\actions\Restore;
 use craft\elements\Asset;
 use craft\elements\User;
+use craft\events\RegisterElementActionsEvent;
 use craft\helpers\Html;
 use craft\helpers\StringHelper as CraftStringHelper;
 use craft\helpers\UrlHelper;
@@ -40,6 +42,7 @@ use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Models\StatusModel;
 use Solspace\Freeform\Records\SpamReasonRecord;
 use Solspace\Freeform\Services\NotesService;
+use yii\base\Event;
 
 class Submission extends Element
 {
@@ -498,6 +501,26 @@ class Submission extends Element
         );
     }
 
+    public function getCurrentRevision(): ?ElementInterface
+    {
+        return null;
+    }
+
+    public static function actions(string $source): array
+    {
+        $actions = static::defineActions($source);
+
+        // Give plugins a chance to modify them
+        $event = new RegisterElementActionsEvent([
+            'source' => $source,
+            'actions' => $actions,
+        ]);
+
+        Event::trigger(static::class, self::EVENT_REGISTER_ACTIONS, $event);
+
+        return $event->actions;
+    }
+
     protected static function defineSources(string $context = null): array
     {
         static $sources;
@@ -546,11 +569,11 @@ class Submission extends Element
 
         if (null === $attributes) {
             $titles = [
-                'userId' => ['label' => Freeform::t('Author')],
-                'status' => ['label' => Freeform::t('Status')],
+                'userId' => ['label' => \Craft::t('app', 'Author')],
+                'status' => ['label' => \Craft::t('app', 'Status')],
                 'form' => ['label' => Freeform::t('Form')],
-                'dateCreated' => ['label' => Freeform::t('Date Created')],
-                'id' => ['label' => Freeform::t('ID')],
+                'dateCreated' => ['label' => \Craft::t('app', 'Date Created')],
+                'id' => ['label' => \Craft::t('app', 'ID')],
                 'incrementalId' => ['label' => Freeform::t('Freeform ID')],
                 'ip' => ['label' => Freeform::t('IP Address')],
                 'spamReasons' => ['label' => Freeform::t('Spam Reasons')],

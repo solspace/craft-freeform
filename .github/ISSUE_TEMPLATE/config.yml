@@ -7,10 +7,10 @@ contact_links:
     url: https://github.com/solspace/craft-freeform/discussions
     about: Ask a question about Freeform (e.g. whether or not ____ can be done, etc).
   - name: Private Support Ticket
-    url: https://docs.solspace.com/craft/freeform/v3/support.html
+    url: https://docs.solspace.com/craft/freeform/v5/support.html
     about: Create a private support ticket.
   - name: Freeform Documentation
-    url: https://docs.solspace.com/craft/freeform/v3/
+    url: https://docs.solspace.com/craft/freeform/v5/
     about: Read the official documentation.
   - name: Craft Stack Exchange
     url: https://craftcms.stackexchange.com/questions/tagged/solspace

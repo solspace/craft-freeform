@@ -8,7 +8,6 @@ use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Controllers\BaseController;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
-use Solspace\Freeform\Fields\Implementations\Pro\SignatureField;
 use Solspace\Freeform\Fields\Interfaces\NoStorageInterface;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
@@ -41,7 +40,7 @@ class QuickExportController extends BaseController
 
             $forms[$form->id] = $form->getForm();
             foreach ($form->getForm()->getLayout()->getFields() as $field) {
-                if ($field instanceof NoStorageInterface || $field instanceof SignatureField || !$field->getId()) {
+                if ($field instanceof NoStorageInterface || !$field->getId()) {
                     continue;
                 }
 
@@ -63,7 +62,7 @@ class QuickExportController extends BaseController
                 $settingRecord->setting = [];
             }
 
-            $settingArray = \is_array($settingRecord->setting) ? $settingRecord->setting : \GuzzleHttp\json_decode($settingRecord->setting, true);
+            $settingArray = \is_array($settingRecord->setting) ? $settingRecord->setting : json_decode($settingRecord->setting, true);
 
             if ($settingRecord && isset($settingArray[$form->getId()])) {
                 foreach ($settingArray[$form->getId()] as $fieldId => $item) {
@@ -117,7 +116,6 @@ class QuickExportController extends BaseController
             foreach ($form->getLayout()->getFields() as $field) {
                 if (
                     $field instanceof NoStorageInterface
-                    || $field instanceof SignatureField
                     || !$field->getId()
                     || \in_array($field->getId(), $storedFieldIds, true)
                 ) {

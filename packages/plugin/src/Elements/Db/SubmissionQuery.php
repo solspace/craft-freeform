@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Elements\Db;
 
 use craft\db\Query;
+use craft\db\Table;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use Solspace\Freeform\Elements\Submission;
@@ -172,6 +173,8 @@ class SubmissionQuery extends ElementQuery
                 $joinFormIds = array_values($formHandleToIdMap ?? []);
             }
 
+            $joinFormIds = $this->extractFormIdsWithContent($joinFormIds);
+
             foreach ($joinFormIds as $formId) {
                 $form = $forms[$formId];
                 $joinedForms[] = $form;
@@ -252,12 +255,17 @@ class SubmissionQuery extends ElementQuery
             'form' => "{$formTable}.[[name]]",
         ];
 
+        if (\is_array($this->orderBy)) {
+            // reset the order by array to a single element
+            $this->orderBy = \array_slice($this->orderBy, 0, 1, true);
+        }
+
         foreach ($customSortTables as $column => $columnUpdate) {
             if (isset($this->orderBy[$column])) {
                 $sortOrder = $this->orderBy[$column];
 
                 unset($this->orderBy[$column]);
-                $this->subQuery->orderBy([$columnUpdate => $sortOrder]);
+                $this->query->orderBy([$columnUpdate => $sortOrder]);
             }
         }
 
@@ -265,6 +273,25 @@ class SubmissionQuery extends ElementQuery
         $this->prepareFieldSearch($joinedForms);
 
         return parent::beforePrepare();
+    }
+
+    private function extractFormIdsWithContent(array $formIds): array
+    {
+        $distinct = (new Query())
+            ->select('formId')
+            ->groupBy('formId')
+            ->distinct('formId')
+            ->from(Submission::TABLE.' s')
+            ->innerJoin(Table::ELEMENTS.' e', '[[e]].[[id]] = [[s]].[[id]]')
+            ->where([
+                's.[[isSpam]]' => (bool) $this->isSpam,
+                's.[[formId]]' => $formIds,
+                'e.[[dateDeleted]]' => null,
+            ])
+            ->column()
+        ;
+
+        return \array_slice($distinct, 0, 50);
     }
 
     private function prepareOrderBy(array $joinedForms): void
@@ -294,11 +321,11 @@ class SubmissionQuery extends ElementQuery
             }
 
             $column = $this->extractColumnName($joinedForms, $key);
-            if (!$column) {
-                continue;
+            if ($column) {
+                $prefixedOrderList[$column] = $sortDirection;
+            } else {
+                $prefixedOrderList[Submission::TABLE_STD.'.[['.$key.']]'] = $sortDirection;
             }
-
-            $prefixedOrderList[$column] = $sortDirection;
         }
 
         $this->orderBy = $prefixedOrderList;
@@ -316,12 +343,14 @@ class SubmissionQuery extends ElementQuery
         }
 
         foreach ($this->fieldSearch as $handle => $term) {
-            $column = $this->extractColumnName($joinedForms, $handle);
-            if (!$column) {
-                continue;
-            }
+            $columns = $this->extractMatchingColumnNames($joinedForms, $handle);
 
-            $this->query->andWhere(Db::parseParam($column, $term));
+            $condition = array_map(fn ($column) => Db::parseParam($column, $term), $columns);
+            if (\count($condition)) {
+                $condition = ['or', ...$condition];
+
+                $this->subQuery->andWhere($condition);
+            }
         }
     }
 
@@ -330,23 +359,26 @@ class SubmissionQuery extends ElementQuery
      */
     private function extractColumnName(array $joinedForms, ?string $handle): ?string
     {
-        $field = null;
-        $currentForm = null;
+        $matching = $this->extractMatchingColumnNames($joinedForms, $handle);
+
+        return reset($matching);
+    }
+
+    private function extractMatchingColumnNames(array $joinedForms, ?string $handle): array
+    {
+        $matchingColumnNames = [];
         foreach ($joinedForms as $form) {
-            $currentForm = $form;
             $field = $form->get($handle);
-            if (null !== $field) {
-                break;
+            if (!$field) {
+                continue;
             }
+
+            $tableName = 'fc'.$form->getId();
+            $columnName = Submission::getFieldColumnName($field);
+
+            $matchingColumnNames[] = "[[{$tableName}]].[[{$columnName}]]";
         }
 
-        if (null === $field) {
-            return null;
-        }
-
-        $tableName = 'fc'.$currentForm->getId();
-        $columnName = Submission::getFieldColumnName($field);
-
-        return "[[{$tableName}]].[[{$columnName}]]";
+        return $matchingColumnNames;
     }
 }

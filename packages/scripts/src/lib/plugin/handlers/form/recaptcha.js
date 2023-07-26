@@ -23,7 +23,7 @@ class RecaptchaHandler {
   captchaElement;
   isTokenSet = false;
 
-  scriptAdded = false;
+  scriptId = 'recaptcha-script';
 
   constructor(freeform) {
     this.freeform = freeform;
@@ -43,7 +43,9 @@ class RecaptchaHandler {
     const loadScripts = () => {
       this.form.removeEventListener('input', loadScripts);
 
-      if (!this.scriptAdded) {
+      const existingScript = document.querySelector(`#${this.scriptId}`);
+
+      if (!existingScript) {
         let url = this._G_URL;
         if (this.isHCaptcha(recaptcha)) {
           url = this._H_URL;
@@ -64,10 +66,10 @@ class RecaptchaHandler {
         script.src = url;
         script.async = true;
         script.defer = true;
+        script.id = this.scriptId;
         script.addEventListener('load', this.renderCaptcha);
-        document.body.appendChild(script);
 
-        this.scriptAdded = true;
+        document.body.appendChild(script);
       } else {
         this.renderCaptcha();
       }

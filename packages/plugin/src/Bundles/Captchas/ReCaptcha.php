@@ -24,14 +24,6 @@ class ReCaptcha extends FeatureBundle
 
     public function __construct()
     {
-        if (\Craft::$app->request->isConsoleRequest) {
-            return;
-        }
-
-        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
-            return;
-        }
-
         Event::on(
             Form::class,
             Form::EVENT_ATTACH_TAG_ATTRIBUTES,
@@ -62,13 +54,21 @@ class ReCaptcha extends FeatureBundle
      */
     public function validateRecaptchaV2Checkbox(ValidateEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $field = $event->getField();
         $form = $field->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_CHECKBOX)) {
             $response = $this->getCheckboxResponse($form);
 
-            if (($field instanceof RecaptchaField) && !$this->validateResponse($response)) {
+            if (($field instanceof RecaptchaField) && (!$response || !$this->validateResponse($response))) {
                 $message = $this->getSettings()->recaptchaErrorMessage;
 
                 $field->addError(Freeform::t($message ?: 'Please verify that you are not a robot.'));
@@ -81,12 +81,20 @@ class ReCaptcha extends FeatureBundle
      */
     public function validateRecaptchaV2Invisible(ValidationEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $form = $event->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V2_INVISIBLE)) {
             $response = $this->getInvisibleResponse($form);
 
-            if (!$this->validateResponse($response)) {
+            if (!$response || !$this->validateResponse($response)) {
                 if ($this->behaviourDisplayError()) {
                     $message = $this->getSettings()->recaptchaErrorMessage;
 
@@ -103,12 +111,20 @@ class ReCaptcha extends FeatureBundle
      */
     public function validateRecaptchaV3(ValidationEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $form = $event->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form) && !$this->isRecaptchaTypeSkipped(Settings::RECAPTCHA_TYPE_V3)) {
             $response = $this->getInvisibleResponse($form);
 
-            if (!$this->validateResponse($response)) {
+            if (!$response || !$this->validateResponse($response)) {
                 if ($this->behaviourDisplayError()) {
                     $message = $this->getSettings()->recaptchaErrorMessage;
 
@@ -125,6 +141,14 @@ class ReCaptcha extends FeatureBundle
      */
     public function addAttributesToFormTag(AttachFormAttributesEvent $event): void
     {
+        if (\Craft::$app->request->isConsoleRequest) {
+            return;
+        }
+
+        if ($this->getSettings()->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
+            return;
+        }
+
         $form = $event->getForm();
 
         if (ReCaptchaHelper::canApplyReCaptcha($form)) {

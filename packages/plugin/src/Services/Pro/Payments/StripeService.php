@@ -76,6 +76,8 @@ class StripeService extends Component
             }
 
             $customerData = CustomerDetails::fromArray($dynamicValues)->toStripeConstructArray();
+            $customerData['payment_method'] = $token;
+
             $customer = Customer::create($customerData);
 
             $paymentIntentProperties = [

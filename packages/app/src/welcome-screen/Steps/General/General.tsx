@@ -30,13 +30,21 @@ const General: React.FC = () => {
   ];
 
   const formattingTemplateOptions: Options<FormattingTemplate> = [
+    { value: FormattingTemplate.BasicLight, label: 'Basic Light' },
+    { value: FormattingTemplate.BasicDark, label: 'Basic Dark' },
+    { value: FormattingTemplate.BasicFloatingLabels, label: 'Basic Floating Labels' },
     { value: FormattingTemplate.Bootstrap, label: 'Bootstrap' },
     { value: FormattingTemplate.Bootstrap4, label: 'Bootstrap 4' },
     { value: FormattingTemplate.Bootstrap5, label: 'Bootstrap 5' },
+    { value: FormattingTemplate.Bootstrap5Dark, label: 'Bootstrap 5 (Dark)' },
+    { value: FormattingTemplate.Bootstrap5Floating, label: 'Bootstrap 5 (Floating labels)' },
+    { value: FormattingTemplate.Bootstrap5MPAllFields, label: 'Bootstrap 5 (Multipage all fields)' },
     { value: FormattingTemplate.Flexbox, label: 'Flexbox' },
     { value: FormattingTemplate.Foundation, label: 'Foundation' },
     { value: FormattingTemplate.Grid, label: 'Grid' },
-    { value: FormattingTemplate.Tailwind, label: 'Tailwind' },
+    { value: FormattingTemplate.Conversational, label: 'Conversational' },
+    { value: FormattingTemplate.Tailwind1, label: 'Tailwind 1' },
+    { value: FormattingTemplate.Tailwind3, label: 'Tailwind 3' },
   ];
 
   const jsInsertLocationOptions: Options<JSInsertLocation> = [

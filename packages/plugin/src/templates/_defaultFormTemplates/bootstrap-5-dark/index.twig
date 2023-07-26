@@ -1,0 +1,87 @@
+{% css formCss %}
+
+<style>
+.opinion-scale .opinion-scale-scales>*:first-child>label {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+.opinion-scale .opinion-scale-scales>*:last-child>label {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+.opinion-scale .opinion-scale-scales li label {
+    color: #ffffff !important;
+    border-color: #495057 !important;
+    background: #1a1d20;
+}
+.opinion-scale .opinion-scale-scales>* input:checked~label {
+    color: #ffffff !important;
+    background: #495057;
+}
+.StripeElement {
+    background: #1a1d20;
+    height: 36px;
+}
+</style>
+
+{% import "freeform/_defaultFormTemplates/bootstrap-5-dark/_row.twig" as rowMacro %}
+
+{{ form.renderTag({
+    attributes: {
+        row: { class: "row" },
+        errors: { class: "alert alert-danger" },
+    }
+}) }}
+
+<script>
+  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+  if (form) {
+    form.addEventListener("freeform-ready", function (event) {
+      var freeform = event.target.freeform;
+
+      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
+      freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
+      freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
+      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
+    })
+
+    form.addEventListener("freeform-stripe-styling", function (event) {
+      event.detail.base = {
+        fontSize: "16px",
+        color: "#ffffff",
+        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+      }
+    })
+  }
+</script>
+
+
+{% if form.pages|length > 1 %}
+    <ul class="nav nav-tabs">
+        {% for page in form.pages %}
+            <li class="nav-item">
+                <span class="nav-link{{ form.currentPage.index == page.index ? ' font-weight-bold active' : ' disabled' }}">{{ page.label }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if form.hasErrors %}
+    <div{{ form.attributes.errors }}>
+        {{ form.settings.behavior.errorMessage | t('freeform') }}
+
+        {% if form.errors|length %}
+            <ul class="mb-0">
+                {% for error in form.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+{% endif %}
+
+{% for row in form.rows %}
+    {{ rowMacro.render(row, form) }}
+{% endfor %}
+
+{{ form.renderClosingTag }}

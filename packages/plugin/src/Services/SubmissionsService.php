@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Services;
 use Carbon\Carbon;
 use craft\db\Query;
 use craft\db\Table;
+use craft\elements\db\ElementQueryInterface;
 use craft\records\Element;
 use Solspace\Commons\Helpers\PermissionHelper;
 use Solspace\Freeform\Elements\Submission;
@@ -196,10 +197,10 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         Event::trigger(Submission::class, Submission::EVENT_PROCESS_SUBMISSION, $event);
     }
 
-    public function delete(array $submissions, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
+    public function delete(ElementQueryInterface $query, bool $bypassPermissionCheck = false, bool $hardDelete = false): bool
     {
         $allowedFormIds = $this->getAllowedWriteFormIds();
-        if (!$submissions) {
+        if (!$query->count()) {
             return false;
         }
 
@@ -207,34 +208,32 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         $deleted = 0;
 
         try {
-            foreach ($submissions as $submission) {
-                if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
-                    continue;
-                }
-
-                $submission->enableDeletingByToken();
-
-                $deleteEvent = new DeleteEvent($submission);
-                $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
-
-                if ($deleteEvent->isValid) {
-                    $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
-
-                    if ($isSuccessful) {
-                        ++$deleted;
+            foreach ($query->batch() as $submissions) {
+                foreach ($submissions as $submission) {
+                    if (!$bypassPermissionCheck && !\in_array($submission->formId, $allowedFormIds, false)) {
+                        continue;
                     }
 
-                    $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
+                    $submission->enableDeletingByToken();
+
+                    $deleteEvent = new DeleteEvent($submission);
+                    $this->trigger(self::EVENT_BEFORE_DELETE, $deleteEvent);
+
+                    if ($deleteEvent->isValid) {
+                        $isSuccessful = \Craft::$app->elements->deleteElement($submission, $hardDelete);
+
+                        if ($isSuccessful) {
+                            ++$deleted;
+                        }
+
+                        $this->trigger(self::EVENT_AFTER_DELETE, new DeleteEvent($submission));
+                    }
                 }
             }
 
-            if (null !== $transaction) {
-                $transaction->commit();
-            }
+            $transaction?->commit();
         } catch (\Exception $e) {
-            if (null !== $transaction) {
-                $transaction->rollBack();
-            }
+            $transaction?->rollBack();
 
             throw $e;
         }
@@ -354,7 +353,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
             ->column()
         ;
 
-        $query = Submission::find()
+        $query = $this->getFindQuery()
             ->id($ids)
             ->skipContent(true)
         ;
@@ -368,6 +367,7 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         foreach ($query->batch() as $results) {
             /** @var Submission $submission */
             foreach ($results as $submission) {
+                $submission = $this->getSubmission($submission->getId());
                 $uploadFields = $submission->getForm()->getLayout()->getFields(FileUploadInterface::class);
                 foreach ($uploadFields as $uploadField) {
                     $value = $submission->{$uploadField->getHandle()}->getValue();
@@ -398,6 +398,11 @@ class SubmissionsService extends BaseService implements SubmissionHandlerInterfa
         }
 
         return [$deletedSubmissions, $deletedAssets];
+    }
+
+    protected function getFindQuery(): Query
+    {
+        return Submission::find();
     }
 
     protected function findSubmissions(): Query

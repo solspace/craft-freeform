@@ -1,0 +1,36 @@
+{% extends "demo/_layout" %}
+
+{% set form = craft.freeform.form(craft.app.request.segment(3)) %}
+{% set pageTitle = form.name ~ " form with your Custom Template" %}
+
+{% block content %}
+
+    {% if form %}
+
+        <div class="freeform-notice">
+            Please be aware that no additional CSS, JS, or libraries are loaded in this view. It is meant for troubleshooting issues with rendering forms.
+        </div>
+    
+        <div class="freeform-page-heading">
+            <h2>{{ form.name }}</h2>
+        </div>
+
+        {{ form.render() }}
+
+    {% else %}
+
+        <div class="freeform-warning-notice">
+            Sorry, a form with the handle of <code>{{ formHandle }}</code> does not exist.
+        </div>
+
+    {% endif %}
+
+{% endblock %}
+
+{% block footerJs %}
+<script>
+    document.addEventListener('freeform-ready', (event) => {
+        event.options.scrollOffset = -250;
+    });
+</script>
+{% endblock %}

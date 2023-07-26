@@ -22,15 +22,15 @@
 <form id="export-csv-modal" method="post">
     {{ csrfInput() }}
     <input type="hidden" name="action" value="freeform/quick-export" />
-    <input type="hidden" name="spam" value="{{ isSpam ? "1" }}" />
+    <input type="hidden" name="spam" value="{{ isSpam ? '1' }}" />
 
     <div class="header">
-        <h1>{{ "Export data"|t }}</h1>
+        <h1>{{ 'Export data'|t('freeform') }}</h1>
     </div>
     <div class="body">
         <div class="field">
             <div class="heading">
-                <label>{{ "Export as"|t }}</label>
+                <label>{{ 'Export as'|t('freeform') }}</label>
             </div>
             <div class="select">
                 <select class="select" name="export_type">
@@ -43,12 +43,12 @@
 
         <div class="field">
             <div class="heading">
-                <label>{{ "Form"|t }}</label>
+                <label>{{ 'Form'|t('freeform') }}</label>
             </div>
             <div class="select">
                 <select class="select" name="form_id">
                     {% for form in forms %}
-                        <option value="{{ form.id }}"{{ form.id == selectedFormId ? ' selected' }}>
+                        <option value="{{ form.id }}"{{ (form.id == selectedFormId) ?? ' selected' }}>
                             {{ form.name }}
                         </option>
                     {% endfor %}
@@ -62,7 +62,7 @@
 
             <div class="form-field-list field{{ form.id != selectedFormId ? ' hidden' }}" data-id="{{ form.id }}">
                 <div class="heading">
-                    <label>{{ ("Fields for"|t) ~ " " ~ form.name }}</label>
+                    <label>{{ ('Fields for'|t('freeform')) ~ " " ~ form.name }}</label>
                 </div>
                 <div class="checkbox-select">
                     {% for fieldId, fieldSetting in fields %}
@@ -86,9 +86,9 @@
                                    name="export_fields[{{ form.id }}][{{ fieldId }}][checked]"
                                    value="1"
                                    {{ isChecked ? 'checked' }}
-                                   id="{{ form.id ~ "-" ~ fieldId }}"
+                                   id="{{ form.id ~ '-' ~ fieldId }}"
                             />
-                            <label for="{{ form.id ~ "-" ~ fieldId }}">{{ label }}</label>
+                            <label for="{{ form.id ~ '-' ~ fieldId }}">{{ label }}</label>
                         </div>
                     {% endfor %}
                 </div>
@@ -98,8 +98,8 @@
     </div>
     <div class="footer">
         <div class="buttons right last">
-            <input type="button" class="btn cancel" value="{{ "Cancel"|t }}"/>
-            <input type="submit" class="btn submit" value="{{ "Export"|t }}"/>
+            <input type="button" class="btn cancel" value="{{ 'Cancel'|t('freeform') }}"/>
+            <input type="submit" class="btn submit" value="{{ 'Export'|t('freeform') }}"/>
 
             <div class="spinner" style="display: none;"></div>
         </div>

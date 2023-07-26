@@ -67,6 +67,10 @@ class DatabaseStorage implements FormContextStorageInterface
         ;
 
         foreach ($this->context as $key => $bag) {
+            if (null === $bag) {
+                continue;
+            }
+
             $isNew = !\in_array($key, $existingKeys, true);
 
             $payload = [

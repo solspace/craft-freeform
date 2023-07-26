@@ -607,8 +607,7 @@ class FilesService extends BaseService implements FileUploadHandlerInterface
             // Ensure that the folder exists
             if (!$folder) {
                 $volume = \Craft::$app->getVolumes()->getVolumeById($volumeId);
-                $folderId = $assetsService->ensureFolderByFullPathAndVolume($subpath, $volume);
-                $folder = $assetsService->getFolderById($folderId);
+                $folder = $assetsService->ensureFolderByFullPathAndVolume($subpath, $volume);
             }
         }
 

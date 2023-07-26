@@ -23,7 +23,7 @@ class GoogleTagManager {
     this.form.addEventListener(EVENT_AJAX_SUCCESS, (event) => {
       const response = event.response;
 
-      const pushEvent = freeform._dispatchEvent(EVENT_GTM_DATA_LAYER_PUSH, { payload: {} });
+      const pushEvent = freeform._dispatchEvent(EVENT_GTM_DATA_LAYER_PUSH, { payload: {}, response });
       const payload = {
         event: eventName,
         form: handle,

@@ -34,4 +34,15 @@
     background: #c5d0db;
     color: #FFFFFF;
   }
+
+  ul.spam-reasons {
+    font-style: italic;
+    list-style-type: initial;
+    margin-left: 20px;
+    margin-top: 5px;
+  }
+
+  ul.spam-reasons li:not(:last-child) {
+    margin-bottom: 5px !important;
+  }
 }

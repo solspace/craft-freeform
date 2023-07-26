@@ -12,7 +12,7 @@ class SenderController extends BaseController
     public function actionDialogue(): Response
     {
         $templates = ['' => '---'];
-        foreach ($this->getNotificationsService()->getAllNotifications(true) as $id => $notification) {
+        foreach ($this->getNotificationsService()->getAllNotifications() as $id => $notification) {
             $templates[$id] = $notification->name;
         }
 

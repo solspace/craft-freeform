@@ -97,7 +97,7 @@ class FileDragAndDropField extends FileUploadField implements ExtraFieldInterfac
         $output .= '</div>';
         $output .= '<div data-preview-zone class="freeform-file-drag-and-drop__preview-zone"></div>';
         $output .= '<ul data-messages class="freeform-file-drag-and-drop__messages"></ul>';
-        $output .= '<input type="file" multiple />';
+        $output .= '<input type="file" id="form-input-'.$this->getHandle().'" multiple />';
         $output .= '</div>';
 
         return $output;

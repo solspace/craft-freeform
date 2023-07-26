@@ -24,6 +24,11 @@ class ElementEditBundle extends FeatureBundle
         );
     }
 
+    public static function getPriority(): int
+    {
+        return 1500;
+    }
+
     public static function getElementId(Form $form)
     {
         return $form->getProperties()->get(self::ELEMENT_KEY);

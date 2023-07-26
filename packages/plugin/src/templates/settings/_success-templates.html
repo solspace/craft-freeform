@@ -12,15 +12,30 @@
 
     <h2 class="first">{{ "Success Templates"|t('freeform') }}</h2>
 
-    {{ forms.textField({
-        class: "code",
+    {% set suggestionsData = [] %}
+    {% for directory in craft.freeform.getAllSiteTemplatesDirectories() %}
+        {% set suggestionsData = suggestionsData|merge([{
+            "name": directory
+        }]) %}
+    {% endfor %}
+
+    {{ forms.autosuggestField({
         label: "Directory Path"|t('freeform'),
-        instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
-        placeholder: "e.g. _freeform_success/",
         id: "successTemplateDirectory",
+        class: "ltr",
+        suggestEnvVars: false,
+        suggestAliases: false,
+        suggestions:[{
+            "label":"Existing Directories",
+            "data": suggestionsData
+        }],
+        tip: null,
+        limit: 10,
         name: "settings[successTemplateDirectory]",
         value: settings.successTemplateDirectory,
         errors: settings.getErrors("successTemplateDirectory"),
+        instructions: "Provide a relative path to the Craft Templates folder where your success templates directory is. If you have not yet created the directory, please do that before filling in this setting. This allows you to use Twig template files for your success formatting and allows Freeform to locate these files when assigning to a form."|t('freeform'),
+        placeholder: "e.g. _freeform/success",
     }) }}
 
     {% if settings.absoluteSuccessTemplateDirectory %}

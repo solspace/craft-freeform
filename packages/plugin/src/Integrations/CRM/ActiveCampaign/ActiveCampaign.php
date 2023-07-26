@@ -353,7 +353,7 @@ class ActiveCampaign extends CRMIntegration
 
         try {
             $response = $client->get($this->getEndpoint('/dealCustomFieldMeta'));
-            $data = \GuzzleHttp\json_decode($response->getBody(), false);
+            $data = json_decode($response->getBody(), false);
 
             foreach ($data->dealCustomFieldMeta as $field) {
                 $type = FieldObject::TYPE_STRING;

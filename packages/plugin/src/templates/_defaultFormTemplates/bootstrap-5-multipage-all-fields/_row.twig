@@ -1,0 +1,50 @@
+{% macro getFieldTemplate(type) -%}
+    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5-multipage-all-fields/fields/" %}
+    {{- fieldTemplatePath ~ type ~ ".twig" -}}
+{%- endmacro %}
+
+{% macro render(row, form) %}
+    {% import _self as self %}
+
+    {% set width = (12 / (row|length)) %}
+
+    <div{{ form.attributes.row }}>
+        {% for cell in row %}
+
+            {% set field = cell.field %}
+            {% do field.setParameters({
+                attributes: {
+                    container: {
+                        class: [
+                            "mb-3",
+                            "col-12",
+                            "col-sm-" ~ width,
+                            "custom-class",
+                        ],
+                    },
+                    input: {
+                        "data-someshit": "somevalue",
+                        novalidate: true,
+                        class: [
+                            "form-control",
+                            "ff-fieldtype-" ~ field.type,
+                            field.hasErrors ? "is-invalid has-validation",
+                            field.type == "file" ? "form-control-file",
+                            field.type == "select" ? "form-select",
+                            field.type == "signature" ? "btn btn-light",
+                            field.type == "table" ? "table",
+                            field.type == "checkbox" ? "checkbox",
+                        ]
+                    },
+                    label: { class: field.required ? "required" },
+                    instructions: { class: ["form-text", "text-muted"] },
+                    error: { class: "invalid-feedback" },
+                }
+            }) %}
+
+            {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+
+        {% endfor %}
+    </div>
+
+{% endmacro %}

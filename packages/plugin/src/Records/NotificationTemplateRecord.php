@@ -15,6 +15,7 @@ namespace Solspace\Freeform\Records;
 
 use craft\db\ActiveRecord;
 use Solspace\Freeform\Library\DataObjects\NotificationTemplate;
+use Solspace\Freeform\Library\Helpers\TwigHelper;
 
 /**
  * @property int    $id
@@ -196,9 +197,13 @@ class NotificationTemplateRecord extends ActiveRecord
         return (bool) $this->autoText;
     }
 
-    public function getPresetAssets(): ?array
+    public function getPresetAssets(): array|string|null
     {
         if ($this->presetAssets) {
+            if (TwigHelper::isTwigValue($this->presetAssets)) {
+                return $this->presetAssets;
+            }
+
             return json_decode($this->presetAssets, true);
         }
 

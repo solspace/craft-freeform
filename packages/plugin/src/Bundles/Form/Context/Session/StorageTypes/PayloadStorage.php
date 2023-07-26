@@ -7,6 +7,7 @@ use Solspace\Freeform\Bundles\Form\Context\Session\Bag\SessionBag;
 use Solspace\Freeform\Events\Forms\GetCustomPropertyEvent;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\OutputAsJsonEvent;
+use Solspace\Freeform\Events\Forms\PrepareAjaxResponsePayloadEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
@@ -28,6 +29,7 @@ class PayloadStorage implements FormContextStorageInterface
         Event::on(Form::class, Form::EVENT_GET_CUSTOM_PROPERTY, [$this, 'attachProperty']);
         Event::on(Form::class, Form::EVENT_RENDER_AFTER_OPEN_TAG, [$this, 'attachInput']);
         Event::on(Form::class, Form::EVENT_OUTPUT_AS_JSON, [$this, 'attachJson']);
+        Event::on(Form::class, Form::EVENT_PREPARE_AJAX_RESPONSE_PAYLOAD, [$this, 'attachToAjaxResponse']);
         Event::on(Form::class, Form::EVENT_BEFORE_HANDLE_REQUEST, [$this, 'requirePayload']);
     }
 
@@ -72,6 +74,16 @@ class PayloadStorage implements FormContextStorageInterface
     }
 
     public function attachJson(OutputAsJsonEvent $event)
+    {
+        $form = $event->getForm();
+        $payload = $this->getEncryptedBag($form);
+
+        $name = self::INPUT_PREFIX;
+
+        $event->add($name, $payload);
+    }
+
+    public function attachToAjaxResponse(PrepareAjaxResponsePayloadEvent $event)
     {
         $form = $event->getForm();
         $payload = $this->getEncryptedBag($form);

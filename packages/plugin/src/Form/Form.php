@@ -125,9 +125,8 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     private bool $disableAjaxReset = false;
     private bool $pagePosted = false;
     private bool $formPosted = false;
-
+    private bool $submissionLimitReached = false;
     private bool $graphqlPosted = false;
-
     private array $graphqlArguments = [];
 
     private ?Submission $submission = null;
@@ -444,6 +443,18 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this;
     }
 
+    public function setSubmissionLimitReached(bool $submissionLimitReached): self
+    {
+        $this->submissionLimitReached = $submissionLimitReached;
+
+        return $this;
+    }
+
+    public function isSubmissionLimitReached(): bool
+    {
+        return $this->submissionLimitReached;
+    }
+
     public function isGraphQLPosted(): bool
     {
         return $this->graphqlPosted;
@@ -510,7 +521,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $event->isValid;
     }
 
-    public function persistState()
+    public function persistState(): void
     {
         Event::trigger(self::class, self::EVENT_PERSIST_STATE, new PersistStateEvent($this));
     }
@@ -656,8 +667,9 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
      */
     public function hasOptInPermission(): bool
     {
-        if ($this->getOptInDataTargetField()) {
-            return $this->getOptInDataTargetField()->isChecked();
+        $field = $this->getOptInDataTargetField();
+        if ($field) {
+            return (bool) $field->getValue();
         }
 
         return true;

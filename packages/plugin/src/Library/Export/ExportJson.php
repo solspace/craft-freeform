@@ -31,6 +31,6 @@ class ExportJson extends AbstractExport
             $output[] = $rowData;
         }
 
-        return \GuzzleHttp\json_encode($output, \JSON_PRETTY_PRINT);
+        return json_encode($output, \JSON_PRETTY_PRINT);
     }
 }

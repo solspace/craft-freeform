@@ -89,34 +89,38 @@ class Campaign extends MailingListIntegration
         }
 
         foreach ($emails as $email) {
-            $contact = CampaignPlugin::$plugin->contacts->getContactByEmail($email);
-
-            if (null === $contact) {
-                $contact = new ContactElement();
-                $contact->email = $email;
+            // The `createAndSubscribeContact` method was added in Campaign v2.1.0.
+            if (method_exists(CampaignPlugin::$plugin->forms, 'createAndSubscribeContact')) {
+                CampaignPlugin::$plugin->forms->createAndSubscribeContact($email, $mappedValues, $mailingListElement, 'Freeform', $source);
             }
+            // TODO: remove this in Freeform v5, assuming it requires Craft 5, in which case Campaign v3 will be required.
+            else {
+                $contact = CampaignPlugin::$plugin->contacts->getContactByEmail($email);
 
-            foreach ($mappedValues as $key => $value) {
-                $contact->setFieldValue($key, $value);
-            }
-
-            // If verification required
-            if ($mailingListElement->getMailingListType()->subscribeVerificationRequired) {
-                $pendingContact = new PendingContactModel();
-                $pendingContact->pid = StringHelper::uniqueId('p');
-                $pendingContact->email = $email;
-                $pendingContact->mailingListId = $mailingListElement->id;
-                $pendingContact->source = $source;
-                $pendingContact->fieldData = $contact->getSerializedFieldValues();
-
-                if (CampaignPlugin::$plugin->pendingContacts->savePendingContact($pendingContact)) {
-                    CampaignPlugin::$plugin->forms->sendVerifySubscribeEmail(
-                        $pendingContact,
-                        $mailingListElement
-                    );
+                if (null === $contact) {
+                    $contact = new ContactElement();
+                    $contact->email = $email;
                 }
-            } else {
-                if (\Craft::$app->getElements()->saveElement($contact)) {
+
+                // Set field values
+                $contact->setFieldValues($mappedValues);
+
+                // If verification required
+                if ($mailingListElement->getMailingListType()->subscribeVerificationRequired) {
+                    $pendingContact = new PendingContactModel();
+                    $pendingContact->pid = StringHelper::uniqueId('p');
+                    $pendingContact->email = $email;
+                    $pendingContact->mailingListId = $mailingListElement->id;
+                    $pendingContact->source = $source;
+                    $pendingContact->fieldData = $contact->getSerializedFieldValues();
+
+                    if (CampaignPlugin::$plugin->pendingContacts->savePendingContact($pendingContact)) {
+                        CampaignPlugin::$plugin->forms->sendVerifySubscribeEmail(
+                            $pendingContact,
+                            $mailingListElement
+                        );
+                    }
+                } elseif (\Craft::$app->getElements()->saveElement($contact)) {
                     CampaignPlugin::$plugin->forms->subscribeContact(
                         $contact,
                         $mailingListElement,
@@ -186,7 +190,7 @@ class Campaign extends MailingListIntegration
             $list = [];
 
             /** @var Field $field */
-            foreach ($fieldLayout->getFields() as $field) {
+            foreach ($fieldLayout->getCustomFields() as $field) {
                 $fieldClass = \get_class($field);
 
                 if (!\in_array($fieldClass, $allowedFieldTypes, true)) {

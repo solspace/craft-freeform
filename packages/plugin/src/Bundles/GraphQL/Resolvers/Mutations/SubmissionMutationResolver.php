@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\GraphQL\Resolvers\Mutations;
 
 use craft\errors\GqlException;
 use craft\gql\base\ElementMutationResolver;
-use GraphQL\Error\UserError;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 use Solspace\Freeform\Bundles\GraphQL\GqlPermissions;
 use Solspace\Freeform\Events\Forms\GraphQLRequestEvent;
@@ -20,19 +20,19 @@ class SubmissionMutationResolver extends ElementMutationResolver
     protected array $immutableAttributes = ['id', 'uid'];
 
     /**
-     * @throws UserError
+     * @throws Error
      * @throws FreeformException
      * @throws GqlException
      */
     public function saveSubmission(mixed $source, array $arguments, mixed $context, ResolveInfo $resolveInfo): ?array
     {
         if (!GqlPermissions::canCreateAllSubmissions() && !GqlPermissions::canCreateSubmissions($context->uid)) {
-            throw new UserError('Unable to create Freeform submissions.');
+            throw new Error('Unable to create Freeform submissions.');
         }
 
         $form = $this->getResolutionData('form');
         if (!$form) {
-            throw new UserError('Form with ID {id} not found', [
+            throw new Error('Form with ID {id} not found', [
                 'id' => $context->id,
             ]);
         }
@@ -83,7 +83,7 @@ class SubmissionMutationResolver extends ElementMutationResolver
         }
 
         if (!empty($userErrors)) {
-            throw new UserError(json_encode($userErrors));
+            throw new Error(json_encode($userErrors));
         }
 
         $form->registerContext();
@@ -96,18 +96,20 @@ class SubmissionMutationResolver extends ElementMutationResolver
             $spamReasons = json_encode($spamReasons);
         }
 
+        $settings = $form->getSettings();
+
         $payload = [
             'success' => $success,
             'hash' => $form->getHash(),
             'multiPage' => $form->isMultiPage(),
             'finished' => $form->isFinished(),
-            'submissionId' => $submission->id,
+            'submissionId' => $submission->getId(),
             'submissionToken' => $submission->token,
             'submissionLimitReached' => $form->isSubmissionLimitReached(),
-            'onSuccess' => $form->getSuccessBehaviour(),
+            'onSuccess' => $settings->getBehavior()->successBehavior,
             'returnUrl' => $returnUrl,
             'html' => $form->render(),
-            'id' => $submission->id,
+            'id' => $submission->getId(),
             'dateCreated' => $submission->getSubmissionDate(),
             'dateUpdated' => $submission->dateUpdated,
             'isSpam' => $submission->isSpam,

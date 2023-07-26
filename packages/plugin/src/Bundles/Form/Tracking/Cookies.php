@@ -2,6 +2,7 @@
 
 namespace Solspace\Freeform\Bundles\Form\Tracking;
 
+use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Events\Forms\SubmitEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -26,17 +27,27 @@ class Cookies extends FeatureBundle
         }
 
         $form = $event->getForm();
+        $behaviorSettings = $form->getSettings()->getBehavior();
+        $limiting = $behaviorSettings->limitSubmissions;
+
+        if (!\in_array($limiting, FormLimiting::COOKIE_LIMITATIONS, true)) {
+            return;
+        }
+
         $name = self::getCookieName($form);
         $value = time();
 
         setcookie(
             $name,
             $value,
-            (int) strtotime('+1 year'),
-            '/',
-            \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
-            true,
-            true
+            [
+                'expires' => (int) strtotime('+1 year'),
+                'path' => '/',
+                'domain' => \Craft::$app->getConfig()->getGeneral()->defaultCookieDomain,
+                'secure' => true,
+                'httponly' => true,
+                'samesite' => \Craft::$app->getConfig()->getGeneral()->sameSiteCookieValue ?? 'Lax',
+            ]
         );
 
         $_COOKIE[$name] = $value;

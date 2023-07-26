@@ -1,11 +1,14 @@
 {% css formCss %}
 
 <style>
-    .required::after {
-        content: "*";
-        color: #d00;
-        margin-left: 5px;
-    }
+.required::after {
+    content: "*";
+    color: #d00;
+    margin-left: 5px;
+}
+.StripeElement {
+    height: 36px;
+}
 </style>
 
 {{ form.renderTag({

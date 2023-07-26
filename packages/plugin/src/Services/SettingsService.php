@@ -51,8 +51,14 @@ class SettingsService extends BaseService
 
     public function isFreeformHoneypotEnabled(Form $form = null): bool
     {
-        $enabled = $this->getSettingsModel()->freeformHoneypot;
+        $settingsModel = $this->getSettingsModel();
+
+        $enabled = $settingsModel->freeformHoneypot;
         if (!$enabled) {
+            return false;
+        }
+
+        if ($settingsModel->bypassSpamCheckOnLoggedInUsers && \Craft::$app->getUser()->id) {
             return false;
         }
 
@@ -333,6 +339,7 @@ class SettingsService extends BaseService
         $nonSettingSections = [
             'statuses',
             'error-log',
+            'diagnostics',
             'mailing-lists',
             'crm',
             'payment-gateways',

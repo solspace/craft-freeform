@@ -129,18 +129,29 @@ class SubmitController extends BaseController
 
         $success = !$form->hasErrors() && empty($fieldErrors) && !$form->getActions();
 
+        $postedValues = [];
+        foreach ($submission as $field) {
+            $postedValues[$field->getHandle()] = $field->getValue();
+        }
+
+        $form->registerContext();
+
         $payload = [
             'success' => $success,
+            'hash' => $form->getHash(),
             'multipage' => $form->isMultiPage(),
             'finished' => $form->isFinished(),
             'submissionId' => $submission->id ?? null,
             'submissionToken' => $submission->token ?? null,
-            'actions' => $form->getActions(),
-            'errors' => $fieldErrors,
-            'formErrors' => $form->getErrors(),
+            'submissionLimitReached' => $form->isSubmissionLimitReached(),
             'onSuccess' => $form->getSettings()->getBehavior()->successBehavior,
             'returnUrl' => $returnUrl,
             'html' => $form->render(),
+            'id' => $submission->getId(),
+            'actions' => $form->getActions(),
+            'errors' => $fieldErrors,
+            'formErrors' => $form->getErrors(),
+            'values' => $postedValues,
         ];
 
         $event = new PrepareAjaxResponsePayloadEvent($form, $payload);

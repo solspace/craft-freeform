@@ -225,20 +225,34 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     }
 
     // TODO: refactor
-    final public function rulesHtmlData(): Markup
+    public function getRules(): string|null
     {
         /*
         $ruleProperties = $this->getForm()->getRuleProperties();
         if (null === $ruleProperties) {
-            return $this->renderRaw('');
+            return null;
         }
 
         $rule = $ruleProperties->getFieldRule($this->getPageIndex(), $this->getHash());
         if (null === $rule) {
-            return $this->renderRaw('');
+            return null;
         }
 
-        $data = json_encode($rule, \JSON_HEX_APOS);
+        return json_encode($rule, \JSON_HEX_APOS);
+        */
+
+        return null;
+    }
+
+    // TODO: refactor
+    final public function rulesHtmlData(): Markup
+    {
+        /*
+        $data = $this->getRules();
+
+        if (null === $data) {
+            return $this->renderRaw('');
+        }
 
         return $this->renderRaw(" data-ff-rule='{$data}'");
         */

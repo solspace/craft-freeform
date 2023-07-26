@@ -180,7 +180,7 @@ return [
     'The name of the status.' => 'Der Name des Status',
     'How you’ll refer to this status in the templates.' => 'Wie du auf den Status in den Templates verweist.',
     'The color of the status circle when viewing inside CP.' => 'Die Farbe des Status-Kreises bei Ansicht im CP.',
-    'Set this status be selected by default when creating new forms?' => 'Soll dieser Status beim Erstellen neuer Formulare standardmäßig ausgewählt werden?',
+    'Set this status to be selected by default when creating new forms?' => 'Soll dieser Status beim Erstellen neuer Formulare standardmäßig ausgewählt werden?',
     'Statuses' => 'Status',
     'Status saved' => 'Status gespeichert',
     'Status not saved' => 'Status nicht gespeichert',
@@ -478,7 +478,6 @@ return [
     'Hide field' => 'Feld verstecken',
     'Hide the mailing list checkbox from the form and make it always trigger a subscription.' => 'Verstecke die Mailingliste-Checkbox vom Formular. Triggert immer eine Subscription.',
     'Live HTML rendering currently disabled.' => 'Live HTML-Rendering ist deaktiviert.',
-
     'Quick save' => 'Schnell speichern',
     'Saving...' => 'Speichern...',
     'Cancel' => 'Abbrechen',
@@ -509,17 +508,14 @@ return [
     'Together at Right' => 'Zusammen rechts',
     'Choose whether the submit button is positioned on the left, center or right side.' => 'Wähle, ob der Submit-Button links, zentriert oder rechts positioniert wird',
     'Add new template' => 'Füge neues Template hinzu',
-
     'Form Settings' => 'Formular-Einstellungen',
     'Admin Notifications' => 'Admin-Benachrichtigungen',
     'CRM Integrations' => 'CRM-Integrationen',
     'Element Connections' => 'Element-Verbindungen',
-
     'Notification added successfully' => 'Benachrichtigung erfolgreich hinzugefügt',
     'Template added successfully' => 'Template erfolgreich hinzugefügt',
     'Template Name' => 'Template-Name',
     'File Name' => 'File-Name',
-
     'Custom Options' => 'Benutzerdefinierte Optionen',
     'Entries' => 'Einträge',
     'Categories' => 'Kategorien',
@@ -545,7 +541,6 @@ return [
     'Submit' => 'Submit',
     'Confirm' => 'Bestätigen',
     'Password' => 'Passwort',
-
     'States' => 'Staaten',
     'States & Territories' => 'Staaten & Regionen',
     'Provinces' => 'Bundesländer',
@@ -560,12 +555,10 @@ return [
     'Months' => 'Monate',
     'Days' => 'Tage',
     'Days of Week' => 'Wochentage',
-
     'The notification template used to send an email to the email value entered into this field (optional).' => 'Das Benachrichtigungstemplate wird verwendet, um eine Email an die Adresse in diesem Feld zu versenden (optional).',
     'Select a template...' => 'Wähle ein Template...',
     'Admin Recipients' => 'Admin-Empfänger',
     'Email address(es) to receive an email notification. Enter each on a new line.' => 'Email-Adressen, die eine Benachrichtigung erhalten. Eine Adresse pro Zeile.',
-
     'This field is required?' => 'Dieses Feld ist benötigt?',
     'Use built-in Table JS?' => 'Use built-in Table JS?',
     'Configuration' => 'Configuration',
@@ -576,18 +569,15 @@ return [
     'CVC/CVV' => 'CVC/CVV',
     'Checked by default' => 'Standardmäßig ausgewählt',
     'Show all options in a single line?' => 'Zeige alle Optionen in einer Zeile?',
-
     'Enable AJAX' => 'Aktiviere AJAX',
     'Use Freeform\'s built-in automatic AJAX submit feature. This will prevent the value in the Return URL field from working unless a template-level override is set.' => 'Verwende das automatische AJAX Submit-Feature von Freeform.',
     'Enable Captchas' => 'Aktivieren Sie Captchas',
     'Disabling this option removes the Captcha check for this specific form.' => 'Durch Deaktivieren dieser Option wird die Captcha-Prüfung für dieses bestimmte Formular entfernt.',
-
     'Input attributes' => 'Input-Attribute',
     'Label attributes' => 'Label-Attribute',
     'Error attributes' => 'Error-Attribute',
     'Instruction attributes' => 'Instruktions-Attribute',
     'Add any tag attributes to the HTML element.' => 'Füge alle Tag-Attribute zum HTML-Element hinzu.',
-
     'Could not finish the tutorial' => 'Konnte das Tutorial nicht beenden',
     "Adjust all settings including return URL and formatting template for your form here. To get back here at a later time, just click the \\'Form Settings\\' button." => "Stelle alle Einstellungen hier ein, inklusie Rückkehr-URL und Formatierungs-Template. Um später hierhin zurückzukehren, klicke einfach den \\'Form Settings\\' button.",
     'Admin Email Notifications' => 'Admin-Emailbenachrichtigungen',
@@ -604,11 +594,9 @@ return [
     'To create multi-page forms, click the + button to add more pages. You can edit the names of the pages in the Property Editor in the right column. To rearrange pages, click and drag page tabs to shuffle order. To move fields from one page to another, drag and drop fields onto the page tab you\'d like it to be on.' => 'Um mehrseitige Formulare zu erstellen, klicke auf den + Button zum Seiten hinzufügen. Um Seiten anzuordnen, klicke und ziehe die Page-Tabs zum Anpassen der Reihenfolge. Um Felder von einer zur nächsten Seite zu verschieben, klicke und ziehe die Felder auf den Page-Tab, zu dem du das Feld verschieben möchtest.',
     'Property Editor' => 'Property-Editor',
     'This is where all your configuration will happen. Clicking on any field, page tab, etc in Form Builder layout area will load its configuration options here.' => 'Hier erfolgt die gesamte Konfiguration. Klicken auf ein Feld, einen Page-Tab etc. im Form Builder Layout-Bereich lädt die jeweiligen Konfigurationen hier.',
-
     'Field Property Editor' => 'Feld-Property Editor',
     'Reset to default values' => 'Zurücksetzen auf Standardwerte',
     'Please select an element' => 'Bitte wähle ein Element',
-
     'Database Templates' => 'DB Benachrichtigungen',
     'File Templates' => 'Template-Benachrichtigungen',
 
@@ -635,16 +623,14 @@ return [
     'Enter your Stripe public key here.' => 'Gib deinen Stripe Public Key ein.',
     'Enter your Stripe secret key here.' => 'Gib deinen Stripe Secret Key ein.',
     'Enter your Stripe webhook secret here.' => 'Gib deinen Stripe Webhook Secret ein.',
-
     'Payment Gateway' => 'Zahlungs-Gateway',
     'Choose a payment gateway.' => 'Wähle ein Zahlungs-Gateway.',
     'Refresh Payment Gateways' => 'Aktualisiere Zahlungs-Gateways',
     'Payment Type' => 'Zahlungs-Typ',
-    'Select one of payment templates' => 'Wähle eines der Zahlungs-Templates',
+    'Select a payment template' => 'Wähle eines der Zahlungs-Templates',
     'Choose payment type...' => 'Wähle Zahlungstyp...',
     'Customer Field Mapping' => 'Kunden Feld-Mapping',
     'Payment fields to your Freeform fields.' => 'Zahlungs-Felder zu deinen Freeform-Feldern',
-
     'Add a rule' => 'Füge eine Regel hinzu',
     'Add Field rule' => 'Füge eine Feld-Regel hinzu',
     'Choose a field' => 'Wähle ein Feld',
@@ -661,7 +647,7 @@ return [
     'Clear' => 'Leeren',
     'Errors' => 'Errors',
     'Error Log' => 'Error Log',
-    'Error Log ({count})' => 'Error Log ({count})',
+    'Error Log <span class="badge">{count}</span>' => 'Error Log <span class="badge">{count}</span>',
     'Everything appears to be okay right now! No errors were found.' => 'Derzeit scheint alles okay zu sein! Keine Errors wurden gefunden.',
     'You don\'t have any submissions yet!' => 'Du hast noch keine Einreichungen!',
     'You haven\'t created any forms yet!' => 'Du hast noch keine Formulare erstellt!',
@@ -703,7 +689,6 @@ return [
     'Form does not contain payment fields' => 'Formular beinhaltet keine Zahlungsfelder.',
     'Payments are not set up for the form' => 'Zahlungen für das Formular nicht eingerichtet',
     'No submissions found' => 'Keine Einreichungen gefunden',
-
     'Payment gateway is not configured!' => 'Zahlungs-Gateway ist nicht konfiguriert!',
     'Payment type is not configured!' => 'Zahlungstyp ist nicht konfiguriert!',
     'Payment amount is not configured!' => 'Zahlungs-Betrag ist nicht konfiguriert!',

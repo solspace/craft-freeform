@@ -1,0 +1,16 @@
+{% extends "demo/_layout" %}
+
+{% set pageTitle = "Welcome" %}
+
+{% block content %}
+
+    <div class="intro-content">
+        <h2>Welcome to the Freeform Demo</h2>
+        <p>Experience your forms and submission data in just a few clicks!</p>
+        <div class="action-wrapper">
+            <a href="{{ siteUrl }}demo/templates/basic-dark" class="freeform-button main-action"><span>Template Simulator</span></a>
+            <a href="{{ siteUrl }}demo/submissions" class="freeform-button"><span>Submission Data</span></a>
+        </div>
+    </div>
+
+{% endblock %}

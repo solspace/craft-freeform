@@ -1,4 +1,7 @@
-import type { NotificationType } from '@ff-client/types/notifications';
+import type {
+  Notification,
+  NotificationType,
+} from '@ff-client/types/notifications';
 import type { GenericValue } from '@ff-client/types/properties';
 import {
   adjectives,
@@ -38,4 +41,10 @@ export const addNewNotification =
         name,
       })
     );
+  };
+
+export const removeNotification =
+  (notification: Notification): AppThunk =>
+  (dispatch) => {
+    dispatch(notificationActions.remove(notification.uid));
   };

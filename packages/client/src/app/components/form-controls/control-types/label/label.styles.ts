@@ -3,6 +3,8 @@ import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const EditableLabelWrapper = styled.div`
+  padding: 0 0 8.75px;
+
   &.errors {
     span {
       color: ${colors.red500};
@@ -36,6 +38,24 @@ export const EditButton = styled(animated.button)`
   }
 `;
 
+export const RemoveButton = styled(animated.button)`
+  position: absolute;
+  top: 0;
+  right: -50px;
+
+  opacity: 0;
+
+  width: 20px;
+  height: 20px;
+
+  > svg {
+    width: 100%;
+    height: 100%;
+
+    color: ${colors.gray400};
+  }
+`;
+
 export const LabelElement = styled(animated.h1)`
   cursor: pointer;
 
@@ -44,7 +64,7 @@ export const LabelElement = styled(animated.h1)`
   margin: 0 0 0 -8px;
   padding: ${spacings.sm} 40px ${spacings.sm} ${spacings.sm};
 
-  border: 0px solid transparent;
+  border: 0;
   border-radius: ${borderRadius.lg};
 
   > span {

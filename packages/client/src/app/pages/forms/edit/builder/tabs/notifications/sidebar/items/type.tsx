@@ -10,7 +10,6 @@ import { v4 } from 'uuid';
 
 import {
   Button,
-  Icon,
   Label,
   LabelWrapper,
   NotificationItemWrapper,
@@ -27,15 +26,12 @@ export const NotificationTypeItem: React.FC<PropsWithChildren<Props>> = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { name, icon } = type;
+  const { name } = type;
 
   return (
     <Wrapper>
       <LabelWrapper>
-        {icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
-
         <Label>{name}</Label>
-
         <Button
           className={classes('btn', 'add', 'icon', 'small', 'dashed')}
           onClick={() => {

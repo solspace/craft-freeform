@@ -23,8 +23,9 @@ use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
 #[Type(
-    name: 'Conditional Notifications',
+    name: 'Conditional',
     newInstanceName: 'Conditional',
+    order: 2,
     icon: __DIR__.'/icon.svg',
 )]
 class Conditional extends BaseNotification
@@ -32,15 +33,15 @@ class Conditional extends BaseNotification
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[Input\NotificationTemplate(
         label: 'Notification Template',
-        instructions: 'Select a notification template to use for this notification.',
-        order: 9,
+        instructions: 'Select an email notification template to use for this notification.',
+        order: 3,
     )]
     protected ?NotificationTemplate $template;
 
     #[ValueTransformer(RecipientTransformer::class)]
     #[Input\Recipients(
         instructions: 'List the recipients of this notification.',
-        order: 10,
+        order: 4,
         value: [],
     )]
     protected RecipientCollection $recipients;
@@ -49,7 +50,7 @@ class Conditional extends BaseNotification
     #[Input\Special\ConditionalNotificationRule(
         label: 'Notification Rule',
         instructions: 'Select a rule to use for this notification.',
-        order: 11,
+        order: 5,
     )]
     protected ?Rule $rule;
 

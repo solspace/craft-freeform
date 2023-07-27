@@ -29,6 +29,7 @@ export const EmailInput = styled.input`
 
   border: none;
   outline: none;
+  min-height: 100% !important;
 
   background-color: transparent;
 

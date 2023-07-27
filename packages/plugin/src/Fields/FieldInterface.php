@@ -37,7 +37,6 @@ interface FieldInterface
     public const TYPE_SAVE = 'save';
     public const TYPE_DYNAMIC_RECIPIENTS = 'dynamic-recipients';
     public const TYPE_EMAIL = 'email';
-    public const TYPE_MAILING_LIST = 'mailing-list';
     public const TYPE_FILE = 'file';
     public const TYPE_FILE_DRAG_AND_DROP = 'file-drag-and-drop';
     public const TYPE_PASSWORD = 'password';

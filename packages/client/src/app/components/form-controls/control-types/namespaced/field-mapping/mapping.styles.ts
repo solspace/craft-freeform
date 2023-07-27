@@ -1,5 +1,22 @@
+import { animations } from '@ff-client/styles/animations';
+import { scrollBar } from '@ff-client/styles/mixins';
 import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
+
+export const RefreshButton = styled.button`
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  font-size: 16px;
+
+  &[disabled] > svg {
+    fill: ${colors.gray300};
+
+    animation: ${animations.spinner} 2s infinite;
+    transform-origin: 50% 50%;
+  }
+`;
 
 export const MappingWrapper = styled.div`
   display: flex;
@@ -7,7 +24,6 @@ export const MappingWrapper = styled.div`
   align-items: center;
   gap: ${spacings.sm};
 
-  width: 70%;
   padding: 2px 0;
 
   > div:first-child {
@@ -17,6 +33,21 @@ export const MappingWrapper = styled.div`
   > div:last-child {
     flex-basis: 300px;
   }
+`;
+
+export const MappingContainer = styled.div`
+  width: 70%;
+  max-height: 454px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  border: 1px solid rgb(205 216 228 / 50%);
+  border-radius: 5px;
+
+  padding: ${spacings.sm} ${spacings.lg};
+
+  ${scrollBar};
 `;
 
 export const SourceField = styled.div`

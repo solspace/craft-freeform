@@ -13,23 +13,17 @@
 namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
-use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
-use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
-use Solspace\Freeform\Library\Database\PaymentGatewayHandlerInterface;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\DataObjects\PlanObject;
 use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegration;
+use Solspace\Freeform\Library\Integrations\Types\PaymentGateways\PaymentGatewayIntegrationInterface;
 use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Records\Pro\Payments\SubscriptionPlanRecord;
 
 // TODO: move to payments module?
 
-class PaymentGatewaysService extends AbstractIntegrationService implements PaymentGatewayHandlerInterface
+class PaymentGatewaysService extends AbstractIntegrationService
 {
-    public function getFetchEvent(): FetchIntegrationTypesEvent
-    {
-        return new FetchPaymentGatewayTypesEvent();
-    }
-
     /**
      * Updates the fields of a given CRM integration.
      *
@@ -129,6 +123,11 @@ class PaymentGatewaysService extends AbstractIntegrationService implements Payme
      */
     protected function getIntegrationType(): string
     {
-        return IntegrationRecord::TYPE_PAYMENT_GATEWAY;
+        return IntegrationInterface::TYPE_PAYMENT_GATEWAY;
+    }
+
+    protected function getIntegrationInterface(): string
+    {
+        return PaymentGatewayIntegrationInterface::class;
     }
 }

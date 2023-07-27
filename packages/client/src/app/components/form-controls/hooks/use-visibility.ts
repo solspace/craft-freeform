@@ -14,14 +14,14 @@ export const useVisibility = (
     }
 
     try {
-      let visible = false;
+      let visible = true;
 
       filters.forEach((filter) => {
         const func = new Function(...Object.keys(values), `return ${filter}`);
         const isValid = func(...Object.values(values));
 
-        if (isValid) {
-          visible = true;
+        if (!isValid) {
+          visible = false;
         }
       });
 

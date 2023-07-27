@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Form\Form;
 
 #[Type(
     name: 'Pipedrive - Leads',
@@ -28,8 +29,10 @@ class PipedriveLeads extends BasePipedriveIntegration
      *
      * @param null $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $client = $this->generateAuthorizedClient();
 
         $orgId = $this->pushOrg($keyValueList);

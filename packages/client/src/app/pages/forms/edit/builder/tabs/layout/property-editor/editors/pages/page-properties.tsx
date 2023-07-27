@@ -8,13 +8,9 @@ import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import { useFetchPageButtonType } from '@ff-client/queries/page-types';
 import type { Property } from '@ff-client/types/properties';
 
-import {
-  CloseLink,
-  Icon,
-  SectionBlock,
-  SectionWrapper,
-  Title,
-} from '../../property-editor.styles';
+import { CloseLink, Title } from '../../property-editor.styles';
+import { SectionBlock } from '../../section-block';
+import { SectionWrapper } from '../../section-block.styles';
 
 import { PageComponent } from './page-component';
 import { PagePropertiesWrapper } from './page-properties.styles';
@@ -58,8 +54,7 @@ export const PageProperties: React.FC<Props> = ({ uid }) => {
     }
 
     sectionBlocks.push(
-      <SectionBlock label={label} key={handle}>
-        {!!icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
+      <SectionBlock label={label} icon={icon} key={handle}>
         {properties
           .sort((a, b) => a.order - b.order)
           .map((property) => (

@@ -4,12 +4,12 @@ namespace Solspace\Freeform\Bundles\Integrations\EmailMarketing;
 
 use Composer\Autoload\ClassMapGenerator;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
+use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Submissions\ProcessSubmissionEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Services\Integrations\MailingListsService;
+use Solspace\Freeform\Services\Integrations\IntegrationsService;
 use yii\base\Event;
 
 class EmailMarketingBundle extends FeatureBundle
@@ -21,8 +21,8 @@ class EmailMarketingBundle extends FeatureBundle
         }
 
         Event::on(
-            MailingListsService::class,
-            MailingListsService::EVENT_FETCH_TYPES,
+            IntegrationsService::class,
+            IntegrationsService::EVENT_REGISTER_INTEGRATION_TYPES,
             [$this, 'registerTypes']
         );
 
@@ -33,7 +33,7 @@ class EmailMarketingBundle extends FeatureBundle
         );
     }
 
-    public function registerTypes(FetchMailingListTypesEvent $event): void
+    public function registerTypes(RegisterIntegrationTypesEvent $event): void
     {
         $path = \Craft::getAlias('@freeform/Integrations/MailingLists');
 

@@ -161,8 +161,10 @@ class Install extends StreamlinedInstallMigration
                 ->addField('label', $this->string(255)->notNull())
                 ->addField('handle', $this->string(255)->notNull())
                 ->addField('type', $this->string(50)->notNull())
+                ->addField('category', $this->string(50))
                 ->addField('required', $this->boolean()->defaultValue(false))
                 ->addIndex(['type'])
+                ->addIndex(['integrationId', 'category'])
                 ->addForeignKey('integrationId', 'freeform_integrations', 'id', ForeignKey::CASCADE),
 
             (new Table('freeform_payment_gateway_fields'))

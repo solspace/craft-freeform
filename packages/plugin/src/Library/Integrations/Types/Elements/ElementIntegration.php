@@ -8,13 +8,18 @@ use craft\models\FieldLayout;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Bundles\Form\ElementEdit\ElementEditBundle;
-use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessElementValueEvent;
+use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use yii\base\Event;
 
 abstract class ElementIntegration extends BaseIntegration implements ElementIntegrationInterface
 {
+    public function getType(): string
+    {
+        return self::TYPE_ELEMENTS;
+    }
+
     public function onValidate(Form $form, Element $element): void
     {
     }
@@ -52,14 +57,14 @@ abstract class ElementIntegration extends BaseIntegration implements ElementInte
         foreach ($mapping as $item) {
             $craftField = $fieldLayout->getFieldByHandle($item->getSource());
             $freeformField = null;
-            if (FieldMapItem::TYPE_RELATION === $item->getSource()) {
+            if (FieldMapItem::TYPE_RELATION === $item->getType()) {
                 $freeformField = $form->get($item->getValue());
             }
 
             $key = $item->getSource();
             $value = $item->extractValue($form);
 
-            $event = new ProcessElementValueEvent(
+            $event = new ProcessValueEvent(
                 $this,
                 $form,
                 $craftField,

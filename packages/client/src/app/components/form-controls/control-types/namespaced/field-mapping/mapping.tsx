@@ -6,7 +6,9 @@ import type { FieldMappingProperty } from '@ff-client/types/properties';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 
+import RefreshIcon from './icons/refresh.svg';
 import { FieldMappingController } from './mapping.controller';
+import { RefreshButton } from './mapping.styles';
 import type { SourceField } from './mapping.types';
 import { extractParameter } from './mapping.utilities';
 
@@ -24,7 +26,11 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
     });
   }
 
-  const { data, isFetching } = useQuery<unknown, unknown, SourceField[]>(
+  const { data, isFetching, refetch } = useQuery<
+    unknown,
+    unknown,
+    SourceField[]
+  >(
     ['field-mapping', property.source, params],
     () => axios.get(property.source, { params }).then((res) => res.data),
     { staleTime: Infinity, cacheTime: Infinity }
@@ -32,6 +38,17 @@ const FieldMapping: React.FC<ControlType<FieldMappingProperty>> = ({
 
   return (
     <Control property={property} errors={errors}>
+      <RefreshButton
+        className="btn"
+        disabled={isFetching}
+        onClick={() => {
+          params['refresh'] = 'true';
+          refetch();
+          delete params['refresh'];
+        }}
+      >
+        <RefreshIcon />
+      </RefreshButton>
       {data && (
         <FieldMappingController
           sources={data}

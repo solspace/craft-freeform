@@ -12,18 +12,16 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 
-use Solspace\Freeform\Library\Database\MailingListHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
-use Solspace\Freeform\Library\Exceptions\Integrations\ListNotFoundException;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
-abstract class MailingListIntegration extends APIIntegration implements MailingListIntegrationInterface, \JsonSerializable
+abstract class MailingListIntegration extends APIIntegration implements MailingListIntegrationInterface
 {
-    public const TYPE = 'mailing_list';
-
-    private MailingListHandlerInterface $mailingListHandler;
+    public function getType(): string
+    {
+        return self::TYPE_MAILING_LIST;
+    }
 
     /**
      * {@inheritDoc}
@@ -31,54 +29,6 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     public static function isInstallable(): bool
     {
         return true;
-    }
-
-    /**
-     * @return ListObject[]
-     */
-    final public function getLists(): array
-    {
-        if ($this->isForceUpdate()) {
-            $lists = $this->fetchLists();
-            $this->mailingListHandler->updateLists($this, $lists);
-        } else {
-            $lists = $this->mailingListHandler->getLists($this);
-        }
-
-        return $lists;
-    }
-
-    /**
-     * @param string $listId
-     *
-     * @throws ListNotFoundException
-     */
-    final public function getListById($listId): ListObject
-    {
-        return $this->mailingListHandler->getListById($this, $listId);
-    }
-
-    /**
-     * Specify data which should be serialized to JSON.
-     */
-    public function jsonSerialize(): array
-    {
-        try {
-            $lists = $this->getLists();
-        } catch (\Exception $e) {
-            $lists = [];
-        }
-
-        return [
-            'integrationId' => $this->getId(),
-            'resourceId' => '',
-            'type' => self::TYPE,
-            'source' => $this->getServiceProvider(),
-            'name' => $this->getName(),
-            'label' => 'Opt-in mailing list "'.$this->getName().'"',
-            'emailFieldHash' => '',
-            'lists' => $lists,
-        ];
     }
 
     /**
@@ -91,11 +41,7 @@ abstract class MailingListIntegration extends APIIntegration implements MailingL
     abstract protected function fetchLists(): array;
 
     /**
-     * Fetch all custom fields for each list.
-     *
      * @return FieldObject[]
-     *
-     * @throws IntegrationException
      */
-    abstract protected function fetchFields(string $listId): array;
+    abstract protected function fetchFields(string $category): array;
 }

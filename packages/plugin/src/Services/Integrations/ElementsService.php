@@ -12,19 +12,18 @@
 
 namespace Solspace\Freeform\Services\Integrations;
 
-use Solspace\Freeform\Events\Integrations\FetchElementTypesEvent;
-use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
-use Solspace\Freeform\Records\IntegrationRecord;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 
 class ElementsService extends AbstractIntegrationService
 {
-    public function getFetchEvent(): FetchIntegrationTypesEvent
-    {
-        return new FetchElementTypesEvent();
-    }
-
     protected function getIntegrationType(): string
     {
-        return IntegrationRecord::TYPE_ELEMENTS;
+        return IntegrationInterface::TYPE_ELEMENTS;
+    }
+
+    protected function getIntegrationInterface(): string
+    {
+        return ElementIntegrationInterface::class;
     }
 }

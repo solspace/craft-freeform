@@ -35,6 +35,8 @@ export const FormField = styled.div`
 `;
 
 export const ControlWrapper = styled.div`
+  position: relative;
+
   &.errors {
     ${Label} {
       color: ${colors.error};

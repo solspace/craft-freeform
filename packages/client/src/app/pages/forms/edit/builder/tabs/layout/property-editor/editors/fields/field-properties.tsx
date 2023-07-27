@@ -16,13 +16,9 @@ import {
 import { type Property, PropertyType } from '@ff-client/types/properties';
 import translate from '@ff-client/utils/translations';
 
-import {
-  CloseLink,
-  Icon,
-  SectionBlock,
-  SectionWrapper,
-  Title,
-} from '../../property-editor.styles';
+import { CloseLink, Icon, Title } from '../../property-editor.styles';
+import { SectionBlock } from '../../section-block';
+import { SectionWrapper } from '../../section-block.styles';
 
 import { FavoriteButton } from './favorite/favorite.button';
 import AdvancedIcon from './icons/advanced.svg';
@@ -66,8 +62,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
     }
 
     sectionBlocks.push(
-      <SectionBlock label={label} key={handle}>
-        {!!icon && <Icon dangerouslySetInnerHTML={{ __html: icon }} />}
+      <SectionBlock label={label} icon={icon} key={handle}>
         {properties
           .sort((a, b) => a.order - b.order)
           .map((property) => (
@@ -94,10 +89,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
       <SectionWrapper>
         {sectionBlocks}
 
-        <SectionBlock label={translate('Advanced')}>
-          <Icon>
-            <AdvancedIcon />
-          </Icon>
+        <SectionBlock label={translate('Advanced')} icon={<AdvancedIcon />}>
           <FormComponent
             value={field.typeClass}
             property={{

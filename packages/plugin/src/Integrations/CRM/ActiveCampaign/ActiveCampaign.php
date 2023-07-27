@@ -18,6 +18,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
@@ -29,6 +30,10 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 class ActiveCampaign extends CRMIntegration
 {
     public const LOG_CATEGORY = 'Active Campaign';
+
+    private const CATEGORY_CONTACT = 'contact';
+    private const CATEGORY_DEAL = 'deal';
+    private const CATEGORY_ORGANISATION = 'organisation';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
@@ -78,8 +83,10 @@ class ActiveCampaign extends CRMIntegration
     #[Input\Text]
     protected string $ownerId = '';
 
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $client = $this->generateAuthorizedClient();
 
         $deal = $contact = $org = [];
@@ -288,105 +295,18 @@ class ActiveCampaign extends CRMIntegration
         }
     }
 
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
         $client = $this->generateAuthorizedClient();
 
-        $contactFields = [
-            new FieldObject('contact___mailing_list_id', 'Mailing List ID (Contact)', FieldObject::TYPE_NUMERIC),
-            new FieldObject('contact___email', 'Email (Contact)', FieldObject::TYPE_STRING),
-            new FieldObject('contact___firstName', 'First Name (Contact)', FieldObject::TYPE_STRING),
-            new FieldObject('contact___lastName', 'Last Name (Contact)', FieldObject::TYPE_STRING),
-            new FieldObject('contact___phone', 'Phone (Contact)', FieldObject::TYPE_STRING),
-        ];
-
-        $dealFields = [
-            new FieldObject('deal___title', 'Title (Deal)', FieldObject::TYPE_STRING),
-            new FieldObject('deal___description', 'Description (Deal)', FieldObject::TYPE_STRING),
-            new FieldObject('deal___value', 'Value (Deal)', FieldObject::TYPE_NUMERIC),
-            new FieldObject('deal___currency', 'Currency (Deal)', FieldObject::TYPE_STRING),
-            new FieldObject('deal___group', 'Group (Deal)', FieldObject::TYPE_STRING),
-            new FieldObject('deal___owner', 'Owner (Deal)', FieldObject::TYPE_STRING),
-            new FieldObject('deal___percent', 'Percent (Deal)', FieldObject::TYPE_STRING),
-            new FieldObject('deal___stage', 'Stage (Deal)', FieldObject::TYPE_STRING),
-            new FieldObject('deal___status', 'Status (Deal)', FieldObject::TYPE_NUMERIC),
-        ];
-
-        $orgFields = [
-            new FieldObject('organisation___name', 'Name (Organisation)', FieldObject::TYPE_STRING),
-        ];
-
-        try {
-            $response = $client->get($this->getEndpoint('/fields'));
-            $data = json_decode($response->getBody(), false);
-
-            foreach ($data->fields as $field) {
-                $type = FieldObject::TYPE_STRING;
-
-                switch ($field->type) {
-                    case 'dropdown':
-                    case 'multiselect':
-                    case 'checkbox':
-                        $type = FieldObject::TYPE_ARRAY;
-
-                        break;
-
-                    case 'date':
-                        $type = FieldObject::TYPE_DATETIME;
-
-                        break;
-
-                    case 'currency':
-                        continue 2;
-                }
-
-                $contactFields[] = new FieldObject(
-                    'contact___'.$field->id,
-                    $field->title.' (Contact)',
-                    $type,
-                    (bool) $field->isrequired
-                );
-            }
-        } catch (RequestException $e) {
-            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
-        }
-
-        try {
-            $response = $client->get($this->getEndpoint('/dealCustomFieldMeta'));
-            $data = json_decode($response->getBody(), false);
-
-            foreach ($data->dealCustomFieldMeta as $field) {
-                $type = FieldObject::TYPE_STRING;
-
-                switch ($field->fieldType) {
-                    case 'dropdown':
-                    case 'multiselect':
-                    case 'checkbox':
-                        $type = FieldObject::TYPE_ARRAY;
-
-                        break;
-
-                    case 'date':
-                        $type = FieldObject::TYPE_DATETIME;
-
-                        break;
-
-                    case 'currency':
-                        continue 2;
-                }
-
-                $contactFields[] = new FieldObject(
-                    'deal___'.$field->id,
-                    $field->fieldLabel.' (Deal)',
-                    $type,
-                    (bool) $field->isRequired
-                );
-            }
-        } catch (RequestException $e) {
-            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
-        }
-
-        return array_merge($contactFields, $dealFields, $orgFields);
+        return match ($category) {
+            self::CATEGORY_CONTACT => $this->fetchContactFields($client),
+            self::CATEGORY_DEAL => $this->fetchDealFields($client),
+            self::CATEGORY_ORGANISATION => [
+                new FieldObject('name', 'Name', FieldObject::TYPE_STRING, self::CATEGORY_ORGANISATION),
+            ],
+            default => [],
+        };
     }
 
     /**
@@ -574,5 +494,117 @@ class ActiveCampaign extends CRMIntegration
         }
 
         return null;
+    }
+
+    /**
+     * @return FieldObject[]
+     */
+    private function fetchContactFields(Client $client): array
+    {
+        $category = self::CATEGORY_CONTACT;
+
+        $fields = [
+            new FieldObject('mailing_list_id', 'Mailing List ID', FieldObject::TYPE_NUMERIC, $category),
+            new FieldObject('email', 'Email', FieldObject::TYPE_STRING, $category),
+            new FieldObject('firstName', 'First Name', FieldObject::TYPE_STRING, $category),
+            new FieldObject('lastName', 'Last Name', FieldObject::TYPE_STRING, $category),
+            new FieldObject('phone', 'Phone', FieldObject::TYPE_STRING, $category),
+        ];
+
+        try {
+            $response = $client->get($this->getEndpoint('/fields'));
+            $data = json_decode($response->getBody(), false);
+
+            foreach ($data->fields as $field) {
+                $type = FieldObject::TYPE_STRING;
+
+                switch ($field->type) {
+                    case 'dropdown':
+                    case 'multiselect':
+                    case 'checkbox':
+                        $type = FieldObject::TYPE_ARRAY;
+
+                        break;
+
+                    case 'date':
+                        $type = FieldObject::TYPE_DATETIME;
+
+                        break;
+
+                    case 'currency':
+                        continue 2;
+                }
+
+                $fields[] = new FieldObject(
+                    $field->id,
+                    $field->title,
+                    $type,
+                    $category,
+                    (bool) $field->isrequired
+                );
+            }
+        } catch (RequestException $e) {
+            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
+        }
+
+        return $fields;
+    }
+
+    /**
+     * @return FieldObject[]
+     */
+    private function fetchDealFields(Client $client): array
+    {
+        $category = self::CATEGORY_DEAL;
+
+        $fields = [
+            new FieldObject('title', 'Title', FieldObject::TYPE_STRING, $category),
+            new FieldObject('description', 'Description', FieldObject::TYPE_STRING, $category),
+            new FieldObject('value', 'Value', FieldObject::TYPE_NUMERIC, $category),
+            new FieldObject('currency', 'Currency', FieldObject::TYPE_STRING, $category),
+            new FieldObject('group', 'Group', FieldObject::TYPE_STRING, $category),
+            new FieldObject('owner', 'Owner', FieldObject::TYPE_STRING, $category),
+            new FieldObject('percent', 'Percent', FieldObject::TYPE_STRING, $category),
+            new FieldObject('stage', 'Stage', FieldObject::TYPE_STRING, $category),
+            new FieldObject('status', 'Status', FieldObject::TYPE_NUMERIC, $category),
+        ];
+
+        try {
+            $response = $client->get($this->getEndpoint('/dealCustomFieldMeta'));
+            $data = json_decode($response->getBody(), false);
+
+            foreach ($data->dealCustomFieldMeta as $field) {
+                $type = FieldObject::TYPE_STRING;
+
+                switch ($field->fieldType) {
+                    case 'dropdown':
+                    case 'multiselect':
+                    case 'checkbox':
+                        $type = FieldObject::TYPE_ARRAY;
+
+                        break;
+
+                    case 'date':
+                        $type = FieldObject::TYPE_DATETIME;
+
+                        break;
+
+                    case 'currency':
+                        continue 2;
+                }
+
+                $fields[] = new FieldObject(
+                    $field->id,
+                    $field->fieldLabel,
+                    $type,
+                    $category,
+                    (bool) $field->isRequired
+                );
+            }
+        } catch (RequestException $e) {
+            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
+        }
+
+        return $fields;
     }
 }

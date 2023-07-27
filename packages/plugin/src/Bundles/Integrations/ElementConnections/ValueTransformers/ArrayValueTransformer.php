@@ -4,7 +4,7 @@ namespace Solspace\Freeform\Bundles\Integrations\ElementConnections\ValueTransfo
 
 use craft\fields\BaseOptionsField;
 use craft\fields\BaseRelationField;
-use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessElementValueEvent;
+use Solspace\Freeform\Events\Integrations\ElementIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\Types\Elements\ElementIntegrationInterface;
 use yii\base\Event;
@@ -20,7 +20,7 @@ class ArrayValueTransformer extends FeatureBundle
         );
     }
 
-    public function transformValue(ProcessElementValueEvent $event): void
+    public function transformValue(ProcessValueEvent $event): void
     {
         $value = $event->getValue();
 

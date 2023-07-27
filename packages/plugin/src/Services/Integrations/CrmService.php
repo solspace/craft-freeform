@@ -12,347 +12,79 @@
 
 namespace Solspace\Freeform\Services\Integrations;
 
-use craft\db\Query;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Events\Integrations\FetchCrmTypesEvent;
-use Solspace\Freeform\Events\Integrations\FetchIntegrationTypesEvent;
-use Solspace\Freeform\Events\Integrations\PushEvent;
-use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Library\Database\CRMHandlerInterface;
-use Solspace\Freeform\Library\Exceptions\FreeformException;
-use Solspace\Freeform\Library\Integrations\BaseIntegration;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
-use Solspace\Freeform\Models\Pro\Payments\PaymentModel;
-use Solspace\Freeform\Models\Pro\Payments\SubscriptionModel;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use Solspace\Freeform\Records\CrmFieldRecord;
-use Solspace\Freeform\Records\IntegrationRecord;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class CrmService extends AbstractIntegrationService implements CRMHandlerInterface
+class CrmService extends AbstractIntegrationService
 {
-    /** @var PaymentModel[]|SubscriptionModel[] */
-    private array $paymentAndSubscriptionCache = [];
-
-    public function getFetchEvent(): FetchIntegrationTypesEvent
-    {
-        return new FetchCrmTypesEvent();
-    }
-
     /**
-     * Updates the fields of a given CRM integration.
-     *
-     * @param FieldObject[] $fields
+     * @return FieldObject[]
      */
-    public function updateFields(CRMIntegration $integration, array $fields): bool
+    public function getFields(CRMIntegrationInterface $integration, string $category, bool $refresh = false): array
     {
-        $handles = [];
-        foreach ($fields as $field) {
-            $handles[] = $field->getHandle();
-        }
-
-        $id = $integration->getId();
-        $existingFields = (new Query())
-            ->select(['handle'])
-            ->from(CrmFieldRecord::TABLE)
-            ->where(['integrationId' => $id])
-            ->column()
+        $existingRecords = CrmFieldRecord::find()
+            ->where([
+                'integrationId' => $integration->getId(),
+                'category' => $category,
+            ])
+            ->indexBy('handle')
+            ->all()
         ;
 
-        $removableHandles = array_diff($existingFields, $handles);
-        $addableHandles = array_diff($handles, $existingFields);
-        $updatableHandles = array_intersect($handles, $existingFields);
+        if ($refresh || empty($existingRecords)) {
+            $fields = $integration->fetchFields($category);
 
-        foreach ($removableHandles as $handle) {
-            // PERFORM DELETE
-            \Craft::$app
-                ->getDb()
-                ->createCommand()
-                ->delete(
-                    CrmFieldRecord::TABLE,
-                    [
-                        'integrationId' => $id,
-                        'handle' => $handle,
-                    ]
-                )
-                ->execute();
-        }
+            $usedHandles = [];
+            $newFields = [];
+            foreach ($fields as $field) {
+                if (!\array_key_exists($field->getHandle(), $existingRecords)) {
+                    $newFields[] = $field;
+                }
 
-        foreach ($fields as $field) {
-            // PERFORM INSERT
-            if (\in_array($field->getHandle(), $addableHandles, true)) {
+                $usedHandles[] = $field->getHandle();
+            }
+
+            foreach ($newFields as $field) {
                 $record = new CrmFieldRecord();
-                $record->integrationId = $id;
+                $record->integrationId = $integration->getId();
                 $record->handle = $field->getHandle();
                 $record->label = $field->getLabel();
                 $record->type = $field->getType();
                 $record->required = $field->isRequired();
+                $record->category = $category;
                 $record->save();
             }
 
-            // PERFORM UPDATE
-            if (\in_array($field->getHandle(), $updatableHandles, true)) {
-                \Craft::$app
-                    ->getDb()
-                    ->createCommand()
-                    ->update(
-                        CrmFieldRecord::TABLE,
-                        [
-                            'label' => $field->getLabel(),
-                            'type' => $field->getType(),
-                            'required' => $field->isRequired() ? 1 : 0,
-                        ],
-                        [
-                            'integrationId' => $id,
-                            'handle' => $field->getHandle(),
-                        ]
-                    )
-                    ->execute();
-            }
-        }
-
-        // Remove ForceUpdate flag
-        \Craft::$app
-            ->getDb()
-            ->createCommand()
-            ->update(
-                IntegrationRecord::TABLE,
-                ['forceUpdate' => 0],
-                ['id' => $id]
-            )
-            ->execute();
-
-        return true;
-    }
-
-    /**
-     * Returns all FieldObjects of a particular CRM integration.
-     *
-     * @return FieldObject[]
-     */
-    public function getFields(CRMIntegration $integration): array
-    {
-        $data = (new Query())
-            ->select(['handle', 'label', 'type', 'required'])
-            ->from(CrmFieldRecord::TABLE)
-            ->where(['integrationId' => $integration->getId()])
-            ->orderBy('label ASC')
-            ->all()
-        ;
-
-        $fields = [];
-        foreach ($data as $item) {
-            $fields[] = new FieldObject(
-                $item['handle'],
-                $item['label'],
-                $item['type'],
-                $item['required']
-            );
-        }
-
-        return $fields;
-    }
-
-    /**
-     * Push the mapped object values to the CRM.
-     */
-    public function pushObject(Submission $submission): bool
-    {
-        $freeform = Freeform::getInstance();
-
-        $form = $submission->getForm();
-        $layout = $form->getLayout();
-
-        // TODO: implement the new integrations push
-        return false;
-        $properties = $form->getIntegrationProperties();
-
-        try {
-            /** @var CRMIntegration $integration */
-            $integration = $this->getIntegrationObjectById($properties->getIntegrationId());
-        } catch (\Exception $e) {
-            return false;
-        }
-
-        $logger = $freeform->logger->getLogger($integration->getServiceProvider());
-        $mapping = $properties->getMapping();
-        if (empty($mapping)) {
-            $logger->warning(
-                Freeform::t(
-                    "No field mapping specified for '{integration}' integration",
-                    ['integration' => $integration->getName()]
-                )
-            );
-
-            return false;
-        }
-
-        /** @var FieldObject[] $crmFieldsByHandle */
-        $crmFieldsByHandle = [];
-
-        try {
-            foreach ($integration->getFields() as $field) {
-                $crmFieldsByHandle[$field->getHandle()] = $field;
-            }
-        } catch (RequestException $e) {
-            $logger->error($e->getMessage());
-        }
-
-        $objectValues = [];
-        $formFields = [];
-        foreach ($mapping as $crmHandle => $fieldHandle) {
-            try {
-                $crmField = $crmFieldsByHandle[$crmHandle];
-                $formField = $layout->getFieldByHandle($fieldHandle);
-
-                $formFields[$crmHandle] = $formField;
-
-                $objectValues[$crmHandle] = $integration->convertCustomFieldValue($crmField, $formField);
-            } catch (\Exception $e) {
-                try {
-                    $objectValues[$crmHandle] = $this->getExtraFieldsValue($fieldHandle, $submission, $integration);
-                } catch (FreeformException $exception) {
-                    $logger->warning($exception->getMessage());
-                } catch (\Exception $exception) {
-                    $logger->error($exception->getMessage());
+            foreach ($existingRecords as $handle => $record) {
+                if (!\in_array($handle, $usedHandles, true)) {
+                    $record->delete();
                 }
             }
+
+            return $fields;
         }
 
-        [$isValid, $objectValues] = $this->onBeforePush($integration, $objectValues);
-        if (!$isValid) {
-            return false;
-        }
-
-        if (!empty($objectValues)) {
-            try {
-                $result = $integration->pushObject($objectValues, $formFields);
-
-                if ($result) {
-                    $this->onAfterPush($integration, $objectValues);
-                }
-
-                return $result;
-            } catch (\Exception $e) {
-                if ($e instanceof ClientException && $e->getResponse()) {
-                    $logger->error($e->getResponse()->getBody());
-                } else {
-                    $logger->error($e->getMessage());
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function getIntegrationType(): string
-    {
-        return IntegrationRecord::TYPE_CRM;
-    }
-
-    /**
-     * @return array - [isValid, values]
-     */
-    private function onBeforePush(BaseIntegration $integration, array $values): array
-    {
-        $event = new PushEvent($integration, $values);
-        $this->trigger(self::EVENT_BEFORE_PUSH, $event);
-
-        return [$event->isValid, $event->getValues()];
-    }
-
-    private function onAfterPush(BaseIntegration $integration, array $values): bool
-    {
-        $event = new PushEvent($integration, $values);
-        $this->trigger(self::EVENT_AFTER_PUSH, $event);
-
-        return $event->isValid;
-    }
-
-    /**
-     * @return null|mixed
-     *
-     * @throws FreeformException
-     */
-    private function getExtraFieldsValue(string $handle, Submission $submission, BaseIntegration $integration)
-    {
-        if (!preg_match('/^(\w+)###(.*)$/', $handle, $matches)) {
-            throw new FreeformException(
-                Freeform::t(
-                    'Cannot access field "{handle}" for "{integration}" integration',
-                    [
-                        'handle' => $handle,
-                        'integration' => $integration->getName(),
-                    ]
-                )
-            );
-        }
-
-        [$_, $object, $property] = $matches;
-
-        switch ($object) {
-            case 'payments':
-                $targetObject = $this->getPaymentOrSubscription($submission);
-
-                break;
-
-            default:
-                $targetObject = null;
-        }
-
-        if ($targetObject) {
-            static $accessor;
-
-            if (null === $accessor) {
-                $accessor = PropertyAccess::createPropertyAccessor();
-            }
-
-            if ($accessor->isReadable($targetObject, $property)) {
-                return $accessor->getValue($targetObject, $property);
-            }
-        }
-
-        throw new FreeformException(
-            Freeform::t(
-                'Cannot access property "{property}" on "{object}" for "{integration}" integration',
-                [
-                    'property' => $property,
-                    'object' => $object,
-                    'integration' => $integration->getName(),
-                ]
-            )
+        return array_map(
+            fn (CrmFieldRecord $record) => new FieldObject(
+                $record->handle,
+                $record->label,
+                $record->type,
+                $record->category,
+                $record->required,
+            ),
+            $existingRecords
         );
     }
 
-    /**
-     * @return null|PaymentModel|SubscriptionModel
-     */
-    private function getPaymentOrSubscription(Submission $submission)
+    protected function getIntegrationType(): string
     {
-        $submissionId = $submission->id;
-        if (!isset($this->paymentAndSubscriptionCache[$submissionId])) {
-            if (!Freeform::getInstance()->isPro()) {
-                $this->paymentAndSubscriptionCache[$submissionId] = null;
-            } else {
-                $payment = Freeform::getInstance()->payments->getBySubmissionId($submissionId);
-                if ($payment) {
-                    $this->paymentAndSubscriptionCache[$submissionId] = $payment;
-                } else {
-                    $subscription = Freeform::getInstance()->subscriptions->getBySubmissionId($submissionId);
-                    if ($subscription) {
-                        $this->paymentAndSubscriptionCache[$submissionId] = $subscription;
-                    } else {
-                        $this->paymentAndSubscriptionCache[$submissionId] = null;
-                    }
-                }
-            }
-        }
+        return IntegrationInterface::TYPE_CRM;
+    }
 
-        return $this->paymentAndSubscriptionCache[$submissionId];
+    protected function getIntegrationInterface(): string
+    {
+        return CRMIntegrationInterface::class;
     }
 }

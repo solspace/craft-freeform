@@ -2,12 +2,14 @@
 
 namespace Solspace\Freeform\Events\Integrations;
 
+use Solspace\Freeform\Attributes\EventListener;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\Events\ArrayableEvent;
 use Solspace\Freeform\Freeform;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
-abstract class FetchIntegrationTypesEvent extends ArrayableEvent
+class RegisterIntegrationTypesEvent extends ArrayableEvent
 {
     /** @var Type[] */
     private array $types = [];
@@ -35,6 +37,10 @@ abstract class FetchIntegrationTypesEvent extends ArrayableEvent
 
     public function addType(string $class): self
     {
+        if (isset($this->types[$class])) {
+            return $this;
+        }
+
         $reflectionClass = new \ReflectionClass($class);
 
         $isPro = Freeform::getInstance()->isPro();
@@ -42,7 +48,7 @@ abstract class FetchIntegrationTypesEvent extends ArrayableEvent
             return $this;
         }
 
-        if (!$this->validateType($class)) {
+        if (!$reflectionClass->implementsInterface(IntegrationInterface::class)) {
             return $this;
         }
 
@@ -61,8 +67,11 @@ abstract class FetchIntegrationTypesEvent extends ArrayableEvent
 
         $this->types[$class] = $type;
 
+        $eventListeners = $reflectionClass->getAttributes(EventListener::class);
+        foreach ($eventListeners as $listener) {
+            \Craft::$container->get($listener->newInstance()->class);
+        }
+
         return $this;
     }
-
-    abstract protected function validateType(string $class): bool;
 }

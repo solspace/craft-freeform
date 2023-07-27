@@ -1,12 +1,12 @@
-import type { Layout, Row } from '@editor/builder/types/layout';
+import type { Row } from '@editor/builder/types/layout';
 import { CellType } from '@editor/builder/types/layout';
 import type { AppThunk } from '@editor/store';
 import type { Field } from '@editor/store/slices/fields';
 import { fieldActions } from '@editor/store/slices/fields';
 import { cellActions } from '@editor/store/slices/layout/cells';
-import type {
-  FieldType,
-  PropertyValueCollection,
+import {
+  type FieldType,
+  type PropertyValueCollection,
 } from '@ff-client/types/fields';
 import { v4 } from 'uuid';
 
@@ -14,13 +14,22 @@ import { layoutSelectors } from '../slices/layout/layouts/layouts.selectors';
 import { rowActions } from '../slices/layout/rows';
 
 export const addNewFieldToNewRow =
-  (options: { fieldType: FieldType; layout?: Layout; row?: Row }): AppThunk =>
+  (options: {
+    fieldType: FieldType;
+    layoutUid?: string;
+    row?: Row;
+  }): AppThunk =>
   (dispatch, getState) => {
     const { fieldType, row } = options;
-    let { layout } = options;
+    let { layoutUid } = options;
 
-    if (!layout) {
-      layout = layoutSelectors.currentPageLayout(getState());
+    if (!layoutUid) {
+      const state = getState();
+      if (row) {
+        layoutUid = row.layoutUid;
+      } else {
+        layoutUid = layoutSelectors.currentPageLayout(state)?.uid;
+      }
     }
 
     const fieldUid = v4();
@@ -30,7 +39,7 @@ export const addNewFieldToNewRow =
     dispatch(fieldActions.add({ fieldType, uid: fieldUid }));
     dispatch(
       rowActions.add({
-        layoutUid: layout.uid,
+        layoutUid,
         uid: rowUid,
         order: row?.order,
       })

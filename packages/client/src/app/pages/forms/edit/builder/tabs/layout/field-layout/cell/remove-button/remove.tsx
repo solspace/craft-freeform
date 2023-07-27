@@ -23,7 +23,10 @@ export const Remove: React.FC<Props> = ({ cell, active }) => {
       style={animation}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      onClick={() => dispatch(removeCell(cell))}
+      onClick={(event) => {
+        event.stopPropagation();
+        dispatch(removeCell(cell));
+      }}
     >
       <DeleteIcon />
     </RemoveButtonWrapper>

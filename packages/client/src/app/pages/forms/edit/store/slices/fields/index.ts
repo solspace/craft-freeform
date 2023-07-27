@@ -1,4 +1,4 @@
-import type { PropertyValueCollection } from '@ff-client/types/fields';
+import { type PropertyValueCollection } from '@ff-client/types/fields';
 import type { GenericValue } from '@ff-client/types/properties';
 import type { FieldType } from '@ff-client/types/properties';
 import type { PayloadAction } from '@reduxjs/toolkit';
@@ -47,7 +47,10 @@ export const fieldsSlice = createSlice({
     },
     add: (
       state,
-      action: PayloadAction<{ fieldType: FieldType; uid: string }>
+      action: PayloadAction<{
+        fieldType: FieldType;
+        uid: string;
+      }>
     ) => {
       const { uid, fieldType } = action.payload;
       const properties: PropertyValueCollection = {};

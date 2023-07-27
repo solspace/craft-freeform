@@ -27,13 +27,13 @@ export const useLayoutDrop = (layout: Layout): LayoutDropHook => {
     () => ({
       accept: [Drag.FieldType, Drag.Cell],
       collect: (monitor) => ({ isOver: monitor.isOver({ shallow: true }) }),
-      canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
+      canDrop: (item, monitor) => monitor.isOver({ shallow: true }),
       drop: (item) => {
         if (item.type === Drag.FieldType) {
           dispatch(
             addNewFieldToNewRow({
               fieldType: item.data,
-              layout,
+              layoutUid: layout.uid,
             })
           );
         }
@@ -42,7 +42,7 @@ export const useLayoutDrop = (layout: Layout): LayoutDropHook => {
           dispatch(
             moveExistingCellToNewRow({
               cell: item.data,
-              layout,
+              layoutUid: layout.uid,
             })
           );
         }

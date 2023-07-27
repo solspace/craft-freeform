@@ -1,11 +1,25 @@
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
+export const Label = styled.label`
+  display: block;
+
+  color: ${colors.gray550};
+  font-weight: bold;
+`;
+
+export const Instructions = styled.div`
+  padding-bottom: 3px;
+
+  color: ${colors.gray300};
+  font-style: italic;
+  font-size: 12px;
+`;
+
 export const CellFieldWrapper = styled.div`
   display: flex;
   flex-direction: column;
 
-  height: 100%;
   padding: ${spacings.sm} ${spacings.md};
   margin: 0;
 
@@ -59,19 +73,4 @@ export const CellFieldWrapper = styled.div`
     border: 1px solid rgba(96, 125, 159, 0.25);
     border-radius: 3px;
   }
-`;
-
-export const Label = styled.label`
-  display: block;
-
-  color: ${colors.gray550};
-  font-weight: bold;
-`;
-
-export const Instructions = styled.div`
-  padding-bottom: 3px;
-
-  color: ${colors.gray300};
-  font-style: italic;
-  font-size: 12px;
 `;

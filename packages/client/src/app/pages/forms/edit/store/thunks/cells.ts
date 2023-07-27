@@ -1,4 +1,3 @@
-import type { Layout } from '@editor/builder/types/layout';
 import { type Cell, type Row, CellType } from '@editor/builder/types/layout';
 import { v4 } from 'uuid';
 
@@ -11,20 +10,20 @@ import { rowActions } from '../slices/layout/rows';
 import { removeEmptyRows } from './rows';
 
 export const moveExistingCellToNewRow =
-  (options: { cell: Cell; order?: number; layout?: Layout }): AppThunk =>
+  (options: { cell: Cell; order?: number; layoutUid?: string }): AppThunk =>
   (dispatch, getState) => {
     const { cell, order } = options;
-    let { layout } = options;
+    let { layoutUid } = options;
 
     const rowUid = v4();
 
-    if (!layout) {
-      layout = layoutSelectors.currentPageLayout(getState());
+    if (!layoutUid) {
+      layoutUid = layoutSelectors.currentPageLayout(getState())?.uid;
     }
 
     dispatch(
       rowActions.add({
-        layoutUid: layout.uid,
+        layoutUid,
         uid: rowUid,
         order,
       })

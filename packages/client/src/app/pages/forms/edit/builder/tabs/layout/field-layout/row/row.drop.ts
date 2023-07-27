@@ -30,6 +30,7 @@ export const useRowDrop = (row: Row): RowDropHook => {
         if (item.type === Drag.Cell) {
           dispatch(
             moveExistingCellToNewRow({
+              layoutUid: row.layoutUid,
               cell: item.data,
               order: row.order,
             })

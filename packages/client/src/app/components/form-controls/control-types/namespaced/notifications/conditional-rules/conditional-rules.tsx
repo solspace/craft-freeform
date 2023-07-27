@@ -83,7 +83,7 @@ const ConditionalNotificationRules: React.FC<
           }
         />
 
-        {translate('of the following rules match')}
+        {translate('of the following rules match:')}
       </ConfigurationDescription>
 
       <ConditionTable

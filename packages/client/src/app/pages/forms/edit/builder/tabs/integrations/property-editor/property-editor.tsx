@@ -5,7 +5,6 @@ import Bool from '@components/form-controls/control-types/bool/bool';
 import { useAppDispatch } from '@editor/store';
 import { integrationActions } from '@editor/store/slices/integrations';
 import { integrationSelectors } from '@editor/store/slices/integrations/integrations.selectors';
-import { Space } from '@ff-client/app/components/layout/blocks/space';
 import { PropertyType } from '@ff-client/types/properties';
 
 import { EmptyEditor } from './empty-editor';
@@ -38,17 +37,20 @@ export const PropertyEditor: React.FC = () => {
       <h1 title={handle}>{name}</h1>
       {!!description && <p>{description}</p>}
 
-      <Bool
-        property={{
-          label: 'Enabled',
-          handle: 'enabled',
-          type: PropertyType.Boolean,
-        }}
-        value={enabled}
-        updateValue={() => dispatch(integrationActions.toggle(id))}
-      />
-
       <SettingsWrapper>
+        {/* REFACTOR - so it comes from the Integration type class, like the other fields and has correct animations applied */}
+        <div style={{ paddingBottom: '10px', marginBottom: '2px' }}>
+          <Bool
+            property={{
+              label: 'Enabled',
+              handle: 'enabled',
+              type: PropertyType.Boolean,
+            }}
+            value={enabled}
+            updateValue={() => dispatch(integrationActions.toggle(id))}
+          />
+        </div>
+
         {properties.map((property) => (
           <FieldComponent
             key={property.handle}

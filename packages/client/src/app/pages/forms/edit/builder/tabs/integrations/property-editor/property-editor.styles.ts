@@ -18,7 +18,7 @@ export const PropertyEditorWrapper = styled.div`
 
   h1 {
     margin: 0;
-    padding: 7.75px 0 8.75px;
+    padding: 7.75px 0 4.75px;
   }
 `;
 

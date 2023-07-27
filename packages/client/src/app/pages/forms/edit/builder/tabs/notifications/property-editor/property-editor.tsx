@@ -4,9 +4,13 @@ import { useParams } from 'react-router-dom';
 import { notificationSelectors } from '@editor/store/slices/notifications/notifications.selectors';
 import { useQueryNotificationTypes } from '@ff-client/queries/notifications';
 
+import { Remove } from './remove-button/remove';
 import { EmptyEditor } from './empty-editor';
 import { FieldComponent } from './field-component';
-import { PropertyEditorWrapper } from './property-editor.styles';
+import {
+  PropertyEditorWrapper,
+  SettingsWrapper,
+} from './property-editor.styles';
 
 type UrlParams = {
   uid: string;
@@ -28,15 +32,18 @@ export const PropertyEditor: React.FC = () => {
 
   return (
     <PropertyEditorWrapper>
-      {properties
-        .sort((a, b) => a.order - b.order)
-        .map((property) => (
-          <FieldComponent
-            key={property.handle}
-            notification={notification}
-            property={property}
-          />
-        ))}
+      <Remove notification={notification} />
+      <SettingsWrapper>
+        {properties
+          .sort((a, b) => a.order - b.order)
+          .map((property) => (
+            <FieldComponent
+              key={property.handle}
+              notification={notification}
+              property={property}
+            />
+          ))}
+      </SettingsWrapper>
     </PropertyEditorWrapper>
   );
 };

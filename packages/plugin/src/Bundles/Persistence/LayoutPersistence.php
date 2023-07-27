@@ -3,6 +3,7 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Form;
@@ -18,8 +19,9 @@ class LayoutPersistence extends FeatureBundle
     private array $cache = [];
     private array $rowContents = [];
 
-    public function __construct()
-    {
+    public function __construct(
+        private PropertyProvider $propertyProvider,
+    ) {
         Event::on(
             FormsController::class,
             FormsController::EVENT_UPSERT_FORM,
@@ -145,7 +147,7 @@ class LayoutPersistence extends FeatureBundle
                 continue;
             }
 
-            $record = $existingRecords[$uid];
+            $record = $existingRecords[$uid] ?? null;
             if (!$record) {
                 $record = new FormFieldRecord();
                 $record->uid = $item->uid;
@@ -153,9 +155,14 @@ class LayoutPersistence extends FeatureBundle
             }
 
             $record->rowId = $this->getRecordId($form, FormRowRecord::class, $item->rowUid);
-            $record->order = $item->order;
+            $record->order = $item->order ?? 0;
             $record->type = $item->typeClass;
             $record->metadata = $this->getValidatedMetadata($item, $event);
+            $record->save();
+
+            if (!$record->hasErrors()) {
+                $this->rowContents[$item->rowUid][] = $uid;
+            }
         }
 
         foreach ($staleUids as $uid) {

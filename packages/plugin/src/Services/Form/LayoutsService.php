@@ -56,6 +56,10 @@ class LayoutsService extends BaseService
             );
         }
 
+        if (empty($pages)) {
+            $layout->getPages()->add(new Page(['label' => 'Page 1']));
+        }
+
         return $layout;
     }
 

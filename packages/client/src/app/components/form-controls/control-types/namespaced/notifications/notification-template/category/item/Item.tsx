@@ -21,7 +21,7 @@ export const Item: React.FC<Props> = ({ active, template, onClick }) => {
   const [hover, setHover] = React.useState(false);
 
   const cardAnimations = useSpring({
-    // transform: hover ? 'scale(1.08) rotate(1deg)' : 'scale(1) rotate(0deg)',
+    transform: hover ? 'scale(1.08) rotate(1deg)' : 'scale(1) rotate(0deg)',
     borderColor: hover ? colors.gray300 : colors.gray200,
     background: active ? colors.gray500 : colors.white,
     color: active ? colors.white : colors.gray300,

@@ -20,25 +20,23 @@ class IntegrationDTOProvider
     }
 
     /**
-     * @param IntegrationModel[] $models
+     * @param IntegrationInterface[] $integrations
      *
      * @return Integration[]
      */
-    public function convert(array $models): array
+    public function convert(array $integrations): array
     {
         return array_filter(
             array_map(
                 fn ($model) => $this->createDTOFromModel($model),
-                $models
+                $integrations
             )
         );
     }
 
-    private function createDTOFromModel(IntegrationModel $model): ?Integration
+    private function createDTOFromModel(IntegrationInterface $integration): ?Integration
     {
-        $class = $model->class;
-
-        $reflection = new \ReflectionClass($class);
+        $reflection = new \ReflectionClass($integration);
 
         $typeAttributes = $reflection->getAttributes(Type::class);
         $type = reset($typeAttributes);
@@ -56,13 +54,13 @@ class IntegrationDTOProvider
         }
 
         $dto = new Integration();
-        $dto->id = $model->id;
-        $dto->name = $model->name;
-        $dto->handle = $model->handle;
-        $dto->enabled = (bool) $model->enabled;
-        $dto->type = $model->type;
+        $dto->id = $integration->getId();
+        $dto->name = $integration->getName();
+        $dto->handle = $integration->getHandle();
+        $dto->enabled = (bool) $integration->isEnabled();
+        $dto->type = $integration->getType();
         $dto->icon = $icon;
-        $dto->properties = $this->propertyProvider->getEditableProperties($model->getIntegrationObject());
+        $dto->properties = $this->propertyProvider->getEditableProperties($integration);
         $dto->properties->removeFlagged(
             IntegrationInterface::FLAG_INTERNAL,
             IntegrationInterface::FLAG_GLOBAL_PROPERTY,

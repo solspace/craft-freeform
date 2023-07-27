@@ -81,11 +81,10 @@ abstract class MailingListOAuthConnector extends MailingListIntegration
     /**
      * @throws IntegrationException
      */
-    public function fetchTokens(): string
+    public function fetchTokens(string $code): string
     {
         $client = new Client();
 
-        $code = $_GET['code'] ?? null;
         $this->onBeforeFetchAccessToken($code);
 
         if (null === $code) {
@@ -166,11 +165,11 @@ abstract class MailingListOAuthConnector extends MailingListIntegration
         return $this->refreshToken;
     }
 
-    protected function onBeforeFetchAccessToken(array &$payload)
+    protected function onBeforeFetchAccessToken(array &$payload): void
     {
     }
 
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
+    protected function onAfterFetchAccessToken(\stdClass $responseData): void
     {
     }
 

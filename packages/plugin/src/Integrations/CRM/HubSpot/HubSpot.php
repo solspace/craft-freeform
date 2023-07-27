@@ -20,6 +20,7 @@ use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
@@ -88,8 +89,10 @@ class HubSpot extends CRMIntegration
      *
      * @param array $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $isAppendContactData = $this->getAppendContactData();
         $isAppendCompanyData = $this->getAppendCompanyData();
 
@@ -353,8 +356,10 @@ class HubSpot extends CRMIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
+        // TODO: reimplement
+        return [];
         $fieldList = [];
         $this->extractCustomFields(
             '/properties/v1/deals/properties/',

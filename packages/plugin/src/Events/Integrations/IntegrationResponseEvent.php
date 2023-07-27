@@ -4,38 +4,31 @@ namespace Solspace\Freeform\Events\Integrations;
 
 use Psr\Http\Message\ResponseInterface;
 use Solspace\Freeform\Events\CancelableArrayableEvent;
-use Solspace\Freeform\Library\Integrations\BaseIntegration;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 
 class IntegrationResponseEvent extends CancelableArrayableEvent
 {
-    /** @var BaseIntegration */
-    private $integration;
-
-    /** @var ResponseInterface */
-    private $response;
-
-    /**
-     * IntegrationResponseEvent constructor.
-     */
-    public function __construct(BaseIntegration $integration, ResponseInterface $response)
-    {
-        $this->integration = $integration;
-        $this->response = $response;
-
+    public function __construct(
+        private IntegrationInterface $integration,
+        private string $requestType,
+        private ResponseInterface $response
+    ) {
         parent::__construct();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function fields(): array
     {
         return array_merge(parent::fields(), ['integration', 'response']);
     }
 
-    public function getIntegration(): BaseIntegration
+    public function getIntegration(): IntegrationInterface
     {
         return $this->integration;
+    }
+
+    public function getRequestType(): string
+    {
+        return $this->requestType;
     }
 
     public function getResponse(): ResponseInterface

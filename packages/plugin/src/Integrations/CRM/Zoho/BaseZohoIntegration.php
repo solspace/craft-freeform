@@ -74,7 +74,7 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
         return "{$url}/crm/v2";
     }
 
-    protected function onBeforeFetchAccessToken(&$payload)
+    protected function onBeforeFetchAccessToken(&$payload): void
     {
         $this->domain = $_GET['location'] ?? '';
         $this->accountsServer = $_GET['accounts-server'] ?? '';
@@ -99,7 +99,7 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
         return "{$url}/oauth/v2/token";
     }
 
-    protected function onAfterFetchAccessToken(\stdClass $responseData)
+    protected function onAfterFetchAccessToken(\stdClass $responseData): void
     {
         if (isset($responseData->api_domain)) {
             $this->apiDomain = $responseData->api_domain;

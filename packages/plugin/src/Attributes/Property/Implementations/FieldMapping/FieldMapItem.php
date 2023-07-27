@@ -34,7 +34,7 @@ class FieldMapItem
         return $this->source;
     }
 
-    public function extractValue(Form $form): mixed
+    public function extractValue(Form $form, array $context = []): mixed
     {
         if (self::TYPE_RELATION === $this->getType()) {
             $field = $form->get($this->getValue());
@@ -54,6 +54,7 @@ class FieldMapItem
             $variableList = [
                 'form' => $form,
                 'submission' => $form->getSubmission(),
+                ...$context,
             ];
 
             $fields = $form->getLayout()->getFields();

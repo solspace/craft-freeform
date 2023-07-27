@@ -8,6 +8,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\AbstractField;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
@@ -19,6 +20,9 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
 {
     public const LOG_CATEGORY = 'Pardot';
+
+    private const CATEGORY_PROSPECT = 'prospect';
+    private const CATEGORY_CUSTOM = 'custom';
 
     #[Validators\Required]
     #[Input\Text(
@@ -37,8 +41,10 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
      *
      * @param null $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $email = null;
         foreach ($keyValueList as $key => $value) {
             if ('email' === $key) {
@@ -112,244 +118,13 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
-        $client = $this->generateAuthorizedClient();
-
-        try {
-            $response = $client->get($this->getPardotEndpoint('customField'));
-        } catch (RequestException $e) {
-            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
-
-            return [];
-        }
-
-        $data = json_decode((string) $response->getBody());
-
-        $fieldList = [
-            new FieldObject(
-                'salutation',
-                'Salutation',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'first_name',
-                'First Name',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'last_name',
-                'Last Name',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'email',
-                'Email',
-                FieldObject::TYPE_STRING,
-                true
-            ),
-            new FieldObject(
-                'password',
-                'Password',
-                FieldObject::TYPE_STRING,
-                true
-            ),
-            new FieldObject(
-                'company',
-                'Company',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'prospect_account_id',
-                'Prospect Account Id',
-                FieldObject::TYPE_NUMERIC,
-                true
-            ),
-            new FieldObject(
-                'website',
-                'Website',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'job_title',
-                'Job Title',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'department',
-                'Department',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'country',
-                'Country',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'address_one',
-                'Address One',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'address_two',
-                'Address Two',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'city',
-                'City',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'state',
-                'State',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'territory',
-                'Territory',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'zip',
-                'Zip',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'phone',
-                'Phone',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'fax',
-                'Fax',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'source',
-                'Source',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'annual_revenue',
-                'Annual Revenue',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'employees',
-                'Employees',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'industry',
-                'Industry',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'years_in_business',
-                'Years in Business',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'comments',
-                'Comments',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'notes',
-                'Notes',
-                FieldObject::TYPE_STRING
-            ),
-            new FieldObject(
-                'score',
-                'Score',
-                FieldObject::TYPE_NUMERIC,
-                true
-            ),
-            new FieldObject(
-                'is_do_not_email',
-                'Do not email',
-                FieldObject::TYPE_BOOLEAN,
-                true
-            ),
-            new FieldObject(
-                'is_do_not_call',
-                'Do not call',
-                FieldObject::TYPE_BOOLEAN,
-                true
-            ),
-            new FieldObject(
-                'is_reviewed',
-                'Reviewed',
-                FieldObject::TYPE_BOOLEAN,
-                true
-            ),
-            new FieldObject(
-                'is_archived',
-                'Archived',
-                FieldObject::TYPE_BOOLEAN,
-                true
-            ),
-            new FieldObject(
-                'is_starred',
-                'Starred',
-                FieldObject::TYPE_NUMERIC,
-                true
-            ),
-            new FieldObject(
-                'campaign_id',
-                'Campaign',
-                FieldObject::TYPE_NUMERIC,
-                true
-            ),
-            new FieldObject(
-                'profile',
-                'Profile',
-                FieldObject::TYPE_STRING,
-                true
-            ),
-            new FieldObject(
-                'assign_to',
-                'Assign To',
-                FieldObject::TYPE_STRING
-            ),
-        ];
-
-        if (!$data || !isset($data->result)) {
-            return $fieldList;
-        }
-
-        foreach ($data->result->customField as $field) {
-            if (\is_array($field)) {
-                $field = (object) $field;
-            }
-
-            if (!\is_object($field) || !isset($field->type)) {
-                continue;
-            }
-
-            $type = match ($field->type) {
-                'Text', 'Textarea', 'TextArea', 'Dropdown', 'Radio Button', 'Hidden' => FieldObject::TYPE_STRING,
-                'Checkbox', 'Multi-Select' => FieldObject::TYPE_ARRAY,
-                'Number' => FieldObject::TYPE_NUMERIC,
-                'Date' => FieldObject::TYPE_DATE,
-                default => null,
-            };
-
-            if (null === $type) {
-                continue;
-            }
-
-            $fieldObject = new FieldObject(
-                'custom___'.$field->field_id,
-                $field->name.' (Custom Fields)',
-                $type
-            );
-
-            $fieldList[] = $fieldObject;
-        }
-
-        return $fieldList;
+        return match ($category) {
+            self::CATEGORY_PROSPECT => $this->fetchProspectFields(),
+            self::CATEGORY_CUSTOM => $this->fetchCustomFields(),
+            default => [],
+        };
     }
 
     public function getApiRootUrl(): string
@@ -390,5 +165,293 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         $action = ltrim($action, '/');
 
         return "{$root}/{$object}/version/4/do/{$action}";
+    }
+
+    /**
+     * @return FieldObject[]
+     */
+    private function fetchProspectFields(): array
+    {
+        $category = self::CATEGORY_PROSPECT;
+
+        return [
+            new FieldObject(
+                'salutation',
+                'Salutation',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'first_name',
+                'First Name',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'last_name',
+                'Last Name',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'email',
+                'Email',
+                FieldObject::TYPE_STRING,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'password',
+                'Password',
+                FieldObject::TYPE_STRING,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'company',
+                'Company',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'prospect_account_id',
+                'Prospect Account Id',
+                FieldObject::TYPE_NUMERIC,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'website',
+                'Website',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'job_title',
+                'Job Title',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'department',
+                'Department',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'country',
+                'Country',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'address_one',
+                'Address One',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'address_two',
+                'Address Two',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'city',
+                'City',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'state',
+                'State',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'territory',
+                'Territory',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'zip',
+                'Zip',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'phone',
+                'Phone',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'fax',
+                'Fax',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'source',
+                'Source',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'annual_revenue',
+                'Annual Revenue',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'employees',
+                'Employees',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'industry',
+                'Industry',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'years_in_business',
+                'Years in Business',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'comments',
+                'Comments',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'notes',
+                'Notes',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+            new FieldObject(
+                'score',
+                'Score',
+                FieldObject::TYPE_NUMERIC,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'is_do_not_email',
+                'Do not email',
+                FieldObject::TYPE_BOOLEAN,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'is_do_not_call',
+                'Do not call',
+                FieldObject::TYPE_BOOLEAN,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'is_reviewed',
+                'Reviewed',
+                FieldObject::TYPE_BOOLEAN,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'is_archived',
+                'Archived',
+                FieldObject::TYPE_BOOLEAN,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'is_starred',
+                'Starred',
+                FieldObject::TYPE_NUMERIC,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'campaign_id',
+                'Campaign',
+                FieldObject::TYPE_NUMERIC,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'profile',
+                'Profile',
+                FieldObject::TYPE_STRING,
+                $category,
+                true
+            ),
+            new FieldObject(
+                'assign_to',
+                'Assign To',
+                FieldObject::TYPE_STRING,
+                $category,
+            ),
+        ];
+    }
+
+    /**
+     * @return FieldObject[]
+     */
+    private function fetchCustomFields(): array
+    {
+        $client = $this->generateAuthorizedClient();
+
+        try {
+            $response = $client->get($this->getPardotEndpoint('customField'));
+        } catch (RequestException $e) {
+            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
+
+            return [];
+        }
+
+        $data = json_decode((string) $response->getBody());
+
+        if (!$data || !isset($data->result)) {
+            return [];
+        }
+
+        $fieldList = [];
+        foreach ($data->result->customField as $field) {
+            if (\is_array($field)) {
+                $field = (object) $field;
+            }
+
+            if (!\is_object($field) || !isset($field->type)) {
+                continue;
+            }
+
+            $type = match ($field->type) {
+                'Text', 'Textarea', 'TextArea', 'Dropdown', 'Radio Button', 'Hidden' => FieldObject::TYPE_STRING,
+                'Checkbox', 'Multi-Select' => FieldObject::TYPE_ARRAY,
+                'Number' => FieldObject::TYPE_NUMERIC,
+                'Date' => FieldObject::TYPE_DATE,
+                default => null,
+            };
+
+            if (null === $type) {
+                continue;
+            }
+
+            $fieldObject = new FieldObject(
+                $field->field_id,
+                $field->name,
+                $type,
+                self::CATEGORY_CUSTOM,
+            );
+
+            $fieldList[] = $fieldObject;
+        }
+
+        return $fieldList;
     }
 }

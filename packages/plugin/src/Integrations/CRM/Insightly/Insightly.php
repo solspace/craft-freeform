@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
@@ -38,8 +39,10 @@ class Insightly extends CRMIntegration
      *
      * @param null|mixed $formFields
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $response = $this
             ->generateAuthorizedClient()
             ->post(
@@ -69,8 +72,10 @@ class Insightly extends CRMIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
+        // TODO: reimplement
+        return [];
         $fieldList = [
             new FieldObject('SALUTATION', 'Salutation', FieldObject::TYPE_STRING),
             new FieldObject('FIRST_NAME', 'First Name', FieldObject::TYPE_STRING),

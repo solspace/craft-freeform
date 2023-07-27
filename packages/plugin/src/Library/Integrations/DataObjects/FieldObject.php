@@ -12,7 +12,7 @@
 
 namespace Solspace\Freeform\Library\Integrations\DataObjects;
 
-class FieldObject implements \JsonSerializable
+class FieldObject
 {
     public const TYPE_STRING = 'string';
     public const TYPE_ARRAY = 'array';
@@ -24,30 +24,13 @@ class FieldObject implements \JsonSerializable
     public const TYPE_MICROTIME = 'microtime';
     public const TYPE_BOOLEAN = 'boolean';
 
-    /** @var string */
-    private $handle;
-
-    /** @var string */
-    private $label;
-
-    /** @var bool */
-    private $required;
-
-    /** @var string */
-    private $type;
-
-    /**
-     * @param string $handle
-     * @param string $label
-     * @param string $type
-     * @param bool   $required
-     */
-    public function __construct($handle, $label, $type, $required = false)
-    {
-        $this->handle = $handle;
-        $this->label = $label;
-        $this->type = $type;
-        $this->required = (bool) $required;
+    public function __construct(
+        private string $handle,
+        private string $label,
+        private string $type,
+        private string $category,
+        private bool $required = false
+    ) {
     }
 
     public static function getTypes(): array
@@ -75,20 +58,13 @@ class FieldObject implements \JsonSerializable
         return $this->type;
     }
 
+    public function getCategory(): string
+    {
+        return $this->category;
+    }
+
     public function isRequired(): bool
     {
         return (bool) $this->required;
-    }
-
-    /**
-     * Specify data which should be serialized to JSON.
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'handle' => $this->getHandle(),
-            'label' => $this->getLabel(),
-            'required' => $this->isRequired(),
-        ];
     }
 }

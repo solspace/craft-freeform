@@ -19,6 +19,7 @@ use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
@@ -62,8 +63,10 @@ class SharpSpring extends CRMIntegration
     {
     }
 
-    public function pushObject(array $keyValueList, ?array $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $contactProps = [];
 
         foreach ($keyValueList as $key => $value) {
@@ -129,8 +132,10 @@ class SharpSpring extends CRMIntegration
      *
      * @throws IntegrationException
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
+        // TODO: reimplement
+        return [];
         $response = $this->getResponse($this->generatePayload('getFields', ['where' => ['isCustom' => '1']]));
         $json = (string) $response->getBody();
         $data = json_decode($json, true);

@@ -7,12 +7,12 @@ use Solspace\Freeform\Library\Serialization\Normalizers\CustomNormalizerInterfac
 #[\Attribute(\Attribute::TARGET_PROPERTY | \Attribute::IS_REPEATABLE)]
 class VisibilityFilter implements CustomNormalizerInterface
 {
-    public function __construct(public string $name)
+    public function __construct(public string $expression)
     {
     }
 
     public function normalize(): string
     {
-        return $this->name;
+        return $this->expression;
     }
 }

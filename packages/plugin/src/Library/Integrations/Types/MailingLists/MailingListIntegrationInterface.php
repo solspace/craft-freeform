@@ -19,18 +19,6 @@ interface MailingListIntegrationInterface
     public static function isInstallable(): bool;
 
     /**
-     * @return ListObject[]
-     */
-    public function getLists();
-
-    /**
-     * @param string $listId
-     *
-     * @return ListObject
-     */
-    public function getListById($listId);
-
-    /**
      * Push emails to a specific mailing list for the service provider.
      *
      * @param array $mappedValues - key => value pairs of integrations fields against form fields

@@ -110,7 +110,6 @@ abstract class IntegrationsController extends BaseController
             }
 
             \Craft::$app->session->setNotice(Freeform::t('Integration saved'));
-            \Craft::$app->session->setFlash('Integration saved');
 
             return $this->redirectToPostedUrl($model);
         }
@@ -129,9 +128,14 @@ abstract class IntegrationsController extends BaseController
         $id = \Craft::$app->request->post('id');
 
         $integration = $this->getIntegrationsService()->getById((int) $id);
+        $integrationObject = $integration->getIntegrationObject();
+
+        if (!$integrationObject instanceof APIIntegration) {
+            return $this->asJson(['success' => true]);
+        }
 
         try {
-            if ($integration->getIntegrationObject()->checkConnection()) {
+            if ($integrationObject->checkConnection()) {
                 return $this->asJson(['success' => true]);
             }
 

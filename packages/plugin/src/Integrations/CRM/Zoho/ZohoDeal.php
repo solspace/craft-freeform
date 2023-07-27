@@ -14,6 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
+use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 
 #[Type(
@@ -46,8 +47,10 @@ class ZohoDeal extends BaseZohoIntegration
      *
      * @throws \Exception
      */
-    public function pushObject(array $keyValueList, $formFields = null): bool
+    public function push(Form $form): bool
     {
+        // TODO: reimplement
+        return false;
         $client = $this->generateAuthorizedClient();
 
         $dealMapping = $contactMapping = $accountMapping = [];
@@ -223,8 +226,10 @@ class ZohoDeal extends BaseZohoIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(): array
+    public function fetchFields(string $category): array
     {
+        // TODO: reimplement
+        return [];
         $client = $this->generateAuthorizedClient();
 
         $fieldEndpoints = [

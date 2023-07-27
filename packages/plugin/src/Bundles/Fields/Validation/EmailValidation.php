@@ -35,13 +35,13 @@ class EmailValidation extends FeatureBundle
         }
 
         $validator = new EmailValidator();
-        $hasDot = preg_match('/@.+\..+$/', $email);
+        $hasDot = preg_match('/@.+\..+$/', $value);
 
-        if (!$hasDot || !$validator->isValid($email, new NoRFCWarningsValidation())) {
+        if (!$hasDot || !$validator->isValid($value, new NoRFCWarningsValidation())) {
             $field->addError(
                 Freeform::t(
                     '{email} is not a valid email address',
-                    ['email' => $email],
+                    ['email' => $value],
                 )
             );
         }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Option } from '@components/form-controls/control-types/options/options.types';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { Condition } from '@ff-client/types/rules';
 import { operatorTypes } from '@ff-client/types/rules';

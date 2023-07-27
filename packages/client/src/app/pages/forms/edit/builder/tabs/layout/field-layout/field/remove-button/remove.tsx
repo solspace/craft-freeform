@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import type { Cell } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { removeCell } from '@editor/store/thunks/cells';
+import type { Field } from '@editor/store/slices/layout/fields';
+import { fieldThunks } from '@editor/store/thunks/fields';
 
 import DeleteIcon from './delete.svg';
 import { useRemoveAnimation } from './remove.animations';
 import { RemoveButtonWrapper } from './remove.styles';
 
 type Props = {
-  cell: Cell;
+  field: Field;
   active: boolean;
 };
 
-export const Remove: React.FC<Props> = ({ cell, active }) => {
+export const Remove: React.FC<Props> = ({ field, active }) => {
   const dispatch = useAppDispatch();
 
   const [hovering, setHovering] = useState(false);
@@ -25,7 +25,7 @@ export const Remove: React.FC<Props> = ({ cell, active }) => {
       onMouseLeave={() => setHovering(false)}
       onClick={(event) => {
         event.stopPropagation();
-        dispatch(removeCell(cell));
+        dispatch(fieldThunks.remove(field));
       }}
     >
       <DeleteIcon />

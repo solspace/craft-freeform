@@ -1,4 +1,4 @@
-import type { Field } from '@editor/store/slices/fields';
+import type { Field } from '@editor/store/slices/layout/fields';
 import { QKFavorites } from '@ff-client/queries/field-favorites';
 import type { APIError } from '@ff-client/types/api';
 import type { PropertyValueCollection } from '@ff-client/types/fields';

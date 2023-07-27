@@ -9,7 +9,7 @@ type Props = {
   cellWidth: number;
 };
 
-const CellDragPlaceholderContainer = styled(animated.div)`
+const FieldDragPlaceholderContainer = styled(animated.div)`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -22,7 +22,7 @@ const CellDragPlaceholderContainer = styled(animated.div)`
   border-radius: ${borderRadius.md};
 `;
 
-export const CellDragPlaceholder: React.FC<Props> = ({
+export const FieldDragPlaceholder: React.FC<Props> = ({
   isActive,
   hoverPosition,
   cellWidth,
@@ -38,5 +38,5 @@ export const CellDragPlaceholder: React.FC<Props> = ({
     },
   });
 
-  return <CellDragPlaceholderContainer style={style} />;
+  return <FieldDragPlaceholderContainer style={style} />;
 };

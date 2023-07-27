@@ -1,5 +1,4 @@
 import type { Page } from '@editor/builder/types/layout';
-import { CellType } from '@editor/builder/types/layout';
 import type { RootState } from '@editor/store';
 import { hasErrors } from '@ff-client/utils/errors';
 
@@ -17,11 +16,7 @@ export const contextSelectors = {
   hasErrors:
     (uid: string) =>
     (state: RootState): boolean => {
-      let pageHasErrors = false;
-
-      const fieldUidsWithErrors = state.fields
-        .filter((field) => hasErrors(field.errors))
-        .map((field) => field.uid);
+      const pageHasErrors = false;
 
       const layoutUid = state.layout.pages.find(
         (page) => page.uid === uid
@@ -29,24 +24,11 @@ export const contextSelectors = {
 
       state.layout.rows
         .filter((row) => row.layoutUid === layoutUid)
-        .forEach((row) => {
-          if (pageHasErrors) {
-            return;
-          }
-
-          const cells = state.layout.cells.filter(
-            (cell) => cell.rowUid === row.uid
-          );
-
-          cells.forEach((cell) => {
-            if (
-              cell.type === CellType.Field &&
-              fieldUidsWithErrors.includes(cell.targetUid)
-            ) {
-              pageHasErrors = true;
-            }
-          });
-        });
+        .some((row) =>
+          state.layout.fields
+            .filter((field) => field.rowUid === row.uid)
+            .some((field) => hasErrors(field.errors))
+        );
 
       return pageHasErrors;
     },

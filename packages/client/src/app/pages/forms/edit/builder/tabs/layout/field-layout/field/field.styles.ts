@@ -1,9 +1,9 @@
 import { animated } from 'react-spring';
 import styled from 'styled-components';
 
-export const CellWrapper = styled(animated.div)`
-  flex: 1;
-  overflow: hidden;
+export const FieldWrapper = styled(animated.div)`
+  position: relative;
+  //overflow: hidden;
 
   &,
   * {

@@ -1,65 +1,46 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import type { Layout as LayoutType } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { contextActions, FocusType } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
-import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
+import type { Field } from '@editor/store/slices/layout/fields';
 import { useFieldType } from '@ff-client/queries/field-types';
 import { Type } from '@ff-client/types/fields';
 import classes from '@ff-client/utils/classes';
 import { hasErrors } from '@ff-client/utils/errors';
-import template from 'lodash.template';
 
-import { GroupFieldLayout } from '../../../layout/group-field-layout/group-field-layout';
+import { GroupFieldLayout } from '../../layout/group-field-layout/group-field-layout';
 
-import { CellFieldWrapper, Instructions, Label } from './cell-field.styles';
+import { FieldCellWrapper, Instructions, Label } from './cell.styles';
+import { useFieldPreview } from './use-field-preview';
 
 type Props = {
-  uid: string;
+  field: Field;
 };
 
-export const CellField: React.FC<Props> = ({ uid }) => {
-  const field = useSelector(fieldSelectors.one(uid));
+export const FieldCell: React.FC<Props> = ({ field }) => {
+  const dispatch = useAppDispatch();
   const type = useFieldType(field?.typeClass);
+  const { uid } = field;
+
   const {
     active,
     type: contextType,
     uid: contextUid,
   } = useSelector(contextSelectors.focus);
-  const dispatch = useAppDispatch();
-
-  const layout: LayoutType | undefined = useSelector(
-    layoutSelectors.one(field.properties?.layout)
-  );
 
   const isActive = useMemo(() => {
     return active && contextType === FocusType.Field && contextUid === uid;
   }, [active, contextType, contextUid, uid]);
 
-  const preview = useMemo(() => {
-    if (
-      field?.properties === undefined ||
-      type?.previewTemplate === undefined
-    ) {
-      return 'No preview available';
-    }
-
-    try {
-      const compiled = template(type.previewTemplate);
-      return compiled(field.properties);
-    } catch (error) {
-      return `Preview template error: "${error.message}"`;
-    }
-  }, [field?.properties, type?.previewTemplate]);
+  const preview = useFieldPreview(field, type);
 
   if (field?.properties === undefined || !type) {
     return null;
   }
 
   return (
-    <CellFieldWrapper
+    <FieldCellWrapper
       className={classes(
         hasErrors(field.errors) && 'errors',
         type.type === Type.Group && 'group',
@@ -81,6 +62,6 @@ export const CellField: React.FC<Props> = ({ uid }) => {
       {type.type !== Type.Group && (
         <div dangerouslySetInnerHTML={{ __html: preview }} />
       )}
-    </CellFieldWrapper>
+    </FieldCellWrapper>
   );
 };

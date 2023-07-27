@@ -16,7 +16,7 @@ export const Instructions = styled.div`
   font-size: 12px;
 `;
 
-export const CellFieldWrapper = styled.div`
+export const FieldCellWrapper = styled.div`
   display: flex;
   flex-direction: column;
 

@@ -103,6 +103,9 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
 
     protected ?int $id = null;
     protected ?string $uid = null;
+    protected ?int $rowId = null;
+    protected ?string $rowUid = null;
+    protected ?int $order = null;
     protected int $pageIndex = 0;
     protected array $errors = [];
 
@@ -304,6 +307,21 @@ abstract class AbstractField implements FieldInterface, IdentificatorInterface
     public function getUid(): ?string
     {
         return $this->uid;
+    }
+
+    public function getRowId(): ?int
+    {
+        return $this->rowId;
+    }
+
+    public function getRowUid(): ?string
+    {
+        return $this->rowUid;
+    }
+
+    public function getOrder(): ?int
+    {
+        return $this->order;
     }
 
     public function getNormalizeIdentificator(): int|string|null

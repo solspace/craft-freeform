@@ -3,7 +3,7 @@ import type { ConnectDragPreview, ConnectDragSource } from 'react-dnd';
 import { useDrag } from 'react-dnd';
 import type { DragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
-import type { Cell } from '@editor/builder/types/layout';
+import type { Field } from '@editor/store/slices/layout/fields';
 
 import { useDragContext } from '../../drag.context';
 
@@ -11,34 +11,34 @@ type DropResult = {
   isDragging: boolean;
 };
 
-type CellDrag = DropResult & {
+type FieldDrag = DropResult & {
   drag: ConnectDragSource;
   preview: ConnectDragPreview;
 };
 
-export const useCellDrag = (cell: Cell, index: number): CellDrag => {
+export const useFieldDrag = (field: Field, index: number): FieldDrag => {
   const [{ isDragging }, drag, preview] = useDrag<
     DragItem,
     unknown,
     DropResult
   >(
     () => ({
-      type: Drag.Cell,
+      type: Drag.Field,
       collect: (monitor) => ({ isDragging: monitor.isDragging() }),
       item: {
-        type: Drag.Cell,
-        data: cell,
+        type: Drag.Field,
+        data: field,
         index,
       },
     }),
-    [cell]
+    [field]
   );
 
   const { dragOn, dragOff } = useDragContext();
 
   useEffect(() => {
     if (isDragging) {
-      dragOn(Drag.Cell);
+      dragOn(Drag.Field);
     } else {
       dragOff();
     }

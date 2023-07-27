@@ -7,7 +7,7 @@ import { Drag } from '@editor/builder/types/drag';
 import type { Page } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
 import { pageActions } from '@editor/store/slices/layout/pages';
-import { moveCellToPage } from '@editor/store/thunks/pages';
+import { moveFieldToPage } from '@editor/store/thunks/pages';
 
 import { useDragContext } from '../../../drag.context';
 
@@ -21,14 +21,14 @@ export const useTabDrop: TabDrop = (currentPageUid, page) => {
   const { dragOff } = useDragContext();
 
   const [{ canDrop }, ref] = useDrop<DragItem, unknown, { canDrop: boolean }>({
-    accept: [Drag.Cell],
+    accept: [Drag.Field],
     canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
     collect: (monitor) => ({
       canDrop: monitor.canDrop() && currentPageUid !== page.uid,
     }),
     drop: (item) => {
-      if (item.type === Drag.Cell) {
-        dispatch(moveCellToPage(item.data, page));
+      if (item.type === Drag.Field) {
+        dispatch(moveFieldToPage(item.data, page));
         dragOff();
       }
     },

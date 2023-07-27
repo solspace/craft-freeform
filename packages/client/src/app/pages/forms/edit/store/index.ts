@@ -7,7 +7,6 @@ import thunk from 'redux-thunk';
 
 import { statePersistMiddleware } from './middleware/state-persist';
 import context from './slices/context';
-import fields from './slices/fields';
 import form from './slices/form';
 import integrations from './slices/integrations';
 import layout from './slices/layout';
@@ -19,7 +18,6 @@ export const store = configureStore({
   middleware: [thunk, statePersistMiddleware],
   reducer: {
     form,
-    fields,
     layout,
     integrations,
     notifications,

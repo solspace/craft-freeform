@@ -73,6 +73,12 @@ interface FieldInterface
 
     public function getUid(): ?string;
 
+    public function getRowId(): ?int;
+
+    public function getRowUid(): ?string;
+
+    public function getOrder(): ?int;
+
     public function getHandle(): ?string;
 
     public function getLabel(): ?string;

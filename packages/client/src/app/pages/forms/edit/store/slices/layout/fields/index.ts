@@ -16,9 +16,11 @@ export type Field = Pick<FieldType, 'typeClass'> & {
   uid: string;
   properties: PropertyValueCollection;
   errors?: FieldErrors;
+  rowUid?: string;
+  order?: number;
 };
 
-type FieldState = Field[];
+export type FieldStore = Field[];
 
 type EditType = {
   uid: string;
@@ -32,27 +34,42 @@ type EditBatch = {
   properties: PropertyValueCollection;
 };
 
+type MoveToPayload = {
+  uid: string;
+  rowUid: string;
+  position: number;
+};
+
 type ErrorPayload = {
   [key: string]: FieldErrors;
 };
 
-const initialState: FieldState = [];
+const initialState: FieldStore = [];
 
 export const fieldsSlice = createSlice({
-  name: 'fields',
+  name: 'layout/fields',
   initialState,
   reducers: {
-    set: (state, action: PayloadAction<FieldState>) => {
+    set: (state, action: PayloadAction<FieldStore>) => {
       state.splice(0, state.length, ...action.payload);
     },
     add: (
       state,
       action: PayloadAction<{
-        fieldType: FieldType;
         uid: string;
+        rowUid: string;
+        fieldType: FieldType;
+        order?: number;
       }>
     ) => {
-      const { uid, fieldType } = action.payload;
+      const { uid, rowUid, fieldType, order } = action.payload;
+      const highestOrder = Math.max(
+        -1,
+        ...state
+          .filter((field) => field.rowUid === action.payload.rowUid)
+          .map((field) => field.order)
+      );
+
       const properties: PropertyValueCollection = {};
       fieldType.properties.forEach(
         (prop) => (properties[prop.handle] = prop.value)
@@ -69,9 +86,23 @@ export const fieldsSlice = createSlice({
 
       state.push({
         uid,
+        rowUid,
         typeClass: fieldType.typeClass,
         properties,
+        order: order !== undefined ? order : highestOrder + 1,
       });
+
+      // shift all other cells on the right by 1 order
+      if (order !== undefined) {
+        state
+          .filter((field) => field.rowUid === rowUid)
+          .filter((field) => field.uid !== uid)
+          .forEach((field) => {
+            if (field.order >= order) {
+              field.order += 1;
+            }
+          });
+      }
     },
     remove: (state, { payload: uid }: PayloadAction<string>) => {
       state.splice(
@@ -109,6 +140,56 @@ export const fieldsSlice = createSlice({
 
       for (const field of state) {
         field.errors = payload?.[field.uid];
+      }
+    },
+    moveTo: (state, action: PayloadAction<MoveToPayload>) => {
+      const { uid, rowUid, position } = action.payload;
+      const movedField = state.find((field) => field.uid === uid);
+
+      const previosRowUid = movedField.rowUid;
+      const previousPosition = movedField.order;
+      const isSameRow = previosRowUid === rowUid;
+
+      if (previousPosition === undefined) {
+        return;
+      }
+
+      movedField.rowUid = rowUid;
+      movedField.order = position;
+
+      if (!isSameRow) {
+        // Reset the order of cells in previous row
+        state
+          .filter((field) => field.rowUid === previosRowUid)
+          .forEach((field) => {
+            const isAfterMovedField = field.order >= previousPosition;
+            field.order -= isAfterMovedField ? 1 : 0;
+          });
+
+        // update all new row orders after the new cell
+        state
+          .filter((field) => field.rowUid === rowUid)
+          .filter((field) => field.uid !== movedField.uid)
+          .forEach((field) => {
+            const isAfterMovedField = field.order >= movedField.order;
+            field.order += isAfterMovedField ? 1 : 0;
+          });
+      }
+
+      if (isSameRow) {
+        // re-calculate orders for the current row
+        state
+          .filter((field) => field.rowUid === rowUid)
+          .filter((field) => field.uid !== movedField.uid)
+          .forEach((field) => {
+            if (field.order > previousPosition && field.order <= position) {
+              field.order -= 1;
+            }
+
+            if (field.order < previousPosition && field.order >= position) {
+              field.order += 1;
+            }
+          });
       }
     },
   },

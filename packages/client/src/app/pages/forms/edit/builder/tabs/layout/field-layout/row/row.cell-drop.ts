@@ -6,8 +6,7 @@ import type { DragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
 import type { Row } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { moveExistingCellToExistingRow } from '@editor/store/thunks/cells';
-import { addNewFieldToExistingRow } from '@editor/store/thunks/fields';
+import { fieldThunks } from '@editor/store/thunks/fields';
 
 type CellDrop = {
   isOver: boolean;
@@ -44,18 +43,18 @@ export const useRowCellDrop = (
     ref,
   ] = useDrop<DragItem, void, CellDrop>(
     {
-      accept: [Drag.Cell, Drag.FieldType],
+      accept: [Drag.Field, Drag.FieldType],
       collect: (monitor) => {
         const item = monitor.getItem();
 
-        const isDraggingCell = item?.type === Drag.Cell;
+        const isDraggingCell = item?.type === Drag.Field;
         const isCurrentRow =
-          item?.type === Drag.Cell && item.data.rowUid === row.uid;
+          item?.type === Drag.Field && item.data.rowUid === row.uid;
 
         return {
           isOver: monitor.isOver({ shallow: true }),
           canDrop: monitor.canDrop(),
-          dragCellIndex: item?.type === Drag.Cell ? item.index : undefined,
+          dragCellIndex: item?.type === Drag.Field ? item.index : undefined,
           isCurrentRow,
           isDraggingCell,
         };
@@ -67,7 +66,7 @@ export const useRowCellDrop = (
         }
 
         const isThisRow =
-          item.type === Drag.Cell && item.data.rowUid === row.uid;
+          item.type === Drag.Field && item.data.rowUid === row.uid;
 
         const count = cellCount + (isThisRow ? 0 : 1);
         if (count <= 1) {
@@ -83,13 +82,17 @@ export const useRowCellDrop = (
         }
       },
       drop: (item) => {
-        if (item.type === Drag.Cell) {
+        if (item.type === Drag.Field) {
           dispatch(
-            moveExistingCellToExistingRow(item.data, row, hoverPosition)
+            fieldThunks.move.existingField.existingRow(
+              item.data,
+              row,
+              hoverPosition
+            )
           );
         } else if (item.type === Drag.FieldType) {
           dispatch(
-            addNewFieldToExistingRow({
+            fieldThunks.move.newField.existingRow({
               fieldType: item.data,
               row,
               order: hoverPosition,

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FormComponent } from '@components/form-controls';
-import type { Field } from '@editor/store/slices/fields';
+import type { Field } from '@editor/store/slices/layout/fields';
 import type { Property } from '@ff-client/types/properties';
 
 import { useFieldPropertyUpdateGenerator } from './use-field-property-update-generator';

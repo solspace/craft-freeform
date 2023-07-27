@@ -19,6 +19,11 @@ class GroupField extends AbstractField implements NoStorageInterface, ExtraField
 
     protected ?Layout $layout;
 
+    public function getLayout(): ?Layout
+    {
+        return $this->layout;
+    }
+
     public function getType(): string
     {
         return self::TYPE_GROUP;

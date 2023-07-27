@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSpring } from 'react-spring';
-import type { Field } from '@editor/store/slices/fields';
+import type { Field } from '@editor/store/slices/layout/fields';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useFieldType } from '@ff-client/queries/field-types';
 import classes from '@ff-client/utils/classes';

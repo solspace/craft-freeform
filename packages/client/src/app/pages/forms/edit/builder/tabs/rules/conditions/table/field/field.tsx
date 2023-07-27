@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
 import type { Condition } from '@ff-client/types/rules';
@@ -17,7 +16,6 @@ export const FieldSelect: React.FC<Props> = ({ condition, onChange }) => {
 
   const cartographed = useSelector(layoutSelectors.cartographed.pageFieldList);
   const pages = useSelector(pageSelecors.all);
-  const fields = useSelector(fieldSelectors.all);
 
   return (
     <div className="select fullwidth">
@@ -31,14 +29,13 @@ export const FieldSelect: React.FC<Props> = ({ condition, onChange }) => {
             key={mapped.page}
             label={pages.find((page) => page.uid === mapped.page)?.label}
           >
-            {mapped.fields.map((fieldUid) => {
-              const field = fields.find((field) => field.uid === fieldUid);
-              if (!field || field.uid === uid) {
+            {mapped.fields.map((field) => {
+              if (field.uid === uid) {
                 return null;
               }
 
               return (
-                <option key={fieldUid} value={fieldUid}>
+                <option key={field.uid} value={field.uid}>
                   {field.properties.label}
                 </option>
               );

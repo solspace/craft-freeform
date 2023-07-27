@@ -17,7 +17,7 @@ export const RowWrapper = styled(animated.div)`
   transform-origin: 50% 0%;
 `;
 
-export const RowCellsContainer = styled(animated.div)`
+export const RowFieldsContainer = styled(animated.div)`
   position: relative;
   z-index: 2;
 

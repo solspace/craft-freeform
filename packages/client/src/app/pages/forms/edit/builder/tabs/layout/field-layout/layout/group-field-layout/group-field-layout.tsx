@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@editor/store';
-import type { Field } from '@editor/store/slices/fields';
-import { fieldActions } from '@editor/store/slices/fields';
+import type { Field } from '@editor/store/slices/layout/fields';
+import { fieldActions } from '@editor/store/slices/layout/fields';
 import { layoutActions } from '@editor/store/slices/layout/layouts';
 import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 import { rowSelectors } from '@editor/store/slices/layout/rows/rows.selectors';

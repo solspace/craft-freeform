@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { LoadingText } from '@components/loaders/loading-text/loading-text';
 import { useAppDispatch } from '@editor/store';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { fieldRuleActions } from '@editor/store/slices/rules/fields';
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
 import { useQueryFormRules } from '@ff-client/queries/rules';

@@ -4,8 +4,8 @@ import { useSelector } from 'react-redux';
 import { FormComponent } from '@components/form-controls';
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
-import { changeFieldType } from '@editor/store/thunks/fields';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
+import { fieldThunks } from '@editor/store/thunks/fields';
 import CloseIcon from '@ff-client/assets/icons/circle-xmark-solid.svg';
 import {
   useFetchFieldPropertySections,
@@ -114,7 +114,7 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
               }
 
               dispatch(
-                changeFieldType(field, searchFieldType(value as string))
+                fieldThunks.change.type(field, searchFieldType(value as string))
               );
             }}
           />

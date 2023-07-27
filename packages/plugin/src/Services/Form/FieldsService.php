@@ -54,7 +54,10 @@ class FieldsService extends BaseService
             $forms = $this->formsService->getAllForms();
 
             /** @var FormFieldRecord[] $records */
-            $records = FormFieldRecord::find()->all();
+            $records = FormFieldRecord::find()
+                ->with('row')
+                ->all()
+            ;
 
             $fields = [];
             foreach ($records as $record) {
@@ -89,6 +92,9 @@ class FieldsService extends BaseService
         $properties = [
             'id' => $record->id,
             'uid' => $record->uid,
+            'rowId' => $record->rowId,
+            'rowUid' => $record->getRow()->one()?->uid,
+            'order' => $record->order,
             ...$metadata,
         ];
 
@@ -111,6 +117,7 @@ class FieldsService extends BaseService
 
         if (null === $records) {
             $records = FormFieldRecord::find()
+                ->with('row')
                 ->where(['formId' => $form->getId()])
                 ->all()
             ;

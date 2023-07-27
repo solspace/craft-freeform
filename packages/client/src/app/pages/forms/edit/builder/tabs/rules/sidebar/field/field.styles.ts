@@ -1,10 +1,13 @@
+import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const CellFieldWrapper = styled.div`
+export const FieldWrapper = styled(animated.div)`
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  flex: 1;
 
   overflow: hidden;
   padding: 5px 7px;
@@ -17,6 +20,11 @@ export const CellFieldWrapper = styled.div`
   border-radius: ${borderRadius.md};
 
   transition: all 0.2s ease-out;
+
+  &,
+  * {
+    cursor: pointer;
+  }
 
   &.has-rule:not(.active) {
     border-right: 4px solid ${colors.gray200};

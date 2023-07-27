@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { ControlType } from '@components/form-controls/types';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { useFieldTypeSearch } from '@ff-client/queries/field-types';
 import type {
   FieldProperty,

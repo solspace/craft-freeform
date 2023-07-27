@@ -4,8 +4,7 @@ import type { DragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
 import type { Row } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { moveExistingCellToNewRow } from '@editor/store/thunks/cells';
-import { addNewFieldToNewRow } from '@editor/store/thunks/fields';
+import { fieldThunks } from '@editor/store/thunks/fields';
 
 type RowDropHook = {
   ref: ConnectDropTarget;
@@ -20,18 +19,18 @@ export const useRowDrop = (row: Row): RowDropHook => {
 
   const [{ isOver, canDrop }, ref] = useDrop<DragItem, void, CollectedProps>(
     () => ({
-      accept: [Drag.FieldType, Drag.Cell],
+      accept: [Drag.FieldType, Drag.Field],
       collect: (monitor) => ({
         isOver: monitor.isOver({ shallow: true }),
         canDrop: monitor.canDrop(),
       }),
       canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
       drop: (item) => {
-        if (item.type === Drag.Cell) {
+        if (item.type === Drag.Field) {
           dispatch(
-            moveExistingCellToNewRow({
+            fieldThunks.move.existingField.newRow({
               layoutUid: row.layoutUid,
-              cell: item.data,
+              field: item.data,
               order: row.order,
             })
           );
@@ -39,7 +38,7 @@ export const useRowDrop = (row: Row): RowDropHook => {
 
         if (item.type === Drag.FieldType) {
           dispatch(
-            addNewFieldToNewRow({
+            fieldThunks.move.newField.newRow({
               fieldType: item.data,
               row,
             })

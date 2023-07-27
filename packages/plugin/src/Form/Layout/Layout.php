@@ -12,13 +12,17 @@ use Solspace\Freeform\Library\Collections\PageCollection;
 class Layout implements \IteratorAggregate
 {
     private PageCollection $pageCollection;
-
     private FieldCollection $fieldCollection;
 
-    public function __construct()
+    public function __construct(private ?string $uid = null)
     {
         $this->pageCollection = new PageCollection();
         $this->fieldCollection = new FieldCollection();
+    }
+
+    public function getUid(): ?string
+    {
+        return $this->uid;
     }
 
     public function getPages(): PageCollection

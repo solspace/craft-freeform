@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
+import type { Field as FieldTypeProp } from '@editor/store/slices/layout/fields';
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
 import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
@@ -10,42 +10,39 @@ import classes from '@ff-client/utils/classes';
 
 import { CombinatorIcon } from './icons/combinator-icon';
 import { DisplayIcon } from './icons/display-icon';
-import {
-  CellFieldWrapper,
-  FieldInfo,
-  Icon,
-  Label,
-  Small,
-} from './cell-field.styles';
+import { FieldInfo, FieldWrapper, Icon, Label, Small } from './field.styles';
 
 type Props = {
-  uid: string;
+  field: FieldTypeProp;
 };
 
-export const CellField: React.FC<Props> = ({ uid }) => {
+export const Field: React.FC<Props> = ({ field }) => {
   const { uid: activeFieldUid } = useParams();
   const navigate = useNavigate();
 
-  const field = useSelector(fieldSelectors.one(uid));
   const type = useFieldType(field?.typeClass);
 
-  const currentField = activeFieldUid === uid;
+  const currentField = activeFieldUid === field.uid;
   const activeRule = useSelector(fieldRuleSelectors.one(activeFieldUid));
   const activePageRule = useSelector(pageRuleSelectors.one(activeFieldUid));
-  const hasRule = useSelector(fieldRuleSelectors.hasRule(uid));
-  const hasPageRule = useSelector(pageRuleSelectors.hasRule(uid));
+  const hasRule = useSelector(fieldRuleSelectors.hasRule(field.uid));
+  const hasPageRule = useSelector(pageRuleSelectors.hasRule(field.uid));
 
   const condition =
-    activeRule?.conditions.find((condition) => condition.field === uid) ||
-    activePageRule?.conditions.find((condition) => condition.field === uid);
+    activeRule?.conditions.find((condition) => condition.field === field.uid) ||
+    activePageRule?.conditions.find(
+      (condition) => condition.field === field.uid
+    );
 
   if (field?.properties === undefined) {
     return null;
   }
 
   return (
-    <CellFieldWrapper
-      onClick={() => navigate(activeFieldUid === uid ? '' : `field/${uid}`)}
+    <FieldWrapper
+      onClick={() =>
+        navigate(activeFieldUid === field.uid ? '' : `field/${field.uid}`)
+      }
       className={classes(
         currentField && 'active',
         (hasRule || hasPageRule) && 'has-rule',
@@ -65,6 +62,6 @@ export const CellField: React.FC<Props> = ({ uid }) => {
           {operatorShorthand[condition.operator]} {condition.value}
         </Small>
       )}
-    </CellFieldWrapper>
+    </FieldWrapper>
   );
 };

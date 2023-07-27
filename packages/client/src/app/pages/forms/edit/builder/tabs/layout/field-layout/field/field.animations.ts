@@ -3,7 +3,7 @@ import { useSpring } from 'react-spring';
 
 import { useDragContext } from '../../drag.context';
 
-type CellDragAnimation = (options: {
+type FieldDragAnimation = (options: {
   width: number;
   isDragging: boolean;
   isOver: boolean;
@@ -65,7 +65,7 @@ const calculateX = (
   return 0;
 };
 
-export const useCellDragAnimation: CellDragAnimation = ({
+export const useFieldDragAnimation: FieldDragAnimation = ({
   width,
   isDragging,
   isOver,

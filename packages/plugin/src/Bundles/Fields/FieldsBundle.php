@@ -50,7 +50,7 @@ class FieldsBundle extends FeatureBundle
         return 100;
     }
 
-    public function registerFieldTypes(RegisterFieldTypesEvent $event)
+    public function registerFieldTypes(RegisterFieldTypesEvent $event): void
     {
         $event->addType(
             // Standard fields

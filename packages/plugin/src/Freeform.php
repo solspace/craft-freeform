@@ -34,7 +34,6 @@ use Solspace\Freeform\Events\Freeform\RegisterSettingsNavigationEvent;
 use Solspace\Freeform\Events\Integrations\FetchMailingListTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchPaymentGatewayTypesEvent;
 use Solspace\Freeform\Events\Integrations\FetchWebhookTypesEvent;
-use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\FieldTypes\FormFieldType;
 use Solspace\Freeform\FieldTypes\SubmissionFieldType;
 use Solspace\Freeform\Form\Form;
@@ -45,7 +44,6 @@ use Solspace\Freeform\Library\Bundles\BundleInterface;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\FormHookHandler;
 use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHandler;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;
-use Solspace\Freeform\Models\FieldModel;
 use Solspace\Freeform\Models\Settings;
 use Solspace\Freeform\Records\FeedRecord;
 use Solspace\Freeform\Records\StatusRecord;
@@ -298,89 +296,6 @@ class Freeform extends Plugin
      */
     public function afterInstall(): void
     {
-        $fieldService = self::getInstance()->fields;
-
-        $field = FieldModel::create();
-        $field->handle = 'firstName';
-        $field->label = 'First Name';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'lastName';
-        $field->label = 'Last Name';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'email';
-        $field->label = 'Email';
-        $field->type = FieldInterface::TYPE_EMAIL;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'website';
-        $field->label = 'Website';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'cellPhone';
-        $field->label = 'Cell Phone';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'homePhone';
-        $field->label = 'Home Phone';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'companyName';
-        $field->label = 'Company Name';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'address';
-        $field->label = 'Address';
-        $field->setMetaProperty('rows', 2);
-        $field->type = FieldInterface::TYPE_TEXTAREA;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'city';
-        $field->label = 'City';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'state';
-        $field->label = 'State';
-        $field->type = FieldInterface::TYPE_SELECT;
-        $field->setMetaProperty('options', include __DIR__.'/Resources/states.php');
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'zipCode';
-        $field->label = 'Zip Code';
-        $field->type = FieldInterface::TYPE_TEXT;
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'message';
-        $field->label = 'Message';
-        $field->type = FieldInterface::TYPE_TEXTAREA;
-        $field->setMetaProperty('rows', 5);
-        $fieldService->save($field);
-
-        $field = FieldModel::create();
-        $field->handle = 'number';
-        $field->label = 'Number';
-        $field->type = FieldInterface::TYPE_NUMBER;
-        $fieldService->save($field);
-
         $status = StatusRecord::create();
         $status->name = 'Pending';
         $status->handle = 'pending';
@@ -402,12 +317,6 @@ class Freeform extends Plugin
         $status->color = 'grey';
         $status->sortOrder = 3;
         $status->save();
-
-        $field = FieldModel::create();
-        $field->handle = 'payment';
-        $field->label = '';
-        $field->type = FieldInterface::TYPE_CREDIT_CARD_DETAILS;
-        $fieldService->save($field);
     }
 
     protected function createSettingsModel(): Settings

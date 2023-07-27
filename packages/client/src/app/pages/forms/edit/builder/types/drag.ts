@@ -1,12 +1,13 @@
+import type { Field } from '@editor/store/slices/layout/fields';
 import type { FieldFavorite } from '@ff-client/types/fields';
 import type { FieldType } from '@ff-client/types/properties';
 
-import type { Cell, Page } from './layout';
+import type { Page } from './layout';
 
 export enum Drag {
   FieldType = 'field-type',
   FavoriteField = 'favorite-field',
-  Cell = 'cell',
+  Field = 'field',
   Row = 'row',
   Page = 'page',
 }
@@ -19,10 +20,10 @@ type BaseDragItem<T extends Drag, D> = {
 export type PageDragItem = BaseDragItem<Drag.Page, Page> & { index: number };
 export type FieldTypeDragItem = BaseDragItem<Drag.FieldType, FieldType>;
 export type FavoriteDragItem = BaseDragItem<Drag.FavoriteField, FieldFavorite>;
-export type CellDragItem = BaseDragItem<Drag.Cell, Cell> & { index: number };
+export type FieldDragItem = BaseDragItem<Drag.Field, Field> & { index: number };
 
 export type DragItem =
-  | CellDragItem
+  | FieldDragItem
   | FieldTypeDragItem
   | FavoriteDragItem
   | PageDragItem;

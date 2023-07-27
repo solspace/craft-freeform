@@ -2,10 +2,10 @@ import type { MutableRefObject } from 'react';
 import React, { useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { Row as RowType } from '@editor/builder/types/layout';
-import { cellSelectors } from '@editor/store/slices/layout/cells/cells.selectors';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 
-import { Cell } from '../cell/cell';
-import { CellDragPlaceholder } from '../cell/cell.placeholder';
+import { Field } from '../field/field';
+import { FieldDragPlaceholder } from '../field/field.placeholder';
 
 import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
 import { useRowCellDrop } from './row.cell-drop';
@@ -14,7 +14,7 @@ import { useRowDrop } from './row.drop';
 import {
   DropZone,
   DropZoneAnimation,
-  RowCellsContainer,
+  RowFieldsContainer,
   RowWrapper,
 } from './row.styles';
 
@@ -24,7 +24,7 @@ type Props = {
 
 export const Row: React.FC<Props> = ({ row }) => {
   const wrapperRef = useRef<HTMLDivElement>(null);
-  const cells = useSelector(cellSelectors.inRow(row));
+  const fields = useSelector(fieldSelectors.inRow(row));
 
   const [width, offsetX] = useRowDimensions(wrapperRef);
 
@@ -33,16 +33,16 @@ export const Row: React.FC<Props> = ({ row }) => {
   const rowAnimation = useRowAnimation(isOverRow);
 
   const {
-    ref: cellDropRef,
+    ref: fieldDropRef,
     isOver,
     isCurrentRow,
     isDraggingCell,
     dragCellIndex,
     hoverPosition,
     cellWidth,
-  } = useRowCellDrop(wrapperRef, row, cells.length, width, offsetX);
+  } = useRowCellDrop(wrapperRef, row, fields.length, width, offsetX);
 
-  const ref = cellDropRef(
+  const ref = fieldDropRef(
     wrapperRef
   ) as unknown as MutableRefObject<HTMLDivElement>;
 
@@ -51,26 +51,26 @@ export const Row: React.FC<Props> = ({ row }) => {
       <DropZone ref={rowDropRef}>
         <DropZoneAnimation style={placeholderAnimation} />
       </DropZone>
-      <RowCellsContainer style={rowAnimation}>
-        <CellDragPlaceholder
+      <RowFieldsContainer style={rowAnimation}>
+        <FieldDragPlaceholder
           isActive={isOver}
           hoverPosition={hoverPosition}
           cellWidth={cellWidth}
         />
-        {cells.map((cell, idx) => (
-          <Cell
-            cell={cell}
+        {fields.map((field, idx) => (
+          <Field
+            field={field}
             isOver={isOver}
             hoverPosition={hoverPosition}
             isCurrentRow={isCurrentRow}
             isDraggingCell={isDraggingCell}
             dragCellIndex={dragCellIndex}
             index={idx}
-            key={cell.uid}
+            key={field.uid}
             width={cellWidth || width}
           />
         ))}
-      </RowCellsContainer>
+      </RowFieldsContainer>
     </RowWrapper>
   );
 };

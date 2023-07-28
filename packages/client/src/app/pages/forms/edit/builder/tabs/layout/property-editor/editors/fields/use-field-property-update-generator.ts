@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import type { MiddlewareInjectCallback } from '@components/middleware/middleware';
 import { applyMiddleware } from '@components/middleware/middleware';
 import { useAppDispatch } from '@editor/store';
-import type { Field } from '@editor/store/slices/fields';
-import { fieldActions } from '@editor/store/slices/fields';
+import type { Field } from '@editor/store/slices/layout/fields';
+import { fieldActions } from '@editor/store/slices/layout/fields';
 import { useFetchFieldTypes } from '@ff-client/queries/field-types';
 import type { Property } from '@ff-client/types/properties';
 
@@ -38,7 +38,8 @@ export const useFieldPropertyUpdateGenerator = (
                 value: applyMiddleware(
                   value,
                   targetProperty.middleware,
-                  getState().fields.find((f) => f.uid === field.uid).properties
+                  getState().layout.fields.find((f) => f.uid === field.uid)
+                    .properties
                 ),
               })
             );
@@ -51,7 +52,8 @@ export const useFieldPropertyUpdateGenerator = (
               value: applyMiddleware(
                 value,
                 property.middleware,
-                getState().fields.find((f) => f.uid === field.uid).properties,
+                getState().layout.fields.find((f) => f.uid === field.uid)
+                  .properties,
                 injectCallback
               ),
             })

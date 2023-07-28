@@ -43,10 +43,6 @@ class FormTransformer
                 [$this->layoutTransformer, 'transformRow'],
                 $this->layoutsService->getRows($form)
             ),
-            'cells' => array_map(
-                [$this->layoutTransformer, 'transformCell'],
-                $this->layoutsService->getCells($form)
-            ),
         ];
 
         return $transformed;

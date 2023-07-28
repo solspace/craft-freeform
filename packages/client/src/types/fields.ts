@@ -1,5 +1,9 @@
 import type { GenericValue, Property } from './properties';
 
+export enum Type {
+  Group = 'group',
+}
+
 export type FieldType = {
   name: string;
   typeClass: string;

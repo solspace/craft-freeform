@@ -516,8 +516,7 @@
     {% set width = (12 / (row|length)) %}
 
     <div{{ form.attributes.row }}>
-        {% for cell in row %}
-            {% set field = cell.field %}
+        {% for field in row %}
 
             {{ field.render({
                 attributes: {

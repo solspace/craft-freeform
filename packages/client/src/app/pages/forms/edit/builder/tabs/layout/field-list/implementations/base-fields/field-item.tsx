@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch } from '@editor/store';
-import { addNewFieldToNewRow } from '@editor/store/thunks/fields';
+import { fieldThunks } from '@editor/store/thunks/fields';
 import type { FieldType } from '@ff-client/types/properties';
 
 import { Field } from '../../field-group/field/field';
@@ -18,7 +18,7 @@ export const FieldItem: React.FC<Props> = ({ fieldType }) => {
   const { ref } = useBaseFieldDrag(fieldType);
 
   const onClick = (): void => {
-    dispatch(addNewFieldToNewRow({ fieldType }));
+    dispatch(fieldThunks.move.newField.newRow({ fieldType }));
   };
 
   return <Field icon={icon} label={name} onClick={onClick} dragRef={ref} />;

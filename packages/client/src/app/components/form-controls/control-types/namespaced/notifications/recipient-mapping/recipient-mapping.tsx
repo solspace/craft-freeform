@@ -4,7 +4,7 @@ import { Control } from '@components/form-controls/control';
 import type { Option } from '@components/form-controls/control-types/options/options.types';
 import { Source } from '@components/form-controls/control-types/options/options.types';
 import type { ControlType } from '@components/form-controls/types';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { Notification } from '@ff-client/types/notifications';
 import { RecipientMapping } from '@ff-client/types/notifications';

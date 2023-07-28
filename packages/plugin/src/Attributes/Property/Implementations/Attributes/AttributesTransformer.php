@@ -14,10 +14,10 @@ class AttributesTransformer implements TransformerInterface
 
     public function reverseTransform($value): object
     {
-        if (!$value instanceof FieldAttributesCollection) {
-            $value = new FieldAttributesCollection();
+        if ($value instanceof FieldAttributesCollection) {
+            $value->jsonSerialize();
         }
 
-        return $value->jsonSerialize();
+        return (new FieldAttributesCollection())->jsonSerialize();
     }
 }

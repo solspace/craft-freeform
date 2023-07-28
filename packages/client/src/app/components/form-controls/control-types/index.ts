@@ -4,6 +4,7 @@ export { default as checkboxes } from './checkboxes/checkboxes';
 export { default as colorPicker } from './color-picker/color-picker';
 export { default as datePicker } from './date-picker/date-picker';
 export { default as field } from './field/field';
+export { default as hidden } from './hidden/hidden';
 export { default as int } from './int/int';
 export { default as label } from './label/label';
 export { default as minMax } from './min-max/min-max';

@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Row as RowType } from '@editor/builder/types/layout';
-import { cellSelectors } from '@editor/store/slices/layout/cells/cells.selectors';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
 
-import { Cell } from '../cell/cell';
+import { Field } from '../field/field';
 
 import { RowWrapper } from './row.styles';
 
@@ -12,12 +12,12 @@ type Props = {
 };
 
 export const Row: React.FC<Props> = ({ row }) => {
-  const cells = useSelector(cellSelectors.inRow(row));
+  const fields = useSelector(fieldSelectors.inRow(row));
 
   return (
     <RowWrapper>
-      {cells.map((cell) => (
-        <Cell key={cell.uid} cell={cell} />
+      {fields.map((field) => (
+        <Field key={field.uid} field={field} />
       ))}
     </RowWrapper>
   );

@@ -17,7 +17,7 @@ export const RowWrapper = styled(animated.div)`
   transform-origin: 50% 0%;
 `;
 
-export const RowCellsContainer = styled(animated.div)`
+export const RowFieldsContainer = styled(animated.div)`
   position: relative;
   z-index: 2;
 
@@ -59,7 +59,7 @@ export const DropZoneAnimation = styled(animated.div)`
   font-family: monospace;
 `;
 
-export const CellPlaceholder = styled(animated.div)`
+export const FieldPlaceholder = styled(animated.div)`
   border: 2px dashed grey;
 
   min-height: ${minHeight};

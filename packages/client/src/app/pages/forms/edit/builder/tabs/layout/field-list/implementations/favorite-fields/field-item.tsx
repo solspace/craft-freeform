@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppDispatch } from '@editor/store';
-import { addNewFieldToNewRow } from '@editor/store/thunks/fields';
+import { fieldThunks } from '@editor/store/thunks/fields';
 import { useFieldType } from '@ff-client/queries/field-types';
 import type { FieldFavorite } from '@ff-client/types/fields';
 
@@ -29,7 +29,7 @@ export const FieldItem: React.FC<Props> = ({ favorite }) => {
   const { icon } = fieldType;
 
   const onClick = (): void => {
-    dispatch(addNewFieldToNewRow({ fieldType: clonedFieldType }));
+    dispatch(fieldThunks.move.newField.newRow({ fieldType: clonedFieldType }));
   };
 
   return <Field icon={icon} label={label} onClick={onClick} dragRef={ref} />;

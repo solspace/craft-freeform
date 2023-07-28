@@ -1,20 +1,20 @@
 import type { MutableRefObject } from 'react';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Row as RowType } from '@editor/builder/types/layout';
-import { cellSelectors } from '@editor/store/slices/layout/cells/cells.selectors';
+import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
+import { useDimensionsObserver } from '@ff-client/hooks/use-height-animation';
 
-import { Cell } from '../cell/cell';
-import { CellDragPlaceholder } from '../cell/cell.placeholder';
+import { Field } from '../field/field';
+import { FieldDragPlaceholder } from '../field/field.placeholder';
 
 import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
-import { useRowCellDrop } from './row.cell-drop';
-import { useRowDimensions } from './row.dimensions';
 import { useRowDrop } from './row.drop';
+import { useRowFieldDrop } from './row.field-drop';
 import {
   DropZone,
   DropZoneAnimation,
-  RowCellsContainer,
+  RowFieldsContainer,
   RowWrapper,
 } from './row.styles';
 
@@ -23,26 +23,29 @@ type Props = {
 };
 
 export const Row: React.FC<Props> = ({ row }) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const cells = useSelector(cellSelectors.inRow(row));
+  const fields = useSelector(fieldSelectors.inRow(row));
 
-  const [width, offsetX] = useRowDimensions(wrapperRef);
+  const { ref: wrapperRef, dimensions } =
+    useDimensionsObserver<HTMLDivElement>();
+
+  const width = dimensions.width;
+  const offsetX = dimensions.x;
 
   const { ref: rowDropRef, isOver: isOverRow } = useRowDrop(row);
   const placeholderAnimation = usePlaceholderAnimation(isOverRow);
   const rowAnimation = useRowAnimation(isOverRow);
 
   const {
-    ref: cellDropRef,
+    ref: fieldDropRef,
     isOver,
     isCurrentRow,
-    isDraggingCell,
-    dragCellIndex,
+    isDraggingField,
+    dragFieldIndex,
     hoverPosition,
-    cellWidth,
-  } = useRowCellDrop(wrapperRef, row, cells.length, width, offsetX);
+    fieldWidth,
+  } = useRowFieldDrop(wrapperRef, row, fields.length, width, offsetX);
 
-  const ref = cellDropRef(
+  const ref = fieldDropRef(
     wrapperRef
   ) as unknown as MutableRefObject<HTMLDivElement>;
 
@@ -51,26 +54,26 @@ export const Row: React.FC<Props> = ({ row }) => {
       <DropZone ref={rowDropRef}>
         <DropZoneAnimation style={placeholderAnimation} />
       </DropZone>
-      <RowCellsContainer style={rowAnimation}>
-        <CellDragPlaceholder
+      <RowFieldsContainer style={rowAnimation}>
+        <FieldDragPlaceholder
           isActive={isOver}
           hoverPosition={hoverPosition}
-          cellWidth={cellWidth}
+          fieldWidth={fieldWidth}
         />
-        {cells.map((cell, idx) => (
-          <Cell
-            cell={cell}
+        {fields.map((field, idx) => (
+          <Field
+            field={field}
             isOver={isOver}
             hoverPosition={hoverPosition}
             isCurrentRow={isCurrentRow}
-            isDraggingCell={isDraggingCell}
-            dragCellIndex={dragCellIndex}
+            isDraggingField={isDraggingField}
+            dragFieldIndex={dragFieldIndex}
             index={idx}
-            key={cell.uid}
-            width={cellWidth || width}
+            key={field.uid}
+            width={fieldWidth || width}
           />
         ))}
-      </RowCellsContainer>
+      </RowFieldsContainer>
     </RowWrapper>
   );
 };

@@ -4,26 +4,30 @@ namespace Solspace\Freeform\Form\Layout;
 
 use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Library\Collections\FieldCollection;
-use Solspace\Freeform\Library\Collections\PageCollection;
+use Solspace\Freeform\Library\Collections\RowCollection;
 
 /**
- * @implements \IteratorAggregate<int, Page>
+ * @implements \IteratorAggregate<int, Row>
  */
 class Layout implements \IteratorAggregate
 {
-    private PageCollection $pageCollection;
-
+    private RowCollection $rowCollection;
     private FieldCollection $fieldCollection;
 
-    public function __construct()
+    public function __construct(private ?string $uid = null)
     {
-        $this->pageCollection = new PageCollection();
+        $this->rowCollection = new RowCollection();
         $this->fieldCollection = new FieldCollection();
     }
 
-    public function getPages(): PageCollection
+    public function getUid(): ?string
     {
-        return $this->pageCollection;
+        return $this->uid;
+    }
+
+    public function getRows(): RowCollection
+    {
+        return $this->rowCollection;
     }
 
     public function hasFields(string $implements): bool
@@ -47,6 +51,6 @@ class Layout implements \IteratorAggregate
 
     public function getIterator(): \ArrayIterator
     {
-        return $this->pageCollection->getIterator();
+        return $this->rowCollection->getIterator();
     }
 }

@@ -7,11 +7,11 @@ export const removeEmptyRows = (
 ): void => {
   const removeUids: string[] = [];
   state.layout.rows.forEach((row) => {
-    const cellCount = state.layout.cells.filter(
-      (cell) => cell.rowUid === row.uid
+    const fieldCount = state.layout.fields.filter(
+      (field) => field.rowUid === row.uid
     ).length;
 
-    if (cellCount === 0) {
+    if (fieldCount === 0) {
       removeUids.push(row.uid);
     }
   });

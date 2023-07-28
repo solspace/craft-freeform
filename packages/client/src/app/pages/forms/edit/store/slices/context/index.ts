@@ -5,7 +5,6 @@ export enum FocusType {
   Page = 'page',
   Field = 'field',
   Row = 'row',
-  Cell = 'cell',
 }
 
 export enum State {

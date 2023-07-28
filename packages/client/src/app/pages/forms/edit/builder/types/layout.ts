@@ -38,16 +38,3 @@ export type Row = {
   layoutUid: string;
   order: number;
 };
-
-export enum CellType {
-  Field = 'field',
-  Layout = 'layout',
-}
-
-export type Cell = {
-  uid: string;
-  type: CellType;
-  rowUid: string;
-  order: number;
-  targetUid: string;
-};

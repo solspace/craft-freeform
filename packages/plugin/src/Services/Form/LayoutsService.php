@@ -3,17 +3,14 @@
 namespace Solspace\Freeform\Services\Form;
 
 use craft\db\Query;
-use Solspace\Freeform\Bundles\Fields\FieldProvider;
+use Solspace\Freeform\Fields\FieldInterface;
+use Solspace\Freeform\Fields\Implementations\Pro\GroupField;
 use Solspace\Freeform\Fields\Interfaces\NoRenderInterface;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Form\Layout\Cell\Cell;
-use Solspace\Freeform\Form\Layout\Cell\FieldCell;
-use Solspace\Freeform\Form\Layout\Cell\LayoutCell;
+use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Form\Layout\Row;
-use Solspace\Freeform\Records\Form\FormCellRecord;
-use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
 use Solspace\Freeform\Records\Form\FormRowRecord;
@@ -21,48 +18,47 @@ use Solspace\Freeform\Services\BaseService;
 
 class LayoutsService extends BaseService
 {
-    private array $fields = [];
     private array $pages = [];
     private array $layouts = [];
     private array $rows = [];
-    private array $cells = [];
 
-    public function __construct($config = [], private ?FieldProvider $fieldProvider = null)
-    {
+    public function __construct(
+        $config = [],
+        private ?FieldsService $fieldsService = null,
+    ) {
         parent::__construct($config);
     }
 
-    public function getLayout(Form $form): Layout
+    public function getLayout(Form $form): FormLayout
     {
-        $layout = new Layout();
+        $formLayout = new FormLayout();
 
         $pages = $this->getPages($form);
         $rows = $this->getRows($form);
-        $cells = $this->getCells($form);
+        $fields = $this->getFields($form);
 
         foreach ($pages as $index => $pageData) {
             $pageData['index'] = $index;
+            $layout = new Layout($pageData['layoutUid']);
 
-            $page = new Page($pageData);
-            $layout->getPages()->add($page);
-            $layoutUid = $pageData['layoutUid'];
+            $page = new Page($layout, $pageData);
+            $formLayout->getPages()->add($page);
 
             $this->attachRows(
                 $form,
-                $layoutUid,
-                $rows,
-                $cells,
-                $page,
                 $layout,
+                $rows,
+                $fields,
+                $page,
+                $formLayout,
             );
         }
 
-        // TODO: improve the default build-up of new forms
         if (empty($pages)) {
-            $layout->getPages()->add(new Page(['label' => 'Page 1']));
+            $formLayout->getPages()->add(new Page(new Layout(''), ['label' => 'Page 1']));
         }
 
-        return $layout;
+        return $formLayout;
     }
 
     public function getPages(Form $form): array
@@ -130,91 +126,60 @@ class LayoutsService extends BaseService
         return $this->rows[$form->getId()];
     }
 
-    public function getCells(Form $form): array
+    public function getFields(Form $form): array
     {
-        if (!\array_key_exists($form->getId(), $this->cells)) {
-            $this->cells[$form->getId()] = (new Query())
-                ->select([
-                    'c.[[id]]',
-                    'c.[[uid]]',
-                    'c.[[type]]',
-                    'c.[[order]]',
-                    'c.[[rowId]]',
-                    'r.[[uid]] as rowUid',
-                    'c.[[type]]',
-                    'c.[[fieldId]]',
-                    'f.[[uid]] as fieldUid',
-                    'c.[[layoutId]]',
-                    'l.[[uid]] as layoutUid',
-                ])
-                ->leftJoin(FormRowRecord::TABLE.' r', 'c.[[rowId]] = r.[[id]]')
-                ->leftJoin(FormFieldRecord::TABLE.' f', 'c.[[fieldId]] = f.[[id]]')
-                ->leftJoin(FormLayoutRecord::TABLE.' l', 'c.[[layoutId]] = l.[[id]]')
-                ->from(FormCellRecord::TABLE.' c')
-                ->where(['c.[[formId]]' => $form->getId()])
-                ->orderBy(['c.[[order]]' => \SORT_ASC])
-                ->all()
-            ;
-        }
-
-        return $this->cells[$form->getId()];
+        return $this->fieldsService->getFields($form);
     }
 
     private function attachRows(
         Form $form,
-        string $layoutUid,
-        array $allRows,
-        array $allCells,
-        Page $page,
         Layout $layout,
+        array $allRows,
+        array $allFields,
+        Page $page,
+        FormLayout $mainLayout,
     ): void {
-        $rowCollection = $page->getRows();
+        $rowCollection = $layout->getRows();
         $currentRows = array_filter(
             $allRows,
-            fn ($row) => $row['layoutUid'] === $layoutUid
+            fn ($row) => $row['layoutUid'] === $layout->getUid()
         );
 
         foreach ($currentRows as $rowData) {
             $row = new Row($rowData);
 
-            $currentCells = array_filter(
-                $allCells,
-                fn ($cell) => $cell['rowId'] === $row->getId()
+            $currentFields = array_filter(
+                $allFields,
+                fn (FieldInterface $field) => $field->getRowId() === $row->getId()
             );
 
-            foreach ($currentCells as $cellData) {
-                $cell = Cell::create($cellData);
-                if ($cell instanceof LayoutCell) {
+            foreach ($currentFields as $field) {
+                $mainLayout->getFields()->add($field);
+                $page->getFields()->add($field);
+
+                if ($field instanceof NoRenderInterface) {
+                    continue;
+                }
+
+                if ($field instanceof GroupField) {
+                    if (null === $field->getLayout()) {
+                        continue;
+                    }
+
                     $this->attachRows(
                         $form,
-                        $cellData['layoutId'],
+                        $field->getLayout(),
                         $allRows,
-                        $allCells,
-                        $cell->getRows(),
-                        $layout,
+                        $allFields,
+                        $page,
+                        $mainLayout,
                     );
                 }
 
-                if ($cell instanceof FieldCell) {
-                    $field = $this->fieldProvider->getFieldByFormAndUid($form, $cellData['fieldUid']);
-                    if ($field) {
-                        $cell->setField($field);
-
-                        $layout->getFields()->add($field);
-                        $page->getFields()->add($field);
-
-                        if ($field instanceof NoRenderInterface) {
-                            continue;
-                        }
-
-                        $row->getFields()->add($field);
-                    }
-                }
-
-                $row->getCells()->add($cell);
+                $row->getFields()->add($field);
             }
 
-            if (!$row->getCells()->count()) {
+            if (!$row->getFields()->count()) {
                 continue;
             }
 

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { fieldSelectors } from '@editor/store/slices/fields/fields.selectors';
 import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
 import classes from '@ff-client/utils/classes';
@@ -16,7 +15,6 @@ type Props = {
 export const FieldSelect: React.FC<Props> = ({ value, onChange }) => {
   const cartographed = useSelector(layoutSelectors.cartographed.pageFieldList);
   const pages = useSelector(pageSelecors.all);
-  const fields = useSelector(fieldSelectors.all);
 
   return (
     <div className="select small fullwidth">
@@ -31,15 +29,11 @@ export const FieldSelect: React.FC<Props> = ({ value, onChange }) => {
             key={mapped.page}
             label={pages.find((page) => page.uid === mapped.page)?.label}
           >
-            {mapped.fields.map((fieldUid) => {
-              const field = fields.find((field) => field.uid === fieldUid);
-
-              return (
-                <option key={fieldUid} value={fieldUid}>
-                  {field?.properties?.label}
-                </option>
-              );
-            })}
+            {mapped.fields.map((field) => (
+              <option key={field.uid} value={field.uid}>
+                {field?.properties?.label}
+              </option>
+            ))}
           </optgroup>
         ))}
       </DropDown>

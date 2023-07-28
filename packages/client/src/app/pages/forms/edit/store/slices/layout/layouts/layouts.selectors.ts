@@ -1,7 +1,7 @@
 import type { Layout, Page } from '@editor/builder/types/layout';
-import { CellType } from '@editor/builder/types/layout';
 import type { RootState } from '@editor/store';
 
+import type { Field } from '../fields';
 import { pageSelecors } from '../pages/pages.selectors';
 import { rowSelectors } from '../rows/rows.selectors';
 
@@ -20,20 +20,18 @@ export const layoutSelectors = {
     pageFieldList: (state: RootState) => {
       const pages = pageSelecors.all(state);
 
-      const cartograph: Array<{ page: string; fields: string[] }> = [];
+      const cartograph: Array<{ page: string; fields: Field[] }> = [];
 
       pages.forEach((page) => {
         const layout = layoutSelectors.pageLayout(page)(state);
         const rows = rowSelectors.inLayout(layout)(state);
 
-        const fields: string[] = [];
+        const fields: Field[] = [];
         rows.forEach((row) => {
-          state.layout.cells
-            .filter(
-              (cell) => cell.rowUid === row.uid && cell.type === CellType.Field
-            )
-            .forEach((cell) => {
-              fields.push(cell.targetUid);
+          state.layout.fields
+            .filter((field) => field.rowUid === row.uid)
+            .forEach((field) => {
+              fields.push(field);
             });
         });
 
@@ -45,21 +43,19 @@ export const layoutSelectors = {
     fullLayoutList: (state: RootState) => {
       const pages = pageSelecors.all(state);
 
-      const cartograph: Array<Array<string[]>> = [];
+      const cartograph: Array<Array<Field[]>> = [];
 
       pages.forEach((page) => {
         const layout = layoutSelectors.pageLayout(page)(state);
         const rows = rowSelectors.inLayout(layout)(state);
 
-        const rowList: Array<string[]> = [];
+        const rowList: Array<Field[]> = [];
         rows.forEach((row) => {
-          const fields: string[] = [];
-          state.layout.cells
-            .filter(
-              (cell) => cell.rowUid === row.uid && cell.type === CellType.Field
-            )
-            .forEach((cell) => {
-              fields.push(cell.targetUid);
+          const fields: Field[] = [];
+          state.layout.fields
+            .filter((field) => field.rowUid === row.uid)
+            .forEach((field) => {
+              fields.push(field);
             });
 
           rowList.push(fields);

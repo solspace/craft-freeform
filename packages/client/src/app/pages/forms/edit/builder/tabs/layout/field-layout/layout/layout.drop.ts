@@ -6,8 +6,7 @@ import type { DragItem } from '@editor/builder/types/drag';
 import { Drag } from '@editor/builder/types/drag';
 import type { Layout } from '@editor/builder/types/layout';
 import { useAppDispatch } from '@editor/store';
-import { moveExistingCellToNewRow } from '@editor/store/thunks/cells';
-import { addNewFieldToNewRow } from '@editor/store/thunks/fields';
+import { fieldThunks } from '@editor/store/thunks/fields';
 
 type LayoutDropHook = {
   dropRef: ConnectDropTarget;
@@ -25,24 +24,24 @@ export const useLayoutDrop = (layout: Layout): LayoutDropHook => {
 
   const [{ isOver }, dropRef] = useDrop<DragItem, void, CollectProps>(
     () => ({
-      accept: [Drag.FieldType, Drag.Cell],
+      accept: [Drag.FieldType, Drag.Field],
       collect: (monitor) => ({ isOver: monitor.isOver({ shallow: true }) }),
-      canDrop: (_, monitor) => monitor.isOver({ shallow: true }),
+      canDrop: (item, monitor) => monitor.isOver({ shallow: true }),
       drop: (item) => {
         if (item.type === Drag.FieldType) {
           dispatch(
-            addNewFieldToNewRow({
+            fieldThunks.move.newField.newRow({
               fieldType: item.data,
-              layout,
+              layoutUid: layout.uid,
             })
           );
         }
 
-        if (item.type === Drag.Cell) {
+        if (item.type === Drag.Field) {
           dispatch(
-            moveExistingCellToNewRow({
-              cell: item.data,
-              layout,
+            fieldThunks.move.existingField.newRow({
+              field: item.data,
+              layoutUid: layout.uid,
             })
           );
         }

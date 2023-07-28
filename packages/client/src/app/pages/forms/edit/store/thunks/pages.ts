@@ -1,10 +1,10 @@
-import { type Cell, type Page, CellType } from '@editor/builder/types/layout';
+import { type Page } from '@editor/builder/types/layout';
 import type { AppDispatch, AppThunk } from '@editor/store';
 import { v4 } from 'uuid';
 
 import { contextActions } from '../slices/context';
-import { fieldActions } from '../slices/fields';
-import { cellActions } from '../slices/layout/cells';
+import type { Field } from '../slices/layout/fields';
+import { fieldActions } from '../slices/layout/fields';
 import { layoutActions } from '../slices/layout/layouts';
 import { pageActions } from '../slices/layout/pages';
 import { rowActions } from '../slices/layout/rows';
@@ -46,8 +46,8 @@ export const addNewPage = (): AppThunk => (dispatch, getState) => {
   dispatch(contextActions.setPage(pageUid));
 };
 
-export const moveCellToPage =
-  (cell: Cell, page: Page): AppThunk =>
+export const moveFieldToPage =
+  (field: Field, page: Page): AppThunk =>
   (dispatch, getState) => {
     const { layoutUid } = page;
 
@@ -60,8 +60,8 @@ export const moveCellToPage =
       })
     );
     dispatch(
-      cellActions.moveTo({
-        uid: cell.uid,
+      fieldActions.moveTo({
+        uid: field.uid,
         rowUid,
         position: 0,
       })
@@ -93,22 +93,16 @@ export const deletePage =
     state.layout.rows
       .filter((row) => row.layoutUid === layoutUid)
       .forEach((row) => {
-        // remove cells and fields
-        const cellUids: string[] = [];
+        // remove fields
         const fieldUids: string[] = [];
 
-        state.layout.cells
-          .filter((cell) => cell.rowUid === row.uid)
-          .forEach((cell) => {
-            cellUids.push(cell.uid);
-            if (cell.type === CellType.Field) {
-              fieldUids.push(cell.targetUid);
-            }
+        state.layout.fields
+          .filter((field) => field.rowUid === row.uid)
+          .forEach((field) => {
+            fieldUids.push(field.uid);
           });
 
-        dispatch(cellActions.removeBatch(cellUids));
         dispatch(fieldActions.removeBatch(fieldUids));
-
         dispatch(rowActions.remove(row.uid));
       });
 

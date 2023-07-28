@@ -19,7 +19,7 @@ export const MiniMapSkeleton: React.FC = () => {
 
           {page.map((row, rowIdx) => (
             <LoadingRow key={rowIdx} style={{ display: 'flex' }}>
-              {row.map((field, fieldIdx) => (
+              {row.map((_, fieldIdx) => (
                 <Skeleton key={fieldIdx} width="100%" height={28} />
               ))}
             </LoadingRow>

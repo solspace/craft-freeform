@@ -53,6 +53,7 @@ interface FieldInterface
     public const TYPE_SIGNATURE = 'signature';
     public const TYPE_TABLE = 'table';
     public const TYPE_INVISIBLE = 'invisible';
+    public const TYPE_GROUP = 'group';
     public const TYPE_CREDIT_CARD_DETAILS = 'cc-details';
     public const TYPE_CREDIT_CARD_NUMBER = 'cc-number';
     public const TYPE_CREDIT_CARD_EXPIRY = 'cc-expiry';
@@ -71,6 +72,12 @@ interface FieldInterface
     public function getId(): ?int;
 
     public function getUid(): ?string;
+
+    public function getRowId(): ?int;
+
+    public function getRowUid(): ?string;
+
+    public function getOrder(): ?int;
 
     public function getHandle(): ?string;
 

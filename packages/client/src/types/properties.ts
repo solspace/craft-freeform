@@ -71,6 +71,7 @@ export type IntegerProperty = BaseProperty<number, PropertyType.Integer> & {
 };
 
 export type StringProperty = BaseProperty<string, PropertyType.String>;
+export type HiddenProperty = BaseProperty<string, PropertyType.String>;
 export type TextareaProperty = BaseProperty<string, PropertyType.Textarea>;
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
@@ -166,6 +167,7 @@ export type Property =
   | DateTimeProperty
   | FieldMappingProperty
   | FieldProperty
+  | HiddenProperty
   | IntegerProperty
   | LabelProperty
   | MinMaxProperty

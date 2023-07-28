@@ -3,11 +3,11 @@
 namespace Solspace\Freeform\Bundles\Persistence;
 
 use craft\db\ActiveRecord;
+use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
 use Solspace\Freeform\controllers\api\FormsController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Records\Form\FormCellRecord;
 use Solspace\Freeform\Records\Form\FormFieldRecord;
 use Solspace\Freeform\Records\Form\FormLayoutRecord;
 use Solspace\Freeform\Records\Form\FormPageRecord;
@@ -19,8 +19,9 @@ class LayoutPersistence extends FeatureBundle
     private array $cache = [];
     private array $rowContents = [];
 
-    public function __construct()
-    {
+    public function __construct(
+        private PropertyProvider $propertyProvider,
+    ) {
         Event::on(
             FormsController::class,
             FormsController::EVENT_UPSERT_FORM,
@@ -30,7 +31,7 @@ class LayoutPersistence extends FeatureBundle
 
     public static function getPriority(): int
     {
-        return 400;
+        return 300;
     }
 
     public function handleFieldSave(PersistFormEvent $event): void
@@ -48,12 +49,12 @@ class LayoutPersistence extends FeatureBundle
         $pages = $payload->pages;
         $layouts = $payload->layouts;
         $rows = $payload->rows;
-        $cells = $payload->cells;
+        $fields = $payload->fields;
 
         $this->saveLayouts($form, $layouts);
         $this->savePages($form, $pages, $event);
         $this->saveRows($form, $rows);
-        $this->saveCells($form, $cells);
+        $this->saveFields($form, $fields, $event);
 
         $this->cleanupOrphans();
     }
@@ -135,34 +136,39 @@ class LayoutPersistence extends FeatureBundle
         }
     }
 
-    private function saveCells(Form $form, array $data): void
+    private function saveFields(Form $form, array $data, $event): void
     {
-        [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormCellRecord::class);
+        [$existingRecords, $staleUids] = $this->getStarterPack($form, $data, FormFieldRecord::class);
 
         foreach ($data as $item) {
             $uid = $item->uid;
-
-            $record = $existingRecords[$uid] ?? null;
-            if (!$record) {
-                $record = new FormCellRecord();
-                $record->uid = $uid;
-                $record->formId = $form->getId();
-                $record->type = $item->type;
-            }
-
-            $record->rowId = $this->getRecordId($form, FormRowRecord::class, $item->rowUid);
-            $record->layoutId = $this->getRecordId($form, FormLayoutRecord::class, $item->targetUid);
-            $record->fieldId = $this->getRecordId($form, FormFieldRecord::class, $item->targetUid);
-
-            if (!$record->fieldId) {
+            $type = $item->typeClass ?? null;
+            if (!$type) {
                 continue;
             }
 
+            $record = $existingRecords[$uid] ?? null;
+            if (!$record) {
+                $record = new FormFieldRecord();
+                $record->uid = $item->uid;
+                $record->formId = $form->getId();
+            }
+
+            $record->rowId = $this->getRecordId($form, FormRowRecord::class, $item->rowUid);
             $record->order = $item->order ?? 0;
+            $record->type = $item->typeClass;
+            $record->metadata = $this->getValidatedMetadata($item, $event);
             $record->save();
 
             if (!$record->hasErrors()) {
                 $this->rowContents[$item->rowUid][] = $uid;
+            }
+
+            if ($record->hasErrors()) {
+                $event->addErrorsToResponse(
+                    'fields',
+                    [$item->uid => $record->getErrors()]
+                );
             }
         }
 
@@ -226,5 +232,32 @@ class LayoutPersistence extends FeatureBundle
                 FormRowRecord::deleteAll(['uid' => $rowUid]);
             }
         }
+    }
+
+    private function getValidatedMetadata(\stdClass $fieldData, PersistFormEvent $event): array
+    {
+        $properties = $this->propertyProvider->getEditableProperties($fieldData->typeClass);
+
+        $metadata = [];
+        foreach ($properties as $property) {
+            $handle = $property->handle;
+            $value = $fieldData->properties->{$handle} ?? null;
+
+            $errors = [];
+            foreach ($property->validators as $validator) {
+                $errors = array_merge($errors, $validator->validate($value));
+            }
+
+            if ($errors) {
+                $event->addErrorsToResponse(
+                    'fields',
+                    [$fieldData->uid => [$property->handle => $errors]]
+                );
+            }
+
+            $metadata[$handle] = $value;
+        }
+
+        return $metadata;
     }
 }

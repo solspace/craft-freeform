@@ -4,7 +4,6 @@ namespace Solspace\Freeform\controllers\api\fields;
 
 use Solspace\Freeform\Bundles\Transformers\Builder\Form\FieldTransformer;
 use Solspace\Freeform\controllers\BaseApiController;
-use Solspace\Freeform\Services\Form\FieldsService;
 
 class FormsController extends BaseApiController
 {
@@ -14,7 +13,6 @@ class FormsController extends BaseApiController
         $id,
         $module,
         $config = [],
-        private FieldsService $fieldsService,
         private FieldTransformer $fieldTransformer,
     ) {
         parent::__construct($id, $module, $config);
@@ -25,17 +23,14 @@ class FormsController extends BaseApiController
         $forms = [];
 
         foreach ($this->getFormsService()->getAllForms() as $form) {
-            $fields = $this->fieldsService->getFields($form);
+            $fields = $form->getLayout()->getFields()->getIterator()->getArrayCopy();
+            $fields = array_map([$this->fieldTransformer, 'transform'], $fields);
 
-            if ($fields) {
-                $fields = array_map([$this->fieldTransformer, 'transform'], $fields);
-
-                $forms[] = (object) [
-                    'uid' => $form->getUid(),
-                    'name' => $form->getName(),
-                    'fields' => $fields,
-                ];
-            }
+            $forms[] = (object) [
+                'uid' => $form->getUid(),
+                'name' => $form->getName(),
+                'fields' => $fields,
+            ];
         }
 
         return $forms;

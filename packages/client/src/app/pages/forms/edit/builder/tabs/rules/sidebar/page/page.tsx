@@ -6,7 +6,7 @@ import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.sel
 import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import classes from '@ff-client/utils/classes';
 
-import { CombinatorIcon } from '../cell/cell-types/cell-field/icons/combinator-icon';
+import { CombinatorIcon } from '../field/icons/combinator-icon';
 import { Layout } from '../layout/layout';
 
 import { PageButton, PageWrapper } from './pages.styles';

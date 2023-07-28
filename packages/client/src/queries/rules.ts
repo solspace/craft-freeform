@@ -55,7 +55,9 @@ export const useQueryNotificationRules = (
     QKRules.notifications(formId),
     () =>
       axios
-        .get<NotificationRule[]>(`/api/forms/${formId}/rules/notifications`)
+        .get<NotificationRule[]>(
+          `/api/forms/${formId || 0}/rules/notifications`
+        )
         .then((res) => res.data),
     {
       staleTime: Infinity,

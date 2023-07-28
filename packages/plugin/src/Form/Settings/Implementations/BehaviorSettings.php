@@ -5,12 +5,16 @@ namespace Solspace\Freeform\Form\Settings\Implementations;
 use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
+use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 
-#[SettingNamespace('Behavior')]
+#[SettingNamespace(
+    'Behavior',
+    order: 2,
+)]
 class BehaviorSettings extends SettingsNamespace
 {
     public const SUCCESS_BEHAVIOUR_RELOAD = 'reload';
@@ -24,95 +28,112 @@ class BehaviorSettings extends SettingsNamespace
     #[Section(
         self::SECTION_SUCCESS_AND_ERRORS,
         label: 'Success & Errors',
-        icon: __DIR__.'/Icons/success.svg',
+        icon: __DIR__.'/Icons/'.self::SECTION_SUCCESS_AND_ERRORS.'.svg',
+        order: 2,
     )]
     #[Input\Select(
-        instructions: "Set how you'd like the success return of this form to be handled. May also be overridden at the template level.",
+        instructions: "Select how you'd like the success return of this form to be handled. May also be overridden at the template level.",
+        order: 1,
         options: [
             ['value' => self::SUCCESS_BEHAVIOUR_RELOAD, 'label' => 'Reload'],
             ['value' => self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL, 'label' => 'Redirect'],
-            ['value' => self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, 'label' => 'Load success template'],
+            ['value' => self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE, 'label' => 'Replace form with a Success message'],
         ],
     )]
-    public string $successBehavior = self::SUCCESS_BEHAVIOUR_RELOAD;
+    #[Validators\Required]
+    public string $successBehavior = self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\Select(
-        options: SuccessTemplateOptions::class,
+        instructions: "Select the template you'd like to replace the form in the page after a successful submit.",
+        order: 2,
+        emptyOption: 'Disabled',
+        options: [],
     )]
+    #[Validators\Required]
     public string $successTemplate = '';
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\Text(
         label: 'Return URL',
-        instructions: 'The URL the form will redirect to after successful submit. This will not work when the Built-in AJAX setting is enabled unless a template-level override is set.',
+        instructions: 'Set a URL for the form to be redirected to after successful submit.',
+        order: 3,
     )]
-    public string $returnUrl = '/';
+    #[Validators\Required]
+    public string $returnUrl = '/contact-us/thank-you/';
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\TextArea(
-        instructions: 'The text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with form.successMessage.',
-        placeholder: 'Form has been submitted successfully!',
+        instructions: 'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.successMessage }}.',
+        order: 4,
+        placeholder: 'e.g. Thanks for filling out the form and stuff!',
     )]
-    public string $successMessage = 'Form has been submitted successfully!';
+    public string $successMessage = '';
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\TextArea(
-        instructions: 'The text to be shown at the top of the form if there are any errors upon submit (AJAX), or load in your template with form.errorMessage.',
-        placeholder: 'Sorry, there was an error submitting the form. Please try again.',
+        instructions: 'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.errorMessage }}.',
+        order: 5,
+        placeholder: 'e.g. There was an error! Please fix!',
     )]
-    public string $errorMessage = 'Sorry, there was an error submitting the form. Please try again.';
+    public string $errorMessage = '';
 
     #[Section(
         self::SECTION_PROCESSING,
         label: 'Processing',
-        icon: __DIR__.'/Icons/processing.svg',
+        icon: __DIR__.'/Icons/'.self::SECTION_PROCESSING.'.svg',
+        order: 1,
     )]
     #[Input\Boolean(
         label: 'Use AJAX',
-        instructions: "Use Freeform's built-in automatic AJAX submit feature",
+        instructions: 'Use built-in AJAX for this form when handling validation and submission of the form',
+        order: 1,
     )]
     public bool $ajax = true;
 
     #[Section(self::SECTION_PROCESSING)]
     #[Input\Boolean(
-        label: 'Collect IP Addresses',
-        instructions: "Should this form collect the user's IP address?",
-    )]
-    public bool $collectIpAddresses = true;
-
-    #[Section(self::SECTION_PROCESSING)]
-    #[Input\Boolean(
         label: 'Show Processing Indicator on Submit',
-        instructions: 'Show a loading indicator on the submit button upon submission of the form.',
+        instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
+        order: 2,
     )]
     public bool $showSpinner = true;
 
     #[Section(self::SECTION_PROCESSING)]
     #[Input\Boolean(
-        label: 'Show Processing Text',
-        instructions: "Enabling this will change the submit button's label to the text of your choice.",
+        label: 'Show Processing Text on Submit',
+        instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
+        order: 3,
     )]
     public bool $showLoadingText = true;
 
     #[Section(self::SECTION_PROCESSING)]
-    #[Input\Text('Processing Text')]
-    public string $loadingText = 'Loading...';
+    #[Input\Text(
+        'Processing Text',
+        instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
+        order: 4,
+    )]
+    public string $loadingText = 'Processing...';
 
     #[Section(
         self::SECTION_LIMITS,
         label: 'Limits',
-        icon: __DIR__.'/Icons/limitations.svg',
+        icon: __DIR__.'/Icons/'.self::SECTION_LIMITS.'.svg',
+        order: 3,
     )]
     #[Input\Select(
         label: 'Limit Form Submission Rate',
+        instructions: 'Select an option for restricting users when submitting this form.',
+        order: 1,
         options: FormLimitingOptions::class,
     )]
     public string $limitSubmissions = FormLimiting::NO_LIMIT;
 
     #[Section(self::SECTION_LIMITS)]
     #[Input\DatePicker(
-        instructions: 'Set a date after which the form will no longer accept submissions.',
+        label: 'Stop Submissions After Date',
+        instructions: 'Set a date after which this form will no longer accept new submissions.',
+        order: 2,
     )]
     public ?string $stopSubmissionsAfter = null;
 }

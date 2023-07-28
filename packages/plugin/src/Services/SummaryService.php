@@ -294,7 +294,9 @@ class SummaryService extends Component
         $types = [];
 
         foreach ($forms as $form) {
-            $behaviorSettings = $form->getSettings()->getBehavior();
+            $settings = $form->getSettings();
+            $generalSettings = $settings->getGeneral();
+            $behaviorSettings = $settings->getBehavior();
 
             $type = \get_class($form);
             if (!\in_array($type, $types, true)) {
@@ -309,7 +311,7 @@ class SummaryService extends Component
                 $builtInAjax = true;
             }
 
-            if (!$form->getSettings()->getGeneral()->storeData) {
+            if (!$generalSettings->storeData) {
                 $notStoringSubmissions = true;
             }
 
@@ -317,11 +319,11 @@ class SummaryService extends Component
                 $postForwarding = true;
             }
 
-            if ($behaviorSettings->collectIpAddresses) {
+            if ($generalSettings->collectIpAddresses) {
                 $collectIp = true;
             }
 
-            if ($form->getSettings()->getGeneral()->dataStorageCheckbox) {
+            if ($generalSettings->optInCheckbox) {
                 $optInDataStorage = true;
             }
 
@@ -339,7 +341,6 @@ class SummaryService extends Component
                 $adminNotifications = true;
             }
 
-            $behaviorSettings = $form->getSettings()->getBehavior();
             if ($behaviorSettings->showLoadingText || $behaviorSettings->showSpinner) {
                 $loadingIndicators = true;
             }

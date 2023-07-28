@@ -25,7 +25,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
     name: 'Admin',
     newInstanceName: 'Admin',
     order: 1,
-    icon: __DIR__.'/icon.svg',
+    icon: __DIR__.'/../Icons/admin.svg',
 )]
 class Admin extends BaseNotification
 {

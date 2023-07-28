@@ -17,7 +17,7 @@ use Solspace\Freeform\Notifications\BaseNotification;
     name: 'Email Field',
     newInstanceName: 'Email Field',
     order: 4,
-    icon: __DIR__.'/icon.svg',
+    icon: __DIR__.'/../Icons/email.svg',
 )]
 class EmailField extends BaseNotification
 {

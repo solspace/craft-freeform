@@ -32,6 +32,7 @@ export type ExtendedFormType = Form & {
 export type FormSettingNamespace = {
   label: string;
   handle: string;
+  order: number;
   sections: Section[];
   properties: Property[];
 };

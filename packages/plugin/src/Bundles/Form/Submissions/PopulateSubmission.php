@@ -28,6 +28,7 @@ class PopulateSubmission extends FeatureBundle
     {
         $form = $event->getForm();
         $submission = $form->getSubmission();
+        $generalSettings = $form->getSettings()->getGeneral();
 
         if (!$submission) {
             return;
@@ -52,10 +53,7 @@ class PopulateSubmission extends FeatureBundle
 
         $dateCreated = new \DateTime();
         if (!$submission->id) {
-            $behaviorSettings = $form->getSettings()->getBehavior();
-            $generalSettings = $form->getSettings()->getGeneral();
-
-            $collectIps = $behaviorSettings->collectIpAddresses;
+            $collectIps = $generalSettings->collectIpAddresses;
 
             $submission->ip = $collectIps ? \Craft::$app->request->getUserIP() : null;
             $submission->formId = $form->getId();
@@ -65,7 +63,7 @@ class PopulateSubmission extends FeatureBundle
         }
 
         $submission->title = \Craft::$app->view->renderString(
-            $form->getSettings()->getGeneral()->submissionTitle,
+            $generalSettings->submissionTitle,
             array_merge(
                 $data,
                 [

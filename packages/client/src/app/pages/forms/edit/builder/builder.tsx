@@ -41,7 +41,7 @@ export const Builder: React.FC = () => {
                 <Route path="field/:uid" element={<FieldRulesEditor />} />
                 <Route path="page/:uid" element={<PageRulesEditor />} />
               </Route>
-              <Route path=":namespace" element={<FormSettings />} />
+              <Route path="settings" element={<FormSettings />} />
             </Routes>
           </BuilderContent>
         </PortalProvider>

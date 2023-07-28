@@ -19,7 +19,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollec
     name: 'User Select',
     newInstanceName: 'Dynamic',
     order: 3,
-    icon: __DIR__.'/icon.svg',
+    icon: __DIR__.'/../Icons/user-select.svg',
 )]
 class Dynamic extends BaseNotification
 {

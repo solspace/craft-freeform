@@ -24,7 +24,8 @@ export const Remove: React.FC<Props> = ({ notification }) => {
       style={animation}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
-      onClick={() => {
+      onClick={(event) => {
+        event.stopPropagation();
         dispatch(removeNotification(notification));
         navigate('..');
       }}

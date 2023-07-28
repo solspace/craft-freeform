@@ -8,9 +8,6 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
-use Solspace\Freeform\Attributes\Property\ValueTransformer;
-use Solspace\Freeform\Form\Properties\GTM\GTMProperty;
-use Solspace\Freeform\Form\Properties\GTM\GTMValueTransformer;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
@@ -20,17 +17,28 @@ use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\RandomColorG
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 use Solspace\Freeform\Form\Types\Regular;
 
-#[SettingNamespace('Settings')]
+#[SettingNamespace(
+    'General',
+    order: 1,
+)]
 class GeneralSettings extends SettingsNamespace
 {
+    private const SECTION_GENERAL = 'general';
+    private const SECTION_DATA_STORAGE = 'data-storage';
+    // TODO - Refactor as Integrations
+    // private const SECTION_CAPTCHAS = 'captchas';
+    // private const SECTION_GTM = 'gtm';
+
     #[Section(
-        handle: 'general',
+        self::SECTION_GENERAL,
         label: 'General',
-        icon: __DIR__.'/Icons/general.svg',
+        icon: __DIR__.'/Icons/'.self::SECTION_GENERAL.'.svg',
+        order: 1,
     )]
     #[Input\Text(
         label: 'Form Name',
-        instructions: 'Name or title of the form',
+        instructions: 'Enter a name for this form.',
+        order: 1,
         placeholder: 'My Form',
     )]
     #[Middleware('injectInto', [
@@ -40,10 +48,11 @@ class GeneralSettings extends SettingsNamespace
     #[Validators\Required]
     public string $name = '';
 
-    #[Section('general')]
+    #[Section(self::SECTION_GENERAL)]
     #[Input\Text(
         label: 'Form Handle',
-        instructions: "How you'll refer to this form in the templates",
+        instructions: 'Enter a name for this form that will be referred to in your templates.',
+        order: 2,
         placeholder: 'myHandle',
     )]
     #[Middleware('handle')]
@@ -52,92 +61,125 @@ class GeneralSettings extends SettingsNamespace
     #[Validators\Length(255)]
     public string $handle = '';
 
-    #[Section('general')]
+    #[Section(self::SECTION_GENERAL)]
     #[Validators\Required]
     #[Input\Select(
         label: 'Form Type',
-        instructions: 'Select the type of form this is. When additional form types are installed, you can choose a different form type that enables special behaviors.',
+        instructions: 'Select the type of form this is.',
+        order: 3,
         options: FormTypeOptions::class,
     )]
     public string $type = Regular::class;
 
-    #[Section('general')]
+    #[Section(self::SECTION_GENERAL)]
     #[Validators\Required]
     #[Input\Text(
-        instructions: 'What the auto-generated submission titles should look like.',
+        instructions: 'How the titles of submissions should be auto-generated for this form.',
+        order: 4,
     )]
-    public string $submissionTitle = '{{ dateCreated|date("Y-m-d H:i:s") }}';
+    public string $submissionTitle = 'Submission from {{ firstName }} {{ lastName }}';
 
-    #[Section('general')]
-    #[ValueGenerator(DefaultStatusGenerator::class)]
+    #[Section(self::SECTION_GENERAL)]
+    #[ValueGenerator(DefaultTemplateGenerator::class)]
     #[Validators\Required]
     #[Input\Select(
-        instructions: 'The default status to be assigned to new submissions.',
-        options: FormStatusOptions::class,
-    )]
-    public ?int $defaultStatus = null;
-
-    #[Section('general')]
-    #[ValueGenerator(DefaultTemplateGenerator::class)]
-    #[Input\Select(
-        instructions: 'The formatting template to assign to this form when using Render method.',
+        label: 'Formatting Template',
+        instructions: 'Select a formatting template to be used when rendering this form.',
+        order: 5,
         options: FormattingTemplateOptions::class,
     )]
     public ?string $formattingTemplate;
 
-    #[Section('general')]
+    #[Section(self::SECTION_GENERAL)]
     #[Input\Textarea(
-        label: 'Form Description / Notes',
-        instructions: 'Description or notes for this form.',
+        label: 'Form Description',
+        instructions: 'Enter a description or notes for this form.',
+        order: 6,
     )]
     public string $description = '';
 
-    #[Section('general')]
+    #[Section(self::SECTION_GENERAL)]
     #[ValueGenerator(RandomColorGenerator::class)]
     #[Input\ColorPicker(
         label: 'Form Color',
-        instructions: 'The color to be used for the dashboard and charts inside the control panel.',
+        instructions: 'Choose a color for this form (generally used in the control panel).',
+        order: 7,
     )]
     public string $color = '';
 
     #[Section(
-        handle: 'data-storage',
+        self::SECTION_DATA_STORAGE,
         label: 'Data Storage',
-        icon: __DIR__.'/Icons/storage.svg',
+        icon: __DIR__.'/Icons/'.self::SECTION_DATA_STORAGE.'.svg',
+        order: 2,
     )]
     #[Input\Boolean(
-        label: 'Store Submitted Data',
-        instructions: 'Should the submission data for this form be stored in the database?',
+        label: 'Store Submitted Data for this Form',
+        instructions: 'All submissions users make on this form will be stored in the database.',
+        order: 1,
     )]
     public bool $storeData = true;
 
-    // TODO: implement a way to get the options to fill on the react side
-    #[Section('data-storage')]
+    #[Section(self::SECTION_DATA_STORAGE)]
+    #[ValueGenerator(DefaultStatusGenerator::class)]
+    #[Validators\Required]
     #[Input\Select(
-        label: 'Opt-In Data Storage Checkbox',
-        instructions: 'Allow users to decide whether the submission data is saved to your site or not.',
+        instructions: 'Select the default status for each submission of this form.',
+        order: 2,
+        options: FormStatusOptions::class,
+    )]
+    public ?int $defaultStatus = null;
+
+    #[Section(self::SECTION_DATA_STORAGE)]
+    #[Input\Boolean(
+        label: 'Collect IP Addresses',
+        instructions: 'Collect and store each users IP address when submitting the form.',
+        order: 3,
+    )]
+    public bool $collectIpAddresses = true;
+
+    #[Section(self::SECTION_DATA_STORAGE)]
+    #[Input\Boolean(
+        label: 'Allow Users to Opt-in',
+        instructions: 'Allow users to choose whether they want their submission data stored in the database.',
+        order: 4,
+    )]
+    public bool $allowUsersToOptIn = false;
+
+    // TODO: implement a way to get the options to fill on the react side
+    #[Section(self::SECTION_DATA_STORAGE)]
+    #[Input\Select(
+        label: 'Opt-in Checkbox',
+        instructions: 'Select the checkbox field that will act as the opt-in for the user submitting the form.',
+        order: 5,
         emptyOption: 'Disabled',
         options: [],
     )]
-    public ?string $dataStorageCheckbox = null;
+    public ?string $optInCheckbox = null;
 
+    // TODO - Refactor as Integrations
+    /*
     #[Section(
-        handle: 'captchas',
+        self::SECTION_CAPTCHAS,
         label: 'Captchas',
-        icon: __DIR__.'/Icons/captchas.svg',
+        icon: __DIR__.'/Icons/'.self::SECTION_CAPTCHAS.'.svg',
+        order: 3,
     )]
     #[Input\Boolean(
         label: 'Enable Captchas',
         instructions: 'Disabling this option removes the Captcha check for this specific form.',
+        order: 1,
     )]
     public bool $captchas = true;
 
     #[Section(
-        handle: 'gtm',
+        self::SECTION_GTM,
         label: 'Google Tag Manager',
-        icon: __DIR__.'/Icons/gtm.svg',
+        icon: __DIR__.'/Icons/'.self::SECTION_GTM.'.svg',
+        order: 4,
     )]
     #[ValueTransformer(GTMValueTransformer::class)]
     #[Input\Special\GTM]
     public GTMProperty $gtm;
+    */
 }

@@ -58,6 +58,7 @@ class SettingsProvider
                         'handle' => $section->handle,
                         'label' => $section->label,
                         'icon' => $section->icon ? file_get_contents($section->icon) : null,
+                        'order' => $section->order,
                     ];
                 }
             }

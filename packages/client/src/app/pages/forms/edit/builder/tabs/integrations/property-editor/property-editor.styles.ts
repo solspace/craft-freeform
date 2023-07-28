@@ -17,8 +17,9 @@ export const PropertyEditorWrapper = styled.div`
   ${scrollBar};
 
   h1 {
-    margin: 0;
-    padding: 7.75px 0 4.75px;
+    padding: 0;
+    margin-top: -11px;
+    margin-bottom: -5px;
   }
 `;
 

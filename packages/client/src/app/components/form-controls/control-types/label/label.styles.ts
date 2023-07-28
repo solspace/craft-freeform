@@ -3,7 +3,8 @@ import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const EditableLabelWrapper = styled.div`
-  padding: 0 0 8.75px;
+  margin-top: -9px;
+  margin-bottom: -9px;
 
   &.errors {
     span {

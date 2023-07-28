@@ -9,7 +9,7 @@ class Section
         public ?string $handle,
         public ?string $label = null,
         public ?string $icon = null,
-        public ?int $order = 100,
+        public ?int $order = null,
     ) {
     }
 }

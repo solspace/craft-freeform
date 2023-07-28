@@ -26,7 +26,7 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
     name: 'Conditional',
     newInstanceName: 'Conditional',
     order: 2,
-    icon: __DIR__.'/icon.svg',
+    icon: __DIR__.'/../Icons/conditional.svg',
 )]
 class Conditional extends BaseNotification
 {

@@ -4,7 +4,7 @@ import { ThemedSkeleton } from '@components/loaders/skeletons/themed-skeleton';
 import { spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-import { PropertyEditorWrapper } from './editor.styles';
+import { PropertyEditorWrapper } from './property-editor.styles';
 
 export const Inline = styled.div`
   display: flex;

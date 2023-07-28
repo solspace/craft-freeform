@@ -16,9 +16,10 @@ use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientMappingCollection;
 
 #[Type(
-    name: 'Dynamic Notifications',
+    name: 'User Select',
     newInstanceName: 'Dynamic',
-    icon: __DIR__.'/icon.svg',
+    order: 3,
+    icon: __DIR__.'/../Icons/user-select.svg',
 )]
 class Dynamic extends BaseNotification
 {
@@ -26,7 +27,7 @@ class Dynamic extends BaseNotification
     #[Input\Field(
         label: 'Target field',
         instructions: 'Select which field should be used to determine where to send the notification.',
-        order: 9,
+        order: 3,
         emptyOption: 'Select a field',
     )]
     protected ?FieldInterface $field;
@@ -35,7 +36,7 @@ class Dynamic extends BaseNotification
     #[Input\NotificationTemplate(
         label: 'Default Notification Template',
         instructions: 'This notification template will be used as a default notification template for all values unless specified otherwise.',
-        order: 10,
+        order: 4,
     )]
     protected ?NotificationTemplate $template;
 
@@ -43,7 +44,7 @@ class Dynamic extends BaseNotification
     #[Input\Recipients(
         label: 'Default Recipients',
         instructions: 'Specify recipients that should receive notifications if not specifically configured below.',
-        order: 11,
+        order: 5,
         value: [],
     )]
     protected RecipientCollection $recipients;
@@ -52,7 +53,7 @@ class Dynamic extends BaseNotification
     #[Input\RecipientMapping(
         label: 'Recipient Mapping',
         instructions: 'Specify recipients that should receive notifications based on the value of the target field.',
-        order: 12,
+        order: 6,
     )]
     protected ?RecipientMappingCollection $recipientMapping;
 

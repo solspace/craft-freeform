@@ -57,7 +57,9 @@ class FormLimiting extends FeatureBundle
     public function handleLimitations(FormEventInterface $event): void
     {
         $form = $event->getForm();
-        $behaviorSettings = $form->getSettings()->getBehavior();
+        $settings = $form->getSettings();
+        $generalSettings = $settings->getGeneral();
+        $behaviorSettings = $settings->getBehavior();
 
         $limiting = $behaviorSettings->limitSubmissions;
 
@@ -86,7 +88,7 @@ class FormLimiting extends FeatureBundle
             $this->limitByUserId($event);
         }
 
-        if ($behaviorSettings->collectIpAddresses && \in_array($limiting, self::IP_LIMITATIONS, true)) {
+        if ($generalSettings->collectIpAddresses && \in_array($limiting, self::IP_LIMITATIONS, true)) {
             $this->limitByIp($event);
         }
 

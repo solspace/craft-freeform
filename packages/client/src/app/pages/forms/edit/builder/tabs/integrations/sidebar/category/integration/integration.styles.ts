@@ -18,11 +18,18 @@ export const Wrapper = styled.div`
     text-decoration: none;
 
     &.active {
-      background-color: ${colors.gray200};
+      color: ${colors.white};
+      background-color: ${colors.gray500};
+    }
+
+    &.active.inactive {
+      .status-dot {
+        border-color: ${colors.white};
+      }
     }
 
     &:hover:not(.active) {
-      background-color: ${colors.gray100};
+      background-color: ${colors.gray200};
     }
   }
 `;

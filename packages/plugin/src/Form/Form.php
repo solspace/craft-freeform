@@ -654,7 +654,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNorm
     // TODO: make the hash be a UID instead
     public function getOptInDataTargetField(): ?CheckboxField
     {
-        $hash = $this->getSettings()->getGeneral()->dataStorageCheckbox;
+        $hash = $this->getSettings()->getGeneral()->optInCheckbox;
         if ($hash) {
             $field = $this->get($hash);
 

@@ -27,7 +27,8 @@ export const useQueryNotificationTypes = (): UseQueryResult<
     () =>
       axios
         .get<NotificationType[]>('/api/notifications/types')
-        .then((res) => res.data),
+        .then((res) => res.data)
+        .then((res) => res.sort((a, b) => a.order - b.order)),
     {
       staleTime: Infinity,
       cacheTime: Infinity,

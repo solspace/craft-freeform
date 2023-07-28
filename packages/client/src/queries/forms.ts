@@ -47,7 +47,8 @@ export const useQueryFormSettings = (): UseQueryResult<
     () =>
       axios
         .get<FormSettingNamespace[]>(`/api/forms/settings`)
-        .then((res) => res.data),
+        .then((res) => res.data)
+        .then((res) => res.sort((a, b) => a.order - b.order)),
     {
       onSuccess: (settings) => {
         dispatch(formActions.setInitialSettings(settings));

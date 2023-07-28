@@ -24,14 +24,6 @@ export const ConditionTable: React.FC<Props> = ({
 }) => {
   return (
     <Table>
-      <thead>
-        <tr>
-          <th>{translate('Field')}</th>
-          <th>{translate('Condition')}</th>
-          <th>{translate('Value')}</th>
-          <th></th>
-        </tr>
-      </thead>
       <tbody>
         {loading && (
           <tr>
@@ -108,7 +100,7 @@ export const ConditionTable: React.FC<Props> = ({
           <tr>
             <td colSpan={4}>
               <button
-                className="btn add icon dashed fullwidth"
+                className="btn add icon fullwidth"
                 onClick={() => {
                   onChange &&
                     onChange([
@@ -122,7 +114,7 @@ export const ConditionTable: React.FC<Props> = ({
                     ]);
                 }}
               >
-                {translate('Add condition')}
+                {translate('Add a condition')}
               </button>
             </td>
           </tr>

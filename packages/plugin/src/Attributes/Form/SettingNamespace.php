@@ -13,6 +13,7 @@ class SettingNamespace
         public string $label,
         array $sections = [],
         public ?string $handle = null,
+        public ?int $order = null,
         public ?PropertyCollection $properties = null,
     ) {
     }

@@ -16,6 +16,7 @@ export type Notification = {
 export type NotificationType = {
   name: string;
   newInstanceName: string;
+  order: number;
   icon: string;
   className: string;
   properties: Property[];

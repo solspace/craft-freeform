@@ -1,59 +1,49 @@
 import { colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
-  margin: ${spacings.sm} 0 ${spacings.lg};
-`;
+export const Wrapper = styled.div``;
 
 export const LabelWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 5px;
-
-  padding-left: 3px;
-
-  font-weight: 700;
-  color: ${colors.gray550};
+  line-height: 22px;
 `;
 
 export const Label = styled.span`
-  flex-grow: 1;
-  max-width: 90%;
-  overflow: hidden;
-`;
-
-const iconSize = 20;
-export const Icon = styled.div`
-  display: block;
-  width: ${iconSize}px;
-  height: ${iconSize}px;
-
-  fill: ${colors.gray550};
+  padding-left: ${spacings.md};
+  font-weight: 700;
+  font-size: 11px;
+  color: ${colors.gray550};
+  text-transform: uppercase;
 `;
 
 export const Button = styled.button`
   align-self: end;
+
+  &:hover {
+    background-color: ${colors.gray200};
+  }
 `;
 
 export const NotificationItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${spacings.xs};
-
-  margin-top: ${spacings.sm};
+  padding: ${spacings.xs} 0;
 
   &:empty {
     &:after {
-      content: 'Empty';
+      content: 'None configured';
 
-      padding: 2px ${spacings.xl};
-      margin-left: 10px;
+      padding: 2px};
+      margin-left: 12px;
 
       font-style: italic;
       font-size: 12px;
 
-      color: ${colors.gray200};
+      color: ${colors.gray300};
     }
   }
 `;

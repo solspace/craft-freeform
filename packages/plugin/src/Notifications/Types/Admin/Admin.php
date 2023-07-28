@@ -22,24 +22,25 @@ use Solspace\Freeform\Notifications\BaseNotification;
 use Solspace\Freeform\Notifications\Components\Recipients\RecipientCollection;
 
 #[Type(
-    name: 'Admin Notifications',
+    name: 'Admin',
     newInstanceName: 'Admin',
-    icon: __DIR__.'/icon.svg',
+    order: 1,
+    icon: __DIR__.'/../Icons/admin.svg',
 )]
 class Admin extends BaseNotification
 {
     #[ValueTransformer(NotificationTemplateTransformer::class)]
     #[Input\NotificationTemplate(
         label: 'Notification Template',
-        instructions: 'Select a notification template to use for this notification.',
-        order: 9,
+        instructions: 'Select an email notification template to use for this notification.',
+        order: 3,
     )]
     protected ?NotificationTemplate $template;
 
     #[ValueTransformer(RecipientTransformer::class)]
     #[Input\Recipients(
         instructions: 'List the recipients of this notification.',
-        order: 10,
+        order: 4,
         value: [],
     )]
     protected RecipientCollection $recipients;

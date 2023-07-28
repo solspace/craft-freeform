@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
 import { Sidebar } from '@components/layout/sidebar/sidebar';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { useQueryFormSettings } from '@ff-client/queries/forms';
@@ -17,21 +16,18 @@ import {
   SectionWrapper,
 } from './form-settings.style';
 
-type RouteParams = {
-  namespace: string;
-};
-
 export const FormSettings: React.FC = () => {
-  const { namespace } = useParams<RouteParams>();
   const { data, isFetching } = useQueryFormSettings();
 
   const formErrors = useSelector(formSelectors.errors);
 
+  const [namespaceIndex, setNamespaceIndex] = useState(0);
   const [sectionIndex, setSectionIndex] = useState(0);
+  const [namespace, setNamespace] = useState(null);
 
   useEffect(() => {
-    setSectionIndex(0);
-  }, [namespace]);
+    setNamespace(data[namespaceIndex]?.handle);
+  }, [namespaceIndex]);
 
   if (!data && isFetching) {
     return <div>Loading...</div>;
@@ -58,19 +54,30 @@ export const FormSettings: React.FC = () => {
     <FormSettingsWrapper>
       <Sidebar $lean>
         <SectionWrapper>
-          {sections.map((section, idx) => (
-            <SectionLink
-              key={section.handle}
-              className={classes(
-                idx === sectionIndex && 'active',
-                sectionsWithErrors.includes(section.handle) && 'errors'
-              )}
-              onClick={() => setSectionIndex(idx)}
-            >
-              <SectionIcon dangerouslySetInnerHTML={{ __html: section.icon }} />
-              {section.label}
-            </SectionLink>
-          ))}
+          {data
+            .sort((a, b) => a.order - b.order)
+            .map((namespace, namespaceIdx) =>
+              namespace.sections.map((section, sectionIdx) => (
+                <SectionLink
+                  key={section.handle}
+                  className={classes(
+                    namespaceIndex === namespaceIdx &&
+                      sectionIndex === sectionIdx &&
+                      'active',
+                    sectionsWithErrors.includes(section.handle) && 'errors'
+                  )}
+                  onClick={() => {
+                    setNamespaceIndex(namespaceIdx);
+                    setSectionIndex(sectionIdx);
+                  }}
+                >
+                  <SectionIcon
+                    dangerouslySetInnerHTML={{ __html: section.icon }}
+                  />
+                  {section.label}
+                </SectionLink>
+              ))
+            )}
         </SectionWrapper>
       </Sidebar>
       <FormSettingsContainer>

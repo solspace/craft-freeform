@@ -21,6 +21,7 @@ import {
 } from './notification-template.animations';
 import { useNotificationTemplates } from './notification-template.hooks';
 import {
+  Button,
   ButtonRow,
   CategorySelectionWrapper,
   NotificationTemplateSelector,
@@ -93,7 +94,7 @@ const NotificationTemplate: React.FC<
         </CategorySelectionWrapper>
 
         <ButtonRow style={{ opacity: selectionAnimations.opacity }}>
-          <button
+          <Button
             className={classes('btn', mutation.isLoading && 'disabled')}
             disabled={mutation.isLoading}
             onClick={() => {
@@ -102,14 +103,10 @@ const NotificationTemplate: React.FC<
             }}
           >
             {translate('Close')}
-          </button>
+          </Button>
 
-          <button
-            className={classes(
-              'btn',
-              'dashed',
-              mutation.isLoading && 'disabled'
-            )}
+          <Button
+            className={classes('btn', mutation.isLoading && 'disabled')}
             disabled={mutation.isLoading}
             onClick={() => {
               mutation.reset();
@@ -117,13 +114,13 @@ const NotificationTemplate: React.FC<
               setOpen(false);
             }}
           >
-            {translate('Clear Choice')}
-          </button>
+            {translate('Clear choice')}
+          </Button>
 
-          <button
+          <Button
             className={classes(
               'btn',
-              'dashed',
+              'submit',
               !mutation.isLoading && 'add',
               !mutation.isLoading && 'icon',
               mutation.isLoading && 'disabled'
@@ -142,11 +139,11 @@ const NotificationTemplate: React.FC<
             }
           >
             {mutation.isLoading && (
-              <LoadingText>{translate('Crating a Template')}</LoadingText>
+              <LoadingText>{translate('Creating a template')}</LoadingText>
             )}
 
-            {!mutation.isLoading && translate('Add new Template')}
-          </button>
+            {!mutation.isLoading && translate('New template')}
+          </Button>
         </ButtonRow>
 
         {mutation.isError && (

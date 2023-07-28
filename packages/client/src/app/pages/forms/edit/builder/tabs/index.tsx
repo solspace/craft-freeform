@@ -79,17 +79,18 @@ export const Tabs: React.FC = () => {
         <NavLink to="integrations">
           <span>{translate('Integrations')}</span>
         </NavLink>
-        {(formSettingsData || []).map((namespace) => (
+        {formSettingsData && (
           <NavLink
-            key={namespace.handle}
-            to={namespace.handle}
+            to="settings"
             className={classes(
-              hasErrors(formErrors?.[namespace.handle]) && 'errors'
+              (hasErrors(formErrors?.general) ||
+                hasErrors(formErrors?.behavior)) &&
+                'errors'
             )}
           >
-            <span>{translate(namespace.label)}</span>
+            <span>{translate('Settings')}</span>
           </NavLink>
-        ))}
+        )}
       </TabsWrapper>
 
       <SaveButtonWrapper>

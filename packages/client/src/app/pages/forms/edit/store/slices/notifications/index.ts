@@ -40,12 +40,16 @@ export const notificationsSlice = createSlice({
     },
     toggle: (state, action: PayloadAction<string>) => {
       const notification = findNotification(state, action.payload);
-      notification.enabled = !notification.enabled;
+      if (notification) {
+        notification.enabled = !notification.enabled;
+      }
     },
     modify: (state, action: PayloadAction<NotificationModificationPayload>) => {
       const { uid, key, value } = action.payload;
       const notification = findNotification(state, uid);
-      notification[key] = value;
+      if (notification) {
+        notification[key] = value;
+      }
     },
     add: (state, action: PayloadAction<Notification>) => {
       state.items.push(action.payload);
@@ -58,9 +62,17 @@ export const notificationsSlice = createSlice({
     setErrors: (state, action: PayloadAction<ErrorPayload>) => {
       const { payload } = action;
 
-      for (const notificaion of state.items) {
-        notificaion.errors = payload?.[notificaion.uid];
+      for (const notification of state.items) {
+        notification.errors = payload?.[notification.uid];
       }
+    },
+    remove: (state, action: PayloadAction<string>) => {
+      state.items.splice(
+        state.items.findIndex(
+          (notification) => notification.uid === action.payload
+        ),
+        1
+      );
     },
   },
 });

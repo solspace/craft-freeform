@@ -17,7 +17,8 @@ export const Instructions = styled.span`
   display: block;
 
   color: ${colors.gray300};
-  line-height: 12px;
+  padding-top: 3px;
+  line-height: 16px;
   font-size: 12px;
   font-style: italic;
 
@@ -46,6 +47,14 @@ export const ControlWrapper = styled.div`
       textarea,
       select {
         border: 1px solid ${colors.error};
+      }
+
+      select {
+        background-color: var(--ui-control-bg-color);
+
+        &:hover {
+          background-color: var(--ui-control-hover-bg-color);
+        }
       }
     }
   }

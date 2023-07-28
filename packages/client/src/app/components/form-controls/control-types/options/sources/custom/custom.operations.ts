@@ -58,13 +58,6 @@ export const updateChecked = (
   };
 };
 
-export const dragAndDropOption = (
-  index: number,
-  value: CustomOptions
-): void => {
-  // TODO: Implement
-};
-
 export const cleanOptions = (value: CustomOptions): CustomOptions => {
   return {
     ...value,

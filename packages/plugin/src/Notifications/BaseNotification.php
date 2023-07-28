@@ -19,10 +19,15 @@ abstract class BaseNotification implements NotificationInterface
     protected ?int $id;
     protected ?string $uid;
 
-    #[Input\Label]
+    #[Input\Label(
+        order: 1
+    )]
     protected string $name;
 
-    #[Input\Boolean]
+    #[Input\Boolean(
+        label: 'Use notification for this form?',
+        order: 2
+    )]
     protected bool $enabled = true;
 
     public function getId(): ?int

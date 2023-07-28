@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 
+type Rect = Pick<DOMRect, 'width' | 'height' | 'x' | 'y'>;
+
 type DimensionsObserverReturn<T extends HTMLElement> = {
   ref: React.RefObject<T>;
-  dimensions: DOMRect | undefined;
+  dimensions: Rect;
 };
 
 export const useDimensionsObserver = <
@@ -10,22 +12,18 @@ export const useDimensionsObserver = <
 >(): DimensionsObserverReturn<T> => {
   const ref = useRef<T>(null);
 
-  const [dimensions, setDimensions] = useState<DOMRect>({
+  const [dimensions, setDimensions] = useState<Rect>({
     height: 0,
     width: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    top: 0,
     x: 0,
     y: 0,
-    toJSON: () => void {},
   });
 
   const [resizeObserver] = useState(
     () =>
       new ResizeObserver(([entry]) => {
-        setDimensions(entry.target.getBoundingClientRect());
+        const { width, height, x, y } = entry.target.getBoundingClientRect();
+        setDimensions({ width, height, x, y });
       })
   );
 

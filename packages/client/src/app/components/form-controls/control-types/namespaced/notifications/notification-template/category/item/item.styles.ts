@@ -24,7 +24,7 @@ export const TemplateCard = styled(animated.li)`
     color: ${colors.white};
     background-color: ${colors.gray500};
     border: 1px solid ${colors.gray300};
-    
+
     &:hover {
       z-index: 1;
     }

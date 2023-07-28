@@ -9,6 +9,7 @@ import type {
 
 import { CheckboxesWrapper, SelectAllWrapper } from './checkboxes.styles';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,unused-imports/no-unused-vars
 const renderOption = (
   option: Option | OptionCollection,
   index: number

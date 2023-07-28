@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,unused-imports/no-unused-vars
 interface Number {
   inRange(min: number, max: number, inclusive?: boolean): boolean;
 }

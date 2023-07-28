@@ -21,9 +21,6 @@ export const Droppable: React.FC<Props> = ({ layout, property }) => {
 
   const [{ canDrop, isOver }, drop] = useDrop(() => ({
     accept: [ElementType.Element, ElementType.LayoutElement],
-    drop: (item) => {
-      console.log(item);
-    },
     collect: (monitor) => ({
       isOver: monitor.isOver(),
       canDrop: monitor.canDrop(),

@@ -27,7 +27,10 @@ export const Integration: React.FC<IntegrationType> = ({
           {!icon && <CogIcon />}
         </Icon>
         <Name>{name}</Name>
-        <Status enabled={integration.enabled} className={classes('status-dot')} />
+        <Status
+          enabled={integration.enabled}
+          className={classes('status-dot')}
+        />
       </NavLink>
     </Wrapper>
   );

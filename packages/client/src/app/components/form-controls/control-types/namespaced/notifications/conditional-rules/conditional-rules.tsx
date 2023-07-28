@@ -19,7 +19,7 @@ import { v4 } from 'uuid';
 
 const ConditionalNotificationRules: React.FC<
   ControlType<ConditionalRulesProperty, Notification>
-> = ({ property, updateValue, value, context, errors }) => {
+> = ({ property, updateValue, value, context }) => {
   const dispatch = useAppDispatch();
   const generatedValues = useRef<string[]>([]);
 

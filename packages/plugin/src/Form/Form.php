@@ -34,7 +34,7 @@ use Solspace\Freeform\Fields\Implementations\HiddenField;
 use Solspace\Freeform\Fields\Interfaces\FileUploadInterface;
 use Solspace\Freeform\Fields\Interfaces\PaymentInterface;
 use Solspace\Freeform\Form\Bags\PropertyBag;
-use Solspace\Freeform\Form\Layout\Layout;
+use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Form\Settings\Implementations\BehaviorSettings;
 use Solspace\Freeform\Form\Settings\Settings;
@@ -59,7 +59,7 @@ use Twig\Markup;
 use yii\base\Event;
 use yii\web\Request;
 
-abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable, CustomNormalizerInterface, \JsonSerializable
+abstract class Form implements FormTypeInterface, \IteratorAggregate, CustomNormalizerInterface, \JsonSerializable
 {
     public const HASH_KEY = 'hash';
     public const ACTION_KEY = 'freeform-action';
@@ -103,7 +103,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public const DATA_RELATIONS = 'relations';
     public const DATA_DISABLE_RECAPTCHA = 'disableRecaptcha';
 
-    protected Layout $layout;
+    protected FormLayout $layout;
     protected FormAttributesCollection $attributes;
     private PropertyBag $propertyBag;
 
@@ -240,6 +240,11 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         );
     }
 
+    public function getCurrentPageIndex(): int
+    {
+        return $this->propertyBag->get(self::PROPERTY_PAGE_INDEX, 0);
+    }
+
     public function getRows(): RowCollection
     {
         return $this->getCurrentPage()->getRows();
@@ -303,7 +308,7 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
         return $this->getLayout()->getPages();
     }
 
-    public function getLayout(): Layout
+    public function getLayout(): FormLayout
     {
         if (!isset($this->layout)) {
             $this->layout = Freeform::getInstance()->formLayouts->getLayout($this);
@@ -695,11 +700,6 @@ abstract class Form implements FormTypeInterface, \IteratorAggregate, \Countable
     public function getFieldPrefix(): ?string
     {
         return $this->getProperties()->get('fieldIdPrefix');
-    }
-
-    public function count(): int
-    {
-        return \count($this->currentPageRows);
     }
 
     public function isLastPage(): bool

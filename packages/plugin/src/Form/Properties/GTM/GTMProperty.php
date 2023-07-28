@@ -8,7 +8,7 @@ class GTMProperty
     private ?string $id;
     private ?string $event;
 
-    public function __construct(array $data)
+    public function __construct(?array $data = null)
     {
         $this->enabled = $data['enabled'] ?? false;
         $this->id = $data['id'] ?? null;

@@ -15,7 +15,6 @@ use Solspace\Freeform\Events\FormEventInterface;
 use Solspace\Freeform\Events\Forms\HandleRequestEvent;
 use Solspace\Freeform\Events\Forms\RenderTagEvent;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Form\Layout\Page;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Helpers\HashHelper;
 use Solspace\Freeform\Library\Helpers\RequestHelper;
@@ -171,7 +170,7 @@ class SessionContext
         $form->getProperties()->merge($bag->getProperties());
         $form->getAttributes()->merge($bag->getAttributes());
         $form->setFormPosted(self::isFormPosted($form));
-        $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPage()));
+        $form->setPagePosted(self::isPagePosted($form, $form->getCurrentPageIndex()));
     }
 
     public function storeContext(FormEventInterface $event): void
@@ -195,9 +194,7 @@ class SessionContext
 
     public static function getPageHash(Form $form): string
     {
-        $pageIndex = $form->getCurrentPage()->getIndex();
-
-        return HashHelper::hash($pageIndex, $form->getId());
+        return HashHelper::hash($form->getCurrentPageIndex(), $form->getId());
     }
 
     public static function isFormPosted(Form $form): bool
@@ -215,7 +212,7 @@ class SessionContext
         return HashHelper::decode($formHash, \Craft::$app->getConfig()->getGeneral()->securityKey);
     }
 
-    public static function isPagePosted(Form $form, Page $page): bool
+    public static function isPagePosted(Form $form, string $pageIndex): bool
     {
         if (!self::isFormPosted($form)) {
             return false;
@@ -224,7 +221,7 @@ class SessionContext
         [$_, $postedPageToken] = self::getPostedHashParts();
         $postedPageIndex = HashHelper::decode($postedPageToken, $form->getId());
 
-        return $postedPageIndex === $page->getIndex();
+        return $postedPageIndex === $pageIndex;
     }
 
     public static function getFormSessionToken(Form $form): string

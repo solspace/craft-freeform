@@ -12,11 +12,11 @@ const testType: FieldType = {
 };
 
 /**
- * generates rows with cells in them based on the passed parameters
+ * generates rows with fields in them based on the passed parameters
  * e.g. mockStoreGenerator(1, 2, 5) -> would yield 3 rows
- * row 1 - 1 cell
- * row 2 - 2 cells
- * row 3 - 5 cells
+ * row 1 - 1 field
+ * row 2 - 2 fields
+ * row 3 - 5 fields
  */
 const mockStoreGenerator = (...fieldsInRow: number[]): FieldStore => {
   const store: FieldStore = [];
@@ -38,7 +38,7 @@ const mockStoreGenerator = (...fieldsInRow: number[]): FieldStore => {
   return store;
 };
 
-// Extracts [cell, row, order] tuples from each cell in the store
+// Extracts [field, row, order] tuples from each field in the store
 const narrowStore = (store: FieldStore): Array<[string, string, number]> =>
   store.map(({ uid, rowUid, order }) => [uid, rowUid, order]);
 
@@ -63,7 +63,7 @@ describe('fields reducer', () => {
       expect(result).toEqual([['field-new', 'row-0', 0]]);
     });
 
-    it('add cell to existing row', () => {
+    it('add field to existing row', () => {
       mockStore = mockStoreGenerator(1);
 
       const result = narrowStore(
@@ -83,7 +83,7 @@ describe('fields reducer', () => {
       ]);
     });
 
-    it('add cell to existing row in the middle', () => {
+    it('add field to existing row in the middle', () => {
       mockStore = mockStoreGenerator(3);
 
       const result = narrowStore(
@@ -107,13 +107,13 @@ describe('fields reducer', () => {
     });
   });
 
-  describe('moving a cell', () => {
+  describe('moving a field', () => {
     let mockStore: FieldStore;
     beforeEach(() => {
       mockStore = mockStoreGenerator(4, 3);
     });
 
-    it('move cell from 0 to 2 in same row', () => {
+    it('move field from 0 to 2 in same row', () => {
       const result = narrowStore(
         reducer(
           mockStore,
@@ -136,7 +136,7 @@ describe('fields reducer', () => {
       ]);
     });
 
-    it('move cell from 1 to 0 in same row', () => {
+    it('move field from 1 to 0 in same row', () => {
       const result = narrowStore(
         reducer(
           mockStore,
@@ -159,7 +159,7 @@ describe('fields reducer', () => {
       ]);
     });
 
-    it('move cell from row to other row', () => {
+    it('move field from row to other row', () => {
       const result = narrowStore(
         reducer(
           mockStore,

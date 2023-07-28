@@ -3,6 +3,7 @@
 namespace Solspace\Tests\Freeform\Unit\Form\Layout;
 
 use PHPUnit\Framework\TestCase;
+use Solspace\Freeform\Form\Layout\FormLayout;
 use Solspace\Freeform\Form\Layout\Layout;
 use Solspace\Freeform\Form\Layout\Page;
 
@@ -15,10 +16,10 @@ class LayoutTest extends TestCase
 {
     public function testIteratePages()
     {
-        $layout = new Layout();
+        $layout = new FormLayout();
         $layout->getPages()
-            ->add(new Page(['label' => 'Page One']))
-            ->add(new Page(['label' => 'Page Two']))
+            ->add(new Page(new Layout(), ['label' => 'Page One']))
+            ->add(new Page(new Layout(), ['label' => 'Page Two']))
         ;
 
         $labels = [];
@@ -31,10 +32,10 @@ class LayoutTest extends TestCase
 
     public function testCountPages()
     {
-        $layout = new Layout();
+        $layout = new FormLayout();
         $layout->getPages()
-            ->add(new Page(['label' => 'Page One']))
-            ->add(new Page(['label' => 'Page Two']))
+            ->add(new Page(new Layout(), ['label' => 'Page One']))
+            ->add(new Page(new Layout(), ['label' => 'Page Two']))
         ;
 
         $this->assertCount(2, $layout);

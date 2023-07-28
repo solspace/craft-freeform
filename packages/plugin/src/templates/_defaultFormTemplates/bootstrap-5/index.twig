@@ -61,8 +61,6 @@
     </div>
 {% endif %}
 
-{% for row in form.rows %}
-    {{ rowMacro.render(row, form) }}
-{% endfor %}
+{{ rowMacro.render(form.rows, form) }}
 
 {{ form.renderClosingTag }}

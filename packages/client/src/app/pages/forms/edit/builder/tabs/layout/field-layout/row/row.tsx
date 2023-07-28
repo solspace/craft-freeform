@@ -1,16 +1,16 @@
 import type { MutableRefObject } from 'react';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Row as RowType } from '@editor/builder/types/layout';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
+import { useDimensionsObserver } from '@ff-client/hooks/use-height-animation';
 
 import { Field } from '../field/field';
 import { FieldDragPlaceholder } from '../field/field.placeholder';
 
 import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
-import { useRowCellDrop } from './row.cell-drop';
-import { useRowDimensions } from './row.dimensions';
 import { useRowDrop } from './row.drop';
+import { useRowFieldDrop } from './row.field-drop';
 import {
   DropZone,
   DropZoneAnimation,
@@ -23,10 +23,13 @@ type Props = {
 };
 
 export const Row: React.FC<Props> = ({ row }) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const fields = useSelector(fieldSelectors.inRow(row));
 
-  const [width, offsetX] = useRowDimensions(wrapperRef);
+  const { ref: wrapperRef, dimensions } =
+    useDimensionsObserver<HTMLDivElement>();
+
+  const width = dimensions.width;
+  const offsetX = dimensions.x;
 
   const { ref: rowDropRef, isOver: isOverRow } = useRowDrop(row);
   const placeholderAnimation = usePlaceholderAnimation(isOverRow);
@@ -36,11 +39,11 @@ export const Row: React.FC<Props> = ({ row }) => {
     ref: fieldDropRef,
     isOver,
     isCurrentRow,
-    isDraggingCell,
-    dragCellIndex,
+    isDraggingField,
+    dragFieldIndex,
     hoverPosition,
-    cellWidth,
-  } = useRowCellDrop(wrapperRef, row, fields.length, width, offsetX);
+    fieldWidth,
+  } = useRowFieldDrop(wrapperRef, row, fields.length, width, offsetX);
 
   const ref = fieldDropRef(
     wrapperRef
@@ -55,7 +58,7 @@ export const Row: React.FC<Props> = ({ row }) => {
         <FieldDragPlaceholder
           isActive={isOver}
           hoverPosition={hoverPosition}
-          cellWidth={cellWidth}
+          fieldWidth={fieldWidth}
         />
         {fields.map((field, idx) => (
           <Field
@@ -63,11 +66,11 @@ export const Row: React.FC<Props> = ({ row }) => {
             isOver={isOver}
             hoverPosition={hoverPosition}
             isCurrentRow={isCurrentRow}
-            isDraggingCell={isDraggingCell}
-            dragCellIndex={dragCellIndex}
+            isDraggingField={isDraggingField}
+            dragFieldIndex={dragFieldIndex}
             index={idx}
             key={field.uid}
-            width={cellWidth || width}
+            width={fieldWidth || width}
           />
         ))}
       </RowFieldsContainer>

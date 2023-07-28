@@ -1,11 +1,12 @@
 import type { FieldFavorite } from '@ff-client/types/fields';
 import type { FieldType } from '@ff-client/types/properties';
+import cloneDeep from 'lodash.clonedeep';
 
 export const cloneFieldTypeFromFavorite = (
   favorite: FieldFavorite,
   fieldType: FieldType
 ): FieldType => {
-  const clone = { ...fieldType };
+  const clone = cloneDeep(fieldType);
 
   Object.entries(favorite.properties).map(([name, value]) => {
     const property = clone?.properties?.find(

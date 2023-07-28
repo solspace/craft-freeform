@@ -15,8 +15,8 @@ type Props = {
   width?: number;
   isOver: boolean;
   isCurrentRow: boolean;
-  isDraggingCell: boolean;
-  dragCellIndex?: number;
+  isDraggingField: boolean;
+  dragFieldIndex?: number;
   hoverPosition?: number;
 };
 
@@ -26,8 +26,8 @@ export const Field: React.FC<Props> = ({
   width,
   isOver,
   isCurrentRow,
-  isDraggingCell,
-  dragCellIndex,
+  isDraggingField,
+  dragFieldIndex,
   hoverPosition,
 }) => {
   const [hovering, setHovering] = useState(false);
@@ -37,8 +37,8 @@ export const Field: React.FC<Props> = ({
     isDragging,
     isOver,
     isCurrentRow,
-    isDraggingCell,
-    dragCellIndex,
+    isDraggingField,
+    dragFieldIndex,
     index,
     hoverPosition,
   });

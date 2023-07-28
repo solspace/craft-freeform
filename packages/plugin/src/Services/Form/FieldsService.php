@@ -113,16 +113,18 @@ class FieldsService extends BaseService
      */
     private function getAllFieldRecords(Form $form): array
     {
-        static $records;
+        static $records = [];
 
-        if (null === $records) {
-            $records = FormFieldRecord::find()
+        $id = $form->getId();
+        if (!\array_key_exists($id, $records)) {
+            $records[$id] = FormFieldRecord::find()
                 ->with('row')
-                ->where(['formId' => $form->getId()])
+                ->where(['formId' => $id])
+                ->orderBy(['order' => \SORT_ASC])
                 ->all()
             ;
         }
 
-        return $records;
+        return $records[$id];
     }
 }

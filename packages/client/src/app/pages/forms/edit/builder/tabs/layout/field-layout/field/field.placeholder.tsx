@@ -6,7 +6,7 @@ import styled from 'styled-components';
 type Props = {
   isActive: boolean;
   hoverPosition: number;
-  cellWidth: number;
+  fieldWidth: number;
 };
 
 const FieldDragPlaceholderContainer = styled(animated.div)`
@@ -25,13 +25,13 @@ const FieldDragPlaceholderContainer = styled(animated.div)`
 export const FieldDragPlaceholder: React.FC<Props> = ({
   isActive,
   hoverPosition,
-  cellWidth,
+  fieldWidth,
 }) => {
   const style = useSpring({
     opacity: isActive ? 1 : 0,
-    x: hoverPosition * cellWidth,
+    x: hoverPosition * fieldWidth,
     scale: isActive ? 1 : 0,
-    width: cellWidth,
+    width: fieldWidth,
     config: {
       tension: 700,
       mass: 0.5,

@@ -518,33 +518,51 @@
     }
 </style>
 
-{% macro render(row, form) %}
+{% macro render(rows, form) %}
     {% import _self as self %}
 
-    {% set width = (12 / (row|length)) %}
+    {% for row in rows %}
 
-    <div{{ form.attributes.row }}>
-        {% for cell in row %}
-            {% set field = cell.field %}
+        {% set width = (12 / (row|length)) %}
 
-            {{ field.render({
-                attributes: {
-                    container: { class: [
-                        "freeform-col-" ~ width,
-                        "ff-fieldtype-" ~ field.type,
-                    ]},
-                    input: { class: field.type not in ["save", "signature"] ? "freeform-input" },
-                    label: { class: [
-                        "freeform-label",
-                        field.inputOnly ? "freeform-input-only-label",
-                        field.required ? "freeform-required",
-                    ]},
-                    errors: { class: "freeform-errors" },
-                    instructions: { class: "freeform-instructions" },
-                }
-            }) }}
-        {% endfor %}
-    </div>
+        <div{{ form.attributes.row }}>
+            {% for field in row %}
+
+                {% do field.setParameters({
+                    attributes: {
+                        container: { class: [
+                            "freeform-col-" ~ width,
+                            "ff-fieldtype-" ~ field.type,
+                        ]},
+                        input: { class: field.type not in ["save", "signature"] ? "freeform-input" },
+                        label: { class: [
+                            "freeform-label",
+                            field.inputOnly ? "freeform-input-only-label",
+                            field.required ? "freeform-required",
+                        ]},
+                        errors: { class: "freeform-errors" },
+                        instructions: { class: "freeform-instructions" },
+                    }
+                }) %}
+
+                {% if field.type == "group" %}
+
+                    <div{{ field.attributes.container }}>
+                        {{ field.renderLabel }}
+                        {{ field.renderInstructions }}
+                        {{ self.render(field.layout, form) }}
+                    </div>
+
+                {% else %}
+
+                    {{ field.render }}
+
+                {% endif %}
+
+            {% endfor %}
+        </div>
+
+    {% endfor %}
 
 {% endmacro %}
 
@@ -603,8 +621,6 @@
     </div>
 {% endif %}
 
-{% for row in form.rows %}
-    {{ _self.render(row, form) }}
-{% endfor %}
+{{ _self.render(form.rows, form) }}
 
 {{ form.renderClosingTag }}

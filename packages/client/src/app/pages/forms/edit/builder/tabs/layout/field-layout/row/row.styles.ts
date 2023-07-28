@@ -59,7 +59,7 @@ export const DropZoneAnimation = styled(animated.div)`
   font-family: monospace;
 `;
 
-export const CellPlaceholder = styled(animated.div)`
+export const FieldPlaceholder = styled(animated.div)`
   border: 2px dashed grey;
 
   min-height: ${minHeight};

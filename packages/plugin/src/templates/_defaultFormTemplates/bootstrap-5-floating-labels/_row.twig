@@ -9,9 +9,8 @@
     {% set width = (12 / (row|length)) %}
 
     <div{{ form.attributes.row }}>
-        {% for cell in row %}
+        {% for field row %}
 
-            {% set field = cell.field %}
             {% do field.setParameters({
                 attributes: {
                     container: {

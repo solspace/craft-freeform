@@ -86,9 +86,8 @@
 
     <div{{ form.attributes.row }}>
 
-        {% for cell in row %}
+        {% for field in row %}
 
-            {% set field = cell.field %}
             {% do field.setParameters({
                 attributes: {
                     container: {

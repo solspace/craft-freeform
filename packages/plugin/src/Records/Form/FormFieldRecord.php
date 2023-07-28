@@ -30,6 +30,8 @@ class FormFieldRecord extends ActiveRecord
 {
     public const TABLE = '{{%freeform_forms_fields}}';
 
+    public ?string $handle = null;
+
     public static function tableName(): string
     {
         return self::TABLE;
@@ -44,6 +46,32 @@ class FormFieldRecord extends ActiveRecord
     {
         return [
             [['formId'], 'required'],
+            [['formId'], 'validateFormHandleUniqueness'],
         ];
+    }
+
+    public function validateFormHandleUniqueness($attribute)
+    {
+        // Decode the metadata JSON to a PHP object/array
+        $metadata = json_decode($this->metadata);
+        if (!isset($metadata->handle)) {
+            return;
+        }
+
+        // Get the handle from the metadata
+        $handle = $metadata->handle;
+
+        // Check the database for existing records with the same formId and handle
+        $exists = self::find()
+            ->where(['formId' => $this->formId])
+            ->andWhere(['like', 'metadata', '"handle":"'.$handle.'"'])
+            ->andWhere(['NOT', ['uid' => $this->uid]])
+            ->exists()
+        ;
+
+        // If a record exists with the same formId and handle, add an error
+        if ($exists) {
+            $this->addError('handle', 'Handle used more than once.');
+        }
     }
 }

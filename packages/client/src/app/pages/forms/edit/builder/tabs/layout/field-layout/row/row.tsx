@@ -8,9 +8,9 @@ import { Field } from '../field/field';
 import { FieldDragPlaceholder } from '../field/field.placeholder';
 
 import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
-import { useRowCellDrop } from './row.cell-drop';
 import { useRowDimensions } from './row.dimensions';
 import { useRowDrop } from './row.drop';
+import { useRowFieldDrop } from './row.field-drop';
 import {
   DropZone,
   DropZoneAnimation,
@@ -36,11 +36,11 @@ export const Row: React.FC<Props> = ({ row }) => {
     ref: fieldDropRef,
     isOver,
     isCurrentRow,
-    isDraggingCell,
-    dragCellIndex,
+    isDraggingField,
+    dragFieldIndex,
     hoverPosition,
-    cellWidth,
-  } = useRowCellDrop(wrapperRef, row, fields.length, width, offsetX);
+    fieldWidth,
+  } = useRowFieldDrop(wrapperRef, row, fields.length, width, offsetX);
 
   const ref = fieldDropRef(
     wrapperRef
@@ -55,7 +55,7 @@ export const Row: React.FC<Props> = ({ row }) => {
         <FieldDragPlaceholder
           isActive={isOver}
           hoverPosition={hoverPosition}
-          cellWidth={cellWidth}
+          fieldWidth={fieldWidth}
         />
         {fields.map((field, idx) => (
           <Field
@@ -63,11 +63,11 @@ export const Row: React.FC<Props> = ({ row }) => {
             isOver={isOver}
             hoverPosition={hoverPosition}
             isCurrentRow={isCurrentRow}
-            isDraggingCell={isDraggingCell}
-            dragCellIndex={dragCellIndex}
+            isDraggingField={isDraggingField}
+            dragFieldIndex={dragFieldIndex}
             index={idx}
             key={field.uid}
-            width={cellWidth || width}
+            width={fieldWidth || width}
           />
         ))}
       </RowFieldsContainer>

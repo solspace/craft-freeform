@@ -163,6 +163,13 @@ class LayoutPersistence extends FeatureBundle
             if (!$record->hasErrors()) {
                 $this->rowContents[$item->rowUid][] = $uid;
             }
+
+            if ($record->hasErrors()) {
+                $event->addErrorsToResponse(
+                    'fields',
+                    [$item->uid => $record->getErrors()]
+                );
+            }
         }
 
         foreach ($staleUids as $uid) {

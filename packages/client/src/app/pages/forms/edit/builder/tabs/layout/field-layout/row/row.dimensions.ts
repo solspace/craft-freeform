@@ -8,7 +8,7 @@ export const useRowDimensions = (
   const [width, setWidth] = useState<number>(0);
   const [offsetX, setOffsetX] = useState<number>(0);
 
-  const updateCellWidth = (): void => {
+  const updateFieldWidth = (): void => {
     const boundingBox = ref.current.getBoundingClientRect();
     setWidth(boundingBox.width);
     setOffsetX(boundingBox.x);
@@ -21,10 +21,10 @@ export const useRowDimensions = (
       setOffsetX(boundingBox.x);
     }
 
-    window.addEventListener('resize', updateCellWidth);
+    window.addEventListener('resize', updateFieldWidth);
 
     return () => {
-      window.removeEventListener('resize', updateCellWidth);
+      window.removeEventListener('resize', updateFieldWidth);
     };
   }, [ref]);
 

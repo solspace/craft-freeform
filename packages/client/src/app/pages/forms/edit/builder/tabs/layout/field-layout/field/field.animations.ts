@@ -8,8 +8,8 @@ type FieldDragAnimation = (options: {
   isDragging: boolean;
   isOver: boolean;
   isCurrentRow: boolean;
-  isDraggingCell: boolean;
-  dragCellIndex?: number;
+  isDraggingField: boolean;
+  dragFieldIndex?: number;
   index: number;
   hoverPosition?: number;
 }) => {
@@ -21,21 +21,21 @@ const calculateX = (
   width: number,
   isOver: boolean,
   isCurrentRow: boolean,
-  isDraggingCell: boolean,
+  isDraggingField: boolean,
   index: number,
-  dragCellIndex?: number,
+  dragFieldIndex?: number,
   hoverPosition?: number
 ): number => {
   if (!isOver || hoverPosition === undefined) {
     return 0;
   }
 
-  if (isCurrentRow && isDraggingCell && dragCellIndex !== undefined) {
-    if (index === dragCellIndex) {
+  if (isCurrentRow && isDraggingField && dragFieldIndex !== undefined) {
+    if (index === dragFieldIndex) {
       return width * (hoverPosition - index);
     }
 
-    if (dragCellIndex > index) {
+    if (dragFieldIndex > index) {
       if (index < hoverPosition) {
         return 0;
       }
@@ -43,7 +43,7 @@ const calculateX = (
       return width;
     }
 
-    if (dragCellIndex < index) {
+    if (dragFieldIndex < index) {
       if (index <= hoverPosition) {
         return -width;
       }
@@ -70,8 +70,8 @@ export const useFieldDragAnimation: FieldDragAnimation = ({
   isDragging,
   isOver,
   isCurrentRow,
-  isDraggingCell,
-  dragCellIndex,
+  isDraggingField,
+  dragFieldIndex,
   index,
   hoverPosition,
 }) => {
@@ -81,9 +81,9 @@ export const useFieldDragAnimation: FieldDragAnimation = ({
     width,
     isOver,
     isCurrentRow,
-    isDraggingCell,
+    isDraggingField,
     index,
-    dragCellIndex,
+    dragFieldIndex,
     hoverPosition
   );
 

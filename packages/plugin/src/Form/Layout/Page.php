@@ -18,20 +18,16 @@ class Page implements \IteratorAggregate
 
     private PageButtons $buttons;
 
-    private RowCollection $rowCollection;
-    private FieldCollection $fieldCollection;
-
-    public function __construct(array $config = [])
-    {
+    public function __construct(
+        private Layout $layout,
+        array $config = [],
+    ) {
         $this->id = $config['id'] ?? null;
         $this->uid = $config['uid'] ?? null;
         $this->label = $config['label'] ?? '';
         $this->index = $config['index'] ?? 0;
 
         $this->buttons = new PageButtons($config['metadata']['buttons'] ?? []);
-
-        $this->rowCollection = new RowCollection();
-        $this->fieldCollection = new FieldCollection();
     }
 
     public function getId(): ?int
@@ -56,12 +52,12 @@ class Page implements \IteratorAggregate
 
     public function getRows(): RowCollection
     {
-        return $this->rowCollection;
+        return $this->layout->getRows();
     }
 
     public function getFields(string|array|null $implements = null, ?string $strategy = null): FieldCollection
     {
-        return $this->fieldCollection->getList($implements, $strategy);
+        return $this->layout->getFields()->getList($implements, $strategy);
     }
 
     public function getButtons(): PageButtons
@@ -71,6 +67,6 @@ class Page implements \IteratorAggregate
 
     public function getIterator(): \ArrayIterator
     {
-        return $this->rowCollection->getIterator();
+        return $this->layout->getRows()->getIterator();
     }
 }

@@ -3,43 +3,46 @@
     {{- fieldTemplatePath ~ type ~ ".twig" -}}
 {%- endmacro %}
 
-{% macro render(row, form) %}
+{% macro render(rows, form) %}
     {% import _self as self %}
 
-    {% set width = (12 / (row|length)) %}
+    {% for row in rows %}
 
-    <div{{ form.attributes.row }}>
-        {% for cell in row %}
+        {% set width = (12 / (row|length)) %}
 
-            {% set field = cell.field %}
-            {% do field.setParameters({
-                attributes: {
-                    container: {
-                        class: [
-                            "form-group",
-                            "col-sm-" ~ width,
-                            "col-xs-12",
-                            "col-12",
-                            field.errors|length ? "has-error",
-                        ],
-                    },
-                    label: { class: [
-                        field.required ? "required",
-                        field.hasErrors ? "is-invalid",
-                    ]},
-                    input: { class: [
-                        "form-control",
-                        "ff-fieldtype-" ~ field.type,
-                        field.hasErrors ? "is-invalid",
-                    ] },
-                    instructions: { class: ["form-text", "text-muted"] },
-                    error: { class: "invalid-feedback" },
-                }
-            }) %}
+        <div{{ form.attributes.row }}>
+            {% for field in row %}
 
-            {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+                {% do field.setParameters({
+                    attributes: {
+                        container: {
+                            class: [
+                                "form-group",
+                                "col-sm-" ~ width,
+                                "col-xs-12",
+                                "col-12",
+                                field.errors|length ? "has-error",
+                            ],
+                        },
+                        label: { class: [
+                            field.required ? "required",
+                            field.hasErrors ? "is-invalid",
+                        ]},
+                        input: { class: [
+                            "form-control",
+                            "ff-fieldtype-" ~ field.type,
+                            field.hasErrors ? "is-invalid",
+                        ] },
+                        instructions: { class: ["form-text", "text-muted"] },
+                        error: { class: "invalid-feedback" },
+                    }
+                }) %}
 
-        {% endfor %}
-    </div>
+                {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+
+            {% endfor %}
+        </div>
+
+    {% endfor %}
 
 {% endmacro %}

@@ -1,4 +1,4 @@
-import type { Cell, Layout, Page, Row } from '@editor/builder/types/layout';
+import type { Layout, Page, Row } from '@editor/builder/types/layout';
 import type { Field } from '@editor/store/slices/layout/fields';
 import type {
   GenericValue,
@@ -25,7 +25,6 @@ export type ExtendedFormType = Form & {
     pages: Page[];
     layouts: Layout[];
     rows: Row[];
-    cells: Cell[];
   };
 };
 

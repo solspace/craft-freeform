@@ -75,14 +75,16 @@ export const fieldsSlice = createSlice({
         (prop) => (properties[prop.handle] = prop.value)
       );
 
-      const label = uniqueNamesGenerator({
-        dictionaries: [adjectives, [fieldType.name], ['field']],
-        separator: ' ',
-        style: 'capital',
-      });
+      if (!properties.label) {
+        const label = uniqueNamesGenerator({
+          dictionaries: [adjectives, [fieldType.name], ['field']],
+          separator: ' ',
+          style: 'capital',
+        });
 
-      properties.label = label;
-      properties.handle = camelCase(label);
+        properties.label = label;
+        properties.handle = camelCase(label);
+      }
 
       state.push({
         uid,
@@ -92,7 +94,7 @@ export const fieldsSlice = createSlice({
         order: order !== undefined ? order : highestOrder + 1,
       });
 
-      // shift all other cells on the right by 1 order
+      // shift all other fields on the right by 1 order
       if (order !== undefined) {
         state
           .filter((field) => field.rowUid === rowUid)
@@ -158,7 +160,7 @@ export const fieldsSlice = createSlice({
       movedField.order = position;
 
       if (!isSameRow) {
-        // Reset the order of cells in previous row
+        // Reset the order of fields in previous row
         state
           .filter((field) => field.rowUid === previosRowUid)
           .forEach((field) => {
@@ -166,7 +168,7 @@ export const fieldsSlice = createSlice({
             field.order -= isAfterMovedField ? 1 : 0;
           });
 
-        // update all new row orders after the new cell
+        // update all new row orders after the new field
         state
           .filter((field) => field.rowUid === rowUid)
           .filter((field) => field.uid !== movedField.uid)

@@ -23,7 +23,10 @@ export const useDimensionsObserver = <
   });
 
   const [resizeObserver] = useState(
-    () => new ResizeObserver(([entry]) => setDimensions(entry.contentRect))
+    () =>
+      new ResizeObserver(([entry]) => {
+        setDimensions(entry.target.getBoundingClientRect());
+      })
   );
 
   useEffect(() => {

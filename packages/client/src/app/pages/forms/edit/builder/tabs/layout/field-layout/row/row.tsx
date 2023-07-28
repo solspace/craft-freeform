@@ -1,14 +1,14 @@
 import type { MutableRefObject } from 'react';
-import React, { useRef } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import type { Row as RowType } from '@editor/builder/types/layout';
 import { fieldSelectors } from '@editor/store/slices/layout/fields/fields.selectors';
+import { useDimensionsObserver } from '@ff-client/hooks/use-height-animation';
 
 import { Field } from '../field/field';
 import { FieldDragPlaceholder } from '../field/field.placeholder';
 
 import { usePlaceholderAnimation, useRowAnimation } from './row.animations';
-import { useRowDimensions } from './row.dimensions';
 import { useRowDrop } from './row.drop';
 import { useRowFieldDrop } from './row.field-drop';
 import {
@@ -23,10 +23,13 @@ type Props = {
 };
 
 export const Row: React.FC<Props> = ({ row }) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
   const fields = useSelector(fieldSelectors.inRow(row));
 
-  const [width, offsetX] = useRowDimensions(wrapperRef);
+  const { ref: wrapperRef, dimensions } =
+    useDimensionsObserver<HTMLDivElement>();
+
+  const width = dimensions.width;
+  const offsetX = dimensions.x;
 
   const { ref: rowDropRef, isOver: isOverRow } = useRowDrop(row);
   const placeholderAnimation = usePlaceholderAnimation(isOverRow);

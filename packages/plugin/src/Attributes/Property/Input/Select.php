@@ -15,6 +15,7 @@ class Select extends Property implements OptionsInterface
         ?string $instructions = null,
         ?int $order = null,
         string|int|null $value = null,
+        ?int $width = null,
         public ?string $emptyOption = null,
         public OptionCollection|array|string|null $options = null,
     ) {
@@ -23,6 +24,7 @@ class Select extends Property implements OptionsInterface
             instructions: $instructions,
             order: $order,
             value: $value,
+            width: $width,
         );
     }
 }

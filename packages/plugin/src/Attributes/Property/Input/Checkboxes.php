@@ -14,6 +14,7 @@ class Checkboxes extends Property implements OptionsInterface
         ?string $label = null,
         ?string $instructions = null,
         ?int $order = null,
+        ?int $width = null,
         string|int|null $value = null,
         public ?bool $selectAll = false,
         public ?int $columns = 1,
@@ -24,6 +25,7 @@ class Checkboxes extends Property implements OptionsInterface
             instructions: $instructions,
             order: $order,
             value: $value,
+            width: $width,
         );
     }
 }

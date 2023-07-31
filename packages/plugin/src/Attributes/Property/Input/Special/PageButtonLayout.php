@@ -15,8 +15,9 @@ class PageButtonLayout extends Property
         ?int $order = null,
         mixed $value = null,
         ?string $placeholder = null,
+        ?int $width = null,
         public array $elements = [],
     ) {
-        parent::__construct($label, $instructions, $order, $value, $placeholder);
+        parent::__construct($label, $instructions, $order, $value, $placeholder, $width);
     }
 }

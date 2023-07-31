@@ -15,6 +15,7 @@ class TabularData extends Property
         ?string $instructions = null,
         ?int $order = null,
         array $value = null,
+        ?int $width = null,
         public TabularDataConfiguration|array|string|null $configuration = null,
     ) {
         parent::__construct(
@@ -22,6 +23,7 @@ class TabularData extends Property
             instructions: $instructions,
             order: $order,
             value: $value,
+            width: $width,
         );
     }
 }

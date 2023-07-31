@@ -39,6 +39,7 @@ abstract class Property
         public ?int $order = null,
         public mixed $value = null,
         public ?string $placeholder = null,
+        public ?int $width = null,
     ) {
     }
 

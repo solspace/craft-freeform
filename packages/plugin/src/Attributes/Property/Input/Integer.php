@@ -16,9 +16,10 @@ class Integer extends Property
         ?int $order = null,
         mixed $value = null,
         ?string $placeholder = null,
+        ?int $width = null,
         public ?int $min = null,
         public ?int $max = null,
     ) {
-        parent::__construct($label, $instructions, $order, $value, $placeholder);
+        parent::__construct($label, $instructions, $order, $value, $placeholder, $width);
     }
 }

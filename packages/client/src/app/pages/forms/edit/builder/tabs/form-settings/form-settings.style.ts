@@ -11,6 +11,8 @@ export const FormSettingsWrapper = styled.div`
 export const FormSettingsContainer = styled.div`
   flex: 1;
   display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
   flex-direction: column;
 
   background: ${colors.white};
@@ -21,9 +23,6 @@ export const FormSettingsContainer = styled.div`
   ${scrollBar};
 
   div[class^='ControlWrapper-'] {
-    width: 100%;
-    max-width: 50%;
-
     div[class^='CheckboxWrapper-'] {
       align-items: start;
 
@@ -72,6 +71,9 @@ export const SectionLink = styled.button`
 
 export const SectionHeader = styled.h1`
   padding: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
   margin-top: -11px;
   margin-bottom: 14px;
 `;

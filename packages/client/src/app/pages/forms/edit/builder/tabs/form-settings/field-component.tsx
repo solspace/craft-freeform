@@ -13,9 +13,8 @@ type Props = {
 
 export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
   const formErrors = useSelector(formSelectors.errors);
-  const value = useSelector(
-    formSelectors.settings.one(namespace, property.handle)
-  );
+  const context = useSelector(formSelectors.settings.one(namespace));
+  const value = context[property.handle];
 
   const generateUpdateHandler = useFormSettingUpdateGenerator(namespace);
 
@@ -28,7 +27,7 @@ export const FieldComponent: React.FC<Props> = ({ namespace, property }) => {
       property={property}
       updateValue={generateUpdateHandler(property)}
       errors={errors}
-      context={namespace}
+      context={context}
       animateVisibility={true}
     />
   );

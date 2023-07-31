@@ -15,6 +15,7 @@ class Table extends Property implements OptionsInterface
         ?string $instructions = null,
         ?int $order = null,
         array $value = null,
+        ?int $width = null,
         public OptionCollection|array|string|null $options = null,
     ) {
         parent::__construct(
@@ -22,6 +23,7 @@ class Table extends Property implements OptionsInterface
             instructions: $instructions,
             order: $order,
             value: $value,
+            width: $width,
         );
     }
 }

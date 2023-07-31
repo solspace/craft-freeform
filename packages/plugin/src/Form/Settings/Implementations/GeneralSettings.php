@@ -8,6 +8,10 @@ use Solspace\Freeform\Attributes\Property\Middleware;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Attributes\Property\ValueTransformer;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
+use Solspace\Freeform\Form\Properties\GTM\GTMProperty;
+use Solspace\Freeform\Form\Properties\GTM\GTMValueTransformer;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormattingTemplateOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormStatusOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormTypeOptions;
@@ -25,9 +29,9 @@ class GeneralSettings extends SettingsNamespace
 {
     private const SECTION_GENERAL = 'general';
     private const SECTION_DATA_STORAGE = 'data-storage';
-    // TODO - Refactor as Integrations
-    // private const SECTION_CAPTCHAS = 'captchas';
-    // private const SECTION_GTM = 'gtm';
+    // TODO: Refactor as Integrations
+    private const SECTION_CAPTCHAS = 'captchas';
+    private const SECTION_GTM = 'gtm';
 
     #[Section(
         self::SECTION_GENERAL,
@@ -148,6 +152,7 @@ class GeneralSettings extends SettingsNamespace
 
     // TODO: implement a way to get the options to fill on the react side
     #[Section(self::SECTION_DATA_STORAGE)]
+    #[VisibilityFilter('Boolean(allowUsersToOptIn)')]
     #[Input\Select(
         label: 'Opt-in Checkbox',
         instructions: 'Select the checkbox field that will act as the opt-in for the user submitting the form.',
@@ -157,8 +162,7 @@ class GeneralSettings extends SettingsNamespace
     )]
     public ?string $optInCheckbox = null;
 
-    // TODO - Refactor as Integrations
-    /*
+    // TODO: Refactor as Integrations
     #[Section(
         self::SECTION_CAPTCHAS,
         label: 'Captchas',
@@ -179,7 +183,8 @@ class GeneralSettings extends SettingsNamespace
         order: 4,
     )]
     #[ValueTransformer(GTMValueTransformer::class)]
-    #[Input\Special\GTM]
+    #[Input\Special\GTM(
+        order: 1,
+    )]
     public GTMProperty $gtm;
-    */
 }

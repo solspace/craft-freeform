@@ -7,13 +7,23 @@ export const formSelectors = {
   current: (state: RootState): Form | undefined => state.form,
   settings: {
     all:
-      (namespace: string) =>
+      () =>
       (state: RootState): SettingsNamespace =>
-        state.form.settings?.[namespace] || {},
+        state.form.settings || {},
     one:
-      (namespace: string, key: string) =>
+      (namespace: string) =>
       (state: RootState): any =>
-        state.form.settings?.[namespace]?.[key],
+        state.form.settings?.[namespace],
+    namespaces: {
+      all:
+        (namespace: string) =>
+        (state: RootState): SettingsNamespace =>
+          state.form.settings?.[namespace] || {},
+      one:
+        (namespace: string, key: string) =>
+        (state: RootState): any =>
+          state.form.settings?.[namespace]?.[key],
+    },
   },
   errors: (state: RootState): FormErrors => state.form.errors,
 } as const;

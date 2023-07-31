@@ -45,11 +45,11 @@ export const FormComponent: React.FC<Props> = ({
   context,
   animateVisibility = false,
 }) => {
-  const type = property.type;
+  const { handle, width, type, visibilityFilters } = property;
   const FormControl = types[type];
 
   const isVisible = useVisibility(
-    property.visibilityFilters || [],
+    visibilityFilters || [],
     context as GenericValue as GenericValue
   );
 
@@ -61,6 +61,7 @@ export const FormComponent: React.FC<Props> = ({
   const animation = useSpring({
     opacity: isVisible ? 1 : 0,
     scaleY: isVisible ? 1 : 0,
+    width: `${width ? width : 100}%`,
     height: isVisible ? height + 12 : 0,
     config: {
       tension: 500,
@@ -70,7 +71,7 @@ export const FormComponent: React.FC<Props> = ({
   });
 
   if (FormControl === undefined) {
-    return <div>{`[${property.handle}]: <${type}>`}</div>;
+    return <div>{`[${handle}]: <${type}>`}</div>;
   }
 
   FormControl.displayName = `FormComponent: <${type}>`;
@@ -78,7 +79,7 @@ export const FormComponent: React.FC<Props> = ({
   if (animateVisibility) {
     return (
       <AnimatedWrapper style={animation}>
-        <ErrorBoundary message={`...${property.handle} <${property.type}>`}>
+        <ErrorBoundary message={`...${handle} <${type}>`}>
           <Suspense>
             <div ref={ref}>
               <FormControl
@@ -100,15 +101,17 @@ export const FormComponent: React.FC<Props> = ({
   }
 
   return (
-    <ErrorBoundary message={`...${property.handle} <${property.type}>`}>
+    <ErrorBoundary message={`...${handle} <${type}>`}>
       <Suspense>
-        <FormControl
-          value={value as GenericValue}
-          property={property}
-          updateValue={updateValue}
-          errors={errors}
-          context={context}
-        />
+        <div style={{ width: `${width ? width : 100}%` }}>
+          <FormControl
+            value={value as GenericValue}
+            property={property}
+            updateValue={updateValue}
+            errors={errors}
+            context={context}
+          />
+        </div>
       </Suspense>
     </ErrorBoundary>
   );

@@ -99,6 +99,11 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->formTemplateDirectory;
     }
 
+    public function getSuccessTemplateDirectory(): string
+    {
+        return $this->getSettingsModel()->getAbsoluteSuccessTemplateDirectory();
+    }
+
     public function getSolspaceFormTemplateDirectory(): string
     {
         return __DIR__.'/../templates/_defaultFormTemplates';
@@ -172,8 +177,18 @@ class SettingsService extends BaseService
     public function getSuccessTemplates(): array
     {
         $templates = [];
-        foreach ($this->getSettingsModel()->listTemplatesInSuccessTemplateDirectory() as $path => $name) {
-            $templates[] = new FormTemplate($path);
+        $templateDirectoryPath = $this->getSuccessTemplateDirectory();
+
+        $rootFiles = (new Finder())
+            ->files()
+            ->in($templateDirectoryPath)
+            ->depth(0)
+            ->sortByName()
+            ->name('*.twig')
+        ;
+
+        foreach ($rootFiles as $file) {
+            $templates[] = new FormTemplate($file->getRealPath(), $templateDirectoryPath);
         }
 
         return $templates;

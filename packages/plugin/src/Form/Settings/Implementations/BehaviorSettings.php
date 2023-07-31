@@ -6,9 +6,11 @@ use Solspace\Freeform\Attributes\Form\SettingNamespace;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Attributes\Property\ValueGenerator;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
+use Solspace\Freeform\Form\Settings\Implementations\ValueGenerators\SuccessTemplateGenerator;
 use Solspace\Freeform\Form\Settings\SettingsNamespace;
 
 #[SettingNamespace(
@@ -44,14 +46,14 @@ class BehaviorSettings extends SettingsNamespace
     public string $successBehavior = self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[ValueGenerator(SuccessTemplateGenerator::class)]
+    #[Validators\Required]
     #[Input\Select(
         instructions: "Select the template you'd like to replace the form in the page after a successful submit.",
         order: 2,
-        emptyOption: 'Disabled',
-        options: [],
+        options: SuccessTemplateOptions::class,
     )]
-    #[Validators\Required]
-    public string $successTemplate = '';
+    public ?string $successTemplate;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\Text(

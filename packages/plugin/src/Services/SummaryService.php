@@ -59,7 +59,7 @@ class SummaryService extends Component
 
         $totals = new Totals();
         $totals->forms = \count($freeform->forms->getAllFormIds());
-        $totals->fields = \count($freeform->fields->getAllFieldIds());
+        $totals->fields = $freeform->fields->getAllFieldCount();
         $totals->emailNotifications = \count($freeform->notifications->getAllNotifications());
         $totals->submissions = $freeform->submissions->getSubmissionCount();
         $totals->spam = $freeform->submissions->getSubmissionCount(null, null, true);

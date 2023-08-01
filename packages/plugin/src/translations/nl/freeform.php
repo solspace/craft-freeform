@@ -318,7 +318,7 @@ return [
     'Plugin Badge' => 'Plug-in-badge',
     "Select the options you'd like to be included in the plugin badge count (when applicable)." => 'Selecteer de opties die u wilt opnemen in het aantal plugin-badges (indien van toepassing).',
     "Don't Show" => 'Niet laten zien',
-    "Update Notices & Logged Errors" => 'Update Mededelingen & Gelogde fouten',
+    'Update Notices & Logged Errors' => 'Update Mededelingen & Gelogde fouten',
     'Update Notices only' => 'Alleen kennisgevingen bijwerken',
     'Logged Errors only' => 'Alleen geregistreerde fouten',
     'Submission Count' => 'Aantal inzendingen',

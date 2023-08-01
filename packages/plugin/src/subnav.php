@@ -5,10 +5,6 @@ use Solspace\Freeform\Freeform;
 
 $navItems = [];
 
-if (PermissionHelper::checkPermission(Freeform::PERMISSION_DASHBOARD_ACCESS)) {
-    $navItems['dashboard'] = ['label' => Freeform::t('Dashboard'), 'url' => 'freeform/dashboard'];
-}
-
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)) {
     $navItems['submissions'] = ['label' => Freeform::t('Submissions'), 'url' => 'freeform/submissions'];
 }
@@ -24,10 +20,6 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS)) {
     $navItems['forms'] = ['label' => Freeform::t('Forms'), 'url' => 'freeform/forms'];
-}
-
-if (PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_ACCESS)) {
-    $navItems['fields'] = ['label' => Freeform::t('Fields'), 'url' => 'freeform/fields'];
 }
 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS)) {

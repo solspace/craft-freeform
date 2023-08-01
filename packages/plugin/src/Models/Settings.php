@@ -330,7 +330,7 @@ class Settings extends Model
         $this->pluginName = null;
         $this->formTemplateDirectory = null;
         $this->successTemplateDirectory = null;
-        $this->defaultView = Freeform::VIEW_DASHBOARD;
+        $this->defaultView = Freeform::VIEW_FORMS;
         $this->fieldDisplayOrder = Freeform::FIELD_DISPLAY_ORDER_NAME;
         $this->showTutorial = true;
         $this->defaultTemplates = true;

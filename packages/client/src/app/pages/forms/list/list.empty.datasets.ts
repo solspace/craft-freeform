@@ -1,0 +1,33 @@
+export const chartDataset: Array<Array<{ value: number }>> = [
+  [
+    { value: 0 },
+    { value: 2 },
+    { value: 0 },
+    { value: 6 },
+    { value: 0 },
+    { value: 0 },
+    { value: 1 },
+    { value: 0 },
+    { value: 0 },
+    { value: 4 },
+    { value: 0 },
+    { value: 3 },
+  ],
+  [
+    { value: 9 },
+    { value: 6 },
+    { value: 3 },
+    { value: 4 },
+    { value: 0 },
+    { value: 6 },
+    { value: 1 },
+  ],
+  [
+    { value: 0 },
+    { value: 25 },
+    { value: 0 },
+    { value: 32 },
+    { value: 0 },
+    { value: 0 },
+  ],
+];

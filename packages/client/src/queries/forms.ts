@@ -17,8 +17,12 @@ export const QKForms = {
 };
 
 export const useQueryForms = (): UseQueryResult<Form[], AxiosError> => {
-  return useQuery<Form[], AxiosError>(QKForms.all, () =>
-    axios.get<Form[]>('/api/forms').then((res) => res.data)
+  return useQuery<Form[], AxiosError>(
+    QKForms.all,
+    () => axios.get<Form[]>('/api/forms').then((res) => res.data),
+    {
+      staleTime: 60 * 60 * 5,
+    }
   );
 };
 

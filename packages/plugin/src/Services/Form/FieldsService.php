@@ -11,8 +11,6 @@ use Solspace\Freeform\Services\FormsService;
 
 class FieldsService extends BaseService
 {
-    private static array $fieldCache = [];
-
     public function __construct(
         $config = [],
         private PropertyProvider $propertyProvider,
@@ -106,6 +104,11 @@ class FieldsService extends BaseService
         $this->propertyProvider->setObjectProperties($field, $properties);
 
         return $field;
+    }
+
+    public function getAllFieldCount(): int
+    {
+        return FormFieldRecord::find()->count();
     }
 
     /**

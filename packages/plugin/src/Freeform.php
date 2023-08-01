@@ -53,8 +53,8 @@ use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\DashboardService;
 use Solspace\Freeform\Services\DiagnosticsService;
 use Solspace\Freeform\Services\ExportService;
-use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
+use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
@@ -104,9 +104,9 @@ use yii\web\ForbiddenHttpException;
  *
  * @property CrmService                  $crm
  * @property ElementsService             $elements
- * @property FieldsService               $fields
  * @property FilesService                $files
  * @property FormsService                $forms
+ * @property FieldsService               $fields
  * @property LayoutsService              $formLayouts
  * @property MailerService               $mailer
  * @property MailingListsService         $mailingLists
@@ -144,10 +144,8 @@ class Freeform extends Plugin
 {
     public const TRANSLATION_CATEGORY = 'freeform';
 
-    public const VIEW_DASHBOARD = 'dashboard';
     public const VIEW_FORMS = 'forms';
     public const VIEW_SUBMISSIONS = 'submissions';
-    public const VIEW_FIELDS = 'fields';
     public const VIEW_NOTIFICATIONS = 'notifications';
     public const VIEW_SETTINGS = 'settings';
     public const VIEW_RESOURCES = 'resources';
@@ -176,7 +174,6 @@ class Freeform extends Plugin
     public const PERMISSION_SUBMISSIONS_MANAGE_INDIVIDUAL = 'freeform-submissionsManageIndividual';
     public const PERMISSION_NOTIFICATIONS_ACCESS = 'freeform-notificationsAccess';
     public const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
-    public const PERMISSION_DASHBOARD_ACCESS = 'freeform-dashboardAccess';
     public const PERMISSION_ERROR_LOG_ACCESS = 'freeform-errorLogAccess';
     public const PERMISSION_ERROR_LOG_MANAGE = 'freeform-errorLogManage';
     public const PERMISSION_RESOURCES = 'freeform-resources';
@@ -349,9 +346,9 @@ class Freeform extends Plugin
                 'crm' => CrmService::class,
                 'elements' => ElementsService::class,
                 'charts' => ChartsService::class,
-                'fields' => FieldsService::class,
                 'files' => FilesService::class,
                 'forms' => FormsService::class,
+                'field' => FieldsService::class,
                 'formLayouts' => LayoutsService::class,
                 'mailer' => MailerService::class,
                 'mailingLists' => MailingListsService::class,
@@ -523,7 +520,6 @@ class Freeform extends Plugin
                     }
 
                     $permissions = [
-                        self::PERMISSION_DASHBOARD_ACCESS => ['label' => self::t('Access Dashboard')],
                         self::PERMISSION_SUBMISSIONS_ACCESS => [
                             'label' => self::t('Access Submissions'),
                             'nested' => [

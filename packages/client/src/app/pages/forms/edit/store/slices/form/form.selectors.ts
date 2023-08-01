@@ -1,5 +1,6 @@
 import type { RootState } from '@editor/store';
 import type { Form, SettingsNamespace } from '@ff-client/types/forms';
+import type { GenericValue } from '@ff-client/types/properties';
 
 import type { FormErrors } from './form.types';
 
@@ -12,7 +13,7 @@ export const formSelectors = {
         state.form.settings || {},
     one:
       (namespace: string) =>
-      (state: RootState): any =>
+      (state: RootState): GenericValue =>
         state.form.settings?.[namespace],
     namespaces: {
       all:
@@ -21,7 +22,7 @@ export const formSelectors = {
           state.form.settings?.[namespace] || {},
       one:
         (namespace: string, key: string) =>
-        (state: RootState): any =>
+        (state: RootState): GenericValue =>
           state.form.settings?.[namespace]?.[key],
     },
   },

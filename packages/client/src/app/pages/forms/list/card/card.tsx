@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
@@ -105,14 +105,14 @@ export const Card: React.FC<Props> = ({ form }) => {
 
         <LinkList>
           <li>
-            <NavLink to={generateUrl(`freeform/submissions/${form.handle}`)}>
+            <a href={generateUrl(`submissions/${form.handle}`, false)}>
               {form.counters.submissions} {translate('Submissions')}
-            </NavLink>
+            </a>
           </li>
           <li>
-            <NavLink to={generateUrl(`freeform/spam/${form.handle}`)}>
+            <a href={generateUrl(`spam/${form.handle}`, false)}>
               {form.counters.spam} {translate('Spam')}
-            </NavLink>
+            </a>
           </li>
         </LinkList>
       </CardBody>

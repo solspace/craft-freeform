@@ -13,7 +13,7 @@ use Solspace\Freeform\Library\Pro\Payments\ElementHookHandlers\SubmissionHookHan
 
 #[Type(
     name: 'Credit Card: Details',
-    typeShorthand: 'cc-details',
+    typeShorthand: 'credit-card',
     iconPath: __DIR__.'/../../Icons/text.svg',
 )]
 class CreditCardDetailsField extends AbstractField implements DefaultFieldInterface, PaymentInterface, ExtraFieldInterface

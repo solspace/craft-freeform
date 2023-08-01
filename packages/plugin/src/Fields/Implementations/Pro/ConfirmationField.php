@@ -18,7 +18,7 @@ use Solspace\Freeform\Library\Exceptions\FreeformException;
 
 #[Type(
     name: 'Confirm',
-    typeShorthand: 'confirmation',
+    typeShorthand: 'confirm',
     iconPath: __DIR__.'/../Icons/confirm.svg',
     previewTemplatePath: __DIR__.'/../PreviewTemplates/text.ejs',
 )]

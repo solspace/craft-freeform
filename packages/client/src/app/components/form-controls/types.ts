@@ -6,4 +6,5 @@ export type ControlType<P extends Property, C = unknown> = {
   updateValue: (value: P['value']) => void;
   errors?: string[];
   context?: C;
+  autoFocus?: boolean;
 };

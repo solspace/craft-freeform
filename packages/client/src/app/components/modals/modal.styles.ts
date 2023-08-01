@@ -1,9 +1,10 @@
+import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
 export const ModalHub = styled.div``;
 
-export const ModalOverlay = styled.div`
+export const ModalOverlay = styled(animated.div)`
   position: fixed;
   left: 0;
   right: 0;
@@ -11,10 +12,14 @@ export const ModalOverlay = styled.div`
   bottom: 0;
   z-index: 1000;
 
-  background-color: rgba(123, 135, 147, 0.35);
+  background-color: rgba(123, 135, 147, 0);
+
+  &.inactive {
+    pointer-events: none;
+  }
 `;
 
-export const ModalWrapper = styled.div`
+export const ModalWrapper = styled(animated.div)`
   position: fixed;
   left: 0;
   right: 0;

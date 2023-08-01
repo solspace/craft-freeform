@@ -9,6 +9,7 @@ const String: React.FC<ControlType<StringProperty>> = ({
   property,
   errors,
   updateValue,
+  autoFocus,
 }) => {
   const { handle } = property;
 
@@ -18,6 +19,7 @@ const String: React.FC<ControlType<StringProperty>> = ({
         id={handle}
         type="text"
         autoComplete="off"
+        autoFocus={autoFocus}
         className={classes(
           'text',
           'fullwidth',

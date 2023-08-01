@@ -21,7 +21,7 @@ export const CreateFormModal: React.FC = () => {
       {!data && isFetching && <FormModalLoading />}
       {data && (
         <>
-          {data.map((property) => (
+          {data.map((property, idx) => (
             <FormComponent
               key={property.handle}
               updateValue={(value) => {
@@ -32,6 +32,7 @@ export const CreateFormModal: React.FC = () => {
                   })
                 );
               }}
+              autoFocus={idx === 0}
               value={values?.[property.handle]}
               property={property}
               errors={errors?.[property.handle] as unknown as string[]}

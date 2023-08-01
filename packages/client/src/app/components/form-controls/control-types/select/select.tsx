@@ -31,6 +31,7 @@ const Select: React.FC<ControlType<SelectProperty>> = ({
   property,
   errors,
   updateValue,
+  autoFocus,
 }) => {
   const { handle, options, emptyOption } = property;
 
@@ -40,6 +41,7 @@ const Select: React.FC<ControlType<SelectProperty>> = ({
         <select
           id={handle}
           value={value ?? ''}
+          autoFocus={autoFocus}
           onChange={(event) => updateValue(event.target.value)}
         >
           {!!emptyOption && <option value="" label={emptyOption} />}

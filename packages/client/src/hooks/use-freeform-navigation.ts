@@ -6,7 +6,7 @@ export const useFreeformNavigation = (): void => {
 
   useEffect(() => {
     const link = document.querySelector(
-      `ul.subnav li a[href$="freeform/forms"]`
+      `ul.subnav li a[href*="/freeform/forms"]`
     );
 
     const onClick = (event: MouseEvent): boolean => {

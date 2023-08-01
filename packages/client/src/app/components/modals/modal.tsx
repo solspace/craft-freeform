@@ -16,6 +16,7 @@ type Props = {
   title?: string;
   closeModal: () => void;
   onSave?: () => boolean | Promise<boolean>;
+  style?: any;
 };
 
 export const Modal: React.FC<PropsWithChildren<Props>> = ({
@@ -23,6 +24,7 @@ export const Modal: React.FC<PropsWithChildren<Props>> = ({
   children,
   closeModal,
   onSave,
+  style,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
 
@@ -60,7 +62,7 @@ export const Modal: React.FC<PropsWithChildren<Props>> = ({
   });
 
   return (
-    <ModalWrapper>
+    <ModalWrapper style={style}>
       <ModalContainer>
         {!!title && (
           <ModalHeader>

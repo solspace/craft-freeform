@@ -23,6 +23,7 @@ type Props = {
   errors?: string[];
   context?: unknown;
   animateVisibility?: boolean;
+  autoFocus?: boolean;
 };
 
 const types: {
@@ -44,6 +45,7 @@ export const FormComponent: React.FC<Props> = ({
   errors,
   context,
   animateVisibility = false,
+  autoFocus = false,
 }) => {
   const { handle, width, type, visibilityFilters } = property;
   const FormControl = types[type];
@@ -88,6 +90,7 @@ export const FormComponent: React.FC<Props> = ({
                 updateValue={updateValue}
                 errors={errors}
                 context={context}
+                autoFocus={autoFocus}
               />
             </div>
           </Suspense>
@@ -110,6 +113,7 @@ export const FormComponent: React.FC<Props> = ({
             updateValue={updateValue}
             errors={errors}
             context={context}
+            autoFocus={autoFocus}
           />
         </div>
       </Suspense>

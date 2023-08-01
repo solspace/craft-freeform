@@ -17,10 +17,11 @@ const String: React.FC<ControlType<StringProperty>> = ({
       <input
         id={handle}
         type="text"
+        autoComplete="off"
         className={classes(
           'text',
           'fullwidth',
-          property.flags.includes('code') && 'code'
+          property?.flags?.includes('code') && 'code'
         )}
         value={value ?? ''}
         placeholder={property.placeholder}

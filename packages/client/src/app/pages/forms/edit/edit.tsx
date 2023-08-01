@@ -8,10 +8,6 @@ import {
   useQueryFormSettings,
   useQuerySingleForm,
 } from '@ff-client/queries/forms';
-import camelCase from 'lodash.camelcase';
-import { adjectives, uniqueNamesGenerator } from 'unique-names-generator';
-import { colors } from 'unique-names-generator';
-import { v4 } from 'uuid';
 
 import { Builder } from './builder/builder';
 import { pageActions } from './store/slices/layout/pages';
@@ -35,29 +31,6 @@ export const Edit: React.FC = () => {
 
   useEffect(() => {
     if (formId === undefined) {
-      const formName = uniqueNamesGenerator({
-        dictionaries: [colors, adjectives, ['form']],
-        separator: ' ',
-        style: 'capital',
-      });
-
-      dispatch(
-        formActions.update({
-          id: null,
-          uid: v4(),
-          type: 'Solspace\\Freeform\\Form\\Types\\Regular',
-          name: formName,
-          handle: camelCase(formName),
-          settings: {},
-        })
-      );
-      dispatch(fieldActions.set([]));
-      dispatch(pageActions.set([]));
-      dispatch(layoutActions.set([]));
-      dispatch(rowActions.set([]));
-
-      dispatch(addNewPage());
-
       return;
     }
 
@@ -75,7 +48,11 @@ export const Edit: React.FC = () => {
     dispatch(layoutActions.set(layouts));
     dispatch(rowActions.set(rows));
 
-    dispatch(contextActions.setPage(pages.find(Boolean)?.uid));
+    if (pages.length === 0) {
+      dispatch(addNewPage());
+    } else {
+      dispatch(contextActions.setPage(pages.find(Boolean)?.uid));
+    }
   }, [data, formId]);
 
   if (isFetching) {

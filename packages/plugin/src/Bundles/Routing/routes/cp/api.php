@@ -12,6 +12,9 @@ return [
     'freeform/api/forms/settings' => 'freeform/api/forms/settings/index',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
+    // FORM MODAL
+    'freeform/api/forms/modal' => 'freeform/api/forms/modal/index',
+
     // FORM ENTRIES
     'freeform/api/forms/<formId:\d+>/layout' => 'freeform/api/forms/layout/get',
 

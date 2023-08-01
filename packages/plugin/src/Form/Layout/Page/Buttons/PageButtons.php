@@ -59,9 +59,9 @@ class PageButtons
         $this->layout = $config['layout'] ?? 'save back|submit';
         $this->attributes = new ButtonAttributesCollection($config['attributes'] ?? []);
 
-        $this->submit = new Button($config['submit'] ?? []);
-        $this->back = new Button($config['back'] ?? []);
-        $this->save = new Button($config['save'] ?? []);
+        $this->submit = new Button($config['submit'] ?? ['label' => 'Submit', 'enabled' => true]);
+        $this->back = new Button($config['back'] ?? ['label' => 'Back', 'enabled' => true]);
+        $this->save = new Button($config['save'] ?? ['label' => 'Save', 'enabled' => false]);
     }
 
     public function getLayout(): string

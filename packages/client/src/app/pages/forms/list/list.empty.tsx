@@ -3,6 +3,7 @@ import type { FormWithStats } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 
 import { Card } from './card/card';
+import { useCreateFormModal } from './modal/use-create-form-modal';
 import { chartDataset } from './list.empty.datasets';
 import { MutedWrapper } from './list.empty.styles';
 
@@ -32,6 +33,8 @@ const generateFormData = (
 });
 
 export const EmptyList: React.FC = () => {
+  const openCreateFormModal = useCreateFormModal();
+
   return (
     <>
       <p>
@@ -40,7 +43,9 @@ export const EmptyList: React.FC = () => {
         )}
       </p>
 
-      <button className="btn submit add icon">{translate('New Form')}</button>
+      <button className="btn submit add icon" onClick={openCreateFormModal}>
+        {translate('New Form')}
+      </button>
 
       <MutedWrapper>
         <Card

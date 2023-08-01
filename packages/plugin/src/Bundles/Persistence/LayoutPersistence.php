@@ -25,7 +25,7 @@ class LayoutPersistence extends FeatureBundle
         Event::on(
             FormsController::class,
             FormsController::EVENT_UPSERT_FORM,
-            [$this, 'handleFieldSave']
+            [$this, 'handleLayoutSave']
         );
     }
 
@@ -34,7 +34,7 @@ class LayoutPersistence extends FeatureBundle
         return 300;
     }
 
-    public function handleFieldSave(PersistFormEvent $event): void
+    public function handleLayoutSave(PersistFormEvent $event): void
     {
         $form = $event->getForm();
         if (!$form) {

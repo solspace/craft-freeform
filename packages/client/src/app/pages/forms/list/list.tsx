@@ -4,11 +4,13 @@ import translate from '@ff-client/utils/translations';
 
 import { Card } from './card/card';
 import { CardLoading } from './card/card.loading';
+import { useCreateFormModal } from './modal/use-create-form-modal';
 import { EmptyList } from './list.empty';
 import { Header, Title, Wrapper } from './list.styles';
 
 export const List: React.FC = () => {
   const { data, isFetching } = useQueryFormsWithStats();
+  const openCreateFormModal = useCreateFormModal();
 
   const isEmpty = !isFetching && data && !data.length;
 
@@ -16,7 +18,7 @@ export const List: React.FC = () => {
     <>
       <Header>
         <Title>{translate('Forms')}</Title>
-        <button className="btn submit add icon">
+        <button className="btn submit add icon" onClick={openCreateFormModal}>
           {translate('Add new Form')}
         </button>
       </Header>
@@ -25,6 +27,7 @@ export const List: React.FC = () => {
           {isEmpty && <EmptyList />}
           {!isEmpty && (
             <Wrapper>
+              {data && data.map((form) => <Card key={form.id} form={form} />)}
               {!data && isFetching && (
                 <>
                   <CardLoading />
@@ -32,9 +35,6 @@ export const List: React.FC = () => {
                   <CardLoading />
                 </>
               )}
-              {!isFetching &&
-                data &&
-                data.map((form) => <Card key={form.id} form={form} />)}
             </Wrapper>
           )}
         </div>

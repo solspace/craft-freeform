@@ -318,7 +318,7 @@ return [
     'Plugin Badge' => 'Plugin Badge',
     "Select the options you'd like to be included in the plugin badge count (when applicable)." => "Select the options you'd like to be included in the plugin badge count (when applicable).",
     "Don't Show" => "Don't Show",
-    "Update Notices & Logged Errors" => "Update Notices & Logged Errors",
+    'Update Notices & Logged Errors' => 'Update Notices & Logged Errors',
     'Update Notices only' => 'Update Notices only',
     'Logged Errors only' => 'Logged Errors only',
     'Submission Count' => 'Submission Count',

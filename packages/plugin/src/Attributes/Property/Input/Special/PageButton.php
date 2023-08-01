@@ -15,9 +15,10 @@ class PageButton extends Property
         ?int $order = null,
         mixed $value = null,
         ?string $placeholder = null,
+        ?int $width = null,
         public ?bool $togglable = false,
         public ?bool $enabled = true,
     ) {
-        parent::__construct($label, $instructions, $order, $value, $placeholder);
+        parent::__construct($label, $instructions, $order, $value, $placeholder, $width);
     }
 }

@@ -17,6 +17,7 @@ class Field extends Property
         ?string $instructions = null,
         ?int $order = null,
         ?string $value = null,
+        ?int $width = null,
         public ?string $emptyOption = null,
         public ?array $implements = [],
     ) {
@@ -25,6 +26,7 @@ class Field extends Property
             instructions: $instructions,
             order: $order,
             value: $value,
+            width: $width,
         );
     }
 }

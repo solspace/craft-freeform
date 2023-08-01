@@ -7,6 +7,7 @@ use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Section;
 use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueGenerator;
+use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Bundles\Form\Limiting\FormLimiting;
 use Solspace\Freeform\Form\Settings\Implementations\Options\FormLimitingOptions;
 use Solspace\Freeform\Form\Settings\Implementations\Options\SuccessTemplateOptions;
@@ -28,6 +29,46 @@ class BehaviorSettings extends SettingsNamespace
     private const SECTION_LIMITS = 'limits';
 
     #[Section(
+        self::SECTION_PROCESSING,
+        label: 'Processing',
+        icon: __DIR__.'/Icons/'.self::SECTION_PROCESSING.'.svg',
+        order: 1,
+    )]
+    #[Input\Boolean(
+        label: 'Use AJAX',
+        instructions: 'Use built-in AJAX for this form when handling validation and submission of the form',
+        order: 1,
+    )]
+    public bool $ajax = false;
+
+    #[Section(self::SECTION_PROCESSING)]
+    #[VisibilityFilter('Boolean(ajax)')]
+    #[Input\Boolean(
+        label: 'Show Processing Indicator on Submit',
+        instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
+        order: 2,
+    )]
+    public bool $showSpinner = false;
+
+    #[Section(self::SECTION_PROCESSING)]
+    #[VisibilityFilter('Boolean(ajax)')]
+    #[Input\Boolean(
+        label: 'Show Processing Text on Submit',
+        instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
+        order: 3,
+    )]
+    public bool $showLoadingText = false;
+
+    #[Section(self::SECTION_PROCESSING)]
+    #[VisibilityFilter('Boolean(showLoadingText)')]
+    #[Input\Text(
+        'Processing Text',
+        instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
+        order: 4,
+    )]
+    public string $loadingText = 'Processing...';
+
+    #[Section(
         self::SECTION_SUCCESS_AND_ERRORS,
         label: 'Success & Errors',
         icon: __DIR__.'/Icons/'.self::SECTION_SUCCESS_AND_ERRORS.'.svg',
@@ -47,6 +88,7 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[ValueGenerator(SuccessTemplateGenerator::class)]
+    #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE.'"')]
     #[Validators\Required]
     #[Input\Select(
         instructions: "Select the template you'd like to replace the form in the page after a successful submit.",
@@ -56,6 +98,7 @@ class BehaviorSettings extends SettingsNamespace
     public ?string $successTemplate;
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
+    #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOUR_REDIRECT_RETURN_URL.'"')]
     #[Input\Text(
         label: 'Return URL',
         instructions: 'Set a URL for the form to be redirected to after successful submit.',
@@ -79,43 +122,6 @@ class BehaviorSettings extends SettingsNamespace
         placeholder: 'e.g. There was an error! Please fix!',
     )]
     public string $errorMessage = '';
-
-    #[Section(
-        self::SECTION_PROCESSING,
-        label: 'Processing',
-        icon: __DIR__.'/Icons/'.self::SECTION_PROCESSING.'.svg',
-        order: 1,
-    )]
-    #[Input\Boolean(
-        label: 'Use AJAX',
-        instructions: 'Use built-in AJAX for this form when handling validation and submission of the form',
-        order: 1,
-    )]
-    public bool $ajax = true;
-
-    #[Section(self::SECTION_PROCESSING)]
-    #[Input\Boolean(
-        label: 'Show Processing Indicator on Submit',
-        instructions: 'Show a spinner icon on the submit button when the user submits the form until it finishes processing.',
-        order: 2,
-    )]
-    public bool $showSpinner = true;
-
-    #[Section(self::SECTION_PROCESSING)]
-    #[Input\Boolean(
-        label: 'Show Processing Text on Submit',
-        instructions: "Show 'processing' text on the submit button when the user submits the form until it finishes processing.",
-        order: 3,
-    )]
-    public bool $showLoadingText = true;
-
-    #[Section(self::SECTION_PROCESSING)]
-    #[Input\Text(
-        'Processing Text',
-        instructions: "Enter the text you'd like to appear on the submit button when the form is processing",
-        order: 4,
-    )]
-    public string $loadingText = 'Processing...';
 
     #[Section(
         self::SECTION_LIMITS,

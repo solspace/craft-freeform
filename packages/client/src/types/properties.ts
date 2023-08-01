@@ -51,6 +51,7 @@ type BaseProperty<T, PT extends PropertyType> = {
   placeholder?: string;
   value?: T | null;
   order?: number;
+  width?: number;
   flags?: string[];
   visibilityFilters?: VisibilityFilter[];
   middleware?: Middleware[];

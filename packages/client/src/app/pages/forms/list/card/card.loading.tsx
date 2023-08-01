@@ -38,7 +38,7 @@ export const CardLoading: React.FC = () => {
       <ResponsiveContainer width="100%" height={40}>
         <AreaChart
           data={data}
-          margin={{ top: 2, bottom: 3, left: 0, right: 0 }}
+          margin={{ top: 10, bottom: 3, left: 0, right: 0 }}
         >
           <Area
             type="monotone"

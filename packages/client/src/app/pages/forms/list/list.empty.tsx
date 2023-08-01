@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Form } from '@ff-client/types/forms';
+import type { FormWithStats } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 
 import { Card } from './card/card';
@@ -7,17 +7,28 @@ import { chartDataset } from './list.empty.datasets';
 import { MutedWrapper } from './list.empty.styles';
 
 const color = '#e0e0e0';
-const generateFormData = (name: string, description: string): Form => ({
+const generateFormData = (
+  name: string,
+  description: string,
+  chartData: Array<{ uv: number }>,
+  submissions: number,
+  spam: number
+): FormWithStats => ({
+  uid: '',
+  type: '',
   name,
   handle: '',
+  chartData,
+  counters: {
+    submissions,
+    spam,
+  },
   settings: {
     general: {
       description,
       color,
     },
   },
-  type: '',
-  uid: '',
 });
 
 export const EmptyList: React.FC = () => {
@@ -33,31 +44,31 @@ export const EmptyList: React.FC = () => {
 
       <MutedWrapper>
         <Card
-          form={generateFormData('Contact Form', 'Main contact form.')}
-          counters={{
-            submissions: 14,
-            spam: 5,
-          }}
-          chartDataset={chartDataset[0]}
+          form={generateFormData(
+            'Contact Form',
+            'Main contact form.',
+            chartDataset[0],
+            14,
+            5
+          )}
         />
         <Card
           form={generateFormData(
             'Customer Survey',
-            'Customer satisfaction survey.'
+            'Customer satisfaction survey.',
+            chartDataset[1],
+            72,
+            18
           )}
-          counters={{
-            submissions: 72,
-            spam: 18,
-          }}
-          chartDataset={chartDataset[1]}
         />
         <Card
-          form={generateFormData('Newsletter', 'Newsletter signup form.')}
-          counters={{
-            submissions: 138,
-            spam: 7,
-          }}
-          chartDataset={chartDataset[2]}
+          form={generateFormData(
+            'Newsletter',
+            'Newsletter signup form.',
+            chartDataset[2],
+            138,
+            7
+          )}
         />
       </MutedWrapper>
     </>

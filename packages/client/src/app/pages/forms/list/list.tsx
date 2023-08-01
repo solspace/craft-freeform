@@ -1,5 +1,5 @@
 import React from 'react';
-import { useQueryForms } from '@ff-client/queries/forms';
+import { useQueryFormsWithStats } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 
 import { Card } from './card/card';
@@ -8,9 +8,7 @@ import { EmptyList } from './list.empty';
 import { Header, Title, Wrapper } from './list.styles';
 
 export const List: React.FC = () => {
-  const { data, isFetching } = useQueryForms();
-  //const data: Form[] = [];
-  //const isFetching = false;
+  const { data, isFetching } = useQueryFormsWithStats();
 
   const isEmpty = !isFetching && data && !data.length;
 
@@ -23,11 +21,11 @@ export const List: React.FC = () => {
         </button>
       </Header>
       <div id="content-container">
-        <div id="content" className="content-pane" style={{ minHeight: 500 }}>
+        <div id="content" className="content-pane">
           {isEmpty && <EmptyList />}
           {!isEmpty && (
             <Wrapper>
-              {isFetching && (
+              {!data && isFetching && (
                 <>
                   <CardLoading />
                   <CardLoading />
@@ -36,16 +34,7 @@ export const List: React.FC = () => {
               )}
               {!isFetching &&
                 data &&
-                data.map((form) => (
-                  <Card
-                    key={form.id}
-                    form={form}
-                    counters={{
-                      submissions: 14,
-                      spam: 5,
-                    }}
-                  />
-                ))}
+                data.map((form) => <Card key={form.id} form={form} />)}
             </Wrapper>
           )}
         </div>

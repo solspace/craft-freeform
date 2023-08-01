@@ -169,6 +169,8 @@ class LayoutPersistence extends FeatureBundle
                     'fields',
                     [$item->uid => $record->getErrors()]
                 );
+            } else {
+                $event->addFieldRecord($record);
             }
         }
 

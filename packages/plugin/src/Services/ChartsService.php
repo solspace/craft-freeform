@@ -15,6 +15,52 @@ use Solspace\Freeform\Library\Charts\RadialChartData;
 
 class ChartsService extends BaseService
 {
+    public function getMinimalSubmissionChartData(array $formIds): array
+    {
+        $submissions = Submission::TABLE;
+        $elements = Table::ELEMENTS;
+
+        $rangeStart = new Carbon('30 days ago', 'UTC');
+        $rangeEnd = new Carbon('now', 'UTC');
+
+        $datasets = [];
+        foreach ($formIds as $formId) {
+            $query = (new Query())
+                ->select(["COUNT({$submissions}.[[id]]) as count", "DATE({$submissions}.[[dateCreated]]) as dt"])
+                ->from(Submission::TABLE)
+                ->where([
+                    'between',
+                    "{$submissions}.[[dateCreated]]",
+                    $rangeStart->toDateTimeString(),
+                    $rangeEnd->toDateTimeString(),
+                ])
+                ->andWhere(["{$submissions}.[[formId]]" => $formId])
+                ->innerJoin(
+                    $elements,
+                    "{$elements}.[[id]] = {$submissions}.[[id]] AND {$elements}.[[dateDeleted]] IS NULL"
+                )
+                ->orderBy(['dt' => \SORT_ASC])
+                ->groupBy(['dt'])
+                ->indexBy('dt')
+            ;
+
+            $result = $query->column();
+            $refDate = $rangeStart->copy();
+
+            $data = [];
+            while ($refDate->lte($rangeEnd)) {
+                $date = $refDate->format('Y-m-d');
+                $data[] = ['uv' => $result[$date] ?? 0];
+
+                $refDate->addDay();
+            }
+
+            $datasets[$formId] = $data;
+        }
+
+        return $datasets;
+    }
+
     /**
      * @throws \Exception
      */

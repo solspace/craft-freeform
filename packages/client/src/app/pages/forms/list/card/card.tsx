@@ -3,10 +3,9 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
-import type { Form } from '@ff-client/types/forms';
+import type { FormWithStats } from '@ff-client/queries/forms';
 import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
-import { addDays, format } from 'date-fns';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import { useDeleteFormMutation } from '../list.mutations';
@@ -28,15 +27,8 @@ import {
 const randomSubmissions = (min: number, max: number): number =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-type ChartDataItem = { value: number };
-
 type Props = {
-  form: Form;
-  chartDataset?: ChartDataItem[];
-  counters: {
-    submissions: number;
-    spam: number;
-  };
+  form: FormWithStats;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -45,7 +37,7 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
   delay: [1500, 0] as unknown as number,
 };
 
-export const Card: React.FC<Props> = ({ form, chartDataset, counters }) => {
+export const Card: React.FC<Props> = ({ form }) => {
   const mutation = useDeleteFormMutation();
   const navigate = useNavigate();
 
@@ -53,14 +45,9 @@ export const Card: React.FC<Props> = ({ form, chartDataset, counters }) => {
   const [descriptionRef, isDescriptionOverflowing] =
     useCheckOverflow<HTMLSpanElement>();
 
-  const testData = Array.from({ length: 31 }, (_, index) => {
-    const date = addDays(new Date(2023, 6, 1), index); // 6 for July (0-indexed)
-
-    return {
-      name: format(date, 'yyyy-MM-dd'),
-      value: randomSubmissions(0, Math.random() > 0.9 ? 50 : 20), // 15% chance for peak day
-    };
-  });
+  const randomData = Array.from({ length: 31 }, () => ({
+    uv: randomSubmissions(0, Math.random() > 0.9 ? 50 : 20), // 15% chance for peak day
+  }));
 
   const { id, name, settings } = form;
   const { color, description } = settings.general;
@@ -79,7 +66,15 @@ export const Card: React.FC<Props> = ({ form, chartDataset, counters }) => {
           </ControlButton>
         </Tooltip>
         <Tooltip title={translate('Delete this Form')} {...tooltipProps}>
-          <ControlButton>
+          <ControlButton
+            onClick={() => {
+              if (
+                confirm(translate('Are you sure you want to delete this form?'))
+              ) {
+                mutation.mutate(id);
+              }
+            }}
+          >
             <CrossIcon />
           </ControlButton>
         </Tooltip>
@@ -111,12 +106,12 @@ export const Card: React.FC<Props> = ({ form, chartDataset, counters }) => {
         <LinkList>
           <li>
             <NavLink to={generateUrl(`freeform/submissions/${form.handle}`)}>
-              {counters.submissions} {translate('Submissions')}
+              {form.counters.submissions} {translate('Submissions')}
             </NavLink>
           </li>
           <li>
             <NavLink to={generateUrl(`freeform/spam/${form.handle}`)}>
-              {counters.spam} {translate('Spam')}
+              {form.counters.spam} {translate('Spam')}
             </NavLink>
           </li>
         </LinkList>
@@ -124,12 +119,12 @@ export const Card: React.FC<Props> = ({ form, chartDataset, counters }) => {
 
       <ResponsiveContainer width="100%" height={40}>
         <AreaChart
-          data={chartDataset || testData}
-          margin={{ top: 2, bottom: 3, left: 0, right: 0 }}
+          data={form.chartData || randomData}
+          margin={{ top: 10, bottom: 3, left: 0, right: 0 }}
         >
           <Area
             type="monotone"
-            dataKey={'value'}
+            dataKey={'uv'}
             stroke={color}
             strokeWidth={2.3}
             fillOpacity={0.3}

@@ -21,10 +21,6 @@ export const useDeleteFormMutation = (): UseMutationResult<
       queryClient.setQueryData(QKForms.all, (old: Form[]) =>
         old.filter((form) => form.id !== id)
       );
-
-      queryClient.invalidateQueries({
-        queryKey: QKForms.all,
-      });
     },
   });
 };

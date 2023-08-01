@@ -93,7 +93,7 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->formTemplateDirectory;
     }
 
-    public function getSuccessTemplateDirectory(): string
+    public function getSuccessTemplateDirectory(): ?string
     {
         return $this->getSettingsModel()->getAbsoluteSuccessTemplateDirectory();
     }
@@ -172,6 +172,9 @@ class SettingsService extends BaseService
     {
         $templates = [];
         $templateDirectoryPath = $this->getSuccessTemplateDirectory();
+        if (!is_dir($templateDirectoryPath)) {
+            return $templates;
+        }
 
         $rootFiles = (new Finder())
             ->files()

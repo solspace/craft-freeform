@@ -226,7 +226,7 @@ abstract class CRMOAuthConnector extends CRMIntegration
         ];
 
         try {
-            $response = $client->post($this->getAccessTokenUrl(), ['query' => $payload]);
+            $response = $client->post($this->getAccessTokenUrl(), ['form_params' => $payload]);
 
             $json = json_decode($response->getBody(), false);
 

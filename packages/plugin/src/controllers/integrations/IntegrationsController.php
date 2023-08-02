@@ -100,7 +100,7 @@ abstract class IntegrationsController extends BaseController
 
         $this->integrationsService->updateModelFromIntegration($model, $integration);
 
-        if ($this->integrationsService->save($model)) {
+        if ($this->integrationsService->save($model, $integration)) {
             if ($integration instanceof APIIntegration) {
                 $integration->initiateAuthentication();
             }

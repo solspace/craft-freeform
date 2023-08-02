@@ -29,6 +29,6 @@ class RefreshedTokenPersistence extends FeatureBundle
         }
 
         $this->integrationsService->updateModelFromIntegration($model, $integration);
-        $this->integrationsService->save($model);
+        $this->integrationsService->save($model, $integration);
     }
 }

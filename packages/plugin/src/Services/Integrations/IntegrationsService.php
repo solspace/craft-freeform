@@ -100,7 +100,7 @@ class IntegrationsService extends BaseService
         return $this->createIntegrationModel($result);
     }
 
-    public function save(IntegrationModel $model): bool
+    public function save(IntegrationModel $model, IntegrationInterface $integration): bool
     {
         $isNew = !$model->id;
 
@@ -137,6 +137,7 @@ class IntegrationsService extends BaseService
 
                 if ($isNew) {
                     $model->id = $record->id;
+                    $integration->setId($record->id);
                 }
 
                 $transaction?->commit();

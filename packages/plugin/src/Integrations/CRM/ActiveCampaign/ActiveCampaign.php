@@ -29,7 +29,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 )]
 class ActiveCampaign extends CRMIntegration
 {
-    public const LOG_CATEGORY = 'Active Campaign';
+    public const LOG_CATEGORY = 'ActiveCampaign';
 
     private const CATEGORY_CONTACT = 'contact';
     private const CATEGORY_DEAL = 'deal';

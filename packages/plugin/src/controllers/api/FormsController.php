@@ -9,6 +9,7 @@ use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Events\Forms\PersistFormEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\FreeformException;
+use Solspace\Freeform\Records\FormRecord;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -35,6 +36,31 @@ class FormsController extends BaseApiController
 
         if (!$this->formDuplicator->clone($id)) {
             throw new FreeformException('Could not duplicate form');
+        }
+
+        $this->response->statusCode = 204;
+        $this->response->format = Response::FORMAT_RAW;
+        $this->response->content = '';
+
+        return $this->response;
+    }
+
+    public function actionSort(): Response
+    {
+        PermissionHelper::requirePermission(Freeform::PERMISSION_FORMS_MANAGE);
+
+        $data = json_decode($this->request->getRawBody());
+        $orderedFormIds = $data->orderedFormIds ?? [];
+
+        $order = 0;
+        foreach ($orderedFormIds as $id) {
+            \Craft::$app->db->createCommand()
+                ->update(
+                    FormRecord::TABLE,
+                    ['order' => $order++],
+                    ['id' => $id]
+                )
+                ->execute();
         }
 
         $this->response->statusCode = 204;

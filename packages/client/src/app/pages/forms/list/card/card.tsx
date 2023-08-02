@@ -4,6 +4,7 @@ import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
 import type { FormWithStats } from '@ff-client/queries/forms';
+import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
@@ -29,6 +30,7 @@ const randomSubmissions = (min: number, max: number): number =>
 
 type Props = {
   form: FormWithStats;
+  isDraggingInProgress?: boolean;
 };
 
 const tooltipProps: Omit<TooltipProps, 'children'> = {
@@ -37,7 +39,7 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
   delay: [1500, 0] as unknown as number,
 };
 
-export const Card: React.FC<Props> = ({ form }) => {
+export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
   const deleteMutation = useDeleteFormMutation();
   const cloneMutation = useCloneFormMutation();
 
@@ -59,10 +61,16 @@ export const Card: React.FC<Props> = ({ form }) => {
   const isDisabled = isDeleting || isCloning;
 
   return (
-    <CardWrapper $disabled={isDisabled}>
+    <CardWrapper
+      data-id={form.id}
+      className={classes(
+        isDisabled && 'disabled',
+        isDraggingInProgress && 'dragging'
+      )}
+    >
       <Controls>
         <Tooltip title={translate('Move')} {...tooltipProps}>
-          <ControlButton>
+          <ControlButton className="handle">
             <MoveIcon />
           </ControlButton>
         </Tooltip>

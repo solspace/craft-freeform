@@ -71,7 +71,7 @@ export const LinkList = styled.ul`
   padding: 0;
 `;
 
-export const CardWrapper = styled.li<{ $disabled?: boolean }>`
+export const CardWrapper = styled.li`
   position: relative;
 
   display: flex;
@@ -84,12 +84,17 @@ export const CardWrapper = styled.li<{ $disabled?: boolean }>`
   border: 1px solid #e7eef7;
   border-radius: var(--large-border-radius);
 
-  opacity: ${({ $disabled }) => ($disabled ? 0.5 : 1)};
-  pointer-events: ${({ $disabled }) => ($disabled ? 'none' : 'auto')};
+  opacity: 1;
+  pointer-events: auto;
 
-  transition: all 0.2s ease-out;
+  transition: background-color 0.2s ease-out, border-color 0.2s ease-out;
 
-  &:hover {
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &:not(.dragging):hover {
     background-color: #f3f7fd;
     border-color: #9eb0c5;
 

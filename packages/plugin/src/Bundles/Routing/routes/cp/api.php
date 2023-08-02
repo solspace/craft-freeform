@@ -10,6 +10,7 @@ return [
     // FORMS
     'freeform/api/forms' => 'freeform/api/forms',
     'freeform/api/forms/settings' => 'freeform/api/forms/settings/index',
+    'freeform/api/forms/<id:\d+>/clone' => 'freeform/api/forms/clone',
     'freeform/api/forms/<id:\d+>' => 'freeform/api/forms',
 
     // FORM MODAL

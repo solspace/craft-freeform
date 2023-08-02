@@ -34,6 +34,10 @@ class EmailRecipientNotifications extends FeatureBundle
 
         foreach ($notifications as $notification) {
             $fieldHandle = $notification->getField()?->getHandle();
+            if (!$fieldHandle) {
+                continue;
+            }
+
             $recipient = $form->get($fieldHandle)->getValue();
 
             if (!$recipient) {

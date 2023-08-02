@@ -35,9 +35,9 @@ class CustomSourceFields extends FeatureBundle
             $source = $event->source;
             if (preg_match('/^form:(\d+)$/', $source, $matches)) {
                 $formId = $matches[1];
-                $form = $forms[$formId]->getForm();
+                $form = $forms[$formId];
 
-                $fields = $form->getLayout()->getStorableFields();
+                $fields = $form->getLayout()->getFields()->getStorableFields();
                 foreach ($fields as $index => $field) {
                     if ($field instanceof CreditCardDetailsField) {
                         unset($fields[$index]);

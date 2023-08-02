@@ -24,3 +24,19 @@ export const useDeleteFormMutation = (): UseMutationResult<
     },
   });
 };
+
+export const useCloneFormMutation = (): UseMutationResult<
+  unknown,
+  Error,
+  number,
+  number
+> => {
+  const queryClient = useQueryClient();
+
+  return useMutation((id) => axios.post(`/api/forms/${id}/clone`), {
+    onMutate: (id) => id,
+    onSuccess: () => {
+      queryClient.invalidateQueries(QKForms.all);
+    },
+  });
+};

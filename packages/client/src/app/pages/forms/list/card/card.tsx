@@ -8,7 +8,7 @@ import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
-import { useDeleteFormMutation } from '../list.mutations';
+import { useCloneFormMutation, useDeleteFormMutation } from '../list.mutations';
 
 import CloneIcon from './icons/clone.svg';
 import CrossIcon from './icons/cross.svg';
@@ -38,7 +38,9 @@ const tooltipProps: Omit<TooltipProps, 'children'> = {
 };
 
 export const Card: React.FC<Props> = ({ form }) => {
-  const mutation = useDeleteFormMutation();
+  const deleteMutation = useDeleteFormMutation();
+  const cloneMutation = useCloneFormMutation();
+
   const navigate = useNavigate();
 
   const [titleRef, isTitleOverflowing] = useCheckOverflow<HTMLHeadingElement>();
@@ -52,8 +54,12 @@ export const Card: React.FC<Props> = ({ form }) => {
   const { id, name, settings } = form;
   const { color, description } = settings.general;
 
+  const isDeleting = deleteMutation.isLoading && deleteMutation.context === id;
+  const isCloning = cloneMutation.isLoading && cloneMutation.context === id;
+  const isDisabled = isDeleting || isCloning;
+
   return (
-    <CardWrapper $disabled={mutation.isLoading && mutation.context === id}>
+    <CardWrapper $disabled={isDisabled}>
       <Controls>
         <Tooltip title={translate('Move')} {...tooltipProps}>
           <ControlButton>
@@ -61,7 +67,11 @@ export const Card: React.FC<Props> = ({ form }) => {
           </ControlButton>
         </Tooltip>
         <Tooltip title={translate('Duplicate this Form')} {...tooltipProps}>
-          <ControlButton>
+          <ControlButton
+            onClick={() => {
+              cloneMutation.mutate(id);
+            }}
+          >
             <CloneIcon />
           </ControlButton>
         </Tooltip>
@@ -71,7 +81,7 @@ export const Card: React.FC<Props> = ({ form }) => {
               if (
                 confirm(translate('Are you sure you want to delete this form?'))
               ) {
-                mutation.mutate(id);
+                deleteMutation.mutate(id);
               }
             }}
           >

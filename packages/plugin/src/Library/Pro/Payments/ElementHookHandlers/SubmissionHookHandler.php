@@ -33,7 +33,7 @@ class SubmissionHookHandler
     /**
      * Register hooks on Submission element handled by this class.
      */
-    public static function registerHooks()
+    public static function registerHooks(): void
     {
         Event::on(
             ElementSources::class,
@@ -63,7 +63,7 @@ class SubmissionHookHandler
     /**
      * Unregisters all previously registered hooks.
      */
-    public static function unregisterHooks()
+    public static function unregisterHooks(): void
     {
         Event::off(
             Submission::class,
@@ -91,7 +91,7 @@ class SubmissionHookHandler
      *
      * @param SetElementTableAttributeHtmlEvent $event
      */
-    public static function injectTableColumns(DefineSourceTableAttributesEvent $event)
+    public static function injectTableColumns(DefineSourceTableAttributesEvent $event): void
     {
         if (Submission::class === $event->elementType) {
             if (preg_match('/^form:(\d+)$/', $event->source, $matches)) {
@@ -102,7 +102,7 @@ class SubmissionHookHandler
                     return;
                 }
 
-                if ($form->getForm()->getLayout()->hasFields(CreditCardDetailsField::class)) {
+                if ($form->getLayout()->hasFields(CreditCardDetailsField::class)) {
                     foreach (self::ATTRIBUTES as $attribute => $label) {
                         $event->attributes[$attribute] = ['label' => Freeform::t($label)];
                     }
@@ -160,10 +160,8 @@ class SubmissionHookHandler
 
     /**
      * Returns Payment for a submission event.
-     *
-     * @return PaymentInterface
      */
-    public static function getPayment(Event $event)
+    public static function getPayment(Event $event): PaymentInterface
     {
         $submission = $event->sender;
         $submissionId = $submission->getId();
@@ -176,7 +174,7 @@ class SubmissionHookHandler
         return $payment;
     }
 
-    public static function removePaymentFromSortOptions(Event $event)
+    public static function removePaymentFromSortOptions(Event $event): void
     {
         $injectedColumns = array_keys(self::ATTRIBUTES);
         $sortOptions = $event->sortOptions;
@@ -197,7 +195,7 @@ class SubmissionHookHandler
     /**
      * @throws ComposerException
      */
-    public static function registerPaymentActions(RegisterElementActionsEvent $event)
+    public static function registerPaymentActions(RegisterElementActionsEvent $event): void
     {
         // show action only for forms with payments configured
         $source = ElementHelper::findSource(Submission::class, $event->source);

@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Tests\Unit\Attributes\Property\Implementations\Options;
+namespace Solspace\Tests\Freeform\Unit\Attributes\Property\Implementations\Options;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Attributes\Property\Implementations\Options\OptionCollection;

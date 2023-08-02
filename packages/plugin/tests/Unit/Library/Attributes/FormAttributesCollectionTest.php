@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Tests\Unit\Library\Attributes;
+namespace Solspace\Tests\Freeform\Unit\Library\Attributes;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\Attributes\FormAttributesCollection;

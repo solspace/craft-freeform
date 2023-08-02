@@ -2,33 +2,25 @@
 
 namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Validators;
+use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
+use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 
-abstract class BasePipedriveIntegration extends CRMIntegration
+abstract class BasePipedriveIntegration extends CRMOAuthConnector implements RefreshTokenInterface
 {
     public const PREFIX_ORGANIZATION = 'org';
     public const PREFIX_PERSON = 'prsn';
     public const PREFIX_DEALS = 'deals';
 
     #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Text]
-    protected string $domain = '';
-
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Validators\Required]
-    #[Input\Text(
-        label: 'API Token',
-        instructions: 'Enter your Pipedrive API token here.',
-    )]
-    protected string $apiToken = '';
+    #[Input\Hidden]
+    protected string $apiDomain = '';
 
     #[Input\Text(
         label: 'User ID',
@@ -41,33 +33,11 @@ abstract class BasePipedriveIntegration extends CRMIntegration
     )]
     protected bool $detectDuplicates = false;
 
-    public function getDomain(): string
-    {
-        return $this->domain;
-    }
-
-    public function getApiToken(): string
-    {
-        return $this->getProcessedValue($this->apiToken);
-    }
-
     public function getUserId(): ?int
     {
         return $this->userId ? (int) $this->userId : null;
     }
 
-    public function isDetectDuplicates(): bool
-    {
-        return $this->detectDuplicates;
-    }
-
-    public function initiateAuthentication(): void
-    {
-    }
-
-    /**
-     * Check if it's possible to connect to the API.
-     */
     public function checkConnection(): bool
     {
         try {
@@ -82,23 +52,6 @@ abstract class BasePipedriveIntegration extends CRMIntegration
     }
 
     /**
-     * Perform anything necessary before this integration is saved.
-     */
-    public function onBeforeSave()
-    {
-        $client = $this->generateAuthorizedClient();
-
-        try {
-            $response = $client->get($this->getEndpoint('/users/me'));
-            $domain = json_decode($response->getBody(), false)->data->company_domain;
-
-            $this->domain = $domain;
-        } catch (RequestException $e) {
-            $this->domain = null;
-        }
-    }
-
-    /**
      * Fetch the custom fields from the integration.
      *
      * @return FieldObject[]
@@ -107,6 +60,7 @@ abstract class BasePipedriveIntegration extends CRMIntegration
     {
         // TODO: reimplement
         return [];
+        /*
         $isLead = $this instanceof PipedriveLeads;
 
         $endpoints = [
@@ -194,37 +148,43 @@ abstract class BasePipedriveIntegration extends CRMIntegration
         }
 
         return $fieldList;
-    }
-
-    public function generateAuthorizedClient(): Client
-    {
-        return new Client([
-            'query' => ['api_token' => $this->getApiToken()],
-            'headers' => ['Accept' => 'application/json'],
-        ]);
+        */
     }
 
     public function getApiRootUrl(): string
     {
-        if ($this->getDomain()) {
-            return 'https://'.$this->getDomain().'.pipedrive.com/api/v1/';
-        }
-
-        return 'https://api.pipedrive.com/api/v1';
+        return $this->apiDomain.'/api/v1/';
     }
 
-    protected function getResponse(string $endpoint, array $queryOptions = []): ResponseInterface
+    protected function onAuthentication(array &$payload): void
     {
-        $client = $this->generateAuthorizedClient();
+        $payload['scope'] = 'base deals:full leads:full';
+    }
 
-        return $client->get(
-            $endpoint,
-            ['query' => $queryOptions ?? []]
-        );
+    protected function onAfterFetchAccessToken(\stdClass $responseData): void
+    {
+        if (!isset($responseData->api_domain)) {
+            throw new CRMIntegrationNotFoundException("Pipedrive response data doesn't contain the API Domain");
+        }
+
+        $this->apiDomain = $responseData->api_domain;
+    }
+
+    protected function getAuthorizeUrl(): string
+    {
+        return 'https://oauth.pipedrive.com/oauth/authorize';
+    }
+
+    protected function getAccessTokenUrl(): string
+    {
+        return 'https://oauth.pipedrive.com/oauth/token';
     }
 
     protected function pushOrg(array $fieldList)
     {
+        // TODO: reimplement
+        return false;
+        /*
         $fields = $this->getFieldsByCategory(self::PREFIX_ORGANIZATION, $fieldList);
 
         $organizationId = null;
@@ -262,10 +222,14 @@ abstract class BasePipedriveIntegration extends CRMIntegration
         }
 
         return $organizationId;
+        */
     }
 
     protected function pushPerson(array $fieldList, $organizationId = null)
     {
+        // TODO: reimplement
+        return false;
+        /*
         $fields = $this->getFieldsByCategory(self::PREFIX_PERSON, $fieldList);
 
         $personId = null;
@@ -312,10 +276,14 @@ abstract class BasePipedriveIntegration extends CRMIntegration
         }
 
         return $personId;
+        */
     }
 
     protected function addOrgNote($id = null, $content = null)
     {
+        // TODO: reimplement
+        return false;
+        /*
         if (!$id || empty($content)) {
             return;
         }
@@ -331,10 +299,14 @@ abstract class BasePipedriveIntegration extends CRMIntegration
                 ],
             ]
         );
+        */
     }
 
     protected function addNote($idPrefix, $id, $content)
     {
+        // TODO: reimplement
+        return false;
+        /*
         if (!$id || empty($content)) {
             return;
         }
@@ -352,10 +324,14 @@ abstract class BasePipedriveIntegration extends CRMIntegration
                 ],
             ]
         );
+        */
     }
 
     protected function getFieldsByCategory(string $prefix, array $fieldList): array
     {
+        // TODO: reimplement
+        return [];
+        /*
         $matchedFields = [];
         foreach ($fieldList as $key => $value) {
             if (preg_match('/^'.$prefix.'___(.*)$/', $key, $matches)) {
@@ -364,20 +340,33 @@ abstract class BasePipedriveIntegration extends CRMIntegration
         }
 
         return $matchedFields;
+        */
     }
 
     protected function getFieldType(string $type): ?string
     {
+        // TODO: reimplement
+        return false;
+        /*
         return match ($type) {
             'varchar', 'varchar_auto', 'text', 'date', 'enum', 'time', 'timerange', 'daterange' => FieldObject::TYPE_STRING,
             'set', 'phone' => FieldObject::TYPE_ARRAY,
             'int', 'double', 'monetary', 'user', 'org', 'people' => FieldObject::TYPE_NUMERIC,
             default => null,
         };
+        */
+    }
+
+    protected function getLogger(?string $category = null): LoggerInterface
+    {
+        return parent::getLogger('Pipedrive');
     }
 
     private function searchForDuplicate(array $terms, string $type)
     {
+        // TODO: reimplement
+        return false;
+        /*
         if (!$this->detectDuplicates) {
             return null;
         }
@@ -424,5 +413,6 @@ abstract class BasePipedriveIntegration extends CRMIntegration
         }
 
         return null;
+        */
     }
 }

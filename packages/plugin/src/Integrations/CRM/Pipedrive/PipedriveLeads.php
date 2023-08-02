@@ -20,7 +20,7 @@ use Solspace\Freeform\Form\Form;
     name: 'Pipedrive - Leads',
     iconPath: __DIR__.'/icon.svg',
 )]
-class PipedriveLeads extends BasePipedriveIntegration
+class PipedriveLeads extends BasePipedriveIntegration implements PipedriveIntegrationInterface
 {
     public const LOG_CATEGORY = 'Pipedrive Leads';
 

@@ -5,6 +5,10 @@ use Solspace\Freeform\Freeform;
 
 $navItems = [];
 
+if (PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS)) {
+    $navItems['forms'] = ['label' => Freeform::t('Forms'), 'url' => 'freeform/forms'];
+}
+
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)) {
     $navItems['submissions'] = ['label' => Freeform::t('Submissions'), 'url' => 'freeform/submissions'];
 }
@@ -16,10 +20,6 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS)
     if ($spamCount) {
         $navItems['spam']['badgeCount'] = $spamCount;
     }
-}
-
-if (PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS)) {
-    $navItems['forms'] = ['label' => Freeform::t('Forms'), 'url' => 'freeform/forms'];
 }
 
 if (PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS)) {

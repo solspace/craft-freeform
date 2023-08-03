@@ -22,7 +22,7 @@ import {
   SaveButtonWrapper,
   TabsWrapper,
   TabWrapper,
-} from './index.styles';
+} from './tabs.styles';
 
 export const Tabs: React.FC = () => {
   const dispatch = useAppDispatch();

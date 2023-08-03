@@ -3,10 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import type { TooltipProps } from 'react-tippy';
 import { Tooltip } from 'react-tippy';
 import { useCheckOverflow } from '@ff-client/hooks/use-check-overflow';
-import type { FormWithStats } from '@ff-client/queries/forms';
+import { type FormWithStats, QKForms } from '@ff-client/queries/forms';
 import classes from '@ff-client/utils/classes';
 import translate from '@ff-client/utils/translations';
 import { generateUrl } from '@ff-client/utils/urls';
+import { useQueryClient } from '@tanstack/react-query';
 import { Area, AreaChart, ResponsiveContainer } from 'recharts';
 
 import { useCloneFormMutation, useDeleteFormMutation } from '../list.mutations';
@@ -44,6 +45,7 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
   const cloneMutation = useCloneFormMutation();
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const [titleRef, isTitleOverflowing] = useCheckOverflow<HTMLHeadingElement>();
   const [descriptionRef, isDescriptionOverflowing] =
@@ -59,6 +61,11 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
   const isDeleting = deleteMutation.isLoading && deleteMutation.context === id;
   const isCloning = cloneMutation.isLoading && cloneMutation.context === id;
   const isDisabled = isDeleting || isCloning;
+
+  const onNavigate = (): void => {
+    queryClient.invalidateQueries(QKForms.single(Number(id)));
+    navigate(`${id}`);
+  };
 
   return (
     <CardWrapper
@@ -101,12 +108,12 @@ export const Card: React.FC<Props> = ({ form, isDraggingInProgress }) => {
       <CardBody>
         {isTitleOverflowing ? (
           <Tooltip title={name} {...tooltipProps}>
-            <Title ref={titleRef} onClick={() => navigate(`${id}`)}>
+            <Title ref={titleRef} onClick={onNavigate}>
               {name}
             </Title>
           </Tooltip>
         ) : (
-          <Title ref={titleRef} onClick={() => navigate(`${id}`)}>
+          <Title ref={titleRef} onClick={onNavigate}>
             {name}
           </Title>
         )}

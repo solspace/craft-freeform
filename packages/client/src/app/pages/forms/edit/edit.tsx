@@ -10,6 +10,7 @@ import {
 } from '@ff-client/queries/forms';
 
 import { Builder } from './builder/builder';
+import { LoaderBuilder } from './builder/builder.loader';
 import { pageActions } from './store/slices/layout/pages';
 import { rowActions } from './store/slices/layout/rows';
 import { addNewPage } from './store/thunks/pages';
@@ -56,7 +57,7 @@ export const Edit: React.FC = () => {
   }, [data, formId]);
 
   if (isFetching) {
-    return <div>Fetching {formId}...</div>;
+    return <LoaderBuilder />;
   }
 
   if (isError) {

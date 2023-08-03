@@ -54,6 +54,7 @@ abstract class CRMOAuthConnector extends CRMIntegration
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Validators\Required]
     #[Input\Text(
+        label: 'Client ID',
         instructions: 'Enter the Client ID of your app here.',
     )]
     protected string $clientId = '';

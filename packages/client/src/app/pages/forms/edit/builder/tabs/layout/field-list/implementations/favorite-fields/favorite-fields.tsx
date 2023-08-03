@@ -1,11 +1,10 @@
 import React from 'react';
-import Skeleton from 'react-loading-skeleton';
 import { ErrorBlock } from '@components/notification-blocks/error/error-block';
 import { useFetchFavorites } from '@ff-client/queries/field-favorites';
-import { range } from '@ff-client/utils/arrays';
 import translate from '@ff-client/utils/translations';
 
 import { FieldGroup } from '../../field-group/field-group';
+import { LoaderFieldGroup } from '../../field-group/field-group.loader';
 import { useSelectSearchedFavorites } from '../../hooks/use-select-searched-fields';
 
 import { FieldItem } from './field-item';
@@ -17,13 +16,7 @@ export const FavoriteFields: React.FC = () => {
   const { data, isFetching, isError, error } = useFetchFavorites({ select });
 
   if (!data && isFetching) {
-    return (
-      <FieldGroup title={title}>
-        {range(2).map((index) => (
-          <Skeleton key={index} height={32} />
-        ))}
-      </FieldGroup>
-    );
+    return <LoaderFieldGroup words={[60]} items={2} />;
   }
 
   if (isError) {

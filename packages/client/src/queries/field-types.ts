@@ -5,7 +5,7 @@ import { useQuery } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import axios from 'axios';
 
-const QKFieldTypes = {
+export const QKFieldTypes = {
   all: ['field-types'] as const,
   propertySections: () => [...QKFieldTypes.all, 'property-sections'] as const,
 };
@@ -14,15 +14,20 @@ type FetchFieldTypesQuery = (options?: {
   select?: (data: FieldType[]) => FieldType[];
 }) => UseQueryResult<FieldType[], AxiosError>;
 
+export const fetchFieldTypes = (): Promise<FieldType[]> =>
+  axios.get<FieldType[]>(`/api/fields/types`).then((res) => res.data);
+
 export const useFetchFieldTypes: FetchFieldTypesQuery = ({ select } = {}) =>
-  useQuery<FieldType[], AxiosError>(
-    QKFieldTypes.all,
-    () => axios.get<FieldType[]>(`/api/fields/types`).then((res) => res.data),
-    {
-      staleTime: Infinity,
-      select,
-    }
-  );
+  useQuery<FieldType[], AxiosError>(QKFieldTypes.all, fetchFieldTypes, {
+    staleTime: Infinity,
+    select,
+  });
+
+export const fetchFieldPropertySections = (): Promise<Section[]> =>
+  axios
+    .get<Section[]>(`/api/fields/types/sections`)
+    .then((res) => res.data)
+    .then((res) => res.sort((a, b) => a.order - b.order));
 
 export const useFetchFieldPropertySections = (): UseQueryResult<
   Section[],
@@ -30,11 +35,7 @@ export const useFetchFieldPropertySections = (): UseQueryResult<
 > =>
   useQuery<Section[], AxiosError>(
     QKFieldTypes.propertySections(),
-    () =>
-      axios
-        .get<Section[]>(`/api/fields/types/sections`)
-        .then((res) => res.data)
-        .then((res) => res.sort((a, b) => a.order - b.order)),
+    fetchFieldPropertySections,
     {
       staleTime: Infinity,
     }

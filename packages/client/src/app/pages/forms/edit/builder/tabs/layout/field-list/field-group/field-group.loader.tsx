@@ -5,15 +5,27 @@ import { range } from '@ff-client/utils/arrays';
 import { LoaderFieldItem } from './field/field.loader';
 import { FieldGroupWrapper, GroupTitle, List } from './field-group.styles';
 
-export const LoaderFieldGroup: React.FC = () => {
+type Props = {
+  words: number[];
+  items: number;
+};
+
+export const LoaderFieldGroup: React.FC<Props> = ({ words, items }) => {
   return (
     <FieldGroupWrapper>
       <GroupTitle>
-        <Skeleton width={50} height={16} inline style={{ marginRight: 8 }} />
-        <Skeleton width={70} height={16} inline />
+        {words.map((word, index) => (
+          <Skeleton
+            key={index}
+            width={word}
+            height={16}
+            inline
+            style={{ marginRight: 8 }}
+          />
+        ))}
       </GroupTitle>
       <List>
-        {range(16).map((i) => (
+        {range(items).map((i) => (
           <LoaderFieldItem key={i} />
         ))}
       </List>

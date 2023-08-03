@@ -8,7 +8,7 @@ export const LoaderFieldList: React.FC = () => {
   return (
     <Sidebar>
       <LoaderSearch />
-      <LoaderFieldGroup />
+      <LoaderFieldGroup words={[50, 70]} items={16} />
     </Sidebar>
   );
 };

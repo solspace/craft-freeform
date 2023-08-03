@@ -1,13 +1,12 @@
 import React from 'react';
-import Skeleton from 'react-loading-skeleton';
 import { useSelector } from 'react-redux';
 import { ErrorBlock } from '@components/notification-blocks/error/error-block';
 import { formSelectors } from '@editor/store/slices/form/form.selectors';
 import { useFetchForms } from '@ff-client/queries/field-forms';
-import { range } from '@ff-client/utils/arrays';
 import translate from '@ff-client/utils/translations';
 
 import { FieldGroup } from '../../field-group/field-group';
+import { LoaderFieldGroup } from '../../field-group/field-group.loader';
 
 import { FieldItem } from './field-item';
 
@@ -16,13 +15,7 @@ export const FormsFields: React.FC = () => {
   const { data, isFetching, isError, error } = useFetchForms();
 
   if (!data && isFetching) {
-    return (
-      <FieldGroup title={translate('Other Field Types')}>
-        {range(2).map((index) => (
-          <Skeleton key={index} height={32} />
-        ))}
-      </FieldGroup>
-    );
+    return <LoaderFieldGroup words={[50, 50, 70]} items={6} />;
   }
 
   if (isError) {

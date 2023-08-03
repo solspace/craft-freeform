@@ -212,7 +212,7 @@ class SessionContext
         return HashHelper::decode($formHash, \Craft::$app->getConfig()->getGeneral()->securityKey);
     }
 
-    public static function isPagePosted(Form $form, string $pageIndex): bool
+    public static function isPagePosted(Form $form, int $pageIndex): bool
     {
         if (!self::isFormPosted($form)) {
             return false;

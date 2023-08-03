@@ -25,19 +25,19 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListOb
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
-    name: 'Dotmailer',
+    name: 'Dotdigital',
     iconPath: __DIR__.'/icon.png',
 )]
 class Dotmailer extends MailingListIntegration
 {
-    public const LOG_CATEGORY = 'Dotmailer';
+    public const LOG_CATEGORY = 'Dotdigital';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API User Email',
-        instructions: 'Enter your Dotmailer API user email.',
+        instructions: 'Enter your Dotdigital API user email.',
     )]
     protected string $userEmail = '';
 
@@ -46,7 +46,7 @@ class Dotmailer extends MailingListIntegration
     #[Validators\Required]
     #[Input\Text(
         label: 'Password',
-        instructions: 'Enter your Dotmailer API user password',
+        instructions: 'Enter your Dotdigital API user password',
     )]
     protected string $userPassword = '';
 

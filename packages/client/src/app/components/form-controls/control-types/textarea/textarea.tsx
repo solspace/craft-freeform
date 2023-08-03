@@ -9,6 +9,7 @@ const Textarea: React.FC<ControlType<TextareaProperty>> = ({
   property,
   errors,
   updateValue,
+  autoFocus,
 }) => {
   const { handle } = property;
 
@@ -24,6 +25,7 @@ const Textarea: React.FC<ControlType<TextareaProperty>> = ({
         rows={2}
         value={value ?? ''}
         placeholder={property.placeholder}
+        autoFocus={autoFocus}
         onChange={(event) => updateValue(event.target.value)}
       />
     </Control>

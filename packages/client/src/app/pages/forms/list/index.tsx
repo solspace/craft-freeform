@@ -1,55 +1,30 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { useQueryForms } from '@ff-client/queries/forms';
+import { Provider } from 'react-redux';
+import { ModalProvider } from '@components/modals/modal.context';
+import {
+  fetchFieldPropertySections,
+  fetchFieldTypes,
+  QKFieldTypes,
+} from '@ff-client/queries/field-types';
+import { useQueryClient } from '@tanstack/react-query';
 
-import { useDeleteFormMutation } from './index.mutations';
-import { Card, RemoveButton, Subtitle, Title, Wrapper } from './index.styles';
+import { List } from './list';
+import { store } from './store';
 
-export const List: React.FC = () => {
-  const { data, isFetching, isError, error } = useQueryForms();
-  const mutation = useDeleteFormMutation();
+export const ListProvider: React.FC = () => {
+  const queryClient = useQueryClient();
 
-  if (!data && isFetching) {
-    return <div>fetching forms...</div>;
-  }
-
-  if (isError) {
-    return <div>ERROR {error.message}</div>;
-  }
+  queryClient.prefetchQuery(QKFieldTypes.all, fetchFieldTypes);
+  queryClient.prefetchQuery(
+    QKFieldTypes.propertySections(),
+    fetchFieldPropertySections
+  );
 
   return (
-    <div>
-      <h1>
-        Forms
-        {isFetching && <span>is fetching</span>}
-      </h1>
-      <Wrapper>
-        <Card>
-          <Title>
-            <Link to="new">Create new Form</Link>
-          </Title>
-          <Subtitle>click me</Subtitle>
-        </Card>
-
-        {data.map((form) => (
-          <Card
-            key={form.id}
-            $disabled={mutation.isLoading && mutation.context === form.id}
-          >
-            <RemoveButton
-              onClick={() => {
-                if (confirm('Are you sure?')) {
-                  mutation.mutate(form.id);
-                }
-              }}
-            />
-            <Title>
-              <Link to={`${form.id}`}>{form.name}</Link>
-            </Title>
-            <Subtitle>{form.handle}</Subtitle>
-          </Card>
-        ))}
-      </Wrapper>
-    </div>
+    <Provider store={store}>
+      <ModalProvider>
+        <List />
+      </ModalProvider>
+    </Provider>
   );
 };

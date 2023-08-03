@@ -28,6 +28,8 @@ class GoogleTagManagerBundle extends FeatureBundle
 
     public function attachAttributes(AttachFormAttributesEvent $event): void
     {
+        // TODO: refactor into integrations
+        return;
         $form = $event->getForm();
         $isAjax = $form->getSettings()->getBehavior()->ajax;
         $gtm = $form->getSettings()->getGeneral()->gtm;
@@ -49,6 +51,8 @@ class GoogleTagManagerBundle extends FeatureBundle
 
     public function attachScripts(RenderTagEvent $event): void
     {
+        // TODO: refactor into integrations
+        return;
         $form = $event->getForm();
         $isAjax = $form->getSettings()->getBehavior()->ajax;
         $gtm = $form->getSettings()->getGeneral()->gtm;

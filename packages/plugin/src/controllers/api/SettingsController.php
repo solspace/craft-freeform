@@ -24,9 +24,9 @@ class SettingsController extends BaseController
         $this->saveSettings(
             [
                 'pluginName' => $this->getRequest()->getBodyParam('name'),
-                'defaultView' => $this->getRequest()->getBodyParam('defaultView', 'dashboard'),
+                'defaultView' => $this->getRequest()->getBodyParam('defaultView', 'forms'),
                 'ajaxByDefault' => $this->getRequest()->getBodyParam('ajax', true),
-                'formattingTemplate' => $this->getRequest()->getBodyParam('defaultFormattingTemplate', 'flexbox'),
+                'formattingTemplate' => $this->getRequest()->getBodyParam('defaultFormattingTemplate', 'basic-light'),
                 'formSubmitDisable' => $this->getRequest()->getBodyParam('disableSubmit', true),
                 'autoScrollToErrors' => $this->getRequest()->getBodyParam('autoScroll', true),
                 'scriptInsertLocation' => $this->getRequest()->getBodyParam('jsInsertLocation', Settings::SCRIPT_INSERT_LOCATION_FOOTER),

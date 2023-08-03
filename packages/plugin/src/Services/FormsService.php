@@ -65,7 +65,7 @@ class FormsService extends BaseService implements FormHandlerInterface
         if (null === self::$formsById || !self::$allFormsLoaded) {
             $query = $this->getFormQuery();
             if ($orderByName) {
-                $query->orderBy(['forms.name' => \SORT_ASC]);
+                $query->orderBy(['forms.order' => \SORT_ASC]);
             }
 
             $results = $query->all();

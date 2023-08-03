@@ -55,36 +55,24 @@ class SettingsController extends BaseController
 
         $defaultView = $this->getSettingsModel()->defaultView;
 
-        $canAccessDashboard = PermissionHelper::checkPermission(Freeform::PERMISSION_DASHBOARD_ACCESS);
         $canAccessForms = PermissionHelper::checkPermission(Freeform::PERMISSION_FORMS_ACCESS);
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
-        $canAccessFields = PermissionHelper::checkPermission(Freeform::PERMISSION_FIELDS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
         $canAccessResources = PermissionHelper::checkPermission(Freeform::PERMISSION_RESOURCES);
 
-        $isDashboardView = Freeform::VIEW_DASHBOARD === $defaultView;
         $isFormView = Freeform::VIEW_FORMS === $defaultView;
         $isSubmissionView = Freeform::VIEW_SUBMISSIONS === $defaultView;
 
         $cantAccessFormView = $isFormView && !$canAccessForms;
         $cantAccessSubmissionView = $isSubmissionView && !$canAccessSubmissions;
-        $cantAccessDashboardView = $isDashboardView && !$canAccessDashboard;
-        if ($cantAccessFormView || $cantAccessSubmissionView || $cantAccessDashboardView) {
-            if ($canAccessDashboard) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_DASHBOARD));
-            }
-
+        if ($cantAccessFormView || $cantAccessSubmissionView) {
             if ($canAccessForms) {
                 return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_FORMS));
             }
 
             if ($canAccessSubmissions) {
                 return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_SUBMISSIONS));
-            }
-
-            if ($canAccessFields) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_FIELDS));
             }
 
             if ($canAccessNotifications) {

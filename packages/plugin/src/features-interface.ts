@@ -1,5 +1,4 @@
 type DefaultView =
-  | "dashboard"
   | "forms"
   | "submissions"
   | "fields"

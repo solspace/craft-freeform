@@ -541,18 +541,18 @@ class Submission extends Element
             ];
 
             foreach ($forms as $form) {
-                if (!\in_array($form->id, $allowedFormIds, false)) {
+                if (!\in_array($form->getId(), $allowedFormIds)) {
                     continue;
                 }
 
                 $items[] = [
-                    'key' => 'form:'.$form->id,
-                    'label' => $form->name,
+                    'key' => 'form:'.$form->getId(),
+                    'label' => $form->getName(),
                     'data' => [
-                        'handle' => $form->handle,
+                        'handle' => $form->getHandle(),
                     ],
                     'criteria' => [
-                        'formId' => $form->id,
+                        'formId' => $form->getId(),
                     ],
                 ];
             }

@@ -1,4 +1,4 @@
-import { TabsWrapper } from '@editor/builder/tabs/index.styles';
+import { TabsWrapper } from '@editor/builder/tabs/tabs.styles';
 import { colors, shadows, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 

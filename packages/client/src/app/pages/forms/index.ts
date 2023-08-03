@@ -1,2 +1,2 @@
 export { EditProvider as Form } from './edit';
-export { List as Forms } from './list';
+export { ListProvider as Forms } from './list';

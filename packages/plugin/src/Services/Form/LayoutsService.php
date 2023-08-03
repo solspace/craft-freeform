@@ -55,7 +55,12 @@ class LayoutsService extends BaseService
         }
 
         if (empty($pages)) {
-            $formLayout->getPages()->add(new Page(new Layout(''), ['label' => 'Page 1']));
+            $formLayout->getPages()->add(
+                new Page(
+                    new Layout(''),
+                    ['label' => 'Page 1']
+                )
+            );
         }
 
         return $formLayout;

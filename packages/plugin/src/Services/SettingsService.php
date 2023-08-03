@@ -33,18 +33,12 @@ class SettingsService extends BaseService
     /** @var Settings */
     private static $settingsModel;
 
-    /**
-     * @return null|string
-     */
-    public function getPluginName()
+    public function getPluginName(): ?string
     {
         return $this->getSettingsModel()->pluginName;
     }
 
-    /**
-     * @return null|string
-     */
-    public function getCustomErrorMessage()
+    public function getCustomErrorMessage(): ?string
     {
         return $this->getSettingsModel()->customErrorMessage;
     }
@@ -99,7 +93,7 @@ class SettingsService extends BaseService
         return $this->getSettingsModel()->formTemplateDirectory;
     }
 
-    public function getSuccessTemplateDirectory(): string
+    public function getSuccessTemplateDirectory(): ?string
     {
         return $this->getSettingsModel()->getAbsoluteSuccessTemplateDirectory();
     }
@@ -178,6 +172,9 @@ class SettingsService extends BaseService
     {
         $templates = [];
         $templateDirectoryPath = $this->getSuccessTemplateDirectory();
+        if (!is_dir($templateDirectoryPath)) {
+            return $templates;
+        }
 
         $rootFiles = (new Finder())
             ->files()
@@ -234,10 +231,7 @@ class SettingsService extends BaseService
         return (bool) $this->getSettingsModel()->removeNewlines;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getPurgableSubmissionAgeInDays()
+    public function getPurgableSubmissionAgeInDays(): ?int
     {
         $age = $this->getSettingsModel()->purgableSubmissionAgeInDays;
 
@@ -245,13 +239,10 @@ class SettingsService extends BaseService
             return null;
         }
 
-        return (int) $age;
+        return $age;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getPurgableSpamAgeInDays()
+    public function getPurgableSpamAgeInDays(): ?int
     {
         $age = $this->getSettingsModel()->purgableSpamAgeInDays;
 
@@ -259,13 +250,10 @@ class SettingsService extends BaseService
             return null;
         }
 
-        return (int) $age;
+        return $age;
     }
 
-    /**
-     * @return null|int
-     */
-    public function getPurgableUnfinalizedAssetAgeInMinutes()
+    public function getPurgableUnfinalizedAssetAgeInMinutes(): ?int
     {
         $age = $this->getSettingsModel()->purgableUnfinalizedAssetAgeInMinutes;
 
@@ -273,7 +261,7 @@ class SettingsService extends BaseService
             return Settings::DEFAULT_UNFINALIZED_ASSET_AGE_MINUTES;
         }
 
-        return (int) $age;
+        return $age;
     }
 
     public function isRenderFormHtmlInCpViews(): bool
@@ -339,12 +327,12 @@ class SettingsService extends BaseService
 
     public function isSpamFolderEnabled(): bool
     {
-        return (bool) $this->getSettingsModel()->spamFolderEnabled;
+        return $this->getSettingsModel()->spamFolderEnabled;
     }
 
     public function isAjaxEnabledByDefault(): bool
     {
-        return (bool) $this->getSettingsModel()->ajaxByDefault;
+        return $this->getSettingsModel()->ajaxByDefault;
     }
 
     public function isSectionASetting(string $sectionName): bool
@@ -436,10 +424,10 @@ class SettingsService extends BaseService
 
     public function isDigestOnlyOnProduction(): bool
     {
-        return (bool) $this->getSettingsModel()->digestOnlyOnProduction;
+        return $this->getSettingsModel()->digestOnlyOnProduction;
     }
 
-    public function getBadgeCount()
+    public function getBadgeCount(): ?int
     {
         $type = $this->getSettingsModel()->badgeType;
         if (!$type) {
@@ -467,7 +455,7 @@ class SettingsService extends BaseService
         return $total;
     }
 
-    public function saveSettings(array $data)
+    public function saveSettings(array $data): bool
     {
         $plugin = Freeform::getInstance();
         $plugin->setSettings($data);
@@ -487,6 +475,6 @@ class SettingsService extends BaseService
 
     public function isFormFieldShowOnlyAllowedForms(): bool
     {
-        return (bool) $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
+        return $this->getSettingsModel()->formFieldShowOnlyAllowedForms;
     }
 }

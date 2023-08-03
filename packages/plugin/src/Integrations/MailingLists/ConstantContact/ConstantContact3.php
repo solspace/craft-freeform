@@ -23,7 +23,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListOb
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListOAuthConnector;
 
 #[Type(
-    name: 'Constant Contact',
+    name: 'Constant Contact (v3)',
     iconPath: __DIR__.'/icon.jpeg',
 )]
 class ConstantContact3 extends MailingListOAuthConnector implements RefreshTokenInterface

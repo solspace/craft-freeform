@@ -45,14 +45,6 @@ Craft.Freeform.SubmissionsIndex = Craft.BaseElementIndex.extend({
 
     this.base();
   },
-  getViewClass: function (mode) {
-    switch (mode) {
-      case 'table':
-        return Craft.Freeform.SubmissionsTableView;
-      default:
-        return this.base(mode);
-    }
-  },
   getDefaultSort: function () {
     return ['dateCreated', 'desc'];
   },

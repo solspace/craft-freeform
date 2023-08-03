@@ -1,6 +1,6 @@
 <?php
 
-namespace Solspace\Freeform\Tests\Unit\Library\Serialization;
+namespace Solspace\Tests\Freeform\Unit\Library\Serialization;
 
 use PHPUnit\Framework\TestCase;
 use Solspace\Freeform\Library\Serialization\FreeformSerializer;

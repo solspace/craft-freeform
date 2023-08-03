@@ -6,7 +6,6 @@ use craft\events\DefineSourceTableAttributesEvent;
 use craft\services\ElementSources;
 use Solspace\Freeform\Elements\SpamSubmission;
 use Solspace\Freeform\Elements\Submission;
-use Solspace\Freeform\Fields\FieldInterface;
 use Solspace\Freeform\Fields\Implementations\Pro\Payments\CreditCardDetailsField;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
@@ -34,20 +33,11 @@ class CustomSourceFields extends FeatureBundle
             $fields = [];
 
             $source = $event->source;
-            if ('*' === $source) {
-                $fields = Freeform::getInstance()->fields->getAllFields();
-                foreach ($fields as $index => $field) {
-                    if (FieldInterface::TYPE_CREDIT_CARD_DETAILS === $field->type) {
-                        unset($fields[$index]);
-                    }
-                }
-            }
-
             if (preg_match('/^form:(\d+)$/', $source, $matches)) {
                 $formId = $matches[1];
-                $form = $forms[$formId]->getForm();
+                $form = $forms[$formId];
 
-                $fields = $form->getLayout()->getStorableFields();
+                $fields = $form->getLayout()->getFields()->getStorableFields();
                 foreach ($fields as $index => $field) {
                     if ($field instanceof CreditCardDetailsField) {
                         unset($fields[$index]);
@@ -56,8 +46,8 @@ class CustomSourceFields extends FeatureBundle
             }
 
             foreach ($fields as $field) {
-                $id = $field instanceof FieldInterface ? $field->getId() : $field->id;
-                $label = $field instanceof FieldInterface ? $field->getLabel() : $field->label;
+                $id = $field->getId();
+                $label = $field->getLabel();
 
                 $event->attributes["field:{$id}"] = ['label' => $label];
             }

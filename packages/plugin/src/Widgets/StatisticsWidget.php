@@ -118,7 +118,7 @@ class StatisticsWidget extends Widget
         $formCount = null;
         $notificationCount = null;
         if ($this->showGlobalStatistics) {
-            $fieldCount = \count($freeform->fields->getAllFieldHandles());
+            $fieldCount = $freeform->fields->getAllFieldCount();
             $formCount = \count($forms);
             $notificationCount = \count($freeform->notifications->getAllNotifications());
         }

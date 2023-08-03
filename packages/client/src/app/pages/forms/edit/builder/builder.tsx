@@ -16,8 +16,8 @@ import { RulesEmpty } from './tabs/rules/editor/editor.empty';
 import { FieldRulesEditor } from './tabs/rules/editor/field-editor';
 import { PageRulesEditor } from './tabs/rules/editor/page-editor';
 import { Rules } from './tabs/rules/rules';
+import { Tabs } from './tabs/tabs';
 import { BuilderContent, BuilderWrapper } from './builder.styles';
-import { Tabs } from './tabs';
 
 export const Builder: React.FC = () => {
   return (

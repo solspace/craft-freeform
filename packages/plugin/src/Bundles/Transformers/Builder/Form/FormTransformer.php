@@ -3,8 +3,10 @@
 namespace Solspace\Freeform\Bundles\Transformers\Builder\Form;
 
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Services\ChartsService;
 use Solspace\Freeform\Services\Form\FieldsService;
 use Solspace\Freeform\Services\Form\LayoutsService;
+use Solspace\Freeform\Services\SubmissionsService;
 
 class FormTransformer
 {
@@ -13,15 +15,19 @@ class FormTransformer
         private LayoutsService $layoutsService,
         private FieldTransformer $fieldTransformer,
         private LayoutTransformer $layoutTransformer,
+        private ChartsService $chartsService,
+        private SubmissionsService $submissionsService,
     ) {
     }
 
     public function transformList(array $forms): array
     {
-        return array_map(
+        $transformed = array_map(
             [$this, 'transformBasic'],
             $forms
         );
+
+        return $this->decorateWithSubmissionStatistics($transformed);
     }
 
     public function transform(Form $form): object
@@ -61,5 +67,24 @@ class FormTransformer
             'handle' => $settings->handle,
             'settings' => $settings->toArray(),
         ];
+    }
+
+    private function decorateWithSubmissionStatistics(array $forms): array
+    {
+        $formIds = array_map(fn ($form) => $form->id, $forms);
+
+        $chartData = $this->chartsService->getMinimalSubmissionChartData($formIds);
+        $submissions = $this->submissionsService->getSubmissionCountByForm();
+        $spamSubmissions = $this->submissionsService->getSubmissionCountByForm(true);
+
+        foreach ($forms as $form) {
+            $form->chartData = $chartData[$form->id] ?? [];
+            $form->counters = [
+                'submissions' => $submissions[$form->id] ?? 0,
+                'spam' => $spamSubmissions[$form->id] ?? 0,
+            ];
+        }
+
+        return $forms;
     }
 }

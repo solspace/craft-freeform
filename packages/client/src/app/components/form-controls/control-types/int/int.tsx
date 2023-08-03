@@ -8,6 +8,7 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
   property,
   errors,
   updateValue,
+  autoFocus,
 }) => {
   const { handle, min, max } = property;
 
@@ -36,6 +37,7 @@ const Int: React.FC<ControlType<IntegerProperty>> = ({
         type="number"
         className="text fullwidth"
         value={value === undefined || value === null ? '' : value}
+        autoFocus={autoFocus}
         onChange={onChange}
         onBlur={onBlur}
       />

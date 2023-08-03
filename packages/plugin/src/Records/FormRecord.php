@@ -23,6 +23,7 @@ use Solspace\Freeform\Freeform;
  * @property string $metadata
  * @property string $name
  * @property string $handle
+ * @property int    $order
  * @property int    $spamBlockCount
  */
 class FormRecord extends ActiveRecord

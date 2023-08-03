@@ -89,7 +89,6 @@ class BehaviorSettings extends SettingsNamespace
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[ValueGenerator(SuccessTemplateGenerator::class)]
     #[VisibilityFilter('successBehavior === "'.self::SUCCESS_BEHAVIOUR_LOAD_SUCCESS_TEMPLATE.'"')]
-    #[Validators\Required]
     #[Input\Select(
         instructions: "Select the template you'd like to replace the form in the page after a successful submit.",
         order: 2,

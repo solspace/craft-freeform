@@ -29,12 +29,12 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListOb
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
-    name: 'Craft Campaign',
+    name: 'Campaign plugin',
     iconPath: __DIR__.'/icon.svg',
 )]
 class Campaign extends MailingListIntegration
 {
-    public const LOG_CATEGORY = 'CraftCampaign';
+    public const LOG_CATEGORY = 'Campaign plugin';
 
     private static array $fieldCache;
 

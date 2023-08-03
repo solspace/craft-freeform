@@ -81,7 +81,7 @@ class GeneralSettings extends SettingsNamespace
         instructions: 'How the titles of submissions should be auto-generated for this form.',
         order: 4,
     )]
-    public string $submissionTitle = 'Submission from {{ firstName }} {{ lastName }}';
+    public string $submissionTitle = 'Submission on {{ dateCreated|date("Y-m-d H:i:s") }}';
 
     #[Section(self::SECTION_GENERAL)]
     #[ValueGenerator(DefaultTemplateGenerator::class)]

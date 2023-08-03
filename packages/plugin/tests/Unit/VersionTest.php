@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class VersionTest extends TestCase
 {
-    public function versionDataProvider()
+    public function versionDataProvider(): array
     {
         return [
             ['1.8.2', '<'],

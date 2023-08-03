@@ -5,7 +5,6 @@ namespace Solspace\Freeform\controllers;
 use craft\web\Controller;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Services\ChartsService;
-use Solspace\Freeform\Services\FieldsService;
 use Solspace\Freeform\Services\FilesService;
 use Solspace\Freeform\Services\Form\TypesService;
 use Solspace\Freeform\Services\FormsService;
@@ -39,11 +38,6 @@ class BaseController extends Controller
     protected function getFormsTypesService(): TypesService
     {
         return Freeform::getInstance()->formTypes;
-    }
-
-    protected function getFieldsService(): FieldsService
-    {
-        return Freeform::getInstance()->fields;
     }
 
     protected function getSubmissionsService(): SubmissionsService

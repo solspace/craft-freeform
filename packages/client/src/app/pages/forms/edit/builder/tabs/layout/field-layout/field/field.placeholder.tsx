@@ -24,8 +24,8 @@ const FieldDragPlaceholderContainer = styled(animated.div)`
 
 export const FieldDragPlaceholder: React.FC<Props> = ({
   isActive,
-  hoverPosition,
-  fieldWidth,
+  hoverPosition = 0,
+  fieldWidth = 1000,
 }) => {
   const style = useSpring({
     opacity: isActive ? 1 : 0,

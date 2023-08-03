@@ -16,9 +16,20 @@ export const QKForms = {
   settings: () => [...QKForms.all, 'settings'] as const,
 };
 
-export const useQueryForms = (): UseQueryResult<Form[], AxiosError> => {
-  return useQuery<Form[], AxiosError>(QKForms.all, () =>
-    axios.get<Form[]>('/api/forms').then((res) => res.data)
+export type FormWithStats = Form & {
+  chartData: Array<{ uv: number }>;
+  counters: {
+    submissions: number;
+    spam: number;
+  };
+};
+
+export const useQueryFormsWithStats = (): UseQueryResult<
+  FormWithStats[],
+  AxiosError
+> => {
+  return useQuery<FormWithStats[], AxiosError>(QKForms.all, () =>
+    axios.get<FormWithStats[]>('/api/forms').then((res) => res.data)
   );
 };
 

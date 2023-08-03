@@ -24,20 +24,20 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListOb
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
-    name: 'MailChimp',
+    name: 'Mailchimp',
     readme: __DIR__.'/README.md',
     iconPath: __DIR__.'/icon.svg',
 )]
 class MailChimp extends MailingListIntegration
 {
-    public const LOG_CATEGORY = 'MailChimp';
+    public const LOG_CATEGORY = 'Mailchimp';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Validators\Required]
     #[Input\Text(
         label: 'API Key',
-        instructions: 'Enter your MailChimp API key here.',
+        instructions: 'Enter your Mailchimp API key here.',
     )]
     protected string $apiKey = '';
 
@@ -217,7 +217,7 @@ class MailChimp extends MailingListIntegration
             $dataCenter = $matches[1];
             $this->dataCenter = $dataCenter;
         } else {
-            throw new IntegrationException('Could not detect data center for MailChimp');
+            throw new IntegrationException('Could not detect data center for Mailchimp');
         }
     }
 
@@ -232,7 +232,7 @@ class MailChimp extends MailingListIntegration
 
         if (empty($dataCenter)) {
             throw new IntegrationException(
-                $this->getTranslator()->translate('Could not detect data center for MailChimp')
+                $this->getTranslator()->translate('Could not detect data center for Mailchimp')
             );
         }
 
@@ -528,7 +528,7 @@ class MailChimp extends MailingListIntegration
                     ['json' => ['email_address' => $email]]
                 );
             } catch (RequestException $exception) {
-                $this->getLogger()->error("Could not add a MailChimp tag '{$tag}' to user {$email}");
+                $this->getLogger()->error("Could not add a Mailchimp tag '{$tag}' to user {$email}");
             }
         }
     }
@@ -544,7 +544,7 @@ class MailChimp extends MailingListIntegration
             try {
                 $client->delete($this->getEndpoint("lists/{$listId}/segments/{$tagId}/members/{$emailHash}"));
             } catch (RequestException $deleteException) {
-                $this->getLogger()->warning("Could not delete MailChimp tag '{$tagName}' (#{$tagId})");
+                $this->getLogger()->warning("Could not delete Mailchimp tag '{$tagName}' (#{$tagId})");
             }
         }
     }
@@ -568,7 +568,7 @@ class MailChimp extends MailingListIntegration
 
                 $this->existingTags = $tags;
             } catch (RequestException $e) {
-                $this->getLogger()->error('Could not fetch MailChimp tags');
+                $this->getLogger()->error('Could not fetch Mailchimp tags');
 
                 $this->existingTags = [];
             }
@@ -597,7 +597,7 @@ class MailChimp extends MailingListIntegration
 
             return $data->id;
         } catch (RequestException $e) {
-            $this->getLogger()->warning("Could not create a MailChimp tag '{$tagName}'");
+            $this->getLogger()->warning("Could not create a Mailchimp tag '{$tagName}'");
 
             return null;
         }

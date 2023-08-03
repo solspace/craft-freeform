@@ -3,12 +3,12 @@ import { Control } from '@components/form-controls/control';
 import type { ControlType } from '@components/form-controls/types';
 import type {
   Option,
-  OptionCollection,
+  OptionGroup,
   SelectProperty,
 } from '@ff-client/types/properties';
 
 const renderOption = (
-  option: Option | OptionCollection,
+  option: Option | OptionGroup,
   index: number
 ): React.ReactNode => {
   if ('children' in option) {

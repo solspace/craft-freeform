@@ -4,14 +4,14 @@ import type { ControlType } from '@components/form-controls/types';
 import type {
   CheckboxesProperty,
   Option,
-  OptionCollection,
+  OptionGroup,
 } from '@ff-client/types/properties';
 
 import { CheckboxesWrapper, SelectAllWrapper } from './checkboxes.styles';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars,unused-imports/no-unused-vars
 const renderOption = (
-  option: Option | OptionCollection,
+  option: Option | OptionGroup,
   index: number
 ): React.ReactNode => {
   if ('children' in option) {

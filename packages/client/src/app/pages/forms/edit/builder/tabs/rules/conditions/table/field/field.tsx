@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors';
 import type { Condition } from '@ff-client/types/rules';
@@ -19,6 +20,58 @@ export const FieldSelect: React.FC<Props> = ({ condition, onChange }) => {
 
   return (
     <div className="select fullwidth">
+      <Dropdown
+        selectedValue="nested-field3"
+        options={[
+          { label: 'Choose field', value: '' },
+          { label: 'Asbestos', value: 'asbestos' },
+          { label: 'Siria', value: 'siria' },
+          {
+            label: 'Nested Group',
+            children: [
+              { label: 'Tank', value: 'nested-field1' },
+              { label: 'Jumanji Tank Specops', value: 'nested-field2' },
+              {
+                label: 'Sub nested group',
+                children: [
+                  { label: 'Jumping jacks', value: 'sub-nested-field1' },
+                  { label: 'Telemetry', value: 'sub-nested-2' },
+                ],
+              },
+              {
+                label: 'Sub nested group',
+                children: [
+                  { label: 'Jumping jacks', value: 'sub-nested-field1' },
+                  { label: 'Telemetry', value: 'sub-nested-2' },
+                  {
+                    label: 'Sub Sub nested group',
+                    children: [
+                      { label: 'Jumping jacks', value: 'sub-nested-field1' },
+                      { label: 'Telemetry', value: 'sub-nested-2' },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            label: 'Nested group 2',
+            children: [
+              { label: 'Tenacious D', value: 'nested-field3' },
+              { label: 'Sin City', value: 'nested-field4' },
+              {
+                label: 'Sub nested group',
+                children: [
+                  { label: 'Jumping jacks', value: 'sub-nested-field1' },
+                  { label: 'Telemetry', value: 'sub-nested-2' },
+                ],
+              },
+            ],
+          },
+        ]}
+      />
+
+      <br />
       <select
         value={condition.field}
         onChange={(event) => onChange && onChange(event.target.value)}

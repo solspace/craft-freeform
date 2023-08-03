@@ -2,48 +2,6 @@ import { animated } from 'react-spring';
 import { borderRadius, colors, spacings } from '@ff-client/styles/variables';
 import styled from 'styled-components';
 
-export const FieldWrapper = styled(animated.div)`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-
-  flex: 1;
-
-  overflow: hidden;
-  padding: 5px 7px;
-
-  width: 100%;
-  height: 100%;
-
-  background: ${colors.white};
-  border: 1px solid rgba(96, 125, 159, 0.25);
-  border-radius: ${borderRadius.md};
-
-  transition: all 0.2s ease-out;
-
-  &,
-  * {
-    cursor: pointer;
-  }
-
-  &.has-rule:not(.active) {
-    border-right: 4px solid ${colors.gray200};
-  }
-
-  &.active {
-    background-color: ${colors.teal550};
-    color: white;
-  }
-
-  &.is-in-condition {
-    border-left: 4px solid ${colors.teal550};
-
-    &.not-equals {
-      border-left-color: ${colors.red500};
-    }
-  }
-`;
-
 export const FieldInfo = styled.div`
   display: flex;
   justify-content: space-between;
@@ -54,6 +12,7 @@ export const FieldInfo = styled.div`
   svg {
     width: 18px;
     height: 18px;
+    fill: currentColor;
   }
 `;
 
@@ -61,8 +20,11 @@ export const Label = styled.label`
   flex: 1;
 
   line-height: 12px;
-  font-family: monospace;
   font-size: 12px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const Icon = styled.div`
@@ -72,10 +34,75 @@ export const Icon = styled.div`
   height: 16px;
 `;
 
-export const Small = styled.small`
-  display: block;
-  padding-left: 24px;
+export const GroupWrapper = styled.div``;
 
-  font-size: 10px;
-  color: ${colors.gray300};
+export const FieldWrapper = styled(animated.div)`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: ${spacings.sm};
+
+  flex: 1;
+
+  overflow: hidden;
+  padding: 5px 7px;
+
+  width: 100%;
+  height: 100%;
+
+  background: ${colors.gray100};
+  border: 1px solid ${colors.gray100};
+  border-radius: ${borderRadius.md};
+
+  transition: all 0.2s ease-out;
+
+  &,
+  * {
+    cursor: pointer;
+  }
+
+  &.has-rule:not(.active) {
+    border-color: ${colors.teal550};
+    background-color: ${colors.teal050};
+  }
+
+  &.group {
+    background-color: ${colors.white};
+    border-color: ${colors.gray100};
+
+    > ${FieldInfo} ${Icon} {
+      display: none;
+    }
+
+    ${GroupWrapper} {
+      color: ${colors.gray800};
+    }
+  }
+
+  &.active {
+    background-color: #5b6573;
+    border-color: #5b6573;
+    color: white;
+  }
+
+  &.is-in-condition {
+    position: relative;
+
+    &:after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 2;
+
+      width: 0;
+      border-left: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+      border-left: 15px solid ${colors.teal550};
+    }
+
+    &.not-equals:after {
+      border-left-color: ${colors.red700};
+    }
+  }
 `;

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
@@ -14,7 +24,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 
 abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements RefreshTokenInterface
 {
-    public const LOG_CATEGORY = 'Salesforce';
+    protected const LOG_CATEGORY = 'Salesforce';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
@@ -47,10 +57,12 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
     {
         try {
             $client = $this->generateAuthorizedClient();
+
             $response = $client->get($this->getEndpoint('/'));
+
             $json = json_decode((string) $response->getBody(), false);
 
-            return isset($json->success) && true === $json->success;
+            return !empty($json);
         } catch (RequestException $exception) {
             throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
         }
@@ -60,17 +72,16 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
     {
         try {
             $client = $this->generateAuthorizedClient();
-            $response = $client->get($this->getEndpoint("/sobjects/{$category}/describe"));
-        } catch (RequestException $e) {
-            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
 
-            return [];
+            $response = $client->get($this->getEndpoint('/sobjects/'.$category.'/describe'));
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
 
         $json = json_decode((string) $response->getBody());
 
-        if (!isset($json->success) || !$json->success) {
-            throw new IntegrationException("Could not fetch fields for {$category}");
+        if (!isset($json->fields) || !$json->fields) {
+            throw new IntegrationException('Could not fetch fields for '.$category);
         }
 
         $fieldList = [];
@@ -205,12 +216,13 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
 
     protected function query(string $query, array $params = []): array
     {
-        $client = $this->generateAuthorizedClient();
-
-        $params = array_map([$this, 'soqlEscape'], $params);
-        $query = sprintf($query, ...$params);
-
         try {
+            $params = array_map([$this, 'soqlEscape'], $params);
+
+            $query = sprintf($query, ...$params);
+
+            $client = $this->generateAuthorizedClient();
+
             $response = $client->get(
                 $this->getEndpoint('/query'),
                 [
@@ -227,10 +239,8 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
             }
 
             return $result->records;
-        } catch (RequestException $e) {
-            $this->getLogger()->error($e->getMessage(), ['response' => $e->getResponse()]);
-
-            return [];
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
     }
 
@@ -262,5 +272,37 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
     protected function getLogger(?string $category = null): LoggerInterface
     {
         return parent::getLogger($category ?? self::LOG_CATEGORY);
+    }
+
+    protected function processException($exception): void
+    {
+        $message = $exception->getMessage();
+        $response = $exception->getResponse();
+
+        if ($exception instanceof RequestException && $response) {
+            $json = json_decode((string) $response->getBody(), false);
+
+            if ($json->error && $json->error_info) {
+                $usefulErrorMessage = $json->error.', '.$json->error_info;
+            } else {
+                $usefulErrorMessage = (string) $response->getBody();
+            }
+
+            $this->getLogger()->error(
+                $usefulErrorMessage,
+                [
+                    'exception' => $message,
+                ],
+            );
+        } else {
+            $this->getLogger()->error(
+                $message,
+                [
+                    'exception' => $message,
+                ],
+            );
+        }
+
+        throw $exception;
     }
 }

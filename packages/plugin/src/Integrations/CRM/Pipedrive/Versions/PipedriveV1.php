@@ -13,13 +13,11 @@
 namespace Solspace\Freeform\Integrations\CRM\Pipedrive\Versions;
 
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapping;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingTransformer;
-use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
@@ -33,16 +31,12 @@ use Solspace\Freeform\Integrations\CRM\Pipedrive\PipedriveIntegrationInterface;
 )]
 class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrationInterface
 {
-    private const CATEGORY_DEAL = 'Deal';
-    private const CATEGORY_LEAD = 'Lead';
-    private const CATEGORY_PERSON = 'Person';
-    private const CATEGORY_ORGANIZATION = 'Organization';
-    private const API_VERSION = 'v1';
+    protected const API_VERSION = 'v1';
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map to Leads?',
-        instructions: 'Should map to leads?',
+        label: 'Map Leads',
+        instructions: 'Should map to leads',
         order: 3,
     )]
     protected bool $mapLeads = false;
@@ -53,21 +47,20 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Lead fields',
         order: 4,
-        source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
+        source: 'api/integrations/crm/fields/Deal',
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $leadMapping = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map to Deals?',
+        label: 'Map Deals',
         instructions: 'Should map to deals?',
         order: 5,
     )]
     protected bool $mapDeals = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[Validators\Required]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Text(
         label: 'Stage ID',
@@ -82,14 +75,14 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Deal fields',
         order: 7,
-        source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
+        source: 'api/integrations/crm/fields/Deal',
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map to Organization?',
+        label: 'Map Organization',
         instructions: 'Should map to organization?',
         order: 8,
     )]
@@ -101,14 +94,14 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Organization fields',
         order: 9,
-        source: 'api/integrations/crm/fields/'.self::CATEGORY_ORGANIZATION,
+        source: 'api/integrations/crm/fields/Organization',
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $organizationMapping = null;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map to Person?',
+        label: 'Map Person',
         instructions: 'Should map to person?',
         order: 10,
     )]
@@ -120,7 +113,7 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Person fields',
         order: 11,
-        source: 'api/integrations/crm/fields/'.self::CATEGORY_PERSON,
+        source: 'api/integrations/crm/fields/Person',
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $personMapping = null;
@@ -129,14 +122,22 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
 
     private ?int $personId = null;
 
+    private ?string $leadId = null;
+
+    private ?int $dealId = null;
+
     public function getApiRootUrl(): string
     {
-        return $this->getApiDomain().'/api/'.self::API_VERSION.'/';
-    }
+        $url = 'https://api.pipedrive.com';
 
-    public function getStageId(): string
-    {
-        return $this->getProcessedValue($this->stageId);
+        $apiDomain = $this->getApiDomain();
+        if ($apiDomain) {
+            $url = $apiDomain;
+        }
+
+        $url = rtrim($url, '/');
+
+        return $url.'/api/'.self::API_VERSION.'/';
     }
 
     public function push(Form $form): bool
@@ -151,37 +152,54 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
         return true;
     }
 
+    protected function getStageId(): ?int
+    {
+        return $this->getProcessedValue($this->stageId);
+    }
+
     private function processOrganization(Form $form, Client $client): void
     {
         if (!$this->mapOrganization) {
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->organizationMapping, self::CATEGORY_ORGANIZATION);
+        $mapping = $this->processMapping($form, $this->organizationMapping, 'Organization');
         if (!$mapping) {
             return;
         }
 
         try {
-            if ($this->getUserId()) {
-                $mapping['owner_id'] = $this->getUserId();
+            $userId = $this->getUserId();
+            if ($userId) {
+                $mapping['owner_id'] = $userId;
             }
 
-            $organizationId = $this->searchForDuplicate($client, ['name' => $mapping['name'] ?? null], 'organization');
+            $organizationId = $this->searchForDuplicate(
+                $client,
+                [
+                    'name' => $mapping['name'] ?? null,
+                ],
+                'organization',
+            );
+
             if ($organizationId) {
                 $this->organizationId = $organizationId;
             }
 
-            $response = $client->post($this->getEndpoint('/organizations'), ['json' => $mapping]);
+            $response = $client->post(
+                $this->getEndpoint('/organizations'),
+                [
+                    'json' => $mapping,
+                ],
+            );
+
             $json = json_decode((string) $response->getBody(), false);
 
             if (isset($json->data->id)) {
                 $this->organizationId = (int) $json->data->id;
             }
-        } catch (RequestException $exception) {
-            $this->getLogger()->error((string) $exception->getResponse()->getBody(), ['exception' => $exception->getMessage()]);
         } catch (\Exception $exception) {
-            $this->getLogger()->error($exception->getMessage());
+            $this->processException($exception);
         }
     }
 
@@ -191,16 +209,23 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->personMapping, self::CATEGORY_PERSON);
+        $mapping = $this->processMapping($form, $this->personMapping, 'Person');
         if (!$mapping) {
             return;
         }
 
-        $personId = $this->searchForDuplicate($client, ['email' => $mapping['email'] ?? null], 'person');
+        $personId = $this->searchForDuplicate(
+            $client,
+            [
+                'email' => $mapping['email'] ?? null,
+            ],
+            'person',
+        );
 
         try {
-            if ($this->getUserId()) {
-                $mapping['owner_id'] = $this->getUserId();
+            $userId = $this->getUserId();
+            if ($userId) {
+                $mapping['owner_id'] = $userId;
             }
 
             if ($this->organizationId) {
@@ -210,20 +235,28 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
             if ($personId) {
                 unset($mapping['email']);
 
-                $response = $client->put($this->getEndpoint("/persons/{$personId}"), ['json' => $mapping]);
+                $response = $client->put(
+                    $this->getEndpoint('/persons/'.$personId),
+                    [
+                        'json' => $mapping,
+                    ],
+                );
             } else {
-                $response = $client->post($this->getEndpoint('/persons'), ['json' => $mapping]);
+                $response = $client->post(
+                    $this->getEndpoint('/persons'),
+                    [
+                        'json' => $mapping,
+                    ],
+                );
             }
 
-            $json = json_decode((string) $response->getBody());
+            $json = json_decode((string) $response->getBody(), false);
 
             if (isset($json->data->id)) {
                 $this->personId = (int) $json->data->id;
             }
-        } catch (RequestException $exception) {
-            $this->getLogger()->error((string) $exception->getResponse()->getBody(), ['exception' => $exception->getMessage()]);
         } catch (\Exception $exception) {
-            $this->getLogger()->error($exception->getMessage());
+            $this->processException($exception);
         }
     }
 
@@ -233,22 +266,23 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->leadMapping, self::CATEGORY_LEAD);
+        $mapping = $this->processMapping($form, $this->leadMapping, 'Lead');
         if (!$mapping) {
             return;
         }
 
         try {
-            if ($this->organizationId) {
-                $mapping['organization_id'] = $this->organizationId;
+            $userId = $this->getUserId();
+            if ($userId) {
+                $mapping['owner_id'] = $userId;
             }
 
             if ($this->personId) {
                 $mapping['person_id'] = $this->personId;
             }
 
-            if ($this->getUserId()) {
-                $mapping['owner_id'] = $this->getUserId();
+            if ($this->organizationId) {
+                $mapping['organization_id'] = $this->organizationId;
             }
 
             $value = new \stdClass();
@@ -259,14 +293,33 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
 
             $mapping['value'] = $value->amount ? $value : null;
 
-            $client->post($this->getEndpoint('/leads'), ['json' => $mapping]);
+            $note = $mapping['note'] ?? false;
+            unset($mapping['note']);
 
-            $this->addNote('org', $this->organizationId, $mapping['note'] ?? null);
-            $this->addNote('person', $this->personId, $mapping['note'] ?? null);
-        } catch (RequestException $exception) {
-            $this->getLogger()->error((string) $exception->getResponse()->getBody(), ['exception' => $exception->getMessage()]);
+            $response = $client->post(
+                $this->getEndpoint('/leads'),
+                [
+                    'json' => $mapping,
+                ],
+            );
+
+            $json = json_decode((string) $response->getBody(), false);
+
+            if (isset($json->data->id)) {
+                $this->leadId = $json->data->id;
+            }
+
+            if (!empty($note)) {
+                $json = [
+                    'content' => $note,
+                    'lead_id' => $this->leadId,
+                    'pinned_to_lead_flag' => '1',
+                ];
+
+                $this->addNote($client, $json);
+            }
         } catch (\Exception $exception) {
-            $this->getLogger()->error($exception->getMessage());
+            $this->processException($exception);
         }
     }
 
@@ -276,14 +329,20 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
+        $mapping = $this->processMapping($form, $this->dealMapping, 'Deal');
         if (!$mapping) {
             return;
         }
 
         try {
-            if ($this->getUserId()) {
-                $mapping['user_id'] = $this->getUserId();
+            $userId = $this->getUserId();
+            if ($userId) {
+                $mapping['user_id'] = $userId;
+            }
+
+            $stageId = $this->getStageId();
+            if ($stageId) {
+                $mapping['stage_id'] = $stageId;
             }
 
             if ($this->personId) {
@@ -294,82 +353,47 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
                 $mapping['org_id'] = $this->organizationId;
             }
 
-            $stageId = $this->getStageId();
-            if ($stageId) {
-                $mapping['stage_id'] = (int) $stageId;
-            }
+            $note = $mapping['note'] ?? false;
+            unset($mapping['note']);
 
-            $response = $client->post($this->getEndpoint('/deals'), ['json' => $mapping]);
+            $response = $client->post(
+                $this->getEndpoint('/deals'),
+                [
+                    'json' => $mapping,
+                ],
+            );
+
             $json = json_decode((string) $response->getBody(), false);
 
             if (isset($json->data->id)) {
-                // FIXME
-                $mapping['note'] = 'FooBar';
-
-                $this->addNote('deal', $json->data->id, $mapping['note'] ?? null);
-                $this->addNote('org', $this->organizationId, $mapping['note'] ?? null);
-                $this->addNote('person', $this->personId, $mapping['note'] ?? null);
+                $this->dealId = (int) $json->data->id;
             }
-        } catch (RequestException $exception) {
-            $this->getLogger()->error((string) $exception->getResponse()->getBody(), ['exception' => $exception->getMessage()]);
+
+            if (!empty($note)) {
+                $json = [
+                    'content' => $note,
+                    'deal_id' => $this->dealId,
+                    'pinned_to_deal_flag' => '1',
+                ];
+
+                $this->addNote($client, $json);
+            }
         } catch (\Exception $exception) {
-            $this->getLogger()->error($exception->getMessage());
+            $this->processException($exception);
         }
     }
 
-    private function addNote($prefix, $id, $content): void
+    private function addNote(Client $client, array $json): void
     {
-        if (!$prefix || !$id || empty($content)) {
-            return;
-        }
-
         try {
-            $json = [];
-            $json['content'] = $content;
-
-            if ('org' === $prefix) {
-                $json['org_id'] = $id;
-                $json['pinned_to_organization_flag'] = '1';
-            }
-
-            if ('lead' === $prefix) {
-                $json['lead_id'] = $id;
-                $json['pinned_to_lead_flag'] = '1';
-            }
-
-            if ('deal' === $prefix) {
-                $json['deal_id'] = $id;
-                $json['pinned_to_deal_flag'] = '1';
-            }
-
-            if ('person' === $prefix) {
-                $json['person_id'] = $id;
-                $json['pinned_to_person_flag'] = '1';
-            }
-
-            $client = $this->generateAuthorizedClient();
-            $client->post($this->getEndpoint('/notes'), ['json' => $json]);
-        } catch (RequestException $exception) {
-            $this->getLogger()->error($exception->getMessage(), ['response' => $exception->getResponse()]);
-        }
-    }
-
-    private function addOrgNote(int $id, string $content): void
-    {
-        if (!$id || empty($content)) {
-            return;
-        }
-
-        try {
-            $json = [];
-            $json['org_id'] = $id;
-            $json['content'] = $content;
-            $json['pinned_to_organization_flag'] = '1';
-
-            $client = $this->generateAuthorizedClient();
-            $client->post($this->getEndpoint('/notes'), ['json' => $json]);
-        } catch (RequestException $exception) {
-            $this->getLogger()->error($exception->getMessage(), ['response' => $exception->getResponse()]);
+            $client->post(
+                $this->getEndpoint('/notes'),
+                [
+                    'json' => $json,
+                ],
+            );
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
     }
 
@@ -390,22 +414,26 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
                 }
 
                 try {
-                    $response = $client->get($this->getEndpoint('/itemSearch'), [
-                        'query' => [
-                            'term' => $term,
-                            'item_types' => $type,
-                            'fields' => $field,
-                            'exact_match' => true,
-                            'limit' => 1,
-                        ],
-                    ]);
-                    $results = json_decode($response->getBody())->data->items;
+                    $response = $client->get(
+                        $this->getEndpoint('/itemSearch'),
+                        [
+                            'query' => [
+                                'term' => $term,
+                                'item_types' => $type,
+                                'fields' => $field,
+                                'exact_match' => true,
+                                'limit' => 1,
+                            ],
+                        ]
+                    );
 
-                    if (\count($results) > 0) {
-                        return (int) $results[0]->item->id;
+                    $json = json_decode((string) $response->getBody(), false);
+
+                    if (\count($json->data->items) > 0) {
+                        return (int) $json->data->items[0]->item->id;
                     }
-                } catch (RequestException $exception) {
-                    $this->getLogger()->error((string) $exception->getResponse()->getBody(), ['exception' => $exception->getMessage()]);
+                } catch (\Exception $exception) {
+                    $this->processException($exception);
                 }
             }
         }

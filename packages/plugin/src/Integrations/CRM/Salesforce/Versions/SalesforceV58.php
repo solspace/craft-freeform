@@ -41,12 +41,12 @@ use yii\base\Event;
 )]
 class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceIntegrationInterface
 {
-    private const CATEGORY_LEAD = 'Lead';
-    private const CATEGORY_OPPORTUNITY = 'Opportunity';
-    private const CATEGORY_ACCOUNT = 'Account';
-    private const CATEGORY_CONTACT = 'Contact';
+    protected const CATEGORY_LEAD = 'Lead';
+    protected const CATEGORY_OPPORTUNITY = 'Opportunity';
+    protected const CATEGORY_ACCOUNT = 'Account';
+    protected const CATEGORY_CONTACT = 'Contact';
 
-    private const API_VERSION = 'v58.0';
+    protected const API_VERSION = 'v58.0';
 
     // ==========================================
     //                   Leads

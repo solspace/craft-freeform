@@ -10,8 +10,8 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM\Salesforce;
+namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
-interface SalesforceIntegrationInterface
+interface ZohoIntegrationInterface
 {
 }

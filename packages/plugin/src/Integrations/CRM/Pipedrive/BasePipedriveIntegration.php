@@ -1,4 +1,14 @@
 <?php
+/**
+ * Freeform for Craft CMS.
+ *
+ * @author        Solspace, Inc.
+ * @copyright     Copyright (c) 2008-2022, Solspace, Inc.
+ *
+ * @see           https://docs.solspace.com/craft/freeform
+ *
+ * @license       https://docs.solspace.com/license-agreement
+ */
 
 namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
@@ -6,7 +16,6 @@ use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
@@ -15,20 +24,19 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
 
 abstract class BasePipedriveIntegration extends CRMOAuthConnector implements RefreshTokenInterface
 {
-    public const LOG_CATEGORY = 'Pipedrive';
+    protected const LOG_CATEGORY = 'Pipedrive';
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
     protected string $apiDomain = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Validators\Required]
     #[Input\Text(
         label: 'User ID',
         instructions: 'Enter the Pipedrive User ID you want to assign to new objects.',
         order: 1,
     )]
-    protected string $userId = '';
+    protected ?int $userId = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
@@ -37,55 +45,35 @@ abstract class BasePipedriveIntegration extends CRMOAuthConnector implements Ref
     )]
     protected bool $detectDuplicates = false;
 
-    public function getApiDomain(): string
-    {
-        return $this->apiDomain;
-    }
-
-    public function getUserId(): ?int
-    {
-        return $this->userId;
-    }
-
-    public function isDetectDuplicates(): bool
-    {
-        return $this->detectDuplicates;
-    }
-
     public function checkConnection(): bool
     {
         try {
             $client = $this->generateAuthorizedClient();
+
             $response = $client->get($this->getEndpoint('/users/me'));
+
             $json = json_decode((string) $response->getBody(), false);
 
             return isset($json->success) && true === $json->success;
-        } catch (RequestException $exception) {
+        } catch (\Exception $exception) {
             throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
         }
     }
 
     public function fetchFields(string $category): array
     {
-        $endpoint = strtolower($category).'Fields';
-
-        if ('Lead' === $category) {
-            $endpoint = 'dealFields';
-        }
-
         try {
             $client = $this->generateAuthorizedClient();
-            $response = $client->get($this->getEndpoint('/'.$endpoint));
-        } catch (RequestException $exception) {
-            $this->getLogger()->error($exception->getMessage(), ['response' => $exception->getResponse()]);
 
-            return [];
+            $response = $client->get($this->getEndpoint('/'.strtolower($category).'Fields'));
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
 
         $json = json_decode((string) $response->getBody());
 
         if (!isset($json->success) || !$json->success) {
-            throw new IntegrationException("Could not fetch fields for {$category}");
+            throw new IntegrationException('Could not fetch fields for '.$category);
         }
 
         $requiredFields = ['name', 'title'];
@@ -183,9 +171,24 @@ abstract class BasePipedriveIntegration extends CRMOAuthConnector implements Ref
         return $fieldList;
     }
 
+    protected function getApiDomain(): string
+    {
+        return $this->apiDomain;
+    }
+
+    protected function getUserId(): ?int
+    {
+        return $this->getProcessedValue($this->userId);
+    }
+
+    protected function isDetectDuplicates(): bool
+    {
+        return $this->detectDuplicates;
+    }
+
     protected function onAuthentication(array &$payload): void
     {
-        $payload['scope'] = 'base contacts:full deals:full leads:full';
+        $payload['scope'] = 'base search:read contacts:full deals:full leads:full';
     }
 
     protected function onAfterFetchAccessToken(\stdClass $responseData): void
@@ -210,5 +213,37 @@ abstract class BasePipedriveIntegration extends CRMOAuthConnector implements Ref
     protected function getLogger(?string $category = null): LoggerInterface
     {
         return parent::getLogger($category ?? self::LOG_CATEGORY);
+    }
+
+    protected function processException($exception): void
+    {
+        $message = $exception->getMessage();
+        $response = $exception->getResponse();
+
+        if ($exception instanceof RequestException && $response) {
+            $json = json_decode((string) $response->getBody(), false);
+
+            if ($json->error && $json->error_info) {
+                $usefulErrorMessage = $json->error.', '.$json->error_info;
+            } else {
+                $usefulErrorMessage = (string) $response->getBody();
+            }
+
+            $this->getLogger()->error(
+                $usefulErrorMessage,
+                [
+                    'exception' => $message,
+                ],
+            );
+        } else {
+            $this->getLogger()->error(
+                $message,
+                [
+                    'exception' => $message,
+                ],
+            );
+        }
+
+        throw $exception;
     }
 }

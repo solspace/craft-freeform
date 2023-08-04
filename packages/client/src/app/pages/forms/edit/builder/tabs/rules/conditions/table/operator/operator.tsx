@@ -1,4 +1,5 @@
 import React from 'react';
+import { Dropdown } from '@components/elements/custom-dropdown/dropdown';
 import type { Condition } from '@ff-client/types/rules';
 import { Operator } from '@ff-client/types/rules';
 import translate from '@ff-client/utils/translations';
@@ -28,18 +29,14 @@ export const OperatorSelect: React.FC<Props> = ({ condition, onChange }) => {
 
   return (
     <div className="select fullwidth">
-      <select
+      <Dropdown
         value={operator}
-        onChange={(event) =>
-          onChange && onChange(event.target.value as Operator)
-        }
-      >
-        {Object.entries(operatorOptions).map(([value, label]) => (
-          <option key={value} value={value}>
-            {label}
-          </option>
-        ))}
-      </select>
+        onChange={(value) => onChange && onChange(value as Operator)}
+        options={Object.entries(operatorOptions).map(([value, label]) => ({
+          value,
+          label,
+        }))}
+      />
     </div>
   );
 };

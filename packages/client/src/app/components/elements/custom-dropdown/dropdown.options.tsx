@@ -10,10 +10,11 @@ type Props = DropdownProps & {
 };
 
 export const Options: React.FC<Props> = ({
-  selectedValue,
+  value: selectedValue,
   options,
   query,
   focusIndex,
+  onChange,
 }) => {
   const optionRefs = useRef<HTMLLIElement[]>([]);
 
@@ -30,7 +31,7 @@ export const Options: React.FC<Props> = ({
     <List>
       {options &&
         options.map((option, idx) => {
-          let value: string | number;
+          let value: string;
           let shadowIndex: number;
           if ('value' in option) {
             value = option.value;
@@ -49,6 +50,13 @@ export const Options: React.FC<Props> = ({
                   optionRefs.current[shadowIndex] = el;
                 }
               }}
+              onClick={(event) => {
+                event.stopPropagation();
+                console.log('clicked', value, onChange);
+                if (value !== undefined && onChange) {
+                  onChange(value);
+                }
+              }}
               key={idx}
               className={classes(
                 children !== undefined && 'has-children',
@@ -60,9 +68,10 @@ export const Options: React.FC<Props> = ({
               {children && (
                 <Options
                   options={children}
-                  selectedValue={selectedValue}
+                  value={selectedValue}
                   query={query}
                   focusIndex={focusIndex}
+                  onChange={onChange}
                 />
               )}
             </Item>

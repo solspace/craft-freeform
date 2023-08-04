@@ -37,6 +37,10 @@ export const Label = styled.label`
 `;
 
 export const Item = styled.li`
+  &.selected > ${Label} {
+    background-color: ${colors.gray200};
+  }
+
   &.focused > ${Label} {
     background-color: ${colors.gray700};
     color: ${colors.gray100};

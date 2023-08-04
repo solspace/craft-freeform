@@ -24,6 +24,7 @@ export const ListWrapper = styled.div`
 `;
 
 export const CurrentValue = styled.div`
+  cursor: pointer;
   position: relative;
 
   background-color: #dfe5ec;

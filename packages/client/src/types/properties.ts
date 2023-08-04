@@ -40,7 +40,7 @@ export enum PropertyType {
 export type Middleware = [string, GenericValue[]?];
 export type VisibilityFilter = string;
 export type Option = {
-  value: string | number;
+  value: string;
   label: string;
   shadowIndex?: number;
 };

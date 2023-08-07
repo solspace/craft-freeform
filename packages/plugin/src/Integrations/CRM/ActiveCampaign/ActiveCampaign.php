@@ -25,7 +25,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type(
     name: 'ActiveCampaign',
-    iconPath: __DIR__.'/icon.png',
+    iconPath: __DIR__.'/icon.svg',
 )]
 class ActiveCampaign extends CRMIntegration
 {

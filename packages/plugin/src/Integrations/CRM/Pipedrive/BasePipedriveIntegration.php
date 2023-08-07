@@ -223,7 +223,7 @@ abstract class BasePipedriveIntegration extends CRMOAuthConnector implements Ref
         if ($exception instanceof RequestException && $response) {
             $json = json_decode((string) $response->getBody(), false);
 
-            if ($json->error && $json->error_info) {
+            if (!empty($json->error) && !empty($json->error_info)) {
                 $usefulErrorMessage = $json->error.', '.$json->error_info;
             } else {
                 $usefulErrorMessage = (string) $response->getBody();

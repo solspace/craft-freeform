@@ -79,6 +79,11 @@ export const FieldWrapper = styled(animated.div)`
     }
   }
 
+  &:hover {
+    background-color: ${colors.gray200};
+    border-color: ${colors.gray200};
+  }
+
   &.active {
     background-color: #5b6573;
     border-color: #5b6573;

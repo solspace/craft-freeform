@@ -22,7 +22,7 @@ export const Options: React.FC<Props> = ({
     if (optionRefs.current[focusIndex]) {
       optionRefs.current[focusIndex].scrollIntoView({
         behavior: 'smooth',
-        block: 'center',
+        block: 'nearest',
       });
     }
   }, [focusIndex]);
@@ -52,7 +52,6 @@ export const Options: React.FC<Props> = ({
               }}
               onClick={(event) => {
                 event.stopPropagation();
-                console.log('clicked', value, onChange);
                 if (value !== undefined && onChange) {
                   onChange(value);
                 }

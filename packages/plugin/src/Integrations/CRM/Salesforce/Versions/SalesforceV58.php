@@ -41,19 +41,12 @@ use yii\base\Event;
 )]
 class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceIntegrationInterface
 {
-    private const CATEGORY_LEAD = 'Lead';
-    private const CATEGORY_OPPORTUNITY = 'Opportunity';
-    private const CATEGORY_ACCOUNT = 'Account';
-    private const CATEGORY_CONTACT = 'Contact';
+    protected const CATEGORY_LEAD = 'Lead';
+    protected const CATEGORY_OPPORTUNITY = 'Opportunity';
+    protected const CATEGORY_ACCOUNT = 'Account';
+    protected const CATEGORY_CONTACT = 'Contact';
 
-    private const API_VERSION = 'v58.0';
-
-    #[Flag(self::FLAG_GLOBAL_PROPERTY)]
-    #[Input\Boolean(
-        label: 'Using custom URL?',
-        instructions: 'Enable this if you connect to your Salesforce account with a custom company URL (e.g. \'mycompany.my.salesforce.com\').'
-    )]
-    protected bool $usingCustomUrl = false;
+    protected const API_VERSION = 'v58.0';
 
     // ==========================================
     //                   Leads
@@ -63,6 +56,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Map to Leads?',
         instructions: 'Should map to leads?',
+        order: 4,
     )]
     protected bool $mapLeads = false;
 
@@ -71,6 +65,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Assign Lead Owner?',
         instructions: 'Enabling this will make Salesforce assign a lead owner based on lead owner assignment rules.',
+        order: 5,
     )]
     protected bool $assignLeadOwner = false;
 
@@ -79,6 +74,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Convert Leads to Contact Tasks for Returning Customers?',
         instructions: 'When a Salesforce Contact already exists with the same email address, create a new Task for the Contact instead of a new Lead.',
+        order: 6,
     )]
     protected bool $convertLeadsToTasks = false;
 
@@ -87,6 +83,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
         instructions: "Enter the text you'd like to have set for new Task subjects.",
+        order: 7,
     )]
     protected string $taskSubject = '';
 
@@ -95,6 +92,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.convertLeadsToTasks')]
     #[Input\Text(
         instructions: "Enter a relative textual date string for the Due Date of the newly created Task (e.g. '2 days').",
+        order: 8,
     )]
     protected string $taskDueDate = '';
 
@@ -103,6 +101,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapLeads')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Lead fields',
+        order: 9,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],
     )]
@@ -112,6 +111,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Map to Opportunities?',
         instructions: 'Should map to opportunities?',
+        order: 10,
     )]
     protected bool $mapOpportunities = false;
 
@@ -120,6 +120,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Validators\Required]
     #[Input\Text(
         instructions: 'Enter a relative textual date string for the Close Date of the newly created Opportunity (e.g. \'7 days\').',
+        order: 11,
     )]
     protected string $closeDate = '';
 
@@ -129,6 +130,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Text(
         label: 'Stage Name',
         instructions: 'Enter the Stage Name the newly created Opportunity should be assigned to (e.g. \'Prospecting\').',
+        order: 12,
     )]
     protected string $stage = '';
 
@@ -137,6 +139,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapOpportunities')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Opportunity fields',
+        order: 13,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_OPPORTUNITY,
         parameterFields: ['id' => 'id'],
     )]
@@ -146,6 +149,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Map to Accounts?',
         instructions: 'Should map to accounts?',
+        order: 14,
     )]
     protected bool $mapAccounts = false;
 
@@ -154,6 +158,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Append checkbox group field values on Account update?',
         instructions: 'If an Account already exists in Salesforce, enabling this will append additional checkbox group field values to the Account inside Salesforce, instead of overwriting the options.',
+        order: 15,
     )]
     protected bool $appendAccountData = false;
 
@@ -162,6 +167,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapAccounts')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Account fields',
+        order: 16,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
     )]
@@ -171,6 +177,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Map to Contacts?',
         instructions: 'Should map to contacts?',
+        order: 17,
     )]
     protected bool $mapContacts = false;
 
@@ -179,6 +186,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Check Contact email address and Account website when checking for duplicates?',
         instructions: 'By default, Freeform will check against Contact first name, last name and email address, as well as and Account name. If enabled, Freeform will instead check against Contact email address only and Account website. If no website is mapped, Freeform will gather the website domain from the Contact email address mapped.',
+        order: 18,
     )]
     protected bool $duplicateCheck = false;
 
@@ -187,6 +195,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[Input\Boolean(
         label: 'Append checkbox group field values on Contact update?',
         instructions: 'If a Contact already exists in Salesforce, enabling this will append additional checkbox group field values to the Contact inside Salesforce, instead of overwriting the options.',
+        order: 19,
     )]
     protected bool $appendContactData = false;
 
@@ -195,6 +204,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     #[VisibilityFilter('values.mapContacts')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Salesforce Account fields',
+        order: 20,
         source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],
     )]
@@ -238,18 +248,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     public function getApiRootUrl(): string
     {
-        $instance = $this->instanceUrl;
-        $usingCustomUrls = $this->usingCustomUrl;
-
-        if (!str_starts_with($instance, 'https://')) {
-            return sprintf(
-                'https://%s%s.salesforce.com/services/data/'.self::API_VERSION.'/',
-                $instance,
-                $usingCustomUrls ? '.my' : ''
-            );
-        }
-
-        return $instance.'/services/data/'.self::API_VERSION.'/';
+        return $this->getInstanceUrl().'/services/data/'.self::API_VERSION.'/';
     }
 
     private function isCreateTasksForDuplicates(): bool

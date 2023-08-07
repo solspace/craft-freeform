@@ -43,7 +43,7 @@ class OAuthController extends BaseController
 
         $integrationsService->updateModelFromIntegration($model, $integration);
 
-        if ($integrationsService->save($model)) {
+        if ($integrationsService->save($model, $integration)) {
             \Craft::$app->session->setNotice(Freeform::t('Integration saved'));
 
             return $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$type.'/'.$integration->getId()));

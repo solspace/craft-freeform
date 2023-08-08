@@ -23,9 +23,12 @@ const list = [
 
 export const Filter: React.FC = () => {
   const [active, setActive] = useState(false);
-  const ref = useClickOutside<HTMLButtonElement>(() => {
-    setActive(false);
-  }, active);
+  const ref = useClickOutside<HTMLButtonElement>({
+    callback: () => {
+      setActive(false);
+    },
+    isEnabled: active,
+  });
 
   const style = useSpring({
     to: {

@@ -38,13 +38,13 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
     isEditing,
   });
 
-  useClickOutside<HTMLDivElement>(
-    () => {
+  useClickOutside<HTMLDivElement>({
+    callback: () => {
       setIsEditing(false);
     },
-    isEditing,
-    editorRef
-  );
+    isEnabled: isEditing,
+    refObject: editorRef,
+  });
 
   useOnKeypress({
     meetsCondition: isEditing,

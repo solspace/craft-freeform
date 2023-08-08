@@ -120,6 +120,11 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         return $this->getCustomFields($client);
     }
 
+    public function getBusinessUnitId(): string
+    {
+        return $this->getProcessedValue($this->businessUnitId);
+    }
+
     public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
     {
         $value = parent::convertCustomFieldValue($fieldObject, $field);
@@ -129,11 +134,6 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         }
 
         return $value;
-    }
-
-    protected function getBusinessUnitId(): string
-    {
-        return $this->getProcessedValue($this->businessUnitId);
     }
 
     protected function isCustomUrl(): bool

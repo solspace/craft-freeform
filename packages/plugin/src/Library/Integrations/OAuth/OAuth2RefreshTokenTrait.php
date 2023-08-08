@@ -9,6 +9,7 @@ use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 trait OAuth2RefreshTokenTrait
 {
     #[Flag(IntegrationInterface::FLAG_ENCRYPTED)]
+    #[Flag(IntegrationInterface::FLAG_INTERNAL)]
     #[Input\Hidden]
     protected string $refreshToken = '';
 

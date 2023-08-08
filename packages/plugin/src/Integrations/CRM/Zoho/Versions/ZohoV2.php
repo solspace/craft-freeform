@@ -182,9 +182,7 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->getEndpoint('/Leads'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
+                        'data' => [$mapping],
                     ],
                 ],
             );

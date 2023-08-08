@@ -14,4 +14,15 @@ namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
 interface ZohoIntegrationInterface
 {
+    public function getAccountsServer(): ?string;
+
+    public function setAccountsServer(?string $accountsServer): self;
+
+    public function getApiDomain(): ?string;
+
+    public function setApiDomain(?string $apiDomain): self;
+
+    public function getLocation(): ?string;
+
+    public function setLocation(?string $location): self;
 }

@@ -97,6 +97,9 @@ abstract class BaseIntegration implements IntegrationInterface
         ;
     }
 
+    /**
+     * @throws \Exception
+     */
     protected function processException(\Exception $exception): void
     {
         $message = $exception->getMessage();

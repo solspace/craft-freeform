@@ -16,7 +16,6 @@ use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -32,16 +31,17 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
 
     protected const LOG_CATEGORY = 'Zoho';
 
-    // TODO - WHERE TO ADD THIS IMPORTANT NOTE ?
-    // If your application has more than one environment, the access and refresh token generated for a user becomes organization-specific in an environment. Thus, you cannot use tokens generated for an organization in one environment to make API calls to the organization in another environment. For instance, you cannot use tokens generated for an organization in the Production environment to make API calls to the organizations in the sandbox or developer accounts.
-
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
-    protected string $apiDomain = '';
+    protected ?string $apiDomain = null;
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
     protected ?string $accountsServer = null;
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected ?string $location = null;
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
@@ -148,9 +148,40 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
         return $fieldList;
     }
 
-    protected function getApiDomain(): string
+    public function getApiDomain(): ?string
     {
         return $this->apiDomain;
+    }
+
+    public function setApiDomain(?string $apiDomain): self
+    {
+        $this->apiDomain = $apiDomain;
+
+        return $this;
+    }
+
+    public function getAccountsServer(): ?string
+    {
+        return $this->accountsServer;
+    }
+
+    public function setAccountsServer(?string $accountsServer): self
+    {
+        $this->accountsServer = $accountsServer;
+
+        return $this;
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
+
+        return $this;
     }
 
     protected function isSandboxMode(): bool
@@ -161,35 +192,6 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
     protected function isDeveloperMode(): bool
     {
         return $this->developerMode;
-    }
-
-    protected function getAccountsServer(): ?string
-    {
-        return $this->accountsServer;
-    }
-
-    protected function onAuthentication(array &$payload): void
-    {
-        $payload['response_type'] = 'code';
-        $payload['access_type'] = 'offline';
-        $payload['client_id'] = $this->getClientId();
-        $payload['redirect_uri'] = $this->getReturnUri();
-        $payload['scope'] = 'ZohoCRM.modules.READ,ZohoCRM.modules.CREATE,ZohoCRM.modules.ALL,ZohoCRM.settings.all';
-    }
-
-    protected function onBeforeFetchAccessToken(&$payload): void
-    {
-        // TODO: refactor this to go through the after fetched tokens event
-        $this->accountsServer = $_GET['accounts-server'] ?? '';
-    }
-
-    protected function onAfterFetchAccessToken(\stdClass $responseData): void
-    {
-        if (!isset($responseData->api_domain)) {
-            throw new CRMIntegrationNotFoundException("Zohos response data doesn't contain the API Domain");
-        }
-
-        $this->apiDomain = $responseData->api_domain;
     }
 
     protected function getDomain(): string
@@ -207,5 +209,18 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
     protected function getLogger(?string $category = null): LoggerInterface
     {
         return parent::getLogger($category ?? self::LOG_CATEGORY);
+    }
+
+    protected function processZohoResponseError(array $response): void
+    {
+        $data = $response['data'][0];
+        if ('error' === $data['status']) {
+            $this->getLogger()->error(
+                $data['message'],
+                ['exception' => $data],
+            );
+
+            throw new IntegrationException($data['message']);
+        }
     }
 }

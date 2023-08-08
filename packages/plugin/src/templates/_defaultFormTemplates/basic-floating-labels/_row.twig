@@ -1,6 +1,10 @@
 {% macro getFieldTemplate(type) -%}
-    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/basic-floating-labels/fields/" %}
-    {{- fieldTemplatePath ~ type ~ ".twig" -}}
+    {%- set fieldTemplatePath = "freeform/_defaultFormTemplates/basic-floating-labels/fields/" -%}
+    {%- if type in ["text", "textarea", "email", "website", "confirm", "regex", "phone", "datetime", "number", "password"] -%}
+        {{- fieldTemplatePath ~ "floating.twig" -}}
+    {%- else -%}
+        {{- fieldTemplatePath ~ type ~ ".twig" -}}
+    {%- endif -%}
 {%- endmacro %}
 
 {% macro render(rows, form) %}

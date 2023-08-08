@@ -1,5 +1,5 @@
 {% macro getFieldTemplate(type) -%}
-    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5/fields/" %}
+    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/basic-light/fields/" %}
     {{- fieldTemplatePath ~ type ~ ".twig" -}}
 {%- endmacro %}
 
@@ -17,28 +17,24 @@
                     attributes: {
                         container: {
                             class: [
-                                "mb-3",
-                                "col-12",
-                                "col-sm-" ~ width,
-                                "custom-class",
+                                "freeform-col-" ~ width,
+                                "freeform-fieldtype-" ~ field.type,
                             ],
                         },
                         input: {
                             novalidate: true,
                             class: [
-                                "form-control",
-                                "ff-fieldtype-" ~ field.type,
                                 field.hasErrors ? "is-invalid has-validation",
-                                field.type == "file" ? "form-control-file",
-                                field.type == "select" ? "form-select",
-                                field.type == "signature" ? "btn btn-light",
-                                field.type == "table" ? "table",
-                                field.type == "checkbox" ? "checkbox",
+                                field.type not in ["save", "signature"] ? "freeform-input"
                             ]
                         },
-                        label: { class: field.required ? "required" },
-                        instructions: { class: ["form-text", "text-muted"] },
-                        error: { class: "invalid-feedback" },
+                        label: { class: [
+                            "freeform-label",
+                            field.inputOnly ? "freeform-input-only-label",
+                            field.required ? "freeform-required",
+                        ]},
+                        instructions: { class: ["freeform-instructions"] },
+                        error: { class: "freeform-errors" },
                     }
                 }) %}
 

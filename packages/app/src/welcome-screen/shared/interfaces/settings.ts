@@ -4,7 +4,7 @@ export enum DefaultView {
   Submissions = 'submissions',
 }
 export enum FormattingTemplate {
-  BasicLight = 'basic-light.twig',
+  BasicLight = 'basic-light/index.twig',
   BasicDark = 'basic-dark.twig',
   BasicFloatingLabels = 'basic-floating-labels.twig',
   Bootstrap = 'bootstrap-3.twig',

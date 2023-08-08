@@ -1,5 +1,3 @@
-{% css formCss %}
-
 <style>
     /* LAYOUT */
     html, body {
@@ -123,6 +121,13 @@
         display: block;
         margin: 0 0 5px 0;
     }
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-group label.group-label {
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-group > .freeform-row {
+        margin: -10px;
+    }
     .freeform-row [class*="freeform-col-"] .freeform-input[type="checkbox"],
     .freeform-row [class*="freeform-col-"] .freeform-input[type="radio"] {
         margin-right: 10px;
@@ -132,10 +137,10 @@
     }
     .freeform-row [class*="freeform-col-"] label:has(> .freeform-input[type="checkbox"].freeform-has-errors),
     .freeform-row [class*="freeform-col-"] label:has(> .freeform-input[type="radio"].freeform-has-errors),
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group:has(ul.freeform-errors) label:not(:first-child),
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group:has(ul.freeform-errors) div.input-group-one-line label,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group:has(ul.freeform-errors) label:not(:first-child),
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group:has(ul.freeform-errors) div.input-group-one-line label {
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes:has(ul.freeform-errors) label:not(:first-child),
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes:has(ul.freeform-errors) div.input-group-one-line label,
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radios:has(ul.freeform-errors) label:not(:first-child),
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radios:has(ul.freeform-errors) div.input-group-one-line label {
         color: #dc3545 !important;
     }
     .freeform-row [class*="freeform-col-"] .input-group-one-line {
@@ -235,10 +240,10 @@
         display: block;
         width: 100%;
     }
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group .freeform-errors,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radio_group .ff-errors,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group .freeform-errors,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox_group .ff-errors {
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radios .freeform-errors,
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radios .ff-errors,
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes .freeform-errors,
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes .ff-errors {
         margin-top: 0;
     }
     .freeform-row [class*="freeform-col-"] .freeform-errors > li,
@@ -257,13 +262,11 @@
         margin: -5px 0 10px 0;
     }
     /* SINGLE CHECKBOX FIELDS */
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox label,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-mailing_list label {
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox label {
         display: inline-block;
         margin: 0 0 10px 0;
     }
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox input[type="checkbox"],
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-mailing_list input[type="checkbox"] {
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkbox input[type="checkbox"] {
         margin-right: 10px;
         width: auto;
         display: inline-block;
@@ -275,11 +278,11 @@
         color: #dc3545 !important;
     }
     /* OPINION SCALE FIELDS */
-    .freeform-fieldtype-opinion_scale .opinion-scale-scales {
+    .freeform-fieldtype-opinion-scale .opinion-scale-scales {
         border: 1px solid #cbced0;
         border-radius: 5px;
     }
-    .freeform-fieldtype-opinion_scale .opinion-scale-scales li label {
+    .freeform-fieldtype-opinion-scale .opinion-scale-scales li label {
         color: #464747 !important;
         background-color: #ffffff;
         border: 0;
@@ -288,23 +291,23 @@
         margin: 0;
         cursor: pointer;
     }
-    .freeform-fieldtype-opinion_scale .opinion-scale-scales li:first-child label {
+    .freeform-fieldtype-opinion-scale .opinion-scale-scales li:first-child label {
         border: 0;
         border-left: 0;
         border-top-left-radius: 3px;
         border-bottom-left-radius: 3px;
     }
-    .freeform-fieldtype-opinion_scale .opinion-scale-scales li label:hover {
+    .freeform-fieldtype-opinion-scale .opinion-scale-scales li label:hover {
         background-color: #eaeaea;
     }
-    .freeform-fieldtype-opinion_scale input[type="radio"]:checked + label {
-        background-color: #cbced0;
+    .freeform-fieldtype-opinion-scale input[type="radio"]:checked + label {
+        background-color: #cbced0 !important;
     }
-    .freeform-fieldtype-opinion_scale .opinion-scale-scales:has(> li input.freeform-has-errors),
-    .freeform-fieldtype-opinion_scale .opinion-scale:has(+ ul.freeform-errors) .opinion-scale-scales {
+    .freeform-fieldtype-opinion-scale .opinion-scale-scales:has(> li input.freeform-has-errors),
+    .freeform-fieldtype-opinion-scale .opinion-scale:has(+ ul.freeform-errors) .opinion-scale-scales {
         border: 1px dashed #dc3545;
     }
-    .freeform-fieldtype-opinion_scale .opinion-scale-legends li {
+    .freeform-fieldtype-opinion-scale .opinion-scale-legends li {
         font: normal 15px sans-serif;
         color: #6c757d;
         padding: 10px 0;
@@ -319,24 +322,24 @@
         margin-right: 5px;
     }
     /* FILE UPLOAD DRAG & DROP FIELDS */
-    .freeform-file-drag-and-drop {
+    .freeform-file-dnd {
         background-color: #ffffff !important;
         border: 1px dashed #6c757d !important;
     }
-    .freeform-file-drag-and-drop input {
+    .freeform-file-dnd input {
         display: none !important;
     }
-    .freeform-file-drag-and-drop__placeholder {
+    .freeform-file-dnd__placeholder {
         font: italic 200 16px sans-serif !important;
         color: #969696;
     }
-    .freeform-file-drag-and-drop [data-messages] > li[data-error],
-    .freeform-file-drag-and-drop [data-field-errors] > li[data-error] {
+    .freeform-file-dnd [data-messages] > li[data-error],
+    .freeform-file-dnd [data-field-errors] > li[data-error] {
         font: 200 16px sans-serif;
         color: #dc3545;
         margin-top: 15px;
     }
-    .freeform-file-drag-and-drop [data-field-errors] > li {
+    .freeform-file-dnd [data-field-errors] > li {
         color: #dc3545;
     }
     /* SIGNATURE FIELDS */
@@ -509,93 +512,3 @@
         .freeform-col-12 { width: 100%; }
     }
 </style>
-
-{% macro render(row, form) %}
-    {% import _self as self %}
-
-    {% set width = (12 / (row|length)) %}
-
-    <div{{ form.attributes.row }}>
-        {% for field in row %}
-
-            {{ field.render({
-                attributes: {
-                    container: { class: [
-                        "freeform-col-" ~ width,
-                        "ff-fieldtype-" ~ field.type,
-                    ]},
-                    input: { class: field.type not in ["save", "signature"] ? "freeform-input" },
-                    label: { class: [
-                        "freeform-label",
-                        field.inputOnly ? "freeform-input-only-label",
-                        field.required ? "freeform-required",
-                    ]},
-                    errors: { class: "freeform-errors" },
-                    instructions: { class: "freeform-instructions" },
-                }
-            }) }}
-        {% endfor %}
-    </div>
-
-{% endmacro %}
-
-
-{{ form.renderTag({
-    attributes: {
-        row: { class: "freeform-row" },
-        errors: { class: "freeform-form-has-errors" },
-    }
-}) }}
-
-<script>
-    var form = document.querySelector('[data-id="{{ form.anchor }}"]');
-    if (form) {
-        form.addEventListener("freeform-stripe-styling", function (event) {
-            event.detail.base = {
-                fontSize: "16px",
-                color: "#464747",
-                fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-            }
-        })
-    }
-</script>
-
-{% if form.pages|length > 1 %}
-    <ul class="freeform-pages">
-        {% for page in form.pages %}
-            <li {% if form.currentPage.index == page.index %}class="active"{% endif %}>
-                {% if form.currentPage.index == page.index %}
-                    <b>{{ page.label }}</b>
-                {% else %}
-                    {{ page.label }}
-                {% endif %}
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
-
-{% if not form.ajaxEnabled and form.submittedSuccessfully %}
-    <div class="freeform-alert freeform-alert-success">
-        {{ form.successMessage | t('freeform') }}
-    </div>
-{% endif %}
-
-{% if form.hasErrors %}
-    <div{{ form.attributes.error }}>
-        {{ form.errorMessage | t('freeform') }}
-
-        {% if form.errors|length %}
-            <ul>
-                {% for error in form.errors %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-{% endif %}
-
-{% for row in form.rows %}
-    {{ _self.render(row, form) }}
-{% endfor %}
-
-{{ form.renderClosingTag }}

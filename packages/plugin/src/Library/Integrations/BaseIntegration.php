@@ -103,9 +103,12 @@ abstract class BaseIntegration implements IntegrationInterface
     protected function processException(\Exception $exception): void
     {
         $message = $exception->getMessage();
+
         $this->getLogger()->error(
             $message,
-            ['exception' => $message],
+            [
+                'exception' => $message,
+            ],
         );
 
         throw $exception;

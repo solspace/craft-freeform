@@ -13,10 +13,10 @@
 namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -62,6 +62,28 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
         } catch (\Exception $exception) {
             throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
         }
+    }
+
+    public function getAuthorizeUrl(): string
+    {
+        return 'https://oauth.pipedrive.com/oauth/authorize';
+    }
+
+    public function getAccessTokenUrl(): string
+    {
+        return 'https://oauth.pipedrive.com/oauth/token';
+    }
+
+    public function getApiDomain(): ?string
+    {
+        return $this->apiDomain;
+    }
+
+    public function setApiDomain(?string $apiDomain): self
+    {
+        $this->apiDomain = $apiDomain;
+
+        return $this;
     }
 
     public function fetchFields(string $category, Client $client): array
@@ -173,21 +195,6 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
         return $fieldList;
     }
 
-    public function getAuthorizeUrl(): string
-    {
-        return 'https://oauth.pipedrive.com/oauth/authorize';
-    }
-
-    public function getAccessTokenUrl(): string
-    {
-        return 'https://oauth.pipedrive.com/oauth/token';
-    }
-
-    protected function getApiDomain(): string
-    {
-        return $this->apiDomain;
-    }
-
     protected function getUserId(): ?int
     {
         return $this->getProcessedValue($this->userId);
@@ -198,22 +205,35 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
         return $this->detectDuplicates;
     }
 
-    protected function onAuthentication(array &$payload): void
-    {
-        $payload['scope'] = 'base search:read contacts:full deals:full leads:full';
-    }
-
-    protected function onAfterFetchAccessToken(\stdClass $responseData): void
-    {
-        if (!isset($responseData->api_domain)) {
-            throw new CRMIntegrationNotFoundException("Pipedrive response data doesn't contain the API Domain");
-        }
-
-        $this->apiDomain = $responseData->api_domain;
-    }
-
     protected function getLogger(?string $category = null): LoggerInterface
     {
         return parent::getLogger($category ?? self::LOG_CATEGORY);
+    }
+
+    protected function processException(\Exception $exception): void
+    {
+        if (!$exception instanceof RequestException) {
+            parent::processException($exception);
+
+            return;
+        }
+
+        $response = $exception->getResponse();
+        $json = json_decode((string) $response->getBody(), false);
+
+        if ($json->error && $json->error_info) {
+            $usefulErrorMessage = $json->error.', '.$json->error_info;
+        } else {
+            $usefulErrorMessage = (string) $response->getBody();
+        }
+
+        $this->getLogger()->error(
+            $usefulErrorMessage,
+            [
+                'exception' => $exception->getMessage(),
+            ],
+        );
+
+        throw $exception;
     }
 }

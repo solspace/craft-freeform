@@ -33,6 +33,10 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     protected const LOG_CATEGORY = 'Pardot';
 
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected string $instanceUrl = '';
+
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'Business Unit ID',
@@ -64,32 +68,9 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
     )]
     protected bool $sandboxMode = false;
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected string $instanceUrl = '';
-
     public function checkConnection(Client $client): bool
     {
         try {
-            /*
-            HOW TO UPDATE CLIENT WITH CUSTOM HEADERS
-            public function generateAuthorizedClient(): Client
-            {
-                parent::generateAuthorizedClient();
-
-                return new Client([
-                    'headers' => [
-                        'Authorization' => 'Bearer '.$this->getAccessToken(),
-                        'Pardot-Business-Unit-Id' => $this->getBusinessUnitId(),
-                        'Content-Type' => 'application/json',
-                    ],
-                    'query' => [
-                        'format' => 'json',
-                    ],
-                ]);
-            }
-            */
-
             $response = $client->get(
                 $this->getPardotEndpoint(),
                 [
@@ -130,18 +111,6 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         return $this;
     }
 
-    public function getBusinessUnitId(): string
-    {
-        return $this->getProcessedValue($this->businessUnitId);
-    }
-
-    public function setBusinessUnitId(string $businessUnitId): self
-    {
-        $this->businessUnitId = $businessUnitId;
-
-        return $this;
-    }
-
     public function fetchFields(string $category, Client $client): array
     {
         if ('Prospect' === $category) {
@@ -160,6 +129,11 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         }
 
         return $value;
+    }
+
+    protected function getBusinessUnitId(): string
+    {
+        return $this->getProcessedValue($this->businessUnitId);
     }
 
     protected function isCustomUrl(): bool

@@ -13,6 +13,7 @@
 namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
@@ -33,15 +34,15 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
-    protected ?string $apiDomain = null;
+    protected string $accountsServer = '';
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
-    protected ?string $accountsServer = null;
+    protected string $location = '';
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
-    protected ?string $location = null;
+    protected string $apiDomain = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
@@ -61,12 +62,49 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
     {
         try {
             $response = $client->get($this->getEndpoint('/settings/modules'));
+
             $json = json_decode((string) $response->getBody(), false);
 
             return !empty($json);
         } catch (\Exception $exception) {
             throw new IntegrationException($exception->getMessage(), $exception->getCode(), $exception->getPrevious());
         }
+    }
+
+    public function getAccountsServer(): ?string
+    {
+        return $this->accountsServer;
+    }
+
+    public function setAccountsServer(?string $accountsServer): self
+    {
+        $this->accountsServer = $accountsServer;
+
+        return $this;
+    }
+
+    public function getLocation(): ?string
+    {
+        return $this->location;
+    }
+
+    public function setLocation(?string $location): self
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    public function getApiDomain(): ?string
+    {
+        return $this->apiDomain;
+    }
+
+    public function setApiDomain(?string $apiDomain): self
+    {
+        $this->apiDomain = $apiDomain;
+
+        return $this;
     }
 
     public function fetchFields(string $category, Client $client): array
@@ -148,42 +186,6 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
         return $fieldList;
     }
 
-    public function getApiDomain(): ?string
-    {
-        return $this->apiDomain;
-    }
-
-    public function setApiDomain(?string $apiDomain): self
-    {
-        $this->apiDomain = $apiDomain;
-
-        return $this;
-    }
-
-    public function getAccountsServer(): ?string
-    {
-        return $this->accountsServer;
-    }
-
-    public function setAccountsServer(?string $accountsServer): self
-    {
-        $this->accountsServer = $accountsServer;
-
-        return $this;
-    }
-
-    public function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
-    public function setLocation(?string $location): self
-    {
-        $this->location = $location;
-
-        return $this;
-    }
-
     protected function isSandboxMode(): bool
     {
         return $this->sandboxMode;
@@ -214,13 +216,43 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
     protected function processZohoResponseError(array $response): void
     {
         $data = $response['data'][0];
+
         if ('error' === $data['status']) {
             $this->getLogger()->error(
                 $data['message'],
-                ['exception' => $data],
+                [
+                    'exception' => $data,
+                ],
             );
 
             throw new IntegrationException($data['message']);
         }
+    }
+
+    protected function processException(\Exception $exception): void
+    {
+        if (!$exception instanceof RequestException) {
+            parent::processException($exception);
+
+            return;
+        }
+
+        $response = $exception->getResponse();
+        $json = json_decode((string) $response->getBody(), false);
+
+        if ($json->error && $json->error_info) {
+            $usefulErrorMessage = $json->error.', '.$json->error_info;
+        } else {
+            $usefulErrorMessage = (string) $response->getBody();
+        }
+
+        $this->getLogger()->error(
+            $usefulErrorMessage,
+            [
+                'exception' => $exception->getMessage(),
+            ],
+        );
+
+        throw $exception;
     }
 }

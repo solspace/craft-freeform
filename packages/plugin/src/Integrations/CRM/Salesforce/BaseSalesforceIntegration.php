@@ -32,6 +32,10 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     protected const LOG_CATEGORY = 'Salesforce';
 
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected string $instanceUrl = '';
+
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
         label: 'Use custom URL?',
@@ -55,14 +59,11 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
     )]
     protected bool $sandboxMode = false;
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected string $instanceUrl = '';
-
     public function checkConnection(Client $client): bool
     {
         try {
             $response = $client->get($this->getEndpoint('/'));
+
             $json = json_decode((string) $response->getBody(), false);
 
             return !empty($json);

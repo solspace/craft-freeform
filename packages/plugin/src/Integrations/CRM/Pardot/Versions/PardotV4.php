@@ -24,7 +24,7 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
     protected const API_VERSION = '4';
 
     // ==========================================
-    //                   Prospect
+    //                 Prospect
     // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
@@ -69,16 +69,16 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
     )]
     protected ?FieldMapping $customMapping = null;
 
+    public function getApiRootUrl(): string
+    {
+        return 'https://pi.pardot.com/api/';
+    }
+
     public function push(Form $form, Client $client): bool
     {
         $this->processProspect($form, $client);
 
         return true;
-    }
-
-    public function getApiRootUrl(): string
-    {
-        return 'https://pi.pardot.com/api/';
     }
 
     protected function getPardotEndpoint(string $object = 'prospect', string $action = 'query'): string

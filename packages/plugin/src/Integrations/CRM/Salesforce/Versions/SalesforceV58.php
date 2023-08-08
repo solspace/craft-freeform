@@ -220,6 +220,11 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     private ?string $accountId = null;
 
+    public function getApiRootUrl(): string
+    {
+        return $this->getInstanceUrl().'/services/data/'.self::API_VERSION.'/';
+    }
+
     public function push(Form $form, Client $client): bool
     {
         $this->accountId = null;
@@ -250,11 +255,6 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     public function getStage(): string
     {
         return $this->getProcessedValue($this->stage);
-    }
-
-    public function getApiRootUrl(): string
-    {
-        return $this->getInstanceUrl().'/services/data/'.self::API_VERSION.'/';
     }
 
     private function isCreateTasksForDuplicates(): bool

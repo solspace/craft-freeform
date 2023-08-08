@@ -32,12 +32,20 @@ class ZohoV2 extends BaseZohoIntegration
 {
     protected const API_VERSION = 'v2';
 
+    // ==========================================
+    //          Default Contact Role ID
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Text(
         label: 'Default Contact Role ID',
         order: 3,
     )]
     protected ?string $defaultContactRoleId = null;
+
+    // ==========================================
+    //                   Leads
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
@@ -58,6 +66,10 @@ class ZohoV2 extends BaseZohoIntegration
     )]
     protected ?FieldMapping $leadMapping = null;
 
+    // ==========================================
+    //                   Deals
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map Deals',
@@ -77,6 +89,10 @@ class ZohoV2 extends BaseZohoIntegration
     )]
     protected ?FieldMapping $dealMapping = null;
 
+    // ==========================================
+    //                   Account
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map Account',
@@ -95,6 +111,10 @@ class ZohoV2 extends BaseZohoIntegration
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $accountMapping = null;
+
+    // ==========================================
+    //                   Contact
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(

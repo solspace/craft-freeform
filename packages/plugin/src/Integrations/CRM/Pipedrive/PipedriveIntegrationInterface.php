@@ -14,4 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM\Pipedrive;
 
 interface PipedriveIntegrationInterface
 {
+    public function getApiDomain(): ?string;
+
+    public function setApiDomain(?string $apiDomain): self;
 }

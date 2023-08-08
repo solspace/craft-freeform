@@ -1,5 +1,5 @@
 button[type=submit] {
-  &.ff-loading {
+  &.freeform-loading {
     display: inline-flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -17,12 +17,12 @@ button[type=submit] {
       border-width: 2px;
       border-color: transparent transparent white white;
       border-radius: 50%;
-      animation: ff-loading .5s linear infinite;
+      animation: freeform-loading .5s linear infinite;
     }
   }
 }
 
-@keyframes ff-loading {
+@keyframes freeform-loading {
   0% {
     transform: rotate(0);
   }

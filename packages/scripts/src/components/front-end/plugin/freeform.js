@@ -249,7 +249,7 @@ export default class Freeform {
     const lastButton = this._lastButtonPressed;
     if (lastButton) {
       if (showSpinner) {
-        lastButton.classList.add('ff-loading');
+        lastButton.classList.add('freeform-loading');
       }
 
       if (showLoadingText) {
@@ -270,7 +270,7 @@ export default class Freeform {
       }
 
       if (showSpinner) {
-        submit.classList.remove('ff-loading');
+        submit.classList.remove('freeform-loading');
       }
 
       if (showLoadingText) {

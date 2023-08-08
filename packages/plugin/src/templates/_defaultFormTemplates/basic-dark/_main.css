@@ -53,12 +53,12 @@
         background-color: #6c757d;
         border-color: #6c757d;
     }
-    button[type=submit].ff-loading {
+    button[type=submit].freeform-loading {
         display: inline-flex;
         flex-wrap: nowrap;
         align-items: center;
     }
-    button[type=submit].ff-loading:before {
+    button[type=submit].freeform-loading:before {
         content: "";
         display: block;
         flex: 1 0 11px;
@@ -69,9 +69,9 @@
         border-width: 2px;
         border-color: transparent transparent #fff #fff;
         border-radius: 50%;
-        animation: ff-loading .5s linear infinite;
+        animation: freeform-loading .5s linear infinite;
     }
-    @keyframes ff-loading {
+    @keyframes freeform-loading {
         0% {
             transform: rotate(0);
         }
@@ -235,8 +235,7 @@
         width: auto;
         margin-right: 10px;
     }
-    .freeform-row [class*="freeform-col-"] .freeform-errors,
-    .freeform-row [class*="freeform-col-"] .ff-errors {
+    .freeform-row [class*="freeform-col-"] .freeform-errors {
         margin: -5px 0 0 0;
         padding: 0;
         list-style: none;
@@ -244,19 +243,15 @@
         width: 100%;
     }
     .freeform-row [class*="freeform-col-"].freeform-fieldtype-radios .freeform-errors,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-radios .ff-errors,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes .freeform-errors,
-    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes .ff-errors {
+    .freeform-row [class*="freeform-col-"].freeform-fieldtype-checkboxes .freeform-errors {
         margin-top: 0;
     }
-    .freeform-row [class*="freeform-col-"] .freeform-errors > li,
-    .freeform-row [class*="freeform-col-"] .ff-errors > li {
+    .freeform-row [class*="freeform-col-"] .freeform-errors > li {
         font: italic 400 15px sans-serif;
         color: #dc3545;
         margin-top: 10px;
     }
-    .freeform-row [class*="freeform-col-"] .freeform-errors > li:not(:first-child),
-    .freeform-row [class*="freeform-col-"] .ff-errors > li:not(:first-child) {
+    .freeform-row [class*="freeform-col-"] .freeform-errors > li:not(:first-child) {
         margin-top: 3px;
     }
     .freeform-row [class*="freeform-col-"] .freeform-instructions {

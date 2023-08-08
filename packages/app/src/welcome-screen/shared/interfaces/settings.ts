@@ -5,7 +5,7 @@ export enum DefaultView {
 }
 export enum FormattingTemplate {
   BasicLight = 'basic-light/index.twig',
-  BasicDark = 'basic-dark.twig',
+  BasicDark = 'basic-dark/index.twig',
   BasicFloatingLabels = 'basic-floating-labels.twig',
   Bootstrap = 'bootstrap-3.twig',
   Bootstrap4 = 'bootstrap-4/index.twig',

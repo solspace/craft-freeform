@@ -1,0 +1,14 @@
+{% import "freeform/_defaultFormTemplates/basic-dark/_row.twig" as rowMacro %}
+
+{% do field.setParameters({
+    attributes: {
+        label: { class: "group-label" },
+    }
+}) %}
+
+<div{{ field.attributes.container }}>
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+
+    {{ rowMacro.render(field.layout, form) }}
+</div>

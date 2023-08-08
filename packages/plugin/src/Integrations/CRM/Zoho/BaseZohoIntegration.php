@@ -12,18 +12,24 @@
 
 namespace Solspace\Freeform\Integrations\CRM\Zoho;
 
-use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Client;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshTokenInterface
+abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, ZohoIntegrationInterface
 {
+    use OAuth2RefreshTokenTrait;
+    use OAuth2Trait;
+
     protected const LOG_CATEGORY = 'Zoho';
 
     // TODO - WHERE TO ADD THIS IMPORTANT NOTE ?
@@ -32,14 +38,6 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
     protected string $apiDomain = '';
-
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected ?string $code = null;
-
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected ?string $location = null;
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
@@ -59,13 +57,10 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
     )]
     protected bool $developerMode = false;
 
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         try {
-            $client = $this->generateAuthorizedClient();
-
             $response = $client->get($this->getEndpoint('/settings/modules'));
-
             $json = json_decode((string) $response->getBody(), false);
 
             return !empty($json);
@@ -74,11 +69,9 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
         }
     }
 
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
         try {
-            $client = $this->generateAuthorizedClient();
-
             $response = $client->get($this->getEndpoint('/settings/fields?module='.$category.'s'));
         } catch (\Exception $exception) {
             $this->processException($exception);
@@ -170,16 +163,6 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
         return $this->developerMode;
     }
 
-    protected function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    protected function getLocation(): ?string
-    {
-        return $this->location;
-    }
-
     protected function getAccountsServer(): ?string
     {
         return $this->accountsServer;
@@ -196,10 +179,7 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
 
     protected function onBeforeFetchAccessToken(&$payload): void
     {
-        $this->code = $_GET['code'] ?? '';
-
-        $this->location = $_GET['location'] ?? '';
-
+        // TODO: refactor this to go through the after fetched tokens event
         $this->accountsServer = $_GET['accounts-server'] ?? '';
     }
 
@@ -227,52 +207,5 @@ abstract class BaseZohoIntegration extends CRMOAuthConnector implements RefreshT
     protected function getLogger(?string $category = null): LoggerInterface
     {
         return parent::getLogger($category ?? self::LOG_CATEGORY);
-    }
-
-    protected function processZohoResponseError(array $response): void
-    {
-        if ('error' === $response['data'][0]['status']) {
-            $this->getLogger()->error(
-                $response['data'][0]['message'],
-                [
-                    'exception' => $response['data'][0],
-                ],
-            );
-
-            throw new IntegrationException($response['data'][0]['message']);
-        }
-    }
-
-    protected function processException($exception): void
-    {
-        $message = $exception->getMessage();
-
-        if ($exception instanceof RequestException) {
-            $response = $exception->getResponse();
-
-            $json = json_decode((string) $response->getBody(), false);
-
-            if ($json->error && $json->error_info) {
-                $usefulErrorMessage = $json->error.', '.$json->error_info;
-            } else {
-                $usefulErrorMessage = (string) $response->getBody();
-            }
-
-            $this->getLogger()->error(
-                $usefulErrorMessage,
-                [
-                    'exception' => $message,
-                ],
-            );
-        } else {
-            $this->getLogger()->error(
-                $message,
-                [
-                    'exception' => $message,
-                ],
-            );
-        }
-
-        throw $exception;
     }
 }

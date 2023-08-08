@@ -10,15 +10,21 @@ use Solspace\Freeform\Attributes\Property\Validators;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type(
     name: 'Pardot (v5)',
     iconPath: __DIR__.'/../Salesforce/icon.svg',
 )]
-class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
+class PardotV5 extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface
 {
+    use OAuth2RefreshTokenTrait;
+    use OAuth2Trait;
+
     public const LOG_CATEGORY = 'Pardot';
 
     private const CATEGORY_PROSPECT = 'prospect';
@@ -41,7 +47,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
      *
      * @param null $formFields
      */
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         // TODO: reimplement
         return false;
@@ -60,7 +66,6 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
             }
         }
 
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getPardotEndpoint('prospect', 'create/email/'.$email);
 
         try {
@@ -83,9 +88,8 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
     /**
      * Check if it's possible to connect to the API.
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getPardotEndpoint();
 
         try {
@@ -99,6 +103,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         }
     }
 
+    // TODO: no longer exists, use event listener
     /**
      * @return array|bool|string
      */
@@ -118,11 +123,11 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
      *
      * @return FieldObject[]
      */
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
         return match ($category) {
             self::CATEGORY_PROSPECT => $this->fetchProspectFields(),
-            self::CATEGORY_CUSTOM => $this->fetchCustomFields(),
+            self::CATEGORY_CUSTOM => $this->fetchCustomFields($client),
             default => [],
         };
     }
@@ -132,6 +137,7 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         return 'https://pi.pardot.com/api/';
     }
 
+    // TODO: move to event listener
     public function generateAuthorizedClient(): Client
     {
         parent::generateAuthorizedClient();
@@ -148,12 +154,12 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
         ]);
     }
 
-    protected function getAuthorizeUrl(): string
+    public function getAuthorizeUrl(): string
     {
         return 'https://login.salesforce.com/services/oauth2/authorize';
     }
 
-    protected function getAccessTokenUrl(): string
+    public function getAccessTokenUrl(): string
     {
         return 'https://login.salesforce.com/services/oauth2/token';
     }
@@ -402,10 +408,8 @@ class PardotV5 extends CRMOAuthConnector implements RefreshTokenInterface
     /**
      * @return FieldObject[]
      */
-    private function fetchCustomFields(): array
+    private function fetchCustomFields(Client $client): array
     {
-        $client = $this->generateAuthorizedClient();
-
         try {
             $response = $client->get($this->getPardotEndpoint('customField'));
         } catch (RequestException $e) {

@@ -22,14 +22,13 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pipedrive\BasePipedriveIntegration;
-use Solspace\Freeform\Integrations\CRM\Pipedrive\PipedriveIntegrationInterface;
 
 #[Type(
     name: 'Pipedrive (v1)',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrationInterface
+class PipedriveV1 extends BasePipedriveIntegration
 {
     protected const API_VERSION = 'v1';
 
@@ -140,10 +139,8 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
         return $url.'/api/'.self::API_VERSION.'/';
     }
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
-
         $this->processOrganization($form, $client);
         $this->processPerson($form, $client);
         $this->processLeads($form, $client);

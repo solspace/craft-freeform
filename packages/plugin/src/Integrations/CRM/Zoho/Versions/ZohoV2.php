@@ -21,14 +21,17 @@ use Solspace\Freeform\Attributes\Property\Input\Special\Properties\FieldMappingT
 use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Integrations\CRM\Zoho\BaseZohoIntegration;
 
 #[Type(
     name: 'Zoho (v2)',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class ZohoV2 extends BaseZohoV2Integration
+class ZohoV2 extends BaseZohoIntegration
 {
+    protected const API_VERSION = 'v2';
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Text(
         label: 'Default Contact Role ID',
@@ -116,6 +119,16 @@ class ZohoV2 extends BaseZohoV2Integration
 
     private ?int $dealId = null;
 
+    public function getAuthorizeUrl(): string
+    {
+        return $this->getDomain().'/oauth/'.self::API_VERSION.'/auth';
+    }
+
+    public function getAccessTokenUrl(): string
+    {
+        return $this->getDomain().'/oauth/'.self::API_VERSION.'/token';
+    }
+
     public function getApiRootUrl(): string
     {
         $url = 'https://www.zohoapis.com';
@@ -138,10 +151,8 @@ class ZohoV2 extends BaseZohoV2Integration
         return $url.'/crm/'.self::API_VERSION;
     }
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
-
         $this->processLeads($form, $client);
         $this->processAccount($form, $client);
         $this->processContact($form, $client);

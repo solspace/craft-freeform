@@ -14,4 +14,7 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
 interface SalesforceIntegrationInterface
 {
+    public function getInstanceUrl(): string;
+
+    public function setInstanceUrl(string $instanceUrl): self;
 }

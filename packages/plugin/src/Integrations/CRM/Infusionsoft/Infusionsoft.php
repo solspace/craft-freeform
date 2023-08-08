@@ -15,27 +15,28 @@ namespace Solspace\Freeform\Integrations\CRM\Infusionsoft;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Events\Integrations\TokensRefreshedEvent;
 use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Form\Form;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 use yii\base\Event;
 
 #[Type('Infusionsoft')]
-class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
+class Infusionsoft extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface
 {
+    use OAuth2RefreshTokenTrait;
+    use OAuth2Trait;
+
     public const LOG_CATEGORY = 'Infusionsoft';
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         // TODO: reimplement
         return false;
-        // This should automatically refresh the access token if needed
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/contacts');
 
         // Build out the array of field values
@@ -101,13 +102,10 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
     /**
      * Check if it's possible to connect to the API.
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/account/profile');
-
         $response = $client->get($endpoint);
-
         $json = json_decode($response->getBody(), true);
 
         return !empty($json);
@@ -118,17 +116,8 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
      *
      * @return FieldObject[]
      */
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
-        try {
-            // This will also refresh the token if its expired, hence the try-catch
-            $client = $this->generateAuthorizedClient();
-        } catch (\Exception $e) {
-            $this->getLogger()->error($e->getMessage());
-
-            return [];
-        }
-
         try {
             $response = $client->get($this->getEndpoint('/contacts/model'));
         } catch (RequestException $e) {
@@ -194,6 +183,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
         return $fieldList;
     }
 
+    // TODO: move to event listener
     public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
     {
         $value = parent::convertCustomFieldValue($fieldObject, $field);
@@ -213,7 +203,7 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
     /**
      * URL pointing to the OAuth2 authorization endpoint.
      */
-    protected function getAuthorizeUrl(): string
+    public function getAuthorizeUrl(): string
     {
         return 'https://signin.infusionsoft.com/app/oauth/authorize';
     }
@@ -221,68 +211,9 @@ class Infusionsoft extends CRMOAuthConnector implements RefreshTokenInterface
     /**
      * URL pointing to the OAuth2 access token endpoint.
      */
-    protected function getAccessTokenUrl(): string
+    public function getAccessTokenUrl(): string
     {
         return 'https://api.infusionsoft.com/token';
-    }
-
-    /**
-     * @throws CRMIntegrationNotFoundException
-     * @throws IntegrationException
-     * @throws \ReflectionException
-     */
-    protected function refreshTokens(): void
-    {
-        $client = new Client([
-            'headers' => [
-                'Authorization' => 'Basic '.base64_encode($this->getClientId().':'.$this->getClientSecret()),
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ],
-        ]);
-
-        $payload = [
-            'grant_type' => 'refresh_token',
-            'refresh_token' => $this->getRefreshToken(),
-        ];
-
-        try {
-            $response = $client->post(
-                $this->getAccessTokenUrl(),
-                ['form_params' => $payload]
-            );
-        } catch (RequestException $e) {
-            throw new IntegrationException((string) $e->getResponse()->getBody());
-        }
-
-        $json = json_decode($response->getBody(), false);
-
-        if (!isset($json->access_token)) {
-            throw new IntegrationException(
-                $this->getTranslator()->translate(
-                    "No 'access_token' present in auth response for {serviceProvider}",
-                    ['serviceProvider' => $this->getServiceProvider()]
-                )
-            );
-        }
-
-        if (!isset($json->refresh_token)) {
-            throw new IntegrationException(
-                $this->getTranslator()->translate(
-                    "No 'refresh_token' present in auth response for {serviceProvider}.",
-                    ['serviceProvider' => $this->getServiceProvider()]
-                )
-            );
-        }
-
-        $this->accessToken = $json->access_token;
-        $this->refreshToken = $json->refresh_token;
-        $this->onAfterFetchAccessToken($json);
-
-        Event::trigger(
-            self::class,
-            self::EVENT_TOKENS_REFRESHED,
-            new TokensRefreshedEvent($this)
-        );
     }
 
     private static function getDefaultFields(): array

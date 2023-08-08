@@ -3,21 +3,16 @@
 namespace Solspace\Freeform\Events\Integrations;
 
 use Solspace\Freeform\Events\CancelableArrayableEvent;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 
 class SaveEvent extends CancelableArrayableEvent
 {
-    /** @var IntegrationModel */
-    private $model;
-
-    /** @var bool */
-    private $new;
-
-    public function __construct(IntegrationModel $model, bool $new)
-    {
-        $this->model = $model;
-        $this->new = $new;
-
+    public function __construct(
+        private IntegrationModel $model,
+        private IntegrationInterface $integration,
+        private bool $new
+    ) {
         parent::__construct();
     }
 
@@ -26,12 +21,17 @@ class SaveEvent extends CancelableArrayableEvent
      */
     public function fields(): array
     {
-        return array_merge(parent::fields(), ['model', 'new']);
+        return array_merge(parent::fields(), ['model', 'integration', 'new']);
     }
 
     public function getModel(): IntegrationModel
     {
         return $this->model;
+    }
+
+    public function getIntegration(): IntegrationInterface
+    {
+        return $this->integration;
     }
 
     public function isNew(): bool

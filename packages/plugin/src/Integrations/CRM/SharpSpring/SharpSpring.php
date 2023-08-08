@@ -63,7 +63,7 @@ class SharpSpring extends CRMIntegration
     {
     }
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         // TODO: reimplement
         return false;
@@ -111,7 +111,7 @@ class SharpSpring extends CRMIntegration
      *
      * @throws IntegrationException
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         $payload = $this->generatePayload('getFields', ['where' => [], 'limit' => 1]);
 
@@ -132,7 +132,7 @@ class SharpSpring extends CRMIntegration
      *
      * @throws IntegrationException
      */
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
         // TODO: reimplement
         return [];

@@ -24,7 +24,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListOAuthCo
 
 #[Type(
     name: 'Constant Contact (v3)',
-    iconPath: __DIR__.'/icon.jpeg',
+    iconPath: __DIR__.'/icon.svg',
 )]
 class ConstantContact3 extends MailingListOAuthConnector implements RefreshTokenInterface
 {

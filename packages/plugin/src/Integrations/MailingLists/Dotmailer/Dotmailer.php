@@ -26,7 +26,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegra
 
 #[Type(
     name: 'Dotdigital',
-    iconPath: __DIR__.'/icon.png',
+    iconPath: __DIR__.'/icon.svg',
 )]
 class Dotmailer extends MailingListIntegration
 {

@@ -39,8 +39,17 @@ export enum PropertyType {
 
 export type Middleware = [string, GenericValue[]?];
 export type VisibilityFilter = string;
-export type Option = { value: string | number; label: string };
-export type OptionCollection = { label: string; children: Option[] };
+export type Option = {
+  value: string;
+  label: string;
+  shadowIndex?: number;
+};
+export type OptionGroup = {
+  label: string;
+  children: OptionCollection;
+};
+
+export type OptionCollection = Array<Option | OptionGroup>;
 
 type BaseProperty<T, PT extends PropertyType> = {
   type: PT;
@@ -76,14 +85,14 @@ export type HiddenProperty = BaseProperty<string, PropertyType.String>;
 export type TextareaProperty = BaseProperty<string, PropertyType.Textarea>;
 export type BooleanProperty = BaseProperty<boolean, PropertyType.Boolean>;
 export type SelectProperty = BaseProperty<string, PropertyType.Select> & {
-  options: Array<Option | OptionCollection>;
+  options: Array<Option | OptionGroup>;
   emptyOption?: string;
 };
 export type CheckboxesProperty = BaseProperty<
   Array<string | number>,
   PropertyType.Checkboxes
 > & {
-  options: Array<Option | OptionCollection>;
+  options: Array<Option | OptionGroup>;
   selectAll?: boolean;
   columns?: number;
 };

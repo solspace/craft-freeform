@@ -14,8 +14,6 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce\Versions;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Attributes\EventListener;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
@@ -29,11 +27,9 @@ use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
-use Solspace\Freeform\Integrations\CRM\Salesforce\EventListeners\SalesforceArrayValueProcessor;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
 use yii\base\Event;
 
-#[EventListener(SalesforceArrayValueProcessor::class)]
 #[Type(
     name: 'Salesforce (v58)',
     readme: __DIR__.'/../README.md',
@@ -107,6 +103,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     )]
     protected ?FieldMapping $leadMapping = null;
 
+    // ==========================================
+    //               Opportunities
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map to Opportunities?',
@@ -145,6 +145,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     )]
     protected ?FieldMapping $opportunityMapping = null;
 
+    // ==========================================
+    //                  Accounts
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map to Accounts?',
@@ -172,6 +176,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $accountMapping = null;
+
+    // ==========================================
+    //                  Contacts
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
@@ -212,11 +220,14 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     private ?string $accountId = null;
 
-    public function push(Form $form): bool
+    public function getApiRootUrl(): string
+    {
+        return $this->getInstanceUrl().'/services/data/'.self::API_VERSION.'/';
+    }
+
+    public function push(Form $form, Client $client): bool
     {
         $this->accountId = null;
-
-        $client = $this->generateAuthorizedClient();
 
         $this->processLeads($form, $client);
         $this->processAccounts($form, $client);
@@ -246,11 +257,6 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         return $this->getProcessedValue($this->stage);
     }
 
-    public function getApiRootUrl(): string
-    {
-        return $this->getInstanceUrl().'/services/data/'.self::API_VERSION.'/';
-    }
-
     private function isCreateTasksForDuplicates(): bool
     {
         return $this->convertLeadsToTasks;
@@ -263,6 +269,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             $email = $keyValueList['Email'];
 
             $contact = $this->querySingle(
+                $client,
                 "SELECT Id, Email, OwnerId FROM Contact WHERE Email = '%s' LIMIT 1",
                 [$email]
             );
@@ -294,13 +301,18 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 }
 
                 try {
-                    $endpoint = $this->getEndpoint('/sobjects/Task');
-                    $response = $client->post($endpoint, ['json' => $payload]);
+                    $response = $client->post(
+                        $this->getEndpoint('/sobjects/Task'),
+                        [
+                            'json' => $payload,
+                        ],
+                    );
 
                     if (201 === $response->getStatusCode()) {
                         return true;
                     }
-                } catch (RequestException $exception) {
+                } catch (\Exception $exception) {
+                    $this->processException($exception);
                 }
             }
         }
@@ -308,28 +320,28 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         return false;
     }
 
-    private function processLeads(Form $form, Client $client): bool
+    private function processLeads(Form $form, Client $client): void
     {
         if (!$this->mapLeads) {
-            return false;
+            return;
         }
 
         $mapping = $this->processMapping($form, $this->leadMapping, self::CATEGORY_LEAD);
         if (!$mapping) {
-            return false;
+            return;
         }
 
         if ($this->createTasksForDuplicates($form, $client, $mapping)) {
-            return true;
+            return;
         }
-
-        $endpoint = $this->getEndpoint('/sobjects/Lead');
 
         try {
             $response = $client->post(
-                $endpoint,
+                $this->getEndpoint('/sobjects/Lead'),
                 [
-                    'headers' => ['Sforce-Auto-Assign' => $this->assignLeadOwner ? 'TRUE' : 'FALSE'],
+                    'headers' => [
+                        'Sforce-Auto-Assign' => $this->assignLeadOwner ? 'TRUE' : 'FALSE',
+                    ],
                     'json' => $mapping,
                 ]
             );
@@ -339,29 +351,31 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_LEAD, $response)
             );
-
-            return 201 === $response->getStatusCode();
-        } catch (RequestException $e) {
-            return $this->handleRequestException($e);
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
     }
 
-    private function processAccounts(Form $form, Client $client): bool
+    private function processAccounts(Form $form, Client $client): void
     {
         if (!$this->mapAccounts) {
-            return false;
+            return;
         }
 
         $contactMapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
+
         $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
+
         if (!$mapping) {
-            return false;
+            return;
         }
 
         $appendAccountFields = [];
+
         foreach ($this->accountMapping as $item) {
             if (FieldMapItem::TYPE_RELATION === $item->getType()) {
                 $field = $form->get($item->getValue());
+
                 if ($field instanceof CheckboxesField) {
                     $appendAccountFields[] = $item->getSource();
                 }
@@ -374,6 +388,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         $contactLastName = $contactMapping['LastName'] ?? null;
         $contactEmail = $contactMapping['Email'] ?? null;
         $contactName = trim("{$contactFirstName} {$contactLastName}");
+
         if (empty($accountName)) {
             $accountName = $contactName;
             $mapping['Name'] = $accountName;
@@ -408,22 +423,16 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             if ($accountWebsite) {
                 // We'll search for an account with account website
                 $accountRecord = $this->querySingle(
-                    'SELECT Id'.$appendAccountFieldsQuery."
-                    FROM Account
-                    WHERE Website = '%s'
-                    ORDER BY CreatedDate desc
-                    LIMIT 1",
-                    [$accountWebsite]
+                    $client,
+                    'SELECT Id'.$appendAccountFieldsQuery." FROM Account WHERE Website = '%s' ORDER BY CreatedDate desc LIMIT 1",
+                    [$accountWebsite],
                 );
             }
         } else {
             $accountRecord = $this->querySingle(
-                'SELECT Id'.$appendAccountFieldsQuery."
-                FROM Account
-                WHERE Name = '%s'
-                ORDER BY CreatedDate desc
-                LIMIT 1",
-                [$accountName]
+                $client,
+                'SELECT Id'.$appendAccountFieldsQuery." FROM Account WHERE Name = '%s' ORDER BY CreatedDate desc LIMIT 1",
+                [$accountName],
             );
         }
 
@@ -434,13 +443,25 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                     $mapping = $this->appendValues($mapping, $accountRecord, $appendAccountFields);
                 }
 
-                $endpoint = $this->getEndpoint('/sobjects/Account/'.$accountRecord->Id);
-                $response = $client->patch($endpoint, ['json' => $mapping]);
+                $response = $client->patch(
+                    $this->getEndpoint('/sobjects/Account/'.$accountRecord->Id),
+                    [
+                        'json' => $mapping,
+                    ],
+                );
+
                 $this->accountId = $accountRecord->Id;
             } else {
-                $endpoint = $this->getEndpoint('/sobjects/Account');
-                $response = $client->post($endpoint, ['json' => $mapping]);
-                $this->accountId = json_decode($response->getBody())->id;
+                $response = $client->post(
+                    $this->getEndpoint('/sobjects/Account'),
+                    [
+                        'json' => $mapping,
+                    ],
+                );
+
+                $json = json_decode((string) $response->getBody());
+
+                $this->accountId = $json->id;
             }
 
             Event::trigger(
@@ -448,30 +469,30 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_ACCOUNT, $response)
             );
-
-            return 201 === $response->getStatusCode();
-        } catch (RequestException $exception) {
-            return $this->handleRequestException($exception);
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
     }
 
-    private function processContacts(Form $form, Client $client): bool
+    private function processContacts(Form $form, Client $client): void
     {
         if (!$this->mapContacts) {
-            return false;
+            return;
         }
 
         $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
         if (!$mapping) {
-            return false;
+            return;
         }
 
         $isAppendContactData = $this->appendContactData;
 
         $appendContactFields = [];
+
         foreach ($this->contactMapping as $item) {
             if (FieldMapItem::TYPE_RELATION === $item->getType()) {
                 $field = $form->get($item->getValue());
+
                 if ($field instanceof CheckboxesField) {
                     $appendContactFields[] = $item->getSource();
                 }
@@ -491,23 +512,17 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         $contactRecord = null;
         if (!empty($contactEmail)) {
             $contactRecord = $this->querySingle(
-                'SELECT Id'.$appendFieldsQuery."
-                FROM Contact
-                WHERE Email = '%s'
-                ORDER BY CreatedDate desc
-                LIMIT 1",
-                [$contactEmail]
+                $client,
+                'SELECT Id'.$appendFieldsQuery." FROM Contact WHERE Email = '%s' ORDER BY CreatedDate desc LIMIT 1",
+                [$contactEmail],
             );
         }
 
         if (!$contactRecord) {
             $contactRecord = $this->querySingle(
-                'SELECT Id'.$appendFieldsQuery."
-                FROM Contact
-                WHERE Name = '%s'
-                ORDER BY CreatedDate desc
-                LIMIT 1",
-                [$contactName]
+                $client,
+                'SELECT Id'.$appendFieldsQuery." FROM Contact WHERE Name = '%s' ORDER BY CreatedDate desc LIMIT 1",
+                [$contactName],
             );
         }
 
@@ -522,11 +537,19 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                     $mapping = $this->appendValues($mapping, $contactRecord, $appendContactFields);
                 }
 
-                $contactEndpoint = $this->getEndpoint('/sobjects/Contact/'.$contactRecord->Id);
-                $response = $client->patch($contactEndpoint, ['json' => $mapping]);
+                $response = $client->patch(
+                    $this->getEndpoint('/sobjects/Contact/'.$contactRecord->Id),
+                    [
+                        'json' => $mapping,
+                    ],
+                );
             } else {
-                $contactEndpoint = $this->getEndpoint('/sobjects/Contact');
-                $response = $client->post($contactEndpoint, ['json' => $mapping]);
+                $response = $client->post(
+                    $this->getEndpoint('/sobjects/Contact'),
+                    [
+                        'json' => $mapping,
+                    ],
+                );
             }
 
             Event::trigger(
@@ -534,22 +557,20 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
             );
-
-            return 201 === $response->getStatusCode();
-        } catch (RequestException $e) {
-            return $this->handleRequestException($e);
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
     }
 
-    private function processOpportunities(Form $form, Client $client): bool
+    private function processOpportunities(Form $form, Client $client): void
     {
         if (!$this->mapOpportunities) {
-            return false;
+            return;
         }
 
         $mapping = $this->processMapping($form, $this->opportunityMapping, self::CATEGORY_OPPORTUNITY);
         if (!$mapping) {
-            return false;
+            return;
         }
 
         try {
@@ -565,45 +586,21 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 $mapping['AccountId'] = $this->accountId;
             }
 
-            $response = $client->post($this->getEndpoint('/sobjects/Opportunity'), ['json' => $mapping]);
+            $response = $client->post(
+                $this->getEndpoint('/sobjects/Opportunity'),
+                [
+                    'json' => $mapping,
+                ],
+            );
 
             Event::trigger(
                 $this,
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_OPPORTUNITY, $response)
             );
-
-            return 201 === $response->getStatusCode();
-        } catch (RequestException $exception) {
-            return $this->handleRequestException($exception);
+        } catch (\Exception $exception) {
+            $this->processException($exception);
         }
-    }
-
-    private function handleRequestException(RequestException $exception): bool
-    {
-        $exceptionResponse = $exception->getResponse();
-        if (!$exceptionResponse) {
-            $this->getLogger()->error($exception->getMessage(), ['exception' => $exception->getMessage()]);
-
-            throw $exception;
-        }
-
-        $responseBody = (string) $exceptionResponse->getBody();
-        $this->getLogger()->error($responseBody, ['exception' => $exception->getMessage()]);
-
-        if (400 === $exceptionResponse->getStatusCode()) {
-            $errors = json_decode((string) $exceptionResponse->getBody());
-
-            if (\is_array($errors)) {
-                foreach ($errors as $error) {
-                    if ('REQUIRED_FIELD_MISSING' === strtoupper($error->errorCode)) {
-                        return false;
-                    }
-                }
-            }
-        }
-
-        throw $exception;
     }
 
     private function extractDomainFromEmail(string $email): ?string

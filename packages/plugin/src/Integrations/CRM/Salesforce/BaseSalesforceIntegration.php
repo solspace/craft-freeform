@@ -12,19 +12,29 @@
 
 namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Library\Exceptions\Integrations\CRMIntegrationNotFoundException;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
-use Solspace\Freeform\Library\Integrations\Types\CRM\CRMOAuthConnector;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
+use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements RefreshTokenInterface
+abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface, SalesforceIntegrationInterface
 {
+    use OAuth2RefreshTokenTrait;
+    use OAuth2Trait;
+
     protected const LOG_CATEGORY = 'Salesforce';
+
+    #[Flag(self::FLAG_INTERNAL)]
+    #[Input\Hidden]
+    protected string $instanceUrl = '';
 
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Boolean(
@@ -49,15 +59,9 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
     )]
     protected bool $sandboxMode = false;
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected string $instanceUrl = '';
-
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         try {
-            $client = $this->generateAuthorizedClient();
-
             $response = $client->get($this->getEndpoint('/'));
 
             $json = json_decode((string) $response->getBody(), false);
@@ -68,11 +72,31 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         }
     }
 
-    public function fetchFields(string $category): array
+    public function getAuthorizeUrl(): string
+    {
+        return $this->getDomain().'/services/oauth2/authorize';
+    }
+
+    public function getAccessTokenUrl(): string
+    {
+        return $this->getDomain().'/services/oauth2/token';
+    }
+
+    public function getInstanceUrl(): string
+    {
+        return $this->instanceUrl;
+    }
+
+    public function setInstanceUrl(string $instanceUrl): self
+    {
+        $this->instanceUrl = $instanceUrl;
+
+        return $this;
+    }
+
+    public function fetchFields(string $category, Client $client): array
     {
         try {
-            $client = $this->generateAuthorizedClient();
-
             $response = $client->get($this->getEndpoint('/sobjects/'.$category.'/describe'));
         } catch (\Exception $exception) {
             $this->processException($exception);
@@ -165,28 +189,9 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         return $this->customUrl;
     }
 
-    protected function getInstanceUrl(): string
-    {
-        return $this->instanceUrl;
-    }
-
     protected function isSandboxMode(): bool
     {
         return $this->sandboxMode;
-    }
-
-    protected function onAuthentication(array &$payload): void
-    {
-        $payload['scope'] = 'refresh_token api';
-    }
-
-    protected function onAfterFetchAccessToken(\stdClass $responseData): void
-    {
-        if (!isset($responseData->instance_url)) {
-            throw new CRMIntegrationNotFoundException("Salesforce response data doesn't contain the instance URL");
-        }
-
-        $this->instanceUrl = $responseData->instance_url;
     }
 
     protected function getDomain(): string
@@ -204,24 +209,12 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         return $domain;
     }
 
-    protected function getAuthorizeUrl(): string
-    {
-        return $this->getDomain().'/services/oauth2/authorize';
-    }
-
-    protected function getAccessTokenUrl(): string
-    {
-        return $this->getDomain().'/services/oauth2/token';
-    }
-
-    protected function query(string $query, array $params = []): array
+    protected function query(Client $client, string $query, array $params = []): array
     {
         try {
             $params = array_map([$this, 'soqlEscape'], $params);
 
             $query = sprintf($query, ...$params);
-
-            $client = $this->generateAuthorizedClient();
 
             $response = $client->get(
                 $this->getEndpoint('/query'),
@@ -244,9 +237,9 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         }
     }
 
-    protected function querySingle(string $query, array $params = []): mixed
+    protected function querySingle(Client $client, string $query, array $params = []): mixed
     {
-        $data = $this->query($query, $params);
+        $data = $this->query($client, $query, $params);
 
         if (\count($data) >= 1) {
             return reset($data);
@@ -274,34 +267,29 @@ abstract class BaseSalesforceIntegration extends CRMOAuthConnector implements Re
         return parent::getLogger($category ?? self::LOG_CATEGORY);
     }
 
-    protected function processException($exception): void
+    protected function processException(\Exception $exception): void
     {
-        $message = $exception->getMessage();
-        $response = $exception->getResponse();
+        if (!$exception instanceof RequestException) {
+            parent::processException($exception);
 
-        if ($exception instanceof RequestException && $response) {
-            $json = json_decode((string) $response->getBody(), false);
-
-            if (!empty($json->error) && !empty($json->error_info)) {
-                $usefulErrorMessage = $json->error.', '.$json->error_info;
-            } else {
-                $usefulErrorMessage = (string) $response->getBody();
-            }
-
-            $this->getLogger()->error(
-                $usefulErrorMessage,
-                [
-                    'exception' => $message,
-                ],
-            );
-        } else {
-            $this->getLogger()->error(
-                $message,
-                [
-                    'exception' => $message,
-                ],
-            );
+            return;
         }
+
+        $response = $exception->getResponse();
+        $json = json_decode((string) $response->getBody(), false);
+
+        if ($json->error && $json->error_info) {
+            $usefulErrorMessage = $json->error.', '.$json->error_info;
+        } else {
+            $usefulErrorMessage = (string) $response->getBody();
+        }
+
+        $this->getLogger()->error(
+            $usefulErrorMessage,
+            [
+                'exception' => $exception->getMessage(),
+            ],
+        );
 
         throw $exception;
     }

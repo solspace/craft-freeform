@@ -4,6 +4,7 @@ namespace Solspace\Freeform\Bundles\Integrations\CRM;
 
 use Composer\Autoload\ClassMapGenerator;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Elements\Submission;
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
@@ -19,8 +20,10 @@ use yii\base\Event;
 
 class CrmBundle extends FeatureBundle
 {
-    public function __construct(private FormIntegrationsProvider $formIntegrationsProvider)
-    {
+    public function __construct(
+        private FormIntegrationsProvider $formIntegrationsProvider,
+        private IntegrationClientProvider $clientProvider,
+    ) {
         if (!Freeform::getInstance()->isPro()) {
             return;
         }
@@ -74,7 +77,8 @@ class CrmBundle extends FeatureBundle
                 continue;
             }
 
-            $integration->push($form);
+            $client = $this->clientProvider->getAuthorizedClient($integration);
+            $integration->push($form, $client);
         }
     }
 

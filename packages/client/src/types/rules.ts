@@ -16,19 +16,6 @@ type OperatorTypes = {
   [key in OperatorTypeKeys]: Operator[];
 };
 
-export const operatorShorthand = {
-  [Operator.Equals]: '=',
-  [Operator.NotEquals]: '!=',
-  [Operator.GreaterThan]: '>',
-  [Operator.GreaterThanOrEquals]: '>=',
-  [Operator.LessThan]: '<',
-  [Operator.LessThanOrEquals]: '<=',
-  [Operator.Contains]: '+',
-  [Operator.NotContains]: '-',
-  [Operator.StartsWith]: '^',
-  [Operator.EndsWith]: '$',
-};
-
 export const operatorTypes: OperatorTypes = {
   boolean: [Operator.Equals, Operator.NotEquals],
   numeric: [

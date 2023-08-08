@@ -52,7 +52,7 @@ export const PageButtons: React.FC<Props> = ({ page }) => {
         }}
       >
         {buttonGroups.map((group, index) => (
-          <ButtonGroup key={index}>
+          <ButtonGroup key={index} className="page-buttons">
             {group.map((button, index) => (
               <button className="btn submit" key={index} type="button">
                 {button.label}

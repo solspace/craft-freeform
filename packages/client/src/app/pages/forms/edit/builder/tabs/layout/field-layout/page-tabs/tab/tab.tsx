@@ -87,13 +87,16 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
     }
   };
 
-  const clickOutsideRef = useClickOutside<HTMLDivElement>((): void => {
-    persistInputChanges();
-    setIsEditing(false);
-  }, isEditing);
+  const clickOutsideRef = useClickOutside<HTMLDivElement>({
+    callback: (): void => {
+      persistInputChanges();
+      setIsEditing(false);
+    },
+    isEnabled: isEditing,
+  });
 
   return (
-    <TabWrapper ref={connectedRef}>
+    <TabWrapper ref={connectedRef} className="page-tab">
       {(!!dragType || isDragging) && <TabDrop ref={dropPageRef} />}
       <PageTab
         ref={clickOutsideRef}
@@ -108,7 +111,6 @@ export const Tab: React.FC<Props> = ({ page, index }) => {
         onClick={(): void => {
           setIsEditing(false);
           dispatch(contextActions.setPage(page.uid));
-          dispatch(contextActions.unfocus());
         }}
         onDoubleClick={(): void => setIsEditing(true)}
       >

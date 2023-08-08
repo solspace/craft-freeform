@@ -96,4 +96,21 @@ abstract class BaseIntegration implements IntegrationInterface
             ->getLogger('Integration'.($category ? '.'.$category : ''))
         ;
     }
+
+    /**
+     * @throws \Exception
+     */
+    protected function processException(\Exception $exception): void
+    {
+        $message = $exception->getMessage();
+
+        $this->getLogger()->error(
+            $message,
+            [
+                'exception' => $message,
+            ],
+        );
+
+        throw $exception;
+    }
 }

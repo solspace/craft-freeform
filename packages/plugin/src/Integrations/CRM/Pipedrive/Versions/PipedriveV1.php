@@ -22,20 +22,23 @@ use Solspace\Freeform\Attributes\Property\ValueTransformer;
 use Solspace\Freeform\Attributes\Property\VisibilityFilter;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Pipedrive\BasePipedriveIntegration;
-use Solspace\Freeform\Integrations\CRM\Pipedrive\PipedriveIntegrationInterface;
 
 #[Type(
     name: 'Pipedrive (v1)',
     readme: __DIR__.'/../README.md',
     iconPath: __DIR__.'/../icon.svg',
 )]
-class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrationInterface
+class PipedriveV1 extends BasePipedriveIntegration
 {
     protected const API_VERSION = 'v1';
 
+    // ==========================================
+    //                   Leads
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Leads',
+        label: 'Map to Leads?',
         instructions: 'Should map to leads',
         order: 3,
     )]
@@ -52,37 +55,49 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
     )]
     protected ?FieldMapping $leadMapping = null;
 
+    // ==========================================
+    //                   Deals
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Deals',
+        label: 'Map to Deals?',
         instructions: 'Should map to deals?',
         order: 5,
     )]
     protected bool $mapDeals = false;
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
-    #[VisibilityFilter('Boolean(values.mapDeals)')]
-    #[Input\Text(
-        label: 'Stage ID',
-        instructions: 'Enter the Pipedrive Stage ID you want the deal to be placed in.',
-        order: 6,
-    )]
-    protected ?int $stageId = null;
-
-    #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[ValueTransformer(FieldMappingTransformer::class)]
     #[VisibilityFilter('Boolean(values.mapDeals)')]
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pipedrive Deal fields',
-        order: 7,
+        order: 6,
         source: 'api/integrations/crm/fields/Deal',
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
 
+    // ==========================================
+    //                 Stage ID
+    // ==========================================
+
+    #[Flag(self::FLAG_INSTANCE_ONLY)]
+    #[VisibilityFilter('Boolean(values.mapDeals)')]
+    #[Input\Text(
+        label: 'Stage ID',
+        instructions: 'Enter the Pipedrive Stage ID you want the deal to be placed in.',
+        order: 7,
+    )]
+    protected ?int $stageId = null;
+
+    // ==========================================
+    //               Organization
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Organization',
+        label: 'Map to Organization?',
         instructions: 'Should map to organization?',
         order: 8,
     )]
@@ -99,9 +114,13 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
     )]
     protected ?FieldMapping $organizationMapping = null;
 
+    // ==========================================
+    //                 Person
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Person',
+        label: 'Map to Person?',
         instructions: 'Should map to person?',
         order: 10,
     )]
@@ -140,10 +159,8 @@ class PipedriveV1 extends BasePipedriveIntegration implements PipedriveIntegrati
         return $url.'/api/'.self::API_VERSION.'/';
     }
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
-
         $this->processOrganization($form, $client);
         $this->processPerson($form, $client);
         $this->processLeads($form, $client);

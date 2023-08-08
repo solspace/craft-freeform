@@ -25,7 +25,7 @@ use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
 #[Type(
     name: 'ActiveCampaign',
-    iconPath: __DIR__.'/icon.png',
+    iconPath: __DIR__.'/icon.svg',
 )]
 class ActiveCampaign extends CRMIntegration
 {
@@ -83,12 +83,10 @@ class ActiveCampaign extends CRMIntegration
     #[Input\Text]
     protected string $ownerId = '';
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         // TODO: reimplement
         return false;
-        $client = $this->generateAuthorizedClient();
-
         $deal = $contact = $org = [];
         $dealProps = $contactProps = [];
 
@@ -284,10 +282,10 @@ class ActiveCampaign extends CRMIntegration
         return true;
     }
 
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         try {
-            $response = $this->generateAuthorizedClient()->get($this->getEndpoint('/'));
+            $response = $client->get($this->getEndpoint('/'));
 
             return 200 === $response->getStatusCode();
         } catch (\Exception $e) {
@@ -295,10 +293,8 @@ class ActiveCampaign extends CRMIntegration
         }
     }
 
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
-        $client = $this->generateAuthorizedClient();
-
         return match ($category) {
             self::CATEGORY_CONTACT => $this->fetchContactFields($client),
             self::CATEGORY_DEAL => $this->fetchDealFields($client),
@@ -355,6 +351,7 @@ class ActiveCampaign extends CRMIntegration
         return rtrim($this->getApiUrl(), '/').'/api/3/';
     }
 
+    // TODO: move to event listener
     public function generateAuthorizedClient(): Client
     {
         return new Client([

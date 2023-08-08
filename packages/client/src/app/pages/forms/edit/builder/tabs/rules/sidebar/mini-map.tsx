@@ -6,7 +6,7 @@ import { pageSelecors } from '@editor/store/slices/layout/pages/pages.selectors'
 import { useQueryFormRules } from '@ff-client/queries/rules';
 
 import { Page } from './page/page';
-import { MiniMapSkeleton } from './mini-map.skeleton';
+import { LoaderMiniMap } from './mini-map.loader';
 import { MiniMapWrapper } from './mini-map.styles';
 
 export const MiniMap: React.FC = () => {
@@ -18,7 +18,7 @@ export const MiniMap: React.FC = () => {
   return (
     <Sidebar>
       <MiniMapWrapper>
-        {isFetching && <MiniMapSkeleton />}
+        {isFetching && <LoaderMiniMap />}
         {!isFetching &&
           pages.map((page) => <Page key={page.uid} page={page} />)}
       </MiniMapWrapper>

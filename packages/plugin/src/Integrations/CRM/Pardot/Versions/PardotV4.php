@@ -23,9 +23,13 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
 {
     protected const API_VERSION = '4';
 
+    // ==========================================
+    //                 Prospect
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Prospect',
+        label: 'Map to Prospect?',
         instructions: 'Should map to prospect?',
         order: 5,
     )]
@@ -42,9 +46,13 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
     )]
     protected ?FieldMapping $prospectMapping = null;
 
+    // ==========================================
+    //                   Custom
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
-        label: 'Map Custom',
+        label: 'Map to Custom?',
         instructions: 'Should map to custom?',
         order: 7,
     )]
@@ -66,10 +74,8 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
         return 'https://pi.pardot.com/api/';
     }
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
-
         $this->processProspect($form, $client);
 
         return true;
@@ -86,7 +92,7 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
         return $root.'/'.$object.'/version/'.self::API_VERSION.'/do/'.$action;
     }
 
-    protected function processProspect(Form $form, Client $client): void
+    private function processProspect(Form $form, Client $client): void
     {
         $prospectMapping = [];
 

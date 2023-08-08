@@ -26,7 +26,7 @@ use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegra
 
 #[Type(
     name: 'Dotdigital',
-    iconPath: __DIR__.'/icon.png',
+    iconPath: __DIR__.'/icon.svg',
 )]
 class Dotmailer extends MailingListIntegration
 {
@@ -86,13 +86,10 @@ class Dotmailer extends MailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
-
         try {
             $response = $client->get($this->getEndpoint('/account-info'));
-
             $json = json_decode((string) $response->getBody());
 
             return isset($json->id) && !empty($json->id);

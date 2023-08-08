@@ -63,7 +63,7 @@ export const Tabs: React.FC = () => {
         <FormName>{form.name || translate('New Form')}</FormName>
       </Heading>
 
-      <TabsWrapper>
+      <TabsWrapper className="main-tabs">
         <NavLink to="" end className={classes(fieldsHaveErrors && 'errors')}>
           <span>{translate('Layout')}</span>
         </NavLink>
@@ -97,7 +97,7 @@ export const Tabs: React.FC = () => {
         <SaveButton
           onClick={triggerSave}
           disabled={state === State.Processing}
-          className={classes('btn', 'submit')}
+          className={classes('btn', 'submit', 'save-button')}
         >
           <LoadingText
             loadingText={translate('Saving')}

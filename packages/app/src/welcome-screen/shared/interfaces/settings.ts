@@ -6,8 +6,7 @@ export enum DefaultView {
 export enum FormattingTemplate {
   BasicLight = 'basic-light/index.twig',
   BasicDark = 'basic-dark/index.twig',
-  BasicFloatingLabels = 'basic-floating-labels.twig',
-  Bootstrap = 'bootstrap-3.twig',
+  BasicFloatingLabels = 'basic-floating-labels/index.twig',
   Bootstrap4 = 'bootstrap-4/index.twig',
   Bootstrap5 = 'bootstrap-5/index.twig',
   Bootstrap5Dark = 'bootstrap-5-dark/index.twig',
@@ -17,7 +16,6 @@ export enum FormattingTemplate {
   Foundation = 'foundation-6.twig',
   Grid = 'grid.twig',
   Conversational = 'conversational.twig',
-  Tailwind1 = 'tailwind-1.twig',
   Tailwind3 = 'tailwind-3.twig',
 }
 export enum JSInsertLocation {

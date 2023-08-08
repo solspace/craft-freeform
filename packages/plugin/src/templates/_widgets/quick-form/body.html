@@ -49,7 +49,7 @@
 
                     <div class="{{ columnClass }}"{{ field.rulesHtmlData }}>
                         {% set class = "freeform-input" %}
-                        {% if field.type in ["checkbox", "checkbox_group", "radio_group", "mailing_list"] %}
+                        {% if field.type in ["checkbox", "checkboxes", "radios"] %}
                             {% set class = class %}
                         {% elseif field.type == "submit" %}
                             {% set class = class ~ " " %}
@@ -61,7 +61,7 @@
                         {% set instructionsClass = "freeform-instructions" %}
                         {% set errorClass = "freeform-errors" %}
 
-                        {% if field.type == "select" %}
+                        {% if field.type == "dropdown" %}
 
                             {{ field.renderLabel({ labelClass: labelClass }) }}
                             {{ field.renderInstructions({ instructionsClass: instructionsClass }) }}

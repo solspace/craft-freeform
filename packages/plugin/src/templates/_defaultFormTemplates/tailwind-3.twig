@@ -131,10 +131,10 @@
 
 
             {# Create a column except when creating Freeform Payments columns #}
-            {% if field.type != 'cc_details' %}
+            {% if field.type != 'credit-card' %}
                 <div class="main-column-class {{ columnClass }} ff-fieldtype-{{ field.type }}"{{ field.rulesHtmlData }} style="overflow: hidden;">
             {% endif %}
-            {% if field.type == "checkbox_group" %}
+            {% if field.type == "checkboxes" %}
 
                 {{ field.renderLabel({
                     labelClass: labelClass,
@@ -289,7 +289,7 @@
                     tableLabelsClass: standardLabelsClasses
                 }) }}
 
-            {% elseif field.type == "cc_details" %}
+            {% elseif field.type == "credit-card" %}
 
                 {# FOR FREEFORM PAYMENTS #}
 
@@ -352,7 +352,7 @@
             {% endif %}
 
             {# Close a column except when creating Freeform Payments columns #}
-            {% if field.type != 'cc_details' %}
+            {% if field.type != 'credit-card' %}
                 </div>
             {% endif %}
         {% endfor %}

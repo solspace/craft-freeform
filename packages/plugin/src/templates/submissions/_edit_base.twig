@@ -72,7 +72,7 @@
 
                 {% for row in page %}
                     <div class="fields-row">
-                        {%- for field in row.getFields(["confirmation", "password", "save", "hidden", "invisible"], "excludes") -%}
+                        {%- for field in row.getFields(["confirm", "password", "save", "hidden", "invisible"], "excludes") -%}
                             <div class="fields-column{{ field.required ? " field-required" : "" }}"{{ field.rulesHtmlData }}>
                                 {% set fieldHandle = field.handle %}
 
@@ -117,22 +117,22 @@
                                             rows: field.rows,
                                             value: value
                                         })) }}
-                                    {% elseif field.type == "select" %}
+                                    {% elseif field.type == "dropdown" %}
                                         {{ forms.selectField(options|merge({
                                             options: field.options,
                                         })) }}
-                                    {% elseif field.type == "multiple_select" %}
+                                    {% elseif field.type == "multiple-select" %}
                                         {{ forms.multiselectField(options|merge({
                                             options: field.optionsAsKeyValuePairs,
                                             values: value,
                                         })) }}
-                                    {% elseif field.type == "checkbox_group" %}
+                                    {% elseif field.type == "checkboxes" %}
                                         {{ forms.checkboxSelectField(options|merge({
                                             showAllOption: false,
                                             options: field.optionsAsKeyValuePairs,
                                             values: value,
                                         })) }}
-                                    {% elseif field.type == "radio_group" %}
+                                    {% elseif field.type == "radios" %}
                                         {{ forms.radioGroupField(options|merge({
                                             options: field.optionsAsKeyValuePairs,
                                         })) }}
@@ -148,7 +148,7 @@
                                             </div>
                                         </div>
 
-                                    {% elseif field.type == "opinion_scale" %}
+                                    {% elseif field.type == "opinion-scale" %}
                                         {% set field = field.setValue(value) %}
 
                                         <div class="field">
@@ -180,7 +180,7 @@
                                             </div>
                                         </div>
 
-                                    {% elseif field.type in ["file", "file_drag_and_drop"] %}
+                                    {% elseif field.type in ["file", "file-dnd"] %}
                                         <div class="field">
                                             <div class="heading">
                                                 <label>{{ field.label }}</label>
@@ -372,17 +372,7 @@
                                     {% endif %}
 
                                 {% else %}
-                                    {% if field.type == "mailing_list" %}
-                                        <div class="field">
-                                            <div class="heading">
-                                                <label>{{ field.label }}</label>
-                                            </div>
-
-                                            <div class="error" style="font-size: 12px;">
-                                                {{ 'While data is passed along to the Email Marketing provider, Freeform does not store whether or not Email Marketing fields were opted in.'|t('freeform') }}
-                                            </div>
-                                        </div>
-                                    {% elseif field.type == "html" %}
+                                    {% if field.type == "html" %}
                                         {% if craft.freeform.settings.renderFormHtmlInCpViews %}
                                             {{ field.render }}
                                         {% else %}

@@ -38,7 +38,7 @@ interface FieldInterface
     public const TYPE_DYNAMIC_RECIPIENTS = 'dynamic-recipients';
     public const TYPE_EMAIL = 'email';
     public const TYPE_FILE = 'file';
-    public const TYPE_FILE_DRAG_AND_DROP = 'file-drag-and-drop';
+    public const TYPE_FILE_DRAG_AND_DROP = 'file-dnd';
     public const TYPE_PASSWORD = 'password';
     public const TYPE_RICH_TEXT = 'rich-text';
     public const TYPE_DATETIME = 'datetime';
@@ -47,14 +47,14 @@ interface FieldInterface
     public const TYPE_WEBSITE = 'website';
     public const TYPE_RATING = 'rating';
     public const TYPE_REGEX = 'regex';
-    public const TYPE_CONFIRMATION = 'confirmation';
+    public const TYPE_CONFIRMATION = 'confirm';
     public const TYPE_RECAPTCHA = 'recaptcha';
     public const TYPE_OPINION_SCALE = 'opinion-scale';
     public const TYPE_SIGNATURE = 'signature';
     public const TYPE_TABLE = 'table';
     public const TYPE_INVISIBLE = 'invisible';
     public const TYPE_GROUP = 'group';
-    public const TYPE_CREDIT_CARD_DETAILS = 'cc-details';
+    public const TYPE_CREDIT_CARD_DETAILS = 'credit-card';
     public const TYPE_CREDIT_CARD_NUMBER = 'cc-number';
     public const TYPE_CREDIT_CARD_EXPIRY = 'cc-expiry';
     public const TYPE_CREDIT_CARD_CVC = 'cc-cvc';

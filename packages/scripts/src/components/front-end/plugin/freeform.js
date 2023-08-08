@@ -44,10 +44,10 @@ export default class Freeform {
     successBannerMessage: 'Form has been submitted successfully!',
     errorBannerMessage: 'Sorry, there was an error submitting the form. Please try again.',
 
-    errorClassBanner: 'ff-form-errors',
-    errorClassList: 'ff-errors',
-    errorClassField: 'ff-has-errors',
-    successClassBanner: 'ff-form-success',
+    errorClassBanner: 'freeform-form-errors',
+    errorClassList: 'freeform-errors',
+    errorClassField: 'freeform-has-errors',
+    successClassBanner: 'freeform-form-success',
 
     removeMessages: null,
     renderSuccess: null,

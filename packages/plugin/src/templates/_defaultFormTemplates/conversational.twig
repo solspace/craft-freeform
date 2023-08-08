@@ -189,8 +189,8 @@
     input[type="checkbox"] {
         display: none;
     }
-    .freeform-fieldtype-radio_group label:not(:first-child),
-    .freeform-fieldtype-checkbox_group label:not(:first-child) {
+    .freeform-fieldtype-radios label:not(:first-child),
+    .freeform-fieldtype-checkboxes label:not(:first-child) {
         font: normal 20px sans-serif;
         color: #ffffff;
         background-color: #1d1f23;
@@ -200,18 +200,18 @@
         margin-bottom: 5px;
         cursor: pointer;
     }
-    .freeform-fieldtype-radio_group label:not(:first-child):hover,
-    .freeform-fieldtype-checkbox_group label:not(:first-child):hover {
+    .freeform-fieldtype-radios label:not(:first-child):hover,
+    .freeform-fieldtype-checkboxes label:not(:first-child):hover {
         background-color: #262a2e;
         border: 1px solid #0d6efd;
     }
-    .freeform-fieldtype-checkbox_group span {
+    .freeform-fieldtype-checkboxes span {
         font: italic 15px sans-serif;
         color: #6c757d;
         margin-bottom: 15px;
     }
-    .freeform-fieldtype-radio_group .option-label span,
-    .freeform-fieldtype-checkbox_group .option-label span {
+    .freeform-fieldtype-radios .option-label span,
+    .freeform-fieldtype-checkboxes .option-label span {
         font: bold 16px sans-serif;
         color: #6c757d;
         text-align: center;
@@ -224,8 +224,8 @@
         margin: 0 15px 0 0;
         display: inline-block;
     }
-    .freeform-fieldtype-radio_group .freeform-has-errors + label:not(:first-child),
-    .freeform-fieldtype-checkbox_group .freeform-has-errors + label:not(:first-child) {
+    .freeform-fieldtype-radios .freeform-has-errors + label:not(:first-child),
+    .freeform-fieldtype-checkboxes .freeform-has-errors + label:not(:first-child) {
         border: 1px dashed #dc3545;
     }
     input[type="radio"]:checked + label,
@@ -300,21 +300,21 @@
         margin-right: 15px;
     }
     /* FILE UPLOAD DRAG & DROP FIELDS */
-    .freeform-file-drag-and-drop {
+    .freeform-file-dnd {
         background-color: #1d1f23 !important;
         border: 1px dashed #767676 !important;
     }
-    .freeform-file-drag-and-drop__placeholder {
+    .freeform-file-dnd__placeholder {
         font: italic 200 18px sans-serif;
         color: #6c757d;
     }
-    .freeform-file-drag-and-drop [data-messages]>li[data-error],
-    .freeform-file-drag-and-drop [data-field-errors]>li[data-error] {
+    .freeform-file-dnd [data-messages]>li[data-error],
+    .freeform-file-dnd [data-field-errors]>li[data-error] {
         font: 200 16px sans-serif;
         color: #dc3545;
         margin-top: 15px;
     }
-    .freeform-file-drag-and-drop [data-field-errors]>li {
+    .freeform-file-dnd [data-field-errors]>li {
         color: #dc3545;
     }
     /* SIGNATURE FIELDS */
@@ -388,9 +388,8 @@
         display: block;
         transform: scale(2);
     }
-    /* CHECKBOX & MAILING LIST FIELDS */
-    .freeform-fieldtype-checkbox,
-    .freeform-fieldtype-mailing_list {
+    /* CHECKBOX */
+    .freeform-fieldtype-checkbox {
         min-height: 75px;
     }
     .freeform-checkbox {
@@ -431,37 +430,30 @@
         bottom: 4px;
         transition: .4s;
     }
-    .freeform-fieldtype-checkbox input:checked + span,
-    .freeform-fieldtype-mailing_list input:checked + span {
+    .freeform-fieldtype-checkbox input:checked + span {
         background-color: #0d6efd;
     }
-    .freeform-fieldtype-checkbox input:focus + span,
-    .freeform-fieldtype-mailing_list input:focus + span {
+    .freeform-fieldtype-checkbox input:focus + span {
         box-shadow: 0 0 1px #0d6efd;
     }
-    .freeform-fieldtype-checkbox input:checked + span:before,
-    .freeform-fieldtype-mailing_list input:checked + span:before {
+    .freeform-fieldtype-checkbox input:checked + span:before {
         transform: translateX(26px);
     }
-    .freeform-fieldtype-checkbox label.freeform-required:after,
-    .freeform-fieldtype-mailing_list label.freeform-required:after {
+    .freeform-fieldtype-checkbox label.freeform-required:after {
         content: "";
         margin-left: 0;
         display: none;
     }
-    .freeform-fieldtype-checkbox .freeform-checkbox-label.freeform-required:after,
-    .freeform-fieldtype-mailing_list .freeform-checkbox-label.freeform-required:after {
+    .freeform-fieldtype-checkbox .freeform-checkbox-label.freeform-required:after {
         color: #dc3545;
         content: "*";
         margin-left: 5px;
     }
-    .freeform-fieldtype-checkbox .freeform-instructions,
-    .freeform-fieldtype-mailing_list .freeform-instructions {
+    .freeform-fieldtype-checkbox .freeform-instructions {
         margin: 5px 0 0 100px;
         width: 30vw;
     }
-    .freeform-fieldtype-checkbox .freeform-errors,
-    .freeform-fieldtype-mailing_list .freeform-errors {
+    .freeform-fieldtype-checkbox .freeform-errors {
         margin: 5px 0 0 100px;
         width: 30vw;
     }
@@ -481,9 +473,7 @@
             width: 50vw;
         }
         .freeform-fieldtype-checkbox .freeform-instructions,
-        .freeform-fieldtype-mailing_list .freeform-instructions,
         .freeform-fieldtype-checkbox .freeform-errors,
-        .freeform-fieldtype-mailing_list .freeform-errors,
         .freeform-checkbox-label {
             width: 40vw;
         }
@@ -500,9 +490,7 @@
             width: 70vw;
         }
         .freeform-fieldtype-checkbox .freeform-instructions,
-        .freeform-fieldtype-mailing_list .freeform-instructions,
         .freeform-fieldtype-checkbox .freeform-errors,
-        .freeform-fieldtype-mailing_list .freeform-errors,
         .freeform-checkbox-label {
             width: 60vw;
         }
@@ -519,9 +507,7 @@
             width: 80vw;
         }
         .freeform-fieldtype-checkbox .freeform-instructions,
-        .freeform-fieldtype-mailing_list .freeform-instructions,
         .freeform-fieldtype-checkbox .freeform-errors,
-        .freeform-fieldtype-mailing_list .freeform-errors,
         .freeform-checkbox-label {
             width: 70vw;
         }

@@ -4,10 +4,13 @@ namespace Solspace\Freeform\controllers\integrations;
 
 use craft\helpers\UrlHelper;
 use Solspace\Commons\Helpers\PermissionHelper;
+use Solspace\Freeform\Bundles\Integrations\OAuth\OAuth2Bundle;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\APIIntegration;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Resources\Bundles\IntegrationsBundle;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
@@ -21,6 +24,8 @@ abstract class IntegrationsController extends BaseController
         $module,
         $config = [],
         private IntegrationsService $integrationsService,
+        private OAuth2Bundle $OAuth2Bundle,
+        private IntegrationClientProvider $clientProvider,
     ) {
         parent::__construct($id, $module, $config);
     }
@@ -98,13 +103,7 @@ abstract class IntegrationsController extends BaseController
             $model->addError('integration', $e->getMessage());
         }
 
-        $this->integrationsService->updateModelFromIntegration($model, $integration);
-
-        if ($this->integrationsService->save($model, $integration)) {
-            if ($integration instanceof APIIntegration) {
-                $integration->initiateAuthentication();
-            }
-
+        if ($this->integrationsService->save($model, $integration, true)) {
             if (\Craft::$app->request->isAjax) {
                 return $this->asJson(['success' => true]);
             }
@@ -135,7 +134,8 @@ abstract class IntegrationsController extends BaseController
         }
 
         try {
-            if ($integrationObject->checkConnection()) {
+            $client = $this->clientProvider->getAuthorizedClient($integrationObject);
+            if ($integrationObject->checkConnection($client)) {
                 return $this->asJson(['success' => true]);
             }
 
@@ -156,10 +156,9 @@ abstract class IntegrationsController extends BaseController
         return $this->asJson(['success' => true]);
     }
 
-    public function actionForceAuthorization(string $handle)
+    public function actionForceAuthorization(string $handle): Response
     {
         $model = $this->getIntegrationsService()->getByHandle($handle);
-
         if (!$model) {
             throw new IntegrationException(
                 Freeform::t(
@@ -170,9 +169,12 @@ abstract class IntegrationsController extends BaseController
         }
 
         $integration = $model->getIntegrationObject();
-        $integration->initiateAuthentication();
+        if (!$integration instanceof OAuth2ConnectorInterface) {
+            return $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$this->getType().'/'.$model->id));
+        }
 
-        $this->redirect(UrlHelper::cpUrl('freeform/settings/'.$this->getType().'/'.$model->id));
+        // TODO: move into an event listener flow
+        $this->OAuth2Bundle->initiateAuthenticationFlow($integration);
     }
 
     protected function renderEditForm(IntegrationModel $model, string $title): Response

@@ -22,8 +22,11 @@ class CrmService extends AbstractIntegrationService
     /**
      * @return FieldObject[]
      */
-    public function getFields(CRMIntegrationInterface $integration, string $category, bool $refresh = false): array
-    {
+    public function getFields(
+        CRMIntegrationInterface $integration,
+        string $category,
+        bool $refresh = false
+    ): array {
         $existingRecords = CrmFieldRecord::find()
             ->where([
                 'integrationId' => $integration->getId(),
@@ -33,8 +36,10 @@ class CrmService extends AbstractIntegrationService
             ->all()
         ;
 
+        $client = $this->clientProvider->getAuthorizedClient($integration);
+
         if ($refresh || empty($existingRecords)) {
-            $fields = $integration->fetchFields($category);
+            $fields = $integration->fetchFields($category, $client);
 
             $usedHandles = [];
             $newFields = [];

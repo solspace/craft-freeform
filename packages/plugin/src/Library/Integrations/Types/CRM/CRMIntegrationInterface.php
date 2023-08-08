@@ -12,6 +12,7 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\CRM;
 
+use GuzzleHttp\Client;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
@@ -25,12 +26,12 @@ interface CRMIntegrationInterface extends IntegrationInterface
      *
      * @param null|mixed $formFields
      */
-    public function push(Form $form): bool;
+    public function push(Form $form, Client $client): bool;
 
     /**
      * Fetch the custom fields from the integration.
      *
      * @return FieldObject[]
      */
-    public function fetchFields(string $category): array;
+    public function fetchFields(string $category, Client $client): array;
 }

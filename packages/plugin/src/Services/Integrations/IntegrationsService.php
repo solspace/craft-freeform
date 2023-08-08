@@ -100,12 +100,22 @@ class IntegrationsService extends BaseService
         return $this->createIntegrationModel($result);
     }
 
-    public function save(IntegrationModel $model, IntegrationInterface $integration): bool
+    public function save(IntegrationModel $model, IntegrationInterface $integration, bool $triggerEvents = false): bool
     {
+        try {
+            $integration->onBeforeSave();
+        } catch (\Exception $e) {
+            $model->addError('integration', $e->getMessage());
+        }
+
+        $this->updateModelFromIntegration($model, $integration);
+
         $isNew = !$model->id;
 
-        $beforeSaveEvent = new SaveEvent($model, $isNew);
-        $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
+        $beforeSaveEvent = new SaveEvent($model, $integration, $isNew);
+        if ($triggerEvents) {
+            $this->trigger(self::EVENT_BEFORE_SAVE, $beforeSaveEvent);
+        }
 
         if ($isNew) {
             $record = new IntegrationRecord();
@@ -142,7 +152,9 @@ class IntegrationsService extends BaseService
 
                 $transaction?->commit();
 
-                $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $isNew));
+                if ($triggerEvents) {
+                    $this->trigger(self::EVENT_AFTER_SAVE, new SaveEvent($model, $integration, $isNew));
+                }
 
                 return true;
             } catch (\Exception $e) {
@@ -255,7 +267,7 @@ class IntegrationsService extends BaseService
         $editableProperties = $this->propertyProvider->getEditableProperties($model->class);
         $reflection = new \ReflectionClass($model->class);
         foreach ($editableProperties as $property) {
-            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY)) {
+            if ($property->hasFlag(IntegrationInterface::FLAG_READONLY, IntegrationInterface::FLAG_INSTANCE_ONLY)) {
                 continue;
             }
 

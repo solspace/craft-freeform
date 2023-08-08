@@ -43,8 +43,9 @@ export const PageButton = styled.button`
   }
 
   &.active {
-    background-color: ${colors.gray100};
-    border-color: ${colors.gray300};
+    background-color: ${colors.gray500};
+    border-color: ${colors.gray700};
+    color: ${colors.white};
   }
 
   &,
@@ -75,8 +76,8 @@ export const PageBody = styled.div`
   }
 
   &.active {
-    background-color: ${colors.gray100};
-    border-color: ${colors.gray300};
+    background-color: ${colors.gray500};
+    border-color: ${colors.gray700};
   }
 `;
 

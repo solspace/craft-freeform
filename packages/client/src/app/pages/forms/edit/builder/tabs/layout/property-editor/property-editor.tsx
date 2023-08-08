@@ -6,6 +6,7 @@ import { RenderContextProvider } from '@components/form-controls/context/render.
 import { useAppDispatch } from '@editor/store';
 import { contextActions } from '@editor/store/slices/context';
 import { contextSelectors } from '@editor/store/slices/context/context.selectors';
+import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 
 import { FieldProperties } from './editors/fields/field-properties';
@@ -27,6 +28,20 @@ export const PropertyEditor: React.FC = () => {
     },
   });
 
+  const ref = useClickOutside<HTMLDivElement>({
+    callback: () => {
+      dispatch(contextActions.unfocus());
+    },
+    isEnabled: active,
+    excludeClassNames: [
+      'field-layout',
+      'page-buttons',
+      'page-tab',
+      'save-button',
+      'main-tabs',
+    ],
+  });
+
   const transitions = useTransition(active ? [context] : null, {
     from: { transform: 'translate3d(100%, 0, 0)', opacity: 1 },
     enter: { transform: 'translate3d(0%, 0, 0)', opacity: 1, zIndex: 2 },
@@ -39,7 +54,7 @@ export const PropertyEditor: React.FC = () => {
 
   return (
     <RenderContextProvider size="small">
-      <PropertyEditorWrapper $active={active}>
+      <PropertyEditorWrapper $active={active} ref={ref}>
         <ErrorBoundary
           message={`Could not load property editor for "${type}" type`}
         >

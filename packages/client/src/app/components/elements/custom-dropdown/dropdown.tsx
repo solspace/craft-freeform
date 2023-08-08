@@ -42,10 +42,10 @@ export const Dropdown: React.FC<DropdownProps> = ({
   const [focusIndex, setFocusIndex] = useState(0);
 
   const searchRef = useRef<HTMLInputElement>(null);
-  const containerRef = useClickOutside<HTMLDivElement>(
-    () => setOpen(false),
-    open
-  );
+  const containerRef = useClickOutside<HTMLDivElement>({
+    callback: () => setOpen(false),
+    isEnabled: open,
+  });
 
   const [filteredOptions, optionCount] = useFilteredOptions(
     options,

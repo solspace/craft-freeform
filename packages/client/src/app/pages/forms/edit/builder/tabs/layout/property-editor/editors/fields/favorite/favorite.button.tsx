@@ -56,10 +56,13 @@ export const FavoriteButton: React.FC<Props> = ({ field }) => {
     },
   });
 
-  const ref = useClickOutside<HTMLDivElement>((): void => {
-    setActive(false);
-    setHover(false);
-  }, active);
+  const ref = useClickOutside<HTMLDivElement>({
+    callback: (): void => {
+      setActive(false);
+      setHover(false);
+    },
+    isEnabled: active,
+  });
 
   if (!field?.uid) {
     return null;

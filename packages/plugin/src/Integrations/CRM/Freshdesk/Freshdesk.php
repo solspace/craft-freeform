@@ -100,7 +100,7 @@ class Freshdesk extends CRMIntegration
      *
      * @param null|mixed $formFields
      */
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         // TODO: reimplement
         return false;
@@ -190,13 +190,10 @@ class Freshdesk extends CRMIntegration
             }
         }
 
-        $response = $this
-            ->generateAuthorizedClient()
-            ->post(
-                $this->getEndpoint('/tickets'),
-                [$requestType => $values]
-            )
-        ;
+        $response = $client->post(
+            $this->getEndpoint('/tickets'),
+            [$requestType => $values]
+        );
 
         return 200 === $response->getStatusCode();
     }
@@ -204,12 +201,9 @@ class Freshdesk extends CRMIntegration
     /**
      * Check if it's possible to connect to the API.
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
-        $response = $this
-            ->generateAuthorizedClient()
-            ->get($this->getEndpoint('/tickets'))
-        ;
+        $response = $client->get($this->getEndpoint('/tickets'));
 
         return 200 === $response->getStatusCode();
     }
@@ -219,7 +213,7 @@ class Freshdesk extends CRMIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
         $fieldList = [
             new FieldObject('name', 'Name', FieldObject::TYPE_STRING),
@@ -244,10 +238,7 @@ class Freshdesk extends CRMIntegration
             new FieldObject('company_id', 'Company ID', FieldObject::TYPE_NUMERIC),
         ];
 
-        $response = $this
-            ->generateAuthorizedClient()
-            ->get($this->getEndpoint('/ticket_fields'))
-        ;
+        $response = $client->get($this->getEndpoint('/ticket_fields'));
 
         $data = json_decode($response->getBody(), false);
         foreach ($data as $field) {
@@ -304,6 +295,7 @@ class Freshdesk extends CRMIntegration
         return sprintf('https://%s.freshdesk.com/api/v2/', $this->getSubdomain());
     }
 
+    // TODO: move this to the event listener
     public function generateAuthorizedClient(): Client
     {
         return new Client([

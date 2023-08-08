@@ -69,7 +69,8 @@ class RegisterIntegrationTypesEvent extends ArrayableEvent
 
         $eventListeners = $reflectionClass->getAttributes(EventListener::class);
         foreach ($eventListeners as $listener) {
-            \Craft::$container->get($listener->newInstance()->class);
+            $listenerClass = $listener->newInstance()->class;
+            \Craft::$container->get($listenerClass);
         }
 
         return $this;

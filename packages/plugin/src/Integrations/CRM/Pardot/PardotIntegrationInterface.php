@@ -14,4 +14,11 @@ namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
 interface PardotIntegrationInterface
 {
+    public function getInstanceUrl(): string;
+
+    public function setInstanceUrl(string $instanceUrl): self;
+
+    public function getBusinessUnitId(): string;
+
+    public function setBusinessUnitId(string $businessUnitId): self;
 }

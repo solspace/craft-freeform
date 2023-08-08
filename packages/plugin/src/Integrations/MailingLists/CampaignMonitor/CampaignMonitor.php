@@ -66,7 +66,7 @@ class CampaignMonitor extends MailingListIntegration
     /**
      * Check if it's possible to connect to the API.
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         $client = $this->generateAuthorizedClient();
 

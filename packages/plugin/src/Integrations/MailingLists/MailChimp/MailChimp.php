@@ -85,10 +85,8 @@ class MailChimp extends MailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
-        $client = $this->generateAuthorizedClient();
-
         try {
             $response = $client->get($this->getEndpoint('/'));
             $json = json_decode((string) $response->getBody());

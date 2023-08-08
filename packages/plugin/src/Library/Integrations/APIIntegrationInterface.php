@@ -12,11 +12,7 @@ interface APIIntegrationInterface
      *
      * @throws IntegrationException
      */
-    public function checkConnection(): bool;
-
-    public function initiateAuthentication(): void;
+    public function checkConnection(Client $client): bool;
 
     public function getApiRootUrl(): string;
-
-    public function generateAuthorizedClient(): Client;
 }

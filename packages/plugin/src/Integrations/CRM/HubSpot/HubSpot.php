@@ -89,14 +89,13 @@ class HubSpot extends CRMIntegration
      *
      * @param array $formFields
      */
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         // TODO: reimplement
         return false;
         $isAppendContactData = $this->getAppendContactData();
         $isAppendCompanyData = $this->getAppendCompanyData();
 
-        $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/deals/v1/deal/');
 
         $dealProps = [];
@@ -335,7 +334,7 @@ class HubSpot extends CRMIntegration
     /**
      * Check if it's possible to connect to the API.
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         $client = $this->generateAuthorizedClient();
         $endpoint = $this->getEndpoint('/contacts/v1/lists/all/contacts/all');
@@ -356,7 +355,7 @@ class HubSpot extends CRMIntegration
      *
      * @return FieldObject[]
      */
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
         // TODO: reimplement
         return [];

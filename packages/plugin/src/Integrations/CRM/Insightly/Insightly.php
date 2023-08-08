@@ -39,17 +39,14 @@ class Insightly extends CRMIntegration
      *
      * @param null|mixed $formFields
      */
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         // TODO: reimplement
         return false;
-        $response = $this
-            ->generateAuthorizedClient()
-            ->post(
-                $this->getEndpoint('/Leads'),
-                ['json' => $keyValueList]
-            )
-        ;
+        $response = $client->post(
+            $this->getEndpoint('/Leads'),
+            ['json' => $keyValueList]
+        );
 
         return 200 === $response->getStatusCode();
     }
@@ -57,22 +54,14 @@ class Insightly extends CRMIntegration
     /**
      * Check if it's possible to connect to the API.
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
-        $response = $this
-            ->generateAuthorizedClient()
-            ->get($this->getEndpoint('/Leads'))
-        ;
+        $response = $client->get($this->getEndpoint('/Leads'));
 
         return 200 === $response->getStatusCode();
     }
 
-    /**
-     * Fetch the custom fields from the integration.
-     *
-     * @return FieldObject[]
-     */
-    public function fetchFields(string $category): array
+    public function fetchFields(string $category, Client $client): array
     {
         // TODO: reimplement
         return [];
@@ -99,10 +88,7 @@ class Insightly extends CRMIntegration
             new FieldObject('LEAD_RATING', 'Lead Rating', FieldObject::TYPE_STRING),
         ];
 
-        $response = $this
-            ->generateAuthorizedClient()
-            ->get($this->getEndpoint('/CustomFields/Leads'))
-        ;
+        $response = $client->get($this->getEndpoint('/CustomFields/Leads'));
 
         $data = json_decode($response->getBody(), false);
         foreach ($data as $field) {
@@ -159,6 +145,7 @@ class Insightly extends CRMIntegration
         return 'https://api.insightly.com/v3.0/';
     }
 
+    // TODO: move to an event listener for generating clients
     public function generateAuthorizedClient(): Client
     {
         return new Client([

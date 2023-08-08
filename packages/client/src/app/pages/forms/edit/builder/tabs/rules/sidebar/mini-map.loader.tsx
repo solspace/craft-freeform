@@ -6,7 +6,7 @@ import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.sel
 
 import { LoadingRow } from './mini-map.styles';
 
-export const MiniMapSkeleton: React.FC = () => {
+export const LoaderMiniMap: React.FC = () => {
   const layout = useSelector(layoutSelectors.cartographed.fullLayoutList);
 
   return (

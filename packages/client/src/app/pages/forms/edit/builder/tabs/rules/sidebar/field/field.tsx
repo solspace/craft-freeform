@@ -5,12 +5,18 @@ import type { Field as FieldTypeProp } from '@editor/store/slices/layout/fields'
 import { fieldRuleSelectors } from '@editor/store/slices/rules/fields/field-rules.selectors';
 import { pageRuleSelectors } from '@editor/store/slices/rules/pages/page-rules.selectors';
 import { useFieldType } from '@ff-client/queries/field-types';
-import { operatorShorthand, operatorTypes } from '@ff-client/types/rules';
+import { operatorTypes } from '@ff-client/types/rules';
 import classes from '@ff-client/utils/classes';
 
-import { CombinatorIcon } from './icons/combinator-icon';
-import { DisplayIcon } from './icons/display-icon';
-import { FieldInfo, FieldWrapper, Icon, Label, Small } from './field.styles';
+import { Layout } from '../layout/layout';
+
+import {
+  FieldInfo,
+  FieldWrapper,
+  GroupWrapper,
+  Icon,
+  Label,
+} from './field.styles';
 
 type Props = {
   field: FieldTypeProp;
@@ -40,10 +46,12 @@ export const Field: React.FC<Props> = ({ field }) => {
 
   return (
     <FieldWrapper
-      onClick={() =>
-        navigate(activeFieldUid === field.uid ? '' : `field/${field.uid}`)
-      }
+      onClick={(event) => {
+        event.stopPropagation();
+        navigate(activeFieldUid === field.uid ? '' : `field/${field.uid}`);
+      }}
       className={classes(
+        type?.type === 'group' && 'group',
         currentField && 'active',
         (hasRule || hasPageRule) && 'has-rule',
         condition && 'is-in-condition',
@@ -53,14 +61,12 @@ export const Field: React.FC<Props> = ({ field }) => {
       <FieldInfo>
         <Icon dangerouslySetInnerHTML={{ __html: type?.icon }} />
         <Label>{field.properties.label || type?.name}</Label>
-
-        {currentField && <DisplayIcon display={activeRule?.display} />}
-        {currentField && <CombinatorIcon combinator={activeRule?.combinator} />}
       </FieldInfo>
-      {condition && (
-        <Small>
-          {operatorShorthand[condition.operator]} {condition.value}
-        </Small>
+
+      {type?.type === 'group' && (
+        <GroupWrapper>
+          <Layout layoutUid={field.properties.layout} />
+        </GroupWrapper>
       )}
     </FieldWrapper>
   );

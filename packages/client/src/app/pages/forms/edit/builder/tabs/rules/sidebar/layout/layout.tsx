@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import type { Layout as LayoutType } from '@editor/builder/types/layout';
+import { layoutSelectors } from '@editor/store/slices/layout/layouts/layouts.selectors';
 import { rowSelectors } from '@editor/store/slices/layout/rows/rows.selectors';
 
 import { Row } from '../row/row';
@@ -8,13 +8,14 @@ import { Row } from '../row/row';
 import { FieldLayoutWrapper } from './layout.styles';
 
 type Props = {
-  layout: LayoutType;
+  layoutUid: string;
 };
 
-export const Layout: React.FC<Props> = ({ layout }) => {
+export const Layout: React.FC<Props> = ({ layoutUid }) => {
+  const layout = useSelector(layoutSelectors.one(layoutUid));
   const rows = useSelector(rowSelectors.inLayout(layout));
 
-  if (!rows.length) {
+  if (!layout || !rows.length) {
     return null;
   }
 

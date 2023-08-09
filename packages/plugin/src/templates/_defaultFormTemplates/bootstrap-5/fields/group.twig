@@ -8,11 +8,12 @@
 }) %}
 
 <div{{ field.attributes.container }}>
-    {{ field.renderLabel }}
-    {{ field.renderInstructions }}
-
     <div class="card">
-        <div class="card-body">
+        <div class="card-header">
+            {{ field.renderLabel }}
+            {{ field.renderInstructions }}
+        </div>
+        <div class="card-body pb-0">
             {{ rowMacro.render(field.layout, form) }}
         </div>
     </div>

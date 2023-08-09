@@ -1,6 +1,7 @@
 <div{{ field.attributes.container }}>
 
     {{ field.renderLabel }}
+    {{ field.renderInstructions }}
 
     {% if field.oneLine %}<div>{% endif %}
 
@@ -22,7 +23,6 @@
 
     {% if field.oneLine %}</div>{% endif %}
 
-    {{ field.renderInstructions }}
     {{ field.renderErrors }}
 
 </div>

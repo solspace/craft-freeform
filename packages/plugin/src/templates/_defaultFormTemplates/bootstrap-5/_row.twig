@@ -25,7 +25,7 @@
                         input: {
                             novalidate: true,
                             class: [
-                                "form-control",
+                                field.type != "signature" ? "form-control",
                                 "freeform-fieldtype-" ~ field.type,
                                 field.hasErrors ? "is-invalid has-validation",
                                 field.type == "file" ? "form-control-file",

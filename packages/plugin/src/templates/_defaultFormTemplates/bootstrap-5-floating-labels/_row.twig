@@ -1,50 +1,55 @@
 {% macro getFieldTemplate(type) -%}
-    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5/fields/" %}
-    {{- fieldTemplatePath ~ type ~ ".twig" -}}
+    {%- set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5-floating-labels/fields/" -%}
+    {%- if type in ["text", "email", "website", "confirm", "regex", "phone", "datetime", "number", "password"] -%}
+        {{- fieldTemplatePath ~ "floating.twig" -}}
+    {%- else -%}
+        {{- fieldTemplatePath ~ type ~ ".twig" -}}
+    {%- endif -%}
 {%- endmacro %}
 
-{% macro render(row, form) %}
+{% macro render(rows, form) %}
     {% import _self as self %}
 
-    {% set width = (12 / (row|length)) %}
+    {% for row in rows %}
 
-    <div{{ form.attributes.row }}>
-        {% for field row %}
+        {% set width = (12 / (row|length)) %}
 
-            {% do field.setParameters({
-                attributes: {
-                    container: {
-                        class: [
-                            "mb-3",
-                            "col-12",
-                            "col-sm-" ~ width,
-                            "custom-class",
-                        ],
-                    },
-                    input: {
-                        "data-someshit": "somevalue",
-                        novalidate: true,
-                        class: [
-                            "form-control",
-                            "freeform-fieldtype-" ~ field.type,
-                            field.hasErrors ? "is-invalid has-validation",
-                            field.type == "file" ? "form-control-file",
-                            field.type == "dropdown" ? "form-select",
-                            field.type == "signature" ? "btn btn-light",
-                            field.type == "table" ? "table",
-                            field.type == "checkbox" ? "checkbox",
-                            "form-floating"
-                        ]
-                    },
-                    label: { class: field.required ? "required" },
-                    instructions: { class: ["form-text", "text-muted"] },
-                    error: { class: "invalid-feedback" },
-                }
-            }) %}
+        <div{{ form.attributes.row }}>
+            {% for field in row %}
 
-            {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+                {% do field.setParameters({
+                    attributes: {
+                        container: {
+                            class: [
+                                "mb-3",
+                                "col-12",
+                                "col-sm-" ~ width,
+                                field.type in ["text", "textarea", "email", "website", "confirm", "regex", "phone", "datetime", "file", "dropdown", "multiple-select", "number", "password", "file-dnd", "signature", "credit-card"] ? "form-floating",
+                            ],
+                        },
+                        input: {
+                            novalidate: true,
+                            class: [
+                                field.type != "signature" ? "form-control",
+                                "freeform-fieldtype-" ~ field.type,
+                                field.hasErrors ? "is-invalid has-validation",
+                                field.type == "file" ? "form-control-file",
+                                field.type == "dropdown" ? "form-select",
+                                field.type == "signature" ? "btn btn-light",
+                                field.type == "checkbox" ? "checkbox",
+                            ]
+                        },
+                        label: { class: field.required ? "required" },
+                        instructions: { class: ["form-text", "text-muted"] },
+                        error: { class: "invalid-feedback" },
+                    }
+                }) %}
 
-        {% endfor %}
-    </div>
+                {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+
+            {% endfor %}
+        </div>
+
+    {% endfor %}
 
 {% endmacro %}

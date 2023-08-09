@@ -1,0 +1,18 @@
+<div{{ field.attributes.container }}>
+
+{% set inputAttributes = ('height:' ~ (25 * 5) ~ 'px') %}
+
+{% do field.setParameters({
+    attributes: {
+        input: { 
+            "style": inputAttributes
+        },
+    }
+}) %}
+
+{{ field.renderInput -}}
+{{- field.renderLabel }}
+{{ field.renderInstructions }}
+{{ field.renderErrors }}
+
+</div>

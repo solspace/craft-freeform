@@ -57,7 +57,7 @@
 {% if form.hasErrors %}
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
         <strong class="font-bold">
-            {{ form.errorMessage | t('freeform') }}
+            {{ form.settings.errorMessage | t('freeform') }}
         </strong>
         {% if form.errors|length %}
             <ul class="mb-0 ">

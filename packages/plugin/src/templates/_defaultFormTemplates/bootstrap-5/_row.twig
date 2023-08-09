@@ -1,5 +1,5 @@
 {% macro getFieldTemplate(type) -%}
-    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5/fields/" %}
+    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5/fields/" -%}
     {{- fieldTemplatePath ~ type ~ ".twig" -}}
 {%- endmacro %}
 

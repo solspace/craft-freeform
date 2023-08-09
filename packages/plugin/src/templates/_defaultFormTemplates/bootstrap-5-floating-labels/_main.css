@@ -40,6 +40,9 @@
         margin-top: -0.5rem !important;
         margin-bottom: 0.25rem!important;
     }
+    .form-floating > label {
+        left: 12px;
+    }
     ul.errors {
         display: block !important;
     }
@@ -64,27 +67,7 @@
     .submit-align-spread button:last-child {
         float: right;
     }
-
-    /* DARK MODE SPECIFIC STYLES */
-    .opinion-scale .opinion-scale-scales>: first-child>label {
-        border-top-left-radius: 5px;
-        border-bottom-left-radius: 5px;
-    }
-    .opinion-scale .opinion-scale-scales>:last-child>label {
-        border-top-right-radius: 5px;
-        border-bottom-right-radius: 5px;
-    }
-    .opinion-scale .opinion-scale-scales li label {
-        color: #fff !important;
-        border-color: #495057 !important;
-        background: #1a1d20 !important;
-    }
-    .opinion-scale .opinion-scale-scales>* input:checked~label {
-        color: #fff !important;
-        background: #495057 !important;
-    }
     .StripeElement {
-        background: #1a1d20;
         height: 36px;
     }
 </style>

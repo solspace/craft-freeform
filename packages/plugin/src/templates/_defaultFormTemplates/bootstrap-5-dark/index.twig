@@ -45,7 +45,7 @@ if (form) {
 
 {% if form.hasErrors %}
     <div{{ form.attributes.errors }}>
-        {{ form.settings.behavior.errorMessage | t('freeform') }}
+        {{ form.settings.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul class="mb-0">
@@ -57,8 +57,6 @@ if (form) {
     </div>
 {% endif %}
 
-{% for row in form.rows %}
-    {{ rowMacro.render(row, form) }}
-{% endfor %}
+{{ rowMacro.render(form.rows, form) }}
 
 {{ form.renderClosingTag }}

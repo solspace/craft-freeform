@@ -1,15 +1,5 @@
-{% css formCss %}
-
-<style>
-.form-floating > label {
-    left: 12px;
-}
-.StripeElement {
-    height: 36px;
-}
-</style>
-
-{% import "freeform/_defaultFormTemplates/bootstrap-5/_row.twig" as rowMacro %}
+{% include "freeform/_defaultFormTemplates/bootstrap-5-floating-labels/_main.css" %}
+{% import "freeform/_defaultFormTemplates/bootstrap-5-floating-labels/_row.twig" as rowMacro %}
 
 {{ form.renderTag({
     attributes: {
@@ -19,28 +9,28 @@
 }) }}
 
 <script>
-  var form = document.querySelector('[data-id="{{ form.anchor }}"]');
-  if (form) {
+var form = document.querySelector('[data-id="{{ form.anchor }}"]');
+if (form) {
     form.addEventListener("freeform-ready", function (event) {
-      var freeform = event.target.freeform;
+        var freeform = event.target.freeform;
 
-      freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
-      freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
-      freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
-      freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
+        freeform.setOption("errorClassBanner", ["alert", "alert-danger", "errors"]);
+        freeform.setOption("errorClassList", ["help-block", "errors", "invalid-feedback"]);
+        freeform.setOption("errorClassField", ["is-invalid", "has-error"]);
+        freeform.setOption("successClassBanner", ["alert", "alert-success", "form-success"]);
     })
-
+    // Styling for Stripe Payments field
     form.addEventListener("freeform-stripe-styling", function (event) {
-      event.detail.base = {
-        fontSize: "16px",
-        fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
-      }
+        event.detail.base = {
+            fontSize: "16px",
+            fontFamily: "-apple-system,BlinkMacSystemFont,\"Segoe UI\",Roboto,\"Helvetica Neue\",Arial,sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Segoe UI Symbol\",\"Noto Color Emoji\"",
+        }
     })
-  }
+}
 </script>
 
 {% if form.pages|length > 1 %}
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs mb-4">
         {% for page in form.pages %}
             <li class="nav-item">
                 <span class="nav-link{{ form.currentPage.index == page.index ? ' fw-bold active' : ' disabled' }}">{{ page.label }}</span>
@@ -51,7 +41,7 @@
 
 {% if form.hasErrors %}
     <div{{ form.attributes.errors }}>
-        {{ form.errorMessage | t('freeform') }}
+        {{ form.settings.errorMessage | t('freeform') }}
 
         {% if form.errors|length %}
             <ul class="mb-0">
@@ -63,8 +53,6 @@
     </div>
 {% endif %}
 
-{% for row in form.rows %}
-    {{ rowMacro.render(row, form) }}
-{% endfor %}
+{{ rowMacro.render(form.rows, form) }}
 
 {{ form.renderClosingTag }}

@@ -1,5 +1,5 @@
 {% macro getFieldTemplate(type) -%}
-    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5-dark/fields/" %}
+    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/bootstrap-5-dark/fields/" -%}
     {{- fieldTemplatePath ~ type ~ ".twig" -}}
 {%- endmacro %}
 
@@ -7,7 +7,7 @@
     {% import _self as self %}
 
     {% for row in rows %}
-        
+
         {% set width = (12 / (row|length)) %}
 
         <div{{ form.attributes.row }}>
@@ -25,7 +25,8 @@
                         input: {
                             novalidate: true,
                             class: [
-                                field.type != "signature" ? "form-control bg-dark-subtle text-white",
+                                "bg-dark-subtle text-white",
+                                field.type != "signature" ? "form-control",
                                 "freeform-fieldtype-" ~ field.type,
                                 field.hasErrors ? "is-invalid has-validation",
                                 field.type == "file" ? "form-control-file",

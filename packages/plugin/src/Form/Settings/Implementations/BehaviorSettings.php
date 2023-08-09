@@ -108,7 +108,7 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\TextArea(
-        instructions: 'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.successMessage }}.',
+        instructions: 'Enter text to be shown at the top of the form if the submit is successful (AJAX), or load in your template with {{ form.settings.successMessage }}.',
         order: 4,
         placeholder: 'e.g. Thanks for filling out the form and stuff!',
     )]
@@ -116,7 +116,7 @@ class BehaviorSettings extends SettingsNamespace
 
     #[Section(self::SECTION_SUCCESS_AND_ERRORS)]
     #[Input\TextArea(
-        instructions: 'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.errorMessage }}.',
+        instructions: 'Enter the text to be shown at the top of the form if there are any errors in the form after submit (AJAX), or load in your template with {{ form.settings.errorMessage }}.',
         order: 5,
         placeholder: 'e.g. There was an error! Please fix!',
     )]

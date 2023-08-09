@@ -1,0 +1,19 @@
+<div{{ field.attributes.container }}>
+
+{% set inputAttributes = ('height:' ~ (25 * field.rows|default(5)) ~ 'px') %}
+
+{% do field.setParameters({
+    attributes: {
+        input: { 
+            "placeholder": field.placeholder,
+            "style": inputAttributes
+        },
+    }
+}) %}
+
+{{ field.renderInput -}}
+{{- field.renderLabel }}
+{{ field.renderInstructions }}
+{{ field.renderErrors }}
+
+</div>

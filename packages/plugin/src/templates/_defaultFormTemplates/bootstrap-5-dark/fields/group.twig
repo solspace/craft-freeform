@@ -1,11 +1,4 @@
-{% import "freeform/_defaultFormTemplates/bootstrap-5/_row.twig" as rowMacro %}
-
-{% do field.setParameters({
-    attributes: {
-        input: { "=class": "form-check-input" },
-        label: { class: "form-check-label" },
-    }
-}) %}
+{% import "freeform/_defaultFormTemplates/bootstrap-5-dark/_row.twig" as rowMacro %}
 
 <div{{ field.attributes.container }}>
     <div class="card">

@@ -25,13 +25,13 @@
             <div id="freeform-success-error-banner">
                 {% if not form.ajaxEnabled and form.submittedSuccessfully %}
                     <div class="freeform-form-success">
-                        <p>{{ form.successMessage | t('freeform') }}</p>
+                        <p>{{ form.settings.successMessage | t('freeform') }}</p>
                     </div>
                 {% endif %}
 
                 {% if form.hasErrors %}
                     <div class="freeform-form-errors">
-                        <p>{{ form.errorMessage | t('freeform') }}</p>
+                        <p>{{ form.settings.errorMessage | t('freeform') }}</p>
 
                         {% if form.errors|length %}
                             <ul>

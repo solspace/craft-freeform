@@ -52,7 +52,7 @@ class TableField extends AbstractField implements MultiValueInterface, MultiDime
             ],
             [
                 'value' => self::COLUMN_TYPE_SELECT,
-                'label' => 'Select',
+                'label' => 'Dropdown',
             ],
         ],
     )]

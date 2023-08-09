@@ -1,0 +1,64 @@
+{% macro getFieldTemplate(type) -%}
+    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/conversational/fields/" %}
+    {{- fieldTemplatePath ~ type ~ ".twig" -}}
+{%- endmacro %}
+
+{% macro render(rows, form) %}
+    {% import _self as self %}
+
+    {% for row in rows %}
+        
+        {% set width = (12 / (row|length)) %}
+
+        {% set questionId = loop.index %}
+        {% set questionTotal = loop.length %}
+        <div id="q{{ questionId }}" class="freeform-page" {{ form.attributes.row }}>
+            <div class="freeform-question">
+            {% for field in row %}
+
+                {% do field.setParameters({
+                    attributes: {
+                        container: {
+                            class: [
+                                "freeform-fields",
+                                "freeform-col-" ~ width,
+                                "freeform-fieldtype-" ~ field.type,
+                            ],
+                        },
+                        input: {
+                            novalidate: true,
+                            class: [
+                                field.hasErrors ? "is-invalid has-validation",
+                                field.type not in ["save", "signature"] ? "freeform-input"
+                            ]
+                        },
+                        label: { class: [
+                            "freeform-label",
+                            field.inputOnly ? "freeform-input-only-label",
+                            field.required ? "freeform-required",
+                        ]},
+                        instructions: { class: ["freeform-instructions"] },
+                        error: { class: "freeform-errors" },
+                    }
+                }) %}
+
+                {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+
+            {% endfor %}
+                <div class="freeform-buttons">
+                    {% if questionId != questionTotal %}
+                        <a href="#q{{ questionId + '1' }}">Next</a>
+                    {% endif %}
+                    {% if questionId == questionTotal %}
+                        <button type="submit" class="submit-button" data-freeform-action="submit">Submit</button>
+                    {% endif %}
+                    {% if questionId > "1" %}
+                        <a href="#q{{ questionId - '1' }}" class="previous">Previous</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+
+{% endmacro %}

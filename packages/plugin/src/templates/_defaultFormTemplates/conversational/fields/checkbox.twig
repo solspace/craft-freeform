@@ -1,0 +1,15 @@
+<div{{ field.attributes.container }}>
+
+    <div class="freeform-checkbox">
+        <label for="{{ field.idAttribute }}" class="form-check-label {{ field.hasErrors ? "freeform-has-errors" }} {{ field.required ? "freeform-required" }}">
+            {{ field.renderInput({
+                class: " form-check-input" ~ (field.hasErrors ? " freeform-has-errors")
+            }) }}
+            <span class="freeform-checkbox-slider"></span>
+            <span class="freeform-checkbox-label {{ field.required ? "freeform-required" }}">{{ field.label|t('freeform') }}</span>
+        </label>
+    </div>
+    {{ field.renderInstructions }}
+    {{ field.renderErrors }}
+
+</div>

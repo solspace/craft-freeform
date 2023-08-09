@@ -15,7 +15,7 @@ export enum FormattingTemplate {
   Flexbox = 'flexbox.twig',
   Foundation = 'foundation-6.twig',
   Grid = 'grid.twig',
-  Conversational = 'conversational.twig',
+  Conversational = 'conversational/index.twig',
   Tailwind3 = 'tailwind-3.twig',
 }
 export enum JSInsertLocation {

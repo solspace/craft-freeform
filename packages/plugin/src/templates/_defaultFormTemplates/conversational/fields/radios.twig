@@ -1,0 +1,19 @@
+<div{{ field.attributes.container }}>
+
+    {{ field.renderLabel }}
+    {{ field.renderInstructions }}
+    {% for index, option in field.options %}
+        <input type="radio"
+            name="{{ field.handle }}"
+            value="{{ option.value }}"
+            id="{{ field.idAttribute }}-{{ index }}"
+            class="form-check-input{{ field.hasErrors ? " freeform-has-errors" }}"
+            {{ option.checked ? "checked" : "" }}
+        />
+        <label class="option-label" for="{{ field.idAttribute }}-{{ index }}">
+            <span>{{ range('A','Z')[loop.index0] }}</span> {{ option.label|t('freeform')|raw }}
+        </label>
+    {% endfor %}
+    {{ field.renderErrors }}
+
+</div>

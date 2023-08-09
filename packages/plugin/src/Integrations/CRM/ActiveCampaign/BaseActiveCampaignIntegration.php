@@ -19,7 +19,7 @@ use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
 
-abstract class BaseActiveCampaignIntegration extends CRMIntegration implements ActiveCampaignInterface
+abstract class BaseActiveCampaignIntegration extends CRMIntegration implements ActiveCampaignIntegrationInterface
 {
     protected const LOG_CATEGORY = 'ActiveCampaign';
 
@@ -48,7 +48,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'API URL',
-        instructions: 'Enter your API specific URL (e.g. "youraccountname.api-us1.com" or "youraccountname.activehosted.com").',
+        instructions: 'Enter your API specific URL (e.g. "https://youraccountname.api-us1.com" or "https://youraccountname.activehosted.com").',
         order: 2,
     )]
     protected string $apiUrl = '';

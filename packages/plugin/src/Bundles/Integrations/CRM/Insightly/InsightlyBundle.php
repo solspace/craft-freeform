@@ -10,16 +10,16 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Bundles\Integrations\CRM\ActiveCampaign;
+namespace Solspace\Freeform\Bundles\Integrations\CRM\Insightly;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Integrations\CRM\ActiveCampaign\ActiveCampaignIntegrationInterface;
+use Solspace\Freeform\Integrations\CRM\Insightly\InsightlyIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use yii\base\Event;
 
-class ActiveCampaignBundle extends FeatureBundle
+class InsightlyBundle extends FeatureBundle
 {
     public function __construct()
     {
@@ -42,15 +42,18 @@ class ActiveCampaignBundle extends FeatureBundle
     public function configureClient(GetAuthorizedClientEvent $event): void
     {
         $integration = $event->getIntegration();
-        if (!$integration instanceof ActiveCampaignIntegrationInterface) {
+        if (!$integration instanceof InsightlyIntegrationInterface) {
             return;
         }
 
         $event->addConfig(
             [
                 'headers' => [
-                    'Api-Token' => $integration->getApiToken(),
                     'Content-Type' => 'application/json',
+                ],
+                'auth' => [
+                    $integration->getApiToken(),
+                    '',
                 ],
             ],
         );

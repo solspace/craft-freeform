@@ -224,7 +224,9 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->getEndpoint('/Leads'),
                 [
                     'json' => [
-                        'data' => [$mapping],
+                        'data' => [
+                            $mapping,
+                        ],
                     ],
                 ],
             );
@@ -267,9 +269,11 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0]['details'])) {
-                $this->accountId = $json['data'][0]['details']['id'];
-                $this->accountName = $json['data'][0]['details']['name'];
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->accountId = $data['details']['id'];
+                $this->accountName = $data['details']['name'];
             }
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
@@ -311,9 +315,11 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0]['details'])) {
-                $this->contactId = $json['data'][0]['details']['id'];
-                $this->contactName = $json['data'][0]['details']['name'];
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->contactId = $data['details']['id'];
+                $this->contactName = $data['details']['name'];
             }
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
@@ -359,8 +365,10 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0]['details']['id'])) {
-                $this->dealId = $json['data'][0]['details']['id'];
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->dealId = $data['details']['id'];
             }
 
             if ($this->dealId && $this->contactId) {

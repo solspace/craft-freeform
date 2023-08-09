@@ -12,6 +12,6 @@
 
 namespace Solspace\Freeform\Integrations\CRM\ActiveCampaign;
 
-interface ActiveCampaignInterface
+interface ActiveCampaignIntegrationInterface
 {
 }

@@ -3,47 +3,49 @@
     {{- fieldTemplatePath ~ type ~ ".twig" -}}
 {%- endmacro %}
 
-{% macro render(row, form) %}
+{% macro render(rows, form) %}
     {% import _self as self %}
 
-    {% set width = (12 / (row|length)) %}
+    {% for row in rows %}
+        
+        {% set width = (12 / (row|length)) %}
 
-    <div{{ form.attributes.row }}>
-        {% for field in row %}
+        <div{{ form.attributes.row }}>
+            {% for field in row %}
 
-            {% do field.setParameters({
-                attributes: {
-                    container: {
-                        class: [
-                            "mb-3",
-                            "col-12",
-                            "col-sm-" ~ width,
-                            "custom-class",
-                        ],
-                    },
-                    input: {
-                        "data-someshit": "somevalue",
-                        novalidate: true,
-                        class: [
-                            "form-control bg-dark-subtle text-white",
-                            "freeform-fieldtype-" ~ field.type,
-                            field.hasErrors ? "is-invalid has-validation",
-                            field.type == "file" ? "form-control-file",
-                            field.type == "select" ? "form-select bg-dark-subtle text-white",
-                            field.type == "signature" ? "btn btn-light",
-                            field.type == "table" ? "table",
-                            field.type == "checkbox" ? "checkbox",
-                        ]
-                    },
-                    label: { class: field.required ? "required" },
-                    instructions: { class: ["form-text", "text-muted"] },
-                    error: { class: "invalid-feedback" },
-                }
-            }) %}
+                {% do field.setParameters({
+                    attributes: {
+                        container: {
+                            class: [
+                                "mb-3",
+                                "col-12",
+                                "col-sm-" ~ width,
+                            ],
+                        },
+                        input: {
+                            novalidate: true,
+                            class: [
+                                "form-control bg-dark-subtle text-white",
+                                "freeform-fieldtype-" ~ field.type,
+                                field.hasErrors ? "is-invalid has-validation",
+                                field.type == "file" ? "form-control-file",
+                                field.type == "dropdown" ? "form-select bg-dark-subtle text-white",
+                                field.type == "signature" ? "btn btn-light",
+                                field.type == "table" ? "table",
+                                field.type == "checkbox" ? "checkbox",
+                            ]
+                        },
+                        label: { class: field.required ? "required" },
+                        instructions: { class: ["form-text", "text-muted"] },
+                        error: { class: "invalid-feedback" },
+                    }
+                }) %}
 
-            {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+                {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
 
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
+
+    {% endfor %}
 
 {% endmacro %}

@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Integrations\CRM\Pardot;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Fields\AbstractField;
@@ -166,38 +165,6 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         return $domain;
     }
 
-    protected function getLogger(?string $category = null): LoggerInterface
-    {
-        return parent::getLogger($category ?? self::LOG_CATEGORY);
-    }
-
-    protected function processException(\Exception $exception): void
-    {
-        if (!$exception instanceof RequestException) {
-            parent::processException($exception);
-
-            return;
-        }
-
-        $response = $exception->getResponse();
-        $json = json_decode((string) $response->getBody(), false);
-
-        if (!empty($json['err'])) {
-            $usefulErrorMessage = $json['err'];
-        } else {
-            $usefulErrorMessage = (string) $response->getBody();
-        }
-
-        $this->getLogger()->error(
-            $usefulErrorMessage,
-            [
-                'exception' => $exception->getMessage(),
-            ],
-        );
-
-        throw $exception;
-    }
-
     private function getProspectFields(): array
     {
         return [
@@ -227,14 +194,14 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
                 'Email',
                 FieldObject::TYPE_STRING,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'password',
                 'Password',
                 FieldObject::TYPE_STRING,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'company',
@@ -248,7 +215,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
                 'Prospect Account Id',
                 FieldObject::TYPE_NUMERIC,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'website',
@@ -395,49 +362,49 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
                 'Do not email',
                 FieldObject::TYPE_BOOLEAN,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'is_do_not_call',
                 'Do not call',
                 FieldObject::TYPE_BOOLEAN,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'is_reviewed',
                 'Reviewed',
                 FieldObject::TYPE_BOOLEAN,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'is_archived',
                 'Archived',
                 FieldObject::TYPE_BOOLEAN,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'is_starred',
                 'Starred',
                 FieldObject::TYPE_NUMERIC,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'campaign_id',
                 'Campaign',
                 FieldObject::TYPE_NUMERIC,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'profile',
                 'Profile',
                 FieldObject::TYPE_STRING,
                 'Prospect',
-                true
+                true,
             ),
             new FieldObject(
                 'assign_to',
@@ -454,7 +421,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         try {
             $response = $client->get($this->getPardotEndpoint('customField'));
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
 
         $json = json_decode((string) $response->getBody());

@@ -233,7 +233,7 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -272,7 +272,7 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->accountName = $json['data'][0]['details']['name'];
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -316,7 +316,7 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->contactName = $json['data'][0]['details']['name'];
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -382,7 +382,7 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->processZohoResponseError($json);
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

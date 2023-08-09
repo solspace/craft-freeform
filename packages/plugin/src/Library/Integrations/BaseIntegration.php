@@ -13,6 +13,8 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use craft\helpers\App;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Freeform;
@@ -80,7 +82,7 @@ abstract class BaseIntegration implements IntegrationInterface
     /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave()
+    public function onBeforeSave(Client $client): void
     {
     }
 
@@ -100,14 +102,29 @@ abstract class BaseIntegration implements IntegrationInterface
     /**
      * @throws \Exception
      */
-    protected function processException(\Exception $exception): void
+    protected function processException(\Exception $exception, ?string $category = null): void
     {
-        $message = $exception->getMessage();
+        $usefulErrorMessage = $exception->getMessage();
 
-        $this->getLogger()->error(
-            $message,
+        if ($exception instanceof RequestException) {
+            $response = $exception->getResponse();
+
+            $json = json_decode((string) $response->getBody(), true);
+            if ($json) {
+                if (!empty($json['err'])) {
+                    $usefulErrorMessage = $json['err'];
+                } elseif (!empty($json['error']) && !empty($json['error_info'])) {
+                    $usefulErrorMessage = $json['error'].', '.$json['error_info'];
+                } else {
+                    $usefulErrorMessage = (string) $response->getBody();
+                }
+            }
+        }
+
+        $this->getLogger($category)->error(
+            $usefulErrorMessage,
             [
-                'exception' => $message,
+                'exception' => $exception->getMessage(),
             ],
         );
 

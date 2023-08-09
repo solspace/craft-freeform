@@ -12,8 +12,6 @@
 
 namespace Solspace\Freeform\Integrations\CRM\HubSpot;
 
-use GuzzleHttp\Exception\RequestException;
-use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -89,37 +87,5 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements OAuth2Co
     protected function getAppendCompanyData(): bool
     {
         return $this->appendCompanyData;
-    }
-
-    protected function getLogger(?string $category = null): LoggerInterface
-    {
-        return parent::getLogger($category ?? self::LOG_CATEGORY);
-    }
-
-    protected function processException(\Exception $exception): void
-    {
-        if (!$exception instanceof RequestException) {
-            parent::processException($exception);
-
-            return;
-        }
-
-        $response = $exception->getResponse();
-        $json = json_decode((string) $response->getBody(), false);
-
-        if ($json->error && $json->error_info) {
-            $usefulErrorMessage = $json->error.', '.$json->error_info;
-        } else {
-            $usefulErrorMessage = (string) $response->getBody();
-        }
-
-        $this->getLogger()->error(
-            $usefulErrorMessage,
-            [
-                'exception' => $exception->getMessage(),
-            ],
-        );
-
-        throw $exception;
     }
 }

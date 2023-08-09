@@ -98,7 +98,8 @@ abstract class IntegrationsController extends BaseController
         $integration = $model->getIntegrationObject();
 
         try {
-            $integration->onBeforeSave();
+            $client = $this->clientProvider->getAuthorizedClient($integration);
+            $integration->onBeforeSave($client);
         } catch (\Exception $e) {
             $model->addError('integration', $e->getMessage());
         }

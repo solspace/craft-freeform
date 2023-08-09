@@ -222,13 +222,11 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     public function getApiRootUrl(): string
     {
-        return $this->getInstanceUrl().'/services/data/'.self::API_VERSION.'/';
+        return $this->getInstanceUrl().'/services/data/'.self::API_VERSION;
     }
 
     public function push(Form $form, Client $client): bool
     {
-        $this->accountId = null;
-
         $this->processLeads($form, $client);
         $this->processAccounts($form, $client);
         $this->processContacts($form, $client);
@@ -285,7 +283,8 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                     $dueDate = new Carbon($dueDate, 'UTC');
                 } catch (\Exception $e) {
                     $dueDate = new Carbon('+2 days', 'UTC');
-                    $this->getLogger()->error($e->getMessage());
+
+                    $this->processException($exception, self::LOG_CATEGORY);
                 }
                 $subject = $this->getTaskSubject() ?: 'New Followup';
 
@@ -312,7 +311,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                         return true;
                     }
                 } catch (\Exception $exception) {
-                    $this->processException($exception);
+                    $this->processException($exception, self::LOG_CATEGORY);
                 }
             }
         }
@@ -352,7 +351,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 new IntegrationResponseEvent($this, self::CATEGORY_LEAD, $response)
             );
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -470,7 +469,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 new IntegrationResponseEvent($this, self::CATEGORY_ACCOUNT, $response)
             );
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -558,7 +557,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
             );
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -599,7 +598,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 new IntegrationResponseEvent($this, self::CATEGORY_OPPORTUNITY, $response)
             );
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 

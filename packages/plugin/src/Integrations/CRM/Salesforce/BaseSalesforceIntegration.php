@@ -14,7 +14,6 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Psr\Log\LoggerInterface;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -99,7 +98,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
         try {
             $response = $client->get($this->getEndpoint('/sobjects/'.$category.'/describe'));
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
 
         $json = json_decode((string) $response->getBody());
@@ -233,7 +232,7 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
             return $result->records;
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -260,37 +259,5 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
         ];
 
         return str_replace($characters, $replacement, $str);
-    }
-
-    protected function getLogger(?string $category = null): LoggerInterface
-    {
-        return parent::getLogger($category ?? self::LOG_CATEGORY);
-    }
-
-    protected function processException(\Exception $exception): void
-    {
-        if (!$exception instanceof RequestException) {
-            parent::processException($exception);
-
-            return;
-        }
-
-        $response = $exception->getResponse();
-        $json = json_decode((string) $response->getBody(), false);
-
-        if ($json->error && $json->error_info) {
-            $usefulErrorMessage = $json->error.', '.$json->error_info;
-        } else {
-            $usefulErrorMessage = (string) $response->getBody();
-        }
-
-        $this->getLogger()->error(
-            $usefulErrorMessage,
-            [
-                'exception' => $exception->getMessage(),
-            ],
-        );
-
-        throw $exception;
     }
 }

@@ -123,7 +123,7 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
                 ],
             );
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

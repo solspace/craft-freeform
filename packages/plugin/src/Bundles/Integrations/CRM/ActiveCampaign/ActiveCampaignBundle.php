@@ -10,17 +10,16 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Bundles\Integrations\CRM\Pardot;
+namespace Solspace\Freeform\Bundles\Integrations\CRM\ActiveCampaign;
 
 use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Freeform;
-use Solspace\Freeform\Integrations\CRM\Pardot\PardotIntegrationInterface;
+use Solspace\Freeform\Integrations\CRM\ActiveCampaign\ActiveCampaignInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
-class PardotBundle extends FeatureBundle
+class ActiveCampaignBundle extends FeatureBundle
 {
     public function __construct()
     {
@@ -43,19 +42,14 @@ class PardotBundle extends FeatureBundle
     public function configureClient(GetAuthorizedClientEvent $event): void
     {
         $integration = $event->getIntegration();
-        if (!$integration instanceof PardotIntegrationInterface) {
+        if (!$integration instanceof ActiveCampaignInterface) {
             return;
         }
 
         $event->addConfig(
             [
                 'headers' => [
-                    'Authorization' => 'Bearer '.$integration->getAccessToken(),
-                    'Pardot-Business-Unit-Id' => $integration->getBusinessUnitId(),
-                    'Content-Type' => 'application/json',
-                ],
-                'query' => [
-                    'format' => 'json',
+                    'Api-Token' => $integration->getApiToken(),
                 ],
             ],
         );

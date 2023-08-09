@@ -146,7 +146,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
         try {
             $response = $client->get($this->getEndpoint('/properties/v1/'.$record.'/properties'));
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
 
         $json = json_decode((string) $response->getBody());
@@ -198,7 +198,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
                 $field->label,
                 $type,
                 $category,
-                false
+                false,
             );
         }
 
@@ -366,7 +366,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
                     $this->companyName = $json->properties->name->value;
                 }
             } catch (\Exception $exception) {
-                $this->processException($exception);
+                $this->processException($exception, self::LOG_CATEGORY);
             }
         }
 
@@ -424,16 +424,16 @@ class HubSpotV1 extends BaseHubSpotIntegration
                                 $this->contactId = $json->vid;
                             }
                         } else {
-                            $this->processException($exception);
+                            $this->processException($exception, self::LOG_CATEGORY);
                         }
                     } elseif (isset($json->error, $json->identityProfile) && 'CONTACT_EXISTS' === $json->error) {
                         $this->contactId = $json->identityProfile->vid;
                     } else {
-                        $this->processException($exception);
+                        $this->processException($exception, self::LOG_CATEGORY);
                     }
                 }
             } catch (\Exception $exception) {
-                $this->processException($exception);
+                $this->processException($exception, self::LOG_CATEGORY);
             }
         }
 

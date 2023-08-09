@@ -216,7 +216,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->organizationId = (int) $json->data->id;
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -273,7 +273,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->personId = (int) $json->data->id;
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -336,7 +336,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->addNote($client, $json);
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -396,7 +396,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 $this->addNote($client, $json);
             }
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -410,7 +410,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                 ],
             );
         } catch (\Exception $exception) {
-            $this->processException($exception);
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -450,7 +450,7 @@ class PipedriveV1 extends BasePipedriveIntegration
                         return (int) $json->data->items[0]->item->id;
                     }
                 } catch (\Exception $exception) {
-                    $this->processException($exception);
+                    $this->processException($exception, self::LOG_CATEGORY);
                 }
             }
         }

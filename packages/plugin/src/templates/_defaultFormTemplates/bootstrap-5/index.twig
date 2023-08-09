@@ -31,10 +31,10 @@ if (form) {
 
 
 {% if form.pages|length > 1 %}
-    <ul class="nav nav-tabs">
+    <ul class="nav nav-tabs mb-4">
         {% for page in form.pages %}
             <li class="nav-item">
-                <span class="nav-link{{ form.currentPage.index == page.index ? ' font-weight-bold active' : ' disabled' }}">{{ page.label }}</span>
+                <span class="nav-link{{ form.currentPage.index == page.index ? ' fw-bold active' : ' disabled' }}">{{ page.label }}</span>
             </li>
         {% endfor %}
     </ul>

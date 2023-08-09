@@ -36,6 +36,10 @@
         color: #d00;
         margin-left: 3px;
     }
+    .freeform-instructions {
+        margin-top: -0.5rem !important;
+        margin-bottom: 0.25rem!important;
+    }
     ul.errors {
         display: block !important;
     }

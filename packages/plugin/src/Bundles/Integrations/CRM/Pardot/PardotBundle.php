@@ -17,7 +17,6 @@ use Solspace\Freeform\Events\Integrations\GetAuthorizedClientEvent;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Integrations\CRM\Pardot\PardotIntegrationInterface;
 use Solspace\Freeform\Library\Bundles\FeatureBundle;
-use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
 use yii\base\Event;
 
 class PardotBundle extends FeatureBundle

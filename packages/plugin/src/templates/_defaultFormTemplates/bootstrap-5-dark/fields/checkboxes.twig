@@ -1,18 +1,20 @@
 <div{{ field.attributes.container }}>
 
     {{ field.renderLabel }}
+    {{ field.renderInstructions }}
 
     {% if field.oneLine %}<div>{% endif %}
 
     {% for index, option in field.options %}
         <div class="form-check{{ field.oneLine ? " form-check-inline" }}">
-            <input type="radio"
-                   name="{{ field.handle }}"
+            <input type="checkbox"
+                   name="{{ field.handle }}[]"
                    value="{{ option.value }}"
                    id="{{ field.idAttribute }}-{{ index }}"
                    class="form-check-input bg-dark-subtle{{ field.hasErrors ? " is-invalid" }}"
                     {{ option.checked ? "checked" : "" }}
             />
+
             <label class="form-check-label text-white" for="{{ field.idAttribute }}-{{ index }}">
                 {{ option.label|t('freeform')|raw }}
             </label>
@@ -21,7 +23,6 @@
 
     {% if field.oneLine %}</div>{% endif %}
 
-    {{ field.renderInstructions }}
     {{ field.renderErrors }}
 
 </div>

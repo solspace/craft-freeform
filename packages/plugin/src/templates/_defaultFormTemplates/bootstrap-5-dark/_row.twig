@@ -25,7 +25,7 @@
                         input: {
                             novalidate: true,
                             class: [
-                                "form-control bg-dark-subtle text-white",
+                                field.type != "signature" ? "form-control bg-dark-subtle text-white",
                                 "freeform-fieldtype-" ~ field.type,
                                 field.hasErrors ? "is-invalid has-validation",
                                 field.type == "file" ? "form-control-file",

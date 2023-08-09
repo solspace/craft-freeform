@@ -267,9 +267,10 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0]['details'])) {
-                $this->accountId = $json['data'][0]['details']['id'];
-                $this->accountName = $json['data'][0]['details']['name'];
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->accountId = $data['details']['id'];
             }
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
@@ -289,7 +290,6 @@ class ZohoV2 extends BaseZohoIntegration
 
         $mapping['Account_Name'] = [
             'id' => $this->accountId,
-            'name' => $this->accountName,
         ];
 
         try {
@@ -311,9 +311,10 @@ class ZohoV2 extends BaseZohoIntegration
 
             $this->processZohoResponseError($json);
 
-            if (isset($json['data'][0]['details'])) {
-                $this->contactId = $json['data'][0]['details']['id'];
-                $this->contactName = $json['data'][0]['details']['name'];
+            if (isset($json['data'][0])) {
+                $data = $json['data'][0];
+
+                $this->contactId = $data['details']['id'];
             }
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);
@@ -335,12 +336,10 @@ class ZohoV2 extends BaseZohoIntegration
 
         $mapping['Account_Name'] = [
             'id' => $this->accountId,
-            'name' => $this->accountName,
         ];
 
         $mapping['Contact_Name'] = [
             'id' => $this->contactId,
-            'name' => $this->contactName,
         ];
 
         try {

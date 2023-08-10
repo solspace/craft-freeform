@@ -12,51 +12,19 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects;
 
-use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegrationInterface;
-
-class ListObject implements \JsonSerializable
+class ListObject
 {
-    /** @var MailingListIntegrationInterface */
-    private $mailingList;
-
-    /** @var string */
-    private $id;
-
-    /** @var string */
-    private $name;
-
-    /** @var int */
-    private $memberCount;
-
-    /** @var FieldObject[] */
-    private $fields;
-
-    /**
-     * ListObject constructor.
-     *
-     * @param string        $id
-     * @param string        $name
-     * @param FieldObject[] $fields
-     * @param int           $memberCount
-     */
     public function __construct(
-        MailingListIntegrationInterface $mailingList,
-        $id,
-        $name,
-        array $fields = [],
-        $memberCount = 0
+        private string $resourceId,
+        private string $name,
+        private int $memberCount = 0,
+        private ?int $id = null,
     ) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->fields = $fields;
-        $this->memberCount = $memberCount;
-        $this->mailingList = $mailingList;
     }
 
-    public function getId(): string
+    public function getResourceId(): string
     {
-        return $this->id;
+        return $this->resourceId;
     }
 
     public function getName(): string
@@ -64,34 +32,13 @@ class ListObject implements \JsonSerializable
         return $this->name;
     }
 
-    /**
-     * @return FieldObject[]
-     */
-    public function getFields(): array
-    {
-        return $this->fields;
-    }
-
     public function getMemberCount(): int
     {
         return $this->memberCount;
     }
 
-    public function pushEmailsToList(array $emails, array $mappedValues): bool
+    public function getId(): ?int
     {
-        return $this->mailingList->pushEmails($this, $emails, $mappedValues);
-    }
-
-    /**
-     * Specify data which should be serialized to JSON.
-     */
-    public function jsonSerialize(): array
-    {
-        return [
-            'id' => $this->getId(),
-            'name' => $this->getName(),
-            'fields' => $this->getFields(),
-            'memberCount' => $this->getMemberCount(),
-        ];
+        return $this->id;
     }
 }

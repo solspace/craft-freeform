@@ -28,18 +28,10 @@ abstract class BaseApiController extends BaseController
         }
 
         if (null === $content) {
-            $this->response->format = Response::FORMAT_RAW;
-            $this->response->content = '';
-
-            return $this->response;
+            return $this->asEmptyResponse();
         }
 
-        $serialized = $this->getSerializer()->serialize($content, 'json', ['preserve_empty_objects' => true]);
-
-        $this->response->format = Response::FORMAT_JSON;
-        $this->response->content = $serialized;
-
-        return $this->response;
+        return $this->asSerializedJson($content);
     }
 
     protected function get(): array|object
@@ -70,5 +62,26 @@ abstract class BaseApiController extends BaseController
     protected function getSerializer(): Serializer
     {
         return \Craft::$container->get(Serializer::class);
+    }
+
+    protected function asEmptyResponse(): Response
+    {
+        $this->response->format = Response::FORMAT_RAW;
+        $this->response->content = '';
+
+        return $this->response;
+    }
+
+    protected function asSerializedJson(mixed $content, int $statusCode = 200): Response
+    {
+        $serialized = $this->getSerializer()->serialize($content, 'json', ['preserve_empty_objects' => true]);
+
+        $this->response->format = Response::FORMAT_JSON;
+        $this->response->content = $serialized;
+        if ($statusCode) {
+            $this->response->statusCode = $statusCode;
+        }
+
+        return $this->response;
     }
 }

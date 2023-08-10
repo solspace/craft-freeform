@@ -63,15 +63,13 @@ export const FieldProperties: React.FC<{ uid: string }> = ({ uid }) => {
 
     sectionBlocks.push(
       <SectionBlock label={label} icon={icon} key={handle}>
-        {properties
-          .sort((a, b) => a.order - b.order)
-          .map((property) => (
-            <FieldComponent
-              key={property.handle}
-              field={field}
-              property={property}
-            />
-          ))}
+        {properties.map((property) => (
+          <FieldComponent
+            key={property.handle}
+            field={field}
+            property={property}
+          />
+        ))}
       </SectionBlock>
     );
   });

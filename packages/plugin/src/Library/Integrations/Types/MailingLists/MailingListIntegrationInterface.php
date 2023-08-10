@@ -12,18 +12,25 @@
 
 namespace Solspace\Freeform\Library\Integrations\Types\MailingLists;
 
+use GuzzleHttp\Client;
+use Solspace\Freeform\Form\Form;
+use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
+use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
 
-interface MailingListIntegrationInterface
+interface MailingListIntegrationInterface extends IntegrationInterface
 {
     public static function isInstallable(): bool;
 
+    public function push(Form $form, Client $client): void;
+
     /**
-     * Push emails to a specific mailing list for the service provider.
-     *
-     * @param array $mappedValues - key => value pairs of integrations fields against form fields
-     *
-     * @return bool
+     * @return ListObject[]
      */
-    public function pushEmails(ListObject $mailingList, array $emails, array $mappedValues);
+    public function fetchLists(Client $client): array;
+
+    /**
+     * @return FieldObject[]
+     */
+    public function fetchFields(ListObject $list, string $category, Client $client): array;
 }

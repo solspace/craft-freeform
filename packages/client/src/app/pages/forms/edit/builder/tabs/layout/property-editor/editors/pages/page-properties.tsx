@@ -55,15 +55,13 @@ export const PageProperties: React.FC<Props> = ({ uid }) => {
 
     sectionBlocks.push(
       <SectionBlock label={label} icon={icon} key={handle}>
-        {properties
-          .sort((a, b) => a.order - b.order)
-          .map((property) => (
-            <PageComponent
-              key={property.handle}
-              page={page}
-              property={property}
-            />
-          ))}
+        {properties.map((property) => (
+          <PageComponent
+            key={property.handle}
+            page={page}
+            property={property}
+          />
+        ))}
       </SectionBlock>
     );
   });

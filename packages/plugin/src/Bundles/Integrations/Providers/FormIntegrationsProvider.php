@@ -6,7 +6,6 @@ use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\IntegrationInterface;
 use Solspace\Freeform\Models\IntegrationModel;
 use Solspace\Freeform\Records\Form\FormIntegrationRecord;
-use Solspace\Freeform\Records\IntegrationRecord;
 use Solspace\Freeform\Services\Integrations\IntegrationsService;
 
 class FormIntegrationsProvider
@@ -21,19 +20,17 @@ class FormIntegrationsProvider
      */
     public function getForForm(?Form $form = null, ?string $type = null): array
     {
-        $integrations = $this->integrationsService->getAllIntegrations();
+        $integrations = $this->integrationsService->getAllIntegrations($type);
+        $integrationIds = array_map(
+            fn (IntegrationModel $record) => $record->id,
+            $integrations
+        );
 
         $query = FormIntegrationRecord::find()
             ->where(['formId' => $form?->getId() ?? null])
+            ->andWhere(['IN', 'integrationId', $integrationIds])
             ->indexBy('integrationId')
         ;
-
-        if ($type) {
-            $query
-                ->innerJoin(IntegrationRecord::TABLE.' i', '[[i.id]] = [[integrationId]]')
-                ->andWhere(['[[i.type]]' => $type])
-            ;
-        }
 
         /** @var FormIntegrationRecord[] $formIntegrationRecords */
         $formIntegrationRecords = $query->all();

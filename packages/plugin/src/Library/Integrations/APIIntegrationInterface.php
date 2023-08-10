@@ -3,14 +3,13 @@
 namespace Solspace\Freeform\Library\Integrations;
 
 use GuzzleHttp\Client;
-use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 
-interface APIIntegrationInterface
+interface APIIntegrationInterface extends IntegrationInterface
 {
+    public const EVENT_PROCESS_VALUE = 'process-value';
+
     /**
      * Check if it's possible to connect to the API.
-     *
-     * @throws IntegrationException
      */
     public function checkConnection(Client $client): bool;
 

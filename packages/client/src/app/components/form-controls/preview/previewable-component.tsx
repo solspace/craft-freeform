@@ -70,7 +70,7 @@ export const PreviewableComponent: React.FC<PropsWithChildren<Props>> = ({
             pointerEvents: isEditing ? 'initial' : 'none',
             ...editorAnimation,
           }}
-          className={classes(isEditing && 'active')}
+          className={classes(isEditing && 'active', 'editable-content')}
           ref={editorRef}
         >
           {children}

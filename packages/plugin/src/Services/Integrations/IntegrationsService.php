@@ -66,10 +66,16 @@ class IntegrationsService extends BaseService
     /**
      * @return IntegrationModel[]
      */
-    public function getAllIntegrations(): array
+    public function getAllIntegrations(?string $type = null): array
     {
         $this->getAllIntegrationTypes();
-        $results = $this->getQuery()->all();
+        $query = $this->getQuery();
+
+        if ($type) {
+            $query->andWhere(['[[type]]' => $type]);
+        }
+
+        $results = $query->all();
 
         $models = [];
         foreach ($results as $result) {
@@ -210,11 +216,11 @@ class IntegrationsService extends BaseService
         }
 
         if ($reflection->implementsInterface(MailingListIntegrationInterface::class)) {
-            return 'mailing-list';
+            return 'mailing-lists';
         }
 
         if ($reflection->implementsInterface(PaymentGatewayIntegrationInterface::class)) {
-            return 'payment-gateway';
+            return 'payment-gateways';
         }
 
         throw new IntegrationException('Unknown integration type');

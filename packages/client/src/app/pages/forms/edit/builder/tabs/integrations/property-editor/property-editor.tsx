@@ -39,17 +39,15 @@ export const PropertyEditor: React.FC = () => {
 
       <SettingsWrapper>
         {/* REFACTOR - so it comes from the Integration type class, like the other fields and has correct animations applied */}
-        <div style={{ paddingBottom: '10px', marginBottom: '2px' }}>
-          <Bool
-            property={{
-              label: 'Enabled',
-              handle: 'enabled',
-              type: PropertyType.Boolean,
-            }}
-            value={enabled}
-            updateValue={() => dispatch(integrationActions.toggle(id))}
-          />
-        </div>
+        <Bool
+          property={{
+            label: 'Enabled',
+            handle: 'enabled',
+            type: PropertyType.Boolean,
+          }}
+          value={enabled}
+          updateValue={() => dispatch(integrationActions.toggle(id))}
+        />
 
         {properties.map((property) => (
           <FieldComponent

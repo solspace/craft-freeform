@@ -5,6 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import SpinnerIcon from '@components/loaders/loading-text/spinner.svg';
 import { useClickOutside } from '@ff-client/hooks/use-click-outside';
 import { useOnKeypress } from '@ff-client/hooks/use-on-keypress';
 import type { OptionCollection } from '@ff-client/types/properties';
@@ -12,6 +13,7 @@ import classes from '@ff-client/utils/classes';
 
 import {
   findLabelByValue,
+  findShadowIndexByValue,
   findValueByShadowIndex,
   useFilteredOptions,
 } from './dropdown.operations';
@@ -22,9 +24,11 @@ import {
   DropdownWrapper,
   ListWrapper,
   Search,
+  SpinnerWrapper,
 } from './dropdown.styles';
 
 export type DropdownProps = {
+  loading?: boolean;
   emptyOption?: string;
   options?: OptionCollection;
   value?: string;
@@ -36,6 +40,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   value,
   options,
   onChange,
+  loading = false,
 }) => {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -47,6 +52,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
     isEnabled: open,
   });
 
+  const toggleOpen = useCallback(() => {
+    if (!loading) {
+      setOpen(!open);
+    }
+  }, [loading, open]);
+
   const [filteredOptions, optionCount] = useFilteredOptions(
     options,
     query,
@@ -55,7 +66,12 @@ export const Dropdown: React.FC<DropdownProps> = ({
 
   const selectedValue = useMemo(
     () => findLabelByValue(options, value) || emptyOption,
-    [options, value]
+    [options, value, loading]
+  );
+
+  const selectedIndex = useMemo(
+    () => findShadowIndexByValue(filteredOptions, value),
+    [options, value, loading]
   );
 
   useOnKeypress(
@@ -91,9 +107,15 @@ export const Dropdown: React.FC<DropdownProps> = ({
   );
 
   useEffect(() => {
+    if (loading && open) {
+      setOpen(false);
+    }
+  }, [loading]);
+
+  useEffect(() => {
     if (open) {
       searchRef.current?.focus();
-      setFocusIndex(0);
+      setFocusIndex(selectedIndex || 0);
     } else {
       setQuery('');
     }
@@ -111,9 +133,17 @@ export const Dropdown: React.FC<DropdownProps> = ({
     <DropdownWrapper
       ref={containerRef}
       className={classes(open && 'open')}
-      onClick={() => setOpen(!open)}
+      onClick={() => toggleOpen()}
     >
-      <CurrentValue>{selectedValue}</CurrentValue>
+      <CurrentValue className={classes(loading && 'disabled')}>
+        <span>{selectedValue}</span>
+
+        {loading && (
+          <SpinnerWrapper>
+            <SpinnerIcon />
+          </SpinnerWrapper>
+        )}
+      </CurrentValue>
       <DropdownRollout>
         <Search
           placeholder="Search..."

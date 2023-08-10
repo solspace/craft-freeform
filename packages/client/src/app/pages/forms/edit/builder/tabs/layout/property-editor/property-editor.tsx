@@ -39,6 +39,7 @@ export const PropertyEditor: React.FC = () => {
       'page-tab',
       'save-button',
       'main-tabs',
+      'editable-content',
     ],
   });
 

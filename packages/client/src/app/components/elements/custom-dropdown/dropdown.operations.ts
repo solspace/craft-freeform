@@ -9,9 +9,13 @@ export const findLabelByValue = (
   options: OptionCollection,
   value: string
 ): string | undefined => {
+  if (!options) {
+    return;
+  }
+
   for (const option of options) {
     if ('value' in option) {
-      if (option.value === value) {
+      if (option.value === String(value)) {
         return option.label;
       }
     }
@@ -25,10 +29,35 @@ export const findLabelByValue = (
   }
 };
 
+export const findShadowIndexByValue = (
+  options: OptionCollection,
+  value: string
+): number | undefined => {
+  if (!options) {
+    return;
+  }
+
+  for (const option of options) {
+    if ('value' in option) {
+      if (option.value === String(value)) {
+        return option.shadowIndex;
+      }
+    }
+
+    if ('children' in option) {
+      return findShadowIndexByValue(option.children, value);
+    }
+  }
+};
+
 export const findValueByShadowIndex = (
   options: OptionCollection,
   shadowIndex: number
 ): string | undefined => {
+  if (!options) {
+    return;
+  }
+
   for (const option of options) {
     if ('shadowIndex' in option) {
       if (option.shadowIndex === shadowIndex) {
@@ -62,38 +91,39 @@ const filterOptions = (
     };
   }
 
-  const filteredOpts = options
-    ?.map((option): Option | OptionGroup => {
-      if ('value' in option) {
-        const hasMatch =
-          !query || option.label.toLowerCase().includes(query.toLowerCase());
-        if (hasMatch) {
-          option.shadowIndex = index++;
+  const filteredOpts =
+    options
+      ?.map((option): Option | OptionGroup => {
+        if ('value' in option) {
+          const hasMatch =
+            !query || option.label.toLowerCase().includes(query.toLowerCase());
+          if (hasMatch) {
+            option.shadowIndex = index++;
 
-          return option;
+            return option;
+          }
         }
-      }
 
-      if ('children' in option) {
-        const [children, nestedIndex] = filterOptions(
-          option.children,
-          query,
-          index
-        );
+        if ('children' in option) {
+          const [children, nestedIndex] = filterOptions(
+            option.children,
+            query,
+            index
+          );
 
-        if (children.length) {
-          index = nestedIndex;
+          if (children.length) {
+            index = nestedIndex;
 
-          return {
-            ...option,
-            children,
-          };
+            return {
+              ...option,
+              children,
+            };
+          }
         }
-      }
 
-      return null;
-    })
-    .filter(Boolean);
+        return null;
+      })
+      .filter(Boolean) || [];
 
   if (emptyOpt) {
     filteredOpts.unshift(emptyOpt);
@@ -121,7 +151,7 @@ export const useFilteredOptions = (
 
     setFilteredOptions(filteredOpts);
     setOptionCount(optCount);
-  }, [query]);
+  }, [options, query]);
 
   return [filteredOptions, optionCount];
 };

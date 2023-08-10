@@ -1168,15 +1168,6 @@ return [
     'Freeform Stats' => 'Freeform Stats',
     'Freeform Checks' => 'Freeform Checks',
 
-    // Resources
-    'Resources' => 'Resources',
-    'Community' => 'Community',
-    'Explore' => 'Explore',
-    'Support' => 'Support',
-    'The Craft community is diverse, inclusive, and amazingly helpful. You can interact with others in the Craft community in a couple of different ways:' => 'The Craft community is diverse, inclusive, and amazingly helpful. You can interact with others in the Craft community in a couple of different ways:',
-    "Check out Solspace's other offerings and explore more options below to go beyond Freeform or extend the functionality of it by using the documented Developer Events." => "Check out Solspace's other offerings and explore more options below to go beyond Freeform or extend the functionality of it by using the documented Developer Events.",
-    'If you run into any issues or have any feature requests, check out the official support options below. We also appreciate any feedback you can provide us.' => 'If you run into any issues or have any feature requests, check out the official support options below. We also appreciate any feedback you can provide us.',
-
     // Craft Dashboard Widgets
     'Customize the widget title. Leave blank for default.' => 'Customize the widget title. Leave blank for default.',
     'Success Message' => 'Success Message',

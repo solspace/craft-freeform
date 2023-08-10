@@ -1172,15 +1172,6 @@ return [
     'Freeform Stats' => 'Freeform Statistieken',
     'Freeform Checks' => 'Freeform Controles',
 
-    // Resources
-    'Resources' => 'Bronnen',
-    'Community' => 'Gemeenschap',
-    'Explore' => 'Ontdekken',
-    'Support' => 'Steun',
-    'The Craft community is diverse, inclusive, and amazingly helpful. You can interact with others in the Craft community in a couple of different ways:' => 'De Craft-gemeenschap is divers, inclusief en ongelooflijk behulpzaam. Je kunt op verschillende manieren communiceren met anderen in de Craft-community:',
-    "Check out Solspace's other offerings and explore more options below to go beyond Freeform or extend the functionality of it by using the documented Developer Events." => 'Bekijk het andere aanbod van Solspace en verken hieronder meer opties om verder te gaan dan Freeform of de functionaliteit ervan uit te breiden door gebruik te maken van de gedocumenteerde Developer Events.',
-    'If you run into any issues or have any feature requests, check out the official support options below. We also appreciate any feedback you can provide us.' => 'Als je problemen tegenkomt of functieverzoeken hebt, bekijk dan de officiële ondersteuningsopties hieronder. We stellen ook alle feedback op prijs die u ons kunt geven.',
-
     // Craft Dashboard Widgets
     'Customize the widget title. Leave blank for default.' => 'Pas de widgettitel aan. Standaard leeg laten.',
     'Success Message' => 'Successbericht',

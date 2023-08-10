@@ -59,7 +59,6 @@ class SettingsController extends BaseController
         $canAccessSubmissions = PermissionHelper::checkPermission(Freeform::PERMISSION_SUBMISSIONS_ACCESS);
         $canAccessNotifications = PermissionHelper::checkPermission(Freeform::PERMISSION_NOTIFICATIONS_ACCESS);
         $canAccessSettings = PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS);
-        $canAccessResources = PermissionHelper::checkPermission(Freeform::PERMISSION_RESOURCES);
 
         $isFormView = Freeform::VIEW_FORMS === $defaultView;
         $isSubmissionView = Freeform::VIEW_SUBMISSIONS === $defaultView;
@@ -85,10 +84,6 @@ class SettingsController extends BaseController
 
             if (Freeform::getInstance()->isPro() && PermissionHelper::checkPermission(Freeform::PERMISSION_EXPORT_PROFILES_ACCESS)) {
                 return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_EXPORT_PROFILES));
-            }
-
-            if ($canAccessResources) {
-                return $this->redirect(UrlHelper::cpUrl('freeform/'.Freeform::VIEW_RESOURCES));
             }
         }
 

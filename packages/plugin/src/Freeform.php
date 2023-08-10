@@ -148,7 +148,6 @@ class Freeform extends Plugin
     public const VIEW_SUBMISSIONS = 'submissions';
     public const VIEW_NOTIFICATIONS = 'notifications';
     public const VIEW_SETTINGS = 'settings';
-    public const VIEW_RESOURCES = 'resources';
     public const VIEW_EXPORT_PROFILES = 'export-profiles';
 
     public const FIELD_DISPLAY_ORDER_TYPE = 'type';
@@ -176,7 +175,6 @@ class Freeform extends Plugin
     public const PERMISSION_NOTIFICATIONS_MANAGE = 'freeform-notificationsManage';
     public const PERMISSION_ERROR_LOG_ACCESS = 'freeform-errorLogAccess';
     public const PERMISSION_ERROR_LOG_MANAGE = 'freeform-errorLogManage';
-    public const PERMISSION_RESOURCES = 'freeform-resources';
     public const PERMISSION_ACCESS_QUICK_EXPORT = 'freeform-access-quick-export';
     public const PERMISSION_EXPORT_PROFILES_ACCESS = 'freeform-pro-exportProfilesAccess';
     public const PERMISSION_EXPORT_PROFILES_MANAGE = 'freeform-pro-exportProfilesManage';
@@ -597,7 +595,6 @@ class Freeform extends Plugin
                             ],
                         ],
                         self::PERMISSION_SETTINGS_ACCESS => ['label' => self::t('Access Settings')],
-                        self::PERMISSION_RESOURCES => ['label' => self::t('Access Resources')],
                     ];
 
                     $event->permissions[] = [

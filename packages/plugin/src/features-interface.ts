@@ -4,7 +4,6 @@ type DefaultView =
   | "fields"
   | "notifications"
   | "settings"
-  | "resources"
   | "export-profiles";
 
 type SpamProtectionBehaviour =

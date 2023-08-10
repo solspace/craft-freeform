@@ -34,8 +34,4 @@ if (PermissionHelper::checkPermission(Freeform::PERMISSION_SETTINGS_ACCESS)) {
     $navItems['settings'] = ['label' => Freeform::t('Settings'), 'url' => 'freeform/settings'];
 }
 
-if (PermissionHelper::checkPermission(Freeform::PERMISSION_RESOURCES)) {
-    $navItems['resources'] = ['label' => Freeform::t('Resources'), 'url' => 'freeform/resources'];
-}
-
 return $navItems;

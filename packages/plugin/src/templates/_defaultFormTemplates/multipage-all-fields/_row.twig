@@ -1,0 +1,111 @@
+{% macro getFieldTemplate(type) -%}
+    {% set fieldTemplatePath = "freeform/_defaultFormTemplates/multipage-all-fields/fields/" %}
+    {{- fieldTemplatePath ~ type ~ ".twig" -}}
+{%- endmacro %}
+
+    {% macro render(rows, form) %}
+        {% import _self as self %}
+
+{% set totalPages = (form.pages|length) %}
+
+{% for page in form.pages %}
+
+<div class="accordion accordion-flush">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading-{{ page.index + 1 }}">
+                <button class="accordion-button border-dark{% if form.currentPage.index == page.index %} bg-primary text-light fw-semibold{% else %} bg-light text-dark{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ page.index + 1 }}" aria-controls="collapse-{{ page.index + 1 }}">
+                    {{ page.index + 1 }}. {{ page.label }}
+                </button>
+            </h2>
+            <div id="collapse-{{ page.index + 1 }}" class="accordion-collapse collapse{% if form.currentPage.index == page.index %} show{% endif %}" aria-labelledby="heading-{{ page.index + 1 }}">
+                <div class="accordion-body{% if form.currentPage.index == page.index %} bg-primary-subtle{% endif %}">
+
+        {% for row in rows %}
+
+        {# Show form field inputs if currently active page #}
+        {% if form.currentPage.index == page.index %}
+            
+            {% set width = (12 / (row|length)) %}
+
+            <div{{ form.attributes.row }}>
+                {% for field in row %}
+
+                    {% do field.setParameters({
+                        attributes: {
+                            container: {
+                                class: [
+                                    "freeform-col-" ~ width,
+                                    "freeform-fieldtype-" ~ field.type,
+                                ],
+                            },
+                            input: {
+                                novalidate: true,
+                                class: [
+                                    field.hasErrors ? "is-invalid has-validation",
+                                    field.type not in ["save", "signature"] ? "freeform-input"
+                                ]
+                            },
+                            label: { class: [
+                                "freeform-label",
+                                field.inputOnly ? "freeform-input-only-label",
+                                field.required ? "freeform-required",
+                            ]},
+                            instructions: { class: ["freeform-instructions"] },
+                            error: { class: "freeform-errors" },
+                        }
+                    }) %}
+
+                    {% include [self.getFieldTemplate(field.type), self.getFieldTemplate("_default")] %}
+
+                {% endfor %}
+            </div>
+
+        {# Show simplified field labels and values (if present) for all other pages #}
+                        {% else %}
+
+                            <table class="table table-sm">
+                                {% for row in page %}
+                                    {% for field in row %}
+                                        {% if field.type != "submit" and field.type != "save" %}
+                                            <tr>
+                                                <th class="text-muted" style="width: 30%;">{{ field.label }}</th>
+                                                <td class="text-muted">
+                                                    {% if field.type == "password" %}
+                                                        •••••
+                                                    {% elseif field.type == "file" or field.type == "file_drag_and_drop" %}
+                                                        {% set assetIds = field.value %}
+                                                        {% if assetIds %}
+                                                            {% for assetId in assetIds %}
+                                                                {% set asset = craft.assets.id(assetId).one() %}
+                                                                {% if asset %}
+                                                                    {% if asset.kind == "image" %}
+                                                                        <img src="{{ asset.url }}" class="img-thumbnail img-responsive" style="max-width: 350px; max-height: 350px;" />
+                                                                    {% else %}
+                                                                        <a href="{{ asset.url }}">{{ asset.filename }}</a>
+                                                                    {% endif %}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        {% endif %}
+                                                    {% else %}
+                                                        {{ field.valueAsString }}
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            </table>
+
+                        {% endif %}
+
+        {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+
+    {% endmacro %}
+

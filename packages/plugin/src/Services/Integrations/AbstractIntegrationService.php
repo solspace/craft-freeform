@@ -10,6 +10,7 @@ namespace Solspace\Freeform\Services\Integrations;
 
 use craft\db\Query;
 use Solspace\Freeform\Bundles\Integrations\Providers\FormIntegrationsProvider;
+use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
@@ -23,8 +24,11 @@ abstract class AbstractIntegrationService extends BaseService
 {
     public const EVENT_FETCH_TYPES = 'fetchTypes';
 
-    public function __construct($config = [], private FormIntegrationsProvider $formIntegrationsProvider)
-    {
+    public function __construct(
+        $config = [],
+        protected FormIntegrationsProvider $formIntegrationsProvider,
+        protected IntegrationClientProvider $clientProvider,
+    ) {
         parent::__construct($config);
     }
 

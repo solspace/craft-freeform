@@ -10,15 +10,17 @@
  * @license       https://docs.solspace.com/license-agreement
  */
 
-namespace Solspace\Freeform\Integrations\CRM\Salesforce\EventListeners;
+namespace Solspace\Freeform\Bundles\Integrations\CRM\Salesforce;
 
 use Solspace\Freeform\Events\Integrations\CrmIntegrations\ProcessValueEvent;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
+use Solspace\Freeform\Library\Bundles\FeatureBundle;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
 use yii\base\Event;
 
-class SalesforceArrayValueProcessor
+// TODO: move into integrations and autowire from there
+class SalesforceArrayValueProcessor extends FeatureBundle
 {
     public function __construct()
     {

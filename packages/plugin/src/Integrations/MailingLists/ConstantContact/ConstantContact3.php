@@ -18,16 +18,22 @@ use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
-use Solspace\Freeform\Library\Integrations\OAuth\RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
+use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\MailingLists\DataObjects\ListObject;
-use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListOAuthConnector;
+use Solspace\Freeform\Library\Integrations\Types\MailingLists\MailingListIntegration;
 
 #[Type(
     name: 'Constant Contact (v3)',
     iconPath: __DIR__.'/icon.svg',
 )]
-class ConstantContact3 extends MailingListOAuthConnector implements RefreshTokenInterface
+class ConstantContact3 extends MailingListIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface
 {
+    use OAuth2RefreshTokenTrait;
+    use OAuth2Trait;
+
     public const LOG_CATEGORY = 'Constant Contact';
 
     /**
@@ -35,31 +41,22 @@ class ConstantContact3 extends MailingListOAuthConnector implements RefreshToken
      *
      * @throws IntegrationException
      */
-    public function checkConnection(bool $refreshTokenIfExpired = true): bool
+    public function checkConnection(Client $client): bool
     {
-        // Having no Access Token is very likely because this is
-        // an attempted connection right after a first save. The response
-        // will definitely be an error so skip the connection in this
-        // first-time connect situation.
-        if ($this->getAccessToken()) {
-            $client = $this->generateAuthorizedClient($refreshTokenIfExpired);
-            $endpoint = $this->getEndpoint('/contact_lists');
+        $endpoint = $this->getEndpoint('/contact_lists');
 
-            try {
-                $response = $client->get($endpoint);
-                $json = json_decode((string) $response->getBody(), false);
+        try {
+            $response = $client->get($endpoint);
+            $json = json_decode((string) $response->getBody(), false);
 
-                return isset($json->lists);
-            } catch (RequestException $exception) {
-                throw new IntegrationException(
-                    $exception->getMessage(),
-                    $exception->getCode(),
-                    $exception->getPrevious()
-                );
-            }
+            return isset($json->lists);
+        } catch (RequestException $exception) {
+            throw new IntegrationException(
+                $exception->getMessage(),
+                $exception->getCode(),
+                $exception->getPrevious()
+            );
         }
-
-        return false;
     }
 
     /**
@@ -130,6 +127,22 @@ class ConstantContact3 extends MailingListOAuthConnector implements RefreshToken
     public function getApiRootUrl(): string
     {
         return 'https://api.cc.email/v3';
+    }
+
+    /**
+     * URL pointing to the OAuth2 authorization endpoint.
+     */
+    public function getAuthorizeUrl(): string
+    {
+        return 'https://authz.constantcontact.com/oauth2/default/v1/authorize';
+    }
+
+    /**
+     * URL pointing to the OAuth2 access token endpoint.
+     */
+    public function getAccessTokenUrl(): string
+    {
+        return 'https://authz.constantcontact.com/oauth2/default/v1/token';
     }
 
     /**
@@ -246,77 +259,5 @@ class ConstantContact3 extends MailingListOAuthConnector implements RefreshToken
         }
 
         return $cachedFields;
-    }
-
-    /**
-     * URL pointing to the OAuth2 authorization endpoint.
-     */
-    protected function getAuthorizeUrl(): string
-    {
-        return 'https://authz.constantcontact.com/oauth2/default/v1/authorize';
-    }
-
-    /**
-     * URL pointing to the OAuth2 access token endpoint.
-     */
-    protected function getAccessTokenUrl(): string
-    {
-        return 'https://authz.constantcontact.com/oauth2/default/v1/token';
-    }
-
-    /**
-     * @throws IntegrationException
-     */
-    private function getRefreshedAccessToken(): string
-    {
-        if (!$this->getRefreshToken() || !$this->getClientId() || !$this->getClientSecret()) {
-            $this->getLogger()->warning(
-                'Trying to refresh Constant Contact access token with no credentials present'
-            );
-
-            return 'invalid';
-        }
-
-        $client = new Client();
-        $payload = [
-            'grant_type' => 'refresh_token',
-            'refresh_token' => $this->getRefreshToken(),
-        ];
-
-        try {
-            $response = $client->post(
-                $this->getAccessTokenUrl(),
-                [
-                    'auth' => [$this->getClientId(), $this->getClientSecret()],
-                    'form_params' => $payload,
-                ]
-            );
-
-            $json = json_decode((string) $response->getBody());
-            if (!isset($json->access_token)) {
-                throw new IntegrationException(
-                    $this->getTranslator()->translate("No 'access_token' present in auth response for Constant Contact")
-                );
-            }
-
-            $this->setAccessToken($json->access_token);
-            $this->setRefreshToken($json->refresh_token);
-
-            // The Record isn't being updated, as it would be with a regular
-            // form save, so we need to update the Record ourselves.
-            $this->updateAccessToken();
-            $this->updateSettings();
-
-            return $this->getAccessToken();
-        } catch (RequestException $e) {
-            $responseBody = (string) $e->getResponse()->getBody();
-            $this->getLogger()->error($responseBody, ['exception' => $e->getMessage()]);
-
-            throw new IntegrationException(
-                $e->getMessage(),
-                $e->getCode(),
-                $e->getPrevious()
-            );
-        }
     }
 }

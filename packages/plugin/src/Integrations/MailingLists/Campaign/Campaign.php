@@ -71,7 +71,7 @@ class Campaign extends MailingListIntegration
     /**
      * {@inheritDoc}
      */
-    public function checkConnection(): bool
+    public function checkConnection(Client $client): bool
     {
         return self::isInstallable();
     }

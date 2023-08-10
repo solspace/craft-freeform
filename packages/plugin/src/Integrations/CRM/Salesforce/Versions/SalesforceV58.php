@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Integrations\CRM\Salesforce\Versions;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
-use Solspace\Freeform\Attributes\EventListener;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Implementations\FieldMapping\FieldMapItem;
@@ -29,11 +28,9 @@ use Solspace\Freeform\Events\Integrations\IntegrationResponseEvent;
 use Solspace\Freeform\Fields\Implementations\CheckboxesField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Integrations\CRM\Salesforce\BaseSalesforceIntegration;
-use Solspace\Freeform\Integrations\CRM\Salesforce\EventListeners\SalesforceArrayValueProcessor;
 use Solspace\Freeform\Integrations\CRM\Salesforce\SalesforceIntegrationInterface;
 use yii\base\Event;
 
-#[EventListener(SalesforceArrayValueProcessor::class)]
 #[Type(
     name: 'Salesforce (v58)',
     readme: __DIR__.'/../README.md',
@@ -107,6 +104,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     )]
     protected ?FieldMapping $leadMapping = null;
 
+    // ==========================================
+    //               Opportunities
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map to Opportunities?',
@@ -145,6 +146,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
     )]
     protected ?FieldMapping $opportunityMapping = null;
 
+    // ==========================================
+    //                  Accounts
+    // ==========================================
+
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
         label: 'Map to Accounts?',
@@ -172,6 +177,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $accountMapping = null;
+
+    // ==========================================
+    //                  Contacts
+    // ==========================================
 
     #[Flag(self::FLAG_INSTANCE_ONLY)]
     #[Input\Boolean(
@@ -212,11 +221,9 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
     private ?string $accountId = null;
 
-    public function push(Form $form): bool
+    public function push(Form $form, Client $client): bool
     {
         $this->accountId = null;
-
-        $client = $this->generateAuthorizedClient();
 
         $this->processLeads($form, $client);
         $this->processAccounts($form, $client);
@@ -308,19 +315,19 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
         return false;
     }
 
-    private function processLeads(Form $form, Client $client): bool
+    private function processLeads(Form $form, Client $client): void
     {
         if (!$this->mapLeads) {
-            return false;
+            return;
         }
 
         $mapping = $this->processMapping($form, $this->leadMapping, self::CATEGORY_LEAD);
         if (!$mapping) {
-            return false;
+            return;
         }
 
         if ($this->createTasksForDuplicates($form, $client, $mapping)) {
-            return true;
+            return;
         }
 
         $endpoint = $this->getEndpoint('/sobjects/Lead');
@@ -339,23 +346,21 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_LEAD, $response)
             );
-
-            return 201 === $response->getStatusCode();
         } catch (RequestException $e) {
-            return $this->handleRequestException($e);
+            $this->handleRequestException($e);
         }
     }
 
-    private function processAccounts(Form $form, Client $client): bool
+    private function processAccounts(Form $form, Client $client): void
     {
         if (!$this->mapAccounts) {
-            return false;
+            return;
         }
 
         $contactMapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
         $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
         if (!$mapping) {
-            return false;
+            return;
         }
 
         $appendAccountFields = [];
@@ -448,22 +453,20 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_ACCOUNT, $response)
             );
-
-            return 201 === $response->getStatusCode();
         } catch (RequestException $exception) {
-            return $this->handleRequestException($exception);
+            $this->handleRequestException($exception);
         }
     }
 
-    private function processContacts(Form $form, Client $client): bool
+    private function processContacts(Form $form, Client $client): void
     {
         if (!$this->mapContacts) {
-            return false;
+            return;
         }
 
         $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
         if (!$mapping) {
-            return false;
+            return;
         }
 
         $isAppendContactData = $this->appendContactData;
@@ -534,22 +537,20 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_CONTACT, $response)
             );
-
-            return 201 === $response->getStatusCode();
         } catch (RequestException $e) {
-            return $this->handleRequestException($e);
+            $this->handleRequestException($e);
         }
     }
 
-    private function processOpportunities(Form $form, Client $client): bool
+    private function processOpportunities(Form $form, Client $client): void
     {
         if (!$this->mapOpportunities) {
-            return false;
+            return;
         }
 
         $mapping = $this->processMapping($form, $this->opportunityMapping, self::CATEGORY_OPPORTUNITY);
         if (!$mapping) {
-            return false;
+            return;
         }
 
         try {
@@ -572,14 +573,12 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 self::EVENT_AFTER_RESPONSE,
                 new IntegrationResponseEvent($this, self::CATEGORY_OPPORTUNITY, $response)
             );
-
-            return 201 === $response->getStatusCode();
         } catch (RequestException $exception) {
-            return $this->handleRequestException($exception);
+            $this->handleRequestException($exception);
         }
     }
 
-    private function handleRequestException(RequestException $exception): bool
+    private function handleRequestException(RequestException $exception): void
     {
         $exceptionResponse = $exception->getResponse();
         if (!$exceptionResponse) {
@@ -597,7 +596,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
             if (\is_array($errors)) {
                 foreach ($errors as $error) {
                     if ('REQUIRED_FIELD_MISSING' === strtoupper($error->errorCode)) {
-                        return false;
+                        return;
                     }
                 }
             }

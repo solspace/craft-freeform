@@ -323,7 +323,6 @@ return [
     'Logged Errors only' => 'Logged Errors only',
     'Submission Count' => 'Submission Count',
     'Spam Folder Count' => 'Spam Folder Count',
-    "Hide 'Install Demo' alert message?" => "Hide 'Install Demo' alert message?",
     'Hides the alert message suggesting to install demo templates when this setting is enabled.' => 'Hides the alert message suggesting to install demo templates when this setting is enabled.',
     'Element Field Type' => 'Element Field Type',
     'Restrict Form options in Form Field Type to User permissions?' => 'Restrict Form options in Form Field Type to User permissions?',

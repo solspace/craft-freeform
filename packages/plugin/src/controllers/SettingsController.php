@@ -47,11 +47,6 @@ class SettingsController extends BaseController
 
     public function actionDefaultView(): Response
     {
-        if ($this->getSettingsService()->isOldFreeformInstalled()) {
-            throw new FreeformException(
-                Freeform::t('We’ve detected that both the new 3.x and old 2.x versions of Freeform are installed. Please review the Upgrading from Freeform 2.x guide and remove the old Freeform Pro 2.x plugin to resolve this issue.')
-            );
-        }
 
         $defaultView = $this->getSettingsModel()->defaultView;
 

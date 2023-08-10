@@ -323,7 +323,6 @@ return [
     'Logged Errors only' => 'Alleen geregistreerde fouten',
     'Submission Count' => 'Aantal inzendingen',
     'Spam Folder Count' => 'Aantal spammappen',
-    "Hide 'Install Demo' alert message?" => "Waarschuwingsbericht 'Demo installeren' verbergen?",
     'Hides the alert message suggesting to install demo templates when this setting is enabled.' => 'Verbergt het waarschuwingsbericht waarin wordt voorgesteld demosjablonen te installeren wanneer deze instelling is ingeschakeld.',
     'Element Field Type' => 'Element Veldtype',
     'Restrict Form options in Form Field Type to User permissions?' => 'Formulieropties in Formulierveldtype beperken tot gebruikersmachtigingen?',

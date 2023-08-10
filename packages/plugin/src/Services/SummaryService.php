@@ -52,7 +52,6 @@ class SummaryService extends Component
         $system->userGroups = $craft->userGroups->getAllGroups() > 1;
         $system->multiSite = $craft->sites->getAllSiteIds() > 1;
         $system->languages = $this->hasLanguages();
-        $system->legacyFreeform = $freeform->settings->isOldFreeformInstalled();
         $system->plugins = $this->getPlugins();
 
         $summary->statistics->system = $system;

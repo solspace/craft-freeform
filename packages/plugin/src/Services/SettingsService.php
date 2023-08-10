@@ -346,32 +346,6 @@ class SettingsService extends BaseService
         return true;
     }
 
-    public function isOldFreeformInstalled(): bool
-    {
-        $paths = [
-            '/solspace/craft3-freeform',
-            '/solspace/craft3-freeform-pro',
-            '/solspace/craft3-freeform-payments',
-        ];
-
-        if (\defined('CRAFT_VENDOR_PATH')) {
-            $vendorPath = CRAFT_VENDOR_PATH;
-        } elseif (\defined('CRAFT_BASE_PATH')) {
-            $vendorPath = CRAFT_BASE_PATH.'/vendor';
-        } else {
-            return false;
-        }
-
-        $hasOldFreeform = false;
-        foreach ($paths as $path) {
-            if (is_dir($vendorPath.$path)) {
-                $hasOldFreeform = true;
-            }
-        }
-
-        return $hasOldFreeform;
-    }
-
     public function getFailedNotificationRecipients(): RecipientCollection
     {
         return new RecipientCollection(

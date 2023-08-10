@@ -247,12 +247,6 @@ class Settings extends Model
     /** @var string */
     public $formattingTemplate;
 
-    /** @var bool */
-    public $hideBannerDemo = false;
-
-    /** @var bool */
-    public $hideBannerOldFreeform = false;
-
     /** @var int */
     public $sessionEntryMaxCount;
 
@@ -388,9 +382,6 @@ class Settings extends Model
         $this->recaptchaTheme = self::RECAPTCHA_THEME;
         $this->recaptchaSize = self::RECAPTCHA_SIZE;
         $this->recaptchaErrorMessage = self::RECAPTCHA_ERROR_MESSAGE;
-
-        $this->hideBannerDemo = false;
-        $this->hideBannerOldFreeform = false;
 
         $this->sessionEntryMaxCount = self::DEFAULT_ACTIVE_SESSION_ENTRIES;
         $this->sessionEntryTTL = self::DEFAULT_SESSION_ENTRY_TTL;

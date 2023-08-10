@@ -23,6 +23,8 @@ abstract class BaseInsightlyIntegration extends CRMIntegration implements Insigh
 {
     protected const LOG_CATEGORY = 'Insightly';
 
+    protected const CATEGORY_LEAD = 'Lead';
+
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(

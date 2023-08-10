@@ -53,7 +53,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable HubSpot Deal fields',
         order: 6,
-        source: 'api/integrations/crm/fields/Deal',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
@@ -76,7 +76,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable HubSpot Contacts fields',
         order: 8,
-        source: 'api/integrations/crm/fields/Contact',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $contactMapping = null;
@@ -99,7 +99,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable HubSpot Company fields',
         order: 10,
-        source: 'api/integrations/crm/fields/Company',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_COMPANY,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $companyMapping = null;
@@ -137,9 +137,9 @@ class HubSpotV1 extends BaseHubSpotIntegration
     {
         $record = 'deals';
 
-        if ('Contact' === $category) {
+        if (self::CATEGORY_CONTACT === $category) {
             $record = 'contacts';
-        } elseif ('Company' === $category) {
+        } elseif (self::CATEGORY_COMPANY === $category) {
             $record = 'companies';
         }
 
@@ -221,7 +221,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
     private function setProps(Form $form): void
     {
         if ($this->mapDeals) {
-            $mapping = $this->processMapping($form, $this->dealMapping, 'Deal');
+            $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
             if (!$mapping) {
                 return;
             }
@@ -239,12 +239,15 @@ class HubSpotV1 extends BaseHubSpotIntegration
             foreach ($mapping as $key => $value) {
                 $value = $this->formatValue($value, $formFields[$key]);
 
-                $this->dealProps[] = ['value' => $value, 'name' => $key];
+                $this->dealProps[] = [
+                    'value' => $value,
+                    'name' => $key,
+                ];
             }
         }
 
         if ($this->mapContacts) {
-            $mapping = $this->processMapping($form, $this->contactMapping, 'Contact');
+            $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
             if (!$mapping) {
                 return;
             }
@@ -262,7 +265,10 @@ class HubSpotV1 extends BaseHubSpotIntegration
             foreach ($mapping as $key => $value) {
                 $value = $this->formatValue($value, $formFields[$key]);
 
-                $this->contactProps[] = ['value' => $value, 'property' => $key];
+                $this->contactProps[] = [
+                    'value' => $value,
+                    'property' => $key,
+                ];
 
                 if ($this->getAppendContactData()) {
                     if (isset($formFields[$key])) {
@@ -275,7 +281,7 @@ class HubSpotV1 extends BaseHubSpotIntegration
         }
 
         if ($this->mapCompanies) {
-            $mapping = $this->processMapping($form, $this->companyMapping, 'Company');
+            $mapping = $this->processMapping($form, $this->companyMapping, self::CATEGORY_COMPANY);
             if (!$mapping) {
                 return;
             }
@@ -293,7 +299,10 @@ class HubSpotV1 extends BaseHubSpotIntegration
             foreach ($mapping as $key => $value) {
                 $value = $this->formatValue($value, $formFields[$key]);
 
-                $this->companyProps[] = ['value' => $value, 'name' => $key];
+                $this->companyProps[] = [
+                    'value' => $value,
+                    'name' => $key,
+                ];
 
                 if ($this->getAppendCompanyData()) {
                     if (isset($formFields[$key])) {
@@ -314,60 +323,62 @@ class HubSpotV1 extends BaseHubSpotIntegration
 
         $contactEmail = $this->getEmailFieldValue($this->contactProps);
 
-        if ($this->companyProps) {
-            try {
-                $companyDomain = $this->getDomainFieldValue($this->companyProps);
+        if (!$this->companyProps) {
+            return;
+        }
 
-                if (!$companyDomain && $contactEmail) {
-                    $companyDomain = $this->extractDomainFromEmail($contactEmail);
+        try {
+            $companyDomain = $this->getDomainFieldValue($this->companyProps);
 
-                    if ($companyDomain) {
-                        $this->companyProps = $this->addCompanyDomainToCompanyProps($companyDomain, $this->companyProps);
-                    }
-                }
+            if (!$companyDomain && $contactEmail) {
+                $companyDomain = $this->extractDomainFromEmail($contactEmail);
 
                 if ($companyDomain) {
-                    $queryProperties = ['domain'];
+                    $this->companyProps = $this->addCompanyDomainToCompanyProps($companyDomain, $this->companyProps);
+                }
+            }
 
-                    if ($this->appendCompanyFields) {
-                        $queryProperties = array_merge($queryProperties, $this->appendCompanyFields);
-                    }
+            if ($companyDomain) {
+                $queryProperties = ['domain'];
 
-                    $response = $this->getCompanyByDomain($companyDomain, $client, $queryProperties);
-
-                    $json = json_decode((string) $response->getBody());
-
-                    if (\count($json->results) > 0) {
-                        $company = $json->results[0];
-
-                        if (isset($company->companyId)) {
-                            $this->companyId = $company->companyId;
-                        }
-
-                        if ($this->appendCompanyFields && isset($company->properties)) {
-                            $this->companyProps = $this->appendValuesToCompanyProperties($this->companyProps, $this->appendCompanyFields, $company);
-                        }
-                    }
+                if ($this->appendCompanyFields) {
+                    $queryProperties = array_merge($queryProperties, $this->appendCompanyFields);
                 }
 
-                if ($this->companyId) {
-                    $response = $this->updateCompanyById($this->companyId, $client, $this->companyProps);
-                } else {
-                    $response = $this->createCompany($client, $this->companyProps);
-                }
+                $response = $this->getCompanyByDomain($companyDomain, $client, $queryProperties);
 
                 $json = json_decode((string) $response->getBody());
 
-                if (isset($json->companyId)) {
-                    $this->companyId = $json->companyId;
-                }
+                if (\count($json->results) > 0) {
+                    $company = $json->results[0];
 
-                if (isset($json->properties->name->value)) {
-                    $this->companyName = $json->properties->name->value;
+                    if (isset($company->companyId)) {
+                        $this->companyId = $company->companyId;
+                    }
+
+                    if ($this->appendCompanyFields && isset($company->properties)) {
+                        $this->companyProps = $this->appendValuesToCompanyProperties($this->companyProps, $this->appendCompanyFields, $company);
+                    }
                 }
-            } catch (\Exception $exception) {
-                $this->processException($exception, self::LOG_CATEGORY);
             }
+
+            if ($this->companyId) {
+                $response = $this->updateCompanyById($this->companyId, $client, $this->companyProps);
+            } else {
+                $response = $this->createCompany($client, $this->companyProps);
+            }
+
+            $json = json_decode((string) $response->getBody());
+
+            if (isset($json->companyId)) {
+                $this->companyId = $json->companyId;
+            }
+
+            if (isset($json->properties->name->value)) {
+                $this->companyName = $json->properties->name->value;
+            }
+        } catch (\Exception $exception) {
+            $this->processException($exception, self::LOG_CATEGORY);
         }
 
         if ($this->contactProps) {
@@ -437,34 +448,34 @@ class HubSpotV1 extends BaseHubSpotIntegration
             }
         }
 
-        if (!empty($this->dealProps)) {
-            $deal = [
-                'properties' => $this->dealProps,
-            ];
+        if (!$this->dealProps) {
+            return;
+        }
 
-            if ($this->companyId || $this->contactId) {
-                $deal['associations'] = [];
+        $deal = [
+            'properties' => $this->dealProps,
+        ];
 
-                if ($this->companyId) {
-                    $deal['associations']['associatedCompanyIds'] = [
-                        $this->companyId,
-                    ];
-                }
+        if ($this->companyId || $this->contactId) {
+            $deal['associations'] = [];
 
-                if ($this->contactId) {
-                    $deal['associations']['associatedVids'] = [
-                        $this->contactId,
-                    ];
-                }
+            if ($this->companyId) {
+                $deal['associations']['associatedCompanyIds'] = [
+                    $this->companyId,
+                ];
             }
 
-            $client->post(
-                $this->getEndpoint('/deals/v1/deal'),
-                [
-                    'json' => $deal,
-                ],
-            );
+            if ($this->contactId) {
+                $deal['associations']['associatedVids'] = [
+                    $this->contactId,
+                ];
+            }
         }
+
+        $client->post(
+            $this->getEndpoint('/deals/v1/deal'),
+            ['json' => $deal],
+        );
     }
 
     private function isAppendFieldType(mixed $formField): bool

@@ -27,6 +27,12 @@ abstract class BaseHubSpotIntegration extends CRMIntegration implements OAuth2Co
 
     protected const LOG_CATEGORY = 'HubSpot';
 
+    protected const CATEGORY_DEAL = 'Deal';
+
+    protected const CATEGORY_CONTACT = 'Contact';
+
+    protected const CATEGORY_COMPANY = 'Company';
+
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
     #[Input\Text(
         label: 'App ID',

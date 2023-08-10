@@ -40,7 +40,7 @@ class InsightlyV31 extends BaseInsightlyIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Insightly Leads fields',
         order: 3,
-        source: 'api/integrations/crm/fields/Lead',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $leadMapping = null;
@@ -67,7 +67,7 @@ class InsightlyV31 extends BaseInsightlyIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->leadMapping, 'Lead');
+        $mapping = $this->processMapping($form, $this->leadMapping, self::CATEGORY_LEAD);
         if (!$mapping) {
             return;
         }
@@ -75,9 +75,7 @@ class InsightlyV31 extends BaseInsightlyIntegration
         try {
             $client->post(
                 $this->getEndpoint('/Leads'),
-                [
-                    'json' => $mapping,
-                ],
+                ['json' => $mapping],
             );
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);

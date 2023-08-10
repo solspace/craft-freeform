@@ -31,6 +31,14 @@ abstract class BaseSalesforceIntegration extends CRMIntegration implements OAuth
 
     protected const LOG_CATEGORY = 'Salesforce';
 
+    protected const CATEGORY_LEAD = 'Lead';
+
+    protected const CATEGORY_OPPORTUNITY = 'Opportunity';
+
+    protected const CATEGORY_ACCOUNT = 'Account';
+
+    protected const CATEGORY_CONTACT = 'Contact';
+
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
     protected string $instanceUrl = '';

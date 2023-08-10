@@ -72,7 +72,7 @@ class ZohoV2 extends BaseZohoIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Lead fields',
         order: 6,
-        source: 'api/integrations/crm/fields/Lead',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_LEAD,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $leadMapping = null;
@@ -95,7 +95,7 @@ class ZohoV2 extends BaseZohoIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Deals fields',
         order: 8,
-        source: 'api/integrations/crm/fields/Deal',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
@@ -118,7 +118,7 @@ class ZohoV2 extends BaseZohoIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Account fields',
         order: 10,
-        source: 'api/integrations/crm/fields/Account',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $accountMapping = null;
@@ -141,18 +141,14 @@ class ZohoV2 extends BaseZohoIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Zoho Contact fields',
         order: 12,
-        source: 'api/integrations/crm/fields/Contact',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $contactMapping = null;
 
     private ?int $accountId = null;
 
-    private ?string $accountName = null;
-
     private ?int $contactId = null;
-
-    private ?string $contactName = null;
 
     private ?int $dealId = null;
 
@@ -214,7 +210,7 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->leadMapping, 'Lead');
+        $mapping = $this->processMapping($form, $this->leadMapping, self::CATEGORY_LEAD);
         if (!$mapping) {
             return;
         }
@@ -224,9 +220,7 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->getEndpoint('/Leads'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
+                        'data' => [$mapping],
                     ],
                 ],
             );
@@ -245,7 +239,7 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->accountMapping, 'Account');
+        $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
         if (!$mapping) {
             return;
         }
@@ -255,12 +249,8 @@ class ZohoV2 extends BaseZohoIntegration
                 $this->getEndpoint('/Accounts/upsert'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
-                        'duplicate_check_fields' => [
-                            'Account_Name',
-                        ],
+                        'data' => [$mapping],
+                        'duplicate_check_fields' => ['Account_Name'],
                     ],
                 ],
             );
@@ -285,26 +275,20 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->contactMapping, 'Contact');
+        $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
         if (!$mapping) {
             return;
         }
 
-        $mapping['Account_Name'] = [
-            'id' => $this->accountId,
-        ];
+        $mapping['Account_Name'] = ['id' => $this->accountId];
 
         try {
             $response = $client->post(
                 $this->getEndpoint('/Contacts/upsert'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
-                        'duplicate_check_fields' => [
-                            'Email',
-                        ],
+                        'data' => [$mapping],
+                        'duplicate_check_fields' => ['Email'],
                     ],
                 ],
             );
@@ -329,29 +313,21 @@ class ZohoV2 extends BaseZohoIntegration
             return;
         }
 
-        $mapping = $this->processMapping($form, $this->dealMapping, 'Deal');
+        $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
         if (!$mapping) {
             return;
         }
 
         $mapping['Stage'] = $this->getStage() ?? 'Qualification';
-
-        $mapping['Account_Name'] = [
-            'id' => $this->accountId,
-        ];
-
-        $mapping['Contact_Name'] = [
-            'id' => $this->contactId,
-        ];
+        $mapping['Account_Name'] = ['id' => $this->accountId];
+        $mapping['Contact_Name'] = ['id' => $this->contactId];
 
         try {
             $response = $client->post(
                 $this->getEndpoint('/Deals'),
                 [
                     'json' => [
-                        'data' => [
-                            $mapping,
-                        ],
+                        'data' => [$mapping],
                     ],
                 ],
             );
@@ -372,9 +348,7 @@ class ZohoV2 extends BaseZohoIntegration
                     [
                         'json' => [
                             'data' => [
-                                [
-                                    'Contact_Role' => $this->getDefaultContactRoleId(),
-                                ],
+                                ['Contact_Role' => $this->getDefaultContactRoleId()],
                             ],
                         ],
                     ],

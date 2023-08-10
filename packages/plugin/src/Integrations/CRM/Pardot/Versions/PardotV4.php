@@ -41,7 +41,7 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Prospect fields',
         order: 6,
-        source: 'api/integrations/crm/fields/Prospect',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_PROSPECT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $prospectMapping = null;
@@ -64,14 +64,14 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable Pardot Custom fields',
         order: 8,
-        source: 'api/integrations/crm/fields/Custom',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_CUSTOM,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $customMapping = null;
 
     public function getApiRootUrl(): string
     {
-        return 'https://pi.pardot.com/api/';
+        return 'https://pi.pardot.com/api';
     }
 
     public function push(Form $form, Client $client): bool
@@ -99,11 +99,11 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
         $customMapping = [];
 
         if ($this->mapProspect) {
-            $prospectMapping = $this->processMapping($form, $this->prospectMapping, 'Prospect');
+            $prospectMapping = $this->processMapping($form, $this->prospectMapping, self::CATEGORY_PROSPECT);
         }
 
         if ($this->mapCustom) {
-            $customMapping = $this->processMapping($form, $this->customMapping, 'Custom');
+            $customMapping = $this->processMapping($form, $this->customMapping, self::CATEGORY_CUSTOM);
         }
 
         $mapping = array_merge($prospectMapping, $customMapping);
@@ -118,9 +118,7 @@ class PardotV4 extends BasePardotIntegration implements PardotIntegrationInterfa
 
             $client->post(
                 $this->getPardotEndpoint('prospect', 'create/email/'.$email),
-                [
-                    'query' => $mapping,
-                ],
+                ['query' => $mapping],
             );
         } catch (\Exception $exception) {
             $this->processException($exception, self::LOG_CATEGORY);

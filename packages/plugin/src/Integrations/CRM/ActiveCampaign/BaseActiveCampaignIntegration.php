@@ -23,17 +23,11 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
 {
     protected const LOG_CATEGORY = 'ActiveCampaign';
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected int $pipelineId = 0;
+    protected const CATEGORY_CONTACT = 'Contact';
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected int $stageId = 0;
+    protected const CATEGORY_DEAL = 'Deal';
 
-    #[Flag(self::FLAG_INTERNAL)]
-    #[Input\Hidden]
-    protected int $ownerId = 0;
+    protected const CATEGORY_ACCOUNT = 'Account';
 
     #[Flag(self::FLAG_ENCRYPTED)]
     #[Flag(self::FLAG_GLOBAL_PROPERTY)]
@@ -93,86 +87,14 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         return $this->getProcessedValue($this->apiToken);
     }
 
-    public function getPipelineId(): int
-    {
-        return $this->pipelineId;
-    }
-
-    public function setPipelineId(int $pipelineId): self
-    {
-        $this->pipelineId = $pipelineId;
-
-        return $this;
-    }
-
-    public function getStageId(): int
-    {
-        return $this->stageId;
-    }
-
-    public function setStageId(int $stageId): self
-    {
-        $this->stageId = $stageId;
-
-        return $this;
-    }
-
-    public function getOwnerId(): int
-    {
-        return $this->ownerId;
-    }
-
-    public function setOwnerId(int $ownerId): self
-    {
-        $this->ownerId = $ownerId;
-
-        return $this;
-    }
-
-    public function onBeforeSave(Client $client): void
-    {
-        $apiToken = $this->getApiToken();
-        $apiUrl = $this->getApiRootUrl();
-        $pipeline = $this->getPipeline();
-        $stage = $this->getStage();
-        $owner = $this->getOwner();
-
-        // If one of these isn't present, we just return void
-        if (!$apiToken || !$apiUrl) {
-            return;
-        }
-
-        $pipelineId = $this->fetchPipelineId($client, $pipeline);
-        if ($pipelineId) {
-            $this->setPipelineId($pipelineId);
-        }
-
-        $stageId = $this->fetchStageId($client, $stage, $pipelineId);
-        if ($stageId) {
-            $this->setStageId($stageId);
-        }
-
-        $ownerId = $this->fetchOwnerId($client, $owner);
-        if ($ownerId) {
-            $this->setOwnerId($ownerId);
-        }
-    }
-
     public function fetchFields(string $category, Client $client): array
     {
-        if ('Contact' === $category) {
-            return $this->fetchContactFields($client);
-        }
-
-        if ('Deal' === $category) {
-            return $this->fetchDealFields($client);
-        }
-
-        if ('Account' === $category) {
-            return $this->fetchAccountFields($client);
-        }
-
-        return [];
+        return match ($category) {
+            self::CATEGORY_CONTACT => $this->fetchContactFields($client, $category),
+            self::CATEGORY_DEAL => $this->fetchDealFields($client, $category),
+            self::CATEGORY_ACCOUNT => $this->fetchAccountFields($client, $category),
+            default => [],
+        };
     }
 
     protected function getApiUrl(): string
@@ -303,7 +225,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         return $ownerId;
     }
 
-    private function fetchContactFields(Client $client): array
+    private function fetchContactFields(Client $client, string $category): array
     {
         try {
             $response = $client->get($this->getEndpoint('/fields'));
@@ -314,7 +236,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         $json = json_decode((string) $response->getBody(), false);
 
         if (!isset($json->fields) || !$json->fields) {
-            throw new IntegrationException('Could not fetch fields for Contact');
+            throw new IntegrationException('Could not fetch fields for '.$category);
         }
 
         $fieldList = [];
@@ -323,7 +245,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'listId',
             'List',
             FieldObject::TYPE_NUMERIC,
-            'Contact',
+            $category,
             false,
         );
 
@@ -331,7 +253,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'firstName',
             'First Name',
             FieldObject::TYPE_STRING,
-            'Contact',
+            $category,
             false,
         );
 
@@ -339,7 +261,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'lastName',
             'Last Name',
             FieldObject::TYPE_STRING,
-            'Contact',
+            $category,
             false,
         );
 
@@ -347,7 +269,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'email',
             'Email',
             FieldObject::TYPE_STRING,
-            'Contact',
+            $category,
             true,
         );
 
@@ -355,7 +277,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'phone',
             'Phone',
             FieldObject::TYPE_STRING,
-            'Contact',
+            $category,
             false,
         );
 
@@ -384,7 +306,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
                 $field->id,
                 $field->title,
                 $type,
-                'Contact',
+                $category,
                 (bool) $field->isrequired,
             );
         }
@@ -392,7 +314,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         return $fieldList;
     }
 
-    private function fetchDealFields(Client $client): array
+    private function fetchDealFields(Client $client, string $category): array
     {
         try {
             $response = $client->get($this->getEndpoint('/dealCustomFieldMeta'));
@@ -403,7 +325,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         $json = json_decode((string) $response->getBody(), false);
 
         if (!isset($json->dealCustomFieldMeta) || !$json->dealCustomFieldMeta) {
-            throw new IntegrationException('Could not fetch fields for Deal');
+            throw new IntegrationException('Could not fetch fields for '.$category);
         }
 
         $fieldList = [];
@@ -412,7 +334,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'title',
             'Title',
             FieldObject::TYPE_STRING,
-            'Deal',
+            $category,
             true,
         );
 
@@ -420,7 +342,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'description',
             'Description',
             FieldObject::TYPE_STRING,
-            'Deal',
+            $category,
             false,
         );
 
@@ -428,7 +350,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'value',
             'Value',
             FieldObject::TYPE_NUMERIC,
-            'Deal',
+            $category,
             true,
         );
 
@@ -436,7 +358,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'currency',
             'Currency',
             FieldObject::TYPE_STRING,
-            'Deal',
+            $category,
             true,
         );
 
@@ -444,7 +366,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'group',
             'Group',
             FieldObject::TYPE_STRING,
-            'Deal',
+            $category,
             true,
         );
 
@@ -452,7 +374,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'owner',
             'Owner',
             FieldObject::TYPE_STRING,
-            'Deal',
+            $category,
             true,
         );
 
@@ -460,7 +382,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'percent',
             'Percent',
             FieldObject::TYPE_STRING,
-            'Deal',
+            $category,
             false,
         );
 
@@ -468,7 +390,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'stage',
             'Stage',
             FieldObject::TYPE_STRING,
-            'Deal',
+            $category,
             true,
         );
 
@@ -476,7 +398,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'status',
             'Status',
             FieldObject::TYPE_NUMERIC,
-            'Deal',
+            $category,
             false,
         );
 
@@ -505,7 +427,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
                 $field->id,
                 $field->fieldLabel,
                 $type,
-                'Deal',
+                $category,
                 (bool) $field->isRequired,
             );
         }
@@ -513,7 +435,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         return $fieldList;
     }
 
-    private function fetchAccountFields(Client $client): array
+    private function fetchAccountFields(Client $client, string $category): array
     {
         try {
             $response = $client->get($this->getEndpoint('/accountCustomFieldMeta'));
@@ -524,7 +446,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
         $json = json_decode((string) $response->getBody());
 
         if (!isset($json->accountCustomFieldMeta) || !$json->accountCustomFieldMeta) {
-            throw new IntegrationException('Could not fetch fields for Account');
+            throw new IntegrationException('Could not fetch fields for '.$category);
         }
 
         $fieldList = [];
@@ -533,7 +455,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
             'name',
             'Name',
             FieldObject::TYPE_STRING,
-            'Account',
+            $category,
             true,
         );
 
@@ -562,7 +484,7 @@ abstract class BaseActiveCampaignIntegration extends CRMIntegration implements A
                 $field->id,
                 $field->fieldLabel,
                 $type,
-                'Account',
+                $category,
                 (bool) $field->isRequired,
             );
         }

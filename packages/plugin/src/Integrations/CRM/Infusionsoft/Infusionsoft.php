@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Integrations\CRM\Infusionsoft;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Integration\Type;
-use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Form\Form;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -23,7 +22,6 @@ use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenInterface;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2RefreshTokenTrait;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2Trait;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegration;
-use yii\base\Event;
 
 #[Type('Infusionsoft')]
 class Infusionsoft extends CRMIntegration implements OAuth2ConnectorInterface, OAuth2RefreshTokenInterface
@@ -181,18 +179,6 @@ class Infusionsoft extends CRMIntegration implements OAuth2ConnectorInterface, O
         }
 
         return $fieldList;
-    }
-
-    // TODO: move to event listener
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
-    {
-        $value = parent::convertCustomFieldValue($fieldObject, $field);
-
-        if (FieldObject::TYPE_ARRAY === $fieldObject->getType()) {
-            $value = \is_array($value) ? implode(';', $value) : $value;
-        }
-
-        return $value;
     }
 
     public function getApiRootUrl(): string

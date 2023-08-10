@@ -30,6 +30,14 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
 
     protected const LOG_CATEGORY = 'Pipedrive';
 
+    protected const CATEGORY_LEAD = 'Lead';
+
+    protected const CATEGORY_DEAL = 'Deal';
+
+    protected const CATEGORY_ORGANIZATION = 'Organization';
+
+    protected const CATEGORY_PERSON = 'Person';
+
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
     protected string $apiDomain = '';
@@ -170,7 +178,7 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
             );
         }
 
-        if ('Organization' === $category) {
+        if (self::CATEGORY_ORGANIZATION === $category) {
             $fieldList[] = new FieldObject(
                 'address',
                 'Address',
@@ -180,7 +188,7 @@ abstract class BasePipedriveIntegration extends CRMIntegration implements OAuth2
             );
         }
 
-        if ('Deal' === $category || 'Lead' === $category) {
+        if (self::CATEGORY_DEAL === $category || self::CATEGORY_LEAD === $category) {
             $fieldList[] = new FieldObject(
                 'note',
                 'Note',

@@ -15,7 +15,6 @@ namespace Solspace\Freeform\Services\Integrations;
 use craft\db\Query;
 use Solspace\Freeform\Attributes\Integration\Type;
 use Solspace\Freeform\Bundles\Attributes\Property\PropertyProvider;
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\Events\Integrations\DeleteEvent;
 use Solspace\Freeform\Events\Integrations\RegisterIntegrationTypesEvent;
 use Solspace\Freeform\Events\Integrations\SaveEvent;
@@ -42,7 +41,6 @@ class IntegrationsService extends BaseService
     public function __construct(
         $config = [],
         private PropertyProvider $propertyProvider,
-        private IntegrationClientProvider $clientProvider,
     ) {
         parent::__construct($config);
     }
@@ -105,8 +103,7 @@ class IntegrationsService extends BaseService
     public function save(IntegrationModel $model, IntegrationInterface $integration, bool $triggerEvents = false): bool
     {
         try {
-            $client = $this->clientProvider->getAuthorizedClient($integration);
-            $integration->onBeforeSave($client);
+            $integration->onBeforeSave();
         } catch (\Exception $e) {
             $model->addError('integration', $e->getMessage());
         }

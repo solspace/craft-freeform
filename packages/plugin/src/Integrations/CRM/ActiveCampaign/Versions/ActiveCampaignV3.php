@@ -50,7 +50,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable ActiveCampaign Contact fields',
         order: 9,
-        source: 'api/integrations/crm/fields/Contact',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_CONTACT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $contactMapping = null;
@@ -73,7 +73,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable ActiveCampaign Deal fields',
         order: 11,
-        source: 'api/integrations/crm/fields/Deal',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_DEAL,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $dealMapping = null;
@@ -96,7 +96,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     #[Input\Special\Properties\FieldMapping(
         instructions: 'Select the Freeform fields to be mapped to the applicable ActiveCampaign Account fields',
         order: 13,
-        source: 'api/integrations/crm/fields/Account',
+        source: 'api/integrations/crm/fields/'.self::CATEGORY_ACCOUNT,
         parameterFields: ['id' => 'id'],
     )]
     protected ?FieldMapping $accountMapping = null;
@@ -137,7 +137,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
     private function setProps(Form $form): void
     {
         if ($this->mapContact) {
-            $mapping = $this->processMapping($form, $this->contactMapping, 'Contact');
+            $mapping = $this->processMapping($form, $this->contactMapping, self::CATEGORY_CONTACT);
             if (!$mapping) {
                 return;
             }
@@ -160,7 +160,7 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
         }
 
         if ($this->mapDeal) {
-            $mapping = $this->processMapping($form, $this->dealMapping, 'Deal');
+            $mapping = $this->processMapping($form, $this->dealMapping, self::CATEGORY_DEAL);
             if (!$mapping) {
                 return;
             }
@@ -180,10 +180,14 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
                     $this->deal[$key] = $value;
                 }
             }
+
+            $this->deal['title'] = 'Deal';
+            $this->deal['currency'] = 'usd';
+            $this->deal['value'] = 0;
         }
 
         if ($this->mapAccount) {
-            $mapping = $this->processMapping($form, $this->accountMapping, 'Account');
+            $mapping = $this->processMapping($form, $this->accountMapping, self::CATEGORY_ACCOUNT);
             if (!$mapping) {
                 return;
             }
@@ -200,42 +204,44 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             return;
         }
 
-        if ($this->account) {
-            try {
-                $response = $client->post(
-                    $this->getEndpoint('/accounts'),
-                    [
-                        'json' => [
-                            'account' => $this->account,
-                        ],
+        if (!$this->account) {
+            return;
+        }
+
+        try {
+            $response = $client->post(
+                $this->getEndpoint('/accounts'),
+                [
+                    'json' => [
+                        'account' => $this->account,
                     ],
-                );
+                ],
+            );
 
-                $json = json_decode((string) $response->getBody(), false);
+            $json = json_decode((string) $response->getBody(), false);
 
-                if (isset($json->account)) {
-                    $this->accountId = $json->account->id;
-                }
-            } catch (\Exception $exception) {
-                if (422 === $exception->getCode()) {
-                    try {
-                        $response = $client->get($this->getEndpoint('/accounts'));
+            if (isset($json->account)) {
+                $this->accountId = $json->account->id;
+            }
+        } catch (\Exception $exception) {
+            if (422 === $exception->getCode()) {
+                try {
+                    $response = $client->get($this->getEndpoint('/accounts'));
 
-                        $json = json_decode($response->getBody(), false);
+                    $json = json_decode($response->getBody(), false);
 
-                        foreach ($json->accounts as $account) {
-                            if (!empty($this->account['name']) && strtolower($account->name) === strtolower($this->account['name'])) {
-                                $this->accountId = $account->id;
+                    foreach ($json->accounts as $account) {
+                        if (!empty($this->account['name']) && strtolower($account->name) === strtolower($this->account['name'])) {
+                            $this->accountId = $account->id;
 
-                                break;
-                            }
+                            break;
                         }
-                    } catch (\Exception $exception) {
-                        $this->processException($exception, self::LOG_CATEGORY);
                     }
-                } else {
+                } catch (\Exception $exception) {
                     $this->processException($exception, self::LOG_CATEGORY);
                 }
+            } else {
+                $this->processException($exception, self::LOG_CATEGORY);
             }
         }
     }
@@ -246,78 +252,82 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             return;
         }
 
-        if (!empty($this->contact)) {
-            try {
-                $listId = null;
-                if (isset($this->contact['listId'])) {
-                    $listId = $this->contact['listId'];
+        if (!$this->contact) {
+            return;
+        }
 
-                    unset($this->contact['listId']);
-                }
+        try {
+            $listId = null;
+            if (isset($this->contact['listId'])) {
+                $listId = $this->contact['listId'];
 
-                $response = $client->post(
-                    $this->getEndpoint('/contact/sync'),
+                unset($this->contact['listId']);
+            }
+
+            $response = $client->post(
+                $this->getEndpoint('/contact/sync'),
+                [
+                    'json' => [
+                        'contact' => $this->contact,
+                    ],
+                ],
+            );
+
+            $json = json_decode($response->getBody(), false);
+
+            if (isset($json->contact)) {
+                $this->contactId = $json->contact->id;
+            }
+
+            if ($this->accountId) {
+                $this->contact['contact'] = $this->contactId;
+                $this->contact['account'] = $this->accountId;
+
+                $client->post(
+                    $this->getEndpoint('/accountContacts'),
                     [
                         'json' => [
-                            'contact' => $this->contact,
+                            'accountContact' => $this->contact,
                         ],
                     ],
                 );
-
-                $json = json_decode($response->getBody(), false);
-
-                if (isset($json->contact)) {
-                    $this->contactId = $json->contact->id;
-                }
-
-                if ($this->accountId) {
-                    $this->contact['contact'] = $this->contactId;
-                    $this->contact['account'] = $this->accountId;
-
-                    $client->post(
-                        $this->getEndpoint('/accountContacts'),
-                        [
-                            'json' => [
-                                'accountContact' => $this->contact,
-                            ],
-                        ],
-                    );
-                }
-
-                foreach ($this->contactProps as $prop) {
-                    $prop['contact'] = $this->contactId;
-
-                    $client->post(
-                        $this->getEndpoint('/fieldValues'),
-                        [
-                            'json' => [
-                                'fieldValue' => $prop,
-                            ],
-                        ],
-                    );
-                }
-            } catch (\Exception $exception) {
-                $this->processException($exception, self::LOG_CATEGORY);
             }
 
-            if ($this->contactId && $listId) {
-                try {
-                    $client->post(
-                        $this->getEndpoint('/contactLists'),
-                        [
-                            'json' => [
-                                'contactList' => [
-                                    'list' => $listId,
-                                    'contact' => $this->contactId,
-                                    'status' => 1,
-                                ],
-                            ],
-                        ]
-                    );
-                } catch (\Exception $exception) {
-                    $this->processException($exception, self::LOG_CATEGORY);
-                }
+            foreach ($this->contactProps as $prop) {
+                $prop['contact'] = $this->contactId;
+
+                $client->post(
+                    $this->getEndpoint('/fieldValues'),
+                    [
+                        'json' => [
+                            'fieldValue' => $prop,
+                        ],
+                    ],
+                );
             }
+        } catch (\Exception $exception) {
+            $this->processException($exception, self::LOG_CATEGORY);
+        }
+
+        if (!$this->contactId && !$listId) {
+            return;
+        }
+
+        try {
+            $client->post(
+                $this->getEndpoint('/contactLists'),
+                [
+                    'json' => [
+                        'contactList' => [
+                            'list' => $listId,
+                            'contact' => $this->contactId,
+                            'status' => 1,
+                        ],
+                    ],
+                ]
+            );
+        } catch (\Exception $exception) {
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 
@@ -327,61 +337,59 @@ class ActiveCampaignV3 extends BaseActiveCampaignIntegration
             return;
         }
 
-        if (!empty($this->deal)) {
-            $pipelineId = $this->fetchPipelineId($client, $this->deal['group'] ?? $this->getPipelineId());
-            if ($pipelineId) {
-                $this->deal['group'] = (string) $pipelineId;
-            }
+        if (!$this->deal) {
+            return;
+        }
 
-            $stageId = $this->fetchStageId($client, $this->deal['stage'] ?? $this->getStageId(), $pipelineId);
-            if ($stageId) {
-                $this->deal['stage'] = (string) $stageId;
-            }
+        $pipelineId = $this->fetchPipelineId($client, $this->deal['group'] ?? $this->getPipeline());
+        if ($pipelineId) {
+            $this->deal['group'] = (string) $pipelineId;
+        }
 
-            $ownerId = $this->fetchOwnerId($client, $this->deal['owner'] ?? $this->getOwnerId());
-            if ($ownerId) {
-                $this->deal['owner'] = (string) $ownerId;
-            }
+        $stageId = $this->fetchStageId($client, $this->deal['stage'] ?? $this->getStage(), $pipelineId);
+        if ($stageId) {
+            $this->deal['stage'] = (string) $stageId;
+        }
 
-            if ($this->contactId) {
-                $this->deal['contact'] = (string) $this->contactId;
-            }
+        $ownerId = $this->fetchOwnerId($client, $this->deal['owner'] ?? $this->getOwner());
+        if ($ownerId) {
+            $this->deal['owner'] = (string) $ownerId;
+        }
 
-            $this->deal['title'] = 'Deal';
-            $this->deal['currency'] = 'usd';
-            $this->deal['value'] = 0;
+        if ($this->contactId) {
+            $this->deal['contact'] = (string) $this->contactId;
+        }
 
-            try {
-                $response = $client->post(
-                    $this->getEndpoint('/deals'),
-                    [
-                        'json' => [
-                            'deal' => $this->deal,
-                        ],
+        try {
+            $response = $client->post(
+                $this->getEndpoint('/deals'),
+                [
+                    'json' => [
+                        'deal' => $this->deal,
                     ],
-                );
+                ],
+            );
 
-                $json = json_decode((string) $response->getBody(), false);
+            $json = json_decode((string) $response->getBody(), false);
 
-                if (isset($json->deal)) {
-                    $dealId = $json->deal->id;
+            if (isset($json->deal)) {
+                $dealId = $json->deal->id;
 
-                    foreach ($this->dealProps as $prop) {
-                        $prop['dealId'] = $dealId;
+                foreach ($this->dealProps as $prop) {
+                    $prop['dealId'] = $dealId;
 
-                        $client->post(
-                            $this->getEndpoint('/dealCustomFieldData'),
-                            [
-                                'json' => [
-                                    'dealCustomFieldDatum' => $prop,
-                                ],
+                    $client->post(
+                        $this->getEndpoint('/dealCustomFieldData'),
+                        [
+                            'json' => [
+                                'dealCustomFieldDatum' => $prop,
                             ],
-                        );
-                    }
+                        ],
+                    );
                 }
-            } catch (\Exception $exception) {
-                $this->processException($exception, self::LOG_CATEGORY);
             }
+        } catch (\Exception $exception) {
+            $this->processException($exception, self::LOG_CATEGORY);
         }
     }
 }

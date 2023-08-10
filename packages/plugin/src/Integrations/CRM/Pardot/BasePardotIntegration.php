@@ -16,7 +16,6 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Solspace\Freeform\Attributes\Property\Flag;
 use Solspace\Freeform\Attributes\Property\Input;
-use Solspace\Freeform\Fields\AbstractField;
 use Solspace\Freeform\Library\Exceptions\Integrations\IntegrationException;
 use Solspace\Freeform\Library\Integrations\DataObjects\FieldObject;
 use Solspace\Freeform\Library\Integrations\OAuth\OAuth2ConnectorInterface;
@@ -31,6 +30,10 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
     use OAuth2Trait;
 
     protected const LOG_CATEGORY = 'Pardot';
+
+    protected const CATEGORY_PROSPECT = 'Prospect';
+
+    protected const CATEGORY_CUSTOM = 'Custom';
 
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
@@ -112,27 +115,16 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
 
     public function fetchFields(string $category, Client $client): array
     {
-        if ('Prospect' === $category) {
-            return $this->getProspectFields();
+        if (self::CATEGORY_PROSPECT === $category) {
+            return $this->getProspectFields($category);
         }
 
-        return $this->getCustomFields($client);
+        return $this->getCustomFields($client, $category);
     }
 
     public function getBusinessUnitId(): string
     {
         return $this->getProcessedValue($this->businessUnitId);
-    }
-
-    public function convertCustomFieldValue(FieldObject $fieldObject, AbstractField $field): mixed
-    {
-        $value = parent::convertCustomFieldValue($fieldObject, $field);
-
-        if (FieldObject::TYPE_ARRAY === $fieldObject->getType()) {
-            $value = \is_array($value) ? implode(';', $value) : $value;
-        }
-
-        return $value;
     }
 
     protected function isCustomUrl(): bool
@@ -165,258 +157,258 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         return $domain;
     }
 
-    private function getProspectFields(): array
+    private function getProspectFields(string $category): array
     {
         return [
             new FieldObject(
                 'salutation',
                 'Salutation',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'first_name',
                 'First Name',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'last_name',
                 'Last Name',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'email',
                 'Email',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'password',
                 'Password',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'company',
                 'Company',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'prospect_account_id',
                 'Prospect Account Id',
                 FieldObject::TYPE_NUMERIC,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'website',
                 'Website',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'job_title',
                 'Job Title',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'department',
                 'Department',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'country',
                 'Country',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'address_one',
                 'Address One',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'address_two',
                 'Address Two',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'city',
                 'City',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'state',
                 'State',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'territory',
                 'Territory',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'zip',
                 'Zip',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'phone',
                 'Phone',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'fax',
                 'Fax',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'source',
                 'Source',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'annual_revenue',
                 'Annual Revenue',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'employees',
                 'Employees',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'industry',
                 'Industry',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'years_in_business',
                 'Years in Business',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'comments',
                 'Comments',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'notes',
                 'Notes',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
             new FieldObject(
                 'score',
                 'Score',
                 FieldObject::TYPE_NUMERIC,
-                'Prospect',
+                $category,
                 true
             ),
             new FieldObject(
                 'is_do_not_email',
                 'Do not email',
                 FieldObject::TYPE_BOOLEAN,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'is_do_not_call',
                 'Do not call',
                 FieldObject::TYPE_BOOLEAN,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'is_reviewed',
                 'Reviewed',
                 FieldObject::TYPE_BOOLEAN,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'is_archived',
                 'Archived',
                 FieldObject::TYPE_BOOLEAN,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'is_starred',
                 'Starred',
                 FieldObject::TYPE_NUMERIC,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'campaign_id',
                 'Campaign',
                 FieldObject::TYPE_NUMERIC,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'profile',
                 'Profile',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 true,
             ),
             new FieldObject(
                 'assign_to',
                 'Assign To',
                 FieldObject::TYPE_STRING,
-                'Prospect',
+                $category,
                 false,
             ),
         ];
     }
 
-    private function getCustomFields(Client $client): array
+    private function getCustomFields(Client $client, string $category): array
     {
         try {
             $response = $client->get($this->getPardotEndpoint('customField'));
@@ -427,7 +419,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
         $json = json_decode((string) $response->getBody());
 
         if (!$json || !isset($json->result)) {
-            throw new IntegrationException('Could not fetch fields for Pardot Custom');
+            throw new IntegrationException('Could not fetch fields for Pardot '.$category);
         }
 
         $fieldList = [];
@@ -474,7 +466,7 @@ abstract class BasePardotIntegration extends CRMIntegration implements OAuth2Con
                 $field->field_id,
                 $field->name,
                 $type,
-                'Custom',
+                $category,
                 false,
             );
         }

@@ -30,6 +30,14 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
 
     protected const LOG_CATEGORY = 'Zoho';
 
+    protected const CATEGORY_LEAD = 'Lead';
+
+    protected const CATEGORY_DEAL = 'Deal';
+
+    protected const CATEGORY_ACCOUNT = 'Account';
+
+    protected const CATEGORY_CONTACT = 'Contact';
+
     #[Flag(self::FLAG_INTERNAL)]
     #[Input\Hidden]
     protected string $accountsServer = '';
@@ -213,9 +221,7 @@ abstract class BaseZohoIntegration extends CRMIntegration implements OAuth2Conne
         if ('error' === $data['status']) {
             $this->getLogger()->error(
                 $data['message'],
-                [
-                    'exception' => $data,
-                ],
+                ['exception' => $data],
             );
 
             throw new IntegrationException($data['message']);

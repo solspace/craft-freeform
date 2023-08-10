@@ -2,7 +2,6 @@
 
 namespace Solspace\Freeform\controllers\api\integrations;
 
-use Solspace\Freeform\Bundles\Integrations\Providers\IntegrationClientProvider;
 use Solspace\Freeform\controllers\BaseApiController;
 use Solspace\Freeform\Freeform;
 use Solspace\Freeform\Library\Integrations\Types\CRM\CRMIntegrationInterface;
@@ -11,15 +10,6 @@ use yii\web\Response;
 
 class CrmController extends BaseApiController
 {
-    public function __construct(
-        $id,
-        $module,
-        private IntegrationClientProvider $clientProvider,
-        $config = [],
-    ) {
-        parent::__construct($id, $module, $config);
-    }
-
     public function actionFields(string $category): Response
     {
         $id = $this->request->get('id');

@@ -37,11 +37,6 @@ use yii\base\Event;
 )]
 class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceIntegrationInterface
 {
-    protected const CATEGORY_LEAD = 'Lead';
-    protected const CATEGORY_OPPORTUNITY = 'Opportunity';
-    protected const CATEGORY_ACCOUNT = 'Account';
-    protected const CATEGORY_CONTACT = 'Contact';
-
     protected const API_VERSION = 'v58.0';
 
     // ==========================================
@@ -281,7 +276,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 try {
                     $dueDate = $this->getTaskDueDate() ?: '+2 days';
                     $dueDate = new Carbon($dueDate, 'UTC');
-                } catch (\Exception $e) {
+                } catch (\Exception $exception) {
                     $dueDate = new Carbon('+2 days', 'UTC');
 
                     $this->processException($exception, self::LOG_CATEGORY);
@@ -302,14 +297,10 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
                 try {
                     $response = $client->post(
                         $this->getEndpoint('/sobjects/Task'),
-                        [
-                            'json' => $payload,
-                        ],
+                        ['json' => $payload],
                     );
 
-                    if (201 === $response->getStatusCode()) {
-                        return true;
-                    }
+                    return 201 === $response->getStatusCode();
                 } catch (\Exception $exception) {
                     $this->processException($exception, self::LOG_CATEGORY);
                 }
@@ -444,18 +435,14 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
                 $response = $client->patch(
                     $this->getEndpoint('/sobjects/Account/'.$accountRecord->Id),
-                    [
-                        'json' => $mapping,
-                    ],
+                    ['json' => $mapping],
                 );
 
                 $this->accountId = $accountRecord->Id;
             } else {
                 $response = $client->post(
                     $this->getEndpoint('/sobjects/Account'),
-                    [
-                        'json' => $mapping,
-                    ],
+                    ['json' => $mapping],
                 );
 
                 $json = json_decode((string) $response->getBody());
@@ -538,16 +525,12 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
                 $response = $client->patch(
                     $this->getEndpoint('/sobjects/Contact/'.$contactRecord->Id),
-                    [
-                        'json' => $mapping,
-                    ],
+                    ['json' => $mapping],
                 );
             } else {
                 $response = $client->post(
                     $this->getEndpoint('/sobjects/Contact'),
-                    [
-                        'json' => $mapping,
-                    ],
+                    ['json' => $mapping],
                 );
             }
 
@@ -587,9 +570,7 @@ class SalesforceV58 extends BaseSalesforceIntegration implements SalesforceInteg
 
             $response = $client->post(
                 $this->getEndpoint('/sobjects/Opportunity'),
-                [
-                    'json' => $mapping,
-                ],
+                ['json' => $mapping],
             );
 
             Event::trigger(

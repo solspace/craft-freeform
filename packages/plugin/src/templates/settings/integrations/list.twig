@@ -14,10 +14,6 @@
 
 {% block content %}
 
-    <div id="no-integrations" class="padded{% if integrations|length %} hidden{% endif %}">
-        <p>{{ "No integrations exist yet"|t('freeform') }}</p>
-    </div>
-
     {% if integrations|length %}
         <table id="integrations" class="data fullwidth collapsible">
             <thead>
@@ -56,13 +52,15 @@
 
             </tbody>
         </table>
-    {% endif %}
-
-    {% if providers|length == 0 %}
-        <div class="alert alert-info alert-dismissible">
-            <a href="{{ cpUrl("plugin-store/freeform") }}">
-                {{ "Upgrade to Pro to enable"|t('freeform') }}
-            </a>
+    {% else %}
+        <div class="zilch">
+            {% if providers|length == 0 %}
+                <a href="{{ cpUrl("plugin-store/freeform") }}">
+                    {{ "Upgrade to the Pro edition of Freeform to get access to integrations."|t('freeform') }}
+                </a>
+            {% else %}
+                {{ "No integrations exist yet."|t("freeform") }}
+            {% endif %}
         </div>
     {% endif %}
 

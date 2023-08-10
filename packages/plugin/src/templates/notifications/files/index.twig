@@ -68,7 +68,7 @@
     {% else %}
 
         <div class="zilch">
-            <p>{{ "No email notification template files exist yet."|t('freeform') }}</p>
+            {{ "No file-based email notification templates exist yet."|t('freeform') }}
 
             {% if not settings.absoluteEmailTemplateDirectory %}
                 <p>

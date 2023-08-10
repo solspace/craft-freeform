@@ -39,9 +39,6 @@
 {% endblock %}
 
 {% set content %}
-    <div id="noexport-profiles" class="padded{% if exportProfiles %} hidden{% endif %}">
-        <p>{{ "No export profiles found"|t('freeform') }}</p>
-    </div>
 
     {% if exportProfiles|length %}
         <table id="export-profiles" class="data fullwidth collapsible">
@@ -96,6 +93,10 @@
             {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <div class="zilch">
+            {{ "No export profiles exist yet."|t("freeform") }}
+        </div>
     {% endif %}
 {% endset %}
 

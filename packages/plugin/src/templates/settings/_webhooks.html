@@ -16,10 +16,6 @@
 
 {% block content %}
 
-    <div id="no-webhooks" class="padded{% if webhooks|length %} hidden{% endif %}">
-        <p>{{ "No Webhooks added yet"|t('freeform') }}</p>
-    </div>
-
     {% if webhooks|length %}
         <table id="webhooks" class="data fullwidth collapsible">
             <thead>
@@ -50,13 +46,15 @@
 
             </tbody>
         </table>
-    {% endif %}
-
-    {% if not craft.freeform.pro %}
-        <div class="alert alert-info alert-dismissible">
-            <a href="{{ cpUrl("plugin-store/freeform") }}">
-                {{ "Upgrade to Pro to enable"|t('freeform') }}
-            </a>
+    {% else %}
+        <div class="zilch">
+            {% if craft.freeform.pro %}
+                {{ "No webhooks exist yet."|t("freeform") }}
+            {% else %}
+                <a href="{{ cpUrl("plugin-store/freeform") }}">
+                    {{ "Upgrade to the Pro edition of Freeform to get access to webhooks."|t('freeform') }}
+                </a>
+            {% endif %}
         </div>
     {% endif %}
 

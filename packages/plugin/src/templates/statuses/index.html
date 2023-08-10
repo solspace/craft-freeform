@@ -19,10 +19,6 @@
 
 {% set content %}
 
-    <div id="nostatuses" class="padded{% if statuses %} hidden{% endif %}">
-        <p>{{ "No statuses found"|t('freeform') }}</p>
-    </div>
-
     {% if statuses|length %}
         <table id="statuses" class="data fullwidth collapsible">
             <thead>
@@ -61,6 +57,10 @@
             {% endfor %}
             </tbody>
         </table>
+    {% else %}
+        <div class="zilch">
+            {{ "No statuses exist yet."|t('freeform') }}
+        </div>
     {% endif %}
 {% endset %}
 

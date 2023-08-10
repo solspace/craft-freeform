@@ -79,26 +79,31 @@
             transform: rotate(1turn);
         }
     }
-    /* PAGE TABS */
-    .freeform-pages {
-        display: flex;
-        padding: 0;
-        margin: 0 0 25px 0;
-        list-style: none;
-        border-bottom: 2px solid #dddddd;
-    }
-    .freeform-pages li {
-        color: #6c757d;
-        background: transparent;
-        padding: 10px 20px;
+    /* PAGES */
+    .freeform-page {
+        display: block;
+        padding: 0 20px 20px;
         margin: 0;
+        background: #ffffff;
     }
-    .freeform-pages li.active {
-        color: black;
-        font-weight: bold;
-        background: #dddddd;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
+    .freeform-page h3 {
+        display: block;
+        padding: 15px 20px;
+        margin: 0 -20px 15px;
+        font-size: 18px;
+        color: #222529;
+        font-weight: 400;
+        background: #f6f9f9;
+        border-bottom: 1px solid #dce3e8;
+    }
+    .freeform-page.freeform-page-active {
+        background: #d4e5ff;
+    }
+    .freeform-page.freeform-page-active h3 {
+        color: #ffffff;
+        font-weight: 600;
+        background: #0d6efd;
+        border-bottom: 1px solid #dce3e8;
     }
     /* FORM LAYOUT */
     .freeform-row {

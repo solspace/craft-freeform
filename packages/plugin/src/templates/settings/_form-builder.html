@@ -76,13 +76,4 @@
         errors: settings.errors("defaultTemplates"),
     }) }}
 
-    {{ forms.lightswitchField({
-        first: not craft.freeform.pro,
-        label: "Show Form Builder Tutorial"|t('freeform'),
-        instructions: "Enable this to show the interactive tutorial again in Form Builder. This setting disables again when the tutorial is completed or skipped."|t('freeform'),
-        name: "settings[showTutorial]",
-        on: settings.showTutorial,
-        errors: settings.errors("showTutorial"),
-    }) }}
-
 {% endblock %}

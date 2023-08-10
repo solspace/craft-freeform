@@ -43,7 +43,6 @@ return [
     'freeform/api/types/page-buttons' => 'freeform/api/types/page-buttons/get-type',
 
     // GENERAL
-    'freeform/api/general/finish-tutorial' => 'freeform/api/settings/finish-tutorial',
     'freeform/api/general/get-submission-data' => 'freeform/api/settings/get-submission-data',
     'freeform/api/modal/forms/options' => 'freeform/api/modal/options',
     'freeform/api/modal/forms' => 'freeform/api/forms/index',

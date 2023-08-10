@@ -383,7 +383,6 @@ return [
     'Expiry Date',
     'CVC/CVV',
     'Checked by default',
-    'Could not finish the tutorial',
     "Adjust all settings including return URL and formatting template for your form here. To get back here at a later time, just click the 'Form Settings' button.",
     'Admin Email Notifications',
     'If you wish to send an email notification to admin(s) upon users successfully submitting this form, set that up here.',

@@ -104,19 +104,6 @@ class SettingsService extends BaseService
     }
 
     /**
-     * Mark the tutorial as finished.
-     */
-    public function finishTutorial(): bool
-    {
-        $plugin = Freeform::getInstance();
-        if (\Craft::$app->plugins->savePluginSettings($plugin, ['showTutorial' => false])) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
      * @return FormTemplate[]
      *
      * @throws \InvalidArgumentException

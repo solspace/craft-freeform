@@ -148,7 +148,7 @@ class Dotmailer extends MailingListIntegration
      *
      * @throws IntegrationException
      */
-    public function onBeforeSave()
+    public function onBeforeSave(): void
     {
         $client = $this->generateAuthorizedClient();
         $endpoint = 'https://api.dotmailer.com/v2/account-info';

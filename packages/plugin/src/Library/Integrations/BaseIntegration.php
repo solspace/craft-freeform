@@ -80,7 +80,7 @@ abstract class BaseIntegration implements IntegrationInterface
     /**
      * Perform anything necessary before this integration is saved.
      */
-    public function onBeforeSave()
+    public function onBeforeSave(): void
     {
     }
 
@@ -100,12 +100,11 @@ abstract class BaseIntegration implements IntegrationInterface
     /**
      * @throws \Exception
      */
-    protected function processException(\Exception $exception): void
+    protected function processException(\Exception $exception, ?string $category = null): void
     {
-        $message = $exception->getMessage();
-        $this->getLogger()->error(
-            $message,
-            ['exception' => $message],
+        $this->getLogger($category)->error(
+            $exception->getMessage(),
+            ['exception' => $exception->getMessage()],
         );
 
         throw $exception;

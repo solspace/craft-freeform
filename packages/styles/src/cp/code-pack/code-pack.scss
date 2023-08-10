@@ -13,13 +13,9 @@
 
     padding: 0 10px;
     margin: 0 0 25px;
-
-    &:last-child {
-      width: 100%;
-    }
   }
 
-  @media only screen and (max-width: 1430px) {
+  @media only screen and (max-width: 800px) {
     > div {
       width: 100%;
     }

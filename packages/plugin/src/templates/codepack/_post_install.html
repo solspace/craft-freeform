@@ -8,16 +8,15 @@
 
 {% block content %}
 
-    <div>
-        {% set stats = {
+    {% set stats = {
         templates: codePack.templates.contents.fileCount,
         assets: codePack.assets.contents.fileCount
-        } %}
+    } %}
 
+    <div class="zilch">
         {{ "Successfully installed <b>{templates} templates</b> and <b>{assets} assets</b>"|t('freeform', stats)|raw }}
-    </div>
-    <div>
-        {{ "You can view the templates <a href='{link}'>here</a>"|t('freeform', {link: (siteUrl ~ prefix ~ '/')})|raw }}
+        <br /><br />
+        <small>{{ "<a href='{link}'>View the Demo area now!</a>"|t('freeform', {link: (siteUrl ~ prefix ~ '/')})|raw }}</small>
     </div>
 
 {% endblock %}

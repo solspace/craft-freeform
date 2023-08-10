@@ -37,14 +37,16 @@
                 <td width="95%">
                     {{ forms.textField({
                         label: "Install Path"|t('freeform'),
+                        instructions: "The folder name you'd like the demo templates installed to, relative to the Craft templates directory.",
                         id: 'prefix',
                         name: 'prefix',
                         value: prefix,
+                        placeholder: "e.g. freeform-demo",
                         autofocus: true
                     }) }}
                 </td>
                 <td>
-                    <div class="buttons" style="margin: 18px 0 0 15px !important;">
+                    <div class="buttons" style="margin: 40px 0 0 5px !important;">
                         <input type="submit" class="btn submit" value="{{ 'Install'|t('app') }}" />
                     </div>
                 </td>
@@ -61,7 +63,13 @@
         </table>
     </form>
 
+    <hr />
+    <div class="field">
+        <p>The following templates, assets and routes will be installed and configured:</p>
+    </div>
+
     <div id="components-wrapper">
+
         {% if codePack.templates %}
             <div>
                 <h3>{{ "Templates"|t('app') }}</h3>
@@ -79,42 +87,41 @@
             </div>
         {% endif %}
 
+        <div>
         {% if codePack.assets %}
-            <div>
-                <h3>{{ "Assets"|t('app') }}</h3>
+            <h3>{{ "Assets"|t('app') }}</h3>
 
-                <ul class="directory-structure">
-                    <li class="dir">
-                        <span data-name="/">demo</span>
-                    </li>
-                    <ul>
-                        {% for file in codePack.assets.contents %}
-                            {{ dir.listFiles(file) }}
-                        {% endfor %}
-                    </ul>
+            <ul class="directory-structure">
+                <li class="dir">
+                    <span data-name="/">demo</span>
+                </li>
+                <ul>
+                    {% for file in codePack.assets.contents %}
+                        {{ dir.listFiles(file) }}
+                    {% endfor %}
                 </ul>
-            </div>
+            </ul>
         {% endif %}
 
         {% if codePack.routes.data %}
-            <div>
-                <h3>{{ "Routes"|t('app') }}</h3>
+            <br />
+            <h3>{{ "Routes"|t('app') }}</h3>
 
-                <ul class="directory-structure routes">
-                    {% for route in codePack.routes.data %}
-                        <li>
-                            <span class="route" data-name="/{{ route.urlPattern }}">
-                                demo/{{ route.urlPattern }}
-                            </span>
+            <ul class="directory-structure routes">
+                {% for route in codePack.routes.data %}
+                    <li>
+                        <span class="route" data-name="/{{ route.urlPattern }}">
+                            demo/{{ route.urlPattern }}
+                        </span>
 
-                            <div class="template">
-                                {{ route.template }}
-                            </div>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
+                        <div class="template">
+                            {{ route.template }}
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
         {% endif %}
+        </div>
     </div>
 
 {% endblock %}

@@ -36,7 +36,7 @@ export const MappingWrapper = styled.div`
 `;
 
 export const MappingContainer = styled.div`
-  width: 70%;
+  max-width: 1000px;
   max-height: 454px;
 
   overflow-y: auto;

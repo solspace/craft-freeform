@@ -250,7 +250,6 @@ return [
     'Handle' => 'Handle',
 
     // Meldingen Controller
-    'Email Notifications' => 'Email Notificaties',
     'Notifications' => 'Notificaties',
     'Notification saved' => 'Notificatie opgeslagen',
     'Notification not saved' => 'Notificatie niet opgeslagen',

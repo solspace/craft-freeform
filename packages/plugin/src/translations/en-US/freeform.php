@@ -250,7 +250,6 @@ return [
     'Handle' => 'Handle',
 
     // Notifications Controller
-    'Email notifications' => 'Email notifications',
     'Notifications' => 'Notifications',
     'Notification saved' => 'Notification saved',
     'Notification not saved' => 'Notification not saved',
